@@ -829,7 +829,7 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText(messages.perpsLearnBasics.message)).toBeInTheDocument();
     });
 
-    it('opens Modify menu with Add exposure and Reduce exposure when Modify button is clicked', async () => {
+    it('opens Modify menu with Add exposure, Reduce exposure, and Reverse position when Modify button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
@@ -846,8 +846,8 @@ describe('PerpsMarketDetailPage', () => {
         screen.getByTestId('perps-modify-menu-reduce-exposure'),
       ).toBeInTheDocument();
       expect(
-        screen.queryByTestId('perps-modify-menu-reverse-position'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-modify-menu-reverse-position'),
+      ).toBeInTheDocument();
       expect(
         screen.getByText(messages.perpsAddExposure.message),
       ).toBeInTheDocument();
@@ -944,7 +944,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('does not show Reverse position option in Modify menu (temporarily disabled)', async () => {
+    it('opens Reverse position modal when Reverse position is clicked in Modify menu', async () => {
       const store = mockStore(createMockState(true));
 
       await renderPage(store);
@@ -952,11 +952,14 @@ describe('PerpsMarketDetailPage', () => {
       fireEvent.click(screen.getByTestId('perps-modify-cta-button'));
 
       expect(
-        screen.queryByTestId('perps-modify-menu-reverse-position'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-modify-menu-reverse-position'),
+      ).toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId('perps-modify-menu-reverse-position'));
+
       expect(
-        screen.queryByTestId('perps-reverse-position-modal'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-reverse-position-modal'),
+      ).toBeInTheDocument();
     });
 
     it('opens Add margin modal from Margin menu', async () => {
