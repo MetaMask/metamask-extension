@@ -10,7 +10,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
-import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockPriceApi } from '../tokens/utils/mocks';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -82,15 +82,8 @@ describe('Editing Confirm Transaction', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-        },
+        testSpecificMock: async (mockServer: MockttpServer) =>
+          mockPriceApi(mockServer, 1700),
       },
       async ({ driver }) => {
         await login(driver);
@@ -134,15 +127,8 @@ describe('Editing Confirm Transaction', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, {
-            'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-          });
-        },
+        testSpecificMock: async (mockServer: MockttpServer) =>
+          mockPriceApi(mockServer, 1700),
       },
       async ({ driver }) => {
         // login to extension

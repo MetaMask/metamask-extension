@@ -94,7 +94,16 @@ describe('Token Details', function () {
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
-            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: marketData,
+            [`eip155:1/erc20:${tokenAddress.toLowerCase()}`]: {
+              price:
+                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+                  ? marketData.price * ethConversionInUsd
+                  : marketData.price,
+              marketCap:
+                process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+                  ? marketData.marketCap * ethConversionInUsd
+                  : marketData.marketCap,
+            },
           }),
           await mockHistoricalPrices(mockServer, {
             address: tokenAddress,
