@@ -1548,6 +1548,14 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
+  "changePasswordPasskeyVerifyingDescription": {
+    "message": "Use Face ID, Touch ID, or your device screen lock when prompted.",
+    "description": "Shown under the loading state while the wallet waits for passkey or device biometrics during change password."
+  },
+  "changePasswordPasskeyVerifyingTitle": {
+    "message": "Confirm with biometrics",
+    "description": "Title shown while the wallet waits for passkey or device biometrics during change password."
+  },
   "changePasswordWarning": {
     "message": "Are you sure?"
   },
@@ -5326,6 +5334,14 @@
     "message": "Biometrics don't match your current wallet lock. Set up biometrics again in Settings.",
     "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
   },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Your password was updated, but biometric unlock couldn't be turned on.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "We couldn't verify your biometrics. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+  },
   "passkeySetupStepRegister": {
     "message": "Register biometrics"
   },
@@ -5335,6 +5351,12 @@
   "passkeyTroubleshoot": {
     "message": "Having trouble with biometrics?",
     "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTurnedOff": {
+    "message": "Biometrics turned off"
+  },
+  "passkeyTurnedOn": {
+    "message": "Biometrics turned on"
   },
   "passkeyUnlockFailed": {
     "message": "Biometrics unlock failed. Try your password."
@@ -7290,6 +7312,10 @@
   },
   "securityChangePasswordToastError": {
     "message": "Password couldn’t be changed. Please try again."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "New password saved, but biometric unlock couldn't be turned on.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
   },
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
@@ -9563,6 +9589,12 @@
   },
   "turnOffMetamaskNotificationsError": {
     "message": "There was an error in disabling the notifications. Please try again later."
+  },
+  "turnOffPasskey": {
+    "message": "Turn off biometrics"
+  },
+  "turnOffPasskeyFailed": {
+    "message": "We couldn't turn off biometrics. Try again."
   },
   "turnOn": {
     "message": "Turn on"
