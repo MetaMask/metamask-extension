@@ -16,7 +16,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-} from '../../../components/component-library';
+} from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import {

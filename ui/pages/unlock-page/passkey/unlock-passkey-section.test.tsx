@@ -31,7 +31,7 @@ beforeAll(() => {
   globalThis.platform = {
     ...globalThis.platform,
     openExtensionInBrowser: mockOpenExtensionInBrowser,
-  };
+  } as typeof globalThis.platform;
 });
 
 const mockStore = configureMockStore([thunk])({ metamask: {} });

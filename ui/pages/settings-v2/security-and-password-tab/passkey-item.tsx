@@ -22,6 +22,7 @@ import {
   isPasskeyCeremonySilentError,
   translatePasskeyError,
 } from '../../../../shared/lib/passkey';
+import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -55,6 +56,8 @@ const PasskeyItem = () => {
 
   const [isPasskeyOperationPending, setIsPasskeyOperationPending] =
     useState(false);
+  const [showPasskeyTroubleshootModal, setShowPasskeyTroubleshootModal] =
+    useState(false);
 
   useEffect(() => {
     return () => {
@@ -63,6 +66,7 @@ const PasskeyItem = () => {
   }, []);
 
   const openSecurityAndPasswordInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
     globalThis.platform?.openExtensionInBrowser?.(SECURITY_AND_PASSWORD_ROUTE);
   }, []);
 
@@ -160,7 +164,7 @@ const PasskeyItem = () => {
             data-testid="security-passkey-sidepanel-continue-full-screen"
             color={TextColor.PrimaryDefault}
             className="mt-2 flex w-full justify-start text-left"
-            onClick={openSecurityAndPasswordInFullScreen}
+            onClick={() => setShowPasskeyTroubleshootModal(true)}
           >
             {t('passkeyTroubleshoot')}
           </TextButton>
@@ -168,22 +172,30 @@ const PasskeyItem = () => {
       </>
     );
     return body;
-  }, [openSecurityAndPasswordInFullScreen, isPasskeyOperationPending, t]);
+  }, [isPasskeyOperationPending, t]);
 
   if (!isPasskeyFeatureAvailable) {
     return null;
   }
 
   return (
-    <SettingsToggleItem
-      title={t(SECURITY_ITEMS.passkey)}
-      description={description}
-      value={Boolean(isPasskeyRegistered)}
-      onToggle={handlePasskeyToggle}
-      dataTestId="security-passkey-settings-toggle"
-      containerDataTestId="security-passkey-settings-row"
-      disabled={isPasskeyOperationPending}
-    />
+    <>
+      <SettingsToggleItem
+        title={t(SECURITY_ITEMS.passkey)}
+        description={description}
+        value={Boolean(isPasskeyRegistered)}
+        onToggle={handlePasskeyToggle}
+        dataTestId="security-passkey-settings-toggle"
+        containerDataTestId="security-passkey-settings-row"
+        disabled={isPasskeyOperationPending}
+      />
+      {showPasskeyTroubleshootModal ? (
+        <PasskeyTroubleshootModal
+          onClose={() => setShowPasskeyTroubleshootModal(false)}
+          onOpenFullScreen={openSecurityAndPasswordInFullScreen}
+        />
+      ) : null}
+    </>
   );
 };
 
