@@ -33,9 +33,9 @@ class TokenOverviewPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.sendButton,
-        // this.swapButton,
+      await Promise.any([
+        this.driver.waitForSelector(this.sendButton),
+        this.driver.waitForSelector(this.swapButton),
       ]);
     } catch (e) {
       console.log(
