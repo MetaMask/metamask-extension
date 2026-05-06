@@ -1010,7 +1010,7 @@
         "@metamask/polling-controller": true,
         "@metamask/snaps-controllers": true,
         "@metamask/superstruct": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/bridge-status-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
         "uuid": true
@@ -1129,6 +1129,7 @@
         "@metamask/design-system-react>@radix-ui/react-slot": true,
         "@metamask/design-system-react>blo": true,
         "react": true,
+        "react-focus-lock": true,
         "@metamask/design-system-react>tailwind-merge": true
       }
     },
@@ -2425,6 +2426,38 @@
         "uuid": true
       }
     },
+    "@metamask/bridge-status-controller>@metamask/transaction-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@ethersproject/abi": true,
+        "@ethersproject/contracts": true,
+        "@ethersproject/providers": true,
+        "ethers>@ethersproject/wallet": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/gas-fee-controller": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "mockttp>async-mutex": true,
+        "@metamask/bridge-status-controller>bignumber.js": true,
+        "ethereumjs-util>bn.js": true,
+        "browserify>buffer": true,
+        "eth-method-registry": true,
+        "webpack>events": true,
+        "lodash": true,
+        "uuid": true
+      }
+    },
     "@metamask/shield-controller>@metamask/transaction-controller": {
       "globals": {
         "clearTimeout": true,
@@ -2625,16 +2658,17 @@
       "packages": {
         "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": true,
         "@metamask/perps-controller>@nktkas/hyperliquid>@noble/hashes": true,
-        "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer": true,
         "@metamask/perps-controller>@nktkas/hyperliquid>valibot": true
       }
     },
     "@metamask/perps-controller>@nktkas/hyperliquid>@nktkas/rews": {
       "globals": {
         "AbortController": true,
-        "AbortSignal.timeout": true,
+        "CloseEvent": true,
         "CustomEvent": true,
-        "DOMException": true,
+        "Event": true,
+        "EventTarget": true,
+        "MessageEvent": true,
         "WebSocket": true,
         "clearTimeout": true,
         "setTimeout": true
@@ -2695,11 +2729,6 @@
       },
       "packages": {
         "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/curves": {
-      "packages": {
-        "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/hashes": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": {
@@ -2806,12 +2835,6 @@
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2982,13 +3005,7 @@
         "TextEncoder": true
       }
     },
-    "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>micro-packed>@scure/base": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": {
+    "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": {
       "packages": {
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": true,
         "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true,
@@ -3049,6 +3066,20 @@
         "@segment/analytics-node>jose": true,
         "process": true,
         "tslib": true
+      }
+    },
+    "@simplewebauthn/browser": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "PublicKeyCredential": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "document.querySelectorAll": true,
+        "location.hostname": true,
+        "navigator.credentials.create": true,
+        "navigator.credentials.get": true
       }
     },
     "@solana/addresses": {
@@ -5083,13 +5114,6 @@
         "react-markdown>unist-util-visit": true
       }
     },
-    "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer": {
-      "packages": {
-        "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/curves": true,
-        "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>@noble/hashes": true,
-        "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>micro-packed": true
-      }
-    },
     "eth-lattice-keyring>@ethereumjs/util>micro-ftch": {
       "globals": {
         "Headers": true,
@@ -5106,11 +5130,6 @@
         "stream-http": true,
         "browserify>url": true,
         "browserify>util": true
-      }
-    },
-    "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>micro-packed": {
-      "packages": {
-        "@metamask/perps-controller>@nktkas/hyperliquid>micro-eth-signer>micro-packed>@scure/base": true
       }
     },
     "react-markdown>remark-parse>mdast-util-from-markdown>micromark": {

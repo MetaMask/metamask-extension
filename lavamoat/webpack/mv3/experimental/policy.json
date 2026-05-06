@@ -2029,6 +2029,20 @@
         "process": true
       }
     },
+    "@simplewebauthn/browser": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "PublicKeyCredential": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "document.querySelectorAll": true,
+        "location.hostname": true,
+        "navigator.credentials.create": true,
+        "navigator.credentials.get": true
+      }
+    },
     "@solana/addresses": {
       "globals": {
         "Intl.Collator": true,

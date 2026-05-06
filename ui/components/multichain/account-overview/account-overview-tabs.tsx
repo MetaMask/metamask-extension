@@ -34,7 +34,7 @@ import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../activity-v2/activity-list';
-import { usePrefetchTransactions } from '../activity-v2/hooks';
+import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
 
