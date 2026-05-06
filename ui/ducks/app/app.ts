@@ -128,6 +128,7 @@ type AppState = {
   isMultiRpcOnboarding: boolean;
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
+  showNftDetectionEnablementToast: boolean;
   showNewSrpAddedToast: number | false;
   showPasswordChangeToast: PasswordChangeToastType | null;
   showCopyAddressToast: boolean;
@@ -236,6 +237,7 @@ const initialState: AppState = {
   isMultiRpcOnboarding: false,
   isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
+  showNftDetectionEnablementToast: false,
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
