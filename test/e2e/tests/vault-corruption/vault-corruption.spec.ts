@@ -146,7 +146,9 @@ describe('Vault Corruption', function () {
           driver,
           password: WALLET_PASSWORD,
         });
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
 
         // make sure the address is the same as before
         assert.equal(
@@ -253,7 +255,9 @@ describe('Vault Corruption', function () {
         });
 
         // make sure the account is different than the first time we onboarded
-        const newFirstAddress = await getFirstAddress(driver);
+        const newFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
         assert.notEqual(
           newFirstAddress,
           initialFirstAddress,
@@ -302,7 +306,9 @@ describe('Vault Corruption', function () {
           driver,
           password: WALLET_PASSWORD,
         });
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
         assert.equal(
           restoredFirstAddress,
           initialFirstAddress,
@@ -334,7 +340,9 @@ describe('Vault Corruption', function () {
           driver,
           password: WALLET_PASSWORD,
         });
-        const restoredFirstAddress = await getFirstAddress(driver);
+        const restoredFirstAddress = await getFirstAddress(driver, undefined, {
+          waitForSync: false,
+        });
 
         // make sure the address is the same as before
         assert.equal(

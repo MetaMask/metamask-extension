@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Portefeuille matériel"
   },
-  "addIPFSGateway": {
-    "message": "Ajoutez votre passerelle IPFS préférée"
-  },
   "addMemo": {
     "message": "Ajouter un mémo"
   },
@@ -1545,9 +1542,6 @@
     "message": "Lorsque vous utilisez nos paramètres et configurations par défaut, nous utilisons Infura comme fournisseur de RPC (appel de procédure à distance) par défaut, afin d’offrir l’accès le plus fiable et le plus privé possible aux données Ethereum.\nDans certains cas limités, nous pouvons utiliser d’autres fournisseurs de RPC afin de garantir la meilleure expérience utilisateur possible. Vous pouvez choisir votre propre RPC, mais n’oubliez pas que tout RPC a besoin d’accéder à votre adresse IP et à l’adresse de votre portefeuille Ethereum pour valider les transactions. Pour en savoir plus sur la façon dont Infura gère les données pour les comptes EVM, lisez notre $1, et pour les comptes Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "cliquez ici"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Pour connecter votre portefeuille matériel, vous devez utiliser MetaMask pour Google Chrome."
   },
@@ -1559,9 +1553,6 @@
   },
   "clearActivity": {
     "message": "Effacer les données d’activité et de nonce"
-  },
-  "clearActivityButton": {
-    "message": "Effacer les données de l’onglet « Activité »"
   },
   "clearActivityDescription": {
     "message": "Cela réinitialise le nonce du compte et efface les données de l’onglet « Activité » dans votre portefeuille. Seuls le compte et le réseau actuels seront affectés. Aucun changement ne sera apporté aux soldes ou transactions entrantes."
@@ -2219,12 +2210,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Recevez des mises à jour sur les produits, des conseils et des nouvelles, notamment par e-mail. Nous pouvons utiliser vos interactions pour trier le contenu que nous partageons avec vous."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "OK"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Vous avez désactivé la collecte de données à des fins de marketing. Cela ne s’applique qu’à cet appareil. Si vous utilisez MetaMask sur d’autres appareils, n’oubliez pas de désactiver cette fonctionnalité sur ces appareils aussi."
   },
   "dataUnavailable": {
     "message": "données non disponibles"
@@ -3912,9 +3897,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Verrouillage de MetaMask…"
   },
-  "lockTimeInvalid": {
-    "message": "Le temps de verrouillage doit être un nombre compris entre 0 et 10 080"
-  },
   "logOut": {
     "message": "Déconnexion"
   },
@@ -5123,9 +5105,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Conditions d’utilisation"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Nous collecterons des données de base sur l’utilisation du produit, telles que l’emplacement général, les clics et les vues. Aucune autre information ne sera stockée."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Nous collecterons des données de base sur l’utilisation des produits. Nous pouvons associer ces informations aux données disponibles sur la chaîne."
   },
@@ -5689,9 +5668,6 @@
   "perpsCancelOrder": {
     "message": "Annuler l’ordre"
   },
-  "perpsCandleIntervals": {
-    "message": "Intervalles de bougies"
-  },
   "perpsCandlePeriodDays": {
     "message": "Jours"
   },
@@ -5703,9 +5679,6 @@
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
-  },
-  "perpsCloseAmount": {
-    "message": "Montant à clôturer"
   },
   "perpsCloseLong": {
     "message": "Fermer la position longue"
@@ -6287,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Retirer"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Retrait du compte de trading de contrats à terme perpétuels",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Délai estimé"
   },
@@ -6334,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Demande de retrait envoyée avec succès"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask échangera vos jetons pour vous. Aucuns frais MetaMask ne s’appliquent lorsque vous effectuez un échange contre des mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Vous recevez"
@@ -6459,6 +6440,10 @@
   },
   "provide": {
     "message": "Fournir"
+  },
+  "providerFee": {
+    "message": "Commission du fournisseur",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Adresse publique"
@@ -6666,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Recevoir des crypto-actifs"
   },
+  "receiveToken": {
+    "message": "Recevoir le jeton",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Reçu"
+  },
+  "receivedTotal": {
+    "message": "Total reçu",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Adresse de réception",
@@ -7175,12 +7168,6 @@
   "securityChangePassword": {
     "message": "Modifier le mot de passe"
   },
-  "securityChangePasswordDescription": {
-    "message": "Choisissez un mot de passe fort pour déverrouiller l’application MetaMask sur votre appareil. Si vous oubliez ce mot de passe, vous aurez besoin de votre phrase secrète de récupération pour réimporter votre portefeuille."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Mot de passe"
-  },
   "securityChangePasswordToastError": {
     "message": "Le mot de passe n’a pas pu être modifié. Veuillez réessayer."
   },
@@ -7192,16 +7179,6 @@
   },
   "securityDescription": {
     "message": "Réduisez le risque de rejoindre des réseaux dangereux et protégez vos comptes"
-  },
-  "securityLoginWithSocial": {
-    "message": "Se connecter avec $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Phrase secrète de récupération sauvegardée"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Sauvegarder la phrase secrète de récupération privée"
   },
   "securityMessageLinkForNetworks": {
     "message": "arnaques et risques de piratage informatique"
@@ -7224,14 +7201,8 @@
     "message": "RÉCUPÉRATION $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Sauvegardez votre phrase secrète de récupération pour ne jamais perdre l’accès à votre portefeuille. Veillez à la conserver dans un endroit sûr auquel personne d’autre que vous ne peut y accéder et que vous ne risquez pas d’oublier."
-  },
   "securitySrpLabel": {
     "message": "PHRASES SECRÈTES DE RÉCUPÉRATION"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Gérer les méthodes de récupération"
   },
   "seeAllPermissions": {
     "message": "Voir toutes les autorisations",
@@ -8189,20 +8160,11 @@
   "smartAccount": {
     "message": "Compte intelligent"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Autoriser les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. Cela n’affectera pas les comptes qui sont déjà des comptes intelligents."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Demandes de comptes intelligents émanant de dapps"
-  },
   "smartAccountLabel": {
     "message": "Compte intelligent"
   },
   "smartAccountRequestsFromDapps": {
     "message": "Demandes de comptes intelligents émanant de dapps"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Autoriser les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. Cela n’affectera pas les comptes qui sont déjà des comptes intelligents."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Même adresse. Des fonctionnalités plus intelligentes."
@@ -8215,9 +8177,6 @@
   },
   "smartContractAddressWarning": {
     "message": "L’adresse du destinataire ne prend peut-être pas en charge les transferts directs de jetons, ce qui pourrait entraîner une perte de fonds. Ne poursuivez que si vous êtes certain que ce contrat est capable de recevoir votre transfert."
-  },
-  "smartContracts": {
-    "message": "Contrats intelligents"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Fonds insuffisants pour souscrire un contrat de swap intelligent."
@@ -8840,12 +8799,6 @@
     "message": "Langues prises en charge",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Répondez à notre sondage"
-  },
-  "surveyTitle": {
-    "message": "Façonnez l’avenir de MetaMask"
-  },
   "swap": {
     "message": "Swap"
   },
@@ -9241,9 +9194,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Ce jeton a déjà été ajouté."
-  },
-  "tokenAutoDetection": {
-    "message": "Détection automatique des jetons"
   },
   "tokenContractAddress": {
     "message": "Adresse du contrat de jeton"
@@ -9838,6 +9788,10 @@
   "willApproveAmountForSwapping": {
     "message": "Approuve le jeton pour le swap."
   },
+  "withdrawTo": {
+    "message": "Recevoir",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Retrait en cours"
   },
@@ -9870,6 +9824,10 @@
   "youSent": {
     "message": "Vous avez envoyé",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Vous recevrez",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Votre activité"

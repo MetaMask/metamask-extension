@@ -67,10 +67,6 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
       networks[CHAIN_IDS.ARBITRUM].rpcEndpoints[0].failoverUrls =
         getFailoverUrlsForInfuraNetwork('arbitrum-mainnet');
     }
-    if (networks[CHAIN_IDS.BSC]?.rpcEndpoints?.[0]) {
-      networks[CHAIN_IDS.BSC].rpcEndpoints[0].failoverUrls =
-        getFailoverUrlsForInfuraNetwork('bsc-mainnet');
-    }
     if (networks[CHAIN_IDS.OPTIMISM]?.rpcEndpoints?.[0]) {
       networks[CHAIN_IDS.OPTIMISM].rpcEndpoints[0].failoverUrls =
         getFailoverUrlsForInfuraNetwork('optimism-mainnet');

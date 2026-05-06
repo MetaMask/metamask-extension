@@ -8,13 +8,17 @@ export { HomePage } from './page-objects/home-page';
 
 export {
   createFixtureBuilder,
+  createFixturePresets,
   buildDefaultFixture,
   buildOnboardingFixture,
   FixturePresets,
   FIXTURE_STATE_METADATA_VERSION,
 } from './fixture-helper';
 
-export type { FixtureBuilderOptions } from './fixture-helper';
+export type {
+  FixtureBuilderOptions,
+  FixtureBuildOptions,
+} from './fixture-helper';
 
 export type {
   LaunchOptions,

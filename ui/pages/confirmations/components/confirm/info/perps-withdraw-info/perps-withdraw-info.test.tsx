@@ -6,10 +6,28 @@ import { renderWithProvider } from '../../../../../../../test/lib/render-helpers
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
 import { ARBITRUM_USDC, PERPS_CURRENCY } from '../../../../constants/perps';
+import { usePerpsLiveAccount } from '../../../../../../hooks/perps/stream';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
 
 jest.mock('../../../../hooks/tokens/useAddToken', () => ({
   useAddToken: jest.fn(),
+}));
+
+// `useTransactionPayPostQuote` reads the current confirmation via
+// `useConfirmContext`, which throws without a `ConfirmContextProvider`.
+// The hook itself is exercised in its own unit tests; mock it out here so
+// `PerpsWithdrawInfo` can render under the lighter `renderWithProvider`.
+jest.mock('../../../../hooks/pay/useTransactionPayPostQuote', () => ({
+  useTransactionPayPostQuote: jest.fn(),
+}));
+
+// `usePerpsLiveAccount` boots the perps stream manager which fires an
+// async background RPC ("perpsInit"). In a stripped-down test render that
+// produces a "Background connection not initialized" warning and an
+// out-of-act `setIsReady` update. Stub it — the only thing this test cares
+// about is that `PerpsWithdrawInfo` forwards the right props.
+jest.mock('../../../../../../hooks/perps/stream', () => ({
+  usePerpsLiveAccount: jest.fn(),
 }));
 
 jest.mock('../../../info/custom-amount-info', () => ({
@@ -24,11 +42,16 @@ jest.mock('../../../perps-confirmations/perps-withdraw-balance', () => ({
 
 const useAddTokenMock = jest.mocked(useAddToken);
 const customAmountInfoMock = jest.mocked(CustomAmountInfo);
+const usePerpsLiveAccountMock = jest.mocked(usePerpsLiveAccount);
 
 describe('PerpsWithdrawInfo', () => {
   beforeEach(() => {
     useAddTokenMock.mockReset();
     customAmountInfoMock.mockClear();
+    usePerpsLiveAccountMock.mockReturnValue({
+      account: null,
+      isInitialLoading: false,
+    });
   });
 
   it('registers Arbitrum USDC via useAddToken', () => {
@@ -49,6 +72,25 @@ describe('PerpsWithdrawInfo', () => {
       expect.objectContaining({
         currency: PERPS_CURRENCY,
         hidePayTokenAmount: true,
+      }),
+      expect.anything(),
+    );
+  });
+
+  it('passes available-to-trade balance as the custom amount max source', () => {
+    usePerpsLiveAccountMock.mockReturnValue({
+      account: {
+        availableBalance: '0',
+        availableToTradeBalance: '321.09',
+      } as never,
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(<PerpsWithdrawInfo />, configureStore(mockState));
+
+    expect(customAmountInfoMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        balanceUsdOverride: 321.09,
       }),
       expect.anything(),
     );
