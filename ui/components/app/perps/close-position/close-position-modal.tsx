@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
   BoxBackgroundColor,
@@ -57,8 +56,7 @@ import {
   type PerpsToastKeyConfig,
 } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
-import { getSelectedInternalAccount } from '../../../../selectors/accounts';
-import { useComplianceGate } from '../../compliance';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position } from '../types';
 
 type ClosePositionParams = {
@@ -253,9 +251,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   sizeDecimals,
 }) => {
   const t = useI18nContext() as CloseToastTranslation;
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { isEligible } = usePerpsEligibility();
-  const { gate } = useComplianceGate(selectedAccount?.address ?? '');
+  const { gate } = useSelectedAccountComplianceGate();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
   usePerpsEventTracking({

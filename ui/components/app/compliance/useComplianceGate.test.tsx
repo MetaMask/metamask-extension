@@ -195,6 +195,29 @@ describe('useComplianceGate', () => {
     expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
   });
 
+  it('fails open when the compliance API rejects even if cached state is blocked', async () => {
+    mockSubmitRequestToBackground.mockRejectedValueOnce(new Error('offline'));
+    const action = jest.fn().mockReturnValue('allowed');
+    const { result } = renderHook(() => useComplianceGate(ADDRESS), {
+      wrapper: getWrapper(
+        getState({
+          walletComplianceStatusMap: {
+            [ADDRESS]: getStatus(ADDRESS, true),
+          },
+        }),
+      ),
+    });
+
+    let value: string | undefined;
+    await act(async () => {
+      value = await result.current.gate(action);
+    });
+
+    expect(action).toHaveBeenCalledTimes(1);
+    expect(value).toBe('allowed');
+    expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
+  });
+
   it('resets stale blocked results after the address changes', async () => {
     mockSubmitRequestToBackground
       .mockResolvedValueOnce([getStatus(BLOCKED_ADDRESS, true)])

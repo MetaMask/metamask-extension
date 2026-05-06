@@ -31,7 +31,8 @@ export function useComplianceGate(address?: AddressInput) {
   const prefetchRef = useRef<Promise<WalletComplianceStatus[] | undefined> | null>(
     null,
   );
-  const prefetchBlockedRef = useRef(false);
+  const latestSuccessfulBlockedRef = useRef(false);
+  const requestIdRef = useRef(0);
 
   const checkCompliance = useCallback(async () => {
     if (addresses.length === 0) {
@@ -46,21 +47,28 @@ export function useComplianceGate(address?: AddressInput) {
 
   useEffect(() => {
     if (!isComplianceEnabled || addresses.length === 0) {
-      prefetchBlockedRef.current = false;
+      requestIdRef.current += 1;
+      latestSuccessfulBlockedRef.current = false;
       prefetchRef.current = null;
       return;
     }
 
-    prefetchBlockedRef.current = false;
+    const requestId = requestIdRef.current + 1;
+    requestIdRef.current = requestId;
+    latestSuccessfulBlockedRef.current = false;
     const request = checkCompliance();
     prefetchRef.current = request;
     request
       .then((results) => {
-        prefetchBlockedRef.current =
-          results?.some((result) => result.blocked) ?? false;
+        if (requestIdRef.current === requestId) {
+          latestSuccessfulBlockedRef.current =
+            results?.some((result) => result.blocked) ?? false;
+        }
       })
       .catch(() => {
-        prefetchBlockedRef.current = false;
+        if (requestIdRef.current === requestId) {
+          latestSuccessfulBlockedRef.current = false;
+        }
       });
   }, [addresses.length, checkCompliance, isComplianceEnabled]);
 
@@ -78,20 +86,20 @@ export function useComplianceGate(address?: AddressInput) {
           ? await prefetchRef.current
           : await checkCompliance();
       } catch {
-        prefetchBlockedRef.current = false;
+        latestSuccessfulBlockedRef.current = false;
       }
 
       const isLatestResultBlocked =
         latestResults?.some((result) => result.blocked) ?? false;
 
-      if (isBlocked || prefetchBlockedRef.current || isLatestResultBlocked) {
+      if (latestSuccessfulBlockedRef.current || isLatestResultBlocked) {
         showAccessRestrictedModal();
         return undefined;
       }
 
       return await action();
     },
-    [checkCompliance, isBlocked, isComplianceEnabled, showAccessRestrictedModal],
+    [checkCompliance, isComplianceEnabled, showAccessRestrictedModal],
   );
 
   return useMemo(

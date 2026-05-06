@@ -6,7 +6,6 @@ import React, {
   useLayoutEffect,
   useRef,
 } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
   BoxAlignItems,
@@ -41,10 +40,9 @@ import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
-import { getSelectedInternalAccount } from '../../../../selectors/accounts';
 import { usePerpsToast } from '../perps-toast';
 import { PERPS_TOAST_KEYS } from '../perps-toast/perps-toast-provider';
-import { useComplianceGate } from '../../compliance';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position, PerpsBackgroundResult } from '../types';
 import {
   normalizeTpslPrices,
@@ -108,10 +106,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   onSubmitStateChange,
 }) => {
   const t = useI18nContext();
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { track } = usePerpsEventTracking();
   const { isEligible } = usePerpsEligibility();
-  const { gate } = useComplianceGate(selectedAccount?.address ?? '');
+  const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: position.symbol,

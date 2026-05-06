@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   PERPS_EVENT_PROPERTY,
@@ -41,11 +42,18 @@ function TestAccessRestrictedConsumer() {
 }
 
 describe('AccessRestrictedProvider', () => {
+  let consoleErrorSpy: jest.SpyInstance;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     globalThis.platform = {
       openTab: jest.fn(),
     } as unknown as typeof globalThis.platform;
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it('tracks the compliance block screen event when the modal is shown', () => {
@@ -64,6 +72,14 @@ describe('AccessRestrictedProvider', () => {
         [PERPS_EVENT_PROPERTY.SCREEN_TYPE]:
           PERPS_EVENT_VALUE.SCREEN_TYPE.COMPLIANCE_BLOCK_NOTIF,
       },
+    );
+  });
+
+  it('throws when missing access-restricted modal context is used', () => {
+    const { result } = renderHook(() => useAccessRestrictedModal());
+
+    expect(() => result.current.showAccessRestrictedModal()).toThrow(
+      'useAccessRestrictedModal must be used within AccessRestrictedProvider',
     );
   });
 });

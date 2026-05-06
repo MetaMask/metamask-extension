@@ -24,9 +24,15 @@ type AccessRestrictedContextValue = {
 const AccessRestrictedContext =
   createContext<AccessRestrictedContextValue | null>(null);
 
+const throwMissingProviderError = () => {
+  throw new Error(
+    'useAccessRestrictedModal must be used within AccessRestrictedProvider',
+  );
+};
+
 const MISSING_PROVIDER_VALUE: AccessRestrictedContextValue = {
-  showAccessRestrictedModal: () => undefined,
-  hideAccessRestrictedModal: () => undefined,
+  showAccessRestrictedModal: throwMissingProviderError,
+  hideAccessRestrictedModal: throwMissingProviderError,
   isAccessRestricted: false,
 };
 

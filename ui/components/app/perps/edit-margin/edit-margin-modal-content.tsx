@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -43,8 +42,7 @@ import {
 } from '../../../../../shared/constants/perps-events';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
-import { getSelectedInternalAccount } from '../../../../selectors/accounts';
-import { useComplianceGate } from '../../compliance';
+import { useSelectedAccountComplianceGate } from '../../compliance';
 import type { Position, AccountState, PerpsBackgroundResult } from '../types';
 import { PerpsSlider } from '../perps-slider';
 import { getDisplayName } from '../utils';
@@ -100,9 +98,8 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   onSavingChange,
 }) => {
   const t = useI18nContext();
-  const selectedAccount = useSelector(getSelectedInternalAccount);
   const { isEligible } = usePerpsEligibility();
-  const { gate } = useComplianceGate(selectedAccount?.address ?? '');
+  const { gate } = useSelectedAccountComplianceGate();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
