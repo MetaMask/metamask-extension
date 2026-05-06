@@ -131,7 +131,6 @@ type AppState = {
   errorInSettings: string | null;
   showNewSrpAddedToast: number | false;
   showPasswordChangeToast: PasswordChangeToastType | null;
-  showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   showInfuraSwitchToast: boolean;
   shieldEntryModal?: {
@@ -241,7 +240,6 @@ const initialState: AppState = {
   errorInSettings: null,
   showNewSrpAddedToast: false,
   showPasswordChangeToast: null,
-  showCopyAddressToast: false,
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
