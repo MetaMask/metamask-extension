@@ -254,10 +254,41 @@ const PrepareBridgePage = ({
   // The function contains reactive dependencies, but they are `dispatch` and an action,
   // making it safe not to worry about recreating this function on dependency updates.
   const debouncedUpdateQuoteRequestInController = useRef(
-    debounce((...args: Parameters<typeof updateQuoteRequestParams>) => {
-      dispatch(updateQuoteRequestParams(...args));
+    debounce((params: Parameters<typeof updateQuoteRequestParams>[0], context: Parameters<typeof updateQuoteRequestParams>[1],) => {
+      // The quote request array can be updated from anywhere, as long as the index and total
+      // request count are passed to updateQuoteRequestParams
+      dispatch(updateQuoteRequestParams(params, context)); // MUSD
+      dispatch(updateQuoteRequestParams({...params, srcTokenAmount: '200000000000', destTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}, context, 1, 2)); // USDC
+      dispatch(updateQuoteRequestParams({...params, srcTokenAmount: '3000000000', destTokenAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7'}, context, 2, 3)); // USDT
     }, 300),
   );
+
+  const { recommendedQuotes,
+  totalReceived,
+  minimumReceived,
+    totalNetworkFee,
+    isLoading: isLoadingBatch,
+  } = useSelector(state => getBridgeQuotesBatch(state, { requestCount: 3 }));
+
+  useEffect(() => {
+    console.log('=====BATCH QUOTES RESPONSE=====',{recommendedQuotes, totalReceived, minimumReceived, totalNetworkFee});
+  }, [isLoadingBatch]);
+
+  /**
+   * CLIENT CHANGES
+   * - maintain list of quote inputs
+   * - onInputChange - pass index and total request count to updateQuoteRequestParams
+   *
+   * TO REMOVE QUOTE REQUEST AT INDEX
+   * - client needs to update its list of quote inputs,
+   * - when inputs' indices change and total input count changes,
+   * - updateQuoteRequestParams gets called, controller auto updates quotes
+   *
+   * TODO pass index to validations selector (for micaela)
+   * TODO controller should not re-fetch all quotes when user removes quote input. deleteBatchQuoteRequest(index)
+   * - should re-key quote requests and quote response requestQuoteIndex
+   * TODO move validations to controller?
+   */
 
   useEffect(() => {
     dispatch(setSelectedQuote(null));
