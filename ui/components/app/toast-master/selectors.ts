@@ -10,7 +10,6 @@ type State = {
   appState: Partial<
     Pick<
       MetaMaskReduxState['appState'],
-      | 'showNftDetectionEnablementToast'
       | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
       | 'showClaimSubmitToast'
@@ -63,12 +62,6 @@ export function selectShowPrivacyPolicyToast(state: Pick<State, 'metamask'>): {
     (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf());
 
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
-}
-
-export function selectNftDetectionEnablementToast(
-  state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showNftDetectionEnablementToast);
 }
 
 /**

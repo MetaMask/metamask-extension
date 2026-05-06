@@ -28,11 +28,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCurrentNetwork,
-  getOriginOfCurrentTab,
-  getUseNftDetection,
-} from '../../../selectors';
+import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   hidePermittedNetworkToast,
@@ -75,7 +71,6 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import {
-  selectNftDetectionEnablementToast,
   selectShowPrivacyPolicyToast,
   selectNewSrpAdded,
   selectClaimSubmitToast,
@@ -89,7 +84,6 @@ import {
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
-  setShowNftDetectionEnablementToast,
   setShowNewSrpAddedToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
@@ -120,7 +114,6 @@ export function ToastMaster() {
         {storageErrorToast}
         <SurveyToast />
         <PrivacyPolicyToast />
-        <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
         <InfuraSwitchToast />
@@ -190,35 +183,6 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
-}
-
-function NftEnablementToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showNftEnablementToast = useSelector(selectNftDetectionEnablementToast);
-  const useNftDetection = useSelector(getUseNftDetection);
-
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showNftEnablementToast &&
-    useNftDetection && (
-      <Toast
-        key="enabled-nft-auto-detection"
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        text={t('nftAutoDetectionEnabled')}
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() =>
-          dispatch(setShowNftDetectionEnablementToast(false))
-        }
       />
     )
   );
