@@ -1619,9 +1619,6 @@ const state = {
     alertMessage: null,
     qrCodeData: null,
     networkDropdownOpen: false,
-    accountDetail: {
-      privateKey: '',
-    },
     isLoading: false,
     warning: null,
     defaultHdPaths: {
