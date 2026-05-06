@@ -53,10 +53,6 @@ export function setShowNftDetectionEnablementToast(
   };
 }
 
-export function setSurveyLinkLastClickedOrClosed(time: number) {
-  submitRequestToBackgroundAndCatch('setSurveyLinkLastClickedOrClosed', [time]);
-}
-
 // May move this to a different file after discussion with team
 export function submitRequestToBackgroundAndCatch(
   method: string,
