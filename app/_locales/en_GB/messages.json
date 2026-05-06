@@ -5353,7 +5353,7 @@
     "message": "Validate Biometrics"
   },
   "passkeyTroubleshoot": {
-    "message": "Having trouble with biometrics?",
+    "message": "Trouble unlocking?",
     "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
   },
   "passkeyTurnedOff": {

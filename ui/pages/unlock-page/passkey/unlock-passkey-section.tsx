@@ -201,15 +201,15 @@ export const UnlockPasskeySection = ({
         ) : null}
       </Box>
 
-      <Button
-        variant={ButtonVariant.Tertiary}
-        data-testid="unlock-use-password-button"
+      <TextButton
         type="button"
+        data-testid="unlock-use-password-button"
+        color={TextColor.PrimaryDefault}
+        className="w-full text-center"
         onClick={handleUsePassword}
-        className="w-full"
       >
         {t('usePassword')}
-      </Button>
+      </TextButton>
     </Box>
   );
 };
