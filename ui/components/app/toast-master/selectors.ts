@@ -1,9 +1,4 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
-import {
-  SURVEY_DATE,
-  SURVEY_END_TIME,
-  SURVEY_START_TIME,
-} from '../../../helpers/constants/survey';
 import { MetaMaskReduxState } from '../../../store/store';
 import {
   ClaimSubmitToastType,
@@ -28,7 +23,6 @@ type State = {
       | 'newPrivacyPolicyToastClickedOrClosed'
       | 'newPrivacyPolicyToastShownDate'
       | 'onboardingDate'
-      | 'surveyLinkLastClickedOrClosed'
       | 'shieldEndingToastLastClickedOrClosed'
       | 'shieldPausedToastLastClickedOrClosed'
       | 'participateInMetaMetrics'
@@ -40,24 +34,6 @@ type State = {
     >
   >;
 };
-
-/**
- * Determines if the survey toast should be shown based on the current time, survey start and end times, and whether the survey link was last clicked or closed.
- *
- * @param state - The application state containing the necessary survey data.
- * @returns True if the current time is between the survey start and end times and the survey link was not last clicked or closed. False otherwise.
- */
-export function selectShowSurveyToast(state: Pick<State, 'metamask'>): boolean {
-  if (state.metamask.surveyLinkLastClickedOrClosed) {
-    return false;
-  }
-
-  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
-  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
-  const now = Date.now();
-
-  return now > startTime && now < endTime;
-}
 
 /**
  * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.

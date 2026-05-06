@@ -1,13 +1,22 @@
 import EventEmitter from 'events';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Box,
   Button,
   ButtonSize,
   Checkbox,
   Text,
+  TextButton,
   TextVariant,
   TextColor,
   BoxFlexDirection,
@@ -23,16 +32,40 @@ import {
 import { isBeta, isFlask } from '../../../../shared/lib/build-types';
 import Mascot from '../../ui/mascot';
 import Spinner from '../../ui/spinner';
+import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  startPasskeyAuthentication,
+  cancelPasskeyCeremony,
+  isPasskeyCeremonySilentError,
+  translatePasskeyError,
+} from '../../../../shared/lib/passkey';
+import {
+  ExtensionPasskeyErrorCode,
+  getPasskeyControllerErrorCode,
+} from '../../../../shared/lib/passkey/passkey-error';
+import {
   changePassword,
+  changePasswordWithPasskeyVerification,
   checkIsSeedlessPasswordOutdated,
+  forceUpdateMetamaskState,
+  generatePasskeyAuthenticationOptions,
+  removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
+import {
+  getIsPasskeyFeatureAvailable,
+  getIsPasskeyRegistered,
+  getIsSocialLoginFlow,
+} from '../../../selectors';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import PasswordForm from '../password-form/password-form';
-import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import {
+  SECURITY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+} from '../../../helpers/constants/routes';
 import { toast, ToastContent } from '../../ui/toast/toast';
-import { getIsSocialLoginFlow } from '../../../selectors';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -41,12 +74,14 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { SECOND } from '../../../../shared/constants/time';
+import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
   VerifyCurrentPassword: 1,
-  ChangePassword: 2,
-  ChangePasswordLoading: 3,
+  VerifyPasskey: 2,
+  ChangePassword: 3,
+  ChangePasswordLoading: 4,
 };
 
 const autoHideToastDelay = 5 * SECOND;
@@ -63,8 +98,18 @@ const ChangePassword = ({
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
+  const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
   const animationEventEmitter = useRef(new EventEmitter());
-  const [step, setStep] = useState(ChangePasswordSteps.VerifyCurrentPassword);
+
+  const [step, setStep] = useState(() =>
+    isPasskeyActive
+      ? ChangePasswordSteps.VerifyPasskey
+      : ChangePasswordSteps.VerifyCurrentPassword,
+  );
+
+  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(isPasskeyActive);
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -73,6 +118,11 @@ const ChangePassword = ({
   const { value: termsChecked, toggle } = useBoolean();
   const [newPassword, setNewPassword] = useState('');
   const [showChangePasswordWarning, setShowChangePasswordWarning] =
+    useState(false);
+  const [passkeyAuthenticationResponse, setPasskeyAuthenticationResponse] =
+    useState<PasskeyAuthenticationResponse | null>(null);
+  const [isPasskeyRenewalEnabled, setIsPasskeyRenewalEnabled] = useState(false);
+  const [showPasskeyTroubleshootModal, setShowPasskeyTroubleshootModal] =
     useState(false);
 
   const renderMascot = () => {
@@ -105,11 +155,57 @@ const ChangePassword = ({
     }
   };
 
+  const handleChangePasswordWithPasskey = async (): Promise<boolean> => {
+    if (!passkeyAuthenticationResponse) {
+      return false;
+    }
+
+    let isPasskeyRenewalSuccessful = false;
+    try {
+      await dispatch(
+        changePasswordWithPasskeyVerification(
+          newPassword,
+          passkeyAuthenticationResponse,
+          { renewVaultKeyProtection: isPasskeyRenewalEnabled },
+        ),
+      );
+      isPasskeyRenewalSuccessful = isPasskeyRenewalEnabled;
+    } catch (error) {
+      if (!isPasskeyRenewalEnabled) {
+        throw error;
+      }
+      const passkeyCode = getPasskeyControllerErrorCode(error);
+      // strictly treat vault key renewal failure as a password change success
+      if (passkeyCode !== ExtensionPasskeyErrorCode.VaultKeyRenewalFailed) {
+        throw error;
+      }
+    }
+
+    setPasskeyAuthenticationResponse(null);
+    await forceUpdateMetamaskState(dispatch);
+    return isPasskeyRenewalSuccessful;
+  };
+
   const onChangePassword = async () => {
+    let isPasskeyRenewalSuccessful = false;
+
     try {
       setShowChangePasswordWarning(false);
       setStep(ChangePasswordSteps.ChangePasswordLoading);
-      await dispatch(changePassword(newPassword, currentPassword));
+
+      if (isSocialLoginFlow) {
+        await dispatch(changePassword(newPassword, currentPassword));
+      } else if (passkeyAuthenticationResponse) {
+        isPasskeyRenewalSuccessful = await handleChangePasswordWithPasskey();
+      } else {
+        // Remove enrollment before changing the password so a failure after
+        // `changePassword` cannot leave an enrolled-but-invalid passkey on disk.
+        if (isPasskeyRegistered) {
+          await removePasskeyWithPasswordVerification(currentPassword);
+          await forceUpdateMetamaskState(dispatch);
+        }
+        await dispatch(changePassword(newPassword, currentPassword));
+      }
 
       // Track password changed event
       trackEvent({
@@ -118,16 +214,19 @@ const ChangePassword = ({
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          biometrics_enabled: false,
+          biometrics_enabled: isPasskeyRenewalSuccessful,
         },
       });
 
       // upon successful password change, go back to the settings page
       navigate(redirectRoute);
-      toast.success(
-        <ToastContent title={t('securityChangePasswordToastSuccess')} />,
-        { duration: autoHideToastDelay },
-      );
+      const messageKey =
+        isPasskeyRenewalEnabled && !isPasskeyRenewalSuccessful
+          ? 'securityChangePasswordToastPasskeyRenewalFailed'
+          : 'securityChangePasswordToastSuccess';
+      toast.success(<ToastContent title={t(messageKey)} />, {
+        duration: autoHideToastDelay,
+      });
     } catch (error) {
       console.error(error);
       setStep(ChangePasswordSteps.ChangePassword);
@@ -173,6 +272,139 @@ const ChangePassword = ({
       }
     })();
   }, [dispatch, isSocialLoginFlow]);
+
+  useEffect(
+    () => () => {
+      cancelPasskeyCeremony();
+    },
+    [],
+  );
+
+  const performPasskeyAuthentication = useCallback(async () => {
+    setIsVerifyingPasskey(true);
+    try {
+      const authOptions = await generatePasskeyAuthenticationOptions();
+      const response = await startPasskeyAuthentication(authOptions);
+      return response;
+    } catch (error: unknown) {
+      if (isPasskeyCeremonySilentError(error)) {
+        log.debug(
+          'Passkey authentication from change-password toggle cancelled or timed out',
+          error,
+        );
+      } else {
+        toast.error(
+          <ToastContent
+            title={
+              translatePasskeyError(error, t as (key: string) => string) ??
+              t('passkeyErrorVerificationFailed')
+            }
+          />,
+          { duration: autoHideToastDelay },
+        );
+      }
+      return null;
+    } finally {
+      setIsVerifyingPasskey(false);
+    }
+  }, [t]);
+
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+
+  const openChangePasswordInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
+    globalThis.platform?.openExtensionInBrowser?.(
+      SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+      'from=sidepanel',
+    );
+  }, []);
+
+  // When a passkey is already enrolled, verify with WebAuthn on the dedicated step before new password.
+  useEffect(() => {
+    if (
+      !isPasskeyActive ||
+      step !== ChangePasswordSteps.VerifyPasskey ||
+      passkeyAuthenticationResponse !== null
+    ) {
+      return;
+    }
+
+    let aborted = false;
+
+    (async () => {
+      try {
+        const response = await performPasskeyAuthentication();
+        if (aborted) {
+          return;
+        }
+        setPasskeyAuthenticationResponse(response);
+        setIsPasskeyRenewalEnabled(Boolean(response));
+        setCurrentPassword('');
+
+        if (response) {
+          setStep(ChangePasswordSteps.ChangePassword);
+        } else {
+          setStep(ChangePasswordSteps.VerifyCurrentPassword);
+        }
+      } catch {
+        if (aborted) {
+          return;
+        }
+        setPasskeyAuthenticationResponse(null);
+        setIsPasskeyRenewalEnabled(false);
+        setCurrentPassword('');
+        setStep(ChangePasswordSteps.VerifyCurrentPassword);
+      }
+    })();
+
+    return () => {
+      aborted = true;
+      cancelPasskeyCeremony();
+      setIsVerifyingPasskey(false);
+    };
+  }, [
+    isPasskeyActive,
+    passkeyAuthenticationResponse,
+    step,
+    performPasskeyAuthentication,
+  ]);
+
+  const handleUseVerifyPassword = useCallback(() => {
+    cancelPasskeyCeremony();
+    setIsVerifyingPasskey(false);
+    setPasskeyAuthenticationResponse(null);
+    setIsPasskeyRenewalEnabled(false);
+    setStep(ChangePasswordSteps.VerifyCurrentPassword);
+  }, []);
+
+  const handlePasskeyToggle = useCallback(
+    async (wasPasskeyRenewalEnabled: boolean) => {
+      if (!isPasskeyActive || isVerifyingPasskey) {
+        return;
+      }
+
+      const willEnablePasskeyRenewal = !wasPasskeyRenewalEnabled;
+      if (!willEnablePasskeyRenewal) {
+        setIsPasskeyRenewalEnabled(false);
+        return;
+      }
+
+      if (passkeyAuthenticationResponse !== null) {
+        setIsPasskeyRenewalEnabled(true);
+        return;
+      }
+
+      const response = await performPasskeyAuthentication();
+      setPasskeyAuthenticationResponse(response);
+      setIsPasskeyRenewalEnabled(Boolean(response));
+    },
+    [
+      isPasskeyActive,
+      isVerifyingPasskey,
+      passkeyAuthenticationResponse,
+      performPasskeyAuthentication,
+    ],
+  );
 
   return (
     <Box padding={4} className="change-password">
@@ -227,6 +459,45 @@ const ChangePassword = ({
         </Box>
       )}
 
+      {step === ChangePasswordSteps.VerifyPasskey && (
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          marginTop={12}
+          gap={4}
+          data-testid="change-password-passkey-verifying"
+        >
+          <Spinner className="change-password__spinner" />
+          <Text
+            variant={TextVariant.BodyLg}
+            fontWeight={FontWeight.Medium}
+            className="text-center"
+          >
+            {t('changePasswordPasskeyVerifyingTitle')}
+          </Text>
+          {isSidePanel && isVerifyingPasskey ? (
+            <TextButton
+              type="button"
+              data-testid="change-password-passkey-verifying-open-full-screen"
+              color={TextColor.PrimaryDefault}
+              className="text-center"
+              onClick={() => setShowPasskeyTroubleshootModal(true)}
+            >
+              {t('passkeyTroubleshoot')}
+            </TextButton>
+          ) : null}
+          <TextButton
+            type="button"
+            data-testid="change-password-verify-passkey-use-password"
+            color={TextColor.PrimaryDefault}
+            className="text-center"
+            onClick={handleUseVerifyPassword}
+          >
+            {t('usePassword')}
+          </TextButton>
+        </Box>
+      )}
+
       {step === ChangePasswordSteps.ChangePassword && (
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -260,6 +531,45 @@ const ChangePassword = ({
                 pwdInputTestId="change-password-input"
                 confirmPwdInputTestId="change-password-confirm-input"
               />
+              {isPasskeyActive ? (
+                <Box
+                  marginTop={6}
+                  marginBottom={12}
+                  flexDirection={BoxFlexDirection.Column}
+                  gap={1}
+                >
+                  <Box
+                    flexDirection={BoxFlexDirection.Row}
+                    justifyContent={BoxJustifyContent.Between}
+                    alignItems={BoxAlignItems.Center}
+                  >
+                    <Text
+                      variant={TextVariant.BodyMd}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {t('unlockWithPasskey')}
+                    </Text>
+                    <ToggleButton
+                      value={isPasskeyRenewalEnabled}
+                      onToggle={handlePasskeyToggle}
+                      dataTestId="change-password-enable-passkey"
+                      containerStyle={{ width: '40px' }}
+                      disabled={isVerifyingPasskey}
+                    />
+                  </Box>
+                  {isSidePanel && isVerifyingPasskey ? (
+                    <TextButton
+                      type="button"
+                      data-testid="change-password-passkey-toggle-open-full-screen"
+                      color={TextColor.PrimaryDefault}
+                      className="mt-2 flex w-full justify-start text-left"
+                      onClick={() => setShowPasskeyTroubleshootModal(true)}
+                    >
+                      {t('passkeyTroubleshoot')}
+                    </TextButton>
+                  ) : null}
+                </Box>
+              ) : null}
               <Box
                 className="create-password__terms-container"
                 flexDirection={BoxFlexDirection.Row}
@@ -287,7 +597,12 @@ const ChangePassword = ({
             </Box>
             <Button
               type="submit"
-              disabled={!currentPassword || !newPassword || !termsChecked}
+              disabled={
+                (!passkeyAuthenticationResponse && !currentPassword) ||
+                !newPassword ||
+                !termsChecked ||
+                isVerifyingPasskey
+              }
               data-testid="change-password-button"
               className="w-full"
             >
@@ -325,6 +640,12 @@ const ChangePassword = ({
           onCancel={() => setShowChangePasswordWarning(false)}
         />
       )}
+      {showPasskeyTroubleshootModal ? (
+        <PasskeyTroubleshootModal
+          onClose={() => setShowPasskeyTroubleshootModal(false)}
+          onOpenFullScreen={openChangePasswordInFullScreen}
+        />
+      ) : null}
     </Box>
   );
 };
