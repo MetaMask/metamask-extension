@@ -5680,9 +5680,6 @@
   "perpsCancelOrder": {
     "message": "Annuler l’ordre"
   },
-  "perpsCandleIntervals": {
-    "message": "Intervalles de bougies"
-  },
   "perpsCandlePeriodDays": {
     "message": "Jours"
   },
@@ -5694,9 +5691,6 @@
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
-  },
-  "perpsCloseAmount": {
-    "message": "Montant à clôturer"
   },
   "perpsCloseLong": {
     "message": "Fermer la position longue"
@@ -6278,6 +6272,10 @@
   "perpsWithdraw": {
     "message": "Retirer"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Retrait du compte de trading de contrats à terme perpétuels",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Délai estimé"
   },
@@ -6325,6 +6323,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Demande de retrait envoyée avec succès"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask échangera vos jetons pour vous. Aucuns frais MetaMask ne s’appliquent lorsque vous effectuez un échange contre des mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Vous recevez"
@@ -6450,6 +6452,10 @@
   },
   "provide": {
     "message": "Fournir"
+  },
+  "providerFee": {
+    "message": "Commission du fournisseur",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Adresse publique"
@@ -6657,8 +6663,16 @@
   "receiveCrypto": {
     "message": "Recevoir des crypto-actifs"
   },
+  "receiveToken": {
+    "message": "Recevoir le jeton",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Reçu"
+  },
+  "receivedTotal": {
+    "message": "Total reçu",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Adresse de réception",
@@ -9823,6 +9837,10 @@
   "willApproveAmountForSwapping": {
     "message": "Approuve le jeton pour le swap."
   },
+  "withdrawTo": {
+    "message": "Recevoir",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Retrait en cours"
   },
@@ -9855,6 +9873,10 @@
   "youSent": {
     "message": "Vous avez envoyé",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Vous recevrez",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Votre activité"

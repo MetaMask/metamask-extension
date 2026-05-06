@@ -5680,9 +5680,6 @@
   "perpsCancelOrder": {
     "message": "Kanselahin ang order"
   },
-  "perpsCandleIntervals": {
-    "message": "Mga candle interval"
-  },
   "perpsCandlePeriodDays": {
     "message": "Araw"
   },
@@ -5694,9 +5691,6 @@
   },
   "perpsCloseAll": {
     "message": "Isara lahat"
-  },
-  "perpsCloseAmount": {
-    "message": "Isara ang Halaga"
   },
   "perpsCloseLong": {
     "message": "Isara ang long"
@@ -6278,6 +6272,10 @@
   "perpsWithdraw": {
     "message": "Mag-withdraw"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Mag-withdraw perps",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Tinatayang oras"
   },
@@ -6325,6 +6323,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Naisumite ang pagwi-withdraw"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "Magsu-swap ang MetaMask ng token na gusto mo para sa iyo. Walang hihinging bayad sa MetaMask kapag nag-swap ka sa mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Nakatanggap ka ng"
@@ -6450,6 +6452,10 @@
   },
   "provide": {
     "message": "Ibigay"
+  },
+  "providerFee": {
+    "message": "Bayad sa provider",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Pampublikong address"
@@ -6657,8 +6663,16 @@
   "receiveCrypto": {
     "message": "Tumanggap ng crypto"
   },
+  "receiveToken": {
+    "message": "Tumanggap ng token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Natanggap"
+  },
+  "receivedTotal": {
+    "message": "Kabuuan ng natanggap",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Tatanggap na address",
@@ -9823,6 +9837,10 @@
   "willApproveAmountForSwapping": {
     "message": "Aprubahan ang token para sa swap."
   },
+  "withdrawTo": {
+    "message": "Tumanggap",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Wini-withdraw"
   },
@@ -9855,6 +9873,10 @@
   "youSent": {
     "message": "Nagpadala ka ng",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Makakatanggap ka ng",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Iyong aktibidad"
