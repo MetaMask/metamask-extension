@@ -76,8 +76,9 @@ class CriticalErrorPage {
 
   /**
    * Click Attempt recovery (backup exists) and handle the confirmation alert.
-   * @param options0
-   * @param options0.confirm
+   *
+   * @param options - Options for the attempt recovery action.
+   * @param options.confirm - Whether to confirm (accept) or dismiss the alert.
    */
   async clickAttemptRecoveryLink({
     confirm,
