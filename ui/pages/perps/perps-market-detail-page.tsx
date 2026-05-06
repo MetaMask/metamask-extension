@@ -91,6 +91,7 @@ import {
   parsePerpsDisplayPrice,
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
+  formatPerpsLiquidationPrice,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -1444,9 +1445,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-position-liquidation-value"
                   >
-                    {position.liquidationPrice
-                      ? formatPerpsFiatUniversal(position.liquidationPrice)
-                      : '-'}
+                    {formatPerpsLiquidationPrice(position.liquidationPrice)}
                   </Text>
                 </Box>
 

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { Position, AccountState } from '@metamask/perps-controller';
+import { isPerpsLiquidationPriceValid } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import {
   calculateMaxRemovableMargin,
   estimateLiquidationPrice,
@@ -64,11 +65,9 @@ export function usePerpsMarginCalculations({
       position.maxLeverage ?? MARGIN_ADJUSTMENT_CONFIG.FallbackMaxLeverage;
 
     let anchorLiquidationPrice: number | null = null;
-    if (position.liquidationPrice) {
+    if (isPerpsLiquidationPriceValid(position.liquidationPrice)) {
       const parsed = Number.parseFloat(position.liquidationPrice);
-      if (Number.isFinite(parsed)) {
-        anchorLiquidationPrice = parsed;
-      }
+      anchorLiquidationPrice = parsed;
     }
 
     const isLong = Number.parseFloat(position.size) >= 0;

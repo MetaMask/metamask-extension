@@ -9,6 +9,7 @@ import { EditMarginModalContent } from './edit-margin-modal-content';
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockUsePerpsMarginCalculations = jest.fn();
 
 jest.mock('../../../../store/background-connection', () => ({
   submitRequestToBackground: (...args: unknown[]) =>
@@ -21,15 +22,7 @@ jest.mock('../../../../hooks/perps', () => ({
 }));
 
 jest.mock('../../../../hooks/perps/usePerpsMarginCalculations', () => ({
-  usePerpsMarginCalculations: () => ({
-    maxAmount: 5000,
-    anchorLiquidationPrice: 2000,
-    estimatedLiquidationPrice: 1800,
-    anchorLiquidationDistance: 0.2,
-    estimatedLiquidationDistance: 0.3,
-    riskAssessment: { riskLevel: 'safe' },
-    isValid: true,
-  }),
+  usePerpsMarginCalculations: () => mockUsePerpsMarginCalculations(),
 }));
 
 jest.mock('../../../../providers/perps', () => ({
@@ -76,6 +69,15 @@ describe('EditMarginModalContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      maxAmount: 5000,
+      anchorLiquidationPrice: 2000,
+      estimatedLiquidationPrice: 1800,
+      anchorLiquidationDistance: 0.2,
+      estimatedLiquidationDistance: 0.3,
+      riskAssessment: { riskLevel: 'safe' },
+      isValid: true,
+    });
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
@@ -83,6 +85,27 @@ describe('EditMarginModalContent', () => {
     renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
 
     expect(screen.getByText(/available/iu)).toBeInTheDocument();
+  });
+
+  it('renders liquidation fallback when the liquidation price is not positive', () => {
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      maxAmount: 5000,
+      anchorLiquidationPrice: null,
+      estimatedLiquidationPrice: null,
+      anchorLiquidationDistance: 0,
+      estimatedLiquidationDistance: null,
+      riskAssessment: null,
+      isValid: true,
+    });
+
+    renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
+
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+    ).toHaveTextContent('--');
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent('--');
   });
 
   describe('auto-focus and select-all', () => {

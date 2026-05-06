@@ -693,6 +693,20 @@ describe('PerpsMarketDetailPage', () => {
       expect(priceLines.find((l) => l.label === 'Liq')).toBeUndefined();
     });
 
+    it('displays a fallback when the position liquidationPrice is not positive', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: [{ ...mockPositions[0], liquidationPrice: '-1' }],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-position-liquidation-value')).toHaveTextContent(
+        '--',
+      );
+    });
+
     it('displays favorite button', async () => {
       const store = mockStore(createMockState(true));
 

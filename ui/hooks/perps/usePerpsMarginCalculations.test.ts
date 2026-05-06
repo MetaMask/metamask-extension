@@ -230,4 +230,28 @@ describe('usePerpsMarginCalculations', () => {
       expect(result.current.estimatedLiquidationPrice).toBeNull();
     });
   });
+
+  describe('with position that has a non-positive liquidation price', () => {
+    for (const liquidationPrice of ['0', '-1']) {
+      it(`returns fallback values when liquidation price is ${liquidationPrice}`, () => {
+        const { result } = renderHook(() =>
+          usePerpsMarginCalculations({
+            position: {
+              ...position,
+              liquidationPrice,
+            },
+            currentPrice,
+            account,
+            mode: 'add',
+            amount: '100',
+          }),
+        );
+
+        expect(result.current.anchorLiquidationPrice).toBeNull();
+        expect(result.current.estimatedLiquidationPrice).toBeNull();
+        expect(result.current.anchorLiquidationDistance).toBe(0);
+        expect(result.current.estimatedLiquidationDistance).toBeNull();
+      });
+    }
+  });
 });
