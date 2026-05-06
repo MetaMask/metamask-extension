@@ -80,8 +80,8 @@ describe('PerpsWithdrawInfo', () => {
   it('passes available-to-trade balance as the custom amount max source', () => {
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
-        availableBalance: '0',
-        availableToTradeBalance: '321.09',
+        spendableBalance: '0',
+        withdrawableBalance: '321.09',
       } as never,
       isInitialLoading: false,
     });

@@ -628,8 +628,8 @@ describe('PerpsView', () => {
       jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '100',
+          spendableBalance: '0',
+          withdrawableBalance: '100',
         },
         isInitialLoading: false,
       });
@@ -651,7 +651,7 @@ describe('PerpsView', () => {
       );
     });
 
-    it('falls back to availableBalance when availableToTradeBalance is absent', () => {
+    it('falls back to spendableBalance when withdrawableBalance is absent', () => {
       const mockTrackEvent = jest.fn();
       const mockMetaMetricsContext = {
         trackEvent: mockTrackEvent,
@@ -663,8 +663,8 @@ describe('PerpsView', () => {
       jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
-          availableBalance: '100',
-          availableToTradeBalance: undefined,
+          spendableBalance: '100',
+          withdrawableBalance: '100',
         },
         isInitialLoading: false,
       });

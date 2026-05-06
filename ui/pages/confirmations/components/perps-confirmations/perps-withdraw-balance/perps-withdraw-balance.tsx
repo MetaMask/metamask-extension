@@ -21,12 +21,12 @@ export const PerpsWithdrawBalance = () => {
   const balanceFormatted = useMemo(() => {
     const value =
       parseFloat(
-        account?.availableToTradeBalance ?? account?.availableBalance ?? '0',
+        account?.withdrawableBalance ?? account?.spendableBalance ?? '0',
       ) || 0;
     return formatCurrency(value, 'USD');
   }, [
-    account?.availableBalance,
-    account?.availableToTradeBalance,
+    account?.spendableBalance,
+    account?.withdrawableBalance,
     formatCurrency,
   ]);
 
