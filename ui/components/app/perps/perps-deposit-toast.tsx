@@ -14,12 +14,6 @@ import { toast, ToastContent } from '../../ui/toast/toast';
 const PERPS_DEPOSIT_TOAST_ID = 'perps-deposit-toast';
 const COMPLETION_TOAST_DURATION = 5 * SECOND;
 
-const clearDepositResult = () => {
-  submitRequestToBackground('perpsClearDepositResult', []).catch(() => {
-    // Non-blocking: toast visibility is owned by react-hot-toast.
-  });
-};
-
 export function PerpsDepositToast() {
   const t = useI18nContext();
   const depositInProgress = useSelector(selectPerpsDepositPending);
@@ -93,7 +87,9 @@ export function PerpsDepositToast() {
       }
 
       clearDepositResultTimeoutRef.current = setTimeout(() => {
-        clearDepositResult();
+        submitRequestToBackground('perpsClearDepositResult', []).catch(
+          () => undefined,
+        );
         clearDepositResultTimeoutRef.current = null;
       }, COMPLETION_TOAST_DURATION);
       return;
