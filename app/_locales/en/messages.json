@@ -726,6 +726,10 @@
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
+  "asterdexReferralConfirmText": {
+    "message": "Yes, get 4% back",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "Get 4% back on trades with a MetaMask referral code.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
@@ -737,10 +741,6 @@
   "asterdexReferralTitle": {
     "message": "Get 4% back on AsterDEX",
     "description": "Title of the AsterDEX referral confirmation screen"
-  },
-  "asterdexReferralConfirmText": {
-    "message": "Yes, get 4% back",
-    "description": "Primary button label on the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
@@ -2431,6 +2431,14 @@
     "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
+  "defiReferralNoThanks": {
+    "message": "No thanks",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "terms",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
+  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -2440,14 +2448,6 @@
   },
   "defiTabErrorTitle": {
     "message": "We could not load this page."
-  },
-  "defiReferralNoThanks": {
-    "message": "No thanks",
-    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
-  },
-  "defiReferralTerms": {
-    "message": "terms",
-    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "delete": {
     "message": "Delete"
@@ -3294,6 +3294,10 @@
     "message": "Get your wallet ready to use web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "Yes, save 5%",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "Save up to 5% on trades with a MetaMask referral code.",
     "description": "The subtitle of the GMX referral confirmation screen"
@@ -3305,10 +3309,6 @@
   "gmxReferralTitle": {
     "message": "Save 5% on GMX",
     "description": "Title of the GMX referral confirmation screen"
-  },
-  "gmxReferralConfirmText": {
-    "message": "Yes, save 5%",
-    "description": "Primary button label on the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Go to site"
@@ -3532,6 +3532,10 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "Yes, save 4%",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
@@ -3543,10 +3547,6 @@
   "hyperliquidReferralTitle": {
     "message": "Save 4% on Hyperliquid",
     "description": "Title of the Hyperliquid referral confirmation screen"
-  },
-  "hyperliquidReferralConfirmText": {
-    "message": "Yes, save 4%",
-    "description": "Primary button label on the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "I understand"

@@ -5,12 +5,12 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFI_REFERRAL_PARTNERS } from '../../../../shared/constants/defi-referrals';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { DefiReferralConsent } from './defi-referral-consent';
 import { useABTest } from '../../../hooks/useABTest';
 import {
   DefiReferralUIABTestVariant,
   DEFI_REFERRAL_CONSENT_AB_TEST_VARIANTS,
 } from '../../../../shared/lib/ab-testing/configs/defi-referral-ui';
+import { DefiReferralConsent } from './defi-referral-consent';
 
 jest.mock('../../../hooks/useABTest');
 
