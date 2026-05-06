@@ -39,6 +39,9 @@ import {
 } from '../../../utils/tpslInput';
 import { formatRoePercent, getPnlDisplayColor } from '../../../utils';
 
+const LOW_VALUE_TRIGGER_PRICE_THRESHOLD = 0.01;
+const LOW_VALUE_TRIGGER_PRICE_DECIMALS = 6;
+
 /**
  * AutoCloseSection - Collapsible section for Take Profit and Stop Loss configuration
  *
@@ -160,10 +163,19 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
         return '';
       }
 
-      return formatPerpsFiat(price, { ranges: PRICE_RANGES_UNIVERSAL }).replace(
-        /[$,]/gu,
-        '',
-      );
+      const preserveLowValueDecimals =
+        Math.abs(price) < LOW_VALUE_TRIGGER_PRICE_THRESHOLD;
+
+      return formatPerpsFiat(price, {
+        ranges: PRICE_RANGES_UNIVERSAL,
+        ...(preserveLowValueDecimals
+          ? {
+              minimumDecimals: LOW_VALUE_TRIGGER_PRICE_DECIMALS,
+              maximumDecimals: LOW_VALUE_TRIGGER_PRICE_DECIMALS,
+              stripTrailingZeros: false,
+            }
+          : {}),
+      }).replace(/[$,]/gu, '');
     },
     [entryPrice, leverage, direction],
   );

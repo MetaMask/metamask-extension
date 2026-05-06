@@ -733,6 +733,11 @@ describe('AutoCloseSection', () => {
       const cases = [
         { asset: 'BTC', currentPrice: 45000, expectedPrice: '45315' },
         { asset: 'PUMP', currentPrice: 0.001958, expectedPrice: '0.001972' },
+        {
+          asset: 'PUMP',
+          currentPrice: 0.0019860973187686197,
+          expectedPrice: '0.002000',
+        },
         { asset: 'xyz:XYZ100', currentPrice: 28426, expectedPrice: '28625' },
         { asset: 'ETH', currentPrice: 2359.6, expectedPrice: '2376.1' },
       ];
@@ -757,9 +762,7 @@ describe('AutoCloseSection', () => {
         fireEvent.focus(input);
         fireEvent.change(input, { target: { value: '7' } });
 
-        expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith(
-          expectedPrice,
-        );
+        expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith(expectedPrice);
 
         unmount();
       }
