@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Hardware wallet"
   },
-  "addIPFSGateway": {
-    "message": "Add your preferred IPFS gateway"
-  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -1551,6 +1548,14 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
+  "changePasswordPasskeyVerifyingDescription": {
+    "message": "Use Face ID, Touch ID, or your device screen lock when prompted.",
+    "description": "Shown under the loading state while the wallet waits for passkey or device biometrics during change password."
+  },
+  "changePasswordPasskeyVerifyingTitle": {
+    "message": "Confirm with biometrics",
+    "description": "Title shown while the wallet waits for passkey or device biometrics during change password."
+  },
   "changePasswordWarning": {
     "message": "Are you sure?"
   },
@@ -1570,9 +1575,6 @@
   "chooseYourNetworkDescription": {
     "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1, and for Solana accounts, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
-  },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "click here"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
@@ -2252,12 +2254,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Okay"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "You turned off data collection for our marketing purposes. This only applies to this device. If you use MetaMask on other devices, make sure to opt out there as well."
   },
   "dataUnavailable": {
     "message": "data unavailable"
@@ -4063,6 +4059,9 @@
   "maxFeeTooltip": {
     "message": "A maximum fee provided to pay for the transaction."
   },
+  "maybeLater": {
+    "message": "Maybe later"
+  },
   "medium": {
     "message": "Market"
   },
@@ -5291,6 +5290,76 @@
   },
   "participateInMetaMetricsDescription": {
     "message": "Participate in MetaMetrics to help us make MetaMask better"
+  },
+  "passkeyDescription": {
+    "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "Biometrics are already set up for this wallet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "We couldn't verify your biometrics. Try again.",
+    "description": "Shown when passkey authentication response verification fails."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Your biometrics response was incomplete. Try again.",
+    "description": "Shown when the passkey assertion is missing required key material."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "Biometrics sign-in session expired. Try again.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "Biometrics setup session expired. Try again from the beginning.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "Biometrics aren't set up for this wallet. Turn on biometrics in Settings.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "Biometrics setup failed. Try again",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "We couldn't verify your biometrics setup. Try again.",
+    "description": "Shown when passkey registration response verification fails."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "We couldn't unlock with biometrics. Try again, or set up biometrics again in Settings.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "Biometrics don't match your current wallet lock. Set up biometrics again in Settings.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Your password was updated, but biometric unlock couldn't be turned on.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "We couldn't verify your biometrics. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Register biometrics"
+  },
+  "passkeySetupStepVerify": {
+    "message": "Verify biometrics"
+  },
+  "passkeyTroubleshoot": {
+    "message": "Having trouble with biometrics?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTurnedOff": {
+    "message": "Biometrics turned off"
+  },
+  "passkeyTurnedOn": {
+    "message": "Biometrics turned on"
+  },
+  "passkeyUnlockFailed": {
+    "message": "Biometrics unlock failed. Try your password."
   },
   "password": {
     "message": "Password"
@@ -7241,14 +7310,12 @@
   "securityChangePassword": {
     "message": "Change password"
   },
-  "securityChangePasswordDescription": {
-    "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityChangePasswordToastError": {
     "message": "Password couldn’t be changed. Please try again."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "New password saved, but biometric unlock couldn't be turned on.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
   },
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
@@ -7258,16 +7325,6 @@
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
-  },
-  "securityLoginWithSocial": {
-    "message": "Log in with $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Secret Recovery Phrase backed up"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Back up Secret Recovery Phrase"
   },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
@@ -7290,14 +7347,8 @@
     "message": "$1 RECOVERY",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
-  },
   "securitySrpLabel": {
     "message": "SECRET RECOVERY PHRASES"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Manage recovery methods"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -7413,6 +7464,9 @@
   "setUp": {
     "message": "Set up",
     "description": "Action label for Smart Accounts. Used on multichain details page."
+  },
+  "setUpPasskey": {
+    "message": "Set up biometrics"
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
@@ -8275,9 +8329,6 @@
   },
   "smartContractAddressWarning": {
     "message": "The recipient address may not support direct token transfers, which could result in fund loss. Only continue if you're certain this contract can receive your transfer."
-  },
-  "smartContracts": {
-    "message": "Smart contracts"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart swap."
@@ -9302,9 +9353,6 @@
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
-  "tokenAutoDetection": {
-    "message": "Token autodetection"
-  },
   "tokenContractAddress": {
     "message": "Token contract address"
   },
@@ -9542,6 +9590,12 @@
   "turnOffMetamaskNotificationsError": {
     "message": "There was an error in disabling the notifications. Please try again later."
   },
+  "turnOffPasskey": {
+    "message": "Turn off biometrics"
+  },
+  "turnOffPasskeyFailed": {
+    "message": "We couldn't turn off biometrics. Try again."
+  },
   "turnOn": {
     "message": "Turn on"
   },
@@ -9644,6 +9698,9 @@
     "message": "Unlock to reveal",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Unlock with biometrics"
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -9729,6 +9786,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
+  },
+  "usePassword": {
+    "message": "Use password"
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"

@@ -10,6 +10,7 @@ import * as accountsSelectors from '../../selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';
+import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import PerpsWithdrawPage from './perps-withdraw-page';
 
 jest.mock('@metamask/perps-controller', () => ({
@@ -110,9 +111,7 @@ const mockUsePerpsEligibility = usePerpsEligibility as jest.MockedFunction<
 >;
 
 jest.mock('../../hooks/perps/stream', () => ({
-  usePerpsLiveAccount: () => ({
-    account: { availableBalance: '100' },
-  }),
+  usePerpsLiveAccount: jest.fn(),
 }));
 
 jest.mock('../../store/background-connection', () => ({
@@ -126,6 +125,9 @@ const mockGetIsPerpsExperienceAvailable =
 
 const mockSubmit = submitRequestToBackground as jest.MockedFunction<
   typeof submitRequestToBackground
+>;
+const mockUsePerpsLiveAccount = usePerpsLiveAccount as jest.MockedFunction<
+  typeof usePerpsLiveAccount
 >;
 
 /**
@@ -217,6 +219,10 @@ describe('PerpsWithdrawPage', () => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: { availableBalance: '100' } as never,
+      isInitialLoading: false,
+    });
     mockSubmit.mockImplementation((method: string) => {
       if (method === 'perpsGetWithdrawalRoutes') {
         return Promise.resolve([
@@ -498,6 +504,29 @@ describe('PerpsWithdrawPage', () => {
     expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
       '50.00',
     );
+  });
+
+  it('uses available-to-trade balance for withdraw max and validation', async () => {
+    const user = userEvent.setup();
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: {
+        availableBalance: '0',
+        availableToTradeBalance: '100',
+      } as never,
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    await user.click(screen.getByTestId('perps-withdraw-percentage-max'));
+
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveValue(
+      '100.00',
+    );
+
+    expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
   });
 
   it('shows server validation error when perpsValidateWithdrawal returns invalid', async () => {

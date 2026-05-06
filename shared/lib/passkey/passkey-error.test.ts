@@ -1,7 +1,11 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { JsonRpcError } from '@metamask/rpc-errors';
 
-import { translatePasskeyError } from './passkey-error';
+import {
+  ExtensionPasskeyErrorCode,
+  getPasskeyControllerErrorCode,
+  translatePasskeyError,
+} from './passkey-error';
 
 describe('translatePasskeyError', () => {
   const t = (key: string) => `t:${key}`;
@@ -43,6 +47,17 @@ describe('translatePasskeyError', () => {
         t,
       ),
     ).toBe('t:passkeyErrorRegistrationVerificationFailed');
+  });
+
+  it('maps already enrolled code', () => {
+    expect(
+      translatePasskeyError(
+        {
+          code: PasskeyControllerErrorCode.AlreadyEnrolled,
+        },
+        t,
+      ),
+    ).toBe('t:passkeyErrorAlreadyEnrolled');
   });
 
   it('returns null when no passkey-specific translation exists', () => {
@@ -95,5 +110,54 @@ describe('translatePasskeyError', () => {
     expect(
       translatePasskeyError(new Error('x'), t) ?? t('passkeyUnlockFailed'),
     ).toBe('t:passkeyUnlockFailed');
+  });
+
+  it('maps extension vault key renewal failed code', () => {
+    expect(
+      translatePasskeyError(
+        { code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed },
+        t,
+      ),
+    ).toBe('t:passkeyErrorVaultKeyRenewalFailed');
+  });
+});
+
+describe('getPasskeyControllerErrorCode', () => {
+  it('reads root string code for extension vault key renewal', () => {
+    expect(
+      getPasskeyControllerErrorCode({
+        code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+      }),
+    ).toBe(ExtensionPasskeyErrorCode.VaultKeyRenewalFailed);
+  });
+
+  it('reads MetaRPC-style data.cause.code for extension vault key renewal', () => {
+    const err = new JsonRpcError(-32603, 'internal error', {
+      cause: {
+        name: 'PasskeyControllerError',
+        code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+      },
+    });
+    expect(getPasskeyControllerErrorCode(err)).toBe(
+      ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+    );
+  });
+
+  it('prefers root string code over data.cause.code', () => {
+    expect(
+      getPasskeyControllerErrorCode({
+        code: PasskeyControllerErrorCode.NotEnrolled,
+        data: {
+          cause: {
+            code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+          },
+        },
+      }),
+    ).toBe(PasskeyControllerErrorCode.NotEnrolled);
+  });
+
+  it('returns null for non-objects', () => {
+    expect(getPasskeyControllerErrorCode(null)).toBeNull();
+    expect(getPasskeyControllerErrorCode('x')).toBeNull();
   });
 });

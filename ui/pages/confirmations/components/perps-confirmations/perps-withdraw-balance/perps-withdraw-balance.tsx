@@ -19,9 +19,16 @@ export const PerpsWithdrawBalance = () => {
   const { account } = usePerpsLiveAccount();
 
   const balanceFormatted = useMemo(() => {
-    const value = parseFloat(account?.availableBalance ?? '0') || 0;
+    const value =
+      parseFloat(
+        account?.availableToTradeBalance ?? account?.availableBalance ?? '0',
+      ) || 0;
     return formatCurrency(value, 'USD');
-  }, [account?.availableBalance, formatCurrency]);
+  }, [
+    account?.availableBalance,
+    account?.availableToTradeBalance,
+    formatCurrency,
+  ]);
 
   return (
     <Box
