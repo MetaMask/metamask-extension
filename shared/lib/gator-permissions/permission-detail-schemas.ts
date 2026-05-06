@@ -356,7 +356,7 @@ const nativeTokenAllowanceSchema: PermissionSchemaEntry = {
           getValue: (ctx) =>
             parseHexPermissionAmount(getData<string>(ctx, 'allowanceAmount')),
           isVisible: alwaysVisible,
-          includeInViews: ['confirmation', 'reviewDetail'],
+          includeInViews: ['confirmation', 'reviewSummary'],
         },
         {
           type: 'date',
@@ -621,7 +621,7 @@ const erc20TokenAllowanceSchema: PermissionSchemaEntry = {
             parseHexPermissionAmount(getData<string>(ctx, 'allowanceAmount')),
           getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
           isVisible: alwaysVisible,
-          includeInViews: ['confirmation', 'reviewDetail'],
+          includeInViews: ['confirmation', 'reviewSummary'],
         },
         {
           type: 'date',
