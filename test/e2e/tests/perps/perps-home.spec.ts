@@ -5,7 +5,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
-import { getConfig } from './helpers';
+import { getPerpsConfigEligible } from './helpers';
 
 /**
  * Perps E2E tests.
@@ -21,7 +21,7 @@ describe('Perps', function (this: Suite) {
   it.skip('shows list of open positions', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
