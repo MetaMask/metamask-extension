@@ -638,16 +638,16 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
     tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
     blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
   },
-  // {
-  //   networkId: 'Mantle',
-  //   networkName: 'Mantle',
-  //   chainId: 5000,
-  //   symbol: 'MNT',
-  //   rpcUrl: 'https://rpc.mantle.xyz',
-  //   rpcName: 'Mantle RPC',
-  //   tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
-  //   blockExplorerUrl: 'https://mantlescan.xyz',
-  // },
+  {
+    networkId: 'Mantle',
+    networkName: 'Mantle',
+    chainId: 5000,
+    symbol: 'MNT',
+    rpcUrl: 'https://rpc.mantle.xyz',
+    rpcName: 'Mantle RPC',
+    tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+    blockExplorerUrl: 'https://mantlescan.xyz',
+  },
 ];
 
 /**
