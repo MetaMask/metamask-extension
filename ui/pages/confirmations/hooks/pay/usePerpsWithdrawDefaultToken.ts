@@ -43,7 +43,9 @@ export function usePerpsWithdrawDefaultToken(): SetPayTokenRequest {
       return ARBITRUM_USDC_FALLBACK;
     }
 
-    const latest = matching.reduce((acc, tx) => (tx.time > acc.time ? tx : acc));
+    const latest = matching.reduce((acc, tx) =>
+      tx.time > acc.time ? tx : acc,
+    );
 
     return {
       address: latest.metamaskPay?.tokenAddress as Hex,

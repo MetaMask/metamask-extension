@@ -249,7 +249,9 @@ describe('PayWithRow', () => {
         setPayToken: jest.fn(),
         isNative: false,
       });
-      useTransactionPayRequiredTokensMock.mockReturnValue([MOCK_REQUIRED_TOKEN]);
+      useTransactionPayRequiredTokensMock.mockReturnValue([
+        MOCK_REQUIRED_TOKEN,
+      ]);
       useConfirmContextMock.mockReturnValue({
         currentConfirmation: {
           id: 'test-id',
