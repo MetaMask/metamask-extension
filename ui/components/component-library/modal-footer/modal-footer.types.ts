@@ -7,6 +7,10 @@ import type {
 } from '../box';
 import type { ButtonProps } from '../button';
 
+/**
+ * @deprecated Use `ModalFooter` from `@metamask/design-system-react` instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#modalfooter-component | Migration Guide}
+ */
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface ModalFooterStyleUtilityProps extends StyleUtilityProps {
@@ -40,11 +44,19 @@ export interface ModalFooterStyleUtilityProps extends StyleUtilityProps {
   containerProps?: ContainerProps<'div'>;
 }
 
+/**
+ * @deprecated Use `ModalFooterProps` from `@metamask/design-system-react` instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#modalfooter-component | Migration Guide}
+ */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalFooterProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ModalFooterStyleUtilityProps>;
 
+/**
+ * @deprecated Use `ModalFooter` from `@metamask/design-system-react` instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#modalfooter-component | Migration Guide}
+ */
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type ModalFooterComponent = <C extends React.ElementType = 'footer'>(
