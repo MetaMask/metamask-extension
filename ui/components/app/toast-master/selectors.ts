@@ -12,7 +12,6 @@ type State = {
       MetaMaskReduxState['appState'],
       | 'showNftDetectionEnablementToast'
       | 'showPasswordChangeToast'
-      | 'showCopyAddressToast'
       | 'showClaimSubmitToast'
       | 'showInfuraSwitchToast'
     >
@@ -69,18 +68,6 @@ export function selectNftDetectionEnablementToast(
   state: Pick<State, 'appState'>,
 ): boolean {
   return Boolean(state.appState.showNftDetectionEnablementToast);
-}
-
-/**
- * Retrieves user preference to see the "Copy Address" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectShowCopyAddressToast(
-  state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showCopyAddressToast);
 }
 
 /**

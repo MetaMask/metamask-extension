@@ -1,7 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { ReactFragment } from 'react';
 import {
-  SET_SHOW_COPY_ADDRESS_TOAST,
   SET_SHOW_CLAIM_SUBMIT_TOAST,
   SET_SHOW_INFURA_SWITCH_TOAST,
   SHOW_NFT_DETECTION_ENABLEMENT_TOAST,
@@ -64,13 +63,6 @@ export function submitRequestToBackgroundAndCatch(
   submitRequestToBackground(method, args)?.catch((error) => {
     console.error('Error caught in submitRequestToBackground', error);
   });
-}
-
-export function setShowCopyAddressToast(value: boolean) {
-  return {
-    type: SET_SHOW_COPY_ADDRESS_TOAST,
-    payload: value,
-  };
 }
 
 export function setShowClaimSubmitToast(

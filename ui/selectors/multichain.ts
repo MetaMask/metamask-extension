@@ -49,7 +49,6 @@ import {
 } from '../../shared/lib/selectors/networks';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import {
   AccountsState,
   getInternalAccounts,
@@ -419,12 +418,14 @@ export function getMultichainConversionRate(
   return parsedConversionRate;
 }
 
-// TODO get this from the multichain network controller
-export const getMultichainNetworkConfigurationsByChainId = (
-  state: MultichainState,
-): Record<Hex | CaipChainId, NetworkConfiguration> => {
-  return {
-    ...getNetworkConfigurationsByChainId(state),
+// Memoized: a plain `{ ...getNetworkConfigurationsByChainId(state), … }` returns a new object
+// every call and breaks Reselect input-stability and downstream createSelector memoization.
+export const getMultichainNetworkConfigurationsByChainId = createSelector(
+  [getNetworkConfigurationsByChainId],
+  (
+    evmNetworkConfigurationsByChainId,
+  ): Record<Hex | CaipChainId, NetworkConfiguration> => ({
+    ...evmNetworkConfigurationsByChainId,
     [MultichainNetworks.SOLANA]: {
       ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
       blockExplorerUrls: [],
@@ -512,14 +513,8 @@ export const getMultichainNetworkConfigurationsByChainId = (
       defaultRpcEndpointIndex: 0,
       chainId: MultichainNetworks.TRON_SHASTA as unknown as Hex,
     },
-  };
-};
-
-export const getMemoizedMultichainNetworkConfigurationsByChainId =
-  createDeepEqualSelector(
-    [getMultichainNetworkConfigurationsByChainId],
-    (networkConfigurations) => networkConfigurations,
-  );
+  }),
+);
 
 export const getLastSelectedNonEvmAccount = createSelector(
   getInternalAccounts,
