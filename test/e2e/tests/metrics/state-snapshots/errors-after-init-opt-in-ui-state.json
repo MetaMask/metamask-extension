@@ -57,7 +57,6 @@
     "showInfuraSwitchToast": "boolean",
     "showIpfsModalOpen": "boolean",
     "showKeyringRemovalSnapModal": "boolean",
-    "showNewSrpAddedToast": "boolean",
     "showNftDetectionEnablementToast": "boolean",
     "showPasswordChangeToast": null,
     "showPermittedNetworkToastOpen": "boolean",

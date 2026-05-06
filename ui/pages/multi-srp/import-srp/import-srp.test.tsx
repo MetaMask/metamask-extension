@@ -6,9 +6,9 @@ import thunk from 'redux-thunk';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { importMnemonicToVault } from '../../../store/actions';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { ImportSrp } from './import-srp';
 
 jest.mock('../../../store/actions', () => ({
@@ -23,13 +23,13 @@ jest.mock('../../../store/actions', () => ({
   hideWarning: jest.fn().mockReturnValue({ type: 'HIDE_WARNING' }),
 }));
 
-jest.mock('../../../components/app/toast-master/utils', () => ({
-  setShowNewSrpAddedToast: jest
-    .fn()
-    .mockImplementation((value: number | false) => ({
-      type: 'SET_SHOW_NEW_SRP_ADDED_TOAST',
-      payload: value,
-    })),
+jest.mock('../../../components/ui/toast/toast', () => ({
+  toast: {
+    success: jest.fn(),
+  },
+  ToastContent: jest.fn(({ title, dataTestId }) => (
+    <div data-testid={dataTestId}>{title}</div>
+  )),
 }));
 
 const mockNavigate = jest.fn();
@@ -101,7 +101,13 @@ describe('ImportSrp', () => {
       expect(importMnemonicToVault).toHaveBeenCalledWith(VALID_SEED);
       // Verify that navigation happened after import
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
-      expect(setShowNewSrpAddedToast).toHaveBeenCalledWith(2);
+      expect(toast.success).toHaveBeenCalledWith(
+        <ToastContent
+          title={messages.importWalletSuccess.message.replace('$1', '2')}
+          dataTestId="new-srp-added-toast"
+        />,
+        { id: 'new-srp-added-toast', duration: 5000 },
+      );
     });
   });
 
@@ -136,7 +142,7 @@ describe('ImportSrp', () => {
       // importMnemonicToVault should not be called
       expect(importMnemonicToVault).not.toHaveBeenCalled();
       expect(mockNavigate).not.toHaveBeenCalled();
-      expect(setShowNewSrpAddedToast).not.toHaveBeenCalled();
+      expect(toast.success).not.toHaveBeenCalled();
     });
   });
 
@@ -183,7 +189,7 @@ describe('ImportSrp', () => {
 
       // Verify navigation did not happen
       expect(mockNavigate).not.toHaveBeenCalledWith(DEFAULT_ROUTE);
-      expect(setShowNewSrpAddedToast).not.toHaveBeenCalled();
+      expect(toast.success).not.toHaveBeenCalled();
     };
 
     it('displays duplicate account error when trying to import a duplicate account', async () => {

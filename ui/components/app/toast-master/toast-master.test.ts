@@ -2,7 +2,6 @@ import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import { SURVEY_DATE, SURVEY_GMT } from '../../../helpers/constants/survey';
 import mockState from '../../../../test/data/mock-state.json';
 import {
-  selectNewSrpAdded,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectShowCopyAddressToast,
@@ -29,13 +28,9 @@ const createMockPrivacyPolicyState = (
   },
 });
 
-const createMockAppState = (
-  showNewSrpAddedToast?: number | false,
-  showCopyAddressToast?: boolean,
-) => ({
+const createMockAppState = (showCopyAddressToast?: boolean) => ({
   appState: {
     ...mockState.appState,
-    showNewSrpAddedToast,
     showCopyAddressToast,
   },
 });
@@ -206,29 +201,15 @@ describe('#getShowPrivacyPolicyToast', () => {
   });
 });
 
-describe('#getShowNewSrpAddedToast', () => {
-  it('returns the wallet number when set', () => {
-    const mockStateData = createMockAppState(2);
-    const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(2);
-  });
-
-  it('returns false when not set', () => {
-    const mockStateData = createMockAppState(false);
-    const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(false);
-  });
-});
-
 describe('#selectShowCopyAddressToast', () => {
   it('returns true when showCopyAddressToast is true', () => {
-    const mockStateData = createMockAppState(undefined, true);
+    const mockStateData = createMockAppState(true);
     const result = selectShowCopyAddressToast(mockStateData);
     expect(result).toBe(true);
   });
 
   it('returns false when showCopyAddressToast is false', () => {
-    const mockStateData = createMockAppState(undefined, false);
+    const mockStateData = createMockAppState(false);
     const result = selectShowCopyAddressToast(mockStateData);
     expect(result).toBe(false);
   });

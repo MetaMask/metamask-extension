@@ -16,7 +16,8 @@ import {
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
 } from '../../../store/actions';
-import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
+import { SECOND } from '../../../../shared/constants/time';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
 import {
@@ -29,6 +30,9 @@ import { MetaMaskReduxDispatch } from '../../../store/store';
 import SrpInputForm from '../../srp-input-form';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+
+const NEW_SRP_ADDED_TOAST_ID = 'new-srp-added-toast';
+const AUTO_HIDE_TOAST_DELAY = 5 * SECOND;
 
 export const ImportSrp = () => {
   const t = useI18nContext();
@@ -75,7 +79,16 @@ export const ImportSrp = () => {
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
       navigate(DEFAULT_ROUTE);
-      dispatch(setShowNewSrpAddedToast(hdKeyrings.length + 1));
+      toast.success(
+        <ToastContent
+          dataTestId={NEW_SRP_ADDED_TOAST_ID}
+          title={t('importWalletSuccess', [hdKeyrings.length + 1])}
+        />,
+        {
+          id: NEW_SRP_ADDED_TOAST_ID,
+          duration: AUTO_HIDE_TOAST_DELAY,
+        },
+      );
     } catch (error) {
       switch ((error as Error)?.message) {
         case 'KeyringController - The account you are trying to import is a duplicate':

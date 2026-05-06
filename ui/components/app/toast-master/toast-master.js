@@ -81,7 +81,6 @@ import {
   selectNftDetectionEnablementToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
-  selectNewSrpAdded,
   selectShowCopyAddressToast,
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
@@ -96,7 +95,6 @@ import {
   setNewPrivacyPolicyToastShownDate,
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
-  setShowNewSrpAddedToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
@@ -130,7 +128,6 @@ export function ToastMaster() {
         <PrivacyPolicyToast />
         <NftEnablementToast />
         <PermittedNetworkToast />
-        <NewSrpAddedToast />
         <InfuraSwitchToast />
         <CopyAddressToast />
         <PerpsDepositToast />
@@ -314,46 +311,6 @@ function PermittedNetworkToast() {
           navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
-      />
-    )
-  );
-}
-
-function NewSrpAddedToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const walletNumber = useSelector(selectNewSrpAdded);
-  const autoHideDelay = 5 * SECOND;
-
-  // This will close the toast if the user clicks the account menu.
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const dismissElement = document.querySelector(
-        '[data-testid="account-menu-icon"]',
-      );
-      if (dismissElement && dismissElement.contains(event.target)) {
-        dispatch(setShowNewSrpAddedToast(false));
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [dispatch]);
-
-  return (
-    walletNumber && (
-      <Toast
-        key="new-srp-added-toast"
-        text={t('importWalletSuccess', [walletNumber])}
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        onClose={() => dispatch(setShowNewSrpAddedToast(false))}
-        autoHideTime={autoHideDelay}
-        onAutoHideToast={() => dispatch(setShowNewSrpAddedToast(false))}
       />
     )
   );
