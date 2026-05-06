@@ -45,32 +45,29 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
       (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
     const defaultButtonText = t(i18nKey);
 
-    if (!primaryRequiredToken) {
-      return {
-        buttonText: defaultButtonText,
-        isDisabled: false,
-        isLoading: true,
-      };
-    }
+    const isAwaitingRequiredToken = !primaryRequiredToken;
 
     const hasBlockingAlerts = blockingAlerts.length > 0;
-
     const firstAlert = blockingAlerts[0];
     const alertText =
       firstAlert?.reason ?? (firstAlert?.message as string | undefined);
 
+    const hasAmount = primaryRequiredToken
+      ? new BigNumber(primaryRequiredToken.amountUsd ?? 0).gt(0)
+      : false;
+
     const buttonText =
-      hasBlockingAlerts && alertText ? alertText : defaultButtonText;
+      !isAwaitingRequiredToken && hasBlockingAlerts && alertText
+        ? alertText
+        : defaultButtonText;
 
-    const hasAmount = new BigNumber(
-      primaryRequiredToken.amountUsd ?? 0,
-    ).gt(0);
+    const isDisabled =
+      isAwaitingRequiredToken || hasBlockingAlerts || !hasAmount;
 
-    return {
-      buttonText,
-      isDisabled: hasBlockingAlerts || !hasAmount,
-      isLoading: isGaslessLoading || isPayLoading,
-    };
+    const isLoading =
+      isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
+
+    return { buttonText, isDisabled, isLoading };
   }, [
     blockingAlerts,
     isGaslessLoading,
@@ -102,7 +99,7 @@ export const SingleActionFooter = ({
         className="w-full"
         data-testid="confirm-footer-button"
         disabled={isDisabled}
-        isLoading={isLoading && !isDisabled}
+        isLoading={isLoading}
         onClick={isLoading ? undefined : onSubmit}
         size={ButtonSize.Lg}
       >

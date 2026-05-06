@@ -87,12 +87,10 @@ describe('<SingleActionFooter />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
-    jest
-      .mocked(useTransactionPayPrimaryRequiredToken)
-      .mockReturnValue({
-        amountUsd: '10.00',
-        skipIfBalance: false,
-      } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '10.00',
+      skipIfBalance: false,
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
   });
 
   it('renders the button', () => {
@@ -178,19 +176,17 @@ describe('<SingleActionFooter />', () => {
   });
 
   it('disables button when amount is zero', () => {
-    jest
-      .mocked(useTransactionPayPrimaryRequiredToken)
-      .mockReturnValue({
-        amountUsd: '0',
-        skipIfBalance: false,
-      } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      skipIfBalance: false,
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
 
     const { getByTestId } = render();
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('shows loading when primary required token is not yet resolved', () => {
+  it('shows disabled loading when primary required token is not yet resolved', () => {
     jest
       .mocked(useTransactionPayPrimaryRequiredToken)
       .mockReturnValue(undefined);
@@ -198,11 +194,11 @@ describe('<SingleActionFooter />', () => {
     const { getByTestId } = render();
 
     const button = getByTestId('confirm-footer-button');
-    expect(button).not.toBeDisabled();
+    expect(button).toBeDisabled();
     expect(button).toHaveAttribute('aria-busy', 'true');
   });
 
-  it('shows loading over blocking alerts when awaiting required token', () => {
+  it('shows disabled loading over blocking alerts when awaiting required token', () => {
     jest
       .mocked(useTransactionPayPrimaryRequiredToken)
       .mockReturnValue(undefined);
@@ -220,7 +216,7 @@ describe('<SingleActionFooter />', () => {
     });
 
     const button = getByTestId('confirm-footer-button');
-    expect(button).not.toBeDisabled();
+    expect(button).toBeDisabled();
     expect(button).toHaveAttribute('aria-busy', 'true');
   });
 

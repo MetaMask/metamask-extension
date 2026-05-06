@@ -218,7 +218,7 @@ function CenterContainer({
         amountFiat={amountFiat}
         autoFocus={autoFocusAmount}
         currency={currency}
-              disabled={!hasTokens}
+        disabled={!hasTokens}
         onChange={onAmountChange}
       />
 
@@ -232,10 +232,7 @@ function CenterContainer({
           gap={3}
         >
           {disablePay !== true && !hidePayTokenAmount && (
-            <PayTokenAmount
-              amountHuman={amountHuman}
-        disabled={!hasTokens}
-            />
+            <PayTokenAmount amountHuman={amountHuman} disabled={!hasTokens} />
           )}
           {children}
           {disablePay !== true && hasTokens && (
@@ -244,7 +241,7 @@ function CenterContainer({
         </Box>
       )}
 
-      {!isInputDisabled && hasMax && (
+      {hasTokens && hasMax && (
         <PercentageButtons onPercentageClick={onPercentageClick} />
       )}
       <AlertMessage />
