@@ -31,7 +31,7 @@ import SrpInputForm from '../../srp-input-form';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 
-const newSrpAddedToastId = 'new-srp-added-toast';
+const toastId = 'new-srp-added-toast';
 const autoHideToastDelay = 5 * SECOND;
 
 export const ImportSrp = () => {
@@ -80,11 +80,11 @@ export const ImportSrp = () => {
 
       toast.success(
         <ToastContent
-          dataTestId={newSrpAddedToastId}
+          dataTestId={toastId}
           title={t('importWalletSuccess', [hdKeyrings.length + 1])}
         />,
         {
-          id: newSrpAddedToastId,
+          id: toastId,
           duration: autoHideToastDelay,
         },
       );
