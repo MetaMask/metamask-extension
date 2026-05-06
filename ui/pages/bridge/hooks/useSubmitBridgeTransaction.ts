@@ -103,10 +103,9 @@ export default function useSubmitBridgeTransaction({
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
-    options?: { skipDeviceReady?: boolean; rpcTimeoutMs?: number },
+    options?: { rpcTimeoutMs?: number },
   ) => {
     console.log('[HW-Batch] submitBridgeTransaction called', {
-      skipDeviceReady: options?.skipDeviceReady,
       rpcTimeoutMs: options?.rpcTimeoutMs,
       isHardwareWalletAccount,
       connectionStatus: connectionState.status,
@@ -117,7 +116,6 @@ export default function useSubmitBridgeTransaction({
     try {
       if (
         isHardwareWalletAccount &&
-        !options?.skipDeviceReady &&
         connectionState.status !== ConnectionStatus.Ready
       ) {
         const isDeviceReady = await ensureDeviceReady();
@@ -152,6 +150,9 @@ export default function useSubmitBridgeTransaction({
     const intentData = quoteResponse.quote.intent;
 
     if (hardwareWalletUsed && intentData) {
+      console.log(
+        '[HW-Batch] submitBridgeTransaction: HW + intentData → onHardwareWalletFailed (intent quotes not supported)',
+      );
       captureException(
         new Error('Hardware wallets cannot submit bridge intent quotes'),
       );

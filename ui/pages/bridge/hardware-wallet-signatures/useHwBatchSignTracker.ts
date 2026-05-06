@@ -1,7 +1,10 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionType } from '@metamask/transaction-controller';
-import { subscribeToMessengerEvent } from '../../../store/background-connection';
+import {
+  subscribeToMessengerEvent,
+  submitRequestToBackground,
+} from '../../../store/background-connection';
 import { HardwareWalletSignatureEvent } from './hardware-wallet-signatures-state-machine';
 
 const APPROVAL_TYPES = new Set([
@@ -47,6 +50,12 @@ function isFromCurrentBatch(
   return batchId === currentBatchId;
 }
 
+function shouldBlockPendingEvent(
+  currentBatchId: string | null | undefined,
+): boolean {
+  return currentBatchId === undefined;
+}
+
 export function useHwBatchSignTracker(
   fromAddress: string | undefined,
   hardwareWalletUsed: boolean | undefined,
@@ -60,7 +69,32 @@ export function useHwBatchSignTracker(
   const currentBatchIdRef = useRef<string | null | undefined>();
   const staleBatchIdsRef = useRef<Set<string>>(new Set());
   const seenBatchIdsRef = useRef<Set<string>>(new Set());
+  const trackedTxIdsRef = useRef<Set<string>>(new Set());
   const lastSeenGenerationRef = useRef(retryGenerationRef?.current ?? 0);
+
+  const cancelCurrentBatch = useCallback(async () => {
+    const batchId = currentBatchIdRef.current;
+
+    for (const txId of trackedTxIdsRef.current) {
+      try {
+        await submitRequestToBackground('abortTransactionSigning', [txId]);
+      } catch {
+        // Transaction may not be in signing state — expected
+      }
+    }
+
+    if (batchId) {
+      console.log('[HW-Batch] cancelCurrentBatch', JSON.stringify({ batchId }));
+      try {
+        await submitRequestToBackground('cancelTransactionBatch', [batchId]);
+      } catch (err) {
+        console.log(
+          '[HW-Batch] cancelCurrentBatch failed (batch may have already completed)',
+          err,
+        );
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (!fromAddress || !hardwareWalletUsed) {
@@ -116,6 +150,7 @@ export function useHwBatchSignTracker(
 
           const batchId = transactionMeta.batchId ?? 'batch-unknown';
           seenBatchIdsRef.current.add(batchId);
+          trackedTxIdsRef.current.add(transactionMeta.id);
 
           if (status === 'signed') {
             if (currentBatchIdRef.current === undefined) {
@@ -157,8 +192,14 @@ export function useHwBatchSignTracker(
               });
             }
           } else if (status === 'failed') {
+            if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
+              console.log(
+                '[HW-Batch] skipping transactionStatusUpdated failed: no batch identified yet',
+              );
+              return;
+            }
             if (
-              currentBatchIdRef.current !== null &&
+              currentBatchIdRef.current !== undefined &&
               !isFromCurrentBatch(
                 transactionMeta,
                 currentBatchIdRef.current,
@@ -175,10 +216,10 @@ export function useHwBatchSignTracker(
               return;
             }
             console.log(
-              '[HW-Batch] transactionStatusUpdated failed → TransactionRejected',
+              '[HW-Batch] transactionStatusUpdated failed → TransactionFailed',
             );
             dispatchRef.current({
-              type: HardwareWalletSignatureEvent.TransactionRejected,
+              type: HardwareWalletSignatureEvent.TransactionFailed,
             });
           }
         },
@@ -212,9 +253,17 @@ export function useHwBatchSignTracker(
 
           const batchId = transactionMeta.batchId ?? 'batch-unknown';
           seenBatchIdsRef.current.add(batchId);
+          trackedTxIdsRef.current.add(transactionMeta.id);
+
+          if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
+            console.log(
+              '[HW-Batch] skipping transactionRejected: no batch identified yet',
+            );
+            return;
+          }
 
           if (
-            currentBatchIdRef.current !== null &&
+            currentBatchIdRef.current !== undefined &&
             !isFromCurrentBatch(
               transactionMeta,
               currentBatchIdRef.current,
@@ -269,9 +318,17 @@ export function useHwBatchSignTracker(
 
           const batchId = transactionMeta.batchId ?? 'batch-unknown';
           seenBatchIdsRef.current.add(batchId);
+          trackedTxIdsRef.current.add(transactionMeta.id);
+
+          if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
+            console.log(
+              '[HW-Batch] skipping transactionFinished: no batch identified yet',
+            );
+            return;
+          }
 
           if (
-            currentBatchIdRef.current !== null &&
+            currentBatchIdRef.current !== undefined &&
             !isFromCurrentBatch(
               transactionMeta,
               currentBatchIdRef.current,
@@ -322,4 +379,6 @@ export function useHwBatchSignTracker(
       }
     };
   }, [fromAddress, hardwareWalletUsed, retryGenerationRef]);
+
+  return { cancelCurrentBatch };
 }

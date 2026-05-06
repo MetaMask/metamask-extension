@@ -1,6 +1,9 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { TransactionType } from '@metamask/transaction-controller';
-import { subscribeToMessengerEvent } from '../../../store/background-connection';
+import {
+  subscribeToMessengerEvent,
+  submitRequestToBackground,
+} from '../../../store/background-connection';
 import { HardwareWalletSignatureEvent } from './hardware-wallet-signatures-state-machine';
 import { useHwBatchSignTracker } from './useHwBatchSignTracker';
 
@@ -16,12 +19,18 @@ jest.mock('../../../store/background-connection', () => {
     subscribeToMessengerEvent: jest
       .fn()
       .mockResolvedValue(createMockUnsubscribe()),
+    submitRequestToBackground: jest.fn().mockResolvedValue(undefined),
   };
 });
 
 const mockSubscribe = subscribeToMessengerEvent as jest.MockedFunction<
   typeof subscribeToMessengerEvent
 >;
+
+const mockSubmitRequestToBackground =
+  submitRequestToBackground as jest.MockedFunction<
+    typeof submitRequestToBackground
+  >;
 
 const FROM_ADDRESS = '0xc5fe6ef47965741f6f7a4734bf784bf3ae3f2452';
 
@@ -281,7 +290,7 @@ describe('useHwBatchSignTracker', () => {
     expect(dispatchEvent).not.toHaveBeenCalled();
   });
 
-  it('dispatches TransactionRejected on status failed', async () => {
+  it('blocks TransactionFailed on status failed before batch is identified', async () => {
     const callbacks = setupAndReturnCallbacks();
 
     renderHook(() =>
@@ -304,12 +313,10 @@ describe('useHwBatchSignTracker', () => {
       ]);
     });
 
-    expect(dispatchEvent).toHaveBeenCalledWith({
-      type: HardwareWalletSignatureEvent.TransactionRejected,
-    });
+    expect(dispatchEvent).not.toHaveBeenCalled();
   });
 
-  it('dispatches TransactionRejected on failed event even when device reconnects mid-flow', async () => {
+  it('dispatches TransactionFailed on status failed after batch is identified', async () => {
     const callbacks = setupAndReturnCallbacks();
 
     renderHook(() =>
@@ -320,15 +327,129 @@ describe('useHwBatchSignTracker', () => {
       await jest.runAllTimersAsync();
     });
 
-    const callback = callbacks.get(
+    const statusCallback = callbacks.get(
       'TransactionController:transactionStatusUpdated',
     );
 
     await act(async () => {
-      callback?.([
+      statusCallback?.([
         {
-          transactionMeta: createTxMeta({ status: 'failed' }),
+          transactionMeta: createTxMeta({ batchId: 'batch-1' }),
         },
+      ]);
+    });
+
+    dispatchEvent.mockClear();
+
+    await act(async () => {
+      statusCallback?.([
+        {
+          transactionMeta: createTxMeta({
+            status: 'failed',
+            batchId: 'batch-1',
+          }),
+        },
+      ]);
+    });
+
+    expect(dispatchEvent).toHaveBeenCalledWith({
+      type: HardwareWalletSignatureEvent.TransactionFailed,
+    });
+  });
+
+  it('dispatches TransactionFailed on failed event after batch identified even when device reconnects mid-flow', async () => {
+    const callbacks = setupAndReturnCallbacks();
+
+    renderHook(() =>
+      useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+    );
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    const statusCallback = callbacks.get(
+      'TransactionController:transactionStatusUpdated',
+    );
+
+    await act(async () => {
+      statusCallback?.([
+        {
+          transactionMeta: createTxMeta({ batchId: 'batch-1' }),
+        },
+      ]);
+    });
+
+    dispatchEvent.mockClear();
+
+    await act(async () => {
+      statusCallback?.([
+        {
+          transactionMeta: createTxMeta({
+            status: 'failed',
+            batchId: 'batch-1',
+          }),
+        },
+      ]);
+    });
+
+    expect(dispatchEvent).toHaveBeenCalledWith({
+      type: HardwareWalletSignatureEvent.TransactionFailed,
+    });
+  });
+
+  it('blocks TransactionRejected on transactionRejected event before batch is identified', async () => {
+    const callbacks = setupAndReturnCallbacks();
+
+    renderHook(() =>
+      useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+    );
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    const callback = callbacks.get('TransactionController:transactionRejected');
+
+    await act(async () => {
+      callback?.([{ transactionMeta: createTxMeta() }]);
+    });
+
+    expect(dispatchEvent).not.toHaveBeenCalled();
+  });
+
+  it('dispatches TransactionRejected on transactionRejected event after batch identified', async () => {
+    const callbacks = setupAndReturnCallbacks();
+
+    renderHook(() =>
+      useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+    );
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    const statusCallback = callbacks.get(
+      'TransactionController:transactionStatusUpdated',
+    );
+
+    await act(async () => {
+      statusCallback?.([
+        {
+          transactionMeta: createTxMeta({ batchId: 'batch-1' }),
+        },
+      ]);
+    });
+
+    const rejectedCallback = callbacks.get(
+      'TransactionController:transactionRejected',
+    );
+
+    dispatchEvent.mockClear();
+
+    await act(async () => {
+      rejectedCallback?.([
+        { transactionMeta: createTxMeta({ batchId: 'batch-1' }) },
       ]);
     });
 
@@ -337,7 +458,7 @@ describe('useHwBatchSignTracker', () => {
     });
   });
 
-  it('dispatches TransactionRejected on transactionRejected event', async () => {
+  it('dispatches TransactionRejected on transactionRejected event after batch identified even when device reconnects mid-flow', async () => {
     const callbacks = setupAndReturnCallbacks();
 
     renderHook(() =>
@@ -348,32 +469,28 @@ describe('useHwBatchSignTracker', () => {
       await jest.runAllTimersAsync();
     });
 
-    const callback = callbacks.get('TransactionController:transactionRejected');
-
-    await act(async () => {
-      callback?.([{ transactionMeta: createTxMeta() }]);
-    });
-
-    expect(dispatchEvent).toHaveBeenCalledWith({
-      type: HardwareWalletSignatureEvent.TransactionRejected,
-    });
-  });
-
-  it('dispatches TransactionRejected on transactionRejected event even when device reconnects mid-flow', async () => {
-    const callbacks = setupAndReturnCallbacks();
-
-    renderHook(() =>
-      useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+    const statusCallback = callbacks.get(
+      'TransactionController:transactionStatusUpdated',
     );
 
     await act(async () => {
-      await jest.runAllTimersAsync();
+      statusCallback?.([
+        {
+          transactionMeta: createTxMeta({ batchId: 'batch-1' }),
+        },
+      ]);
     });
 
-    const callback = callbacks.get('TransactionController:transactionRejected');
+    const rejectedCallback = callbacks.get(
+      'TransactionController:transactionRejected',
+    );
+
+    dispatchEvent.mockClear();
 
     await act(async () => {
-      callback?.([{ transactionMeta: createTxMeta() }]);
+      rejectedCallback?.([
+        { transactionMeta: createTxMeta({ batchId: 'batch-1' }) },
+      ]);
     });
 
     expect(dispatchEvent).toHaveBeenCalledWith({
@@ -381,7 +498,7 @@ describe('useHwBatchSignTracker', () => {
     });
   });
 
-  it('dispatches TransactionRejected when transaction finished with rejected status', async () => {
+  it('blocks TransactionRejected when transaction finished with rejected status before batch identified', async () => {
     const callbacks = setupAndReturnCallbacks();
 
     renderHook(() =>
@@ -402,12 +519,55 @@ describe('useHwBatchSignTracker', () => {
       ]);
     });
 
+    expect(dispatchEvent).not.toHaveBeenCalled();
+  });
+
+  it('dispatches TransactionRejected when transaction finished with rejected status after batch identified', async () => {
+    const callbacks = setupAndReturnCallbacks();
+
+    renderHook(() =>
+      useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+    );
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    const statusCallback = callbacks.get(
+      'TransactionController:transactionStatusUpdated',
+    );
+
+    await act(async () => {
+      statusCallback?.([
+        {
+          transactionMeta: createTxMeta({ batchId: 'batch-1' }),
+        },
+      ]);
+    });
+
+    const finishedCallback = callbacks.get(
+      'TransactionController:transactionFinished',
+    );
+
+    dispatchEvent.mockClear();
+
+    await act(async () => {
+      finishedCallback?.([
+        {
+          transactionMeta: createTxMeta({
+            status: 'rejected',
+            batchId: 'batch-1',
+          }),
+        },
+      ]);
+    });
+
     expect(dispatchEvent).toHaveBeenCalledWith({
       type: HardwareWalletSignatureEvent.TransactionRejected,
     });
   });
 
-  it('dispatches TransactionFailed when transaction finished with failed status', async () => {
+  it('blocks TransactionFailed when transaction finished with failed status before batch identified', async () => {
     const callbacks = setupAndReturnCallbacks();
 
     renderHook(() =>
@@ -428,12 +588,10 @@ describe('useHwBatchSignTracker', () => {
       ]);
     });
 
-    expect(dispatchEvent).toHaveBeenCalledWith({
-      type: HardwareWalletSignatureEvent.TransactionFailed,
-    });
+    expect(dispatchEvent).not.toHaveBeenCalled();
   });
 
-  it('dispatches TransactionFailed on transactionFinished even when device reconnects mid-flow', async () => {
+  it('dispatches TransactionFailed when transaction finished with failed status after batch identified', async () => {
     const callbacks = setupAndReturnCallbacks();
 
     renderHook(() =>
@@ -444,12 +602,76 @@ describe('useHwBatchSignTracker', () => {
       await jest.runAllTimersAsync();
     });
 
-    const callback = callbacks.get('TransactionController:transactionFinished');
+    const statusCallback = callbacks.get(
+      'TransactionController:transactionStatusUpdated',
+    );
 
     await act(async () => {
-      callback?.([
+      statusCallback?.([
         {
-          transactionMeta: createTxMeta({ status: 'failed' }),
+          transactionMeta: createTxMeta({ batchId: 'batch-1' }),
+        },
+      ]);
+    });
+
+    const finishedCallback = callbacks.get(
+      'TransactionController:transactionFinished',
+    );
+
+    dispatchEvent.mockClear();
+
+    await act(async () => {
+      finishedCallback?.([
+        {
+          transactionMeta: createTxMeta({
+            status: 'failed',
+            batchId: 'batch-1',
+          }),
+        },
+      ]);
+    });
+
+    expect(dispatchEvent).toHaveBeenCalledWith({
+      type: HardwareWalletSignatureEvent.TransactionFailed,
+    });
+  });
+
+  it('dispatches TransactionFailed on transactionFinished after batch identified even when device reconnects mid-flow', async () => {
+    const callbacks = setupAndReturnCallbacks();
+
+    renderHook(() =>
+      useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+    );
+
+    await act(async () => {
+      await jest.runAllTimersAsync();
+    });
+
+    const statusCallback = callbacks.get(
+      'TransactionController:transactionStatusUpdated',
+    );
+
+    await act(async () => {
+      statusCallback?.([
+        {
+          transactionMeta: createTxMeta({ batchId: 'batch-1' }),
+        },
+      ]);
+    });
+
+    const finishedCallback = callbacks.get(
+      'TransactionController:transactionFinished',
+    );
+
+    dispatchEvent.mockClear();
+
+    await act(async () => {
+      finishedCallback?.([
+        {
+          transactionMeta: createTxMeta({
+            status: 'failed',
+            batchId: 'batch-1',
+          }),
         },
       ]);
     });
@@ -650,7 +872,7 @@ describe('useHwBatchSignTracker', () => {
       expect(dispatchEvent).not.toHaveBeenCalled();
     });
 
-    it('resets batchId tracking on retry generation change and allows stale terminal events', async () => {
+    it('resets batchId tracking on retry generation change and blocks stale terminal events', async () => {
       const callbacks = setupAndReturnCallbacks();
       const retryGenerationRef: React.MutableRefObject<number> = { current: 0 };
 
@@ -701,9 +923,7 @@ describe('useHwBatchSignTracker', () => {
         ]);
       });
 
-      expect(dispatchEvent).toHaveBeenCalledWith({
-        type: HardwareWalletSignatureEvent.TransactionRejected,
-      });
+      expect(dispatchEvent).not.toHaveBeenCalled();
     });
 
     it('processes events from new batch after generation reset', async () => {
@@ -867,7 +1087,7 @@ describe('useHwBatchSignTracker', () => {
       });
     });
 
-    it('allows rejection from stale batch after retry until new batch is established', async () => {
+    it('blocks stale batch finished event after retry until new batch is established', async () => {
       const callbacks = setupAndReturnCallbacks();
       const retryGenerationRef: React.MutableRefObject<number> = { current: 0 };
 
@@ -918,9 +1138,7 @@ describe('useHwBatchSignTracker', () => {
         ]);
       });
 
-      expect(dispatchEvent).toHaveBeenCalledWith({
-        type: HardwareWalletSignatureEvent.TransactionRejected,
-      });
+      expect(dispatchEvent).not.toHaveBeenCalled();
 
       dispatchEvent.mockClear();
 
@@ -940,7 +1158,7 @@ describe('useHwBatchSignTracker', () => {
       });
     });
 
-    it('allows stale batch finished event after retry when no signed event was seen', async () => {
+    it('blocks stale batch finished event after retry when no signed event was seen', async () => {
       const callbacks = setupAndReturnCallbacks();
       const retryGenerationRef: React.MutableRefObject<number> = { current: 0 };
 
@@ -972,9 +1190,7 @@ describe('useHwBatchSignTracker', () => {
         ]);
       });
 
-      expect(dispatchEvent).toHaveBeenCalledWith({
-        type: HardwareWalletSignatureEvent.TransactionRejected,
-      });
+      expect(dispatchEvent).not.toHaveBeenCalled();
 
       retryGenerationRef.current = 1;
 
@@ -995,8 +1211,20 @@ describe('useHwBatchSignTracker', () => {
         ]);
       });
 
-      expect(dispatchEvent).toHaveBeenCalledWith({
-        type: HardwareWalletSignatureEvent.TransactionRejected,
+      expect(dispatchEvent).not.toHaveBeenCalled();
+
+      const statusCallback = callbacks.get(
+        'TransactionController:transactionStatusUpdated',
+      );
+
+      await act(async () => {
+        statusCallback?.([
+          {
+            transactionMeta: createTxMeta({
+              batchId: 'batch-new',
+            }),
+          },
+        ]);
       });
 
       dispatchEvent.mockClear();
@@ -1107,6 +1335,282 @@ describe('useHwBatchSignTracker', () => {
       expect(dispatchEvent).toHaveBeenCalledWith({
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });
+    });
+  });
+
+  describe('cancelCurrentBatch', () => {
+    it('calls cancelTransactionBatch and abortTransactionSigning for tracked batch transactions', async () => {
+      const callbacks = setupAndReturnCallbacks();
+
+      const { result } = renderHook(() =>
+        useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const statusCallback = callbacks.get(
+        'TransactionController:transactionStatusUpdated',
+      );
+
+      await act(async () => {
+        statusCallback?.([
+          {
+            transactionMeta: createTxMeta({
+              batchId: 'batch-1',
+              id: 'tx-approval',
+              type: TransactionType.bridgeApproval,
+            }),
+          },
+        ]);
+      });
+
+      await act(async () => {
+        statusCallback?.([
+          {
+            transactionMeta: createTxMeta({
+              batchId: 'batch-1',
+              id: 'tx-trade',
+              type: TransactionType.bridge,
+            }),
+          },
+        ]);
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+
+      await act(async () => {
+        await result.current.cancelCurrentBatch();
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'cancelTransactionBatch',
+        ['batch-1'],
+      );
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'abortTransactionSigning',
+        ['tx-approval'],
+      );
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'abortTransactionSigning',
+        ['tx-trade'],
+      );
+    });
+
+    it('continues cleanup even when cancelTransactionBatch throws for completed batch', async () => {
+      const callbacks = setupAndReturnCallbacks();
+
+      const { result } = renderHook(() =>
+        useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const statusCallback = callbacks.get(
+        'TransactionController:transactionStatusUpdated',
+      );
+
+      await act(async () => {
+        statusCallback?.([
+          {
+            transactionMeta: createTxMeta({
+              batchId: 'batch-1',
+              id: 'tx-approval',
+            }),
+          },
+        ]);
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+      mockSubmitRequestToBackground.mockRejectedValueOnce(
+        new Error('Cannot cancel batch as it is not currently being processed'),
+      );
+
+      await act(async () => {
+        await result.current.cancelCurrentBatch();
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'cancelTransactionBatch',
+        ['batch-1'],
+      );
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'abortTransactionSigning',
+        ['tx-approval'],
+      );
+    });
+
+    it('does nothing when no batch has been seen', async () => {
+      const { result } = renderHook(() =>
+        useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+
+      await act(async () => {
+        await result.current.cancelCurrentBatch();
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+
+    it('aborts all tracked tx ids and cancels the current batch after retry', async () => {
+      const callbacks = setupAndReturnCallbacks();
+      const retryGenerationRef: React.MutableRefObject<number> = { current: 0 };
+
+      const { result } = renderHook(() =>
+        useHwBatchSignTracker(
+          FROM_ADDRESS,
+          true,
+          true,
+          dispatchEvent,
+          retryGenerationRef,
+        ),
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const statusCallback = callbacks.get(
+        'TransactionController:transactionStatusUpdated',
+      );
+
+      await act(async () => {
+        statusCallback?.([
+          {
+            transactionMeta: createTxMeta({
+              batchId: 'batch-1',
+              id: 'tx-1a',
+              type: TransactionType.bridgeApproval,
+            }),
+          },
+        ]);
+      });
+
+      retryGenerationRef.current = 1;
+
+      await act(async () => {
+        statusCallback?.([
+          {
+            transactionMeta: createTxMeta({
+              batchId: 'batch-2',
+              id: 'tx-2a',
+              type: TransactionType.bridgeApproval,
+            }),
+          },
+        ]);
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+
+      await act(async () => {
+        await result.current.cancelCurrentBatch();
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'abortTransactionSigning',
+        ['tx-1a'],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'abortTransactionSigning',
+        ['tx-2a'],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'cancelTransactionBatch',
+        ['batch-2'],
+      );
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'cancelTransactionBatch',
+        ['batch-1'],
+      );
+    });
+
+    it('aborts tx ids tracked via rejected events even before batch is identified', async () => {
+      const callbacks = setupAndReturnCallbacks();
+
+      const { result } = renderHook(() =>
+        useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const rejectedCallback = callbacks.get(
+        'TransactionController:transactionRejected',
+      );
+
+      await act(async () => {
+        rejectedCallback?.([
+          {
+            transactionMeta: createTxMeta({
+              batchId: 'batch-1',
+              id: 'tx-rejected',
+            }),
+          },
+        ]);
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+
+      await act(async () => {
+        await result.current.cancelCurrentBatch();
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'abortTransactionSigning',
+        ['tx-rejected'],
+      );
+    });
+
+    it('aborts tx ids tracked via finished events even before batch is identified', async () => {
+      const callbacks = setupAndReturnCallbacks();
+
+      const { result } = renderHook(() =>
+        useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      const finishedCallback = callbacks.get(
+        'TransactionController:transactionFinished',
+      );
+
+      await act(async () => {
+        finishedCallback?.([
+          {
+            transactionMeta: createTxMeta({
+              status: 'rejected',
+              batchId: 'batch-1',
+              id: 'tx-finished',
+            }),
+          },
+        ]);
+      });
+
+      mockSubmitRequestToBackground.mockClear();
+
+      await act(async () => {
+        await result.current.cancelCurrentBatch();
+      });
+
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'abortTransactionSigning',
+        ['tx-finished'],
+      );
     });
   });
 });

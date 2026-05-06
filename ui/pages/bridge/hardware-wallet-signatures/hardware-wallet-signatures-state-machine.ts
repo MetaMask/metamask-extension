@@ -108,63 +108,91 @@ export const hardwareWalletSignaturesReducer = (
   state: HardwareWalletSignaturesState,
   action: HardwareWalletSignaturesAction,
 ): HardwareWalletSignaturesState => {
+  const prevState = state.status;
+  let nextState: HardwareWalletSignaturesState;
+
   switch (action.type) {
     case HardwareWalletSignatureEvent.FirstSignatureSubmitted:
       if (
         state.status === HardwareWalletSignatureStatus.AwaitingFirstSignature
       ) {
-        return {
+        nextState = {
           status: HardwareWalletSignatureStatus.AwaitingFinalSignature,
         };
+      } else {
+        nextState = state;
       }
-      return state;
+      break;
     case HardwareWalletSignatureEvent.TransactionSubmitted:
       if (
         state.status === HardwareWalletSignatureStatus.AwaitingFirstSignature ||
         state.status === HardwareWalletSignatureStatus.AwaitingFinalSignature
       ) {
-        return {
+        nextState = {
           status: HardwareWalletSignatureStatus.Submitted,
         };
+      } else {
+        nextState = state;
       }
-      return state;
+      break;
     case HardwareWalletSignatureEvent.TransactionRejected: {
       const sig = toResumableStatus(state);
       if (sig) {
-        return {
+        nextState = {
           status: HardwareWalletSignatureStatus.Rejected,
           rejectedSignature: sig,
         };
+      } else {
+        nextState = state;
       }
-      return state;
+      break;
     }
     case HardwareWalletSignatureEvent.TransactionFailed: {
       const sig = toResumableStatus(state);
       if (sig) {
-        return {
+        nextState = {
           status: HardwareWalletSignatureStatus.Failed,
           failedSignature: sig,
         };
+      } else {
+        nextState = state;
       }
-      return state;
+      break;
     }
     case HardwareWalletSignatureEvent.DeviceDisconnected: {
       const sig = toResumableStatus(state);
       if (sig) {
-        return {
+        nextState = {
           status: HardwareWalletSignatureStatus.Disconnected,
           disconnectedSignature: sig,
         };
+      } else {
+        nextState = state;
       }
-      return state;
+      break;
     }
     case HardwareWalletSignatureEvent.Retry:
-      return handleResume(state);
+      nextState = handleResume(state);
+      break;
     case HardwareWalletSignatureEvent.Reset:
-      return getInitialHardwareWalletSignaturesState(
+      nextState = getInitialHardwareWalletSignaturesState(
         action.needsTwoConfirmations,
       );
+      break;
     default:
-      return state;
+      nextState = state;
   }
+
+  if (prevState !== nextState.status) {
+    console.log(
+      '[HW-Batch] state machine transition',
+      JSON.stringify({
+        event: action.type,
+        from: prevState,
+        to: nextState.status,
+      }),
+    );
+  }
+
+  return nextState;
 };

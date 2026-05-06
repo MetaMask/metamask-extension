@@ -69,6 +69,17 @@ export default function HardwareWalletSignatures() {
   const needsTwoConfirmations = Boolean(lockedQuote?.approval);
   const fromAmount = lockedQuote?.sentAmount?.amount;
 
+  console.log(
+    '[HW-Batch] HardwareWalletSignatures render',
+    JSON.stringify({
+      hasLockedQuote: Boolean(lockedQuote),
+      requestId: lockedQuote?.quote?.requestId ?? null,
+      needsTwoConfirmations,
+      hardwareWalletUsed,
+      hardwareWalletType: hardwareWalletType ?? null,
+    }),
+  );
+
   const [signatureState, dispatchSignatureEvent] = useReducer(
     hardwareWalletSignaturesReducer,
     needsTwoConfirmations,
@@ -147,7 +158,7 @@ export default function HardwareWalletSignatures() {
 
   useHwSwapNavigation({ signatureState });
 
-  useHwBatchSignTracker(
+  const { cancelCurrentBatch } = useHwBatchSignTracker(
     fromAddress,
     hardwareWalletUsed,
     needsTwoConfirmations,
@@ -263,11 +274,20 @@ export default function HardwareWalletSignatures() {
         retryGeneration: retryGenerationRef.current,
       }),
     );
+
+    await cancelCurrentBatch();
+
+    // Wait for the background to fully settle the batch cancellation
+    // before submitting a new one, to prevent "Signing aborted" errors
+    // from the old batch bleeding into the new submission.
+    await new Promise((resolve) => setTimeout(resolve, 1_000));
+
     if (signatureState.status === HardwareWalletSignatureStatus.Disconnected) {
       const canRetry =
         connectionState.status === ConnectionStatus.Connected ||
         connectionState.status === ConnectionStatus.Ready ||
-        connectionState.status === ConnectionStatus.AwaitingConfirmation;
+        connectionState.status === ConnectionStatus.AwaitingConfirmation ||
+        connectionState.status === ConnectionStatus.ErrorState;
       if (!canRetry) {
         console.log(
           '[HW-Batch] handleRetry: cannot retry, device not connected',
@@ -290,8 +310,24 @@ export default function HardwareWalletSignatures() {
       return;
     }
 
+    const canRetry =
+      connectionState.status === ConnectionStatus.Connected ||
+      connectionState.status === ConnectionStatus.Ready ||
+      connectionState.status === ConnectionStatus.AwaitingConfirmation ||
+      connectionState.status === ConnectionStatus.ErrorState;
+    if (!canRetry) {
+      console.log(
+        '[HW-Batch] handleRetry: cannot retry, device not connected (rejected/failed path)',
+      );
+      return;
+    }
+
     retryGenerationRef.current += 1;
-    dispatchSignatureEvent({ type: HardwareWalletSignatureEvent.Retry });
+    resetConnectionError();
+    dispatchSignatureEvent({
+      type: HardwareWalletSignatureEvent.Reset,
+      needsTwoConfirmations,
+    });
     console.log(
       '[HW-Batch] handleRetry: calling retrySubmission (rejected/failed path)',
     );
@@ -300,6 +336,7 @@ export default function HardwareWalletSignatures() {
       '[HW-Batch] handleRetry: retrySubmission completed (rejected/failed path)',
     );
   }, [
+    cancelCurrentBatch,
     connectionState.status,
     dispatchSignatureEvent,
     needsTwoConfirmations,
@@ -308,10 +345,11 @@ export default function HardwareWalletSignatures() {
     retrySubmission,
     signatureState.status,
   ]);
-  const handleCancel = useCallback(() => {
+  const handleCancel = useCallback(async () => {
+    await cancelCurrentBatch();
     handleQrSignatureCancel();
     navigateToBridgePage();
-  }, [handleQrSignatureCancel, navigateToBridgePage]);
+  }, [cancelCurrentBatch, handleQrSignatureCancel, navigateToBridgePage]);
 
   return (
     <div className="hardware-wallet-signatures">
