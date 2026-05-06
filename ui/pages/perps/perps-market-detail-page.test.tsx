@@ -13,6 +13,7 @@ import {
   mockHip3Markets,
   mockTransactions,
 } from '../../components/app/perps/mocks';
+import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 
 jest.mock('@metamask/perps-controller', () => ({
@@ -703,7 +704,7 @@ describe('PerpsMarketDetailPage', () => {
       const { getByTestId } = await renderPage(store);
 
       expect(getByTestId('perps-position-liquidation-value')).toHaveTextContent(
-        '--',
+        PERPS_LIQUIDATION_PRICE_FALLBACK,
       );
     });
 

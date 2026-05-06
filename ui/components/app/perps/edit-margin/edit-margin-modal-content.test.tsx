@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions, mockAccountState } from '../mocks';
+import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../utils/formatPerpsDisplayPrice';
 import { EditMarginModalContent } from './edit-margin-modal-content';
 
 const mockSubmitRequestToBackground = jest.fn();
@@ -102,10 +103,10 @@ describe('EditMarginModalContent', () => {
 
     expect(
       screen.getByTestId('perps-edit-margin-liquidation-price-value'),
-    ).toHaveTextContent('--');
+    ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
     expect(
       screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
-    ).toHaveTextContent('--');
+    ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
   });
 
   describe('auto-focus and select-all', () => {

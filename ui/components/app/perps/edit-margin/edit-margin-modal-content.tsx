@@ -135,7 +135,8 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   const showLiquidationComparison = amountNumForDisplay > 0;
 
   const liquidationPriceDisplay = useMemo(() => {
-    if (!isPerpsLiquidationPriceValid(anchorLiquidationPrice)) {
+    const displayAnchorLiquidationPrice = anchorLiquidationPrice ?? 0;
+    if (!isPerpsLiquidationPriceValid(displayAnchorLiquidationPrice)) {
       return (
         <Text
           variant={TextVariant.BodySm}
@@ -158,7 +159,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           className="max-w-[65%] flex-wrap justify-end"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {formatPerpsFiat(anchorLiquidationPrice, {
+            {formatPerpsFiat(displayAnchorLiquidationPrice, {
               ranges: PRICE_RANGES_UNIVERSAL,
             })}
           </Text>

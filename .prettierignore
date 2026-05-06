@@ -18,3 +18,6 @@ node_modules/**/*
 /test/test-results/**/*
 /test/e2e/send-eth-with-private-key-test/**/*
 CHANGELOG*.md
+.omc/**/*
+.omx/**/*
+*.local.md
