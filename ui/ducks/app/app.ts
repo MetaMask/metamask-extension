@@ -562,11 +562,6 @@ export default function reduceApp(
         ...appState,
         isNftStillFetchingIndication: true,
       };
-    case actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST:
-      return {
-        ...appState,
-        showNftDetectionEnablementToast: action.payload,
-      };
 
     case actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION:
       return {
@@ -742,12 +737,6 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
-      return {
-        ...appState,
-        showNewSrpAddedToast: action.payload,
-      };
-
     case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
       return {
         ...appState,
