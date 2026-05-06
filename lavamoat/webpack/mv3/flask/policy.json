@@ -1245,7 +1245,7 @@
     },
     "@metamask/multichain-network-controller": {
       "packages": {
-        "@metamask/keyring-api": true,
+        "@metamask/multichain-network-controller>@metamask/keyring-api": true,
         "@metamask/network-controller": true,
         "@metamask/utils": true
       }
