@@ -17,7 +17,7 @@ export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
 export const SETTINGS_V2_ROUTE = SETTINGS_ROUTE;
 export const ASSETS_ROUTE = '/settings/assets';
-export const CURRENCY_ROUTE = '/settings/assets/currency';
+export const CURRENCY_ROUTE = '/settings/preferences-and-display/currency';
 export const TRANSACTIONS_ROUTE = '/settings/transactions';
 export const PREFERENCES_AND_DISPLAY_ROUTE =
   '/settings/preferences-and-display';
@@ -157,6 +157,7 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
 
 export const DEEP_LINK_ROUTE = '/link';
 

@@ -1112,6 +1112,7 @@
     },
     "@metamask/json-rpc-engine": {
       "packages": {
+        "@metamask/messenger": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
         "@metamask/utils": true,
@@ -1276,6 +1277,11 @@
         "@metamask/logo>gl-vec3": true
       }
     },
+    "@metamask/messenger": {
+      "globals": {
+        "console.error": true
+      }
+    },
     "@metamask/multichain-network-controller": {
       "packages": {
         "@metamask/keyring-api": true,
@@ -1370,7 +1376,6 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/json-rpc-engine": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
@@ -2131,6 +2136,20 @@
       },
       "packages": {
         "process": true
+      }
+    },
+    "@simplewebauthn/browser": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "PublicKeyCredential": true,
+        "atob": true,
+        "btoa": true,
+        "console.warn": true,
+        "document.querySelectorAll": true,
+        "location.hostname": true,
+        "navigator.credentials.create": true,
+        "navigator.credentials.get": true
       }
     },
     "@solana/addresses": {
