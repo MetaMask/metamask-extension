@@ -11,6 +11,10 @@ jest.mock('../../shared/lib/passkey', () => ({
   isWebAuthnSupported: jest.fn(),
 }));
 
+jest.mock('../../shared/lib/browser-runtime.utils', () => ({
+  isFirefoxBrowser: jest.fn(),
+}));
+
 jest.mock('./first-time-flow', () => ({
   getIsSocialLoginFlow: jest.fn(),
 }));
@@ -27,6 +31,12 @@ const { isWebAuthnSupported } = jest.requireMock(
   isWebAuthnSupported: jest.Mock;
 };
 
+const { isFirefoxBrowser } = jest.requireMock(
+  '../../shared/lib/browser-runtime.utils',
+) as {
+  isFirefoxBrowser: jest.Mock;
+};
+
 const { getIsSocialLoginFlow } = jest.requireMock('./first-time-flow') as {
   getIsSocialLoginFlow: jest.Mock;
 };
@@ -38,10 +48,11 @@ describe('getIsPasskeyFeatureAvailable', () => {
     jest.resetAllMocks();
   });
 
-  it('returns true when build flag is enabled, WebAuthn is supported, and not social login', () => {
+  it('returns true when build flag is enabled, WebAuthn is supported, not social login, and not Firefox', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(true);
     isWebAuthnSupported.mockReturnValue(true);
     getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(false);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(true);
   });
@@ -50,6 +61,7 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(false);
     isWebAuthnSupported.mockReturnValue(true);
     getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(false);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
   });
@@ -58,6 +70,7 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(true);
     isWebAuthnSupported.mockReturnValue(false);
     getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(false);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
   });
@@ -66,6 +79,16 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(true);
     isWebAuthnSupported.mockReturnValue(true);
     getIsSocialLoginFlow.mockReturnValue(true);
+    isFirefoxBrowser.mockReturnValue(false);
+
+    expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
+  });
+
+  it('returns false when browser is Firefox', () => {
+    getIsPasskeyFeatureEnabled.mockReturnValue(true);
+    isWebAuthnSupported.mockReturnValue(true);
+    getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(true);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
   });
@@ -74,6 +97,7 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(false);
     isWebAuthnSupported.mockReturnValue(false);
     getIsSocialLoginFlow.mockReturnValue(true);
+    isFirefoxBrowser.mockReturnValue(true);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
   });

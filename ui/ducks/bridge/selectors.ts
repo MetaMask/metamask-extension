@@ -51,6 +51,7 @@ import {
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
@@ -102,7 +103,6 @@ import {
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
 import { getCurrentCurrency } from '../metamask/metamask';
-import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -144,8 +144,8 @@ export type BridgeAppState = {
   bridge: BridgeState;
 };
 
-// Only includes networks user has added
-const getAllBridgeableNetworks = createDeepEqualSelector(
+// getMultichainNetworkConfigurationsByChainId is memoized in ui/selectors/multichain.ts.
+const getAllBridgeableNetworks = createSelector(
   [getMultichainNetworkConfigurationsByChainId],
   (
     multichainNetworkConfigurationsByChainId,
@@ -880,7 +880,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-
     const minimumBalanceToKeep =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
@@ -900,7 +899,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           !isLoading &&
           quotesRefreshCount > 0,
         ),
-      // Shown prior to fetching quotes
+      // Shown prior to fetching quotes (native reserve error takes precedence)
       isInsufficientGasBalance: Boolean(
         nativeBalance &&
         !activeQuote &&

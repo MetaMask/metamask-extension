@@ -8166,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Solicitações de conta inteligente vindas de dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Permite que dapps (aplicativos descentralizados) solicitem recursos de conta inteligente para contas padrão. Isso não afetará contas que já são contas inteligentes."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Mesmo endereço. Recursos mais inteligentes."
   },
@@ -8801,12 +8798,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Idiomas aceitos",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Responda à nossa pesquisa"
-  },
-  "surveyTitle": {
-    "message": "Molde o futuro da MetaMask"
   },
   "swap": {
     "message": "Trocar"

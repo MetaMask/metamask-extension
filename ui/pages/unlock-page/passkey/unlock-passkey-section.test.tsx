@@ -6,7 +6,35 @@ import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as actionsModule from '../../../store/actions';
 import * as passkeyCeremony from '../../../../shared/lib/passkey/passkey-ceremony';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { UnlockPasskeySection } from './unlock-passkey-section';
+
+jest.mock('../../../../shared/lib/environment-type', () => {
+  const actual = jest.requireActual<
+    typeof import('../../../../shared/lib/environment-type')
+  >('../../../../shared/lib/environment-type');
+  return {
+    ...actual,
+    getEnvironmentType: jest.fn((url?: string) =>
+      actual.getEnvironmentType(url),
+    ),
+  };
+});
+
+const getEnvironmentTypeMock = getEnvironmentType as jest.MockedFunction<
+  typeof getEnvironmentType
+>;
+
+const mockOpenExtensionInBrowser = jest.fn();
+
+beforeAll(() => {
+  globalThis.platform = {
+    ...globalThis.platform,
+    openExtensionInBrowser: mockOpenExtensionInBrowser,
+  } as unknown as typeof globalThis.platform;
+});
 
 const mockStore = configureMockStore([thunk])({ metamask: {} });
 
@@ -22,6 +50,12 @@ describe('UnlockPasskeySection', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    getEnvironmentTypeMock.mockImplementation((url?: string) => {
+      const actual = jest.requireActual<
+        typeof import('../../../../shared/lib/environment-type')
+      >('../../../../shared/lib/environment-type');
+      return actual.getEnvironmentType(url);
+    });
     jest
       .spyOn(actionsModule, 'generatePasskeyAuthenticationOptions')
       .mockResolvedValue({
@@ -145,6 +179,61 @@ describe('UnlockPasskeySection', () => {
 
     await waitFor(() => {
       expect(onUnlockWithPasskey).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('opens troubleshoot modal from the side panel while passkey is in progress', async () => {
+    getEnvironmentTypeMock.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+    let resolveCeremony: (value: unknown) => void;
+    const ceremonyPromise = new Promise((resolve) => {
+      resolveCeremony = resolve;
+    });
+    jest
+      .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
+      .mockReturnValueOnce(ceremonyPromise as never);
+
+    const { getByTestId } = renderWithProvider(
+      <UnlockPasskeySection {...baseProps} />,
+      mockStore,
+      '/unlock',
+    );
+
+    fireEvent.click(getByTestId('unlock-passkey-button'));
+
+    await waitFor(() => {
+      expect(
+        getByTestId('unlock-passkey-troubleshoot-button'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(getByTestId('unlock-passkey-troubleshoot-button'));
+
+    await waitFor(() => {
+      expect(getByTestId('passkey-troubleshoot-modal')).toBeInTheDocument();
+    });
+
+    fireEvent.click(
+      getByTestId('passkey-troubleshoot-open-full-screen-button'),
+    );
+
+    expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
+      UNLOCK_ROUTE,
+      'from=sidepanel',
+    );
+
+    await act(async () => {
+      resolveCeremony({
+        id: 'cred',
+        rawId: 'cred',
+        type: 'public-key',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'AQ',
+        },
+        clientExtensionResults: {},
+      });
+      await Promise.resolve();
     });
   });
 });

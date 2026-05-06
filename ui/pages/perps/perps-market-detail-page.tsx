@@ -45,6 +45,7 @@ import {
 } from '../../../shared/constants/perps-events';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useTheme } from '../../hooks/useTheme';
 import {
@@ -486,10 +487,19 @@ const PerpsMarketDetailPage: React.FC = () => {
     });
   }, [decodedSymbol, allOrders, position]);
 
-  // Candle period state and chart ref
-  const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
-    CandlePeriod.FiveMinutes,
-  );
+  // Candle period: persisted in PreferencesController across sessions/markets.
+  // Local override gives instant UI feedback; background save persists for next visit.
+  const { perpsSelectedCandlePeriod: persistedCandlePeriod } = useSelector(
+    getPreferences,
+  ) as { perpsSelectedCandlePeriod?: string };
+  const resolvedPersistedPeriod =
+    persistedCandlePeriod &&
+    Object.values(CandlePeriod).includes(persistedCandlePeriod as CandlePeriod)
+      ? (persistedCandlePeriod as CandlePeriod)
+      : CandlePeriod.FiveMinutes;
+  const [localPeriodOverride, setLocalPeriodOverride] =
+    useState<CandlePeriod | null>(null);
+  const selectedPeriod = localPeriodOverride ?? resolvedPersistedPeriod;
   const chartRef = useRef<PerpsCandlestickChartRef>(null);
 
   // Live candle data from CandleStreamChannel
@@ -692,8 +702,13 @@ const PerpsMarketDetailPage: React.FC = () => {
   // 5. MOBILE REFERENCE: See usePerpsLiveCandles hook, CandleStreamChannel,
   // and HyperLiquidClientService.subscribeToCandles() in the mobile app.
   const handlePeriodChange = useCallback((period: CandlePeriod) => {
-    setSelectedPeriod(period);
-    // Apply default zoom when period changes
+    setLocalPeriodOverride(period);
+    submitRequestToBackground('setPreference', [
+      'perpsSelectedCandlePeriod',
+      period,
+    ]).catch(() => {
+      // Preference save is best-effort; chart still updates via local state.
+    });
     if (chartRef.current) {
       chartRef.current.applyZoom(ZOOM_CONFIG.DEFAULT_CANDLES, true);
     }

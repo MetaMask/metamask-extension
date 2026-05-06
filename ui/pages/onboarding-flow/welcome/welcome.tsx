@@ -495,7 +495,7 @@ export default function OnboardingWelcome() {
 
           {loginError !== null && (
             <LoginErrorModal
-              onDone={() => setLoginError(null)}
+              onClose={() => setLoginError(null)}
               loginError={loginError}
             />
           )}

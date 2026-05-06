@@ -26,4 +26,5 @@ export type Preferences = {
   };
   useNativeCurrencyAsPrimaryCurrency: boolean;
   useSidePanelAsDefault?: boolean;
+  perpsSelectedCandlePeriod?: string;
 };
