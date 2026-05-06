@@ -82,7 +82,6 @@ import {
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
-  selectShowCopyAddressToast,
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
@@ -97,7 +96,6 @@ import {
   setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
-  setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
@@ -132,7 +130,6 @@ export function ToastMaster() {
         <PermittedNetworkToast />
         <NewSrpAddedToast />
         <InfuraSwitchToast />
-        <CopyAddressToast />
         <PerpsDepositToast />
         <MerklClaimToast />
         <MusdConversionToast />
@@ -378,30 +375,6 @@ function InfuraSwitchToast() {
         onClose={() => dispatch(setShowInfuraSwitchToast(false))}
         autoHideTime={autoHideDelay}
         onAutoHideToast={() => dispatch(setShowInfuraSwitchToast(false))}
-      />
-    )
-  );
-}
-
-function CopyAddressToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showCopyAddressToast = useSelector(selectShowCopyAddressToast);
-  const autoHideToastDelay = 2 * SECOND;
-
-  return (
-    showCopyAddressToast && (
-      <Toast
-        key="copy-address-toast"
-        text={t('addressCopied')}
-        startAdornment={
-          <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
-        }
-        onClose={() => dispatch(setShowCopyAddressToast(false))}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => dispatch(setShowCopyAddressToast(false))}
-        dataTestId="copy-address-toast"
       />
     )
   );

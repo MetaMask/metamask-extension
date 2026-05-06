@@ -5,7 +5,6 @@ import {
   selectNewSrpAdded,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
-  selectShowCopyAddressToast,
   selectShowInfuraSwitchToast,
 } from './selectors';
 
@@ -29,14 +28,10 @@ const createMockPrivacyPolicyState = (
   },
 });
 
-const createMockAppState = (
-  showNewSrpAddedToast?: number | false,
-  showCopyAddressToast?: boolean,
-) => ({
+const createMockAppState = (showNewSrpAddedToast?: number | false) => ({
   appState: {
     ...mockState.appState,
     showNewSrpAddedToast,
-    showCopyAddressToast,
   },
 });
 
@@ -216,26 +211,6 @@ describe('#getShowNewSrpAddedToast', () => {
   it('returns false when not set', () => {
     const mockStateData = createMockAppState(false);
     const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(false);
-  });
-});
-
-describe('#selectShowCopyAddressToast', () => {
-  it('returns true when showCopyAddressToast is true', () => {
-    const mockStateData = createMockAppState(undefined, true);
-    const result = selectShowCopyAddressToast(mockStateData);
-    expect(result).toBe(true);
-  });
-
-  it('returns false when showCopyAddressToast is false', () => {
-    const mockStateData = createMockAppState(undefined, false);
-    const result = selectShowCopyAddressToast(mockStateData);
-    expect(result).toBe(false);
-  });
-
-  it('returns false when showCopyAddressToast is undefined', () => {
-    const mockStateData = createMockAppState();
-    const result = selectShowCopyAddressToast(mockStateData);
     expect(result).toBe(false);
   });
 });

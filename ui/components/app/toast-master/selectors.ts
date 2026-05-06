@@ -18,7 +18,6 @@ type State = {
       | 'showNftDetectionEnablementToast'
       | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
-      | 'showCopyAddressToast'
       | 'showClaimSubmitToast'
       | 'showInfuraSwitchToast'
     >
@@ -106,18 +105,6 @@ export function selectNewSrpAdded(
   state: Pick<State, 'appState'>,
 ): number | false {
   return state.appState.showNewSrpAddedToast || false;
-}
-
-/**
- * Retrieves user preference to see the "Copy Address" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectShowCopyAddressToast(
-  state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showCopyAddressToast);
 }
 
 /**
