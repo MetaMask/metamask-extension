@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
@@ -95,9 +96,10 @@ jest.mock('@metamask/perps-controller', () => ({
   },
 }));
 
-/** Matches rendered `perpsClosePartialMinNotional` after $1 is replaced with a formatted USD amount */
-const PARTIAL_MIN_NOTIONAL_PATTERN =
-  /Partial closes must be at least \$[\d,.]+ in USD value\. Increase the close amount or close the full position\./u;
+const PARTIAL_MIN_NOTIONAL_AMOUNT = '$10';
+const PARTIAL_MIN_NOTIONAL_MESSAGE = tEn('perpsClosePartialMinNotional', [
+  PARTIAL_MIN_NOTIONAL_AMOUNT,
+]);
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
@@ -186,7 +188,7 @@ describe('ClosePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
+          screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
         ).toBeInTheDocument();
       });
     });
@@ -212,7 +214,7 @@ describe('ClosePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
+          screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
         ).toBeInTheDocument();
       });
     });
@@ -527,7 +529,7 @@ describe('ClosePositionModal', () => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
           expect.objectContaining({
             key: 'perpsToastCloseFailed',
-            description: expect.stringMatching(PARTIAL_MIN_NOTIONAL_PATTERN),
+            description: expect.stringContaining(PARTIAL_MIN_NOTIONAL_MESSAGE),
           }),
         );
       });
@@ -592,7 +594,7 @@ describe('ClosePositionModal', () => {
       );
 
       await waitFor(() => {
-        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN);
+        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);
         expect(warningMessage).toBeInTheDocument();
         expect(warningMessage).not.toHaveTextContent(/slider|slide/u);
         expect(
@@ -629,7 +631,7 @@ describe('ClosePositionModal', () => {
       await user.keyboard('{ArrowLeft}');
 
       await waitFor(() => {
-        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN);
+        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);
         expect(warningMessage).toBeInTheDocument();
         expect(warningMessage).not.toHaveTextContent(/slider|slide/u);
         expect(
