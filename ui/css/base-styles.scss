@@ -42,12 +42,15 @@ html[data-theme] {
 }
 
 /* Overlay scrim, dialog top-aligned in panel. */
-/* stylelint-disable color-no-hex */
 #critical-error-content {
   justify-content: flex-start;
-  background-color: rgb(133 139 154 / 20%);
+  background-color:
+    color-mix(
+      in srgb,
+      var(--brand-colors-grey-grey400) 20%,
+      transparent
+    );
 }
-/* stylelint-enable color-no-hex */
 
 a {
   text-decoration: none;
