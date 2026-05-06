@@ -445,7 +445,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           <Box className="shrink-0">
             <TextField
               size={TextFieldSize.Md}
-              testId="perps-edit-margin-amount-input"
+              data-testid="perps-edit-margin-amount-input"
               value={marginAmount}
               onChange={handleAmountChange}
               onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
@@ -457,7 +457,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               disabled={isSaving}
               autoFocus
-              data-testid="perps-edit-margin-amount-input"
               inputProps={{
                 inputMode: 'decimal',
                 size: 10,
