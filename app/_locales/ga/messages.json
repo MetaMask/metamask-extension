@@ -5935,12 +5935,6 @@
   "supportMultiRpcInformation": {
     "message": "Tacaímid anois le roinnt RPCanna do líonra amháin. Tá do RPC is déanaí roghnaithe mar an ceann réamhshocraithe chun faisnéis choinbhleachtúil a réiteach."
   },
-  "surveyConversion": {
-    "message": "Glac páirt inár suirbhé"
-  },
-  "surveyTitle": {
-    "message": "Múnlaigh todhchaí MetaMask"
-  },
   "swap": {
     "message": "Malartú"
   },

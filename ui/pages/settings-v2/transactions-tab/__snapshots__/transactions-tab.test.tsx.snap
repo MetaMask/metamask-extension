@@ -258,7 +258,7 @@ exports[`TransactionsTab snapshot matches snapshot 1`] = `
         <p
           class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
         >
-          Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts.
+          Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account.
         </p>
       </div>
     </div>
