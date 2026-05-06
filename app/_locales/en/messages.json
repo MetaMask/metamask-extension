@@ -2842,10 +2842,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Error details",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
   },
@@ -8823,9 +8819,6 @@
   "stillConnectingTo": {
     "message": "Still connecting to $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "Still getting this message?"
   },
   "storageErrorAction": {
     "message": "Back up Secret Recovery Phrase"

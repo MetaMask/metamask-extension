@@ -42,7 +42,6 @@ const enMessages: I18NMessageDict = {
   somethingIsWrong: { message: 'Something is wrong.' },
   restartMetamask: { message: 'Restart MetaMask' },
   errorPageContactSupport: { message: 'Contact support' },
-  errorDetails: { message: 'Error details' },
   reportThisError: { message: 'Report this error' },
   errorLegalTextSummary: { message: 'Legal summary' },
   errorLegalTextFirstInfo: { message: 'First legal info' },

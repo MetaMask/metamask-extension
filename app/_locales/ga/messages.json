@@ -2127,10 +2127,6 @@
     "message": "Cód: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Sonraí earráide",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Earráid agus liosta slabhra sábháilte á fháil, lean ar aghaidh go cúramach le do thoil."
   },
@@ -5849,9 +5845,6 @@
   "stillConnectingTo": {
     "message": "Ag ceangal le $1 fós...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "An bhfuil an teachtaireacht seo fós á fáil agat?"
   },
   "strong": {
     "message": "Láidir"

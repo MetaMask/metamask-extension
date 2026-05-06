@@ -2800,10 +2800,6 @@
     "message": "代码：$1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "错误详情",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "获取安全链列表时出错，请谨慎继续。"
   },
@@ -8676,9 +8672,6 @@
   "stillConnectingTo": {
     "message": "仍在连接到 $1……",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "仍然收到此消息？"
   },
   "storageErrorAction": {
     "message": "备份私钥助记词"

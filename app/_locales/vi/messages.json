@@ -2800,10 +2800,6 @@
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Chi tiết lỗi",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Lỗi khi lấy danh sách chuỗi an toàn, vui lòng tiếp tục một cách thận trọng."
   },
@@ -8684,9 +8680,6 @@
   "stillConnectingTo": {
     "message": "Vẫn đang kết nối với $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "Vẫn nhận được thông báo này?"
   },
   "storageErrorAction": {
     "message": "Sao lưu Cụm từ khôi phục bí mật"
