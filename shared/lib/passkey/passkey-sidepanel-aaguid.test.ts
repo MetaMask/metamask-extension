@@ -1,8 +1,11 @@
-import { GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID } from '../../constants/passkey';
 import {
   normalizePasskeyAaguid,
   isPasskeyAaguidIncompatibleWithSidepanel,
 } from './passkey-sidepanel-aaguid';
+
+/** Must match private Google Password Manager AAGUID in passkey-sidepanel-aaguid.ts */
+const GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID =
+  'ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4';
 
 describe('normalizePasskeyAaguid', () => {
   it('returns lowercase trimmed UUID', () => {

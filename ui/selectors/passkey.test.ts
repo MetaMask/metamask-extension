@@ -1,4 +1,3 @@
-import { GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID } from '../../shared/constants/passkey';
 import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
@@ -43,6 +42,10 @@ const { isFirefoxBrowser } = jest.requireMock(
 const { getIsSocialLoginFlow } = jest.requireMock('./first-time-flow') as {
   getIsSocialLoginFlow: jest.Mock;
 };
+
+/** Must match private Google Password Manager AAGUID in shared/lib/passkey/passkey-sidepanel-aaguid.ts */
+const GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID =
+  'ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4';
 
 describe('getIsPasskeyFeatureAvailable', () => {
   const mockState = {} as Parameters<typeof getIsPasskeyFeatureAvailable>[0];

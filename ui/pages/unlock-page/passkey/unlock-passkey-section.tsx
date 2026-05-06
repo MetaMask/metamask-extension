@@ -154,7 +154,7 @@ export const UnlockPasskeySection = ({
     );
   }, []);
 
-  const handlePrimaryPasskeyAction = useCallback(() => {
+  const handlePasskeyUnlockAction = useCallback(() => {
     if (mustDeferPasskeyToBrowserTab) {
       openUnlockInFullScreen();
       return;
@@ -202,7 +202,7 @@ export const UnlockPasskeySection = ({
           isLoading={passkeyInProgress}
           data-testid="unlock-passkey-button"
           disabled={isPasswordInProgress || passkeyInProgress}
-          onClick={handlePrimaryPasskeyAction}
+          onClick={handlePasskeyUnlockAction}
           aria-busy={passkeyInProgress}
         >
           {t('unlockWithPasskey')}

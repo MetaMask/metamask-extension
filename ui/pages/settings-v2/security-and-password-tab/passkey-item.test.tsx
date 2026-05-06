@@ -3,7 +3,6 @@ import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
-import { GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID } from '../../../../shared/constants/passkey';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -27,6 +26,10 @@ const backgroundConnectionMock = new Proxy(
   {},
   { get: () => jest.fn().mockResolvedValue(undefined) },
 );
+
+/** Must match private Google Password Manager AAGUID in shared/lib/passkey/passkey-sidepanel-aaguid.ts */
+const GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID =
+  'ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4';
 
 describe('PasskeyItem', () => {
   const mockStore = configureMockStore([thunk])(mockState);
