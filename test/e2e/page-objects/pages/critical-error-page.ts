@@ -90,47 +90,17 @@ class CriticalErrorPage {
       await alert.accept();
 
       // runtime.reload() kills extension tabs, so the driver's current window
-      // handle is stale. Wait for the reload, then reattach to a surviving tab.
+      // handle is stale. Wait for the reload, then reattach to the extension UI
+      // once the background has completed the restoring-tab handoff.
       await this.driver.delay(3000);
-      const handles = await this.driver.driver.getAllWindowHandles();
-      await this.driver.driver.switchTo().window(handles[0]);
-
-      await this.waitForPageAfterExtensionReload({
-        timeoutMs: 30_000,
-        waitForLoadingLogoToDisappear: false,
-      });
-
-      // The service worker handoff runs asynchronously after runtime.reload():
-      // it reads the restore session from storage.local, converts the
-      // metamask.io/restoring tab to home.html, then clears the key. We must
-      // wait for that key to be cleared before closing extra tabs — otherwise
-      // we kill the restoring tab before the service worker can hand it off,
-      // causing a fallback that opens a second home.html tab.
-      await this.driver.waitUntil(
-        async () => {
-          const cleared = await this.driver.executeScript(`
-            return new Promise(resolve => {
-              const b = globalThis.browser ?? globalThis.chrome;
-              b.storage.local.get('criticalErrorRestore', (data) => {
-                resolve(!data.criticalErrorRestore);
-              });
-            });
-          `);
-          return Boolean(cleared);
-        },
-        { interval: 300, timeout: 30_000 },
-      );
-
-      // TEMP DIAGNOSTIC: extra delay to verify hypothesis that the SW handoff
-      // (initBackground + handoffRestoringTabToExtension) is still in flight
-      // when we reach this point — the storage key is cleared BEFORE handoff
-      // in app/scripts/background.js initOrRestoreBackground, so the waitUntil
-      // above can return while initBackground/handoff is still running.
-      // If this delay makes the test stop being flaky, the race is confirmed.
-      await this.driver.delay(10_000);
-
-      // Now safe to close extra tabs (service worker has finished handoff / fallback).
-      await this.driver.closeAllOtherTabs();
+      try {
+        await this.driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+      } catch {
+        await this.driver.openNewPage('about:blank');
+        await this.driver.navigate();
+      }
     } else {
       await alert.dismiss();
     }
