@@ -46,7 +46,6 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         title: testTitle,
         fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
-          .withSyncDisabled()
           .build(),
         manifestFlags: {
           testing: {
