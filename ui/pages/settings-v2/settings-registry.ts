@@ -162,7 +162,9 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () =>
-        import('./security-and-password-tab/manage-wallet-recovery-sub-page.tsx'),
+        import(
+          './security-and-password-tab/manage-wallet-recovery-sub-page.tsx'
+        ),
     ),
   },
   [SECURITY_PASSWORD_CHANGE_V2_ROUTE]: {
@@ -218,9 +220,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [TRANSACTION_SHIELD_ROUTE]: {
     labelKey: 'shieldTx',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../shield/transaction-shield/index.ts'),
-    ),
+    component: mmLazy(() => import('../shield/transaction-shield/index.ts')),
     isTab: true,
     iconName: IconName.ShieldLock,
   },
