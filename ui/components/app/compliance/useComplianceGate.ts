@@ -28,9 +28,9 @@ export function useComplianceGate(address?: AddressInput) {
   const { showAccessRestrictedModal } = useAccessRestrictedModal();
   const isBlocked = isComplianceEnabled && rawIsBlocked;
 
-  const prefetchRef = useRef<Promise<WalletComplianceStatus[] | undefined> | null>(
-    null,
-  );
+  const prefetchRef = useRef<Promise<
+    WalletComplianceStatus[] | undefined
+  > | null>(null);
   const latestSuccessfulBlockedRef = useRef(false);
   const requestIdRef = useRef(0);
 

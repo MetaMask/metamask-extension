@@ -54,12 +54,12 @@ describe('compliance selectors', () => {
     });
 
     it('accepts boolean feature flag values', () => {
-      expect(getIsComplianceEnabled(getState({ complianceEnabled: true }))).toBe(
-        true,
-      );
-      expect(getIsComplianceEnabled(getState({ complianceEnabled: false }))).toBe(
-        false,
-      );
+      expect(
+        getIsComplianceEnabled(getState({ complianceEnabled: true })),
+      ).toBe(true);
+      expect(
+        getIsComplianceEnabled(getState({ complianceEnabled: false })),
+      ).toBe(false);
     });
 
     it('accepts enabled version-gated feature flag values', () => {
@@ -139,7 +139,10 @@ describe('compliance selectors', () => {
     });
 
     it('returns the cached status map and last checked timestamp', () => {
-      const state = getState({ walletComplianceStatusMap, lastCheckedAt: checkedAt });
+      const state = getState({
+        walletComplianceStatusMap,
+        lastCheckedAt: checkedAt,
+      });
 
       expect(selectWalletComplianceStatusMap(state)).toBe(
         walletComplianceStatusMap,

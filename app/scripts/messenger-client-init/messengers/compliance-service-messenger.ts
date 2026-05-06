@@ -26,4 +26,3 @@ export function getComplianceServiceMessenger(messenger: RootMessenger) {
     parent: messenger,
   });
 }
-

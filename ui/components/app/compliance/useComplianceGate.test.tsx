@@ -226,13 +226,10 @@ describe('useComplianceGate', () => {
     const { result, rerender } = renderHook<
       { address: string },
       ReturnType<typeof useComplianceGate>
-    >(
-      ({ address }) => useComplianceGate(address),
-      {
-        initialProps: { address: BLOCKED_ADDRESS },
-        wrapper: getWrapper(),
-      },
-    );
+    >(({ address }) => useComplianceGate(address), {
+      initialProps: { address: BLOCKED_ADDRESS },
+      wrapper: getWrapper(),
+    });
 
     await act(async () => {
       await Promise.resolve();

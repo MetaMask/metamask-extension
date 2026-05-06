@@ -30,10 +30,7 @@ const selectedAccountId = mockState.metamask.internalAccounts
 const selectedAccountAddress =
   mockState.metamask.internalAccounts.accounts[selectedAccountId].address;
 
-function renderStartTradeCta(
-  component: React.ReactElement,
-  store = mockStore,
-) {
+function renderStartTradeCta(component: React.ReactElement, store = mockStore) {
   return renderWithProvider(
     <AccessRestrictedProvider>{component}</AccessRestrictedProvider>,
     store,

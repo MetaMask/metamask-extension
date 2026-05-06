@@ -30,4 +30,3 @@ export const ComplianceServiceInit: MessengerClientInitFunction<
 
   return { messengerClient };
 };
-

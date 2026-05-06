@@ -333,7 +333,8 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           [PERPS_EVENT_PROPERTY.SIZE]: rawMarginAmount,
         });
         track(MetaMetricsEventName.PerpsError, {
-          [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+          [PERPS_EVENT_PROPERTY.ERROR_TYPE]:
+            PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
           [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
         });
 

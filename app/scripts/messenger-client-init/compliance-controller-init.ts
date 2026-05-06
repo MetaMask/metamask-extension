@@ -45,4 +45,3 @@ function getApi(
       messengerClient.checkWalletsCompliance.bind(messengerClient),
   };
 }
-
