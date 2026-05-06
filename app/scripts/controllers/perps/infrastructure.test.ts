@@ -226,6 +226,136 @@ describe('createPerpsInfrastructure', () => {
         expect(mockCaptureException).toHaveBeenCalledWith(error);
       });
     });
+
+    describe('when error is a benign disconnect race', () => {
+      it('does not call captureException for a direct TERMINATED_BY_USER code', () => {
+        setupSentryScope();
+        const { logger } = createPerpsInfrastructure(getDeps());
+
+        const error = Object.assign(new Error('reconnect error'), {
+          name: 'ReconnectingWebSocketError',
+          code: 'TERMINATED_BY_USER',
+        });
+
+        logger.error(error);
+
+        expect(mockCaptureException).not.toHaveBeenCalled();
+      });
+
+      it('does not call captureException when TERMINATED_BY_USER is nested via cause', () => {
+        setupSentryScope();
+        const { logger } = createPerpsInfrastructure(getDeps());
+
+        // Real-world shape: WebSocketRequestError { cause: ReconnectingWebSocketError { code } }
+        const cause = Object.assign(new Error('Error when reconnecting WebSocket: TERMINATED_BY_USER'), {
+          name: 'ReconnectingWebSocketError',
+          code: 'TERMINATED_BY_USER',
+        });
+        const error = Object.assign(new Error('Failed to establish WebSocket connection'), {
+          name: 'WebSocketRequestError',
+          cause,
+        });
+
+        logger.error(error);
+
+        expect(mockCaptureException).not.toHaveBeenCalled();
+      });
+
+      it('does not call captureException when matched by ReconnectingWebSocketError name alone', () => {
+        setupSentryScope();
+        const { logger } = createPerpsInfrastructure(getDeps());
+
+        const error = Object.assign(new Error('reconnect error'), {
+          name: 'ReconnectingWebSocketError',
+        });
+
+        logger.error(error);
+
+        expect(mockCaptureException).not.toHaveBeenCalled();
+      });
+
+      it('does not call captureException for WebSocketRequestError("WebSocket connection closed")', () => {
+        setupSentryScope();
+        const { logger } = createPerpsInfrastructure(getDeps());
+
+        // Shape produced when the HL SDK drains its pending request queue on socket close
+        const error = Object.assign(new Error('WebSocket connection closed'), {
+          name: 'WebSocketRequestError',
+        });
+
+        logger.error(error);
+
+        expect(mockCaptureException).not.toHaveBeenCalled();
+      });
+
+      it('does not touch Sentry scope when suppressing', () => {
+        const mockScope = setupSentryScope();
+        const { logger } = createPerpsInfrastructure(getDeps());
+
+        const cause = Object.assign(new Error('TERMINATED_BY_USER'), {
+          name: 'ReconnectingWebSocketError',
+          code: 'TERMINATED_BY_USER',
+        });
+        const error = Object.assign(new Error('WS error'), {
+          name: 'WebSocketRequestError',
+          cause,
+        });
+
+        logger.error(error, { tags: { feature: 'perps' } });
+
+        expect(mockScope.setTag).not.toHaveBeenCalled();
+        expect(mockScope.setContext).not.toHaveBeenCalled();
+        expect(mockScope.setExtras).not.toHaveBeenCalled();
+        expect(mockCaptureException).not.toHaveBeenCalled();
+      });
+
+      it('does not touch Sentry scope for WebSocket connection closed error', () => {
+        const mockScope = setupSentryScope();
+        const { logger } = createPerpsInfrastructure(getDeps());
+
+        const error = Object.assign(new Error('WebSocket connection closed'), {
+          name: 'WebSocketRequestError',
+        });
+
+        logger.error(error, { tags: { feature: 'perps' } });
+
+        expect(mockScope.setTag).not.toHaveBeenCalled();
+        expect(mockScope.setContext).not.toHaveBeenCalled();
+        expect(mockScope.setExtras).not.toHaveBeenCalled();
+        expect(mockCaptureException).not.toHaveBeenCalled();
+      });
+
+      it('still calls captureException for errors with a different ReconnectingWebSocket code', () => {
+        setupSentryScope();
+        const { logger } = createPerpsInfrastructure(getDeps());
+
+        const cause = Object.assign(new Error('Error when reconnecting WebSocket: UNKNOWN_ERROR'), {
+          name: 'ReconnectingWebSocketError',
+          code: 'UNKNOWN_ERROR',
+        });
+        const error = Object.assign(new Error('Failed to establish WebSocket connection'), {
+          name: 'WebSocketRequestError',
+          cause,
+        });
+
+        logger.error(error);
+
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+
+      it('still calls captureException for WebSocketRequestError with a different message', () => {
+        setupSentryScope();
+        const { logger } = createPerpsInfrastructure(getDeps());
+
+        const error = Object.assign(new Error('Failed to close WebSocket connection'), {
+          name: 'WebSocketRequestError',
+        });
+
+        logger.error(error);
+
+        expect(mockCaptureException).toHaveBeenCalledWith(error);
+      });
+    });
   });
 
   describe('performance', () => {

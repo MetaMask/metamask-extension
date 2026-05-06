@@ -7,6 +7,7 @@ import {
 import { SERVICE_NAME as STORAGE_SERVICE_NAME } from '@metamask/storage-service';
 import type { MetaMetricsEventPayload } from '../../../shared/constants/metametrics';
 import { createPerpsInfrastructure } from '../controllers/perps/infrastructure';
+import { isBenignDisconnectError } from '../controllers/perps/perps-error-utils';
 import { MessengerClientInitFunction } from './types';
 import { PerpsControllerMessenger } from './messengers/perps-controller-messenger';
 
@@ -216,13 +217,19 @@ type PerpsBackgroundApi = {
 };
 
 /**
- * Wrap a controller method so that CLIENT_NOT_INITIALIZED /
- * CLIENT_REINITIALIZING errors trigger `controller.init()` and a retry.
+ * Wrap a controller method so that transient initialization and WebSocket
+ * disconnect-race errors trigger `controller.init()` and a single retry.
  *
- * During account switches, `perpsDisconnect → perpsInit` runs async.
- * Any provider-dependent call during that gap throws one of these errors.
- * This wrapper catches them once, re-initializes, and retries — making
- * every wrapped method self-healing without any UI-side awareness.
+ * Retried error conditions:
+ * - `CLIENT_NOT_INITIALIZED` / `CLIENT_REINITIALIZING` — provider not yet
+ *   ready between `perpsDisconnect → perpsInit` during account switches.
+ * - Benign WS disconnect-race errors (`TERMINATED_BY_USER`, in-flight queue
+ *   drained on socket close) — our own `disconnect()` closed the socket while
+ *   a request was in-flight. By the time `init()` resolves the controller has
+ *   rebuilt the provider with the new account and the retry runs against a
+ *   fresh, ready WebSocket.
+ *
+ * Every wrapped method is self-healing without any UI-side awareness.
  * @param controller
  * @param fn
  */
@@ -237,7 +244,8 @@ function withAutoInit<TArgs extends unknown[], TResult>(
       const message = err instanceof Error ? err.message : String(err);
       if (
         message.includes('CLIENT_NOT_INITIALIZED') ||
-        message.includes('CLIENT_REINITIALIZING')
+        message.includes('CLIENT_REINITIALIZING') ||
+        isBenignDisconnectError(err)
       ) {
         await controller.init();
         return await fn(...args);

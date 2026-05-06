@@ -707,5 +707,116 @@ describe('PerpsControllerInit', () => {
       expect(placeOrder).toHaveBeenCalledTimes(2);
       expect(result).toEqual({ orderId: '123' });
     });
+
+    describe('benign disconnect-race recovery', () => {
+      function makeTerminatedByUserError() {
+        const cause = Object.assign(
+          new Error('Error when reconnecting WebSocket: TERMINATED_BY_USER'),
+          { name: 'ReconnectingWebSocketError', code: 'TERMINATED_BY_USER' },
+        );
+        return Object.assign(
+          new Error('Failed to establish WebSocket connection'),
+          { name: 'WebSocketRequestError', cause },
+        );
+      }
+
+      function makeConnectionClosedError() {
+        return Object.assign(new Error('WebSocket connection closed'), {
+          name: 'WebSocketRequestError',
+        });
+      }
+
+      it('retries perpsGetPositions after TERMINATED_BY_USER and succeeds', async () => {
+        const { api, messengerClient } = initWithApi();
+        const getPositions = messengerClient.getPositions as jest.Mock;
+        getPositions
+          .mockRejectedValueOnce(makeTerminatedByUserError())
+          .mockResolvedValueOnce([{ symbol: 'ETH' }]);
+
+        const result = await api.perpsGetPositions();
+
+        expect(messengerClient.init).toHaveBeenCalledTimes(1);
+        expect(getPositions).toHaveBeenCalledTimes(2);
+        expect(result).toEqual([{ symbol: 'ETH' }]);
+      });
+
+      it('retries perpsGetUserHistory (provider passthrough) after TERMINATED_BY_USER', async () => {
+        const { api, messengerClient } = initWithApi();
+        const getUserHistory = messengerClient.getActiveProvider()
+          .getUserHistory as jest.Mock;
+        getUserHistory
+          .mockRejectedValueOnce(makeTerminatedByUserError())
+          .mockResolvedValueOnce([{ id: 'h1' }]);
+
+        const result = await api.perpsGetUserHistory({ startTime: 0 });
+
+        expect(messengerClient.init).toHaveBeenCalledTimes(1);
+        expect(result).toEqual([{ id: 'h1' }]);
+      });
+
+      it('retries perpsGetPositions after WebSocket connection closed and succeeds', async () => {
+        const { api, messengerClient } = initWithApi();
+        const getPositions = messengerClient.getPositions as jest.Mock;
+        getPositions
+          .mockRejectedValueOnce(makeConnectionClosedError())
+          .mockResolvedValueOnce([{ symbol: 'BTC' }]);
+
+        const result = await api.perpsGetPositions();
+
+        expect(messengerClient.init).toHaveBeenCalledTimes(1);
+        expect(getPositions).toHaveBeenCalledTimes(2);
+        expect(result).toEqual([{ symbol: 'BTC' }]);
+      });
+
+      it('retries perpsGetUserHistory after WebSocket connection closed and succeeds', async () => {
+        const { api, messengerClient } = initWithApi();
+        const getUserHistory = messengerClient.getActiveProvider()
+          .getUserHistory as jest.Mock;
+        getUserHistory
+          .mockRejectedValueOnce(makeConnectionClosedError())
+          .mockResolvedValueOnce([{ id: 'h2' }]);
+
+        const result = await api.perpsGetUserHistory({ startTime: 0 });
+
+        expect(messengerClient.init).toHaveBeenCalledTimes(1);
+        expect(result).toEqual([{ id: 'h2' }]);
+      });
+
+      it('does not retry when the cause code is not TERMINATED_BY_USER', async () => {
+        const { api, messengerClient } = initWithApi();
+        const getPositions = messengerClient.getPositions as jest.Mock;
+        const cause = Object.assign(
+          new Error('Error when reconnecting WebSocket: UNKNOWN_ERROR'),
+          { name: 'ReconnectingWebSocketError', code: 'UNKNOWN_ERROR' },
+        );
+        const wsError = Object.assign(
+          new Error('Failed to establish WebSocket connection'),
+          { name: 'WebSocketRequestError', cause },
+        );
+        getPositions.mockRejectedValueOnce(wsError);
+
+        await expect(api.perpsGetPositions()).rejects.toThrow(
+          'Failed to establish WebSocket connection',
+        );
+        expect(messengerClient.init).not.toHaveBeenCalled();
+        expect(getPositions).toHaveBeenCalledTimes(1);
+      });
+
+      it('does not retry for a WebSocketRequestError with a different message', async () => {
+        const { api, messengerClient } = initWithApi();
+        const getPositions = messengerClient.getPositions as jest.Mock;
+        const wsError = Object.assign(
+          new Error('Failed to close WebSocket connection'),
+          { name: 'WebSocketRequestError' },
+        );
+        getPositions.mockRejectedValueOnce(wsError);
+
+        await expect(api.perpsGetPositions()).rejects.toThrow(
+          'Failed to close WebSocket connection',
+        );
+        expect(messengerClient.init).not.toHaveBeenCalled();
+        expect(getPositions).toHaveBeenCalledTimes(1);
+      });
+    });
   });
 });

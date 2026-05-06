@@ -37,6 +37,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
 import { validatedVersionGatedFeatureFlag } from '../../../../shared/lib/feature-flags/version-gating';
+import { isBenignDisconnectError } from './perps-error-utils';
 
 /**
  * Dependencies required to wire {@link createPerpsInfrastructure} to extension services.
@@ -56,6 +57,13 @@ const debugLog = createProjectLogger('perps');
 function createLogger(): PerpsLogger {
   return {
     error: (error, options) => {
+      // Benign disconnect-race errors are always side-effects of our own
+      // disconnect() during account switches — never real connection failures.
+      // Route these to the debug log and skip Sentry/console entirely.
+      if (isBenignDisconnectError(error)) {
+        debugLog('Suppressed benign perps WS disconnect race', error, options);
+        return;
+      }
       const withScope = globalThis.sentry?.withScope;
       if (!withScope) {
         captureException(error);
