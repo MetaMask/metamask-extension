@@ -5664,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "ऑर्डर कैंसिल करें"
   },
-  "perpsCandleIntervals": {
-    "message": "कैंडल अंतराल"
-  },
   "perpsCandlePeriodDays": {
     "message": "दिन"
   },
@@ -5678,9 +5675,6 @@
   },
   "perpsCloseAll": {
     "message": "सब बंद करें"
-  },
-  "perpsCloseAmount": {
-    "message": "अमाउंट क्लोज़ करें"
   },
   "perpsCloseLong": {
     "message": "लॉन्ग को क्लोज़ करें"
@@ -6262,6 +6256,10 @@
   "perpsWithdraw": {
     "message": "निकालें"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "पर्प्स विदड्रॉ",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "अनुमानित समय"
   },
@@ -6309,6 +6307,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "विदड्रॉवल सबमिट किया गया"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask आपके लिए आपके पसंदीदा टोकन में स्वैप करेगा। जब आप mUSD में स्वैप करते हैं तो कोई MetaMask शुल्क लागू नहीं होता है।",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "आप प्राप्त करते हैं"
@@ -6434,6 +6436,10 @@
   },
   "provide": {
     "message": "प्रदान करें"
+  },
+  "providerFee": {
+    "message": "प्रदाता फीस",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "सार्वजनिक एड्रेस"
@@ -6641,8 +6647,16 @@
   "receiveCrypto": {
     "message": "क्रिप्टो प्राप्त करें"
   },
+  "receiveToken": {
+    "message": "टोकन प्राप्त करें",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "प्राप्त किया गया"
+  },
+  "receivedTotal": {
+    "message": "कुल प्राप्त हुआ",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "एड्रेस प्राप्त हो रहा है",
@@ -8148,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "dapps से स्मार्ट अकाउंट रिक्वेस्ट"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "dapps को स्टैंडर्ड अकाउंट के लिए स्मार्ट अकाउंट फ़ीचर रिक्वेस्ट करने दें। इससे उन अकाउंट पर कोई असर नहीं पड़ेगा जो पहले से ही स्मार्ट अकाउंट हैं।"
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "वही एड्रेस। और स्मार्ट फीचर्स।"
   },
@@ -8783,12 +8794,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "सपोर्टेड भाषाएँ",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "हमारे सर्वे में भाग लें"
-  },
-  "surveyTitle": {
-    "message": "MetaMask के भविष्य को आकार दें"
   },
   "swap": {
     "message": "स्वैप करें"
@@ -9779,6 +9784,10 @@
   "willApproveAmountForSwapping": {
     "message": "स्वैप के लिए टोकन एप्रूव करता है।"
   },
+  "withdrawTo": {
+    "message": "प्राप्त करें",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "निकाला जा रहा है"
   },
@@ -9811,6 +9820,10 @@
   "youSent": {
     "message": "आपने भेजा",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "आपको प्राप्त होगा",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "आपकी एक्टिविटी"

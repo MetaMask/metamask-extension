@@ -1548,6 +1548,10 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
+  "changePasswordPasskeyVerifyingTitle": {
+    "message": "Confirm with Biometrics",
+    "description": "Title shown while the wallet waits for passkey or device biometrics during change password."
+  },
   "changePasswordWarning": {
     "message": "Are you sure?"
   },
@@ -4051,6 +4055,9 @@
   "maxFeeTooltip": {
     "message": "A maximum fee provided to pay for the transaction."
   },
+  "maybeLater": {
+    "message": "Maybe later"
+  },
   "medium": {
     "message": "Market"
   },
@@ -5279,6 +5286,92 @@
   },
   "participateInMetaMetricsDescription": {
     "message": "Participate in MetaMetrics to help us make MetaMask better"
+  },
+  "passkeyDescription": {
+    "message": "Use Touch ID to unlock MetaMask instead of entering your password. This creates a passkey on this device only."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "Biometrics are already set up for this wallet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "We couldn't verify your Biometrics. Try again.",
+    "description": "Shown when passkey authentication response verification fails."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Your Biometrics response was incomplete. Try again.",
+    "description": "Shown when the passkey assertion is missing required key material."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "Biometrics sign-in session expired. Try again.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "Biometrics setup session expired. Try again from the beginning.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "Biometrics aren't set up for this wallet. Turn on Biometrics in Settings.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "Biometrics setup failed. Try again",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "We couldn't verify your Biometrics setup. Try again.",
+    "description": "Shown when passkey registration response verification fails."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "We couldn't unlock with Biometrics. Try again, or set up Biometrics again in Settings.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "Biometrics don't match your current wallet lock. Set up Biometrics again in Settings.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Your password was updated, but biometric unlock couldn't be turned on.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "We couldn't verify your Biometrics. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Register Biometrics"
+  },
+  "passkeySetupStepVerify": {
+    "message": "Validate Biometrics"
+  },
+  "passkeyTroubleshoot": {
+    "message": "Trouble unlocking?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Try opening the extension in a full screen window and try again.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Open full screen window",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Still having trouble?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootModalTitle": {
+    "message": "Trouble unlocking",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTurnedOff": {
+    "message": "Biometrics turned off"
+  },
+  "passkeyTurnedOn": {
+    "message": "Biometrics turned on"
+  },
+  "passkeyUnlockFailed": {
+    "message": "Biometrics unlock failed. Try your password."
   },
   "password": {
     "message": "Password"
@@ -7232,6 +7325,10 @@
   "securityChangePasswordToastError": {
     "message": "Password couldn’t be changed. Please try again."
   },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "New password saved, but biometric unlock couldn't be turned on.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
+  },
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
   },
@@ -7380,8 +7477,15 @@
     "message": "Set up",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "Set up Biometrics"
+  },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
+  },
+  "settingUpPasskey": {
+    "message": "Setting Up Biometrics",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
   },
   "settings": {
     "message": "Settings"
@@ -8227,8 +8331,8 @@
   "smartAccountRequestsFromDapps": {
     "message": "Smart account requests from dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -8863,12 +8967,6 @@
     "message": "Supported languages",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Take our survey"
-  },
-  "surveyTitle": {
-    "message": "Shape the future of MetaMask"
-  },
   "swap": {
     "message": "Swap"
   },
@@ -9502,6 +9600,12 @@
   "turnOffMetamaskNotificationsError": {
     "message": "There was an error in disabling the notifications. Please try again later."
   },
+  "turnOffPasskey": {
+    "message": "Turn off Biometrics"
+  },
+  "turnOffPasskeyFailed": {
+    "message": "We couldn't turn off Biometrics. Try again."
+  },
   "turnOn": {
     "message": "Turn on"
   },
@@ -9604,6 +9708,9 @@
     "message": "Unlock to reveal",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Unlock with Biometrics"
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -9689,6 +9796,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
+  },
+  "usePassword": {
+    "message": "Use password"
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"

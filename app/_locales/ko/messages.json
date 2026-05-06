@@ -5668,9 +5668,6 @@
   "perpsCancelOrder": {
     "message": "주문 취소"
   },
-  "perpsCandleIntervals": {
-    "message": "캔들 간격"
-  },
   "perpsCandlePeriodDays": {
     "message": "일"
   },
@@ -5682,9 +5679,6 @@
   },
   "perpsCloseAll": {
     "message": "모두 종료"
-  },
-  "perpsCloseAmount": {
-    "message": "청산 수량"
   },
   "perpsCloseLong": {
     "message": "롱 청산"
@@ -6270,6 +6264,10 @@
   "perpsWithdraw": {
     "message": "출금"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "무기한 선물 출금",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "예상 시간"
   },
@@ -6317,6 +6315,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "출금 제출 완료"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask가 원하는 토큰으로 스왑해 드립니다. mUSD로 스왑할 때 MetaMask 수수료는 적용되지 않습니다.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "받음:"
@@ -6442,6 +6444,10 @@
   },
   "provide": {
     "message": "제공"
+  },
+  "providerFee": {
+    "message": "공급자 수수료",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "공개 주소"
@@ -6649,8 +6655,16 @@
   "receiveCrypto": {
     "message": "암호화폐 수령"
   },
+  "receiveToken": {
+    "message": "토큰 받기",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "받음"
+  },
+  "receivedTotal": {
+    "message": "총 수령액",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "받는 주소",
@@ -8156,9 +8170,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "디앱의 스마트 계정 요청"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "디앱이 일반 계정에 스마트 계정 기능을 요청하도록 허용합니다. 이미 스마트 계정인 계정에는 영향을 미치지 않습니다."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "같은 주소. 더욱 스마트한 기능."
   },
@@ -8791,12 +8802,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "지원 언어",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "설문조사에 참여하세요"
-  },
-  "surveyTitle": {
-    "message": "MetaMask의 미래를 그리세요"
   },
   "swap": {
     "message": "스왑"
@@ -9787,6 +9792,10 @@
   "willApproveAmountForSwapping": {
     "message": "스왑을 위한 토큰 승인."
   },
+  "withdrawTo": {
+    "message": "받기",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "인출"
   },
@@ -9819,6 +9828,10 @@
   "youSent": {
     "message": "보냄:",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "받을 금액:",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "내 활동"

@@ -140,7 +140,7 @@ export const fetchPopularTokens = async ({
   assetsWithBalances,
 }: {
   jwt?: string;
-  signal: AbortSignal;
+  signal?: AbortSignal;
   chainIds: CaipChainId[];
   clientId: string;
   bridgeApiBaseUrl: string;

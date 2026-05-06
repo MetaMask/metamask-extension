@@ -387,6 +387,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(submitIntentSpy).toHaveBeenCalledWith({
         quoteResponse: quoteWithIntent,
         accountAddress: expect.any(String),
+        tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(

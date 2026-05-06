@@ -49,6 +49,9 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
+import { isWebAuthnSupported } from '../../shared/lib/passkey';
+import { getIsPasskeyFeatureEnabled } from '../../shared/lib/environment';
+import { isFirefoxBrowser } from '../../shared/lib/browser-runtime.utils';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
@@ -176,6 +179,7 @@ import {
   getInternalAccountByAddress,
 } from './accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
+import { getIsSocialLoginFlow } from './first-time-flow';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getApprovalRequestsByType } from './approvals';
 import {
@@ -2914,6 +2918,31 @@ export function getIsSecurityAlertsEnabled(state) {
  */
 export function getUsePhishDetect(state) {
   return state.metamask.usePhishDetect;
+}
+
+/**
+ * Checks if a passkey is registered for unlock
+ *
+ * @param {*} state
+ * @returns {boolean}
+ */
+export function getIsPasskeyRegistered(state) {
+  return Boolean(state.metamask.passkeyRecord);
+}
+
+/**
+ * Checks if the passkey feature is available
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsPasskeyFeatureAvailable(state) {
+  return (
+    getIsPasskeyFeatureEnabled() &&
+    isWebAuthnSupported() &&
+    !getIsSocialLoginFlow(state) &&
+    !isFirefoxBrowser()
+  );
 }
 
 /**

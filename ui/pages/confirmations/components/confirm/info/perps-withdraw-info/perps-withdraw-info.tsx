@@ -16,18 +16,20 @@ export const PerpsWithdrawInfo = () => {
 
   useTransactionPayPostQuote();
 
-  // Source the balance for the custom-amount percentage buttons from the
-  // user's Perps available balance (gasless / withdraw-from-Perps flow). The
-  // shared `useTransactionCustomAmount` hook stays decoupled from the perps
-  // stream by accepting an explicit `balanceUsdOverride`.
+  // Release-branch Unified Account bridge: source the custom-amount percentage
+  // balance from the user-visible Perps withdraw max.
   const { account } = usePerpsLiveAccount();
-  const balanceUsdOverride = parseFloat(account?.availableBalance ?? '0') || 0;
+  const balanceUsdOverride =
+    parseFloat(
+      account?.availableToTradeBalance ?? account?.availableBalance ?? '0',
+    ) || 0;
 
   return (
     // Percentage buttons (25/50/75/Max) are intentionally hidden for MVP —
     // not passing `hasMax` so they never render. Re-enable by passing
     // `hasMax` (and optionally a `percentages` override) when ready.
     <CustomAmountInfo
+      autoFocusAmount
       balanceUsdOverride={balanceUsdOverride}
       currency={PERPS_CURRENCY}
       hidePayTokenAmount
