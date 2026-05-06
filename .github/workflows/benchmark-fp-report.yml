@@ -43,7 +43,7 @@ jobs:
           git clone --depth 1 "https://metamaskbot:${EXTENSION_BENCHMARK_STATS_TOKEN}@github.com/${STATS_REPO}.git" "${STATS_CLONE_DIR}"
 
       - name: Compute FP rate and update ${{ env.STATS_FILE }}
-        run: yarn tsx .github/scripts/benchmark-fp-rate.ts
+        run: yarn tsx .github/scripts/benchmark-fp-rate.mts
         env:
           OUTPUT_PATH: ${{ env.STATS_CLONE_DIR }}/${{ env.STATS_FILE }}
 

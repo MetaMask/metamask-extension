@@ -75,8 +75,9 @@ function parsePerpsAmountInput(raw: string): number {
  * Perps withdraw screen: enter USDC amount, validate against routes and balance,
  * submit `perpsWithdraw` with HyperLiquid USDC CAIP asset id.
  *
- * Layout mirrors deposit confirmations (`CustomAmountInfo` + small summary rows)
- * while remaining a standalone multichain page (no `TransactionMeta` / pay flow).
+ * Layout mirrors deposit confirmations (`CustomAmountInfo` + small summary rows).
+ * The Perps tab opens this page by default; confirmations-backed withdraw remains
+ * gated by the Pay post-quote feature flag.
  */
 const PerpsWithdrawPage: React.FC = () => {
   const t = useI18nContext();
@@ -94,7 +95,8 @@ const PerpsWithdrawPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const availableBalance = account?.availableBalance ?? '0';
+  const availableBalance =
+    account?.availableToTradeBalance ?? account?.availableBalance ?? '0';
   const availableNum = parseFloat(availableBalance) || 0;
 
   const usdcAssetId = useMemo(

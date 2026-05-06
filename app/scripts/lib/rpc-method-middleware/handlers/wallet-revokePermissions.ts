@@ -7,21 +7,38 @@ import {
 } from '@metamask/utils';
 import { Caip25EndowmentPermissionName } from '@metamask/chain-agnostic-permission';
 import {
-  AsyncJsonRpcEngineNextCallback,
   JsonRpcEngineEndCallback,
+  JsonRpcEngineNextCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
 import { RestrictedMethods } from '../../../../../shared/constants/permissions';
 import { PermissionNames } from '../../../controllers/permissions';
 
+export type RevokePermissionsHooks = {
+  revokePermissionsForOrigin: (permissionKeys: string[]) => void;
+  rejectApprovalRequestsForOrigin: () => void;
+};
+
+type RevokePermissionsConstraint = MethodHandler<
+  RevokePermissionsHooks,
+  never,
+  Json[],
+  null
+>;
+
 export const revokePermissionsHandler = {
-  methodNames: [MethodNames.RevokePermissions],
   implementation: revokePermissionsImplementation,
   hookNames: {
     revokePermissionsForOrigin: true,
     rejectApprovalRequestsForOrigin: true,
-    updateCaveat: true,
   },
+} satisfies RevokePermissionsConstraint;
+
+const revokePermissionsHandlers = {
+  [MethodNames.RevokePermissions]: revokePermissionsHandler,
 };
+
+export default revokePermissionsHandlers;
 
 /**
  * Revoke Permissions implementation to be used in JsonRpcEngine middleware.
@@ -37,8 +54,8 @@ export const revokePermissionsHandler = {
  */
 function revokePermissionsImplementation(
   req: JsonRpcRequest<Json[]>,
-  res: PendingJsonRpcResponse<Json>,
-  _next: AsyncJsonRpcEngineNextCallback,
+  res: PendingJsonRpcResponse<null>,
+  _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
   {
     revokePermissionsForOrigin,

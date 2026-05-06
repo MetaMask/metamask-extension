@@ -94,7 +94,12 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
     const currency = currencyProp ?? selectedCurrency;
     const fiatSymbol = getCurrencySymbol(currency);
     const amountLength = amountFiat.length;
-    const amountCharacterLength = amountFiat.replaceAll(/[.,]/gu, '').length;
+    const decimalSeparatorCount = (amountFiat.match(/[.,]/gu) || []).length;
+    // Decimal separators visually take roughly half the width of a digit in
+    // proportional fonts, so account for them as 0.5ch each. Counting them
+    // as a full ch over-allocates (visible cursor gap); counting them as 0
+    // under-allocates (text gets clipped when overflowing the input).
+    const amountWidth = amountLength - decimalSeparatorCount * 0.5;
 
     const showLoader = isLoading || (isMaxAmount && isQuotesLoading);
 
@@ -150,7 +155,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
               border: 'none',
               background: 'transparent',
               outline: 'none',
-              width: `${Math.max(1, amountCharacterLength)}ch`,
+              width: `${Math.max(1, amountWidth)}ch`,
               cursor: disabled ? 'default' : 'text',
             } as React.CSSProperties
           }

@@ -42,6 +42,7 @@ DefaultStory.args = {
   forceUpdateMetamaskState: () => ({
     participateInMetaMetrics: true,
   }),
+  passkeyAutoUnlockSuppressed: false,
 };
 
 DefaultStory.storyName = 'Default';
