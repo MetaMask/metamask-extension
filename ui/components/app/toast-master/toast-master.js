@@ -78,7 +78,6 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import {
-  selectNftDetectionEnablementToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
@@ -94,7 +93,6 @@ import {
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
-  setShowNftDetectionEnablementToast,
   setSurveyLinkLastClickedOrClosed,
   setShowNewSrpAddedToast,
   setShowCopyAddressToast,
@@ -128,7 +126,6 @@ export function ToastMaster() {
         <SurveyToast />
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
-        <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
         <InfuraSwitchToast />
@@ -227,35 +224,6 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
-}
-
-function NftEnablementToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showNftEnablementToast = useSelector(selectNftDetectionEnablementToast);
-  const useNftDetection = useSelector(getUseNftDetection);
-
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showNftEnablementToast &&
-    useNftDetection && (
-      <Toast
-        key="enabled-nft-auto-detection"
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        text={t('nftAutoDetectionEnabled')}
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() =>
-          dispatch(setShowNftDetectionEnablementToast(false))
-        }
       />
     )
   );
