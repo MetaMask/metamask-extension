@@ -22,11 +22,13 @@ export function PerpsDepositToast() {
     selectPerpsLastDepositTransactionId,
   );
   const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
-  const lastShownPendingToastKeyRef = useRef<string | null>(null);
-  const lastShownCompletionToastKeyRef = useRef<string | null>(null);
   const clearDepositResultTimeoutRef = useRef<ReturnType<
     typeof setTimeout
   > | null>(null);
+  const hasDepositResult = Boolean(lastDepositResult);
+  const lastDepositResultError = lastDepositResult?.error;
+  const lastDepositResultSuccess = lastDepositResult?.success;
+  const lastDepositResultTimestamp = lastDepositResult?.timestamp;
 
   useEffect(() => {
     return () => {
@@ -39,35 +41,21 @@ export function PerpsDepositToast() {
   useEffect(() => {
     if (!shouldShowDepositToast) {
       toast.dismiss(PERPS_DEPOSIT_TOAST_ID);
-      lastShownPendingToastKeyRef.current = null;
       return;
     }
 
-    if (lastDepositResult) {
-      const completionToastKey = [
-        lastDepositResult.timestamp ?? 'no-timestamp',
-        lastDepositResult.success,
-        lastDepositResult.error ?? '',
-      ].join(':');
-
-      if (lastShownCompletionToastKeyRef.current === completionToastKey) {
-        return;
-      }
-
+    if (hasDepositResult) {
       if (clearDepositResultTimeoutRef.current) {
         clearTimeout(clearDepositResultTimeoutRef.current);
       }
 
-      lastShownCompletionToastKeyRef.current = completionToastKey;
-      lastShownPendingToastKeyRef.current = null;
-
-      const isSuccess = lastDepositResult.success === true;
+      const isSuccess = lastDepositResultSuccess === true;
       const title = isSuccess
         ? t('perpsDepositToastSuccessTitle')
         : t('perpsDepositToastErrorTitle');
       const description = isSuccess
         ? t('perpsDepositToastSuccessDescription')
-        : lastDepositResult.error || t('perpsDepositToastErrorDescription');
+        : lastDepositResultError || t('perpsDepositToastErrorDescription');
       const content = (
         <ToastContent
           dataTestId={PERPS_DEPOSIT_TOAST_ID}
@@ -95,21 +83,11 @@ export function PerpsDepositToast() {
       return;
     }
 
-    lastShownCompletionToastKeyRef.current = null;
-
     if (!depositInProgress) {
       toast.dismiss(PERPS_DEPOSIT_TOAST_ID);
-      lastShownPendingToastKeyRef.current = null;
       return;
     }
 
-    const pendingToastKey = lastDepositTransactionId ?? 'pending';
-
-    if (lastShownPendingToastKeyRef.current === pendingToastKey) {
-      return;
-    }
-
-    lastShownPendingToastKeyRef.current = pendingToastKey;
     toast.loading(
       <ToastContent
         dataTestId={PERPS_DEPOSIT_TOAST_ID}
@@ -123,7 +101,10 @@ export function PerpsDepositToast() {
     );
   }, [
     depositInProgress,
-    lastDepositResult,
+    hasDepositResult,
+    lastDepositResultError,
+    lastDepositResultSuccess,
+    lastDepositResultTimestamp,
     lastDepositTransactionId,
     shouldShowDepositToast,
     t,
