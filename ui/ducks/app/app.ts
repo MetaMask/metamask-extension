@@ -246,12 +246,6 @@ export default function reduceApp(
         confirmationExchangeRates: action.value,
       };
 
-    case actionConstants.RESET_ONBOARDING: {
-      return {
-        ...appState,
-      };
-    }
-
     // dropdown methods
     case actionConstants.NETWORK_DROPDOWN_OPEN:
       return {
