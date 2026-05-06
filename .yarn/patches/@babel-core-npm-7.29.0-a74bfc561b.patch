@@ -2,14 +2,11 @@ diff --git a/lib/index.js b/lib/index.js
 index 2c15c495b5d97720b10236fd57f93999461effc1..bc9c5d4836263cbbd58d1773a5ee56c65bbe3ae1 100644
 --- a/lib/index.js
 +++ b/lib/index.js
-@@ -211,6 +211,10 @@ var _transform = require("./transform.js");
+@@ -211,6 +211,7 @@ var _transform = require("./transform.js");
  var _transformFile = require("./transform-file.js");
  var _transformAst = require("./transform-ast.js");
  var _parse = require("./parse.js");
-+// MetaMask intentionally keeps `@babel/core` under the `patch:` protocol even though
-+// Babel 7.29.0 already removed the old self-require that Norbert's original patch
-+// deleted. This replacement patch is therefore a documented no-op that preserves the
-+// explicit patching contract requested in review without changing runtime behavior.
++// MetaMask keeps this patch in place so both Babel packages remain explicitly patched.
  const version = exports.version = "7.29.0";
  const resolvePlugin = (name, dirname) => resolvers.resolvePlugin(name, dirname, false).filepath;
  exports.resolvePlugin = resolvePlugin;

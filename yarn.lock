@@ -206,7 +206,7 @@ __metadata:
 
 "@babel/core@patch:@babel/core@npm%3A7.29.0#~/.yarn/patches/@babel-core-npm-7.29.0-a74bfc561b.patch":
   version: 7.29.0
-  resolution: "@babel/core@patch:@babel/core@npm%3A7.29.0#~/.yarn/patches/@babel-core-npm-7.29.0-a74bfc561b.patch::version=7.29.0&hash=c71cc7"
+  resolution: "@babel/core@patch:@babel/core@npm%3A7.29.0#~/.yarn/patches/@babel-core-npm-7.29.0-a74bfc561b.patch::version=7.29.0&hash=ac086b"
   dependencies:
     "@babel/code-frame": "npm:^7.29.0"
     "@babel/generator": "npm:^7.29.0"
@@ -223,7 +223,7 @@ __metadata:
     gensync: "npm:^1.0.0-beta.2"
     json5: "npm:^2.2.3"
     semver: "npm:^6.3.1"
-  checksum: 10/d233c7c35492d539ae1fe6a822a88e9282fe8cd6fcd061e0a23ab6165e600ca30370a69f1de67e1e1fa1236a1221a6d2fccd43fc0bd96b1ee4fe3c1f899cae9e
+  checksum: 10/a23526c0cfb02e0188351567971e06c047b18defb4851937907d6f189cf300088ab5aea8841987374ec050b00524f6f895549deb55b659a6d8311317ab71aa9b
   languageName: node
   linkType: hard
 
