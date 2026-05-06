@@ -547,7 +547,7 @@ export function getCommonMocks(server: Mockttp): Promise<MockedEndpoint>[] {
 
 export function userStorageHostMock(server: Mockttp): Promise<MockedEndpoint> {
   const endpointPromise = server
-    .forAnyRequest()
+    .forGet()
     .forHost('user-storage.api.cx.metamask.io')
     .always()
     .thenCallback(() => ({ statusCode: 200, json: null }));
@@ -555,7 +555,10 @@ export function userStorageHostMock(server: Mockttp): Promise<MockedEndpoint> {
   const existingInterceptor = (server as unknown as Record<string, unknown>)
     .__passThroughInterceptor as PassThroughInterceptor | undefined;
   setPassThroughInterceptor(server, (req) => {
-    if (req.url.includes('user-storage.api.cx.metamask.io')) {
+    if (
+      req.method === 'GET' &&
+      req.url.includes('user-storage.api.cx.metamask.io')
+    ) {
       return { response: { statusCode: 200, json: null } };
     }
     return existingInterceptor?.(req) ?? null;

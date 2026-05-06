@@ -417,7 +417,7 @@ class AccountListPage {
    */
   async waitUntilSyncingIsCompleted(): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    await this.checkAddWalletButttonIsDisplayed();
+    await this.checkAddWalletButtonIsDisplayed();
     await this.driver.assertElementNotPresent(this.syncingMessage);
   }
 
@@ -920,7 +920,7 @@ class AccountListPage {
     await this.driver.waitForSelector(this.walletDetailsButton);
   }
 
-  async checkAddWalletButttonIsDisplayed(): Promise<void> {
+  async checkAddWalletButtonIsDisplayed(): Promise<void> {
     console.log('Check add wallet button is displayed');
     await this.driver.waitForSelector(this.addMultichainWalletButton);
   }
