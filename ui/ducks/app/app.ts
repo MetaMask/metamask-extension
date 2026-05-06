@@ -10,10 +10,7 @@ import {
   WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
-import {
-  PasswordChangeToastType,
-  ClaimSubmitToastType,
-} from '../../../shared/constants/app-state';
+import { ClaimSubmitToastType } from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
@@ -128,7 +125,6 @@ type AppState = {
   isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
   showNewSrpAddedToast: number | false;
-  showPasswordChangeToast: PasswordChangeToastType | null;
   showClaimSubmitToast: ClaimSubmitToastType | null;
   showInfuraSwitchToast: boolean;
   shieldEntryModal?: {
@@ -235,7 +231,6 @@ const initialState: AppState = {
   isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
   showNewSrpAddedToast: false,
-  showPasswordChangeToast: null,
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,

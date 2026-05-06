@@ -11,7 +11,6 @@ type State = {
     Pick<
       MetaMaskReduxState['appState'],
       | 'showNewSrpAddedToast'
-      | 'showPasswordChangeToast'
       | 'showClaimSubmitToast'
       | 'showInfuraSwitchToast'
     >
