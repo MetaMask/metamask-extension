@@ -242,6 +242,10 @@
     "ui/components/app/basic-configuration-modal/basic-configuration-modal.test.tsx": {
       "Reselect: Input stability warnings": 1
     },
+    "ui/components/app/change-password/change-password.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 10,
+      "React: componentWill* lifecycle deprecations": 1
+    },
     "ui/components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 4
@@ -1515,6 +1519,9 @@
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/pages/settings-v2/security-and-password-tab/passkey-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/security-and-password-tab/security-and-password-tab.test.tsx": {
