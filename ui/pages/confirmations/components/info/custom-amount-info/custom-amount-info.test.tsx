@@ -290,7 +290,9 @@ describe('CustomAmountInfo', () => {
       });
 
       expect(getByTestId('custom-amount-info')).toBeInTheDocument();
-      expect(queryByTestId('custom-amount-info-skeleton')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('custom-amount-info-skeleton'),
+      ).not.toBeInTheDocument();
     });
 
     it('renders the full UI once a primary required token is resolved', () => {
@@ -299,7 +301,9 @@ describe('CustomAmountInfo', () => {
       });
 
       expect(getByTestId('custom-amount-info')).toBeInTheDocument();
-      expect(queryByTestId('custom-amount-info-skeleton')).not.toBeInTheDocument();
+      expect(
+        queryByTestId('custom-amount-info-skeleton'),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -448,7 +452,9 @@ describe('CustomAmountInfo', () => {
         .mocked(useTransactionPayDataModule.useTransactionPaySourceAmounts)
         .mockReturnValue([]);
       jest
-        .mocked(useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken)
+        .mocked(
+          useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken,
+        )
         .mockReturnValue({ skipIfBalance: false } as ReturnType<
           typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
         >);
