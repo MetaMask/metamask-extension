@@ -109,6 +109,30 @@ describe('EditMarginModalContent', () => {
     ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
   });
 
+  it('renders liquidation fallback when the estimated liquidation price is not positive', () => {
+    mockUsePerpsMarginCalculations.mockReturnValue({
+      maxAmount: 5000,
+      anchorLiquidationPrice: 2000,
+      estimatedLiquidationPrice: 0,
+      anchorLiquidationDistance: 31,
+      estimatedLiquidationDistance: 0,
+      riskAssessment: null,
+      isValid: true,
+    });
+
+    renderWithProvider(<EditMarginModalContent {...defaultProps} />, mockStore);
+
+    const amountInput = screen.getByPlaceholderText('0.00');
+    fireEvent.change(amountInput, { target: { value: '100' } });
+
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-price-value'),
+    ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
+    expect(
+      screen.getByTestId('perps-edit-margin-liquidation-distance-value'),
+    ).toHaveTextContent(PERPS_LIQUIDATION_PRICE_FALLBACK);
+  });
+
   describe('auto-focus and select-all', () => {
     it('auto-focuses the margin amount input on mount', () => {
       renderWithProvider(

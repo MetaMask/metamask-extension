@@ -133,10 +133,15 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     [marginAmount],
   );
   const showLiquidationComparison = amountNumForDisplay > 0;
+  const hasValidAnchorLiquidationPrice =
+    isPerpsLiquidationPriceValid(anchorLiquidationPrice);
+  const hasValidEstimatedLiquidationPrice = isPerpsLiquidationPriceValid(
+    estimatedLiquidationPrice,
+  );
 
   const liquidationPriceDisplay = useMemo(() => {
     const displayAnchorLiquidationPrice = anchorLiquidationPrice ?? 0;
-    if (!isPerpsLiquidationPriceValid(displayAnchorLiquidationPrice)) {
+    if (!hasValidAnchorLiquidationPrice) {
       return (
         <Text
           variant={TextVariant.BodySm}
@@ -147,10 +152,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         </Text>
       );
     }
-    if (
-      showLiquidationComparison &&
-      isPerpsLiquidationPriceValid(estimatedLiquidationPrice)
-    ) {
+    if (showLiquidationComparison && hasValidEstimatedLiquidationPrice) {
       return (
         <Box
           flexDirection={BoxFlexDirection.Row}
@@ -185,13 +187,17 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
         data-testid="perps-edit-margin-liquidation-price-value"
       >
         {formatPerpsLiquidationPrice(
-          estimatedLiquidationPrice ?? anchorLiquidationPrice,
+          showLiquidationComparison
+            ? estimatedLiquidationPrice
+            : anchorLiquidationPrice,
         )}
       </Text>
     );
   }, [
     anchorLiquidationPrice,
     estimatedLiquidationPrice,
+    hasValidAnchorLiquidationPrice,
+    hasValidEstimatedLiquidationPrice,
     showLiquidationComparison,
   ]);
 
@@ -514,8 +520,8 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           {showLiquidationComparison &&
           estimatedLiquidationDistance !== null &&
           Number.isFinite(estimatedLiquidationDistance) &&
-          isPerpsLiquidationPriceValid(anchorLiquidationPrice) &&
-          isPerpsLiquidationPriceValid(estimatedLiquidationPrice) ? (
+          hasValidAnchorLiquidationPrice &&
+          hasValidEstimatedLiquidationPrice ? (
             <Box
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
@@ -550,9 +556,9 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
               fontWeight={FontWeight.Medium}
               data-testid="perps-edit-margin-liquidation-distance-value"
             >
-              {isPerpsLiquidationPriceValid(anchorLiquidationPrice)
-                ? formatLiquidationDistance(anchorLiquidationDistance)
-                : PERPS_LIQUIDATION_PRICE_FALLBACK}
+              {showLiquidationComparison || !hasValidAnchorLiquidationPrice
+                ? PERPS_LIQUIDATION_PRICE_FALLBACK
+                : formatLiquidationDistance(anchorLiquidationDistance)}
             </Text>
           )}
         </Box>
