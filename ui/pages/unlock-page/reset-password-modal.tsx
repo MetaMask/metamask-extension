@@ -86,7 +86,7 @@ export default function ResetPasswordModal({
     await dispatch(markPasswordForgotten());
 
     if (isPopupOrSidePanel) {
-      global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
+      globalThis.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
     } else {
       navigate(RESTORE_VAULT_ROUTE, { replace: true });
     }
