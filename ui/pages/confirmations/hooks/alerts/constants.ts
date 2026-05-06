@@ -9,6 +9,7 @@ export enum AlertsName {
   NetworkBusy = 'networkBusy',
   NoGasPrice = 'noGasPrice',
   NoPayTokenQuotes = 'noPayTokenQuotes',
+  NoRequiredToken = 'noRequiredToken',
   PendingTransaction = 'pendingTransactions',
   PayHardwareAccount = 'payHardwareAccount',
   SigningOrSubmitting = 'signingOrSubmitting',

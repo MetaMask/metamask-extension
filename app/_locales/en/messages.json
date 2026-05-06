@@ -540,6 +540,9 @@
   "alertNoPayTokenQuotesTitle": {
     "message": "No quotes"
   },
+  "alertNoRequiredTokenMessage": {
+    "message": "Unknown target token"
+  },
   "alertPayHardwareAccountMessage": {
     "message": "Hardware wallets aren't supported.\nSwitch wallets to continue."
   },

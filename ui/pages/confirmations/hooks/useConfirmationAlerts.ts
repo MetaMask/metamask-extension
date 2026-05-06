@@ -15,6 +15,7 @@ import { usePerpsWithdrawInsufficientBalanceAlert } from './alerts/transactions/
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
+import { useNoRequiredTokenAlert } from './alerts/transactions/useNoRequiredTokenAlert';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { usePayHardwareAccountAlert } from './alerts/transactions/usePayHardwareAccountAlert';
@@ -59,6 +60,7 @@ function useTransactionAlerts(): Alert[] {
   const multipleApprovalAlerts = useMultipleApprovalsAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
   const noPayTokenQuotesAlerts = useNoPayTokenQuotesAlert();
+  const noRequiredTokenAlerts = useNoRequiredTokenAlert();
   const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const payHardwareAccountAlerts = usePayHardwareAccountAlert();
@@ -84,6 +86,7 @@ function useTransactionAlerts(): Alert[] {
       ...multipleApprovalAlerts,
       ...noGasPriceAlerts,
       ...noPayTokenQuotesAlerts,
+      ...noRequiredTokenAlerts,
       ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
       ...payHardwareAccountAlerts,
@@ -108,6 +111,7 @@ function useTransactionAlerts(): Alert[] {
       multipleApprovalAlerts,
       noGasPriceAlerts,
       noPayTokenQuotesAlerts,
+      noRequiredTokenAlerts,
       nonContractAddressAlerts,
       pendingTransactionAlerts,
       payHardwareAccountAlerts,
