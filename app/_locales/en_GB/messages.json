@@ -10,6 +10,12 @@
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
+  "batchSellSelectHeaderTitle": {
+    "message": "Select up to 5 tokens"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "All tokens need to be on the same network."
+  },
   "QRHardwareMismatchedSignId": {
     "message": "Incongruent transaction data. Please check the transaction details."
   },
