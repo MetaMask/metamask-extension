@@ -1,5 +1,42 @@
+import {
+  ButtonBase,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import React from 'react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export const SortingChip = () => {
-  return <div>sorting chip</div>;
+type SortingChipProps = {
+  order: 1 | -1; // 'asc' | 'desc'
+  onClick: (newOrder: 1 | -1) => void;
+}
+
+export const SortingChip = ({ order, onClick }: SortingChipProps) => {
+  const t = useI18nContext();
+
+  return (
+    <ButtonBase
+      className="flex flex-row items-center gap-1 bg-inherit"
+      onClick={() => onClick((order * -1) as 1 | -1)}
+    >
+      <Text
+        variant={TextVariant.BodySm}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextAlternative}
+      >
+        {t('balance')}
+      </Text>
+      <Icon
+        size={IconSize.Sm}
+        name={order > 0 ? IconName.Arrow2Down : IconName.Arrow2Up}
+        color={IconColor.IconAlternative}
+      />
+    </ButtonBase>
+  );
 };

@@ -38,7 +38,7 @@ const BatchSellPage = () => {
           />
         }
       />
-      <Content padding={0}>
+      <Content padding={0} >
         <Routes>
           <Route
             path={toRelativeRoutePath(

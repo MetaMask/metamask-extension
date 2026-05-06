@@ -1,5 +1,123 @@
-import React from 'react';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  Checkbox,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+// Follow same pattern as with the global PercentageChange component.
+// eslint-disable-next-line import-x/no-restricted-paths
+import { formatValue } from '../../../../../app/scripts/lib/util';
+import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
+import {
+  formatCurrencyAmount,
+  formatTokenAmount,
+} from '../../../bridge/utils/quote';
+import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
+import { getIntlLocale } from '../../../../ducks/locale/locale';
 
-export const AssetListItem = () => {
-  return <div>Asset list item</div>;
+type AssetListItemProps = {
+  asset: BatchSellAsset;
+  selected: boolean;
+  onSelect: (asset: BatchSellAsset) => void;
+  onDeselect: (asset: BatchSellAsset) => void;
+};
+
+export const AssetListItem = ({
+  asset,
+  selected,
+  onSelect,
+  onDeselect,
+}: AssetListItemProps) => {
+  const currency = useSelector(getCurrentCurrency);
+  const locale = useSelector(getIntlLocale);
+
+  const percentageChangeTextColor = useMemo(() => {
+    if (asset.percentageChange === 0 || !asset.percentageChange) {
+      return TextColor.TextAlternative;
+    }
+
+    return asset.percentageChange < 0
+      ? TextColor.ErrorDefault
+      : TextColor.SuccessDefault;
+  }, [asset.percentageChange]);
+
+  return (
+    <Box
+      paddingHorizontal={4}
+      paddingVertical={3}
+      gap={3}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+    >
+      <AvatarToken
+        size={AvatarTokenSize.Md}
+        name={asset.name}
+        src={asset.image}
+      />
+      <Box gap={1} className="flex-1">
+        <Box>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {asset.name}
+          </Text>
+        </Box>
+        <Box flexDirection={BoxFlexDirection.Row} gap={1}>
+          {asset.tokenFiatPrice && (
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextAlternative}
+            >
+              {formatCurrencyAmount(
+                asset.tokenFiatPrice.toString(),
+                currency,
+                2,
+              )}{' '}
+              •
+            </Text>
+          )}
+          {asset.percentageChange && (
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={percentageChangeTextColor}
+            >
+              {formatValue(asset.percentageChange, false)}
+            </Text>
+          )}
+        </Box>
+      </Box>
+      <Box gap={1} className="text-right">
+        {asset.fiatBalance && (
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {formatCurrencyAmount(asset.fiatBalance.toString(), currency, 2)}
+          </Text>
+        )}
+        <Text
+          variant={TextVariant.BodySm}
+          fontWeight={FontWeight.Medium}
+          color={TextColor.TextAlternative}
+        >
+          {formatTokenAmount(locale, asset.balance, asset.symbol)}
+        </Text>
+      </Box>
+      <Box>
+        <Checkbox
+          id={`batch-sell-asset-checkbox-${asset.assetId}`}
+          isSelected={selected}
+          onChange={(isSelected) =>
+            isSelected ? onDeselect(asset) : onSelect(asset)
+          }
+        />
+      </Box>
+    </Box>
+  );
 };

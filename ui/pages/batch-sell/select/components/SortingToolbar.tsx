@@ -1,7 +1,27 @@
 import React from 'react';
 
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { SortingChip } from './SortingChip';
 
-export const SortingToolbar = () => {
-  return <SortingChip />;
+type SortingToolbarProps = {
+  balance: {
+    order: 1 | -1; // 'asc' | 'desc'
+    onClick: (newSort: 1 | -1) => void;
+  };
+}
+
+export const SortingToolbar = ({ balance }: SortingToolbarProps) => {
+  return (
+    <Box paddingVertical={2} className="w-full">
+      <Box
+        gap={2}
+        flexDirection={BoxFlexDirection.Row}
+        style={{
+          overflowX: 'auto',
+        }}
+      >
+        <SortingChip order={balance.order} onClick={balance.onClick} />
+      </Box>
+    </Box>
+  );
 };
