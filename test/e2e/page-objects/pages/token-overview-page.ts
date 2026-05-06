@@ -33,9 +33,7 @@ class TokenOverviewPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.swapButton,
-      ]);
+      await this.driver.waitForMultipleSelectors([this.swapButton]);
     } catch (e) {
       console.log(
         'Timeout while waiting for Token overview page to be loaded',
