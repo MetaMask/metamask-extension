@@ -39,27 +39,29 @@ const trackNotificationsActivatedMetaMetricsEvent = async (
   actionType: string,
   profileSyncEnabled: boolean,
 ) => {
-  const expectedCall = [
-    'trackMetaMetricsEvent',
-    [
-      expect.objectContaining({
-        event: MetaMetricsEventName.NotificationsActivated,
-        category: MetaMetricsEventCategory.NotificationsActivationFlow,
-        properties: {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          action_type: actionType,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_profile_syncing_enabled: profileSyncEnabled,
-        },
-      }),
-    ],
-  ];
-
   expect(
     mockedBackgroundConnection.submitRequestToBackground.mock.calls,
-  ).toStrictEqual(expect.arrayContaining([expectedCall]));
+  ).toEqual(
+    expect.arrayContaining([
+      [
+        'trackMetaMetricsEvent',
+        expect.arrayContaining([
+          expect.objectContaining({
+            event: MetaMetricsEventName.NotificationsActivated,
+            category: MetaMetricsEventCategory.NotificationsActivationFlow,
+            properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              action_type: actionType,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              is_profile_syncing_enabled: profileSyncEnabled,
+            },
+          }),
+        ]),
+      ],
+    ]),
+  );
 };
 describe('Notifications Activation', () => {
   beforeEach(() => {

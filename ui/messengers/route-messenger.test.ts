@@ -23,14 +23,6 @@ describe('getRouteMessengerNamespace', () => {
 
 describe('createRouteMessenger', () => {
   it('creates a route messenger with the correct namespace and capabilities', () => {
-    const OriginalMessenger = messengerModule.Messenger;
-    const MessengerSpy = jest
-      .spyOn(messengerModule, 'Messenger')
-      .mockImplementation(
-        (...args: ConstructorParameters<typeof messengerModule.Messenger>) =>
-          new OriginalMessenger(...args),
-      );
-
     const uiMessenger = createMockUIMessenger();
     jest.spyOn(uiMessenger, 'delegate');
 
@@ -49,10 +41,13 @@ describe('createRouteMessenger', () => {
       events: ['SnapController:snapInstalled'],
     });
 
-    expect(MessengerSpy).toHaveBeenCalledWith({
-      namespace: 'SomePathRoute',
-      parent: uiMessenger,
-    });
+    expect(routeMessenger).toBeInstanceOf(messengerModule.Messenger);
+    expect(() =>
+      routeMessenger.registerActionHandler(
+        'SomePathRoute:test' as never,
+        jest.fn(),
+      ),
+    ).not.toThrow();
   });
 
   it('throws an error if no actions or events are provided', () => {

@@ -1,14 +1,25 @@
 import { cloneDeep } from 'lodash';
 
 const mockUnitTestInfuraIdInitialValue = 'unitTestInfuraId';
-let mockUnitTestInfuraId: string | undefined = mockUnitTestInfuraIdInitialValue;
+const { getMockUnitTestInfuraId, setMockUnitTestInfuraId } = jest.hoisted(
+  () => {
+    let mockUnitTestInfuraId: string | undefined = 'unitTestInfuraId';
+
+    return {
+      getMockUnitTestInfuraId: () => mockUnitTestInfuraId,
+      setMockUnitTestInfuraId: (value: string | undefined) => {
+        mockUnitTestInfuraId = value;
+      },
+    };
+  },
+);
 
 jest.mock('../../../shared/constants/network', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   ...jest.requireActual('../../../shared/constants/network'),
   get infuraProjectId() {
-    return mockUnitTestInfuraId;
+    return getMockUnitTestInfuraId();
   },
 }));
 
@@ -66,7 +77,7 @@ describe(`migration #${VERSION}`, () => {
     process.env.QUICKNODE_HYPEREVM_URL = QUICKNODE_HYPEREVM_URL;
     mockedCaptureException = jest.fn();
     global.sentry = { captureException: mockedCaptureException };
-    mockUnitTestInfuraId = mockUnitTestInfuraIdInitialValue;
+    setMockUnitTestInfuraId(mockUnitTestInfuraIdInitialValue);
   });
 
   afterEach(() => {
@@ -255,7 +266,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('leaves it untouched when Infura key project ID doesnt exist', async () => {
-    mockUnitTestInfuraId = undefined;
+    setMockUnitTestInfuraId(undefined);
     const oldStorage = {
       meta: { version: oldVersion },
       data: {

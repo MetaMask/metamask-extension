@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`UpdateModal renders correctly with required props 1`] = `
+exports[`UpdateModal > renders correctly with required props 1`] = `
 <body>
   <div
     id="popover-content"

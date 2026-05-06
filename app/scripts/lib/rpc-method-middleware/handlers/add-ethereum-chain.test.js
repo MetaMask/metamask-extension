@@ -155,9 +155,7 @@ describe('addEthereumChainHandler', () => {
       params: [{}],
     });
 
-    expect(end).toHaveBeenCalledWith(
-      rpcErrors.invalidParams(new Error('failed to validate params')),
-    );
+    expect(end).toHaveBeenCalledWith(new Error('failed to validate params'));
   });
 
   it('should deduplicate the featured endpoint if the URL `firstValidRPCUrl` send from client is the same as the one in FEATURED_RPCS', async () => {

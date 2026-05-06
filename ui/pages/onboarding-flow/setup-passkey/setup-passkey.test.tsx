@@ -25,10 +25,10 @@ import {
 } from '../../../../shared/lib/passkey';
 import SetupPasskey from './setup-passkey';
 
-jest.mock('../../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
+jest.mock('../../../../shared/lib/passkey', async () => ({
+  ...(await jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
     '../../../../shared/lib/passkey',
-  ),
+  )),
   startPasskeyRegistration: jest.fn().mockResolvedValue({
     id: 'AQ',
     rawId: 'AQ',
@@ -64,8 +64,11 @@ const mockAuthenticationResponse = {
   clientExtensionResults: {},
 };
 
-jest.mock('../../../store/actions', () => {
-  const actual = jest.requireActual('../../../store/actions');
+jest.mock('../../../store/actions', async () => {
+  const actual =
+    await jest.requireActual<typeof import('../../../store/actions')>(
+      '../../../store/actions',
+    );
   return {
     ...actual,
     generatePasskeyRegistrationOptions: jest.fn().mockResolvedValue({

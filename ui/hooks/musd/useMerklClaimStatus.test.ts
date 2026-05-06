@@ -14,8 +14,8 @@ import { useMerklClaimStatus } from './useMerklClaimStatus';
 const MOCK_USER = '0x1234567890abcdef1234567890abcdef12345678';
 
 const mockResolveClaimAmount = jest.fn();
-jest.mock('./transaction-amount-utils', () => {
-  const actual = jest.requireActual<
+jest.mock('./transaction-amount-utils', async () => {
+  const actual = await vi.importActual<
     typeof import('./transaction-amount-utils')
   >('./transaction-amount-utils');
   return {

@@ -18,6 +18,7 @@ import usePolling from './usePolling';
 jest.mock('./usePolling', () => jest.fn());
 
 jest.mock('../store/actions', () => ({
+  gasFeeStopPollingByPollingToken: jest.fn(),
   getNetworkConfigurationByNetworkClientId: jest.fn(),
 }));
 

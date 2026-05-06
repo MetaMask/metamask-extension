@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Modal should match snapshot 1`] = `
+exports[`Modal > should match snapshot 1`] = `
 <div
   class="mm-modal"
   data-testid="test"

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`<NFTSendHeading /> renders component 1`] = `
+exports[`<NFTSendHeading /> > renders component 1`] = `
 <div>
   <div
     class="flex flex-col mb-2 pb-3 px-0"

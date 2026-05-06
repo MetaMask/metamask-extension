@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`storiesMetadata matches expected values for storiesMetadata 1`] = `
+exports[`storiesMetadata > matches expected values for storiesMetadata 1`] = `
 {
   "airswap": {
     "color": "#2B71FF",

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SwapStepIcon renders the component with step 1 by default 1`] = `
+exports[`SwapStepIcon > renders the component with step 1 by default 1`] = `
 <div>
   <svg
     fill="none"
@@ -24,7 +24,7 @@ exports[`SwapStepIcon renders the component with step 1 by default 1`] = `
 </div>
 `;
 
-exports[`SwapStepIcon renders the component with step 2 1`] = `
+exports[`SwapStepIcon > renders the component with step 2 1`] = `
 <div>
   <svg
     fill="none"

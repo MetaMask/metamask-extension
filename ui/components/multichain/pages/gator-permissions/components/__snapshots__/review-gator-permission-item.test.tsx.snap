@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Permission List Item render ERC20 token permissions renders erc20 token periodic permission correctly 1`] = `
+exports[`Permission List Item > render > ERC20 token permissions > renders erc20 token periodic permission correctly 1`] = `
 <div>
   <div
     class="box box--margin-4 box--padding-4 box--gap-1 box--flex-direction-row box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
@@ -196,7 +196,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
 </div>
 `;
 
-exports[`Permission List Item render ERC20 token permissions renders erc20 token permission with loading state for unknown token 1`] = `
+exports[`Permission List Item > render > ERC20 token permissions > renders erc20 token permission with loading state for unknown token 1`] = `
 <div>
   <div
     class="box box--margin-4 box--padding-4 box--gap-1 box--flex-direction-row box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
@@ -397,7 +397,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
 </div>
 `;
 
-exports[`Permission List Item render ERC20 token permissions renders erc20 token revocation permission correctly without frequency row 1`] = `
+exports[`Permission List Item > render > ERC20 token permissions > renders erc20 token revocation permission correctly without frequency row 1`] = `
 <div>
   <div
     class="box box--margin-4 box--padding-4 box--gap-1 box--flex-direction-row box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
@@ -572,7 +572,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
 </div>
 `;
 
-exports[`Permission List Item render ERC20 token permissions renders erc20 token stream permission correctly 1`] = `
+exports[`Permission List Item > render > ERC20 token permissions > renders erc20 token stream permission correctly 1`] = `
 <div>
   <div
     class="box box--margin-4 box--padding-4 box--gap-1 box--flex-direction-row box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
@@ -768,7 +768,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
 </div>
 `;
 
-exports[`Permission List Item render NATIVE token permissions renders native token periodic permission correctly 1`] = `
+exports[`Permission List Item > render > NATIVE token permissions > renders native token periodic permission correctly 1`] = `
 <div>
   <div
     class="box box--margin-4 box--padding-4 box--gap-1 box--flex-direction-row box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
@@ -964,7 +964,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
 </div>
 `;
 
-exports[`Permission List Item render NATIVE token permissions renders native token stream permission correctly 1`] = `
+exports[`Permission List Item > render > NATIVE token permissions > renders native token stream permission correctly 1`] = `
 <div>
   <div
     class="box box--margin-4 box--padding-4 box--gap-1 box--flex-direction-row box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"

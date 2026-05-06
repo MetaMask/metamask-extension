@@ -1,9 +1,9 @@
-const {
+import {
   selectFragmentBySuccessEvent,
   selectFragmentById,
   selectMatchingFragment,
   getLatestMetricsEventTimestamp,
-} = require('.');
+} from '.';
 
 describe('selectFragmentBySuccessEvent', () => {
   it('should find matching fragment in state by successEvent', () => {

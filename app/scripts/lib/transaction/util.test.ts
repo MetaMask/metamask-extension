@@ -42,8 +42,6 @@ jest.mock('./tempo-tx-utils', () => ({
   ...jest.requireActual('./tempo-tx-utils'),
   getTempoTransactionBatchArgs: jest.fn(),
 }));
-const realGetTempoTransactionBatchArgsImpl =
-  jest.requireActual('./tempo-tx-utils').getTempoTransactionBatchArgs;
 
 jest.mock('../ppom/ppom-util');
 jest.mock('../trust-signals/security-alerts-api');
@@ -196,7 +194,14 @@ describe('Transaction Utils', () => {
     (accountSupports7702 as jest.Mock).mockResolvedValue(true);
 
     (getTempoTransactionBatchArgs as jest.Mock).mockImplementation(
-      realGetTempoTransactionBatchArgsImpl,
+      ({ request: transactionRequest }) => ({
+        ...transactionRequest.transactionOptions,
+        from: transactionRequest.transactionParams.from,
+        transactions: TEMPO_EXPECTED_TRANSACTIONS_FOR_VALID_CALLS_FIELD,
+        gasFeeToken: transactionRequest.transactionParams.feeToken,
+        excludeNativeTokenForFee: true,
+        networkClientId: transactionRequest.networkClientId,
+      }),
     );
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();

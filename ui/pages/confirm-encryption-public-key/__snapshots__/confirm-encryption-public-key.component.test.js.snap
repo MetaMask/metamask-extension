@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ConfirmDecryptMessage Component should match snapshot when preference is ETH currency 1`] = `
+exports[`ConfirmDecryptMessage Component > should match snapshot when preference is ETH currency 1`] = `
 <div>
   <div
     class="request-encryption-public-key__container"

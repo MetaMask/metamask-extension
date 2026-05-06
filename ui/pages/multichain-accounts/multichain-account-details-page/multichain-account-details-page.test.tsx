@@ -27,7 +27,12 @@ const LEDGER_ACCOUNT_GROUP_ID =
   'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813';
 
 jest.mock('../../../../shared/lib/trace', () => ({
-  ...jest.requireActual('../../../../shared/lib/trace'),
+  TraceName: {
+    ShowAccountAddressList: 'Show Account Address List',
+  },
+  TraceOperation: {
+    AccountUi: 'account.ui',
+  },
   trace: jest.fn(),
 }));
 
@@ -252,10 +257,9 @@ describe('MultichainAccountDetailsPage', () => {
         (addressesLink as HTMLElement).click();
       }
 
-      const { TraceName } = jest.requireActual('../../../../shared/lib/trace');
       expect(traceModule.trace).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: TraceName.ShowAccountAddressList,
+          name: traceModule.TraceName.ShowAccountAddressList,
         }),
       );
     });

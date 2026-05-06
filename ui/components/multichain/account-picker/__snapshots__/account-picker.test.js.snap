@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AccountPicker renders properly 1`] = `
+exports[`AccountPicker > renders properly 1`] = `
 <div>
   <div
     class="mm-box w-full mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"

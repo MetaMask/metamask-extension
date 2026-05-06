@@ -485,9 +485,6 @@ describe('printReport', () => {
   });
 
   it('shows all-passing metrics in PASS section without detail lines', () => {
-    const { COMPARISON_SEVERITY: SEV } = jest.requireActual(
-      './comparison-utils',
-    ) as typeof import('./comparison-utils');
     printReport({
       comparisons: [
         makeComparison({
@@ -501,8 +498,8 @@ describe('printReport', () => {
               baseline: 1400,
               delta: 0,
               deltaPercent: 0,
-              severity: SEV.Pass.value,
-              indication: SEV.Pass.icon,
+              severity: COMPARISON_SEVERITY.Pass.value,
+              indication: COMPARISON_SEVERITY.Pass.icon,
             },
           ],
         }),
@@ -517,12 +514,6 @@ describe('printReport', () => {
   });
 
   it('prints issue metric lines for comparisons with violations', () => {
-    const { COMPARISON_SEVERITY: SEV } = jest.requireActual(
-      './comparison-utils',
-    ) as typeof import('./comparison-utils');
-    const { THRESHOLD_SEVERITY: TS } = jest.requireActual(
-      '../../shared/constants/benchmarks',
-    ) as typeof import('../../shared/constants/benchmarks');
     printReport({
       comparisons: [
         makeComparison({
@@ -535,7 +526,7 @@ describe('printReport', () => {
               percentile: 'p95',
               value: 6000,
               threshold: 4800,
-              severity: TS.Fail,
+              severity: THRESHOLD_SEVERITY.Fail,
             },
           ],
         }),
@@ -546,13 +537,10 @@ describe('printReport', () => {
     const allCalls = consoleSpy.mock.calls.flat().join('\n');
     expect(allCalls).toContain('FAIL  standardHome [chrome-webpack]');
     expect(allCalls).toContain('uiStartup');
-    expect(allCalls).toContain(SEV.Regression.icon);
+    expect(allCalls).toContain(COMPARISON_SEVERITY.Regression.icon);
   });
 
   it('reports correct total counts for failed and warned comparisons', () => {
-    const { THRESHOLD_SEVERITY: TS } = jest.requireActual(
-      '../../shared/constants/benchmarks',
-    ) as typeof import('../../shared/constants/benchmarks');
     printReport({
       comparisons: [
         makeComparison({ benchmarkName: 'A', absoluteFailed: true }),
@@ -565,7 +553,7 @@ describe('printReport', () => {
               percentile: 'p75',
               value: 2100,
               threshold: 2000,
-              severity: TS.Warn,
+              severity: THRESHOLD_SEVERITY.Warn,
             },
           ],
         }),

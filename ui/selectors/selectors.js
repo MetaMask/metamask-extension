@@ -1998,9 +1998,8 @@ export function getWeb3ShimUsageStateForOrigin(state, origin) {
 export function getSwapsDefaultToken(state, overrideChainId = null) {
   const selectedAccount = getSelectedAccount(state);
   const balance = selectedAccount?.balance;
-  const currentChainId = getCurrentChainId(state);
 
-  const chainId = overrideChainId ?? currentChainId;
+  const chainId = overrideChainId ?? getCurrentChainId(state);
   const defaultTokenObject = SWAPS_CHAINID_DEFAULT_TOKEN_MAP[chainId];
 
   return {
@@ -2022,8 +2021,7 @@ export function getSwapsDefaultToken(state, overrideChainId = null) {
  * @returns {boolean} Whether the chainId is a swaps chain
  */
 export function getIsSwapsChain(state, overrideChainId) {
-  const currentChainId = getCurrentChainId(state);
-  const chainId = overrideChainId ?? currentChainId;
+  const chainId = overrideChainId ?? getCurrentChainId(state);
   const isDevelopment =
     process.env.METAMASK_ENVIRONMENT === 'development' ||
     process.env.METAMASK_ENVIRONMENT === 'testing';
@@ -2043,6 +2041,10 @@ export function selectHasBridgeQuotes(state) {
  * @returns {boolean} Whether the chainId is a bridge chain
  */
 export function getIsBridgeChain(state, overrideChainId) {
+  if (overrideChainId !== undefined && overrideChainId !== null) {
+    return ALLOWED_BRIDGE_CHAIN_IDS.includes(overrideChainId);
+  }
+
   const account = getSelectedInternalAccount(state);
   const { chainId: selectedMultiChainId, isEvmNetwork } = getMultichainNetwork(
     state,

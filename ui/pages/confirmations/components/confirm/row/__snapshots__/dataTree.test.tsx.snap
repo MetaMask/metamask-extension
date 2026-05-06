@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DataTree correctly renders reverse strings 1`] = `
+exports[`DataTree > correctly renders reverse strings 1`] = `
 <div>
   <div
     class="mm-box mm-box--width-full"
@@ -71,7 +71,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
 </div>
 `;
 
-exports[`DataTree should match snapshot 1`] = `
+exports[`DataTree > should match snapshot 1`] = `
 <div>
   <div
     class="mm-box mm-box--width-full"
@@ -539,7 +539,7 @@ exports[`DataTree should match snapshot 1`] = `
 </div>
 `;
 
-exports[`DataTree should match snapshot for order signature type 1`] = `
+exports[`DataTree > should match snapshot for order signature type 1`] = `
 <div>
   <div
     class="mm-box mm-box--width-full"
@@ -664,7 +664,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
 </div>
 `;
 
-exports[`DataTree should match snapshot for permit signature type 1`] = `
+exports[`DataTree > should match snapshot for permit signature type 1`] = `
 <div>
   <div
     class="mm-box mm-box--width-full"
@@ -791,7 +791,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
 </div>
 `;
 
-exports[`DataTree should match snapshot for permit signature type and deadline is -1 (None) 1`] = `
+exports[`DataTree > should match snapshot for permit signature type and deadline is -1 (None) 1`] = `
 <div>
   <div
     class="mm-box mm-box--width-full"

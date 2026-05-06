@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Info renders info section for approve request 1`] = `
+exports[`Info > renders info section for approve request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -473,7 +473,7 @@ exports[`Info renders info section for approve request 1`] = `
 </div>
 `;
 
-exports[`Info renders info section for contract interaction request 1`] = `
+exports[`Info > renders info section for contract interaction request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--padding-inline-0 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -832,7 +832,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
 </div>
 `;
 
-exports[`Info renders info section for personal sign request 1`] = `
+exports[`Info > renders info section for personal sign request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -976,7 +976,7 @@ exports[`Info renders info section for personal sign request 1`] = `
 </div>
 `;
 
-exports[`Info renders info section for setApprovalForAll request 1`] = `
+exports[`Info > renders info section for setApprovalForAll request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -1449,7 +1449,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
 </div>
 `;
 
-exports[`Info renders info section for typed sign request 1`] = `
+exports[`Info > renders info section for typed sign request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -2143,7 +2143,7 @@ exports[`Info renders info section for typed sign request 1`] = `
 </div>
 `;
 
-exports[`Info renders info section for typed sign request with permission 1`] = `
+exports[`Info > renders info section for typed sign request with permission 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"

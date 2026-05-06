@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BridgeTransactionSettingsModal should render the component, with initial Solana state 1`] = `
+exports[`BridgeTransactionSettingsModal > should render the component, with initial Solana state 1`] = `
 <div
   class="mm-modal bridge-settings-modal"
 >
@@ -148,7 +148,7 @@ exports[`BridgeTransactionSettingsModal should render the component, with initia
 </div>
 `;
 
-exports[`BridgeTransactionSettingsModal should render the component, with initial state 1`] = `
+exports[`BridgeTransactionSettingsModal > should render the component, with initial state 1`] = `
 <div
   class="mm-modal bridge-settings-modal"
 >

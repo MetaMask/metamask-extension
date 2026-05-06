@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ConfirmInfoRowAddress renders appropriately with PetNames enabled 1`] = `
+exports[`ConfirmInfoRowAddress > renders appropriately with PetNames enabled 1`] = `
 <div>
   <div
     class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"

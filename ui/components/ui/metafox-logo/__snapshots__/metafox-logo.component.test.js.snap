@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`MetaFoxLogo does not set icon height and width when unsetIconHeight is true 1`] = `
+exports[`MetaFoxLogo > does not set icon height and width when unsetIconHeight is true 1`] = `
 <div>
   <button
     class="mm-box app-header__logo-container mm-box--background-color-transparent"
@@ -16,7 +16,7 @@ exports[`MetaFoxLogo does not set icon height and width when unsetIconHeight is 
 </div>
 `;
 
-exports[`MetaFoxLogo should match snapshot with img width and height default set to 42 1`] = `
+exports[`MetaFoxLogo > should match snapshot with img width and height default set to 42 1`] = `
 <div>
   <button
     class="mm-box app-header__logo-container mm-box--background-color-transparent"

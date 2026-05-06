@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`usePrefillFromSearchQuery should not set inputs when there are no query params 1`] = `
+exports[`usePrefillFromSearchQuery > should not set inputs when there are no query params 1`] = `
 {
   "fromNativeBalance": undefined,
   "fromToken": undefined,
@@ -10,7 +10,7 @@ exports[`usePrefillFromSearchQuery should not set inputs when there are no query
 }
 `;
 
-exports[`usePrefillFromSearchQuery should not set params when fetchAssetMetadataForAssetIds fails 1`] = `
+exports[`usePrefillFromSearchQuery > should not set params when fetchAssetMetadataForAssetIds fails 1`] = `
 {
   "fromToken": undefined,
   "fromTokenInputValue": undefined,
@@ -18,7 +18,7 @@ exports[`usePrefillFromSearchQuery should not set params when fetchAssetMetadata
 }
 `;
 
-exports[`usePrefillFromSearchQuery should only set dest token 1`] = `
+exports[`usePrefillFromSearchQuery > should only set dest token 1`] = `
 {
   "fromToken": undefined,
   "fromTokenInputValue": undefined,
@@ -39,7 +39,7 @@ exports[`usePrefillFromSearchQuery should only set dest token 1`] = `
 }
 `;
 
-exports[`usePrefillFromSearchQuery should only set src token and amount 1`] = `
+exports[`usePrefillFromSearchQuery > should only set src token and amount 1`] = `
 {
   "fromToken": {
     "accountType": undefined,
@@ -60,7 +60,7 @@ exports[`usePrefillFromSearchQuery should only set src token and amount 1`] = `
 }
 `;
 
-exports[`usePrefillFromSearchQuery should set evm bridge params 1`] = `
+exports[`usePrefillFromSearchQuery > should set evm bridge params 1`] = `
 {
   "fromNativeBalance": null,
   "fromToken": {
@@ -96,7 +96,7 @@ exports[`usePrefillFromSearchQuery should set evm bridge params 1`] = `
 }
 `;
 
-exports[`usePrefillFromSearchQuery should set solana swap params 1`] = `
+exports[`usePrefillFromSearchQuery > should set solana swap params 1`] = `
 {
   "fromToken": {
     "accountType": undefined,
@@ -130,7 +130,7 @@ exports[`usePrefillFromSearchQuery should set solana swap params 1`] = `
 }
 `;
 
-exports[`usePrefillFromSearchQuery should set src token after navigating from ERC20 asset page 1`] = `
+exports[`usePrefillFromSearchQuery > should set src token after navigating from ERC20 asset page 1`] = `
 {
   "fromToken": {
     "accountType": undefined,
@@ -151,7 +151,7 @@ exports[`usePrefillFromSearchQuery should set src token after navigating from ER
 }
 `;
 
-exports[`usePrefillFromSearchQuery should set src token after navigating from native asset page 1`] = `
+exports[`usePrefillFromSearchQuery > should set src token after navigating from native asset page 1`] = `
 {
   "fromToken": {
     "accountType": undefined,
@@ -172,7 +172,7 @@ exports[`usePrefillFromSearchQuery should set src token after navigating from na
 }
 `;
 
-exports[`usePrefillFromSearchQuery should unset amount 1`] = `
+exports[`usePrefillFromSearchQuery > should unset amount 1`] = `
 {
   "fromToken": undefined,
   "fromTokenInputValue": undefined,

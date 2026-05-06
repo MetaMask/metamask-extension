@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Review Recovery Phrase Component renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params 1`] = `
+exports[`Review Recovery Phrase Component > renders match snapshot when isFromReminder and isFromSettingsSecurity are present in the search params 1`] = `
 <div>
   <div
     class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
@@ -336,7 +336,7 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
 </div>
 `;
 
-exports[`Review Recovery Phrase Component should match snapshot 1`] = `
+exports[`Review Recovery Phrase Component > should match snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"
@@ -649,7 +649,7 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
 </div>
 `;
 
-exports[`Review Recovery Phrase Component should match snapshot after reveal recovery button is clicked 1`] = `
+exports[`Review Recovery Phrase Component > should match snapshot after reveal recovery button is clicked 1`] = `
 <div>
   <div
     class="flex flex-col gap-6 items-center justify-between recovery-phrase h-full"

@@ -1,14 +1,8 @@
 /**
  * @jest-environment node
  */
-const buildUtils = require('@metamask/build-utils');
 const { createRemoveFencedCodeTransform } = require('./remove-fenced-code');
 const transformUtils = require('./utils');
-
-jest.mock('@metamask/build-utils', () => ({
-  ...jest.requireActual('@metamask/build-utils'),
-  lintTransformedFile: jest.fn(),
-}));
 
 jest.mock('./utils', () => ({
   getESLintInstance: jest.fn(),
@@ -30,13 +24,15 @@ const getFeatures = ({ all, active }) => ({
 
 describe('build/transforms/remove-fenced-code', () => {
   describe('createRemoveFencedCodeTransform', () => {
-    const { lintTransformedFile: lintTransformedFileMock } = buildUtils;
     const { getESLintInstance: getESLintInstanceMock } = transformUtils;
+    const lintTextMock = jest.fn();
     const mockJsFileName = 'file.js';
 
     beforeEach(() => {
-      getESLintInstanceMock.mockImplementation(() => ({}));
-      lintTransformedFileMock.mockImplementation(() => Promise.resolve());
+      lintTextMock.mockResolvedValue([{ errorCount: 0, messages: [] }]);
+      getESLintInstanceMock.mockImplementation(() => ({
+        lintText: lintTextMock,
+      }));
     });
 
     afterEach(() => {
@@ -61,7 +57,7 @@ describe('build/transforms/remove-fenced-code', () => {
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(fileContent);
           expect(getESLintInstanceMock).not.toHaveBeenCalled();
-          expect(lintTransformedFileMock).not.toHaveBeenCalled();
+          expect(lintTextMock).not.toHaveBeenCalled();
           resolve();
         });
 
@@ -90,11 +86,10 @@ describe('build/transforms/remove-fenced-code', () => {
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
           expect(getESLintInstanceMock).toHaveBeenCalledTimes(1);
-          expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
-          expect(lintTransformedFileMock).toHaveBeenCalledWith(
-            {}, // mock eslint instance
-            mockJsFileName,
+          expect(lintTextMock).toHaveBeenCalledTimes(1);
+          expect(lintTextMock).toHaveBeenCalledWith(
             filePrefix,
+            { filePath: mockJsFileName, warnIgnored: false },
           );
           resolve();
         });
@@ -129,11 +124,10 @@ describe('build/transforms/remove-fenced-code', () => {
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
           expect(getESLintInstanceMock).toHaveBeenCalledTimes(1);
-          expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
-          expect(lintTransformedFileMock).toHaveBeenCalledWith(
-            {}, // mock eslint instance
-            mockJsFileName,
+          expect(lintTextMock).toHaveBeenCalledTimes(1);
+          expect(lintTextMock).toHaveBeenCalledWith(
             filePrefix,
+            { filePath: mockJsFileName, warnIgnored: false },
           );
           resolve();
         });
@@ -162,7 +156,7 @@ describe('build/transforms/remove-fenced-code', () => {
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(fileContent);
           expect(getESLintInstanceMock).not.toHaveBeenCalled();
-          expect(lintTransformedFileMock).not.toHaveBeenCalled();
+          expect(lintTextMock).not.toHaveBeenCalled();
           resolve();
         });
 
@@ -188,7 +182,7 @@ describe('build/transforms/remove-fenced-code', () => {
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
           expect(getESLintInstanceMock).not.toHaveBeenCalled();
-          expect(lintTransformedFileMock).not.toHaveBeenCalled();
+          expect(lintTextMock).not.toHaveBeenCalled();
           resolve();
         });
 
@@ -213,7 +207,7 @@ describe('build/transforms/remove-fenced-code', () => {
             ),
           );
           expect(getESLintInstanceMock).not.toHaveBeenCalled();
-          expect(lintTransformedFileMock).not.toHaveBeenCalled();
+          expect(lintTextMock).not.toHaveBeenCalled();
           resolve();
         });
 
@@ -222,9 +216,14 @@ describe('build/transforms/remove-fenced-code', () => {
     });
 
     it('handles transformed file lint failure', async () => {
-      lintTransformedFileMock.mockImplementationOnce(() =>
-        Promise.reject(new Error('lint failure')),
-      );
+      lintTextMock.mockResolvedValueOnce([
+        {
+          errorCount: 1,
+          messages: [
+            { severity: 2, message: 'lint failure', ruleId: 'test/rule' },
+          ],
+        },
+      ]);
 
       const filePrefix = '// A comment\n';
       const fileContent = filePrefix.concat(getMinimalFencedCode());
@@ -235,13 +234,14 @@ describe('build/transforms/remove-fenced-code', () => {
 
       await new Promise((resolve) => {
         stream.on('error', (error) => {
-          expect(error).toStrictEqual(new Error('lint failure'));
+          expect(error.message).toStrictEqual(
+            expect.stringContaining('lint failure'),
+          );
           expect(getESLintInstanceMock).toHaveBeenCalledTimes(1);
-          expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
-          expect(lintTransformedFileMock).toHaveBeenCalledWith(
-            {}, // mock eslint instance
-            mockJsFileName,
+          expect(lintTextMock).toHaveBeenCalledTimes(1);
+          expect(lintTextMock).toHaveBeenCalledWith(
             filePrefix,
+            { filePath: mockJsFileName, warnIgnored: false },
           );
           resolve();
         });

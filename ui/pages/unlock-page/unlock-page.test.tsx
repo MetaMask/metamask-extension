@@ -34,10 +34,10 @@ jest.mock('../onboarding-flow/welcome/fox-appear-animation', () => ({
   default: () => <div data-testid="fox-appear-animation" />,
 }));
 
-jest.mock('../../../shared/lib/passkey', () => ({
-  ...jest.requireActual<typeof import('../../../shared/lib/passkey')>(
+jest.mock('../../../shared/lib/passkey', async () => ({
+  ...(await jest.requireActual<typeof import('../../../shared/lib/passkey')>(
     '../../../shared/lib/passkey',
-  ),
+  )),
   startPasskeyAuthentication: jest.fn().mockResolvedValue({
     id: 'cred',
     rawId: 'cred',

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AddRpcUrlModal should render correctly 1`] = `
+exports[`AddRpcUrlModal > should render correctly 1`] = `
 <div>
   <div
     class="mm-box add-rpc-modal mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--height-full"

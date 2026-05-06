@@ -75,6 +75,45 @@ jest.mock('../../../hooks/musd', () => {
       shouldShowTokenListItemCta: jest.fn().mockReturnValue(false),
       shouldShowAssetOverviewCta: jest.fn().mockReturnValue(false),
     }),
+    useMusdMerklPosition: (enabled = true) => {
+      if (!enabled) {
+        return { aggregatedFiat: 0, hasAnyBalance: false };
+      }
+
+      const { getAssetsBySelectedAccountGroup: selectAssets } =
+        jest.requireMock('../../../selectors/assets') as typeof import('../../../selectors/assets');
+      const assetsByChain = selectAssets();
+      const musdAddress =
+        '0xacA92E438df0B2401fF60dA7E4337B687a2435DA'.toLowerCase();
+
+      let aggregatedFiat = 0;
+      let hasAnyBalance = false;
+
+      for (const chainId of ['0x1', '0xe708']) {
+        const asset = assetsByChain[chainId]?.find(
+          ({ address }: { address?: string }) =>
+            address?.toLowerCase() === musdAddress,
+        );
+
+        if (!asset) {
+          continue;
+        }
+
+        const fiatBalance = asset.fiat?.balance;
+        if (typeof fiatBalance === 'number' && Number.isFinite(fiatBalance)) {
+          aggregatedFiat += fiatBalance;
+        }
+
+        const { rawBalance, balance } = asset;
+        hasAnyBalance =
+          hasAnyBalance ||
+          (typeof rawBalance === 'string'
+            ? !/^0x0*$/u.test(rawBalance)
+            : balance !== '0');
+      }
+
+      return { aggregatedFiat, hasAnyBalance };
+    },
     useMusdBalance: () => ({
       hasMusdBalance: false,
     }),

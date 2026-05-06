@@ -1,10 +1,8 @@
 import React from 'react';
-import { useAppSelector } from '../../store/store';
+import configureStore, { useAppSelector } from '../../store/store';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import NotificationDetails from './notification-details';
-
-const configureStore = jest.requireActual('../../store/store').default;
 
 const mockUseNavigate = jest.fn();
 

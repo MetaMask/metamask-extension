@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Connected Site Menu should render the site menu in connected state 1`] = `
+exports[`Connected Site Menu > should render the site menu in connected state 1`] = `
 <div>
   <button
     class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg"
@@ -14,7 +14,7 @@ exports[`Connected Site Menu should render the site menu in connected state 1`] 
 </div>
 `;
 
-exports[`Connected Site Menu should render the site menu in not connected state 1`] = `
+exports[`Connected Site Menu > should render the site menu in not connected state 1`] = `
 <div>
   <button
     class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg"
@@ -28,7 +28,7 @@ exports[`Connected Site Menu should render the site menu in not connected state 
 </div>
 `;
 
-exports[`Connected Site Menu should render the site menu in not connected to current account state 1`] = `
+exports[`Connected Site Menu > should render the site menu in not connected to current account state 1`] = `
 <div>
   <button
     class="mm-box multichain-connected-site-menu mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg"

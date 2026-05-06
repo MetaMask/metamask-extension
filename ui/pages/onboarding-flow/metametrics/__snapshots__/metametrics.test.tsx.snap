@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
+exports[`Onboarding Metametrics Component > renders match snapshot 1`] = `
 <div>
   <div
     class="flex flex-col gap-4 onboarding-metametrics"
@@ -149,7 +149,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
 </div>
 `;
 
-exports[`Onboarding Metametrics Component renders match snapshot after new policy date 1`] = `
+exports[`Onboarding Metametrics Component > renders match snapshot after new policy date 1`] = `
 <div>
   <div
     class="flex flex-col gap-4 onboarding-metametrics"

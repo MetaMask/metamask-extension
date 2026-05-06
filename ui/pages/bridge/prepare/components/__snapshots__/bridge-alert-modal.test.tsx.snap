@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BridgeAlertModal price-data-unavailable does not open when activeQuotePriceData is present 1`] = `
+exports[`BridgeAlertModal > price-data-unavailable > does not open when activeQuotePriceData is present 1`] = `
 <body>
   <div
     id="popover-content"
@@ -9,7 +9,7 @@ exports[`BridgeAlertModal price-data-unavailable does not open when activeQuoteP
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should not render when there is no price impact warning or error: -0.1 1`] = `
+exports[`BridgeAlertModal > quote-card > should not render when there is no price impact warning or error: -0.1 1`] = `
 <body>
   <div
     id="popover-content"
@@ -18,7 +18,7 @@ exports[`BridgeAlertModal quote-card should not render when there is no price im
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should not render when there is no price impact warning or error: 0 1`] = `
+exports[`BridgeAlertModal > quote-card > should not render when there is no price impact warning or error: 0 1`] = `
 <body>
   <div
     id="popover-content"
@@ -27,7 +27,7 @@ exports[`BridgeAlertModal quote-card should not render when there is no price im
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should not render when there is no price impact warning or error: 0.001 1`] = `
+exports[`BridgeAlertModal > quote-card > should not render when there is no price impact warning or error: 0.001 1`] = `
 <body>
   <div
     id="popover-content"
@@ -36,7 +36,7 @@ exports[`BridgeAlertModal quote-card should not render when there is no price im
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should not render when there is no price impact warning or error: undefined 1`] = `
+exports[`BridgeAlertModal > quote-card > should not render when there is no price impact warning or error: undefined 1`] = `
 <body>
   <div
     id="popover-content"
@@ -45,7 +45,9 @@ exports[`BridgeAlertModal quote-card should not render when there is no price im
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should render alert banner when there is a price impact error (with exchange rates): 0.27 1`] = `
+exports[`BridgeAlertModal > quote-card > should render alert banner when there is a price impact error (with exchange rates): 0.27 > BannerAlert within BridgeAlertModal 1`] = `"You will lose $0.07 on this trade"`;
+
+exports[`BridgeAlertModal > quote-card > should render alert banner when there is a price impact error (with exchange rates): 0.27 1`] = `
 <body>
   <div
     id="popover-content"
@@ -190,9 +192,9 @@ exports[`BridgeAlertModal quote-card should render alert banner when there is a 
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should render alert banner when there is a price impact error (with exchange rates): 0.27: BannerAlert within BridgeAlertModal 1`] = `"You will lose $0.07 on this trade"`;
+exports[`BridgeAlertModal > quote-card > should render when there is a price impact error: 0.27 > BannerAlert within BridgeAlertModal 1`] = `undefined`;
 
-exports[`BridgeAlertModal quote-card should render when there is a price impact error: 0.27 1`] = `
+exports[`BridgeAlertModal > quote-card > should render when there is a price impact error: 0.27 1`] = `
 <body>
   <div
     id="popover-content"
@@ -309,9 +311,9 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should render when there is a price impact error: 0.27: BannerAlert within BridgeAlertModal 1`] = `undefined`;
+exports[`BridgeAlertModal > quote-card > should render when there is a price impact warning (with exchange rates): 0.07 > BannerAlert within BridgeAlertModal 1`] = `undefined`;
 
-exports[`BridgeAlertModal quote-card should render when there is a price impact warning (with exchange rates): 0.07 1`] = `
+exports[`BridgeAlertModal > quote-card > should render when there is a price impact warning (with exchange rates): 0.07 1`] = `
 <body>
   <div
     id="popover-content"
@@ -428,9 +430,9 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should render when there is a price impact warning (with exchange rates): 0.07: BannerAlert within BridgeAlertModal 1`] = `undefined`;
+exports[`BridgeAlertModal > quote-card > should render when there is a price impact warning: 0.07 > BannerAlert within BridgeAlertModal 1`] = `undefined`;
 
-exports[`BridgeAlertModal quote-card should render when there is a price impact warning: 0.07 1`] = `
+exports[`BridgeAlertModal > quote-card > should render when there is a price impact warning: 0.07 1`] = `
 <body>
   <div
     id="popover-content"
@@ -547,9 +549,7 @@ exports[`BridgeAlertModal quote-card should render when there is a price impact 
 </body>
 `;
 
-exports[`BridgeAlertModal quote-card should render when there is a price impact warning: 0.07: BannerAlert within BridgeAlertModal 1`] = `undefined`;
-
-exports[`BridgeAlertModal submit-cta should disable the submit button when submission is in progress 1`] = `
+exports[`BridgeAlertModal > submit-cta > should disable the submit button when submission is in progress 1`] = `
 <body>
   <div
     id="popover-content"
@@ -733,7 +733,7 @@ exports[`BridgeAlertModal submit-cta should disable the submit button when submi
 </body>
 `;
 
-exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: 0 1`] = `
+exports[`BridgeAlertModal > submit-cta > should not render when there is no price impact error: 0 1`] = `
 <body>
   <div
     id="popover-content"
@@ -742,7 +742,7 @@ exports[`BridgeAlertModal submit-cta should not render when there is no price im
 </body>
 `;
 
-exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: 0.001 1`] = `
+exports[`BridgeAlertModal > submit-cta > should not render when there is no price impact error: 0.001 1`] = `
 <body>
   <div
     id="popover-content"
@@ -751,7 +751,7 @@ exports[`BridgeAlertModal submit-cta should not render when there is no price im
 </body>
 `;
 
-exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: 0.07 1`] = `
+exports[`BridgeAlertModal > submit-cta > should not render when there is no price impact error: 0.07 1`] = `
 <body>
   <div
     id="popover-content"
@@ -760,7 +760,7 @@ exports[`BridgeAlertModal submit-cta should not render when there is no price im
 </body>
 `;
 
-exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: 0.24 1`] = `
+exports[`BridgeAlertModal > submit-cta > should not render when there is no price impact error: 0.24 1`] = `
 <body>
   <div
     id="popover-content"
@@ -769,7 +769,7 @@ exports[`BridgeAlertModal submit-cta should not render when there is no price im
 </body>
 `;
 
-exports[`BridgeAlertModal submit-cta should not render when there is no price impact error: undefined 1`] = `
+exports[`BridgeAlertModal > submit-cta > should not render when there is no price impact error: undefined 1`] = `
 <body>
   <div
     id="popover-content"
@@ -778,7 +778,7 @@ exports[`BridgeAlertModal submit-cta should not render when there is no price im
 </body>
 `;
 
-exports[`BridgeAlertModal submit-cta should render when there is a price impact error 1`] = `
+exports[`BridgeAlertModal > submit-cta > should render when there is a price impact error 1`] = `
 <body>
   <div
     id="popover-content"

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CurrencyInput Component rendering should disable unit input 1`] = `
+exports[`CurrencyInput Component > rendering > should disable unit input 1`] = `
 <div>
   <div
     class="unit-input"
@@ -54,7 +54,7 @@ exports[`CurrencyInput Component rendering should disable unit input 1`] = `
 </div>
 `;
 
-exports[`CurrencyInput Component rendering should render properly with a fiat value 1`] = `
+exports[`CurrencyInput Component > rendering > should render properly with a fiat value 1`] = `
 <div>
   <div
     class="unit-input"
@@ -113,7 +113,7 @@ exports[`CurrencyInput Component rendering should render properly with a fiat va
 </div>
 `;
 
-exports[`CurrencyInput Component rendering should render properly with a native value when hideSecondary is true 1`] = `
+exports[`CurrencyInput Component > rendering > should render properly with a native value when hideSecondary is true 1`] = `
 <div>
   <div
     class="unit-input"
@@ -148,7 +148,7 @@ exports[`CurrencyInput Component rendering should render properly with a native 
 </div>
 `;
 
-exports[`CurrencyInput Component rendering should render properly with an ETH value 1`] = `
+exports[`CurrencyInput Component > rendering > should render properly with an ETH value 1`] = `
 <div>
   <div
     class="unit-input"
@@ -203,7 +203,7 @@ exports[`CurrencyInput Component rendering should render properly with an ETH va
 </div>
 `;
 
-exports[`CurrencyInput Component rendering should render properly without a suffix 1`] = `
+exports[`CurrencyInput Component > rendering > should render properly without a suffix 1`] = `
 <div>
   <div
     class="unit-input"
@@ -258,7 +258,7 @@ exports[`CurrencyInput Component rendering should render properly without a suff
 </div>
 `;
 
-exports[`CurrencyInput Component rendering should show skeleton state 1`] = `
+exports[`CurrencyInput Component > rendering > should show skeleton state 1`] = `
 <div>
   <div
     class="mm-box currency-input__skeleton-container mm-box--padding-right-4"

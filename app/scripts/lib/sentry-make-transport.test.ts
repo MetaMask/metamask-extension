@@ -3,7 +3,21 @@ import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
 import { tick } from '../../../test/lib/timer-helpers';
 import { makeTransport } from './sentry-make-transport';
 
-const originalMakeFetchTransport = Sentry.makeFetchTransport.bind(Sentry);
+jest.mock('@sentry/browser', async () => {
+  const actual =
+    await vi.importActual<typeof import('@sentry/browser')>('@sentry/browser');
+  return {
+    ...actual,
+    actualMakeFetchTransport: actual.makeFetchTransport,
+    makeFetchTransport: jest.fn(actual.makeFetchTransport),
+  };
+});
+
+const originalMakeFetchTransport = (
+  Sentry as typeof Sentry & {
+    actualMakeFetchTransport: typeof Sentry.makeFetchTransport;
+  }
+).actualMakeFetchTransport.bind(Sentry);
 
 type TestTransport = ReturnType<typeof makeTransport>;
 type TestEnvelope = Parameters<TestTransport['send']>[0];
@@ -58,24 +72,23 @@ describe('sentry-make-transport', () => {
     it('does not call send or flush on the default transport when makeTransport is called', () => {
       const defaultTransportSend = jest.fn().mockResolvedValue({});
       const defaultTransportFlush = jest.fn().mockResolvedValue(true);
-      const makeFetchTransportSpy = jest
-        .spyOn(Sentry, 'makeFetchTransport')
-        .mockReturnValue({
-          send: defaultTransportSend,
-          flush: defaultTransportFlush,
-        });
+      const makeFetchTransportMock = jest.mocked(Sentry.makeFetchTransport);
+      makeFetchTransportMock.mockReturnValueOnce({
+        send: defaultTransportSend,
+        flush: defaultTransportFlush,
+      });
 
       makeTransport({} as Parameters<typeof Sentry.makeFetchTransport>[0]);
 
       expect(defaultTransportSend).not.toHaveBeenCalled();
       expect(defaultTransportFlush).not.toHaveBeenCalled();
-
-      makeFetchTransportSpy.mockRestore();
     });
   });
 
   describe('makeTransport', () => {
-    let makeFetchTransportSpy: jest.SpyInstance;
+    let makeFetchTransportMock: jest.MockedFunction<
+      typeof Sentry.makeFetchTransport
+    >;
 
     function mockFetchForTransport() {
       return jest
@@ -84,18 +97,17 @@ describe('sentry-make-transport', () => {
     }
 
     beforeEach(() => {
-      makeFetchTransportSpy = jest
-        .spyOn(Sentry, 'makeFetchTransport')
-        .mockImplementation((options, customFetch) =>
-          originalMakeFetchTransport(
-            options as Parameters<typeof originalMakeFetchTransport>[0],
-            customFetch,
-          ),
-        );
+      makeFetchTransportMock = jest.mocked(Sentry.makeFetchTransport);
+      makeFetchTransportMock.mockImplementation((options, customFetch) =>
+        originalMakeFetchTransport(
+          options as Parameters<typeof originalMakeFetchTransport>[0],
+          customFetch,
+        ),
+      );
     });
 
     afterEach(() => {
-      makeFetchTransportSpy.mockRestore();
+      makeFetchTransportMock.mockClear();
       deleteStateHookProperty('getPersistedState');
       deleteStateHookProperty('getBackupState');
     });
@@ -127,7 +139,7 @@ describe('sentry-make-transport', () => {
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
       );
-      expect(makeFetchTransportSpy).toHaveBeenCalled();
+      expect(makeFetchTransportMock).toHaveBeenCalled();
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();

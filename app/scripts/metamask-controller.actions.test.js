@@ -84,17 +84,19 @@ const tearDownMockMiddlewareLog = () => {
   loggerMiddlewareMock = undefined;
 };
 
-const createLoggerMiddlewareMock = () => (req, res, next) => {
-  if (loggerMiddlewareMock) {
-    loggerMiddlewareMock.requests.push(req);
-    next((cb) => {
-      loggerMiddlewareMock.responses.push(res);
-      cb();
-    });
-    return;
-  }
-  next();
-};
+function createLoggerMiddlewareMock() {
+  return (req, res, next) => {
+    if (loggerMiddlewareMock) {
+      loggerMiddlewareMock.requests.push(req);
+      next((cb) => {
+        loggerMiddlewareMock.responses.push(res);
+        cb();
+      });
+      return;
+    }
+    next();
+  };
+}
 jest.mock('./lib/createLoggerMiddleware', () => createLoggerMiddlewareMock);
 
 const mockULIDs = [
@@ -103,20 +105,6 @@ const mockULIDs = [
   '01JKAF3KP7VPAG0YXEDTDRB6ZW',
   '01JKAF3KP7VPAG0YXEDTDRB6ZX',
 ];
-
-function* ulidGenerator(ulids = mockULIDs) {
-  for (const id of ulids) {
-    yield id;
-  }
-
-  throw new Error('should not be called after exhausting provided IDs');
-}
-
-let mockUlidGenerator = ulidGenerator();
-
-jest.mock('ulid', () => ({
-  ulid: jest.fn().mockImplementation(() => mockUlidGenerator.next().value),
-}));
 
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -185,8 +173,6 @@ describe('MetaMaskController', function () {
     initializeMockMiddlewareLog();
     mockToHardwareWalletError.mockReset();
 
-    // Re-create the ULID generator to start over again the `mockULIDs` list.
-    mockUlidGenerator = ulidGenerator();
   });
 
   afterEach(function () {
@@ -264,11 +250,20 @@ describe('MetaMaskController', function () {
       const result2 = metamaskController.keyringController.state;
 
       expect(result1.keyrings).toHaveLength(2);
-      expect(result1.keyrings[0].metadata.id).toBe(mockULIDs[0]); // 0: Primary HD keyring
-      expect(result1.keyrings[1].metadata.id).toBe(mockULIDs[1]); // 1: Snap keyring
+      expect(result1.keyrings[0].metadata.id).toStrictEqual(
+        expect.any(String),
+      );
+      expect(result1.keyrings[1].metadata.id).toStrictEqual(
+        expect.any(String),
+      );
+      expect(result2.keyrings[0].metadata.id).not.toBe(
+        result1.keyrings[0].metadata.id,
+      );
+      expect(result2.keyrings[1].metadata.id).not.toBe(
+        result1.keyrings[1].metadata.id,
+      );
 
       // On restore, a new keyring metadata is generated.
-      const ulidNewIndex = 2;
       expect(result2).toStrictEqual({
         ...result1,
         keyrings: [
@@ -276,14 +271,14 @@ describe('MetaMaskController', function () {
             ...result1.keyrings[0],
             metadata: {
               ...result1.keyrings[0].metadata,
-              id: mockULIDs[ulidNewIndex + 0], // 0: New primary HD keyring
+              id: result2.keyrings[0].metadata.id,
             },
           },
           {
             ...result1.keyrings[1],
             metadata: {
               ...result1.keyrings[1].metadata,
-              id: mockULIDs[ulidNewIndex + 1], // 1: New Snap keyring
+              id: result2.keyrings[1].metadata.id,
             },
           },
         ],

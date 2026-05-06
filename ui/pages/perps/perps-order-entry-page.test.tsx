@@ -261,6 +261,25 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const mockIsNearLiquidationPrice = jest.fn();
+const isNearLiquidationPrice = (
+  currentPrice: number,
+  liquidationPrice: number | null | undefined,
+  direction: 'long' | 'short',
+) => {
+  if (
+    liquidationPrice === null ||
+    liquidationPrice === undefined ||
+    liquidationPrice <= 0
+  ) {
+    return false;
+  }
+  if (!currentPrice || currentPrice <= 0) {
+    return false;
+  }
+  return direction === 'long'
+    ? currentPrice <= liquidationPrice
+    : currentPrice >= liquidationPrice;
+};
 jest.mock('../../components/app/perps/order-entry/limit-price-warnings', () => {
   const actual = jest.requireActual(
     '../../components/app/perps/order-entry/limit-price-warnings',
@@ -302,11 +321,7 @@ describe('PerpsOrderEntryPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
-    const { isNearLiquidationPrice: realIsNearLiquidation } =
-      jest.requireActual(
-        '../../components/app/perps/order-entry/limit-price-warnings',
-      );
-    mockIsNearLiquidationPrice.mockImplementation(realIsNearLiquidation);
+    mockIsNearLiquidationPrice.mockImplementation(isNearLiquidationPrice);
     mockReplacePerpsToastByKey.mockReset();
     mockHidePerpsToast.mockReset();
     mockTriggerDeposit.mockClear();

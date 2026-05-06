@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ExchangeRateDisplay renders the component with initial props 1`] = `
+exports[`ExchangeRateDisplay > renders the component with initial props 1`] = `
 <div>
   <div
     class="exchange-rate-display"

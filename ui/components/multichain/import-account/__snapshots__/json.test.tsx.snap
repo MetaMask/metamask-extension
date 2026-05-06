@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Json should match snapshot 1`] = `
+exports[`Json > should match snapshot 1`] = `
 <DocumentFragment>
   <p
     class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Reveal Seed Page should match snapshot 1`] = `
+exports[`Reveal Seed Page > should match snapshot 1`] = `
 <div>
   <div
     class="gap-4 pt-8 pr-4 pb-8 pl-4 page-container h-full md:w-[490px]"

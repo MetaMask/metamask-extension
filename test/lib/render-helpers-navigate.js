@@ -16,7 +16,7 @@ import {
   LegacyMetaMetricsProvider,
 } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
-import * as enLocaleMessages from '../../app/_locales/en/messages.json';
+import enLocaleMessages from '../../app/_locales/en/messages.json';
 import {
   LegacyRouteMessengerProvider,
   RouteMessengerContext,

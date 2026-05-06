@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Input should render correctly 1`] = `
+exports[`Input > should render correctly 1`] = `
 <div>
   <input
     autocomplete="off"

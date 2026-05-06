@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NetworkListMenu renders properly 1`] = `
+exports[`NetworkListMenu > renders properly 1`] = `
 <body>
   <div
     id="popover-content"
@@ -1003,7 +1003,7 @@ exports[`NetworkListMenu renders properly 1`] = `
 </body>
 `;
 
-exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
+exports[`NetworkListMenu > should match snapshot when adding a network 1`] = `
 <body>
   <div
     id="popover-content"
@@ -1270,7 +1270,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
 </body>
 `;
 
-exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
+exports[`NetworkListMenu > should match snapshot when editing a network 1`] = `
 <body>
   <div
     id="popover-content"

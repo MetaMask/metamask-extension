@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`CurrencyDisplay Component should match default snapshot 1`] = `
+exports[`CurrencyDisplay Component > should match default snapshot 1`] = `
 <div>
   <div
     class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -16,7 +16,7 @@ exports[`CurrencyDisplay Component should match default snapshot 1`] = `
 </div>
 `;
 
-exports[`CurrencyDisplay Component should render text with a className 1`] = `
+exports[`CurrencyDisplay Component > should render text with a className 1`] = `
 <div>
   <div
     class="mm-box currency-display-component currency-display mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -32,7 +32,7 @@ exports[`CurrencyDisplay Component should render text with a className 1`] = `
 </div>
 `;
 
-exports[`CurrencyDisplay Component should render text with a prefix 1`] = `
+exports[`CurrencyDisplay Component > should render text with a prefix 1`] = `
 <div>
   <div
     class="mm-box currency-display-component currency-display mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -49,7 +49,7 @@ exports[`CurrencyDisplay Component should render text with a prefix 1`] = `
 </div>
 `;
 
-exports[`CurrencyDisplay Component should render with title (tooltip) 1`] = `
+exports[`CurrencyDisplay Component > should render with title (tooltip) 1`] = `
 <div>
   <div
     class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -65,7 +65,7 @@ exports[`CurrencyDisplay Component should render with title (tooltip) 1`] = `
 </div>
 `;
 
-exports[`CurrencyDisplay Component should render without title (tooltip) 1`] = `
+exports[`CurrencyDisplay Component > should render without title (tooltip) 1`] = `
 <div>
   <div
     class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
@@ -79,4 +79,3 @@ exports[`CurrencyDisplay Component should render without title (tooltip) 1`] = `
   </div>
 </div>
 `;
-

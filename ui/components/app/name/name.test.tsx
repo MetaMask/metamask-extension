@@ -24,7 +24,12 @@ jest.mock('react-redux', () => ({
 }));
 
 jest.mock('./name-details/name-details', () => {
-  return <div data-testid="name-details">NameDetails</div>;
+  return {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    __esModule: true,
+    default: () => <div data-testid="name-details">NameDetails</div>,
+  };
 });
 
 const ADDRESS_NO_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54977';

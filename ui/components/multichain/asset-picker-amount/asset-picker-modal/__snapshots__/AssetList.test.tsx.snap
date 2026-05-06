@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AssetList should pass an undefined nativeCurrencySymbol if the safe chains are not loaded 1`] = `
+exports[`AssetList > should pass an undefined nativeCurrencySymbol if the safe chains are not loaded 1`] = `
 [
   [
     {
@@ -41,7 +41,7 @@ exports[`AssetList should pass an undefined nativeCurrencySymbol if the safe cha
 ]
 `;
 
-exports[`AssetList should show the scam warning modal 1`] = `
+exports[`AssetList > should show the scam warning modal 1`] = `
 [
   [
     {

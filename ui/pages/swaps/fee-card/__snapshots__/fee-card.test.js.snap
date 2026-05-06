@@ -1,10 +1,10 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`FeeCard renders the component with EIP-1559 enabled 1`] = `null`;
+exports[`FeeCard > renders the component with EIP-1559 enabled 1`] = `null`;
 
-exports[`FeeCard renders the component with initial props 1`] = `null`;
+exports[`FeeCard > renders the component with initial props 1`] = `null`;
 
-exports[`FeeCard renders the component with initial props 2`] = `
+exports[`FeeCard > renders the component with initial props 2`] = `
 <div
   class="info-tooltip"
   data-testid="info-tooltip"

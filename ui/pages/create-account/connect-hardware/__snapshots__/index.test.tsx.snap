@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ConnectHardwareForm initial render render matches snapshot 1`] = `
+exports[`ConnectHardwareForm > initial render > render matches snapshot 1`] = `
 <div>
   <div
     class="flex flex-col items-center justify-center new-external-account-form"

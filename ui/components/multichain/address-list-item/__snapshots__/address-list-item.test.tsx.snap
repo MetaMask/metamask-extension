@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AddressListItem displays duplicate contact warning icon 1`] = `
+exports[`AddressListItem > displays duplicate contact warning icon 1`] = `
 <div>
   <button
     class="mm-box address-list-item gap-4 mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
@@ -121,7 +121,7 @@ exports[`AddressListItem displays duplicate contact warning icon 1`] = `
 </div>
 `;
 
-exports[`AddressListItem renders the address and label without duplicate contact warning icon 1`] = `
+exports[`AddressListItem > renders the address and label without duplicate contact warning icon 1`] = `
 <div>
   <button
     class="mm-box address-list-item gap-4 mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
@@ -223,7 +223,7 @@ exports[`AddressListItem renders the address and label without duplicate contact
 </div>
 `;
 
-exports[`AddressListItem uses a confusable when it should 1`] = `
+exports[`AddressListItem > uses a confusable when it should 1`] = `
 <div>
   <button
     class="mm-box address-list-item gap-4 mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"

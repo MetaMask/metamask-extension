@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`HexToDecimal Component should render a prefixed hex as a decimal with a className 1`] = `
+exports[`HexToDecimal Component > should render a prefixed hex as a decimal with a className 1`] = `
 <div>
   <div
     class="hex-to-decimal"
@@ -10,7 +10,7 @@ exports[`HexToDecimal Component should render a prefixed hex as a decimal with a
 </div>
 `;
 
-exports[`HexToDecimal Component should render an unprefixed hex as a decimal with a className 1`] = `
+exports[`HexToDecimal Component > should render an unprefixed hex as a decimal with a className 1`] = `
 <div>
   <div
     class="hex-to-decimal"

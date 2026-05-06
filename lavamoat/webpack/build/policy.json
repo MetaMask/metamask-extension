@@ -248,7 +248,7 @@
         "define": true
       },
       "packages": {
-        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "vitest>magic-string>@jridgewell/sourcemap-codec": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
@@ -272,7 +272,7 @@
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
-    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+    "vitest>magic-string>@jridgewell/sourcemap-codec": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
@@ -285,7 +285,7 @@
       },
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+        "vitest>magic-string>@jridgewell/sourcemap-codec": true
       }
     },
     "@lavamoat/webpack>@lavamoat/aa": {
@@ -1136,7 +1136,7 @@
         "schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
         "mocha>serialize-javascript": true,
-        "copy-webpack-plugin>tinyglobby": true
+        "vitest>tinyglobby": true
       }
     },
     "postcss-loader>cosmiconfig": {
@@ -1397,7 +1397,7 @@
         "depcheck>cosmiconfig>parse-json>error-ex>is-arrayish": true
       }
     },
-    "webpack>es-module-lexer": {
+    "vitest>es-module-lexer": {
       "globals": {
         "Buffer": true,
         "WebAssembly.Instance": true,
@@ -1407,7 +1407,7 @@
         "atob": true
       }
     },
-    "@storybook/test-runner>@storybook/core-common>esbuild": {
+    "vitest>vite>esbuild": {
       "builtin": {
         "child_process.execFileSync": true,
         "child_process.spawn": true,
@@ -1602,7 +1602,7 @@
         "webpack-dev-server>sockjs>websocket-driver": true
       }
     },
-    "copy-webpack-plugin>tinyglobby>fdir": {
+    "vitest>tinyglobby>fdir": {
       "builtin": {
         "fs": true,
         "path": true
@@ -1611,7 +1611,7 @@
         "process.platform": true
       },
       "packages": {
-        "copy-webpack-plugin>tinyglobby>picomatch": true
+        "vitest>tinyglobby>picomatch": true
       }
     },
     "chokidar>braces>fill-range": {
@@ -2283,7 +2283,7 @@
         "process.version.slice": true
       }
     },
-    "copy-webpack-plugin>tinyglobby>picomatch": {
+    "vitest>tinyglobby>picomatch": {
       "globals": {
         "navigator": true,
         "process": true
@@ -2922,7 +2922,7 @@
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "@swc/core": true,
-        "@storybook/test-runner>@storybook/core-common>esbuild": true,
+        "vitest>vite>esbuild": true,
         "terser-webpack-plugin>jest-worker": true,
         "schema-utils": true,
         "mocha>serialize-javascript": true,
@@ -2962,11 +2962,20 @@
         "process.nextTick": true
       }
     },
-    "copy-webpack-plugin>tinyglobby": {
+    "vitest>tinyglobby": {
       "builtin": {
-        "fs": true,
-        "path": true,
-        "url": true
+        "fs.readdir": true,
+        "fs.readdirSync": true,
+        "fs.realpath": true,
+        "fs.realpathSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "path.isAbsolute": true,
+        "path.posix.join": true,
+        "path.posix.normalize": true,
+        "path.posix.relative": true,
+        "path.resolve": true,
+        "url.fileURLToPath": true
       },
       "globals": {
         "URL": true,
@@ -2976,8 +2985,8 @@
         "process.platform": true
       },
       "packages": {
-        "copy-webpack-plugin>tinyglobby>fdir": true,
-        "copy-webpack-plugin>tinyglobby>picomatch": true
+        "vitest>tinyglobby>fdir": true,
+        "vitest>tinyglobby>picomatch": true
       }
     },
     "chokidar>braces>fill-range>to-regex-range": {
@@ -3242,7 +3251,7 @@
         "webpack>chrome-trace-event": true,
         "css-loader": true,
         "webpack>enhanced-resolve": true,
-        "webpack>es-module-lexer": true,
+        "vitest>es-module-lexer": true,
         "webpack>eslint-scope": true,
         "webpack>glob-to-regexp": true,
         "del>graceful-fs": true,

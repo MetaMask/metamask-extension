@@ -8,6 +8,9 @@ const mockVerify = verify as jest.MockedFunction<typeof verify>;
 const mockRoutes = routes as jest.Mocked<Map<string, Route>>;
 
 jest.mock('./verify', () => ({
+  INVALID: 'invalid',
+  MISSING: 'missing',
+  VALID: 'valid',
   verify: jest.fn(),
 }));
 jest.mock('./routes', () => ({

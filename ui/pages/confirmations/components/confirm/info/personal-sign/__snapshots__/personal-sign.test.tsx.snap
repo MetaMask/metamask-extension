@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`PersonalSignInfo handle reverse string properly 1`] = `
+exports[`PersonalSignInfo > handle reverse string properly 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -142,7 +142,7 @@ exports[`PersonalSignInfo handle reverse string properly 1`] = `
 </div>
 `;
 
-exports[`PersonalSignInfo renders correctly for personal sign request 1`] = `
+exports[`PersonalSignInfo > renders correctly for personal sign request 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"

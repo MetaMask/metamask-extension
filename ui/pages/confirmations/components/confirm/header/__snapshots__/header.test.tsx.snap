@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Header should match snapshot with signature confirmation 1`] = `
+exports[`Header > should match snapshot with signature confirmation 1`] = `
 <div>
   <div
     class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -107,7 +107,7 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
 </div>
 `;
 
-exports[`Header should match snapshot with token transfer confirmation initiated in a dApp 1`] = `
+exports[`Header > should match snapshot with token transfer confirmation initiated in a dApp 1`] = `
 <div>
   <div
     class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default"
@@ -147,7 +147,7 @@ exports[`Header should match snapshot with token transfer confirmation initiated
 </div>
 `;
 
-exports[`Header should match snapshot with token transfer confirmation initiated in the wallet 1`] = `
+exports[`Header > should match snapshot with token transfer confirmation initiated in the wallet 1`] = `
 <div>
   <div
     class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-3 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--background-color-background-default"
@@ -192,7 +192,7 @@ exports[`Header should match snapshot with token transfer confirmation initiated
 </div>
 `;
 
-exports[`Header should match snapshot with transaction confirmation 1`] = `
+exports[`Header > should match snapshot with transaction confirmation 1`] = `
 <div>
   <div
     class="mm-box confirm_header__wrapper mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"

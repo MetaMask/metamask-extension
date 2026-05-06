@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SiteCellTooltip should render correctly 1`] = `
+exports[`SiteCellTooltip > should render correctly 1`] = `
 <div>
   <div
     aria-describedby="tippy-tooltip-1"

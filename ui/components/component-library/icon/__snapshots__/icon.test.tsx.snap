@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Icon should render correctly 1`] = `
+exports[`Icon > should render correctly 1`] = `
 <div>
   <span
     class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"

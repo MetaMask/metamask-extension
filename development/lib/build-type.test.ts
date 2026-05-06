@@ -1,22 +1,21 @@
 import path from 'path';
+import { createRequire } from 'node:module';
 import { cloneDeep } from 'lodash';
-import { parse as yamlParse } from 'yaml';
-import { loadBuildTypesConfig } from './build-type';
+
+const requireFromHere = createRequire(import.meta.url);
 
 jest.mock('fs', () => ({
   readFileSync: jest.fn(),
 }));
 
-jest.mock('yaml', () => ({
-  parse: jest.fn(),
-}));
-
-const yamlParseMock = jest.mocked(yamlParse);
+const yamlModule = requireFromHere('yaml') as typeof import('yaml');
+const originalYamlParse = yamlModule.parse;
+const yamlParseMock = jest.fn();
+let loadBuildTypesConfig: typeof import('./build-type').loadBuildTypesConfig;
 
 const makeBuildsYml = (() => {
   const { readFileSync } = jest.requireActual('fs');
-  const { parse } = jest.requireActual('yaml');
-  const buildsYml = parse(
+  const buildsYml = originalYamlParse(
     readFileSync(path.resolve(__dirname, '../../builds.yml'), 'utf8'),
   );
 
@@ -26,6 +25,15 @@ const makeBuildsYml = (() => {
 describe('loadBuildTypesConfig', () => {
   beforeEach(() => {
     yamlParseMock.mockReset();
+    yamlModule.parse = yamlParseMock as typeof yamlModule.parse;
+    delete requireFromHere.cache[requireFromHere.resolve('./build-type')];
+    ({ loadBuildTypesConfig } = requireFromHere(
+      './build-type',
+    ) as typeof import('./build-type'));
+  });
+
+  afterEach(() => {
+    yamlModule.parse = originalYamlParse;
   });
 
   it('should load the build types config', () => {
@@ -40,10 +48,11 @@ describe('loadBuildTypesConfig', () => {
   });
 
   it('should cache the loaded build types config by default', () => {
+    yamlParseMock.mockReturnValueOnce(makeBuildsYml());
+    const buildTypes1 = loadBuildTypesConfig();
     yamlParseMock.mockImplementation(() => {
       throw new Error('Should not be called');
     });
-    const buildTypes1 = loadBuildTypesConfig();
     const buildTypes2 = loadBuildTypesConfig();
     expect(buildTypes1).toBe(buildTypes2);
   });

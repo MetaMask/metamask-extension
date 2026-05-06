@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
+exports[`Confirm > matches snapshot for signature - personal sign type 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -295,7 +295,7 @@ exports[`Confirm matches snapshot for signature - personal sign type 1`] = `
 </div>
 `;
 
-exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitBatch 1`] = `
+exports[`Confirm > should match snapshot for signature - typed sign - V4 - PermitBatch 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -772,7 +772,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitB
 </div>
 `;
 
-exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitSingle 1`] = `
+exports[`Confirm > should match snapshot for signature - typed sign - V4 - PermitSingle 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -1196,7 +1196,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 - PermitS
 </div>
 `;
 
-exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
+exports[`Confirm > should match snapshot for signature - typed sign - V4 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -2041,7 +2041,7 @@ exports[`Confirm should match snapshot for signature - typed sign - V4 1`] = `
 </div>
 `;
 
-exports[`Confirm should match snapshot for signature - typed sign - permit 1`] = `
+exports[`Confirm > should match snapshot for signature - typed sign - permit 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -2458,7 +2458,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
 </div>
 `;
 
-exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
+exports[`Confirm > should match snapshot signature - typed sign - order 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -3158,7 +3158,7 @@ exports[`Confirm should match snapshot signature - typed sign - order 1`] = `
 </div>
 `;
 
-exports[`Confirm should render SmartTransactionsBannerAlert for transaction types but not signature types 1`] = `
+exports[`Confirm > should render SmartTransactionsBannerAlert for transaction types but not signature types 1`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
@@ -3211,7 +3211,7 @@ exports[`Confirm should render SmartTransactionsBannerAlert for transaction type
 </div>
 `;
 
-exports[`Confirm should render SmartTransactionsBannerAlert for transaction types but not signature types 2`] = `
+exports[`Confirm > should render SmartTransactionsBannerAlert for transaction types but not signature types 2`] = `
 <div>
   <div
     class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"

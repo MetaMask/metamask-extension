@@ -3,6 +3,8 @@ import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navi
 import { getGaslessBridgeWith7702EnabledForChain } from '../../../../shared/lib/selectors';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { isHardwareWallet } from '../../../selectors';
+import { isRelaySupported } from '../../../store/actions';
+import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
 import { useGasIncluded7702 } from './useGasIncluded7702';
 
 jest.mock('../../../store/actions', () => ({
@@ -38,12 +40,8 @@ const renderUseGasIncluded7702 = (
 };
 
 describe('useGasIncluded7702', () => {
-  const mockIsRelaySupported = jest.requireMock(
-    '../../../store/actions',
-  ).isRelaySupported;
-  const mockIsAtomicBatchSupported = jest.requireMock(
-    '../../../store/controller-actions/transaction-controller',
-  ).isAtomicBatchSupported;
+  const mockIsRelaySupported = jest.mocked(isRelaySupported);
+  const mockIsAtomicBatchSupported = jest.mocked(isAtomicBatchSupported);
   const mockGetIsStxEnabled = jest.mocked(getIsStxEnabled);
   const mockGetGaslessBridgeWith7702Enabled = jest.mocked(
     getGaslessBridgeWith7702EnabledForChain,

@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`NameDetails renders proposed names 1`] = `
+exports[`NameDetails > renders proposed names 1`] = `
 <body>
   <div
     id="popover-content"
@@ -257,7 +257,7 @@ exports[`NameDetails renders proposed names 1`] = `
 </body>
 `;
 
-exports[`NameDetails renders when no address value is passed 1`] = `
+exports[`NameDetails > renders when no address value is passed 1`] = `
 <body>
   <div
     id="popover-content"
@@ -477,7 +477,7 @@ exports[`NameDetails renders when no address value is passed 1`] = `
 </body>
 `;
 
-exports[`NameDetails renders with no saved name 1`] = `
+exports[`NameDetails > renders with no saved name 1`] = `
 <body>
   <div
     id="popover-content"
@@ -699,7 +699,7 @@ exports[`NameDetails renders with no saved name 1`] = `
 </body>
 `;
 
-exports[`NameDetails renders with recognized name 1`] = `
+exports[`NameDetails > renders with recognized name 1`] = `
 <body>
   <div
     id="popover-content"
@@ -921,7 +921,7 @@ exports[`NameDetails renders with recognized name 1`] = `
 </body>
 `;
 
-exports[`NameDetails renders with saved name 1`] = `
+exports[`NameDetails > renders with saved name 1`] = `
 <body>
   <div
     id="popover-content"

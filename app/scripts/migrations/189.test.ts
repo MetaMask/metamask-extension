@@ -1,14 +1,25 @@
 import { cloneDeep } from 'lodash';
 
 const mockUnitTestInfuraIdInitialValue = 'unitTestInfuraId';
-let mockUnitTestInfuraId: string | undefined = mockUnitTestInfuraIdInitialValue;
+const { getMockUnitTestInfuraId, setMockUnitTestInfuraId } = jest.hoisted(
+  () => {
+    let mockUnitTestInfuraId: string | undefined = 'unitTestInfuraId';
+
+    return {
+      getMockUnitTestInfuraId: () => mockUnitTestInfuraId,
+      setMockUnitTestInfuraId: (value: string | undefined) => {
+        mockUnitTestInfuraId = value;
+      },
+    };
+  },
+);
 
 jest.mock('../../../shared/constants/network', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   ...jest.requireActual('../../../shared/constants/network'),
   get infuraProjectId() {
-    return mockUnitTestInfuraId;
+    return getMockUnitTestInfuraId();
   },
 }));
 
@@ -63,7 +74,7 @@ describe(`migration #${VERSION}`, () => {
   beforeEach(() => {
     mockedCaptureException = jest.fn();
     global.sentry = { captureException: mockedCaptureException };
-    mockUnitTestInfuraId = mockUnitTestInfuraIdInitialValue;
+    setMockUnitTestInfuraId(mockUnitTestInfuraIdInitialValue);
   });
 
   afterEach(() => {
@@ -239,7 +250,7 @@ describe(`migration #${VERSION}`, () => {
     expect(migratedConfig.rpcEndpoints).toHaveLength(2);
     expect(migratedConfig.rpcEndpoints[0].url).toBe('https://rpc.com');
     expect(migratedConfig.rpcEndpoints[1].url).toBe(
-      `https://megaeth-mainnet.infura.io/v3/${mockUnitTestInfuraId}`,
+      `https://megaeth-mainnet.infura.io/v3/${mockUnitTestInfuraIdInitialValue}`,
     );
     expect(migratedConfig.defaultRpcEndpointIndex).toBe(1);
     expect(migratedConfig.blockExplorerUrls).toEqual([
@@ -250,7 +261,7 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('only changes the blockExplorer RPC when Infura key project ID doesnt exist', async () => {
-    mockUnitTestInfuraId = undefined;
+    setMockUnitTestInfuraId(undefined);
     const oldStorage = {
       meta: { version: oldVersion },
       data: {

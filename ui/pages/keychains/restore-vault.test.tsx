@@ -1,5 +1,4 @@
 import React from 'react';
-import sinon from 'sinon';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { userEvent } from '@testing-library/user-event';
@@ -15,6 +14,13 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
 }));
+jest.mock('../../store/actions', () => ({
+  createNewVaultAndRestore: jest.fn(),
+  resetOAuthLoginState: jest.fn(),
+  resetWallet: jest.fn(),
+  setFirstTimeFlowType: jest.fn(),
+  unMarkPasswordForgotten: jest.fn(),
+}));
 
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -24,6 +30,10 @@ describe('Restore vault Component', () => {
 
   beforeEach(() => {
     mockUseNavigate.mockClear();
+    jest.clearAllMocks();
+    jest
+      .mocked(actions.unMarkPasswordForgotten)
+      .mockReturnValue({ type: 'MOCK' });
   });
 
   it('renders match snapshot', () => {
@@ -64,40 +74,31 @@ describe('Restore vault Component', () => {
   });
 
   it('should call handleImport when password is submitted', async () => {
-    const mockCreateNewVaultAndRestore = sinon.stub().resolves();
-    const mockSetFirstTimeFlowType = sinon.stub().resolves();
-    const mockUnMarkPasswordForgotten = sinon.stub().returns({ type: 'MOCK' });
-    const mockResetWallet = sinon.stub().resolves();
+    const mockCreateNewVaultAndRestore = jest.fn().mockResolvedValue(undefined);
+    const mockSetFirstTimeFlowType = jest.fn().mockResolvedValue(undefined);
+    const mockResetWallet = jest.fn().mockResolvedValue(undefined);
 
     const testStore = mockStore({
       metamask: { currentLocale: 'en' },
       appState: { isLoading: false },
     });
 
-    // Mock the action creators
-    sinon
-      .stub(actions, 'unMarkPasswordForgotten')
-      .returns(
-        mockUnMarkPasswordForgotten as ReturnType<
-          typeof actions.unMarkPasswordForgotten
-        >,
-      );
-    sinon.stub(actions, 'createNewVaultAndRestore').callsFake(((
-      pw: string,
+    jest.mocked(actions.createNewVaultAndRestore).mockImplementation(((
+      password: string,
       seed: string,
     ) => {
       return () => {
-        mockCreateNewVaultAndRestore(pw, seed);
+        mockCreateNewVaultAndRestore(password, seed);
         return Promise.resolve();
       };
     }) as typeof actions.createNewVaultAndRestore);
-    sinon.stub(actions, 'setFirstTimeFlowType').callsFake(((type) => {
+    jest.mocked(actions.setFirstTimeFlowType).mockImplementation(((type) => {
       return () => {
         mockSetFirstTimeFlowType(type);
         return Promise.resolve();
       };
     }) as typeof actions.setFirstTimeFlowType);
-    sinon.stub(actions, 'resetWallet').callsFake(((restoreOnly?: boolean) => {
+    jest.mocked(actions.resetWallet).mockImplementation(((restoreOnly?: boolean) => {
       return () => {
         mockResetWallet(restoreOnly);
         return Promise.resolve();
@@ -166,19 +167,14 @@ describe('Restore vault Component', () => {
     // Wait for the async action to be called
     await waitFor(() => {
       const restoreOnly = true;
-      expect(mockResetWallet.calledWith(restoreOnly)).toBe(true);
-      expect(mockCreateNewVaultAndRestore.calledOnce).toBe(true);
+      expect(mockResetWallet).toHaveBeenCalledWith(restoreOnly);
+      expect(mockCreateNewVaultAndRestore).toHaveBeenCalledTimes(1);
     });
 
-    expect(mockCreateNewVaultAndRestore.calledWith(password, TEST_SEED)).toBe(
-      true,
+    expect(mockCreateNewVaultAndRestore).toHaveBeenCalledWith(
+      password,
+      TEST_SEED,
     );
-
-    // Restore the stubs
-    (actions.unMarkPasswordForgotten as sinon.SinonStub).restore();
-    (actions.createNewVaultAndRestore as sinon.SinonStub).restore();
-    (actions.setFirstTimeFlowType as sinon.SinonStub).restore();
-    (actions.resetWallet as sinon.SinonStub).restore();
 
     // Verify navigation to default route
     expect(mockUseNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {

@@ -21,12 +21,14 @@ describe('Stream Utils', () => {
         const result = isStreamWritable(stream);
         expect(result).toBe(false);
       });
-      it(`should return false for ended instance`, (done) => {
-        stream.end(() => {
-          const result = isStreamWritable(stream);
-          expect(result).toBe(false);
-          done();
+      it(`should return false for ended instance`, async () => {
+        await new Promise<void>((resolve) => {
+          stream.end(() => {
+            resolve();
+          });
         });
+        const result = isStreamWritable(stream);
+        expect(result).toBe(false);
       });
     });
 
@@ -69,13 +71,15 @@ describe('Stream Utils', () => {
             const result = isStreamWritable(stream);
             expect(result).toBe(false);
           });
-          it(`should return false for ended ${className}`, (done) => {
+          it(`should return false for ended ${className}`, async () => {
             const stream = new S();
-            stream.end(() => {
-              const result = isStreamWritable(stream);
-              expect(result).toBe(false);
-              done();
+            await new Promise<void>((resolve) => {
+              stream.end(() => {
+                resolve();
+              });
             });
+            const result = isStreamWritable(stream);
+            expect(result).toBe(false);
           });
         });
         [

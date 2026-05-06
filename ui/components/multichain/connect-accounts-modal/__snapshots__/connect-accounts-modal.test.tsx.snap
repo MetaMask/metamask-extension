@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Connect More Accounts Modal should render correctly 1`] = `
+exports[`Connect More Accounts Modal > should render correctly 1`] = `
 <body>
   <div
     id="popover-content"

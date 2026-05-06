@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
+exports[`BridgeQuotesModal > should render gasIncluded quotes 1`] = `
 <body>
   <div
     id="popover-content"
@@ -178,7 +178,7 @@ exports[`BridgeQuotesModal should render gasIncluded quotes 1`] = `
 </body>
 `;
 
-exports[`BridgeQuotesModal should render the modal 1`] = `
+exports[`BridgeQuotesModal > should render the modal 1`] = `
 <body>
   <div
     id="popover-content"
@@ -356,7 +356,7 @@ exports[`BridgeQuotesModal should render the modal 1`] = `
 </body>
 `;
 
-exports[`BridgeQuotesModal should render the modal when exchange rates are not available 1`] = `
+exports[`BridgeQuotesModal > should render the modal when exchange rates are not available 1`] = `
 <body>
   <div
     id="popover-content"

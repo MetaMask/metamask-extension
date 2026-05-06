@@ -43,11 +43,34 @@ jest.mock('../trace', () => ({
 const mockedCaptureException = jest.mocked(captureException);
 const mockedCaptureMessage = jest.mocked(captureMessage);
 
+const requestLock = async (
+  name: string,
+  optionsOrCallback: LockOptions | LockGrantedCallback,
+  maybeCallback?: LockGrantedCallback,
+) => {
+  const options =
+    typeof optionsOrCallback === 'function' ? undefined : optionsOrCallback;
+  const callback =
+    typeof optionsOrCallback === 'function' ? optionsOrCallback : maybeCallback;
+
+  if (options?.signal?.aborted) {
+    throw new DOMException('The operation was aborted.', 'AbortError');
+  }
+
+  return callback?.({
+    mode: options?.mode ?? 'exclusive',
+    name,
+  } as Lock);
+};
+
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    navigator.locks.request = jest.fn(
+      requestLock,
+    ) as unknown as LockManager['request'];
     manager = new PersistenceManager({ localStore: new ExtensionStore() });
   });
 
@@ -441,14 +464,26 @@ describe('PersistenceManager', () => {
         .mockImplementation()
         .mockResolvedValue(undefined);
 
-      const { request } = navigator.locks;
       const mockCallback = jest.fn();
+      let lockRequestCount = 0;
       const mockLocksRequest = jest
         .fn()
-        .mockImplementation((name, options, _) => {
-          return request.call(navigator.locks, name, options, mockCallback);
+        .mockImplementation((_name, options) => {
+          lockRequestCount += 1;
+          const runCallback = () => {
+            if (options.signal.aborted) {
+              return undefined;
+            }
+
+            return mockCallback();
+          };
+
+          return lockRequestCount === 1
+            ? Promise.resolve(runCallback())
+            : Promise.resolve().then(runCallback);
         });
-      navigator.locks.request = mockLocksRequest;
+      navigator.locks.request =
+        mockLocksRequest as unknown as LockManager['request'];
 
       // should be saved
       const one = manager.set({ appState: { test: 1 } });
@@ -457,7 +492,7 @@ describe('PersistenceManager', () => {
       // should be saved
       const three = manager.set({ appState: { test: 3 } });
 
-      await Promise.race([one, two, three]);
+      await Promise.allSettled([one, two, three]);
 
       // lock should be requested 3 times
       expect(mockLocksRequest).toHaveBeenCalledTimes(3);

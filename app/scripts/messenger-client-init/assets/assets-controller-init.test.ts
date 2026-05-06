@@ -59,6 +59,11 @@ function getInitRequestMock(
   return requestMock;
 }
 
+async function importFreshAssetsControllerInit() {
+  jest.resetModules();
+  return await import('./assets-controller-init');
+}
+
 /**
  * Builds a test setup that also exposes the base messenger so tests can
  * publish events and exercise the subscriber callbacks registered by
@@ -420,14 +425,11 @@ describe('AssetsControllerInit', () => {
   });
 
   describe('queryApiClient', () => {
-    it('creates the API client with correct clientProduct', () => {
-      // Use jest.isolateModules so assets-controller-init gets a fresh module
+    it('creates the API client with correct clientProduct', async () => {
+      // Import a fresh module so assets-controller-init gets a fresh module
       // instance with apiClient = null, guaranteeing createApiPlatformClient is called.
-      jest.isolateModules(() => {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(getInitRequestMock());
-      });
+      const freshModule = await importFreshAssetsControllerInit();
+      freshModule.AssetsControllerInit(getInitRequestMock());
 
       expect(createApiPlatformClient).toHaveBeenCalledWith({
         clientProduct: 'metamask-extension',
@@ -435,23 +437,17 @@ describe('AssetsControllerInit', () => {
       });
     });
 
-    it('reuses the cached API client across multiple init calls', () => {
-      jest.isolateModules(() => {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(getInitRequestMock());
-        freshModule.AssetsControllerInit(getInitRequestMock());
-      });
+    it('reuses the cached API client across multiple init calls', async () => {
+      const freshModule = await importFreshAssetsControllerInit();
+      freshModule.AssetsControllerInit(getInitRequestMock());
+      freshModule.AssetsControllerInit(getInitRequestMock());
 
       expect(createApiPlatformClient).toHaveBeenCalledTimes(1);
     });
 
     it('getBearerToken resolves with the bearer token on success', async () => {
-      jest.isolateModules(() => {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(getInitRequestMock());
-      });
+      const freshModule = await importFreshAssetsControllerInit();
+      freshModule.AssetsControllerInit(getInitRequestMock());
 
       const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
       if (!callArgs) {
@@ -481,11 +477,8 @@ describe('AssetsControllerInit', () => {
           throw new Error(`Unexpected action: ${action}`);
         });
 
-      jest.isolateModules(() => {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-explicit-any
-        const freshModule = require('./assets-controller-init') as any;
-        freshModule.AssetsControllerInit(requestMock);
-      });
+      const freshModule = await importFreshAssetsControllerInit();
+      freshModule.AssetsControllerInit(requestMock);
 
       const callArgs = jest.mocked(createApiPlatformClient).mock.calls[0];
       if (!callArgs) {

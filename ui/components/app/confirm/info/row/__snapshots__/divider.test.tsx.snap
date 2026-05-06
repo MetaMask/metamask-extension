@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`ConfirmInfoRowDivider should match snapshot 1`] = `
+exports[`ConfirmInfoRowDivider > should match snapshot 1`] = `
 <div>
   <div
     style="padding-top: 8px; padding-bottom: 8px;"

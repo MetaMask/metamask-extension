@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`AlertProvider renders correctly with required props 1`] = `
+exports[`AlertProvider > renders correctly with required props 1`] = `
 <div>
   <div
     class="mm-box mm-box--padding-top-1 mm-box--text-align-center"

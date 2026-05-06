@@ -1,5 +1,6 @@
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { BtcScope } from '@metamask/keyring-api';
+import { waitFor } from '@testing-library/react';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import {
@@ -105,11 +106,11 @@ describe('useCurrencyRatePolling', () => {
       state,
     );
 
-    // Wait for the asynchronous effect(s) to complete.
-    await new Promise((r) => setTimeout(r, 0));
+    await waitFor(() => {
+      expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
+    });
     await Promise.all(mockPromises);
 
-    expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
     expect(currencyRateStartPolling).toHaveBeenCalledWith(['ETH', 'BNB']);
 
     // Simulate unmount, which should trigger stopping the polling.
@@ -164,11 +165,11 @@ describe('useCurrencyRatePolling', () => {
 
     renderHookWithProvider(() => useCurrencyRatePolling(), state);
 
-    // Wait for the asynchronous effect(s) to complete.
-    await new Promise((r) => setTimeout(r, 0));
+    await waitFor(() => {
+      expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
+    });
     await Promise.all(mockPromises);
 
-    expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
     expect(currencyRateStartPolling).toHaveBeenCalledWith(['ETH']); // Polling using the original native token symbol
   });
 
@@ -184,11 +185,11 @@ describe('useCurrencyRatePolling', () => {
 
     renderHookWithProvider(() => useCurrencyRatePolling(), state);
 
-    // Wait for the asynchronous effect(s) to complete.
-    await new Promise((r) => setTimeout(r, 0));
+    await waitFor(() => {
+      expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
+    });
     await Promise.all(mockPromises);
 
-    expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
     expect(currencyRateStartPolling).toHaveBeenCalledWith(['CUSTOM_TOKEN']); // Polling using the original native token symbol
   });
 
@@ -217,11 +218,11 @@ describe('useCurrencyRatePolling', () => {
 
     renderHookWithProvider(() => useCurrencyRatePolling(), state);
 
-    // Wait for the asynchronous effect(s) to complete.
-    await new Promise((r) => setTimeout(r, 0));
+    await waitFor(() => {
+      expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
+    });
     await Promise.all(mockPromises);
 
-    expect(currencyRateStartPolling).toHaveBeenCalledTimes(1);
     expect(currencyRateStartPolling).toHaveBeenCalledWith(['ETH']); // Polling using the original native token symbol
   });
 });

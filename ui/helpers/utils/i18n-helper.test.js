@@ -7,7 +7,9 @@ import { getMessage } from './i18n-helper';
 jest.mock('../../../shared/lib/i18n');
 jest.mock('../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
-  sentryLogger: jest.requireActual('../../../shared/lib/sentry').sentryLogger,
+  sentryLogger: Object.assign(jest.fn(), {
+    extend: jest.fn().mockReturnThis(),
+  }),
 }));
 const mockedCaptureException = jest.mocked(captureException);
 

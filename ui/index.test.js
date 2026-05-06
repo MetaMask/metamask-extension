@@ -39,6 +39,7 @@ const esMessages = {
 };
 
 jest.mock('../shared/lib/i18n', () => ({
+  FALLBACK_LOCALE: 'en',
   fetchLocale: jest.fn((locale) => (locale === 'en' ? enMessages : esMessages)),
   loadRelativeTimeFormatLocaleData: jest.fn(),
 }));

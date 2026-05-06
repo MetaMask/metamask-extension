@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`TransactionData renders a truncated token id for an NFT with a long token id 1`] = `
+exports[`TransactionData > renders a truncated token id for an NFT with a long token id 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -352,7 +352,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
 </div>
 `;
 
-exports[`TransactionData renders decoded data with names and descriptions 1`] = `
+exports[`TransactionData > renders decoded data with names and descriptions 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -1402,7 +1402,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
 </div>
 `;
 
-exports[`TransactionData renders decoded data with no names 1`] = `
+exports[`TransactionData > renders decoded data with no names 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -1633,7 +1633,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
 </div>
 `;
 
-exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
+exports[`TransactionData > renders decoded data with tuples and arrays 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
@@ -2740,9 +2740,9 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
 </div>
 `;
 
-exports[`TransactionData renders nothing if no transaction data 1`] = `<div />`;
+exports[`TransactionData > renders nothing if no transaction data 1`] = `<div />`;
 
-exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
+exports[`TransactionData > renders raw hexadecimal if no decoded data 1`] = `
 <div>
   <div
     class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"

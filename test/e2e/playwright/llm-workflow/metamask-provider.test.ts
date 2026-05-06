@@ -52,11 +52,13 @@ jest.mock('@metamask/client-mcp-core', () => ({
     MM_NO_ACTIVE_SESSION: 'MM_NO_ACTIVE_SESSION',
     MM_CONTEXT_SWITCH_BLOCKED: 'MM_CONTEXT_SWITCH_BLOCKED',
   },
+  fetchWithTimeout: jest.fn(),
   generateSessionId: jest.fn().mockReturnValue('test-session-id'),
   knowledgeStore: {
     writeSessionMetadata: jest.fn().mockResolvedValue(undefined),
   },
   MockServerCapability: class {},
+  retryUntil: jest.fn(),
 }));
 
 describe('MetaMaskSessionManager', () => {

@@ -139,6 +139,39 @@ jest.mock('loglevel', () => ({
   setDefaultLevel: jest.fn(),
 }));
 
+jest.mock('../../components/component-library', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const react = require('react') as typeof import('react');
+  const actual = jest.requireActual('../../components/component-library');
+
+  return {
+    ...actual,
+    ModalHeader: ({
+      children,
+      onClose,
+    }: {
+      children: React.ReactNode;
+      onClose?: () => void;
+    }) =>
+      react.createElement(
+        'header',
+        null,
+        children,
+        onClose
+          ? React.createElement(
+              'button',
+              {
+                'aria-label': 'Close',
+                onClick: onClose,
+                type: 'button',
+              },
+              'Close',
+            )
+          : null,
+      ),
+  };
+});
+
 const mockSubmitRequestToBackground = jest
   .fn()
   .mockResolvedValue({ success: true });
@@ -222,9 +255,10 @@ const mockLiveAccount = jest.fn(() => ({
 }));
 
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
+const mockTrackPerpsEvent = jest.fn();
 jest.mock('../../hooks/perps', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
-  usePerpsEventTracking: () => ({ track: jest.fn() }),
+  usePerpsEventTracking: () => ({ track: mockTrackPerpsEvent }),
   usePerpsOrderForm: jest.fn(),
   useUserHistory: jest.fn(),
   usePerpsTransactionHistory: jest.fn(),
@@ -374,6 +408,7 @@ describe('PerpsMarketDetailPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
+    mockTrackPerpsEvent.mockClear();
     mockReplacePerpsToastByKey.mockReset();
     mockTriggerDeposit.mockClear();
     mockLiveAccount.mockReturnValue({

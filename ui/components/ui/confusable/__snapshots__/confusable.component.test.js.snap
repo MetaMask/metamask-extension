@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Confusable component should detect homoglyphic unicode points 1`] = `
+exports[`Confusable component > should detect homoglyphic unicode points 1`] = `
 <div>
   f
   a
@@ -17,7 +17,7 @@ exports[`Confusable component should detect homoglyphic unicode points 1`] = `
 </div>
 `;
 
-exports[`Confusable component should detect multiple homoglyphic unicode points 1`] = `
+exports[`Confusable component > should detect multiple homoglyphic unicode points 1`] = `
 <div>
   s
   c
@@ -31,7 +31,7 @@ exports[`Confusable component should detect multiple homoglyphic unicode points 
 </div>
 `;
 
-exports[`Confusable component should detect zero-width unicode 1`] = `
+exports[`Confusable component > should detect zero-width unicode 1`] = `
 <div>
   v
   i
@@ -47,7 +47,7 @@ exports[`Confusable component should detect zero-width unicode 1`] = `
 </div>
 `;
 
-exports[`Confusable component should not detect emoji 1`] = `
+exports[`Confusable component > should not detect emoji 1`] = `
 <div>
   👻
   .

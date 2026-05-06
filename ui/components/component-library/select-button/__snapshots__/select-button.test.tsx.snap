@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SelectButton renders without crashing 1`] = `
+exports[`SelectButton > renders without crashing 1`] = `
 <div>
   <button
     class="mm-box mm-text mm-select-button mm-select-button--size-md mm-text--body-md mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-border-default box--border-style-solid box--border-width-1"

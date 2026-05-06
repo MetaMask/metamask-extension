@@ -23,7 +23,9 @@ beforeEach(() => {
   mockImg = { src: '' };
   jest
     .spyOn(window, 'Image')
-    .mockImplementation(() => mockImg as unknown as HTMLImageElement);
+    .mockImplementation(function imageMock() {
+      return mockImg as unknown as HTMLImageElement;
+    } as unknown as typeof Image);
 });
 
 afterEach(() => jest.restoreAllMocks());

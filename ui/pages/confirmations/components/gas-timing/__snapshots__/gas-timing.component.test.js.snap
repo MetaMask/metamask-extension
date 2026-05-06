@@ -1,3 +1,3 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Gas timing renders nothing when gas is loading 1`] = `<div />`;
+exports[`Gas timing > renders nothing when gas is loading 1`] = `<div />`;

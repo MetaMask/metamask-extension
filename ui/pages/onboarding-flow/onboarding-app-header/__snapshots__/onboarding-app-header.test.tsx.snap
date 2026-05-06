@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 1`] = `
+exports[`OnboardingAppHeader > shoul match snapshot on onboarding completion page 1`] = `
 <div>
   <div
     class="p-4 bg-default onboarding-app-header w-full"
@@ -93,7 +93,7 @@ exports[`OnboardingAppHeader shoul match snapshot on onboarding completion page 
 </div>
 `;
 
-exports[`OnboardingAppHeader should match snapshot 1`] = `
+exports[`OnboardingAppHeader > should match snapshot 1`] = `
 <div>
   <div
     class="p-4 bg-default onboarding-app-header w-full"

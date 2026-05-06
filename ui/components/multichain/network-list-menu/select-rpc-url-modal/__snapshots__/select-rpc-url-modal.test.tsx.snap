@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SelectRpcUrlModal Component renders select rpc url 1`] = `
+exports[`SelectRpcUrlModal Component > renders select rpc url 1`] = `
 <div>
   <div
     class="mm-box"

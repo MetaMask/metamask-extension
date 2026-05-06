@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
+exports[`Hide Token Confirmation Modal > should match snapshot 1`] = `
 <div>
   <div
     class="hide-token-confirmation__container"

@@ -21,6 +21,18 @@ const mockSignEIP712Message = jest.fn();
 const mockSignEIP712HashedMessage = jest.fn();
 const mockGetTransactionSelector = jest.fn();
 
+jest.mock('@metamask/eth-sig-util', () => {
+  const actual = jest.requireActual('@metamask/eth-sig-util');
+  return {
+    ...actual,
+    TypedDataUtils: {
+      ...actual.TypedDataUtils,
+      eip712DomainHash: jest.fn(() => Buffer.from('11'.repeat(32), 'hex')),
+      hashStruct: jest.fn(() => Buffer.from('22'.repeat(32), 'hex')),
+    },
+  };
+});
+
 const { getTransactionSelector: actualGetTransactionSelector } =
   jest.requireActual(
     '@metamask/eth-ledger-bridge-keyring',

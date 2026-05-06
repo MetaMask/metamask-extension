@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`SelectedAssetButton renders with a native asset 1`] = `
+exports[`SelectedAssetButton > renders with a native asset 1`] = `
 <div>
   <button
     class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
@@ -58,7 +58,7 @@ exports[`SelectedAssetButton renders with a native asset 1`] = `
 </div>
 `;
 
-exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
+exports[`SelectedAssetButton > renders with a non-EVM asset 1`] = `
 <div>
   <button
     class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
@@ -116,7 +116,7 @@ exports[`SelectedAssetButton renders with a non-EVM asset 1`] = `
 </div>
 `;
 
-exports[`SelectedAssetButton renders with an ERC20 asset 1`] = `
+exports[`SelectedAssetButton > renders with an ERC20 asset 1`] = `
 <div>
   <button
     class="mm-box mm-text mm-select-button mm-select-button--size-lg bridge-selected-asset-button mm-text--body-md mm-box--padding-top-3 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-muted box--border-style-solid box--border-width-1"

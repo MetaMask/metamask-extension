@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are not defined 1`] = `
+exports[`useTokensWithFiltering > should fetch bridge tokens if cached tokens are not defined 1`] = `
 [
   {
     "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
@@ -140,7 +140,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if cached tokens are 
 ]
 `;
 
-exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`] = `
+exports[`useTokensWithFiltering > should fetch bridge tokens if chain is solana 1`] = `
 [
   {
     "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
@@ -280,7 +280,7 @@ exports[`useTokensWithFiltering should fetch bridge tokens if chain is solana 1`
 ]
 `;
 
-exports[`useTokensWithFiltering should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance 1`] = `
+exports[`useTokensWithFiltering > should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance 1`] = `
 [
   {
     "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
@@ -420,7 +420,7 @@ exports[`useTokensWithFiltering should return all tokens when chainId !== active
 ]
 `;
 
-exports[`useTokensWithFiltering should return all tokens when chainId !== activeChainId and chainId has not been imported, sorted by balance 1`] = `
+exports[`useTokensWithFiltering > should return all tokens when chainId !== activeChainId and chainId has not been imported, sorted by balance 1`] = `
 [
   {
     "address": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
