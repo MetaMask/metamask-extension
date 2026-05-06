@@ -628,26 +628,26 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //     'https://raw.githubusercontent.com/megaeth-labs/mega-tokenlist/main/megaeth.tokenlist.json',
   //   blockExplorerUrl: 'https://explorer.megaeth.io', // optional
   // },
-  // {
-  //   networkId: 'Ink',
-  //   networkName: 'Ink',
-  //   chainId: 57073,
-  //   symbol: 'ETH', // adjust if the native symbol differs
-  //   rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
-  //   rpcName: 'Ink RPC',
-  //   tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
-  //   blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
-  // },
   {
-    networkId: 'Mantle',
-    networkName: 'Mantle',
-    chainId: 5000,
-    symbol: 'MNT',
-    rpcUrl: 'https://rpc.mantle.xyz',
-    rpcName: 'Mantle RPC',
+    networkId: 'Ink',
+    networkName: 'Ink',
+    chainId: 57073,
+    symbol: 'ETH', // adjust if the native symbol differs
+    rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
+    rpcName: 'Ink RPC',
     tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
-    blockExplorerUrl: 'https://mantlescan.xyz',
+    blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
   },
+  // {
+  //   networkId: 'Mantle',
+  //   networkName: 'Mantle',
+  //   chainId: 5000,
+  //   symbol: 'MNT',
+  //   rpcUrl: 'https://rpc.mantle.xyz',
+  //   rpcName: 'Mantle RPC',
+  //   tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+  //   blockExplorerUrl: 'https://mantlescan.xyz',
+  // },
 ];
 
 /**

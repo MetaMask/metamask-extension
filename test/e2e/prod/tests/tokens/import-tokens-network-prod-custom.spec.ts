@@ -114,22 +114,9 @@ async function runTokenImportTest(
       await addRpcUrlModal.fillAddRpcNameInput(networkConfig.rpcName);
       await addRpcUrlModal.saveAddRpcUrl();
 
-      // Wait for RPC validation to settle and Save to be actionable.
+      // Save the network using page-object fallback selectors for legacy + Settings V2 flows.
       await addEditNetworkModal.checkPageIsLoaded();
-      await driver.findClickableElement(
-        { text: 'Save', tag: 'button' },
-        { timeout: PROD_DELAYS.RPC_RESPONSE * 2 },
-      );
-
-      // Save the network and wait for the modal to fully close.
-      await driver.clickElement({ text: 'Save', tag: 'button' });
-      await driver.assertElementNotPresent(
-        { text: 'Add a custom network', tag: 'h4' },
-        {
-          waitAtLeastGuard: 300,
-          timeout: PROD_DELAYS.RPC_RESPONSE * 2,
-        },
-      );
+      await addEditNetworkModal.saveEditedNetwork(networkConfig.networkName);
 
       // Verify network was added
       const homepage = new HomePage(driver);
