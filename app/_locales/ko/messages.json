@@ -5684,7 +5684,7 @@
     "message": "롱 청산"
   },
   "perpsClosePartialMinNotional": {
-    "message": "부분 종료는 USD 기준 최소 $1 이상이어야 합니다. 종료 금액을 늘리거나 슬라이더를 100%로 설정하세요."
+    "message": "부분 종료는 USD 기준 최소 $1 이상이어야 합니다. 종료 금액을 늘리거나 전체 포지션을 종료하세요."
   },
   "perpsClosePosition": {
     "message": "포지션 종료"

@@ -5684,7 +5684,7 @@
     "message": "Fermer la position longue"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Les clôtures partielles doivent avoir une valeur d’au moins $1 USD. Augmentez le montant de clôture ou réglez le curseur sur 100 %."
+    "message": "Les clôtures partielles doivent avoir une valeur d’au moins $1 USD. Augmentez le montant de clôture ou clôturez la position complète."
   },
   "perpsClosePosition": {
     "message": "Fermer la position"

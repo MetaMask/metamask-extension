@@ -5684,7 +5684,7 @@
     "message": "Long pozisyonu kapat"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Kısmi kapatma işlemleri en az $1 USD değerinde olmalıdır. Kapatma tutarını artırın veya kaydırıcıyı %100'e ayarlayın."
+    "message": "Kısmi kapatma işlemleri en az $1 USD değerinde olmalıdır. Kapatma tutarını artırın veya pozisyonun tamamını kapatın."
   },
   "perpsClosePosition": {
     "message": "Pozisyonu kapat"

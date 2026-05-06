@@ -5680,7 +5680,7 @@
     "message": "ロングをクローズ"
   },
   "perpsClosePartialMinNotional": {
-    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、スライダーを100%に設定してください。"
+    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、ポジション全体をクローズしてください。"
   },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"

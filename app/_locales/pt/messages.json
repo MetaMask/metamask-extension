@@ -5684,7 +5684,7 @@
     "message": "Encerrar posição long"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Fechamentos parciais devem ter um valor mínimo de $1 em USD. Aumente o valor do fechamento ou defina o controle deslizante para 100%."
+    "message": "Fechamentos parciais devem ter um valor mínimo de $1 em USD. Aumente o valor do fechamento ou feche a posição completa."
   },
   "perpsClosePosition": {
     "message": "Encerrar posição"

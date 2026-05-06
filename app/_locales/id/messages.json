@@ -5684,7 +5684,7 @@
     "message": "Tutup long"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Penutupan sebagian harus bernilai minimal $1 dalam USD. Tingkatkan jumlah penutupan atau atur slider ke 100%."
+    "message": "Penutupan sebagian harus bernilai minimal $1 dalam USD. Tingkatkan jumlah penutupan atau tutup posisi penuh."
   },
   "perpsClosePosition": {
     "message": "Tutup posisi"

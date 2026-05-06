@@ -5684,7 +5684,7 @@
     "message": "Cerrar posición larga"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Los cierres parciales deben tener un valor mínimo de $1 USD. Aumenta el monto del cierre o ajusta el control deslizante al 100 %."
+    "message": "Los cierres parciales deben tener un valor mínimo de $1 USD. Aumenta el monto del cierre o cierra la posición completa."
   },
   "perpsClosePosition": {
     "message": "Cerrar posición"

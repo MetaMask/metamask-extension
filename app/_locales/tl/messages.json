@@ -5684,7 +5684,7 @@
     "message": "Isara ang long"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Ang mga bahagyang pagsasara ay dapat na hindi bababa sa $1 sa halaga ng USD. Dagdagan ang halaga ng pagsasara o itakda ang slider sa 100%."
+    "message": "Ang mga bahagyang pagsasara ay dapat na hindi bababa sa $1 sa halaga ng USD. Dagdagan ang halaga ng pagsasara o isara ang buong posisyon."
   },
   "perpsClosePosition": {
     "message": "Isara ang posisyon"

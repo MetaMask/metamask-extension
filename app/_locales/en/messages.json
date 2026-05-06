@@ -5788,7 +5788,7 @@
     "message": "Close long"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or close the full position."
   },
   "perpsClosePosition": {
     "message": "Close position"

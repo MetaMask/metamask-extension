@@ -97,7 +97,7 @@ jest.mock('@metamask/perps-controller', () => ({
 
 /** Matches rendered `perpsClosePartialMinNotional` after $1 is replaced with a formatted USD amount */
 const PARTIAL_MIN_NOTIONAL_PATTERN =
-  /Partial closes must be at least \$[\d,.]+ in USD value\. Increase the close amount or set the slider to 100%\./u;
+  /Partial closes must be at least \$[\d,.]+ in USD value\. Increase the close amount or close the full position\./u;
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
@@ -592,9 +592,9 @@ describe('ClosePositionModal', () => {
       );
 
       await waitFor(() => {
-        expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
-        ).toBeInTheDocument();
+        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN);
+        expect(warningMessage).toBeInTheDocument();
+        expect(warningMessage).not.toHaveTextContent(/slider|slide/u);
         expect(
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();
@@ -629,9 +629,9 @@ describe('ClosePositionModal', () => {
       await user.keyboard('{ArrowLeft}');
 
       await waitFor(() => {
-        expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
-        ).toBeInTheDocument();
+        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN);
+        expect(warningMessage).toBeInTheDocument();
+        expect(warningMessage).not.toHaveTextContent(/slider|slide/u);
         expect(
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();

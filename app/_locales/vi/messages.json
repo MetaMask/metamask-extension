@@ -5684,7 +5684,7 @@
     "message": "Đóng vị thế mua khống"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Đóng một phần phải có giá trị tối thiểu là $1 USD. Hãy tăng số lượng đóng hoặc đặt thanh trượt thành 100%."
+    "message": "Đóng một phần phải có giá trị tối thiểu là $1 USD. Hãy tăng số lượng đóng hoặc đóng toàn bộ vị thế."
   },
   "perpsClosePosition": {
     "message": "Đóng vị thế"

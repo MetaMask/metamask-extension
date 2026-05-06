@@ -5684,7 +5684,7 @@
     "message": "Long-Position schließen"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Teilschließungen müssen einen Mindestwert von $1 in US-Dollar betragen. Erhöhen Sie den Abschlussbetrag oder setzen Sie den Regler auf 100 %."
+    "message": "Teilschließungen müssen einen Mindestwert von $1 in US-Dollar betragen. Erhöhen Sie den Abschlussbetrag oder schließen Sie die gesamte Position."
   },
   "perpsClosePosition": {
     "message": "Position schließen"

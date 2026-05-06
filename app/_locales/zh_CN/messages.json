@@ -5680,7 +5680,7 @@
     "message": "平仓多头仓位"
   },
   "perpsClosePartialMinNotional": {
-    "message": "部分平仓的金额至少需要达到 $1 美元。请增加平仓金额或将滑块设为100%。"
+    "message": "部分平仓的金额至少需要达到 $1 美元。请增加平仓金额或平仓全部仓位。"
   },
   "perpsClosePosition": {
     "message": "平仓"
