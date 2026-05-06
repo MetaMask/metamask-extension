@@ -29,6 +29,7 @@ export const PerpsWithdrawInfo = () => {
     // not passing `hasMax` so they never render. Re-enable by passing
     // `hasMax` (and optionally a `percentages` override) when ready.
     <CustomAmountInfo
+      autoFocusAmount
       balanceUsdOverride={balanceUsdOverride}
       currency={PERPS_CURRENCY}
       hidePayTokenAmount

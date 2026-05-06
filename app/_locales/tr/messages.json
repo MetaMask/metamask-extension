@@ -8170,9 +8170,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Dapp'lerden akıllı hesap talepleri"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Dapp'lerin standart hesaplar için akıllı hesap özellikleri talep etmesine izin verin. Bu durum, halihazırda akıllı hesap olan hesapları etkilemez."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Aynı adres. Daha akıllı özellikler."
   },
@@ -8805,12 +8802,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Desteklenen diller",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Anketimize katılın"
-  },
-  "surveyTitle": {
-    "message": "MetaMask'in geleceğini şekillendirin"
   },
   "swap": {
     "message": "Takas Yap"

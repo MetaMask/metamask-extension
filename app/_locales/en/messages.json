@@ -8331,8 +8331,8 @@
   "smartAccountRequestsFromDapps": {
     "message": "Smart account requests from dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -8966,12 +8966,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Supported languages",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Take our survey"
-  },
-  "surveyTitle": {
-    "message": "Shape the future of MetaMask"
   },
   "swap": {
     "message": "Swap"
