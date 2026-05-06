@@ -104,16 +104,6 @@ export async function runKernel(): Promise<never> {
           'ocapURLRedemptionService',
         ],
       },
-      {
-        vatName: 'echoService',
-        bundlePath: 'ocap-kernel/vats/echo-service/index.bundle',
-        services: ['ocapURLIssuerService', 'ocapURLRedemptionService'],
-      },
-      {
-        vatName: 'randomNumberService',
-        bundlePath: 'ocap-kernel/vats/random-number-service/index.bundle',
-        services: ['ocapURLIssuerService', 'ocapURLRedemptionService'],
-      },
     ];
 
     const serviceContacts: { name: string; contactUrl: string }[] = [];
@@ -130,10 +120,9 @@ export async function runKernel(): Promise<never> {
           vats: {
             [subcluster.vatName]: {
               bundleSpec: bundleUrl,
-              // Endow the Web Crypto API so the vat can generate registration
-              // tokens and (for RandomNumberService) random numbers. SES
-              // strips crypto from the default compartment globals, so it
-              // must be opted into explicitly here.
+              // Endow the Web Crypto API so the vat can generate
+              // registration tokens. SES strips crypto from the default
+              // compartment globals, so it must be opted into here.
               globals: ['crypto'],
               parameters: { matcherUrl },
             },
