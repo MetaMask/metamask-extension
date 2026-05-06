@@ -8,6 +8,7 @@ type PasskeyCode =
  */
 const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<PasskeyCode, string> = {
   [PasskeyControllerErrorCode.NotEnrolled]: 'passkeyErrorNotEnrolled',
+  [PasskeyControllerErrorCode.AlreadyEnrolled]: 'passkeyErrorAlreadyEnrolled',
   [PasskeyControllerErrorCode.NoRegistrationCeremony]:
     'passkeyErrorNoRegistrationCeremony',
   [PasskeyControllerErrorCode.RegistrationVerificationFailed]:

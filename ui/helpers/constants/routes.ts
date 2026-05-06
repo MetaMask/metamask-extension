@@ -157,10 +157,10 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
 export const BATCH_SELL_ROOT_ROUTE = '/batch-sell';
 export const BATCH_SELL_SELECT_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/select`;
 export const BATCH_SELL_CONFIRM_ROUTE = `${BATCH_SELL_ROOT_ROUTE}/confirm`;
-
 export const DEEP_LINK_ROUTE = '/link';
 
 /** Shown when Basic Functionality is off and user opens a route that requires it (e.g. swap, rewards). */
