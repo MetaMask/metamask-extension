@@ -13,8 +13,8 @@ import React from 'react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type SortingChipProps = {
-  order: 1 | -1; // 'asc' | 'desc'
-  onClick: (newOrder: 1 | -1) => void;
+  order: 'asc' | 'desc'
+  onClick: (newOrder:  'asc' | 'desc') => void;
 }
 
 export const SortingChip = ({ order, onClick }: SortingChipProps) => {
@@ -23,7 +23,7 @@ export const SortingChip = ({ order, onClick }: SortingChipProps) => {
   return (
     <ButtonBase
       className="flex flex-row items-center gap-1 bg-inherit"
-      onClick={() => onClick((order * -1) as 1 | -1)}
+      onClick={() => onClick(order === 'asc' ? 'desc' : 'asc')}
     >
       <Text
         variant={TextVariant.BodySm}
@@ -34,7 +34,7 @@ export const SortingChip = ({ order, onClick }: SortingChipProps) => {
       </Text>
       <Icon
         size={IconSize.Sm}
-        name={order > 0 ? IconName.Arrow2Down : IconName.Arrow2Up}
+        name={order === 'desc' ? IconName.Arrow2Down : IconName.Arrow2Up}
         color={IconColor.IconAlternative}
       />
     </ButtonBase>

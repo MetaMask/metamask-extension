@@ -114,7 +114,7 @@ export const AssetListItem = ({
           id={`batch-sell-asset-checkbox-${asset.assetId}`}
           isSelected={selected}
           onChange={(isSelected) =>
-            isSelected ? onDeselect(asset) : onSelect(asset)
+            isSelected ? onSelect(asset) : onDeselect(asset)
           }
         />
       </Box>

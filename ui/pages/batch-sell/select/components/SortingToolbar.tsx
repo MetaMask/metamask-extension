@@ -5,8 +5,8 @@ import { SortingChip } from './SortingChip';
 
 type SortingToolbarProps = {
   balance: {
-    order: 1 | -1; // 'asc' | 'desc'
-    onClick: (newSort: 1 | -1) => void;
+    order: 'asc' | 'desc'
+    onClick: (newSort:  'asc' | 'desc') => void;
   };
 }
 

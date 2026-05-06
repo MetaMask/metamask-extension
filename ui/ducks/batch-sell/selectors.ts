@@ -105,9 +105,27 @@ export const getNetworksWithPositiveBalanceForSelectedAccount = createSelector(
     ) as Record<CaipChainId, MultichainNetworkConfiguration>,
 );
 
+const selectFiatBalanceByChain = createSelector(
+  getAssetsBySelectedAccountGroup,
+  (assetsByChain): Record<string, number> => {
+    const result: Record<string, number> = {};
+    for (const [hexChainId, assets] of Object.entries(assetsByChain)) {
+      const caipChainId = isEvmChainId(hexChainId as Hex)
+        ? toEvmCaipChainId(hexChainId as Hex)
+        : hexChainId;
+      result[caipChainId] = assets.reduce(
+        (sum, asset) => sum + (Number(asset.fiat?.balance) || 0),
+        0,
+      );
+    }
+    return result;
+  },
+);
+
 export const getAvailableBatchSellNetworksSelector = createSelector(
   getNetworksWithPositiveBalanceForSelectedAccount,
-  (networksWithBalance) =>
+  selectFiatBalanceByChain,
+  (networksWithBalance, fiatBalanceByChain) =>
     Object.entries(networksWithBalance)
       .filter(([chainId]) =>
         BATCH_SELL_SUPPORTED_CHAIN_IDS.has(chainId as CaipChainId),
@@ -119,7 +137,12 @@ export const getAvailableBatchSellNetworksSelector = createSelector(
           CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
             convertCaipToHexChainId(chainId as CaipChainId)
           ] ?? '',
-      })),
+      }))
+      .toSorted(
+        (a, b) =>
+          (fiatBalanceByChain[b.chainId] ?? 0) -
+          (fiatBalanceByChain[a.chainId] ?? 0),
+      ),
 );
 
 export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(

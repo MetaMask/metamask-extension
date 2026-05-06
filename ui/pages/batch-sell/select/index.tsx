@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
@@ -6,6 +6,8 @@ import {
   getAvailableBatchSellAssetsForNetworkSelector,
   getAvailableBatchSellNetworksSelector,
 } from '../../../ducks/batch-sell/selectors';
+import { BatchSellAsset } from '../../../ducks/batch-sell/types';
+import { useSortBatchSellAssetsByBalance } from '../../../hooks/batch-sell/useSortBatchSellAssetsByBalance';
 import { AssetList } from './components/AssetList';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
@@ -16,12 +18,13 @@ import { SortingToolbar } from './components/SortingToolbar';
 // TODO: max tokens
 // TODO: empty network list
 // TODO: filter out stable coins
-// TODO: The network pills/badges are ordered based on their available fiat balance
-// TODO: save selected assets
-// TODO: change networks
-// TODO: order by balance
+// TODO: stable coins images are not rendered
 
 export const BatchSellSelectPage = () => {
+  const [assetsOrderByBalance, setAssetsOrderByBalance] = useState<
+    'asc' | 'desc'
+  >('desc');
+
   const availableBatchSellNetworksList = useSelector(
     getAvailableBatchSellNetworksSelector,
   );
@@ -40,20 +43,54 @@ export const BatchSellSelectPage = () => {
     ),
   );
 
+  const orderedAvailableBatchSellAssetsForNetworkList =
+    useSortBatchSellAssetsByBalance(
+      availableBatchSellAssetsForNetworkList,
+      assetsOrderByBalance,
+    );
+
+  const onNetworkSelect = useCallback((chainId: CaipChainId) => {
+    setSelectedAssetsId([]);
+    setSelectedNetworkChainId(chainId);
+  }, []);
+
+  const onSelectAsset = useCallback(
+    (asset: BatchSellAsset) =>
+      setSelectedAssetsId((assets) =>
+        assets.includes(asset.assetId) ? assets : [...assets, asset.assetId],
+      ),
+    [],
+  );
+
+  const onDeselectAsset = useCallback((asset: BatchSellAsset) => {
+    setSelectedAssetsId((assets) =>
+      assets.filter((_assetId) => _assetId !== asset.assetId),
+    );
+  }, []);
+
+  if (!selectedNetworkChainId) {
+    return <div>empty</div>;
+  }
+
   return (
-    <Box flexDirection={BoxFlexDirection.Column} className='h-full'>
+    <Box flexDirection={BoxFlexDirection.Column} className="h-full">
       <Header />
       <NetworkToolbar
         networks={availableBatchSellNetworksList}
-        selectedNetworkChainId={availableBatchSellNetworksList[0].chainId}
-        onClick={console.log}
+        selectedNetworkChainId={selectedNetworkChainId}
+        onClick={onNetworkSelect}
       />
-      <SortingToolbar balance={{ order: -1, onClick: console.log }} />
+      <SortingToolbar
+        balance={{
+          order: assetsOrderByBalance,
+          onClick: setAssetsOrderByBalance,
+        }}
+      />
       <AssetList
         selectedAssetsId={selectedAssetsId}
-        assets={availableBatchSellAssetsForNetworkList}
-        onSelect={console.log}
-        onDeselect={console.log}
+        assets={orderedAvailableBatchSellAssetsForNetworkList}
+        onSelect={onSelectAsset}
+        onDeselect={onDeselectAsset}
       />
       <Footer onSubmit={console.log} />
     </Box>
