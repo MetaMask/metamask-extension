@@ -87,7 +87,7 @@ export const ToastContent = ({
   onActionClick?: () => void;
 }) => {
   return (
-    <div data-testid={dataTestId}>
+    <div className="flex min-w-0 flex-1 flex-col" data-testid={dataTestId}>
       <p className="text-m-body-md">{title}</p>
 
       {description ? (
@@ -100,7 +100,7 @@ export const ToastContent = ({
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Sm}
-          className="mt-2 rounded-lg"
+          className="mt-2 self-start rounded-lg"
           textProps={{
             variant: TextVariant.BodySm,
           }}
