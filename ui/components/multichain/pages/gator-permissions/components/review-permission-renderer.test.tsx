@@ -12,12 +12,41 @@ import { ReviewPermissionRenderer } from './review-permission-renderer';
 const store = configureStore(mockState);
 
 const TEST_REVIEW_DETAIL_DIVIDER_TYPE = '__test_review_detail_divider__';
+const ACCOUNT_ADDRESS = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const RULE_ADDRESS = '0x0000000000000000000000000000000000000001';
+const STREAM_PERMISSION_DATA = {
+  initialAmount: '0x6f05b59d3b20000',
+  maxAmount: '0x22b1c8c1227a0000',
+  amountPerSecond: '0x6f05b59d3b20000',
+  startTime: 1736271776,
+};
+const PERIODIC_PERMISSION_DATA = {
+  periodAmount: '0xde0b6b3a7640000',
+  periodDuration: 86400,
+  startTime: 1736271776,
+};
 
 jest.mock('../../../../app/modals/nickname-popovers', () => {
   return function mockNicknamePopovers() {
     return <div data-testid="nickname-popovers" />;
   };
 });
+
+function renderReviewPermissionRenderer(
+  props: Partial<React.ComponentProps<typeof ReviewPermissionRenderer>> = {},
+) {
+  return renderWithProvider(
+    <ReviewPermissionRenderer
+      permissionType="native-token-stream"
+      permissionData={STREAM_PERMISSION_DATA}
+      chainId="0x1"
+      tokenInfo={{ symbol: 'ETH', decimals: 18 }}
+      tokenLoading={false}
+      {...props}
+    />,
+    store,
+  );
+}
 
 describe('ReviewPermissionRenderer', () => {
   beforeAll(() => {
@@ -101,67 +130,35 @@ describe('ReviewPermissionRenderer', () => {
   });
 
   it('renders justification as a plain string when provided', () => {
-    renderWithProvider(
-      <ReviewPermissionRenderer
-        permissionType="native-token-stream"
-        permissionData={{
-          initialAmount: '0x6f05b59d3b20000',
-          maxAmount: '0x22b1c8c1227a0000',
-          amountPerSecond: '0x6f05b59d3b20000',
-          startTime: 1736271776,
-          justification: 'Project payroll',
-        }}
-        chainId="0x1"
-        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
-        tokenLoading={false}
-      />,
-      store,
-    );
+    renderReviewPermissionRenderer({
+      permissionData: {
+        ...STREAM_PERMISSION_DATA,
+        justification: 'Project payroll',
+      },
+    });
+
     expect(
       screen.getByTestId('review-gator-permission-justification'),
     ).toHaveTextContent('Project payroll');
   });
 
   it('shows no expiration label when expiry is absent from rules', () => {
-    renderWithProvider(
-      <ReviewPermissionRenderer
-        permissionType="native-token-stream"
-        permissionData={{
-          initialAmount: '0x6f05b59d3b20000',
-          maxAmount: '0x22b1c8c1227a0000',
-          amountPerSecond: '0x6f05b59d3b20000',
-          startTime: 1736271776,
-        }}
-        chainId="0x1"
-        rules={[]}
-        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
-        tokenLoading={false}
-      />,
-      store,
-    );
+    renderReviewPermissionRenderer({ rules: [] });
+
     expect(
       screen.getByTestId('review-gator-permission-expiration-date'),
     ).toHaveTextContent('No expiration');
   });
 
   it('renders periodic reviewSummary amount, frequency text, and account row', () => {
-    renderWithProvider(
-      <ReviewPermissionRenderer
-        permissionType="native-token-periodic"
-        permissionData={{
-          periodAmount: '0xde0b6b3a7640000',
-          periodDuration: 86400,
-          startTime: 1736271776,
-        }}
-        chainId="0x1"
-        rules={[]}
-        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
-        tokenLoading={false}
-        viewMode="reviewSummary"
-        permissionAccount="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
-      />,
-      store,
-    );
+    renderReviewPermissionRenderer({
+      permissionType: 'native-token-periodic',
+      permissionData: PERIODIC_PERMISSION_DATA,
+      rules: [],
+      viewMode: 'reviewSummary',
+      permissionAccount: ACCOUNT_ADDRESS,
+    });
+
     expect(
       screen.getByTestId('review-gator-permission-amount-label'),
     ).toBeInTheDocument();
@@ -173,106 +170,42 @@ describe('ReviewPermissionRenderer', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders network and redeemer rows when props and rules are present', () => {
-    const redeemerAddr = '0x0000000000000000000000000000000000000001';
-    renderWithProvider(
-      <ReviewPermissionRenderer
-        permissionType="native-token-stream"
-        permissionData={{
-          initialAmount: '0x6f05b59d3b20000',
-          maxAmount:
-            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-          amountPerSecond: '0x1',
-          startTime: 1736271776,
-        }}
-        chainId="0x1"
-        rules={[{ type: 'redeemer', data: { addresses: [redeemerAddr] } }]}
-        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
-        tokenLoading={false}
-        networkName="Ethereum Mainnet"
-      />,
-      store,
-    );
+  it('renders network, redeemer, and payee rows when rules are present', () => {
+    renderReviewPermissionRenderer({
+      rules: [
+        { type: 'redeemer', data: { addresses: [RULE_ADDRESS] } },
+        { type: 'payee', data: { addresses: [RULE_ADDRESS] } },
+      ],
+      networkName: 'Ethereum Mainnet',
+    });
+
     expect(
       screen.getByTestId('review-gator-permission-network-name'),
     ).toHaveTextContent('Ethereum Mainnet');
-    expect(
-      screen.getAllByTestId('review-gator-permission-rule-address'),
-    ).toHaveLength(1);
-  });
-
-  it('renders payee rows when payee rules are present', () => {
-    const payeeAddr = '0x0000000000000000000000000000000000000002';
-    renderWithProvider(
-      <ReviewPermissionRenderer
-        permissionType="native-token-stream"
-        permissionData={{
-          initialAmount: '0x6f05b59d3b20000',
-          maxAmount:
-            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-          amountPerSecond: '0x1',
-          startTime: 1736271776,
-        }}
-        chainId="0x1"
-        rules={[{ type: 'payee', data: { addresses: [payeeAddr] } }]}
-        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
-        tokenLoading={false}
-      />,
-      store,
-    );
+    expect(screen.getByText(messages.redeemer.message)).toBeInTheDocument();
     expect(screen.getByText(messages.payee.message)).toBeInTheDocument();
     expect(
       screen.getAllByTestId('review-gator-permission-rule-address'),
-    ).toHaveLength(1);
+    ).toHaveLength(2);
   });
 
-  it('does not open nickname popover when copying a review account address', () => {
-    renderWithProvider(
-      <ReviewPermissionRenderer
-        permissionType="native-token-periodic"
-        permissionData={{
-          periodAmount: '0xde0b6b3a7640000',
-          periodDuration: 86400,
-          startTime: 1736271776,
-        }}
-        chainId="0x1"
-        rules={[]}
-        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
-        tokenLoading={false}
-        viewMode="reviewSummary"
-        permissionAccount="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
-      />,
-      store,
-    );
+  it('does not open nickname popover from copy buttons', () => {
+    const { unmount } = renderReviewPermissionRenderer({
+      permissionType: 'native-token-periodic',
+      permissionData: PERIODIC_PERMISSION_DATA,
+      rules: [],
+      viewMode: 'reviewSummary',
+      permissionAccount: ACCOUNT_ADDRESS,
+    });
 
     fireEvent.click(screen.getByLabelText('copy-button'));
-
     expect(screen.queryByTestId('nickname-popovers')).not.toBeInTheDocument();
-  });
+    unmount();
 
-  it('does not open nickname popover when copying a rule address', () => {
-    const redeemerAddr = '0x0000000000000000000000000000000000000001';
-
-    renderWithProvider(
-      <ReviewPermissionRenderer
-        permissionType="native-token-stream"
-        permissionData={{
-          initialAmount: '0x6f05b59d3b20000',
-          maxAmount:
-            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-          amountPerSecond: '0x1',
-          startTime: 1736271776,
-        }}
-        chainId="0x1"
-        rules={[{ type: 'redeemer', data: { addresses: [redeemerAddr] } }]}
-        tokenInfo={{ symbol: 'ETH', decimals: 18 }}
-        tokenLoading={false}
-      />,
-      store,
-    );
-
+    renderReviewPermissionRenderer({
+      rules: [{ type: 'redeemer', data: { addresses: [RULE_ADDRESS] } }],
+    });
     fireEvent.click(screen.getByLabelText('copy-button'));
-
     expect(screen.queryByTestId('nickname-popovers')).not.toBeInTheDocument();
   });
 

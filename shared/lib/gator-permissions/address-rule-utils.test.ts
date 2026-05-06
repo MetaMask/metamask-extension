@@ -12,9 +12,8 @@ const addressRuleExtractors = [
   },
 ] as const;
 
-describe.each(addressRuleExtractors)(
-  '$name address rule extraction',
-  ({ ruleType }) => {
+for (const { name, ruleType } of addressRuleExtractors) {
+  describe(`${name} address rule extraction`, () => {
     it('returns addresses when the matching rule is present', () => {
       const addr1 = '0x0000000000000000000000000000000000000001';
       const addr2 = '0x0000000000000000000000000000000000000002';
@@ -96,5 +95,5 @@ describe.each(addressRuleExtractors)(
       ] as Rule[];
       expect(extractAddressesFromRuleByType(rules, ruleType)).toBeNull();
     });
-  },
-);
+  });
+}

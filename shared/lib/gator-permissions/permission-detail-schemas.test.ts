@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
 
 import type {
-  AmountField,
   PermissionRenderContext,
   SchemaElement,
 } from './permission-detail-schema.types';
@@ -12,18 +11,17 @@ import {
 } from './permission-detail-schemas';
 import { MAX_UINT256 } from './permission-constants';
 
+type ElementOfType<TType extends SchemaElement['type']> = Extract<
+  SchemaElement,
+  { type: TType }
+>;
+
 function getJustificationGetValueFromSchema() {
-  const entry = PERMISSION_SCHEMAS['native-token-stream'];
-  for (const section of entry.sections) {
-    for (const element of section.elements) {
-      if (element.type === 'justification') {
-        return element.getValue;
-      }
-    }
-  }
-  throw new Error(
-    'Expected native-token-stream schema to include justification',
-  );
+  return findElementOfType(
+    'native-token-stream',
+    'review-gator-permission-justification',
+    'justification',
+  ).getValue;
 }
 
 function buildMinimalContext(
@@ -45,8 +43,7 @@ function findElementByTestId(
   permissionType: keyof typeof PERMISSION_SCHEMAS,
   testId: string,
 ): SchemaElement {
-  const entry = PERMISSION_SCHEMAS[permissionType];
-  for (const section of entry.sections) {
+  for (const section of PERMISSION_SCHEMAS[permissionType].sections) {
     for (const element of section.elements) {
       if ('testId' in element && element.testId === testId) {
         return element;
@@ -56,42 +53,51 @@ function findElementByTestId(
   throw new Error(`No schema element with testId ${testId}`);
 }
 
-function findElementsByType(
+function findElementOfType<TType extends SchemaElement['type']>(
   permissionType: keyof typeof PERMISSION_SCHEMAS,
-  type: SchemaElement['type'],
-): SchemaElement[] {
-  const entry = PERMISSION_SCHEMAS[permissionType];
-  const out: SchemaElement[] = [];
-  for (const section of entry.sections) {
-    for (const element of section.elements) {
-      if (element.type === type) {
-        out.push(element);
-      }
-    }
+  testId: string,
+  type: TType,
+): ElementOfType<TType> {
+  const element = findElementByTestId(permissionType, testId);
+  if (element.type !== type) {
+    throw new Error(`Expected ${testId} to be ${type}`);
   }
-  return out;
+  return element as ElementOfType<TType>;
+}
+
+function ctx(
+  type = 'native-token-stream',
+  data: Record<string, unknown> = {},
+  extras: Partial<PermissionRenderContext> = {},
+): PermissionRenderContext {
+  return {
+    permission: { type, data },
+    expiry: null,
+    chainId: '0x1' as Hex,
+    origin: 'https://dapp.example',
+    ...extras,
+  };
 }
 
 describe('justification field getValue', () => {
   it('returns the no-justification i18n value when justification is an empty string', () => {
-    const getValue = getJustificationGetValueFromSchema();
-    expect(getValue(buildMinimalContext(''))).toStrictEqual({
+    expect(getJustificationGetValueFromSchema()(buildMinimalContext(''))).toStrictEqual({
       key: 'gatorNoJustificationProvided',
     });
   });
 
   it('returns the no-justification i18n value when justification is undefined', () => {
-    const getValue = getJustificationGetValueFromSchema();
-    expect(getValue(buildMinimalContext(undefined))).toStrictEqual({
-      key: 'gatorNoJustificationProvided',
-    });
+    expect(
+      getJustificationGetValueFromSchema()(buildMinimalContext(undefined)),
+    ).toStrictEqual({ key: 'gatorNoJustificationProvided' });
   });
 
   it('returns the site-provided justification text when non-empty', () => {
-    const getValue = getJustificationGetValueFromSchema();
-    expect(getValue(buildMinimalContext('Pay subscription'))).toBe(
-      'Pay subscription',
-    );
+    expect(
+      getJustificationGetValueFromSchema()(
+        buildMinimalContext('Pay subscription'),
+      ),
+    ).toBe('Pay subscription');
   });
 });
 
@@ -116,81 +122,43 @@ describe('assertPermissionSchemaEntry', () => {
 });
 
 describe('permissionInfoSection field accessors', () => {
-  const base: PermissionRenderContext = {
-    permission: { type: 'native-token-stream', data: {} },
-    expiry: null,
-    chainId: '0x1' as Hex,
-    origin: 'https://dapp.example',
-  };
+  const base = ctx(undefined, undefined, { origin: 'https://dapp.example' });
 
-  it('exposes origin via the origin field', () => {
-    const originEl = findElementByTestId(
+  it('exposes origin and recipient values', () => {
+    const recipient = '0x0000000000000000000000000000000000000002';
+    const originEl = findElementOfType(
       'native-token-stream',
       'confirmation-origin',
+      'origin',
     );
-    expect(originEl.type).toBe('origin');
-    if (originEl.type !== 'origin') {
-      return;
-    }
-    expect(originEl.getValue(base)).toBe('https://dapp.example');
-  });
-
-  it('hides recipient when `to` is unset and shows it when set', () => {
-    const addressEl = findElementByTestId(
+    const recipientEl = findElementOfType(
       'native-token-stream',
       'confirmation-recipient',
+      'address',
     );
-    expect(addressEl.type).toBe('address');
-    if (addressEl.type !== 'address') {
-      return;
-    }
-    expect(addressEl.isVisible(base)).toBe(false);
-    expect(
-      addressEl.isVisible({
-        ...base,
-        to: '0x0000000000000000000000000000000000000002',
-      }),
-    ).toBe(true);
-    expect(
-      addressEl.getValue({
-        ...base,
-        to: '0x0000000000000000000000000000000000000002',
-      }),
-    ).toBe('0x0000000000000000000000000000000000000002');
+
+    expect(originEl.getValue(base)).toBe('https://dapp.example');
+    expect(recipientEl.isVisible(base)).toBe(false);
+    expect(recipientEl.isVisible({ ...base, to: recipient })).toBe(true);
+    expect(recipientEl.getValue({ ...base, to: recipient })).toBe(recipient);
   });
 
-  it('reads redeemerAddresses from context for the redeemer field', () => {
-    const redeemerEl = findElementByTestId(
-      'native-token-stream',
-      'confirmation-redeemer',
-    );
-    expect(redeemerEl.type).toBe('rule-address');
-    if (redeemerEl.type !== 'rule-address') {
-      return;
-    }
-    const addrs = ['0x0000000000000000000000000000000000000003'];
-    expect(
-      redeemerEl.getValue({ ...base, redeemerAddresses: addrs }),
-    ).toStrictEqual(addrs);
-    expect(redeemerEl.isVisible({ ...base, redeemerAddresses: addrs })).toBe(
-      true,
-    );
-  });
+  it('reads redeemer and payee addresses from context', () => {
+    const addresses = ['0x0000000000000000000000000000000000000003'];
 
-  it('reads payeeAddresses from context for the payee field', () => {
-    const payeeEl = findElementByTestId(
-      'native-token-stream',
-      'confirmation-payee',
-    );
-    expect(payeeEl.type).toBe('rule-address');
-    if (payeeEl.type !== 'rule-address') {
-      return;
+    for (const [testId, field] of [
+      ['confirmation-redeemer', 'redeemerAddresses'],
+      ['confirmation-payee', 'payeeAddresses'],
+    ] as const) {
+      const element = findElementOfType(
+        'native-token-stream',
+        testId,
+        'rule-address',
+      );
+      const context = { ...base, [field]: addresses };
+      expect(element.getValue(context)).toStrictEqual(addresses);
+      expect(element.isVisible(context)).toBe(true);
     }
-    const addrs = ['0x0000000000000000000000000000000000000003'];
-    expect(payeeEl.getValue({ ...base, payeeAddresses: addrs })).toStrictEqual(
-      addrs,
-    );
-    expect(payeeEl.isVisible({ ...base, payeeAddresses: addrs })).toBe(true);
   });
 });
 
@@ -201,266 +169,176 @@ describe('stream confirmation total exposure fields', () => {
     amountPerSecond: '0x01',
     startTime: 1,
   };
+  const finite = findElementOfType(
+    'native-token-stream',
+    'confirmation-total-exposure',
+    'amount',
+  );
+  const unlimited = findElementOfType(
+    'native-token-stream',
+    'confirmation-total-exposure-unlimited',
+    'text',
+  );
 
-  it('throws when streamTotalExposure is missing from context', () => {
-    const el = findElementByTestId(
-      'native-token-stream',
-      'confirmation-total-exposure',
-    ) as AmountField;
-    const ctx: PermissionRenderContext = {
-      permission: { type: 'native-token-stream', data: streamData },
-      expiry: null,
-      chainId: '0x1' as Hex,
-    };
-    expect(() => el.getValue(ctx)).toThrow(
-      'streamTotalExposure must be set when rendering stream permission fields',
-    );
+  it('requires streamTotalExposure for stream total exposure amount fields', () => {
+    for (const [permissionType, data] of [
+      ['native-token-stream', streamData],
+      [
+        'erc20-token-stream',
+        { ...streamData, tokenAddress: MAX_UINT256 },
+      ],
+    ] as const) {
+      const element = findElementOfType(
+        permissionType,
+        'confirmation-total-exposure',
+        'amount',
+      );
+      expect(() => element.getValue(ctx(permissionType, data))).toThrow(
+        'streamTotalExposure must be set when rendering stream permission fields',
+      );
+    }
   });
 
-  it('treats null streamTotalExposure as unlimited in the confirmation summary', () => {
-    const finite = findElementByTestId(
-      'native-token-stream',
-      'confirmation-total-exposure',
-    ) as AmountField;
-    const unlimited = findElementByTestId(
-      'native-token-stream',
-      'confirmation-total-exposure-unlimited',
-    );
-    expect(unlimited.type).toBe('text');
-
-    const ctx: PermissionRenderContext = {
-      permission: { type: 'native-token-stream', data: streamData },
-      expiry: null,
-      chainId: '0x1' as Hex,
+  it('shows unlimited or finite total exposure based on streamTotalExposure', () => {
+    const unlimitedCtx = ctx('native-token-stream', streamData, {
       streamTotalExposure: null,
-    };
-
-    expect(finite.isVisible(ctx)).toBe(false);
-    if (unlimited.type !== 'text') {
-      return;
-    }
-    expect(unlimited.isVisible(ctx)).toBe(true);
-    expect(unlimited.getValue(ctx)).toStrictEqual({ key: 'unlimited' });
-  });
-
-  it('shows finite total exposure when streamTotalExposure is a BigNumber', () => {
-    const finite = findElementByTestId(
-      'native-token-stream',
-      'confirmation-total-exposure',
-    ) as AmountField;
-    const unlimited = findElementByTestId(
-      'native-token-stream',
-      'confirmation-total-exposure-unlimited',
-    );
-    const ctx: PermissionRenderContext = {
-      permission: { type: 'native-token-stream', data: streamData },
-      expiry: null,
-      chainId: '0x1' as Hex,
+    });
+    const finiteCtx = ctx('native-token-stream', streamData, {
       streamTotalExposure: new BigNumber(42),
-    };
-    expect(finite.isVisible(ctx)).toBe(true);
-    expect(finite.getValue(ctx).toFixed()).toBe('42');
-    if (unlimited.type !== 'text') {
-      return;
-    }
-    expect(unlimited.isVisible(ctx)).toBe(false);
-  });
+    });
 
-  it('requires streamTotalExposure for ERC20 stream total exposure amount', () => {
-    const el = findElementByTestId(
-      'erc20-token-stream',
-      'confirmation-total-exposure',
-    ) as AmountField;
-    const ctx: PermissionRenderContext = {
-      permission: {
-        type: 'erc20-token-stream',
-        data: { ...streamData, tokenAddress: MAX_UINT256 },
-      },
-      expiry: null,
-      chainId: '0x1' as Hex,
-    };
-    expect(() => el.getValue(ctx)).toThrow(
-      'streamTotalExposure must be set when rendering stream permission fields',
-    );
+    expect(finite.isVisible(unlimitedCtx)).toBe(false);
+    expect(unlimited.isVisible(unlimitedCtx)).toBe(true);
+    expect(unlimited.getValue(unlimitedCtx)).toStrictEqual({ key: 'unlimited' });
+    expect(finite.isVisible(finiteCtx)).toBe(true);
+    expect(finite.getValue(finiteCtx).toFixed()).toBe('42');
+    expect(unlimited.isVisible(finiteCtx)).toBe(false);
   });
 });
 
-describe('native-token-stream max allowance visibility', () => {
+describe('native-token-stream review fields', () => {
   const baseData = {
     initialAmount: '0x1',
     amountPerSecond: '0x1',
     startTime: 1,
   };
 
-  it('shows the numeric max allowance row unless max is unlimited', () => {
-    const maxRow = findElementByTestId(
+  it('toggles max and initial allowance rows from permission data', () => {
+    const maxRow = findElementOfType(
       'native-token-stream',
       'review-gator-permission-max-allowance',
-    ) as AmountField;
-    const unlimitedRow = findElementByTestId(
+      'amount',
+    );
+    const unlimitedRow = findElementOfType(
       'native-token-stream',
       'review-gator-permission-max-allowance-unlimited',
+      'text',
     );
-    const ctxFinite: PermissionRenderContext = {
-      permission: {
-        type: 'native-token-stream',
-        data: { ...baseData, maxAmount: '0x10' },
-      },
-      expiry: null,
-      chainId: '0x1' as Hex,
-    };
-    expect(maxRow.isVisible(ctxFinite)).toBe(true);
-    if (unlimitedRow.type !== 'text') {
-      return;
-    }
-    expect(unlimitedRow.isVisible(ctxFinite)).toBe(false);
-
-    const ctxUnlimited: PermissionRenderContext = {
-      permission: {
-        type: 'native-token-stream',
-        data: { ...baseData, maxAmount: MAX_UINT256 },
-      },
-      expiry: null,
-      chainId: '0x1' as Hex,
-    };
-    expect(maxRow.isVisible(ctxUnlimited)).toBe(false);
-    expect(unlimitedRow.isVisible(ctxUnlimited)).toBe(true);
-  });
-
-  it('hides the initial allowance amount when initialAmount is absent', () => {
-    const initialRow = findElementByTestId(
+    const initialRow = findElementOfType(
       'native-token-stream',
       'review-gator-permission-initial-allowance',
-    ) as AmountField;
-    const ctx: PermissionRenderContext = {
-      permission: {
-        type: 'native-token-stream',
-        data: {
-          amountPerSecond: '0x1',
-          startTime: 1,
-          maxAmount: '0xff',
-        },
-      },
-      expiry: null,
-      chainId: '0x1' as Hex,
-    };
-    expect(initialRow.isVisible(ctx)).toBe(false);
-  });
-});
-
-describe('native-token-periodic review summary fields', () => {
-  it('maps daily periodDuration to the daily translation key', () => {
-    const freq = findElementByTestId(
-      'native-token-periodic',
-      'review-gator-permission-frequency-label',
+      'amount',
     );
-    expect(freq.type).toBe('text');
-    if (freq.type !== 'text') {
-      return;
-    }
-    const ctx: PermissionRenderContext = {
-      permission: {
-        type: 'native-token-periodic',
-        data: {
-          periodAmount: '0x1',
-          periodDuration: 86400,
-          startTime: 1,
-        },
-      },
-      expiry: null,
-      chainId: '0x1' as Hex,
-    };
-    expect(freq.getValue(ctx)).toStrictEqual({
-      key: 'gatorPermissionDailyFrequency',
+    const finiteCtx = ctx('native-token-stream', {
+      ...baseData,
+      maxAmount: '0x10',
     });
-  });
-});
+    const unlimitedCtx = ctx('native-token-stream', {
+      ...baseData,
+      maxAmount: MAX_UINT256,
+    });
+    const noInitialCtx = ctx('native-token-stream', {
+      amountPerSecond: '0x1',
+      startTime: 1,
+      maxAmount: '0xff',
+    });
 
-describe('native-token-stream weekly summary aggregates', () => {
-  it('computes streamed amount per weekly period and labels it as weekly', () => {
-    const amountEl = findElementByTestId(
+    expect(maxRow.isVisible(finiteCtx)).toBe(true);
+    expect(unlimitedRow.isVisible(finiteCtx)).toBe(false);
+    expect(maxRow.isVisible(unlimitedCtx)).toBe(false);
+    expect(unlimitedRow.isVisible(unlimitedCtx)).toBe(true);
+    expect(initialRow.isVisible(noInitialCtx)).toBe(false);
+  });
+
+  it('computes weekly summary amount and frequency', () => {
+    const amountEl = findElementOfType(
       'native-token-stream',
       'review-gator-permission-amount-label',
-    ) as AmountField;
-    const freqEl = findElementByTestId(
+      'amount',
+    );
+    const freqEl = findElementOfType(
       'native-token-stream',
       'review-gator-permission-frequency-label',
+      'text',
     );
-    expect(freqEl.type).toBe('text');
-    const ctx: PermissionRenderContext = {
-      permission: {
-        type: 'native-token-stream',
-        data: {
-          initialAmount: '0x01',
-          maxAmount: '0xff',
-          amountPerSecond: '0x01',
-          startTime: 1,
-        },
-      },
-      expiry: null,
-      chainId: '0x1' as Hex,
-    };
-    expect(amountEl.getValue(ctx).toFixed()).not.toBe('0');
-    if (freqEl.type !== 'text') {
-      return;
-    }
-    expect(freqEl.getValue(ctx)).toStrictEqual({
+    const context = ctx('native-token-stream', {
+      ...baseData,
+      maxAmount: '0xff',
+    });
+
+    expect(amountEl.getValue(context).toFixed()).not.toBe('0');
+    expect(freqEl.getValue(context)).toStrictEqual({
       key: 'gatorPermissionWeeklyFrequency',
     });
   });
 });
 
-describe('erc20-token-revocation summary', () => {
-  it('shows an i18n value for revoke-all-tokens summary text', () => {
-    const textEl = findElementByTestId(
+describe('other schema fields', () => {
+  it('maps native periodic and ERC20 revocation summary text', () => {
+    const frequency = findElementOfType(
+      'native-token-periodic',
+      'review-gator-permission-frequency-label',
+      'text',
+    );
+    const revokeAll = findElementOfType(
       'erc20-token-revocation',
       'review-gator-permission-amount-label',
+      'text',
     );
-    expect(textEl.type).toBe('text');
-    if (textEl.type !== 'text') {
-      return;
-    }
-    expect(textEl.getValue(buildMinimalContext(undefined))).toStrictEqual({
+
+    expect(
+      frequency.getValue(
+        ctx('native-token-periodic', {
+          periodAmount: '0x1',
+          periodDuration: 86400,
+          startTime: 1,
+        }),
+      ),
+    ).toStrictEqual({ key: 'gatorPermissionDailyFrequency' });
+    expect(revokeAll.getValue(buildMinimalContext(undefined))).toStrictEqual({
       key: 'allTokens',
     });
   });
 
-  it('includes a standalone network element marker in confirmation info sections', () => {
-    expect(
-      findElementsByType('erc20-token-revocation', 'network')[0]?.type,
-    ).toBe('network');
-  });
-});
-
-describe('account justification field static accessors', () => {
-  it('always returns undefined for account avatar fields used in confirmation markup', () => {
+  it('includes confirmation-only account and standalone network elements', () => {
     const accountEl = PERMISSION_SCHEMAS['native-token-stream'].sections
-      .flatMap((s) => s.elements)
+      .flatMap((section) => section.elements)
       .find(
-        (e) =>
-          e.type === 'account' && e.includeInViews.includes('confirmation'),
+        (element) =>
+          element.type === 'account' &&
+          element.includeInViews.includes('confirmation'),
       );
+    const hasNetwork = PERMISSION_SCHEMAS[
+      'erc20-token-revocation'
+    ].sections.some((section) =>
+      section.elements.some((element) => element.type === 'network'),
+    );
+
     expect(accountEl?.type).toBe('account');
-    if (accountEl?.type !== 'account') {
-      return;
-    }
-    expect(accountEl.getValue(buildMinimalContext(undefined))).toBeUndefined();
+    expect(accountEl?.getValue(buildMinimalContext(undefined))).toBeUndefined();
+    expect(hasNetwork).toBe(true);
   });
 });
 
 describe('requireStartTime validation', () => {
-  it('runs on native-token-periodic schemas', () => {
-    const { validate } = PERMISSION_SCHEMAS['native-token-periodic'];
-    expect(validate).toBeDefined();
+  it('validates required startTime for periodic schemas', () => {
     expect(() =>
-      validate?.({ data: { periodAmount: '0x1', periodDuration: 1 } }),
+      PERMISSION_SCHEMAS['native-token-periodic'].validate?.({
+        data: { periodAmount: '0x1', periodDuration: 1 },
+      }),
     ).toThrow('Start time is required');
-  });
-
-  it('runs on erc20-token-periodic schemas', () => {
-    const { validate } = PERMISSION_SCHEMAS['erc20-token-periodic'];
     expect(() =>
-      validate?.({
+      PERMISSION_SCHEMAS['erc20-token-periodic'].validate?.({
         data: {
           tokenAddress: '0x0000000000000000000000000000000000000001',
           periodAmount: '0x1',
