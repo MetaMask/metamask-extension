@@ -124,7 +124,7 @@ describe('Swap tests', function (this: Suite) {
             tokenFrom: 'ETH',
             tokenTo: 'MUSD',
           },
-          expectedDestAmount: '0.369',
+          expectedDestAmount: '3,839',
           skipStatusPage: true,
         });
 
