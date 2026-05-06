@@ -1169,9 +1169,6 @@
       "MetaMask: Background connection not initialized": 90,
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientPayTokenBalanceAlert.test.ts": {
-      "Reselect: Identity function warnings": 3
-    },
     "ui/pages/confirmations/hooks/alerts/transactions/useMultipleApprovalsAlerts.test.ts": {
       "Reselect: Identity function warnings": 3
     },

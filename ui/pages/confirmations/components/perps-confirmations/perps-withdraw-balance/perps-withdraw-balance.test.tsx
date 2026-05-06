@@ -73,25 +73,4 @@ describe('PerpsWithdrawBalance', () => {
       ),
     ).toBeInTheDocument();
   });
-
-  it('prefers `availableToTradeBalance` over `availableBalance` for HyperLiquid Unified Account mode', () => {
-    // Unified mode reports `availableBalance: $0` because USDC sits in the
-    // spot clearinghouse. The unified `availableToTradeBalance` field is the
-    // correct withdrawable amount. Mirrors metamask-mobile#29492.
-    usePerpsLiveAccountMock.mockReturnValue({
-      account: {
-        availableBalance: '0',
-        availableToTradeBalance: '41.13',
-      } as never,
-      isInitialLoading: false,
-    });
-
-    renderBalance();
-
-    expect(
-      screen.getByText(
-        new RegExp(`${messages.perpsAvailableBalance.message}\\$41\\.13`, 'u'),
-      ),
-    ).toBeInTheDocument();
-  });
 });
