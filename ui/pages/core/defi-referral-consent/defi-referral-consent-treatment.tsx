@@ -59,8 +59,6 @@ export const DefiReferralConsentTreatment: React.FC<
   t('hyperliquidReferralConfirmText');
   t('gmxReferralConfirmText');
   t('asterdexReferralConfirmText');
-  t('defiReferralNoThanks');
-  t('defiReferralTerms');
 
   return (
     <Box
