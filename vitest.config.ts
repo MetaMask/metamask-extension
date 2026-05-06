@@ -33,6 +33,8 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     restoreMocks: true,
+    maxWorkers: 2,
+    vmMemoryLimit: '1GB',
     testTimeout: 5500,
 
     include: [

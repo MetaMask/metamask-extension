@@ -1,15 +1,22 @@
 /**
  * Vitest equivalent of test/integration/config/setupAfter.js.
  *
- * jest-preview is Jest-specific and is NOT ported here.  The CSS asset import
- * and nock baseline mock are preserved.
+ * jest-preview and its generated CSS asset are Jest-specific and are NOT
+ * ported here. The nock baseline mock is preserved.
  */
 
+import { configure } from '@testing-library/react';
 import { vi, beforeEach } from 'vitest';
 import nock from 'nock';
 import { ACCOUNTS_API_BASE_URL } from '../../shared/constants/accounts';
-import '../integration/config/assets/index.css';
 import '../helpers/setup-after-helper';
+
+configure({ asyncUtilTimeout: 5000 });
+
+if (typeof window !== 'undefined') {
+  window.cancelAnimationFrame ??= (() =>
+    undefined) as typeof cancelAnimationFrame;
+}
 
 beforeEach(() => {
   nock(ACCOUNTS_API_BASE_URL)

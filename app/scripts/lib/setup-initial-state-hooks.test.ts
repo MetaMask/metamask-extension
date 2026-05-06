@@ -51,9 +51,8 @@ jest.mock('../../../shared/lib/stores/persistence-manager', () => ({
   }),
 }));
 
-const { FixtureExtensionStore } = await import(
-  '../../../shared/lib/stores/fixture-extension-store'
-);
+const { FixtureExtensionStore } =
+  await import('../../../shared/lib/stores/fixture-extension-store');
 
 /**
  * Re-imports the module with a fresh module registry so top-level code

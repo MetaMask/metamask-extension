@@ -36,11 +36,10 @@ describe('createRandomId', () => {
         return array;
       });
 
-    const { default: createRandomIdFromSeed } = (await import(
-      './random-id'
-    )) as {
-      default: () => number;
-    };
+    const { default: createRandomIdFromSeed } =
+      (await import('./random-id')) as {
+        default: () => number;
+      };
 
     expect(createRandomIdFromSeed()).toBe(MAX - 2);
     expect(createRandomIdFromSeed()).toBe(MAX - 1);

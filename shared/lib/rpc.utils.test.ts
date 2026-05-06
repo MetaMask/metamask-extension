@@ -5,9 +5,8 @@ jest.mock('./fetch-with-timeout', () => {
   return jest.fn(() => mockFetch);
 });
 
-const { default: getFetchWithTimeout } = (await import(
-  './fetch-with-timeout'
-)) as { default: jest.Mock };
+const { default: getFetchWithTimeout } =
+  (await import('./fetch-with-timeout')) as { default: jest.Mock };
 
 function getMockFetch(): jest.Mock {
   return getFetchWithTimeout();
