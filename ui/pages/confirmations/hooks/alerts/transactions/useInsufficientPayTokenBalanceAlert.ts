@@ -62,14 +62,19 @@ export function useInsufficientPayTokenBalanceAlert({
   const nativeTokenAddress = getNativeTokenAddress(sourceChainId);
   const nativeToken = useTokenWithBalance(nativeTokenAddress, sourceChainId);
 
-  // chainId guard: a native destination on a different chain must not
-  // suppress the source-chain gas check.
-  const isPayTokenNative = Boolean(
-    payToken &&
+  // For post-quote, `payToken` is the destination so its native-ness has
+  // no bearing on source gas — force false so the source-network check
+  // evaluates against the user's actual native balance vs. the gas fee.
+  // For non-post-quote, also gate on `chainId === sourceChainId` so a
+  // native destination on a different chain can't suppress the check.
+  const isPayTokenNative =
+    !isPostQuote &&
+    Boolean(
+      payToken &&
       payToken.address.toLowerCase() ===
         (nativeToken?.address.toLowerCase() ?? '') &&
       payToken.chainId === sourceChainId,
-  );
+    );
 
   const { balanceUsd, balanceRaw } = payToken ?? {};
   const nativeBalanceRaw = nativeToken?.balanceRaw ?? '0';

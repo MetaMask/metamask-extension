@@ -492,5 +492,41 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
         }),
       ]);
     });
+
+    it('still raises the source-network alert when payToken is the native token of the source chain', () => {
+      // Withdrawing TO ETH on Arbitrum (same chain as the placeholder tx).
+      // For non-post-quote this would mark the pay token native and suppress
+      // the gas check; in post-quote `payToken` is the destination, so the
+      // gas check must remain live against the user's source native balance.
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          address: NATIVE_TOKEN_MOCK.address,
+          chainId: CHAIN_IDS.ARBITRUM as Hex,
+          balanceRaw: '10000000000000000000',
+        },
+        isNative: true,
+        setPayToken: jest.fn(),
+      });
+
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: CHAIN_IDS.ARBITRUM as Hex,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      const { result } = runHookForPerpsWithdraw();
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.InsufficientPayTokenNative,
+        }),
+      ]);
+    });
   });
 });
