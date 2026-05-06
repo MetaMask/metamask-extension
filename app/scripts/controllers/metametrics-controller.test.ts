@@ -1553,8 +1553,7 @@ describe('MetaMetricsController', function () {
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 chain_id: null,
                 // eslint-disable-next-line @typescript-eslint/naming-convention
-                chain_id_caip:
-                  'bip122:000000000019d6689c085ae165831e93',
+                chain_id_caip: 'bip122:000000000019d6689c085ae165831e93',
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 environment_type: 'background',
               },
