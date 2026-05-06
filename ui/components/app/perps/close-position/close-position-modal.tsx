@@ -534,8 +534,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 >
                   <Icon
                     name={IconName.Warning}
-                    size={IconSize.Sm}
+                    size={IconSize.Md}
                     color={IconColor.WarningDefault}
+                    className="shrink-0"
                   />
                   <Text
                     variant={TextVariant.BodySm}
@@ -671,6 +672,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               'data-testid': 'perps-close-position-modal-submit',
               children: t('perpsClosePosition'),
               disabled: isSubmitDisabled,
+              autoFocus: true,
             }}
           />
         </ModalContent>

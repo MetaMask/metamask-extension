@@ -50,6 +50,7 @@
     "isWalletResetInProgress": "boolean",
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
+    "lastVisitedRoute": null,
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "networkConnectionBanner": "object",
@@ -112,6 +113,7 @@
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quotesRefreshCount": 0,
+    "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object"
   },
   "BridgeStatusController": { "txHistory": "object" },

@@ -89,10 +89,17 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import type {
+  PasskeyAuthenticationResponse,
+  PasskeyRegistrationOptions,
+  PasskeyAuthenticationOptions,
+  PasskeyRegistrationResponse,
+} from '@metamask/passkey-controller';
 import { toHardwareWalletError } from '../contexts/hardware-wallets/rpcErrorUtils';
 import { HardwareWalletType } from '../contexts/hardware-wallets/types';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
+import { isPasskeyPRFSupported } from '../../shared/lib/passkey';
 import { switchDirection } from '../../shared/lib/switch-direction';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -993,6 +1000,34 @@ export function tryUnlockMetamask(
 }
 
 /**
+ * Tries to unlock the metamask with the passkey.
+ * @param authenticationResponse - The authentication response from the passkey.
+ * @returns A promise that resolves when the unlock is successful or rejected when it fails.
+ */
+export function tryUnlockMetamaskWithPasskey(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    dispatch(unlockInProgress());
+
+    try {
+      await submitRequestToBackground('unlockWithPasskey', [
+        authenticationResponse,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(unlockSucceeded());
+      dispatch(hideWarning());
+    } catch (error) {
+      dispatch(unlockFailed(getErrorMessage(error)));
+      throw error;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
+/**
  * Checks if the seedless onboarding user is authenticated.
  *
  * @returns True if the seedless onboarding user is authenticated, false otherwise.
@@ -1167,6 +1202,115 @@ export function unlockAndGetSeedPhrase(
 
 export function submitPassword(password: string): Promise<void> {
   return submitRequestToBackground('submitPassword', [password]);
+}
+
+/**
+ * Generates passkey registration options.
+ *
+ * @returns Passkey registration options.
+ */
+export async function generatePasskeyRegistrationOptions(): Promise<PasskeyRegistrationOptions> {
+  const prfSupported = await isPasskeyPRFSupported();
+  return submitRequestToBackground('generatePasskeyRegistrationOptions', [
+    { prfAvailable: prfSupported !== false },
+  ]);
+}
+
+/**
+ * Generates passkey authentication options.
+ *
+ * @returns Passkey authentication options.
+ */
+export function generatePasskeyAuthenticationOptions(): Promise<PasskeyAuthenticationOptions> {
+  return submitRequestToBackground('generatePasskeyAuthenticationOptions');
+}
+
+/**
+ * Generates passkey authentication options immediately after registration.
+ *
+ * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
+ */
+export function generatePasskeyPostRegistrationAuthenticationOptions(
+  registrationResponse: PasskeyRegistrationResponse,
+): Promise<PasskeyAuthenticationOptions> {
+  return submitRequestToBackground(
+    'generatePasskeyPostRegistrationAuthenticationOptions',
+    [registrationResponse],
+  );
+}
+
+/**
+ * Protects the vault key with a passkey.
+ *
+ * @param registrationResponse - Passkey registration response JSON from the UI ceremony.
+ * @param authenticationResponse - Post-registration `get()` response from the UI ceremony.
+ * @param password - When onboarding is complete, the wallet password (step-up). Omit during onboarding.
+ */
+export function protectVaultKeyWithPasskey(
+  registrationResponse: PasskeyRegistrationResponse,
+  authenticationResponse: PasskeyAuthenticationResponse,
+  password?: string,
+): Promise<void> {
+  return submitRequestToBackground('protectVaultKeyWithPasskey', [
+    registrationResponse,
+    authenticationResponse,
+    password,
+  ]);
+}
+
+/**
+ * Removes the passkey from the vault using the passkey authentication response.
+ *
+ * @param authenticationResponse - Passkey authentication response JSON from the UI ceremony.
+ */
+export function removePasskeyWithPasskeyVerification(
+  authenticationResponse: PasskeyAuthenticationResponse,
+): Promise<void> {
+  return submitRequestToBackground('removePasskeyWithPasskeyVerification', [
+    authenticationResponse,
+  ]);
+}
+
+/**
+ * Removes the passkey from the vault using the wallet password.
+ *
+ * @param password - The wallet password.
+ */
+export function removePasskeyWithPasswordVerification(
+  password: string,
+): Promise<void> {
+  return submitRequestToBackground('removePasskeyWithPasswordVerification', [
+    password,
+  ]);
+}
+
+/**
+ * Changes wallet password using a verified passkey assertion, then either re-wraps the
+ * passkey record for the new vault encryption key or removes passkey enrollment.
+ * (Non–social-login, passkey already enrolled.)
+ *
+ * @param newPassword - The new wallet password.
+ * @param authenticationResponse - WebAuthn authentication response from `navigator.credentials.get`.
+ * @param options - Settings forwarded to the background handler.
+ * @param options.renewVaultKeyProtection - Whether to renew vault key protection. If `false`, removes passkey after the change instead of renewing vault key protection.
+ */
+export function changePasswordWithPasskeyVerification(
+  newPassword: string,
+  authenticationResponse: PasskeyAuthenticationResponse,
+  options: { renewVaultKeyProtection: boolean },
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('changePasswordWithPasskeyVerification', [
+        newPassword,
+        authenticationResponse,
+        options,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
 }
 
 /**
@@ -2170,24 +2314,6 @@ export function enableSnap(
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('enableSnap', [snapId]);
     await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function updateSnap(
-  origin: string,
-  snap: { [snapId: string]: { version: string } },
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch, getState) => {
-    await submitRequestToBackground('updateSnap', [origin, snap]);
-    await forceUpdateMetamaskState(dispatch);
-
-    const state = getState();
-
-    const approval = getFirstSnapInstallOrUpdateRequest(state);
-
-    return approval?.metadata.id;
   };
 }
 
@@ -4320,6 +4446,24 @@ export async function setDefaultHomeActiveTabName(
   } catch {
     // noop
   }
+}
+
+export function setLastVisitedPerpsRoute(
+  path: string | null,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (_dispatch: MetaMaskReduxDispatch) => {
+    // Fire-and-forget: this write is a pure navigation hint for the next
+    // home mount. Swallow errors without a warning toast — users should
+    // never see UI noise for an internal persistence operation. We also
+    // skip `forceUpdateMetamaskState` because the field is memory-only
+    // (persist:false) and every Perps route change would otherwise pull
+    // the entire background state.
+    try {
+      await submitRequestToBackground('setLastVisitedRoute', ['perps', path]);
+    } catch (error) {
+      log.error('[setLastVisitedPerpsRoute] error', error);
+    }
+  };
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {

@@ -274,7 +274,7 @@ export async function mockTokensWithSecurityData(
     }));
 }
 
-async function mockGetPopularTokens(mockServer: Mockttp) {
+export async function mockGetPopularTokens(mockServer: Mockttp) {
   return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
     statusCode: 200,
     json: [
@@ -559,7 +559,6 @@ async function mockFeatureFlags(
         json: [
           {
             bridgeConfig: featureFlags,
-            extensionUxPna25: true,
             extensionSkipTransactionStatusPage,
             ...additionalFlags,
           },
