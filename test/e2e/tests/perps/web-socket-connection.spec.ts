@@ -59,7 +59,7 @@ describe.skip('Perps Web Socket', function (this: Suite) {
   it('the websocket connection is maintained for a grace period when MetaMask window is closed', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -83,7 +83,7 @@ describe.skip('Perps Web Socket', function (this: Suite) {
   it('websocket connection is shared between multiple MetaMask windows', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
