@@ -176,12 +176,7 @@ const AssetPage = ({
       if (type === AssetType.token) {
         return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
       }
-
-      if (isEvm) {
-        return getNativeTokenAddress(chainId as Hex);
-      }
-
-      return asset.nativeAssetId ?? nativeAssetType;
+      return isEvm ? getNativeTokenAddress(chainId as Hex) : nativeAssetType;
     })() ?? '';
 
   const shouldShowContractAddress = type === AssetType.token;
@@ -208,7 +203,7 @@ const AssetPage = ({
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
-  const tokenHexBalance = (assetWithBalance?.rawBalance as string) ?? '0x0';
+  const tokenHexBalance = assetWithBalance?.rawBalance ?? '0x0';
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(

@@ -8,8 +8,6 @@ export type Asset = (
       type: AssetType.native;
       /** Whether the symbol has been verified to match the chain */
       isOriginalNativeSymbol: boolean;
-      /** Optional CAIP asset ID for non-EVM native assets */
-      nativeAssetId?: string;
     }
   | {
       type: AssetType.token;
