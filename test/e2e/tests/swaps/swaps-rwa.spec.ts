@@ -17,8 +17,34 @@ describe('Swap RWA', function () {
         unapproved: true,
       },
       expectedTransactionsCount: 2,
-      expectedDestAmount: '23.83',
-    }
+      expectedDestAmount: '0.0599',
+    },
+    {
+      name: 'should swap GOOGLon to USDC',
+      quote: {
+        amount: '1',
+        tokenFrom: 'GOOGLon',
+        tokenTo: 'USDC',
+        fromChain: 'Ethereum',
+        toChain: 'Ethereum',
+        unapproved: true,
+      },
+      expectedTransactionsCount: 2,
+      expectedDestAmount: '395.7',
+    },
+    {
+      name: 'should swap GOOGLon to SPYon',
+      quote: {
+        amount: '0.05',
+        tokenFrom: 'GOOGLon',
+        tokenTo: 'SPYon',
+        fromChain: 'Ethereum',
+        toChain: 'Ethereum',
+        unapproved: true,
+      },
+      expectedTransactionsCount: 2,
+      expectedDestAmount: '0.0246',
+    },
   ];
 
   swapTestCases.forEach((testCase) => {

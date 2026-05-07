@@ -47,6 +47,8 @@ import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usdc-gas-sponsored.json';
 import MOCK_SWAP_QUOTES_USDC_GOOGLON from './mocks/swap-quotes-usdc-googlon.json';
+import MOCK_SWAP_QUOTES_GOOGLON_USDC from './mocks/swap-quotes-googlon-usdc.json';
+import MOCK_SWAP_QUOTES_GOOGLON_SPYON from './mocks/swap-quotes-googlon-spyon.json';
 
 export class BridgePage {
   driver: Driver;
@@ -1367,6 +1369,8 @@ export const getBridgeFixtures = ({
         await mockSwapETHtoMUSD(mockServer, tokenWarnings),
         await mockUSDCtoDAI(mockServer, featureFlags.sse?.enabled),
         await mockSwapUSDCtoGOOGLON(mockServer, featureFlags.sse?.enabled),
+        await mockSwapGOOGLONtoUSDC(mockServer, featureFlags.sse?.enabled),
+        await mockSwapGOOGLONtoSPYON(mockServer, featureFlags.sse?.enabled),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1962,6 +1966,64 @@ async function mockSwapUSDCtoGOOGLON(mockServer: Mockttp, sseEnabled?: boolean) 
       return {
         statusCode: 200,
         json: MOCK_SWAP_QUOTES_USDC_GOOGLON,
+      };
+    });
+}
+
+async function mockSwapGOOGLONtoUSDC(mockServer: Mockttp, sseEnabled?: boolean) {
+  if (sseEnabled) {
+    return await mockServer
+      .forGet(/getQuoteStream/u)
+      .withQuery({
+        srcTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+        destTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      })
+      .thenStream(
+        200,
+        mockSseEventSource(MOCK_SWAP_QUOTES_GOOGLON_USDC),
+        SSE_RESPONSE_HEADER,
+      );
+  }
+
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+      destTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_SWAP_QUOTES_GOOGLON_USDC,
+      };
+    });
+}
+
+async function mockSwapGOOGLONtoSPYON(mockServer: Mockttp, sseEnabled?: boolean) {
+  if (sseEnabled) {
+    return await mockServer
+      .forGet(/getQuoteStream/u)
+      .withQuery({
+        srcTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+        destTokenAddress: '0xfEdc5f4a6c38211C1338aa411018DfaF26612C08',
+      })
+      .thenStream(
+        200,
+        mockSseEventSource(MOCK_SWAP_QUOTES_GOOGLON_SPYON),
+        SSE_RESPONSE_HEADER,
+      );
+  }
+
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+      destTokenAddress: '0xfEdc5f4a6c38211C1338aa411018DfaF26612C08',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_SWAP_QUOTES_GOOGLON_SPYON,
       };
     });
 }

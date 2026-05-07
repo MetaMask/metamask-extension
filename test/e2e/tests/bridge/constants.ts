@@ -355,6 +355,16 @@ export const MOCK_TOKENS_ETHEREUM = [
     address: '0xba47214edd2bb43099611b208f75e4b42fdcfedc',
     name: 'Alphabet Class A (Ondo Tokenized)',
   },
+  {
+    symbol: 'SPYon',
+    decimals: 18,
+    aggregators: ['cowswap'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xfedc5f4a6c38211c1338aa411018dfaf26612c08.png',
+    address: '0xfedc5f4a6c38211c1338aa411018dfaf26612c08',
+    name: 'SPDR S&P 500 ETF (Ondo Tokenized)',
+  },
   getNativeAssetForChainId(1),
 ];
 

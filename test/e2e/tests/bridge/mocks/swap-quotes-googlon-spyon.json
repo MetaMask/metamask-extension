@@ -1,0 +1,90 @@
+[
+  {
+    "quote": {
+      "requestId": "1168270133",
+      "bridgeId": "cowswap",
+      "srcChainId": 1,
+      "srcAsset": {
+        "address": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+        "chainId": 1,
+        "assetId": "eip155:1/erc20:0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+        "symbol": "GOOGLon",
+        "decimals": 18,
+        "name": "Alphabet Class A (Ondo Tokenized)",
+        "coingeckoId": "alphabet-class-a-ondo-tokenized-stock",
+        "aggregators": ["coinGecko", "rubic", "rango", "ondo"],
+        "occurrences": 4,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xba47214edd2bb43099611b208f75e4b42fdcfedc.png",
+        "metadata": {}
+      },
+      "srcTokenAmount": "50000000000000000",
+      "destChainId": 1,
+      "destAsset": {
+        "address": "0xfedc5f4a6c38211c1338aa411018dfaf26612c08",
+        "chainId": 1,
+        "assetId": "eip155:1/erc20:0xfedc5f4a6c38211c1338aa411018dfaf26612c08",
+        "symbol": "SPYon",
+        "decimals": 18,
+        "name": "SPDR S&P 500 ETF (Ondo Tokenized)",
+        "coingeckoId": "spdr-s-p-500-etf-ondo-tokenized-etf",
+        "aggregators": ["coinGecko", "liFi", "rubic", "rango", "ondo"],
+        "occurrences": 5,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xfedc5f4a6c38211c1338aa411018dfaf26612c08.png",
+        "metadata": {}
+      },
+      "destTokenAmount": "24562231707029827",
+      "minDestTokenAmount": "24491001235079440",
+      "feeData": {
+        "metabridge": {
+          "amount": "437500000000000",
+          "asset": {
+            "address": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+            "chainId": 1,
+            "assetId": "eip155:1/erc20:0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+            "symbol": "GOOGLon",
+            "decimals": 18,
+            "name": "Alphabet Class A (Ondo Tokenized)",
+            "coingeckoId": "alphabet-class-a-ondo-tokenized-stock",
+            "aggregators": ["coinGecko", "rubic", "rango", "ondo"],
+            "occurrences": 4,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xba47214edd2bb43099611b208f75e4b42fdcfedc.png",
+            "metadata": {}
+          },
+          "quoteBpsFee": 87.5,
+          "baseBpsFee": 87.5
+        }
+      },
+      "aggregator": "cowswap",
+      "bridges": ["cowswap"],
+      "protocols": ["cowswap"],
+      "steps": [],
+      "priceData": {
+        "totalFromAmountUsd": "18.358667905585964",
+        "totalToAmountUsd": "18.34845074876371",
+        "priceImpact": "0.0005565304015954781"
+      },
+      "aggregatorType": "AGG",
+      "walletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "destWalletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "gasIncluded": false,
+      "slippage": 0.29
+    },
+    "approval": {
+      "chainId": 1,
+      "to": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "value": "0x0",
+      "data": "0x095ea7b3000000000000000000000000c92e8bdf79f0507f65a392b0ab4667716bfe011000000000000000000000000000000000000000000000000000b1a2bc2ec50000",
+      "gasLimit": 60000
+    },
+    "trade": {
+      "chainId": 1,
+      "to": "0x9008D19f58AAbD9eD0D60971565AA8510560ab41",
+      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "value": "0x0",
+      "data": "0x07c",
+      "gasLimit": 450000
+    },
+    "estimatedProcessingTimeInSeconds": 1800
+  }
+]

@@ -1,0 +1,131 @@
+[
+  {
+    "quote": {
+      "requestId": "1168279840",
+      "bridgeId": "cowswap",
+      "srcChainId": 1,
+      "srcAsset": {
+        "address": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+        "chainId": 1,
+        "assetId": "eip155:1/erc20:0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+        "symbol": "GOOGLON",
+        "decimals": 18,
+        "name": "Alphabet Class A (Ondo Tokenized)",
+        "coingeckoId": "alphabet-class-a-ondo-tokenized-stock",
+        "aggregators": ["coinGecko", "rubic", "rango", "ondo"],
+        "occurrences": 4,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xba47214edd2bb43099611b208f75e4b42fdcfedc.png",
+        "metadata": {}
+      },
+      "srcTokenAmount": "1000000000000000000",
+      "destChainId": 1,
+      "destAsset": {
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "chainId": 1,
+        "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "symbol": "USDC",
+        "decimals": 6,
+        "name": "USDC",
+        "coingeckoId": "usd-coin",
+        "aggregators": [
+          "metamask",
+          "oneInch",
+          "liFi",
+          "trustWallet",
+          "socket",
+          "rubic",
+          "squid",
+          "rango",
+          "sonarwatch",
+          "sushiSwap",
+          "bancor"
+        ],
+        "occurrences": 13,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+        "metadata": {
+          "storage": {
+            "balance": 9,
+            "approval": 10
+          }
+        }
+      },
+      "destTokenAmount": "395708976",
+      "minDestTokenAmount": "393967856",
+      "feeData": {
+        "metabridge": {
+          "amount": "8750000000000000",
+          "asset": {
+            "address": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+            "chainId": 1,
+            "assetId": "eip155:1/erc20:0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+            "symbol": "GOOGLON",
+            "decimals": 18,
+            "name": "Alphabet Class A (Ondo Tokenized)",
+            "coingeckoId": "alphabet-class-a-ondo-tokenized-stock",
+            "aggregators": ["coinGecko", "rubic", "rango", "ondo"],
+            "occurrences": 4,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xba47214edd2bb43099611b208f75e4b42fdcfedc.png",
+            "metadata": {}
+          },
+          "quoteBpsFee": 87.5,
+          "baseBpsFee": 87.5,
+          "usd": "3.5235574654276505"
+        }
+      },
+      "aggregator": "cowswap",
+      "bridges": ["cowswap"],
+      "protocols": ["cowswap"],
+      "steps": [],
+      "priceData": {
+        "totalFromAmountUsd": "401.0488843088351",
+        "totalToAmountUsd": "400.596857208862",
+        "priceImpact": "0.0011271122241173735"
+      },
+      "aggregatorType": "AGG",
+      "walletAddress": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+      "destWalletAddress": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+      "gasIncluded": false,
+      "slippage": 0.44,
+      "intent": {
+        "protocol": "cowswap",
+        "order": {
+          "kind": "sell",
+          "sellToken": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+          "buyToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "from": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+          "receiver": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+          "sellAmount": "1000000000000000000",
+          "buyAmount": "393967856",
+          "feeAmount": "0",
+          "validTo": 1778149133,
+          "appDataHash": "0x17abf568dd6bb8707a202889895478e0e51a89c8835dfc7c51a06567c17fc618",
+          "partiallyFillable": false,
+          "sellTokenBalance": "erc20",
+          "buyTokenBalance": "erc20",
+          "signingScheme": "eip712",
+          "priceQuality": "optimal",
+          "quoteId": 1168279840
+        },
+        "relayer": "0x9008D19f58AAbD9eD0D60971565AA8510560ab41"
+      }
+    },
+    "approval": {
+      "chainId": 1,
+      "to": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+      "from": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+      "value": "0x0",
+      "data": "0x095ea7b3000000000000000000000000c92e8bdf79f0507f65a392b0ab4667716bfe01100000000000000000000000000000000000000000000000000de0b6b3a7640000",
+      "gasLimit": null
+    },
+    "trade": {
+      "chainId": 1,
+      "to": "0x9008D19f58AAbD9eD0D60971565AA8510560ab41",
+      "from": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+      "value": "0x0",
+      "data": "0x07c",
+      "gasLimit": null
+    },
+    "estimatedProcessingTimeInSeconds": 1800,
+    "quoteId": "047dd2cc-1bb1-41fa-9633-2db5ca596cd2"
+  }
+]

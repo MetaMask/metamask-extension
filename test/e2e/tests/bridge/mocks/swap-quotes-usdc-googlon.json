@@ -1,93 +1,148 @@
 [
   {
     "quote": {
-      "requestId": "xo-swap-usdc-googlon-001",
+      "requestId": "1168275713",
       "bridgeId": "cowswap",
       "srcChainId": 1,
-      "destChainId": 1,
-      "aggregator": "cowswap",
-      "aggregatorType": "AGG",
       "srcAsset": {
-        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
         "chainId": 1,
         "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
         "symbol": "USDC",
         "decimals": 6,
-        "name": "USD Coin",
+        "name": "USDC",
         "coingeckoId": "usd-coin",
-        "aggregators": [],
-        "occurrences": 14,
-        "iconUrl": "https://raw.githubusercontent.com/MetaMask/contract-metadata/master/icons/eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48.svg",
-        "metadata": {}
+        "aggregators": [
+          "metamask",
+          "oneInch",
+          "liFi",
+          "trustWallet",
+          "socket",
+          "rubic",
+          "squid",
+          "rango",
+          "sonarwatch",
+          "sushiSwap",
+          "bancor"
+        ],
+        "occurrences": 13,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+        "metadata": {
+          "storage": {
+            "balance": 9,
+            "approval": 10
+          }
+        }
       },
       "srcTokenAmount": "25000000",
+      "destChainId": 1,
       "destAsset": {
         "address": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
         "chainId": 1,
         "assetId": "eip155:1/erc20:0xba47214edd2bb43099611b208f75e4b42fdcfedc",
-        "symbol": "GOOGLon",
+        "symbol": "GOOGLON",
         "decimals": 18,
         "name": "Alphabet Class A (Ondo Tokenized)",
-        "coingeckoId": "googlon",
-        "aggregators": [],
-        "occurrences": 1,
+        "coingeckoId": "alphabet-class-a-ondo-tokenized-stock",
+        "aggregators": ["coinGecko", "rubic", "rango", "ondo"],
+        "occurrences": 4,
         "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xba47214edd2bb43099611b208f75e4b42fdcfedc.png",
         "metadata": {}
       },
-      "destTokenAmount": "23830000000000000000",
-      "minDestTokenAmount": "23350000000000000000",
-      "walletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
-      "destWalletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "destTokenAmount": "59947831701662800",
+      "minDestTokenAmount": "59678066459005317",
       "feeData": {
         "metabridge": {
           "amount": "218750",
           "asset": {
-            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
             "chainId": 1,
             "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
             "symbol": "USDC",
             "decimals": 6,
-            "name": "USD Coin",
+            "name": "USDC",
             "coingeckoId": "usd-coin",
-            "aggregators": [],
-            "occurrences": 14,
-            "iconUrl": "https://raw.githubusercontent.com/MetaMask/contract-metadata/master/icons/eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48.svg",
-            "metadata": {}
+            "aggregators": [
+              "metamask",
+              "oneInch",
+              "liFi",
+              "trustWallet",
+              "socket",
+              "rubic",
+              "squid",
+              "rango",
+              "sonarwatch",
+              "sushiSwap",
+              "bancor"
+            ],
+            "occurrences": 13,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+            "metadata": {
+              "storage": {
+                "balance": 9,
+                "approval": 10
+              }
+            }
           },
           "quoteBpsFee": 87.5,
-          "baseBpsFee": 87.5
+          "baseBpsFee": 87.5,
+          "usd": "0.21890687566824496"
         }
       },
+      "aggregator": "cowswap",
       "bridges": ["cowswap"],
       "protocols": ["cowswap"],
       "steps": [],
-      "slippage": 2,
-      "gasSponsored": false,
-      "gasIncluded": false,
-      "gasIncluded7702": false,
       "priceData": {
-        "totalFromAmountUsd": "25.00",
-        "totalToAmountUsd": "23.83",
-        "priceImpact": "0.003",
-        "totalFeeAmountUsd": "0.00"
+        "totalFromAmountUsd": "24.3856965700723",
+        "totalToAmountUsd": "24.36751267600935",
+        "priceImpact": "0.0007456786813818904"
+      },
+      "aggregatorType": "AGG",
+      "walletAddress": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+      "destWalletAddress": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+      "gasIncluded": false,
+      "slippage": 0.45,
+      "intent": {
+        "protocol": "cowswap",
+        "order": {
+          "kind": "sell",
+          "sellToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "buyToken": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+          "from": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+          "receiver": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+          "sellAmount": "25000000",
+          "buyAmount": "59678066459005317",
+          "feeAmount": "0",
+          "validTo": 1778148888,
+          "appDataHash": "0x07e6b3e2d6ac49797ccd32c4a201b8cc0c09774320b36b0ee45eb032b3ec2f58",
+          "partiallyFillable": false,
+          "sellTokenBalance": "erc20",
+          "buyTokenBalance": "erc20",
+          "signingScheme": "eip712",
+          "priceQuality": "optimal",
+          "quoteId": 1168275713
+        },
+        "relayer": "0x9008D19f58AAbD9eD0D60971565AA8510560ab41"
       }
     },
     "approval": {
       "chainId": 1,
-      "to": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
-      "value": "0x00",
-      "data": "0x095ea7b30000000000000000000000000439e60f02a8900a951603950d8d4527f400c3f100000000000000000000000000000000000000000000000000000000017d7840",
-      "gasLimit": 60000
+      "to": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "from": "0xbec040014de5b4f1117edd010828ea35cec28b30",
+      "value": "0x0",
+      "data": "0x095ea7b3000000000000000000000000c92e8bdf79f0507f65a392b0ab4667716bfe011000000000000000000000000000000000000000000000000000000000017d7840",
+      "gasLimit": null
     },
     "trade": {
       "chainId": 1,
-      "to": "0x881D40237659C251811CEC9c364ef91dC08D300C",
-      "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+      "to": "0x9008D19f58AAbD9eD0D60971565AA8510560ab41",
+      "from": "0xbec040014de5b4f1117edd010828ea35cec28b30",
       "value": "0x0",
-      "data": "0x5f5755290000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000017d7840000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000136f70656e4f6365616e46656544796e616d696300000000000000000000000000",
-      "gasLimit": 448721
+      "data": "0x07c",
+      "gasLimit": null
     },
-    "estimatedProcessingTimeInSeconds": 0
+    "estimatedProcessingTimeInSeconds": 1800,
+    "quoteId": "b9abe86c-9e7c-4137-add8-2ca8e12628d7"
   }
 ]
