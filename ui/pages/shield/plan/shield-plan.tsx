@@ -38,19 +38,19 @@ import log from 'loglevel';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
-} from '../../../shared/constants/network';
+} from '../../../../shared/constants/network';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
-} from '../../components/component-library';
+} from '../../../components/component-library';
 import {
   Content,
   Footer,
   Header,
   Page,
-} from '../../components/multichain/pages/page';
-import LoadingScreen from '../../components/ui/loading-screen';
+} from '../../../components/multichain/pages/page';
+import LoadingScreen from '../../../components/ui/loading-screen';
 import {
   AlignItems,
   BackgroundColor,
@@ -58,49 +58,49 @@ import {
   FlexDirection,
   JustifyContent,
   TextVariant as OldTextVariant,
-} from '../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
   SETTINGS_ROUTE,
   SHIELD_PLAN_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
-} from '../../helpers/constants/routes';
+} from '../../../helpers/constants/routes';
 import {
   TokenWithApprovalAmount,
   useAvailableTokenBalances,
   useSubscriptionPaymentMethods,
   useSubscriptionPricing,
   useSubscriptionProductPlans,
-} from '../../hooks/subscription/useSubscriptionPricing';
+} from '../../../hooks/subscription/useSubscriptionPricing';
 import {
   useHandleSubscription,
   useShieldRewards,
   useSubscriptionError,
   useUserSubscriptionByProduct,
   useUserSubscriptions,
-} from '../../hooks/subscription/useSubscription';
-import { useI18nContext } from '../../hooks/useI18nContext';
-import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
+} from '../../../hooks/subscription/useSubscription';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getLastUsedShieldSubscriptionPaymentDetails } from '../../../selectors/subscription';
 import {
   ShieldMetricsSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
   SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
-} from '../../../shared/constants/subscriptions';
+} from '../../../../shared/constants/subscriptions';
 import {
   isDevOrTestEnvironment,
   isDevOrUatBuild,
   getIsTrialedSubscription,
-} from '../../../shared/lib/shield';
-import ApiErrorHandler from '../../components/app/api-error-handler';
-import { MetaMaskReduxDispatch } from '../../store/store';
+} from '../../../../shared/lib/shield';
+import ApiErrorHandler from '../../../components/app/api-error-handler';
+import { MetaMaskReduxDispatch } from '../../../store/store';
 import {
   setLastUsedSubscriptionPaymentDetails,
   setPendingRedirectRoute,
-} from '../../store/actions';
-import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
-import { getIntlLocale } from '../../ducks/locale/locale';
-import { getPendingRedirectRoute } from '../../selectors';
-import { PendingRedirectRoute } from '../../../shared/lib/pending-redirect-state';
+} from '../../../store/actions';
+import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { getPendingRedirectRoute } from '../../../selectors';
+import { PendingRedirectRoute } from '../../../../shared/lib/pending-redirect-state';
 import { ShieldPaymentModal } from './shield-payment-modal';
 import { ShieldRewardsModal } from './shield-rewards-modal';
 import { Plan } from './types';

@@ -7,7 +7,7 @@ import {
 } from '@metamask/subscription-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useSubscriptionProductPlans } from '../../../../hooks/subscription/useSubscriptionPricing';
-import { getProductPrice } from '../../../shield-plan/utils';
+import { getProductPrice } from '../../plan/utils';
 
 const ReactivateButton = ({
   subscriptionPricing,
