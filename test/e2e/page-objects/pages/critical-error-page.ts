@@ -100,6 +100,12 @@ class CriticalErrorPage {
         waitForLoadingLogoToDisappear: false,
       });
 
+      // The service worker handoff runs asynchronously after runtime.reload():
+      // it reads the restore session from storage.local, converts the
+      // metamask.io/restoring tab to home.html, then clears the key. We must
+      // wait for that key to be cleared before closing extra tabs — otherwise
+      // we kill the restoring tab before the service worker can hand it off,
+      // causing a fallback that opens a second home.html tab.
       await this.driver.waitUntil(
         async () => {
           const cleared = await this.driver.executeScript(`
@@ -115,11 +121,9 @@ class CriticalErrorPage {
         { interval: 300, timeout: 30_000 },
       );
 
-      // The restore session key is cleared before the service worker finishes
-      // initializing. Wait for the UI to receive state and finish launching
-      // before closing extra tabs.
+      // Wait for the UI to receive state and finish launching.
       await this.driver.waitForControllersLoaded(30_000);
-
+      // Now safe to close extra tabs (service worker has finished handoff / fallback).
       await this.driver.closeAllOtherTabs();
     } else {
       await alert.dismiss();
