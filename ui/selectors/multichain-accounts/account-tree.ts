@@ -814,8 +814,7 @@ export const getDefaultScopeAndAddressByAccountGroupId =
   createParameterizedSelector(GROUP_LRU_CACHE_SIZE)(
     [
       getInternalAccountListSpreadByScopesByGroupId,
-      (state: MetaMaskReduxState): DefaultAddressScope =>
-        getPreferences(state).defaultAddressScope,
+      (state: MetaMaskReduxState) => getPreferences(state).defaultAddressScope,
     ],
     (
       spreadList: {
