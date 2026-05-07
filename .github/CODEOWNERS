@@ -263,5 +263,5 @@ development/generate-lavamoat-policies.js             @MetaMask/extension-platfo
 /tsconfig.*.json                                      @MetaMask/extension-platform
 
 # Background Process
-app/scripts/lib/createMetaRPCHandler.js              @MetaMask/extension-platform
+app/scripts/lib/createMetaRPCHandler.ts              @MetaMask/extension-platform
 app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platform
