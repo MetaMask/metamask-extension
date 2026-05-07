@@ -8162,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "DAppからのスマートアカウントリクエスト"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "同じアドレスでよりスマートな機能。"
   },
@@ -8797,12 +8794,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "サポートされている言語",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "アンケートに回答する"
-  },
-  "surveyTitle": {
-    "message": "MetaMaskの未来を形作りましょう"
   },
   "swap": {
     "message": "スワップ"
