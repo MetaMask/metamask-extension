@@ -51,10 +51,13 @@ function defaultAssetsController() {
  * (`#ensureDefaultTrackedAssetsSeeded` and the snap-discovery flow), so the
  * migration does not need to populate them.
  *
- * As a consequence, accounts that hold only native assets get no per-account
- * entries (nothing to migrate). Accounts that hold at least one ERC-20 / SPL
- * token, plus the currently selected account if it has imported tokens, are
- * the only ones with per-account writes.
+ * Which accounts are migrated:
+ * Per-account writes happen only for "relevant" accounts — the currently
+ * selected account, plus any account that has at least one imported ERC-20
+ * (TokensController) or non-native multichain asset (MultichainAssetsController).
+ * Accounts that exist in storage but were never opened by the user (no imported
+ * tokens, not selected) are skipped — the controller rebuilds their state at
+ * runtime. Accounts holding only native assets are likewise skipped.
  *
  * Per-account classification:
  * ERC-20 with non-zero balance lands in `assetsBalance`. ERC-20 with zero or
@@ -65,10 +68,6 @@ function defaultAssetsController() {
  *
  * Metadata is written to the global `assetsInfo` registry (keyed by CAIP-19),
  * so each migrated asset is immediately renderable in the UI.
- *
- * Per-account entries are only written for accounts present in
- * `AccountTreeController`. If the tree is empty / not built, no per-account
- * writes happen — the controller will repopulate state once the tree exists.
  *
  * Idempotency: existing AssetsController entries are never overwritten; the
  * migration only fills gaps. Non-EVM and native entries previously written to
@@ -82,11 +81,16 @@ export const migrate = (async (versionedData, changedControllers) => {
   try {
     const { data } = versionedData;
     const ac = ensureAssetsController(data);
-    const treeAccountIds = collectTreeAccountIds(data);
-    const addressToId = buildAddressToIdMap(data, treeAccountIds);
+    const addressToId = buildAddressToIdMap(data);
+    const relevantAccountIds = collectRelevantAccountIds(data, addressToId);
 
-    const evmChanged = migrateEvmTokens(data, ac, addressToId, treeAccountIds);
-    const nonEvmChanged = migrateNonEvmAssets(data, ac, treeAccountIds);
+    const evmChanged = migrateEvmTokens(
+      data,
+      ac,
+      addressToId,
+      relevantAccountIds,
+    );
+    const nonEvmChanged = migrateNonEvmAssets(data, ac, relevantAccountIds);
     const cleanupChanged = cleanupCustomAssets(ac);
 
     if (evmChanged || nonEvmChanged || cleanupChanged) {
@@ -135,55 +139,14 @@ function ensureAssetsController(
 }
 
 /**
- * Collect the set of account UUIDs that exist in the AccountTree. An empty set
- * means the tree has not been built yet — callers should skip per-account
- * writes in that case.
- *
- * Tree shape: AccountTreeController.accountTree.wallets[walletId].groups[groupId].accounts: AccountId[]
+ * Build a map from lowercase account address to account UUID using
+ * `AccountsController.internalAccounts.accounts`.
  *
  * @param data - The migration data root.
- */
-function collectTreeAccountIds(data: Record<string, unknown>): Set<string> {
-  const ids = new Set<string>();
-  const wallets = readPath(data, ['AccountTreeController', 'accountTree', 'wallets']);
-  if (!isObject(wallets)) {
-    return ids;
-  }
-
-  for (const wallet of Object.values(wallets)) {
-    if (!isObject(wallet) || !isObject(wallet.groups)) {
-      continue;
-    }
-    for (const group of Object.values(wallet.groups)) {
-      if (!isObject(group) || !Array.isArray(group.accounts)) {
-        continue;
-      }
-      for (const accountId of group.accounts) {
-        if (typeof accountId === 'string' && accountId) {
-          ids.add(accountId);
-        }
-      }
-    }
-  }
-  return ids;
-}
-
-/**
- * Build a map from lowercase account address to account UUID, restricted to
- * accounts present in the AccountTree.
- *
- * @param data - The migration data root.
- * @param treeAccountIds - Set of account UUIDs allowed by the tree. When
- * empty, the returned map is empty.
  */
 function buildAddressToIdMap(
   data: Record<string, unknown>,
-  treeAccountIds: Set<string>,
 ): Record<string, string> {
-  if (treeAccountIds.size === 0) {
-    return {};
-  }
-
   const accounts = readPath(data, [
     'AccountsController',
     'internalAccounts',
@@ -196,7 +159,6 @@ function buildAddressToIdMap(
   const map: Record<string, string> = {};
   for (const [id, account] of Object.entries(accounts)) {
     if (
-      treeAccountIds.has(id) &&
       isObject(account) &&
       typeof account.address === 'string' &&
       account.address
@@ -205,6 +167,78 @@ function buildAddressToIdMap(
     }
   }
   return map;
+}
+
+/**
+ * Collect the account UUIDs that should be migrated. An account is "relevant"
+ * when any of the following holds: it is the currently selected account
+ * (`AccountsController.internalAccounts.selectedAccount`); or it has at least
+ * one imported ERC-20 token in `TokensController.allTokens`; or it has at
+ * least one imported non-native multichain asset in
+ * `MultichainAssetsController.accountsAssets` (entries with the `slip44`
+ * namespace are ignored, since native assets are built at runtime).
+ *
+ * Returning an empty set means there is nothing worth migrating per-account
+ * (e.g. a fresh install). Per-account writes should be skipped in that case.
+ *
+ * @param data - The migration data root.
+ * @param addressToId - Lowercase address → account UUID map.
+ */
+function collectRelevantAccountIds(
+  data: Record<string, unknown>,
+  addressToId: Record<string, string>,
+): Set<string> {
+  const ids = new Set<string>();
+
+  // 1. Selected account — always relevant.
+  const selectedAccountId = readPath(data, [
+    'AccountsController',
+    'internalAccounts',
+    'selectedAccount',
+  ]);
+  if (typeof selectedAccountId === 'string' && selectedAccountId) {
+    ids.add(selectedAccountId);
+  }
+
+  // 2. EVM accounts with at least one imported ERC-20 token.
+  const allTokens = readPath(data, ['TokensController', 'allTokens']);
+  if (isObject(allTokens)) {
+    for (const accountTokens of Object.values(allTokens)) {
+      if (!isObject(accountTokens)) {
+        continue;
+      }
+      for (const [rawAddress, tokens] of Object.entries(accountTokens)) {
+        if (!Array.isArray(tokens) || tokens.length === 0) {
+          continue;
+        }
+        const accountId = addressToId[rawAddress.toLowerCase()];
+        if (accountId) {
+          ids.add(accountId);
+        }
+      }
+    }
+  }
+
+  // 3. Non-EVM accounts with at least one non-native imported asset.
+  const accountsAssets = readPath(data, [
+    'MultichainAssetsController',
+    'accountsAssets',
+  ]);
+  if (isObject(accountsAssets)) {
+    for (const [accountId, assetIds] of Object.entries(accountsAssets)) {
+      if (!Array.isArray(assetIds)) {
+        continue;
+      }
+      const hasNonNative = assetIds.some(
+        (assetId) => typeof assetId === 'string' && !isNativeAssetId(assetId),
+      );
+      if (hasNonNative) {
+        ids.add(accountId);
+      }
+    }
+  }
+
+  return ids;
 }
 
 // ─── CAIP-19 / encoding helpers ────────────────────────────────────────────────
@@ -527,15 +561,14 @@ function buildEvmAssetInfo(token: Record<string, unknown>): AssetInfo {
  *
  * @param data - The migration data root.
  * @param ac - The AssetsController view.
- * @param addressToId - Lowercase address → account UUID map (already filtered
- * to tree accounts).
- * @param treeAccountIds - Set of account UUIDs in the AccountTree.
+ * @param addressToId - Lowercase address → account UUID map.
+ * @param relevantAccountIds - Set of account UUIDs eligible for per-account writes.
  */
 function migrateEvmTokens(
   data: Record<string, unknown>,
   ac: AssetsControllerShape,
   addressToId: Record<string, string>,
-  treeAccountIds: Set<string>,
+  relevantAccountIds: Set<string>,
 ): boolean {
   const allTokens = readPath(data, ['TokensController', 'allTokens']);
   if (!isObject(allTokens)) {
@@ -557,8 +590,8 @@ function migrateEvmTokens(
 
       const accountAddress = rawAddress.toLowerCase();
       const accountId = addressToId[accountAddress];
-      const accountIsKnown =
-        Boolean(accountId) && treeAccountIds.has(accountId);
+      const accountIsRelevant =
+        Boolean(accountId) && relevantAccountIds.has(accountId);
 
       const chainBalances =
         (isObject(tokenBalances[accountAddress]) &&
@@ -588,8 +621,8 @@ function migrateEvmTokens(
           changed = true;
         }
 
-        // Per-account writes require an account that's in the AccountTree.
-        if (!accountIsKnown) {
+        // Per-account writes are restricted to relevant accounts.
+        if (!accountIsRelevant) {
           continue;
         }
 
@@ -674,21 +707,23 @@ function buildNonEvmAssetInfo(
  * Migrate non-EVM assets from MultichainAssetsController +
  * MultichainBalancesController.
  *
- * Non-EVM assets are snap-discovered and always tracked: they are written to
- * `assetsBalance` (with `'0'` for missing/zero balance) and never to
- * `customAssets`.
+ * Non-EVM non-native assets are snap-discovered and always tracked: they are
+ * written to `assetsBalance` (with `'0'` for missing/zero balance) and never
+ * to `customAssets`. Native (slip44) assets are skipped — the controller
+ * builds them at runtime.
  *
- * Per-account writes are restricted to accounts in the AccountTree so we
- * don't pollute state with assets for accounts the user has never opened.
+ * Per-account writes are restricted to relevant accounts (selected, or with
+ * imported tokens) so we don't pollute state with assets for accounts the
+ * user has never opened.
  *
  * @param data - The migration data root.
  * @param ac - The AssetsController view.
- * @param treeAccountIds - Set of account UUIDs in the AccountTree.
+ * @param relevantAccountIds - Set of account UUIDs eligible for per-account writes.
  */
 function migrateNonEvmAssets(
   data: Record<string, unknown>,
   ac: AssetsControllerShape,
-  treeAccountIds: Set<string>,
+  relevantAccountIds: Set<string>,
 ): boolean {
   const accountsAssets = readPath(data, [
     'MultichainAssetsController',
@@ -712,7 +747,7 @@ function migrateNonEvmAssets(
       continue;
     }
 
-    const accountIsKnown = treeAccountIds.has(accountId);
+    const accountIsRelevant = relevantAccountIds.has(accountId);
     const accountBalances = isObject(balances[accountId])
       ? balances[accountId]
       : {};
@@ -726,13 +761,13 @@ function migrateNonEvmAssets(
         continue;
       }
 
-      // Global metadata write — unaffected by tree membership.
+      // Global metadata write — unaffected by per-account relevance.
       const info = buildNonEvmAssetInfo(assetId, metadata[assetId]);
       if (info && writeAssetInfoIfAbsent(ac, assetId, info)) {
         changed = true;
       }
 
-      if (!accountIsKnown) {
+      if (!accountIsRelevant) {
         continue;
       }
 

@@ -37,41 +37,22 @@ function getAC(vd: { data: unknown }): TestAssetsController {
     .AssetsController as TestAssetsController;
 }
 
-function buildAccountTree(accountIds: string[]) {
-  return {
-    accountTree: {
-      wallets: {
-        'wallet-1': {
-          id: 'wallet-1',
-          groups: {
-            'group-1': {
-              id: 'group-1',
-              accounts: accountIds,
-            },
-          },
-        },
-      },
-    },
-  };
-}
-
 function buildBaseStorage(
   overrides: Record<string, unknown> = {},
-  options: { treeAccountIds?: string[] } = {},
+  options: { selectedAccount?: string } = {},
 ) {
-  const treeAccountIds = options.treeAccountIds ?? [ACCOUNT_1_ID, ACCOUNT_2_ID];
   return {
     meta: { version: OLD_VERSION },
     data: {
       AccountsController: {
         internalAccounts: {
+          selectedAccount: options.selectedAccount ?? ACCOUNT_1_ID,
           accounts: {
             [ACCOUNT_1_ID]: { address: ACCOUNT_1_ADDRESS, id: ACCOUNT_1_ID },
             [ACCOUNT_2_ID]: { address: ACCOUNT_2_ADDRESS, id: ACCOUNT_2_ID },
           },
         },
       },
-      AccountTreeController: buildAccountTree(treeAccountIds),
       ...overrides,
     } as Record<string, unknown>,
   };
@@ -931,9 +912,11 @@ describe(`migration #${VERSION}`, () => {
     );
   });
 
-  // ─── AccountTree gating ─────────────────────────────────────────────────────
+  // ─── Relevant-account gating ────────────────────────────────────────────────
 
-  it('skips per-account writes when the AccountTree is empty', async () => {
+  it('skips per-account writes for accounts that have no imported tokens and are not selected', async () => {
+    // ACCOUNT_2 has no imported tokens and is not selected → must be skipped.
+    // ACCOUNT_1 is selected and has an imported token → must be migrated.
     const vd = cloneDeep(
       buildBaseStorage(
         {
@@ -942,63 +925,6 @@ describe(`migration #${VERSION}`, () => {
               '0x1': {
                 [ACCOUNT_1_ADDRESS]: [
                   { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
-                ],
-              },
-            },
-          },
-          TokenBalancesController: {
-            tokenBalances: {
-              [ACCOUNT_1_ADDRESS]: { '0x1': { [USDC_ADDRESS]: '0x5f5e100' } },
-            },
-          },
-          MultichainAssetsController: {
-            accountsAssets: { [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID] },
-            assetsMetadata: {
-              [SOL_USDC_ASSET_ID]: {
-                fungible: true,
-                symbol: 'USDC',
-                units: [{ decimals: 6 }],
-              },
-            },
-          },
-          MultichainBalancesController: {
-            balances: {
-              [ACCOUNT_1_ID]: {
-                [SOL_USDC_ASSET_ID]: { amount: '500', unit: 'USDC' },
-              },
-            },
-          },
-        },
-        { treeAccountIds: [] },
-      ),
-    );
-
-    const changed = new Set<string>();
-    await migrate(vd, changed);
-
-    const ac = getAC(vd);
-    // Global metadata is still written.
-    expect(ac.assetsInfo[USDC_CAIP19_MAINNET]).toBeDefined();
-    expect(ac.assetsInfo[SOL_USDC_ASSET_ID]).toBeDefined();
-    // No per-account entries.
-    expect(Object.keys(ac.assetsBalance)).toHaveLength(0);
-    expect(Object.keys(ac.customAssets)).toHaveLength(0);
-  });
-
-  it('skips per-account writes for accounts not in the AccountTree', async () => {
-    // Tree only contains ACCOUNT_1; ACCOUNT_2 has assets in source state but
-    // should be skipped.
-    const vd = cloneDeep(
-      buildBaseStorage(
-        {
-          TokensController: {
-            allTokens: {
-              '0x1': {
-                [ACCOUNT_1_ADDRESS]: [
-                  { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
-                ],
-                [ACCOUNT_2_ADDRESS]: [
-                  { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 },
                 ],
               },
             },
@@ -1006,22 +932,10 @@ describe(`migration #${VERSION}`, () => {
           TokenBalancesController: {
             tokenBalances: {
               [ACCOUNT_1_ADDRESS]: { '0x1': { [USDC_ADDRESS]: '0x0' } },
-              [ACCOUNT_2_ADDRESS]: { '0x1': { [DAI_ADDRESS]: '0x0' } },
             },
           },
-          MultichainAssetsController: {
-            accountsAssets: { [ACCOUNT_2_ID]: [SOL_USDC_ASSET_ID] },
-            assetsMetadata: {
-              [SOL_USDC_ASSET_ID]: {
-                fungible: true,
-                symbol: 'USDC',
-                units: [{ decimals: 6 }],
-              },
-            },
-          },
-          MultichainBalancesController: { balances: {} },
         },
-        { treeAccountIds: [ACCOUNT_1_ID] },
+        { selectedAccount: ACCOUNT_1_ID },
       ),
     );
 
@@ -1029,11 +943,83 @@ describe(`migration #${VERSION}`, () => {
     await migrate(vd, changed);
 
     const ac = getAC(vd);
-    // ACCOUNT_1 is in tree → entry created.
     expect(ac.customAssets[ACCOUNT_1_ID]).toContain(USDC_CAIP19_MAINNET);
-    // ACCOUNT_2 is NOT in tree → no per-account writes.
     expect(ac.customAssets[ACCOUNT_2_ID]).toBeUndefined();
     expect(ac.assetsBalance[ACCOUNT_2_ID]).toBeUndefined();
+  });
+
+  it('migrates the selected account even when it has no imported tokens', async () => {
+    // ACCOUNT_2 is selected but has nothing in source data → no per-account
+    // writes happen (nothing to migrate). ACCOUNT_1 has imported tokens → it
+    // gets migrated even though it's not selected.
+    const vd = cloneDeep(
+      buildBaseStorage(
+        {
+          TokensController: {
+            allTokens: {
+              '0x1': {
+                [ACCOUNT_1_ADDRESS]: [
+                  { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
+                ],
+              },
+            },
+          },
+          TokenBalancesController: {
+            tokenBalances: {
+              [ACCOUNT_1_ADDRESS]: {
+                '0x1': { [USDC_ADDRESS]: '0x5f5e100' },
+              },
+            },
+          },
+        },
+        { selectedAccount: ACCOUNT_2_ID },
+      ),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    const ac = getAC(vd);
+    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[USDC_CAIP19_MAINNET]).toBeDefined();
+    expect(ac.assetsBalance[ACCOUNT_2_ID]).toBeUndefined();
+  });
+
+  it('migrates non-EVM (Solana) assets WITH balance for accounts that have imported them', async () => {
+    // Reproduces the bug: assets with balances must land in assetsBalance.
+    const vd = cloneDeep(
+      buildBaseStorage(
+        {
+          MultichainAssetsController: {
+            accountsAssets: { [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID] },
+            assetsMetadata: {
+              [SOL_USDC_ASSET_ID]: {
+                fungible: true,
+                symbol: 'USDC',
+                name: 'USD Coin',
+                units: [{ decimals: 6 }],
+              },
+            },
+          },
+          MultichainBalancesController: {
+            balances: {
+              [ACCOUNT_1_ID]: {
+                [SOL_USDC_ASSET_ID]: { amount: '500.5', unit: 'USDC' },
+              },
+            },
+          },
+        },
+        { selectedAccount: ACCOUNT_1_ID },
+      ),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    const ac = getAC(vd);
+    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[SOL_USDC_ASSET_ID]).toMatchObject({
+      amount: '500.5',
+    });
+    expect(ac.assetsInfo[SOL_USDC_ASSET_ID]).toBeDefined();
   });
 
   // ─── Cleanup of pre-existing buggy customAssets entries ─────────────────────
