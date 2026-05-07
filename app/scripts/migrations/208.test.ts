@@ -105,7 +105,9 @@ describe(`migration #${VERSION}`, () => {
     expect(changed).toContain('AssetsController');
     const ac = getAC(vd);
     expect(ac.customAssets[ACCOUNT_1_ID]).toContain(USDC_CAIP19_MAINNET);
-    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[USDC_CAIP19_MAINNET]).toBeUndefined();
+    expect(
+      ac.assetsBalance[ACCOUNT_1_ID]?.[USDC_CAIP19_MAINNET],
+    ).toBeUndefined();
     expect(ac.assetsInfo[USDC_CAIP19_MAINNET]).toMatchObject({
       type: 'erc20',
       symbol: 'USDC',
