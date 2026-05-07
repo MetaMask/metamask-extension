@@ -142,5 +142,4 @@ describe(`migration #${VERSION}`, () => {
     });
     expect(changedControllers).toStrictEqual(new Set([]));
   });
-
 });
