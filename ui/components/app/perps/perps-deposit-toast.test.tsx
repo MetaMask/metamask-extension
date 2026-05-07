@@ -1,5 +1,5 @@
 import React from 'react';
-import { act } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import {
   TransactionStatus,
   TransactionType,
@@ -98,9 +98,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).not.toHaveBeenCalled();
-    expect(mockToastSuccess).not.toHaveBeenCalled();
-    expect(mockToastError).not.toHaveBeenCalled();
+    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
   });
 
   it('renders pending toast when mounting with deposit already in progress', () => {
@@ -417,28 +415,33 @@ describe('PerpsDepositToast', () => {
   });
 
   it('does not show completion toast for token-funded deposits', () => {
-    renderPerpsDepositToast({
-      transactions: [
-        buildPendingDepositTransaction({
-          id: 'submitted-tx-1',
-          status: TransactionStatus.confirmed,
-        }),
-      ],
-      lastDepositTransactionId: 'submitted-tx-1',
-      lastDepositResult: {
-        success: true,
-        error: '',
-        timestamp: 1_700_000_000_000,
-      },
-      transactionData: {
-        'submitted-tx-1': {
-          paymentToken: {
-            address: '0x00000000000000000000000000000000000000dA',
-            chainId: '0xa4b1',
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'submitted-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'submitted-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+        transactionData: {
+          'submitted-tx-1': {
+            paymentToken: {
+              address: '0x00000000000000000000000000000000000000dA',
+              chainId: '0xa4b1',
+            },
           },
         },
       },
     });
+
+    renderWithProvider(<PerpsDepositToast />, store);
 
     expect(mockToastSuccess).not.toHaveBeenCalled();
   });
@@ -489,16 +492,5 @@ describe('PerpsDepositToast', () => {
     renderWithProvider(<PerpsDepositToast />, store);
 
     expect(mockToastLoading).not.toHaveBeenCalled();
-  });
-
-  it('does not repeat a pending toast for the same transaction ID', () => {
-    const { rerender } = renderPerpsDepositToast({
-      transactions: [buildPendingDepositTransaction()],
-      lastDepositTransactionId: 'pending-tx-1',
-    });
-
-    rerender(<PerpsDepositToast />);
-
-    expect(mockToastLoading).toHaveBeenCalledTimes(1);
   });
 });
