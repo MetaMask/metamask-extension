@@ -91,6 +91,7 @@ const activeTab = {
 const makeCaip25Permission = (
   accounts: string[],
   scope: string = 'eip155:0',
+  sessionProperties?: Record<string, unknown>,
 ) => ({
   'endowment:caip25': {
     parentCapability: 'endowment:caip25',
@@ -103,6 +104,7 @@ const makeCaip25Permission = (
             [scope]: { accounts },
           },
           isMultichainOrigin: false,
+          ...(sessionProperties ? { sessionProperties } : {}),
         },
       },
     ],
@@ -134,7 +136,11 @@ const connectedMockState = {
     },
     subjects: {
       [DAPP_ORIGIN]: {
-        permissions: makeCaip25Permission([`eip155:0:${ACCOUNT_1_ADDRESS}`]),
+        permissions: makeCaip25Permission(
+          [`eip155:0:${ACCOUNT_1_ADDRESS}`],
+          'eip155:0',
+          { 'eip1193-compatible': true },
+        ),
       },
     },
   },
@@ -444,6 +450,173 @@ describe('DappConnectionControlBar', () => {
       expect(
         getByTestId('dapp-connection-control-bar__disconnect-button'),
       ).toBeInTheDocument();
+    });
+  });
+
+  describe('network picker visibility based on eip1193-compatible session property', () => {
+    it('renders the network picker when sessionProperties contains eip1193-compatible: "true"', () => {
+      const state = {
+        metamask: {
+          ...mockState.metamask,
+          ...sharedMetamaskOverrides,
+          accountTree: {
+            ...mockState.metamask.accountTree,
+            selectedAccountGroup: GROUP_1_ID,
+          },
+          internalAccounts: {
+            ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              [ACCOUNT_1_ID]: {
+                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+                metadata: {
+                  ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID]
+                    .metadata,
+                  lastSelected: 1000,
+                },
+              },
+            },
+            selectedAccount: ACCOUNT_1_ID,
+          },
+          subjects: {
+            [DAPP_ORIGIN]: {
+              permissions: makeCaip25Permission(
+                [`eip155:0:${ACCOUNT_1_ADDRESS}`],
+                'eip155:0',
+                { 'eip1193-compatible': true },
+              ),
+            },
+          },
+        },
+        activeTab,
+      };
+      const store = configureStore(state);
+      const { getByTestId } = renderWithProvider(
+        <DappConnectionControlBar />,
+        store,
+      );
+      expect(
+        getByTestId('dapp-connection-control-bar__network-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not render the network picker for EVM-only connections without eip1193-compatible', () => {
+      const stateWithoutSessionProp = {
+        metamask: {
+          ...mockState.metamask,
+          ...sharedMetamaskOverrides,
+          accountTree: {
+            ...mockState.metamask.accountTree,
+            selectedAccountGroup: GROUP_1_ID,
+          },
+          internalAccounts: {
+            ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              [ACCOUNT_1_ID]: {
+                ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID],
+                metadata: {
+                  ...mockState.metamask.internalAccounts.accounts[ACCOUNT_1_ID]
+                    .metadata,
+                  lastSelected: 1000,
+                },
+              },
+            },
+            selectedAccount: ACCOUNT_1_ID,
+          },
+          subjects: {
+            [DAPP_ORIGIN]: {
+              permissions: makeCaip25Permission([
+                `eip155:0:${ACCOUNT_1_ADDRESS}`,
+              ]),
+            },
+          },
+        },
+        activeTab,
+      };
+      const store = configureStore(stateWithoutSessionProp);
+      const { queryByTestId } = renderWithProvider(
+        <DappConnectionControlBar />,
+        store,
+      );
+      expect(
+        queryByTestId('dapp-connection-control-bar__network-button'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('does not render the network picker for Solana-only connections', () => {
+      const SOLANA_ACCOUNT_ID = 'a8b9c0d1-2e3f-4a5b-6c7d-8e9f0a1b2c3d';
+      const SOLANA_ACCOUNT_ADDRESS =
+        '7S3P4HxJpyyigGzodYwHtCxZyUQe9JiBMHyRWXArAaKv';
+      const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+
+      const baseGroup =
+        mockState.metamask.accountTree.wallets[
+          'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+        ].groups[GROUP_1_ID];
+
+      const state = {
+        metamask: {
+          ...mockState.metamask,
+          ...sharedMetamaskOverrides,
+          accountTree: {
+            ...mockState.metamask.accountTree,
+            selectedAccountGroup: GROUP_1_ID,
+            wallets: {
+              ...mockState.metamask.accountTree.wallets,
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+                ...mockState.metamask.accountTree.wallets[
+                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+                ],
+                groups: {
+                  [GROUP_1_ID]: {
+                    ...baseGroup,
+                    accounts: [...baseGroup.accounts, SOLANA_ACCOUNT_ID],
+                  },
+                },
+              },
+            },
+          },
+          internalAccounts: {
+            ...mockState.metamask.internalAccounts,
+            accounts: {
+              ...mockState.metamask.internalAccounts.accounts,
+              [SOLANA_ACCOUNT_ID]: {
+                address: SOLANA_ACCOUNT_ADDRESS,
+                id: SOLANA_ACCOUNT_ID,
+                metadata: {
+                  importTime: 0,
+                  name: 'Solana Account',
+                  keyring: { type: 'Snap Keyring' },
+                  lastSelected: 3000,
+                },
+                options: {},
+                methods: [],
+                scopes: [SOLANA_SCOPE],
+                type: 'solana:data-account',
+              },
+            },
+            selectedAccount: SOLANA_ACCOUNT_ID,
+          },
+          subjects: {
+            [DAPP_ORIGIN]: {
+              permissions: makeCaip25Permission(
+                [`${SOLANA_SCOPE}:${SOLANA_ACCOUNT_ADDRESS}`],
+                SOLANA_SCOPE,
+              ),
+            },
+          },
+        },
+        activeTab,
+      };
+      const store = configureStore(state);
+      const { queryByTestId } = renderWithProvider(
+        <DappConnectionControlBar />,
+        store,
+      );
+      expect(
+        queryByTestId('dapp-connection-control-bar__network-button'),
+      ).not.toBeInTheDocument();
     });
   });
 

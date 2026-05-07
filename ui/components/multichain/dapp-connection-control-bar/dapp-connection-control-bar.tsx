@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { KnownCaipNamespace, NonEmptyArray } from '@metamask/utils';
+import { NonEmptyArray } from '@metamask/utils';
 import {
   getAllScopesFromCaip25CaveatValue,
   isInternalAccountInPermittedAccountIds,
@@ -39,7 +39,10 @@ import {
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
-import { getDappActiveNetwork } from '../../../selectors/dapp';
+import {
+  getDappActiveNetwork,
+  getIsEip1193CompatibleConnection,
+} from '../../../selectors/dapp';
 import {
   addPermittedAccounts,
   hidePermittedNetworkToast,
@@ -78,6 +81,7 @@ export const DappConnectionControlBar: React.FC = () => {
     { permissions: Record<string, { parentCapability: string }> }
   >;
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
+  const isEip1193Compatible = useSelector(getIsEip1193CompatibleConnection);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupInternalAccounts = useSelector((state) =>
     getInternalAccountsFromGroupById(
@@ -119,18 +123,6 @@ export const DappConnectionControlBar: React.FC = () => {
       getCaip25CaveatValueFromPermissions(existingPermissions);
     return caveatValue ? getAllScopesFromCaip25CaveatValue(caveatValue) : [];
   }, [existingPermissions]);
-
-  // The network picker is EVM-only. Only show it when the dapp has at least
-  // one EIP155 (EVM) scope in its permissions; non-EVM-only connections
-  // (e.g. Solana, Tron) should not render the network picker, as the
-  // currently selected EVM network is irrelevant to that dapp's context.
-  const hasEip155Permission = useMemo(
-    () =>
-      existingChainIds.some((scope) =>
-        scope.startsWith(`${KnownCaipNamespace.Eip155}:`),
-      ),
-    [existingChainIds],
-  );
 
   const addressesToPermit = useMemo(() => {
     if (!accountGroupInternalAccounts?.length) {
@@ -321,8 +313,8 @@ export const DappConnectionControlBar: React.FC = () => {
             )
           ) : (
             <>
-              {/* Network selector (icon-only, same size as action icons) */}
-              {dappActiveNetwork && hasEip155Permission && (
+              {/* Network selector — only for EIP-1193-compatible (EVM) connections */}
+              {dappActiveNetwork && isEip1193Compatible && (
                 <button
                   className="dapp-connection-control-bar__network-button flex items-center gap-1"
                   onClick={handleNetworkClick}

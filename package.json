@@ -338,7 +338,7 @@
     "@metamask/bridge-controller": "^71.0.0",
     "@metamask/bridge-status-controller": "^71.1.0",
     "@metamask/browser-passworder": "^6.0.0",
-    "@metamask/chain-agnostic-permission": "^1.5.0",
+    "@metamask/chain-agnostic-permission": "npm:@metamask-previews/chain-agnostic-permission@1.5.0-preview-902014de8",
     "@metamask/claims-controller": "^0.4.2",
     "@metamask/client-controller": "^1.0.0",
     "@metamask/connectivity-controller": "^0.1.0",
