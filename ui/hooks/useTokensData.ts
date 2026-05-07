@@ -11,7 +11,7 @@ export type TokenAsset = {
   iconUrl: string;
   name: string;
   symbol: string;
-}
+};
 
 const TOKEN_API_V3_BASE_URL = 'https://tokens.api.cx.metamask.io/v3';
 
@@ -96,7 +96,9 @@ export function useTokensData(assetIds: string[]): Record<string, TokenAsset> {
   );
 
   useEffect(() => {
-    if (!assetIdsKey) {return;}
+    if (!assetIdsKey) {
+      return;
+    }
 
     let cancelled = false;
 

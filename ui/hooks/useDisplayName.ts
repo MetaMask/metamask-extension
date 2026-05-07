@@ -1,5 +1,5 @@
 import { NameOrigin, NameType } from '@metamask/name-controller';
-import { Hex } from '@metamask/utils';
+import { Hex, isStrictHexString } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import {
@@ -120,7 +120,12 @@ function useERC20Tokens(
   nameRequests: UseDisplayNameRequest[],
 ): ({ name?: string; image?: string } | undefined)[] {
   const assetIds = nameRequests
-    .filter(({ type, value }) => type === NameType.ETHEREUM_ADDRESS && value)
+    .filter(
+      ({ type, value, variation }) =>
+        type === NameType.ETHEREUM_ADDRESS &&
+        value &&
+        isStrictHexString(variation),
+    )
     .map(({ value, variation }) =>
       buildEvmCaip19AssetId(value as string, variation as Hex),
     );
@@ -133,10 +138,11 @@ function useERC20Tokens(
         return undefined;
       }
 
-      const token =
-        tokensByAssetId[
-          buildEvmCaip19AssetId(value as string, variation as Hex)
-        ];
+      const token = isStrictHexString(variation)
+        ? tokensByAssetId[
+            buildEvmCaip19AssetId(value as string, variation as Hex)
+          ]
+        : undefined;
       const name =
         preferContractSymbol && token?.symbol ? token.symbol : token?.name;
 
