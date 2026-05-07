@@ -56,7 +56,7 @@ describe('Develop options tab', () => {
     expect(container).toMatchSnapshot();
     expect(
       getByTestId('developer-options-remote-feature-flags').textContent,
-    ).toEqual(JSON.stringify(mockRemoteFeatureFlags));
+    ).toEqual(JSON.stringify(mockRemoteFeatureFlags, null, 2));
   });
 
   describe('Perps Testnet toggle (METAMASK_DEBUG only)', () => {
