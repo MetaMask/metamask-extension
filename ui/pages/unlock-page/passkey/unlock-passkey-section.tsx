@@ -21,6 +21,7 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import {
+  getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
@@ -60,6 +61,7 @@ export const UnlockPasskeySection = ({
   onUsePassword,
 }: UnlockPasskeySectionProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
@@ -117,7 +119,8 @@ export const UnlockPasskeySection = ({
         setPasskeyError(null);
       } else {
         setPasskeyError(
-          translatePasskeyError(err, t) ?? t('passkeyUnlockFailed'),
+          translatePasskeyError(err, t, passkeyMethodLabel) ??
+            t('passkeyUnlockFailed', [passkeyMethodLabel]),
         );
       }
     } finally {
@@ -130,6 +133,7 @@ export const UnlockPasskeySection = ({
     passkeyInProgress,
     isPasskeyActive,
     onUnlockWithPasskey,
+    passkeyMethodLabel,
     t,
     trackEvent,
   ]);
@@ -205,7 +209,7 @@ export const UnlockPasskeySection = ({
           onClick={handlePasskeyUnlockAction}
           aria-busy={passkeyInProgress}
         >
-          {t('unlockWithPasskey')}
+          {t('unlockWithPasskey', [passkeyMethodLabel])}
         </Button>
         {showTroubleshoot ? (
           <TextButton

@@ -23,6 +23,7 @@ import {
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getPasskeyAuthMethodKey,
   startPasskeyRegistration,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
@@ -69,7 +70,14 @@ export default function PasskeyRegisterSubPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const t = useI18nContext() as (key: string) => string;
+  const t = useI18nContext() as (
+    key: string,
+    substitutions?: string[],
+  ) => string;
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
+  const passkeyMethodSpecificLabel = t(
+    getPasskeyAuthMethodKey({ specific: true }),
+  );
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
 
@@ -162,9 +170,12 @@ export default function PasskeyRegisterSubPage() {
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
       });
-      toast.success(<ToastContent title={t('passkeyTurnedOn')} />, {
-        duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-      });
+      toast.success(
+        <ToastContent title={t('passkeyTurnedOn', [passkeyMethodLabel])} />,
+        {
+          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+        },
+      );
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
@@ -187,10 +198,12 @@ export default function PasskeyRegisterSubPage() {
 
       log.error('Settings passkey enrollment failed', error);
       setEnrollmentError(
-        translatePasskeyError(error, t) ??
+        translatePasskeyError(error, t, passkeyMethodLabel) ??
           (registrationSucceeded
-            ? t('passkeyErrorAuthenticationVerificationFailed')
-            : t('passkeyErrorRegistrationFailed')),
+            ? t('passkeyErrorAuthenticationVerificationFailed', [
+                passkeyMethodLabel,
+              ])
+            : t('passkeyErrorRegistrationFailed', [passkeyMethodLabel])),
       );
     } finally {
       setIsEnrollmentInProgress(false);
@@ -201,6 +214,7 @@ export default function PasskeyRegisterSubPage() {
     dispatch,
     goToSettings,
     isPasskeyRegistered,
+    passkeyMethodLabel,
     t,
     trackEvent,
     walletPassword,
@@ -246,19 +260,19 @@ export default function PasskeyRegisterSubPage() {
               color={TextColor.TextAlternative}
               data-testid="register-passkey-intro-description"
             >
-              {t('passkeyDescription')}
+              {t('passkeyDescription', [passkeyMethodSpecificLabel])}
             </Text>
             <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               className="w-full shrink-0"
               data-testid="register-passkey-intro-continue-button"
-              aria-label={t('setUpPasskey')}
+              aria-label={t('setUpPasskey', [passkeyMethodLabel])}
               onClick={() => {
                 setStep(PasskeyRegisterSteps.VerifyPassword);
               }}
             >
-              {t('setUpPasskey')}
+              {t('setUpPasskey', [passkeyMethodLabel])}
             </Button>
           </Box>
         </Box>
@@ -323,15 +337,19 @@ export default function PasskeyRegisterSubPage() {
             color={TextColor.TextAlternative}
             data-testid="register-passkey-description"
           >
-            {t('passkeyDescription')}
+            {t('passkeyDescription', [passkeyMethodSpecificLabel])}
           </Text>
 
           {isEnrollmentInProgress ? (
             <PasskeyEnrollmentSteps
               registerStatus={registerStepStatus}
               verifyStatus={verifyStepStatus}
-              registerLabel={t('passkeySetupStepRegister')}
-              verifyLabel={t('passkeySetupStepVerify')}
+              registerLabel={t('passkeySetupStepRegister', [
+                passkeyMethodSpecificLabel,
+              ])}
+              verifyLabel={t('passkeySetupStepVerify', [
+                passkeyMethodSpecificLabel,
+              ])}
               className="w-full"
             />
           ) : (
@@ -352,10 +370,10 @@ export default function PasskeyRegisterSubPage() {
                 size={ButtonSize.Lg}
                 className="w-full shrink-0"
                 data-testid="register-passkey-set-up-button"
-                aria-label={t('setUpPasskey')}
+                aria-label={t('setUpPasskey', [passkeyMethodLabel])}
                 onClick={beginPasskeyCeremonyFlow}
               >
-                {t('setUpPasskey')}
+                {t('setUpPasskey', [passkeyMethodLabel])}
               </Button>
             </>
           )}

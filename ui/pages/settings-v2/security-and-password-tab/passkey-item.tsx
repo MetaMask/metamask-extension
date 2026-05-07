@@ -17,6 +17,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
+  getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
@@ -47,7 +48,14 @@ import { SECURITY_ITEMS } from '../search-config';
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
 const PasskeyItem = () => {
-  const t = useI18nContext() as (key: string) => string;
+  const t = useI18nContext() as (
+    key: string,
+    substitutions?: string[],
+  ) => string;
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
+  const passkeyMethodSpecificLabel = t(
+    getPasskeyAuthMethodKey({ specific: true }),
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -111,9 +119,12 @@ const PasskeyItem = () => {
       await removePasskeyWithPasskeyVerification(authenticationResponse);
       await forceUpdateMetamaskState(dispatch);
 
-      toast.success(<ToastContent title={t('passkeyTurnedOff')} />, {
-        duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-      });
+      toast.success(
+        <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
+        {
+          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+        },
+      );
 
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -139,8 +150,8 @@ const PasskeyItem = () => {
         toast.error(
           <ToastContent
             title={
-              translatePasskeyError(error, t) ??
-              t('passkeyErrorVerificationFailed')
+              translatePasskeyError(error, t, passkeyMethodLabel) ??
+              t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
             }
           />,
           { duration: PASSKEY_SETTINGS_TOAST_DURATION_MS },
@@ -155,6 +166,7 @@ const PasskeyItem = () => {
     isEnrolledPasskeyIncompatibleWithSidepanel,
     isPasskeyRegistered,
     navigate,
+    passkeyMethodLabel,
     t,
     trackEvent,
   ]);
@@ -179,7 +191,7 @@ const PasskeyItem = () => {
   const description = useMemo(() => {
     const body = (
       <>
-        <span>{t('passkeyDescription')}</span>
+        <span>{t('passkeyDescription', [passkeyMethodSpecificLabel])}</span>
         {isPasskeyOperationPending &&
         getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL ? (
           <TextButton
@@ -195,7 +207,7 @@ const PasskeyItem = () => {
       </>
     );
     return body;
-  }, [isPasskeyOperationPending, t]);
+  }, [isPasskeyOperationPending, passkeyMethodSpecificLabel, t]);
 
   if (!isPasskeyFeatureAvailable) {
     return null;
@@ -204,7 +216,7 @@ const PasskeyItem = () => {
   return (
     <>
       <SettingsToggleItem
-        title={t(SECURITY_ITEMS.passkey)}
+        title={t(SECURITY_ITEMS.passkey, [passkeyMethodLabel])}
         description={description}
         value={Boolean(isPasskeyRegistered)}
         onToggle={handlePasskeyToggle}

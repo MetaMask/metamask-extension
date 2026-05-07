@@ -35,6 +35,7 @@ import Spinner from '../../ui/spinner';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
@@ -95,6 +96,7 @@ const ChangePassword = ({
   redirectRoute = SECURITY_ROUTE,
 }: ChangePasswordProps) => {
   const t = useI18nContext();
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -232,11 +234,14 @@ const ChangePassword = ({
 
       // upon successful password change, go back to the settings page
       navigate(redirectRoute);
-      const messageKey =
-        isPasskeyRenewalEnabled && !isPasskeyRenewalSuccessful
-          ? 'securityChangePasswordToastPasskeyRenewalFailed'
-          : 'securityChangePasswordToastSuccess';
-      toast.success(<ToastContent title={t(messageKey)} />, {
+      const isPasskeyRenewalToast =
+        isPasskeyRenewalEnabled && !isPasskeyRenewalSuccessful;
+      const toastTitle = isPasskeyRenewalToast
+        ? t('securityChangePasswordToastPasskeyRenewalFailed', [
+            passkeyMethodLabel,
+          ])
+        : t('securityChangePasswordToastSuccess');
+      toast.success(<ToastContent title={toastTitle} />, {
         duration: autoHideToastDelay,
       });
     } catch (error) {
@@ -308,8 +313,11 @@ const ChangePassword = ({
         toast.error(
           <ToastContent
             title={
-              translatePasskeyError(error, t as (key: string) => string) ??
-              t('passkeyErrorVerificationFailed')
+              translatePasskeyError(
+                error,
+                t as (key: string, substitutions?: string[]) => string,
+                passkeyMethodLabel,
+              ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
             }
           />,
           { duration: autoHideToastDelay },
@@ -319,7 +327,7 @@ const ChangePassword = ({
     } finally {
       setIsVerifyingPasskey(false);
     }
-  }, [t]);
+  }, [passkeyMethodLabel, t]);
 
   const openChangePasswordInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
@@ -496,7 +504,14 @@ const ChangePassword = ({
             fontWeight={FontWeight.Medium}
             className="text-center"
           >
-            {t('changePasswordPasskeyVerifyingTitle')}
+            {t('passkeyVerifyingTitle', [passkeyMethodLabel])}
+          </Text>
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.TextAlternative}
+            className="text-center"
+          >
+            {t('passkeyVerifyingDescription', [passkeyMethodLabel])}
           </Text>
           {isSidePanel &&
           isVerifyingPasskey &&
@@ -515,7 +530,7 @@ const ChangePassword = ({
             type="button"
             data-testid="change-password-verify-passkey-use-password"
             color={TextColor.PrimaryDefault}
-            className="text-center"
+            className="text-center mt-4"
             onClick={handleUseVerifyPassword}
           >
             {t('usePassword')}
@@ -572,7 +587,7 @@ const ChangePassword = ({
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      {t('unlockWithPasskey')}
+                      {t('unlockWithPasskey', [passkeyMethodLabel])}
                     </Text>
                     <ToggleButton
                       value={isPasskeyRenewalEnabled}
