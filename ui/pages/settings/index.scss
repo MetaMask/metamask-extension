@@ -1,6 +1,11 @@
 @use "design-system";
 
+<<<<<<< settings-transaction-shield-cleanup
 @import '../settings-v2/debug-tab/developer-options-tab/index';
+=======
+@import '../settings-v2/debug-tab/debug-content/index';
+@import 'transaction-shield-tab/index';
+>>>>>>> main
 
 .settings-page {
   position: relative;
