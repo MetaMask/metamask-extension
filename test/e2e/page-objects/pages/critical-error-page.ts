@@ -115,10 +115,10 @@ class CriticalErrorPage {
         { interval: 300, timeout: 30_000 },
       );
 
-      // TEMP DIAGNOSTIC: The restore session key is cleared before the service
-      // worker completes initBackground + handoffRestoringTabToExtension. This
-      // delay gives that handoff time to finish before closing extra tabs.
-      await this.driver.delay(10_000);
+      // The restore session key is cleared before the service worker finishes
+      // initializing. Wait for the UI to receive state and finish launching
+      // before closing extra tabs.
+      await this.driver.waitForControllersLoaded(30_000);
 
       await this.driver.closeAllOtherTabs();
     } else {
