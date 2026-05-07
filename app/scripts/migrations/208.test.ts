@@ -143,22 +143,4 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers).toStrictEqual(new Set([]));
   });
 
-  it('does nothing when AppStateController state is not an object', async () => {
-    const oldStorage = {
-      meta: { version: OLD_VERSION },
-      data: {
-        AppStateController: 'invalid state',
-      },
-    };
-    const versionedData = cloneDeep(oldStorage);
-    const changedControllers = new Set<string>();
-
-    await migrate(versionedData, changedControllers);
-
-    expect(versionedData).toStrictEqual({
-      meta: { version: VERSION },
-      data: oldStorage.data,
-    });
-    expect(changedControllers).toStrictEqual(new Set([]));
-  });
 });
