@@ -70,8 +70,9 @@ BLOCKAID_PUBLIC_KEY=
 ; SENTRY_DSN_DEV=https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496
 ; SENTRY_DSN_PERFORMANCE - For CI/CD and automated performance testing (keeps CI traffic separate)
 ; SENTRY_DISTRIBUTED_TRACING_DISABLED - Emergency kill switch for the distributed tracing wrappers.
-;   When true, forces tracesSampleRate=0 (disables all Sentry tracing), skips installing
-;   wrapMessengerWithTracing, and stops appending _traceContext to background RPC calls.
+;   When true, skips installing wrapMessengerWithTracing and stops appending _traceContext
+;   to background RPC calls. Other Sentry tracing (tracesSampleRate, auto-instrumentation,
+;   existing trace() callers) is unaffected.
 ;   Hotfix release required to flip this in production.
 ;SENTRY_DISTRIBUTED_TRACING_DISABLED=true
 
