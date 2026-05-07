@@ -71,29 +71,44 @@ export function useHwBatchSignTracker(
   const seenBatchIdsRef = useRef<Set<string>>(new Set());
   const trackedTxIdsRef = useRef<Set<string>>(new Set());
   const lastSeenGenerationRef = useRef(retryGenerationRef?.current ?? 0);
+  const pendingAbortTxIdsRef = useRef<Set<string>>(new Set());
+  const abortSettleResolveRef = useRef<((value: void) => void) | null>(null);
 
   const cancelCurrentBatch = useCallback(async () => {
-    const batchId = currentBatchIdRef.current;
+    const txIds = [...trackedTxIdsRef.current];
+    trackedTxIdsRef.current = new Set();
 
-    for (const txId of trackedTxIdsRef.current) {
-      try {
-        await submitRequestToBackground('abortTransactionSigning', [txId]);
-      } catch {
-        // Transaction may not be in signing state — expected
-      }
+    if (txIds.length === 0) {
+      return;
     }
 
-    if (batchId) {
-      console.log('[HW-Batch] cancelCurrentBatch', JSON.stringify({ batchId }));
-      try {
-        await submitRequestToBackground('cancelTransactionBatch', [batchId]);
-      } catch (err) {
-        console.log(
-          '[HW-Batch] cancelCurrentBatch failed (batch may have already completed)',
-          err,
-        );
-      }
+    pendingAbortTxIdsRef.current = new Set(txIds);
+
+    const settlePromise = new Promise<void>((resolve) => {
+      abortSettleResolveRef.current = resolve;
+    });
+
+    await Promise.all(
+      txIds.map(async (txId) => {
+        try {
+          await submitRequestToBackground('abortTransactionSigning', [txId]);
+        } catch {
+          pendingAbortTxIdsRef.current.delete(txId);
+        }
+      }),
+    );
+
+    if (pendingAbortTxIdsRef.current.size === 0) {
+      abortSettleResolveRef.current = null;
+      return;
     }
+
+    await Promise.race([
+      settlePromise,
+      new Promise((resolve) => setTimeout(resolve, 5_000)),
+    ]);
+
+    abortSettleResolveRef.current = null;
   }, []);
 
   useEffect(() => {
@@ -151,6 +166,17 @@ export function useHwBatchSignTracker(
           const batchId = transactionMeta.batchId ?? 'batch-unknown';
           seenBatchIdsRef.current.add(batchId);
           trackedTxIdsRef.current.add(transactionMeta.id);
+
+          if (pendingAbortTxIdsRef.current.has(transactionMeta.id)) {
+            pendingAbortTxIdsRef.current.delete(transactionMeta.id);
+            if (
+              pendingAbortTxIdsRef.current.size === 0 &&
+              abortSettleResolveRef.current
+            ) {
+              abortSettleResolveRef.current();
+            }
+            return;
+          }
 
           if (status === 'signed') {
             if (currentBatchIdRef.current === undefined) {
@@ -255,6 +281,17 @@ export function useHwBatchSignTracker(
           seenBatchIdsRef.current.add(batchId);
           trackedTxIdsRef.current.add(transactionMeta.id);
 
+          if (pendingAbortTxIdsRef.current.has(transactionMeta.id)) {
+            pendingAbortTxIdsRef.current.delete(transactionMeta.id);
+            if (
+              pendingAbortTxIdsRef.current.size === 0 &&
+              abortSettleResolveRef.current
+            ) {
+              abortSettleResolveRef.current();
+            }
+            return;
+          }
+
           if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
             console.log(
               '[HW-Batch] skipping transactionRejected: no batch identified yet',
@@ -319,6 +356,17 @@ export function useHwBatchSignTracker(
           const batchId = transactionMeta.batchId ?? 'batch-unknown';
           seenBatchIdsRef.current.add(batchId);
           trackedTxIdsRef.current.add(transactionMeta.id);
+
+          if (pendingAbortTxIdsRef.current.has(transactionMeta.id)) {
+            pendingAbortTxIdsRef.current.delete(transactionMeta.id);
+            if (
+              pendingAbortTxIdsRef.current.size === 0 &&
+              abortSettleResolveRef.current
+            ) {
+              abortSettleResolveRef.current();
+            }
+            return;
+          }
 
           if (shouldBlockPendingEvent(currentBatchIdRef.current)) {
             console.log(
