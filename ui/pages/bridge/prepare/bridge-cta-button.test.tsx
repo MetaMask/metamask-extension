@@ -329,6 +329,59 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).not.toBeDisabled();
   });
 
+  it('should render swap label for QR hardware wallet when disconnected', () => {
+    mockUseHardwareWalletConfig.mockReturnValue({
+      ...baseHardwareWalletConfig,
+      isHardwareWalletAccount: true,
+      walletType: HardwareWalletType.Qr,
+    });
+    mockUseHardwareWalletState.mockReturnValue({
+      connectionState: { status: ConnectionStatus.Disconnected },
+    });
+
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
+      },
+      bridgeStateOverrides: {
+        quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+        quotesLastFetched: Date.now(),
+        quotesLoadingStatus: RequestStatus.FETCHED,
+      },
+    });
+
+    const { getByText, queryByText, getByRole } = renderWithProvider(
+      <HardwareWalletProvider>
+        <BridgeCTAButton
+          onFetchNewQuotes={jest.fn()}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
+          onOpenRecipientModal={jest.fn()}
+          onOpenMarketClosedModal={jest.fn()}
+        />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    const button = getByRole('button') as HTMLButtonElement;
+
+    expect(getByText(messages.swap.message)).toBeTruthy();
+    expect(queryByText('Connect QR')).toBeNull();
+    expect(button.disabled).toBe(false);
+  });
+
   // @ts-expect-error: each is a valid test function in jest
   it.each([
     {

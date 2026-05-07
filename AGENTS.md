@@ -995,25 +995,26 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 
 Find them in [](./test/e2e/AGENTS.md)
 
-### Visual Verification (MetaMask MCP / Playwright)
+### Visual Verification (MetaMask CLI / Playwright)
 
-When the user explicitly asks for visual verification of UI behavior (e.g., "verify this works", "confirm visually", "take screenshots", "click through onboarding/unlock/send flow"), you **MUST** use the MetaMask visual testing skill and MCP tools instead of only reasoning about code.
+When the user explicitly asks for visual verification of UI behavior (e.g., "verify this works", "confirm visually", "take screenshots", "click through onboarding/unlock/send flow"), you **MUST** use the MetaMask visual testing skill and `mm` cli tools instead of only reasoning about code.
 
 **Load the skill:** `/metamask-visual-testing`
 
 **Workflow:**
 
-1. Start with `mm_build` (if extension not built) then `mm_launch`
-2. Always call `mm_describe_screen` before acting to discover targets
-3. Use `mm_click`/`mm_type`/`mm_wait_for` to drive the flow
-4. Provide evidence via `mm_screenshot` and/or final `mm_describe_screen` output
-5. Always end with `mm_cleanup` (even on failure)
+0. Build if needed (`yarn build:test`), then `mm launch` (this auto-starts the daemon)
+1. **Query prior knowledge:** Run `mm knowledge-search "<flow>"` and `mm knowledge-sessions` to reuse previously discovered flows and avoid wasting tokens rediscovering known sequences.
+2. Always call `mm describe-screen` before acting to discover targets
+3. Use `mm click`/`mm type`/`mm wait-for` to drive the flow
+4. Provide evidence via `mm screenshot` and/or final `mm describe-screen` output
+5. Always end with `mm cleanup` (even on failure)
 
-**If MCP tools are unavailable or denied:** Say so explicitly and explain what's missing. Do not claim you verified without actual tool output as evidence.
+**If CLI is unavailable or denied:** Say so explicitly and explain what's missing. Do not claim you verified without actual tool output as evidence.
 
 **Skill location:** `.claude/skills/metamask-visual-testing/SKILL.md`
 
-**MCP Server docs:** `test/e2e/playwright/llm-workflow/mcp-server/README.md`
+**MM CLI architecture docs:** `test/e2e/playwright/llm-workflow/README.md`
 
 ### Integration Tests
 

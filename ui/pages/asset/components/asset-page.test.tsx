@@ -464,6 +464,43 @@ describe('AssetPage', () => {
     );
   });
 
+  it('hides the Send button when token balance is zero', () => {
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      store,
+    );
+
+    expect(queryByTestId('eth-overview-send')).not.toBeInTheDocument();
+  });
+
+  it('shows the Send button when token balance is greater than zero', () => {
+    (
+      getAssetsBySelectedAccountGroup as unknown as jest.Mock
+    ).mockReturnValueOnce({
+      '0x1': [
+        {
+          assetId: '0x0000000000000000000000000000000000000000',
+          rawBalance: '0x0',
+          balance: '0',
+          fiat: { balance: 0 },
+        },
+        {
+          assetId: token.address,
+          rawBalance: '0x1',
+          balance: '1',
+          fiat: { balance: 0 },
+        },
+      ],
+    });
+
+    const { queryByTestId } = renderWithProvider(
+      <AssetPage asset={token} optionsButton={null} />,
+      store,
+    );
+
+    expect(queryByTestId('eth-overview-send')).toBeInTheDocument();
+  });
+
   it('should show the Swap button if chain id is supported', async () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
