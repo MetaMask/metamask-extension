@@ -1,5 +1,6 @@
 .yalc
 yalc.lock
+.env.langfuse
 
 npm-debug.log
 yarn-error.log

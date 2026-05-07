@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import './instrumentation';
 import path from 'path';
 import {
   createServer,
@@ -9,6 +10,7 @@ import {
 
 import { MetaMaskSessionManager } from './metamask-provider';
 import { createMetaMaskE2EContext } from './capabilities/factory';
+import { createLangfuseHooks } from './langfuse-hooks';
 import { resolveRepoRoot } from './resolve-repo-root';
 
 // Single shared KnowledgeStore instance used by both the global singleton
@@ -27,6 +29,7 @@ const server = createServer({
   knowledgeStore,
   idleShutdownMs: 30 * 60 * 1000,
   logFilePath: path.join(resolveRepoRoot(), '.mm-daemon.log'),
+  hooks: createLangfuseHooks(),
   contextFactory: async () => {
     const [anvilAlloc, fixtureAlloc, mockAlloc] = await Promise.all([
       allocatePort(),
