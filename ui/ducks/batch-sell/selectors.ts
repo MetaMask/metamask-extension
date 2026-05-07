@@ -171,11 +171,10 @@ export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(
       .map((asset) => {
         let tokenFiatPrice: number | undefined;
         let percentageChange: number | undefined;
+        let tokenAddress: Hex | undefined;
 
         if (isEvm) {
           const hexChainId = convertCaipToHexChainId(selectedChainId);
-
-          let tokenAddress: `0x${string}` | undefined;
 
           if (asset.isNative) {
             tokenAddress = getNativeTokenAddress(hexChainId);
@@ -199,17 +198,28 @@ export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(
           percentageChange = assetRateData?.marketData?.pricePercentChange?.P1D;
         }
 
+        const assetImage = asset.isNative
+          ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+              isEvm ? convertCaipToHexChainId(selectedChainId) : selectedChainId
+            ]
+          : asset.image;
+
+        // For EVM, tokenAddress is already resolved above (native or contract).
+        // For non-EVM, there is no address concept so we leave it undefined.
+        const address = isEvm ? tokenAddress : undefined;
+
         return {
           assetId: asset.assetId,
           name: asset.name,
           symbol: asset.symbol,
-          image: asset.image,
+          image: assetImage,
           balance: asset.balance,
           fiatBalance: asset.fiat?.balance,
           tokenFiatPrice,
           percentageChange,
           isNative: asset.isNative,
           chainId: selectedChainId,
+          address,
         };
       });
   },

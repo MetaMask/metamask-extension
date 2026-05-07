@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@metamask/design-system-react';
-import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
+import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { AssetListItem } from './AssetListItem';
 
 type AssetListProps = {

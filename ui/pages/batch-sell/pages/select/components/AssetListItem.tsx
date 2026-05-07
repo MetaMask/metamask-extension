@@ -15,14 +15,14 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 // Follow same pattern as with the global PercentageChange component.
 // eslint-disable-next-line import-x/no-restricted-paths
-import { formatValue } from '../../../../../app/scripts/lib/util';
-import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
+import { formatValue } from '../../../../../../app/scripts/lib/util';
+import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import {
   formatCurrencyAmount,
   formatTokenAmount,
-} from '../../../bridge/utils/quote';
-import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { getIntlLocale } from '../../../../ducks/locale/locale';
+} from '../../../../bridge/utils/quote';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getIntlLocale } from '../../../../../ducks/locale/locale';
 
 type AssetListItemProps = {
   asset: BatchSellAsset;

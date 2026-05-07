@@ -11,4 +11,5 @@ export type BatchSellAsset = {
   percentageChange?: number;
   isNative: boolean;
   chainId: CaipChainId;
+  address?: string;
 };

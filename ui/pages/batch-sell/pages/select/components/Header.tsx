@@ -5,7 +5,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import React from 'react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export const Header = () => {
   const t = useI18nContext();

@@ -10,12 +10,6 @@
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
-  "batchSellSelectHeaderTitle": {
-    "message": "Select up to 5 tokens"
-  },
-  "batchSellSelectHeaderSubtitle": {
-    "message": "All tokens need to be on the same network."
-  },
   "QRHardwareMismatchedSignId": {
     "message": "Incongruent transaction data. Please check the transaction details."
   },
@@ -936,6 +930,27 @@
   },
   "batchSell": {
     "message": "Batch Sell"
+  },
+  "batchSellContinueNAssetsCTAPlural": {
+    "message": "Continue with ($1) tokens"
+  },
+  "batchSellContinueNAssetsCTASingle": {
+    "message": "Continue with ($1) token"
+  },
+  "batchSellHighRateAlert": {
+    "message": "High rate alert"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "Batch selling one token could lead to a higher rate. Want to do a swap instead?"
+  },
+  "batchSellMaxSelectedTokens": {
+    "message": "Max $1 tokens allowed"
+  },
+  "batchSellSelectHeaderSubtitle": {
+    "message": "All tokens need to be on the same network."
+  },
+  "batchSellSelectHeaderTitle": {
+    "message": "Select up to 5 tokens"
   },
   "bestQuote": {
     "message": "Best quote"
@@ -2965,6 +2980,12 @@
   },
   "exploreDefi": {
     "message": "Explore DeFi"
+  },
+  "exploreTokens": {
+    "message": "Explore Tokens"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "No tokens. No problem. Explore and buy tokens to batch sell."
   },
   "exportYourData": {
     "message": "Export your data"
@@ -9996,6 +10017,9 @@
   },
   "yes": {
     "message": "Yes"
+  },
+  "yesSwap": {
+    "message": "Yes, swap"
   },
   "you": {
     "message": "You"

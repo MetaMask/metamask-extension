@@ -15,8 +15,9 @@ import {
   BATCH_SELL_ROOT_ROUTE,
   BATCH_SELL_SELECT_ROUTE,
 } from '../../helpers/constants/routes';
-import { BatchSellSelectPage } from './select';
-import { BatchSellConfirmPage } from './confirm';
+import { BatchSellSelectPage } from './pages/select';
+import { BatchSellConfirmPage } from './pages/confirm';
+import { BatchSellModalProvider } from './providers/BatchSellModalProvider';
 
 const BatchSellPage = () => {
   const t = useI18nContext();
@@ -27,36 +28,38 @@ const BatchSellPage = () => {
   };
 
   return (
-    <Page>
-      <Header
-        startAccessory={
-          <ButtonIcon
-            iconName={IconName.ArrowLeft}
-            size={ButtonIconSize.Sm}
-            ariaLabel={t('back')}
-            onClick={handleBack}
-          />
-        }
-      />
-      <Content padding={0} >
-        <Routes>
-          <Route
-            path={toRelativeRoutePath(
-              BATCH_SELL_SELECT_ROUTE,
-              BATCH_SELL_ROOT_ROUTE,
-            )}
-            element={<BatchSellSelectPage />}
-          />
-          <Route
-            path={toRelativeRoutePath(
-              BATCH_SELL_CONFIRM_ROUTE,
-              BATCH_SELL_ROOT_ROUTE,
-            )}
-            element={<BatchSellConfirmPage />}
-          />
-        </Routes>
-      </Content>
-    </Page>
+    <BatchSellModalProvider>
+      <Page>
+        <Header
+          startAccessory={
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              size={ButtonIconSize.Sm}
+              ariaLabel={t('back')}
+              onClick={handleBack}
+            />
+          }
+        />
+        <Content padding={0}>
+          <Routes>
+            <Route
+              path={toRelativeRoutePath(
+                BATCH_SELL_SELECT_ROUTE,
+                BATCH_SELL_ROOT_ROUTE,
+              )}
+              element={<BatchSellSelectPage />}
+            />
+            <Route
+              path={toRelativeRoutePath(
+                BATCH_SELL_CONFIRM_ROUTE,
+                BATCH_SELL_ROOT_ROUTE,
+              )}
+              element={<BatchSellConfirmPage />}
+            />
+          </Routes>
+        </Content>
+      </Page>
+    </BatchSellModalProvider>
   );
 };
 
