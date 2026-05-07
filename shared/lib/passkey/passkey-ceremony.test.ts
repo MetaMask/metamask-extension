@@ -73,7 +73,7 @@ describe('passkey ceremony helpers', () => {
       expect(mockStartRegistration).toHaveBeenCalledWith({
         optionsJSON: {
           challenge: 'abc',
-          rp: { id: undefined },
+          extensions: undefined,
         },
       });
       expect(result).toStrictEqual(response);
@@ -133,7 +133,6 @@ describe('passkey ceremony helpers', () => {
       expect(mockStartRegistration).toHaveBeenCalledWith({
         optionsJSON: {
           challenge: 'abc',
-          rp: { id: undefined },
           extensions: {
             prf: {
               eval: {

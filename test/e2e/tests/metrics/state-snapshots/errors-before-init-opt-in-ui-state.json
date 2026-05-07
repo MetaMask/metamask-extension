@@ -44,6 +44,7 @@
       "isWalletResetInProgress": "boolean",
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
+      "lastVisitedRoute": null,
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -308,5 +309,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 206 }
+  "meta": { "storageKind": "split", "version": 207 }
 }

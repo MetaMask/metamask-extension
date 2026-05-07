@@ -58,6 +58,7 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
       data-testid="direction-tabs"
     >
       <ButtonBase
+        type="button"
         className={longTabStyles}
         onClick={() => handleDirectionClick('long')}
         data-testid="direction-tab-long"
@@ -75,6 +76,7 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
       </ButtonBase>
 
       <ButtonBase
+        type="button"
         className={shortTabStyles}
         onClick={() => handleDirectionClick('short')}
         data-testid="direction-tab-short"

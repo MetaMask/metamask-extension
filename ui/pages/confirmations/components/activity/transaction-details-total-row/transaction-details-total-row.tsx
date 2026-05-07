@@ -12,7 +12,7 @@ import { hasTransactionType } from '../../../../../../shared/lib/transactions.ut
 export function TransactionDetailsTotalRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();
-  const fiatFormatter = useFiatFormatter();
+  const fiatFormatter = useFiatFormatter({ overrideCurrency: 'usd' });
 
   const { metamaskPay } = transactionMeta;
   const { totalFiat: payTotal, targetFiat } = metamaskPay || {};
