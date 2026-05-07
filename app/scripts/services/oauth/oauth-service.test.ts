@@ -6,6 +6,7 @@ import {
   MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
+import browser from 'webextension-polyfill';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { OAuthServiceMessenger, WebAuthenticator } from './types';
@@ -18,6 +19,14 @@ type Actions = MessengerActions<OAuthServiceMessenger>;
 type Events = MessengerEvents<OAuthServiceMessenger>;
 
 type RootMessenger = Messenger<MockAnyNamespace, Actions, Events>;
+
+type OAuthServiceTestMessenger = OAuthServiceMessenger & {
+  captureException?: jest.Mock;
+};
+
+const mockBrowserRuntime = browser.runtime as typeof browser.runtime & {
+  lastError?: { message: string; stack?: string[] };
+};
 
 const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
@@ -43,14 +52,22 @@ function getOAuthLoginEnvs(): {
   };
 }
 
-function getMessenger(): OAuthServiceMessenger {
+function getMessenger({
+  captureException,
+}: {
+  captureException?: jest.Mock;
+} = {}): OAuthServiceTestMessenger {
   const rootMessenger: RootMessenger = new Messenger({
     namespace: MOCK_ANY_NAMESPACE,
   });
-  return new Messenger({
+  const messenger = new Messenger({
     namespace: 'OAuthService',
     parent: rootMessenger,
-  });
+  }) as OAuthServiceTestMessenger;
+
+  messenger.captureException = captureException;
+
+  return messenger;
 }
 
 const getRedirectUrlSpy = jest.fn().mockReturnValue(MOCK_REDIRECT_URI);
@@ -82,6 +99,8 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   beforeEach(() => {
+    mockBrowserRuntime.lastError = undefined;
+
     // mock the fetch call to auth-server
     jest.spyOn(global, 'fetch').mockImplementation(
       jest.fn(() => {
@@ -102,6 +121,7 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   afterEach(() => {
+    mockBrowserRuntime.lastError = undefined;
     jest.clearAllMocks();
   });
 
@@ -177,7 +197,8 @@ describe('OAuthService - startOAuthLogin', () => {
   });
 
   it('should throw an error if the state validation fails - google', async () => {
-    const messenger = getMessenger();
+    const captureException = jest.fn();
+    const messenger = getMessenger({ captureException });
 
     const oauthEnv = getOAuthLoginEnvs();
 
@@ -198,6 +219,104 @@ describe('OAuthService - startOAuthLogin', () => {
     await expect(
       oauthService.startOAuthLogin(AuthConnection.Google),
     ).rejects.toThrow(OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR);
+
+    expect(captureException).toHaveBeenCalledTimes(1);
+    const sentryError = captureException.mock.calls[0][0] as Error & {
+      cause?: Error;
+    };
+
+    expect(sentryError.message).toContain(AuthConnection.Google);
+    expect(sentryError.message).not.toContain(MOCK_REDIRECT_URI);
+    expect(sentryError.cause?.message).toBe(
+      OAuthErrorMessages.INVALID_OAUTH_STATE_ERROR,
+    );
+  });
+
+  it('preserves the browser auth flow error for sentry when no redirect URL is returned', async () => {
+    const ErrorUtils =
+      jest.requireActual<typeof import('../../../../shared/lib/error')>(
+        '../../../../shared/lib/error',
+      );
+    const createSentryErrorSpy = jest.spyOn(ErrorUtils, 'createSentryError');
+    const captureException = jest.fn();
+    const messenger = getMessenger({ captureException });
+    const browserAuthFlowErrorMessage =
+      'Authorization page could not be loaded';
+    mockBrowserRuntime.lastError = {
+      message: browserAuthFlowErrorMessage,
+    };
+
+    const oauthService = new OAuthService({
+      messenger,
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        launchWebAuthFlow: jest.fn().mockImplementation((_options, cb) => {
+          cb(undefined);
+        }),
+      },
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Google),
+    ).rejects.toThrow(browserAuthFlowErrorMessage);
+
+    const sentryError = captureException.mock.calls[0][0] as Error & {
+      cause?: Error & { cause?: Error };
+    };
+
+    expect(sentryError.cause?.message).toBe(browserAuthFlowErrorMessage);
+    expect(sentryError.cause?.cause?.message).toBe(browserAuthFlowErrorMessage);
+    expect(sentryError.message).toContain(AuthConnection.Google);
+    expect(sentryError.message).not.toContain(MOCK_REDIRECT_URI);
+    expect(createSentryErrorSpy).toHaveBeenCalledTimes(1);
+    expect(createSentryErrorSpy).not.toHaveBeenCalledWith(
+      OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR,
+      expect.anything(),
+    );
+
+    createSentryErrorSpy.mockRestore();
+  });
+
+  it('falls back to the generic no redirect error when the browser reports no lastError', async () => {
+    const captureException = jest.fn();
+    const messenger = getMessenger({ captureException });
+
+    const oauthService = new OAuthService({
+      messenger,
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        launchWebAuthFlow: jest.fn().mockImplementation((_options, cb) => {
+          cb(undefined);
+        }),
+      },
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Google),
+    ).rejects.toThrow(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR);
+
+    const sentryError = captureException.mock.calls[0][0] as Error & {
+      cause?: Error & { cause?: Error };
+    };
+
+    expect(sentryError.cause?.message).toBe(
+      OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR,
+    );
+    expect(sentryError.cause?.cause).toBeUndefined();
+    expect(sentryError.message).toContain(AuthConnection.Google);
+    expect(sentryError.message).not.toContain(MOCK_REDIRECT_URI);
   });
 
   describe('OAuthService:startOAuthLogin action', () => {
