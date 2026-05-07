@@ -192,7 +192,9 @@ describe('AggregatedPercentageOverview', () => {
   beforeEach(() => {
     mockGetIntlLocale.mockReturnValue('en-US');
     mockGetCurrentCurrency.mockReturnValue('USD');
-    mockGetPreferences.mockReturnValue({ privacyMode: false });
+    mockGetPreferences.mockReturnValue({
+      privacyMode: false,
+    } as ReturnType<typeof mockGetPreferences>);
     mockGetSelectedAccount.mockReturnValue(selectedAccountMock);
     mockGetShouldHideZeroBalanceTokens.mockReturnValue(false);
     mockGetTokensMarketData.mockReturnValue(marketDataMock);

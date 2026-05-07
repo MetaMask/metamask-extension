@@ -1,13 +1,10 @@
 import type { AccountsControllerState } from '@metamask/accounts-controller';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
 };
 
-export function getSelectedInternalAccount(
-  state: AccountsState,
-): InternalAccount {
+export function getSelectedInternalAccount(state: AccountsState) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
   return state.metamask.internalAccounts.accounts[accountId];
 }
@@ -19,9 +16,7 @@ export function getSelectedInternalAccount(
  * @param state - The accounts state
  * @returns The selected internal account or undefined
  */
-export function getMaybeSelectedInternalAccount(
-  state: AccountsState,
-): InternalAccount | undefined {
+export function getMaybeSelectedInternalAccount(state: AccountsState) {
   const accountId = state.metamask.internalAccounts?.selectedAccount;
   return accountId
     ? state.metamask.internalAccounts?.accounts[accountId]

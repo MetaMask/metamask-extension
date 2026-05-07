@@ -1542,7 +1542,7 @@ export function getShouldShowFiat(state, chainId) {
   const isConvertibleToFiat = Boolean(useCurrencyRateCheck && conversionRate);
 
   if (isTestnet) {
-    return Boolean(showFiatInTestnets && isConvertibleToFiat);
+    return showFiatInTestnets && isConvertibleToFiat;
   }
 
   return isConvertibleToFiat;
@@ -1550,7 +1550,7 @@ export function getShouldShowFiat(state, chainId) {
 
 export function getShouldHideZeroBalanceTokens(state) {
   const { hideZeroBalanceTokens } = getPreferences(state);
-  return Boolean(hideZeroBalanceTokens);
+  return hideZeroBalanceTokens;
 }
 
 export function getAdvancedInlineGasShown(state) {

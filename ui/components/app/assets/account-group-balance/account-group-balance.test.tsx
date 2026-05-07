@@ -70,7 +70,10 @@ describe('AccountGroupBalance', () => {
 
     const mockGetPreferences = jest
       .mocked(getPreferences)
-      .mockReturnValue({ privacyMode: false, showNativeTokenAsMainBalance });
+      .mockReturnValue({
+        privacyMode: false,
+        showNativeTokenAsMainBalance,
+      } as ReturnType<typeof getPreferences>);
 
     const mockGetEnabledNetworksByNamespace = jest
       .mocked(getEnabledNetworksByNamespace)
@@ -231,7 +234,7 @@ describe('AccountGroupBalance', () => {
     jest.mocked(getPreferences).mockReturnValue({
       privacyMode: true,
       showNativeTokenAsMainBalance: false,
-    });
+    } as ReturnType<typeof getPreferences>);
     const { getByText } = renderComponent();
     // SensitiveText shows bullet pattern when isHidden (privacyMode) is true
     expect(getByText('••••••')).toBeInTheDocument();
