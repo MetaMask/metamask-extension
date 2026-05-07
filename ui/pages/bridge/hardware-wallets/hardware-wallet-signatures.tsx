@@ -93,12 +93,18 @@ export default function HardwareWalletSignatures() {
   const { connectionState } = useHardwareWalletState();
 
   const handleHardwareWalletSubmitted = useCallback(() => {
+    if (isRetryingRef.current) {
+      return;
+    }
     dispatchSignatureEvent({
       type: HardwareWalletSignatureEvent.TransactionSubmitted,
     });
   }, [dispatchSignatureEvent]);
 
   const handleHardwareWalletRejected = useCallback(() => {
+    if (isRetryingRef.current) {
+      return;
+    }
     console.log(
       '[HW-Batch] handleHardwareWalletRejected, current state:',
       signatureState.status,
@@ -109,6 +115,9 @@ export default function HardwareWalletSignatures() {
   }, [dispatchSignatureEvent, signatureState.status]);
 
   const handleHardwareWalletFailed = useCallback(() => {
+    if (isRetryingRef.current) {
+      return;
+    }
     dispatchSignatureEvent({
       type: HardwareWalletSignatureEvent.TransactionFailed,
     });
