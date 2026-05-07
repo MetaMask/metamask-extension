@@ -86,7 +86,7 @@ describe('PerpsDepositToast', () => {
     submitRequestToBackgroundMock.mockResolvedValue(undefined);
   });
 
-  it('does not show a toast when there is no deposit state', () => {
+  it('renders nothing when there is no deposit state', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -102,7 +102,7 @@ describe('PerpsDepositToast', () => {
     expect(mockToastError).not.toHaveBeenCalled();
   });
 
-  it('shows a pending toast when a native-token-funded deposit is pending', () => {
+  it('renders a pending toast when a native-token-funded deposit is pending', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -138,6 +138,7 @@ describe('PerpsDepositToast', () => {
           }),
         ],
         lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
         transactionData: {
           'pending-tx-1': {
             paymentToken: {
