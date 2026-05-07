@@ -34,6 +34,11 @@ export function useNavigateOnQrScanComplete(): void {
     const wasQrScanActive = Boolean(prevQrScanRequestRef.current);
     const isQrScanCleared = !activeQrCodeScanRequest;
 
+    // Always update ref before any early branching so the next effect run
+    // sees the current value (prevents duplicate navigation if the effect
+    // re-runs after a successful navigate but before unmount).
+    prevQrScanRequestRef.current = activeQrCodeScanRequest;
+
     // Navigate only when QR scan completed successfully (not on cancel/reject)
     if (
       wasQrScanActive &&
@@ -57,8 +62,6 @@ export function useNavigateOnQrScanComplete(): void {
         replace: true,
       });
     }
-
-    prevQrScanRequestRef.current = activeQrCodeScanRequest;
   }, [
     activeQrCodeScanRequest,
     dispatch,
