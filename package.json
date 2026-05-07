@@ -818,7 +818,7 @@
   },
   "engines": {
     "node": ">=24.13.0",
-    "yarn": "^4.12.0"
+    "yarn": "^4.14.1"
   },
   "lavamoat": {
     "allowScripts": {
@@ -854,7 +854,7 @@
       "tsx>esbuild#0.27.7": true
     }
   },
-  "packageManager": "yarn@4.12.0",
+  "packageManager": "yarn@4.14.1",
   "foundryup": {
     "binaries": [
       "anvil"
