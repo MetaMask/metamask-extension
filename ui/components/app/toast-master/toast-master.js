@@ -12,10 +12,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  PRIVACY_POLICY_LINK,
-  SURVEY_LINK,
-} from '../../../../shared/lib/ui-utils';
+import { PRIVACY_POLICY_LINK } from '../../../../shared/lib/ui-utils';
 import {
   BorderRadius,
   IconColor,
@@ -31,11 +28,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCurrentNetwork,
-  getOriginOfCurrentTab,
-  getUseNftDetection,
-} from '../../../selectors';
+import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   hidePermittedNetworkToast,
@@ -78,11 +71,7 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import {
-  selectNftDetectionEnablementToast,
   selectShowPrivacyPolicyToast,
-  selectShowSurveyToast,
-  selectNewSrpAdded,
-  selectShowCopyAddressToast,
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
@@ -94,10 +83,6 @@ import {
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
-  setShowNftDetectionEnablementToast,
-  setSurveyLinkLastClickedOrClosed,
-  setShowNewSrpAddedToast,
-  setShowCopyAddressToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
@@ -126,13 +111,9 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <SurveyToast />
-        <SurveyToastMayDelete />
         <PrivacyPolicyToast />
-        <NftEnablementToast />
         <PermittedNetworkToast />
-        <NewSrpAddedToast />
         <InfuraSwitchToast />
-        <CopyAddressToast />
         <PerpsDepositToast />
         <MerklClaimToast />
         <MusdConversionToast />
@@ -172,34 +153,6 @@ export function ToastMaster() {
   return null;
 }
 
-function SurveyToastMayDelete() {
-  const t = useI18nContext();
-
-  const showSurveyToast = useSelector(selectShowSurveyToast);
-
-  return (
-    showSurveyToast && (
-      <Toast
-        key="survey-toast"
-        startAdornment={
-          <Icon name={IconName.Heart} color={IconColor.errorDefault} />
-        }
-        text={t('surveyTitle')}
-        actionText={t('surveyConversion')}
-        onActionClick={() => {
-          global.platform.openTab({
-            url: SURVEY_LINK,
-          });
-          setSurveyLinkLastClickedOrClosed(Date.now());
-        }}
-        onClose={() => {
-          setSurveyLinkLastClickedOrClosed(Date.now());
-        }}
-      />
-    )
-  );
-}
-
 function PrivacyPolicyToast() {
   const t = useI18nContext();
 
@@ -227,35 +180,6 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
-}
-
-function NftEnablementToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showNftEnablementToast = useSelector(selectNftDetectionEnablementToast);
-  const useNftDetection = useSelector(getUseNftDetection);
-
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showNftEnablementToast &&
-    useNftDetection && (
-      <Toast
-        key="enabled-nft-auto-detection"
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        text={t('nftAutoDetectionEnabled')}
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() =>
-          dispatch(setShowNftDetectionEnablementToast(false))
-        }
       />
     )
   );
@@ -319,46 +243,6 @@ function PermittedNetworkToast() {
   );
 }
 
-function NewSrpAddedToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const walletNumber = useSelector(selectNewSrpAdded);
-  const autoHideDelay = 5 * SECOND;
-
-  // This will close the toast if the user clicks the account menu.
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const dismissElement = document.querySelector(
-        '[data-testid="account-menu-icon"]',
-      );
-      if (dismissElement && dismissElement.contains(event.target)) {
-        dispatch(setShowNewSrpAddedToast(false));
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [dispatch]);
-
-  return (
-    walletNumber && (
-      <Toast
-        key="new-srp-added-toast"
-        text={t('importWalletSuccess', [walletNumber])}
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        onClose={() => dispatch(setShowNewSrpAddedToast(false))}
-        autoHideTime={autoHideDelay}
-        onAutoHideToast={() => dispatch(setShowNewSrpAddedToast(false))}
-      />
-    )
-  );
-}
-
 function InfuraSwitchToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -378,30 +262,6 @@ function InfuraSwitchToast() {
         onClose={() => dispatch(setShowInfuraSwitchToast(false))}
         autoHideTime={autoHideDelay}
         onAutoHideToast={() => dispatch(setShowInfuraSwitchToast(false))}
-      />
-    )
-  );
-}
-
-function CopyAddressToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showCopyAddressToast = useSelector(selectShowCopyAddressToast);
-  const autoHideToastDelay = 2 * SECOND;
-
-  return (
-    showCopyAddressToast && (
-      <Toast
-        key="copy-address-toast"
-        text={t('addressCopied')}
-        startAdornment={
-          <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
-        }
-        onClose={() => dispatch(setShowCopyAddressToast(false))}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => dispatch(setShowCopyAddressToast(false))}
-        dataTestId="copy-address-toast"
       />
     )
   );
