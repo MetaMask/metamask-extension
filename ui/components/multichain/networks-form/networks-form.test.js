@@ -4,26 +4,26 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import nock from 'nock';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
   NETWORK_TYPES,
   getRpcUrl,
-} from '../../../../../shared/constants/network';
-import * as fetchWithCacheModule from '../../../../../shared/lib/fetch-with-cache';
-import { mockNetworkState } from '../../../../../test/stub/networks';
+} from '../../../../shared/constants/network';
+import * as fetchWithCacheModule from '../../../../shared/lib/fetch-with-cache';
+import { mockNetworkState } from '../../../../test/stub/networks';
 import {
   addNetwork,
   setTokenNetworkFilter,
   updateNetwork,
-} from '../../../../store/actions';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+} from '../../../store/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { NetworksForm } from './networks-form';
 
-jest.mock('../../../../../ui/store/actions', () => ({
-  ...jest.requireActual('../../../../../ui/store/actions'),
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
   updateNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
   addNetwork: jest.fn().mockReturnValue(jest.fn().mockResolvedValue()),
   setTokenNetworkFilter: jest
@@ -31,8 +31,8 @@ jest.mock('../../../../../ui/store/actions', () => ({
     .mockReturnValue(jest.fn().mockResolvedValue()),
 }));
 
-jest.mock('../../../../store/background-connection', () => ({
-  ...jest.requireActual('../../../../store/background-connection'),
+jest.mock('../../../store/background-connection', () => ({
+  ...jest.requireActual('../../../store/background-connection'),
   submitRequestToBackground: jest.fn().mockImplementation((method, args) => {
     if (method === 'isPublicEndpointUrl') {
       const url = args[0];
