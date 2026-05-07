@@ -1941,10 +1941,7 @@ async function mockGasSponsoredSwapETHtoUSDC(mockServer: Mockttp) {
     );
 }
 
-async function mockSwapUSDCtoGOOGLON(
-  mockServer: Mockttp,
-  sseEnabled?: boolean,
-) {
+async function mockSwapUSDCtoGOOGLON(mockServer: Mockttp, sseEnabled?: boolean) {
   if (sseEnabled) {
     return await mockServer
       .forGet(/getQuoteStream/u)
