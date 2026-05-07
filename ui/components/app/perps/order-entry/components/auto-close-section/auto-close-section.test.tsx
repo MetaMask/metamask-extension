@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
@@ -729,7 +730,7 @@ describe('AutoCloseSection', () => {
       expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith('45675');
     });
 
-    it('formats percentage-derived TP prices with market precision', () => {
+    it('formats percentage-derived TP prices with market precision', async () => {
       const cases = [
         { asset: 'BTC', currentPrice: 45000, expectedPrice: '45315' },
         { asset: 'PUMP', currentPrice: 0.001958, expectedPrice: '0.001972' },
@@ -758,9 +759,10 @@ describe('AutoCloseSection', () => {
 
         const container = screen.getByTestId('tp-percent-input');
         const input = container.querySelector('input') as HTMLInputElement;
+        const user = userEvent.setup();
 
-        fireEvent.focus(input);
-        fireEvent.change(input, { target: { value: '7' } });
+        await user.click(input);
+        await user.type(input, '7');
 
         expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith(expectedPrice);
 
