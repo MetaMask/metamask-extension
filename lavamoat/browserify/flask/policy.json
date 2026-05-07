@@ -2645,14 +2645,12 @@
         "AbortController": true,
         "URLSearchParams": true,
         "clearTimeout": true,
-        "console.log": true,
         "fetch": true,
         "setTimeout": true
       },
       "packages": {
         "@ethersproject/abi": true,
         "@ethersproject/contracts": true,
-        "ethers>@ethersproject/keccak256": true,
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
         "@metamask/bridge-controller": true,
@@ -2663,7 +2661,6 @@
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
-        "crypto-browserify": true,
         "lodash": true
       }
     },
