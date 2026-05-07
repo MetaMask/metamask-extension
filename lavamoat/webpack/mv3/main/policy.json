@@ -1573,12 +1573,6 @@
         "semver": true
       }
     },
-    "@mui/x-date-pickers>@mui/base": {
-      "packages": {
-        "@mui/x-date-pickers>@mui/base>@mui/utils": true,
-        "clsx": true
-      }
-    },
     "@mui/material": {
       "globals": {
         "DocumentFragment": true,
@@ -1667,11 +1661,6 @@
         "react": true
       }
     },
-    "@mui/x-date-pickers>@mui/base>@mui/utils": {
-      "packages": {
-        "react": true
-      }
-    },
     "@mui/material>@mui/utils": {
       "globals": {
         "clearTimeout": true,
@@ -1683,15 +1672,27 @@
       "packages": {
         "@babel/runtime": true,
         "clsx": true,
-        "prop-types": true,
         "react": true,
         "@mui/material>@mui/utils>react-is": true
+      }
+    },
+    "@mui/x-date-pickers>@mui/utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "document": true
+      },
+      "packages": {
+        "clsx": true,
+        "prop-types": true,
+        "react": true
       }
     },
     "@mui/x-date-pickers": {
       "globals": {
         "HTMLElement": true,
         "Intl": true,
+        "Range": true,
         "addEventListener": true,
         "clearTimeout": true,
         "console.error": true,
@@ -1711,10 +1712,10 @@
       },
       "packages": {
         "@babel/runtime": true,
-        "@mui/x-date-pickers>@mui/base": true,
         "@mui/material": true,
         "@mui/material>@mui/system": true,
-        "@mui/material>@mui/utils": true,
+        "@mui/x-date-pickers>@mui/utils": true,
+        "@mui/x-date-pickers>@mui/x-internals": true,
         "clsx": true,
         "luxon": true,
         "prop-types": true,

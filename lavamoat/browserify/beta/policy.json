@@ -2772,17 +2772,6 @@
         "semver": true
       }
     },
-    "@mui/x-date-pickers>@mui/base": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@mui/x-date-pickers>@mui/base>@mui/utils": true,
-        "clsx": true,
-        "react": true
-      }
-    },
     "@mui/material": {
       "globals": {
         "DocumentFragment": true,
@@ -2865,24 +2854,6 @@
         "react": true
       }
     },
-    "@mui/x-date-pickers>@mui/base>@mui/utils": {
-      "globals": {
-        "URL": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "document": true,
-        "navigator.userAgent": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "clsx": true,
-        "prop-types": true,
-        "react": true,
-        "@mui/x-date-pickers>@mui/base>@mui/utils>react-is": true
-      }
-    },
     "@mui/material>@mui/utils": {
       "globals": {
         "clearTimeout": true,
@@ -2899,10 +2870,29 @@
         "@mui/material>@mui/utils>react-is": true
       }
     },
+    "@mui/x-date-pickers>@mui/utils": {
+      "globals": {
+        "URL": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "navigator.userAgent.includes": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "clsx": true,
+        "prop-types": true,
+        "react": true,
+        "@mui/x-date-pickers>@mui/utils>react-is": true
+      }
+    },
     "@mui/x-date-pickers": {
       "globals": {
         "HTMLElement": true,
         "Intl": true,
+        "Range": true,
         "addEventListener": true,
         "clearTimeout": true,
         "console.error": true,
@@ -2917,15 +2907,21 @@
       },
       "packages": {
         "@babel/runtime": true,
-        "@mui/x-date-pickers>@mui/base": true,
         "@mui/material": true,
         "@mui/material>@mui/system": true,
-        "@mui/material>@mui/utils": true,
+        "@mui/x-date-pickers>@mui/utils": true,
+        "@mui/x-date-pickers>@mui/x-internals": true,
         "clsx": true,
         "luxon": true,
         "prop-types": true,
         "react": true,
         "react-transition-group": true
+      }
+    },
+    "@mui/x-date-pickers>@mui/x-internals": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
       }
     },
     "@ngraveio/bc-ur": {
