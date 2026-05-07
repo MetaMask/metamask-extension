@@ -46,7 +46,11 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let error: unknown;
     try {
       if (!traceContext) {
-        result = await handler.call(api, ...(cleanParams as unknown[]));
+        if (Array.isArray(cleanParams)) {
+          result = await handler.call(api, ...cleanParams);
+        } else {
+          result = await handler.call(api, cleanParams);
+        }
       } else if (shouldSampleWrappers(traceContext._traceId)) {
         // Wrapper sub-sample passes: emit the `rpc.handler` span and
         // propagate trace context for nested spans.
