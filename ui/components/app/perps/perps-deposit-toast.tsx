@@ -11,20 +11,17 @@ import {
 } from '../../../selectors/perps-controller';
 import { toast } from '../../ui/toast/toast';
 
-const PERPS_DEPOSIT_TOAST_ID = 'perps-deposit-toast';
-const COMPLETION_TOAST_DURATION = 5 * SECOND;
+const id = 'perps-deposit-toast';
+const duration = 5 * SECOND;
 
-const PerpsDepositToastContent = ({
+const Content = ({
   title,
   description,
 }: {
   title: string;
   description: string;
 }) => (
-  <div
-    className="flex min-w-0 flex-1 flex-col"
-    data-testid={PERPS_DEPOSIT_TOAST_ID}
-  >
+  <div className="flex min-w-0 flex-1 flex-col" data-testid={id}>
     <p className="text-m-body-md">{title}</p>
     <p className="mt-1 text-m-body-sm text-text-alternative">{description}</p>
   </div>
@@ -45,7 +42,7 @@ export function PerpsDepositToast() {
 
   useEffect(() => {
     if (!shouldShowDepositToast) {
-      toast.dismiss(PERPS_DEPOSIT_TOAST_ID);
+      toast.dismiss(id);
       return;
     }
 
@@ -57,13 +54,8 @@ export function PerpsDepositToast() {
       const description = isSuccess
         ? t('perpsDepositToastSuccessDescription')
         : lastDepositResultError || t('perpsDepositToastErrorDescription');
-      const content = (
-        <PerpsDepositToastContent title={title} description={description} />
-      );
-      const options = {
-        id: PERPS_DEPOSIT_TOAST_ID,
-        duration: COMPLETION_TOAST_DURATION,
-      };
+      const content = <Content title={title} description={description} />;
+      const options = { id, duration };
 
       if (isSuccess) {
         toast.success(content, options);
@@ -78,17 +70,17 @@ export function PerpsDepositToast() {
     }
 
     if (!depositInProgress) {
-      toast.dismiss(PERPS_DEPOSIT_TOAST_ID);
+      toast.dismiss(id);
       return;
     }
 
     toast.loading(
-      <PerpsDepositToastContent
+      <Content
         title={t('perpsDepositToastPendingTitle')}
         description={t('perpsDepositToastPendingDescription')}
       />,
       {
-        id: PERPS_DEPOSIT_TOAST_ID,
+        id,
         duration: Infinity,
       },
     );
