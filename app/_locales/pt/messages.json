@@ -114,12 +114,6 @@
   "accountIdenticon": {
     "message": "Identicon da conta"
   },
-  "accountIdenticonDescription": {
-    "message": "Escolha entre três estilos diferentes de ícones exclusivos que podem ajudar você a identificar as contas rapidamente."
-  },
-  "accountIsntConnectedToastText": {
-    "message": "$1 não está conectado a $2"
-  },
   "accountName": {
     "message": "Nome da conta"
   },
@@ -1546,12 +1540,6 @@
   "confirmFieldFrequency": {
     "message": "Frequência"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "Provisão inicial"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "Provisão máxima"
-  },
   "confirmFieldNeverExpires": {
     "message": "Nunca expira"
   },
@@ -1571,20 +1559,14 @@
     "message": "Mensal"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "segundos",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1 segundos",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "Semanal"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Anual"
-  },
-  "confirmFieldStartDate": {
-    "message": "Data de início"
-  },
-  "confirmFieldStreamRate": {
-    "message": "Taxa de fluxo"
   },
   "confirmFieldTooltipJustification": {
     "message": "Justificativa para a solicitação fornecida pelo site"
@@ -1750,9 +1732,6 @@
   },
   "connect": {
     "message": "Conectar"
-  },
-  "connectAccount": {
-    "message": "Conectar conta"
   },
   "connectAccounts": {
     "message": "Conectar contas"
@@ -2249,9 +2228,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "a página de mercado de perps"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "a página da lista de mercado de perps"
   },
   "deepLink_thePerpsPage": {
     "message": "a página de perps"
@@ -3034,6 +3010,9 @@
   },
   "gasUsed": {
     "message": "Gás usado"
+  },
+  "gatorNoJustificationProvided": {
+    "message": "Nenhuma justificativa foi fornecida para a permissão"
   },
   "gatorPermissionAnnualFrequency": {
     "message": "Anual",
@@ -4034,12 +4013,6 @@
   "mismatchedRpcUrl": {
     "message": "De acordo com os nossos registros, o valor de URL da RPC enviado não corresponde a um provedor conhecido para este ID de cadeia."
   },
-  "missingSetting": {
-    "message": "Não consegue encontrar uma configuração?"
-  },
-  "missingSettingRequest": {
-    "message": "Solicite aqui"
-  },
   "month": {
     "message": "mês"
   },
@@ -4122,6 +4095,102 @@
   "multipleSnapConnectionWarning": {
     "message": "$1 quer usar Snaps de $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdAssetBonusAccruing": {
+    "message": "Acumulando próximo bônus",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "Resgate bônus de $1",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Bônus anual estimado",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Informações sobre seu bônus",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Uma projeção do que você ganharia em um ano com base no seu saldo e taxa atuais. A taxa é variável e pode mudar.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Saiba mais.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "O total de bônus que você resgatou desde que começou.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1% de bônus anualizado que você ganha apenas por manter mUSD. Você pode resgatá-lo diariamente na Linea. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Bônus vitalício resgatado",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Sem bônus acumulado",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1% de bônus",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Seu bônus",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Bônus diário",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Lastreado em dólar",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Sem bloqueios",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "Sem taxas da MetaMask",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% de bônus anualizado",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Receba um ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " ao converter USDC, USDT e DAI em mUSD.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Saiba mais.",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Converta suas stablecoins",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Saldo",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Sua posição",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Valor",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
   },
   "musdBonusExplanation": {
     "message": "Converta suas stablecoins em mUSD e ganhe um \nbônus anualizado de até $1% que você pode\nresgatar diariamente. $2",
@@ -4226,6 +4295,10 @@
   "musdMetaMaskUsd": {
     "message": "USD MetaMask",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Sujeito a termos e condições."
@@ -4789,6 +4862,14 @@
   "notificationTransactionSuccessView": {
     "message": "Visualizar em $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
+  },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Falha na transação! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Transação confirmada!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
     "message": "Notificações"
@@ -5453,7 +5534,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Saldo de perps disponível: "
+    "message": "Saldo disponível: "
   },
   "perpsAvailableToAdd": {
     "message": "Disponível para adicionar"
@@ -5499,7 +5580,7 @@
     "message": "Valor de encerramento"
   },
   "perpsCloseLong": {
-    "message": "Encerrar long"
+    "message": "Encerrar posição long"
   },
   "perpsClosePartialMinNotional": {
     "message": "Fechamentos parciais devem ter um valor mínimo de $1 em USD. Aumente o valor do fechamento ou defina o controle deslizante para 100%."
@@ -5508,19 +5589,25 @@
     "message": "Encerrar posição"
   },
   "perpsCloseShort": {
-    "message": "Encerrar short"
+    "message": "Encerrar posição short"
   },
   "perpsConfirmCloseLong": {
-    "message": "Encerrar long"
+    "message": "Encerrar posição long"
   },
   "perpsConfirmCloseShort": {
-    "message": "Encerrar short"
+    "message": "Encerrar posição short"
   },
   "perpsConnectionTimeout": {
     "message": "Conexão expirou. Tente novamente."
   },
   "perpsContactSupport": {
     "message": "Falar com o suporte"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "Os perps da MetaMask oferecem suporte apenas para negociações com margem isolada. Você precisa primeiro fechar sua posição em margem cruzada antes de poder negociar na MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Não há suporte para margem cruzada"
   },
   "perpsDateToday": {
     "message": "Hoje"
@@ -5712,24 +5799,24 @@
     "message": "Ainda não há transações"
   },
   "perpsOpenInterest": {
-    "message": "Interesse em aberto"
+    "message": "Contrato em aberto"
   },
   "perpsOpenInterestTooltip": {
     "message": "O valor combinado de todas as posições em aberto para esse perp"
   },
   "perpsOpenLong": {
-    "message": "Abrir long de $1",
+    "message": "Abrir posição long de $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Ordens em aberto"
   },
   "perpsOpenShort": {
-    "message": "Abrir short de $1",
+    "message": "Abrir posição short de $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOraclePrice": {
-    "message": "Preço da Oracle"
+    "message": "Preço do oráculo"
   },
   "perpsOraclePriceTooltip": {
     "message": "A mediana dos preços externos reportados pelos validadores, utilizada para calcular a taxa de financiamento"
@@ -5803,15 +5890,12 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Inverta sua posição short para uma posição long"
   },
-  "perpsSaveChanges": {
-    "message": "Salvar alterações",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "Pesquisar mercados"
   },
   "perpsSeeAll": {
-    "message": "Ver tudo"
+    "message": "Ver tudo",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Serviço temporariamente indisponível. Tente novamente mais tarde."
@@ -6011,6 +6095,9 @@
   },
   "perpsTrades": {
     "message": "Negociações"
+  },
+  "perpsTriggerPrice": {
+    "message": "Preço de disparo"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "A alavancagem amplifica tanto os ganhos quanto as perdas. Com alavancagem de 40x, uma variação de 1% no preço representa um ganho ou uma perda de 40% em sua margem."

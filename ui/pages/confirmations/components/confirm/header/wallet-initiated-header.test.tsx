@@ -27,6 +27,16 @@ const getPerpsDepositState = () => {
   } as TransactionMeta);
 };
 
+/** Build a confirm state for a perpsWithdraw transaction. */
+const getPerpsWithdrawState = () => {
+  const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
+  return getMockConfirmStateForTransaction({
+    ...base,
+    type: TransactionType.perpsWithdraw,
+    origin: 'metamask',
+  } as TransactionMeta);
+};
+
 const render = (
   state: DefaultRootState = getMockTokenTransferConfirmState({}),
 ) => {
@@ -119,5 +129,36 @@ describe('<WalletInitiatedHeader />', () => {
     const { getByTestId } = render();
 
     expect(getByTestId('header-advanced-details-button')).toBeInTheDocument();
+  });
+
+  it('calls onCancel with navigateBackToPreviousPage for perpsWithdraw', () => {
+    const mockOnCancel = jest.fn();
+    jest.spyOn(ConfirmActions, 'useConfirmActions').mockImplementation(() => ({
+      onCancel: mockOnCancel,
+      resetTransactionState: jest.fn(),
+    }));
+
+    const { getByTestId } = render(getPerpsWithdrawState());
+    fireEvent.click(getByTestId('wallet-initiated-header-back-button'));
+
+    expect(mockOnCancel).toHaveBeenCalledWith({
+      location: 'confirmation',
+      navigateBackToPreviousPage: true,
+    });
+  });
+
+  it('shows perpsWithdrawFundsTitle as the header title for perpsWithdraw', () => {
+    const { getByText } = render(getPerpsWithdrawState());
+
+    expect(getByText(tEn('perpsWithdrawFundsTitle'))).toBeInTheDocument();
+  });
+
+  it('hides AdvancedDetailsButton visually for perpsWithdraw', () => {
+    const { getByTestId } = render(getPerpsWithdrawState());
+
+    const advancedButton = getByTestId('header-advanced-details-button');
+    expect(advancedButton.closest('[style*="visibility"]')).toHaveStyle({
+      visibility: 'hidden',
+    });
   });
 });

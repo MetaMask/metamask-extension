@@ -1,22 +1,8 @@
-import {
-  Category,
-  ErrorCode,
-  HardwareWalletError,
-  Severity,
-} from '@metamask/hw-wallet-sdk';
-import { getTrezorFeatures } from '../../../store/actions';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
 import * as webConnectionUtils from '../webConnectionUtils';
-import {
-  getMissingCapabilities,
-  isTrezorModelOne,
-  isTrezorModelUsingTrezorSuite,
-} from './trezorUtils';
+import { getMissingCapabilities, isTrezorModelOne } from './trezorUtils';
 import { TrezorAdapter } from './TrezorAdapter';
-
-jest.mock('../../../store/actions', () => ({
-  getTrezorFeatures: jest.fn(),
-}));
 
 jest.mock('../webConnectionUtils', () => ({
   ...jest.requireActual('../webConnectionUtils'),
@@ -24,9 +10,6 @@ jest.mock('../webConnectionUtils', () => ({
   isWebUsbAvailable: jest.fn(),
 }));
 
-const mockGetTrezorFeatures = getTrezorFeatures as jest.MockedFunction<
-  typeof getTrezorFeatures
->;
 const mockGetConnectedTrezorDevices =
   webConnectionUtils.getConnectedTrezorDevices as jest.MockedFunction<
     typeof webConnectionUtils.getConnectedTrezorDevices
@@ -35,33 +18,6 @@ const mockIsWebUsbAvailable =
   webConnectionUtils.isWebUsbAvailable as jest.MockedFunction<
     typeof webConnectionUtils.isWebUsbAvailable
   >;
-
-type TrezorFeaturesPayload = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  session_id: string | null;
-  model: string;
-  initialized: boolean;
-  capabilities: string[];
-  unlocked: boolean;
-};
-
-const createMockFeaturesResponse = (
-  payload: Partial<TrezorFeaturesPayload> = {},
-) => ({
-  payload: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    session_id: 'session-id',
-    model: 'T',
-    initialized: true,
-    capabilities: [
-      'Capability_Bitcoin',
-      'Capability_Solana',
-      'Capability_Ethereum',
-    ],
-    unlocked: true,
-    ...payload,
-  },
-});
 
 describe('TrezorAdapter', () => {
   let adapter: TrezorAdapter;
@@ -88,7 +44,6 @@ describe('TrezorAdapter', () => {
       .mockImplementation(() => undefined);
     mockIsWebUsbAvailable.mockReturnValue(true);
     mockGetConnectedTrezorDevices.mockResolvedValue([{} as USBDevice]);
-    mockGetTrezorFeatures.mockResolvedValue(createMockFeaturesResponse());
 
     adapter = new TrezorAdapter(mockOptions);
   });
@@ -103,6 +58,31 @@ describe('TrezorAdapter', () => {
   describe('constructor and events', () => {
     it('initializes disconnected state', () => {
       expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('does not subscribe to WebUSB events in the adapter', () => {
+      const originalUsb = navigator.usb;
+      const addEventListener = jest.fn();
+      const removeEventListener = jest.fn();
+
+      Object.defineProperty(navigator, 'usb', {
+        configurable: true,
+        value: {
+          ...originalUsb,
+          addEventListener,
+          removeEventListener,
+        },
+      });
+
+      const testAdapter = new TrezorAdapter(mockOptions);
+
+      expect(addEventListener).not.toHaveBeenCalled();
+
+      testAdapter.destroy();
+      Object.defineProperty(navigator, 'usb', {
+        configurable: true,
+        value: originalUsb,
+      });
     });
   });
 
@@ -188,163 +168,89 @@ describe('TrezorAdapter', () => {
       expect(result).toBe(true);
       expect(adapter.isConnected()).toBe(true);
       expect(mockGetConnectedTrezorDevices).toHaveBeenCalled();
-      expect(mockGetTrezorFeatures).toHaveBeenCalled();
     });
 
-    it('allows null session for models that use Trezor Suite', async () => {
-      mockGetTrezorFeatures.mockResolvedValue(
-        createMockFeaturesResponse({
-          model: 'safe 7',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          session_id: null,
-        }),
-      );
+    it('returns true without reconnecting when already connected', async () => {
+      await adapter.connect();
+      mockGetConnectedTrezorDevices.mockClear();
 
-      await expect(adapter.ensureDeviceReady()).resolves.toBe(true);
+      const result = await adapter.ensureDeviceReady();
+
+      expect(result).toBe(true);
+      expect(mockGetConnectedTrezorDevices).not.toHaveBeenCalled();
     });
+  });
 
-    it('throws AuthenticationDeviceLocked when device is locked', async () => {
-      mockGetTrezorFeatures.mockResolvedValue(
-        createMockFeaturesResponse({
-          unlocked: false,
-        }),
-      );
+  describe('validateCapabilities', () => {
+    it('throws DeviceMissingCapability when a required capability is missing', () => {
+      expect(() =>
+        adapter.validateCapabilities(
+          ['Capability_Bitcoin', 'Capability_Ethereum'],
+          'T',
+        ),
+      ).toThrow(HardwareWalletError);
 
-      await expect(adapter.ensureDeviceReady()).rejects.toMatchObject({
-        code: ErrorCode.AuthenticationDeviceLocked,
-      });
-
-      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+      expect(() =>
+        adapter.validateCapabilities(
+          ['Capability_Bitcoin', 'Capability_Ethereum'],
+          'T',
+        ),
+      ).toThrow(
         expect.objectContaining({
-          event: DeviceEvent.DeviceLocked,
-          error: expect.objectContaining({
-            code: ErrorCode.AuthenticationDeviceLocked,
+          code: ErrorCode.DeviceMissingCapability,
+          metadata: expect.objectContaining({
+            missingCapabilities: ['Capability_Solana'],
           }),
         }),
       );
     });
 
-    it('throws DeviceNotReady when device is not initialized', async () => {
-      mockGetTrezorFeatures.mockResolvedValue(
-        createMockFeaturesResponse({
-          initialized: false,
-        }),
-      );
+    it('allows Model One when only Solana capability is missing', () => {
+      expect(() =>
+        adapter.validateCapabilities(
+          ['Capability_Bitcoin', 'Capability_Ethereum'],
+          'Trezor Model One',
+        ),
+      ).not.toThrow();
+    });
 
-      await expect(adapter.ensureDeviceReady()).rejects.toMatchObject({
-        code: ErrorCode.DeviceNotReady,
-      });
-
-      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+    it('throws DeviceMissingCapability when Model One is missing a supported capability', () => {
+      expect(() =>
+        adapter.validateCapabilities(['Capability_Bitcoin'], 'T1B1'),
+      ).toThrow(
         expect.objectContaining({
-          event: DeviceEvent.Disconnected,
-          error: expect.objectContaining({ code: ErrorCode.DeviceNotReady }),
+          code: ErrorCode.DeviceMissingCapability,
+          metadata: expect.objectContaining({
+            missingCapabilities: ['Capability_Ethereum'],
+          }),
         }),
       );
-      expect(adapter.isConnected()).toBe(false);
     });
 
-    it('throws ConnectionClosed when session is missing for legacy models', async () => {
-      mockGetTrezorFeatures.mockResolvedValue(
-        createMockFeaturesResponse({
-          model: 'T',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          session_id: null,
-        }),
-      );
-
-      await expect(adapter.ensureDeviceReady()).rejects.toMatchObject({
-        code: ErrorCode.ConnectionClosed,
-      });
-      expect(adapter.isConnected()).toBe(false);
-    });
-
-    it('throws DeviceMissingCapability when required capability is missing', async () => {
-      mockGetTrezorFeatures.mockResolvedValue(
-        createMockFeaturesResponse({
-          capabilities: ['Capability_Bitcoin', 'Capability_Ethereum'],
-        }),
-      );
-
-      await expect(adapter.ensureDeviceReady()).rejects.toMatchObject({
-        code: ErrorCode.DeviceMissingCapability,
-      });
-    });
-
-    it('rejects oversized messages on Model One preflight', async () => {
-      mockGetTrezorFeatures.mockResolvedValue(
-        createMockFeaturesResponse({
-          model: '1',
-        }),
-      );
-
-      await expect(
-        adapter.ensureDeviceReady({ preflightMessageBytes: 1025 }),
-      ).rejects.toMatchObject({
-        code: ErrorCode.DeviceMissingCapability,
-      });
-    });
-
-    it('emits Disconnected and resets state for ConnectionClosed errors', async () => {
-      await adapter.connect();
-      expect(adapter.isConnected()).toBe(true);
-
-      const connectionClosedError = new HardwareWalletError(
-        'Connection closed',
-        {
-          code: ErrorCode.ConnectionClosed,
-          severity: Severity.Err,
-          category: Category.Connection,
-          userMessage: 'Connection closed',
-        },
-      );
-      mockGetTrezorFeatures.mockRejectedValue(connectionClosedError);
-
-      await expect(adapter.ensureDeviceReady()).rejects.toBe(
-        connectionClosedError,
-      );
-
-      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
-        event: DeviceEvent.Disconnected,
-        error: connectionClosedError,
-      });
-      expect(adapter.isConnected()).toBe(false);
-    });
-
-    it('wraps unknown errors as HardwareWalletError', async () => {
-      mockGetTrezorFeatures.mockRejectedValue(
-        new Error('feature fetch failed'),
-      );
-
-      await expect(adapter.ensureDeviceReady()).rejects.toThrow(
-        HardwareWalletError,
-      );
-      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+    it('includes the raw capabilities in missing capability error metadata', () => {
+      expect(() =>
+        adapter.validateCapabilities('Capability_Bitcoin', 'T'),
+      ).toThrow(
         expect.objectContaining({
-          event: DeviceEvent.Disconnected,
-          error: expect.any(HardwareWalletError),
+          metadata: expect.objectContaining({
+            capabilities: 'Capability_Bitcoin',
+          }),
         }),
       );
+    });
+
+    it('does not throw when all required capabilities are present', () => {
+      expect(() =>
+        adapter.validateCapabilities(
+          ['Capability_Bitcoin', 'Capability_Solana', 'Capability_Ethereum'],
+          'T',
+        ),
+      ).not.toThrow();
     });
   });
 });
 
 describe('trezorUtils', () => {
-  describe('isTrezorModelUsingTrezorSuite', () => {
-    it('returns true for safe 7', () => {
-      expect(isTrezorModelUsingTrezorSuite('safe 7')).toBe(true);
-    });
-
-    it('returns true for Safe 7 (case insensitive)', () => {
-      expect(isTrezorModelUsingTrezorSuite('Safe 7')).toBe(true);
-    });
-
-    it('returns false for other models', () => {
-      expect(isTrezorModelUsingTrezorSuite('T')).toBe(false);
-      expect(isTrezorModelUsingTrezorSuite('1')).toBe(false);
-    });
-  });
-
   describe('getMissingCapabilities', () => {
     it('returns empty array when all capabilities are present', () => {
       expect(

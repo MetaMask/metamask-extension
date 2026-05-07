@@ -114,12 +114,6 @@
   "accountIdenticon": {
     "message": "アカウントのアイデンティコン"
   },
-  "accountIdenticonDescription": {
-    "message": "アカウントを一目で見分けられるよう、3種類の異なるスタイルのアイコンからお選びください。"
-  },
-  "accountIsntConnectedToastText": {
-    "message": "$1は$2に接続されていません"
-  },
   "accountName": {
     "message": "アカウント名"
   },
@@ -628,10 +622,10 @@
     "message": "すべての人気のネットワーク"
   },
   "allTimeHigh": {
-    "message": "最高記録"
+    "message": "最高値"
   },
   "allTimeLow": {
-    "message": "最低記録"
+    "message": "最安値"
   },
   "allTokens": {
     "message": "すべてのトークン"
@@ -867,7 +861,7 @@
     "message": "基本"
   },
   "basicConfigurationDescription": {
-    "message": "MetaMaskは、インターネットサービスを通じてトークンの詳細やガス設定などの基本的な機能を提供します。インターネットサービスを使用すると、この場合はMetaMaskに、ユーザーのIPアドレスが共有されます。これは他のどのWebサイトにアクセスした場合も同様で、MetaMaskはこのデータを一時的に使用し、ユーザーのデータを販売することは一切ありません。VPNを使用したり、これらのサービスをオフにしたりすることもできますが、MetaMaskでのエクスペリエンスに影響を与える可能性があります。詳細は$1をお読みください。",
+    "message": "MetaMaskにより、インターネットサービスを通じてトークンの詳細やガス設定などの基本的な機能が提供されます。インターネットサービスを使用すると、ユーザーのIPアドレスが共有されます。この場合の共有先はMetaMaskです。これは他のどのWebサイトにアクセスした場合も同様です。MetaMaskによりこのデータが一時的に使用され、ユーザーのデータが販売されることは一切ありません。VPNを使用したり、これらのサービスをオフにしたりすることもできますが、MetaMaskでのエクスペリエンスに影響を与える可能性があります。詳細は$1をお読みください。",
     "description": "$1 is to be replaced by the message for privacyMsg, and will link to https://consensys.io/privacy-policy"
   },
   "basicConfigurationDescriptionV2": {
@@ -1437,7 +1431,7 @@
     "message": "ネットワークを選択してください"
   },
   "chooseYourNetworkDescription": {
-    "message": "デフォルトの設定と構成を使用する場合、当社はInfuraをデフォルトの遠隔手続き呼び出し (RPC) プロバイダーとして使用し、イーサリアムデータへの可能な限り最も信頼性が高くプライベートなアクセスを提供します。まれに、ユーザーに最も優れたエクスペリエンスを提供するために、他のRPCプロバイダーが使用される場合もあります。ユーザーが自らRPCを選択することもできますが、どのRPCもトランザクションを実行するために、ユーザーのIPアドレスとイーサリアムウォレットを取得する点にご注意ください。InfuraによるEVMアカウントのデータの取り扱いに関する詳細は、$1をご覧ください。Solanaアカウントの場合は、$2。",
+    "message": "デフォルトの設定と構成を使用する場合、当社はInfuraをデフォルトの遠隔手続き呼び出し (RPC) プロバイダーとして使用し、イーサリアムデータへの可能な限り最も信頼性が高くプライベートなアクセスを提供します。まれに、ユーザーに最も優れたエクスペリエンスを提供するために、他のRPCプロバイダーが使用される場合もあります。ユーザーが自らRPCを選択することもできますが、トランザクションを実行するために、どのRPCでもユーザーのIPアドレスとイーサリアムウォレットが取得される点にご注意ください。InfuraによるEVMアカウントのデータの取り扱いに関する詳細は、$1をご覧ください。Solanaアカウントの場合は、$2。",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chooseYourNetworkDescriptionCallToAction": {
@@ -1546,12 +1540,6 @@
   "confirmFieldFrequency": {
     "message": "頻度"
   },
-  "confirmFieldInitialAllowance": {
-    "message": "初回割当"
-  },
-  "confirmFieldMaxAllowance": {
-    "message": "最大割当"
-  },
   "confirmFieldNeverExpires": {
     "message": "有効期限なし"
   },
@@ -1571,20 +1559,14 @@
     "message": "月次"
   },
   "confirmFieldPeriodDurationSeconds": {
-    "message": "秒",
-    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+    "message": "$1秒",
+    "description": "$1 is the number of seconds in the permission period (shown when the period is not a standard hour/day/week/etc.)"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "週次"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "年次"
-  },
-  "confirmFieldStartDate": {
-    "message": "開始日"
-  },
-  "confirmFieldStreamRate": {
-    "message": "流入量"
   },
   "confirmFieldTooltipJustification": {
     "message": "このウェブサイトが提供するリクエストの正当性"
@@ -1750,9 +1732,6 @@
   },
   "connect": {
     "message": "接続"
-  },
-  "connectAccount": {
-    "message": "アカウントの接続"
   },
   "connectAccounts": {
     "message": "アカウントの接続"
@@ -1998,7 +1977,7 @@
     "message": "残高とトークン価格チェッカーを表示"
   },
   "currencyRateCheckToggleDescription": {
-    "message": "MetaMaskは、$1と$2のAPIを使用して残高とトークンの価格を表示します。$3",
+    "message": "$1APIと$2APIにより残高とトークンの価格が表示されます。$3",
     "description": "$1 represents Coingecko, $2 represents CryptoCompare and $3 represents Privacy Policy"
   },
   "currencySymbol": {
@@ -2249,9 +2228,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "パーペチュアル市場ページ"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "パーペチュアル市場一覧ページ"
   },
   "deepLink_thePerpsPage": {
     "message": "パーペチュアルのページ"
@@ -2668,13 +2644,13 @@
     "message": "改善されたトークン検出は現在$1で利用可能です。$2"
   },
   "ensDomainsSettingDescriptionIntroduction": {
-    "message": "MetaMaskは、ENSドメインをブラウザのアドレスバーに直接表示します。使い方は次の通りです:"
+    "message": "MetaMaskにより、ENSドメインがブラウザのアドレスバーに直接表示されます。使い方は次の通りです："
   },
   "ensDomainsSettingDescriptionOutroduction": {
     "message": "この機能を使用すると、IPアドレスがIPFSのサードパーティサービスに公開されます。"
   },
   "ensDomainsSettingDescriptionPart1": {
-    "message": "MetaMaskはイーサリアムのENSコントラクトを確認し、ENS名に接続されたコードを取得します。"
+    "message": "MetaMaskでは、イーサリアムのENSコントラクト確認によりENS名に接続するコードがわかるようになります。"
   },
   "ensDomainsSettingDescriptionPart2": {
     "message": "コードがIPFSにリンクしている場合、関連付けられたコンテンツ (通常Webサイト) を見ることができます。"
@@ -2865,7 +2841,7 @@
     "message": "ニックネームの提案"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "当社は、Etherscan、Infura、Lensプロトコルなどのサードパーティソースから、やり取りするアドレスに使用するニックネームの提案を取得します。これらのソースは対象となるアドレスとユーザーのIPアドレスを把握できます。ユーザーのアカウントアドレスはサードパーティに公開されません。"
+    "message": "当社は、Etherscan、Infura、Lensプロトコルなどのサードパーティソースから、やり取りするアドレスに使用するニックネーム候補を取得します。これらのソースでは対象となるアドレスとユーザーのIPアドレスの把握が可能になります。ユーザーのアカウントアドレスはサードパーティに公開されません。"
   },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Etherscan、Infura、Lensプロトコルなどのサードパーティソースから、ユーザーがやり取りするアドレスのニックネームの提案を取得します。"
@@ -3034,6 +3010,9 @@
   },
   "gasUsed": {
     "message": "ガス使用量"
+  },
+  "gatorNoJustificationProvided": {
+    "message": "アクセス許可の正当な理由が提供されませんでした"
   },
   "gatorPermissionAnnualFrequency": {
     "message": "年次",
@@ -4034,12 +4013,6 @@
   "mismatchedRpcUrl": {
     "message": "弊社の記録によると、送信されたRPC URLの値がこのチェーンIDの既知のプロバイダーと一致しません。"
   },
-  "missingSetting": {
-    "message": "設定が見つからない場合"
-  },
-  "missingSettingRequest": {
-    "message": "ここでリクエスト"
-  },
   "month": {
     "message": "月"
   },
@@ -4122,6 +4095,102 @@
   "multipleSnapConnectionWarning": {
     "message": "$1が$2 Snapの使用を求めています",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
+  },
+  "musdAssetBonusAccruing": {
+    "message": "次のボーナスを獲得しています",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "$1のボーナスを請求",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "予想年間ボーナス",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "ボーナス情報",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "現在の残高とレートに基づき1年間でいくら稼げるかの予想です。レートは変動式で、変わる可能性があります。",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "詳細を見る。",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "開始以降請求したボーナスの合計です。",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "mUSDを保有するだけで獲得できる年換算$1%のボーナスです。Lineaで毎日請求できます。$2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "生涯で請求したボーナス",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "獲得しているボーナスはありません",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1%のボーナス",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "ボーナス",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "デイリーボーナス",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "ドルペッグ制",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "ロックアップなし",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "MetaMaskの手数料なし",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "年率$1%のボーナス",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": " USDC、USDT、DAIをmUSDに換金すると、",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": "を獲得できます。",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "詳細。",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "ステーブルコインの換金",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "残高",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "あなたの順位",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "価値",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
   },
   "musdBonusExplanation": {
     "message": "お持ちのステーブルコインをmUSDに換えて、\n年換算で最大$1%のボーナスを獲得しましょう。\nこのボーナスは毎日請求できます。$2",
@@ -4226,6 +4295,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "諸条件が適用されます。"
@@ -4412,7 +4485,7 @@
     "message": "このネットワークに関連付けられている名前。"
   },
   "networkNameEthereum": {
-    "message": "イーサリアム"
+    "message": "Ethereum"
   },
   "networkNameGoerli": {
     "message": "Goerli"
@@ -4790,6 +4863,14 @@
     "message": "$1で表示",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "トランザクションに失敗しました！$1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "トランザクションが確定しました!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
+  },
   "notifications": {
     "message": "通知"
   },
@@ -4875,7 +4956,7 @@
     "message": "エクスペリエンスの改善にご協力ください"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "IPFSゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタムIPFSゲートウェイを追加するか、引き続きデフォルトを使用できます。"
+    "message": "IPFSゲートウェイにより、第三者がホスティングしているデータへのアクセスと表示が可能になります。カスタムIPFSゲートウェイの追加、または継続的なデフォルト使用が可能です。"
   },
   "onboardingAdvancedPrivacyIPFSInvalid": {
     "message": "有効なURLを入力してください"
@@ -4890,7 +4971,7 @@
     "message": "デフォルトの設定と構成を使用する場合、当社はInfuraをデフォルトの遠隔手続き呼び出し (RPC) プロバイダーとして使用し、イーサリアムデータへの可能な限り最も信頼性が高くプライベートなアクセスを提供します。まれに、ユーザーに最も優れたエクスペリエンスを提供するために、他のRPCプロバイダーが使用される場合もあります。ユーザーが自らRPCを選択することもできますが、どのRPCもトランザクションを実行するために、ユーザーのIPアドレスとイーサリアムウォレットを取得する点にご注意ください。InfuraによるEVMアカウントのデータの取り扱いに関する詳細は、$1をご覧ください。Solanaアカウントの場合は、$2。"
   },
   "onboardingAdvancedPrivacyNetworkDescriptionCallToAction": {
-    "message": "こちらをクリック"
+    "message": "こちらをクリックしてください"
   },
   "onboardingAdvancedPrivacyNetworkTitle": {
     "message": "ネットワークを選択してください"
@@ -4921,7 +5002,7 @@
     "message": "当社は製品の基本的な使用状況データを収集します。この情報はオンチェーンデータと関連付けられる場合があります。"
   },
   "onboardingMetametricCheckboxDescriptionTwo": {
-    "message": "このデータは、ユーザーによる当社のマーケティングコミュニケーションとのインタラクションを把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
+    "message": "このデータは、当社の各種マーケティング活動に対するユーザーの反応を把握するために使用されます。また、関連ニュースをお伝えする場合もあります (製品の機能など)。"
   },
   "onboardingMetametricCheckboxTitleOne": {
     "message": "基本的な使用状況データの収集"
@@ -4933,7 +5014,7 @@
     "message": "続行"
   },
   "onboardingMetametricsDescription": {
-    "message": "MetaMaskの改善を目的に、基本的な使用状況および診断データを収集したいと思います。ここで提供されるデータが販売されることはありません。"
+    "message": "次の項目について許可をお願いします。使用状況データはいつでもオプトアウトまたは削除できます。"
   },
   "onboardingMetametricsTitle": {
     "message": "MetaMaskの改善にご協力ください"
@@ -5453,7 +5534,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "使用可能なパーペチュアル残高: "
+    "message": "利用可能残高: "
   },
   "perpsAvailableToAdd": {
     "message": "追加可能"
@@ -5521,6 +5602,12 @@
   },
   "perpsContactSupport": {
     "message": "サポートへのお問い合わせ"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMaskパーペチュアル取引では、分離マージンでの取引にのみ対応しています。MetaMaskで取引を行うには、最初にクロスマージンのポジションをクローズする必要があります。"
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "クロスマージンには対応していません"
   },
   "perpsDateToday": {
     "message": "今日"
@@ -5803,15 +5890,12 @@
   "perpsReversePositionDescriptionShort": {
     "message": "ショートポジションを反転してロングにします"
   },
-  "perpsSaveChanges": {
-    "message": "変更を保存",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "市場を検索"
   },
   "perpsSeeAll": {
-    "message": "すべて表示"
+    "message": "すべて表示",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "現在サービスが一時的にご利用いただけません。後ほどもう一度お試しください。"
@@ -5880,7 +5964,7 @@
     "message": "トリガー済み"
   },
   "perpsStopLoss": {
-    "message": "損切り",
+    "message": "ストップロス",
     "description": "Label for stop loss price input"
   },
   "perpsStopLossInvalidPrice": {
@@ -6011,6 +6095,9 @@
   },
   "perpsTrades": {
     "message": "取引"
+  },
+  "perpsTriggerPrice": {
+    "message": "トリガー価格"
   },
   "perpsTutorialChooseLeverageDescription": {
     "message": "レバレッジを利用すると、利益も損失も大きくなります。レバレッジが40倍の場合、価格が1%変動すると、証拠金に対して40%の利益または損失が生まれます。"
@@ -9441,7 +9528,7 @@
     "message": "アカウント残高の一括リクエスト"
   },
   "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "アカウントの残高リクエストを一斉に行うことで、より素早く残高更新を取得できます。これにより、アカウントの残高を一斉に取得できるので、更新がより迅速になり、エクスペリエンスが向上します。この機能がオフの場合、サードパーティがユーザーのアカウントをお互いに関連付けなくなる可能性があります。"
+    "message": "アカウントの残高リクエストを一斉に行うことで、より素早く残高更新を取得できます。これにより、アカウントの残高を一斉に取得できるので、更新がより迅速になり、エクスペリエンスが向上します。この機能がオフの場合、サードパーティによるユーザーの各種アカウントの関連付けが難しくなります。"
   },
   "useMultiAccountBalanceCheckerSettingDescriptionV2": {
     "message": "すべてのアカウントの残高の最新情報を一度に送信します。複数アカウントをより迅速に管理でき、総合的なユーザー体験が向上します。"
@@ -9475,7 +9562,7 @@
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useTokenDetectionPrivacyDesc": {
-    "message": "アカウントに送信されたトークンを自動的に表示するには、サードパーティサーバーと通信してトークンの画像を取得する必要があります。これらのサーバーは、あなたのIPアドレスにアクセスすることになります。"
+    "message": "アカウントに送信されたトークンを自動的に表示するには、サードパーティサーバーと通信してトークンの画像を取得する必要があります。これらのサーバーにより、あなたのIPアドレスにアクセスされることになります。"
   },
   "usedByClients": {
     "message": "さまざまな異なるクライアントによって使用されています"

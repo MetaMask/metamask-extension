@@ -185,6 +185,23 @@ describe('compare-benchmarks', () => {
       const result = runComparison(benchmarks, {});
       expect(result.comparisons).toHaveLength(0);
     });
+
+    it('skips entries from failed benchmark runs (missing p75/p95)', () => {
+      const benchmarks = [
+        {
+          name: 'benchmark-chrome-browserify-startupStandardHome',
+          data: {
+            startupStandardHome: { error: 'Browser crashed' } as never,
+          },
+        },
+      ];
+
+      const result = runComparison(benchmarks, {});
+      expect(result.comparisons).toHaveLength(0);
+      expect(console.warn).toHaveBeenCalledWith(
+        expect.stringContaining('missing p75/p95'),
+      );
+    });
   });
 });
 

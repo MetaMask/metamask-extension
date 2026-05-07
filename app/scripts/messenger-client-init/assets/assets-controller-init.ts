@@ -156,6 +156,7 @@ export const AssetsControllerInit: MessengerClientInitFunction<
   const isBasicFunctionality = getIsBasicFunctionality(initMessenger);
 
   // Extension: subscribe to PreferencesController:stateChange and notify the controller only when useExternalServices changes.
+  // Also subscribe to OnboardingController:stateChange so that when onboarding completes, subscriptions are re-evaluated.
   // Mobile can pass a different implementation (e.g. Redux or app-specific listener).
   const subscribeToBasicFunctionalityChange = (
     onChange: (isBasic: boolean) => void,

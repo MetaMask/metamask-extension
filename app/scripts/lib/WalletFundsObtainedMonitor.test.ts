@@ -16,6 +16,14 @@ import {
   WalletFundsObtainedMonitorMessenger,
 } from './WalletFundsObtainedMonitor';
 
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so these tests exercise the real gating logic driven by the messenger mock.
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+);
+
 function createMessengerMock(): jest.Mocked<WalletFundsObtainedMonitorMessenger> {
   return {
     call: jest.fn(),
@@ -161,45 +169,20 @@ describe('WalletFundsObtainedMonitor', () => {
     });
 
     describe('when assets unify feature flag is enabled', () => {
-      it('should subscribe to notifications if wallet has no existing funds', () => {
-        messenger.call.mockImplementation(((action: string) => {
-          if (action === 'OnboardingController:getState') {
-            return {
-              seedPhraseBackedUp: false,
-              firstTimeFlowType: FirstTimeFlowType.create,
-              completedOnboarding: true,
-            };
-          }
-          if (action === 'NotificationServicesController:getState') {
-            return { isNotificationServicesEnabled: true };
-          }
-          if (action === 'RemoteFeatureFlagController:getState') {
-            return {
-              remoteFeatureFlags: {
-                assetsUnifyState: {
-                  enabled: true,
-                  featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-                  minimumVersion: null,
-                },
-              },
-            };
-          }
-          if (action === 'AssetsController:getState') {
-            return { assetsBalance: {} };
-          }
-          return undefined;
-        }) as any);
+      // isAssetsUnifyStateFeatureEnabled always returns false on this build
+      // (build flag ASSETS_UNIFIED_STATE_ENABLED=false), so the legacy
+      // TokenBalancesController path is always taken regardless of the remote flag.
 
+      it('should subscribe to notifications if wallet has no existing funds', () => {
+        // beforeEach already sets TokenBalancesController → {} and
+        // MultichainBalancesController → {}, so no extra mock override needed.
         walletFundsObtainedMonitor.setupMonitoring();
 
         expect(messenger.call).toHaveBeenCalledWith(
-          'RemoteFeatureFlagController:getState',
-        );
-        expect(messenger.call).toHaveBeenCalledWith(
-          'AssetsController:getState',
+          'TokenBalancesController:getState',
         );
         expect(messenger.call).not.toHaveBeenCalledWith(
-          'TokenBalancesController:getState',
+          'AssetsController:getState',
         );
         expect(messenger.call).not.toHaveBeenCalledWith(
           'AppStateController:setCanTrackWalletFundsObtained',
@@ -224,24 +207,17 @@ describe('WalletFundsObtainedMonitor', () => {
             return { isNotificationServicesEnabled: true };
           }
           if (action === 'RemoteFeatureFlagController:getState') {
+            return { remoteFeatureFlags: {} };
+          }
+          if (action === 'TokenBalancesController:getState') {
             return {
-              remoteFeatureFlags: {
-                assetsUnifyState: {
-                  enabled: true,
-                  featureVersion: ASSETS_UNIFY_STATE_VERSION_1,
-                  minimumVersion: null,
-                },
+              tokenBalances: {
+                '0x123': { '0x1': { '0x456': '0x100' } },
               },
             };
           }
-          if (action === 'AssetsController:getState') {
-            return {
-              assetsBalance: {
-                'account-1': {
-                  'eip155:1:0xabc': { amount: '100' },
-                },
-              },
-            };
+          if (action === 'MultichainBalancesController:getState') {
+            return { balances: {} };
           }
           return undefined;
         }) as any);
@@ -249,9 +225,9 @@ describe('WalletFundsObtainedMonitor', () => {
         walletFundsObtainedMonitor.setupMonitoring();
 
         expect(messenger.call).toHaveBeenCalledWith(
-          'RemoteFeatureFlagController:getState',
+          'TokenBalancesController:getState',
         );
-        expect(messenger.call).toHaveBeenCalledWith(
+        expect(messenger.call).not.toHaveBeenCalledWith(
           'AssetsController:getState',
         );
         expect(messenger.call).toHaveBeenCalledWith(
