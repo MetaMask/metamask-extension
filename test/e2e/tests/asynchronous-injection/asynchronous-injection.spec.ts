@@ -7,8 +7,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';
 
-const CUSTOM_DAPP_PATH =
-  './tests/asynchronous-injection/';
+const CUSTOM_DAPP_PATH = './tests/asynchronous-injection/';
 
 // `script-src-elem 'self' blob:` blocks the synchronous inline `<script>`
 // the inpage wrapper appends to `documentElement` (no `'unsafe-inline'`)
@@ -104,7 +103,7 @@ describe('Inpage script injection under page CSP', function (this: Suite) {
     );
   });
 
-  it("exposes window.ethereum on a page whose script-src-elem CSP blocks the inline injection via the Blob URL fallback", async function () {
+  it('exposes window.ethereum on a page whose script-src-elem CSP blocks the inline injection via the Blob URL fallback', async function () {
     await withFixtures(
       {
         dappOptions: { customDappPaths: [CUSTOM_DAPP_PATH] },
