@@ -2120,9 +2120,15 @@
   "criticalErrorAttemptRecovery": {
     "message": "Attempt recovery"
   },
-  "criticalErrorFooter": {
-    "message": "$1 $2 or $3",
-    "description": "Footer on the critical error screen. $1 is the 'Still getting this message?' text, $2 is the 'Contact support' link, $3 is the 'Attempt recovery' link. Translators may reorder the links (e.g. '$1 $3 or $2')."
+  "criticalErrorFooterContactSupport": {
+    "message": "If none of the above works, $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "Reinstall MetaMask"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "Still having issues?"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2859,10 +2865,6 @@
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "Error details",
-    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
@@ -8911,9 +8913,6 @@
   "stillConnectingTo": {
     "message": "Still connecting to $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "Still getting this message?"
   },
   "storageErrorAction": {
     "message": "Back up Secret Recovery Phrase"
