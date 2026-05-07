@@ -310,7 +310,7 @@ describe('Ducks - Bridge', () => {
           usd_amount_source: 1000,
         },
         undefined,
-        undefined
+        undefined,
       );
     });
   });

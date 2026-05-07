@@ -687,13 +687,12 @@ export const getBridgeQuotes = createSelector(
   },
 );
 
-
 export const getBridgeQuotesBatch = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
     ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
-    (_, {requestCount}: {requestCount: number}) => requestCount,
+    (_, { requestCount }: { requestCount: number }) => requestCount,
   ],
   (controllerStates, sortOrder, selectedQuote, requestCount) => {
     return selectBatchSellQuotes(controllerStates, {
