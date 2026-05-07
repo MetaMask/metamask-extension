@@ -10,6 +10,21 @@ jest.mock('../webConnectionUtils', () => ({
   isWebUsbAvailable: jest.fn(),
 }));
 
+let mockIsManifestV3 = true;
+let mockIsFirefoxBrowser = false;
+
+jest.mock('../../../../shared/lib/mv3.utils', () => ({
+  get isManifestV3() {
+    return mockIsManifestV3;
+  },
+}));
+
+jest.mock('../../../../shared/lib/browser-runtime.utils', () => ({
+  get isFirefoxBrowser() {
+    return () => mockIsFirefoxBrowser;
+  },
+}));
+
 const mockGetConnectedTrezorDevices =
   webConnectionUtils.getConnectedTrezorDevices as jest.MockedFunction<
     typeof webConnectionUtils.getConnectedTrezorDevices
@@ -139,6 +154,36 @@ describe('TrezorAdapter', () => {
 
       await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
       expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('skips WebUSB check on MV2 (Firefox) and defers to TrezorConnectBridge', async () => {
+      mockIsManifestV3 = false;
+
+      const mv2Adapter = new TrezorAdapter(mockOptions);
+
+      await mv2Adapter.connect();
+
+      expect(mockIsWebUsbAvailable).not.toHaveBeenCalled();
+      expect(mockGetConnectedTrezorDevices).not.toHaveBeenCalled();
+      expect(mv2Adapter.isConnected()).toBe(true);
+
+      mv2Adapter.destroy();
+      mockIsManifestV3 = true;
+    });
+
+    it('skips WebUSB check on Firefox even under MV3', async () => {
+      mockIsFirefoxBrowser = true;
+
+      const firefoxAdapter = new TrezorAdapter(mockOptions);
+
+      await firefoxAdapter.connect();
+
+      expect(mockIsWebUsbAvailable).not.toHaveBeenCalled();
+      expect(mockGetConnectedTrezorDevices).not.toHaveBeenCalled();
+      expect(firefoxAdapter.isConnected()).toBe(true);
+
+      firefoxAdapter.destroy();
+      mockIsFirefoxBrowser = false;
     });
   });
 
