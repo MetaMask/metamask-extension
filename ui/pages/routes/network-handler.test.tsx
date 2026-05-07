@@ -95,7 +95,7 @@ describe('NetworkHandler', () => {
   });
 
   it('does not dispatch when there is no network to switch to', () => {
-    totalUnapprovedConfirmationCount = 0;
+    totalUnapprovedConfirmationCount = 1;
 
     const { rerender } = render(<NetworkHandler />);
 
