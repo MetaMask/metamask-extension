@@ -91,7 +91,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
 > = ({
   type = 'datetime',
   label,
-  placeholder,
+  placeholder = '',
   name,
   form,
   disabled,
