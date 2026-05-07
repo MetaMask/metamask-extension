@@ -60,71 +60,35 @@ export const migrate = (async (versionedData, changedControllers) => {
   try {
     const { data } = versionedData;
 
+    const accountsAssets = readPath(data, [
+      'MultichainAssetsController',
+      'accountsAssets',
+    ]);
+    const snapBalances = readPath(data, [
+      'MultichainBalancesController',
+      'balances',
+    ]);
     console.log(
-      '++++ [migration 207] START - controllers present:',
-      JSON.stringify(Object.keys(data)),
-    );
-    console.log(
-      '++++ [migration 207] AccountsController.internalAccounts.accounts:',
-      JSON.stringify(
-        readPath(data, ['AccountsController', 'internalAccounts', 'accounts']),
-        null,
-        2,
-      ),
-    );
-    console.log(
-      '++++ [migration 207] TokensController.allTokens:',
-      JSON.stringify(readPath(data, ['TokensController', 'allTokens']), null, 2),
-    );
-    console.log(
-      '++++ [migration 207] TokenBalancesController.tokenBalances:',
-      JSON.stringify(
-        readPath(data, ['TokenBalancesController', 'tokenBalances']),
-        null,
-        2,
-      ),
-    );
-    console.log(
-      '++++ [migration 207] MultichainAssetsController.accountsAssets:',
-      JSON.stringify(
-        readPath(data, ['MultichainAssetsController', 'accountsAssets']),
-        null,
-        2,
-      ),
-    );
-    console.log(
-      '++++ [migration 207] MultichainBalancesController.balances:',
-      JSON.stringify(
-        readPath(data, ['MultichainBalancesController', 'balances']),
-        null,
-        2,
-      ),
-    );
-    console.log(
-      '++++ [migration 207] AssetsController BEFORE:',
-      JSON.stringify(data.AssetsController, null, 2),
+      '++++ [migration 207] non-EVM input account counts:',
+      JSON.stringify({
+        accountsAssetsCount: isObject(accountsAssets)
+          ? Object.keys(accountsAssets).length
+          : 0,
+        snapBalancesCount: isObject(snapBalances)
+          ? Object.keys(snapBalances).length
+          : 0,
+      }),
     );
 
     const addressToId = buildAddressToIdMap(data);
-    console.log(
-      '++++ [migration 207] addressToId map:',
-      JSON.stringify(addressToId, null, 2),
-    );
-
     const ac = ensureAssetsController(data);
 
     const evmChanged = migrateEvmTokens(data, ac, addressToId);
-    console.log(
-      `++++ [migration 207] AssetsController AFTER EVM migration (evmChanged=${evmChanged}):`,
-      JSON.stringify(ac, null, 2),
-    );
-
     const nonEvmChanged = migrateNonEvmAssets(data, ac);
-    console.log(
-      `++++ [migration 207] AssetsController AFTER non-EVM migration (nonEvmChanged=${nonEvmChanged}):`,
-      JSON.stringify(ac, null, 2),
-    );
 
+    console.log(
+      `++++ [migration 207] DONE evmChanged=${evmChanged} nonEvmChanged=${nonEvmChanged}`,
+    );
     console.log(
       '++++ [migration 207] customAssets FINAL counts per account:',
       JSON.stringify(
@@ -723,19 +687,21 @@ function migrateNonEvmAssets(
       continue;
     }
 
-    const accountBalances = isObject(balances[accountId])
-      ? balances[accountId]
-      : {};
-
-    console.log(
-      '++++ [migrateNonEvmAssets] account entry:',
-      JSON.stringify({
-        accountId,
-        assetIdCount: assetIds.length,
-        assetIds,
-        balanceKeys: Object.keys(accountBalances),
-      }),
-    );
+    // `MultichainAssetsController.accountsAssets[accountId]` is auto-populated
+    // by snaps with default supported assets (e.g. BTC, SOL, TRX + variants)
+    // the moment an account is created — even if the user never opened it.
+    // `MultichainBalancesController.balances[accountId]` is only populated once
+    // the snap actually fetches balances, which only happens when the account
+    // is opened. Use it as the proxy for "this account has been activated".
+    // Skipping never-opened accounts here keeps `customAssets` from being
+    // flooded with placeholder assets for hundreds of dormant accounts; the
+    // snap will repopulate `accountsAssets` (and our controllers) naturally
+    // the first time those accounts are opened post-migration.
+    const accountBalancesRaw = balances[accountId];
+    if (!isObject(accountBalancesRaw)) {
+      continue;
+    }
+    const accountBalances = accountBalancesRaw;
 
     for (const assetId of assetIds) {
       if (typeof assetId !== 'string' || !assetId) {
@@ -753,17 +719,6 @@ function migrateNonEvmAssets(
           ? balanceEntry.amount
           : undefined;
       const amount = isNonZeroAmount(rawAmount) ? rawAmount : null;
-
-      console.log(
-        '++++ [migrateNonEvmAssets] asset classify:',
-        JSON.stringify({
-          accountId,
-          assetId,
-          rawAmount,
-          amount,
-          hasMetadata: Boolean(info),
-        }),
-      );
 
       if (classifyAccountAsset(ac, accountId, assetId, amount)) {
         changed = true;
