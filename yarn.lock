@@ -5723,9 +5723,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controller@npm:@metamask-previews/assets-controller@6.4.0-preview-2b316ced3":
-  version: 6.4.0-preview-2b316ced3
-  resolution: "@metamask-previews/assets-controller@npm:6.4.0-preview-2b316ced3"
+"@metamask/assets-controller@npm:@metamask-previews/assets-controller@6.4.0-preview-d3f1b8bd9":
+  version: 6.4.0-preview-d3f1b8bd9
+  resolution: "@metamask-previews/assets-controller@npm:6.4.0-preview-d3f1b8bd9"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5756,7 +5756,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/becf4caa9d6c729c245436c3eb3a934c2be5ee7df7027ba21e017e8289850bbaf8e92ca237d0639e532c9f3806fa2b42afaac395827a73ce057fac8bad6710e2
+  checksum: 10/d179251427ce97addf414d9ee093618caa320449c02aadd49b084de11a9f8180709e732dc77c3959a4a6e9d74fb33b13a8c6e98655d19cfbd0016637e8b10741
   languageName: node
   linkType: hard
 
@@ -34419,7 +34419,7 @@ __metadata:
     "@metamask/announcement-controller": "npm:^8.0.0"
     "@metamask/api-specs": "npm:^0.13.0"
     "@metamask/approval-controller": "npm:^9.0.0"
-    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@6.4.0-preview-2b316ced3"
+    "@metamask/assets-controller": "npm:@metamask-previews/assets-controller@6.4.0-preview-d3f1b8bd9"
     "@metamask/assets-controllers": "npm:^105.0.0"
     "@metamask/auto-changelog": "npm:^5.3.1"
     "@metamask/base-controller": "npm:^9.0.1"
