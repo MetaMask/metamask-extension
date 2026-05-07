@@ -111,7 +111,11 @@ describe('SnapUIDateTimePicker', () => {
 
     it('renders a label when provided', () => {
       render(
-        <SnapUIDateTimePicker name="test" type="datetime" label="Pick a date" />,
+        <SnapUIDateTimePicker
+          name="test"
+          type="datetime"
+          label="Pick a date"
+        />,
       );
 
       expect(screen.getByText('Pick a date')).toBeInTheDocument();
@@ -167,7 +171,9 @@ describe('SnapUIDateTimePicker', () => {
       render(<SnapUIDateTimePicker name="test" type="datetime" disabled />);
 
       expect(
-        screen.getByTestId('mock-datetime-picker').getAttribute('data-disabled'),
+        screen
+          .getByTestId('mock-datetime-picker')
+          .getAttribute('data-disabled'),
       ).toBe('true');
     });
 
@@ -210,9 +216,9 @@ describe('SnapUIDateTimePicker', () => {
     it('passes the correct class to the datetime picker', () => {
       render(<SnapUIDateTimePicker name="test" type="datetime" />);
 
-      expect(
-        screen.getByTestId('mock-datetime-picker').className,
-      ).toContain('snap-ui-renderer__date-time-picker--datetime');
+      expect(screen.getByTestId('mock-datetime-picker').className).toContain(
+        'snap-ui-renderer__date-time-picker--datetime',
+      );
     });
 
     it('passes the correct class to the date picker', () => {
@@ -229,6 +235,80 @@ describe('SnapUIDateTimePicker', () => {
       expect(screen.getByTestId('mock-time-picker').className).toContain(
         'snap-ui-renderer__date-time-picker--time',
       );
+    });
+
+    it('passes the placeholder to the datetime picker', () => {
+      let capturedSlotProps: Record<string, unknown> = {};
+      mockDateTimePicker.mockImplementation(({ slotProps }) => {
+        capturedSlotProps = slotProps ?? {};
+        return <div data-testid="mock-datetime-picker" />;
+      });
+
+      render(
+        <SnapUIDateTimePicker
+          name="test"
+          type="datetime"
+          placeholder="Pick a date and time"
+        />,
+      );
+
+      expect(
+        (capturedSlotProps.textField as Record<string, unknown>)?.placeholder,
+      ).toBe('Pick a date and time');
+    });
+
+    it('passes the placeholder to the date picker', () => {
+      let capturedSlotProps: Record<string, unknown> = {};
+      mockDatePicker.mockImplementation(({ slotProps }) => {
+        capturedSlotProps = slotProps ?? {};
+        return <div data-testid="mock-date-picker" />;
+      });
+
+      render(
+        <SnapUIDateTimePicker
+          name="test"
+          type="date"
+          placeholder="Pick a date"
+        />,
+      );
+
+      expect(
+        (capturedSlotProps.textField as Record<string, unknown>)?.placeholder,
+      ).toBe('Pick a date');
+    });
+
+    it('passes the placeholder to the time picker', () => {
+      let capturedSlotProps: Record<string, unknown> = {};
+      mockTimePicker.mockImplementation(({ slotProps }) => {
+        capturedSlotProps = slotProps ?? {};
+        return <div data-testid="mock-time-picker" />;
+      });
+
+      render(
+        <SnapUIDateTimePicker
+          name="test"
+          type="time"
+          placeholder="Pick a time"
+        />,
+      );
+
+      expect(
+        (capturedSlotProps.textField as Record<string, unknown>)?.placeholder,
+      ).toBe('Pick a time');
+    });
+
+    it('uses an empty string as the default placeholder', () => {
+      let capturedSlotProps: Record<string, unknown> = {};
+      mockDateTimePicker.mockImplementation(({ slotProps }) => {
+        capturedSlotProps = slotProps ?? {};
+        return <div data-testid="mock-datetime-picker" />;
+      });
+
+      render(<SnapUIDateTimePicker name="test" type="datetime" />);
+
+      expect(
+        (capturedSlotProps.textField as Record<string, unknown>)?.placeholder,
+      ).toBe('');
     });
   });
 
