@@ -56,7 +56,7 @@ const mockUseSafeChains = jest.fn().mockReturnValue({
   safeChains: [],
 });
 jest.mock(
-  '../../../../pages/settings/networks-tab/networks-form/use-safe-chains',
+  '../../../networks-form/use-safe-chains',
   () => ({
     useSafeChains: () => mockUseSafeChains(),
   }),
