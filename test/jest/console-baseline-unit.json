@@ -1543,7 +1543,14 @@
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/settings/transaction-shield/claims-form/claims-form.test.tsx": {
+    "ui/pages/shield/plan/shield-payment-modal.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 6
+    },
+    "ui/pages/shield/plan/shield-plan.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 8,
+      "error: [useShieldRewards error]: Error: Actions must": 14
+    },
+    "ui/pages/shield/transaction-shield/claims-form/claims-form.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
       "React: Act warnings (component updates not wrapped)": 8
     },
