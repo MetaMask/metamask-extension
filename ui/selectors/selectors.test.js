@@ -4499,6 +4499,9 @@ describe('getLastQrScanCompletedSuccessfully', () => {
   it('returns undefined when lastQrScanCompletedSuccessfully is not in state', () => {
     const state = { metamask: {} };
     expect(selectors.getLastQrScanCompletedSuccessfully(state)).toBeUndefined();
+  });
+});
+
 describe('getLastVisitedPerpsRoute', () => {
   it('returns the perps lastVisitedRoute value when set', () => {
     const entry = { path: '/perps/market/BTC', timestamp: 1700000000000 };
