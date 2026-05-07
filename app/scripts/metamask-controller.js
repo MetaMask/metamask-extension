@@ -12,7 +12,6 @@ import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, uniq } from 'lodash';
-import { KeyringType } from '@metamask/keyring-api/v2';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
@@ -137,6 +136,7 @@ import {
 } from '@metamask/seedless-onboarding-controller';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
+import { KeyringTypes } from '@metamask/keyring-controller';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
   findAtomicBatchSupportForChain,
@@ -157,7 +157,6 @@ import {
   LedgerTransportTypes,
   KEYRING_DEVICE_PROPERTY_MAP,
 } from '../../shared/constants/hardware-wallets';
-import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
@@ -466,7 +465,6 @@ import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metri
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
-import { KeyringTypes } from '@metamask/keyring-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1809,13 +1807,13 @@ export default class MetamaskController extends EventEmitter {
   async getSnapKeyring() {
     // TODO: Use `withKeyring` instead
     let [snapKeyring] = this.keyringController.getKeyringsByType(
-      KeyringType.snap,
+      KeyringTypes.snap,
     );
     if (!snapKeyring) {
-      await this.keyringController.addNewKeyring(KeyringType.snap);
+      await this.keyringController.addNewKeyring(KeyringTypes.snap);
       // TODO: Use `withKeyring` instead
       [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
+        KeyringTypes.snap,
       );
     }
     return snapKeyring;
@@ -1831,7 +1829,7 @@ export default class MetamaskController extends EventEmitter {
     if (this.keyringController.isUnlocked()) {
       // TODO: Use `withKeyring` instead
       const [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
+        KeyringTypes.snap,
       );
 
       return snapKeyring;
@@ -5374,7 +5372,7 @@ export default class MetamaskController extends EventEmitter {
       const isHdKeyring = await this.keyringController.withKeyringV2(
         { id: metadata.id },
         async ({ keyring }) => {
-          return keyring.type === KeyringType.Hd;
+          return keyring.type === KeyringTypes.hd;
         },
       );
       if (isHdKeyring) {
@@ -5741,15 +5739,15 @@ export default class MetamaskController extends EventEmitter {
     const keyringType =
       await this.keyringController.getAccountKeyringType(address);
     switch (keyringType) {
-      case KeyringType.trezor:
-      case KeyringType.oneKey:
-      case KeyringType.lattice:
-      case KeyringType.qr:
-      case KeyringType.ledger:
+      case KeyringTypes.trezor:
+      case KeyringTypes.oneKey:
+      case KeyringTypes.lattice:
+      case KeyringTypes.qr:
+      case KeyringTypes.ledger:
         return KEYRING_DEVICE_PROPERTY_MAP[keyringType];
-      case KeyringType.imported:
+      case KeyringTypes.imported:
         return 'imported';
-      case KeyringType.snap:
+      case KeyringTypes.snap:
         return 'snap';
       default:
         return 'MetaMask';
@@ -5769,15 +5767,15 @@ export default class MetamaskController extends EventEmitter {
       { address },
       async ({ keyring }) => {
         switch (keyring.type) {
-          case KeyringType.trezor:
-          case KeyringType.oneKey:
+          case KeyringTypes.trezor:
+          case KeyringTypes.oneKey:
             return keyring.getModel();
-          case KeyringType.qr:
+          case KeyringTypes.qr:
             return keyring.getName();
-          case KeyringType.ledger:
+          case KeyringTypes.ledger:
             // TODO: get model after ledger keyring exposes method
             return HardwareDeviceNames.ledger;
-          case KeyringType.lattice:
+          case KeyringTypes.lattice:
             // TODO: get model after lattice keyring exposes method
             return HardwareDeviceNames.lattice;
           default:
@@ -5864,12 +5862,12 @@ export default class MetamaskController extends EventEmitter {
     const oldAccounts = await this.keyringController.getAccounts();
     const keyringSelector = _keyringId
       ? { id: _keyringId }
-      : { type: KeyringType.Hd };
+      : { type: KeyringTypes.hd };
 
     const addedAccountAddress = await this.keyringController.withKeyring(
       keyringSelector,
       async ({ keyring }) => {
-        if (keyring.type !== KeyringType.Hd) {
+        if (keyring.type !== KeyringTypes.hd) {
           throw new Error('Cannot add account to non-HD keyring');
         }
         const accountsInKeyring = await keyring.getAccounts();

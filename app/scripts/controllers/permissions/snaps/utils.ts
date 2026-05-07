@@ -1,5 +1,7 @@
-import { KeyringControllerWithKeyringV2Action } from '@metamask/keyring-controller';
-import { KeyringType } from '@metamask/keyring-api/v2';
+import {
+  KeyringControllerWithKeyringV2Action,
+  KeyringTypes,
+} from '@metamask/keyring-controller';
 import type { HdKeyring } from '@metamask/eth-hd-keyring/v2';
 import { RootMessenger } from '../../../lib/messenger';
 
@@ -19,7 +21,7 @@ export async function getMnemonic(
     const mnemonic = (await messenger.call(
       'KeyringController:withKeyringV2',
       {
-        type: KeyringType.Hd,
+        type: KeyringTypes.hd,
         index: 0,
       },
       async ({ keyring }) => (keyring as HdKeyring).mnemonic,
@@ -49,7 +51,7 @@ export async function getMnemonic(
       mnemonic?: Uint8Array;
     };
 
-    if (type !== KeyringType.Hd || !mnemonic) {
+    if (type !== KeyringTypes.hd || !mnemonic) {
       // The keyring isn't guaranteed to have a mnemonic (e.g.,
       // hardware wallets, which can't be used as entropy sources),
       // so we throw an error if it doesn't.
@@ -78,7 +80,7 @@ export async function getMnemonicSeed(
     const seed = (await messenger.call(
       'KeyringController:withKeyringV2',
       {
-        type: KeyringType.Hd,
+        type: KeyringTypes.hd,
         index: 0,
       },
       async ({ keyring }) => (keyring as HdKeyring).seed,
@@ -105,7 +107,7 @@ export async function getMnemonicSeed(
 
     const { type, seed } = keyringData as { type: string; seed?: Uint8Array };
 
-    if (type !== KeyringType.Hd || !seed) {
+    if (type !== KeyringTypes.hd || !seed) {
       // The keyring isn't guaranteed to have a mnemonic (e.g.,
       // hardware wallets, which can't be used as entropy sources),
       // so we throw an error if it doesn't.
