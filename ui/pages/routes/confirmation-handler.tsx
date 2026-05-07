@@ -163,5 +163,3 @@ export const ConfirmationRouter = () => {
 
   return null;
 };
-
-export const ConfirmationHandler = ConfirmationRouter;
