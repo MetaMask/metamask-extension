@@ -4821,6 +4821,7 @@ export default class MetamaskController extends EventEmitter {
       shouldSelectAccount: true,
     },
   ) {
+    console.log('[PERFORMANCE DEBUG] NEW SRP IMPORT ');
     const { shouldCreateSocialBackup, shouldSelectAccount } = options;
     const releaseLock = await this.createVaultMutex.acquire();
     try {

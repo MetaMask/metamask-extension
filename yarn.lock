@@ -5918,10 +5918,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:@metamask-previews/bitcoin-wallet-snap@1.10.1-preview-fa702f3":
-  version: 1.10.1-preview-fa702f3
-  resolution: "@metamask-previews/bitcoin-wallet-snap@npm:1.10.1-preview-fa702f3"
-  checksum: 10/99af5a8d0238922c835ad30029fb2ed154357f846844a90294ea14d2e84058e3d5ceb6822c57404bda5eb9dfbe6310f176865f7bd05b9a7b52436ca809b57304
+"@metamask/bitcoin-wallet-snap@npm:@metamask-previews/bitcoin-wallet-snap@1.10.1-preview-b88ce08":
+  version: 1.10.1-preview-b88ce08
+  resolution: "@metamask-previews/bitcoin-wallet-snap@npm:1.10.1-preview-b88ce08"
+  checksum: 10/256a3a8315a98a9b0649aadd26920bd5d42dc86662ab3fd989eb3b45939b0cad6f89e6988ed39803156c59e462c34cb47791e8705a13655025b76f9df5862b64
   languageName: node
   linkType: hard
 
@@ -8529,10 +8529,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@1.25.3-preview-779711e":
-  version: 1.25.3-preview-779711e
-  resolution: "@metamask-previews/tron-wallet-snap@npm:1.25.3-preview-779711e"
-  checksum: 10/3d426bc1d60cef9a5ee1040975a72166d623ddef0707a975af24eb0b0aac9b9b9c758cb575354b5cd09c2c29fbc662a1a2b6cc43afe5f97d17eb4166632cbf11
+"@metamask/tron-wallet-snap@npm:@metamask-previews/tron-wallet-snap@1.25.3-preview-9cb9bd2":
+  version: 1.25.3-preview-9cb9bd2
+  resolution: "@metamask-previews/tron-wallet-snap@npm:1.25.3-preview-9cb9bd2"
+  checksum: 10/cc42f06cfbc851585facf66d47ec65511ca768d42b32e192ff281fb89ea9e9402c4178a4999b31e921922e57d235f670a8f684bcaf1ffb2b5c125ea3893b50f3
   languageName: node
   linkType: hard
 
