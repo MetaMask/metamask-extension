@@ -6,9 +6,7 @@ import { OS, type Os } from '../../constants/app';
  * Windows and macOS are distinguished; all other platforms map to {@link OS.OTHER}.
  */
 function detectOsForPasskey(): Os {
-  const osName = Bowser.getParser(
-    globalThis.navigator.userAgent,
-  ).getOSName();
+  const osName = Bowser.getParser(globalThis.navigator.userAgent).getOSName();
   if (osName === 'Windows') {
     return OS.WINDOWS;
   }
