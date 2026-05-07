@@ -6,7 +6,10 @@ import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
@@ -21,6 +24,7 @@ import {
   getFirstTimeFlowType,
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from '../../selectors';
 import {
   getCompletedOnboarding,
@@ -43,17 +47,22 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   } = state;
   const isSocialLoginFlow = getIsSocialLoginFlow(state);
   const isOnboardingCompleted = getCompletedOnboarding(state);
+  const isPasskeyActive =
+    getIsPasskeyFeatureAvailable(state) &&
+    getIsPasskeyRegistered(state) &&
+    !isSocialLoginFlow &&
+    isOnboardingCompleted;
   return {
     isUnlocked,
     isSocialLoginFlow,
     isOnboardingCompleted,
     firstTimeFlowType: getFirstTimeFlowType(state),
     isWalletResetInProgress: getIsWalletResetInProgress(state),
-    isPasskeyActive:
-      getIsPasskeyFeatureAvailable(state) &&
-      getIsPasskeyRegistered(state) &&
-      !isSocialLoginFlow &&
-      isOnboardingCompleted,
+    isPasskeyActive,
+    mustDeferPasskeyToBrowserTab:
+      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
+      getIsEnrolledPasskeyIncompatibleWithSidepanel(state) &&
+      isPasskeyActive,
     passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
   };
 };

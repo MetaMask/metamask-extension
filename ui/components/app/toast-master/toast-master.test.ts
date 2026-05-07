@@ -1,9 +1,7 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import mockState from '../../../../test/data/mock-state.json';
 import {
-  selectNewSrpAdded,
   selectShowPrivacyPolicyToast,
-  selectShowCopyAddressToast,
   selectShowInfuraSwitchToast,
 } from './selectors';
 
@@ -17,17 +15,6 @@ const createMockPrivacyPolicyState = (
     newPrivacyPolicyToastClickedOrClosed,
     onboardingDate,
     newPrivacyPolicyToastShownDate,
-  },
-});
-
-const createMockAppState = (
-  showNewSrpAddedToast?: number | false,
-  showCopyAddressToast?: boolean,
-) => ({
-  appState: {
-    ...mockState.appState,
-    showNewSrpAddedToast,
-    showCopyAddressToast,
   },
 });
 
@@ -154,40 +141,6 @@ describe('#getShowPrivacyPolicyToast', () => {
       });
       expect(result.showPrivacyPolicyToast).toBe(false);
     });
-  });
-});
-
-describe('#getShowNewSrpAddedToast', () => {
-  it('returns the wallet number when set', () => {
-    const mockStateData = createMockAppState(2);
-    const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(2);
-  });
-
-  it('returns false when not set', () => {
-    const mockStateData = createMockAppState(false);
-    const result = selectNewSrpAdded(mockStateData);
-    expect(result).toBe(false);
-  });
-});
-
-describe('#selectShowCopyAddressToast', () => {
-  it('returns true when showCopyAddressToast is true', () => {
-    const mockStateData = createMockAppState(undefined, true);
-    const result = selectShowCopyAddressToast(mockStateData);
-    expect(result).toBe(true);
-  });
-
-  it('returns false when showCopyAddressToast is false', () => {
-    const mockStateData = createMockAppState(undefined, false);
-    const result = selectShowCopyAddressToast(mockStateData);
-    expect(result).toBe(false);
-  });
-
-  it('returns false when showCopyAddressToast is undefined', () => {
-    const mockStateData = createMockAppState();
-    const result = selectShowCopyAddressToast(mockStateData);
-    expect(result).toBe(false);
   });
 });
 

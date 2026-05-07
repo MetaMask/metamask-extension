@@ -10,10 +10,7 @@ type State = {
   appState: Partial<
     Pick<
       MetaMaskReduxState['appState'],
-      | 'showNftDetectionEnablementToast'
-      | 'showNewSrpAddedToast'
       | 'showPasswordChangeToast'
-      | 'showCopyAddressToast'
       | 'showClaimSubmitToast'
       | 'showInfuraSwitchToast'
     >
@@ -64,36 +61,6 @@ export function selectShowPrivacyPolicyToast(state: Pick<State, 'metamask'>): {
     (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf());
 
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
-}
-
-export function selectNftDetectionEnablementToast(
-  state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showNftDetectionEnablementToast);
-}
-
-/**
- * Retrieves the wallet number for the "New SRP Added" toast, or false if hidden.
- *
- * @param state - Redux state object.
- * @returns The new wallet number to display, or false if the toast should be hidden.
- */
-export function selectNewSrpAdded(
-  state: Pick<State, 'appState'>,
-): number | false {
-  return state.appState.showNewSrpAddedToast || false;
-}
-
-/**
- * Retrieves user preference to see the "Copy Address" toast
- *
- * @param state - Redux state object.
- * @returns Boolean preference value
- */
-export function selectShowCopyAddressToast(
-  state: Pick<State, 'appState'>,
-): boolean {
-  return Boolean(state.appState.showCopyAddressToast);
 }
 
 /**

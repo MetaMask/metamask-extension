@@ -113,7 +113,8 @@ export function PayWithRow({
   }, []);
 
   const firstRequiredToken = requiredTokens?.[0];
-  const displayToken = payToken ?? firstRequiredToken;
+  const displayToken =
+    payToken ?? (isPerpsWithdraw ? undefined : firstRequiredToken);
 
   const balanceUsdFormatted = useMemo(
     () =>
@@ -122,6 +123,9 @@ export function PayWithRow({
   );
 
   if (!displayToken?.chainId) {
+    if (isPerpsWithdraw) {
+      return <PayWithRowSkeleton />;
+    }
     return null;
   }
 
