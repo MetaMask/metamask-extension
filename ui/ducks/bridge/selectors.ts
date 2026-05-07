@@ -172,7 +172,7 @@ const getAllBridgeableNetworks = createSelector(
   },
 );
 
-const getBridgeFeatureFlags = createDeepEqualSelector(
+export const getBridgeFeatureFlags = createDeepEqualSelector(
   [(state: BridgeAppState) => getRemoteFeatureFlags(state).bridgeConfig],
   (bridgeConfig) => {
     const validatedFlags = selectBridgeFeatureFlags({

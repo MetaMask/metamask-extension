@@ -21,7 +21,6 @@ import { Footer } from './components/Footer';
 import { AssetList } from './components/AssetList';
 import { BatchSellEmptySelectTokens } from './components/BatchSellEmptySelectTokens';
 
-// TODO: filter out stable coins
 // TODO: submit and navigate to confirm screen
 // TODO: should we exclude more action from assets?
 

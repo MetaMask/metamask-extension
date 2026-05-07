@@ -12,6 +12,7 @@ import {
   toEvmCaipChainId,
 } from '@metamask/multichain-network-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
@@ -26,8 +27,13 @@ import {
   getMarketData,
   getSelectedInternalAccount,
 } from '../../selectors';
-import { isEvmChainId } from '../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../shared/lib/asset-utils';
+import {
+  getBridgeFeatureFlags,
+  type BridgeAppState,
+} from '../bridge/selectors';
 import { BatchSellAsset } from './types';
+import { getChecksummedEvmAssetId } from './utils';
 
 /**
  * V1 of batch sell functionality relies on a hardcoded list
@@ -145,16 +151,50 @@ export const getAvailableBatchSellNetworksSelector = createSelector(
       ),
 );
 
+export const selectBatchSellDestStablecoins = createSelector(
+  [
+    getBridgeFeatureFlags,
+    (_state: BridgeAppState, chainId?: CaipChainId) => chainId,
+  ],
+  (bridgeFeatureFlags, chainId): CaipAssetType[] => {
+    if (!chainId) {
+      return [];
+    }
+    const caipChainId = formatChainIdToCaip(chainId);
+    const batchSellDestStablecoins =
+      (
+        bridgeFeatureFlags?.chains?.[caipChainId] as unknown as {
+          batchSellDestStablecoins?: CaipAssetType[];
+        }
+      )?.batchSellDestStablecoins ?? [];
+
+
+     // Note: this seletor works for EVM asset ids at the time of this
+     // writing. If we need to support non-evm assets in the future
+     // inside the `batchSellDestStablecoins` feature flag, then we
+     // will have to revise it as conversion to getChecksummedEvmAssetId
+     // will fail.
+    const checksummedStablecoinAssetIds = batchSellDestStablecoins.map(
+      getChecksummedEvmAssetId,
+    );
+
+    return checksummedStablecoinAssetIds;
+  },
+);
+
 export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(
   getAssetsBySelectedAccountGroup,
   getMarketData,
   getAssetsRates,
   (_state: unknown, selectedChainId: CaipChainId | null) => selectedChainId,
+  (state: BridgeAppState, selectedChainId: CaipChainId | null) =>
+    selectBatchSellDestStablecoins(state, selectedChainId ?? undefined),
   (
     assetsByChain,
     marketData,
     assetsRates,
     selectedChainId,
+    stablecoins,
   ): BatchSellAsset[] => {
     if (!selectedChainId) {
       return [];
@@ -166,8 +206,20 @@ export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(
       ? convertCaipToHexChainId(selectedChainId)
       : selectedChainId;
     const assets = assetsByChain[lookupKey] ?? [];
+
+    const isStablecoin = (asset: (typeof assets)[number]): boolean => {
+      if (!stablecoins.length || asset.isNative) {
+        return false;
+      }
+      const address = 'address' in asset ? asset.address : asset.assetId;
+      const caipAssetId = toAssetId(address, selectedChainId);
+      return caipAssetId !== undefined && stablecoins.includes(caipAssetId);
+    };
+
     return assets
-      .filter((asset) => hexToBigInt(asset.rawBalance) > 0n)
+      .filter(
+        (asset) => hexToBigInt(asset.rawBalance) > 0n && !isStablecoin(asset),
+      )
       .map((asset) => {
         let tokenFiatPrice: number | undefined;
         let percentageChange: number | undefined;
