@@ -13,9 +13,9 @@ import React from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 type SortingChipProps = {
-  order: 'asc' | 'desc'
-  onClick: (newOrder:  'asc' | 'desc') => void;
-}
+  order: 'asc' | 'desc';
+  onClick: (newOrder: 'asc' | 'desc') => void;
+};
 
 export const SortingChip = ({ order, onClick }: SortingChipProps) => {
   const t = useI18nContext();

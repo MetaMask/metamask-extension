@@ -1,7 +1,9 @@
-import { formatAddressToAssetId } from "@metamask/bridge-controller";
-import { CaipAssetType, parseCaipAssetType } from "@metamask/utils";
+import { formatAddressToAssetId } from '@metamask/bridge-controller';
+import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 
-export function getChecksummedEvmAssetId(assetId: CaipAssetType): CaipAssetType {
+export function getChecksummedEvmAssetId(
+  assetId: CaipAssetType,
+): CaipAssetType {
   try {
     const { assetNamespace, assetReference, chainId } =
       parseCaipAssetType(assetId);

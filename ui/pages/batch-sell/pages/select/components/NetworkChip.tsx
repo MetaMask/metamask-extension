@@ -15,11 +15,11 @@ type NetworkChipProps = {
   network: {
     chainId: CaipChainId;
     name: string;
-    imageUrl: string
+    imageUrl: string;
   };
   isSelected?: boolean;
   onClick: (chainId: CaipChainId) => void;
-}
+};
 
 export const NetworkChip = ({
   network,

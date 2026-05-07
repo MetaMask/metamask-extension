@@ -937,6 +937,9 @@
   "batchSellContinueNAssetsCTASingle": {
     "message": "Continue with ($1) token"
   },
+  "batchSellEmptyStateDescription": {
+    "message": "No tokens. No problem. Explore and buy tokens to batch sell."
+  },
   "batchSellHighRateAlert": {
     "message": "High rate alert"
   },
@@ -2983,9 +2986,6 @@
   },
   "exploreTokens": {
     "message": "Explore Tokens"
-  },
-  "batchSellEmptyStateDescription": {
-    "message": "No tokens. No problem. Explore and buy tokens to batch sell."
   },
   "exportYourData": {
     "message": "Export your data"

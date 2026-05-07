@@ -11,9 +11,7 @@ import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 import { useSortBatchSellAssetsByBalance } from '../../../../hooks/batch-sell/useSortBatchSellAssetsByBalance';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useBatchSellModal } from '../../hooks/useBatchSellModal';
-import {
-  useBatchSellNavigation,
-} from '../../../../hooks/batch-sell/useBatchSellNavigation';
+import { useBatchSellNavigation } from '../../../../hooks/batch-sell/useBatchSellNavigation';
 import { MIN_SELECTED_ALLOWED_TOKENS } from '../../../../constants/batch-sell';
 import { transitionForward } from '../../../../components/ui/transition';
 import useBridging from '../../../../hooks/bridge/useBridging';
@@ -127,7 +125,7 @@ export const BatchSellSelectPage = () => {
     availableBatchSellAssetsForNetworkList,
     closeModal,
     openBridgeExperience,
-    selectedAssetsId
+    selectedAssetsId,
   ]);
 
   const onSubmit = useCallback(() => {

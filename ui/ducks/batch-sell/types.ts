@@ -1,4 +1,4 @@
-import { CaipChainId } from "@metamask/utils";
+import { CaipChainId } from '@metamask/utils';
 
 export type BatchSellAsset = {
   assetId: string;

@@ -7,12 +7,6 @@
     "message": "Loading is taking longer than usual.",
     "description": "First line of the message that is shown when the initial loading of the MetaMask UI takes a very long time."
   },
-  "batchSellHighRateAlert": {
-    "message": "High rate alert"
-  },
-  "batchSellHightRateAlertModalDescription": {
-    "message": "Batch selling one token could lead to a higher rate. Want to do a swap instead?"
-  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -942,6 +936,18 @@
   },
   "batchSellContinueNAssetsCTASingle": {
     "message": "Continue with ($1) token"
+  },
+  "batchSellEmptyStateDescription": {
+    "message": "No tokens. No problem. Explore and buy tokens to batch sell."
+  },
+  "batchSellHighRateAlert": {
+    "message": "High rate alert"
+  },
+  "batchSellHightRateAlertModalDescription": {
+    "message": "Batch selling one token could lead to a higher rate. Want to do a swap instead?"
+  },
+  "batchSellMaxSelectedTokens": {
+    "message": "Max $1 tokens allowed"
   },
   "batchSellSelectHeaderSubtitle": {
     "message": "All tokens need to be on the same network."
@@ -2977,6 +2983,9 @@
   },
   "exploreDefi": {
     "message": "Explore DeFi"
+  },
+  "exploreTokens": {
+    "message": "Explore Tokens"
   },
   "exportYourData": {
     "message": "Export your data"
@@ -10003,23 +10012,14 @@
     "message": "Wrong password",
     "description": "Displayed when the user enters an incorrect password"
   },
-  "exploreTokens": {
-    "message": "Explore Tokens"
-  },
-  "batchSellEmptyStateDescription": {
-    "message": "No tokens. No problem. Explore and buy tokens to batch sell."
-  },
   "year": {
     "message": "year"
   },
-  "batchSellMaxSelectedTokens": {
-    "message": "Max $1 tokens allowed"
+  "yes": {
+    "message": "Yes"
   },
   "yesSwap": {
     "message": "Yes, swap"
-  },
-  "yes": {
-    "message": "Yes"
   },
   "you": {
     "message": "You"

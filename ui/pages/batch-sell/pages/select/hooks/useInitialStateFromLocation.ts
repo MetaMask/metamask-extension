@@ -1,7 +1,7 @@
-import { CaipChainId } from "@metamask/utils";
-import { useMemo } from "react";
-import { useLocation } from "react-router-dom";
-import { BatchSellNavigationState } from "../../../../../hooks/batch-sell/useBatchSellNavigation";
+import { CaipChainId } from '@metamask/utils';
+import { useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
+import { BatchSellNavigationState } from '../../../../../hooks/batch-sell/useBatchSellNavigation';
 
 export const useInitialStateFromLocation = (
   availableNetworkChainIds: CaipChainId[],

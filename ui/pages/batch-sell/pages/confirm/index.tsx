@@ -4,8 +4,8 @@ import { BatchSellNavigationState } from '../../../../hooks/batch-sell/useBatchS
 
 export const BatchSellConfirmPage = () => {
   const { state } = useLocation();
-  const { selectedNetworkChainId, selectedAssetsId } =
-    (state ?? {}) as BatchSellNavigationState;
+  const { selectedNetworkChainId, selectedAssetsId } = (state ??
+    {}) as BatchSellNavigationState;
 
   return (
     <div>

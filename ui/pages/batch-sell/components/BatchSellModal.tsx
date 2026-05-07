@@ -30,7 +30,7 @@ export type BatchSellModalProps = {
     descriptionProps: TextProps;
   };
   onClose: () => void;
-}
+};
 
 export const BatchSellModal = ({
   open,
@@ -38,7 +38,7 @@ export const BatchSellModal = ({
   onClose,
 }: BatchSellModalProps) => {
   if (!modalProps) {
-    return null
+    return null;
   }
 
   return (
@@ -51,7 +51,11 @@ export const BatchSellModal = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>
-          <Text textAlign={TextAlign.Center} variant={TextVariant.HeadingSm} {...modalProps.titleProps} />
+          <Text
+            textAlign={TextAlign.Center}
+            variant={TextVariant.HeadingSm}
+            {...modalProps.titleProps}
+          />
         </ModalHeader>
         <ModalBody>
           <Text variant={TextVariant.BodySm} {...modalProps.descriptionProps} />

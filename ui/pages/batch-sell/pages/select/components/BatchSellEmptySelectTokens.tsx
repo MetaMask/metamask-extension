@@ -15,7 +15,11 @@ import { useSelector } from 'react-redux';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useTheme } from '../../../../../hooks/useTheme';
-import { getMetaMetricsId, getParticipateInMetaMetrics, getDataCollectionForMarketing } from '../../../../../selectors';
+import {
+  getMetaMetricsId,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
+} from '../../../../../selectors';
 import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
 
 export const BatchSellEmptySelectTokens = () => {

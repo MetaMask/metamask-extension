@@ -12,7 +12,7 @@ type NetworkToolbarProps = {
     imageUrl: string;
   }[];
   onClick: (chainId: CaipChainId) => void;
-}
+};
 
 export const NetworkToolbar = ({
   selectedNetworkChainId,

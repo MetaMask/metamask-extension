@@ -5,10 +5,10 @@ import { SortingChip } from './SortingChip';
 
 type SortingToolbarProps = {
   balance: {
-    order: 'asc' | 'desc'
-    onClick: (newSort:  'asc' | 'desc') => void;
+    order: 'asc' | 'desc';
+    onClick: (newSort: 'asc' | 'desc') => void;
   };
-}
+};
 
 export const SortingToolbar = ({ balance }: SortingToolbarProps) => {
   return (

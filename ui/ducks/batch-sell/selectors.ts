@@ -169,12 +169,11 @@ export const selectBatchSellDestStablecoins = createSelector(
         }
       )?.batchSellDestStablecoins ?? [];
 
-
-     // Note: this seletor works for EVM asset ids at the time of this
-     // writing. If we need to support non-evm assets in the future
-     // inside the `batchSellDestStablecoins` feature flag, then we
-     // will have to revise it as conversion to getChecksummedEvmAssetId
-     // will fail.
+    // Note: this seletor works for EVM asset ids at the time of this
+    // writing. If we need to support non-evm assets in the future
+    // inside the `batchSellDestStablecoins` feature flag, then we
+    // will have to revise it as conversion to getChecksummedEvmAssetId
+    // will fail.
     const checksummedStablecoinAssetIds = batchSellDestStablecoins.map(
       getChecksummedEvmAssetId,
     );

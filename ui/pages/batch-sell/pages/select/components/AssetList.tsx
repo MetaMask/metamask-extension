@@ -8,7 +8,7 @@ type AssetListProps = {
   assets: BatchSellAsset[];
   onSelect: (asset: BatchSellAsset) => void;
   onDeselect: (asset: BatchSellAsset) => void;
-}
+};
 
 export const AssetList = ({
   selectedAssetsId,
@@ -17,7 +17,7 @@ export const AssetList = ({
   onDeselect,
 }: AssetListProps) => {
   return (
-    <Box className='flex-1'>
+    <Box className="flex-1">
       {assets.map((asset) => (
         <AssetListItem
           key={asset.assetId}
