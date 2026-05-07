@@ -98,31 +98,21 @@ function stopPropagation(event: React.SyntheticEvent): void {
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
 
-const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
-  const t = useI18nContext() as I18nFunction;
+const ReviewAddressDisplay: React.FC<{
+  address: string;
+  testId: string;
+  style?: React.CSSProperties;
+}> = ({ address, testId, style }) => {
   const { displayName, hexAddress } = useFallbackDisplayName(address);
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
 
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      justifyContent={BoxJustifyContent.Between}
-      style={gatorPermissionDetailRowStyle}
-      gap={4}
-      marginTop={2}
-    >
-      <Text
-        textAlign={TextAlign.Left}
-        color={TextColor.TextAlternative}
-        variant={TextVariant.BodyMd}
-      >
-        {t('account')}
-      </Text>
+    <>
       <Box
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.End}
-        style={gatorPermissionDetailRowStyle}
+        style={style}
         gap={2}
         alignItems={BoxAlignItems.Center}
         onClick={handleDisplayNameClick}
@@ -131,7 +121,7 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
         <Text
           variant={TextVariant.BodyMd}
           color={TextColor.TextAlternative}
-          data-testid="review-gator-permission-account-name"
+          data-testid={testId}
         >
           {displayName}
         </Text>
@@ -148,6 +138,33 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
           address={hexAddress}
         />
       ) : null}
+    </>
+  );
+};
+
+const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
+  const t = useI18nContext() as I18nFunction;
+
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      style={gatorPermissionDetailRowStyle}
+      gap={4}
+      marginTop={2}
+    >
+      <Text
+        textAlign={TextAlign.Left}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
+      >
+        {t('account')}
+      </Text>
+      <ReviewAddressDisplay
+        address={address}
+        testId="review-gator-permission-account-name"
+        style={gatorPermissionDetailRowStyle}
+      />
     </Box>
   );
 };
@@ -198,45 +215,6 @@ const ReviewNetworkRow: React.FC<{
   );
 };
 
-const ReviewRuleAddressItem: React.FC<{ address: string }> = ({ address }) => {
-  const { displayName, hexAddress } = useFallbackDisplayName(address);
-  const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
-  const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
-
-  return (
-    <>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.End}
-        gap={2}
-        alignItems={BoxAlignItems.Center}
-        onClick={handleDisplayNameClick}
-      >
-        <PreferredAvatar address={address} />
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          data-testid="review-gator-permission-rule-address"
-        >
-          {displayName}
-        </Text>
-        <span onClick={stopPropagation} onKeyDown={stopPropagation}>
-          <CopyIcon
-            copyText={address}
-            style={{ position: 'static', right: 'auto', top: 'auto' }}
-          />
-        </span>
-      </Box>
-      {isNicknamePopoverShown ? (
-        <NicknamePopovers
-          onClose={() => setIsNicknamePopoverShown(false)}
-          address={hexAddress}
-        />
-      ) : null}
-    </>
-  );
-};
-
 const ReviewRuleAddressRow: React.FC<{
   addresses: string[];
   label: string;
@@ -263,7 +241,11 @@ const ReviewRuleAddressRow: React.FC<{
         gap={2}
       >
         {addresses.map((addr) => (
-          <ReviewRuleAddressItem key={addr} address={addr} />
+          <ReviewAddressDisplay
+            key={addr}
+            address={addr}
+            testId="review-gator-permission-rule-address"
+          />
         ))}
       </Box>
     </Box>
