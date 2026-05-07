@@ -37,6 +37,41 @@ const getMockStore = (permission?: DecodedPermission) => {
   return configureMockStore([])(state);
 };
 
+const STREAM_PERMISSION = {
+  type: 'native-token-stream',
+  data: {
+    initialAmount: '0x1234',
+    maxAmount: '0x1234',
+    amountPerSecond: '0x1234',
+    startTime: 123456789,
+  },
+};
+const ERC20_STREAM_PERMISSION = {
+  ...STREAM_PERMISSION,
+  type: 'erc20-token-stream',
+  data: {
+    tokenAddress: '0xa0b86a33e6441b8c4c8c0e4a8e4a8e4a8e4a8e4a',
+    ...STREAM_PERMISSION.data,
+  },
+};
+const RULE_ADDRESS = '0xb552685e3d2790efd64a175b00d51f02cdafee5d';
+
+function renderPermissionDetail(
+  props: Partial<React.ComponentProps<typeof PermissionDetailRenderer>> = {},
+) {
+  return renderWithConfirmContextProvider(
+    <PermissionDetailRenderer
+      permission={STREAM_PERMISSION}
+      expiry={123456789}
+      chainId="0x1"
+      origin="https://example.com"
+      ownerId="test-owner"
+      {...props}
+    />,
+    getMockStore(),
+  );
+}
+
 describe('PermissionDetailRenderer', () => {
   beforeEach(() => {
     fetchErc20DecimalsMock().mockReset();
@@ -328,26 +363,9 @@ describe('PermissionDetailRenderer', () => {
 
   describe('recipient redeemer and Snap origin presentation', () => {
     it('shows the recipient row when `to` is supplied', async () => {
-      const permission = {
-        type: 'native-token-stream',
-        data: {
-          initialAmount: '0x1234',
-          maxAmount: '0x1234',
-          amountPerSecond: '0x1234',
-          startTime: 123456789,
-        },
-      };
-      renderWithConfirmContextProvider(
-        <PermissionDetailRenderer
-          permission={permission}
-          expiry={123456789}
-          chainId="0x1"
-          origin="https://example.com"
-          ownerId="test-owner"
-          to="0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        />,
-        getMockStore(),
-      );
+      renderPermissionDetail({
+        to: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      });
 
       await waitFor(() => {
         expect(
@@ -356,94 +374,25 @@ describe('PermissionDetailRenderer', () => {
       });
     });
 
-    it('lists redeemer addresses from rules when redeemer rules are present', async () => {
-      const redeemerAddr = '0xb552685e3d2790efd64a175b00d51f02cdafee5d';
-      const permission = {
-        type: 'erc20-token-stream',
-        data: {
-          tokenAddress: '0xa0b86a33e6441b8c4c8c0e4a8e4a8e4a8e4a8e4a',
-          initialAmount: '0x1234',
-          maxAmount: '0x1234',
-          amountPerSecond: '0x1234',
-          startTime: 123456789,
-        },
-      };
-      renderWithConfirmContextProvider(
-        <PermissionDetailRenderer
-          permission={permission}
-          expiry={123456789}
-          chainId="0x1"
-          origin="https://example.com"
-          ownerId="test-owner"
-          rules={[
-            {
-              type: 'redeemer',
-              data: { addresses: [redeemerAddr] },
-            },
-          ]}
-        />,
-        getMockStore(),
-      );
-
-      await waitFor(() => {
-        expect(screen.getByText(messages.redeemer.message)).toBeInTheDocument();
+    it.each([
+      ['redeemer', messages.redeemer.message],
+      ['payee', messages.payee.message],
+    ] as const)('lists %s addresses from rules', async (ruleType, label) => {
+      renderPermissionDetail({
+        permission: ERC20_STREAM_PERMISSION,
+        rules: [{ type: ruleType, data: { addresses: [RULE_ADDRESS] } }],
       });
-    });
-
-    it('lists payee addresses from rules when payee rules are present', async () => {
-      const payeeAddr = '0xb552685e3d2790efd64a175b00d51f02cdafee5d';
-      const permission = {
-        type: 'erc20-token-stream',
-        data: {
-          tokenAddress: '0xa0b86a33e6441b8c4c8c0e4a8e4a8e4a8e4a8e4a',
-          initialAmount: '0x1234',
-          maxAmount: '0x1234',
-          amountPerSecond: '0x1234',
-          startTime: 123456789,
-        },
-      };
-      renderWithConfirmContextProvider(
-        <PermissionDetailRenderer
-          permission={permission}
-          expiry={123456789}
-          chainId="0x1"
-          origin="https://example.com"
-          ownerId="test-owner"
-          rules={[
-            {
-              type: 'payee',
-              data: { addresses: [payeeAddr] },
-            },
-          ]}
-        />,
-        getMockStore(),
-      );
 
       await waitFor(() => {
-        expect(screen.getByText(messages.payee.message)).toBeInTheDocument();
+        expect(screen.getByText(label)).toBeInTheDocument();
       });
     });
 
     it('uses the Snap-specific request-from tooltip when origin is a Snap id', async () => {
-      const permission = {
-        type: 'native-token-stream',
-        data: {
-          initialAmount: '0x1234',
-          maxAmount: '0x1234',
-          amountPerSecond: '0x1234',
-          startTime: 123456789,
-        },
-      };
-      renderWithConfirmContextProvider(
-        <PermissionDetailRenderer
-          permission={permission}
-          expiry={123456789}
-          chainId="0x1"
-          origin="npm:@metamask/test-snap"
-          ownerId="test-owner-snap-origin"
-        />,
-        getMockStore(),
-      );
+      renderPermissionDetail({
+        origin: 'npm:@metamask/test-snap',
+        ownerId: 'test-owner-snap-origin',
+      });
 
       await waitFor(() => {
         expect(
