@@ -7,10 +7,10 @@ import { OS, type Os } from '../../constants/app';
  */
 function detectOsForPasskey(): Os {
   const osName = Bowser.getParser(globalThis.navigator.userAgent).getOSName();
-  if (osName === 'Windows') {
+  if (osName === Bowser.OS_MAP.Windows) {
     return OS.WINDOWS;
   }
-  if (osName === 'macOS') {
+  if (osName === Bowser.OS_MAP.MacOS) {
     return OS.MACOS;
   }
   return OS.OTHER;

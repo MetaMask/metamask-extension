@@ -1,5 +1,4 @@
 import Bowser from 'bowser';
-import { OS } from '../../constants/app';
 import { getPasskeyAuthMethodKey } from './passkey-auth-method';
 
 describe('getPasskeyAuthMethodKey', () => {
@@ -18,7 +17,7 @@ describe('getPasskeyAuthMethodKey', () => {
 
   describe('Windows', () => {
     beforeEach(() => {
-      getOSNameMock.mockReturnValue('Windows');
+      getOSNameMock.mockReturnValue(Bowser.OS_MAP.Windows);
     });
 
     it('returns Windows Hello key', () => {
@@ -34,7 +33,7 @@ describe('getPasskeyAuthMethodKey', () => {
 
   describe('macOS', () => {
     beforeEach(() => {
-      getOSNameMock.mockReturnValue('macOS');
+      getOSNameMock.mockReturnValue(Bowser.OS_MAP.MacOS);
     });
 
     it('returns Biometrics key by default', () => {
@@ -55,9 +54,9 @@ describe('getPasskeyAuthMethodKey', () => {
   });
 
   for (const [label, bowserName] of [
-    ['Linux', OS.LINUX],
-    ['iOS', OS.IOS],
-    ['Android', OS.ANDROID],
+    ['Linux', Bowser.OS_MAP.Linux],
+    ['iOS', Bowser.OS_MAP.iOS],
+    ['Android', Bowser.OS_MAP.Android],
   ] as const) {
     describe(`non-Windows, non-macOS (${label})`, () => {
       beforeEach(() => {
@@ -78,7 +77,7 @@ describe('getPasskeyAuthMethodKey', () => {
 
   describe('unknown / other Bowser OS names', () => {
     beforeEach(() => {
-      getOSNameMock.mockReturnValue('Chrome OS');
+      getOSNameMock.mockReturnValue(Bowser.OS_MAP.ChromeOS);
     });
 
     it('returns Biometrics key by default', () => {
