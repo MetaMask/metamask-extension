@@ -312,21 +312,19 @@ describe('other schema fields', () => {
   });
 
   it('includes confirmation-only account and standalone network elements', () => {
-    const accountEl = PERMISSION_SCHEMAS['native-token-stream'].sections
-      .flatMap((section) => section.elements)
-      .find(
-        (element) =>
-          element.type === 'account' &&
-          element.includeInViews.includes('confirmation'),
-      );
+    const accountEl = findElementOfType(
+      'native-token-stream',
+      'review-gator-permission-account-name',
+      'account',
+    );
     const hasNetwork = PERMISSION_SCHEMAS[
       'erc20-token-revocation'
     ].sections.some((section) =>
       section.elements.some((element) => element.type === 'network'),
     );
 
-    expect(accountEl?.type).toBe('account');
-    expect(accountEl?.getValue(buildMinimalContext(undefined))).toBeUndefined();
+    expect(accountEl.includeInViews).toContain('confirmation');
+    expect(accountEl.getValue(buildMinimalContext(undefined))).toBeUndefined();
     expect(hasNetwork).toBe(true);
   });
 });
