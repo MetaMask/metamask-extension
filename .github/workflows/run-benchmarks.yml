@@ -240,6 +240,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: die
+        run: exit 1
       - name: Checkout quality-gate sources
         uses: actions/checkout@v6
         with:
