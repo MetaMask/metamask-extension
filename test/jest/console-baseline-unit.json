@@ -242,6 +242,10 @@
     "ui/components/app/basic-configuration-modal/basic-configuration-modal.test.tsx": {
       "Reselect: Input stability warnings": 1
     },
+    "ui/components/app/change-password/change-password.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 10,
+      "React: componentWill* lifecycle deprecations": 1
+    },
     "ui/components/app/identity/backup-and-sync-features-toggles/backup-and-sync-features-toggles.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "error: Error: MetaMetrics context trackEvent was": 4
@@ -662,8 +666,7 @@
       "MetaMask: Background connection not initialized": 1
     },
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
-      "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1
+      "Reselect: Identity function warnings": 1
     },
     "ui/pages/bridge/index.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 5,
@@ -1109,7 +1112,7 @@
     "ui/pages/confirmations/confirm/confirm.test.tsx": {
       "MetaMask: Background connection not initialized": 235,
       "React: Act warnings (component updates not wrapped)": 3,
-      "Reselect: Identity function warnings": 6
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/confirmation/templates/create-snap-account.test.js": {
       "Reselect: Identity function warnings": 3
@@ -1161,9 +1164,6 @@
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientBalanceAlerts.test.ts": {
       "MetaMask: Background connection not initialized": 90,
-      "Reselect: Identity function warnings": 3
-    },
-    "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientPayTokenBalanceAlert.test.ts": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useMultipleApprovalsAlerts.test.ts": {
@@ -1309,9 +1309,9 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useConfirmationAlerts.test.ts": {
-      "MetaMask: Background connection not initialized": 7,
-      "React: Act warnings (component updates not wrapped)": 3,
-      "Reselect: Identity function warnings": 6
+      "MetaMask: Background connection not initialized": 8,
+      "React: Act warnings (component updates not wrapped)": 4,
+      "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/hooks/useConfirmationId.test.ts": {
       "Reselect: Identity function warnings": 1
@@ -1514,6 +1514,9 @@
     "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/pages/settings-v2/security-and-password-tab/passkey-item.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1
+    },
     "ui/pages/settings-v2/security-and-password-tab/security-and-password-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
@@ -1584,12 +1587,8 @@
     "ui/pages/trust-signals/hooks/useTrustSignalMetrics.test.ts": {
       "Reselect: Identity function warnings": 3
     },
-    "ui/pages/unlock-page/reset-password-modal.test.tsx": {
-      "React: DOM nesting violations": 1
-    },
     "ui/pages/unlock-page/unlock-page.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "error: Error: SeedlessOnboardingController - Authentication error": 1
+      "MetaMask: Background connection not initialized": 1
     },
     "ui/selectors/assets.test.ts": {
       "Reselect: Identity function warnings": 1,
