@@ -68,12 +68,10 @@ describe('AccountGroupBalance', () => {
       .mocked(selectAnyEnabledNetworksAreAvailable)
       .mockReturnValue(anyEnabledNetworksAreAvailable);
 
-    const mockGetPreferences = jest
-      .mocked(getPreferences)
-      .mockReturnValue({
-        privacyMode: false,
-        showNativeTokenAsMainBalance,
-      } as ReturnType<typeof getPreferences>);
+    const mockGetPreferences = jest.mocked(getPreferences).mockReturnValue({
+      privacyMode: false,
+      showNativeTokenAsMainBalance,
+    } as ReturnType<typeof getPreferences>);
 
     const mockGetEnabledNetworksByNamespace = jest
       .mocked(getEnabledNetworksByNamespace)
