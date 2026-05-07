@@ -333,7 +333,6 @@ const ChangePassword = ({
     cancelPasskeyCeremony();
     globalThis.platform?.openExtensionInBrowser?.(
       SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-      'from=sidepanel',
     );
   }, []);
 

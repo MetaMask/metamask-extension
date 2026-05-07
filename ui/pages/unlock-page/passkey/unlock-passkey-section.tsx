@@ -152,10 +152,7 @@ export const UnlockPasskeySection = ({
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
-    globalThis.platform?.openExtensionInBrowser?.(
-      UNLOCK_ROUTE,
-      'from=sidepanel',
-    );
+    globalThis.platform?.openExtensionInBrowser?.(UNLOCK_ROUTE);
   }, []);
 
   const handlePasskeyUnlockAction = useCallback(() => {

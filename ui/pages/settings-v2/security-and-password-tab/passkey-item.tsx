@@ -106,7 +106,6 @@ const PasskeyItem = () => {
       cancelPasskeyCeremony();
       globalThis.platform?.openExtensionInBrowser?.(
         SECURITY_AND_PASSWORD_ROUTE,
-        'from=sidepanel',
       );
       return;
     }

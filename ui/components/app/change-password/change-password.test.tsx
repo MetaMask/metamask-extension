@@ -672,7 +672,6 @@ describe('ChangePassword', () => {
       await waitFor(() => {
         expect(openExtensionInBrowser).toHaveBeenCalledWith(
           SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-          'from=sidepanel',
         );
       });
 
@@ -733,7 +732,6 @@ describe('ChangePassword', () => {
         expect(jest.mocked(cancelPasskeyCeremony)).toHaveBeenCalled();
         expect(openExtensionInBrowser).toHaveBeenCalledWith(
           SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-          'from=sidepanel',
         );
 
         await act(async () => {

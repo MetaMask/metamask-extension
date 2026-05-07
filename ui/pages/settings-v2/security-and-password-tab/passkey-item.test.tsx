@@ -79,7 +79,6 @@ describe('PasskeyItem', () => {
 
     expect(openExtensionInBrowser).toHaveBeenCalledWith(
       SECURITY_AND_PASSWORD_ROUTE,
-      'from=sidepanel',
     );
 
     delete (globalThis as { platform?: unknown }).platform;
