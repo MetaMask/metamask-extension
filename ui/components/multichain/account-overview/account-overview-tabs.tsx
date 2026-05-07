@@ -16,7 +16,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
-import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { useSafeChains } from '../networks-form/use-safe-chains';
 import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
@@ -138,7 +138,9 @@ export const AccountOverviewTabs = ({
   );
   const onClickDeFi = useCallback(
     (chainId: string, protocolId: string) =>
-      navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+      transitionForward(() =>
+        navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+      ),
     [navigate],
   );
 

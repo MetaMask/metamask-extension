@@ -2800,10 +2800,6 @@
     "message": "Код: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Сведения об ошибке",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Ошибка при получении списка безопасных блокчейнов. Продолжайте с осторожностью."
   },
@@ -5668,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "Отменить ордер"
   },
-  "perpsCandleIntervals": {
-    "message": "Интервалы свечей"
-  },
   "perpsCandlePeriodDays": {
     "message": "Дни"
   },
@@ -5682,9 +5675,6 @@
   },
   "perpsCloseAll": {
     "message": "Закрыть все"
-  },
-  "perpsCloseAmount": {
-    "message": "Сумма закрытия"
   },
   "perpsCloseLong": {
     "message": "Закрыть длинную"
@@ -6266,6 +6256,10 @@
   "perpsWithdraw": {
     "message": "Вывести средства"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Вывод из перпов",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Предполагаемое время"
   },
@@ -6313,6 +6307,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Выводимые средства отправлены"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask автоматически обменяет ваш токен на желаемый. При обмене на mUSD комиссия MetaMask не взимается.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Вы получаете"
@@ -6438,6 +6436,10 @@
   },
   "provide": {
     "message": "Предоставить"
+  },
+  "providerFee": {
+    "message": "Комиссия поставщика",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Публичный адрес"
@@ -6645,8 +6647,16 @@
   "receiveCrypto": {
     "message": "Получить криптовалюту"
   },
+  "receiveToken": {
+    "message": "Получить токен",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Получено"
+  },
+  "receivedTotal": {
+    "message": "Всего получено",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Принимающий адрес",
@@ -8152,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Запросы на создание смарт-счетов от dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Разрешите dapps запрашивать функции смарт-счетов для стандартных счетов. Это не повлияет на счета, которые уже являются смарт-счетами."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Один и тот же адрес. Более умные функции."
   },
@@ -8681,9 +8688,6 @@
     "message": "Все еще подключаюсь к $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Все еще получаете это сообщение?"
-  },
   "storageErrorAction": {
     "message": "Создать резервную копию секретной фразы для восстановления"
   },
@@ -8787,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Поддерживаемые языки",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Пройдите наш опрос"
-  },
-  "surveyTitle": {
-    "message": "Сформируйте будущее MetaMask"
   },
   "swap": {
     "message": "Обменять"
@@ -9783,6 +9781,10 @@
   "willApproveAmountForSwapping": {
     "message": "Утверждает токен для свопа."
   },
+  "withdrawTo": {
+    "message": "Получить",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Выполняется вывод"
   },
@@ -9815,6 +9817,10 @@
   "youSent": {
     "message": "Вы отправили",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Вы получите",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Ваша деятельность"

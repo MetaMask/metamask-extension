@@ -2800,10 +2800,6 @@
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Chi tiết lỗi",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Lỗi khi lấy danh sách chuỗi an toàn, vui lòng tiếp tục một cách thận trọng."
   },
@@ -5668,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "Hủy lệnh"
   },
-  "perpsCandleIntervals": {
-    "message": "Khoảng nến"
-  },
   "perpsCandlePeriodDays": {
     "message": "Ngày"
   },
@@ -5682,9 +5675,6 @@
   },
   "perpsCloseAll": {
     "message": "Đóng tất cả"
-  },
-  "perpsCloseAmount": {
-    "message": "Số lượng đóng"
   },
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
@@ -6270,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Rút tiền"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Rút tiền hợp đồng vĩnh cửu",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Thời gian ước tính"
   },
@@ -6317,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Yêu cầu rút tiền đã được gửi"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn. Không áp dụng phí MetaMask khi bạn hoán đổi sang mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Bạn nhận được"
@@ -6442,6 +6440,10 @@
   },
   "provide": {
     "message": "Cung cấp"
+  },
+  "providerFee": {
+    "message": "Phí nhà cung cấp",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Địa chỉ công khai"
@@ -6649,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Nhận tiền mã hóa"
   },
+  "receiveToken": {
+    "message": "Token nhận được",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Đã nhận"
+  },
+  "receivedTotal": {
+    "message": "Tổng số lượng nhận được",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Địa chỉ nhận",
@@ -8156,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Yêu cầu tài khoản thông minh từ dapp"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Cùng địa chỉ. Tính năng thông minh hơn."
   },
@@ -8685,9 +8692,6 @@
     "message": "Vẫn đang kết nối với $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Vẫn nhận được thông báo này?"
-  },
   "storageErrorAction": {
     "message": "Sao lưu Cụm từ khôi phục bí mật"
   },
@@ -8791,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Ngôn ngữ được hỗ trợ",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Tham gia khảo sát của chúng tôi"
-  },
-  "surveyTitle": {
-    "message": "Định hình tương lai của MetaMask"
   },
   "swap": {
     "message": "Hoán đổi"
@@ -9787,6 +9785,10 @@
   "willApproveAmountForSwapping": {
     "message": "Phê duyệt token cho hoán đổi."
   },
+  "withdrawTo": {
+    "message": "Nhận",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Đang rút tiền"
   },
@@ -9819,6 +9821,10 @@
   "youSent": {
     "message": "Bạn đã gửi",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Bạn sẽ nhận được",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Hoạt động của bạn"

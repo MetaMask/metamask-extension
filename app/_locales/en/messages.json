@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
+  "asterdexReferralConfirmText": {
+    "message": "Yes, get 4% back",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "Get 4% back on trades with a MetaMask referral code.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "Get 4% back on trades with a MetaMask referral code. This discount applies to all future trades, as per AsterDEX's $1. MetaMask earns a fee.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "Get 4% back on AsterDEX",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
@@ -1548,6 +1560,10 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
+  "changePasswordPasskeyVerifyingTitle": {
+    "message": "Confirm with Biometrics",
+    "description": "Title shown while the wallet waits for passkey or device biometrics during change password."
+  },
   "changePasswordWarning": {
     "message": "Are you sure?"
   },
@@ -2104,9 +2120,15 @@
   "criticalErrorAttemptRecovery": {
     "message": "Attempt recovery"
   },
-  "criticalErrorFooter": {
-    "message": "$1 $2 or $3",
-    "description": "Footer on the critical error screen. $1 is the 'Still getting this message?' text, $2 is the 'Contact support' link, $3 is the 'Attempt recovery' link. Translators may reorder the links (e.g. '$1 $3 or $2')."
+  "criticalErrorFooterContactSupport": {
+    "message": "If none of the above works, $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "Reinstall MetaMask"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "Still having issues?"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2406,6 +2428,14 @@
   "defiReferralCheckboxLabel": {
     "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "No thanks",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "terms",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -2836,10 +2866,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Error details",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
   },
@@ -3262,9 +3288,21 @@
     "message": "Get your wallet ready to use web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "Yes, save 5%",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "Save up to 5% on trades with a MetaMask referral code.",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "Save 5% in trades with a MetaMask referral code. This discount applies to all future trades, as per GMX's $1. MetaMask earns a fee.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "Save 5% on GMX",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Go to site"
@@ -3488,9 +3526,21 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "Yes, save 4%",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "Save 4% on trades with a MetaMask referral code. Applies to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Save 4% on Hyperliquid",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "I understand"
@@ -5284,18 +5334,18 @@
     "message": "Participate in MetaMetrics to help us make MetaMask better"
   },
   "passkeyDescription": {
-    "message": "Use Face ID or your fingerprint to unlock MetaMask on this device instead of entering your password. This creates a secure passkey stored on your device."
+    "message": "Use Touch ID to unlock MetaMask instead of entering your password. This creates a passkey on this device only."
   },
   "passkeyErrorAlreadyEnrolled": {
     "message": "Biometrics are already set up for this wallet.",
     "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
-    "message": "We couldn't verify your biometrics. Try again.",
+    "message": "We couldn't verify your Biometrics. Try again.",
     "description": "Shown when passkey authentication response verification fails."
   },
   "passkeyErrorMissingKeyMaterial": {
-    "message": "Your biometrics response was incomplete. Try again.",
+    "message": "Your Biometrics response was incomplete. Try again.",
     "description": "Shown when the passkey assertion is missing required key material."
   },
   "passkeyErrorNoAuthenticationCeremony": {
@@ -5307,7 +5357,7 @@
     "description": "Shown when passkey registration verification runs without an active registration ceremony."
   },
   "passkeyErrorNotEnrolled": {
-    "message": "Biometrics aren't set up for this wallet. Turn on biometrics in Settings.",
+    "message": "Biometrics aren't set up for this wallet. Turn on Biometrics in Settings.",
     "description": "Shown when biometrics unlock fails because no passkey is enrolled."
   },
   "passkeyErrorRegistrationFailed": {
@@ -5315,26 +5365,64 @@
     "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
   },
   "passkeyErrorRegistrationVerificationFailed": {
-    "message": "We couldn't verify your biometrics setup. Try again.",
+    "message": "We couldn't verify your Biometrics setup. Try again.",
     "description": "Shown when passkey registration response verification fails."
   },
   "passkeyErrorVaultKeyDecryptionFailed": {
-    "message": "We couldn't unlock with biometrics. Try again, or set up biometrics again in Settings.",
+    "message": "We couldn't unlock with Biometrics. Try again, or set up Biometrics again in Settings.",
     "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
   },
   "passkeyErrorVaultKeyMismatch": {
-    "message": "Biometrics don't match your current wallet lock. Set up biometrics again in Settings.",
+    "message": "Biometrics don't match your current wallet lock. Set up Biometrics again in Settings.",
     "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
   },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Your password was updated, but biometric unlock couldn't be turned on.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "We couldn't verify your Biometrics. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+  },
   "passkeySetupStepRegister": {
-    "message": "Register biometrics"
+    "message": "Register Biometrics"
   },
   "passkeySetupStepVerify": {
-    "message": "Verify biometrics"
+    "message": "Validate Biometrics"
   },
-  "passkeyTroubleshoot": {
-    "message": "Having trouble with biometrics?",
+  "passkeyTroubleshootModalDescription": {
+    "message": "Try opening the extension in a full screen window and try again.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Open full screen window",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Still having trouble?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "Trouble unlocking?",
     "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "Trouble unlocking",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Trouble verifying?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Trouble verifying?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "Biometrics turned off"
+  },
+  "passkeyTurnedOn": {
+    "message": "Biometrics turned on"
   },
   "passkeyUnlockFailed": {
     "message": "Biometrics unlock failed. Try your password."
@@ -7291,6 +7379,10 @@
   "securityChangePasswordToastError": {
     "message": "Password couldn’t be changed. Please try again."
   },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "New password saved, but biometric unlock couldn't be turned on.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
+  },
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
   },
@@ -7440,10 +7532,14 @@
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
   "setUpPasskey": {
-    "message": "Set up biometrics"
+    "message": "Set up Biometrics"
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
+  },
+  "settingUpPasskey": {
+    "message": "Setting Up Biometrics",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
   },
   "settings": {
     "message": "Settings"
@@ -8289,8 +8385,8 @@
   "smartAccountRequestsFromDapps": {
     "message": "Smart account requests from dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -8818,9 +8914,6 @@
     "message": "Still connecting to $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Still getting this message?"
-  },
   "storageErrorAction": {
     "message": "Back up Secret Recovery Phrase"
   },
@@ -8924,12 +9017,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Supported languages",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Take our survey"
-  },
-  "surveyTitle": {
-    "message": "Shape the future of MetaMask"
   },
   "swap": {
     "message": "Swap"
@@ -9564,6 +9651,12 @@
   "turnOffMetamaskNotificationsError": {
     "message": "There was an error in disabling the notifications. Please try again later."
   },
+  "turnOffPasskey": {
+    "message": "Turn off Biometrics"
+  },
+  "turnOffPasskeyFailed": {
+    "message": "We couldn't turn off Biometrics. Try again."
+  },
   "turnOn": {
     "message": "Turn on"
   },
@@ -9667,7 +9760,7 @@
     "description": "Label used for Private Keys row on multichain account details page."
   },
   "unlockWithPasskey": {
-    "message": "Unlock with biometrics"
+    "message": "Unlock with Biometrics"
   },
   "unpin": {
     "message": "Unpin"

@@ -2800,10 +2800,6 @@
     "message": "Kod: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Hata ayrıntıları",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Güvenli zincir listesi alınırken hata oluştu, lütfen dikkatli bir şekilde devam edin."
   },
@@ -5668,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "Emri iptal et"
   },
-  "perpsCandleIntervals": {
-    "message": "Mum aralıkları"
-  },
   "perpsCandlePeriodDays": {
     "message": "Gün"
   },
@@ -5682,9 +5675,6 @@
   },
   "perpsCloseAll": {
     "message": "Tümünü kapat"
-  },
-  "perpsCloseAmount": {
-    "message": "Kapanış Miktarı"
   },
   "perpsCloseLong": {
     "message": "Long pozisyonu kapat"
@@ -6270,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Çek"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps çek",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Tahmini süre"
   },
@@ -6317,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Çekim gönderildi"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask, sizin için istediğiniz tokena takas gerçekleştirecek. mUSD'ye takas gerçekleştirirken MetaMask ücreti uygulanmaz.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Aldığınız"
@@ -6442,6 +6440,10 @@
   },
   "provide": {
     "message": "Sun"
+  },
+  "providerFee": {
+    "message": "Sağlayıcı ücreti",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Genel adres"
@@ -6649,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Kripto al"
   },
+  "receiveToken": {
+    "message": "Token al",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Alınan"
+  },
+  "receivedTotal": {
+    "message": "Alınan toplam",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Alıcı adresi",
@@ -8156,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Dapp'lerden akıllı hesap talepleri"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Dapp'lerin standart hesaplar için akıllı hesap özellikleri talep etmesine izin verin. Bu durum, halihazırda akıllı hesap olan hesapları etkilemez."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Aynı adres. Daha akıllı özellikler."
   },
@@ -8685,9 +8692,6 @@
     "message": "Halen $1 ağına bağlanılıyor...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Bu mesajı almaya devam mı ediyorsun?"
-  },
   "storageErrorAction": {
     "message": "Gizli Kurtarma İfadesini yedekle"
   },
@@ -8791,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Desteklenen diller",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Anketimize katılın"
-  },
-  "surveyTitle": {
-    "message": "MetaMask'in geleceğini şekillendirin"
   },
   "swap": {
     "message": "Takas Yap"
@@ -9787,6 +9785,10 @@
   "willApproveAmountForSwapping": {
     "message": "Takas işlemi için token'i onaylar."
   },
+  "withdrawTo": {
+    "message": "Al",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Çekiliyor"
   },
@@ -9819,6 +9821,10 @@
   "youSent": {
     "message": "Gönderdiğiniz",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Elinize geçecek miktar:",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Aktiviteniz"

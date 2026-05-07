@@ -2800,10 +2800,6 @@
     "message": "Code : $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Détails de l’erreur",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Erreur lors de l’obtention de la liste des chaînes sécurisées, veuillez continuer avec précaution."
   },
@@ -5668,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "Annuler l’ordre"
   },
-  "perpsCandleIntervals": {
-    "message": "Intervalles de bougies"
-  },
   "perpsCandlePeriodDays": {
     "message": "Jours"
   },
@@ -5682,9 +5675,6 @@
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
-  },
-  "perpsCloseAmount": {
-    "message": "Montant à clôturer"
   },
   "perpsCloseLong": {
     "message": "Fermer la position longue"
@@ -6266,6 +6256,10 @@
   "perpsWithdraw": {
     "message": "Retirer"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Retrait du compte de trading de contrats à terme perpétuels",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Délai estimé"
   },
@@ -6313,6 +6307,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Demande de retrait envoyée avec succès"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask échangera vos jetons pour vous. Aucuns frais MetaMask ne s’appliquent lorsque vous effectuez un échange contre des mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Vous recevez"
@@ -6438,6 +6436,10 @@
   },
   "provide": {
     "message": "Fournir"
+  },
+  "providerFee": {
+    "message": "Commission du fournisseur",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Adresse publique"
@@ -6645,8 +6647,16 @@
   "receiveCrypto": {
     "message": "Recevoir des crypto-actifs"
   },
+  "receiveToken": {
+    "message": "Recevoir le jeton",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Reçu"
+  },
+  "receivedTotal": {
+    "message": "Total reçu",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Adresse de réception",
@@ -8152,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Demandes de comptes intelligents émanant de dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Autoriser les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. Cela n’affectera pas les comptes qui sont déjà des comptes intelligents."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Même adresse. Des fonctionnalités plus intelligentes."
   },
@@ -8681,9 +8688,6 @@
     "message": "Toujours en cours de connexion à $1…",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Vous recevez toujours ce message ?"
-  },
   "storageErrorAction": {
     "message": "Sauvegarder la phrase secrète de récupération"
   },
@@ -8787,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Langues prises en charge",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Répondez à notre sondage"
-  },
-  "surveyTitle": {
-    "message": "Façonnez l’avenir de MetaMask"
   },
   "swap": {
     "message": "Swap"
@@ -9783,6 +9781,10 @@
   "willApproveAmountForSwapping": {
     "message": "Approuve le jeton pour le swap."
   },
+  "withdrawTo": {
+    "message": "Recevoir",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Retrait en cours"
   },
@@ -9815,6 +9817,10 @@
   "youSent": {
     "message": "Vous avez envoyé",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Vous recevrez",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Votre activité"

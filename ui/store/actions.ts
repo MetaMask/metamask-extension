@@ -6,7 +6,7 @@
 import { ReactFragment } from 'react';
 import browser from 'webextension-polyfill';
 import log from 'loglevel';
-import { capitalize, isEqual } from 'lodash';
+import capitalize from 'lodash/capitalize';
 import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { providerErrors } from '@metamask/rpc-errors';
@@ -202,8 +202,8 @@ import {
   OptInStatusDto,
   OptInStatusInputDto,
 } from '../../shared/types/rewards';
-import { SubmitClaimErrorResponse } from '../pages/settings/transaction-shield-tab/types';
-import { SubmitClaimError } from '../pages/settings/transaction-shield-tab/claim-error';
+import { SubmitClaimErrorResponse } from '../pages/shield/transaction-shield/types';
+import { SubmitClaimError } from '../pages/shield/transaction-shield/claim-error';
 import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
@@ -1285,21 +1285,26 @@ export function removePasskeyWithPasswordVerification(
 }
 
 /**
- * Changes wallet password using a verified passkey assertion, then re-wraps the passkey
- * record for the new vault encryption key (non–social-login, passkey already enrolled).
+ * Changes wallet password using a verified passkey assertion, then either re-wraps the
+ * passkey record for the new vault encryption key or removes passkey enrollment.
+ * (Non–social-login, passkey already enrolled.)
  *
  * @param newPassword - The new wallet password.
  * @param authenticationResponse - WebAuthn authentication response from `navigator.credentials.get`.
+ * @param options - Settings forwarded to the background handler.
+ * @param options.renewVaultKeyProtection - Whether to renew vault key protection. If `false`, removes passkey after the change instead of renewing vault key protection.
  */
 export function changePasswordWithPasskeyVerification(
   newPassword: string,
   authenticationResponse: PasskeyAuthenticationResponse,
+  options: { renewVaultKeyProtection: boolean },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       await submitRequestToBackground('changePasswordWithPasskeyVerification', [
         newPassword,
         authenticationResponse,
+        options,
       ]);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -2611,61 +2616,6 @@ export function updateMetamaskState(
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
-    const newAddressBook =
-      newState.addressBook?.[newProviderConfig?.chainId] ?? {};
-    const oldAddressBook =
-      currentState.addressBook?.[providerConfig?.chainId] ?? {};
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const newAccounts: { [address: string]: Record<string, any> } =
-      getMetaMaskAccounts({ metamask: newState });
-
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const oldAccounts: { [address: string]: Record<string, any> } =
-      getMetaMaskAccounts({ metamask: currentState });
-    const newSelectedAccount = newAccounts[newSelectedAddress];
-    const oldSelectedAccount = newAccounts[selectedAddress];
-    // dispatch an ACCOUNT_CHANGED for any account whose balance or other
-    // properties changed in this update
-    Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
-      if (!isEqual(oldAccount, newAccounts[address])) {
-        dispatch({
-          type: actionConstants.ACCOUNT_CHANGED,
-          payload: { account: newAccounts[address] },
-        });
-      }
-    });
-
-    // Also emit an event for the selected account changing, either due to a
-    // property update or if the entire account changes.
-    if (isEqual(oldSelectedAccount, newSelectedAccount) === false) {
-      dispatch({
-        type: actionConstants.SELECTED_ACCOUNT_CHANGED,
-        payload: { account: newSelectedAccount },
-      });
-    }
-    // We need to keep track of changing address book entries
-    if (isEqual(oldAddressBook, newAddressBook) === false) {
-      dispatch({
-        type: actionConstants.ADDRESS_BOOK_UPDATED,
-        payload: { addressBook: newAddressBook },
-      });
-    }
-
-    // track when gasFeeEstimates change
-    if (
-      isEqual(currentState.gasFeeEstimates, newState.gasFeeEstimates) === false
-    ) {
-      dispatch({
-        type: actionConstants.GAS_FEE_ESTIMATES_UPDATED,
-        payload: {
-          gasFeeEstimates: newState.gasFeeEstimates,
-          gasEstimateType: newState.gasEstimateType,
-        },
-      });
-    }
     dispatch({
       type: actionConstants.UPDATE_METAMASK_STATE,
       value: newState,
