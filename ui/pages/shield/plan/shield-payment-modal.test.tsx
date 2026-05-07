@@ -2,10 +2,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { PAYMENT_TYPES } from '@metamask/subscription-controller';
-import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
-import mockState from '../../../test/data/mock-state.json';
-import { AssetType } from '../../../shared/constants/transaction';
-import { TokenWithApprovalAmount } from '../../hooks/subscription/useSubscriptionPricing';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import mockState from '../../../../test/data/mock-state.json';
+import { AssetType } from '../../../../shared/constants/transaction';
+import { TokenWithApprovalAmount } from '../../../hooks/subscription/useSubscriptionPricing';
 import { ShieldPaymentModal } from './shield-payment-modal';
 
 const defaultProps = {
