@@ -7,7 +7,6 @@ import type {
   TraceContext as ControllerTraceContext,
 } from '@metamask/controller-utils';
 import { sentryLogger } from './sentry';
-import { shouldSampleWrappers } from './wrapper-sampling';
 
 /**
  * The supported trace names.
