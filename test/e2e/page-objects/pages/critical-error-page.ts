@@ -122,7 +122,8 @@ class CriticalErrorPage {
       );
 
       // Wait for the UI to receive state and finish launching.
-      await this.driver.waitForControllersLoaded(30_000);
+      await this.driver.delay(5000);
+      await this.driver.waitForControllersLoaded();
       // Now safe to close extra tabs (service worker has finished handoff / fallback).
       await this.driver.closeAllOtherTabs();
     } else {
