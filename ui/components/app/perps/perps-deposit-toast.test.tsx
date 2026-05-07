@@ -87,7 +87,15 @@ describe('PerpsDepositToast', () => {
   });
 
   it('does not show a toast when there is no deposit state', () => {
-    renderPerpsDepositToast({});
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [],
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
 
     expect(mockToastLoading).not.toHaveBeenCalled();
     expect(mockToastSuccess).not.toHaveBeenCalled();
@@ -95,10 +103,15 @@ describe('PerpsDepositToast', () => {
   });
 
   it('shows a pending toast when a native-token-funded deposit is pending', () => {
-    renderPerpsDepositToast({
-      transactions: [buildPendingDepositTransaction()],
-      lastDepositTransactionId: 'pending-tx-1',
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [buildPendingDepositTransaction()],
+        lastDepositTransactionId: 'pending-tx-1',
+      },
     });
+
+    renderWithProvider(<PerpsDepositToast />, store);
 
     expect(mockToastLoading).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -115,37 +128,52 @@ describe('PerpsDepositToast', () => {
   });
 
   it('does not show pending toast for token-funded deposits', () => {
-    renderPerpsDepositToast({
-      transactions: [buildPendingDepositTransaction()],
-      lastDepositTransactionId: 'pending-tx-1',
-      transactionData: {
-        'pending-tx-1': {
-          paymentToken: {
-            address: '0x00000000000000000000000000000000000000dA',
-            chainId: '0xa4b1',
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'pending-tx-1',
+            type: TransactionType.perpsDeposit,
+          }),
+        ],
+        lastDepositTransactionId: 'pending-tx-1',
+        transactionData: {
+          'pending-tx-1': {
+            paymentToken: {
+              address: '0x00000000000000000000000000000000000000dA',
+              chainId: '0xa4b1',
+            },
           },
         },
       },
     });
 
+    renderWithProvider(<PerpsDepositToast />, store);
+
     expect(mockToastLoading).not.toHaveBeenCalled();
   });
 
   it('shows a success toast and clears the deposit result', () => {
-    renderPerpsDepositToast({
-      transactions: [
-        buildPendingDepositTransaction({
-          id: 'result-tx-1',
-          status: TransactionStatus.confirmed,
-        }),
-      ],
-      lastDepositTransactionId: 'result-tx-1',
-      lastDepositResult: {
-        success: true,
-        error: '',
-        timestamp: 1_700_000_000_000,
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
       },
     });
+
+    renderWithProvider(<PerpsDepositToast />, store);
 
     expect(mockToastSuccess).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -166,20 +194,25 @@ describe('PerpsDepositToast', () => {
   });
 
   it('shows an error toast using the deposit result error', () => {
-    renderPerpsDepositToast({
-      transactions: [
-        buildPendingDepositTransaction({
-          id: 'result-tx-1',
-          status: TransactionStatus.confirmed,
-        }),
-      ],
-      lastDepositTransactionId: 'result-tx-1',
-      lastDepositResult: {
-        success: false,
-        error: 'Bridge failed',
-        timestamp: 1_700_000_000_000,
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: false,
+          error: 'Bridge failed',
+          timestamp: 1_700_000_000_000,
+        },
       },
     });
+
+    renderWithProvider(<PerpsDepositToast />, store);
 
     expect(mockToastError).toHaveBeenCalledWith(
       expect.objectContaining({
