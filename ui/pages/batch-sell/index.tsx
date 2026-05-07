@@ -4,11 +4,14 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { transitionBack } from '../../components/ui/transition';
-import { useBatchSellNavigation } from '../../hooks/batch-sell/useBatchSellNavigation';
+import {
+  useBatchSellNavigation,
+  BatchSellNavigationState,
+} from '../../hooks/batch-sell/useBatchSellNavigation';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   BATCH_SELL_CONFIRM_ROUTE,
@@ -21,10 +24,28 @@ import { BatchSellModalProvider } from './providers/BatchSellModalProvider';
 
 const BatchSellPage = () => {
   const t = useI18nContext();
-  const { navigateToDefaultRoute } = useBatchSellNavigation();
+  const { pathname, state } = useLocation();
+  const { navigateToDefaultRoute, navigateToBatchSellSelectPage } =
+    useBatchSellNavigation();
 
   const handleBack = () => {
-    transitionBack(() => navigateToDefaultRoute());
+    const isOnConfirmPage = pathname === BATCH_SELL_CONFIRM_ROUTE;
+
+    if (isOnConfirmPage) {
+      const { selectedNetworkChainId, selectedAssetsId } = (state ??
+        {}) as BatchSellNavigationState;
+
+      transitionBack(() =>
+        navigateToBatchSellSelectPage({
+          selectedNetworkChainId,
+          selectedAssetsId,
+        }),
+      );
+
+      return;
+    }
+
+    transitionBack(navigateToDefaultRoute);
   };
 
   return (

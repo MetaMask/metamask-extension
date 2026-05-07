@@ -15,6 +15,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_IDS,
 } from '../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
@@ -250,11 +251,23 @@ export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(
           percentageChange = assetRateData?.marketData?.pricePercentChange?.P1D;
         }
 
-        const assetImage = asset.isNative
-          ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-              isEvm ? convertCaipToHexChainId(selectedChainId) : selectedChainId
-            ]
-          : asset.image;
+        // For EVM native tokens use CHAIN_ID_TOKEN_IMAGE_MAP (same source as
+        // the dashboard asset list via getNativeCurrencyForChain), which returns
+        // the token logo (e.g. ETH) consistently across all EVM chains.
+        // For non-EVM native tokens fall back to the chain network image.
+        // For ERC-20/non-native tokens use the asset's own image.
+        let assetImage: string | undefined;
+        if (asset.isNative && isEvm) {
+          const hexChainId = convertCaipToHexChainId(selectedChainId);
+          assetImage =
+            CHAIN_ID_TOKEN_IMAGE_MAP[
+              hexChainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
+            ];
+        } else if (asset.isNative) {
+          assetImage = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[selectedChainId];
+        } else {
+          assetImage = asset.image;
+        }
 
         // For EVM, tokenAddress is already resolved above (native or contract).
         // For non-EVM, there is no address concept so we leave it undefined.

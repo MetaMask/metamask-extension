@@ -30,7 +30,7 @@ export const BatchSellEmptySelectTokens = () => {
       ? '/images/empty-state-defi-dark.png'
       : '/images/empty-state-defi-light.png';
 
-  const navigateToExplorer = useCallback(() => {
+  const navigateToPortfolioDiscover = useCallback(() => {
     const url = getPortfolioUrl(
       'explore/tokens',
       'ext_batch_sell_empty',
@@ -68,7 +68,7 @@ export const BatchSellEmptySelectTokens = () => {
           <Button
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
-            onClick={navigateToExplorer}
+            onClick={navigateToPortfolioDiscover}
             className="self-center"
           >
             {t('exploreTokens')}

@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
@@ -10,6 +11,9 @@ import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 import { useSortBatchSellAssetsByBalance } from '../../../../hooks/batch-sell/useSortBatchSellAssetsByBalance';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useBatchSellModal } from '../../hooks/useBatchSellModal';
+import {
+  useBatchSellNavigation,
+} from '../../../../hooks/batch-sell/useBatchSellNavigation';
 import { MIN_SELECTED_ALLOWED_TOKENS } from '../../../../constants/batch-sell';
 import { transitionForward } from '../../../../components/ui/transition';
 import useBridging from '../../../../hooks/bridge/useBridging';
@@ -20,14 +24,13 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { AssetList } from './components/AssetList';
 import { BatchSellEmptySelectTokens } from './components/BatchSellEmptySelectTokens';
-
-// TODO: submit and navigate to confirm screen
-// TODO: should we exclude more action from assets?
+import { useInitialStateFromLocation } from './hooks/useInitialStateFromLocation';
 
 export const BatchSellSelectPage = () => {
   const t = useI18nContext();
   const { openBridgeExperience } = useBridging();
   const { openModal, closeModal } = useBatchSellModal();
+  const { navigateToBatchSellConfirmPage } = useBatchSellNavigation();
 
   const [assetsOrderByBalance, setAssetsOrderByBalance] = useState<
     'asc' | 'desc'
@@ -37,12 +40,38 @@ export const BatchSellSelectPage = () => {
     getAvailableBatchSellNetworksSelector,
   );
 
-  const [selectedNetworkChainId, setSelectedNetworkChainId] =
-    useState<CaipChainId | null>(
-      availableBatchSellNetworksList[0]?.chainId ?? null,
-    );
+  const availableNetworkChainIds = useMemo(
+    () => availableBatchSellNetworksList.map((n) => n.chainId),
+    [availableBatchSellNetworksList],
+  );
 
-  const [selectedAssetsId, setSelectedAssetsId] = useState<string[]>([]);
+  // Need a stable getter for assets at init time (before selectedNetworkChainId state exists)
+  // We use a selector directly for each candidate chainId
+  const allAssetsByNetwork = useSelector((state) => {
+    const result: Record<string, string[]> = {};
+    for (const chainId of availableNetworkChainIds) {
+      result[chainId] = getAvailableBatchSellAssetsForNetworkSelector(
+        state,
+        chainId,
+      ).map((a) => a.assetId);
+    }
+    return result;
+  });
+
+  const getAvailableAssetIds = useCallback(
+    (chainId: CaipChainId | null) =>
+      chainId ? (allAssetsByNetwork[chainId] ?? []) : [],
+    [allAssetsByNetwork],
+  );
+
+  const { networkChainId: initialNetworkChainId, assetsId: initialAssetsId } =
+    useInitialStateFromLocation(availableNetworkChainIds, getAvailableAssetIds);
+
+  const [selectedNetworkChainId, setSelectedNetworkChainId] =
+    useState<CaipChainId | null>(initialNetworkChainId);
+
+  const [selectedAssetsId, setSelectedAssetsId] =
+    useState<string[]>(initialAssetsId);
 
   const availableBatchSellAssetsForNetworkList = useSelector((state) =>
     getAvailableBatchSellAssetsForNetworkSelector(
@@ -76,6 +105,31 @@ export const BatchSellSelectPage = () => {
     );
   }, []);
 
+  const navigateToBridgePageAndPreselect = useCallback(() => {
+    closeModal();
+    const selectedAsset = availableBatchSellAssetsForNetworkList.find(
+      (asset) => asset.assetId === selectedAssetsId[0],
+    );
+    const bridgeToken =
+      selectedAsset?.address === undefined
+        ? undefined
+        : {
+            symbol: selectedAsset.symbol,
+            address: selectedAsset.address,
+            name: selectedAsset.name,
+            chainId: selectedAsset.chainId,
+          };
+
+    transitionForward(() =>
+      openBridgeExperience(MetaMetricsSwapsEventSource.MainView, bridgeToken),
+    );
+  }, [
+    availableBatchSellAssetsForNetworkList,
+    closeModal,
+    openBridgeExperience,
+    selectedAssetsId
+  ]);
+
   const onSubmit = useCallback(() => {
     if (selectedAssetsId.length < MIN_SELECTED_ALLOWED_TOKENS) {
       openModal({
@@ -87,40 +141,24 @@ export const BatchSellSelectPage = () => {
         },
         ctaProps: {
           text: t('yesSwap'),
-          onClick: () => {
-            closeModal();
-            const selectedAsset = availableBatchSellAssetsForNetworkList.find(
-              (asset) => asset.assetId === selectedAssetsId[0],
-            );
-            const bridgeToken =
-              selectedAsset?.address === undefined
-                ? undefined
-                : {
-                    symbol: selectedAsset.symbol,
-                    address: selectedAsset.address,
-                    name: selectedAsset.name,
-                    chainId: selectedAsset.chainId,
-                  };
-
-            transitionForward(() =>
-              openBridgeExperience(
-                MetaMetricsSwapsEventSource.MainView,
-                bridgeToken,
-              ),
-            );
-          },
+          onClick: navigateToBridgePageAndPreselect,
         },
       });
       return;
     }
 
-    console.log('submit');
+    transitionForward(() =>
+      navigateToBatchSellConfirmPage({
+        selectedNetworkChainId,
+        selectedAssetsId,
+      }),
+    );
   }, [
     selectedAssetsId,
+    selectedNetworkChainId,
     openModal,
-    closeModal,
-    openBridgeExperience,
-    availableBatchSellAssetsForNetworkList,
+    navigateToBatchSellConfirmPage,
+    navigateToBridgePageAndPreselect,
     t,
   ]);
 
