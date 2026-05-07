@@ -6,7 +6,6 @@ import { withFixtures } from '../../helpers';
 import { configureFixtureSession } from '../../helpers/fixture-session';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import HomePage from '../../page-objects/pages/home/homepage';
 import type { Driver } from '../../webdriver/driver';
 import { setupPhishingDetectionMocks } from '../../tests/phishing-controller/mocks';
 import {
@@ -111,9 +110,10 @@ function handleRequests(
 }
 
 async function unlockAndWaitForBlocklist(driver: Driver): Promise<void> {
-  await login(driver);
-  const homePage = new HomePage(driver);
-  await homePage.checkPageIsLoaded();
+  await login(driver, {
+    validateBalance: false,
+    waitForNonEvmAccounts: false,
+  });
   await driver.wait(async () => {
     const state = await driver.executeScript(
       'return window.stateHooks.getPersistedState()',
