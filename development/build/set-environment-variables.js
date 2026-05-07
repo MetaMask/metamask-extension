@@ -64,7 +64,8 @@ function setEnvironmentVariables({
     }),
     METAMASK_DEBUG: isDevBuild || variables.getMaybe('METAMASK_DEBUG') === true,
     SENTRY_DISTRIBUTED_TRACING_DISABLED:
-      variables.getMaybe('SENTRY_DISTRIBUTED_TRACING_DISABLED') === true,
+      variables.getMaybe('SENTRY_DISTRIBUTED_TRACING_DISABLED')?.toString() ===
+      'true',
     METAMASK_BUILD_NAME: buildName,
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,
