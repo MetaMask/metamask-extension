@@ -466,6 +466,7 @@ import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metri
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
+import { KeyringTypes } from '@metamask/keyring-controller';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -5764,7 +5765,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
-    return this.keyringController.withKeyringV2(
+    return this.keyringController.withKeyring(
       { address },
       async ({ keyring }) => {
         switch (keyring.type) {
@@ -6414,14 +6415,15 @@ export default class MetamaskController extends EventEmitter {
 
     if (this.onboardingController.getIsSocialLoginFlow()) {
       // Use withKeyring to get keyring metadata for an address
+      const accountId = this.accountsController.getAccountByAddress(
+        importedAccountAddress,
+      )?.id;
       const { id: keyringId, privateKey: privateKeyFromKeyring } =
         await this.keyringController.withKeyringV2(
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
-            const privateKey = await keyring.exportAccount(
-              importedAccountAddress,
-            );
-            return { id: metadata.id, privateKey };
+            const privateKeyObj = await keyring.exportAccount(accountId);
+            return { id: metadata.id, privateKey: privateKeyObj.privateKey };
           },
         );
 
@@ -6898,7 +6900,7 @@ export default class MetamaskController extends EventEmitter {
   getHDEntropyIndex() {
     const selectedAccount = this.accountsController.getSelectedAccount();
     const hdKeyrings = this.keyringController.state.keyrings.filter(
-      (keyring) => keyring.type === KeyringType.Hd,
+      (keyring) => keyring.type === KeyringTypes.hd,
     );
     const index = hdKeyrings.findIndex((keyring) =>
       keyring.accounts.includes(selectedAccount.address),
@@ -8106,7 +8108,7 @@ export default class MetamaskController extends EventEmitter {
 
           return state.keyrings
             .map((keyring, index) => {
-              if (keyring.type === KeyringType.Hd) {
+              if (keyring.type === KeyringTypes.hd) {
                 return {
                   id: keyring.metadata.id,
                   name: keyring.metadata.name,
@@ -9849,7 +9851,7 @@ export default class MetamaskController extends EventEmitter {
         );
     }
 
-    return this.keyringController.withKeyringV2(
+    return this.keyringController.withKeyring(
       { type: keyringType },
       async ({ keyring }) => {
         if (options.hdPath && keyring.setHdPath) {
