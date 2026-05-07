@@ -299,7 +299,6 @@
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
     "@blockaid/ppom_release": "^1.5.3",
-    "@date-io/luxon": "^1.3.13",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@ensdomains/content-hash": "^2.5.7",
@@ -321,7 +320,6 @@
     "@ledgerhq/hw-transport": "^6.31.0",
     "@ledgerhq/hw-transport-webhid": "^6.31.0",
     "@material-ui/core": "^4.12.4",
-    "@material-ui/pickers": "^3.3.11",
     "@metamask/7715-permission-types": "^0.5.0",
     "@metamask/abi-utils": "^3.0.0",
     "@metamask/account-api": "^1.0.0",
