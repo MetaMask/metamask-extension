@@ -1480,11 +1480,11 @@
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1
     },
-    "ui/pages/settings-v2/debug-tab/developer-options-tab/developer-options-tab.test.tsx": {
+    "ui/pages/settings-v2/debug-tab/debug-content/debug-content.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 11,
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/debug-tab/developer-options-tab/developer-options-toggle-row-component.test.tsx": {
+    "ui/pages/settings-v2/debug-tab/debug-content/toggle-row-component.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/pages/settings-v2/developer-tools-tab/developer-tools-tab.test.tsx": {
