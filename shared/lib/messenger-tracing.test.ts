@@ -90,7 +90,7 @@ describe('wrapMessengerWithTracing', () => {
     expect(result).toBe('result');
   });
 
-  it('still traces non-read-only actions like setState', () => {
+  it('traces non-read-only actions with name, op, and action data', () => {
     const messenger = new Messenger<'Test', TestActions, never>({
       namespace: 'Test',
     });
@@ -105,6 +105,7 @@ describe('wrapMessengerWithTracing', () => {
       expect.objectContaining({
         name: `Messenger Call: Test:setState`,
         op: 'messenger.call',
+        data: { action: 'Test:setState' },
       }),
       expect.any(Function),
     );
@@ -122,27 +123,6 @@ describe('wrapMessengerWithTracing', () => {
     wrapped.call('Test:setState', 'value');
 
     expect(traceMock).not.toHaveBeenCalled();
-  });
-
-  it('wraps messenger.call with tracing', () => {
-    const messenger = new Messenger<'Test', TestActions, never>({
-      namespace: 'Test',
-    });
-    const handler = jest.fn().mockImplementation(() => undefined);
-    messenger.registerActionHandler('Test:setState', handler);
-
-    const wrapped = wrapMessengerWithTracing(messenger);
-    wrapped.call('Test:setState', 'value');
-
-    expect(traceMock).toHaveBeenCalledTimes(1);
-    expect(traceMock).toHaveBeenCalledWith(
-      expect.objectContaining({
-        name: `Messenger Call: Test:setState`,
-        op: 'messenger.call',
-        data: { action: 'Test:setState' },
-      }),
-      expect.any(Function),
-    );
   });
 
   it('returns the same messenger instance', () => {
