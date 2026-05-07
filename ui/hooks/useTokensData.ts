@@ -25,19 +25,20 @@ const tokenCache: Record<string, TokenAsset> = {};
 const inFlight = new Map<string, Promise<TokenAsset[]>>();
 
 function fetchTokenBatch(assetIds: string[]): Promise<TokenAsset[]> {
-  const key = assetIds.join(',');
+  const normalizedIds = assetIds.map((id) => id.toLowerCase());
+  const key = normalizedIds.join(',');
 
   const existing = inFlight.get(key);
   if (existing) {
     return existing;
   }
 
-  if (assetIds.every((id) => tokenCache[id])) {
-    return Promise.resolve(assetIds.map((id) => tokenCache[id]));
+  if (normalizedIds.every((id) => tokenCache[id])) {
+    return Promise.resolve(normalizedIds.map((id) => tokenCache[id]));
   }
 
   const params = new URLSearchParams({
-    assetIds: assetIds.join(','),
+    assetIds: normalizedIds.join(','),
     includeIconUrl: 'true',
   });
 
@@ -91,7 +92,9 @@ export function useTokensData(assetIds: string[]): Record<string, TokenAsset> {
     Record<string, TokenAsset>
   >(() =>
     Object.fromEntries(
-      assetIds.filter((id) => tokenCache[id]).map((id) => [id, tokenCache[id]]),
+      assetIds
+        .filter((id) => tokenCache[id.toLowerCase()])
+        .map((id) => [id.toLowerCase(), tokenCache[id.toLowerCase()]]),
     ),
   );
 
