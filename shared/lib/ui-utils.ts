@@ -7,7 +7,6 @@ export const CRYPTOCOMPARE_LINK = 'https://www.cryptocompare.com/';
 export const PRIVACY_POLICY_LINK = 'https://consensys.io/privacy-policy/';
 export const METAMETRICS_SETTINGS_LINK =
   'https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/?utm_source=extension';
-export const SURVEY_LINK = 'https://www.getfeedback.com/r/Oczu1vP0';
 
 // TODO make sure these links are correct
 export const ETHERSCAN_PRIVACY_LINK = 'https://etherscan.io/privacyPolicy';

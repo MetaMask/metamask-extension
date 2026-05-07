@@ -8158,9 +8158,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "来自 dapp 的智能账户请求"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "让 dapp 为标准账户请求智能账户功能。这不会影响已经是智能账户的账户。"
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "地址相同。功能更加智能化。"
   },
@@ -8790,12 +8787,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "支持的语言",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "参与我们的调查"
-  },
-  "surveyTitle": {
-    "message": "塑造MetaMask的未来"
   },
   "swap": {
     "message": "兑换"

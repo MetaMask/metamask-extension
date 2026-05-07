@@ -8166,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Permintaan akun cerdas dari dapp"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. Ini tidak akan memengaruhi akun yang sudah menjadi akun cerdas."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Alamat sama. Fitur lebih cerdas."
   },
@@ -8798,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Bahasa yang didukung",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Ikuti survei kami"
-  },
-  "surveyTitle": {
-    "message": "Bentuk masa depan MetaMask"
   },
   "swap": {
     "message": "Swap"

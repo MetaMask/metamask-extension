@@ -105,6 +105,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
     ({
       value,
       onChange,
+      autoFocus = false,
       disabled = false,
       hasAlert = false,
       isLoading = false,
@@ -177,6 +178,7 @@ export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
               {value || '0'}
             </span>
             <input
+              autoFocus={autoFocus && !disabled}
               data-testid="perps-fiat-hero-amount-input"
               type="text"
               inputMode="decimal"

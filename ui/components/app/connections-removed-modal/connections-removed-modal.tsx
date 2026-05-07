@@ -1,4 +1,6 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
@@ -23,17 +25,26 @@ import {
   ModalBody,
   ButtonSize,
 } from '../../component-library';
-
-type ConnectionsRemovedModalProps = {
-  onConfirm: () => void;
-};
+import { resetWallet } from '../../../store/actions';
+import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function ConnectionsRemovedModal({
-  onConfirm,
-}: ConnectionsRemovedModalProps) {
+export default function ConnectionsRemovedModal() {
   const t = useI18nContext();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleConfirm = async () => {
+    await dispatch(resetWallet());
+
+    if (isPopupOrSidePanelEnvironment()) {
+      globalThis.platform.openExtensionInBrowser?.(DEFAULT_ROUTE);
+    } else {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    }
+  };
 
   return (
     <Modal
@@ -66,7 +77,7 @@ export default function ConnectionsRemovedModal({
           <Button
             size={ButtonSize.Lg}
             block
-            onClick={onConfirm}
+            onClick={handleConfirm}
             data-testid="connections-removed-modal-button"
           >
             {t('gotIt')}
