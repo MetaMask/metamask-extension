@@ -22,22 +22,22 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-} from '../../components/component-library';
-import { BorderColor } from '../../helpers/constants/design-system';
-import { AssetPickerModal } from '../../components/multichain/asset-picker-amount/asset-picker-modal';
-import { useI18nContext } from '../../hooks/useI18nContext';
+} from '../../../components/component-library';
+import { BorderColor } from '../../../helpers/constants/design-system';
+import { AssetPickerModal } from '../../../components/multichain/asset-picker-amount/asset-picker-modal';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
   NETWORK_TO_NAME_MAP,
-} from '../../../shared/constants/network';
-import { TokenWithApprovalAmount } from '../../hooks/subscription/useSubscriptionPricing';
+} from '../../../../shared/constants/network';
+import { TokenWithApprovalAmount } from '../../../hooks/subscription/useSubscriptionPricing';
 import {
   AssetWithDisplayData,
   ERC20Asset,
   NativeAsset,
-} from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
-import { SUPPORTED_PAYMENT_TOKEN_IMAGES } from '../../../shared/constants/subscriptions';
+} from '../../../components/multichain/asset-picker-amount/asset-picker-modal/types';
+import { SUPPORTED_PAYMENT_TOKEN_IMAGES } from '../../../../shared/constants/subscriptions';
 
 export const ShieldPaymentModal = ({
   isOpen,

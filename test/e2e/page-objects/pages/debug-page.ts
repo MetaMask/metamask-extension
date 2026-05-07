@@ -5,7 +5,7 @@ import {
   MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
 } from '../../constants';
 
-class DevelopOptions {
+class DebugOptions {
   private readonly driver: Driver;
 
   // Locators
@@ -14,6 +14,9 @@ class DevelopOptions {
 
   private readonly developerOptionsRemoteFeatureFlagsState: string =
     '[data-testid="developer-options-remote-feature-flags"]';
+
+  private readonly remoteFeatureFlagsDetailsToggle: string =
+    '[data-testid="remote-feature-flags-toggle"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -32,24 +35,30 @@ class DevelopOptions {
   }
 
   async clickGenerateCrashButton(): Promise<void> {
-    console.log('Generate a page crash in Developer option page');
+    console.log('Generate a page crash in Debug page');
     await this.driver.clickElement(this.generatePageCrashButton);
   }
 
   async validateRemoteFeatureFlagState(): Promise<void> {
-    console.log('Validate remote feature flags state in Developer option page');
+    console.log('Validate remote feature flags state in Debug page');
+    // Click to expand the collapsible details element
+    await this.driver.clickElement(this.remoteFeatureFlagsDetailsToggle);
     const element = await this.driver.findElement(
       this.developerOptionsRemoteFeatureFlagsState,
     );
     const remoteFeatureFlagsState = await element.getText();
     assert.equal(
       remoteFeatureFlagsState,
-      JSON.stringify({
-        ...MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
-        ...MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
-      }),
+      JSON.stringify(
+        {
+          ...MOCK_REMOTE_FEATURE_FLAGS_RESPONSE,
+          ...MOCK_CUSTOMIZED_REMOTE_FEATURE_FLAGS,
+        },
+        null,
+        2,
+      ),
     );
   }
 }
 
-export default DevelopOptions;
+export default DebugOptions;
