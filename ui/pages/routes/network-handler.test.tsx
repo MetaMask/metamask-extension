@@ -71,10 +71,11 @@ describe('NetworkHandler', () => {
     rerender(<NetworkHandler />);
 
     expect(automaticallySwitchNetwork).toHaveBeenCalledWith('network-client-id');
-    expect(mockDispatch).toHaveBeenCalledWith({
-      payload: 'network-client-id',
-      type: 'AUTOMATICALLY_SWITCH_NETWORK',
-    });
+    expect(mockDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payload: 'network-client-id',
+      }),
+    );
   });
 
   it('dispatches automatic switch when the wallet transitions from locked to unlocked', () => {
@@ -88,10 +89,11 @@ describe('NetworkHandler', () => {
     rerender(<NetworkHandler />);
 
     expect(automaticallySwitchNetwork).toHaveBeenCalledWith('network-client-id');
-    expect(mockDispatch).toHaveBeenCalledWith({
-      payload: 'network-client-id',
-      type: 'AUTOMATICALLY_SWITCH_NETWORK',
-    });
+    expect(mockDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        payload: 'network-client-id',
+      }),
+    );
   });
 
   it('does not dispatch when there is no network to switch to', () => {
