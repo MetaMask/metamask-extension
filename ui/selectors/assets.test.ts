@@ -677,7 +677,6 @@ describe('getTokenByAccountAndAddressAndChainId', () => {
         tokenFiatAmount: null,
       });
     });
-
   });
 
   describe('when account is undefined and selectedAccountGroup is null', () => {
