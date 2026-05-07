@@ -5680,9 +5680,6 @@
   "perpsCancelOrder": {
     "message": "Отменить ордер"
   },
-  "perpsCandleIntervals": {
-    "message": "Интервалы свечей"
-  },
   "perpsCandlePeriodDays": {
     "message": "Дни"
   },
@@ -5694,9 +5691,6 @@
   },
   "perpsCloseAll": {
     "message": "Закрыть все"
-  },
-  "perpsCloseAmount": {
-    "message": "Сумма закрытия"
   },
   "perpsCloseLong": {
     "message": "Закрыть длинную"
@@ -6278,6 +6272,10 @@
   "perpsWithdraw": {
     "message": "Вывести средства"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Вывод из перпов",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Предполагаемое время"
   },
@@ -6325,6 +6323,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Выводимые средства отправлены"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask автоматически обменяет ваш токен на желаемый. При обмене на mUSD комиссия MetaMask не взимается.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Вы получаете"
@@ -6450,6 +6452,10 @@
   },
   "provide": {
     "message": "Предоставить"
+  },
+  "providerFee": {
+    "message": "Комиссия поставщика",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Публичный адрес"
@@ -6657,8 +6663,16 @@
   "receiveCrypto": {
     "message": "Получить криптовалюту"
   },
+  "receiveToken": {
+    "message": "Получить токен",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Получено"
+  },
+  "receivedTotal": {
+    "message": "Всего получено",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Принимающий адрес",
@@ -9823,6 +9837,10 @@
   "willApproveAmountForSwapping": {
     "message": "Утверждает токен для свопа."
   },
+  "withdrawTo": {
+    "message": "Получить",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Выполняется вывод"
   },
@@ -9855,6 +9873,10 @@
   "youSent": {
     "message": "Вы отправили",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Вы получите",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Ваша деятельность"
