@@ -11,6 +11,7 @@ import { useMemo } from 'react';
 import { getInternalAccountByAddress } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
+
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
@@ -68,61 +69,58 @@ export const useSnapAssetSelectorData = ({
   const locale = useSelector(getIntlLocale);
   const { formatTokenQuantity } = useFormatters();
 
-  const parsedAccounts = useMemo(
-    () => addresses.map(parseCaipAccountId),
-    [addresses],
-  );
+  const parsedAccounts = addresses.map(parseCaipAccountId);
 
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, parsedAccounts[0].address),
   );
-
   const networks = useSelector(getMultichainNetworkConfigurationsByChainId);
+
   const assets = useSelector((state) => getMultiChainAssets(state, account));
 
-  const formattedAssets = useMemo(() => {
-    /**
-     * Formats a fiat balance.
-     *
-     * @param balance - The balance to format.
-     * @returns The formatted balance.
-     */
-    const formatFiatBalance = (balance: number | null = 0) =>
-      formatWithThreshold(balance, 0.01, locale, {
-        style: 'currency',
-        currency: currentCurrency.toUpperCase(),
-      });
+  /**
+   * Formats a fiat balance.
+   *
+   * @param balance - The balance to format.
+   * @returns The formatted balance.
+   */
+  const formatFiatBalance = (balance: number | null = 0) =>
+    formatWithThreshold(balance, 0.01, locale, {
+      style: 'currency',
+      currency: currentCurrency.toUpperCase(),
+    });
 
-    /**
-     * Formats a non-EVM asset for the SnapUIAssetSelector.
-     *
-     * @param asset - The asset to format.
-     * @returns The formatted asset.
-     */
-    const formatAsset = (asset: TokenWithFiatAmount): SnapUIAsset => {
-      const networkName =
-        NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-          asset.chainId as AllowedBridgeChainIds
-        ] ?? networks[asset.chainId]?.name;
+  /**
+   * Formats a non-EVM asset for the SnapUIAssetSelector.
+   *
+   * @param asset - The asset to format.
+   * @returns The formatted asset.
+   */
+  const formatAsset = (asset: TokenWithFiatAmount) => {
+    const networkName =
+      NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+        asset.chainId as AllowedBridgeChainIds
+      ] ?? networks[asset.chainId]?.name;
 
-      return {
-        icon: asset.image,
-        symbol: asset.symbol,
-        name: asset.title,
-        balance: formatTokenQuantity(Number(asset.balance ?? 0), asset.symbol),
-        networkName,
-        networkIcon: getImageForChainId(asset.chainId),
-        fiat: formatFiatBalance(asset.secondary),
-        chainId: asset.chainId as CaipChainId,
-        address: asset.address as CaipAssetType,
-      };
+    return {
+      icon: asset.image,
+      symbol: asset.symbol,
+      name: asset.title,
+      balance: formatTokenQuantity(Number(asset.balance ?? 0), asset.symbol),
+      networkName,
+      networkIcon: getImageForChainId(asset.chainId),
+      fiat: formatFiatBalance(asset.secondary),
+      chainId: asset.chainId as CaipChainId,
+      address: asset.address as CaipAssetType,
     };
+  };
 
-    // Filter the chain IDs to only include the requested ones.
-    const requestedChainIds = parsedAccounts
-      .map((chainId) => chainId)
-      .filter(({ chainId }) => (chainIds ? chainIds?.includes(chainId) : true));
+  // Filter the chain IDs to only include the requested ones.
+  const requestedChainIds = parsedAccounts
+    .map((chainId) => chainId)
+    .filter(({ chainId }) => (chainIds ? chainIds?.includes(chainId) : true));
 
+  const formattedAssets = useMemo(() => {
     // Filter the assets by the requested chain IDs
     const filteredAssets = assets.filter((asset) =>
       requestedChainIds.some(({ chainId, chain: { namespace, reference } }) => {
@@ -133,6 +131,7 @@ export const useSnapAssetSelectorData = ({
           );
           return assetNamepace === namespace;
         }
+
         return chainId === asset.chainId;
       }),
     );
@@ -141,15 +140,7 @@ export const useSnapAssetSelectorData = ({
     const formatted: SnapUIAsset[] = filteredAssets.map(formatAsset);
 
     return formatted;
-  }, [
-    assets,
-    networks,
-    locale,
-    currentCurrency,
-    formatTokenQuantity,
-    chainIds,
-    parsedAccounts,
-  ]);
+  }, [assets]);
 
   return formattedAssets;
 };
