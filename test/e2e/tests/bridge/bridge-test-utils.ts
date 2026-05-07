@@ -46,6 +46,7 @@ import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usdc-gas-sponsored.json';
+import MOCK_SWAP_QUOTES_USDC_GOOGLON from './mocks/swap-quotes-usdc-googlon.json';
 
 export class BridgePage {
   driver: Driver;
@@ -1365,6 +1366,7 @@ export const getBridgeFixtures = ({
         await mockDAItoETH(mockServer, featureFlags.sse?.enabled),
         await mockSwapETHtoMUSD(mockServer, tokenWarnings),
         await mockUSDCtoDAI(mockServer, featureFlags.sse?.enabled),
+        await mockSwapUSDCtoGOOGLON(mockServer, featureFlags.sse?.enabled),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1933,6 +1935,35 @@ async function mockGasSponsoredSwapETHtoUSDC(mockServer: Mockttp) {
       mockSseEventSource(MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED),
       SSE_RESPONSE_HEADER,
     );
+}
+
+async function mockSwapUSDCtoGOOGLON(mockServer: Mockttp, sseEnabled?: boolean) {
+  if (sseEnabled) {
+    return await mockServer
+      .forGet(/getQuoteStream/u)
+      .withQuery({
+        srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        destTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+      })
+      .thenStream(
+        200,
+        mockSseEventSource(MOCK_SWAP_QUOTES_USDC_GOOGLON),
+        SSE_RESPONSE_HEADER,
+      );
+  }
+
+  return await mockServer
+    .forGet(/getQuote/u)
+    .withQuery({
+      srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+      destTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_SWAP_QUOTES_USDC_GOOGLON,
+      };
+    });
 }
 
 async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {

@@ -345,6 +345,16 @@ export const MOCK_TOKENS_ETHEREUM = [
     address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
     name: 'MetaMask USD',
   },
+  {
+    symbol: 'GOOGLon',
+    decimals: 18,
+    aggregators: ['cowswap'],
+    occurrences: 1,
+    iconUrl:
+      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xba47214edd2bb43099611b208f75e4b42fdcfedc.png',
+    address: '0xba47214edd2bb43099611b208f75e4b42fdcfedc',
+    name: 'Alphabet Class A (Ondo Tokenized)',
+  },
   getNativeAssetForChainId(1),
 ];
 
