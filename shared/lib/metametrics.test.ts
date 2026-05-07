@@ -51,6 +51,8 @@ const createTransactionMetricsRequest = (customProps = {}) => {
     getPna25Acknowledged: jest.fn(),
     getAddressSecurityAlertResponse: jest.fn(),
     getSecurityAlertsEnabled: jest.fn(),
+    getTransactionFrameContext: jest.fn(),
+    removeTransactionFrameContext: jest.fn(),
     getTransactionPayData: jest.fn(),
     getAllTransactions: jest.fn().mockReturnValue([]),
     ...customProps,
