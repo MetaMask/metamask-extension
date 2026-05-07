@@ -70,7 +70,9 @@ describe('NetworkHandler', () => {
     totalUnapprovedConfirmationCount = 0;
     rerender(<NetworkHandler />);
 
-    expect(automaticallySwitchNetwork).toHaveBeenCalledWith('network-client-id');
+    expect(automaticallySwitchNetwork).toHaveBeenCalledWith(
+      'network-client-id',
+    );
     expect(mockDispatch).toHaveBeenCalledWith(
       expect.objectContaining({
         payload: 'network-client-id',
@@ -88,7 +90,9 @@ describe('NetworkHandler', () => {
     isUnlocked = true;
     rerender(<NetworkHandler />);
 
-    expect(automaticallySwitchNetwork).toHaveBeenCalledWith('network-client-id');
+    expect(automaticallySwitchNetwork).toHaveBeenCalledWith(
+      'network-client-id',
+    );
     expect(mockDispatch).toHaveBeenCalledWith(
       expect.objectContaining({
         payload: 'network-client-id',
