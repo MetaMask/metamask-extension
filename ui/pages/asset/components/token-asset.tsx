@@ -149,7 +149,9 @@ const TokenAsset = ({
         <AssetOptions
           isNativeAsset={false}
           onRemove={() =>
-            dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }))
+            dispatch(
+              showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }),
+            )
           }
           onClickBlockExplorer={() => {
             if (!blockExplorerLink) {
