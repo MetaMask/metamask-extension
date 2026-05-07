@@ -92,6 +92,7 @@ export const RESTORE_VAULT_ROUTE = '/restore-vault';
 export const IMPORT_TOKEN_ROUTE = '/import-token';
 export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
+export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
@@ -424,6 +425,11 @@ export const ROUTES = [
   {
     path: CONFIRM_IMPORT_TOKEN_ROUTE,
     label: 'Confirm Import Token Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: TOKEN_MANAGEMENT_ROUTE,
+    label: 'Token Management Page',
     trackInAnalytics: true,
   },
   {

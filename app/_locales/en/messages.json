@@ -4022,6 +4022,9 @@
   "managePermissions": {
     "message": "Manage permissions"
   },
+  "manageTokens": {
+    "message": "Manage tokens"
+  },
   "manageWalletRecovery": {
     "message": "Manage wallet recovery"
   },
@@ -4858,8 +4861,14 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
+  "noTokensMatchSearch": {
+    "message": "No tokens match your search"
+  },
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
+  },
+  "noTokensToManage": {
+    "message": "You don't have any tokens yet. Search by name or address to discover popular tokens."
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."

@@ -2133,6 +2133,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  extensionUxTokenManagementFilter: {
+    name: 'extensionUxTokenManagementFilter',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
   neNetworkDiscoverButton: {
     name: 'neNetworkDiscoverButton',
     type: FeatureFlagType.Remote,

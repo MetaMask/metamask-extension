@@ -56,6 +56,7 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
   NETWORKS_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
@@ -155,6 +156,9 @@ const RevealSeedConfirmation = mmLazy(
 );
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
+const TokenManagementPage = mmLazy(
+  () => import('../token-management/index.ts'),
+);
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -300,6 +304,10 @@ export const routeConfig = [
       {
         path: NETWORKS_ROUTE,
         element: <NetworksPage />,
+      },
+      {
+        path: TOKEN_MANAGEMENT_ROUTE,
+        element: <TokenManagementPage />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
