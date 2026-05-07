@@ -1,10 +1,10 @@
 import React from 'react';
-import InfoTab from '../../settings/info-tab/info-tab';
 import { SettingsTab } from '../shared';
 import { SettingItemConfig } from '../types';
+import AboutInfo from './about-info';
 
 const ABOUT_US_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'about-us', component: InfoTab },
+  { id: 'about-us', component: AboutInfo },
 ];
 
 const AboutTab = () => {

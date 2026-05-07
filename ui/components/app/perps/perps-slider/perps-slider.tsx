@@ -24,7 +24,7 @@ import Tooltip from '../../../ui/tooltip';
  */
 const sliderStyles = {
   root: {
-    height: 6,
+    height: 4,
     padding: 0,
     overflow: 'visible',
   },
@@ -33,48 +33,63 @@ const sliderStyles = {
   rail: {
     borderRadius: 50,
     background: 'var(--color-border-muted)',
-    height: 6,
+    height: 4,
     opacity: 1,
   },
   track: {
     borderRadius: 50,
     background: 'var(--color-text-default)',
-    height: 6,
+    height: 4,
   },
   thumb: {
     height: 16,
     width: 16,
-    marginTop: -5,
+    marginTop: -6,
     marginLeft: -5,
-    backgroundColor: 'var(--color-icon-muted)',
+    // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+    backgroundColor: '#414243',
     border: '2px solid var(--color-text-default)',
     boxSizing: 'border-box' as const,
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+    '[data-theme="dark"] &': {
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      backgroundColor: '#CCCCCC',
+    },
     '&:focus, &$active': {
       height: 16,
       width: 16,
-      marginTop: -5,
+      marginTop: -6,
       marginLeft: -5,
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
     '&:hover': {
       height: 18,
       width: 18,
-      marginTop: -6,
+      marginTop: -7,
       marginLeft: -6,
-      backgroundColor: 'var(--color-icon-muted)',
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      '[data-theme="dark"] &': {
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+        backgroundColor: '#CCCCCC',
+      },
     },
     '&$disabled': {
       height: 16,
       width: 16,
-      marginTop: -5,
+      marginTop: -6,
       marginLeft: -5,
-      backgroundColor: 'var(--color-icon-muted)',
+      // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+      backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
       boxSizing: 'border-box' as const,
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+      '[data-theme="dark"] &': {
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+        backgroundColor: '#CCCCCC',
+      },
       '&:hover': {
         boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
       },
@@ -85,11 +100,11 @@ const sliderStyles = {
     width: 2,
     height: 2,
     borderRadius: '50%',
-    backgroundColor: 'var(--color-text-default)',
-    marginTop: 2,
+    backgroundColor: 'var(--color-icon-alternative)',
+    marginTop: 1,
   },
   markActive: {
-    backgroundColor: 'var(--color-text-default)',
+    backgroundColor: 'var(--color-icon-alternative)',
     opacity: 1,
   },
 };

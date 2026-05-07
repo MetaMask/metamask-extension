@@ -15,7 +15,11 @@ import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
-import { ConnectionStatus, type EnsureDeviceReadyOptions } from './types';
+import {
+  ConnectionStatus,
+  HardwareWalletType,
+  type EnsureDeviceReadyOptions,
+} from './types';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 
 type UseHardwareFooterArgs = {
@@ -23,6 +27,21 @@ type UseHardwareFooterArgs = {
   currentConfirmationId?: string;
   onUserRejectedHardwareWalletError: () => Promise<void>;
 };
+
+/**
+ * Returns true when the transport is established (`Connected`) or when a full
+ * readiness probe has succeeded (`Ready`). `Connected` alone is enough to show
+ * the primary "Confirm" CTA: `ensureDeviceReady` still runs on submit before signing.
+ *
+ * @param status - Current `ConnectionStatus` from hardware wallet context.
+ */
+export function isHardwareConnectionReadyForConfirmFooter(
+  status: ConnectionStatus,
+): boolean {
+  return (
+    status === ConnectionStatus.Ready || status === ConnectionStatus.Connected
+  );
+}
 
 export type SubmitPreflightCheckOptions = {
   /**
@@ -109,12 +128,20 @@ export const useHardwareFooter = ({
       return true;
     }
 
-    return ConnectionStatus.Ready === connectionState.status;
+    // QR wallets don't need a physical device connection before showing the
+    // primary footer CTA. The Confirm action still runs ensureDeviceReady,
+    // which handles camera permission before signing.
+    if (walletType === HardwareWalletType.Qr) {
+      return true;
+    }
+
+    return isHardwareConnectionReadyForConfirmFooter(connectionState.status);
   }, [
     connectionState.status,
     hasPreflightSucceeded,
     inE2e,
     isHardwareWalletAccount,
+    walletType,
   ]);
 
   const onSubmitPreflightCheck = useCallback(

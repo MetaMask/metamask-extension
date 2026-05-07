@@ -2,12 +2,12 @@ import type { Json } from '@metamask/utils';
 
 import type { MetaMetricsEventPayload } from '../../constants/metametrics';
 import { getManifestFlags } from '../manifestFlags';
+import {
+  createActiveABTestAssignment,
+  normalizeActiveABTestAssignments,
+  type ActiveABTestAssignment,
+} from './active-ab-test-assignment';
 import { resolveABTestAssignment } from './resolve-ab-test-assignment';
-
-export type ActiveABTestAssignment = {
-  key: string;
-  value: string;
-};
 
 export type ABTestAnalyticsMapping = {
   flagKey: string;
@@ -32,26 +32,6 @@ export function hasABTestAnalyticsMappingForEvent(
   return mappings.some((mapping) => hasEventName(mapping, eventName));
 }
 
-const isActiveABTestAssignment = (
-  value: unknown,
-): value is ActiveABTestAssignment =>
-  Boolean(
-    value &&
-      typeof value === 'object' &&
-      'key' in value &&
-      typeof value.key === 'string' &&
-      'value' in value &&
-      typeof value.value === 'string',
-  );
-
-const getExistingActiveABTests = (value: unknown): ActiveABTestAssignment[] => {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  return value.filter(isActiveABTestAssignment);
-};
-
 export function getRemoteFeatureFlagsWithManifestOverrides(
   remoteFeatureFlags: Record<string, unknown> | null | undefined,
 ): Record<string, unknown> {
@@ -61,17 +41,36 @@ export function getRemoteFeatureFlagsWithManifestOverrides(
   };
 }
 
+const cloneEventWithAssignments = <TEvent extends MetaMetricsEventPayload>(
+  event: TEvent,
+  assignments: ActiveABTestAssignment[],
+): TEvent => ({
+  ...event,
+  properties: {
+    ...event.properties,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    active_ab_tests: assignments as Json,
+  },
+});
+
 export function enrichWithABTests<TEvent extends MetaMetricsEventPayload>(
   event: TEvent,
   featureFlags: Record<string, unknown> | null | undefined,
   mappings: readonly ABTestAnalyticsMapping[] = AB_TEST_ANALYTICS_MAPPINGS,
 ): TEvent {
+  const existingAssignments = normalizeActiveABTestAssignments(
+    event.properties?.active_ab_tests,
+  );
   const relevantMappings = mappings.filter((mapping) =>
     hasEventName(mapping, event.event),
   );
 
   if (relevantMappings.length === 0) {
-    return event;
+    if (existingAssignments.length === 0) {
+      return event;
+    }
+
+    return cloneEventWithAssignments(event, existingAssignments);
   }
 
   const injectedAssignments = relevantMappings.flatMap((mapping) => {
@@ -81,16 +80,19 @@ export function enrichWithABTests<TEvent extends MetaMetricsEventPayload>(
       mapping.validVariants,
     );
 
-    return isActive ? [{ key: mapping.flagKey, value: variantName }] : [];
+    return isActive
+      ? [createActiveABTestAssignment(mapping.flagKey, variantName)]
+      : [];
   });
 
   if (injectedAssignments.length === 0) {
-    return event;
+    if (existingAssignments.length === 0) {
+      return event;
+    }
+
+    return cloneEventWithAssignments(event, existingAssignments);
   }
 
-  const existingAssignments = getExistingActiveABTests(
-    event.properties?.active_ab_tests,
-  );
   const mergedAssignments = [...existingAssignments];
   const existingKeys = new Set(existingAssignments.map(({ key }) => key));
 
@@ -103,12 +105,5 @@ export function enrichWithABTests<TEvent extends MetaMetricsEventPayload>(
     mergedAssignments.push(assignment);
   }
 
-  return {
-    ...event,
-    properties: {
-      ...event.properties,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      active_ab_tests: mergedAssignments as Json,
-    },
-  };
+  return cloneEventWithAssignments(event, mergedAssignments);
 }

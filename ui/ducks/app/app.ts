@@ -562,11 +562,6 @@ export default function reduceApp(
         ...appState,
         isNftStillFetchingIndication: true,
       };
-    case actionConstants.SHOW_NFT_DETECTION_ENABLEMENT_TOAST:
-      return {
-        ...appState,
-        showNftDetectionEnablementToast: action.payload,
-      };
 
     case actionConstants.HIDE_NFT_STILL_FETCHING_INDICATION:
       return {
@@ -625,18 +620,6 @@ export default function reduceApp(
       return {
         ...appState,
         newTokensImportedError: action.payload,
-      };
-
-    case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
-      return {
-        ...appState,
-        newNftAddedMessage: action.payload,
-      };
-
-    case actionConstants.SET_REMOVE_NFT_MESSAGE:
-      return {
-        ...appState,
-        removeNftMessage: action.payload,
       };
 
     case actionConstants.SET_REQUEST_ACCOUNT_TABS:
@@ -754,18 +737,6 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
-      return {
-        ...appState,
-        showNewSrpAddedToast: action.payload,
-      };
-
-    case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:
-      return {
-        ...appState,
-        showCopyAddressToast: action.payload,
-      };
-
     case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
       return {
         ...appState,
@@ -850,12 +821,6 @@ export function setOnBoardedInThisUISession(
   return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, payload };
 }
 
-export function setShowCopyAddressToast(
-  payload: boolean,
-): PayloadAction<boolean> {
-  return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
-}
-
 export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
@@ -905,10 +870,6 @@ export function getLedgerTransportStatus(state: AppSliceState): string | null {
 
 export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
   return state.appState.showSupportDataConsentModal;
-}
-
-export function getShowCopyAddressToast(state: AppSliceState): boolean {
-  return state.appState.showCopyAddressToast;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {
