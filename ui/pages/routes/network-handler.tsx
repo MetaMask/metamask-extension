@@ -19,20 +19,12 @@ export const NetworkHandler = () => {
   );
   const isUnlocked = useAppSelector(getIsUnlocked);
 
-  const prevPropsRef = useRef<{
-    isUnlocked: boolean;
-    totalUnapprovedConfirmationCount: number;
-  } | null>(null);
+  const prevPropsRef = useRef({
+    isUnlocked,
+    totalUnapprovedConfirmationCount,
+  });
 
   useEffect(() => {
-    if (!prevPropsRef.current) {
-      prevPropsRef.current = {
-        isUnlocked,
-        totalUnapprovedConfirmationCount,
-      };
-      return;
-    }
-
     const prevProps = prevPropsRef.current;
 
     if (
