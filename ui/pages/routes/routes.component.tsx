@@ -223,7 +223,7 @@ const SmartAccountPage = mmLazy(
 const NonEvmBalanceCheck = mmLazy(
   () => import('../nonevm-balance-check/index.tsx'),
 );
-const ShieldPlan = mmLazy(() => import('../shield-plan/index.ts'));
+const ShieldPlan = mmLazy(() => import('../shield/plan/index.ts'));
 const PerpsMarketDetailPage = mmLazy(
   () => import('../perps/perps-market-detail-page.tsx'),
 );

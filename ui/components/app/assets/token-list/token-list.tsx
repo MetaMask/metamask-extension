@@ -26,7 +26,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import {
   isEvmChainId,
   isTronSpecialAsset,
