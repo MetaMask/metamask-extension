@@ -169,15 +169,20 @@ export default function SetupPasskey() {
           'Onboarding passkey enrollment ceremony cancelled or timed out',
           error,
         );
-        setRegisterStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
-        setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+        if (isMountedRef.current) {
+          setRegisterStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+          setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+        }
         return;
       }
 
       log.error('Onboarding passkey registration failed', error);
-      setEnrollmentError(
-        translatePasskeyError(error, t) ?? t('passkeyErrorRegistrationFailed'),
-      );
+      if (isMountedRef.current) {
+        setEnrollmentError(
+          translatePasskeyError(error, t) ??
+            t('passkeyErrorRegistrationFailed'),
+        );
+      }
     } finally {
       if (isMountedRef.current) {
         setIsEnrollmentInProgress(false);
