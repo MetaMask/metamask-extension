@@ -4,7 +4,7 @@
 
 // Disabled to allow setting up initial state hooks first
 
-// This import sets up global functions required for Sentry to function.
+// This! import sets up global functions required for Sentry to function.
 // It must be run first in case an error is thrown later during initialization.
 // eslint-disable-next-line import-x/order -- intentional first import for Sentry
 import { persistenceManager } from './lib/setup-initial-state-hooks';
