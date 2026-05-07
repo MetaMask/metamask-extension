@@ -12,7 +12,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { providerAsMiddleware } from '@metamask/eth-json-rpc-middleware';
 import { debounce, uniq } from 'lodash';
-import { KeyringTypes } from '@metamask/keyring-controller';
+import { KeyringType } from '@metamask/keyring-api/v2';
 import createFilterMiddleware from '@metamask/eth-json-rpc-filters';
 import createSubscriptionManager from '@metamask/eth-json-rpc-filters/subscriptionManager';
 import {
@@ -5081,7 +5081,7 @@ export default class MetamaskController extends EventEmitter {
           ),
         });
 
-      const [newAccountAddress] = await this.keyringController.withKeyringV2(
+      const [newAccount] = await this.keyringController.withKeyringV2(
         { id },
         async ({ keyring }) => keyring.getAccounts(),
       );
@@ -5097,15 +5097,16 @@ export default class MetamaskController extends EventEmitter {
         } catch (err) {
           await this.multichainAccountService.removeMultichainAccountWallet(
             id,
-            newAccountAddress,
+            newAccount.address,
           );
           throw err;
         }
       }
 
       if (shouldSelectAccount) {
-        const account =
-          this.accountsController.getAccountByAddress(newAccountAddress);
+        const account = this.accountsController.getAccountByAddress(
+          newAccount.address,
+        );
         this.accountsController.setSelectedAccount(account.id);
       }
 
@@ -5372,7 +5373,7 @@ export default class MetamaskController extends EventEmitter {
       const isHdKeyring = await this.keyringController.withKeyringV2(
         { id: metadata.id },
         async ({ keyring }) => {
-          return keyring.type === KeyringTypes.hd;
+          return keyring.type === KeyringType.Hd;
         },
       );
       if (isHdKeyring) {
@@ -5704,7 +5705,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {HardwareKeyringType} Keyring hardware type
    */
   async getHardwareTypeForMetric(address) {
-    return await this.keyringController.withKeyringV2(
+    return await this.keyringController.withKeyring(
       { address },
       ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
     );
@@ -5862,12 +5863,12 @@ export default class MetamaskController extends EventEmitter {
     const oldAccounts = await this.keyringController.getAccounts();
     const keyringSelector = _keyringId
       ? { id: _keyringId }
-      : { type: KeyringTypes.hd };
+      : { type: KeyringType.Hd };
 
     const addedAccountAddress = await this.keyringController.withKeyring(
       keyringSelector,
       async ({ keyring }) => {
-        if (keyring.type !== KeyringTypes.hd) {
+        if (keyring.type !== KeyringType.Hd) {
           throw new Error('Cannot add account to non-HD keyring');
         }
         const accountsInKeyring = await keyring.getAccounts();
@@ -6897,7 +6898,7 @@ export default class MetamaskController extends EventEmitter {
   getHDEntropyIndex() {
     const selectedAccount = this.accountsController.getSelectedAccount();
     const hdKeyrings = this.keyringController.state.keyrings.filter(
-      (keyring) => keyring.type === KeyringTypes.hd,
+      (keyring) => keyring.type === KeyringType.Hd,
     );
     const index = hdKeyrings.findIndex((keyring) =>
       keyring.accounts.includes(selectedAccount.address),
@@ -8105,7 +8106,7 @@ export default class MetamaskController extends EventEmitter {
 
           return state.keyrings
             .map((keyring, index) => {
-              if (keyring.type === KeyringTypes.hd) {
+              if (keyring.type === KeyringType.Hd) {
                 return {
                   id: keyring.metadata.id,
                   name: keyring.metadata.name,
