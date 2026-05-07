@@ -9,8 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.30.0]
 
+### Uncategorized
+
+- This reverts commit 8c84cfa0cb92d870c8fc73a8d73df29cd7e72617. (#42090)
+- Revert "release: 13.29.0" (#42359)
+- This reverts commit 7a0415955016aa894bdfb571bb28052d34096b23, reversing (#42090)
+- Developer-options-tab into settings-v2/debug-tab (#42254)
+- Align AssetsControllerInit tests with simplified init (#42231)
+- Enforces performance quality gate that blocks PRs that introduce performance regressions, and defines an allowlist of gated (#42166)
+  metrics.
+- Enable ASSETS_UNIFIED_STATE_ENABLED for dev builds (#42157)
+- chore: sync stable into release/13.29.0 (#42124)
+- No user-facing changes. Benchmark infrastructure only (outlier trimming, warm-up exclusion, PowerUser iteration rebalance, (#41961)
+  trimmedCount Sentry tag).
+- Added UTM parameters to extension links for improved analytics tracking (#40745)
+
 ### Added
 
+- Update metrics to track wallet composition (number of accounts, number of hardware wallets etc) (#41918)
+- Migrate prettier to oxfmt (#40697)
+- Added a Developer Options entry to trigger the new Perps Withdraw confirmation UI (#42043)
+- feat: Create `LegacyBackgroundApiService` and init (#41786)
 - Added Tempo chain to the additional networks list (#42270)
 - Added an editable USD input for close-position amount in perpetuals trading (#42261)
 - Added auto-slippage support for RWA tokens (#42289)
@@ -34,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Null (internal decimal behavior, no user-facing feature flag — matches #41920 / #41993 precedent). (#41993)
 - Fixed a Perps bug where a position-level TP/SL appeared in the orders list of the market detail page instead of the auto-close section (#42292)
 - Fixed the modify menu popover width on the Perps market detail page (#42281)
 - Fixed a bug that caused Perps TP/SL RoE signs to disappear or default incorrectly in the Auto close modal (#42284)
