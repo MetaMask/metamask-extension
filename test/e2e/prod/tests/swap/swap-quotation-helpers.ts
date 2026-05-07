@@ -151,10 +151,21 @@ export async function importTokensIntoWallet(
   }
 
   for (const token of tokens) {
-    await assetListPage.checkTokenExistsInList(token.symbol);
-    console.log(
-      `[HELPER] Verified token visible in asset list: ${token.symbol}`,
-    );
+    // Some tokens display their full name in the asset list instead of the
+    // symbol (e.g. AZND shows "Asian Dollar"). Try the symbol first, then
+    // fall back to the name so verification works regardless of which label
+    // is rendered.
+    try {
+      await assetListPage.checkTokenExistsInList(token.symbol);
+      console.log(
+        `[HELPER] Verified token visible in asset list: ${token.symbol}`,
+      );
+    } catch (_symbolErr) {
+      await assetListPage.checkTokenExistsInList(token.name);
+      console.log(
+        `[HELPER] Verified token visible in asset list by name: ${token.name} (symbol: ${token.symbol})`,
+      );
+    }
   }
 }
 
@@ -194,12 +205,23 @@ function findTokensArray(obj: any): Token[] {
  *
  * @param driver - Playwright Driver instance
  * @param options - Swap flow options
+ * @param options.sourceTokenSymbol - Source token symbol (e.g. 'AZND')
+ * @param options.sourceTokenName - Optional full token name fallback when the asset list
+ * shows the name instead of the symbol (e.g. 'Asian Dollar' for AZND)
+ * @param options.destinationTokenAddress - Destination token address or symbol for native tokens
+ * @param options.destinationTokenSymbol - Destination token symbol for logging
+ * @param options.fromAmount - Amount to fill in the from-amount input
+ * @param options.useMax - Click the Max button instead of filling the amount input
  * @throws Error if any step fails
  */
 export async function performSwapFlow(
   driver: Driver,
   options: {
     sourceTokenSymbol: string;
+    // Full token name fallback for tokens whose asset-list label differs from
+    // their symbol (e.g. AZND displays "Asian Dollar"). Optional — all existing
+    // callers that omit this field are completely unaffected.
+    sourceTokenName?: string;
     destinationTokenAddress: string;
     destinationTokenSymbol: string;
     fromAmount?: string | number;
@@ -208,6 +230,7 @@ export async function performSwapFlow(
 ): Promise<void> {
   const {
     sourceTokenSymbol,
+    sourceTokenName,
     destinationTokenAddress,
     destinationTokenSymbol,
     fromAmount = DEFAULT_SWAP_AMOUNT,
@@ -224,13 +247,24 @@ export async function performSwapFlow(
 
   await driver.clickElement('[data-testid="account-overview__asset-tab"]');
   await driver.delay(PROD_DELAYS.API_RESPONSE);
+  // Some tokens display their full name instead of the symbol in the asset
+  // list (e.g. AZND shows "Asian Dollar"). Derive the label to use as a
+  // fallback when sourceTokenName is provided and differs from the symbol.
+  const sourceTokenLabel =
+    sourceTokenName && sourceTokenName !== sourceTokenSymbol
+      ? sourceTokenName
+      : sourceTokenSymbol;
   try {
     await assetListPage.clickOnAsset(sourceTokenSymbol);
-  } catch (error) {
-    await driver.clickElement({
-      css: '[data-testid="multichain-token-list-button"]',
-      text: sourceTokenSymbol,
-    });
+  } catch (_err) {
+    try {
+      await assetListPage.clickOnAsset(sourceTokenLabel);
+    } catch (_err2) {
+      await driver.clickElement({
+        css: '[data-testid="multichain-token-list-button"]',
+        text: sourceTokenLabel,
+      });
+    }
   }
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 

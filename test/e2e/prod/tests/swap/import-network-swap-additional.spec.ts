@@ -221,6 +221,7 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                 );
                 await performSwapFlow(driver, {
                   sourceTokenSymbol: fromSymbol,
+                  sourceTokenName: tokenBySymbol.get(fromSymbol)?.name,
                   destinationTokenAddress: destinationAddress,
                   destinationTokenSymbol: toSymbol,
                   fromAmount: plannedFromAmount,
