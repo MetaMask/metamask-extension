@@ -1,8 +1,11 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../selectors';
+import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
+import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
@@ -15,10 +18,15 @@ export function useAutomaticTransactionPayToken({
   disable?: boolean;
   preferredToken?: SetPayTokenRequest;
 } = {}) {
-  const isUpdated = useRef(false);
-  const { setPayToken } = useTransactionPayToken();
+  // Per-id guard: don't re-dispatch on revisit, do dispatch for new tx.
+  const isUpdated = useRef<string | undefined>(undefined);
+  const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
   const tokens = useTransactionPayAvailableTokens();
+
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const transactionId = currentConfirmation?.id;
+  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
 
   const tokensWithBalance = useMemo(
     () => tokens.filter((t) => !t.disabled),
@@ -36,13 +44,19 @@ export function useAutomaticTransactionPayToken({
     [requiredTokens],
   );
 
-  useEffect(() => {
-    if (disable || isUpdated.current) {
+  useLayoutEffect(() => {
+    if (
+      disable ||
+      payToken ||
+      !transactionId ||
+      isUpdated.current === transactionId
+    ) {
       return;
     }
 
     const automaticToken = getBestToken({
       isHardwareWallet,
+      isWithdraw,
       targetToken,
       tokens: tokensWithBalance,
       preferredToken,
@@ -57,25 +71,30 @@ export function useAutomaticTransactionPayToken({
       chainId: automaticToken.chainId,
     });
 
-    isUpdated.current = true;
+    isUpdated.current = transactionId;
   }, [
     disable,
     isHardwareWallet,
+    isWithdraw,
+    payToken,
     preferredToken,
     requiredTokens,
     setPayToken,
     targetToken,
     tokensWithBalance,
+    transactionId,
   ]);
 }
 
 function getBestToken({
   isHardwareWallet,
+  isWithdraw,
   preferredToken,
   targetToken,
   tokens,
 }: {
   isHardwareWallet: boolean;
+  isWithdraw: boolean;
   preferredToken?: SetPayTokenRequest;
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
@@ -89,6 +108,12 @@ function getBestToken({
 
   if (isHardwareWallet) {
     return targetTokenFallback;
+  }
+
+  // For withdraws `preferredToken` is the destination — honour it even if
+  // the user has no wallet balance of it.
+  if (isWithdraw && preferredToken) {
+    return preferredToken;
   }
 
   if (preferredToken) {

@@ -46,7 +46,11 @@ import browser from 'webextension-polyfill';
 import { JsonRpcEngine } from '@metamask/json-rpc-engine';
 import { errorCodes } from '@metamask/rpc-errors';
 import { ERC20 } from '@metamask/controller-utils';
-import { parseCaipAccountId } from '@metamask/utils';
+import {
+  parseCaipAccountId,
+  parseCaipChainId,
+  toCaipAccountId,
+} from '@metamask/utils';
 
 import { createTestProviderTools } from '../../test/stub/provider';
 import {
@@ -86,6 +90,7 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import { forwardRequestToSnap } from './lib/forwardRequestToSnap';
+import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import MetaMaskController from './metamask-controller';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
@@ -5040,7 +5045,6 @@ describe('MetaMaskController', () => {
           CHAIN_IDS.LINEA_MAINNET,
           CHAIN_IDS.BASE,
           CHAIN_IDS.ARBITRUM,
-          CHAIN_IDS.BSC,
           CHAIN_IDS.POLYGON,
           CHAIN_IDS.OPTIMISM,
           CHAIN_IDS.SEI,
@@ -5048,6 +5052,7 @@ describe('MetaMaskController', () => {
         const networksWithoutFailoverUrls = [
           CHAIN_IDS.SEPOLIA,
           CHAIN_IDS.LINEA_SEPOLIA,
+          CHAIN_IDS.BSC,
           '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
           '0x539', // Localhost
@@ -5746,6 +5751,79 @@ describe('MetaMaskController', () => {
         });
       });
 
+      it('uses activePermittedAddressOverride for approval when it matches a later permitted account', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({ approved: true });
+
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          mockTabId,
+          mockNewConnectionTriggerType,
+          { activePermittedAddressOverride: '0x456' },
+        );
+        expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: '0x456',
+          },
+          shouldShowRequest: true,
+        });
+        expect(
+          metamaskController._handleDefiReferralApprovedAccount,
+        ).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          '0x456',
+          mockPermittedAccounts,
+          [],
+        );
+        expect(
+          metamaskController._handleDefiReferralRedirect,
+        ).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          mockTabId,
+          '0x456',
+        );
+      });
+
+      it('uses caveat address casing when activePermittedAddressOverride matches case-insensitively', async () => {
+        const caveatAddress = '0xAbCdEf0000000000000000000000000000000001';
+        const permittedAccountsForCasing = [caveatAddress, '0x456'];
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(permittedAccountsForCasing);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          mockTabId,
+          mockNewConnectionTriggerType,
+          {
+            activePermittedAddressOverride: caveatAddress.toLowerCase(),
+          },
+        );
+        expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: caveatAddress,
+          },
+          shouldShowRequest: true,
+        });
+      });
+
       it('triggers approval without pop-up for a new unprocessed account on navigate to connected tab', async () => {
         jest
           .spyOn(metamaskController, 'getPermittedAccounts')
@@ -5769,6 +5847,32 @@ describe('MetaMaskController', () => {
             selectedAddress: mockPermittedAccount,
           },
           shouldShowRequest: false, // false because triggerType is navigate to connected tab
+        });
+      });
+
+      it('triggers approval without pop-up when permitted account was added via background API', async () => {
+        jest
+          .spyOn(metamaskController, 'getPermittedAccounts')
+          .mockReturnValueOnce(mockPermittedAccounts);
+        jest
+          .spyOn(metamaskController.approvalController, 'add')
+          .mockResolvedValueOnce({});
+
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          mockTabId,
+          ReferralTriggerType.PermittedAccountAdded,
+        );
+        expect(metamaskController.approvalController.add).toHaveBeenCalledWith({
+          origin: HYPERLIQUID_ORIGIN,
+          type: HYPERLIQUID_APPROVAL_TYPE,
+          requestData: {
+            learnMoreUrl: HYPERLIQUID_LEARN_MORE_URL,
+            partnerId: DefiReferralPartner.Hyperliquid,
+            partnerName: HYPERLIQUID_NAME,
+            selectedAddress: mockPermittedAccount,
+          },
+          shouldShowRequest: false,
         });
       });
 
@@ -6055,6 +6159,176 @@ describe('MetaMaskController', () => {
             mockPermittedAccount,
           );
         });
+      });
+    });
+
+    describe('_handleDefiReferralOnPermittedAccountsAdded', () => {
+      const HL_ORIGIN =
+        DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
+
+      let mockEvmAccount;
+      let mockCaipAccountId;
+      let handleDefiReferralSpy;
+
+      beforeEach(() => {
+        jest
+          .mocked(parseCaipAccountId)
+          .mockImplementation(
+            jest.requireActual('@metamask/utils').parseCaipAccountId,
+          );
+
+        mockEvmAccount = createMockInternalAccount({
+          address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+        });
+        const { namespace, reference } = parseCaipChainId(
+          mockEvmAccount.scopes[0],
+        );
+        mockCaipAccountId = toCaipAccountId(
+          namespace,
+          reference,
+          mockEvmAccount.address,
+        );
+
+        handleDefiReferralSpy = jest
+          .spyOn(metamaskController, 'handleDefiReferral')
+          .mockResolvedValue(undefined);
+
+        metamaskController.accountsController.update((state) => {
+          state.internalAccounts.accounts[mockEvmAccount.id] = mockEvmAccount;
+          state.internalAccounts.selectedAccount = mockEvmAccount.id;
+        });
+
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 914,
+            title: 'Hyperliquid',
+            origin: HL_ORIGIN,
+            protocol: 'https:',
+            url: `${HL_ORIGIN}/trade`,
+            host: 'app.hyperliquid.xyz',
+            href: `${HL_ORIGIN}/trade`,
+          };
+        });
+      });
+
+      afterEach(() => {
+        handleDefiReferralSpy.mockRestore();
+        jest.mocked(parseCaipAccountId).mockReset();
+      });
+
+      it('calls handleDefiReferral when the selected EVM account matches a new permitted CAIP id and appActiveTab matches', () => {
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).toHaveBeenCalledTimes(1);
+        expect(handleDefiReferralSpy).toHaveBeenCalledWith(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
+          914,
+          ReferralTriggerType.PermittedAccountAdded,
+          {
+            activePermittedAddressOverride: mockEvmAccount.address,
+          },
+        );
+      });
+
+      it('does nothing when origin is not Hyperliquid', () => {
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: DEFI_REFERRAL_PARTNERS[DefiReferralPartner.GMX].origin,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when the selected account is not EVM', () => {
+        const solAccount = createMockInternalAccount({
+          type: SolAccountType.DataAccount,
+        });
+        metamaskController.accountsController.update((state) => {
+          state.internalAccounts.accounts = {
+            [solAccount.id]: solAccount,
+          };
+          state.internalAccounts.selectedAccount = solAccount.id;
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when newly permitted ids do not include the selected account address', () => {
+        const otherCaipId = toCaipAccountId(
+          'eip155',
+          '1',
+          '0x0000000000000000000000000000000000000001',
+        );
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [otherCaipId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when appActiveTab origin does not match', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 914,
+            title: 'Other',
+            origin: 'https://example.com',
+            protocol: 'https:',
+            url: 'https://example.com/',
+            host: 'example.com',
+            href: 'https://example.com/',
+          };
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when appActiveTab has no numeric id', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = {
+            id: 'not-a-number',
+            title: 'Hyperliquid',
+            origin: HL_ORIGIN,
+            protocol: 'https:',
+            url: `${HL_ORIGIN}/`,
+            host: 'app.hyperliquid.xyz',
+            href: `${HL_ORIGIN}/`,
+          };
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
+      });
+
+      it('does nothing when appActiveTab is undefined', () => {
+        metamaskController.appStateController.update((state) => {
+          state.appActiveTab = undefined;
+        });
+
+        metamaskController._handleDefiReferralOnPermittedAccountsAdded({
+          origin: HL_ORIGIN,
+          newCaipAccountIds: [mockCaipAccountId],
+        });
+
+        expect(handleDefiReferralSpy).not.toHaveBeenCalled();
       });
     });
   });

@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Hardware-Wallet"
   },
-  "addIPFSGateway": {
-    "message": "Fügen Sie Ihr bevorzugtes IPFS-Gateway hinzu."
-  },
   "addMemo": {
     "message": "Notiz hinzufügen"
   },
@@ -721,7 +718,7 @@
     "message": "Vermögenswert-Optionen"
   },
   "assets": {
-    "message": "Vermögenswerte"
+    "message": "Assets"
   },
   "assetsDescription": {
     "message": "Automatische Erkennung von Tokens in Ihrer Wallet, Anzeige von NFTs und stapelweise Aktualisierung des Kontostands"
@@ -1545,14 +1542,11 @@
     "message": "Wenn Sie unsere Standardeinstellungen und -konfigurationen verwenden, nutzen wir Infura als Standard-RPC-Anbieter (Remote Procedure Call), um einen möglichst zuverlässigen und privaten Zugriff auf Ethereum-Daten zu gewährleisten. In Ausnahmefällen können wir auch andere RPC-Anbieter einsetzen, um unseren Nutzern das bestmögliche Erlebnis zu bieten. Sie können Ihren eigenen RPC wählen, doch bedenken Sie dabei, dass jeder RPC Ihre IP-Adresse und Ihr Ethereum-Wallet zur Durchführung von Transaktionen erhalten wird. Weitere Informationen darüber, wie Infura Daten für EVM-Konten verarbeitet, finden Sie in unserer $1 und für Solana-Konten in der $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "klicken Sie hier"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrer Hardware-Wallet zu verbinden."
   },
   "circulatingSupply": {
-    "message": "Zirkulierende Versorgung"
+    "message": "Umlaufmenge"
   },
   "clear": {
     "message": "Löschen"
@@ -2216,12 +2210,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Erhalten Sie Produkt-Updates, Tipps und Neuigkeiten – auch per E-Mail. Wir können Ihre Interaktionen zur Verbesserung unseres Angebots nutzen."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Okay"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Sie haben die Datenerhebung für unsere Marketingzwecke deaktiviert. Dies gilt nur für dieses Gerät. Wenn Sie MetaMask auf anderen Geräten verwenden, stellen Sie sicher, dass Sie sich auch dort abmelden."
   },
   "dataUnavailable": {
     "message": "Daten nicht verfügbar"
@@ -5078,7 +5066,7 @@
     "message": "Helfen Sie uns, Ihr Erlebnis zu verbessern"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Das IPFS-Gateway ermöglicht es, auf von Dritten gehostete Daten zuzugreifen und diese einzusehen. Sie können ein benutzerdefiniertes IPFS-Gateway hinzufügen oder weiterhin das Standard-Gateway verwenden."
+    "message": "Das IPFS-Gateway ermöglicht den Zugriff auf Daten, die von Drittanbietern gehostet werden. Sie können ein benutzerdefiniertes IPFS-Gateway hinzufügen oder weiterhin das Standard-Gateway verwenden."
   },
   "onboardingAdvancedPrivacyIPFSInvalid": {
     "message": "Bitte geben Sie eine gültige URL ein."
@@ -5103,7 +5091,7 @@
     "description": "$1 is the type of login used Google, Apple, etc."
   },
   "onboardingCreateWallet": {
-    "message": "Ein neues Wallet erstellen"
+    "message": "Eine neue Wallet erstellen"
   },
   "onboardingImportWallet": {
     "message": "Ich habe eine bestehende Wallet"
@@ -5680,9 +5668,6 @@
   "perpsCancelOrder": {
     "message": "Order stornieren"
   },
-  "perpsCandleIntervals": {
-    "message": "Kerzendiagramm-Intervalle"
-  },
   "perpsCandlePeriodDays": {
     "message": "Tage"
   },
@@ -5694,9 +5679,6 @@
   },
   "perpsCloseAll": {
     "message": "Alle schließen"
-  },
-  "perpsCloseAmount": {
-    "message": "Betrag schließen"
   },
   "perpsCloseLong": {
     "message": "Long-Position schließen"
@@ -6278,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Auszahlen"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps-Auszahlung",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Geschätzte Zeit"
   },
@@ -6325,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Auszahlung abgesendet"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask swappt den Token für Sie in den gewünschten Token um. Beim Swap in mUSD fallen keine MetaMask-Gebühren an.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Sie empfangen"
@@ -6450,6 +6440,10 @@
   },
   "provide": {
     "message": "Bereitstellen"
+  },
+  "providerFee": {
+    "message": "Anbietergebühr",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Öffentliche Adresse"
@@ -6657,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Krypto empfangen"
   },
+  "receiveToken": {
+    "message": "Token empfangen",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Empfangen"
+  },
+  "receivedTotal": {
+    "message": "Insgesamt erhalten",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Empfängeradresse",
@@ -7166,12 +7168,6 @@
   "securityChangePassword": {
     "message": "Passwort ändern"
   },
-  "securityChangePasswordDescription": {
-    "message": "Wählen Sie ein sicheres Passwort, um die MetaMask-App auf Ihrem Gerät zu entsperren. Wenn Sie dieses Passwort verlieren, benötigen Sie für den erneuten Import Ihrer Wallet Ihre geheime Wiederherstellungsphrase."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Passwort"
-  },
   "securityChangePasswordToastError": {
     "message": "Passwort konnte nicht geändert werden. Bitte versuchen Sie es erneut."
   },
@@ -7183,16 +7179,6 @@
   },
   "securityDescription": {
     "message": "Verringern Sie das Risiko, sich mit unsicheren Netzwerken zu verbinden und sichern Sie Ihre Konten"
-  },
-  "securityLoginWithSocial": {
-    "message": "Mit $1 anmelden",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Geheime Wiederherstellungsphrase gesichert"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Geheime Wiederherstellungsphrase sichern"
   },
   "securityMessageLinkForNetworks": {
     "message": "Netzwerk-Betrügereien und Sicherheitsrisiken"
@@ -7215,14 +7201,8 @@
     "message": "$1 WIEDERHERSTELLUNG",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Sichern Sie Ihre geheime Wiederherstellungsphrase, damit Sie nie den Zugriff auf Ihre Wallet verlieren. Bewahren Sie sie an einem sicheren Ort auf, auf den nur Sie Zugriff haben und den Sie nie vergessen werden."
-  },
   "securitySrpLabel": {
     "message": "GEHEIME WIEDERHERSTELLUNGSPHRASEN"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Wiederherstellungsmethoden verwalten"
   },
   "seeAllPermissions": {
     "message": "Alle Genehmigungen ansehen",
@@ -7651,7 +7631,7 @@
     "message": "Handeln Sie mit zusätzlicher Sicherheit"
   },
   "shieldEntryModalTitleB": {
-    "message": "Wir stellen vor: Transaktionsschutz"
+    "message": "Neu: Transaktionsschutz"
   },
   "shieldErrorPayerAddressAlreadyUsed": {
     "message": "Diese Adresse ist bereits mit einem anderen Konto verknüpft. Verwenden Sie eine andere Adresse, um sich anzumelden."
@@ -8121,13 +8101,13 @@
     "message": "Wir konnten das Gas nicht schätzen. Es könnte einen Fehler im Contract geben und diese Transaktion könnte fehlschlagen."
   },
   "simulationsSettingDescription": {
-    "message": "Schalten Sie diese Funktion ein, um die Saldoänderungen von Transaktionen und Unterschriften abzuschätzen, bevor Sie sie bestätigen. Dies ist keine Garantie für das endgültige Ergebnis. $1"
+    "message": "Aktivieren Sie diese Funktion, um Änderungen Ihres Kontostands durch Transaktionen und Signaturen vor der Bestätigung abzuschätzen. Dies garantiert nicht das endgültige Ergebnis. $1"
   },
   "simulationsSettingDescriptionV2": {
     "message": "Schätzen Sie die Saldoänderungen von Transaktionen ab, bevor Sie diese bestätigen. Dies ist jedoch keine Garantie für das endgültige Ergebnis Ihrer Transaktionen. $1"
   },
   "simulationsSettingSubHeader": {
-    "message": "Geschätzte Kontostandänderungen"
+    "message": "Kontostandänderungen schätzen"
   },
   "singleNetwork": {
     "message": "1 Netzwerk"
@@ -8186,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Anfragen für Smart-Konten von Dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Lassen Sie Dapps die Smart-Konto-Funktionen für Standardkonten anfordern. Dies wirkt sich nicht auf bereits bestehende Smart-Konten aus."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Dieselbe Adresse. Intelligentere Funktionen."
   },
@@ -8200,9 +8177,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Die Empfängeradresse unterstützt womöglich keine direkten Token-Übertragungen, was zu Geldverlusten führen kann. Fahren Sie nur fort, wenn Sie sicher sind, dass dieser Contract Ihre Übertragung empfangen kann."
-  },
-  "smartContracts": {
-    "message": "Smart Contracts"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Nicht genügend Gelder für einen Smart Swap."
@@ -8825,12 +8799,6 @@
     "message": "Unterstützte Sprachen",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Nehmen Sie an unserer Umfrage teil"
-  },
-  "surveyTitle": {
-    "message": "Gestalten Sie die Zukunft von MetaMask"
-  },
   "swap": {
     "message": "Swap"
   },
@@ -9226,9 +9194,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Token wurde bereits hinzugefügt."
-  },
-  "tokenAutoDetection": {
-    "message": "Automatische Token-Erkennung"
   },
   "tokenContractAddress": {
     "message": "Token-Contract-Adresse"
@@ -9675,7 +9640,7 @@
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useTokenDetectionPrivacyDesc": {
-    "message": "Die automatische Anzeige von Token, die an Ihr Konto gesendet werden, beinhaltet die Kommunikation mit Servern von Drittanbietern, um die Bilder der Token abzurufen. Diese Server haben Zugriff auf Ihre IP-Adresse."
+    "message": "Die automatische Anzeige von Tokens, die an Ihr Konto gesendet werden, erfordert die Kommunikation mit Servern von Drittanbietern, um Token-Bilder abzurufen. Diese Server erhalten Zugriff auf Ihre IP-Adresse."
   },
   "usedByClients": {
     "message": "Verwendet von einer Reihe von Kunden"
@@ -9823,6 +9788,10 @@
   "willApproveAmountForSwapping": {
     "message": "Genehmigt Token für Swap."
   },
+  "withdrawTo": {
+    "message": "Empfangen",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Auszahlung"
   },
@@ -9855,6 +9824,10 @@
   "youSent": {
     "message": "Sie sandten",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Sie empfangen",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Ihre Aktivität"

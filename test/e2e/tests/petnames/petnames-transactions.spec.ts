@@ -21,6 +21,8 @@ describe('Petnames - Transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
+        // TODO: Remove once the issue #32084 is fixed: Transaction with id _ID_ not found
+        ignoredConsoleErrors: ['Transaction with id'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -67,6 +69,8 @@ describe('Petnames - Transactions', function () {
           })
           .withNoNames()
           .build(),
+        // TODO: Remove once the issue #32084 is fixed: Transaction with id _ID_ not found
+        ignoredConsoleErrors: ['Transaction with id'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
