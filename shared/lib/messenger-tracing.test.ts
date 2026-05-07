@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-shadow
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { Messenger } from '@metamask/messenger';
 import { sentryGetActiveSpan, trace } from './trace';
 import { shouldSampleWrappers } from './wrapper-sampling';
