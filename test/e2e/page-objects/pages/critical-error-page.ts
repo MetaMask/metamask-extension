@@ -90,17 +90,37 @@ class CriticalErrorPage {
       await alert.accept();
 
       // runtime.reload() kills extension tabs, so the driver's current window
-      // handle is stale. Wait for the reload, then reattach to the extension UI
-      // once the background has completed the restoring-tab handoff.
+      // handle is stale. Wait for the reload, then reattach to a surviving tab.
       await this.driver.delay(3000);
-      try {
-        await this.driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
-      } catch {
-        await this.driver.openNewPage('about:blank');
-        await this.driver.navigate();
-      }
+      const handles = await this.driver.driver.getAllWindowHandles();
+      await this.driver.driver.switchTo().window(handles[0]);
+
+      await this.waitForPageAfterExtensionReload({
+        timeoutMs: 30_000,
+        waitForLoadingLogoToDisappear: false,
+      });
+
+      await this.driver.waitUntil(
+        async () => {
+          const cleared = await this.driver.executeScript(`
+            return new Promise(resolve => {
+              const b = globalThis.browser ?? globalThis.chrome;
+              b.storage.local.get('criticalErrorRestore', (data) => {
+                resolve(!data.criticalErrorRestore);
+              });
+            });
+          `);
+          return Boolean(cleared);
+        },
+        { interval: 300, timeout: 30_000 },
+      );
+
+      // TEMP DIAGNOSTIC: The restore session key is cleared before the service
+      // worker completes initBackground + handoffRestoringTabToExtension. This
+      // delay gives that handoff time to finish before closing extra tabs.
+      await this.driver.delay(10_000);
+
+      await this.driver.closeAllOtherTabs();
     } else {
       await alert.dismiss();
     }
