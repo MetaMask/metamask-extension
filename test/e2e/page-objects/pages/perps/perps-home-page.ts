@@ -57,6 +57,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-view',
   };
 
+  private readonly perpsRecentActivityEmpty = {
+    testId: 'perps-recent-activity-empty',
+  };
+
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
   /**
@@ -130,9 +134,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * Waits for the Perps tab to be present, clicks it, then waits for the Perps Home view to load.
    */
   async navigateToPerpsHome(): Promise<void> {
-    await this.driver.waitForSelector(this.accountOverviewPerpsTab, {
-      timeout: 20000,
-    });
+    await this.driver.waitForSelector(this.accountOverviewPerpsTab);
     await this.driver.clickElement(this.accountOverviewPerpsTab);
     await this.checkPageIsLoaded();
   }
@@ -177,7 +179,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * Dismisses the geo-block modal by clicking the "Got it" button.
    */
   async dismissGeoBlockModal(): Promise<void> {
-    await this.driver.clickElement(this.geoBlockModalDismiss);
+    await this.driver.clickElementAndWaitToDisappear(this.geoBlockModalDismiss);
   }
 
   /**
@@ -200,8 +202,6 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * Shown when the user has no perps transaction history.
    */
   async waitForEmptyActivitySection(): Promise<void> {
-    await this.driver.waitForSelector({
-      testId: 'perps-recent-activity-empty',
-    });
+    await this.driver.waitForSelector(this.perpsRecentActivityEmpty);
   }
 }

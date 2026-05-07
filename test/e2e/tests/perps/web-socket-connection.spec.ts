@@ -5,7 +5,7 @@ import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
-import { getPerpsConfigEligible } from './helpers';
+import { getPerpsConfigEligible } from './perps-fixture-config';
 
 async function waitForPerpsWebsocketConnections(
   driver: Driver,

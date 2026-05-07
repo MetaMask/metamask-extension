@@ -23,7 +23,7 @@ import { Driver } from '../../webdriver/driver';
 import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsWithdrawPage } from '../../page-objects/pages/perps/perps-withdraw-page';
-import { getPerpsConfigEligible } from './helpers';
+import { getPerpsConfigEligible } from './perps-fixture-config';
 import { WS_USER_WITH_FUNDED_ACCOUNT } from './mocks/websocketPositionMocks';
 
 const withdrawFixtures = (title?: string) => ({

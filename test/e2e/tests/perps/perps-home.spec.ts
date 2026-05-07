@@ -5,7 +5,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
-import { getPerpsConfigEligible } from './helpers';
+import { getPerpsConfigEligible } from './perps-fixture-config';
 
 /**
  * Perps E2E tests.

@@ -25,7 +25,7 @@ import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market
 import { PerpsActivityPage } from '../../page-objects/pages/perps/perps-activity-page';
 import { PerpsOrderEntryPage } from '../../page-objects/pages/perps/perps-order-entry-page';
 import { assertPerpsActivityShowsCloseFill } from '../../page-objects/flows/perps-activity-close-fill.flow';
-import { getPerpsConfigEligible } from './helpers';
+import { getPerpsConfigEligible } from './perps-fixture-config';
 import {
   WS_USER_WITH_BTC_SHORT_POSITION,
   WS_USER_WITH_ETH_LONG_POSITION,
