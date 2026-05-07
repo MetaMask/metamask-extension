@@ -175,7 +175,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               stripTrailingZeros: false,
             }
           : {}),
-      }).replace(/[$,]/gu, '');
+      }).replace(/[<$,]/gu, '');
     },
     [entryPrice, leverage, direction],
   );

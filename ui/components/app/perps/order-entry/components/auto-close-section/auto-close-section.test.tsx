@@ -739,6 +739,7 @@ describe('AutoCloseSection', () => {
           currentPrice: 0.0019860973187686197,
           expectedPrice: '0.002000',
         },
+        { asset: 'PUMP', currentPrice: 0.0000009, expectedPrice: '0.000001' },
         { asset: 'xyz:XYZ100', currentPrice: 28426, expectedPrice: '28625' },
         { asset: 'ETH', currentPrice: 2359.6, expectedPrice: '2376.1' },
       ];
