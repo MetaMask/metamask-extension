@@ -22,6 +22,9 @@ const DAI_CAIP19_MAINNET = `eip155:1/erc20:${DAI_ADDRESS}`;
 // Non-EVM (Solana)
 const SOL_USDC_ASSET_ID =
   'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/spl:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+// Native Solana (slip44) — should never be migrated.
+const SOL_NATIVE_ASSET_ID =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 
 type TestAssetsController = {
   assetsInfo: Record<string, unknown>;
@@ -1035,7 +1038,8 @@ describe(`migration #${VERSION}`, () => {
 
   // ─── Cleanup of pre-existing buggy customAssets entries ─────────────────────
 
-  it('removes pre-existing non-EVM entries from customAssets', async () => {
+  it('removes pre-existing non-EVM and native entries from customAssets', async () => {
+    const NATIVE_ETH_MAINNET = 'eip155:1/slip44:60';
     const vd = cloneDeep(
       buildBaseStorage({
         AssetsController: {
@@ -1044,9 +1048,10 @@ describe(`migration #${VERSION}`, () => {
           customAssets: {
             [ACCOUNT_1_ID]: [
               SOL_USDC_ASSET_ID, // non-EVM, should be removed
-              USDC_CAIP19_MAINNET, // EVM, should be preserved
+              NATIVE_ETH_MAINNET, // native (slip44), should be removed
+              USDC_CAIP19_MAINNET, // EVM ERC-20, should be preserved
             ],
-            [ACCOUNT_2_ID]: [SOL_USDC_ASSET_ID], // entire entry becomes empty
+            [ACCOUNT_2_ID]: [SOL_USDC_ASSET_ID, SOL_NATIVE_ASSET_ID],
           },
         },
       }),
@@ -1059,6 +1064,94 @@ describe(`migration #${VERSION}`, () => {
     expect(changed).toContain('AssetsController');
     expect(ac.customAssets[ACCOUNT_1_ID]).toEqual([USDC_CAIP19_MAINNET]);
     expect(ac.customAssets[ACCOUNT_2_ID]).toEqual([]);
+  });
+
+  // ─── Native (slip44) assets are skipped entirely ───────────────────────────
+
+  it('skips native (slip44) assets entirely — runtime builds them', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        MultichainAssetsController: {
+          accountsAssets: {
+            [ACCOUNT_1_ID]: [SOL_NATIVE_ASSET_ID, SOL_USDC_ASSET_ID],
+          },
+          assetsMetadata: {
+            [SOL_NATIVE_ASSET_ID]: {
+              fungible: true,
+              symbol: 'SOL',
+              name: 'Solana',
+              units: [{ decimals: 9 }],
+            },
+            [SOL_USDC_ASSET_ID]: {
+              fungible: true,
+              symbol: 'USDC',
+              name: 'USD Coin',
+              units: [{ decimals: 6 }],
+            },
+          },
+        },
+        MultichainBalancesController: {
+          balances: {
+            [ACCOUNT_1_ID]: {
+              [SOL_NATIVE_ASSET_ID]: { amount: '2.5', unit: 'SOL' },
+              [SOL_USDC_ASSET_ID]: { amount: '100', unit: 'USDC' },
+            },
+          },
+        },
+      }),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    const ac = getAC(vd);
+    // Native is NOT migrated (neither metadata nor balance).
+    expect(ac.assetsInfo[SOL_NATIVE_ASSET_ID]).toBeUndefined();
+    expect(
+      ac.assetsBalance[ACCOUNT_1_ID]?.[SOL_NATIVE_ASSET_ID],
+    ).toBeUndefined();
+    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(
+      SOL_NATIVE_ASSET_ID,
+    );
+    // SPL token IS migrated.
+    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[SOL_USDC_ASSET_ID]).toMatchObject({
+      amount: '100',
+    });
+  });
+
+  it('does not create per-account entries for accounts that hold only native assets', async () => {
+    // ACCOUNT_2 has only native — should get nothing migrated.
+    const vd = cloneDeep(
+      buildBaseStorage({
+        MultichainAssetsController: {
+          accountsAssets: {
+            [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID],
+            [ACCOUNT_2_ID]: [SOL_NATIVE_ASSET_ID],
+          },
+          assetsMetadata: {
+            [SOL_USDC_ASSET_ID]: {
+              fungible: true,
+              symbol: 'USDC',
+              units: [{ decimals: 6 }],
+            },
+            [SOL_NATIVE_ASSET_ID]: {
+              fungible: true,
+              symbol: 'SOL',
+              units: [{ decimals: 9 }],
+            },
+          },
+        },
+        MultichainBalancesController: { balances: {} },
+      }),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    const ac = getAC(vd);
+    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[SOL_USDC_ASSET_ID]).toBeDefined();
+    expect(ac.assetsBalance[ACCOUNT_2_ID]).toBeUndefined();
+    expect(ac.customAssets[ACCOUNT_2_ID]).toBeUndefined();
   });
 
   // ─── version bump ────────────────────────────────────────────────────────────

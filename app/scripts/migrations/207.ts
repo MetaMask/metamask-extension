@@ -40,28 +40,39 @@ function defaultAssetsController() {
 }
 
 /**
- * Consolidate EVM token state (TokensController + TokenBalancesController) and
- * non-EVM asset state (MultichainAssetsController + MultichainBalancesController)
- * into the unified AssetsController state.
+ * Consolidate user-imported token state (ERC-20 from TokensController,
+ * SPL/non-native from MultichainAssetsController) into the unified
+ * `AssetsController` state.
  *
- * Per-account classification rules:
- * EVM ERC-20 with non-zero balance lands in `assetsBalance`. EVM ERC-20 with
- * zero / missing balance lands in `customAssets` (user-imported, needs polling).
- * Non-EVM (snap-discovered) assets ALWAYS land in `assetsBalance`: the snap
- * manages discovery, so the `customAssets` rule does not apply. Missing
- * balances are written as `'0'` so the asset is still tracked.
+ * What gets migrated:
+ * Only user-imported tokens — EVM ERC-20s and non-EVM non-native (e.g. SPL)
+ * tokens. Native assets (CAIP-19 `slip44` namespace) are deliberately skipped:
+ * the `AssetsController` builds those at runtime via its own seeding logic
+ * (`#ensureDefaultTrackedAssetsSeeded` and the snap-discovery flow), so the
+ * migration does not need to populate them.
  *
- * Metadata is written to the global `assetsInfo` registry (keyed by CAIP-19,
- * not by account) so the asset is immediately renderable in the UI.
+ * As a consequence, accounts that hold only native assets get no per-account
+ * entries (nothing to migrate). Accounts that hold at least one ERC-20 / SPL
+ * token, plus the currently selected account if it has imported tokens, are
+ * the only ones with per-account writes.
+ *
+ * Per-account classification:
+ * ERC-20 with non-zero balance lands in `assetsBalance`. ERC-20 with zero or
+ * missing balance lands in `customAssets`. Non-EVM non-native tokens (e.g. SPL)
+ * always land in `assetsBalance` with `'0'` for missing balances — the snap
+ * manages discovery for these, so they are never user-imported in the
+ * `customAssets` sense.
+ *
+ * Metadata is written to the global `assetsInfo` registry (keyed by CAIP-19),
+ * so each migrated asset is immediately renderable in the UI.
  *
  * Per-account entries are only written for accounts present in
- * `AccountTreeController`. If the account tree is empty / not built, no
- * per-account writes happen — the controller will repopulate state once the
- * tree exists. `assetsInfo` writes still happen (the registry is global).
+ * `AccountTreeController`. If the tree is empty / not built, no per-account
+ * writes happen — the controller will repopulate state once the tree exists.
  *
  * Idempotency: existing AssetsController entries are never overwritten; the
- * migration only fills gaps. Non-EVM entries previously written to
- * `customAssets` by an earlier buggy version of this migration are cleaned up.
+ * migration only fills gaps. Non-EVM and native entries previously written to
+ * `customAssets` by an earlier buggy version are cleaned up.
  *
  * @param versionedData - The versioned data object to migrate.
  * @param changedControllers - Set used to record which controllers were modified.
@@ -76,7 +87,7 @@ export const migrate = (async (versionedData, changedControllers) => {
 
     const evmChanged = migrateEvmTokens(data, ac, addressToId, treeAccountIds);
     const nonEvmChanged = migrateNonEvmAssets(data, ac, treeAccountIds);
-    const cleanupChanged = cleanupNonEvmCustomAssets(ac);
+    const cleanupChanged = cleanupCustomAssets(ac);
 
     if (evmChanged || nonEvmChanged || cleanupChanged) {
       changedControllers.add('AssetsController');
@@ -322,6 +333,17 @@ function isNonEvmAssetId(assetId: string): boolean {
   return !assetId.startsWith(EVM_ASSET_PREFIX);
 }
 
+/**
+ * Returns true when the assetId represents a native asset (CAIP-19 `slip44`
+ * namespace). The unified `AssetsController` builds native asset entries at
+ * runtime, so the migration deliberately skips them.
+ *
+ * @param assetId - CAIP-19 asset identifier.
+ */
+function isNativeAssetId(assetId: string): boolean {
+  return assetTypeFromCaip19(assetId) === 'native';
+}
+
 // ─── Generic write helpers ─────────────────────────────────────────────────────
 
 /**
@@ -434,20 +456,23 @@ function removeFromCustomAssets(
 }
 
 /**
- * Remove any non-EVM (i.e. non-`eip155:`) asset IDs from `customAssets`. These
- * may have been added by an earlier buggy version of this migration; the
- * unified `AssetsController` model treats snap-discovered (non-EVM) assets as
- * always-tracked.
+ * Strip entries from `customAssets` that should not be there:
+ * - Non-EVM (snap-discovered) assets — always tracked, never user-imported.
+ * - Native assets (slip44) — populated by the controller at runtime.
+ *
+ * These may have been added by an earlier buggy version of this migration.
  *
  * @param ac - The AssetsController view.
  */
-function cleanupNonEvmCustomAssets(ac: AssetsControllerShape): boolean {
+function cleanupCustomAssets(ac: AssetsControllerShape): boolean {
   let changed = false;
   for (const [accountId, assetIds] of Object.entries(ac.customAssets)) {
     if (!Array.isArray(assetIds)) {
       continue;
     }
-    const filtered = assetIds.filter((id) => !isNonEvmAssetId(id));
+    const filtered = assetIds.filter(
+      (id) => !isNonEvmAssetId(id) && !isNativeAssetId(id),
+    );
     if (filtered.length !== assetIds.length) {
       ac.customAssets[accountId] = filtered;
       changed = true;
@@ -694,6 +719,10 @@ function migrateNonEvmAssets(
 
     for (const assetId of assetIds) {
       if (typeof assetId !== 'string' || !assetId) {
+        continue;
+      }
+      // Native assets (slip44) are populated by the controller at runtime.
+      if (isNativeAssetId(assetId)) {
         continue;
       }
 
