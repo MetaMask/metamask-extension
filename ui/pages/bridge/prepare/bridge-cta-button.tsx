@@ -27,6 +27,7 @@ import {
 } from '../../../contexts/hardware-wallets';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
+import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 
 export const BridgeCTAButton = ({
