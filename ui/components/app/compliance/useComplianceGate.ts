@@ -68,6 +68,9 @@ export function useComplianceGate(address?: AddressInput) {
       .catch(() => {
         if (requestIdRef.current === requestId) {
           latestSuccessfulBlockedRef.current = false;
+          if (prefetchRef.current === request) {
+            prefetchRef.current = null;
+          }
         }
       });
   }, [addresses.length, checkCompliance, isComplianceEnabled]);
@@ -81,12 +84,14 @@ export function useComplianceGate(address?: AddressInput) {
       }
 
       let latestResults: WalletComplianceStatus[] | undefined;
+      const prefetch = prefetchRef.current;
       try {
-        latestResults = prefetchRef.current
-          ? await prefetchRef.current
-          : await checkCompliance();
+        latestResults = prefetch ? await prefetch : await checkCompliance();
       } catch {
         latestSuccessfulBlockedRef.current = false;
+        if (prefetchRef.current === prefetch) {
+          prefetchRef.current = null;
+        }
       }
 
       const isLatestResultBlocked =

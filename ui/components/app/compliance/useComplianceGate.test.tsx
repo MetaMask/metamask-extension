@@ -195,6 +195,32 @@ describe('useComplianceGate', () => {
     expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
   });
 
+  it('retries compliance checks after a rejected prefetch', async () => {
+    mockSubmitRequestToBackground
+      .mockRejectedValueOnce(new Error('offline'))
+      .mockResolvedValueOnce([getStatus(ADDRESS, true)]);
+    const firstAction = jest.fn().mockReturnValue('allowed');
+    const secondAction = jest.fn();
+    const { result } = renderHook(() => useComplianceGate(ADDRESS), {
+      wrapper: getWrapper(),
+    });
+
+    let value: string | undefined;
+    await act(async () => {
+      value = await result.current.gate(firstAction);
+    });
+
+    await act(async () => {
+      await result.current.gate(secondAction);
+    });
+
+    expect(firstAction).toHaveBeenCalledTimes(1);
+    expect(value).toBe('allowed');
+    expect(secondAction).not.toHaveBeenCalled();
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledTimes(2);
+    expect(mockShowAccessRestrictedModal).toHaveBeenCalledTimes(1);
+  });
+
   it('fails open when the compliance API rejects even if cached state is blocked', async () => {
     mockSubmitRequestToBackground.mockRejectedValueOnce(new Error('offline'));
     const action = jest.fn().mockReturnValue('allowed');
