@@ -25,6 +25,9 @@ type AssetsControllerShape = {
   customAssets: Record<string, string[]>;
 };
 
+const ZERO_AMOUNT = '0';
+const EVM_ASSET_PREFIX = 'eip155:';
+
 function defaultAssetsController() {
   return {
     assetsInfo: {},
@@ -37,20 +40,28 @@ function defaultAssetsController() {
 }
 
 /**
- * Consolidate EVM token state (TokensController + TokenBalancesController)
- * and non-EVM asset state (MultichainAssetsController + MultichainBalancesController)
+ * Consolidate EVM token state (TokensController + TokenBalancesController) and
+ * non-EVM asset state (MultichainAssetsController + MultichainBalancesController)
  * into the unified AssetsController state.
  *
- * Classification rule (per account/asset):
- * - Non-zero balance  → assetsBalance  (tracked automatically)
- * - Zero / missing    → customAssets   (user-added, must be polled)
+ * Per-account classification rules:
+ * EVM ERC-20 with non-zero balance lands in `assetsBalance`. EVM ERC-20 with
+ * zero / missing balance lands in `customAssets` (user-imported, needs polling).
+ * Non-EVM (snap-discovered) assets ALWAYS land in `assetsBalance`: the snap
+ * manages discovery, so the `customAssets` rule does not apply. Missing
+ * balances are written as `'0'` so the asset is still tracked.
  *
  * Metadata is written to the global `assetsInfo` registry (keyed by CAIP-19,
- * not by account) so the asset is immediately renderable in the UI — even for
- * tokens belonging to accounts that aren't in AccountsController.
+ * not by account) so the asset is immediately renderable in the UI.
+ *
+ * Per-account entries are only written for accounts present in
+ * `AccountTreeController`. If the account tree is empty / not built, no
+ * per-account writes happen — the controller will repopulate state once the
+ * tree exists. `assetsInfo` writes still happen (the registry is global).
  *
  * Idempotency: existing AssetsController entries are never overwritten; the
- * migration only fills gaps.
+ * migration only fills gaps. Non-EVM entries previously written to
+ * `customAssets` by an earlier buggy version of this migration are cleaned up.
  *
  * @param versionedData - The versioned data object to migrate.
  * @param changedControllers - Set used to record which controllers were modified.
@@ -59,63 +70,18 @@ export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
   try {
     const { data } = versionedData;
-
-    const accountsAssets = readPath(data, [
-      'MultichainAssetsController',
-      'accountsAssets',
-    ]);
-    const snapBalances = readPath(data, [
-      'MultichainBalancesController',
-      'balances',
-    ]);
-    console.log(
-      '++++ [migration 207] non-EVM input account counts:',
-      JSON.stringify({
-        accountsAssetsCount: isObject(accountsAssets)
-          ? Object.keys(accountsAssets).length
-          : 0,
-        snapBalancesCount: isObject(snapBalances)
-          ? Object.keys(snapBalances).length
-          : 0,
-      }),
-    );
-
-    const addressToId = buildAddressToIdMap(data);
     const ac = ensureAssetsController(data);
+    const treeAccountIds = collectTreeAccountIds(data);
+    const addressToId = buildAddressToIdMap(data, treeAccountIds);
 
-    const evmChanged = migrateEvmTokens(data, ac, addressToId);
-    const nonEvmChanged = migrateNonEvmAssets(data, ac);
+    const evmChanged = migrateEvmTokens(data, ac, addressToId, treeAccountIds);
+    const nonEvmChanged = migrateNonEvmAssets(data, ac, treeAccountIds);
+    const cleanupChanged = cleanupNonEvmCustomAssets(ac);
 
-    console.log(
-      `++++ [migration 207] DONE evmChanged=${evmChanged} nonEvmChanged=${nonEvmChanged}`,
-    );
-    console.log(
-      '++++ [migration 207] customAssets FINAL counts per account:',
-      JSON.stringify(
-        Object.fromEntries(
-          Object.entries(ac.customAssets).map(([accId, assets]) => [
-            accId,
-            Array.isArray(assets) ? assets.length : 'not-array',
-          ]),
-        ),
-        null,
-        2,
-      ),
-    );
-    console.log(
-      '++++ [migration 207] customAssets FINAL full:',
-      JSON.stringify(ac.customAssets, null, 2),
-    );
-
-    if (evmChanged || nonEvmChanged) {
+    if (evmChanged || nonEvmChanged || cleanupChanged) {
       changedControllers.add('AssetsController');
     }
   } catch (error) {
-    console.log(
-      '++++ [migration 207] ERROR:',
-      getErrorMessage(error),
-      error,
-    );
     captureException(
       new Error(
         `Migration #${version} - migrate old AssetsControllers state to new unified AssetsController state failed: ${getErrorMessage(error)}`,
@@ -158,20 +124,60 @@ function ensureAssetsController(
 }
 
 /**
- * Build a map from lowercase account address to account UUID using
- * AccountsController.internalAccounts.accounts.
+ * Collect the set of account UUIDs that exist in the AccountTree. An empty set
+ * means the tree has not been built yet — callers should skip per-account
+ * writes in that case.
+ *
+ * Tree shape: AccountTreeController.accountTree.wallets[walletId].groups[groupId].accounts: AccountId[]
  *
  * @param data - The migration data root.
  */
+function collectTreeAccountIds(data: Record<string, unknown>): Set<string> {
+  const ids = new Set<string>();
+  const wallets = readPath(data, ['AccountTreeController', 'accountTree', 'wallets']);
+  if (!isObject(wallets)) {
+    return ids;
+  }
+
+  for (const wallet of Object.values(wallets)) {
+    if (!isObject(wallet) || !isObject(wallet.groups)) {
+      continue;
+    }
+    for (const group of Object.values(wallet.groups)) {
+      if (!isObject(group) || !Array.isArray(group.accounts)) {
+        continue;
+      }
+      for (const accountId of group.accounts) {
+        if (typeof accountId === 'string' && accountId) {
+          ids.add(accountId);
+        }
+      }
+    }
+  }
+  return ids;
+}
+
+/**
+ * Build a map from lowercase account address to account UUID, restricted to
+ * accounts present in the AccountTree.
+ *
+ * @param data - The migration data root.
+ * @param treeAccountIds - Set of account UUIDs allowed by the tree. When
+ * empty, the returned map is empty.
+ */
 function buildAddressToIdMap(
   data: Record<string, unknown>,
+  treeAccountIds: Set<string>,
 ): Record<string, string> {
+  if (treeAccountIds.size === 0) {
+    return {};
+  }
+
   const accounts = readPath(data, [
     'AccountsController',
     'internalAccounts',
     'accounts',
   ]);
-
   if (!isObject(accounts)) {
     return {};
   }
@@ -179,6 +185,7 @@ function buildAddressToIdMap(
   const map: Record<string, string> = {};
   for (const [id, account] of Object.entries(accounts)) {
     if (
+      treeAccountIds.has(id) &&
       isObject(account) &&
       typeof account.address === 'string' &&
       account.address
@@ -202,7 +209,7 @@ function hexChainIdToCaip2(hexChainId: string): string | null {
   if (!Number.isFinite(decimal)) {
     return null;
   }
-  return `eip155:${decimal}`;
+  return `${EVM_ASSET_PREFIX}${decimal}`;
 }
 
 /**
@@ -228,10 +235,9 @@ function buildErc20AssetId(
 }
 
 /**
- * Convert a hex balance string into the decimal-applied display string the unified `AssetsController`
- * stores in `assetsBalance[accountId][assetId].amount` (e.g.
- * '2.029194191379609600' for 18-decimal DAI).
- * Returns '0' when the input cannot be parsed.
+ * Convert a hex balance string into the decimal-applied display string the
+ * unified `AssetsController` stores in `assetsBalance[accountId][assetId].amount`
+ * (e.g. '2.029194191379609600' for 18-decimal DAI). Returns '0' on parse error.
  *
  * @param hex - The hex-encoded raw balance (smallest unit).
  * @param decimals - The token's decimal precision.
@@ -240,13 +246,13 @@ function hexBalanceToDisplayAmount(hex: string, decimals: number): string {
   try {
     const bn = new BigNumber(hex, 16);
     if (bn.isNaN()) {
-      return '0';
+      return ZERO_AMOUNT;
     }
     const safeDecimals = Math.max(decimals, 0);
     const divisor = new BigNumber(10).pow(safeDecimals);
     return bn.dividedBy(divisor).toFixed(safeDecimals);
   } catch {
-    return '0';
+    return ZERO_AMOUNT;
   }
 }
 
@@ -284,8 +290,8 @@ function isNonZeroAmount(amount: unknown): amount is string {
  * Derive the AssetsController token type from a CAIP-19 asset namespace.
  *
  * Mappings: erc20 → 'erc20', spl → 'spl', slip44 → 'native'.
- * Unknown or malformed inputs default to 'spl' (safe default for non-EVM
- * snap assets, which are the only producers of unknown namespaces here).
+ * Unknown / malformed inputs default to 'spl' (safe default for non-EVM
+ * snap assets, the only producer of unknown namespaces here).
  *
  * @param assetId - CAIP-19 asset identifier.
  */
@@ -304,6 +310,16 @@ function assetTypeFromCaip19(assetId: string): AssetType {
     default:
       return 'spl';
   }
+}
+
+/**
+ * Returns true when the assetId belongs to a non-EVM chain (i.e. anything not
+ * prefixed with `eip155:`).
+ *
+ * @param assetId - CAIP-19 asset identifier.
+ */
+function isNonEvmAssetId(assetId: string): boolean {
+  return !assetId.startsWith(EVM_ASSET_PREFIX);
 }
 
 // ─── Generic write helpers ─────────────────────────────────────────────────────
@@ -347,98 +363,97 @@ function writeAssetInfoIfAbsent(
 }
 
 /**
- * Classify a per-account asset entry as either tracked (non-zero balance) or
- * custom (zero / missing balance), respecting existing entries.
- *
- * Mutual exclusion: if the asset is already in `assetsBalance` for this
- * account, we never duplicate it into `customAssets`, and vice versa.
+ * Write a per-account balance entry, preserving any pre-existing entry. If the
+ * asset was previously stored in `customAssets`, remove it from there to keep
+ * the two maps mutually exclusive.
  *
  * @param ac - The AssetsController view.
  * @param accountId - The account UUID.
  * @param assetId - CAIP-19 asset identifier.
- * @param amount - The decimal balance (already classified as non-zero) or null.
+ * @param amount - Decimal amount string.
  */
-function classifyAccountAsset(
+function writeAssetBalance(
   ac: AssetsControllerShape,
   accountId: string,
   assetId: string,
-  amount: string | null,
+  amount: string,
 ): boolean {
-  const normalizedAssetId = assetId.toLowerCase();
-  const trackedAssetsForAccount = ac.assetsBalance[accountId] ?? {};
-  const customAssetsForAccount = ac.customAssets[accountId] ?? [];
-
-  console.log(
-    '++++ [classifyAccountAsset] called:',
-    JSON.stringify(
-      {
-        accountId,
-        assetId,
-        amount,
-        existingTrackedKeys: Object.keys(trackedAssetsForAccount),
-        existingCustomCount: customAssetsForAccount.length,
-        existingCustomList: customAssetsForAccount,
-      },
-      null,
-      2,
-    ),
-  );
-
-  const trackedAssetIdMatch = Object.keys(trackedAssetsForAccount).find(
-    (existingAssetId) =>
-      existingAssetId === assetId ||
-      existingAssetId.toLowerCase() === normalizedAssetId,
-  );
-  const customAssetIdMatch = customAssetsForAccount.find(
-    (existingAssetId) =>
-      existingAssetId === assetId ||
-      existingAssetId.toLowerCase() === normalizedAssetId,
-  );
-
-  const alreadyTracked = Boolean(trackedAssetIdMatch);
-  const alreadyCustom = Boolean(customAssetIdMatch);
-
-  if (amount !== null) {
-    if (alreadyTracked) {
-      console.log(
-        '++++ [classifyAccountAsset] SKIP - already tracked with balance:',
-        JSON.stringify({ accountId, assetId }),
-      );
-      return false;
-    }
-    ac.assetsBalance[accountId] ??= {};
-    ac.assetsBalance[accountId][assetId] = { amount };
-    // Maintain mutual exclusion: contains assetBalance, so must remove from customAssets.
-    if (alreadyCustom) {
-      ac.customAssets[accountId] = ac.customAssets[accountId].filter(
-        (id) => id.toLowerCase() !== normalizedAssetId,
-      );
-    }
-    console.log(
-      '++++ [classifyAccountAsset] WROTE to assetsBalance:',
-      JSON.stringify({ accountId, assetId, amount }),
-    );
-    return true;
+  ac.assetsBalance[accountId] ??= {};
+  if (ac.assetsBalance[accountId][assetId]) {
+    return false;
   }
+  ac.assetsBalance[accountId][assetId] = { amount };
+  removeFromCustomAssets(ac, accountId, assetId);
+  return true;
+}
 
-  if (alreadyTracked || alreadyCustom) {
-    console.log(
-      '++++ [classifyAccountAsset] SKIP customAssets push - already present:',
-      JSON.stringify({ accountId, assetId, alreadyTracked, alreadyCustom }),
-    );
+/**
+ * Add `assetId` to `customAssets[accountId]` if it's not already tracked in
+ * `assetsBalance` or already present in `customAssets`.
+ *
+ * @param ac - The AssetsController view.
+ * @param accountId - The account UUID.
+ * @param assetId - CAIP-19 asset identifier.
+ */
+function addCustomAsset(
+  ac: AssetsControllerShape,
+  accountId: string,
+  assetId: string,
+): boolean {
+  if (ac.assetsBalance[accountId]?.[assetId]) {
     return false;
   }
   ac.customAssets[accountId] ??= [];
+  if (ac.customAssets[accountId].includes(assetId)) {
+    return false;
+  }
   ac.customAssets[accountId].push(assetId);
-  console.log(
-    '++++ [classifyAccountAsset] PUSHED to customAssets:',
-    JSON.stringify({
-      accountId,
-      assetId,
-      newCustomLength: ac.customAssets[accountId].length,
-    }),
-  );
   return true;
+}
+
+/**
+ * Remove an asset ID from `customAssets[accountId]` if present.
+ *
+ * @param ac - The AssetsController view.
+ * @param accountId - The account UUID.
+ * @param assetId - CAIP-19 asset identifier.
+ */
+function removeFromCustomAssets(
+  ac: AssetsControllerShape,
+  accountId: string,
+  assetId: string,
+): void {
+  const list = ac.customAssets[accountId];
+  if (!list) {
+    return;
+  }
+  const idx = list.indexOf(assetId);
+  if (idx >= 0) {
+    list.splice(idx, 1);
+  }
+}
+
+/**
+ * Remove any non-EVM (i.e. non-`eip155:`) asset IDs from `customAssets`. These
+ * may have been added by an earlier buggy version of this migration; the
+ * unified `AssetsController` model treats snap-discovered (non-EVM) assets as
+ * always-tracked.
+ *
+ * @param ac - The AssetsController view.
+ */
+function cleanupNonEvmCustomAssets(ac: AssetsControllerShape): boolean {
+  let changed = false;
+  for (const [accountId, assetIds] of Object.entries(ac.customAssets)) {
+    if (!Array.isArray(assetIds)) {
+      continue;
+    }
+    const filtered = assetIds.filter((id) => !isNonEvmAssetId(id));
+    if (filtered.length !== assetIds.length) {
+      ac.customAssets[accountId] = filtered;
+      changed = true;
+    }
+  }
+  return changed;
 }
 
 // ─── EVM migration ─────────────────────────────────────────────────────────────
@@ -446,9 +461,9 @@ function classifyAccountAsset(
 type EvmTokenBalances = Record<string, Record<string, Record<string, string>>>;
 
 /**
- * Read TokenBalancesController.tokenBalances or `{}` when absent / malformed.
+ * Read `TokenBalancesController.tokenBalances` or `{}` when absent / malformed.
  *
- * Shape: tokenBalances[accountAddressLowercase][chainIdHex][tokenAddressChecksummed] = hexBalance
+ * Shape: balances[accountAddressLowercase][chainIdHex][tokenAddressChecksummed] = hexBalance
  *
  * @param data - The migration data root.
  */
@@ -487,12 +502,15 @@ function buildEvmAssetInfo(token: Record<string, unknown>): AssetInfo {
  *
  * @param data - The migration data root.
  * @param ac - The AssetsController view.
- * @param addressToId - Lowercase address → account UUID map.
+ * @param addressToId - Lowercase address → account UUID map (already filtered
+ * to tree accounts).
+ * @param treeAccountIds - Set of account UUIDs in the AccountTree.
  */
 function migrateEvmTokens(
   data: Record<string, unknown>,
   ac: AssetsControllerShape,
   addressToId: Record<string, string>,
+  treeAccountIds: Set<string>,
 ): boolean {
   const allTokens = readPath(data, ['TokensController', 'allTokens']);
   if (!isObject(allTokens)) {
@@ -507,14 +525,6 @@ function migrateEvmTokens(
       continue;
     }
 
-    console.log(
-      '++++ [migrateEvmTokens] chain entry:',
-      JSON.stringify({
-        hexChainId,
-        accountAddresses: Object.keys(accountTokens),
-      }),
-    );
-
     for (const [rawAddress, tokens] of Object.entries(accountTokens)) {
       if (!Array.isArray(tokens)) {
         continue;
@@ -522,21 +532,13 @@ function migrateEvmTokens(
 
       const accountAddress = rawAddress.toLowerCase();
       const accountId = addressToId[accountAddress];
+      const accountIsKnown =
+        Boolean(accountId) && treeAccountIds.has(accountId);
+
       const chainBalances =
         (isObject(tokenBalances[accountAddress]) &&
           tokenBalances[accountAddress][hexChainId]) ||
         {};
-
-      console.log(
-        '++++ [migrateEvmTokens] account entry:',
-        JSON.stringify({
-          rawAddress,
-          accountAddress,
-          accountId,
-          tokenCount: tokens.length,
-          chainBalanceKeys: Object.keys(chainBalances),
-        }),
-      );
 
       for (const token of tokens) {
         if (
@@ -546,7 +548,7 @@ function migrateEvmTokens(
         ) {
           continue;
         }
-        // Skip NFTs — AssetsController tracks them separately
+        // Skip NFTs — AssetsController tracks them separately.
         if (token.isERC721 === true) {
           continue;
         }
@@ -556,13 +558,13 @@ function migrateEvmTokens(
           continue;
         }
 
-        // assetsInfo is a global registry; write regardless of accountId presence.
+        // assetsInfo is a global registry; write regardless of accountId.
         if (writeAssetInfoIfAbsent(ac, assetId, buildEvmAssetInfo(token))) {
           changed = true;
         }
 
-        // Per-account tracking requires a known account UUID.
-        if (!accountId) {
+        // Per-account writes require an account that's in the AccountTree.
+        if (!accountIsKnown) {
           continue;
         }
 
@@ -570,24 +572,13 @@ function migrateEvmTokens(
         const hexBalance = chainBalances[checksummed];
         const decimals =
           typeof token.decimals === 'number' ? token.decimals : 0;
-        const amount = isNonZeroHexBalance(hexBalance)
-          ? hexBalanceToDisplayAmount(hexBalance, decimals)
-          : null;
 
-        console.log(
-          '++++ [migrateEvmTokens] token classify:',
-          JSON.stringify({
-            assetId,
-            tokenAddress: token.address,
-            checksummed,
-            hexBalance,
-            decimals,
-            amount,
-            symbol: token.symbol,
-          }),
-        );
-
-        if (classifyAccountAsset(ac, accountId, assetId, amount)) {
+        if (isNonZeroHexBalance(hexBalance)) {
+          const amount = hexBalanceToDisplayAmount(hexBalance, decimals);
+          if (writeAssetBalance(ac, accountId, assetId, amount)) {
+            changed = true;
+          }
+        } else if (addCustomAsset(ac, accountId, assetId)) {
           changed = true;
         }
       }
@@ -605,7 +596,7 @@ type SnapBalances = Record<
 >;
 
 /**
- * Read MultichainBalancesController.balances or `{}` when absent / malformed.
+ * Read `MultichainBalancesController.balances` or `{}` when absent / malformed.
  *
  * @param data - The migration data root.
  */
@@ -658,12 +649,21 @@ function buildNonEvmAssetInfo(
  * Migrate non-EVM assets from MultichainAssetsController +
  * MultichainBalancesController.
  *
+ * Non-EVM assets are snap-discovered and always tracked: they are written to
+ * `assetsBalance` (with `'0'` for missing/zero balance) and never to
+ * `customAssets`.
+ *
+ * Per-account writes are restricted to accounts in the AccountTree so we
+ * don't pollute state with assets for accounts the user has never opened.
+ *
  * @param data - The migration data root.
  * @param ac - The AssetsController view.
+ * @param treeAccountIds - Set of account UUIDs in the AccountTree.
  */
 function migrateNonEvmAssets(
   data: Record<string, unknown>,
   ac: AssetsControllerShape,
+  treeAccountIds: Set<string>,
 ): boolean {
   const accountsAssets = readPath(data, [
     'MultichainAssetsController',
@@ -687,30 +687,24 @@ function migrateNonEvmAssets(
       continue;
     }
 
-    // `MultichainAssetsController.accountsAssets[accountId]` is auto-populated
-    // by snaps with default supported assets (e.g. BTC, SOL, TRX + variants)
-    // the moment an account is created — even if the user never opened it.
-    // `MultichainBalancesController.balances[accountId]` is only populated once
-    // the snap actually fetches balances, which only happens when the account
-    // is opened. Use it as the proxy for "this account has been activated".
-    // Skipping never-opened accounts here keeps `customAssets` from being
-    // flooded with placeholder assets for hundreds of dormant accounts; the
-    // snap will repopulate `accountsAssets` (and our controllers) naturally
-    // the first time those accounts are opened post-migration.
-    const accountBalancesRaw = balances[accountId];
-    if (!isObject(accountBalancesRaw)) {
-      continue;
-    }
-    const accountBalances = accountBalancesRaw;
+    const accountIsKnown = treeAccountIds.has(accountId);
+    const accountBalances = isObject(balances[accountId])
+      ? balances[accountId]
+      : {};
 
     for (const assetId of assetIds) {
       if (typeof assetId !== 'string' || !assetId) {
         continue;
       }
 
+      // Global metadata write — unaffected by tree membership.
       const info = buildNonEvmAssetInfo(assetId, metadata[assetId]);
       if (info && writeAssetInfoIfAbsent(ac, assetId, info)) {
         changed = true;
+      }
+
+      if (!accountIsKnown) {
+        continue;
       }
 
       const balanceEntry = accountBalances[assetId];
@@ -718,9 +712,9 @@ function migrateNonEvmAssets(
         isObject(balanceEntry) && typeof balanceEntry.amount === 'string'
           ? balanceEntry.amount
           : undefined;
-      const amount = isNonZeroAmount(rawAmount) ? rawAmount : null;
+      const amount = isNonZeroAmount(rawAmount) ? rawAmount : ZERO_AMOUNT;
 
-      if (classifyAccountAsset(ac, accountId, assetId, amount)) {
+      if (writeAssetBalance(ac, accountId, assetId, amount)) {
         changed = true;
       }
     }

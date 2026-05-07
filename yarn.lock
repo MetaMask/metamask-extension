@@ -5771,7 +5771,7 @@ __metadata:
 
 "@metamask/assets-controller@file:../core/packages/assets-controller::locator=metamask-crx%40workspace%3A.":
   version: 6.4.0
-  resolution: "@metamask/assets-controller@file:../core/packages/assets-controller#../core/packages/assets-controller::hash=384557&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/assets-controller@file:../core/packages/assets-controller#../core/packages/assets-controller::hash=dd28cf&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5802,7 +5802,7 @@ __metadata:
     bignumber.js: "npm:^9.1.2"
     lodash: "npm:^4.17.21"
     p-limit: "npm:^3.1.0"
-  checksum: 10/79d7c4f32e096c3f934476022f0979ac6b786ab311a70633c88c37c90df1d6f1ab2b32d7e8c2ef6a51f8b7a3e77323fa1626440c058945602a376c32ef60fa1b
+  checksum: 10/b024febfc52a0e39afc88baf4a5f25f1422e0d003d6d9bcbd3ec4d58693895a900690a13f29520066a62c00f2f564fa08ca36c056fd8d846ad0a25723b0b804a
   languageName: node
   linkType: hard
 
