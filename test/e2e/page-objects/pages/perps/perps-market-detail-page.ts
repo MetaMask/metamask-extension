@@ -284,7 +284,9 @@ export class PerpsMarketDetailPage {
    * is still visible after the first click.
    */
   async clickBack(): Promise<void> {
-    await this.driver.clickElement(this.marketDetailBackButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.marketDetailBackButton,
+    );
   }
 
   /**
@@ -478,7 +480,7 @@ export class PerpsMarketDetailPage {
    * Reads the close % from the wrapper `data-testid` inside the open close modal.
    */
   private async getCloseAmountSliderPercentInModal(): Promise<number> {
-    const el = await this.driver.findElement(
+    const el = await this.driver.waitForSelector(
       this.closeAmountSliderInCloseModal,
     );
     const testId = await el.getAttribute('data-testid');

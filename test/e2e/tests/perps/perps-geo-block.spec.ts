@@ -16,7 +16,10 @@ import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
-import { getPerpsGeoBlockConfig, getPerpsConfigEligible } from './perps-fixture-config';
+import {
+  getPerpsGeoBlockConfig,
+  getPerpsConfigEligible,
+} from './perps-fixture-config';
 import { WS_USER_WITH_FUNDED_ACCOUNT } from './mocks/websocketPositionMocks';
 
 describe('Perps Geo-block', function (this: Suite) {
