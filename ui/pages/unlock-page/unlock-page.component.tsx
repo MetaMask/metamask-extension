@@ -67,7 +67,6 @@ type UnlockPageProps = {
   location: RouterLocation;
   isUnlocked: boolean;
   isOnboardingCompleted: boolean;
-  onRestore: () => void;
   onSubmit: (password: string) => Promise<void>;
   isPasskeyActive: boolean;
   onUnlockWithPasskey: (
@@ -80,7 +79,6 @@ type UnlockPageProps = {
   onboardingParentContext: MutableRefObject<unknown>;
   loginWithDifferentMethod: () => Promise<void>;
   firstTimeFlowType: string | null;
-  resetWallet: () => Promise<void>;
   isPopup: boolean;
   isWalletResetInProgress: boolean;
   passkeyAutoUnlockSuppressed: boolean;
@@ -151,10 +149,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      */
     isOnboardingCompleted: PropTypes.bool,
     /**
-     * onClick handler for "Forgot password?" link
-     */
-    onRestore: PropTypes.func,
-    /**
      * onSubmit handler when form is submitted
      */
     onSubmit: PropTypes.func,
@@ -186,10 +180,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
      * Indicates the type of first time flow
      */
     firstTimeFlowType: PropTypes.string,
-    /**
-     * Reset Wallet
-     */
-    resetWallet: PropTypes.func,
     /**
      * Indicates if the environment is a popup
      */
@@ -581,32 +571,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     this.setState({ showResetPasswordModal: true });
   };
 
-  onRestoreWallet = async () => {
-    const { isSocialLoginFlow } = this.props;
-
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Accounts,
-      event: MetaMetricsEventName.ResetWallet,
-      properties: {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: isSocialLoginFlow ? 'social' : 'metamask',
-      },
-    });
-    this.props.onRestore();
-  };
-
-  onResetWallet = async () => {
-    this.setState({
-      showLoginErrorModal: false,
-      showConnectionsRemovedModal: false,
-      showResetPasswordModal: false,
-    });
-    await this.props.resetWallet();
-    await this.props.forceUpdateMetamaskState();
-    this.props.navigate(DEFAULT_ROUTE, { replace: true });
-  };
-
   renderLogoSection = (isRehydrationFlow: boolean) => {
     const { t } = this.context as UnlockPageContext;
     return (
@@ -664,18 +628,15 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         {showResetPasswordModal && (
           <ResetPasswordModal
             onClose={() => this.setState({ showResetPasswordModal: false })}
-            onRestore={this.onRestoreWallet}
           />
         )}
         {showLoginErrorModal && (
           <LoginErrorModal
-            onDone={this.onResetWallet}
             loginError={LOGIN_ERROR.RESET_WALLET}
+            onClose={() => this.setState({ showLoginErrorModal: false })}
           />
         )}
-        {showConnectionsRemovedModal && (
-          <ConnectionsRemovedModal onConfirm={this.onResetWallet} />
-        )}
+        {showConnectionsRemovedModal && <ConnectionsRemovedModal />}
         <Box
           flexDirection={BoxFlexDirection.Column}
           justifyContent={BoxJustifyContent.Center}

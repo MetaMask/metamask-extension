@@ -78,7 +78,7 @@ const SmartTransactionsItem = createToggleItem({
 const SmartAccountRequestsFromDappsItem = createToggleItem({
   name: 'SmartAccountRequestsFromDappsItem',
   titleKey: TRANSACTION_ITEMS['smart-account-requests-from-dapps'],
-  descriptionKey: 'smartAccountRequestsFromDappsDescription',
+  descriptionKey: 'smartAccountRequestsFromDappsDescriptionV2',
   selector: (state: MetaMaskReduxState) =>
     !getPreferences(state)?.dismissSmartAccountSuggestionEnabled,
   action: (value: boolean) => setDismissSmartAccountSuggestionEnabled(!value),
