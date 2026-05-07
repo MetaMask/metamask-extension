@@ -55,7 +55,7 @@ jest.mock('../../token-list-item', () => ({
 const mockUseSafeChains = jest.fn().mockReturnValue({
   safeChains: [],
 });
-jest.mock('../../../networks-form/use-safe-chains', () => ({
+jest.mock('../../networks-form/use-safe-chains', () => ({
   useSafeChains: () => mockUseSafeChains(),
 }));
 
