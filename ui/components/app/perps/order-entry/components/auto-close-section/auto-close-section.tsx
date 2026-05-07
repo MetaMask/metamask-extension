@@ -166,7 +166,7 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
       const preserveLowValueDecimals =
         Math.abs(price) < LOW_VALUE_TRIGGER_PRICE_THRESHOLD;
 
-      return formatPerpsFiat(price, {
+      const formattedPrice = formatPerpsFiat(price, {
         ranges: PRICE_RANGES_UNIVERSAL,
         ...(preserveLowValueDecimals
           ? {
@@ -175,7 +175,13 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
               stripTrailingZeros: false,
             }
           : {}),
-      }).replace(/[<$,]/gu, '');
+      });
+
+      if (formattedPrice.startsWith('<')) {
+        return '';
+      }
+
+      return formattedPrice.replace(/[$,]/gu, '');
     },
     [entryPrice, leverage, direction],
   );
