@@ -247,14 +247,20 @@ describe('createPerpsInfrastructure', () => {
         const { logger } = createPerpsInfrastructure(getDeps());
 
         // Real-world shape: WebSocketRequestError { cause: ReconnectingWebSocketError { code } }
-        const cause = Object.assign(new Error('Error when reconnecting WebSocket: TERMINATED_BY_USER'), {
-          name: 'ReconnectingWebSocketError',
-          code: 'TERMINATED_BY_USER',
-        });
-        const error = Object.assign(new Error('Failed to establish WebSocket connection'), {
-          name: 'WebSocketRequestError',
-          cause,
-        });
+        const cause = Object.assign(
+          new Error('Error when reconnecting WebSocket: TERMINATED_BY_USER'),
+          {
+            name: 'ReconnectingWebSocketError',
+            code: 'TERMINATED_BY_USER',
+          },
+        );
+        const error = Object.assign(
+          new Error('Failed to establish WebSocket connection'),
+          {
+            name: 'WebSocketRequestError',
+            cause,
+          },
+        );
 
         logger.error(error);
 
@@ -329,14 +335,20 @@ describe('createPerpsInfrastructure', () => {
         setupSentryScope();
         const { logger } = createPerpsInfrastructure(getDeps());
 
-        const cause = Object.assign(new Error('Error when reconnecting WebSocket: UNKNOWN_ERROR'), {
-          name: 'ReconnectingWebSocketError',
-          code: 'UNKNOWN_ERROR',
-        });
-        const error = Object.assign(new Error('Failed to establish WebSocket connection'), {
-          name: 'WebSocketRequestError',
-          cause,
-        });
+        const cause = Object.assign(
+          new Error('Error when reconnecting WebSocket: UNKNOWN_ERROR'),
+          {
+            name: 'ReconnectingWebSocketError',
+            code: 'UNKNOWN_ERROR',
+          },
+        );
+        const error = Object.assign(
+          new Error('Failed to establish WebSocket connection'),
+          {
+            name: 'WebSocketRequestError',
+            cause,
+          },
+        );
 
         logger.error(error);
 
@@ -347,9 +359,12 @@ describe('createPerpsInfrastructure', () => {
         setupSentryScope();
         const { logger } = createPerpsInfrastructure(getDeps());
 
-        const error = Object.assign(new Error('Failed to close WebSocket connection'), {
-          name: 'WebSocketRequestError',
-        });
+        const error = Object.assign(
+          new Error('Failed to close WebSocket connection'),
+          {
+            name: 'WebSocketRequestError',
+          },
+        );
 
         logger.error(error);
 
