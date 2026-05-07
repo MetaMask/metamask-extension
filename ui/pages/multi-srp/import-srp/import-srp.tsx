@@ -18,7 +18,7 @@ import {
 } from '../../../store/actions';
 import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { Header, Page } from '../../../components/multichain/pages/page';
+import { Footer, Header, Page } from '../../../components/multichain/pages/page';
 import {
   getIsSocialLoginFlow,
   getMetaMaskHdKeyrings,
@@ -123,7 +123,7 @@ export const ImportSrp = () => {
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClearCallback={() => setSrpError('')}
       />
-      <Box className="w-full">
+      <Footer>
         <Button
           size={ButtonSize.Lg}
           data-testid="import-srp-confirm"
@@ -133,7 +133,7 @@ export const ImportSrp = () => {
         >
           {t('continue')}
         </Button>
-      </Box>
+      </Footer>
     </Page>
   );
 };
