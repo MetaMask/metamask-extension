@@ -90,7 +90,7 @@ function schemaElementDomKey(
   return `${sectionTestId}-${element.testId}`;
 }
 
-function stopClickPropagation(event: React.MouseEvent): void {
+function stopPropagation(event: React.SyntheticEvent): void {
   event.stopPropagation();
 }
 
@@ -135,7 +135,11 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
         >
           {displayName}
         </Text>
-        <span onClick={stopClickPropagation}>
+        <span
+          onClick={stopPropagation}
+          onKeyDown={stopPropagation}
+          role="presentation"
+        >
           <CopyIcon
             copyText={address}
             style={{ position: 'static', right: 'auto', top: 'auto' }}
@@ -220,7 +224,11 @@ const ReviewRuleAddressItem: React.FC<{ address: string }> = ({ address }) => {
         >
           {displayName}
         </Text>
-        <span onClick={stopClickPropagation}>
+        <span
+          onClick={stopPropagation}
+          onKeyDown={stopPropagation}
+          role="presentation"
+        >
           <CopyIcon
             copyText={address}
             style={{ position: 'static', right: 'auto', top: 'auto' }}
