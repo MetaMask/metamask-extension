@@ -258,6 +258,22 @@ describe('hardwareWalletSignaturesReducer', () => {
         rejectedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
       });
     });
+
+    it('transitions from Disconnected to Failed on TransactionFailed', () => {
+      expect(
+        hardwareWalletSignaturesReducer(
+          {
+            status: HardwareWalletSignatureStatus.Disconnected,
+            disconnectedSignature:
+              HardwareWalletSignatureStatus.AwaitingFinalSignature,
+          },
+          { type: HardwareWalletSignatureEvent.TransactionFailed },
+        ),
+      ).toStrictEqual({
+        status: HardwareWalletSignatureStatus.Failed,
+        failedSignature: HardwareWalletSignatureStatus.AwaitingFinalSignature,
+      });
+    });
   });
 
   describe('DeviceDisconnected', () => {
