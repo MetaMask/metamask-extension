@@ -15,7 +15,11 @@ import {
   isHardwareWalletError,
   isUserRejectedHardwareWalletError,
 } from './rpcErrorUtils';
-import { ConnectionStatus, type EnsureDeviceReadyOptions } from './types';
+import {
+  ConnectionStatus,
+  HardwareWalletType,
+  type EnsureDeviceReadyOptions,
+} from './types';
 import { useHardwareWalletMetrics } from './useHardwareWalletMetrics';
 
 type UseHardwareFooterArgs = {
@@ -124,12 +128,20 @@ export const useHardwareFooter = ({
       return true;
     }
 
+    // QR wallets don't need a physical device connection before showing the
+    // primary footer CTA. The Confirm action still runs ensureDeviceReady,
+    // which handles camera permission before signing.
+    if (walletType === HardwareWalletType.Qr) {
+      return true;
+    }
+
     return isHardwareConnectionReadyForConfirmFooter(connectionState.status);
   }, [
     connectionState.status,
     hasPreflightSucceeded,
     inE2e,
     isHardwareWalletAccount,
+    walletType,
   ]);
 
   const onSubmitPreflightCheck = useCallback(

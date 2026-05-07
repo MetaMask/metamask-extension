@@ -417,8 +417,8 @@ export function AssetPickerModal({
 
       return Boolean(
         isTokenInSelectedChain &&
-          isMatchedBySearchQuery &&
-          !filteredTokensAddresses.has(getTokenKey(address, tokenChainId)),
+        isMatchedBySearchQuery &&
+        !filteredTokensAddresses.has(getTokenKey(address, tokenChainId)),
       );
     };
 

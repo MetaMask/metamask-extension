@@ -643,3 +643,13 @@ export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
 export function getOpenedWithSidepanel(state) {
   return state.metamask.openedWithSidepanel;
 }
+
+/**
+ * When true, unlock UI must not auto-start WebAuthn passkey unlock (from background).
+ *
+ * @param {object} state - Redux root state
+ * @returns {boolean}
+ */
+export function getPasskeyAutoUnlockSuppressed(state) {
+  return Boolean(state.metamask.passkeyAutoUnlockSuppressed);
+}

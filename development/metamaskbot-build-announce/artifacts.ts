@@ -3,8 +3,8 @@
  */
 
 import {
-  BENCHMARK_PLATFORMS,
   BENCHMARK_BUILD_TYPES,
+  BENCHMARK_PLATFORMS,
 } from '../../shared/constants/benchmarks';
 
 type ArtifactLink = { url: string; label: string };

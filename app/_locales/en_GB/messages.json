@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Hardware wallet"
   },
-  "addIPFSGateway": {
-    "message": "Add your preferred IPFS gateway"
-  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -1089,6 +1086,12 @@
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },
+  "bridgeMalicious": {
+    "message": "Malicious"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Malicious token"
+  },
   "bridgeMarketClosedAction": {
     "message": "Market closed"
   },
@@ -1109,6 +1112,9 @@
   },
   "bridgeNoMMFee": {
     "message": "No MM fee"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "No price information"
   },
   "bridgePoints": {
     "message": "Est. points",
@@ -1137,6 +1143,9 @@
   "bridgePoints_tooltip_content_2": {
     "message": "Keep in mind this value is an estimate and will be finalized once the transaction is complete. Points can take up to 1 hour to be confirmed in your Rewards balance.",
     "description": "Second part of tooltip content explaining how points are calculated"
+  },
+  "bridgePriceDataUnavailableError": {
+    "message": "We couldn't get price information for this token. Make sure the amount received is what you expect before continuing."
   },
   "bridgePriceImpact": {
     "message": "Price impact"
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Receiving on destination chain"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Suspicious airdrop"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Concentrated supply"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Suspicious behavior"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Inflated trader count"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Fake volume"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Heavy bot activity"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Undisclosed supply"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "High buy fee"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "High sell fee"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "High transfer fee"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Honeypot risk"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Impersonator"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Impersonates a sensitive asset"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Likely impersonator"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Possible impersonator"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Inappropriate content"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Artificial volume"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Low locked liquidity"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Creator has low reputation"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Known malicious"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Suspicious metadata"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Possible price manipulation"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Rugpull risk"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Sanctioned creator"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Resembles malicious contract"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Bot activity at launch"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Spam text"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Suspicious code"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Token backdoor"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Unsellable token"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Unstable price"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Wash trading"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Select a destination account"
   },
@@ -1261,8 +1366,26 @@
     "message": "Swapping $1 for $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
   },
+  "bridgeSuspicious": {
+    "message": "Suspicious"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Suspicious token"
+  },
   "bridgeTo": {
     "message": "Bridge to"
+  },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 is a malicious token."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 is flagged as malicious. It's likely to steal funds from anyone who interacts with it."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 is a suspicious token."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 is flagged as suspicious. Take a look at the risks before you continue."
   },
   "bridgeTokenNotFound": {
     "message": "No tokens match \"$1\""
@@ -1317,11 +1440,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "You sent"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "Use max allowed"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "You don't have enough $1 to pay the gas fee for this bridge. Enter a smaller amount or buy more $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "More $1 needed for gas"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "This specific network requires to maintain a reserve of $1 $3 in your account. With your current balance you can use a maximum of $2 $3",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "Minimum $1 reserve balance is required",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "Bridged"
@@ -1414,6 +1548,10 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
+  "changePasswordPasskeyVerifyingTitle": {
+    "message": "Confirm with Biometrics",
+    "description": "Title shown while the wallet waits for passkey or device biometrics during change password."
+  },
   "changePasswordWarning": {
     "message": "Are you sure?"
   },
@@ -1434,9 +1572,6 @@
     "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1, and for Solana accounts, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "click here"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -1448,9 +1583,6 @@
   },
   "clearActivity": {
     "message": "Clear activity and nonce data"
-  },
-  "clearActivityButton": {
-    "message": "Clear activity tab data"
   },
   "clearActivityDescription": {
     "message": "Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change."
@@ -1973,6 +2105,13 @@
   "creatorAddress": {
     "message": "Creator address"
   },
+  "criticalErrorAttemptRecovery": {
+    "message": "Attempt recovery"
+  },
+  "criticalErrorFooter": {
+    "message": "$1 $2 or $3",
+    "description": "Footer on the critical error screen. $1 is the 'Still getting this message?' text, $2 is the 'Contact support' link, $3 is the 'Attempt recovery' link. Translators may reorder the links (e.g. '$1 $3 or $2')."
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2111,12 +2250,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Okay"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "You turned off data collection for our marketing purposes. This only applies to this device. If you use MetaMask on other devices, make sure to opt out there as well."
   },
   "dataUnavailable": {
     "message": "data unavailable"
@@ -3804,9 +3937,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Locking MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "Lock time must be a number between 0 and 10080"
-  },
   "logOut": {
     "message": "Log out"
   },
@@ -3924,6 +4054,9 @@
   },
   "maxFeeTooltip": {
     "message": "A maximum fee provided to pay for the transaction."
+  },
+  "maybeLater": {
+    "message": "Maybe later"
   },
   "medium": {
     "message": "Market"
@@ -5015,9 +5148,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "We’ll collect basic product usage data. We may associate this information with on-chain data."
   },
@@ -5156,6 +5286,100 @@
   },
   "participateInMetaMetricsDescription": {
     "message": "Participate in MetaMetrics to help us make MetaMask better"
+  },
+  "passkeyDescription": {
+    "message": "Use Touch ID to unlock MetaMask instead of entering your password. This creates a passkey on this device only."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "Biometrics are already set up for this wallet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "We couldn't verify your Biometrics. Try again.",
+    "description": "Shown when passkey authentication response verification fails."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Your Biometrics response was incomplete. Try again.",
+    "description": "Shown when the passkey assertion is missing required key material."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "Biometrics sign-in session expired. Try again.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "Biometrics setup session expired. Try again from the beginning.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "Biometrics aren't set up for this wallet. Turn on Biometrics in Settings.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "Biometrics setup failed. Try again",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "We couldn't verify your Biometrics setup. Try again.",
+    "description": "Shown when passkey registration response verification fails."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "We couldn't unlock with Biometrics. Try again, or set up Biometrics again in Settings.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "Biometrics don't match your current wallet lock. Set up Biometrics again in Settings.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Your password was updated, but biometric unlock couldn't be turned on.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "We couldn't verify your Biometrics. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Register Biometrics"
+  },
+  "passkeySetupStepVerify": {
+    "message": "Validate Biometrics"
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Try opening the extension in a full screen window and try again.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Open full screen window",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Still having trouble?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "Trouble unlocking?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "Trouble unlocking",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Trouble verifying?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Trouble verifying?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "Biometrics turned off"
+  },
+  "passkeyTurnedOn": {
+    "message": "Biometrics turned on"
+  },
+  "passkeyUnlockFailed": {
+    "message": "Biometrics unlock failed. Try your password."
   },
   "password": {
     "message": "Password"
@@ -5569,6 +5793,9 @@
     "message": "Available to trade",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "This feature isn't available while basic functionality is turned off."
+  },
   "perpsBatchCancelFailed": {
     "message": "Failed to cancel one or more orders. Try again."
   },
@@ -5582,7 +5809,7 @@
     "message": "Cancel order"
   },
   "perpsCandleIntervals": {
-    "message": "Candle intervals"
+    "message": "Set candle interval"
   },
   "perpsCandlePeriodDays": {
     "message": "Days"
@@ -5597,10 +5824,10 @@
     "message": "Close all"
   },
   "perpsCloseAmount": {
-    "message": "Close Amount"
+    "message": "Close amount"
   },
   "perpsCloseLong": {
-    "message": "Close Long"
+    "message": "Close long"
   },
   "perpsClosePartialMinNotional": {
     "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
@@ -5609,13 +5836,13 @@
     "message": "Close position"
   },
   "perpsCloseShort": {
-    "message": "Close Short"
+    "message": "Close short"
   },
   "perpsConfirmCloseLong": {
-    "message": "Close Long"
+    "message": "Close long"
   },
   "perpsConfirmCloseShort": {
-    "message": "Close Short"
+    "message": "Close short"
   },
   "perpsConnectionTimeout": {
     "message": "Connection timed out. Please try again."
@@ -5658,12 +5885,6 @@
   },
   "perpsDepositToastPendingTitle": {
     "message": "Adding funds to Perps"
-  },
-  "perpsDepositToastSubmittedDescription": {
-    "message": "Your funds are being added to Perps."
-  },
-  "perpsDepositToastSubmittedTitle": {
-    "message": "Deposit submitted"
   },
   "perpsDepositToastSuccessDescription": {
     "message": "Your funds are ready to trade."
@@ -5764,7 +5985,7 @@
     "message": "Limit"
   },
   "perpsLimitPrice": {
-    "message": "Limit Price"
+    "message": "Limit price"
   },
   "perpsLimitPriceAboveCurrentPrice": {
     "message": "Limit price is above current price"
@@ -5805,6 +6026,10 @@
   },
   "perpsMid": {
     "message": "Mid"
+  },
+  "perpsMinOrderSize": {
+    "message": "Order size must be at least $1",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
   },
   "perpsModify": {
     "message": "Modify"
@@ -5917,7 +6142,7 @@
     "message": "Flip your short position to a long"
   },
   "perpsSaveChanges": {
-    "message": "Save Changes",
+    "message": "Save changes",
     "description": "Button text for saving TP/SL changes"
   },
   "perpsSearchMarkets": {
@@ -5994,8 +6219,12 @@
     "message": "Triggered"
   },
   "perpsStopLoss": {
-    "message": "Stop Loss",
+    "message": "Stop loss",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "Stop loss must be $1 liquidation price",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "Stop loss must be $1 $2 price",
@@ -6006,7 +6235,7 @@
     "description": "Loading text shown while an order is being submitted"
   },
   "perpsTakeProfit": {
-    "message": "Take Profit",
+    "message": "Take profit",
     "description": "Label for take profit price input"
   },
   "perpsTakeProfitInvalidPrice": {
@@ -6193,6 +6422,10 @@
   "perpsWithdraw": {
     "message": "Withdraw"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps withdraw",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Estimated time"
   },
@@ -6240,6 +6473,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Withdrawal submitted"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask will swap to your desired token for you. No MetaMask fee applies when you swap to mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "You receive"
@@ -6365,6 +6602,10 @@
   },
   "provide": {
     "message": "Provide"
+  },
+  "providerFee": {
+    "message": "Provider fee",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Public address"
@@ -6572,8 +6813,16 @@
   "receiveCrypto": {
     "message": "Receive crypto"
   },
+  "receiveToken": {
+    "message": "Receive token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Received"
+  },
+  "receivedTotal": {
+    "message": "Received total",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Receiving address",
@@ -7081,14 +7330,12 @@
   "securityChangePassword": {
     "message": "Change password"
   },
-  "securityChangePasswordDescription": {
-    "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityChangePasswordToastError": {
     "message": "Password couldn’t be changed. Please try again."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "New password saved, but biometric unlock couldn't be turned on.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
   },
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
@@ -7098,16 +7345,6 @@
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
-  },
-  "securityLoginWithSocial": {
-    "message": "Log in with $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Secret Recovery Phrase backed up"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Back up Secret Recovery Phrase"
   },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
@@ -7130,14 +7367,8 @@
     "message": "$1 RECOVERY",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
-  },
   "securitySrpLabel": {
     "message": "SECRET RECOVERY PHRASES"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Manage recovery methods"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -7254,8 +7485,15 @@
     "message": "Set up",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "Set up Biometrics"
+  },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
+  },
+  "settingUpPasskey": {
+    "message": "Setting Up Biometrics",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
   },
   "settings": {
     "message": "Settings"
@@ -8095,20 +8333,14 @@
   "smartAccount": {
     "message": "Smart account"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Smart account requests from dapps"
-  },
   "smartAccountLabel": {
     "message": "Smart Account"
   },
   "smartAccountRequestsFromDapps": {
     "message": "Smart account requests from dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -8121,9 +8353,6 @@
   },
   "smartContractAddressWarning": {
     "message": "The recipient address may not support direct token transfers, which could result in fund loss. Only continue if you're certain this contract can receive your transfer."
-  },
-  "smartContracts": {
-    "message": "Smart contracts"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart swap."
@@ -8746,12 +8975,6 @@
     "message": "Supported languages",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Take our survey"
-  },
-  "surveyTitle": {
-    "message": "Shape the future of MetaMask"
-  },
   "swap": {
     "message": "Swap"
   },
@@ -9148,9 +9371,6 @@
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
-  "tokenAutoDetection": {
-    "message": "Token autodetection"
-  },
   "tokenContractAddress": {
     "message": "Token contract address"
   },
@@ -9388,6 +9608,12 @@
   "turnOffMetamaskNotificationsError": {
     "message": "There was an error in disabling the notifications. Please try again later."
   },
+  "turnOffPasskey": {
+    "message": "Turn off Biometrics"
+  },
+  "turnOffPasskeyFailed": {
+    "message": "We couldn't turn off Biometrics. Try again."
+  },
   "turnOn": {
     "message": "Turn on"
   },
@@ -9490,6 +9716,9 @@
     "message": "Unlock to reveal",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Unlock with Biometrics"
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -9575,6 +9804,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
+  },
+  "usePassword": {
+    "message": "Use password"
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"
@@ -9744,6 +9976,10 @@
   "willApproveAmountForSwapping": {
     "message": "Approves token for swap."
   },
+  "withdrawTo": {
+    "message": "Receive",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Withdrawing"
   },
@@ -9776,6 +10012,10 @@
   "youSent": {
     "message": "You sent",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "You'll receive",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Your activity"

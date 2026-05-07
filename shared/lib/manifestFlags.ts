@@ -92,10 +92,6 @@ export type ManifestFlags = {
      */
     disableSmartTransactionsOverride?: boolean;
     /**
-     * Whether to disable all of the syncing features that get automatically enabled in migrations 158 and 167
-     */
-    disableSync?: boolean;
-    /**
      * Simulate a delay to how quickly the background responds to the UI. Set this to `true` to
      * make the background completely unresponsive.
      */
@@ -105,6 +101,18 @@ export type ManifestFlags = {
      * background loading promise.
      */
     simulatedSlowBackgroundLoadingTimeout?: number;
+    /**
+     * Simulate background initialization hang for testing the initialization
+     * timeout error screen. Only triggers when a vault backup exists in IndexedDB,
+     * so tests can onboard first, then reload to trigger the timeout.
+     */
+    simulateBackgroundInitializationHang?: boolean;
+    /**
+     * Simulate state sync hang for testing the state sync timeout error screen.
+     * Only triggers when a vault backup exists in IndexedDB. When triggered, the
+     * background sends BACKGROUND_INITIALIZED but never calls connectWindowPostMessage.
+     */
+    simulateBackgroundStateSyncHang?: boolean;
     /**
      * The Infura project ID to use for API requests, useful to inject into a test build that doesn't have one
      */
@@ -129,6 +137,12 @@ export type ManifestFlags = {
      * immediately, triggering the storage error toast notification.
      */
     simulateStorageSetFailure?: boolean;
+    /**
+     * Override the fixture server port for dynamic port allocation.
+     * When set, FixtureExtensionStore fetches state from this port
+     * instead of the default 12345.
+     */
+    fixtureServerPort?: number;
   };
 };
 

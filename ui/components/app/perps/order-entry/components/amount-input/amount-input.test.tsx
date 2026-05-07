@@ -522,4 +522,91 @@ describe('AmountInput', () => {
       expect(screen.getByTestId('amount-slider')).toBeInTheDocument();
     });
   });
+
+  describe('auto-focus and select-all', () => {
+    it('auto-focuses the USD input when autoFocus is true', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} autoFocus />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveFocus();
+    });
+
+    it('does not auto-focus the USD input when autoFocus is false', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} autoFocus={false} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).not.toHaveFocus();
+    });
+
+    it('selects existing USD value on focus', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="123.45" />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input') as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
+    it('selects existing token value after focus switches to editing mode', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} amount="9000" currentPrice={45000} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-token-field');
+      const input = container.querySelector('input') as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+
+      expect(input).toHaveValue('0.2');
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
+    it('selects existing percent value on focus', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} balancePercent={42} />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('balance-percent-input');
+      const input = container.querySelector('input') as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
+    it('uses custom usdPlaceholder when provided', () => {
+      renderWithProvider(
+        <AmountInput {...defaultProps} usdPlaceholder="min $10" />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveAttribute('placeholder', 'min $10');
+    });
+
+    it('exposes the USD input through usdInputRef', () => {
+      const ref: { current: HTMLInputElement | null } = { current: null };
+      renderWithProvider(
+        <AmountInput {...defaultProps} usdInputRef={ref} />,
+        mockStore,
+      );
+
+      expect(ref.current).not.toBeNull();
+      expect(ref.current?.tagName).toBe('INPUT');
+    });
+  });
 });
