@@ -18,6 +18,7 @@
     "webpack:lavamoat:policy:mv3": "concurrently 'yarn webpack:lavamoat:build --generatePolicy' 'yarn webpack:lavamoat:build --generatePolicy --type flask' 'yarn webpack:lavamoat:build --generatePolicy --type beta' 'yarn webpack:lavamoat:build --generatePolicy --type experimental' --kill-others-on-fail",
     "foundryup": "yarn mm-foundryup",
     "postinstall": "yarn webpack:clearcache && yarn foundryup",
+    "skills": "bash ${CONSENSYS_SKILLS_DIR:-$HOME/dev/Consensys/skills}/tools/sync --repo metamask-extension --target .",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' ENABLE_ENFORCED_SIMULATIONS='true' yarn",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",

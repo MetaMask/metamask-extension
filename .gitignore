@@ -116,3 +116,12 @@ temp-llm-workflow-*
 
 # Local git worktrees
 .worktrees
+
+# Agent skills — fully local. Synced via `yarn skills` from Consensys/skills,
+# or hand-authored personal skills. Never tracked here. (See ADR #57.)
+.claude/skills/
+.claude/commands/
+.agents/skills/
+.cursor/rules/
+.cursor/skills/
+.cursor/commands/
