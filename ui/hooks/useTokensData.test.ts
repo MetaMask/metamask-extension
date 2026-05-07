@@ -1,7 +1,11 @@
 import { waitFor } from '@testing-library/react';
 import { renderHook, act } from '@testing-library/react-hooks';
 import { handleFetch } from '@metamask/controller-utils';
-import { useTokensData, MAX_BATCH_SIZE, type TokenAsset } from './useTokensData';
+import {
+  useTokensData,
+  MAX_BATCH_SIZE,
+  type TokenAsset,
+} from './useTokensData';
 
 jest.mock('@metamask/controller-utils', () => ({
   handleFetch: jest.fn(),
@@ -70,9 +74,17 @@ describe('useTokensData', () => {
       const address = uniqueAddress();
       const lowercasedId = buildAssetId(address);
       // Simulate the API returning an EIP-55 checksummed address variant.
-      const checksummedId = lowercasedId.replace('0x', '0x').toUpperCase().replace('EIP155', 'eip155').replace('ERC20', 'erc20');
+      const checksummedId = lowercasedId
+        .replace('0x', '0x')
+        .toUpperCase()
+        .replace('EIP155', 'eip155')
+        .replace('ERC20', 'erc20');
 
-      const token = buildTokenAsset({ assetId: checksummedId, name: 'Checksummed', symbol: 'CKS' });
+      const token = buildTokenAsset({
+        assetId: checksummedId,
+        name: 'Checksummed',
+        symbol: 'CKS',
+      });
       mockHandleFetch.mockResolvedValue([token]);
 
       const { result } = renderHook(() => useTokensData([lowercasedId]));
