@@ -28,11 +28,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCurrentNetwork,
-  getOriginOfCurrentTab,
-  getUseNftDetection,
-} from '../../../selectors';
+import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   hidePermittedNetworkToast,
@@ -75,9 +71,7 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import {
-  selectNftDetectionEnablementToast,
   selectShowPrivacyPolicyToast,
-  selectNewSrpAdded,
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
@@ -89,8 +83,6 @@ import {
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
-  setShowNftDetectionEnablementToast,
-  setShowNewSrpAddedToast,
   setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
@@ -120,9 +112,7 @@ export function ToastMaster() {
         {storageErrorToast}
         <SurveyToast />
         <PrivacyPolicyToast />
-        <NftEnablementToast />
         <PermittedNetworkToast />
-        <NewSrpAddedToast />
         <InfuraSwitchToast />
         <PerpsDepositToast />
         <MerklClaimToast />
@@ -195,35 +185,6 @@ function PrivacyPolicyToast() {
   );
 }
 
-function NftEnablementToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showNftEnablementToast = useSelector(selectNftDetectionEnablementToast);
-  const useNftDetection = useSelector(getUseNftDetection);
-
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showNftEnablementToast &&
-    useNftDetection && (
-      <Toast
-        key="enabled-nft-auto-detection"
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        text={t('nftAutoDetectionEnabled')}
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() =>
-          dispatch(setShowNftDetectionEnablementToast(false))
-        }
-      />
-    )
-  );
-}
-
 function PermittedNetworkToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -277,46 +238,6 @@ function PermittedNetworkToast() {
           navigate(`${REVIEW_PERMISSIONS}?origin=${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
-      />
-    )
-  );
-}
-
-function NewSrpAddedToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const walletNumber = useSelector(selectNewSrpAdded);
-  const autoHideDelay = 5 * SECOND;
-
-  // This will close the toast if the user clicks the account menu.
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const dismissElement = document.querySelector(
-        '[data-testid="account-menu-icon"]',
-      );
-      if (dismissElement && dismissElement.contains(event.target)) {
-        dispatch(setShowNewSrpAddedToast(false));
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [dispatch]);
-
-  return (
-    walletNumber && (
-      <Toast
-        key="new-srp-added-toast"
-        text={t('importWalletSuccess', [walletNumber])}
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        onClose={() => dispatch(setShowNewSrpAddedToast(false))}
-        autoHideTime={autoHideDelay}
-        onAutoHideToast={() => dispatch(setShowNewSrpAddedToast(false))}
       />
     )
   );

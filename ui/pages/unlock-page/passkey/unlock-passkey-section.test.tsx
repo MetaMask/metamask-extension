@@ -43,6 +43,7 @@ describe('UnlockPasskeySection', () => {
     logoSection: <div data-testid="logo-mock" />,
     isPasskeyActive: true,
     passkeyAutoUnlockSuppressed: true,
+    mustDeferPasskeyToBrowserTab: false,
     isPasswordInProgress: false,
     onUnlockWithPasskey: jest.fn().mockResolvedValue(undefined),
     onUsePassword: jest.fn(),
@@ -234,6 +235,65 @@ describe('UnlockPasskeySection', () => {
         clientExtensionResults: {},
       });
       await Promise.resolve();
+    });
+  });
+
+  describe('when mustDeferPasskeyToBrowserTab', () => {
+    const openExtensionInBrowser = jest.fn();
+
+    beforeEach(() => {
+      globalThis.platform = {
+        openExtensionInBrowser,
+      } as never;
+    });
+
+    afterEach(() => {
+      delete (globalThis as { platform?: unknown }).platform;
+    });
+
+    it('does not start passkey ceremony on mount when auto unlock is not suppressed', async () => {
+      const onUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
+
+      renderWithProvider(
+        <UnlockPasskeySection
+          {...baseProps}
+          passkeyAutoUnlockSuppressed={false}
+          mustDeferPasskeyToBrowserTab
+          onUnlockWithPasskey={onUnlockWithPasskey}
+        />,
+        mockStore,
+        '/unlock',
+      );
+
+      await act(async () => {
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+
+      expect(onUnlockWithPasskey).not.toHaveBeenCalled();
+      expect(openExtensionInBrowser).not.toHaveBeenCalled();
+    });
+
+    it('opens extension in browser when primary passkey button is clicked', async () => {
+      const onUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
+
+      const { getByTestId } = renderWithProvider(
+        <UnlockPasskeySection
+          {...baseProps}
+          mustDeferPasskeyToBrowserTab
+          onUnlockWithPasskey={onUnlockWithPasskey}
+        />,
+        mockStore,
+        '/unlock',
+      );
+
+      fireEvent.click(getByTestId('unlock-passkey-button'));
+
+      expect(openExtensionInBrowser).toHaveBeenCalledWith(
+        UNLOCK_ROUTE,
+        'from=sidepanel',
+      );
+      expect(onUnlockWithPasskey).not.toHaveBeenCalled();
     });
   });
 });

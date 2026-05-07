@@ -805,7 +805,7 @@ class FixtureBuilderV2 {
       selectedNetworkClientId: seiClientId,
       networkConfigurationsByChainId: {
         [seiChainId]: {
-          blockExplorerUrls: ['https://seitrace.com'],
+          blockExplorerUrls: ['https://seiscan.io'],
           chainId: seiChainId,
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,

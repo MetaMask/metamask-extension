@@ -33,6 +33,7 @@ import {
 import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from '../../../selectors';
 import {
   forceUpdateMetamaskState,
@@ -53,6 +54,9 @@ const PasskeyItem = () => {
 
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
+    getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  );
 
   const [isPasskeyOperationPending, setIsPasskeyOperationPending] =
     useState(false);
@@ -84,6 +88,18 @@ const PasskeyItem = () => {
 
   const removePasskey = useCallback(async () => {
     if (!isPasskeyRegistered) {
+      return;
+    }
+
+    if (
+      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
+      isEnrolledPasskeyIncompatibleWithSidepanel
+    ) {
+      cancelPasskeyCeremony();
+      globalThis.platform?.openExtensionInBrowser?.(
+        SECURITY_AND_PASSWORD_ROUTE,
+        'from=sidepanel',
+      );
       return;
     }
 
@@ -134,7 +150,14 @@ const PasskeyItem = () => {
     } finally {
       setIsPasskeyOperationPending(false);
     }
-  }, [dispatch, isPasskeyRegistered, navigate, t, trackEvent]);
+  }, [
+    dispatch,
+    isEnrolledPasskeyIncompatibleWithSidepanel,
+    isPasskeyRegistered,
+    navigate,
+    t,
+    trackEvent,
+  ]);
 
   const handlePasskeyToggle = useCallback(
     async (isPasskeyUnlockEnabled: boolean) => {
@@ -166,7 +189,7 @@ const PasskeyItem = () => {
             className="mt-2 flex w-full justify-start text-left"
             onClick={() => setShowPasskeyTroubleshootModal(true)}
           >
-            {t('passkeyTroubleshoot')}
+            {t('passkeyTroubleshootVerify')}
           </TextButton>
         ) : null}
       </>
@@ -191,6 +214,7 @@ const PasskeyItem = () => {
       />
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
+          mode="verify"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openSecurityAndPasswordInFullScreen}
         />
