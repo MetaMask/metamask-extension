@@ -1,14 +1,5 @@
 {
   "resources": {
-    "@babel/core>@ampproject/remapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true
-      }
-    },
     "@babel/code-frame": {
       "globals": {
         "console.warn": true,
@@ -38,12 +29,13 @@
         "process.env.BABEL_ENV": true,
         "process.env.BABEL_SHOW_CONFIG_FOR": true,
         "process.env.NODE_ENV": true,
+        "process.features.typescript": true,
         "process.versions.node": true,
-        "process.versions.pnp": true
+        "process.versions.pnp": true,
+        "structuredClone": true
       },
       "packages": {
         "$root$": true,
-        "@babel/core>@ampproject/remapping": true,
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
         "@babel/core>@babel/helper-compilation-targets": true,
@@ -65,6 +57,7 @@
         "@babel/core>@babel/template": true,
         "depcheck>@babel/traverse": true,
         "@babel/core>@babel/types": true,
+        "@babel/core>@jridgewell/remapping": true,
         "babel-plugin-react-compiler": true,
         "@babel/core>convert-source-map": true,
         "nock>debug": true,
@@ -130,7 +123,7 @@
         "console.warn": true,
         "process.env.BROWSERSLIST": true,
         "process.env.BROWSERSLIST_CONFIG": true,
-        "process.versions.node": true
+        "process.versions.node.split": true
       },
       "packages": {
         "@babel/preset-env>@babel/compat-data": true,
@@ -203,7 +196,6 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
@@ -229,7 +221,7 @@
         "depcheck>@babel/traverse": true
       }
     },
-    "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
+    "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -464,7 +456,7 @@
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true
+        "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-modules-systemjs": {
@@ -925,6 +917,15 @@
       },
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
+      }
+    },
+    "@babel/core>@jridgewell/remapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },
