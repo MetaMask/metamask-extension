@@ -1,6 +1,8 @@
 import React from 'react';
 import {
   Box,
+  BoxAlignItems,
+  BoxJustifyContent,
   Icon,
   IconColor,
   IconName,
@@ -19,7 +21,11 @@ const SignatureStatusIcon = ({
 }) => {
   if (status === SignatureStepStatus.Complete) {
     return (
-      <Box className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--complete">
+      <Box
+        className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--complete"
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+      >
         <Icon
           name={IconName.Check}
           size={IconSize.Sm}
@@ -35,7 +41,11 @@ const SignatureStatusIcon = ({
     status === SignatureStepStatus.Disconnected
   ) {
     return (
-      <Box className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--rejected">
+      <Box
+        className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--rejected"
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+      >
         <Icon
           name={IconName.CircleX}
           size={IconSize.Sm}
@@ -47,14 +57,24 @@ const SignatureStatusIcon = ({
 
   if (status === SignatureStepStatus.Active) {
     return (
-      <Box className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--active">
+      <Box
+        className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--active"
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
+      >
         <PulseLoader />
       </Box>
     );
   }
 
   return (
-    <Box className="hardware-wallet-signatures__step-icon">{stepNumber}</Box>
+    <Box
+      className="hardware-wallet-signatures__step-icon"
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
+    >
+      {stepNumber}
+    </Box>
   );
 };
 

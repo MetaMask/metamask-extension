@@ -1,18 +1,8 @@
 .hardware-wallet-signatures {
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  flex: 1;
-  width: 100%;
-  min-height: 100%;
   background: var(--color-background-default);
 
   &__content {
-    display: flex;
-    flex-flow: column;
-    padding-top: 24px;
     text-align: left;
-    height: 100%;
   }
 
   &__steps {
@@ -20,6 +10,8 @@
     flex-direction: column;
     align-items: flex-start;
     margin: 0;
+    padding: 0;
+    list-style: none;
     width: 100%;
 
     li {
@@ -41,7 +33,6 @@
   }
 
   &__device {
-    align-self: center;
     color: var(--color-primary-default);
   }
 
@@ -64,8 +55,6 @@
     height: 32px;
     border-radius: 999px;
     display: flex;
-    align-items: center;
-    justify-content: center;
     color: var(--color-text-default);
     background: var(--color-background-muted);
     flex: 0 0 auto;
@@ -91,23 +80,6 @@
   }
 
   &__qr-code {
-    display: flex;
-    width: 240px;
-    height: 240px;
-    align-items: center;
-    justify-content: center;
-    margin-top: 16px;
     background: var(--qr-code-white-background);
-  }
-
-  &__qr-reader {
-    width: 100%;
-    margin-bottom: 24px;
-  }
-
-  &__footer {
-    width: 100%;
-    padding: 16px;
-    margin-top: auto;
   }
 }

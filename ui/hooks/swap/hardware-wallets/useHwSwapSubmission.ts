@@ -1,8 +1,8 @@
 import { useCallback, useRef, useEffect } from 'react';
 
 import type { QuoteResponse, QuoteMetadata } from '@metamask/bridge-controller';
-import { HardwareWalletSignatureEvent } from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureEvent } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
 
 const RETRY_RPC_TIMEOUT_MS = 120_000;
 

@@ -3,6 +3,7 @@ import { act, fireEvent } from '@testing-library/react';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
+import { Box } from '@metamask/design-system-react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
@@ -31,7 +32,7 @@ jest.mock('../../../app/toast-listener/shared', () => ({
 jest.mock('./generic-hardware-wallet-animation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => <div data-testid="generic-hardware-wallet-animation" />,
+  default: () => <Box data-testid="generic-hardware-wallet-animation" />,
 }));
 
 const mockUseHardwareWalletState = jest.fn();

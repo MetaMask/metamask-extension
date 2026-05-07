@@ -1,8 +1,7 @@
-import { act } from '@testing-library/react-hooks';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures-state-machine';
+} from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useHwSwapConfirmationMonitoring } from './useHwSwapConfirmationMonitoring';
 

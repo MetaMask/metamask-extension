@@ -1,10 +1,11 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { Box } from '@metamask/design-system-react';
 import { SignatureStepStatus } from './hardware-wallet-signatures.utils';
 import SignatureStatusIcon from './signature-status-icon';
 
 jest.mock('../../../components/ui/pulse-loader', () => () => (
-  <div data-testid="pulse-loader" />
+  <Box data-testid="pulse-loader" />
 ));
 
 describe('SignatureStatusIcon', () => {

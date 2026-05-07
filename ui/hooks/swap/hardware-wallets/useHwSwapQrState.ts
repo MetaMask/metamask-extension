@@ -13,9 +13,9 @@ import {
   rejectPendingApproval,
 } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
-import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures-state-machine';
-import { isQrHardwareSignRequest } from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures.utils';
+import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
+import { isQrHardwareSignRequest } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletQrStateOptions = {
   signatureState: HardwareWalletSignaturesState;

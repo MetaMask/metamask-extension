@@ -37,7 +37,7 @@ import { useInitialBridgeTokens } from '../../hooks/bridge/useInitialBridgeToken
 import PrepareBridgePage from './prepare/prepare-bridge-page';
 import AwaitingSignaturesCancelButton from './awaiting-signatures/awaiting-signatures-cancel-button';
 import AwaitingSignatures from './awaiting-signatures';
-import HardwareWalletSignatures from './hardware-wallet-signatures';
+import HardwareWalletSignatures from './hardware-wallets';
 import { BridgeTransactionSettingsModal } from './prepare/bridge-transaction-settings-modal';
 import { useRefreshSmartTransactionsLiveness } from './hooks/useRefreshSmartTransactionsLiveness';
 import { clearAllBridgeCacheItems } from './utils/cache';

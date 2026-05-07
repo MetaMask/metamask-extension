@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
 import { useHwSwapQrState } from './useHwSwapQrState';
 
 jest.mock('react-redux', () => ({
@@ -26,7 +26,7 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock(
-  '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures.utils',
+  '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures.utils',
   () => ({
     isQrHardwareSignRequest: jest.fn(),
   }),
@@ -43,7 +43,7 @@ const mockGetActiveQrCodeScanRequest =
   jest.requireMock('../../../selectors').getActiveQrCodeScanRequest;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockIsQrHardwareSignRequest = jest.requireMock(
-  '../../../pages/bridge/hardware-wallet-signatures/hardware-wallet-signatures.utils',
+  '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures.utils',
 ).isQrHardwareSignRequest;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockCancelQrCodeScan = jest.requireMock(

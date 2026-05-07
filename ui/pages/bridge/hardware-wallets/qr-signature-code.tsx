@@ -1,7 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { UR, UREncoder } from '@ngraveio/bc-ur';
-import { Box } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 
 import type { QrHardwareSignRequest } from './types';
 
@@ -36,7 +40,13 @@ const QrSignatureCode = ({
   }, [urEncoder]);
 
   return (
-    <Box className="hardware-wallet-signatures__qr-code">
+    <Box
+      className="hardware-wallet-signatures__qr-code"
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
+      marginTop={4}
+      style={{ width: QR_CODE_SIZE, height: QR_CODE_SIZE }}
+    >
       <QRCodeSVG value={currentQrCode.toUpperCase()} size={QR_CODE_SIZE} />
     </Box>
   );

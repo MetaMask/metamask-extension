@@ -12,7 +12,6 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
-  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -336,16 +335,24 @@ export default function HardwareWalletSignatures() {
   }, [cancelCurrentBatch, handleQrSignatureCancel, navigateToBridgePage]);
 
   return (
-    <div className="hardware-wallet-signatures">
+    <Box
+      className="hardware-wallet-signatures"
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      style={{ flex: 1, width: '100%', minHeight: '100%' }}
+    >
       <Box
         className="hardware-wallet-signatures__content"
-        paddingLeft={4}
-        paddingRight={4}
-        justifyContent={BoxJustifyContent.Start}
         flexDirection={BoxFlexDirection.Column}
+        paddingTop={6}
         alignItems={BoxAlignItems.Start}
+        style={{ height: '100%' }}
       >
-        <Box className="hardware-wallet-signatures__device" marginBottom={6}>
+        <Box
+          className="hardware-wallet-signatures__device"
+          marginBottom={6}
+          style={{ alignSelf: 'center' }}
+        >
           <GenericHardwareWalletAnimation status={signatureState.status} />
         </Box>
         <Text
@@ -358,7 +365,7 @@ export default function HardwareWalletSignatures() {
         {lockedQuote && (
           <>
             {isReadingQrSignature && qrSignRequest && (
-              <Box className="hardware-wallet-signatures__qr-reader">
+              <Box className="hardware-wallet-signatures__qr-reader" style={{ width: '100%' }} marginBottom={6}>
                 <Reader
                   cancelQRHardwareSignRequest={handleQrSignatureCancel}
                   submitQRHardwareSignature={handleQrScanSuccess}
@@ -451,6 +458,8 @@ export default function HardwareWalletSignatures() {
           className="hardware-wallet-signatures__footer"
           flexDirection={BoxFlexDirection.Column}
           gap={4}
+          style={{ width: '100%', marginTop: 'auto' }}
+          padding={4}
         >
           {isRetryable && (
             <Button
@@ -486,6 +495,6 @@ export default function HardwareWalletSignatures() {
           </Button>
         </Box>
       )}
-    </div>
+    </Box>
   );
 }
