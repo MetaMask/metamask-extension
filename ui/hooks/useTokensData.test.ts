@@ -1,5 +1,4 @@
-import { waitFor } from '@testing-library/react';
-import { act } from '@testing-library/react-hooks';
+import { waitFor, act } from '@testing-library/react';
 import { handleFetch } from '@metamask/controller-utils';
 import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import { useTokensData, MAX_BATCH_SIZE } from './useTokensData';
@@ -109,10 +108,6 @@ describe('useTokensData', () => {
     expect(calledUrl).toContain('includeIconUrl=true');
   });
 
-  // Note: this test produces one act() warning because each renderHook call creates
-  // an independent React tree. When the shared in-flight promise resolves, all three
-  // trees update simultaneously, but only the one observed by waitFor is wrapped in act.
-  // This is a known RNTL limitation when testing cross-hook module-level state sharing.
   it('deduplicates concurrent requests for the same asset IDs', async () => {
     const assetId = makeAssetId();
     mockHandleFetch.mockResolvedValue(makeTokenResponse(assetId));

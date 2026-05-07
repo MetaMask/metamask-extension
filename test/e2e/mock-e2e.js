@@ -1261,6 +1261,8 @@ async function setupMocking(
         },
       );
 
+      const wethMainnet =
+        'eip155:1/erc20:0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
       const usdcMainnet =
         'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
       const usdtMainnet =
@@ -1268,6 +1270,17 @@ async function setupMocking(
       const daiMainnet =
         'eip155:1/erc20:0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
+      if (
+        assetIds.includes(wethMainnet) ||
+        assetIds.includes(wethMainnet.toLowerCase())
+      ) {
+        results.push({
+          assetId: wethMainnet,
+          name: 'Wrapped Ether',
+          symbol: 'WETH',
+          decimals: 18,
+        });
+      }
       if (
         assetIds.includes(usdcMainnet) ||
         assetIds.includes(usdcMainnet.toLowerCase())
