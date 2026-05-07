@@ -28,6 +28,7 @@ const getMaterialThemeInputProps = ({
   max,
   autoComplete,
 }) => ({
+  variant: 'standard',
   InputLabelProps: {
     sx: {
       '&.Mui-focused': {
@@ -68,6 +69,7 @@ const getMaterialWhitePaddedThemeInputProps = ({
   max,
   autoComplete,
 }) => ({
+  variant: 'standard',
   InputProps: {
     startAdornment,
     endAdornment,
