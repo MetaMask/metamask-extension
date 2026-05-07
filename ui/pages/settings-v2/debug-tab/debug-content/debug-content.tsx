@@ -232,8 +232,7 @@ const DebugContent = () => {
       <Box
         className="settings-page__content-row"
         display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
+        flexDirection={FlexDirection.Column}
         gap={4}
       >
         <div className="settings-page__content-item">
@@ -245,12 +244,15 @@ const DebugContent = () => {
             which will override values coming from LaunchDarkly.
           </div>
         </div>
-        <div
-          className="settings-page__content-description"
-          data-testid="developer-options-remote-feature-flags"
-        >
-          {JSON.stringify(remoteFeatureFlags)}
-        </div>
+        <details className="remote-feature-flags-details">
+          <summary>View feature flags JSON</summary>
+          <pre
+            className="remote-feature-flags-json"
+            data-testid="developer-options-remote-feature-flags"
+          >
+            <code>{JSON.stringify(remoteFeatureFlags, null, 2)}</code>
+          </pre>
+        </details>
       </Box>
     );
   };
