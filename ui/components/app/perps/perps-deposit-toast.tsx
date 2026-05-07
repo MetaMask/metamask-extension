@@ -9,23 +9,10 @@ import {
   selectPerpsLastDepositTransactionId,
   selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
-import { toast } from '../../ui/toast/toast';
+import { toast, ToastContent } from '../../ui/toast/toast';
 
 const id = 'perps-deposit-toast';
 const duration = 5 * SECOND;
-
-const Content = ({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) => (
-  <div className="flex min-w-0 flex-1 flex-col" data-testid={id}>
-    <p className="text-m-body-md">{title}</p>
-    <p className="mt-1 text-m-body-sm text-text-alternative">{description}</p>
-  </div>
-);
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
@@ -54,7 +41,9 @@ export function PerpsDepositToast() {
       const description = isSuccess
         ? t('perpsDepositToastSuccessDescription')
         : lastDepositResultError || t('perpsDepositToastErrorDescription');
-      const content = <Content title={title} description={description} />;
+      const content = (
+        <ToastContent title={title} description={description} dataTestId={id} />
+      );
       const options = { id, duration };
 
       if (isSuccess) {
@@ -75,9 +64,10 @@ export function PerpsDepositToast() {
     }
 
     toast.loading(
-      <Content
+      <ToastContent
         title={t('perpsDepositToastPendingTitle')}
         description={t('perpsDepositToastPendingDescription')}
+        dataTestId={id}
       />,
       {
         id,
