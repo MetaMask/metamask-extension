@@ -21,7 +21,19 @@ const DEBOUNCE_DELAY = 500;
 export function useTransactionCustomAmount({
   currency,
   disableUpdate = false,
-}: { currency?: string; disableUpdate?: boolean } = {}) {
+  balanceUsdOverride,
+}: {
+  currency?: string;
+  disableUpdate?: boolean;
+  /**
+   * Optional caller-provided balance (USD) used as the source for
+   * `updatePendingAmountPercentage`. When provided, takes precedence over the
+   * default `payToken.balanceUsd`. Lets callers like Perps Withdraw supply a
+   * non-pay-token balance (e.g. Perps available balance) without coupling the
+   * shared hook to those flows.
+   */
+  balanceUsdOverride?: number;
+} = {}) {
   const [isInputChanged, setInputChanged] = useState(false);
   const [hasInput, setHasInput] = useState(false);
   const [amountHumanDebounced, setAmountHumanDebounced] = useState('0');
@@ -34,7 +46,7 @@ export function useTransactionCustomAmount({
   const tokenAddress = getTokenAddress(transactionMeta);
   const tokenFiatRate =
     useTokenFiatRate(tokenAddress, chainId as Hex, currency) ?? 1;
-  const balanceUsd = useTokenBalance();
+  const balanceUsd = useTokenBalance(balanceUsdOverride);
 
   const { updateTokenAmount: updateTokenAmountCallback } =
     useUpdateTokenAmount();
@@ -221,8 +233,12 @@ export function useTransactionCustomAmount({
   };
 }
 
-function useTokenBalance() {
+function useTokenBalance(balanceUsdOverride?: number) {
   const { payToken } = useTransactionPayToken();
+
+  if (balanceUsdOverride !== undefined) {
+    return balanceUsdOverride;
+  }
 
   const payTokenBalanceUsd = new BigNumber(
     payToken?.balanceUsd ?? 0,

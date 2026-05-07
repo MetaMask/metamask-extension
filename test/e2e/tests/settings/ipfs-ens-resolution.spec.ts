@@ -7,6 +7,8 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { NETWORK_CLIENT_ID } from '../../constants';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 
 describe('Settings', function () {
   const ENS_NAME = 'metamask.eth';
@@ -49,13 +51,29 @@ describe('Settings', function () {
         // Unlike getPersistedState (which reads IndexedDB fixture data
         // immediately), getCleanAppState reflects the running controller
         // state that has been synced to the UI after background init.
-        await driver.wait(async () => {
-          const uiState = await getCleanAppState(driver);
-          return (
-            uiState?.metamask?.ipfsGateway === 'dweb.link' &&
-            uiState?.metamask?.useAddressBarEnsResolution === true
-          );
-        }, 10000);
+        // Wait until NetworkController state resolves to mainnet.
+        await driver.waitUntil(
+          async () => {
+            const uiState = await getCleanAppState(driver);
+            const m = uiState?.metamask;
+            if (
+              m?.ipfsGateway !== 'dweb.link' ||
+              m?.useAddressBarEnsResolution !== true
+            ) {
+              return false;
+            }
+            try {
+              return getCurrentChainId({ metamask: m }) === CHAIN_IDS.MAINNET;
+            } catch {
+              return false;
+            }
+          },
+          {
+            interval: 1000,
+            stableFor: 2000,
+            timeout: 10000,
+          },
+        );
 
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();

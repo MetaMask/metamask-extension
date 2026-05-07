@@ -2,6 +2,7 @@ import { ENVIRONMENT } from '../../development/build/constants';
 import {
   getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
+  getIsPasskeyFeatureEnabled,
   getIsAssetsUnifiedStateIncludedInBuild,
   getIsNewHardwareWalletOnboardingEnabled,
   isProduction,
@@ -180,5 +181,32 @@ describe('getIsNewHardwareWalletOnboardingEnabled', () => {
   it('returns false when NEW_HARDWARE_WALLET_ONBOARDING is undefined', () => {
     delete process.env.NEW_HARDWARE_WALLET_ONBOARDING;
     expect(getIsNewHardwareWalletOnboardingEnabled()).toBe(false);
+  });
+});
+
+describe('getIsPasskeyFeatureEnabled', () => {
+  let originalValue: string | undefined;
+
+  beforeAll(() => {
+    originalValue = process.env.PASSKEY_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.PASSKEY_ENABLED = originalValue;
+  });
+
+  it('returns true when PASSKEY_ENABLED is "true"', () => {
+    process.env.PASSKEY_ENABLED = 'true';
+    expect(getIsPasskeyFeatureEnabled()).toBe(true);
+  });
+
+  it('returns false when PASSKEY_ENABLED is "false"', () => {
+    process.env.PASSKEY_ENABLED = 'false';
+    expect(getIsPasskeyFeatureEnabled()).toBe(false);
+  });
+
+  it('returns false when PASSKEY_ENABLED is undefined', () => {
+    delete process.env.PASSKEY_ENABLED;
+    expect(getIsPasskeyFeatureEnabled()).toBe(false);
   });
 });

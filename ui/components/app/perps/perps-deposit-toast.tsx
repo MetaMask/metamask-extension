@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Icon as DsIcon,
@@ -10,52 +10,24 @@ import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import {
-  selectPerpsDepositInProgress,
+  selectPerpsDepositPending,
   selectPerpsLastDepositResult,
   selectPerpsLastDepositTransactionId,
+  selectPerpsShouldShowDepositToast,
 } from '../../../selectors/perps-controller';
 import { Toast } from '../../multichain/toast';
 
 export function PerpsDepositToast() {
   const t = useI18nContext();
-  const depositInProgress = useSelector(selectPerpsDepositInProgress);
+  const depositInProgress = useSelector(selectPerpsDepositPending);
   const lastDepositResult = useSelector(selectPerpsLastDepositResult);
   const lastDepositTransactionId = useSelector(
     selectPerpsLastDepositTransactionId,
   );
+  const shouldShowDepositToast = useSelector(selectPerpsShouldShowDepositToast);
   const [dismissedPendingTransactionId, setDismissedPendingTransactionId] =
     useState<string | null>(null);
   const [dismissedCompletion, setDismissedCompletion] = useState(false);
-
-  const prevTransactionIdRef = useRef<string | null>(null);
-  const [submittedTransactionId, setSubmittedTransactionId] = useState<
-    string | null
-  >(() => {
-    if (depositInProgress && lastDepositTransactionId && !lastDepositResult) {
-      return lastDepositTransactionId;
-    }
-    return null;
-  });
-
-  useEffect(() => {
-    if (
-      lastDepositTransactionId &&
-      lastDepositTransactionId !== prevTransactionIdRef.current
-    ) {
-      setSubmittedTransactionId(lastDepositTransactionId);
-    }
-    prevTransactionIdRef.current = lastDepositTransactionId;
-  }, [lastDepositTransactionId]);
-
-  useEffect(() => {
-    if (lastDepositResult) {
-      setSubmittedTransactionId(null);
-    }
-  }, [lastDepositResult]);
-
-  const dismissSubmittedToast = useCallback(() => {
-    setSubmittedTransactionId(null);
-  }, []);
 
   useEffect(() => {
     const hasNewPendingTransaction =
@@ -94,7 +66,7 @@ export function PerpsDepositToast() {
   const hasDismissedPendingToast =
     (lastDepositTransactionId ?? 'pending') === dismissedPendingTransactionId;
 
-  if (lastDepositResult && !dismissedCompletion) {
+  if (lastDepositResult && shouldShowDepositToast && !dismissedCompletion) {
     const isSuccess = lastDepositResult.success === true;
     return (
       <Toast
@@ -132,29 +104,6 @@ export function PerpsDepositToast() {
         onClose={dismissCompletionToast}
         autoHideTime={5 * SECOND}
         onAutoHideToast={dismissCompletionToast}
-      />
-    );
-  }
-
-  if (submittedTransactionId) {
-    return (
-      <Toast
-        key={`perps-deposit-submitted-toast-${submittedTransactionId}`}
-        dataTestId="perps-deposit-submitted-toast"
-        className="perps-toast self-center w-full max-w-[408px]"
-        contentProps={{ className: 'items-center' }}
-        text={t('perpsDepositToastSubmittedTitle')}
-        description={t('perpsDepositToastSubmittedDescription')}
-        startAdornment={
-          <DsIcon
-            name={DsIconName.Confirmation}
-            color={DsIconColor.SuccessDefault}
-            size={DsIconSize.Lg}
-          />
-        }
-        onClose={dismissSubmittedToast}
-        autoHideTime={5 * SECOND}
-        onAutoHideToast={dismissSubmittedToast}
       />
     );
   }

@@ -4,9 +4,11 @@ import {
   TransactionMeta,
   TransactionStatus,
 } from '@metamask/transaction-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { Hex } from '@metamask/utils';
 import { CachedScanAddressResponse, ResultType } from '../trust-signals';
 import {
+  DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE,
   EnforcedSimulationsState,
   getEnforcedSimulationsSlippage,
   isEnforcedSimulationsEligible,
@@ -80,20 +82,45 @@ function buildStateForAddresses(
   };
 }
 
+function buildRemoteFeatureFlagState(flag?: {
+  enabled?: boolean;
+  slippage?: number;
+}): RemoteFeatureFlagControllerState {
+  return {
+    cacheTimestamp: 0,
+    remoteFeatureFlags: flag
+      ? /* eslint-disable-next-line @typescript-eslint/naming-convention */
+        { confirmations_enforced_simulations: flag }
+      : {},
+  };
+}
+
 describe('enforced-simulations', () => {
   describe('getEnforcedSimulationsSlippage', () => {
-    it('returns the default slippage percentage', () => {
-      expect(getEnforcedSimulationsSlippage()).toBe(10);
+    it('returns the value from the flag when provided', () => {
+      expect(
+        getEnforcedSimulationsSlippage(
+          buildRemoteFeatureFlagState({ slippage: 25 }),
+        ),
+      ).toBe(25);
+    });
+
+    it('falls back to the default when the flag has no slippage', () => {
+      expect(
+        getEnforcedSimulationsSlippage(buildRemoteFeatureFlagState({})),
+      ).toBe(DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE);
+    });
+
+    it('falls back to the default when the flag is missing', () => {
+      expect(
+        getEnforcedSimulationsSlippage(buildRemoteFeatureFlagState()),
+      ).toBe(DEFAULT_ENFORCED_SIMULATIONS_SLIPPAGE);
     });
   });
 
   describe('getIsEnforcedSimulationsEligible', () => {
-    beforeEach(() => {
-      process.env.ENABLE_ENFORCED_SIMULATIONS = 'true';
-    });
-
     afterEach(() => {
-      delete process.env.ENABLE_ENFORCED_SIMULATIONS;
+      delete process.env.FORCE_ENABLE_SIMULATIONS;
     });
 
     it('returns true when all conditions are met', () => {
@@ -105,27 +132,21 @@ describe('enforced-simulations', () => {
       ).toBe(true);
     });
 
-    it('returns false when env flag is not set', () => {
-      delete process.env.ENABLE_ENFORCED_SIMULATIONS;
-
-      expect(isEnforcedSimulationsEligible(BASE_TRANSACTION_META)).toBe(false);
-    });
-
     it('returns false when origin is undefined', () => {
       expect(
-        isEnforcedSimulationsEligible({
-          ...BASE_TRANSACTION_META,
-          origin: undefined,
-        }),
+        isEnforcedSimulationsEligible(
+          { ...BASE_TRANSACTION_META, origin: undefined },
+          buildState(ResultType.Benign),
+        ),
       ).toBe(false);
     });
 
     it('returns false when origin is MetaMask internal', () => {
       expect(
-        isEnforcedSimulationsEligible({
-          ...BASE_TRANSACTION_META,
-          origin: ORIGIN_METAMASK,
-        }),
+        isEnforcedSimulationsEligible(
+          { ...BASE_TRANSACTION_META, origin: ORIGIN_METAMASK },
+          buildState(ResultType.Benign),
+        ),
       ).toBe(false);
     });
 
@@ -386,6 +407,72 @@ describe('enforced-simulations', () => {
             }),
           ),
         ).toBe(true);
+      });
+    });
+
+    describe('with FORCE_ENABLE_SIMULATIONS', () => {
+      beforeEach(() => {
+        process.env.FORCE_ENABLE_SIMULATIONS = 'true';
+      });
+
+      it('returns true even when recipient is trusted', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            BASE_TRANSACTION_META,
+            buildState(ResultType.Trusted),
+          ),
+        ).toBe(true);
+      });
+
+      it('returns true even when all nested addresses are trusted', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              nestedTransactions: [
+                { to: NESTED_ADDRESS_A as `0x${string}` },
+                { to: NESTED_ADDRESS_B as `0x${string}` },
+              ],
+            },
+            buildStateForAddresses({
+              [TO_ADDRESS]: ResultType.Trusted,
+              [NESTED_ADDRESS_A]: ResultType.Trusted,
+              [NESTED_ADDRESS_B]: ResultType.Trusted,
+            }),
+          ),
+        ).toBe(true);
+      });
+
+      it('still returns false when there are no balance changes', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            {
+              ...BASE_TRANSACTION_META,
+              simulationData: { tokenBalanceChanges: [] },
+            },
+            buildState(ResultType.Trusted),
+          ),
+        ).toBe(false);
+      });
+
+      it('still returns false when origin is MetaMask internal', () => {
+        expect(
+          isEnforcedSimulationsEligible(
+            { ...BASE_TRANSACTION_META, origin: ORIGIN_METAMASK },
+            buildState(ResultType.Trusted),
+          ),
+        ).toBe(false);
+      });
+
+      it('is ignored when value is not the string "true"', () => {
+        process.env.FORCE_ENABLE_SIMULATIONS = '1';
+
+        expect(
+          isEnforcedSimulationsEligible(
+            BASE_TRANSACTION_META,
+            buildState(ResultType.Trusted),
+          ),
+        ).toBe(false);
       });
     });
   });

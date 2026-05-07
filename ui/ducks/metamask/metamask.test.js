@@ -16,6 +16,7 @@ import reduceMetamask, {
   getGasFeeEstimates,
   getGasFeeEstimatesByChainId,
   getIsNetworkBusyByChainId,
+  getPasskeyAutoUnlockSuppressed,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
@@ -770,6 +771,30 @@ describe('MetaMask Reducers', () => {
       };
       const tokens = getTokensByChainId(stateWithNoTokens, '0x1');
       expect(tokens).toStrictEqual([]);
+    });
+  });
+
+  describe('passkey selectors', () => {
+    describe('getPasskeyAutoUnlockSuppressed', () => {
+      it('returns true when passkey auto unlock is suppressed', () => {
+        const state = {
+          metamask: {
+            passkeyAutoUnlockSuppressed: true,
+          },
+        };
+
+        expect(getPasskeyAutoUnlockSuppressed(state)).toBe(true);
+      });
+
+      it('returns false when passkey auto unlock is not suppressed', () => {
+        const state = {
+          metamask: {
+            passkeyAutoUnlockSuppressed: false,
+          },
+        };
+
+        expect(getPasskeyAutoUnlockSuppressed(state)).toBe(false);
+      });
     });
   });
 });

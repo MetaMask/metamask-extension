@@ -135,6 +135,12 @@ export type OrderEntryProps = {
    * Falls back to currentPrice when not yet available.
    */
   markPrice?: number;
+  /** Auto-focus the USD size input on mount / when market order type is active */
+  autoFocusUsd?: boolean;
+  /** Auto-focus the limit price input on mount / when switching to limit order type */
+  autoFocusLimitPrice?: boolean;
+  /** Placeholder override for the USD input. Defaults to AmountInput's '0.00'. */
+  usdPlaceholder?: string;
 };
 
 /**
@@ -176,6 +182,14 @@ export type AmountInputProps = {
   szDecimals?: number;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
+  /** Auto-focus the USD input on mount (used for keyboard-first order entry) */
+  autoFocus?: boolean;
+  /** Placeholder override for the USD input. Defaults to '0.00'. */
+  usdPlaceholder?: string;
+  /** Ref to the USD input element so parents can imperatively refocus it on order-type changes */
+  usdInputRef?:
+    | React.MutableRefObject<HTMLInputElement | null>
+    | ((instance: HTMLInputElement | null) => void);
 };
 
 /**
@@ -232,6 +246,8 @@ export type AutoCloseSectionProps = {
   orderType?: OrderType;
   /** Limit price string – used as the reference price for limit-order TP/SL validation */
   limitPrice?: string;
+  /** Estimated liquidation price – used for stop-loss safety validation */
+  liquidationPrice?: number | null;
   /** Leverage multiplier - used to convert RoE % to price change % (RoE% = priceChange% * leverage) */
   leverage: number;
   /** Asset symbol (e.g. 'BTC', 'ETH') – used to fetch dynamic closing fee rates */

@@ -174,7 +174,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 206,
+      "currentMigrationVersion": 207,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -220,7 +220,6 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "AssetsController": {},
     "AuthenticationController": {},
     "BridgeStatusController": {
       "txHistory": {}
@@ -840,6 +839,9 @@
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": null
     },
+    "PasskeyController": {
+      "passkeyRecord": null
+    },
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []
@@ -1105,6 +1107,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 206
+    "version": 207
   }
 }
