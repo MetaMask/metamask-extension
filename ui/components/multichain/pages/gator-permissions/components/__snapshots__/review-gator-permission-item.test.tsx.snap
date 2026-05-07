@@ -144,9 +144,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           >
             Test Gator Account
           </p>
-          <span
-            role="presentation"
-          >
+          <span>
             <button
               aria-label="copy-button"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
@@ -349,9 +347,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           >
             Test Gator Account
           </p>
-          <span
-            role="presentation"
-          >
+          <span>
             <button
               aria-label="copy-button"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
@@ -528,9 +524,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           >
             Test Gator Account
           </p>
-          <span
-            role="presentation"
-          >
+          <span>
             <button
               aria-label="copy-button"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
@@ -728,9 +722,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           >
             Test Gator Account
           </p>
-          <span
-            role="presentation"
-          >
+          <span>
             <button
               aria-label="copy-button"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
@@ -928,9 +920,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           >
             Test Gator Account
           </p>
-          <span
-            role="presentation"
-          >
+          <span>
             <button
               aria-label="copy-button"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
@@ -1128,9 +1118,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           >
             Test Gator Account
           </p>
-          <span
-            role="presentation"
-          >
+          <span>
             <button
               aria-label="copy-button"
               class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
