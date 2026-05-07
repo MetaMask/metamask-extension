@@ -564,7 +564,7 @@ class HomePage {
 
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
-    await this.driver.clickElement(this.srpAddedToastCloseButton);
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 5000);
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {
