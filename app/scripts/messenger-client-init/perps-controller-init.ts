@@ -222,12 +222,12 @@ type PerpsBackgroundApi = {
  *
  * Retried error conditions:
  * - `CLIENT_NOT_INITIALIZED` / `CLIENT_REINITIALIZING` — provider not yet
- *   ready between `perpsDisconnect → perpsInit` during account switches.
+ * ready between `perpsDisconnect → perpsInit` during account switches.
  * - Benign WS disconnect-race errors (`TERMINATED_BY_USER`, in-flight queue
- *   drained on socket close) — our own `disconnect()` closed the socket while
- *   a request was in-flight. By the time `init()` resolves the controller has
- *   rebuilt the provider with the new account and the retry runs against a
- *   fresh, ready WebSocket.
+ * drained on socket close) — our own `disconnect()` closed the socket while
+ * a request was in-flight. By the time `init()` resolves the controller has
+ * rebuilt the provider with the new account and the retry runs against a
+ * fresh, ready WebSocket.
  *
  * Every wrapped method is self-healing without any UI-side awareness.
  * @param controller

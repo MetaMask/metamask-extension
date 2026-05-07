@@ -5,12 +5,12 @@
  * Two error shapes are treated as benign:
  *
  * 1. `ReconnectingWebSocketError { code: 'TERMINATED_BY_USER' }` (from
- *    `@nktkas/rews`) — emitted when `close()` is called explicitly.  Typically
- *    surfaces as `WebSocketRequestError { cause: ReconnectingWebSocketError }`.
+ * `@nktkas/rews`) — emitted when `close()` is called explicitly.  Typically
+ * surfaces as `WebSocketRequestError { cause: ReconnectingWebSocketError }`.
  *
  * 2. `WebSocketRequestError { message: 'WebSocket connection closed' }` (from
- *    `@nktkas/hyperliquid` `_postRequest.js`) — thrown when the socket's
- *    `close`/`error` event drains the pending request queue mid-disconnect.
+ * `@nktkas/hyperliquid` `_postRequest.js`) — thrown when the socket's
+ * `close`/`error` event drains the pending request queue mid-disconnect.
  *
  * Neither indicates a real connectivity problem; both are race side-effects of
  * account switches where `disconnect()` fires while a request is in-flight.
