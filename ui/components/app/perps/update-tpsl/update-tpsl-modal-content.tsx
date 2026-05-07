@@ -18,6 +18,11 @@ import {
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
+  formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
+  PRICE_RANGES_UNIVERSAL,
+} from '../../../../../shared/lib/perps-formatters';
+import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
@@ -27,7 +32,6 @@ import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import {
   usePerpsEligibility,
   usePerpsEventTracking,
@@ -49,13 +53,24 @@ import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  isStopLossSafeFromLiquidation,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
+  getStopLossLiquidationErrorDirection,
 } from '../utils/tpslValidation';
+import {
+  applyDefaultStopLossSign,
+  isSignedDecimalInput,
+} from '../utils/tpslInput';
 
 // RoE (Return on Equity) preset percentages - matching mobile
 const TP_PRESETS = [10, 25, 50, 100];
 const SL_PRESETS = [5, 10, 25, 50];
+
+const formatSignedRoePercent = (value: number): string => {
+  const formatted = formatRoePercent(value);
+  return value > 0 && formatted !== '0' ? `+${formatted}` : formatted;
+};
 
 export type UpdateTPSLSubmitState = {
   onSubmit: () => void;
@@ -91,7 +106,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 }) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
@@ -117,6 +131,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   // Exact preset percent values, kept until the user manually edits a field
   const [tpPresetPercent, setTpPresetPercent] = useState<string | null>(null);
   const [slPresetPercent, setSlPresetPercent] = useState<string | null>(null);
+  const tpPercentInputRef = useRef<HTMLInputElement | null>(null);
+  const slPercentInputRef = useRef<HTMLInputElement | null>(null);
+  const pendingPercentSelectRef = useRef<'tp' | 'sl' | null>(null);
 
   const entryPriceForEdit = useMemo(() => {
     if (position?.entryPrice) {
@@ -137,17 +154,39 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     return Number.parseFloat(position.size) >= 0 ? 'long' : 'short';
   }, [position]);
 
-  const formatEditPrice = useCallback(
-    (value: number): string => value.toFixed(2),
-    [],
-  );
+  const liquidationPrice = useMemo(() => {
+    if (!position.liquidationPrice) {
+      return null;
+    }
+    const parsed = Number.parseFloat(
+      position.liquidationPrice.replaceAll(',', ''),
+    );
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  }, [position.liquidationPrice]);
+
+  // Presets populate the input with a raw numeric string (the `$` renders as a
+  // sibling icon). Use PRICE_RANGES_UNIVERSAL so BTC collapses to no decimals
+  // ("78975") while PUMP keeps 6 ("0.001824") — matches mobile's preset output
+  // and avoids the `.toFixed(2)` behaviour that produced "$0.00" for sub-cent
+  // assets and 2-decimal BTC prices.
+  const formatEditPrice = useCallback((value: number): string => {
+    if (!Number.isFinite(value) || value <= 0) {
+      return '';
+    }
+    return formatPerpsFiat(value, { ranges: PRICE_RANGES_UNIVERSAL }).replace(
+      /[$,]/gu,
+      '',
+    );
+  }, []);
 
   /**
-   * Convert a target price to a RoE% for display.
+   * Convert a target price to a signed RoE% for display.
+   * Positive = profitable (above entry for long / below entry for short).
+   * Negative = at a loss.
    * RoE% = ((targetPrice - entryPrice) / entryPrice) * leverage * 100
    */
   const priceToPercentForEdit = useCallback(
-    (price: string, isTP: boolean): string => {
+    (price: string): string => {
       if (!price || !entryPriceForEdit) {
         return '';
       }
@@ -158,30 +197,31 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       }
       const diff = priceNum - entryPriceForEdit;
       const percentChange = (diff / entryPriceForEdit) * leverageForEdit * 100;
-      if (positionDirection === 'long') {
-        return formatRoePercent(isTP ? percentChange : -percentChange);
-      }
-      return formatRoePercent(isTP ? -percentChange : percentChange);
+      // For long: positive when price > entry (profit). For short: negate (profit when price < entry).
+      return formatSignedRoePercent(
+        positionDirection === 'long' ? percentChange : -percentChange,
+      );
     },
     [entryPriceForEdit, leverageForEdit, positionDirection],
   );
 
   /**
-   * Convert a RoE% to a target price.
-   * targetPrice = entryPrice * (1 + roePercent / (leverage * 100))
+   * Convert a signed RoE% to a target price.
+   * Positive percent = profitable direction (above entry for long / below entry for short).
+   * Negative percent = loss direction.
+   * targetPrice = entryPrice * (1 + signedRoe / (leverage * 100))  [long]
+   * targetPrice = entryPrice * (1 - signedRoe / (leverage * 100))  [short]
    */
   const percentToPriceForEdit = useCallback(
-    (percent: number, isTP: boolean): string => {
+    (percent: number): string => {
       if (!entryPriceForEdit || percent === 0) {
         return '';
       }
       const priceChangeRatio = percent / (leverageForEdit * 100);
-      let multiplier: number;
-      if (positionDirection === 'long') {
-        multiplier = isTP ? 1 + priceChangeRatio : 1 - priceChangeRatio;
-      } else {
-        multiplier = isTP ? 1 - priceChangeRatio : 1 + priceChangeRatio;
-      }
+      const multiplier =
+        positionDirection === 'long'
+          ? 1 + priceChangeRatio
+          : 1 - priceChangeRatio;
       const price = entryPriceForEdit * multiplier;
       return formatEditPrice(price);
     },
@@ -189,12 +229,12 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   const editingTpPercent = useMemo(
-    () => priceToPercentForEdit(editingTpPrice, true),
+    () => priceToPercentForEdit(editingTpPrice),
     [priceToPercentForEdit, editingTpPrice],
   );
 
   const editingSlPercent = useMemo(
-    () => priceToPercentForEdit(editingSlPrice, false),
+    () => priceToPercentForEdit(editingSlPrice),
     [priceToPercentForEdit, editingSlPrice],
   );
 
@@ -241,11 +281,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     () =>
       Boolean(
         editingTpPrice.replaceAll(',', '').trim() &&
-          currentPrice > 0 &&
-          !isValidTakeProfitPrice(editingTpPrice, {
-            currentPrice,
-            direction: positionDirection,
-          }),
+        currentPrice > 0 &&
+        !isValidTakeProfitPrice(editingTpPrice, {
+          currentPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingTpPrice, currentPrice, positionDirection],
   );
@@ -254,16 +294,42 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     () =>
       Boolean(
         editingSlPrice.replaceAll(',', '').trim() &&
-          currentPrice > 0 &&
-          !isValidStopLossPrice(editingSlPrice, {
-            currentPrice,
-            direction: positionDirection,
-          }),
+        currentPrice > 0 &&
+        !isValidStopLossPrice(editingSlPrice, {
+          currentPrice,
+          direction: positionDirection,
+        }),
       ),
     [editingSlPrice, currentPrice, positionDirection],
   );
 
-  const hasInvalidTPSL = isTpInvalid || isSlInvalid;
+  const isSlLiquidationInvalid = useMemo(
+    () =>
+      Boolean(
+        editingSlPrice.trim() &&
+        !isStopLossSafeFromLiquidation(editingSlPrice, {
+          liquidationPrice,
+          direction: positionDirection,
+        }),
+      ),
+    [editingSlPrice, liquidationPrice, positionDirection],
+  );
+
+  const hasInvalidTPSL = isTpInvalid || isSlInvalid || isSlLiquidationInvalid;
+
+  useLayoutEffect(() => {
+    const pendingInput = pendingPercentSelectRef.current;
+    if (!pendingInput) {
+      return;
+    }
+
+    pendingPercentSelectRef.current = null;
+    const input =
+      pendingInput === 'tp'
+        ? tpPercentInputRef.current
+        : slPercentInputRef.current;
+    input?.select();
+  });
 
   useEffect(() => {
     return () => {
@@ -273,11 +339,12 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleTpPresetClick = useCallback(
     (percent: number) => {
-      const newPrice = percentToPriceForEdit(percent, true);
+      // TP presets are always positive RoE (profitable direction)
+      const newPrice = percentToPriceForEdit(percent);
       setEditingTpPrice(newPrice);
       // Preserve the exact preset value for display — avoids round-trip drift
       // caused by the price being rounded to 2 decimal places
-      const presetStr = String(percent);
+      const presetStr = formatSignedRoePercent(percent);
       setRawTpPercent(presetStr);
       setTpPresetPercent(presetStr);
     },
@@ -286,9 +353,11 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleSlPresetClick = useCallback(
     (percent: number) => {
-      const newPrice = percentToPriceForEdit(percent, false);
+      // SL presets represent the loss magnitude; negate to express as signed RoE
+      const signedPercent = -percent;
+      const newPrice = percentToPriceForEdit(signedPercent);
       setEditingSlPrice(newPrice);
-      const presetStr = String(percent);
+      const presetStr = String(signedPercent);
       setRawSlPercent(presetStr);
       setSlPresetPercent(presetStr);
     },
@@ -298,14 +367,14 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   const handleTpPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = event.target;
-      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+      if (value === '' || isSignedDecimalInput(value)) {
         setRawTpPercent(value);
         setTpPresetPercent(null);
         const numValue = Number.parseFloat(value);
-        if (value === '' || value === '-') {
+        if (value === '' || value === '-' || value === '+') {
           setEditingTpPrice('');
         } else if (!Number.isNaN(numValue)) {
-          const newPrice = percentToPriceForEdit(numValue, true);
+          const newPrice = percentToPriceForEdit(numValue);
           setEditingTpPrice(newPrice);
         }
       }
@@ -314,6 +383,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   );
 
   const handleTpPercentFocus = useCallback(() => {
+    pendingPercentSelectRef.current = 'tp';
     setRawTpPercent(tpPresetPercent ?? editingTpPercent);
     setIsTpPercentFocused(true);
   }, [tpPresetPercent, editingTpPercent]);
@@ -326,23 +396,24 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
 
   const handleSlPercentInputChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { value } = event.target;
-      if (value === '' || /^-?\d*(?:\.\d*)?$/u.test(value)) {
+      const value = applyDefaultStopLossSign(event.target.value, rawSlPercent);
+      if (value === '' || isSignedDecimalInput(value)) {
         setRawSlPercent(value);
         setSlPresetPercent(null);
         const numValue = Number.parseFloat(value);
-        if (value === '' || value === '-') {
+        if (value === '' || value === '-' || value === '+') {
           setEditingSlPrice('');
         } else if (!Number.isNaN(numValue)) {
-          const newPrice = percentToPriceForEdit(numValue, false);
+          const newPrice = percentToPriceForEdit(numValue);
           setEditingSlPrice(newPrice);
         }
       }
     },
-    [percentToPriceForEdit],
+    [percentToPriceForEdit, rawSlPercent],
   );
 
   const handleSlPercentFocus = useCallback(() => {
+    pendingPercentSelectRef.current = 'sl';
     setRawSlPercent(slPresetPercent ?? editingSlPercent);
     setIsSlPercentFocused(true);
   }, [slPresetPercent, editingSlPercent]);
@@ -492,14 +563,34 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     track,
   ]);
 
+  const isSubmitDisabled = isSaving || hasInvalidTPSL;
+
   useLayoutEffect(() => {
     onSubmitStateChange?.({
       onSubmit: handleSave,
       isSaving,
-      submitDisabled: isSaving || hasInvalidTPSL,
+      submitDisabled: isSubmitDisabled,
       submitButtonTitle: undefined,
     });
-  }, [onSubmitStateChange, handleSave, isSaving, hasInvalidTPSL, t]);
+  }, [onSubmitStateChange, handleSave, isSaving, isSubmitDisabled, t]);
+
+  const handleInputEnterKey = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (
+        event.key !== 'Enter' ||
+        event.shiftKey ||
+        event.nativeEvent.isComposing ||
+        isSubmitDisabled
+      ) {
+        return;
+      }
+      event.preventDefault();
+      handleSave().catch(() => {
+        // Errors are surfaced via the perps toast system.
+      });
+    },
+    [handleSave, isSubmitDisabled],
+  );
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -548,6 +639,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
                   setTpPresetPercent(null);
                 }
               }}
+              onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+                event.target.select()
+              }
               onBlur={handleTpPriceBlur}
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
@@ -555,6 +649,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              autoFocus
+              testId="perps-update-tpsl-tp-price-input"
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -582,6 +679,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-tp-percent-input"
+              inputRef={tpPercentInputRef}
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               endAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -612,10 +712,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               color={getPnlDisplayColor(estimatedPnlAtTp)}
             >
               {estimatedPnlAtTp >= 0 ? '+' : '-'}
-              {formatCurrencyWithMinThreshold(
-                Math.abs(estimatedPnlAtTp),
-                'USD',
-              )}
+              {formatPerpsFiat(Math.abs(estimatedPnlAtTp), {
+                ranges: PRICE_RANGES_MINIMAL_VIEW,
+              })}
             </Text>
           </Box>
         )}
@@ -678,6 +777,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
                   setSlPresetPercent(null);
                 }
               }}
+              onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+                event.target.select()
+              }
               onBlur={handleSlPriceBlur}
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
@@ -685,6 +787,8 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-sl-price-input"
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -712,6 +816,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               backgroundColor={BackgroundColor.backgroundMuted}
               className="w-full"
               disabled={isSaving}
+              testId="perps-update-tpsl-sl-percent-input"
+              inputRef={slPercentInputRef}
+              inputProps={{ onKeyDown: handleInputEnterKey }}
               endAccessory={
                 <Text
                   variant={TextVariant.BodyMd}
@@ -742,23 +849,26 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
               color={getPnlDisplayColor(estimatedPnlAtSl)}
             >
               {estimatedPnlAtSl >= 0 ? '+' : '-'}
-              {formatCurrencyWithMinThreshold(
-                Math.abs(estimatedPnlAtSl),
-                'USD',
-              )}
+              {formatPerpsFiat(Math.abs(estimatedPnlAtSl), {
+                ranges: PRICE_RANGES_MINIMAL_VIEW,
+              })}
             </Text>
           </Box>
         )}
-        {isSlInvalid && (
+        {(isSlInvalid || isSlLiquidationInvalid) && (
           <Text
             variant={TextVariant.BodyXs}
             color={TextColor.ErrorDefault}
             data-testid="sl-validation-error"
           >
-            {t('perpsStopLossInvalidPrice', [
-              getStopLossErrorDirection(positionDirection),
-              'current',
-            ])}
+            {isSlInvalid
+              ? t('perpsStopLossInvalidPrice', [
+                  getStopLossErrorDirection(positionDirection),
+                  'current',
+                ])
+              : t('perpsStopLossInvalidLiquidationPrice', [
+                  getStopLossLiquidationErrorDirection(positionDirection),
+                ])}
           </Text>
         )}
       </Box>

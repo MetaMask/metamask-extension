@@ -19,6 +19,7 @@ export const AddNetwork: React.FC<AddNetworkProps> = ({
   return (
     <NetworksForm
       toggleNetworkMenuAfterSubmit={false}
+      usePageFooterStyle={true}
       onComplete={() => {
         setSearchParams({});
       }}

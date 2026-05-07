@@ -14,7 +14,8 @@ const CODE_FILE_REGEX = /\.(ts|tsx|js|jsx)$/u;
 const TEST_FILE_REGEX = /\.(test|spec)\.(ts|tsx|js|jsx)$/u;
 const VALID_FLAG_KEY_REGEX =
   /^[a-z][A-Za-z0-9]*[A-Z]{2,}[0-9]+Abtest[A-Z][A-Za-z0-9]*$/u;
-const ABTEST_STRING_LITERAL_REGEX = /(['"])([A-Za-z0-9]*Abtest[A-Za-z0-9]*)\1/gu;
+const ABTEST_STRING_LITERAL_REGEX =
+  /(['"])([A-Za-z0-9]*Abtest[A-Za-z0-9]*)\1/gu;
 const RISKY_CHANGE_REGEX =
   /useABTest\(|resolveABTestAssignment\(|enrichWithABTests\(|AB_TEST_ANALYTICS_MAPPINGS|active_ab_tests\s*:|ab_tests\s*:|trackEvent\(|createEventBuilder\(|MetaMetricsEvents\.|Experiment Viewed|ExperimentViewed/u;
 
@@ -28,7 +29,7 @@ Checks changed files for A/B testing implementation compliance.
 
 Rules:
   - Fail: New ab_tests payload additions in checked code diffs
-  - Fail: Malformed literal active_ab_tests objects missing key/value
+  - Fail: Malformed literal active_ab_tests objects missing key/value/key_value_pair
   - Fail: Inline useABTest variants object missing control
   - Warn: Flag key naming mismatch for Abtest keys
   - Warn: Risky A/B integration changes without test-file updates`;
@@ -186,6 +187,47 @@ function printList(title: string, items: string[]): void {
   }
 }
 
+function extractActiveABTestsPayload(
+  addedLines: string[],
+  startIndex: number,
+): string | null {
+  const line = addedLines[startIndex];
+  const match = line.match(/active_ab_tests\s*:\s*(\[|\{)/u);
+
+  if (!match) {
+    return null;
+  }
+
+  const openingCharacter = match[1];
+  const closingCharacter = openingCharacter === '[' ? ']' : '}';
+  const payloadStartIndex =
+    (match.index ?? 0) + match[0].lastIndexOf(openingCharacter);
+  let payload = line.slice(payloadStartIndex);
+  const closingIndex = payload.indexOf(closingCharacter);
+
+  if (closingIndex !== -1) {
+    return payload.slice(0, closingIndex + 1);
+  }
+
+  for (
+    let index = startIndex + 1;
+    index < addedLines.length && index <= startIndex + 8;
+    index += 1
+  ) {
+    const nextLine = addedLines[index];
+    const nextClosingIndex = nextLine.indexOf(closingCharacter);
+
+    if (nextClosingIndex !== -1) {
+      payload += `\n${nextLine.slice(0, nextClosingIndex + 1)}`;
+      break;
+    }
+
+    payload += `\n${nextLine}`;
+  }
+
+  return payload;
+}
+
 function main(): void {
   let mode: Mode | null = null;
   let filesArg = '';
@@ -270,7 +312,9 @@ function main(): void {
         'A/B compliance check: no staged files and no working-tree changed files to inspect.',
       );
     } else {
-      console.log('A/B compliance check: no files to inspect from --files input.');
+      console.log(
+        'A/B compliance check: no files to inspect from --files input.',
+      );
     }
     process.exit(0);
   }
@@ -315,10 +359,19 @@ function main(): void {
 
       if (/active_ab_tests\s*:/.test(line)) {
         if (/active_ab_tests\s*:\s*(\[|\{)/.test(line)) {
-          const window = addedLines.slice(index, index + 9).join('\n');
-          if (!/key\s*:/.test(window) || !/value\s*:/.test(window)) {
+          const payload = extractActiveABTestsPayload(addedLines, index) ?? '';
+          const hasLiteralAssignmentFields =
+            /key\s*:/.test(payload) ||
+            /value\s*:/.test(payload) ||
+            /key_value_pair\s*:/.test(payload);
+          const hasCompleteLiteralAssignment =
+            /key\s*:/.test(payload) &&
+            /value\s*:/.test(payload) &&
+            /key_value_pair\s*:/.test(payload);
+
+          if (hasLiteralAssignmentFields && !hasCompleteLiteralAssignment) {
             failures.push(
-              `${file}: malformed literal active_ab_tests object (expected key and value).`,
+              `${file}: malformed literal active_ab_tests object (expected key, value, and key_value_pair).`,
             );
           }
         }
@@ -328,7 +381,11 @@ function main(): void {
         const callSegments: string[] = [];
         let parenDepth = 0;
 
-        for (let segmentIndex = index; segmentIndex < addedLines.length; segmentIndex += 1) {
+        for (
+          let segmentIndex = index;
+          segmentIndex < addedLines.length;
+          segmentIndex += 1
+        ) {
           let segment = addedLines[segmentIndex];
           if (segmentIndex === index) {
             segment = `useABTest${segment.split('useABTest').slice(1).join('useABTest')}`;
@@ -359,10 +416,7 @@ function main(): void {
         /useABTest\s*\(\s*['"]([^'"]+)['"]/u,
       )?.[1];
 
-      if (
-        useAbTestLiteralKey &&
-        !isValidFlagKey(useAbTestLiteralKey)
-      ) {
+      if (useAbTestLiteralKey && !isValidFlagKey(useAbTestLiteralKey)) {
         warnings.push(
           `${file}: flag key '${useAbTestLiteralKey}' does not match {team}{TICKET}Abtest{Name}.`,
         );

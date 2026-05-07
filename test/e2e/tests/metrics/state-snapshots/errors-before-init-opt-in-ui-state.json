@@ -7,6 +7,7 @@
     "AccountTracker": { "accountsByChainId": "object" },
     "AccountTreeController": {
       "accountGroupsMetadata": "object",
+      "accountTree": "object",
       "accountWalletsMetadata": "object",
       "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
       "selectedAccountGroup": "string"
@@ -43,6 +44,7 @@
       "isWalletResetInProgress": "boolean",
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
+      "lastVisitedRoute": null,
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
@@ -50,6 +52,7 @@
       "nftsDetectionNoticeDismissed": false,
       "onboardingDate": null,
       "outdatedBrowserWarningLastShown": "object",
+      "passkeyAutoUnlockSuppressed": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": "boolean",
@@ -71,6 +74,7 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
+    "AssetsController": "object",
     "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
@@ -180,6 +184,7 @@
       "seedPhraseBackedUp": null
     },
     "PPOMController": { "storageMetadata": "object" },
+    "PasskeyController": { "passkeyRecord": null },
     "PermissionController": { "subjects": "object" },
     "PermissionLogController": { "permissionHistory": "object" },
     "PerpsController": "object",
@@ -304,5 +309,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 204 }
+  "meta": { "storageKind": "split", "version": 207 }
 }

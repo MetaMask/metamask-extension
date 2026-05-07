@@ -17,7 +17,7 @@ export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
 export const SETTINGS_V2_ROUTE = SETTINGS_ROUTE;
 export const ASSETS_ROUTE = '/settings/assets';
-export const CURRENCY_ROUTE = '/settings/assets/currency';
+export const CURRENCY_ROUTE = '/settings/preferences-and-display/currency';
 export const TRANSACTIONS_ROUTE = '/settings/transactions';
 export const PREFERENCES_AND_DISPLAY_ROUTE =
   '/settings/preferences-and-display';
@@ -29,10 +29,14 @@ export const PRIVACY_ROUTE = '/settings/privacy';
 export const THIRD_PARTY_APIS_ROUTE = '/settings/privacy/third-party-apis';
 export const SECURITY_AND_PASSWORD_ROUTE = '/settings/security-and-password';
 export const AUTO_LOCK_ROUTE = '/settings/security-and-password/auto-lock';
-export const MANAGE_WALLET_RECOVERY_V2_ROUTE =
+export const MANAGE_WALLET_RECOVERY_ROUTE =
   '/settings/security-and-password/manage-wallet-recovery';
 export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
   '/settings/security-and-password/password';
+export const SECURITY_REGISTER_PASSKEY_ROUTE =
+  '/settings/security-and-password/register-passkey';
+export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
+  '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const GENERAL_ROUTE = '/settings/general';
@@ -67,19 +71,17 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
 } as const;
 export const SECURITY_ROUTE = '/settings/security';
 export const ABOUT_US_ROUTE = '/settings/about-us';
-export const NETWORKS_ROUTE = '/settings/networks';
-export const NETWORKS_FORM_ROUTE = '/settings/networks/form';
-export const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
+export const NETWORKS_ROUTE = '/networks';
+export const NETWORKS_FORM_ROUTE = '/networks/form';
+export const ADD_NETWORK_ROUTE = '/networks/add-network';
 export const ADD_POPULAR_CUSTOM_NETWORK =
-  '/settings/networks/add-popular-custom-network';
+  '/networks/add-popular-custom-network';
 // Contacts (global menu)
 export const CONTACTS_ROUTE = '/contacts';
 export const CONTACTS_ADD_ROUTE = '/contacts/add';
 export const CONTACTS_VIEW_ROUTE = '/contacts/view';
 export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
-export const REVEAL_SRP_LIST_ROUTE =
-  '/settings/security-and-privacy/reveal-srp-list';
 export const SECURITY_PASSWORD_CHANGE_ROUTE =
   '/settings/security-and-privacy/password-change';
 export const BACKUPANDSYNC_ROUTE =
@@ -97,6 +99,7 @@ export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
 export const MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE =
   '/multichain-account-private-key-list';
 export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
+export const CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE = '/choose-new-wallet-type';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';
 export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
@@ -158,6 +161,7 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
 
 export const DEEP_LINK_ROUTE = '/link';
 
@@ -173,6 +177,11 @@ export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
+
+// Window during which reopening the extension resumes the last Perps screen
+// instead of landing on the wallet home. Keeps the cap short so stale sessions
+// do not hijack the user's home view after a long break.
+export const PERPS_REOPEN_TTL_MS = 5 * 60 * 1000;
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
@@ -225,6 +234,11 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+    label: 'Choose New Wallet Type Page',
+    trackInAnalytics: true,
+  },
+  {
     path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
     label: 'Smart Account Page',
     trackInAnalytics: true,
@@ -252,13 +266,23 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: MANAGE_WALLET_RECOVERY_V2_ROUTE,
+    path: MANAGE_WALLET_RECOVERY_ROUTE,
     label: 'Manage Wallet Recovery Settings Page',
     trackInAnalytics: true,
   },
   {
     path: SECURITY_PASSWORD_CHANGE_V2_ROUTE,
     label: 'Password Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_REGISTER_PASSKEY_ROUTE,
+    label: 'Register Passkey',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_TURN_OFF_PASSKEY_ROUTE,
+    label: 'Turn Off Passkey',
     trackInAnalytics: true,
   },
   {
@@ -355,11 +379,6 @@ export const ROUTES = [
   {
     path: SNAP_SETTINGS_ROUTE,
     label: 'Snap Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: REVEAL_SRP_LIST_ROUTE,
-    label: 'Reveal Secret Recovery Phrase List Page',
     trackInAnalytics: true,
   },
   {

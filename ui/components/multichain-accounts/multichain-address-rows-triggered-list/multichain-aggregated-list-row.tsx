@@ -54,7 +54,7 @@ export const MultichainAggregatedAddressListRow = ({
 
   const truncatedAddress = shortenAddress(normalizeSafeAddress(address)); // Shorten address for display
   const [displayText, setDisplayText] = useState(truncatedAddress); // Text to display (address or copy message)
-  const [copyIcon, setCopyIcon] = useState(IconName.Copy); // Default copy icon state
+  const [copyIcon, setCopyIcon] = useState<IconName>(IconName.Copy); // Default copy icon state
   const [addressCopied, setAddressCopied] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   // Track timeout ID for managing `setTimeout`

@@ -141,6 +141,7 @@ import {
   getAccountTrackerControllerMessenger,
 } from './account-tracker-controller-messenger';
 import { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+import { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 import {
   getRemoteFeatureFlagControllerInitMessenger,
   getRemoteFeatureFlagControllerMessenger,
@@ -208,8 +209,11 @@ import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 import { getStorageServiceMessenger } from './storage-service-messenger';
+import { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
+import { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 import { getPerpsControllerMessenger } from './perps-controller-messenger';
 import { getDataDeletionServiceMessenger } from './data-deletion-service-messenger';
+import { getLegacyBackgroundApiServiceMessenger } from './legacy-background-api-service-messenger';
 
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
 export type {
@@ -304,6 +308,8 @@ export {
   getNameControllerInitMessenger,
 } from './name-controller-messenger';
 export { getOnboardingControllerMessenger } from './onboarding-controller-messenger';
+export type { PasskeyControllerMessenger } from './passkey-controller-messenger';
+export { getPasskeyControllerMessenger } from './passkey-controller-messenger';
 export { getPreferencesControllerMessenger } from './preferences-controller-messenger';
 export type {
   PermissionControllerMessenger,
@@ -315,6 +321,8 @@ export {
 } from './permission-controller-messenger';
 export type { PermissionLogControllerMessenger } from './permission-log-controller-messenger';
 export { getPermissionLogControllerMessenger } from './permission-log-controller-messenger';
+export { getGeolocationApiServiceMessenger } from './geolocation-api-service-messenger';
+export { getGeolocationControllerMessenger } from './geolocation-controller-messenger';
 export type { PerpsControllerMessenger } from './perps-controller-messenger';
 export { getPerpsControllerMessenger } from './perps-controller-messenger';
 export type { PhishingControllerMessenger } from './phishing-controller-messenger';
@@ -348,10 +356,7 @@ export {
   getTokenBalancesControllerMessenger,
   getTokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
-export type {
-  StaticAssetsControllerMessenger,
-  StaticAssetsControllerInitMessenger,
-} from './static-assets-controller-messenger';
+export type { StaticAssetsControllerInitMessenger } from './static-assets-controller-messenger';
 export {
   getStaticAssetsControllerMessenger,
   getStaticAssetsControllerInitMessenger,
@@ -521,6 +526,14 @@ export const MESSENGER_FACTORIES = {
     getMessenger: getGatorPermissionsControllerMessenger,
     getInitMessenger: noop,
   },
+  GeolocationApiService: {
+    getMessenger: getGeolocationApiServiceMessenger,
+    getInitMessenger: noop,
+  },
+  GeolocationController: {
+    getMessenger: getGeolocationControllerMessenger,
+    getInitMessenger: noop,
+  },
   InstitutionalSnapController: {
     getMessenger: getInstitutionalSnapControllerMessenger,
     getInitMessenger: noop,
@@ -528,6 +541,10 @@ export const MESSENGER_FACTORIES = {
   KeyringController: {
     getMessenger: getKeyringControllerMessenger,
     getInitMessenger: getKeyringControllerInitMessenger,
+  },
+  LegacyBackgroundApiService: {
+    getMessenger: getLegacyBackgroundApiServiceMessenger,
+    getInitMessenger: noop,
   },
   LoggingController: {
     getMessenger: getLoggingControllerMessenger,
@@ -587,6 +604,10 @@ export const MESSENGER_FACTORIES = {
   },
   OnboardingController: {
     getMessenger: getOnboardingControllerMessenger,
+    getInitMessenger: noop,
+  },
+  PasskeyController: {
+    getMessenger: getPasskeyControllerMessenger,
     getInitMessenger: noop,
   },
   PermissionController: {

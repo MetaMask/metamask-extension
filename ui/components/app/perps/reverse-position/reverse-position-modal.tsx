@@ -6,10 +6,19 @@ import {
   BoxAlignItems,
   Text,
   TextVariant,
+  TextAlign,
   TextColor,
   FontWeight,
+  Icon,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
+import {
+  formatPerpsFiat,
+  formatPositionSize,
+  PRICE_RANGES_MINIMAL_VIEW,
+} from '../../../../../shared/lib/perps-formatters';
 import {
   Modal,
   ModalContent,
@@ -29,7 +38,6 @@ import {
   usePerpsEventTracking,
 } from '../../../../hooks/perps';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { getPerpsStreamManager } from '../../../../providers/perps';
 import { getPositionDirection } from '../utils';
@@ -44,6 +52,7 @@ export type ReversePositionModalProps = {
   onClose: () => void;
   position: Position;
   currentPrice: number;
+  sizeDecimals?: number;
 };
 
 function toFlipPositionPayload(pos: Position): Position {
@@ -62,10 +71,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
   onClose,
   position,
   currentPrice,
+  sizeDecimals,
 }) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
 
@@ -95,7 +104,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
       ? `${t('perpsLong')} → ${t('perpsShort')}`
       : `${t('perpsShort')} → ${t('perpsLong')}`;
   const sizeNum = Math.abs(parseFloat(position.size));
-  const estSizeLabel = `${sizeNum.toFixed(2)} ${position.symbol}`;
+  const estSizeLabel = `${formatPositionSize(sizeNum, sizeDecimals)} ${position.symbol}`;
 
   const {
     feeRate,
@@ -186,7 +195,19 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
           <ModalHeader onClose={onClose}>
-            {t('perpsReversePosition')}
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              <Icon name={IconName.SwapHorizontal} size={IconSize.Xl} />
+              <Text
+                variant={TextVariant.HeadingSm}
+                textAlign={TextAlign.Center}
+              >
+                {t('perpsReversePosition')}
+              </Text>
+            </Box>
           </ModalHeader>
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -222,6 +243,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 <Text
                   variant={TextVariant.BodySm}
                   fontWeight={FontWeight.Medium}
+                  data-testid="perps-reverse-est-size-value"
                 >
                   {estSizeLabel}
                 </Text>
@@ -244,7 +266,9 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 >
                   {shouldShowFeePlaceholder
                     ? '--'
-                    : formatCurrencyWithMinThreshold(estimatedFees, 'USD')}
+                    : formatPerpsFiat(estimatedFees, {
+                        ranges: PRICE_RANGES_MINIMAL_VIEW,
+                      })}
                 </Text>
               </Box>
               {error && (

@@ -81,6 +81,7 @@ jest.mock('@metamask/perps-controller', () => ({
     getHistoricalPortfolio: jest.fn(),
     fetchHistoricalCandles: jest.fn(),
     calculateFees: jest.fn(),
+    calculateLiquidationPrice: jest.fn(),
     getAvailableDexs: jest.fn(),
     refreshEligibility: jest.fn(),
     startEligibilityMonitoring: jest.fn(),
@@ -181,6 +182,31 @@ describe('PerpsControllerInit', () => {
       });
     });
 
+    /**
+     * Data-layer guard: the UI categorization filter (Stocks/Commodities/Forex)
+     * intentionally does NOT re-check the HIP-3 allowlist and trusts the
+     * controller to limit which HIP-3 markets reach the UI. If this fallback
+     * is ever weakened (e.g. set to []), markets from non-allowlisted DEXes
+     * could surface in the UI before LaunchDarkly responds. Lock it in here.
+     *
+     * See ui/pages/perps/market-list/index.tsx :: filterByType.
+     */
+    it('always wires a non-empty fallbackHip3AllowlistMarkets so the controller can gate HIP-3 markets before LD loads', () => {
+      const request = getInitRequestMock();
+      PerpsControllerInit(request);
+
+      const constructorCall = PerpsControllerMock.mock.calls[0][0];
+      const { clientConfig } = constructorCall;
+      expect(clientConfig).toBeDefined();
+      if (!clientConfig) {
+        return;
+      }
+      expect(clientConfig.fallbackHip3Enabled).toBe(true);
+      expect(clientConfig.fallbackHip3AllowlistMarkets).toEqual(['xyz:*']);
+      expect(clientConfig.fallbackHip3AllowlistMarkets).not.toEqual([]);
+      expect(clientConfig.fallbackHip3AllowlistMarkets).not.toBeUndefined();
+    });
+
     it('passes deferEligibilityCheck true when onboarding is not complete', () => {
       const request = getInitRequestMock();
       request.persistedState.OnboardingController = {
@@ -266,6 +292,9 @@ describe('PerpsControllerInit', () => {
       PerpsControllerInit(getInitRequestMock());
       expect(createPerpsInfrastructure).toHaveBeenCalledWith({
         trackEvent: expect.any(Function),
+        getStorageItem: expect.any(Function),
+        setStorageItem: expect.any(Function),
+        removeStorageItem: expect.any(Function),
       });
     });
 
@@ -295,6 +324,53 @@ describe('PerpsControllerInit', () => {
           event: MetaMetricsEventName.PerpsScreenViewed,
           category: MetaMetricsEventCategory.Perps,
         }),
+      );
+    });
+
+    it('storage helpers from createPerpsInfrastructure delegate to StorageService', async () => {
+      const call = jest.fn().mockResolvedValue({ result: 'cached-value' });
+      const request = getInitRequestMock();
+      request.controllerMessenger = {
+        call,
+      } as unknown as PerpsControllerMessenger;
+      let capturedDeps: InfrastructureDeps | undefined;
+
+      jest
+        .mocked(createPerpsInfrastructure)
+        .mockImplementationOnce((deps: InfrastructureDeps) => {
+          capturedDeps = deps;
+          return {} as PerpsPlatformDependencies;
+        });
+
+      PerpsControllerInit(request);
+      expect(capturedDeps).toBeDefined();
+      const deps = capturedDeps as InfrastructureDeps;
+
+      await deps.getStorageItem('diskCache:PERPS_DISK_CACHE_MARKETS');
+      await deps.setStorageItem(
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'cached-value',
+      );
+      await deps.removeStorageItem('diskCache:PERPS_DISK_CACHE_MARKETS');
+
+      expect(call).toHaveBeenNthCalledWith(
+        1,
+        'StorageService:getItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+      );
+      expect(call).toHaveBeenNthCalledWith(
+        2,
+        'StorageService:setItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
+        'cached-value',
+      );
+      expect(call).toHaveBeenNthCalledWith(
+        3,
+        'StorageService:removeItem',
+        'PerpsController',
+        'diskCache:PERPS_DISK_CACHE_MARKETS',
       );
     });
   });
@@ -447,6 +523,7 @@ describe('PerpsControllerInit', () => {
       ['perpsGetHistoricalPortfolio', 'getHistoricalPortfolio'],
       ['perpsFetchHistoricalCandles', 'fetchHistoricalCandles'],
       ['perpsCalculateFees', 'calculateFees'],
+      ['perpsCalculateLiquidationPrice', 'calculateLiquidationPrice'],
       ['perpsGetAvailableDexs', 'getAvailableDexs'],
       ['perpsRefreshEligibility', 'refreshEligibility'],
       ['perpsStartEligibilityMonitoring', 'startEligibilityMonitoring'],

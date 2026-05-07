@@ -51,6 +51,7 @@
     "lastQrScanCompletedSuccessfully": null,
     "lastUpdatedAt": null,
     "lastViewedUserSurvey": null,
+    "lastVisitedRoute": null,
     "musdConversionDismissedCtaKeys": "object",
     "musdConversionEducationSeen": "boolean",
     "networkConnectionBanner": "object",
@@ -61,6 +62,7 @@
     "notificationGasPollTokens": "object",
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
+    "passkeyAutoUnlockSuppressed": "boolean",
     "pendingExtensionVersion": null,
     "pendingRedirectRoute": null,
     "pendingShieldCohort": null,
@@ -112,6 +114,7 @@
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
     "quotesRefreshCount": 0,
+    "tokenSecurityTypeDestination": null,
     "tokenWarnings": "object"
   },
   "BridgeStatusController": { "txHistory": "object" },
@@ -162,6 +165,7 @@
     "nonRPCGasFeeApisDisabled": "boolean"
   },
   "GatorPermissionsController": "object",
+  "GeolocationController": "object",
   "InstitutionalSnapController": "object",
   "KeyringController": {
     "encryptionKey": "string",
@@ -252,6 +256,7 @@
     "seedPhraseBackedUp": null
   },
   "PPOMController": { "storageMetadata": "object" },
+  "PasskeyController": { "passkeyRecord": null },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
     "permissionActivityLog": "object",

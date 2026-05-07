@@ -31,6 +31,9 @@ class NFTDetailsPage {
 
   private readonly nftItemButtom = '[data-testid="nft-item"]';
 
+  private readonly removeNftSuccessToast =
+    '[data-testid="nft-remove-success-toast"]';
+
   private readonly showNftImageButton = {
     text: 'Show',
     tag: 'button',
@@ -71,6 +74,7 @@ class NFTDetailsPage {
     console.log('Click to remove NFT on NFT details page');
     await this.driver.clickElement(this.nftOptionsButton);
     await this.driver.clickElement(this.nftRemoveButton);
+    await this.driver.waitForSelector(this.removeNftSuccessToast);
   }
 
   async showNftImage() {

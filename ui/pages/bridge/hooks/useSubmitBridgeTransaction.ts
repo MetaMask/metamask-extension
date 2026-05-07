@@ -8,6 +8,7 @@ import {
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
 import { isHardwareWallet } from '../../../../shared/lib/selectors';
+import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
@@ -19,6 +20,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getToToken,
   getWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
@@ -68,9 +70,11 @@ export default function useSubmitBridgeTransaction() {
     useBridgeNavigation();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const toastEnabled = useSelector(getExtensionSkipTransactionStatusPage);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
+  const toToken = useSelector(getToToken);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
@@ -129,6 +133,7 @@ export default function useSubmitBridgeTransaction() {
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
       } else {
@@ -139,12 +144,12 @@ export default function useSubmitBridgeTransaction() {
             smartTransactionsEnabled,
             getQuotesReceivedProperties(
               quoteResponse,
-              // @ts-expect-error 'market_closed' will be added to QuoteWarning in the controller
               warnings,
               true,
               recommendedQuote,
               fromTokenBalanceInUsd,
             ),
+            toToken?.securityData?.type ?? null,
           ),
         );
       }
@@ -159,7 +164,8 @@ export default function useSubmitBridgeTransaction() {
       setIsSubmitting(false);
     }
 
-    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+    const to = toastEnabled ? DEFAULT_ROUTE : `${DEFAULT_ROUTE}?tab=activity`;
+    navigate(to, {
       state: { stayOnHomePage: true },
       replace: true,
     });

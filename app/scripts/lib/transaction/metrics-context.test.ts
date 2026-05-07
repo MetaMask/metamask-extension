@@ -74,7 +74,7 @@ describe('buildTransactionMetricsContext', () => {
     expect(context.contractMethodName).toBeUndefined();
   });
 
-  it('returns musdConversion as transaction type for mUSD conversion transactions', async () => {
+  it('returns musd_conversion as transaction type for mUSD conversion transactions', async () => {
     const context = await buildTransactionMetricsContext({
       transactionMeta: createTransactionMeta({
         type: TransactionType.musdConversion,
@@ -83,11 +83,11 @@ describe('buildTransactionMetricsContext', () => {
       transactionMetricsRequest: createRequest(),
     });
 
-    expect(context.transactionTypeForMetrics).toBe('musdConversion');
+    expect(context.transactionTypeForMetrics).toBe('musd_conversion');
     expect(context.isContractInteraction).toBe(false);
   });
 
-  it('returns musdClaim as transaction type for mUSD claim transactions', async () => {
+  it('returns musd_claim as transaction type for mUSD claim transactions', async () => {
     const context = await buildTransactionMetricsContext({
       transactionMeta: createTransactionMeta({
         type: TransactionType.musdClaim,
@@ -96,11 +96,11 @@ describe('buildTransactionMetricsContext', () => {
       transactionMetricsRequest: createRequest(),
     });
 
-    expect(context.transactionTypeForMetrics).toBe('musdClaim');
+    expect(context.transactionTypeForMetrics).toBe('musd_claim');
     expect(context.isContractInteraction).toBe(false);
   });
 
-  it('returns perpsDeposit as transaction type for perps deposit transactions', async () => {
+  it('returns perps_deposit as transaction type for perps deposit transactions', async () => {
     const context = await buildTransactionMetricsContext({
       transactionMeta: createTransactionMeta({
         type: TransactionType.perpsDeposit,
@@ -109,7 +109,20 @@ describe('buildTransactionMetricsContext', () => {
       transactionMetricsRequest: createRequest(),
     });
 
-    expect(context.transactionTypeForMetrics).toBe('perpsDeposit');
+    expect(context.transactionTypeForMetrics).toBe('perps_deposit');
+    expect(context.isContractInteraction).toBe(false);
+  });
+
+  it('returns perps_withdraw as transaction type for perps withdraw transactions', async () => {
+    const context = await buildTransactionMetricsContext({
+      transactionMeta: createTransactionMeta({
+        type: TransactionType.perpsWithdraw,
+        txParams: { data: '0xa9059cbb' },
+      }),
+      transactionMetricsRequest: createRequest(),
+    });
+
+    expect(context.transactionTypeForMetrics).toBe('perps_withdraw');
     expect(context.isContractInteraction).toBe(false);
   });
 });

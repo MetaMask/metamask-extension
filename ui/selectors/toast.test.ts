@@ -5,6 +5,7 @@ import {
   selectCrossChainBridgeSourceTxIds,
   selectEvmTransactionsForToast,
   selectNonEvmTransactionsForToast,
+  selectSmartTransactions,
 } from './toast';
 
 type SelectorState = Parameters<typeof selectTransactionIds>[0];
@@ -90,6 +91,7 @@ describe('toast selectors', () => {
             },
             { id: '7', time: 8, type: TransactionType.perpsDeposit },
             { id: '8', time: 9, type: TransactionType.perpsDepositAndOrder },
+            { id: '9', time: 10, type: TransactionType.perpsRelayDeposit },
           ],
         },
       } as unknown as SelectorState;
@@ -109,7 +111,8 @@ describe('toast selectors', () => {
           transactions: [
             { id: '0', time: 1, type: TransactionType.perpsDeposit },
             { id: '1', time: 2, type: TransactionType.perpsDepositAndOrder },
-            { id: '2', time: 3, type: TransactionType.simpleSend },
+            { id: '2', time: 3, type: TransactionType.perpsRelayDeposit },
+            { id: '3', time: 4, type: TransactionType.simpleSend },
           ],
         },
       } as unknown as SelectorState;
@@ -117,7 +120,7 @@ describe('toast selectors', () => {
       const results = selectEvmTransactionsForToast(state);
 
       expect(results).toStrictEqual([
-        { id: '2', time: 3, type: TransactionType.simpleSend },
+        { id: '3', time: 4, type: TransactionType.simpleSend },
       ]);
     });
 
@@ -352,6 +355,184 @@ describe('toast selectors', () => {
         {} as unknown as SelectorState,
       );
       expect(results).toStrictEqual([]);
+    });
+  });
+
+  describe('selectSmartTransactions', () => {
+    it('returns only smart transaction status page approvals with tx ids', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: {
+                  status: 'pending',
+                },
+              },
+            },
+            'approval-2': {
+              id: 'approval-2',
+              type: 'wallet_addEthereumChain',
+              requestState: {
+                txId: 'tx-2',
+              },
+            },
+            'approval-3': {
+              id: 'approval-3',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {},
+            },
+          },
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([
+        {
+          approvalId: 'approval-1',
+          txId: 'tx-1',
+          smartTransactionStatus: 'pending',
+          evmStatus: undefined,
+        },
+      ]);
+    });
+
+    it('populates evmStatus from the matching TransactionController entry', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: { status: 'pending' },
+              },
+            },
+          },
+          transactions: [
+            { id: 'tx-1', status: 'dropped' },
+            { id: 'tx-2', status: 'confirmed' },
+          ],
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([
+        {
+          approvalId: 'approval-1',
+          txId: 'tx-1',
+          smartTransactionStatus: 'pending',
+          evmStatus: 'dropped',
+        },
+      ]);
+    });
+
+    it('excludes smart transaction toasts for batches with excluded nested types', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: { status: 'pending' },
+              },
+            },
+          },
+          transactions: [
+            {
+              id: 'tx-1',
+              status: 'submitted',
+              type: TransactionType.batch,
+              nestedTransactions: [
+                { type: TransactionType.tokenMethodApprove },
+                { type: TransactionType.musdRelayDeposit },
+              ],
+            },
+          ],
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([]);
+    });
+
+    it('follows the replacement for a Speed Up (retry) chain', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: { status: 'pending' },
+              },
+            },
+          },
+          transactions: [
+            {
+              id: 'tx-1',
+              status: 'dropped',
+              replacedById: 'tx-1-retry',
+            },
+            {
+              id: 'tx-1-retry',
+              status: 'submitted',
+              type: TransactionType.retry,
+            },
+          ],
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([
+        {
+          approvalId: 'approval-1',
+          txId: 'tx-1',
+          smartTransactionStatus: 'pending',
+          evmStatus: 'submitted',
+        },
+      ]);
+    });
+
+    it('does NOT follow a cancel replacement (keeps original dropped status)', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: { status: 'pending' },
+              },
+            },
+          },
+          transactions: [
+            {
+              id: 'tx-1',
+              status: 'dropped',
+              replacedById: 'tx-1-cancel',
+            },
+            {
+              id: 'tx-1-cancel',
+              status: 'confirmed',
+              type: TransactionType.cancel,
+            },
+          ],
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([
+        {
+          approvalId: 'approval-1',
+          txId: 'tx-1',
+          smartTransactionStatus: 'pending',
+          evmStatus: 'dropped',
+        },
+      ]);
     });
   });
 });

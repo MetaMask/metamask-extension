@@ -29,7 +29,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -39,7 +38,6 @@ import {
   getIsSocialLoginFlow,
   getSocialLoginType,
   getParticipateInMetaMetrics,
-  getPreferences,
   getDeferredDeepLink,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -53,6 +51,7 @@ import {
   getCompletedOnboarding,
   getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
+  getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
 import {
   toggleExternalServices,
@@ -92,14 +91,13 @@ export default function CreationSuccessful() {
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const socialLoginType = useSelector(getSocialLoginType);
   const isSidePanelEnabled = useSidePanelEnabled();
-  const preferences = useSelector(getPreferences);
-  const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
   const isOnboardingCompleted = useSelector(getCompletedOnboarding);
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const deferredDeepLink: DeferredDeepLink | null =
     useSelector(getDeferredDeepLink);
 
   const isInitialized = useSelector(getIsInitialized);
+  const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
 
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
@@ -116,10 +114,10 @@ export default function CreationSuccessful() {
     if (isFromReminder) {
       return;
     }
-    if (!isInitialized) {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    if (!isInitialized || isResetWalletInProgress) {
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }, [isInitialized, isFromReminder, navigate]);
+  }, [isInitialized, isFromReminder, navigate, isResetWalletInProgress]);
 
   useEffect(() => {
     const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -255,6 +253,12 @@ export default function CreationSuccessful() {
       return;
     }
 
+    if (isResetWalletInProgress) {
+      // if the wallet reset is in progress, we navigate to the default route (i.e. onboarding start page)
+      navigate(DEFAULT_ROUTE);
+      return;
+    }
+
     const deferredDeepLinkResult =
       await getDeferredDeepLinkRoute(deferredDeepLink);
     const shouldOpenSidePanel =
@@ -321,14 +325,6 @@ export default function CreationSuccessful() {
 
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
-      // If useSidePanelAsDefault is already true, side panel is already set up
-      // Just complete onboarding and redirect to home page
-      if (isSidePanelSetAsDefault) {
-        await dispatch(setCompletedOnboarding());
-        navigate(DEFAULT_ROUTE);
-        return;
-      }
-
       try {
         // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
         const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -385,9 +381,9 @@ export default function CreationSuccessful() {
     isFromSettingsSecurity,
     firstTimeFlowType,
     trackEvent,
-    isSidePanelSetAsDefault,
     participateInMetaMetrics,
     handleOnDoneNavigation,
+    isResetWalletInProgress,
   ]);
 
   const renderDoneButton = () => {
