@@ -1,6 +1,4 @@
-import {
-  HardwareWalletSignatureStatus,
-} from './hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-state-machine';
 import type { HardwareWalletSignaturesState } from './hardware-wallet-signatures-state-machine';
 
 export const createSignatureState = (

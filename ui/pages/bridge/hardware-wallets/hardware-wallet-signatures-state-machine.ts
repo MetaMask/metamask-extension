@@ -33,9 +33,7 @@ type ResumableStatus =
 
 export type HardwareWalletSignaturesState =
   | {
-      status:
-        | SigningStatus
-        | typeof HardwareWalletSignatureStatus.Submitted;
+      status: SigningStatus | typeof HardwareWalletSignatureStatus.Submitted;
     }
   | {
       status: typeof HardwareWalletSignatureStatus.Rejected;
