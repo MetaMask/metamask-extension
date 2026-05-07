@@ -815,7 +815,7 @@ export const getDefaultScopeAndAddressByAccountGroupId =
     [
       getInternalAccountListSpreadByScopesByGroupId,
       (state: MetaMaskReduxState): DefaultAddressScope =>
-        getPreferences(state).defaultAddressScope ?? 'eip155',
+        getPreferences(state).defaultAddressScope,
     ],
     (
       spreadList: {
