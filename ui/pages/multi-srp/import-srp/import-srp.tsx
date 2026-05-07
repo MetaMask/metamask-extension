@@ -123,7 +123,7 @@ export const ImportSrp = () => {
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClearCallback={() => setSrpError('')}
       />
-      <Box className="w-full multichain-page-footer">
+      <Box className="w-full cta-footer">
         <Button
           size={ButtonSize.Lg}
           data-testid="import-srp-confirm"
