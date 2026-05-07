@@ -1,15 +1,21 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { ExtensionPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
-import { startPasskeyAuthentication } from '../../../../shared/lib/passkey';
+import {
+  startPasskeyAuthentication,
+  cancelPasskeyCeremony,
+} from '../../../../shared/lib/passkey';
 import { toast } from '../../ui/toast/toast';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
+import {
+  SECURITY_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+} from '../../../helpers/constants/routes';
 import * as selectors from '../../../selectors';
 import ChangePassword from './change-password';
 
@@ -123,6 +129,9 @@ jest.mock('../../../selectors', () => ({
   getIsSocialLoginFlow: jest.fn().mockReturnValue(false),
   getIsPasskeyRegistered: jest.fn().mockReturnValue(false),
   getIsPasskeyFeatureAvailable: jest.fn().mockReturnValue(false),
+  getIsEnrolledPasskeyIncompatibleWithSidepanel: jest
+    .fn()
+    .mockReturnValue(false),
 }));
 
 describe('ChangePassword', () => {
@@ -138,6 +147,9 @@ describe('ChangePassword', () => {
     (selectors.getIsPasskeyFeatureAvailable as jest.Mock).mockReturnValue(
       false,
     );
+    (
+      selectors.getIsEnrolledPasskeyIncompatibleWithSidepanel as jest.Mock
+    ).mockReturnValue(false);
     (startPasskeyAuthentication as jest.Mock).mockResolvedValue({
       id: 'mock-credential',
     });
@@ -375,6 +387,9 @@ describe('ChangePassword', () => {
       (selectors.getIsPasskeyFeatureAvailable as jest.Mock).mockReturnValue(
         true,
       );
+      (
+        selectors.getIsEnrolledPasskeyIncompatibleWithSidepanel as jest.Mock
+      ).mockReturnValue(false);
       (startPasskeyAuthentication as jest.Mock).mockResolvedValue(
         mockAssertion,
       );
@@ -431,7 +446,7 @@ describe('ChangePassword', () => {
       });
     });
 
-    it('shows a loader and passkey confirmation copy while passkey verification runs', () => {
+    it('shows a loader and passkey verification title while passkey verification runs', () => {
       const { getByTestId, getByText } = renderWithProvider(
         <ChangePassword />,
         mockStore,
@@ -442,9 +457,6 @@ describe('ChangePassword', () => {
       ).toBeInTheDocument();
       expect(
         getByText(messages.changePasswordPasskeyVerifyingTitle.message),
-      ).toBeInTheDocument();
-      expect(
-        getByText(messages.changePasswordPasskeyVerifyingDescription.message),
       ).toBeInTheDocument();
     });
 
@@ -634,10 +646,49 @@ describe('ChangePassword', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows open in full tab while passkey verification runs in the side panel', async () => {
+    it('opens change password in browser tab when sidepanel and enrolled passkey is incompatible', async () => {
+      const openExtensionInBrowser = jest.fn();
+      globalThis.platform = { openExtensionInBrowser } as never;
+
       jest
         .mocked(getEnvironmentType)
         .mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      (
+        selectors.getIsEnrolledPasskeyIncompatibleWithSidepanel as jest.Mock
+      ).mockReturnValue(true);
+
+      const { getByTestId, queryByTestId } = renderWithProvider(
+        <ChangePassword />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(openExtensionInBrowser).toHaveBeenCalledWith(
+          SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+          'from=sidepanel',
+        );
+      });
+
+      expect(
+        queryByTestId('change-password-passkey-verifying-open-full-screen'),
+      ).not.toBeInTheDocument();
+      expect(getByTestId('verify-current-password-input')).toBeInTheDocument();
+      expect(startPasskeyAuthentication).not.toHaveBeenCalled();
+
+      delete (globalThis as { platform?: unknown }).platform;
+    });
+
+    it('opens passkey troubleshoot modal from side panel verify step and opens change password full screen from modal', async () => {
+      jest
+        .mocked(getEnvironmentType)
+        .mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+      const openExtensionInBrowser = jest.fn();
+      const previousPlatform = globalThis.platform;
+      globalThis.platform = {
+        ...previousPlatform,
+        openExtensionInBrowser,
+      } as unknown as typeof globalThis.platform;
+
       let resolveAuth: ((value: unknown) => void) | undefined;
       (startPasskeyAuthentication as jest.Mock).mockImplementation(
         () =>
@@ -646,29 +697,54 @@ describe('ChangePassword', () => {
           }),
       );
 
-      const { getByTestId } = renderWithProvider(<ChangePassword />, mockStore);
+      try {
+        const { getByTestId } = renderWithProvider(
+          <ChangePassword />,
+          mockStore,
+        );
 
-      await waitFor(() => {
-        expect(
-          getByTestId('change-password-passkey-verifying-open-full-screen'),
-        ).toBeInTheDocument();
-      });
+        await waitFor(() => {
+          expect(
+            getByTestId('change-password-passkey-verifying-open-full-screen'),
+          ).toBeInTheDocument();
+        });
 
-      resolveAuth?.({
-        id: 'mock-credential',
-        rawId: 'mock-credential',
-        type: 'public-key',
-        response: {
-          clientDataJSON: 'e30',
-          authenticatorData: 'AA',
-          signature: 'AA',
-        },
-        clientExtensionResults: {},
-      });
+        await act(async () => {
+          fireEvent.click(
+            getByTestId('change-password-passkey-verifying-open-full-screen'),
+          );
+        });
 
-      await waitFor(() => {
-        expect(getByTestId('change-password-input')).toBeInTheDocument();
-      });
+        expect(getByTestId('passkey-troubleshoot-modal')).toBeInTheDocument();
+
+        await act(async () => {
+          fireEvent.click(
+            getByTestId('passkey-troubleshoot-open-full-screen-button'),
+          );
+        });
+
+        expect(jest.mocked(cancelPasskeyCeremony)).toHaveBeenCalled();
+        expect(openExtensionInBrowser).toHaveBeenCalledWith(
+          SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+          'from=sidepanel',
+        );
+
+        await act(async () => {
+          resolveAuth?.({
+            id: 'mock-credential',
+            rawId: 'mock-credential',
+            type: 'public-key',
+            response: {
+              clientDataJSON: 'e30',
+              authenticatorData: 'AA',
+              signature: 'AA',
+            },
+            clientExtensionResults: {},
+          });
+        });
+      } finally {
+        globalThis.platform = previousPlatform;
+      }
     });
 
     it('with renewal disabled after enabling toggle, saves via passkey verification with renewal off', async () => {
