@@ -36,7 +36,9 @@ exports[`Develop options tab should match snapshot 1`] = `
         <details
           class="remote-feature-flags-details"
         >
-          <summary>
+          <summary
+            data-testid="remote-feature-flags-toggle"
+          >
             View feature flags JSON
           </summary>
           <pre

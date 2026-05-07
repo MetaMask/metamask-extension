@@ -15,6 +15,9 @@ class DebugOptions {
   private readonly developerOptionsRemoteFeatureFlagsState: string =
     '[data-testid="developer-options-remote-feature-flags"]';
 
+  private readonly remoteFeatureFlagsDetailsToggle: string =
+    '[data-testid="remote-feature-flags-toggle"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -38,6 +41,8 @@ class DebugOptions {
 
   async validateRemoteFeatureFlagState(): Promise<void> {
     console.log('Validate remote feature flags state in Debug page');
+    // Click to expand the collapsible details element
+    await this.driver.clickElement(this.remoteFeatureFlagsDetailsToggle);
     const element = await this.driver.findElement(
       this.developerOptionsRemoteFeatureFlagsState,
     );

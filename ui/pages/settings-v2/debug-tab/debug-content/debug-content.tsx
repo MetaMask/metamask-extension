@@ -245,7 +245,9 @@ const DebugContent = () => {
           </div>
         </div>
         <details className="remote-feature-flags-details">
-          <summary>View feature flags JSON</summary>
+          <summary data-testid="remote-feature-flags-toggle">
+            View feature flags JSON
+          </summary>
           <pre
             className="remote-feature-flags-json"
             data-testid="developer-options-remote-feature-flags"
