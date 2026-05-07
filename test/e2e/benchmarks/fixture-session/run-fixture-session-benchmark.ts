@@ -10,7 +10,15 @@ import {
 } from '../../../../.github/scripts/shared/utils.mts';
 
 const BENCHMARK_MODES = [
+  'withFixtures',
   'sharedReset',
+  'sharedNoReset',
+] as const;
+
+const MODE_COMPARISONS = [
+  ['withFixtures', 'sharedReset'],
+  ['withFixtures', 'sharedNoReset'],
+  ['sharedReset', 'sharedNoReset'],
 ] as const;
 
 type BenchmarkMode = (typeof BENCHMARK_MODES)[number];
@@ -90,19 +98,58 @@ function createMarkdownTable(
   ].join('\n');
 }
 
+function formatSignedTime(ms: number) {
+  const sign = ms < 0 ? '-' : '+';
+  return `${sign}${formatTime(Math.abs(ms))}`;
+}
+
+function formatDeltaPercent(deltaMs: number, baselineMs: number) {
+  return `${((deltaMs / baselineMs) * 100).toFixed(1)}%`;
+}
+
+function createModeComparison(
+  baseline: BenchmarkMode,
+  target: BenchmarkMode,
+  modeSummaries: Record<BenchmarkMode, ModeSummary>,
+) {
+  const baselineSummary = modeSummaries[baseline];
+  const targetSummary = modeSummaries[target];
+  const wallDeltaMs =
+    targetSummary.wall.medianMs - baselineSummary.wall.medianMs;
+  const suiteDeltaMs =
+    targetSummary.suite.medianMs - baselineSummary.suite.medianMs;
+
+  return [
+    `Median wall-clock delta (\`${target} - ${baseline}\`): ${formatSignedTime(
+      wallDeltaMs,
+    )} (${formatDeltaPercent(wallDeltaMs, baselineSummary.wall.medianMs)})`,
+    `Median suite-time delta (\`${target} - ${baseline}\`): ${formatSignedTime(
+      suiteDeltaMs,
+    )} (${formatDeltaPercent(suiteDeltaMs, baselineSummary.suite.medianMs)})`,
+  ].join('\n');
+}
+
 function createMarkdownSummary(
   args: ParsedArgs,
   modeSummaries: Record<BenchmarkMode, ModeSummary>,
 ) {
+  const comparisons = MODE_COMPARISONS.map(([baseline, target]) =>
+    createModeComparison(baseline, target, modeSummaries),
+  );
+
   return [
     '# Fixture Session Benchmark',
     '',
     `- Spec: \`${args.spec}\``,
     `- Browser: \`${args.browser}\``,
     `- Iterations per mode: \`${args.iterations}\``,
-    '- Run order: `sharedReset` only',
+    `- Run order: ${BENCHMARK_MODES.map((mode) => `\`${mode}\``).join(
+      ', ',
+    )}`,
     '',
     createMarkdownTable(modeSummaries),
+    '',
+    ...comparisons,
   ].join('\n');
 }
 
