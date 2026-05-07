@@ -59,16 +59,99 @@ export const migrate = (async (versionedData, changedControllers) => {
   versionedData.meta.version = version;
   try {
     const { data } = versionedData;
+
+    console.log(
+      '++++ [migration 207] START - controllers present:',
+      JSON.stringify(Object.keys(data)),
+    );
+    console.log(
+      '++++ [migration 207] AccountsController.internalAccounts.accounts:',
+      JSON.stringify(
+        readPath(data, ['AccountsController', 'internalAccounts', 'accounts']),
+        null,
+        2,
+      ),
+    );
+    console.log(
+      '++++ [migration 207] TokensController.allTokens:',
+      JSON.stringify(readPath(data, ['TokensController', 'allTokens']), null, 2),
+    );
+    console.log(
+      '++++ [migration 207] TokenBalancesController.tokenBalances:',
+      JSON.stringify(
+        readPath(data, ['TokenBalancesController', 'tokenBalances']),
+        null,
+        2,
+      ),
+    );
+    console.log(
+      '++++ [migration 207] MultichainAssetsController.accountsAssets:',
+      JSON.stringify(
+        readPath(data, ['MultichainAssetsController', 'accountsAssets']),
+        null,
+        2,
+      ),
+    );
+    console.log(
+      '++++ [migration 207] MultichainBalancesController.balances:',
+      JSON.stringify(
+        readPath(data, ['MultichainBalancesController', 'balances']),
+        null,
+        2,
+      ),
+    );
+    console.log(
+      '++++ [migration 207] AssetsController BEFORE:',
+      JSON.stringify(data.AssetsController, null, 2),
+    );
+
     const addressToId = buildAddressToIdMap(data);
+    console.log(
+      '++++ [migration 207] addressToId map:',
+      JSON.stringify(addressToId, null, 2),
+    );
+
     const ac = ensureAssetsController(data);
 
     const evmChanged = migrateEvmTokens(data, ac, addressToId);
+    console.log(
+      `++++ [migration 207] AssetsController AFTER EVM migration (evmChanged=${evmChanged}):`,
+      JSON.stringify(ac, null, 2),
+    );
+
     const nonEvmChanged = migrateNonEvmAssets(data, ac);
+    console.log(
+      `++++ [migration 207] AssetsController AFTER non-EVM migration (nonEvmChanged=${nonEvmChanged}):`,
+      JSON.stringify(ac, null, 2),
+    );
+
+    console.log(
+      '++++ [migration 207] customAssets FINAL counts per account:',
+      JSON.stringify(
+        Object.fromEntries(
+          Object.entries(ac.customAssets).map(([accId, assets]) => [
+            accId,
+            Array.isArray(assets) ? assets.length : 'not-array',
+          ]),
+        ),
+        null,
+        2,
+      ),
+    );
+    console.log(
+      '++++ [migration 207] customAssets FINAL full:',
+      JSON.stringify(ac.customAssets, null, 2),
+    );
 
     if (evmChanged || nonEvmChanged) {
       changedControllers.add('AssetsController');
     }
   } catch (error) {
+    console.log(
+      '++++ [migration 207] ERROR:',
+      getErrorMessage(error),
+      error,
+    );
     captureException(
       new Error(
         `Migration #${version} - migrate old AssetsControllers state to new unified AssetsController state failed: ${getErrorMessage(error)}`,
@@ -321,6 +404,22 @@ function classifyAccountAsset(
   const trackedAssetsForAccount = ac.assetsBalance[accountId] ?? {};
   const customAssetsForAccount = ac.customAssets[accountId] ?? [];
 
+  console.log(
+    '++++ [classifyAccountAsset] called:',
+    JSON.stringify(
+      {
+        accountId,
+        assetId,
+        amount,
+        existingTrackedKeys: Object.keys(trackedAssetsForAccount),
+        existingCustomCount: customAssetsForAccount.length,
+        existingCustomList: customAssetsForAccount,
+      },
+      null,
+      2,
+    ),
+  );
+
   const trackedAssetIdMatch = Object.keys(trackedAssetsForAccount).find(
     (existingAssetId) =>
       existingAssetId === assetId ||
@@ -337,6 +436,10 @@ function classifyAccountAsset(
 
   if (amount !== null) {
     if (alreadyTracked) {
+      console.log(
+        '++++ [classifyAccountAsset] SKIP - already tracked with balance:',
+        JSON.stringify({ accountId, assetId }),
+      );
       return false;
     }
     ac.assetsBalance[accountId] ??= {};
@@ -347,14 +450,30 @@ function classifyAccountAsset(
         (id) => id.toLowerCase() !== normalizedAssetId,
       );
     }
+    console.log(
+      '++++ [classifyAccountAsset] WROTE to assetsBalance:',
+      JSON.stringify({ accountId, assetId, amount }),
+    );
     return true;
   }
 
   if (alreadyTracked || alreadyCustom) {
+    console.log(
+      '++++ [classifyAccountAsset] SKIP customAssets push - already present:',
+      JSON.stringify({ accountId, assetId, alreadyTracked, alreadyCustom }),
+    );
     return false;
   }
   ac.customAssets[accountId] ??= [];
   ac.customAssets[accountId].push(assetId);
+  console.log(
+    '++++ [classifyAccountAsset] PUSHED to customAssets:',
+    JSON.stringify({
+      accountId,
+      assetId,
+      newCustomLength: ac.customAssets[accountId].length,
+    }),
+  );
   return true;
 }
 
@@ -424,6 +543,14 @@ function migrateEvmTokens(
       continue;
     }
 
+    console.log(
+      '++++ [migrateEvmTokens] chain entry:',
+      JSON.stringify({
+        hexChainId,
+        accountAddresses: Object.keys(accountTokens),
+      }),
+    );
+
     for (const [rawAddress, tokens] of Object.entries(accountTokens)) {
       if (!Array.isArray(tokens)) {
         continue;
@@ -435,6 +562,17 @@ function migrateEvmTokens(
         (isObject(tokenBalances[accountAddress]) &&
           tokenBalances[accountAddress][hexChainId]) ||
         {};
+
+      console.log(
+        '++++ [migrateEvmTokens] account entry:',
+        JSON.stringify({
+          rawAddress,
+          accountAddress,
+          accountId,
+          tokenCount: tokens.length,
+          chainBalanceKeys: Object.keys(chainBalances),
+        }),
+      );
 
       for (const token of tokens) {
         if (
@@ -471,6 +609,19 @@ function migrateEvmTokens(
         const amount = isNonZeroHexBalance(hexBalance)
           ? hexBalanceToDisplayAmount(hexBalance, decimals)
           : null;
+
+        console.log(
+          '++++ [migrateEvmTokens] token classify:',
+          JSON.stringify({
+            assetId,
+            tokenAddress: token.address,
+            checksummed,
+            hexBalance,
+            decimals,
+            amount,
+            symbol: token.symbol,
+          }),
+        );
 
         if (classifyAccountAsset(ac, accountId, assetId, amount)) {
           changed = true;
@@ -576,6 +727,16 @@ function migrateNonEvmAssets(
       ? balances[accountId]
       : {};
 
+    console.log(
+      '++++ [migrateNonEvmAssets] account entry:',
+      JSON.stringify({
+        accountId,
+        assetIdCount: assetIds.length,
+        assetIds,
+        balanceKeys: Object.keys(accountBalances),
+      }),
+    );
+
     for (const assetId of assetIds) {
       if (typeof assetId !== 'string' || !assetId) {
         continue;
@@ -592,6 +753,17 @@ function migrateNonEvmAssets(
           ? balanceEntry.amount
           : undefined;
       const amount = isNonZeroAmount(rawAmount) ? rawAmount : null;
+
+      console.log(
+        '++++ [migrateNonEvmAssets] asset classify:',
+        JSON.stringify({
+          accountId,
+          assetId,
+          rawAmount,
+          amount,
+          hasMetadata: Boolean(info),
+        }),
+      );
 
       if (classifyAccountAsset(ac, accountId, assetId, amount)) {
         changed = true;
