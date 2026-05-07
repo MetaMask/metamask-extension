@@ -7,6 +7,107 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.31.0]
+
+### Uncategorized
+
+- Add transitions to defi and nft navigation (#42502)
+- Updates internal Debug tab feature flag output styles (#42486)
+- chore(6939): add @mui/material v5, Emotion, and @mui/x-date-pickers dependencies (#41954)
+- Updated the description under the "Smart account requests from dapps" setting to clarify that MetaMask will only upgrade (#42052)
+  to our audited smart account.
+- Moved shared tabs to security-tab (#42255)
+- Developer-options-tab into settings-v2/debug-tab (#42254)
+- Align AssetsControllerInit tests with simplified init (#42231)
+- Enforces performance quality gate that blocks PRs that introduce performance regressions, and defines an allowlist of gated (#42166)
+  metrics.
+- Enable ASSETS_UNIFIED_STATE_ENABLED for dev builds (#42157)
+- No user-facing changes. Benchmark infrastructure only (outlier trimming, warm-up exclusion, PowerUser iteration rebalance, (#41961)
+  trimmedCount Sentry tag).
+
+### Added
+
+- Redesigned critical error screen (#42421)
+- Prevent toast overlapping CTA footer (#42479)
+- Added a redesigned DeFi referral consent UI behind an A/B test (#42449)
+- Improved passkey support when using Google Password Manager by completing passkey steps in a full extension tab instead of (#42459)
+  the side panel.
+- Added auto-focus to the amount input on MetaMask Pay deposit, withdraw, and mUSD conversion screens (#42204)
+- Improved biometric setup and troubleshooting flows for passkey onboarding, unlock, and Settings experiences. (#42443)
+- Added passkey management in Security settings and improved changing the wallet password when passkey unlock is enabled. (#42299)
+- Added passkey setup during onboarding and passkey-based unlock with password fallback. (#42169)
+- Pre-fetch popular tokens for Bridge page (#42239)
+- Tempo disable tx management for testnet moderato (#42201)
+- Hyperliquid DeFi referral flow now runs after permitting an additional account for the site from the account-picker (#41996)
+- Adds "Restore accounts" on critical error screen when a backup exists. (#40306)
+- Improved perps order entry with auto-focus, auto-select-on-focus, real-time minimum-order-size validation, and (#41949)
+  Enter-to-submit keyboard shortcut.
+- Add Tempo chain to the additional networks list (#42270)
+- Added editable USD input for close-position amount in perpetuals trading (#42261)
+- Added auto slippage support for RWA tokens (#42289)
+- Reopening the extension within 5 minutes of closing it on a Perps screen now returns the user to that screen instead of the (#42009)
+  wallet home.
+- Make Perps Withdraw to any token submission work (#42259)
+- Swap/Bridge to warn user if native balance will go below a minimum threshold. (#42113)
+- Updated Perps Withdraw activity rows to show the destination token and amount, and tailored the Transaction Details modal (#42263)
+  as well
+- Update metrics to track wallet composition (number of accounts, number of hardware wallets etc) (#41918)
+- Migrate prettier to oxfmt (#40697)
+- Filter malicious non-evm activity transactions (#42176)
+- Added Clear buttons for Take Profit and Stop Loss inputs in the perps order entry screen (#42156)
+- Updated perps balance to use unified accounts from perps controller (#42101)
+- Consume swap token warnings (#41495)
+- Add QR hardware wallet camera permission handling and recovery flow (#41612)
+- Add new Page for choosing wallet type for new wallet onboarding (#42048)
+- Advanced Permissions now show either expired or revoked status in Dapp Connections (#41985)
+- Added support for ENS v2 (#42079)
+
+### Fixed
+
+- Fixed an issue where Blockaid warnings were not shown for some multichain API signature requests (#42276)
+- Fixed Sei Mainnet: replaced deprecated Seitrace explorer with Seiscan (`https://seiscan.io`). Existing installs are (#42064)
+  migrated via migration 207.
+- Fixed a bug where the token asset details page showed Send for zero-balance tokens. (#42451)
+- Fixed an alert that incorrectly warned about a previous signing or submitting transaction when the previous transaction was on a (#42194)
+  different chain or from a different account.
+- Fixed an issue where resetting or restoring a wallet from the side panel or popup could leave onboarding stuck or make Open (#42386)
+  wallet unresponsive.
+  Guarded the onboarding-completion page with
+  `isResetWalletInProgress` state to prevent the wallet state sync issue
+  with UI.
+- Fixed UX for camera access and QR recovery flow in side panel (#42363)
+- Fixed the candle period selection resetting to default when navigating away from the Perps market detail page (#42285)
+- Paginate from last evm completed transaction (#42344)
+- Drop early return in `toAssetId` if error so we allow fallback assetId erc20:0x... (#42054)
+- Returns `nonce: '0x0'` when eth_getTransactionByHash is called for a gasless tx (#42119)
+- Fixed activity screen showing wrong currency symbol (e.g. R$ instead of $) for MM Pay, Perps deposit, and mUSD transaction (#42151)
+  amounts
+- Skip connect qr for QR accounts. (#42294)
+- Fixed a perps bug where a position-level TP/SL appeared in the orders list of the market detail page instead of the auto-close (#42292)
+  section.
+- Fixed the modify menu popover width on the perps market detail page (#42281)
+- Fixed a bug that caused Perps TP/SL RoE signs to disappear or default incorrectly in the Auto close modal (#42284)
+- Fixed a bug where Ledger users could not complete swaps on networks without Ledger plugin support (e.g. Monad), which previously (#41948)
+  surfaced as a misleading "blind signing is not enabled" error.
+- Fixed a bug where NFT details showed placeholder description text when no description metadata was available. (#42236)
+- Updated perps stop-loss inputs to default initial unsigned percentages to negative RoE, normalize leading-zero values, (#42232)
+  preserve intentional positive edits, and block liquidation-unsafe
+  stop-loss trigger prices.
+- Fixed a memory leak that would degrade performance over time when using Firefox (#42203)
+- Fix bug related to improper deposit tracking (#41913)
+- Replace unlock redirect history entry (#42184)
+- Fixed EIP-712 Permit confirmation parsing to prevent decoy spending cap values from being displayed. (#42197)
+- Fixed hardware wallet detection in the pay alert so Ledger and other hardware wallets are correctly identified during mUSD (#42117)
+  conversion
+- Added header icons to the Add Margin, Decrease Margin, Reverse Position, and Close Position modals in Perpetuals (#42147)
+- Prevent invalid bridge tx hashes from being persisted in txHistory (#41981)
+- Fixed confirmation footer showing "Connect Ledger" when a Ledger transport was already connected; the primary action now shows (#42138)
+  "Confirm" in that state.
+- Fixed Perps deposit confirmation and activity UI by correcting amount input alignment, showing the send icon in activity, (#41838)
+  and restoring percentage buttons for native payment assets.
+- Fixed a crash that could occur when account ordering briefly contained invalid entries during hardware wallet or multichain (#41834)
+  account sync.
+
 ## [13.29.0]
 
 ### Added
@@ -2222,7 +2323,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...HEAD
+[13.31.0]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...v13.31.0
 [13.29.0]: https://github.com/MetaMask/metamask-extension/compare/v13.28.0...v13.29.0
 [13.28.0]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...v13.28.0
 [13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
