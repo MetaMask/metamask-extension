@@ -72,38 +72,26 @@ describe('Develop options tab', () => {
 
     it('does not render perps-testnet-toggle when METAMASK_DEBUG is not set', () => {
       delete process.env.METAMASK_DEBUG;
-      const { queryByTestId } = renderWithProvider(
-        <DebugContent />,
-        mockStore,
-      );
+      const { queryByTestId } = renderWithProvider(<DebugContent />, mockStore);
       expect(queryByTestId('perps-testnet-toggle')).not.toBeInTheDocument();
     });
 
     it('renders perps-testnet-toggle when METAMASK_DEBUG is set', () => {
       process.env.METAMASK_DEBUG = 'true';
-      const { getByTestId } = renderWithProvider(
-        <DebugContent />,
-        mockStore,
-      );
+      const { getByTestId } = renderWithProvider(<DebugContent />, mockStore);
       expect(getByTestId('perps-testnet-toggle')).toBeInTheDocument();
     });
 
     it('calls perpsToggleTestnet when toggle is clicked', () => {
       process.env.METAMASK_DEBUG = 'true';
-      const { getByTestId } = renderWithProvider(
-        <DebugContent />,
-        mockStore,
-      );
+      const { getByTestId } = renderWithProvider(<DebugContent />, mockStore);
       fireEvent.click(getByTestId('perps-testnet-toggle'));
       expect(mockPerpsToggleTestnet).toHaveBeenCalled();
     });
   });
 
   it('should toggle Service Worker Keep Alive', async () => {
-    const { getByTestId } = renderWithProvider(
-      <DebugContent />,
-      mockStore,
-    );
+    const { getByTestId } = renderWithProvider(<DebugContent />, mockStore);
     const triggerButton = getByTestId(
       'developer-options-service-worker-alive-toggle',
     );
