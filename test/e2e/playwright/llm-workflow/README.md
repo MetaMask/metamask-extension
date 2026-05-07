@@ -160,8 +160,15 @@ mm launch --state custom --preset withMultipleAccounts
 
 ---
 
+## Langfuse Tracing
+
+See [LANGFUSE.md](./LANGFUSE.md) for setup, usage, and architecture of the Langfuse observability integration.
+
+---
+
 ## See Also
 
 - **Agent Skill**: `.claude/skills/metamask-visual-testing/SKILL.md` - Concise command reference for agents.
 - **Core Package**: `@metamask/client-mcp-core` - Generic daemon infrastructure.
+- **Langfuse Tracing**: [LANGFUSE.md](./LANGFUSE.md) - Observability setup and Claude runner.
 - **Migrating from MCP?** If you previously configured an MCP server for MetaMask, see [mcp-cli-migration.md](./mcp-cli-migration.md).
