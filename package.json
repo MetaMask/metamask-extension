@@ -8,7 +8,7 @@
   },
   "@metamask/assets-controller": {
     "type": "non-breaking",
-    "previewVersion": "6.4.0-preview-d3f1b8bd9"
+    "previewVersion": "6.4.0-preview-2b316ced3"
   },
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
