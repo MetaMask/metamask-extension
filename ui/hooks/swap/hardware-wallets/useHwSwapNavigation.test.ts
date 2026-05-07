@@ -1,5 +1,6 @@
 import { act } from '@testing-library/react-hooks';
 import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
+import { createSignatureState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine.test-helpers';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useHwSwapNavigation } from './useHwSwapNavigation';
 
@@ -19,10 +20,6 @@ const mockUseBridgeNavigation = jest.requireMock(
 ).useBridgeNavigation;
 
 const mockNavigateToDefaultRoute = jest.fn();
-
-const createSignatureState = (
-  status: HardwareWalletSignatureStatus,
-): { status: HardwareWalletSignatureStatus } => ({ status });
 
 describe('useHwSwapNavigation', () => {
   beforeEach(() => {

@@ -4,6 +4,7 @@ import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
 } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
+import { createSignatureState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine.test-helpers';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useHwSwapConnectionMonitoring } from './useHwSwapConnectionMonitoring';
 
@@ -31,10 +32,6 @@ const mockGetHardwareWalletErrorCode = jest.requireMock(
 const mockIsUserRejectedHardwareWalletError = jest.requireMock(
   '../../../contexts/hardware-wallets',
 ).isUserRejectedHardwareWalletError;
-
-const createSignatureState = (
-  status: HardwareWalletSignatureStatus,
-): { status: HardwareWalletSignatureStatus } => ({ status });
 
 describe('useHwSwapConnectionMonitoring', () => {
   const mockDispatchSignatureEvent = jest.fn();

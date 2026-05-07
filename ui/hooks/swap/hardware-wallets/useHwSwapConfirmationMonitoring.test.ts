@@ -2,6 +2,7 @@ import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
 } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
+import { createSignatureState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine.test-helpers';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useHwSwapConfirmationMonitoring } from './useHwSwapConfirmationMonitoring';
 
@@ -11,10 +12,6 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUseSelector = jest.requireMock('react-redux').useSelector;
-
-const createSignatureState = (
-  status: HardwareWalletSignatureStatus,
-): { status: HardwareWalletSignatureStatus } => ({ status });
 
 describe('useHwSwapConfirmationMonitoring', () => {
   const mockDispatchSignatureEvent = jest.fn();

@@ -89,9 +89,9 @@ function handleResume(
   return state;
 }
 
-function toResumableStatus(
+function toSigningStatus(
   state: HardwareWalletSignaturesState,
-): ResumableStatus | null {
+): SigningStatus | null {
   if (
     state.status === HardwareWalletSignatureStatus.AwaitingFirstSignature ||
     state.status === HardwareWalletSignatureStatus.AwaitingFinalSignature
@@ -136,7 +136,7 @@ export const hardwareWalletSignaturesReducer = (
       }
       break;
     case HardwareWalletSignatureEvent.TransactionRejected: {
-      const sig = toResumableStatus(state);
+      const sig = toSigningStatus(state);
       if (sig) {
         nextState = {
           status: HardwareWalletSignatureStatus.Rejected,
@@ -148,7 +148,7 @@ export const hardwareWalletSignaturesReducer = (
       break;
     }
     case HardwareWalletSignatureEvent.TransactionFailed: {
-      const sig = toResumableStatus(state);
+      const sig = toSigningStatus(state);
       if (sig) {
         nextState = {
           status: HardwareWalletSignatureStatus.Failed,
@@ -160,7 +160,7 @@ export const hardwareWalletSignaturesReducer = (
       break;
     }
     case HardwareWalletSignatureEvent.DeviceDisconnected: {
-      const sig = toResumableStatus(state);
+      const sig = toSigningStatus(state);
       if (sig) {
         nextState = {
           status: HardwareWalletSignatureStatus.Disconnected,

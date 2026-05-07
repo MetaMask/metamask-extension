@@ -7,6 +7,7 @@ import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
 } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
+import { createSignatureState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine.test-helpers';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { rejectPendingApproval } from '../../../store/actions';
 import { useHwSwapSubmission } from './useHwSwapSubmission';
@@ -18,10 +19,6 @@ jest.mock('../../../store/actions', () => ({
 const mockRejectPendingApproval = rejectPendingApproval as jest.MockedFunction<
   typeof rejectPendingApproval
 >;
-
-const createSignatureState = (
-  status: HardwareWalletSignatureStatus,
-): { status: HardwareWalletSignatureStatus } => ({ status });
 
 const createMockLockedQuote = (requestId: string) =>
   ({

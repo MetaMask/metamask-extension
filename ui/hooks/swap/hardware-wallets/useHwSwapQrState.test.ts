@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
 import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
+import { createSignatureState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine.test-helpers';
 import { useHwSwapQrState } from './useHwSwapQrState';
 
 jest.mock('react-redux', () => ({
@@ -53,10 +54,6 @@ const mockCancelQrCodeScan = jest.requireMock(
 const mockCompleteQrCodeScan = jest.requireMock(
   '../../../store/actions',
 ).completeQrCodeScan;
-
-const createSignatureState = (
-  status: HardwareWalletSignatureStatus,
-): { status: HardwareWalletSignatureStatus } => ({ status });
 
 describe('useHwSwapQrState', () => {
   const mockDispatch = jest.fn();
