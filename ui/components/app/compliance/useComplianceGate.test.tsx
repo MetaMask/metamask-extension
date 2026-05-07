@@ -221,9 +221,11 @@ describe('useComplianceGate', () => {
     expect(mockShowAccessRestrictedModal).toHaveBeenCalledTimes(1);
   });
 
-  it('fails open when the compliance API rejects even if cached state is blocked', async () => {
-    mockSubmitRequestToBackground.mockRejectedValueOnce(new Error('offline'));
-    const action = jest.fn().mockReturnValue('allowed');
+  it('blocks when the background returns a cached blocked status', async () => {
+    mockSubmitRequestToBackground.mockResolvedValueOnce([
+      getStatus(ADDRESS, true),
+    ]);
+    const action = jest.fn();
     const { result } = renderHook(() => useComplianceGate(ADDRESS), {
       wrapper: getWrapper(
         getState({
@@ -234,14 +236,12 @@ describe('useComplianceGate', () => {
       ),
     });
 
-    let value: string | undefined;
     await act(async () => {
-      value = await result.current.gate(action);
+      await result.current.gate(action);
     });
 
-    expect(action).toHaveBeenCalledTimes(1);
-    expect(value).toBe('allowed');
-    expect(mockShowAccessRestrictedModal).not.toHaveBeenCalled();
+    expect(action).not.toHaveBeenCalled();
+    expect(mockShowAccessRestrictedModal).toHaveBeenCalledTimes(1);
   });
 
   it('resets stale blocked results after the address changes', async () => {
