@@ -6,6 +6,10 @@
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-extension.git"
   },
+  "@metamask/assets-controller": {
+    "type": "non-breaking",
+    "previewVersion": "6.4.0-preview-d3f1b8bd9"
+  },
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
@@ -161,7 +165,6 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/assets-controller": "file:../core/packages/assets-controller",
     "follow-redirects": "^1.16.0",
     "@unrs/resolver-binding-wasm32-wasi": "npm:npm-empty-package@1.0.0",
     "jest-clean-console-reporter/chalk": "^4.1.2",
