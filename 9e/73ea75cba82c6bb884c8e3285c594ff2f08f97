@@ -1,0 +1,14 @@
+.claude/skills/metamask-visual-testing/SKILL.md
+  h_bf2df3051e8d1a 80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "9e73ea75cba82c6bb884c8e3285c594ff2f08f97",
+  "prompts": {},
+  "humans": {
+    "h_bf2df3051e8d1a": {
+      "author": "cryptotavares"
+    }
+  }
+}
