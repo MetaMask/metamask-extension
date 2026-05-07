@@ -552,7 +552,7 @@ describe('AssetPage', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('renders non-EVM asset details without actions when account is incompatible', () => {
+  it('renders non-EVM asset details with action buttons when account is incompatible', () => {
     const { queryByTestId, getByTestId } = renderWithProvider(
       <AssetPage
         asset={nonEvmNative}
@@ -613,8 +613,8 @@ describe('AssetPage', () => {
     );
 
     expect(getByTestId('asset-network')).toBeInTheDocument();
-    expect(queryByTestId('coin-overview-send')).not.toBeInTheDocument();
-    expect(queryByTestId('asset-options')).not.toBeInTheDocument();
+    expect(queryByTestId('coin-overview-swap')).toBeInTheDocument();
+    expect(queryByTestId('asset-options')).toBeInTheDocument();
   });
 
   it('should render an ERC20 asset without prices', async () => {

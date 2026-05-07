@@ -58,6 +58,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { transitionBack } from '../../../components/ui/transition';
 import {
   getDataCollectionForMarketing,
+  getSelectedInternalAccount,
   getIsBridgeChain,
   getIsSwapsChain,
   getMetaMetricsId,
@@ -126,6 +127,8 @@ const AssetPage = ({
       caipChainId as CaipChainId,
     ),
   );
+  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
+  const accountForActions = selectedAccount ?? selectedInternalAccount;
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -139,12 +142,12 @@ const AssetPage = ({
   );
 
   const isSigningEnabled = Boolean(
-    selectedAccount &&
-    (selectedAccount.methods.includes(EthMethod.SignTransaction) ||
-      selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
-      selectedAccount.methods.includes(SolMethod.SignTransaction) ||
-      selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
-      selectedAccount.type === TrxAccountType.Eoa),
+    accountForActions &&
+    (accountForActions.methods.includes(EthMethod.SignTransaction) ||
+      accountForActions.methods.includes(EthMethod.SignUserOperation) ||
+      accountForActions.methods.includes(SolMethod.SignTransaction) ||
+      accountForActions.methods.includes(BtcMethod.SignPsbt) ||
+      accountForActions.type === TrxAccountType.Eoa),
   );
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
@@ -209,7 +212,6 @@ const AssetPage = ({
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
   const tokenHexBalance = (assetWithBalance?.rawBalance as string) ?? '0x0';
-  const hasCompatibleAccount = Boolean(selectedAccount);
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -310,9 +312,6 @@ const AssetPage = ({
     setIsMarketClosedModalOpen(true);
   };
 
-  const optionsButtonWithAccountGuard =
-    hasCompatibleAccount || isEvm ? optionsButton : null;
-
   return (
     <Box className="asset__content">
       <Box
@@ -333,7 +332,7 @@ const AssetPage = ({
             className="asset-page__back-button"
           />
         </Box>
-        {optionsButtonWithAccountGuard}
+        {optionsButton}
       </Box>
       <Box paddingLeft={4}>
         {isStockToken ? (
@@ -353,10 +352,10 @@ const AssetPage = ({
         asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
       <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-        {isUpdatedAssetNative && selectedAccount ? (
+        {isUpdatedAssetNative && accountForActions ? (
           <CoinButtons
             {...{
-              account: selectedAccount,
+              account: accountForActions,
               trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
@@ -367,14 +366,14 @@ const AssetPage = ({
             }}
           />
         ) : null}
-        {tokenAsset && hasCompatibleAccount ? (
+        {tokenAsset ? (
           <TokenButtons
             token={tokenAsset}
             disableSendForNonEvm
             isMarketClosed={isMarketClosed}
           />
         ) : null}
-        {isMarketClosed && tokenAsset && hasCompatibleAccount ? (
+        {isMarketClosed && tokenAsset ? (
           <Box marginTop={4}>
             <MarketClosedActionButton onClick={handleOpenMarketClosedModal} />
           </Box>

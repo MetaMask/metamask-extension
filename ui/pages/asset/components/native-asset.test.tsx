@@ -76,7 +76,7 @@ describe('NativeAsset', () => {
     global.platform.openTab = jest.fn();
   });
 
-  it('passes nativeAssetId and hides options for non-EVM without compatible account', () => {
+  it('passes nativeAssetId and keeps options visible for non-EVM without compatible account', () => {
     mockUseSelector
       .mockReturnValueOnce({ type: 'rpc' } as never)
       .mockReturnValueOnce({ address: '0x123' } as never)
@@ -107,7 +107,7 @@ describe('NativeAsset', () => {
       optionsButton: React.ReactNode;
     };
     expect(props.asset.nativeAssetId).toBe(token.address);
-    expect(props.optionsButton).toBeNull();
+    expect(props.optionsButton).toBeTruthy();
   });
 
   it('shows options for non-EVM when compatible account exists', () => {

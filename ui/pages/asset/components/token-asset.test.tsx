@@ -130,7 +130,7 @@ describe('TokenAsset', () => {
     );
   }
 
-  it('hides options when chain is non-EVM and selected account is missing', () => {
+  it('keeps options visible when chain is non-EVM and selected account is missing', () => {
     mockIsEvmChainId.mockReturnValue(false);
     mockGetTokenTrackerLink.mockReturnValue('https://etherscan.io/token');
 
@@ -148,7 +148,7 @@ describe('TokenAsset', () => {
     const props = mockAssetPage.mock.calls[0]?.[0] as unknown as {
       optionsButton: React.ReactNode;
     };
-    expect(props.optionsButton).toBeNull();
+    expect(props.optionsButton).toBeTruthy();
   });
 
   it('uses multichain block explorer link for non-EVM account', () => {

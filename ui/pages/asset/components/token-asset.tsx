@@ -124,8 +124,6 @@ const TokenAsset = ({
           multichainNetwork,
         );
 
-  const shouldShowOptions = isEvm || Boolean(selectedAccount);
-
   return (
     <AssetPage
       asset={{
@@ -148,36 +146,32 @@ const TokenAsset = ({
         isERC721,
       }}
       optionsButton={
-        shouldShowOptions ? (
-          <AssetOptions
-            isNativeAsset={false}
-            onRemove={() =>
-              dispatch(
-                showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }),
-              )
+        <AssetOptions
+          isNativeAsset={false}
+          onRemove={() =>
+            dispatch(showModal({ name: 'HIDE_TOKEN_CONFIRMATION', token, navigate }))
+          }
+          onClickBlockExplorer={() => {
+            if (!blockExplorerLink) {
+              return;
             }
-            onClickBlockExplorer={() => {
-              if (!blockExplorerLink) {
-                return;
-              }
-              trackEvent({
-                event: 'Clicked Block Explorer Link',
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  link_type: 'Token Tracker',
-                  action: 'Token Options',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  block_explorer_domain: getURLHostName(tokenTrackerLink),
-                },
-              });
-              global.platform.openTab({ url: blockExplorerLink });
-            }}
-            token={token}
-          />
-        ) : null
+            trackEvent({
+              event: 'Clicked Block Explorer Link',
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                link_type: 'Token Tracker',
+                action: 'Token Options',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                block_explorer_domain: getURLHostName(tokenTrackerLink),
+              },
+            });
+            global.platform.openTab({ url: blockExplorerLink });
+          }}
+          token={token}
+        />
       }
     />
   );

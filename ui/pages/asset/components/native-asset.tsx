@@ -59,7 +59,6 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     symbol,
     type,
   );
-  const shouldShowOptions = isEvm || Boolean(selectedAccount);
 
   return (
     <AssetPage
@@ -73,32 +72,30 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
         nativeAssetId: isEvm ? undefined : token.address,
       }}
       optionsButton={
-        shouldShowOptions ? (
-          <AssetOptions
-            isNativeAsset={true}
-            onClickBlockExplorer={() => {
-              if (!accountLink) {
-                return;
-              }
-              trackEvent({
-                event: 'Clicked Block Explorer Link',
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  link_type: 'Account Tracker',
-                  action: 'Asset Options',
-                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                  // eslint-disable-next-line @typescript-eslint/naming-convention
-                  block_explorer_domain: getURLHostName(accountLink),
-                },
-              });
-              global.platform.openTab({
-                url: accountLink,
-              });
-            }}
-          />
-        ) : null
+        <AssetOptions
+          isNativeAsset={true}
+          onClickBlockExplorer={() => {
+            if (!accountLink) {
+              return;
+            }
+            trackEvent({
+              event: 'Clicked Block Explorer Link',
+              category: MetaMetricsEventCategory.Navigation,
+              properties: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                link_type: 'Account Tracker',
+                action: 'Asset Options',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                block_explorer_domain: getURLHostName(accountLink),
+              },
+            });
+            global.platform.openTab({
+              url: accountLink,
+            });
+          }}
+        />
       }
     />
   );
