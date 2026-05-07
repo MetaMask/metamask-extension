@@ -537,7 +537,7 @@ export type MultichainNetwork = {
   isEvmNetwork: boolean;
   chainId: CaipChainId;
   network: // TODO: Maybe updates ProviderConfig to add rpcPrefs.imageUrl field
-  ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
+    ProviderConfigWithImageUrlAndExplorerUrl | MultichainProviderConfig;
 };
 
 function getMultichainNetworkProviders(

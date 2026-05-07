@@ -11,6 +11,13 @@ ignores:
   - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
+  # peer deps of @mui/material v5, consumed internally by MUI (not imported directly)
+  - '@emotion/react'
+  - '@emotion/styled'
+  # v5 pre-installed alongside @material-ui/core v4 ahead of migration
+  - '@mui/material'
+  # installed alongside @material-ui/pickers ahead of migration to MUI v5
+  - '@mui/x-date-pickers'
 
   #
   # dev deps
@@ -18,8 +25,6 @@ ignores:
 
   # all @types/* packages are imported implicitly by TypeScript
   - '@types/*'
-  # safety fallback for npm lifecycle scripts, not used normally
-  - '@lavamoat/preinstall-always-fail'
   # used in testing + ci
   - '@metamask/auto-changelog' # invoked as `auto-changelog`
   - '@metamask/browser-playground' # used by MM Connect E2E tests
@@ -34,29 +39,22 @@ ignores:
   - '@metamask/design-tokens' # Only imported in index.css
   - '@tsconfig/node22' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
-  - 'chromedriver'
   - 'depcheck' # ooo meta
   - 'ethers' # ethers @5.7.0 expected by @account-abstraction/contracts, but conflicts with transitive ethers@6.x
-  - 'ganache-cli'
-  - 'geckodriver'
   - 'jest'
   - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
-  - 'playwright'
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
   - 'tweetnacl' # used by solana-wallet-standard
   - 'bs58' # used by solana-wallet-standard
   - '@metamask/design-system-shared' # scanned by Tailwind JIT to generate utility classes; dev dependency not imported directly
-  # storybook
-  - '@storybook/cli'
-  - '@storybook/core'
+  # storybook (v7 — CLI entry point + addons are not directly imported)
+  - 'storybook'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
   - '@storybook/addon-docs'
-  - '@storybook/builder-webpack5'
-  - '@storybook/manager-webpack5'
   - '@storybook/react-webpack5'
   - 'react-syntax-highlighter'
   - 'style-loader'
@@ -118,3 +116,5 @@ ignorePatterns:
   # self-contained bundle used for testing
   - '**/send-eth-with-private-key-test/web3js.js'
   - '**/send-eth-with-private-key-test/ethereumjs-tx.js'
+  # vendored Yarn plugin bundles
+  - '.yarn/plugins/**'

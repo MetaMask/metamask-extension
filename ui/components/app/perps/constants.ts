@@ -19,6 +19,13 @@ export const HYPERLIQUID_ASSET_ICONS_BASE_URL =
   'https://app.hyperliquid.xyz/coins/';
 
 /**
+ * MetaMask-hosted perps icons base URL (GitHub/contract-metadata)
+ * Primary source for asset icons; covers HIP-3 assets missing from HyperLiquid CDN
+ */
+export const METAMASK_PERPS_ICONS_BASE_URL =
+  'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/icons/eip155:999/';
+
+/**
  * Perps withdraw amount input: digits with optional decimal, max six fractional digits
  * (aligned with HyperLiquid / controller expectations).
  */

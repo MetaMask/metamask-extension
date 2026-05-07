@@ -1,5 +1,5 @@
 import React from 'react';
-import ChangePassword from '../../settings/security-tab/change-password/change-password';
+import ChangePassword from '../../../components/app/change-password/change-password';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 
 const PasswordSubPage = () => {

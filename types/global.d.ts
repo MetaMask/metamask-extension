@@ -29,6 +29,7 @@ import type {
   LongTaskMetrics,
   LongTaskMetricsWithTBT,
 } from '../ui/helpers/utils/performance-observers';
+import type { Backup } from '../shared/lib/stores/persistence-manager';
 
 declare class MessageSender {
   documentId?: string;
@@ -259,9 +260,7 @@ type StateHooks = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getPersistedState: () => Promise<any>;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getBackupState?: () => Promise<any>;
+  getBackupState?: () => Promise<Backup | null>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getSentryAppState?: () => any;

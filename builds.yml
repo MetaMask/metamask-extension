@@ -31,7 +31,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
       - GOOGLE_PROD_CLIENT_ID
       - APPLE_PROD_CLIENT_ID
@@ -63,7 +62,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
       - GOOGLE_BETA_CLIENT_ID
       - APPLE_BETA_CLIENT_ID
@@ -94,7 +92,6 @@ buildTypes:
       - REJECT_INVALID_SNAPS_PLATFORM_VERSION: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/11.0.1/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
-      - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
       - GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_EXPERIMENTAL_CLIENT_ID
@@ -102,6 +99,7 @@ buildTypes:
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
+      - PASSKEY_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
@@ -128,7 +126,6 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
       - EIP_4337_ENTRYPOINT: '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'
-      - EXTENSION_UX_PNA25: true
       # for seedless onboarding (social login)
       - GOOGLE_FLASK_CLIENT_ID
       - APPLE_FLASK_CLIENT_ID
@@ -285,7 +282,6 @@ env:
   - QUICKNODE_OPTIMISM_URL: null
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
-  - QUICKNODE_BSC_URL: null
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
   - QUICKNODE_HYPEREVM_URL: null
@@ -372,7 +368,7 @@ env:
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   # EIP-7715 Readable Permissions
-  - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
+  - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic'
   - PERMISSIONS_KERNEL_SNAP_ID: 'npm:@metamask/permissions-kernel-snap'
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
   - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
@@ -430,8 +426,10 @@ env:
   ###
   - DEEP_LINK_PUBLIC_KEY: BD8cWMMR2J33ax8hvSz8LNt99H3wGBPWuAgw+lsfWcBrw4ZtTHFnWyNkbgXglqJOoc+1OA5ZC4kW4GYU/QIeBNA=
 
-  # Enforce simulation balance changes by converting external transactions to delegations.
-  - ENABLE_ENFORCED_SIMULATIONS: false
+  # Force enforced simulations to apply whenever a transaction has balance
+  # changes, bypassing the trust signal check. Intended for local
+  # development and QA only; must remain false for production builds.
+  - FORCE_ENABLE_SIMULATIONS: false
 
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF
@@ -454,8 +452,8 @@ env:
   # production builds (including beta and Flask).
   - FORCE_PREINSTALLED_SNAPS: 'false'
 
-  # PNA25 (Privacy Notice)
-  - EXTENSION_UX_PNA25: true
-
   # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
+
+  # Passkey / Biometrics unlock
+  - PASSKEY_ENABLED: 'false'
