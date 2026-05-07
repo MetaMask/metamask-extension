@@ -3,7 +3,13 @@ import { useSelector } from 'react-redux';
 import type { Rule } from '@metamask/7715-permission-types';
 import type { Hex } from '@metamask/utils';
 import { isSnapId } from '@metamask/snaps-utils';
-import { Text, TextVariant } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
 
 import {
   ConfirmInfoRow,
@@ -45,12 +51,6 @@ import type {
   SchemaSection,
   TokenResolution,
 } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schema.types';
-import { Box } from '../../../../../../../components/component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../../../../../helpers/constants/design-system';
 import { NativeAmountRow } from './native-amount-row';
 import { TokenAmountRow } from './token-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
@@ -262,9 +262,8 @@ function renderElement(
         <React.Fragment key={index}>
           <ConfirmInfoRow label={t(element.labelKey)}>
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.flexEnd}
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.End}
             >
               {addresses.map((address) => (
                 <ConfirmInfoRowAddress
