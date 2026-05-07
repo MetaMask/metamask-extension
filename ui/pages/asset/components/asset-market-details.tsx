@@ -45,11 +45,11 @@ export const AssetMarketDetails = ({
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
   const { formatCurrencyCompact, formatCompact } = useFormatters();
-  const { type, symbol, chainId } = asset;
 
   const isEvm = isEvmChainId(asset.chainId);
-  const evmChainId = chainId as Hex;
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
+
+  const { type, symbol, chainId } = asset;
 
   const evmTokenExchangeRate =
     type === AssetType.native
@@ -74,7 +74,7 @@ export const AssetMarketDetails = ({
       : nonEvmConversionRates?.[address as CaipAssetType]?.marketData;
 
   const tokenMarketDetails = isEvm
-    ? evmMarketData[evmChainId]?.[address as Hex]
+    ? evmMarketData[chainId as Hex]?.[address as Hex]
     : nonEvmMarketData;
 
   const shouldDisplayMarketData =

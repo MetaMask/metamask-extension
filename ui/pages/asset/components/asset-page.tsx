@@ -122,10 +122,7 @@ const AssetPage = ({
     ? asset.chainId
     : formatChainIdToCaip(asset.chainId);
   const selectedAccount = useSelector((state) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(
-      state,
-      caipChainId as CaipChainId,
-    ),
+    getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
   );
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
   const accountForActions = selectedAccount ?? selectedInternalAccount;
@@ -143,11 +140,11 @@ const AssetPage = ({
 
   const isSigningEnabled = Boolean(
     accountForActions &&
-    (accountForActions.methods.includes(EthMethod.SignTransaction) ||
-      accountForActions.methods.includes(EthMethod.SignUserOperation) ||
-      accountForActions.methods.includes(SolMethod.SignTransaction) ||
-      accountForActions.methods.includes(BtcMethod.SignPsbt) ||
-      accountForActions.type === TrxAccountType.Eoa),
+      (accountForActions.methods.includes(EthMethod.SignTransaction) ||
+        accountForActions.methods.includes(EthMethod.SignUserOperation) ||
+        accountForActions.methods.includes(SolMethod.SignTransaction) ||
+        accountForActions.methods.includes(BtcMethod.SignPsbt) ||
+        accountForActions.type === TrxAccountType.Eoa),
   );
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
