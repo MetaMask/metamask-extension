@@ -1970,10 +1970,7 @@ async function mockSwapUSDCtoGOOGLON(mockServer: Mockttp, sseEnabled?: boolean) 
     });
 }
 
-async function mockSwapGOOGLONtoUSDC(
-  mockServer: Mockttp,
-  sseEnabled?: boolean,
-) {
+async function mockSwapGOOGLONtoUSDC(mockServer: Mockttp, sseEnabled?: boolean) {
   if (sseEnabled) {
     return await mockServer
       .forGet(/getQuoteStream/u)
@@ -2002,10 +1999,7 @@ async function mockSwapGOOGLONtoUSDC(
     });
 }
 
-async function mockSwapGOOGLONtoSPYON(
-  mockServer: Mockttp,
-  sseEnabled?: boolean,
-) {
+async function mockSwapGOOGLONtoSPYON(mockServer: Mockttp, sseEnabled?: boolean) {
   if (sseEnabled) {
     return await mockServer
       .forGet(/getQuoteStream/u)
