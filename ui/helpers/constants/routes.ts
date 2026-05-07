@@ -33,6 +33,10 @@ export const MANAGE_WALLET_RECOVERY_ROUTE =
   '/settings/security-and-password/manage-wallet-recovery';
 export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
   '/settings/security-and-password/password';
+export const SECURITY_REGISTER_PASSKEY_ROUTE =
+  '/settings/security-and-password/register-passkey';
+export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
+  '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const GENERAL_ROUTE = '/settings/general';
@@ -271,6 +275,16 @@ export const ROUTES = [
   {
     path: SECURITY_PASSWORD_CHANGE_V2_ROUTE,
     label: 'Password Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_REGISTER_PASSKEY_ROUTE,
+    label: 'Register Passkey',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_TURN_OFF_PASSKEY_ROUTE,
+    label: 'Turn Off Passkey',
     trackInAnalytics: true,
   },
   {

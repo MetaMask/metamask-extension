@@ -8170,9 +8170,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "디앱의 스마트 계정 요청"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "디앱이 일반 계정에 스마트 계정 기능을 요청하도록 허용합니다. 이미 스마트 계정인 계정에는 영향을 미치지 않습니다."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "같은 주소. 더욱 스마트한 기능."
   },
@@ -8805,12 +8802,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "지원 언어",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "설문조사에 참여하세요"
-  },
-  "surveyTitle": {
-    "message": "MetaMask의 미래를 그리세요"
   },
   "swap": {
     "message": "스왑"
