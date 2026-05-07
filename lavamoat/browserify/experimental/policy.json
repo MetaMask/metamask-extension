@@ -3717,7 +3717,7 @@
     },
     "@ensdomains/content-hash>multihashes>multibase>base-x": {
       "packages": {
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "base32-encode": {
@@ -3867,7 +3867,7 @@
         "ethereumjs-util>create-hash>cipher-base": true,
         "crypto-browserify>browserify-cipher>evp_bytestokey": true,
         "pumpify>inherits": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>browserify-cipher": {
@@ -3889,7 +3889,7 @@
       "packages": {
         "ethereumjs-util>bn.js": true,
         "crypto-browserify>randombytes": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>browserify-sign": {
@@ -3902,7 +3902,7 @@
         "pumpify>inherits": true,
         "crypto-browserify>public-encrypt>parse-asn1": true,
         "crypto-browserify>browserify-sign>readable-stream": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "browserify>browserify-zlib": {
@@ -3929,7 +3929,7 @@
       "packages": {
         "ethereumjs-util>ethereum-cryptography>bs58check>bs58": true,
         "ethereumjs-util>create-hash": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>bs58check": {
@@ -4057,7 +4057,7 @@
     "ethereumjs-util>create-hash>cipher-base": {
       "packages": {
         "pumpify>inherits": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "stream-browserify": true,
         "browserify>string_decoder": true
       }
@@ -4172,7 +4172,7 @@
         "ethereumjs-util>create-hash": true,
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>ripemd160": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js": true
       }
     },
@@ -4513,7 +4513,7 @@
         "ethers>@ethersproject/sha2>hash.js": true,
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "ganache>secp256k1": true
       }
     },
@@ -4600,7 +4600,7 @@
     "crypto-browserify>browserify-cipher>evp_bytestokey": {
       "packages": {
         "ethereumjs-util>create-hash>md5.js": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "extension-port-stream": {
@@ -4763,14 +4763,14 @@
       "packages": {
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>md5.js>hash-base>readable-stream": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160>hash-base": {
       "packages": {
         "pumpify>inherits": true,
         "ethereumjs-util>create-hash>ripemd160>hash-base>readable-stream": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>pbkdf2>ripemd160>hash-base": {
@@ -4797,7 +4797,7 @@
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "crypto-browserify": true,
         "ethereumjs-util>create-hash>ripemd160": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "ganache>secp256k1": true
       }
     },
@@ -5199,7 +5199,7 @@
       "packages": {
         "ethereumjs-util>create-hash>md5.js>hash-base": true,
         "pumpify>inherits": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "@storybook/addon-docs>remark-external-links>mdast-util-definitions": {
@@ -5421,7 +5421,7 @@
         "ethereumjs-util>ethereum-cryptography>browserify-aes": true,
         "crypto-browserify>browserify-cipher>evp_bytestokey": true,
         "crypto-browserify>pbkdf2": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "react-syntax-highlighter>refractor>parse-entities": {
@@ -5446,7 +5446,7 @@
         "crypto-browserify>pbkdf2>create-hash": true,
         "process": true,
         "crypto-browserify>pbkdf2>ripemd160": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js": true,
         "@ngraveio/bc-ur>sha.js>to-buffer": true
       }
@@ -5541,7 +5541,7 @@
         "ethereumjs-util>create-hash": true,
         "crypto-browserify>public-encrypt>parse-asn1": true,
         "crypto-browserify>randombytes": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "browserify>punycode": {
@@ -5591,7 +5591,7 @@
       },
       "packages": {
         "process": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>randomfill": {
@@ -5602,7 +5602,7 @@
       "packages": {
         "process": true,
         "crypto-browserify>randombytes": true,
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "react": {
@@ -6183,7 +6183,7 @@
         "setTimeout.apply": true
       }
     },
-    "mockttp>express>safe-buffer": {
+    "koa>content-disposition>safe-buffer": {
       "packages": {
         "browserify>buffer": true
       }
@@ -6279,7 +6279,7 @@
     "@ngraveio/bc-ur>sha.js": {
       "packages": {
         "pumpify>inherits": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "@ngraveio/bc-ur>sha.js>to-buffer": true
       }
     },
@@ -6376,7 +6376,7 @@
     },
     "browserify>string_decoder": {
       "packages": {
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "crypto-browserify>browserify-sign>readable-stream>string_decoder": {
@@ -6421,7 +6421,7 @@
     "@ngraveio/bc-ur>sha.js>to-buffer": {
       "packages": {
         "@lavamoat/webpack>json-stable-stringify>isarray": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "string.prototype.matchall>es-abstract>typed-array-buffer": true
       }
     },
