@@ -1,6 +1,5 @@
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
-import BigNumber from 'bignumber.js';
 import { captureException } from '../../../shared/lib/sentry';
 import type { Migrate } from './types';
 
@@ -25,7 +24,6 @@ type AssetsControllerShape = {
   customAssets: Record<string, string[]>;
 };
 
-const ZERO_AMOUNT = '0';
 const EVM_ASSET_PREFIX = 'eip155:';
 
 function defaultAssetsController() {
@@ -55,22 +53,17 @@ function defaultAssetsController() {
  * Per-account writes happen only for "relevant" accounts — the currently
  * selected account, plus any account that has at least one imported ERC-20
  * (TokensController) or non-native multichain asset (MultichainAssetsController).
- * Accounts that exist in storage but were never opened by the user (no imported
- * tokens, not selected) are skipped — the controller rebuilds their state at
- * runtime. Accounts holding only native assets are likewise skipped.
+ * Accounts that exist in storage but were never opened by the user are skipped.
  *
- * Per-account classification:
- * ERC-20 with non-zero balance lands in `assetsBalance`. ERC-20 with zero or
- * missing balance lands in `customAssets`. Non-EVM non-native tokens (e.g. SPL)
- * always land in `assetsBalance` with `'0'` for missing balances — the snap
- * manages discovery for these, so they are never user-imported in the
- * `customAssets` sense.
- *
- * Metadata is written to the global `assetsInfo` registry (keyed by CAIP-19),
- * so each migrated asset is immediately renderable in the UI.
+ * Migration behavior:
+ * Every migrated asset is added to `customAssets` for its account — never to
+ * `assetsBalance`. Balance state is rebuilt at runtime by the controller. The
+ * global `assetsInfo` registry is always populated with metadata for every
+ * encountered asset (keyed by CAIP-19), so each asset is immediately renderable
+ * in the UI.
  *
  * Idempotency: existing AssetsController entries are never overwritten; the
- * migration only fills gaps. Non-EVM and native entries previously written to
+ * migration only fills gaps. Native (slip44) entries previously written to
  * `customAssets` by an earlier buggy version are cleaned up.
  *
  * @param versionedData - The versioned data object to migrate.
@@ -280,58 +273,6 @@ function buildErc20AssetId(
 }
 
 /**
- * Convert a hex balance string into the decimal-applied display string the
- * unified `AssetsController` stores in `assetsBalance[accountId][assetId].amount`
- * (e.g. '2.029194191379609600' for 18-decimal DAI). Returns '0' on parse error.
- *
- * @param hex - The hex-encoded raw balance (smallest unit).
- * @param decimals - The token's decimal precision.
- */
-function hexBalanceToDisplayAmount(hex: string, decimals: number): string {
-  try {
-    const bn = new BigNumber(hex, 16);
-    if (bn.isNaN()) {
-      return ZERO_AMOUNT;
-    }
-    const safeDecimals = Math.max(decimals, 0);
-    const divisor = new BigNumber(10).pow(safeDecimals);
-    return bn.dividedBy(divisor).toFixed(safeDecimals);
-  } catch {
-    return ZERO_AMOUNT;
-  }
-}
-
-/**
- * Returns true when `hexBalance` represents a strictly positive integer.
- *
- * @param hexBalance - Candidate hex balance string.
- */
-function isNonZeroHexBalance(hexBalance: unknown): hexBalance is string {
-  if (typeof hexBalance !== 'string') {
-    return false;
-  }
-  try {
-    return BigInt(hexBalance) > 0n;
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Returns true when `amount` (a decimal string, possibly fractional) represents
- * a strictly positive value. Negative and non-finite values are rejected.
- *
- * @param amount - Candidate decimal amount string.
- */
-function isNonZeroAmount(amount: unknown): amount is string {
-  if (typeof amount !== 'string') {
-    return false;
-  }
-  const n = Number.parseFloat(amount);
-  return Number.isFinite(n) && n > 0;
-}
-
-/**
  * Derive the AssetsController token type from a CAIP-19 asset namespace.
  *
  * Mappings: erc20 → 'erc20', spl → 'spl', slip44 → 'native'.
@@ -355,16 +296,6 @@ function assetTypeFromCaip19(assetId: string): AssetType {
     default:
       return 'spl';
   }
-}
-
-/**
- * Returns true when the assetId belongs to a non-EVM chain (i.e. anything not
- * prefixed with `eip155:`).
- *
- * @param assetId - CAIP-19 asset identifier.
- */
-function isNonEvmAssetId(assetId: string): boolean {
-  return !assetId.startsWith(EVM_ASSET_PREFIX);
 }
 
 /**
@@ -419,33 +350,8 @@ function writeAssetInfoIfAbsent(
 }
 
 /**
- * Write a per-account balance entry, preserving any pre-existing entry. If the
- * asset was previously stored in `customAssets`, remove it from there to keep
- * the two maps mutually exclusive.
- *
- * @param ac - The AssetsController view.
- * @param accountId - The account UUID.
- * @param assetId - CAIP-19 asset identifier.
- * @param amount - Decimal amount string.
- */
-function writeAssetBalance(
-  ac: AssetsControllerShape,
-  accountId: string,
-  assetId: string,
-  amount: string,
-): boolean {
-  ac.assetsBalance[accountId] ??= {};
-  if (ac.assetsBalance[accountId][assetId]) {
-    return false;
-  }
-  ac.assetsBalance[accountId][assetId] = { amount };
-  removeFromCustomAssets(ac, accountId, assetId);
-  return true;
-}
-
-/**
  * Add `assetId` to `customAssets[accountId]` if it's not already tracked in
- * `assetsBalance` or already present in `customAssets`.
+ * `assetsBalance` (mutual exclusion) and not already present in `customAssets`.
  *
  * @param ac - The AssetsController view.
  * @param accountId - The account UUID.
@@ -468,33 +374,9 @@ function addCustomAsset(
 }
 
 /**
- * Remove an asset ID from `customAssets[accountId]` if present.
- *
- * @param ac - The AssetsController view.
- * @param accountId - The account UUID.
- * @param assetId - CAIP-19 asset identifier.
- */
-function removeFromCustomAssets(
-  ac: AssetsControllerShape,
-  accountId: string,
-  assetId: string,
-): void {
-  const list = ac.customAssets[accountId];
-  if (!list) {
-    return;
-  }
-  const idx = list.indexOf(assetId);
-  if (idx >= 0) {
-    list.splice(idx, 1);
-  }
-}
-
-/**
- * Strip entries from `customAssets` that should not be there:
- * - Non-EVM (snap-discovered) assets — always tracked, never user-imported.
- * - Native assets (slip44) — populated by the controller at runtime.
- *
- * These may have been added by an earlier buggy version of this migration.
+ * Strip native (slip44) entries from `customAssets` — those are populated by
+ * the controller at runtime and should never appear in `customAssets`. They
+ * may have been added by an earlier buggy version of this migration.
  *
  * @param ac - The AssetsController view.
  */
@@ -504,9 +386,7 @@ function cleanupCustomAssets(ac: AssetsControllerShape): boolean {
     if (!Array.isArray(assetIds)) {
       continue;
     }
-    const filtered = assetIds.filter(
-      (id) => !isNonEvmAssetId(id) && !isNativeAssetId(id),
-    );
+    const filtered = assetIds.filter((id) => !isNativeAssetId(id));
     if (filtered.length !== assetIds.length) {
       ac.customAssets[accountId] = filtered;
       changed = true;
@@ -516,20 +396,6 @@ function cleanupCustomAssets(ac: AssetsControllerShape): boolean {
 }
 
 // ─── EVM migration ─────────────────────────────────────────────────────────────
-
-type EvmTokenBalances = Record<string, Record<string, Record<string, string>>>;
-
-/**
- * Read `TokenBalancesController.tokenBalances` or `{}` when absent / malformed.
- *
- * Shape: balances[accountAddressLowercase][chainIdHex][tokenAddressChecksummed] = hexBalance
- *
- * @param data - The migration data root.
- */
-function readEvmTokenBalances(data: Record<string, unknown>): EvmTokenBalances {
-  const balances = readPath(data, ['TokenBalancesController', 'tokenBalances']);
-  return isObject(balances) ? (balances as EvmTokenBalances) : {};
-}
 
 /**
  * Build an `AssetInfo` from a raw TokensController token entry.
@@ -557,7 +423,8 @@ function buildEvmAssetInfo(token: Record<string, unknown>): AssetInfo {
 }
 
 /**
- * Migrate EVM tokens from TokensController + TokenBalancesController.
+ * Migrate EVM tokens from TokensController. Each token's metadata is written
+ * to `assetsInfo`; for relevant accounts, the asset is added to `customAssets`.
  *
  * @param data - The migration data root.
  * @param ac - The AssetsController view.
@@ -575,7 +442,6 @@ function migrateEvmTokens(
     return false;
   }
 
-  const tokenBalances = readEvmTokenBalances(data);
   let changed = false;
 
   for (const [hexChainId, accountTokens] of Object.entries(allTokens)) {
@@ -588,15 +454,9 @@ function migrateEvmTokens(
         continue;
       }
 
-      const accountAddress = rawAddress.toLowerCase();
-      const accountId = addressToId[accountAddress];
+      const accountId = addressToId[rawAddress.toLowerCase()];
       const accountIsRelevant =
         Boolean(accountId) && relevantAccountIds.has(accountId);
-
-      const chainBalances =
-        (isObject(tokenBalances[accountAddress]) &&
-          tokenBalances[accountAddress][hexChainId]) ||
-        {};
 
       for (const token of tokens) {
         if (
@@ -616,7 +476,7 @@ function migrateEvmTokens(
           continue;
         }
 
-        // assetsInfo is a global registry; write regardless of accountId.
+        // assetsInfo is a global registry; always written.
         if (writeAssetInfoIfAbsent(ac, assetId, buildEvmAssetInfo(token))) {
           changed = true;
         }
@@ -626,17 +486,7 @@ function migrateEvmTokens(
           continue;
         }
 
-        const checksummed = toChecksumHexAddress(token.address);
-        const hexBalance = chainBalances[checksummed];
-        const decimals =
-          typeof token.decimals === 'number' ? token.decimals : 0;
-
-        if (isNonZeroHexBalance(hexBalance)) {
-          const amount = hexBalanceToDisplayAmount(hexBalance, decimals);
-          if (writeAssetBalance(ac, accountId, assetId, amount)) {
-            changed = true;
-          }
-        } else if (addCustomAsset(ac, accountId, assetId)) {
+        if (addCustomAsset(ac, accountId, assetId)) {
           changed = true;
         }
       }
@@ -648,34 +498,25 @@ function migrateEvmTokens(
 
 // ─── Non-EVM migration ─────────────────────────────────────────────────────────
 
-type SnapBalances = Record<
-  string,
-  Record<string, { amount: string; unit: string }>
->;
-
 /**
- * Read `MultichainBalancesController.balances` or `{}` when absent / malformed.
- *
- * @param data - The migration data root.
- */
-function readSnapBalances(data: Record<string, unknown>): SnapBalances {
-  const balances = readPath(data, ['MultichainBalancesController', 'balances']);
-  return isObject(balances) ? (balances as SnapBalances) : {};
-}
-
-/**
- * Build an `AssetInfo` from a snaps-sdk FungibleAssetMetadata entry, or
- * return null when the metadata is missing / non-fungible.
+ * Build an `AssetInfo` from a snaps-sdk FungibleAssetMetadata entry, falling
+ * back to a minimal placeholder (type derived from CAIP-19, empty symbol/name,
+ * 0 decimals) when metadata is missing or non-fungible. This guarantees that
+ * `assetsInfo` is populated for every encountered asset.
  *
  * @param assetId - CAIP-19 asset identifier.
- * @param snapMeta - Raw snap metadata entry.
+ * @param snapMeta - Raw snap metadata entry (possibly missing).
  */
-function buildNonEvmAssetInfo(
-  assetId: string,
-  snapMeta: unknown,
-): AssetInfo | null {
+function buildNonEvmAssetInfo(assetId: string, snapMeta: unknown): AssetInfo {
+  const fallback: AssetInfo = {
+    type: assetTypeFromCaip19(assetId),
+    symbol: '',
+    name: '',
+    decimals: 0,
+  };
+
   if (!isObject(snapMeta) || snapMeta.fungible !== true) {
-    return null;
+    return fallback;
   }
 
   const units = Array.isArray(snapMeta.units) ? snapMeta.units : [];
@@ -704,17 +545,10 @@ function buildNonEvmAssetInfo(
 }
 
 /**
- * Migrate non-EVM assets from MultichainAssetsController +
- * MultichainBalancesController.
- *
- * Non-EVM non-native assets are snap-discovered and always tracked: they are
- * written to `assetsBalance` (with `'0'` for missing/zero balance) and never
- * to `customAssets`. Native (slip44) assets are skipped — the controller
- * builds them at runtime.
- *
- * Per-account writes are restricted to relevant accounts (selected, or with
- * imported tokens) so we don't pollute state with assets for accounts the
- * user has never opened.
+ * Migrate non-EVM assets from MultichainAssetsController. Each asset's
+ * metadata is written to `assetsInfo`; for relevant accounts, the asset is
+ * added to `customAssets`. Native (slip44) assets are skipped — built at
+ * runtime.
  *
  * @param data - The migration data root.
  * @param ac - The AssetsController view.
@@ -738,7 +572,6 @@ function migrateNonEvmAssets(
     'assetsMetadata',
   ]);
   const metadata = isObject(snapsMetadata) ? snapsMetadata : {};
-  const balances = readSnapBalances(data);
 
   let changed = false;
 
@@ -748,9 +581,6 @@ function migrateNonEvmAssets(
     }
 
     const accountIsRelevant = relevantAccountIds.has(accountId);
-    const accountBalances = isObject(balances[accountId])
-      ? balances[accountId]
-      : {};
 
     for (const assetId of assetIds) {
       if (typeof assetId !== 'string' || !assetId) {
@@ -761,9 +591,9 @@ function migrateNonEvmAssets(
         continue;
       }
 
-      // Global metadata write — unaffected by per-account relevance.
+      // assetsInfo is always populated, even when snap metadata is missing.
       const info = buildNonEvmAssetInfo(assetId, metadata[assetId]);
-      if (info && writeAssetInfoIfAbsent(ac, assetId, info)) {
+      if (writeAssetInfoIfAbsent(ac, assetId, info)) {
         changed = true;
       }
 
@@ -771,14 +601,7 @@ function migrateNonEvmAssets(
         continue;
       }
 
-      const balanceEntry = accountBalances[assetId];
-      const rawAmount =
-        isObject(balanceEntry) && typeof balanceEntry.amount === 'string'
-          ? balanceEntry.amount
-          : undefined;
-      const amount = isNonZeroAmount(rawAmount) ? rawAmount : ZERO_AMOUNT;
-
-      if (writeAssetBalance(ac, accountId, assetId, amount)) {
+      if (addCustomAsset(ac, accountId, assetId)) {
         changed = true;
       }
     }
