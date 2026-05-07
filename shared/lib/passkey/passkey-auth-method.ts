@@ -6,7 +6,9 @@ import { OS, type Os } from '../../constants/app';
  * Windows and macOS are distinguished; all other platforms map to {@link OS.OTHER}.
  */
 function detectOsForPasskey(): Os {
-  const osName = Bowser.getParser(window.navigator.userAgent).getOSName();
+  const osName = Bowser.getParser(
+    globalThis.navigator.userAgent,
+  ).getOSName();
   if (osName === 'Windows') {
     return OS.WINDOWS;
   }
@@ -41,7 +43,7 @@ type GetPasskeyAuthMethodKeyOptions = {
 /**
  * Returns the i18n key for the passkey auth-method noun shown in passkey copy.
  *
- * Uses {@link detectOsForPasskey} internally (Bowser on `window.navigator`).
+ * Uses {@link detectOsForPasskey} internally (Bowser on `globalThis.navigator`).
  *
  * Resolution:
  * - Windows: always `passkeyAuthMethodWindowsHello` ("Windows Hello").
