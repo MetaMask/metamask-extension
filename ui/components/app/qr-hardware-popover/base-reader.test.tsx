@@ -16,7 +16,7 @@ import {
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import type { BaseReaderProps } from './base-reader.types';
 import BaseReader from './base-reader';
-import EnhancedReader from './enhanced-reader';
+import EnhancedReaderNimiq from './enhanced-reader-nimiq';
 
 jest.mock('../../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
@@ -36,7 +36,7 @@ jest.mock('../../../../shared/lib/browser-runtime.utils', () => ({
 
 jest.mock('../../../helpers/utils/webcam-utils');
 
-jest.mock('./enhanced-reader');
+jest.mock('./enhanced-reader-nimiq');
 
 const mockGetEnvironmentType = jest.mocked(getEnvironmentType);
 const mockGetChromiumExtensionCameraSiteSettingsUrl = jest.mocked(
@@ -46,7 +46,7 @@ const mockIsFirefoxBrowser = jest.mocked(isFirefoxBrowser);
 const mockGetMozExtensionOriginForDisplay = jest.mocked(
   getMozExtensionOriginForDisplay,
 );
-const mockEnhancedReader = jest.mocked(EnhancedReader);
+const mockEnhancedReader = jest.mocked(EnhancedReaderNimiq);
 
 const mockCheckStatus = jest.mocked(WebcamUtils.checkStatus);
 const mockQueryCameraPermission = jest.mocked(
@@ -119,7 +119,7 @@ describe('BaseReader', () => {
         );
       }, [handleScan]);
       return null;
-    }) as unknown as typeof EnhancedReader);
+    }) as unknown as typeof EnhancedReaderNimiq);
     renderWithProvider(<BaseReader {...defaultProps} />);
 
     expect(
@@ -712,7 +712,7 @@ describe('BaseReader', () => {
         handleScan('not-a-valid-ur-payload');
       }, [handleScan]);
       return null;
-    }) as unknown as typeof EnhancedReader);
+    }) as unknown as typeof EnhancedReaderNimiq);
 
     renderWithProvider(<BaseReader {...defaultProps} isReadingWallet />);
 
@@ -736,7 +736,7 @@ describe('BaseReader', () => {
         handleScan('not-a-valid-ur-payload');
       }, [handleScan]);
       return null;
-    }) as unknown as typeof EnhancedReader);
+    }) as unknown as typeof EnhancedReaderNimiq);
 
     renderWithProvider(
       <BaseReader {...defaultProps} isReadingWallet={false} />,

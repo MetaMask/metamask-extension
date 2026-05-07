@@ -16008,6 +16008,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/emscripten@npm:^1.41.5":
+  version: 1.41.5
+  resolution: "@types/emscripten@npm:1.41.5"
+  checksum: 10/60dfcced39b2d0c94f31907c5cf5d97fe06ed35ed6cb134650a1a96bae861302722d4a6f459b484ea09588cde70cbcc034974454a746be3ce9688b52398d2953
+  languageName: node
+  linkType: hard
+
 "@types/escodegen@npm:^0.0.6":
   version: 0.0.6
   resolution: "@types/escodegen@npm:0.0.6"
@@ -16549,6 +16556,13 @@ __metadata:
   version: 2.4.0
   resolution: "@types/normalize-package-data@npm:2.4.0"
   checksum: 10/f98b30d59e968be565846347b6ec34dd5ee709f85eb440d294e359e67397af8d3e0211e51ba2f1890783df49802e160f04ce438f6816814923b92d1a62e831c8
+  languageName: node
+  linkType: hard
+
+"@types/offscreencanvas@npm:^2019.6.4":
+  version: 2019.7.3
+  resolution: "@types/offscreencanvas@npm:2019.7.3"
+  checksum: 10/53a394a65ae08eddff6e0a2a8db72abecc94f41fc8fee166e8900075d3c1ca32540ddf5b4836c37357d53a0253a03fea4d781b2db543e3f08bc1cdc2dc0fefb5
   languageName: node
   linkType: hard
 
@@ -19984,6 +19998,15 @@ __metadata:
   version: 4.0.4
   resolution: "balanced-match@npm:4.0.4"
   checksum: 10/fb07bb66a0959c2843fc055838047e2a95ccebb837c519614afb067ebfdf2fa967ca8d712c35ced07f2cd26fc6f07964230b094891315ad74f11eba3d53178a0
+  languageName: node
+  linkType: hard
+
+"barcode-detector@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "barcode-detector@npm:3.1.2"
+  dependencies:
+    zxing-wasm: "npm:3.0.2"
+  checksum: 10/45f0bbb15750feaada6b4198d7d5ed62afae5b9bdbb8d829525562d1597f4a1f054627e4ad7eaed028449786feb5895c9682b187f4cc63c0acbbe55d56900b05
   languageName: node
   linkType: hard
 
@@ -34301,6 +34324,7 @@ __metadata:
     axios: "patch:axios@npm%3A1.13.5#~/.yarn/patches/axios-npm-1.13.5-ed8865f696.patch"
     babel-plugin-react-compiler: "npm:^1.0.0"
     babelify: "npm:^10.0.0"
+    barcode-detector: "npm:^3.1.2"
     base32-encode: "npm:^1.2.0"
     base64-js: "npm:^1.5.1"
     bify-module-groups: "npm:^2.0.0"
@@ -34438,6 +34462,7 @@ __metadata:
     prop-types: "npm:^15.6.1"
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
+    qr-scanner: "npm:^1.4.2"
     qrcode-generator: "npm:^2.0.4"
     qrcode.react: "npm:^4.2.0"
     randomcolor: "npm:^0.5.4"
@@ -38305,6 +38330,15 @@ __metadata:
   version: 1.1.5
   resolution: "pvutils@npm:1.1.5"
   checksum: 10/9a5a71603c72bf9ea3a4501e8251e3f7a56026ed059bf63a18bd9a30cac6c35cc8250b39eb6291c1cb204cdeb6660663ab9bb2c74e85a512919bb2d614e340ea
+  languageName: node
+  linkType: hard
+
+"qr-scanner@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "qr-scanner@npm:1.4.2"
+  dependencies:
+    "@types/offscreencanvas": "npm:^2019.6.4"
+  checksum: 10/21e09c3c6d5928f56cac243d0a50ce29a9c25c4cd5b31c74b1579d232622c3944777406b652e503cd457a983e3f6806bf2d89ba387f90f841b77f1f3b119fdd0
   languageName: node
   linkType: hard
 
@@ -43102,6 +43136,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tagged-tag@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "tagged-tag@npm:1.0.0"
+  checksum: 10/e37653df3e495daa7ea7790cb161b810b00075bba2e4d6c93fb06a709e747e3ae9da11a120d0489833203926511b39e038a2affbd9d279cfb7a2f3fcccd30b5d
+  languageName: node
+  linkType: hard
+
 "tailwind-merge@npm:^2.0.0":
   version: 2.6.0
   resolution: "tailwind-merge@npm:2.6.0"
@@ -44020,6 +44061,15 @@ __metadata:
   version: 3.13.1
   resolution: "type-fest@npm:3.13.1"
   checksum: 10/9a8a2359ada34c9b3affcaf3a8f73ee14c52779e89950db337ce66fb74c3399776c697c99f2532e9b16e10e61cfdba3b1c19daffb93b338b742f0acd0117ce12
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^5.5.0":
+  version: 5.6.0
+  resolution: "type-fest@npm:5.6.0"
+  dependencies:
+    tagged-tag: "npm:^1.0.0"
+  checksum: 10/2cc7a510f46a538af7a365ed50cee10e51a69bd353ca66c2a432e172b90ff12efff9ba59c7ba493d6361d07fd298c84945b9e4481ab63f85a29860c0b0430233
   languageName: node
   linkType: hard
 
@@ -46864,5 +46914,17 @@ __metadata:
   version: 0.1.5
   resolution: "zstd-codec@npm:0.1.5"
   checksum: 10/deee384c29129e3ed86b4f2ac4dc415fd8dad8b62b12ad07cc092c89481bee362477478c6179f2beb252bec67b57120fad8fd84f0a7f7b5914a77e24b3608094
+  languageName: node
+  linkType: hard
+
+"zxing-wasm@npm:3.0.2":
+  version: 3.0.2
+  resolution: "zxing-wasm@npm:3.0.2"
+  dependencies:
+    "@types/emscripten": "npm:^1.41.5"
+    type-fest: "npm:^5.5.0"
+  peerDependencies:
+    "@types/emscripten": ">=1.39.6"
+  checksum: 10/6853b8cd23488b0b4974bd0b2684db222b39ce32cb895aa9b33d9c2ff59815977c4d1b1766e6c93741ca2ed08b1d9429ba9b8a8a0eba1193fbe2d5ac12682cc5
   languageName: node
   linkType: hard
