@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../pages/header-navbar';
 import SettingsPage from '../pages/settings/settings-page';
-import DevelopOptions from '../pages/developer-options-page';
+import DebugPage from '../pages/debug-page';
 
 /**
  * Trigger a UI crash.
@@ -15,7 +15,7 @@ export const triggerCrash = async (driver: Driver): Promise<void> => {
   await settingsPage.checkPageIsLoaded();
   await settingsPage.goToDebugSettings();
 
-  const developOptionsPage = new DevelopOptions(driver);
-  await developOptionsPage.checkPageIsLoaded();
-  await developOptionsPage.clickGenerateCrashButton();
+  const debugPage = new DebugPage(driver);
+  await debugPage.checkPageIsLoaded();
+  await debugPage.clickGenerateCrashButton();
 };

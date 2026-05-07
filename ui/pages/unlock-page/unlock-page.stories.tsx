@@ -43,6 +43,7 @@ DefaultStory.args = {
     participateInMetaMetrics: true,
   }),
   passkeyAutoUnlockSuppressed: false,
+  mustDeferPasskeyToBrowserTab: false,
 };
 
 DefaultStory.storyName = 'Default';

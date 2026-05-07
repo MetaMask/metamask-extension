@@ -555,10 +555,10 @@ export function userStorageHostMock(server: Mockttp): Promise<MockedEndpoint> {
   const existingInterceptor = (server as unknown as Record<string, unknown>)
     .__passThroughInterceptor as PassThroughInterceptor | undefined;
   setPassThroughInterceptor(server, (req) => {
-    if (
-      req.method === 'GET' &&
-      req.url.includes('user-storage.api.cx.metamask.io')
-    ) {
+    if (req.url.includes('user-storage.api.cx.metamask.io')) {
+      if (req.method === 'PUT' || req.method === 'DELETE') {
+        return { response: { statusCode: 204 } };
+      }
       return { response: { statusCode: 200, json: null } };
     }
     return existingInterceptor?.(req) ?? null;

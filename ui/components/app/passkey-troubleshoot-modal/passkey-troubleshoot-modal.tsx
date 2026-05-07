@@ -26,12 +26,16 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
+export type PasskeyTroubleshootModalMode = 'unlock' | 'verify';
+
 type PasskeyTroubleshootModalProps = Readonly<{
+  mode: PasskeyTroubleshootModalMode;
   onClose: () => void;
   onOpenFullScreen: () => void;
 }>;
 
 export default function PasskeyTroubleshootModal({
+  mode,
   onClose,
   onOpenFullScreen,
 }: PasskeyTroubleshootModalProps) {
@@ -84,7 +88,11 @@ export default function PasskeyTroubleshootModal({
             color={TextColor.TextDefault}
             textAlign={TextAlign.Center}
           >
-            {t('passkeyTroubleshootModalTitle')}
+            {t(
+              mode === 'unlock'
+                ? 'passkeyTroubleshootUnlockModalTitle'
+                : 'passkeyTroubleshootVerifyModalTitle',
+            )}
           </Text>
         </ModalHeader>
         <Box paddingHorizontal={4}>
