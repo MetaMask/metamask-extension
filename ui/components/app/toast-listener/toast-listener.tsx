@@ -6,7 +6,7 @@ import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import { useSmartTransactionToasts } from './useSmartTransactionToasts';
 
-const SmartTransactionToastListener = () => {
+const SmartTransactionToast = () => {
   useSmartTransactionToasts();
 
   return null;
@@ -25,8 +25,8 @@ export function ToastListener() {
 
   return (
     <>
+      {transactionToastEnabled ? <SmartTransactionToast /> : null}
       {isUnlocked ? <PerpsDepositToast /> : null}
-      {transactionToastEnabled ? <SmartTransactionToastListener /> : null}
     </>
   );
 }

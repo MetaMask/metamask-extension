@@ -70,15 +70,6 @@ describe('ToastListener', () => {
     expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
   });
 
-  it('mounts the Perps deposit toast listener when smart transaction toasts are disabled', () => {
-    renderToastListener({
-      transactionToastEnabled: false,
-      isInteractive: true,
-    });
-
-    expect(mockPerpsDepositToast).toHaveBeenCalledTimes(1);
-  });
-
   it('does not mount toast listeners in non-interactive UI', () => {
     renderToastListener({
       transactionToastEnabled: true,

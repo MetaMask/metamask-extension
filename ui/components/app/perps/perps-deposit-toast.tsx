@@ -64,7 +64,7 @@ export function PerpsDepositToast() {
       }
 
       submitRequestToBackground('perpsClearDepositResult', []).catch(
-        () => undefined,
+        // Non-blocking: toast is already dismissed locally
       );
       return;
     }
