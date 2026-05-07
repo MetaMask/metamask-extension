@@ -9,11 +9,22 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
 import * as Actions from '../../../store/actions';
 import CreatePassword from './create-password';
+
+jest.mock('../../../../shared/lib/passkey', () => ({
+  isWebAuthnSupported: jest.fn().mockReturnValue(true),
+}));
+
+jest.mock('../../../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment'),
+  getIsPasskeyFeatureEnabled: jest.fn().mockReturnValue(true),
+}));
 
 const mockUseNavigate = jest.fn();
 
@@ -44,7 +55,21 @@ describe('Onboarding Create Password', () => {
 
   describe('Initialized State Conditionals with keyrings and firstTimeFlowType', () => {
     it('should route to secure your wallet when keyring is present but not imported first time flow type', () => {
-      const mockStore = configureMockStore([thunk])(initializedMockState);
+      const createFirstTimeFlowWithPasskeyState = {
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          passkeyRecord: {
+            credentialId: 'cred',
+            derivationMethod: 'prf',
+            wrappedEncryptionKey: 'e30',
+            iv: 'e30',
+          },
+        },
+      };
+      const mockStore = configureMockStore([thunk])(
+        createFirstTimeFlowWithPasskeyState,
+      );
 
       renderWithProvider(
         <CreatePassword
@@ -60,13 +85,14 @@ describe('Onboarding Create Password', () => {
       );
     });
 
-    it('should route to metametrics when keyring is present and imported first time flow type', () => {
+    it('should route to setup passkey when keyring is present and imported first time flow type and passkey is not registered', () => {
       const importFirstTimeFlowState = {
         ...initializedMockState,
         metamask: {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
           participateInMetaMetrics: null,
+          passkeyRecord: null,
         },
       };
       const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
@@ -79,18 +105,56 @@ describe('Onboarding Create Password', () => {
         />,
         mockStore,
       );
-      expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
-        replace: true,
-      });
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_SETUP_PASSKEY_ROUTE,
+        { replace: true },
+      );
     });
 
-    it('should redirect to onboarding completion when user has imported SRP and set participating in metametrics', () => {
+    it('should route to setup passkey when keyring is present and imported first time flow type (passkey already registered)', () => {
+      const importFirstTimeFlowState = {
+        ...initializedMockState,
+        metamask: {
+          ...initializedMockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.import,
+          participateInMetaMetrics: null,
+          passkeyRecord: {
+            credentialId: 'cred',
+            derivationMethod: 'prf',
+            wrappedEncryptionKey: 'e30',
+            iv: 'e30',
+          },
+        },
+      };
+      const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
+
+      renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        ONBOARDING_SETUP_PASSKEY_ROUTE,
+        { replace: true },
+      );
+    });
+
+    it('should route to setup passkey when user has imported SRP, metametrics set, and passkey already registered', () => {
       const importFirstTimeFlowState = {
         ...initializedMockState,
         metamask: {
           ...initializedMockState.metamask,
           firstTimeFlowType: FirstTimeFlowType.import,
           participateInMetaMetrics: true,
+          passkeyRecord: {
+            credentialId: 'cred',
+            derivationMethod: 'prf',
+            wrappedEncryptionKey: 'e30',
+            iv: 'e30',
+          },
         },
       };
       const mockStore = configureMockStore([thunk])(importFirstTimeFlowState);
@@ -104,7 +168,7 @@ describe('Onboarding Create Password', () => {
       );
 
       expect(mockUseNavigate).toHaveBeenCalledWith(
-        ONBOARDING_COMPLETION_ROUTE,
+        ONBOARDING_SETUP_PASSKEY_ROUTE,
         { replace: true },
       );
     });
@@ -387,6 +451,52 @@ describe('Onboarding Create Password', () => {
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_SETUP_PASSKEY_ROUTE,
+          {
+            replace: true,
+          },
+        );
+      });
+    });
+
+    it('navigates to review SRP when passkey feature is unavailable after wallet creation', async () => {
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.create,
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      expect(mockCreateNewAccount).toHaveBeenCalled();
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
           ONBOARDING_REVIEW_SRP_ROUTE,
           {
             replace: true,
@@ -453,6 +563,47 @@ describe('Onboarding Create Password', () => {
         password,
         props.secretRecoveryPhrase,
       );
+
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalledWith(
+          ONBOARDING_SETUP_PASSKEY_ROUTE,
+          {
+            replace: true,
+          },
+        );
+      });
+    });
+
+    it('navigates to MetaMetrics after import when passkey feature is unavailable', async () => {
+      jest.mocked(getIsPasskeyFeatureEnabled).mockReturnValueOnce(false);
+      const mockStore = configureMockStore([thunk])(importMockState);
+
+      const props = {
+        importWithRecoveryPhrase: jest.fn().mockResolvedValue(undefined),
+        secretRecoveryPhrase: 'SRP',
+        createNewAccount: jest.fn().mockResolvedValue(''),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword {...props} />,
+        mockStore,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
