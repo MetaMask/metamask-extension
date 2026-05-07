@@ -193,6 +193,7 @@ export const getSmartTransactionsEnabled = (
 ): boolean => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = (chainId || getCurrentChainId(state)) as Hex;
+  // @ts-expect-error Smart transaction selector types does not match controller state
   const supportedAccount = accountSupportsSmartTx(state);
   const featureFlags = getSmartTransactionsFeatureFlagsForChain(
     state,

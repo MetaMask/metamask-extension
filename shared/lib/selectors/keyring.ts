@@ -1,31 +1,19 @@
 import { KeyringType } from '../../constants/keyring';
+import { AccountsState, getSelectedInternalAccount } from './accounts';
 
-type Keyring = { type: string } | null | undefined;
+type Keyring = { type: string };
 
-// Structurally minimal state shape for keyring-derived helpers. Only requires
-// the path actually read (`...metadata?.keyring?.type`), so any state that
-// includes the selected internal account's keyring type — full
-// `AccountsControllerState`-typed UI state, or the custom subset declared by
-// `SmartTransactionsMetaMaskState` — is assignable without a cast.
-export type KeyringSelectorState = {
-  metamask: {
-    internalAccounts: {
-      selectedAccount: string;
-      accounts: Record<string, { metadata?: { keyring?: { type?: string } } }>;
-    };
-  };
-};
+export function getCurrentKeyring(state: AccountsState) {
+  const internalAccount = getSelectedInternalAccount(state);
 
-export function getCurrentKeyring(state: KeyringSelectorState): Keyring {
-  const accountId = state.metamask.internalAccounts.selectedAccount;
-  const account = state.metamask.internalAccounts.accounts[accountId];
-  if (!account?.metadata?.keyring?.type) {
+  if (!internalAccount) {
     return null;
   }
-  return { type: account.metadata.keyring.type };
+
+  return internalAccount.metadata?.keyring;
 }
 
-export function isHardwareWallet(state: KeyringSelectorState): boolean {
+export function isHardwareWallet(state: AccountsState): boolean {
   const keyring = getCurrentKeyring(state);
   return Boolean(keyring?.type?.includes('Hardware'));
 }
@@ -36,18 +24,27 @@ export function isHardwareWallet(state: KeyringSelectorState): boolean {
  * @param state - The state object.
  */
 export function getHardwareWalletType(
-  state: KeyringSelectorState,
+  state: AccountsState,
 ): string | undefined {
   const keyring = getCurrentKeyring(state);
   return isHardwareWallet(state) ? keyring?.type : undefined;
 }
 
-export function getAccountTypeForKeyring(keyring: Keyring): string {
+export function getAccountType(state: AccountsState): string {
+  const currentKeyring = getCurrentKeyring(state);
+  return getAccountTypeForKeyring(currentKeyring);
+}
+
+export function getAccountTypeForKeyring(
+  keyring: Keyring | null | undefined,
+): string {
   if (!keyring) {
     return '';
   }
 
-  switch (keyring.type) {
+  const { type } = keyring;
+
+  switch (type) {
     case KeyringType.trezor:
     case KeyringType.oneKey:
     case KeyringType.ledger:
@@ -63,17 +60,12 @@ export function getAccountTypeForKeyring(keyring: Keyring): string {
   }
 }
 
-export function getAccountType(state: KeyringSelectorState): string {
-  const currentKeyring = getCurrentKeyring(state);
-  return getAccountTypeForKeyring(currentKeyring);
-}
-
 /**
  * Checks if the account supports smart transactions.
  *
  * @param state - The state object.
  */
-export function accountSupportsSmartTx(state: KeyringSelectorState): boolean {
+export function accountSupportsSmartTx(state: AccountsState): boolean {
   const accountType = getAccountType(state);
   return Boolean(accountType !== 'snap');
 }
