@@ -692,6 +692,7 @@
     },
     "ui/pages/bridge/prepare/prepare-bridge-page.test.tsx": {
       "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: Warning: A component is changing": 2,
       "µWebSockets: Compatibility warnings": 1,
@@ -1049,6 +1050,9 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/account-flow-row/account-flow-row.test.tsx": {
+      "Reselect: Identity function warnings": 3
+    },
+    "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/rows/claimable-bonus-row/claimable-bonus-row.test.tsx": {
