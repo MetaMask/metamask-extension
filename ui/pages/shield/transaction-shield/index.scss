@@ -1,3 +1,5 @@
+@use "design-system";
+
 .transaction-shield-page {
   @include design-system.screen-sm-min {
     padding: 16px;

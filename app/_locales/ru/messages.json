@@ -2800,10 +2800,6 @@
     "message": "Код: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Сведения об ошибке",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Ошибка при получении списка безопасных блокчейнов. Продолжайте с осторожностью."
   },
@@ -8691,9 +8687,6 @@
   "stillConnectingTo": {
     "message": "Все еще подключаюсь к $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "Все еще получаете это сообщение?"
   },
   "storageErrorAction": {
     "message": "Создать резервную копию секретной фразы для восстановления"
