@@ -115,11 +115,11 @@ export function txParamsAreDappSuggested(
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       gasPrice === transactionMeta?.dappSuggestedGasFees?.gasPrice) ||
-      (maxPriorityFeePerGas &&
-        maxFeePerGas &&
-        transactionMeta?.dappSuggestedGasFees?.maxPriorityFeePerGas ===
-          maxPriorityFeePerGas &&
-        transactionMeta?.dappSuggestedGasFees?.maxFeePerGas === maxFeePerGas),
+    (maxPriorityFeePerGas &&
+      maxFeePerGas &&
+      transactionMeta?.dappSuggestedGasFees?.maxPriorityFeePerGas ===
+        maxPriorityFeePerGas &&
+      transactionMeta?.dappSuggestedGasFees?.maxFeePerGas === maxFeePerGas),
   );
 }
 

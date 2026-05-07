@@ -41,6 +41,24 @@ describe('PerpsWithdrawBalance', () => {
     ).toBeInTheDocument();
   });
 
+  it('prefers available-to-trade balance when provided', () => {
+    usePerpsLiveAccountMock.mockReturnValue({
+      account: {
+        availableBalance: '0',
+        availableToTradeBalance: '456.78',
+      } as never,
+      isInitialLoading: false,
+    });
+
+    renderBalance();
+
+    expect(
+      screen.getByText(
+        new RegExp(`${messages.perpsAvailableBalance.message}\\$456\\.78`, 'u'),
+      ),
+    ).toBeInTheDocument();
+  });
+
   it('renders $0.00 when the live account has no balance', () => {
     usePerpsLiveAccountMock.mockReturnValue({
       account: null,

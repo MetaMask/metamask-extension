@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Аппаратный кошелек"
   },
-  "addIPFSGateway": {
-    "message": "Добавьте предпочтительный шлюз IPFS"
-  },
   "addMemo": {
     "message": "Добавить примечание"
   },
@@ -1545,9 +1542,6 @@
     "message": "Когда вы используете наши настройки и конфигурации по умолчанию, мы используем Infura в качестве нашего поставщика удаленного вызова процедур (RPC) по умолчанию, чтобы предложить наиболее надежный и конфиденциальный доступ к данным Ethereum, который мы можем предложить. В ограниченных случаях мы можем использовать других поставщиков RPC, чтобы обеспечить наилучший опыт для наших пользователей. Вы можете выбрать свой собственный RPC, но помните, что любой RPC получит ваш IP-адрес и кошелек Ethereum для совершения транзакций. Чтобы узнать больше о том, как Infura обрабатывает данные для учетных записей EVM, прочтите нашу статью $1, а для счетов Solana — статью $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "нажмите здесь"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к аппаратному кошельку."
   },
@@ -1559,9 +1553,6 @@
   },
   "clearActivity": {
     "message": "Очистить данные о действиях и одноразовых номерах"
-  },
-  "clearActivityButton": {
-    "message": "Очистить данные вкладки активности"
   },
   "clearActivityDescription": {
     "message": "Выполняется сброс одноразового кода счета и удалению данных со вкладки «Активность» в вашем кошельке. Это затронет только текущий счет и сеть. Ваши балансы и входящие транзакции не изменятся."
@@ -2219,12 +2210,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Получайте обновления, советы и новости о продуктах, в том числе по эл. почте. Мы можем использовать ваши сообщения для улучшения того, чем мы делимся."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Хорошо"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Вы отключили сбор данных для наших маркетинговых целей. Это касается только этого устройства. Если вы используете MetaMask на других устройствах, обязательно отключите его и там."
   },
   "dataUnavailable": {
     "message": "данные недоступны"
@@ -3912,9 +3897,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Блокировка MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "Время блокировки будет числом от 0 до 10080"
-  },
   "logOut": {
     "message": "Выйти"
   },
@@ -5123,9 +5105,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Условиями использования"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Мы будем собирать основные данные об использовании продукта, такие как общее местоположение, клики и просмотры. Никакая другая информация не будет сохраняться."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Мы будем собирать основные данные об использовании продукта. Мы можем связать эту информацию с данными, хранящимися ончейн."
   },
@@ -5689,9 +5668,6 @@
   "perpsCancelOrder": {
     "message": "Отменить ордер"
   },
-  "perpsCandleIntervals": {
-    "message": "Интервалы свечей"
-  },
   "perpsCandlePeriodDays": {
     "message": "Дни"
   },
@@ -5703,9 +5679,6 @@
   },
   "perpsCloseAll": {
     "message": "Закрыть все"
-  },
-  "perpsCloseAmount": {
-    "message": "Сумма закрытия"
   },
   "perpsCloseLong": {
     "message": "Закрыть длинную"
@@ -6287,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Вывести средства"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Вывод из перпов",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Предполагаемое время"
   },
@@ -6334,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Выводимые средства отправлены"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask автоматически обменяет ваш токен на желаемый. При обмене на mUSD комиссия MetaMask не взимается.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Вы получаете"
@@ -6459,6 +6440,10 @@
   },
   "provide": {
     "message": "Предоставить"
+  },
+  "providerFee": {
+    "message": "Комиссия поставщика",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Публичный адрес"
@@ -6666,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Получить криптовалюту"
   },
+  "receiveToken": {
+    "message": "Получить токен",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Получено"
+  },
+  "receivedTotal": {
+    "message": "Всего получено",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Принимающий адрес",
@@ -7175,12 +7168,6 @@
   "securityChangePassword": {
     "message": "Изменить пароль"
   },
-  "securityChangePasswordDescription": {
-    "message": "Выберите надежный пароль для разблокировки приложения MetaMask на вашем устройстве. Если вы потеряете этот пароль, для восстановления доступа к кошельку потребуется ваша секретная фраза для восстановления."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Пароль"
-  },
   "securityChangePasswordToastError": {
     "message": "Не удалось изменить пароль. Попробуйте еще раз."
   },
@@ -7192,16 +7179,6 @@
   },
   "securityDescription": {
     "message": "Уменьшите свои шансы присоединиться к небезопасным сетям и защитите свои счета"
-  },
-  "securityLoginWithSocial": {
-    "message": "Войти с помощью $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Создана резервная копия секретной фразы для восстановления"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Создать резервную копию секретной фразы для восстановления"
   },
   "securityMessageLinkForNetworks": {
     "message": "мошенничества с сетью и угроз безопасности"
@@ -7224,14 +7201,8 @@
     "message": "ВОССТАНОВЛЕНИЕ $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Сохраните свою секретную фразу для восстановления, чтобы никогда не терять доступ к своему кошельку. Обязательно сохраните ее в безопасном месте, к которому сможете получить доступ только вы и которое вы не забудете."
-  },
   "securitySrpLabel": {
     "message": "СЕКРЕТНЫЕ ФРАЗЫ ДЛЯ ВОССТАНОВЛЕНИЯ"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Управление способами восстановления"
   },
   "seeAllPermissions": {
     "message": "Смотреть все разрешения",
@@ -8189,20 +8160,11 @@
   "smartAccount": {
     "message": "Смарт-счет"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Разрешите dapps запрашивать функции смарт-счетов для стандартных счетов. Это не повлияет на счета, которые уже являются смарт-счетами."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Запросы на создание смарт-счетов от dapps"
-  },
   "smartAccountLabel": {
     "message": "Смарт-счет"
   },
   "smartAccountRequestsFromDapps": {
     "message": "Запросы на создание смарт-счетов от dapps"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Разрешите dapps запрашивать функции смарт-счетов для стандартных счетов. Это не повлияет на счета, которые уже являются смарт-счетами."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Один и тот же адрес. Более умные функции."
@@ -8215,9 +8177,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Адрес получателя может не поддерживать прямые переводы токенов, что может привести к потере средств. Продолжайте только в том случае, если вы уверены, что этот контракт может получить ваш перевод."
-  },
-  "smartContracts": {
-    "message": "Смарт-контракты"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Недостаточно средств для смарт-свопа."
@@ -8840,12 +8799,6 @@
     "message": "Поддерживаемые языки",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
-  "surveyConversion": {
-    "message": "Пройдите наш опрос"
-  },
-  "surveyTitle": {
-    "message": "Сформируйте будущее MetaMask"
-  },
   "swap": {
     "message": "Обменять"
   },
@@ -9241,9 +9194,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Токен уже добавлен."
-  },
-  "tokenAutoDetection": {
-    "message": "Автоопределение токена"
   },
   "tokenContractAddress": {
     "message": "Адрес контракта токена"
@@ -9838,6 +9788,10 @@
   "willApproveAmountForSwapping": {
     "message": "Утверждает токен для свопа."
   },
+  "withdrawTo": {
+    "message": "Получить",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Выполняется вывод"
   },
@@ -9870,6 +9824,10 @@
   "youSent": {
     "message": "Вы отправили",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Вы получите",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Ваша деятельность"
