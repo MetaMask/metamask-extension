@@ -375,19 +375,11 @@
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch",
     "@metamask/json-rpc-engine": "^10.3.0",
     "@metamask/json-rpc-middleware-stream": "^8.0.4",
-<<<<<<< HEAD
-    "@metamask/keyring-api": "^21.6.0",
-    "@metamask/keyring-controller": "^25.4.0",
-    "@metamask/keyring-internal-api": "^10.0.0",
-    "@metamask/keyring-internal-snap-client": "^9.0.1",
-    "@metamask/keyring-snap-client": "^8.1.0",
-=======
     "@metamask/keyring-api": "^23.1.0",
     "@metamask/keyring-controller": "^25.4.0",
     "@metamask/keyring-internal-api": "^11.0.1",
     "@metamask/keyring-internal-snap-client": "^10.0.3",
     "@metamask/keyring-snap-client": "^9.0.2",
->>>>>>> origin/main
     "@metamask/keyring-utils": "^3.2.0",
     "@metamask/logging-controller": "^8.0.0",
     "@metamask/logo": "^4.0.0",
