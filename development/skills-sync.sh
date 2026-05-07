@@ -28,4 +28,4 @@ EOF
   exit 1
 fi
 
-exec bash "$CONSENSYS_SKILLS_DIR/tools/sync" --repo metamask-extension --target .
+exec bash "$CONSENSYS_SKILLS_DIR/tools/sync" --repo metamask-extension --target . "$@"
