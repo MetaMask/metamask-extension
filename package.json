@@ -289,7 +289,8 @@
     "@metamask/snaps-controllers": "^20.0.3",
     "@metamask/messenger@npm:^0.3.0": "^1.1.1",
     "@metamask/perps-controller": "^5.0.0",
-    "@metamask/bridge-status-controller@npm:^71.1.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch"
+    "@metamask/bridge-status-controller@npm:^71.1.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch",
+    "@metamask/transaction-pay-controller@npm:^20.1.0": "patch:@metamask/transaction-pay-controller@npm%3A20.1.0#~/.yarn/patches/@metamask-transaction-pay-controller-npm-20.1.0-1c84c5db4d.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.26.10#~/.yarn/patches/@babel-runtime-npm-7.26.10-fe8c62510a.patch",
