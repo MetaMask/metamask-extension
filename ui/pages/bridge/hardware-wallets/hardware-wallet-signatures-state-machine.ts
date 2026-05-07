@@ -1,68 +1,76 @@
-export enum HardwareWalletSignatureStatus {
-  AwaitingFirstSignature = 'awaiting-first-signature',
-  AwaitingFinalSignature = 'awaiting-final-signature',
-  Submitted = 'submitted',
-  Rejected = 'rejected',
-  Failed = 'failed',
-  Disconnected = 'disconnected',
-}
+export const HardwareWalletSignatureStatus = {
+  AwaitingFirstSignature: 'awaiting-first-signature',
+  AwaitingFinalSignature: 'awaiting-final-signature',
+  Submitted: 'submitted',
+  Rejected: 'rejected',
+  Failed: 'failed',
+  Disconnected: 'disconnected',
+} as const;
 
-export enum HardwareWalletSignatureEvent {
-  FirstSignatureSubmitted = 'first-signature-submitted',
-  TransactionSubmitted = 'transaction-submitted',
-  TransactionRejected = 'transaction-rejected',
-  TransactionFailed = 'transaction-failed',
-  DeviceDisconnected = 'device-disconnected',
-  Retry = 'retry',
-  Reset = 'reset',
-}
+export type HardwareWalletSignatureStatus =
+  (typeof HardwareWalletSignatureStatus)[keyof typeof HardwareWalletSignatureStatus];
+
+export const HardwareWalletSignatureEvent = {
+  FirstSignatureSubmitted: 'first-signature-submitted',
+  TransactionSubmitted: 'transaction-submitted',
+  TransactionRejected: 'transaction-rejected',
+  TransactionFailed: 'transaction-failed',
+  DeviceDisconnected: 'device-disconnected',
+  Retry: 'retry',
+  Reset: 'reset',
+} as const;
+
+export type HardwareWalletSignatureEvent =
+  (typeof HardwareWalletSignatureEvent)[keyof typeof HardwareWalletSignatureEvent];
 
 type SigningStatus =
-  | HardwareWalletSignatureStatus.AwaitingFirstSignature
-  | HardwareWalletSignatureStatus.AwaitingFinalSignature;
+  | typeof HardwareWalletSignatureStatus.AwaitingFirstSignature
+  | typeof HardwareWalletSignatureStatus.AwaitingFinalSignature;
 
 type ResumableStatus =
   | SigningStatus
-  | HardwareWalletSignatureStatus.Disconnected;
+  | typeof HardwareWalletSignatureStatus.Disconnected;
 
 export type HardwareWalletSignaturesState =
   | {
-      status: SigningStatus | HardwareWalletSignatureStatus.Submitted;
+      status:
+        | SigningStatus
+        | typeof HardwareWalletSignatureStatus.Submitted;
     }
   | {
-      status: HardwareWalletSignatureStatus.Rejected;
+      status: typeof HardwareWalletSignatureStatus.Rejected;
       rejectedSignature: SigningStatus;
     }
   | {
-      status: HardwareWalletSignatureStatus.Failed;
+      status: typeof HardwareWalletSignatureStatus.Failed;
       failedSignature: SigningStatus;
     }
   | {
-      status: HardwareWalletSignatureStatus.Disconnected;
+      status: typeof HardwareWalletSignatureStatus.Disconnected;
       disconnectedSignature: SigningStatus;
     };
 
 type HardwareWalletSignaturesAction =
   | {
-      type: HardwareWalletSignatureEvent.FirstSignatureSubmitted;
+      type: typeof HardwareWalletSignatureEvent.FirstSignatureSubmitted;
     }
   | {
-      type: HardwareWalletSignatureEvent.TransactionSubmitted;
+      type: typeof HardwareWalletSignatureEvent.TransactionSubmitted;
     }
   | {
-      type: HardwareWalletSignatureEvent.TransactionRejected;
+      type: typeof HardwareWalletSignatureEvent.TransactionRejected;
     }
   | {
-      type: HardwareWalletSignatureEvent.TransactionFailed;
+      type: typeof HardwareWalletSignatureEvent.TransactionFailed;
     }
   | {
-      type: HardwareWalletSignatureEvent.DeviceDisconnected;
+      type: typeof HardwareWalletSignatureEvent.DeviceDisconnected;
     }
   | {
-      type: HardwareWalletSignatureEvent.Retry;
+      type: typeof HardwareWalletSignatureEvent.Retry;
     }
   | {
-      type: HardwareWalletSignatureEvent.Reset;
+      type: typeof HardwareWalletSignatureEvent.Reset;
       needsTwoConfirmations: boolean;
     };
 
@@ -108,7 +116,6 @@ export const hardwareWalletSignaturesReducer = (
   state: HardwareWalletSignaturesState,
   action: HardwareWalletSignaturesAction,
 ): HardwareWalletSignaturesState => {
-  const prevState = state.status;
   let nextState: HardwareWalletSignaturesState;
 
   switch (action.type) {
@@ -181,17 +188,6 @@ export const hardwareWalletSignaturesReducer = (
       break;
     default:
       nextState = state;
-  }
-
-  if (prevState !== nextState.status) {
-    console.log(
-      '[HW-Batch] state machine transition',
-      JSON.stringify({
-        event: action.type,
-        from: prevState,
-        to: nextState.status,
-      }),
-    );
   }
 
   return nextState;
