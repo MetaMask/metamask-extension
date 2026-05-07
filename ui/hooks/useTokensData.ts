@@ -29,7 +29,7 @@ function fetchTokenBatch(assetIds: string[]): Promise<TokenAsset[]> {
   const key = normalizedIds.join(',');
 
   const existing = inFlight.get(key);
-  if (existing) {
+  if (existing !== undefined) {
     return existing;
   }
 
