@@ -16,12 +16,11 @@ const selectors = {
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
   exampleDatePicker: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
-  datePickerCalendarContainer: '.MuiPickersSlideTransition-transitionContainer',
-  datePickerPreviousMonthButton: '.MuiPickersCalendarHeader-iconButton',
-  datePickerDayButton: '.MuiPickersDay-day',
-  timePickerHourButton: '.MuiPickersClockNumber-clockNumber',
-  dateTimePickerOkButton:
-    '.MuiPickersModal-withAdditionalAction > button:nth-child(3)',
+  datePickerCalendarContainer: '.MuiDayCalendar-slideTransition',
+  datePickerPreviousMonthButton: '.MuiPickersArrowSwitcher-previousIconButton',
+  datePickerDayButton: '.MuiPickersDay-root',
+  timePickerHourButton: '.MuiClockNumber-root',
+  dateTimePickerOkButton: '.MuiDialogActions-root button:last-child',
 } satisfies Record<string, string | Record<string, string>>;
 
 class SnapInteractiveDialog {
@@ -185,7 +184,7 @@ class SnapInteractiveDialog {
     );
 
     await this.driver.clickElement({
-      xpath: `//button[span[p[contains(text(), "${day}")]]]`,
+      xpath: `//button[span[contains(text(), "${day}")]]`,
     });
   }
 

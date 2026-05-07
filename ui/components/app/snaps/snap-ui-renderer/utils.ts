@@ -245,14 +245,14 @@ export const muiPickerTheme = createTheme({
     },
     MuiPickersCalendarHeader: {
       styleOverrides: {
-        switchViewButton: {
+        switchViewIcon: {
           '&:hover': {
             backgroundColor: 'var(--color-background-alternative-hover)',
           },
           color: 'var(--color-icon-alternative)',
           backgroundColor: 'var(--color-background-alternative)',
         },
-        label: {
+        labelContainer: {
           color: 'var(--color-text-alternative)',
         },
       },
