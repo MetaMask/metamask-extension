@@ -163,6 +163,78 @@
       "symbol": "APEX",
       "decimals": 18,
       "logoURI": "https://token-list.mantle.xyz/data/APEX/logo.svg"
+    },
+    {
+      "chainId": 5000,
+      "address": "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+      "name": "USDT0",
+      "symbol": "USDT (USDT0)",
+      "decimals": 6,
+      "logoURI": "https://token-list.mantle.xyz/data/USDT0/logo.svg"
+    },
+    {
+      "chainId": 5000,
+      "address": "0x111111d2bf19e43c34263401e0cad979ed1cdb61",
+      "name": "USD1",
+      "symbol": "USD1",
+      "decimals": 18,
+      "logoURI": "https://token-list.mantle.xyz/data/USD1/logo.svg"
+    },
+    {
+      "chainId": 5000,
+      "address": "0x6199CCd9273A1E0e41e2cC18d9dAcd1E9382F58E",
+      "name": "XAUt",
+      "symbol": "XAUt",
+      "decimals": 6,
+      "logoURI": "https://token-list.mantle.xyz/data/XAUt/logo.svg"
+    },
+    {
+      "chainId": 5000,
+      "address": "0x58538e6A46E07434d7E7375Bc268D3cb839C0133",
+      "name": "Ethena Token",
+      "symbol": "ENA",
+      "decimals": 18,
+      "logoURI": "https://token-list.mantle.xyz/data/ENA/logo.svg"
+    },
+    {
+      "chainId": 5000,
+      "address": "0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34",
+      "name": "USDe",
+      "symbol": "USDe",
+      "decimals": 18,
+      "logoURI": "https://token-list.mantle.xyz/data/USDE/logo.svg"
+    },
+    {
+      "chainId": 5000,
+      "address": "0xE265FC71d45fd791c9ebf3EE0a53FBB220Eb8f75",
+      "name": "Curve DAO Token",
+      "symbol": "CRV",
+      "decimals": 18,
+      "logoURI": "https://token-list.mantle.xyz/data/CRV/logo.png"
+    },
+    {
+      "chainId": 5000,
+      "address": "0x0994206dfE8De6Ec6920FF4D779B0d950605Fb53",
+      "name": "Curve.Fi USD Stablecoin",
+      "symbol": "crvUSD",
+      "decimals": 18,
+      "logoURI": "https://token-list.mantle.xyz/data/crvUSD/logo.svg"
+    },
+    {
+      "chainId": 5000,
+      "address": "0x211Cc4DD073734dA055fbF44a2b4667d5E5fE5d2",
+      "name": "sUSDe",
+      "symbol": "sUSDe",
+      "decimals": 18,
+      "logoURI": "https://token-list.mantle.xyz/data/SUSDE/logo.svg"
+    },
+    {
+      "chainId": 5000,
+      "address": "0x201EBa5CC46D216Ce6DC03F6a759e8E766e956aE",
+      "name": "Tether USD",
+      "symbol": "USDT (BRIDGED)",
+      "decimals": 6,
+      "logoURI": "https://token-list.mantle.xyz/data/USDT/logo.svg"
     }
   ]
 }

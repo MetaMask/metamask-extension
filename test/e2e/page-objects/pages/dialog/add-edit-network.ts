@@ -43,10 +43,19 @@ class AddEditNetworkModal {
   private readonly editModalRpcDropDownButton =
     '[data-testid="test-add-rpc-drop-down"]';
 
-  private readonly editModalSaveButton = {
+  private readonly legacyEditModalSaveButton = {
     text: 'Save',
     tag: 'button',
   };
+
+  private readonly settingsV2EditModalSaveButton =
+    '[data-testid="page-container-footer-next"]';
+
+  private readonly settingsV2NetworksPageBackButton =
+    '[data-testid="settings-v2-header-back-button"]';
+
+  private readonly settingsV2NetworksPageList =
+    '[data-testid="networks-page-list"]';
 
   private readonly explorerUrlInputDropDownButton = {
     testId: 'test-explorer-drop-down',
@@ -65,8 +74,24 @@ class AddEditNetworkModal {
       await this.driver.waitForMultipleSelectors([
         this.networkNameInputField,
         this.editModalRpcDropDownButton,
-        this.editModalSaveButton,
       ]);
+
+      await this.driver.waitUntil(async () => {
+        const legacySaveVisible =
+          await this.driver.isElementPresentAndVisible(
+            this.legacyEditModalSaveButton,
+          );
+        if (legacySaveVisible) {
+          return true;
+        }
+
+        return await this.driver.isElementPresentAndVisible(
+          this.settingsV2EditModalSaveButton,
+        );
+      }, {
+        interval: 200,
+        timeout: 10_000,
+      });
     } catch (e) {
       console.log(
         'Timeout while waiting for add/edit network dialog to be loaded',
@@ -75,6 +100,20 @@ class AddEditNetworkModal {
       throw e;
     }
     console.log('Edit network dialog is loaded');
+  }
+
+  private async getSaveButtonSelector(): Promise<
+    string | { text: string; tag: string }
+  > {
+    if (
+      await this.driver.isElementPresentAndVisible(
+        this.settingsV2EditModalSaveButton,
+      )
+    ) {
+      return this.settingsV2EditModalSaveButton;
+    }
+
+    return this.legacyEditModalSaveButton;
   }
 
   /**
@@ -144,9 +183,47 @@ class AddEditNetworkModal {
     );
   }
 
-  async saveEditedNetwork(): Promise<void> {
+  async saveEditedNetwork(networkName?: string): Promise<void> {
     console.log('Save and close edit network modal');
-    await this.driver.clickElementAndWaitToDisappear(this.editModalSaveButton);
+    const saveButtonSelector = await this.getSaveButtonSelector();
+
+    await this.driver.waitUntil(async () => {
+      const saveButton = await this.driver.findElement(saveButtonSelector);
+      return await saveButton.isEnabled();
+    }, {
+      interval: 200,
+      timeout: 10_000,
+    });
+
+    await this.driver.clickElement(saveButtonSelector);
+    await this.driver.assertElementNotPresent(this.networkNameInputField, {
+      waitAtLeastGuard: 300,
+      timeout: 20_000,
+    });
+
+    // In Settings V2, saving can return to the networks page instead of home.
+    // Preserve legacy flow expectation by navigating back to the wallet home page.
+    if (
+      await this.driver.isElementPresentAndVisible(this.settingsV2NetworksPageList)
+    ) {
+      if (networkName) {
+        const networkNameSelector = `[data-testid="${networkName}"]`;
+        if (await this.driver.isElementPresentAndVisible(networkNameSelector)) {
+          await this.driver.clickElement(networkNameSelector);
+        }
+      }
+
+      if (
+        await this.driver.isElementPresentAndVisible(this.settingsV2NetworksPageList)
+      ) {
+        await this.driver.clickElement(this.settingsV2NetworksPageBackButton);
+      }
+
+      await this.driver.assertElementNotPresent(this.settingsV2NetworksPageList, {
+        waitAtLeastGuard: 300,
+        timeout: 20_000,
+      });
+    }
   }
 
   /**

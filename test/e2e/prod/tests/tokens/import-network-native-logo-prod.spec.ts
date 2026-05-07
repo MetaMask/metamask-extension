@@ -597,7 +597,7 @@ async function runNetworkImportNativeValidationTest(
         await addRpcUrlModal.saveAddRpcUrl();
 
 
-        await addEditNetworkModal.saveEditedNetwork();
+          await addEditNetworkModal.saveEditedNetwork(networkConfig.networkName);
 
 
         await homePage.checkPageIsLoaded();
