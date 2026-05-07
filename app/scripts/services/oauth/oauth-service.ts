@@ -280,10 +280,10 @@ export class OAuthService {
                   return;
                 }
                 if (browserAuthFlowError) {
-                  const message = browserAuthFlowError.message || OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR;
-                  const authError = new Error(
-                    message,
-                  ) as Error & {
+                  const message =
+                    browserAuthFlowError.message ||
+                    OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR;
+                  const authError = new Error(message) as Error & {
                     cause?: Error;
                   };
                   authError.cause = browserAuthFlowError as Error;
