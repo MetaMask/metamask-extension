@@ -11,6 +11,9 @@ ignores:
   - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
+  # peer deps of @mui/material v5; no direct imports in app source (MUI resolves them)
+  - '@emotion/react'
+  - '@emotion/styled'
 
   #
   # dev deps
@@ -108,8 +111,6 @@ ignores:
   - '@metamask/institutional-wallet-snap'
   - '@metamask/gator-permissions-snap'
   - '@metamask/permissions-kernel-snap'
-  # perps poc
-  - '@metamask/perps-controller'
 
 # files depcheck should not parse
 ignorePatterns:
