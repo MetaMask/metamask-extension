@@ -29,6 +29,7 @@ const PAGES = {
   POPUP: 'popup',
   SIDEPANEL: 'sidepanel',
 };
+const EXTENSION_FULL_SCREEN_TITLE = 'MetaMask';
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
@@ -1145,6 +1146,58 @@ class Driver {
       until.elementLocated(this.buildLocator('.controller-loaded')),
       timeout,
     );
+  }
+
+  /**
+   * Waits for the extension UI to become available on the home page.
+   *
+   * This is useful after actions that temporarily make the extension
+   * unavailable, such as `runtime.reload()`, background recovery flows, or
+   * shared fixture session resets. This method only waits for startup to
+   * complete; it does not trigger the restart itself.
+   *
+   * @param {object} [options] - Options.
+   * @param {number} [options.timeout] - The maximum time in milliseconds to
+   * wait for the extension to become reachable. Defaults to the driver's
+   * timeout.
+   * @param {boolean} [options.waitForControllers] - Whether to wait for the
+   * controller-loaded marker after the extension page is reachable. Defaults
+   * to true.
+   * @param {boolean} [options.waitForLoadingLogoToDisappear] - Whether to wait
+   * for the loading logo to disappear. Defaults to true.
+   * @returns {Promise<void>} A promise that resolves once the extension home
+   * page satisfies the requested readiness checks.
+   */
+  async waitForExtensionStart({
+    timeout = this.timeout,
+    waitForControllers = true,
+    waitForLoadingLogoToDisappear = true,
+  } = {}) {
+    await this.waitUntil(
+      async () => {
+        try {
+          await this.navigate(PAGES.HOME, { waitForControllers: false });
+          const title = await this.driver.getTitle();
+          // The browser may briefly show an error page for `home.html` until
+          // the extension has finished starting again.
+          return title === EXTENSION_FULL_SCREEN_TITLE;
+        } catch {
+          return false;
+        }
+      },
+      {
+        interval: 100,
+        timeout,
+      },
+    );
+
+    if (waitForControllers) {
+      await this.waitForControllersLoaded(timeout);
+    }
+
+    if (waitForLoadingLogoToDisappear) {
+      await this.assertElementNotPresent('.loading-logo', { timeout });
+    }
   }
 
   /**

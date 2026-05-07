@@ -55,6 +55,11 @@ export function getRequestSafeReload<Type extends PersistenceManager>(
       return operationSafener.execute(...params);
     },
     /**
+     * Immediately runs the latest queued persistence operation, while allowing
+     * future persistence writes to continue. Use this when no reload follows.
+     */
+    flushPersistence: () => operationSafener.flush(),
+    /**
      * Requests a safe reload of the browser. It prevents any new updates from
      * being sent to the persistence manager, and waits for any
      * pending updates to complete before scheduling `browser.runtime.reload()`

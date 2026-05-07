@@ -439,6 +439,7 @@ async function withFixtures(options, testSuite) {
       bundlerServer,
       contractRegistry,
       driver: driverProxy ?? driver,
+      fixtureServer,
       localNodes,
       mockedEndpoint,
       mockServer,

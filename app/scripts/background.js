@@ -153,11 +153,19 @@ function hadVaultAtStartupRecently(hasVaultAtStartup) {
  * Test-only state shared across startup and later port handling (hang simulations).
  * `null` in production builds so we do not keep loose mutable test globals.
  */
+/* istanbul ignore next: test-only E2E fixture reset state */
 const inTestState = inTest
-  ? { restoreInProgress: false, hasVaultAtStartup: null }
+  ? {
+      restoreInProgress: false,
+      hasVaultAtStartup: null,
+      fixtureBaselineControllerState: null,
+      fixtureBaselinePersistentState: null,
+      fixtureBaselineMetadata: null,
+      fixtureBaselineStorageKind: null,
+    }
   : null;
 
-const { safePersist, requestSafeReload, evacuate } =
+const { safePersist, requestSafeReload, evacuate, flushPersistence } =
   getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
@@ -1656,6 +1664,19 @@ export function setupController(
     sentry?.captureException(error);
   });
 
+  /* istanbul ignore next: test-only E2E fixture reset baseline capture */
+  if (inTestState) {
+    const persistentState = controller.store.getState();
+    inTestState.fixtureBaselinePersistentState =
+      structuredClone(persistentState);
+    inTestState.fixtureBaselineControllerState = structuredClone({
+      ...persistentState,
+      ...controller.memStore.getState(),
+    });
+    inTestState.fixtureBaselineMetadata = structuredClone(stateMetadata);
+    inTestState.fixtureBaselineStorageKind = persistenceManager.storageKind;
+  }
+
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
       getCurrentChainId({ metamask: controller.networkController.state }),
@@ -2611,14 +2632,164 @@ initOrRestoreBackground().catch((error) => {
   log.error('initOrRestoreBackground failed', error);
 });
 
+/* istanbul ignore next: test-only E2E fixture reset path */
+function getControllerState(controllerLike) {
+  return (
+    controllerLike.getState?.() ??
+    controllerLike.state ??
+    controllerLike.store?.getState?.() ??
+    {}
+  );
+}
+
+/* istanbul ignore next: test-only E2E fixture reset path */
+function replaceControllerState(
+  controllerKey,
+  controllerLike,
+  nextState,
+  hasFullBaselineState,
+) {
+  const clonedState = structuredClone(nextState ?? {});
+
+  if (typeof controllerLike.update === 'function') {
+    const replacementState =
+      hasFullBaselineState || !controllerLike.metadata
+        ? clonedState
+        : { ...getControllerState(controllerLike), ...clonedState };
+
+    controllerLike.update(() => replacementState);
+    return;
+  }
+
+  const targetStore = controllerLike.store ?? controllerLike;
+  if (typeof targetStore.putState === 'function') {
+    targetStore.putState(clonedState);
+    return;
+  }
+  if (typeof targetStore.updateState === 'function') {
+    targetStore.updateState(clonedState);
+    return;
+  }
+
+  throw new Error(`Unable to reset controller state for ${controllerKey}`);
+}
+
+/* istanbul ignore next: test-only E2E fixture reset path */
+function resetTransientControllerState() {
+  controller.resetStates([
+    controller.decryptMessageController.resetState.bind(
+      controller.decryptMessageController,
+    ),
+    controller.encryptionPublicKeyController.resetState.bind(
+      controller.encryptionPublicKeyController,
+    ),
+    controller.signatureController.resetState.bind(
+      controller.signatureController,
+    ),
+    controller.bridgeController.resetState.bind(controller.bridgeController),
+    controller.ensController.resetState.bind(controller.ensController),
+    controller.approvalController.clearRequests.bind(
+      controller.approvalController,
+    ),
+  ]);
+}
+
+/* istanbul ignore next: test-only E2E fixture reset path */
+function queuePersistentFixtureStateReset(persistedState) {
+  persistenceManager.storageKind =
+    inTestState.fixtureBaselineStorageKind ?? persistenceManager.storageKind;
+  persistenceManager.setMetadata(
+    structuredClone(inTestState.fixtureBaselineMetadata),
+  );
+
+  if (persistenceManager.storageKind !== 'split') {
+    return;
+  }
+
+  const baselineState = inTestState.fixtureBaselinePersistentState;
+  const currentPersistedKeys = Object.keys(persistedState?.data ?? {});
+  const baselineKeys = Object.keys(baselineState);
+
+  for (const key of new Set([...currentPersistedKeys, ...baselineKeys])) {
+    persistenceManager.update(
+      key,
+      hasProperty(baselineState, key)
+        ? structuredClone(baselineState[key])
+        : undefined,
+    );
+  }
+}
+
+/* istanbul ignore next: test-only E2E fixture reset path */
+async function persistFixtureStateReset() {
+  if (persistenceManager.storageKind === 'split') {
+    await persistenceManager.persist();
+    return;
+  }
+
+  await persistenceManager.set(controller.store.getState());
+}
+
+/* istanbul ignore next: test-only E2E fixture reset path */
+async function resetFixtureStateInPlace() {
+  if (!inTestState.fixtureBaselineControllerState) {
+    throw new Error('Fixture baseline controller state is not available.');
+  }
+
+  await flushPersistence();
+
+  if (controller.isUnlocked()) {
+    await controller.setLocked({ skipSeedlessOperationLock: true });
+  }
+
+  const persistedState = await persistenceManager.get({
+    validateVault: false,
+  });
+
+  for (const [controllerKey, controllerState] of Object.entries(
+    inTestState.fixtureBaselineControllerState,
+  )) {
+    const controllerLike =
+      controller.store.config[controllerKey] ??
+      controller.memStore.config[controllerKey];
+
+    if (!controllerLike || controllerState === undefined) {
+      continue;
+    }
+
+    replaceControllerState(
+      controllerKey,
+      controllerLike,
+      controllerState,
+      hasProperty(controller.memStore.config, controllerKey),
+    );
+  }
+
+  resetTransientControllerState();
+  queuePersistentFixtureStateReset(persistedState);
+  await controller.phishingController.maybeUpdateState();
+  await persistFixtureStateReset();
+  await flushPersistence();
+}
+
+/* istanbul ignore next: test-only E2E control path */
 if (inTest) {
   // listen for test messages from the background
-  // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
-  // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
+  // Maintenance note: if no tests send one of these message types, remove only
+  // the corresponding branch. Only remove `evacuate` if no call sites use it.
   browser.runtime.onMessage.addListener(async (message, _sender) => {
     if (message.type === 'STOP_PERSISTENCE') {
       await evacuate();
       return { status: 'PERSISTENCE_STOPPED' };
+    }
+    if (message.type === 'RESET_FIXTURE_STATE') {
+      if (message.strategy === 'inPlace') {
+        await resetFixtureStateInPlace();
+        return { status: 'FIXTURE_STATE_RESET', reloadRequired: false };
+      }
+      await evacuate();
+      await persistenceManager.reset();
+      return { status: 'FIXTURE_STATE_RESET', reloadRequired: true };
     }
     return Promise.resolve();
   });

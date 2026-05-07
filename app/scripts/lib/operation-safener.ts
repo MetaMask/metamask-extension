@@ -127,6 +127,19 @@ export class OperationSafener<O extends Op = Op> {
   };
 
   /**
+   * Executes the latest pending operation immediately without entering
+   * evacuation mode, so future executions can still be queued.
+   *
+   * @returns A Promise that resolves when the flushed operation completes.
+   */
+  async flush(): Promise<void> {
+    const finalInvocation = this.#bouncer.flush();
+    if (finalInvocation) {
+      await finalInvocation;
+    }
+  }
+
+  /**
    * Executes the operation with the provided parameters, debouncing it if
    * necessary.
    *
