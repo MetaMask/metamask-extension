@@ -58,6 +58,7 @@
       "Test errors: Fetch failures": 4,
       "Third-party: Bindings failed, using pure JS": 1,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
+      "error: TokenRatesController: No network configuration found": 12,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
@@ -70,8 +71,10 @@
       "error: Error: NetworkController state is invalid:": 1,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
       "error: This browser doesn't support cancelAnimationFrame.": 1,
+      "error: TokenRatesController: No network configuration found": 158,
       "error: {": 1,
       "warn: Error during SnapController initialization. AssertionError:": 2,
+      "warn: Error handling token state change:": 1,
       "µWebSockets: Compatibility warnings": 1,
       "µWebSockets: Fallback to Node implementation": 1
     },
