@@ -10,18 +10,18 @@ jest.mock('../webConnectionUtils', () => ({
   isWebUsbAvailable: jest.fn(),
 }));
 
-let mockIsManifestV3 = true;
-let mockIsFirefoxBrowser = false;
+const mockIsManifestV3 = jest.fn(() => true);
+const mockIsFirefoxBrowser = jest.fn(() => false);
 
 jest.mock('../../../../shared/lib/mv3.utils', () => ({
   get isManifestV3() {
-    return mockIsManifestV3;
+    return mockIsManifestV3();
   },
 }));
 
 jest.mock('../../../../shared/lib/browser-runtime.utils', () => ({
   get isFirefoxBrowser() {
-    return () => mockIsFirefoxBrowser;
+    return mockIsFirefoxBrowser;
   },
 }));
 
@@ -50,6 +50,8 @@ describe('TrezorAdapter', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsManifestV3.mockReturnValue(true);
+    mockIsFirefoxBrowser.mockReturnValue(false);
     mockOptions = createMockOptions();
     consoleLogSpy = jest
       .spyOn(console, 'log')
@@ -156,8 +158,24 @@ describe('TrezorAdapter', () => {
       expect(adapter.isConnected()).toBe(false);
     });
 
+    it('simulates a previous test leaving the browser environment dirty', () => {
+      mockIsManifestV3.mockReturnValue(false);
+      mockIsFirefoxBrowser.mockReturnValue(true);
+
+      expect(mockIsManifestV3()).toBe(false);
+      expect(mockIsFirefoxBrowser()).toBe(true);
+    });
+
+    it('resets browser environment before each test', async () => {
+      await adapter.connect();
+
+      expect(mockIsWebUsbAvailable).toHaveBeenCalled();
+      expect(mockGetConnectedTrezorDevices).toHaveBeenCalled();
+      expect(adapter.isConnected()).toBe(true);
+    });
+
     it('skips WebUSB check on MV2 (Firefox) and defers to TrezorConnectBridge', async () => {
-      mockIsManifestV3 = false;
+      mockIsManifestV3.mockReturnValue(false);
 
       const mv2Adapter = new TrezorAdapter(mockOptions);
 
@@ -168,11 +186,10 @@ describe('TrezorAdapter', () => {
       expect(mv2Adapter.isConnected()).toBe(true);
 
       mv2Adapter.destroy();
-      mockIsManifestV3 = true;
     });
 
     it('skips WebUSB check on Firefox even under MV3', async () => {
-      mockIsFirefoxBrowser = true;
+      mockIsFirefoxBrowser.mockReturnValue(true);
 
       const firefoxAdapter = new TrezorAdapter(mockOptions);
 
@@ -183,7 +200,6 @@ describe('TrezorAdapter', () => {
       expect(firefoxAdapter.isConnected()).toBe(true);
 
       firefoxAdapter.destroy();
-      mockIsFirefoxBrowser = false;
     });
   });
 
