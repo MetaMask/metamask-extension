@@ -138,7 +138,7 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { getConnectingLabel, setTheme } from './utils';
-import { ConfirmationRouter } from './confirmation-handler';
+import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
 
