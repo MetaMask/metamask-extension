@@ -135,11 +135,7 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
         >
           {displayName}
         </Text>
-        <span
-          onClick={stopPropagation}
-          onKeyDown={stopPropagation}
-          role="presentation"
-        >
+        <span onClick={stopPropagation} onKeyDown={stopPropagation}>
           <CopyIcon
             copyText={address}
             style={{ position: 'static', right: 'auto', top: 'auto' }}
@@ -224,11 +220,7 @@ const ReviewRuleAddressItem: React.FC<{ address: string }> = ({ address }) => {
         >
           {displayName}
         </Text>
-        <span
-          onClick={stopPropagation}
-          onKeyDown={stopPropagation}
-          role="presentation"
-        >
+        <span onClick={stopPropagation} onKeyDown={stopPropagation}>
           <CopyIcon
             copyText={address}
             style={{ position: 'static', right: 'auto', top: 'auto' }}
