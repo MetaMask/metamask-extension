@@ -66,14 +66,14 @@ describe('wrapMessengerWithTracing', () => {
     const messenger = new Messenger<'Test', TestActions, never>({
       namespace: 'Test',
     });
-    const handler = jest.fn<() => string>().mockReturnValue('result');
-    messenger.registerActionHandler('Test:getState', handler);
+    const handler = jest.fn();
+    messenger.registerActionHandler('Test:setState', handler);
 
     const wrapped = wrapMessengerWithTracing(messenger);
-    const result = wrapped.call('Test:getState');
+    wrapped.call('Test:setState', 'value');
 
     expect(traceMock).not.toHaveBeenCalled();
-    expect(result).toBe('result');
+    expect(handler).toHaveBeenCalledWith('value');
   });
 
   it('skips trace for a read-only messenger action (denylist applies)', () => {
