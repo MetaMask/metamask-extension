@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import { captureException } from '../../../shared/lib/sentry';
 import type { Migrate } from './types';
 
-export const version = 207;
+export const version = 208;
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
