@@ -10,6 +10,7 @@ import { getTokenTransferData } from '../../utils/transaction-pay';
 import { updateEditableParams } from '../../../../store/actions';
 import { updateAtomicBatchData } from '../../../../store/controller-actions/transaction-controller';
 import { useTransactionPayPrimaryRequiredToken } from '../pay/useTransactionPayData';
+import { useTokenWithBalance } from '../tokens/useTokenWithBalance';
 
 const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
 let erc20Interface: Interface | null = null;
@@ -50,7 +51,15 @@ export function useUpdateTokenAmount() {
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
-  const decimals = primaryRequiredToken?.decimals ?? 18;
+  // Synchronous fallback source for decimals
+
+  const recipientToken = useTokenWithBalance(
+    (to ?? '0x0') as Hex,
+    (transactionMeta?.chainId ?? '0x0') as Hex,
+  );
+
+  const decimals: number | undefined =
+    primaryRequiredToken?.decimals ?? recipientToken?.decimals;
 
   const amountRaw = useMemo(() => {
     if (!data) {
@@ -76,6 +85,11 @@ export function useUpdateTokenAmount() {
   const updateTokenAmount = useCallback(
     (amountHuman: string) => {
       if (!data || !to) {
+        return;
+      }
+
+      // Bail if decimals can't be resolved
+      if (decimals === undefined) {
         return;
       }
 
