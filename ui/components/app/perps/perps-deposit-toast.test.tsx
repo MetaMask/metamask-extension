@@ -27,6 +27,7 @@ jest.mock('../../ui/toast/toast', () => ({
     loading: (...args: unknown[]) => mockToastLoading(...args),
     success: (...args: unknown[]) => mockToastSuccess(...args),
   },
+  ToastContent: () => null,
 }));
 
 function buildPendingDepositTransaction(
@@ -102,12 +103,13 @@ describe('PerpsDepositToast', () => {
     expect(mockToastError).not.toHaveBeenCalled();
   });
 
-  it('renders a pending toast when a native-token-funded deposit is pending', () => {
+  it('renders pending toast when mounting with deposit already in progress', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
         transactions: [buildPendingDepositTransaction()],
         lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
       },
     });
 
@@ -127,16 +129,11 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('does not show pending toast for token-funded deposits', () => {
+  it('does not render pending toast for token-funded deposits', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        transactions: [
-          buildPendingDepositTransaction({
-            id: 'pending-tx-1',
-            type: TransactionType.perpsDeposit,
-          }),
-        ],
+        transactions: [buildPendingDepositTransaction()],
         lastDepositTransactionId: 'pending-tx-1',
         lastDepositResult: null,
         transactionData: {
@@ -155,7 +152,68 @@ describe('PerpsDepositToast', () => {
     expect(mockToastLoading).not.toHaveBeenCalled();
   });
 
-  it('shows a success toast and clears the deposit result', () => {
+  it('renders pending toast for native-token-funded deposits', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [buildPendingDepositTransaction()],
+        lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
+        transactionData: {
+          'pending-tx-1': {
+            paymentToken: {
+              address: '0x0000000000000000000000000000000000000000',
+              chainId: '0xa4b1',
+            },
+          },
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastLoading).toHaveBeenCalled();
+  });
+
+  it('renders pending toast when mounting with deposit already in progress for perpsDepositAndOrder', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            type: TransactionType.perpsDepositAndOrder,
+          }),
+        ],
+        lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastLoading).toHaveBeenCalled();
+  });
+
+  it('does not render the pending toast when the transaction is still unapproved', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            status: TransactionStatus.unapproved,
+          }),
+        ],
+        lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastLoading).not.toHaveBeenCalled();
+  });
+
+  it('renders success toast when lastDepositResult is successful', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -194,7 +252,7 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('shows an error toast using the deposit result error', () => {
+  it('renders error toast when lastDepositResult is unsuccessful', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -229,7 +287,90 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('replaces pending toast with completion toast when the result arrives', () => {
+  it('prefers the completion toast when a result and in-progress state coexist', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [buildPendingDepositTransaction()],
+        lastDepositTransactionId: 'pending-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastSuccess).toHaveBeenCalled();
+    expect(mockToastLoading).not.toHaveBeenCalled();
+  });
+
+  it('renders pending toast when a new deposit transaction ID appears', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [],
+        lastDepositTransactionId: null,
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastLoading).not.toHaveBeenCalled();
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          transactions: [
+            buildPendingDepositTransaction({ id: 'submitted-tx-1' }),
+          ],
+          lastDepositTransactionId: 'submitted-tx-1',
+          lastDepositResult: null,
+        },
+      });
+    });
+
+    expect(mockToastLoading).toHaveBeenCalled();
+  });
+
+  it('keeps showing the pending toast after a transaction ID appears', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [],
+        lastDepositTransactionId: null,
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastLoading).not.toHaveBeenCalled();
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          transactions: [
+            buildPendingDepositTransaction({
+              id: 'submitted-tx-1',
+              status: TransactionStatus.submitted,
+            }),
+          ],
+          lastDepositTransactionId: 'submitted-tx-1',
+          lastDepositResult: null,
+        },
+      });
+    });
+
+    expect(mockToastLoading).toHaveBeenCalled();
+  });
+
+  it('shows completion toast when deposit result arrives', () => {
     const { store } = renderPerpsDepositToast({
       transactions: [
         buildPendingDepositTransaction({
@@ -300,6 +441,54 @@ describe('PerpsDepositToast', () => {
     });
 
     expect(mockToastSuccess).not.toHaveBeenCalled();
+  });
+
+  it('shows pending for the active deposit only when a stale perps tx remains submitted', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'stale-deposit',
+            status: TransactionStatus.submitted,
+          }),
+          buildPendingDepositTransaction({
+            id: 'current-deposit',
+            status: TransactionStatus.approved,
+          }),
+        ],
+        lastDepositTransactionId: 'current-deposit',
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastLoading).toHaveBeenCalled();
+  });
+
+  it('does not show pending when active id is confirmed even if another perps deposit stays submitted', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'stale-deposit',
+            status: TransactionStatus.submitted,
+          }),
+          buildPendingDepositTransaction({
+            id: 'current-deposit',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'current-deposit',
+        lastDepositResult: null,
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastLoading).not.toHaveBeenCalled();
   });
 
   it('does not repeat a pending toast for the same transaction ID', () => {
