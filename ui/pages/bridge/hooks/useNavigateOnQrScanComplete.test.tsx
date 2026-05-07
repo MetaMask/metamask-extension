@@ -1,9 +1,9 @@
 import { act, waitFor } from '@testing-library/react';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
+  DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { useNavigateOnQrScanComplete } from './useNavigateOnQrScanComplete';

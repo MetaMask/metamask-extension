@@ -6,12 +6,12 @@ import {
   getActiveQrCodeScanRequest,
   getLastQrScanCompletedSuccessfully,
 } from '../../../selectors/selectors';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
+  DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
+import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 
 /**
  * Navigates away from awaiting signatures page when QR scan completes successfully.
