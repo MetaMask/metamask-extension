@@ -20,6 +20,7 @@ import {
 
 export type CustomAmountProps = {
   amountFiat: string;
+  autoFocus?: boolean;
   currency?: string;
   disabled?: boolean;
   hasAlert?: boolean;
@@ -82,6 +83,7 @@ export const CustomAmountSkeleton: React.FC = () => (
 export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
   ({
     amountFiat,
+    autoFocus = false,
     currency: currencyProp,
     disabled = false,
     hasAlert = false,
@@ -139,6 +141,7 @@ export const CustomAmount: React.FC<CustomAmountProps> = React.memo(
           {fiatSymbol}
         </Text>
         <input
+          autoFocus={autoFocus && !disabled}
           data-testid="custom-amount-input"
           type="text"
           inputMode="decimal"
