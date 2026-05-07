@@ -3253,7 +3253,7 @@ export const getUseSafeChainsListValidation = (state) => {
 
 export function getShowFiatInTestnets(state) {
   const { showFiatInTestnets } = getPreferences(state);
-  return Boolean(showFiatInTestnets);
+  return showFiatInTestnets;
 }
 
 /**
