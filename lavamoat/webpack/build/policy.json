@@ -75,14 +75,11 @@
         "process.versions": true
       },
       "packages": {
-        "@babel/core>@babel/helper-compilation-targets>@babel/compat-data": true,
         "@babel/preset-env>@babel/compat-data": true,
-        "@babel/core>@babel/helper-compilation-targets>@babel/helper-validator-option": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
         "@babel/preset-env>@babel": true,
         "browserslist": true,
         "@babel/core>@babel/helper-compilation-targets>lru-cache": true,
-        "@babel/core>semver": true,
         "@babel/core>@babel/helper-compilation-targets>semver": true
       }
     },
@@ -114,14 +111,6 @@
         "@babel/core>@babel/types": true
       }
     },
-    "@emotion/react>@emotion/babel-plugin>@babel/helper-module-imports": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "@babel/core>@babel/types": true
-      }
-    },
     "@babel/core>@babel/helper-module-transforms": {
       "builtin": {
         "assert": true,
@@ -131,20 +120,6 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "@babel/code-frame>@babel/helper-validator-identifier": true,
-        "depcheck>@babel/traverse": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-modules-amd>@babel/helper-module-transforms": {
-      "builtin": {
-        "assert": true,
-        "path.basename": true,
-        "path.extname": true
-      },
-      "packages": {
-        "@babel/core": true,
-        "@emotion/react>@emotion/babel-plugin>@babel/helper-module-imports": true,
-        "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true,
         "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
@@ -191,7 +166,7 @@
     "@babel/preset-env>@babel/plugin-transform-modules-commonjs": {
       "packages": {
         "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-modules-amd>@babel/helper-module-transforms": true,
+        "@babel/core>@babel/helper-module-transforms": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true
       }
@@ -2640,6 +2615,12 @@
       }
     },
     "@babel/core>semver": {
+      "globals": {
+        "console": true,
+        "process": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets>semver": {
       "globals": {
         "console": true,
         "process": true
