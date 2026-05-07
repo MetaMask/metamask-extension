@@ -1,0 +1,134 @@
+# Posts a Slack Block Kit message summarising RC testing progress.
+#
+# Phase 1 (no Mixpanel credentials): posts a formatted link to the
+# manually-created Mixpanel board + a testing checklist.
+#
+# Phase 2 (MIXPANEL_PROJECT_SECRET secret + MIXPANEL_* variables set):
+# additionally queries Mixpanel for live event counts, including zero-fire
+# events, and renders them as a table in the message.
+#
+# See .github/scripts/rc-testing-summary.mts
+#
+# Manual test (no waiting for schedule):
+#   Actions → RC testing summary → Run workflow → fill semver, mixpanel_url, test_channel
+#
+# Friday schedule: runs at 10:00 UTC (start of US East morning, end of EU morning).
+# Set SLACK_CHANNEL repo variable to override the default #release-extension-X-Y-Z target.
+
+name: RC testing summary
+
+on:
+  schedule:
+    # Every Friday at 10:00 UTC
+    - cron: '0 10 * * 5'
+  workflow_dispatch:
+    inputs:
+      semver:
+        description: 'RC version (e.g. 13.30.0 — must match release/X.Y.Z branch name)'
+        required: true
+      mixpanel_url:
+        description: 'Full URL of the Mixpanel testing board for this RC'
+        required: true
+      test_channel:
+        description: 'Slack channel for this test run (e.g. #mm-qa-legends). Bot must be in the channel.'
+        required: false
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  post-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve semver (schedule only)
+        id: resolve
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # Find the most recent open release PR (head: release/X.Y.Z → base: stable)
+          SEMVER="$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --base stable \
+            --state open \
+            --json headRefName \
+            --jq '[.[] | select(.headRefName | test("^release/[0-9]+\\.[0-9]+\\.[0-9]+$"))] | first | .headRefName | ltrimstr("release/")' \
+            2>/dev/null || true)"
+
+          if [[ -z "$SEMVER" || "$SEMVER" == "null" ]]; then
+            echo "No open release PR found — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "semver=$SEMVER" >> "$GITHUB_OUTPUT"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "Found RC: $SEMVER"
+          fi
+
+      - name: Resolve Mixpanel URL (schedule only)
+        id: resolve-url
+        if: github.event_name == 'schedule' && steps.resolve.outputs.skip == 'false'
+        env:
+          BOARD_ID: ${{ vars.MIXPANEL_BOARD_ID }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${BOARD_ID:-}" ]]; then
+            echo "⚠️ MIXPANEL_BOARD_ID variable not set — board link will be omitted."
+            echo "url=" >> "$GITHUB_OUTPUT"
+          else
+            URL="https://mixpanel.com/project/${{ vars.MIXPANEL_PROJECT_ID }}/view/2760756/app/boards#id=${BOARD_ID}"
+            echo "url=$URL" >> "$GITHUB_OUTPUT"
+            echo "Board URL: $URL"
+          fi
+
+      - name: Checkout and setup
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'schedule' && steps.resolve.outputs.skip == 'false')
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Post RC testing summary to Slack
+        if: >-
+          github.event_name == 'workflow_dispatch' ||
+          (github.event_name == 'schedule' && steps.resolve.outputs.skip == 'false')
+        continue-on-error: true
+        env:
+          SEMVER: >-
+            ${{
+              github.event_name == 'workflow_dispatch'
+                && inputs.semver
+                || steps.resolve.outputs.semver
+            }}
+          MIXPANEL_URL: >-
+            ${{
+              github.event_name == 'workflow_dispatch'
+                && inputs.mixpanel_url
+                || steps.resolve-url.outputs.url
+            }}
+          # Channel priority: test_channel input → SLACK_CHANNEL var → default #release-extension-X-Y-Z
+          SLACK_CHANNEL: >-
+            ${{
+              github.event_name == 'workflow_dispatch' && inputs.test_channel != ''
+                && inputs.test_channel
+                || vars.SLACK_CHANNEL
+                || ''
+            }}
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          # Phase 2 — optional; when set, live Mixpanel counts are included in the message.
+          MIXPANEL_PROJECT_SECRET: ${{ secrets.MIXPANEL_PROJECT_SECRET }}
+          MIXPANEL_PROJECT_ID: ${{ vars.MIXPANEL_PROJECT_ID }}
+          MIXPANEL_BOARD_ID: ${{ vars.MIXPANEL_BOARD_ID }}
+          MIXPANEL_REPORT_ID: ${{ vars.MIXPANEL_REPORT_ID }}
+          MIXPANEL_RC_PROPERTY: ${{ vars.MIXPANEL_RC_PROPERTY }}
+          MIXPANEL_REGION: ${{ vars.MIXPANEL_REGION }}
+          # Comma-separated list of Mixpanel event names to summarise.
+          # When empty, live counts are skipped even if credentials are present.
+          # Set via repo variable once event names are confirmed.
+          MIXPANEL_EVENT_NAMES: ${{ vars.MIXPANEL_EVENT_NAMES }}
+        run: yarn exec tsx ./.github/scripts/rc-testing-summary.mts
