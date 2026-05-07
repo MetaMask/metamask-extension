@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import log from 'loglevel';
 import {
   Box,
@@ -80,6 +80,14 @@ export default function SetupPasskey() {
       DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE,
     );
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const goToNextStep = useCallback(() => {
     const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
@@ -151,7 +159,9 @@ export default function SetupPasskey() {
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
       });
-      goToNextStep();
+      if (isMountedRef.current) {
+        goToNextStep();
+      }
     } catch (error) {
       // handle error
       if (isPasskeyCeremonySilentError(error)) {
@@ -159,19 +169,26 @@ export default function SetupPasskey() {
           'Onboarding passkey enrollment ceremony cancelled or timed out',
           error,
         );
-        setRegisterStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
-        setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+        if (isMountedRef.current) {
+          setRegisterStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+          setVerifyStepPhase(DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE);
+        }
         return;
       }
 
       log.error('Onboarding passkey registration failed', error);
-      setEnrollmentError(
-        translatePasskeyError(error, t) ?? t('passkeyErrorRegistrationFailed'),
-      );
+      if (isMountedRef.current) {
+        setEnrollmentError(
+          translatePasskeyError(error, t) ??
+            t('passkeyErrorRegistrationFailed'),
+        );
+      }
     } finally {
-      setIsEnrollmentInProgress(false);
-      setRegisterStepPhase((prev) => (prev === 'loading' ? 'idle' : prev));
-      setVerifyStepPhase((prev) => (prev === 'loading' ? 'idle' : prev));
+      if (isMountedRef.current) {
+        setIsEnrollmentInProgress(false);
+        setRegisterStepPhase((prev) => (prev === 'loading' ? 'idle' : prev));
+        setVerifyStepPhase((prev) => (prev === 'loading' ? 'idle' : prev));
+      }
     }
   }, [dispatch, t, goToNextStep]);
 
