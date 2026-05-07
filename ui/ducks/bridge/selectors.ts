@@ -11,7 +11,7 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
-  selectBridgeQuotesBatch,
+  selectBatchSellQuotes,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteWarning,
@@ -696,7 +696,7 @@ export const getBridgeQuotesBatch = createSelector(
     (_, {requestCount}: {requestCount: number}) => requestCount,
   ],
   (controllerStates, sortOrder, selectedQuote, requestCount) => {
-    return selectBridgeQuotesBatch(controllerStates, {
+    return selectBatchSellQuotes(controllerStates, {
       sortOrder,
       requestCount,
       selectedQuote,
