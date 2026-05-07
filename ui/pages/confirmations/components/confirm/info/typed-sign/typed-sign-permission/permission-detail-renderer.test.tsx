@@ -374,19 +374,21 @@ describe('PermissionDetailRenderer', () => {
       });
     });
 
-    it.each([
+    for (const [ruleType, label] of [
       ['redeemer', messages.redeemer.message],
       ['payee', messages.payee.message],
-    ] as const)('lists %s addresses from rules', async (ruleType, label) => {
-      renderPermissionDetail({
-        permission: ERC20_STREAM_PERMISSION,
-        rules: [{ type: ruleType, data: { addresses: [RULE_ADDRESS] } }],
-      });
+    ] as const) {
+      it(`lists ${ruleType} addresses from rules`, async () => {
+        renderPermissionDetail({
+          permission: ERC20_STREAM_PERMISSION,
+          rules: [{ type: ruleType, data: { addresses: [RULE_ADDRESS] } }],
+        });
 
-      await waitFor(() => {
-        expect(screen.getByText(label)).toBeInTheDocument();
+        await waitFor(() => {
+          expect(screen.getByText(label)).toBeInTheDocument();
+        });
       });
-    });
+    }
 
     it('uses the Snap-specific request-from tooltip when origin is a Snap id', async () => {
       renderPermissionDetail({

@@ -4,10 +4,12 @@ import { extractAddressesFromRuleByType } from './address-rule-utils';
 const ADDR_1 = '0x0000000000000000000000000000000000000001';
 const ADDR_2 = '0x0000000000000000000000000000000000000002';
 
-describe.each(['payee', 'redeemer'] as const)(
-  '%s address rule extraction',
-  (ruleType) => {
-    it.each([
+type RuleType = 'payee' | 'redeemer';
+type RuleCase = [string, Rule[] | null | undefined, string[] | null];
+
+for (const ruleType of ['payee', 'redeemer'] as RuleType[]) {
+  describe(`${ruleType} address rule extraction`, () => {
+    const cases: RuleCase[] = [
       [
         'matching rule is present',
         [{ type: ruleType, data: { addresses: [ADDR_1, ADDR_2] } }] as Rule[],
@@ -52,10 +54,14 @@ describe.each(['payee', 'redeemer'] as const)(
         [{ type: ruleType, data: { addresses: [1, 2, null] } }] as Rule[],
         null,
       ],
-    ])('returns expected addresses when %s', (_name, rules, expected) => {
-      expect(extractAddressesFromRuleByType(rules, ruleType)).toStrictEqual(
-        expected,
-      );
-    });
-  },
-);
+    ];
+
+    for (const [name, rules, expected] of cases) {
+      it(`returns expected addresses when ${name}`, () => {
+        expect(extractAddressesFromRuleByType(rules, ruleType)).toStrictEqual(
+          expected,
+        );
+      });
+    }
+  });
+}
