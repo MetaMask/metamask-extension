@@ -39,6 +39,7 @@ import { useAutomaticTransactionPayToken } from '../../../hooks/pay/useAutomatic
 import type { SetPayTokenRequest } from '../../../hooks/pay/types';
 import {
   useIsTransactionPayLoading,
+  useTransactionPayPrimaryRequiredToken,
   useTransactionPayQuotes,
 } from '../../../hooks/pay/useTransactionPayData';
 import { useTransactionPayMetrics } from '../../../hooks/pay/useTransactionPayMetrics';
@@ -95,6 +96,8 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
     const { currentConfirmation } = useConfirmContext<TransactionMeta>();
     const availableTokens = useTransactionPayAvailableTokens();
     const hasTokens = availableTokens.length > 0;
+    const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
+    const isAwaitingRequiredToken = !disablePay && !primaryRequiredToken;
 
     const { disableUpdate } = useTransactionCustomAmountAlerts();
 
@@ -123,7 +126,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
       [updatePendingAmountPercentage],
     );
 
-    if (!currentConfirmation) {
+    if (!currentConfirmation || isAwaitingRequiredToken) {
       return <CustomAmountInfoSkeleton />;
     }
 
