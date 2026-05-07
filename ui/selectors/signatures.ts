@@ -27,28 +27,18 @@ export const selectSignatureRequestById = createSelector(
   (signatureRequests, id) => (id ? signatureRequests[id] : undefined),
 );
 
-const memoizedSelectUnapprovedSignatureRequestById = createSelector(
-  selectSignatureRequestById,
-  (request) =>
-    request?.status === SignatureRequestStatus.Unapproved ? request : undefined,
-);
-
 /**
  * Returns the unapproved {@link SignatureRequest} for a given ID, or
  * `undefined` if the request does not exist or is not in the unapproved state.
  *
- * Accepts `DefaultRootState` so callers inside `useSelector` need no type cast.
- * `clearCache` is forwarded to the underlying memoized selector.
+ * The input selector casts `DefaultRootState` to `SignatureState` so callers
+ * inside `useSelector` need no type cast at the call site.
  */
-export const selectUnapprovedSignatureRequestById = Object.assign(
-  (
-    state: DefaultRootState,
-    id: string | undefined,
-  ): SignatureRequest | undefined =>
-    memoizedSelectUnapprovedSignatureRequestById(state as SignatureState, id),
-  {
-    clearCache: () => memoizedSelectUnapprovedSignatureRequestById.clearCache(),
-  },
+export const selectUnapprovedSignatureRequestById = createSelector(
+  (state: DefaultRootState, id: string | undefined) =>
+    selectSignatureRequestById(state as SignatureState, id),
+  (request) =>
+    request?.status === SignatureRequestStatus.Unapproved ? request : undefined,
 );
 
 /** @deprecated Use {@link selectSignatureRequests} instead. */
