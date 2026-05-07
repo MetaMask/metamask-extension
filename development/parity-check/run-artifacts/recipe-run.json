@@ -1,0 +1,53 @@
+{
+  "title": "Refactor parity — PR #42441 selector hoist",
+  "pr": "https://github.com/MetaMask/metamask-extension/pull/42441",
+  "runAt": "2026-05-07T23:00:54.294Z",
+  "overall": "FAIL",
+  "nodes": [
+    {
+      "node": "cycles",
+      "status": "FAIL",
+      "durationMs": 1063,
+      "exitCode": 127,
+      "stdout": "",
+      "stderr": "command not found: tsx\n",
+      "note": "shared/lib/selectors/** must not appear in any cycle (9→0 on this PR)"
+    },
+    {
+      "node": "boundary",
+      "status": "FAIL",
+      "durationMs": 32,
+      "exitCode": 0,
+      "stdout": "shared/lib/selectors/account.ts:// eslint-disable-next-line import-x/no-restricted-paths\nshared/lib/selectors/smart-transactions.ts:  // eslint-disable-next-line import-x/no-restricted-paths\nshared/lib/selectors/smart-transactions.ts:  // eslint-disable-next-line import-x/no-restricted-paths\nshared/lib/selectors/index.ts:// eslint-disable-next-line import-x/no-restricted-paths\n",
+      "stderr": "",
+      "note": "No eslint-disable bypass of the shared→ui import boundary should remain"
+    },
+    {
+      "node": "parity",
+      "status": "FAIL",
+      "durationMs": 1798,
+      "exitCode": 1,
+      "stdout": "\nParity check: main → HEAD\nManifest: development/parity-check/pr-42441-moves.json (12 symbols)\n\n  ✗ getSelectedInternalAccount  [MISSING on new] shared/lib/selectors/accounts.ts\n  ✗ getMaybeSelectedInternalAccount  [MISSING on new] shared/lib/selectors/accounts.ts\n  ✗ AccountsState  [MISSING on new] shared/lib/selectors/accounts.ts\n  ✗ getCurrentKeyring  [MISSING on new] shared/lib/selectors/keyring.ts\n  ✗ getAccountType  [MISSING on new] shared/lib/selectors/keyring.ts\n  ✗ getAccountTypeForKeyring  [MISSING on new] shared/lib/selectors/keyring.ts\n  ✗ isHardwareWallet  [MISSING on new] shared/lib/selectors/keyring.ts\n  ✗ getHardwareWalletType  [MISSING on new] shared/lib/selectors/keyring.ts\n  ✗ accountSupportsSmartTx  [MISSING on new] shared/lib/selectors/keyring.ts\n  ✗ getPreferences  [MISSING on new] shared/lib/selectors/preferences.ts\n  ✗ getRemoteFeatureFlags  [MISSING on new] shared/lib/selectors/remote-feature-flags.ts\n  ✗ RemoteFeatureFlagsState  [MISSING on new] shared/lib/selectors/remote-feature-flags.ts\n\n0/12 match\n",
+      "stderr": "",
+      "note": "All moved selectors must be structurally identical to their originals (AST body, modulo locations/comments)"
+    },
+    {
+      "node": "tsc",
+      "status": "FAIL",
+      "durationMs": 45687,
+      "exitCode": 2,
+      "stdout": "app/scripts/controllers/metametrics-controller.ts(1404,54): error TS2345: Argument of type '(collection: string | object | null | undefined) => number' is not assignable to parameter of type '(value: unknown, index: number, array: unknown[]) => number'.\n  Types of parameters 'collection' and 'value' are incompatible.\n    Type 'unknown' is not assignable to type 'string | object | null | undefined'.\napp/scripts/controllers/metametrics-controller.ts(1417,39): error TS18046: 'networkConfiguration' is of type 'unknown'.\napp/scripts/controllers/metametrics-controller.ts(1421,17): error TS2769: No overload matches this call.\n  Overload 1 of 2, '(predicate: (value: unknown, index: number, array: unknown[]) => value is unknown, thisArg?: any): unknown[]', gave the following error.\n    Argument of type '({ nativeCurrency }: { nativeCurrency: any; }) => boolean' is not assignable to parameter of type '(value: unknown, index: number, array: unknown[]) => value is unknown'.\n      Types of parameters '__0' and 'value' are incompatible.\n        Type 'unknown' is not assignable to type '{ nativeCurrency: any; }'.\n  Overload 2 of 2, '(predicate: (value: unknown, index: number, array: unknown[]) => unknown, thisArg?: any): unknown[]', gave the following error.\n    Argument of type '({ nativeCurrency }: { nativeCurrency: any; }) => boolean' is not assignable to parameter of type '(value: unknown, index: number, array: unknown[]) => unknown'.\n      Types of parameters '__0' and 'value' are incompatible.\n        Type 'unknown' is not assignable to type '{ nativeCurrency: any; }'.\napp/scripts/controllers/metametrics-controller.ts(1422,14): error TS2345: Argument of type '({ chainId }: { chainId: any; }) => any' is not assignable to parameter of type '(value: unknown, index: number, array: unknown[]) => any'.\n  Types of parameters '__0' and 'value' are incompatible.\n    Type 'unknown' is not assignable to type '{ chainId: any; }'.\napp/scripts/controllers/metametrics-controller.ts(1470,20",
+      "stderr": "",
+      "note": "TypeScript must be clean across the full project"
+    },
+    {
+      "node": "tests",
+      "status": "FAIL",
+      "durationMs": 62679,
+      "exitCode": 1,
+      "stdout": "\n\n════════════════════════════════════════════════════════════════════════════════\n  Console Baseline Report (Per-File)\n════════════════════════════════════════════════════════════════════════════════\n\n📋 NEW FILES (not in baseline)\n\n  The following test files are not in the baseline yet:\n\n  📁 ui/ducks/ramps/ramps.test.ts\n     Total warnings: 1\n       • warn: ImmutableStateInvariantMiddleware took 45ms, which is: 1\n\n  💡 Run \"yarn test:unit:update-baseline\" to add these files to baseline.\n\n\n✨ CONSOLE IMPROVEMENTS DETECTED\n\n  Great job! The following warnings were reduced:\n\n  📁 ui/selectors/assets.test.ts\n     🎉 FIXED: warn: No tokens found for chainId:\n        All 1 occurrences eliminated!\n\n  📁 ui/hooks/useHardwareWalletRecoveryLocation.test.tsx\n     🎉 FIXED: Reselect: Identity function warnings\n        All 1 occurrences eliminated!\n\n  💡 To lock in improvements:\n     - Edit baseline manually, OR\n     - Run yarn test:unit:update-baseline:strict (allows decreases - use with caution)\n\n════════════════════════════════════════════════════════════════════════════════\n  SUMMARY\n    Files analyzed: 198\n    Violations: 0\n    Improvements: 2\n    New files: 1\n════════════════════════════════════════════════════════════════════════════════\n\n\n",
+      "stderr": "PASS shared/lib/selectors/assets-migration.test.ts (5.167 s)\nPASS ui/selectors/transactions.test.js (5.917 s)\nPASS ui/selectors/multichain/networks.test.ts\nPASS ui/selectors/gator-permissions/gator-permissions.test.ts (11.182 s)\nPASS ui/selectors/selectors.test.js (11.234 s)\nPASS ui/selectors/multichain-accounts/account-tree.test.ts (11.252 s)\nPASS ui/ducks/swaps/swaps.test.js (5.494 s)\nPASS ui/selectors/assets.test.ts (11.71 s)\nPASS ui/hooks/useAccountGroupForPermissions.test.ts (11.781 s)\nPASS ui/hooks/rewards/useLinkAccountGroup.test.tsx (12.151 s)\nPASS ui/hooks/rewards/useCandidateSubscriptionId.test.ts (12.268 s)\nPASS ui/hooks/bridge/useRewards.test.ts (12.273 s)\nPASS ui/ducks/bridge/selectors.test.ts (12.361 s)\nPASS ui/hooks/gator-permissions/useRevokeGatorPermissions.test.tsx (5.767 s)\nPASS ui/hooks/rewards/usePrimaryWalletGroupAccounts.test.ts\nPASS ui/selectors/perps-controller.test.ts\nPASS ui/selectors/permissions.test.js\nPASS ui/selectors/multichain.test.ts\nPASS ui/ducks/metamask/metamask.test.js\nPASS ui/hooks/musd/useMusdConversionTokens.test.ts\nPASS shared/lib/selectors/index.test.ts\nPASS ui/hooks/rewards/useSeasonStatus.test.ts\nPASS ui/hooks/useNetworkConnectionBanner.test.ts\nPASS ui/hooks/musd/useMusdCtaVisibility.test.ts\nPASS ui/hooks/rewards/useOptIn.test.tsx\nPASS ui/hooks/useTokenInsightsData.test.ts\nPASS ui/hooks/rewards/useLinkAccountAddress.test.tsx\nPASS ui/hooks/perps/usePerpsMarketFills.test.ts\nPASS ui/hooks/musd/useMerklClaimStatus.test.ts\nPASS ui/hooks/useDisplayName.test.ts\n  ● Console\n\n    console.error\n      Unexpected key \"DNS\" found in preloadedState argument passed to createStore. Expected to find one of the known reducer keys instead: \"invalidCustomNetwork\", \"unconnectedAccount\", \"activeTab\", \"metamask\", \"appState\", \"history\", \"confirmAlerts\", \"confirmTransaction\", \"swaps\", \"ramps\", \"bridge\", \"gas\", \"localeMessages\", \"smartAccounts\", \"rewards\", \"perpsTutorial\". Unexpected keys will be ignored.\n\n      63 |   }\n      64 |\n    > 65 |   re",
+      "note": "Tests on directly touched modules must pass"
+    }
+  ]
+}

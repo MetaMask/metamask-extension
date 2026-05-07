@@ -1,0 +1,64 @@
+[
+    {
+        "symbol": "getSelectedInternalAccount",
+        "oldPath": "ui/selectors/accounts.ts",
+        "newPath": "shared/lib/selectors/accounts.ts"
+    },
+    {
+        "symbol": "getMaybeSelectedInternalAccount",
+        "oldPath": "ui/selectors/accounts.ts",
+        "newPath": "shared/lib/selectors/accounts.ts"
+    },
+    {
+        "symbol": "AccountsState",
+        "oldPath": "ui/selectors/accounts.ts",
+        "newPath": "shared/lib/selectors/accounts.ts",
+        "kind": "type"
+    },
+    {
+        "symbol": "getCurrentKeyring",
+        "oldPath": "ui/selectors/selectors.js",
+        "newPath": "shared/lib/selectors/keyring.ts"
+    },
+    {
+        "symbol": "getAccountType",
+        "oldPath": "ui/selectors/selectors.js",
+        "newPath": "shared/lib/selectors/keyring.ts"
+    },
+    {
+        "symbol": "getAccountTypeForKeyring",
+        "oldPath": "ui/selectors/selectors.js",
+        "newPath": "shared/lib/selectors/keyring.ts"
+    },
+    {
+        "symbol": "isHardwareWallet",
+        "oldPath": "ui/selectors/selectors.js",
+        "newPath": "shared/lib/selectors/keyring.ts"
+    },
+    {
+        "symbol": "getHardwareWalletType",
+        "oldPath": "ui/selectors/selectors.js",
+        "newPath": "shared/lib/selectors/keyring.ts"
+    },
+    {
+        "symbol": "accountSupportsSmartTx",
+        "oldPath": "ui/selectors/selectors.js",
+        "newPath": "shared/lib/selectors/keyring.ts"
+    },
+    {
+        "symbol": "getPreferences",
+        "oldPath": "ui/selectors/selectors.js",
+        "newPath": "shared/lib/selectors/preferences.ts"
+    },
+    {
+        "symbol": "getRemoteFeatureFlags",
+        "oldPath": "ui/selectors/remote-feature-flags.ts",
+        "newPath": "shared/lib/selectors/remote-feature-flags.ts"
+    },
+    {
+        "symbol": "RemoteFeatureFlagsState",
+        "oldPath": "ui/selectors/remote-feature-flags.ts",
+        "newPath": "shared/lib/selectors/remote-feature-flags.ts",
+        "kind": "type"
+    }
+]

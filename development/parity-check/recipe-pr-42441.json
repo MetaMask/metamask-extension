@@ -1,0 +1,50 @@
+{
+    "title": "Refactor parity — PR #42441 selector hoist",
+    "description": "Verifies that hoisting UI selectors into shared/lib/selectors/ introduced no runtime behavior changes.",
+    "pr": "https://github.com/MetaMask/metamask-extension/pull/42441",
+    "schema_version": 1,
+    "validate": {
+        "workflow": {
+            "pre_conditions": ["git.on_pr_branch"],
+            "entry": "cycles",
+            "nodes": {
+                "cycles": {
+                    "action": "shell",
+                    "cmd": "node ./node_modules/tsx/dist/cli.mjs development/circular-deps.ts 2>&1 | grep -c 'shared/lib/selectors' || true",
+                    "assert": { "operator": "output_empty" },
+                    "note": "shared/lib/selectors/** must not appear in any cycle (9→0 on this PR). Run with nvm loaded.",
+                    "next": "boundary"
+                },
+                "boundary": {
+                    "action": "shell",
+                    "cmd": "grep -r 'eslint-disable.*import-x/no-restricted-paths' shared/lib/selectors/ || true",
+                    "assert": { "operator": "output_empty" },
+                    "note": "No eslint-disable bypass of the shared→ui import boundary should remain",
+                    "next": "parity"
+                },
+                "parity": {
+                    "action": "script",
+                    "cmd": "node --require ./node_modules/tsx/dist/preflight.cjs --import ./node_modules/tsx/dist/loader.mjs development/parity-check/parity-check.ts --manifest development/parity-check/pr-42441-moves.json --old-ref main --new-ref HEAD",
+                    "assert": { "operator": "exit_code", "value": 0 },
+                    "note": "All moved selectors must be structurally identical to their originals (AST body, modulo locations/comments)",
+                    "next": "tsc"
+                },
+                "tsc": {
+                    "action": "shell",
+                    "cmd": "yarn tsc --noEmit -p tsconfig.json",
+                    "assert": { "operator": "exit_code", "value": 0 },
+                    "note": "TypeScript must be clean across the full project",
+                    "next": "tests"
+                },
+                "tests": {
+                    "action": "shell",
+                    "cmd": "yarn jest --testPathPattern='shared/lib/selectors|ui/selectors|ui/ducks|ui/hooks' --passWithNoTests",
+                    "assert": { "operator": "exit_code", "value": 0 },
+                    "note": "Tests on directly touched modules must pass",
+                    "next": "done"
+                },
+                "done": { "action": "end", "status": "pass" }
+            }
+        }
+    }
+}
