@@ -737,12 +737,6 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    case actionConstants.SET_SHOW_NEW_SRP_ADDED_TOAST:
-      return {
-        ...appState,
-        showNewSrpAddedToast: action.payload,
-      };
-
     case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
       return {
         ...appState,

@@ -16,26 +16,26 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsNetworkEventSource,
-} from '../../../../../shared/constants/metametrics';
+} from '../../../../shared/constants/metametrics';
 import {
   CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
   CHAIN_IDS,
   infuraProjectId,
   NETWORK_TO_NAME_MAP,
-} from '../../../../../shared/constants/network';
+} from '../../../../shared/constants/network';
 import {
   decimalToHex,
   hexToDecimal,
-} from '../../../../../shared/lib/conversion.utils';
+} from '../../../../shared/lib/conversion.utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
-} from '../../../../../shared/lib/network.utils';
-import { jsonRpcRequest } from '../../../../../shared/lib/rpc.utils';
-import { submitRequestToBackground } from '../../../../store/background-connection';
-import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+} from '../../../../shared/lib/network.utils';
+import { jsonRpcRequest } from '../../../../shared/lib/rpc.utils';
+import { submitRequestToBackground } from '../../../store/background-connection';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
@@ -44,7 +44,7 @@ import {
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
   updateNetwork,
-} from '../../../../store/actions';
+} from '../../../store/actions';
 import {
   Box,
   ButtonLink,
@@ -56,7 +56,7 @@ import {
   HelpTextSeverity,
   Tag,
   Text,
-} from '../../../../components/component-library';
+} from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -67,20 +67,20 @@ import {
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 import RpcListItem, {
   stripKeyFromInfuraUrl,
   stripProtocol,
-} from '../../../../components/multichain/network-list-menu/rpc-list-item';
+} from '../network-list-menu/rpc-list-item';
 import {
   DropdownEditor,
   DropdownEditorStyle,
-} from '../../../../components/multichain/dropdown-editor/dropdown-editor';
+} from '../dropdown-editor/dropdown-editor';
 import {
   getIsRpcFailoverEnabled,
   getTokenNetworkFilter,
-} from '../../../../selectors';
-import { onlyKeepHost } from '../../../../../shared/lib/only-keep-host';
+} from '../../../selectors';
+import { onlyKeepHost } from '../../../../shared/lib/only-keep-host';
 import { useSafeChains, rpcIdentifierUtility } from './use-safe-chains';
 import { useNetworkFormState } from './networks-form-state';
 
@@ -453,7 +453,7 @@ export const NetworksForm = ({
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
       ref={scrollableRef}
-      className="networks-tab__scrollable"
+      className="networks-form__scrollable"
     >
       <Box
         width={BlockSize.Full}
@@ -789,8 +789,8 @@ export const NetworksForm = ({
         />
       </Box>
       <Box
-        className={`networks-tab__network-form__footer${
-          usePageFooterStyle ? ' networks-tab__network-form__footer--page' : ''
+        className={`networks-form__footer${
+          usePageFooterStyle ? ' networks-form__footer--page' : ''
         }`}
         backgroundColor={
           usePageFooterStyle

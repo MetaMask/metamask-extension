@@ -1,5 +1,4 @@
 import {
-  SET_SHOW_NEW_SRP_ADDED_TOAST,
   SET_SHOW_CLAIM_SUBMIT_TOAST,
   SET_SHOW_INFURA_SWITCH_TOAST,
 } from '../../../store/actionConstants';
@@ -52,13 +51,6 @@ export function submitRequestToBackgroundAndCatch(
   submitRequestToBackground(method, args)?.catch((error) => {
     console.error('Error caught in submitRequestToBackground', error);
   });
-}
-
-export function setShowNewSrpAddedToast(value: number | false) {
-  return {
-    type: SET_SHOW_NEW_SRP_ADDED_TOAST,
-    payload: value,
-  };
 }
 
 export function setShowClaimSubmitToast(
