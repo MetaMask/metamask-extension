@@ -6,8 +6,7 @@ class SetupPasskeyPage {
   private readonly maybeLaterButton =
     '[data-testid="passkey-maybe-later-button"]';
 
-  private readonly setUpPasskeyButton =
-    '[data-testid="passkey-set-up-button"]';
+  private readonly setUpPasskeyButton = '[data-testid="passkey-set-up-button"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
