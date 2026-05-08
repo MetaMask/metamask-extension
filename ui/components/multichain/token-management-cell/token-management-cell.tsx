@@ -1,23 +1,20 @@
 import React from 'react';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  FontWeight,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
+  AvatarTokenSize,
   BadgeWrapper,
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
   Text,
-} from '../../component-library';
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import ToggleButton from '../../ui/toggle-button';
 import { ASSET_CELL_HEIGHT } from '../../app/assets/constants';
 
@@ -94,29 +91,26 @@ export const TokenManagementCell = ({
     <AvatarToken
       name={symbol}
       src={image}
-      backgroundColor={BackgroundColor.backgroundSection}
+      size={AvatarTokenSize.Md}
     />
   );
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      width={BlockSize.Full}
-      height={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Row}
       gap={4}
+      className="h-full w-full"
       data-testid={dataTestId}
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         paddingTop={2}
         paddingBottom={2}
         paddingLeft={4}
         paddingRight={4}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        width={BlockSize.Full}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        className="w-full"
         style={{ height: ASSET_CELL_HEIGHT }}
       >
         {hasNetworkBadge ? (
@@ -126,41 +120,36 @@ export const TokenManagementCell = ({
                 name={networkName ?? symbol}
                 src={networkImage}
                 size={AvatarNetworkSize.Xs}
-                backgroundColor={BackgroundColor.backgroundSection}
-                borderWidth={2}
+                hasBorder
+                data-testid={`${dataTestId}-network-badge`}
               />
             }
-            marginRight={4}
-            style={{ alignSelf: 'center' }}
-            badgeContainerProps={{
-              'data-testid': `${dataTestId}-network-badge`,
-            }}
+            className="mr-4 self-center"
           >
             {tokenAvatar}
           </BadgeWrapper>
         ) : (
-          <Box marginRight={4} style={{ alignSelf: 'center' }}>
+          <Box marginRight={4} className="self-center">
             {tokenAvatar}
           </Box>
         )}
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          style={{ flex: '1 1 0', minWidth: 0 }}
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
+          className="min-w-0 flex-1"
         >
           <Text
-            variant={TextVariant.bodyMd}
+            variant={TextVariant.BodyMd}
             fontWeight={FontWeight.Medium}
-            color={TextColor.textDefault}
+            color={TextColor.TextDefault}
             ellipsis
           >
             {primaryLabel}
           </Text>
           {secondaryLabel ? (
             <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
               ellipsis
             >
               {secondaryLabel}
