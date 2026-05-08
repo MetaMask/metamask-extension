@@ -2800,10 +2800,6 @@
     "message": "코드: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "오류 세부 정보",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "안전 체인 목록을 가져오는 동안 오류가 발생했습니다. 주의하여 계속 진행하세요."
   },
@@ -8695,9 +8691,6 @@
   "stillConnectingTo": {
     "message": "$1에 연결 중...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "아직 이 메시지가 표시되시나요?"
   },
   "storageErrorAction": {
     "message": "비밀복구구문 백업"

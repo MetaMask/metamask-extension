@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   getSafeNativeCurrencySymbol,
   type SafeChain,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+} from '../../../multichain/networks-form/use-safe-chains';
 import { setEditedNetwork } from '../../../../store/actions';
 import {
   ButtonSecondary,

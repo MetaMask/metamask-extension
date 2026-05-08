@@ -18,6 +18,8 @@ class CriticalErrorPage {
 
   protected readonly restoreAccountsLink = '#critical-error-restore-link';
 
+  protected readonly reinstallMetamaskLink = '#critical-error-reinstall-link';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -65,8 +67,15 @@ class CriticalErrorPage {
   }
 
   /**
-   * Click the "Attempt recovery" link (shown on critical error when backup exists)
-   * and handle the confirmation alert.
+   * Validate that the "Reinstall MetaMask" link is present on the page and
+   * points to the SRP recovery support article.
+   */
+  async validateReinstallMetamaskLink(): Promise<void> {
+    await this.driver.waitForSelector(this.reinstallMetamaskLink);
+  }
+
+  /**
+   * Click Attempt recovery (backup exists) and handle the confirmation alert.
    *
    * @param options - Options for the attempt recovery action.
    * @param options.confirm - Whether to confirm (accept) or dismiss the alert.
@@ -121,6 +130,9 @@ class CriticalErrorPage {
         { interval: 300, timeout: 30_000 },
       );
 
+      // Wait for the UI to receive state and finish launching.
+      await this.driver.delay(5000);
+      await this.driver.waitForControllersLoaded();
       // Now safe to close extra tabs (service worker has finished handoff / fallback).
       await this.driver.closeAllOtherTabs();
     } else {

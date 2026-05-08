@@ -4,7 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { tEn } from '../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
@@ -43,7 +43,9 @@ describe('PasskeyItem', () => {
     renderWithProvider(<PasskeyItem />, mockStore);
 
     expect(
-      screen.getByText(messages.unlockWithPasskey.message),
+      screen.getByText(
+        tEn('unlockWithPasskey', [tEn('passkeyAuthMethodBiometrics')]),
+      ),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('security-passkey-settings-toggle'),
@@ -77,7 +79,6 @@ describe('PasskeyItem', () => {
 
     expect(openExtensionInBrowser).toHaveBeenCalledWith(
       SECURITY_AND_PASSWORD_ROUTE,
-      'from=sidepanel',
     );
 
     delete (globalThis as { platform?: unknown }).platform;

@@ -2800,10 +2800,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Mga detalye ng error",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "May error habang kinukuha ang ligtas na chain list, mangyaring magpatuloy nang may pag-iingat."
   },
@@ -8691,9 +8687,6 @@
   "stillConnectingTo": {
     "message": "Kasalukuyan pa ring kumokonekta sa $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "Nakukuha pa rin ang mensaheng ito?"
   },
   "storageErrorAction": {
     "message": "I-back up ang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase)"
