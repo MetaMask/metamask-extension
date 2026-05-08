@@ -357,9 +357,7 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
       messengerClient.getWithdrawalProgress.bind(messengerClient),
 
     // -- Data fetches (read-guard: init errors + benign disconnect) --
-    perpsGetPositions: read(
-      messengerClient.getPositions.bind(messengerClient),
-    ),
+    perpsGetPositions: read(messengerClient.getPositions.bind(messengerClient)),
     perpsGetMarkets: read(messengerClient.getMarkets.bind(messengerClient)),
     perpsGetMarketDataWithPrices: read(
       messengerClient.getMarketDataWithPrices.bind(messengerClient),

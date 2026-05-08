@@ -871,8 +871,9 @@ describe('PerpsControllerInit', () => {
             const fn = (
               messengerClient as unknown as Record<string, jest.Mock>
             )[controllerMethod];
-            fn.mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
-              .mockResolvedValueOnce(undefined);
+            fn.mockRejectedValueOnce(
+              new Error('CLIENT_NOT_INITIALIZED'),
+            ).mockResolvedValueOnce(undefined);
 
             await (api as Record<string, CallableFunction>)[apiMethod]();
 
@@ -915,11 +916,10 @@ describe('PerpsControllerInit', () => {
 
         it('perpsDepositWithConfirmation still retries on CLIENT_NOT_INITIALIZED (pre-send)', async () => {
           const { api, messengerClient } = initWithApi();
-          (messengerClient.state as unknown as Record<string, string>).lastDepositTransactionId =
-            'tx-retry';
           (
-            messengerClient.depositWithConfirmation as jest.Mock
-          )
+            messengerClient.state as unknown as Record<string, string>
+          ).lastDepositTransactionId = 'tx-retry';
+          (messengerClient.depositWithConfirmation as jest.Mock)
             .mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
             .mockResolvedValueOnce(undefined);
 
@@ -930,9 +930,9 @@ describe('PerpsControllerInit', () => {
           );
 
           expect(messengerClient.init).toHaveBeenCalledTimes(1);
-          expect(
-            messengerClient.depositWithConfirmation,
-          ).toHaveBeenCalledTimes(2);
+          expect(messengerClient.depositWithConfirmation).toHaveBeenCalledTimes(
+            2,
+          );
           expect(result).toBe('tx-retry');
         });
       });
