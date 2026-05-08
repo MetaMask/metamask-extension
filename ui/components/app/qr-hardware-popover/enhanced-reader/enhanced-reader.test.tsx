@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, act } from '@testing-library/react';
 import { BrowserQRCodeReader } from '@zxing/browser';
+import log from 'loglevel';
 import EnhancedReader from './enhanced-reader';
 
 jest.mock('@zxing/browser', () => ({
@@ -36,137 +37,165 @@ describe('EnhancedReader', () => {
     jest.restoreAllMocks();
   });
 
-  it('renders a video element hidden with spinner when isVisible is false', () => {
-    const { container } = render(
-      <EnhancedReader onFrame={jest.fn()} isVisible={false} />,
-    );
+  describe('rendering', () => {
+    it('hides video and shows spinner when isVisible is false', () => {
+      const { container } = render(
+        <EnhancedReader onFrame={jest.fn()} isVisible={false} />,
+      );
 
-    const video = container.querySelector('video') as HTMLVideoElement;
-    expect(video).toBeInTheDocument();
-    expect(video.style.display).toBe('none');
-    expect(container.querySelector('.spinner')).toBeInTheDocument();
-  });
-
-  it('renders video visible without spinner when isVisible is true', () => {
-    const { container } = render(
-      <EnhancedReader onFrame={jest.fn()} isVisible />,
-    );
-
-    const video = container.querySelector('video') as HTMLVideoElement;
-    expect(video.style.display).toBe('block');
-    expect(container.querySelector('.spinner')).not.toBeInTheDocument();
-  });
-
-  it('initializes BrowserQRCodeReader with QR_CODE hint', () => {
-    render(<EnhancedReader onFrame={jest.fn()} isVisible />);
-
-    expect(MockBrowserQRCodeReader).toHaveBeenCalledWith(
-      expect.any(Map),
-      expect.objectContaining({
-        delayBetweenScanAttempts: 100,
-        delayBetweenScanSuccess: 100,
-      }),
-    );
-  });
-
-  it('calls decodeFromVideoDevice with a video element ref', () => {
-    render(<EnhancedReader onFrame={jest.fn()} isVisible />);
-
-    expect(mockDecodeFromVideoDevice).toHaveBeenCalledWith(
-      undefined,
-      expect.any(HTMLVideoElement),
-      expect.any(Function),
-    );
-  });
-
-  it('invokes onFrame when a QR code is decoded', () => {
-    const onFrame = jest.fn();
-
-    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
-      callback({ getText: () => 'decoded-payload' }, null);
-      return Promise.resolve(mockControls);
+      const video = container.querySelector('video') as HTMLVideoElement;
+      expect(video).toBeInTheDocument();
+      expect(video.style.display).toBe('none');
+      expect(container.querySelector('.spinner')).toBeInTheDocument();
     });
 
-    render(<EnhancedReader onFrame={onFrame} isVisible />);
+    it('shows video and hides spinner when isVisible is true', () => {
+      const { container } = render(
+        <EnhancedReader onFrame={jest.fn()} isVisible />,
+      );
 
-    expect(onFrame).toHaveBeenCalledWith('decoded-payload');
+      const video = container.querySelector('video') as HTMLVideoElement;
+      expect(video.style.display).toBe('block');
+      expect(container.querySelector('.spinner')).not.toBeInTheDocument();
+    });
   });
 
-  it('does not invoke onFrame when result is null', () => {
-    const onFrame = jest.fn();
-
-    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
-      callback(null, null);
-      return Promise.resolve(mockControls);
-    });
-
-    render(<EnhancedReader onFrame={onFrame} isVisible />);
-
-    expect(onFrame).not.toHaveBeenCalled();
-  });
-
-  it('invokes onCameraError when decode reports an error', () => {
-    const onCameraError = jest.fn();
-    const scanError = new Error('Camera lost');
-
-    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
-      callback(null, scanError);
-      return Promise.resolve(mockControls);
-    });
-
-    render(
-      <EnhancedReader
-        onFrame={jest.fn()}
-        onCameraError={onCameraError}
-        isVisible
-      />,
-    );
-
-    expect(onCameraError).toHaveBeenCalledWith(scanError);
-  });
-
-  it('passes the error object directly to onCameraError', () => {
-    const onCameraError = jest.fn();
-    const scanError = new Error('Device unavailable');
-
-    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
-      callback(null, scanError);
-      return Promise.resolve(mockControls);
-    });
-
-    render(
-      <EnhancedReader
-        onFrame={jest.fn()}
-        onCameraError={onCameraError}
-        isVisible
-      />,
-    );
-
-    expect(onCameraError).toHaveBeenCalledWith(scanError);
-  });
-
-  it('stops controls on unmount', async () => {
-    const { unmount } = render(
-      <EnhancedReader onFrame={jest.fn()} isVisible />,
-    );
-
-    unmount();
-
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-
-    expect(mockControls.stop).toHaveBeenCalled();
-  });
-
-  it('does not call onCameraError when callback is not provided', () => {
-    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
-      callback(null, new Error('ignored'));
-      return Promise.resolve(mockControls);
-    });
-
-    expect(() => {
+  describe('QR reader initialization', () => {
+    it('configures BrowserQRCodeReader with scan interval options', () => {
       render(<EnhancedReader onFrame={jest.fn()} isVisible />);
-    }).not.toThrow();
+
+      expect(MockBrowserQRCodeReader).toHaveBeenCalledWith(
+        expect.any(Map),
+        expect.objectContaining({
+          delayBetweenScanAttempts: 100,
+          delayBetweenScanSuccess: 100,
+        }),
+      );
+    });
+
+    it('starts decoding from the video element ref', () => {
+      render(<EnhancedReader onFrame={jest.fn()} isVisible />);
+
+      expect(mockDecodeFromVideoDevice).toHaveBeenCalledWith(
+        undefined,
+        expect.any(HTMLVideoElement),
+        expect.any(Function),
+      );
+    });
+  });
+
+  describe('onFrame callback', () => {
+    it('invokes onFrame with decoded text on successful scan', () => {
+      const onFrame = jest.fn();
+      mockDecodeFromVideoDevice.mockImplementation(
+        (_device, _elem, callback) => {
+          callback({ getText: () => 'decoded-payload' }, undefined);
+          return Promise.resolve(mockControls);
+        },
+      );
+
+      render(<EnhancedReader onFrame={onFrame} isVisible />);
+
+      expect(onFrame).toHaveBeenCalledWith('decoded-payload');
+    });
+
+    it('does not invoke onFrame when result is undefined', () => {
+      const onFrame = jest.fn();
+      mockDecodeFromVideoDevice.mockImplementation(
+        (_device, _elem, callback) => {
+          callback(undefined, undefined);
+          return Promise.resolve(mockControls);
+        },
+      );
+
+      render(<EnhancedReader onFrame={onFrame} isVisible />);
+
+      expect(onFrame).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('onCameraError callback', () => {
+    it('forwards the error directly when onCameraError is provided', () => {
+      const onCameraError = jest.fn();
+      const scanError = new Error('Camera lost');
+      mockDecodeFromVideoDevice.mockImplementation(
+        (_device, _elem, callback) => {
+          callback(undefined, scanError);
+          return Promise.resolve(mockControls);
+        },
+      );
+
+      render(
+        <EnhancedReader
+          onFrame={jest.fn()}
+          onCameraError={onCameraError}
+          isVisible
+        />,
+      );
+
+      expect(onCameraError).toHaveBeenCalledWith(scanError);
+    });
+
+    it('does not throw when onCameraError is omitted and error occurs', () => {
+      mockDecodeFromVideoDevice.mockImplementation(
+        (_device, _elem, callback) => {
+          callback(undefined, new Error('ignored'));
+          return Promise.resolve(mockControls);
+        },
+      );
+
+      expect(() => {
+        render(<EnhancedReader onFrame={jest.fn()} isVisible />);
+      }).not.toThrow();
+    });
+  });
+
+  describe('cleanup on unmount', () => {
+    it('stops scanner controls when component unmounts', async () => {
+      const { unmount } = render(
+        <EnhancedReader onFrame={jest.fn()} isVisible />,
+      );
+
+      unmount();
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(mockControls.stop).toHaveBeenCalledTimes(1);
+    });
+
+    it('handles gracefully when controls resolve to undefined', async () => {
+      mockDecodeFromVideoDevice.mockResolvedValue(undefined);
+
+      const { unmount } = render(
+        <EnhancedReader onFrame={jest.fn()} isVisible />,
+      );
+
+      unmount();
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(mockControls.stop).not.toHaveBeenCalled();
+    });
+
+    it('logs rejection instead of throwing when cleanup fails', async () => {
+      const logInfoSpy = jest.spyOn(log, 'info');
+      mockDecodeFromVideoDevice.mockRejectedValue(new Error('cleanup failed'));
+
+      const { unmount } = render(
+        <EnhancedReader onFrame={jest.fn()} isVisible />,
+      );
+
+      unmount();
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      expect(logInfoSpy).toHaveBeenCalled();
+    });
   });
 });
