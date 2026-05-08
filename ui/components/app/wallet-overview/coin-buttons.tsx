@@ -137,7 +137,7 @@ const MoreButtonsGroup = ({
               >
                 {action.label}
               </Text>
-              <Tag {...action.tagProps} />
+              {action.tagProps && <Tag {...action.tagProps} />}
             </ButtonBase>
           ))}
         </Box>

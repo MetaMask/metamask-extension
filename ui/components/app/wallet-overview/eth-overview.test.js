@@ -20,6 +20,14 @@ import {
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
 
+const mockOpenBatchSellExperience = jest.fn();
+
+jest.mock('../../../hooks/batch-sell/useBatchSell', () => ({
+  useBatchSell: () => ({
+    openBatchSellExperience: mockOpenBatchSellExperience,
+  }),
+}));
+
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
 // TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
 jest.mock(
@@ -208,6 +216,7 @@ describe('EthOverview', () => {
 
   afterEach(() => {
     store.clearActions();
+    mockOpenBatchSellExperience.mockClear();
   });
 
   describe('EthOverview', () => {
@@ -341,6 +350,25 @@ describe('EthOverview', () => {
       fireEvent.click(queryByTestId('eth-overview-more'));
 
       expect(queryByTestId(ETH_OVERVIEW_RECEIVE)).toBeInTheDocument();
+    });
+
+    it('should show the Batch Sell button inside the more-options dropdown', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+
+      expect(queryByTestId('eth-overview-batchSell')).not.toBeInTheDocument();
+
+      fireEvent.click(queryByTestId('eth-overview-more'));
+
+      expect(queryByTestId('eth-overview-batchSell')).toBeInTheDocument();
+    });
+
+    it('should call openBatchSellExperience when Batch Sell button is clicked', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+
+      fireEvent.click(queryByTestId('eth-overview-more'));
+      fireEvent.click(queryByTestId('eth-overview-batchSell'));
+
+      expect(mockOpenBatchSellExperience).toHaveBeenCalledTimes(1);
     });
 
     it('should always show the Portfolio button', () => {
@@ -479,6 +507,37 @@ describe('EthOverview', () => {
         text: 'Buy',
         // We use a `SwapsEthToken` in this case, so we're expecting an entire object here.
         token_symbol: expect.any(Object),
+      },
+    });
+  });
+
+  it('sends an event when clicking the Batch Sell button', () => {
+    const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
+
+    const mockedStore = configureMockStore([thunk])(mockStore);
+    const { queryByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+        <EthOverview />
+      </MetaMetricsContext.Provider>,
+      mockedStore,
+    );
+
+    fireEvent.click(queryByTestId('eth-overview-more'));
+    fireEvent.click(queryByTestId('eth-overview-batchSell'));
+
+    expect(mockTrackEvent).toHaveBeenCalledWith({
+      event: MetaMetricsEventName.NavBatchSellButtonClicked,
+      category: MetaMetricsEventCategory.Navigation,
+      properties: {
+        text: 'Batch Sell',
+        location: 'home',
+        chain_id: CHAIN_IDS.MAINNET,
       },
     });
   });

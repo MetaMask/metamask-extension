@@ -84,15 +84,16 @@ export const AssetListItem = ({
               •
             </Text>
           )}
-          {asset.percentageChange !== undefined && asset.percentageChange !== 0 && (
-            <Text
-              variant={TextVariant.BodySm}
-              fontWeight={FontWeight.Medium}
-              color={percentageChangeTextColor}
-            >
-              {formatValue(asset.percentageChange, false)}
-            </Text>
-          )}
+          {asset.percentageChange !== undefined &&
+            asset.percentageChange !== 0 && (
+              <Text
+                variant={TextVariant.BodySm}
+                fontWeight={FontWeight.Medium}
+                color={percentageChangeTextColor}
+              >
+                {formatValue(asset.percentageChange, false)}
+              </Text>
+            )}
         </Box>
       </Box>
       <Box gap={1} className="text-right">
