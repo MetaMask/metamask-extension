@@ -716,8 +716,6 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
   }, []);
 
-  // Always return to the wallet Perps tab — not navigate(-1), so extra history
-  // entries from account-overview tab switches do not require multiple back presses.
   const handleBackClick = useCallback(() => {
     navigate(-1);
   }, [navigate]);
