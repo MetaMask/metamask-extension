@@ -2800,10 +2800,6 @@
     "message": "Κωδικός: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Λεπτομέρειες σφάλματος",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Σφάλμα κατά τη λήψη της λίστας ασφαλών αλυσίδων, συνεχίστε με προσοχή."
   },
@@ -8166,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Αιτήματα έξυπνου λογαριασμού από αποκεντρωμένες εφαρμογές (dapps)"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Επιτρέψτε στις αποκεντρωμένες εφαρμογές (dapps) να ζητούν λειτουργίες έξυπνου λογαριασμού για τυπικούς λογαριασμούς. Δεν θα επηρεαστούν οι λογαριασμοί που είναι ήδη έξυπνοι λογαριασμοί."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Ίδια διεύθυνση. Πιο έξυπνες λειτουργίες."
   },
@@ -8695,9 +8688,6 @@
     "message": "Ακόμα συνδέεται με το $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Ακόμα λαμβάνετε αυτό το μήνυμα;"
-  },
   "storageErrorAction": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
@@ -8801,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Υποστηριζόμενες γλώσσες",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Πάρτε μέρος στην έρευνά μας"
-  },
-  "surveyTitle": {
-    "message": "Διαμορφώστε το μέλλον του MetaMask"
   },
   "swap": {
     "message": "Ανταλλαγή"

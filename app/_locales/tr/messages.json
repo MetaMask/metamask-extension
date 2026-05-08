@@ -2800,10 +2800,6 @@
     "message": "Kod: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Hata ayrıntıları",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Güvenli zincir listesi alınırken hata oluştu, lütfen dikkatli bir şekilde devam edin."
   },
@@ -8170,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Dapp'lerden akıllı hesap talepleri"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Dapp'lerin standart hesaplar için akıllı hesap özellikleri talep etmesine izin verin. Bu durum, halihazırda akıllı hesap olan hesapları etkilemez."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Aynı adres. Daha akıllı özellikler."
   },
@@ -8699,9 +8692,6 @@
     "message": "Halen $1 ağına bağlanılıyor...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Bu mesajı almaya devam mı ediyorsun?"
-  },
   "storageErrorAction": {
     "message": "Gizli Kurtarma İfadesini yedekle"
   },
@@ -8805,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Desteklenen diller",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Anketimize katılın"
-  },
-  "surveyTitle": {
-    "message": "MetaMask'in geleceğini şekillendirin"
   },
   "swap": {
     "message": "Takas Yap"

@@ -18,7 +18,7 @@ import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
 import {
   getImageForChainId,
-  getMemoizedMultichainNetworkConfigurationsByChainId,
+  getMultichainNetworkConfigurationsByChainId,
 } from '../../../../selectors/multichain';
 import {
   AllowedBridgeChainIds,
@@ -74,9 +74,7 @@ export const useSnapAssetSelectorData = ({
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, parsedAccounts[0].address),
   );
-  const networks = useSelector(
-    getMemoizedMultichainNetworkConfigurationsByChainId,
-  );
+  const networks = useSelector(getMultichainNetworkConfigurationsByChainId);
 
   const assets = useSelector((state) => getMultiChainAssets(state, account));
 

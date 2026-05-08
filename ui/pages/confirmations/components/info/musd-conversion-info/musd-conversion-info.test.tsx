@@ -163,6 +163,15 @@ function setupDefaultMocks({
     .mocked(useTransactionPayDataModule.useTransactionPaySourceAmounts)
     .mockReturnValue([]);
   jest
+    .mocked(useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken)
+    .mockReturnValue({
+      address: '0xrequired',
+      skipIfBalance: false,
+      decimals: 18,
+    } as unknown as ReturnType<
+      typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+    >);
+  jest
     .mocked(useTransactionPayTokenModule.useTransactionPayToken)
     .mockReturnValue({
       isNative: false,

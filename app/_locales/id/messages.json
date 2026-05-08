@@ -2800,10 +2800,6 @@
     "message": "Kode: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Detail kesalahan",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Terjadi kesalahan saat mendapatkan daftar rantai aman, lanjutkan dengan hati-hati."
   },
@@ -8170,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Permintaan akun cerdas dari dapp"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. Ini tidak akan memengaruhi akun yang sudah menjadi akun cerdas."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Alamat sama. Fitur lebih cerdas."
   },
@@ -8699,9 +8692,6 @@
     "message": "Masih terhubung ke $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Masih menerima pesan ini?"
-  },
   "storageErrorAction": {
     "message": "Cadangkan Frasa Pemulihan Rahasia"
   },
@@ -8805,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Bahasa yang didukung",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Ikuti survei kami"
-  },
-  "surveyTitle": {
-    "message": "Bentuk masa depan MetaMask"
   },
   "swap": {
     "message": "Swap"
