@@ -9,7 +9,9 @@ import {
   selectTransactions,
   type TransactionState,
 } from '../../../../selectors/transactionController';
+import type { RemoteFeatureFlagsState } from '../../../../selectors/remote-feature-flags';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
+import { selectPreferredPayToken } from '../../selectors/feature-flags';
 import { ARBITRUM_USDC } from '../../constants/perps';
 import type { SetPayTokenRequest } from './types';
 
@@ -18,16 +20,20 @@ const ARBITRUM_USDC_FALLBACK: SetPayTokenRequest = {
   chainId: ARBITRUM_USDC.chainId,
 };
 
+type PerpsWithdrawDefaultTokenState = TransactionState & RemoteFeatureFlagsState;
+
 /**
  * Default destination token for Perps Withdraw: last confirmed
- * `perpsWithdraw`'s `metamaskPay`, else native Arbitrum USDC.
- *
- * TODO: replace the hardcoded fallback with the `metamask_pay_tokens`
- * remote flag once exposed in the extension.
+ * `perpsWithdraw`'s `metamaskPay`, else the remote-configured preference,
+ * else native Arbitrum USDC.
  */
 export function usePerpsWithdrawDefaultToken(): SetPayTokenRequest {
-  const transactions = useSelector((state: TransactionState) =>
+  const transactions = useSelector((state: PerpsWithdrawDefaultTokenState) =>
     selectTransactions(state),
+  );
+  const preferredToken = useSelector(
+    (state: PerpsWithdrawDefaultTokenState) =>
+      selectPreferredPayToken(state, TransactionType.perpsWithdraw),
   );
 
   return useMemo(() => {
@@ -40,7 +46,12 @@ export function usePerpsWithdrawDefaultToken(): SetPayTokenRequest {
     );
 
     if (matching.length === 0) {
-      return ARBITRUM_USDC_FALLBACK;
+      return preferredToken
+        ? {
+            address: preferredToken.address,
+            chainId: preferredToken.chainId,
+          }
+        : ARBITRUM_USDC_FALLBACK;
     }
 
     const latest = matching.reduce((acc, tx) =>
@@ -51,5 +62,5 @@ export function usePerpsWithdrawDefaultToken(): SetPayTokenRequest {
       address: latest.metamaskPay?.tokenAddress as Hex,
       chainId: latest.metamaskPay?.chainId as Hex,
     };
-  }, [transactions]);
+  }, [preferredToken, transactions]);
 }

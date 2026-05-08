@@ -5,6 +5,7 @@ import {
   selectIsEnforcedSimulationsEnabled,
   selectIsMetaMaskPayDappsEnabled,
   selectPayQuoteConfig,
+  selectPreferredPayToken,
 } from './feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -27,12 +28,29 @@ type PayPostQuoteFlag = {
   perpsWithdraw?: PayPostQuoteConfig;
 };
 
+type PreferredPayToken = {
+  address?: string;
+  chainId?: string;
+  name?: string;
+};
+
+type PreferredTokensConfig = {
+  default?: PreferredPayToken[] | Record<string, PreferredPayToken[]>;
+  overrides?: Record<string, PreferredPayToken[]>;
+  perpsWithdraw?: PreferredPayToken[];
+};
+
+type PayTokensFlag = {
+  preferredTokens?: PreferredTokensConfig;
+};
+
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
       confirmations_pay_dapps?: ConfirmationsPayDappsFlag;
       confirmations_enforced_simulations?: EnforcedSimulationsFlag;
       confirmations_pay_post_quote?: PayPostQuoteFlag;
+      confirmations_pay_tokens?: PayTokensFlag;
     };
   };
 };
@@ -68,6 +86,18 @@ const getMockPayPostQuoteState = (
     remoteFeatureFlags: {
       ...(confirmations_pay_post_quote !== undefined && {
         confirmations_pay_post_quote,
+      }),
+    },
+  },
+});
+
+const getMockPayTokensState = (
+  confirmations_pay_tokens?: PayTokensFlag,
+): MockState => ({
+  metamask: {
+    remoteFeatureFlags: {
+      ...(confirmations_pay_tokens !== undefined && {
+        confirmations_pay_tokens,
       }),
     },
   },
@@ -175,6 +205,64 @@ describe('Confirmations Pay Feature Flags', () => {
         enabled: false,
         tokens: undefined,
       });
+    });
+  });
+
+  describe('selectPreferredPayToken', () => {
+    it('returns the first transaction override token from the resolved config', () => {
+      const state = getMockPayTokensState({
+        preferredTokens: {
+          default: {},
+          overrides: {
+            perpsWithdraw: [
+              {
+                address: '0x1111111111111111111111111111111111111111',
+                chainId: '0x1',
+                name: 'mUSD',
+              },
+              {
+                address: '0x2222222222222222222222222222222222222222',
+                chainId: '0xa4b1',
+                name: 'USDC',
+              },
+            ],
+          },
+        },
+      });
+
+      expect(selectPreferredPayToken(state, 'perpsWithdraw')).toStrictEqual({
+        address: '0x1111111111111111111111111111111111111111',
+        chainId: '0x1',
+        name: 'mUSD',
+      });
+    });
+
+    it('supports direct transaction config', () => {
+      const state = getMockPayTokensState({
+        preferredTokens: {
+          perpsWithdraw: [
+            {
+              address: '0x3333333333333333333333333333333333333333',
+              chainId: '0x38',
+            },
+          ],
+        },
+      });
+
+      expect(selectPreferredPayToken(state, 'perpsWithdraw')).toStrictEqual({
+        address: '0x3333333333333333333333333333333333333333',
+        chainId: '0x38',
+      });
+    });
+
+    it('returns undefined when no preferred token is configured', () => {
+      const state = getMockPayTokensState({
+        preferredTokens: {
+          default: {},
+        },
+      });
+
+      expect(selectPreferredPayToken(state, 'perpsWithdraw')).toBeUndefined();
     });
   });
 });

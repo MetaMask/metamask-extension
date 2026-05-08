@@ -24,6 +24,25 @@ type RawPayPostQuoteFlag = {
     | undefined;
 };
 
+export type PreferredPayToken = {
+  address: Hex;
+  chainId: Hex;
+  name?: string;
+};
+
+type PreferredTokensConfig = {
+  default?: PreferredPayToken[] | Record<string, PreferredPayToken[]>;
+  overrides?: Record<string, PreferredPayToken[]>;
+  [transactionType: string]:
+    | PreferredPayToken[]
+    | Record<string, PreferredPayToken[]>
+    | undefined;
+};
+
+type RawPayTokensFlag = {
+  preferredTokens?: PreferredTokensConfig;
+};
+
 const selectConfirmationsPayDappsFlag = createSelector(
   getRemoteFeatureFlags,
   (flags) =>
@@ -50,6 +69,18 @@ const selectPayPostQuoteFlag = createSelector(
         confirmations_pay_post_quote?: RawPayPostQuoteFlag;
       }
     ).confirmations_pay_post_quote,
+  /* eslint-enable @typescript-eslint/naming-convention */
+);
+
+const selectPayTokensFlag = createSelector(
+  getRemoteFeatureFlags,
+  (flags) =>
+    /* eslint-disable @typescript-eslint/naming-convention */
+    (
+      flags as unknown as {
+        confirmations_pay_tokens?: RawPayTokensFlag;
+      }
+    ).confirmations_pay_tokens,
   /* eslint-enable @typescript-eslint/naming-convention */
 );
 
@@ -88,6 +119,21 @@ export const selectPayQuoteConfig = createSelector(
   },
 );
 
+export const selectPreferredPayToken = createSelector(
+  [
+    selectPayTokensFlag,
+    (_state, transactionType?: string) => transactionType,
+  ],
+  (flag, transactionType): PreferredPayToken | undefined => {
+    const preferredTokens = getPreferredTokensForTransaction(
+      flag?.preferredTokens,
+      transactionType,
+    );
+
+    return preferredTokens?.[0];
+  },
+);
+
 export const selectIsEnforcedSimulationsEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags): boolean =>
@@ -99,3 +145,41 @@ export const selectEnforcedSimulationsSlippage = createSelector(
   (remoteFeatureFlags): number =>
     getEnforcedSimulationsSlippage({ remoteFeatureFlags }),
 );
+
+function getPreferredTokensForTransaction(
+  config?: PreferredTokensConfig,
+  transactionType?: string,
+): PreferredPayToken[] | undefined {
+  if (!config) {
+    return undefined;
+  }
+
+  const defaultTokens = normalizePreferredPayTokens(config.default);
+  const transactionTokens = transactionType
+    ? normalizePreferredPayTokens(
+        config.overrides?.[transactionType] ?? config[transactionType],
+      )
+    : undefined;
+
+  return transactionTokens ?? defaultTokens;
+}
+
+function normalizePreferredPayTokens(
+  value?: PreferredPayToken[] | Record<string, PreferredPayToken[]>,
+): PreferredPayToken[] | undefined {
+  if (!Array.isArray(value)) {
+    return undefined;
+  }
+
+  const tokens = value.filter(isPreferredPayToken);
+  return tokens.length ? tokens : undefined;
+}
+
+function isPreferredPayToken(value: unknown): value is PreferredPayToken {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof (value as PreferredPayToken).address === 'string' &&
+    typeof (value as PreferredPayToken).chainId === 'string'
+  );
+}
