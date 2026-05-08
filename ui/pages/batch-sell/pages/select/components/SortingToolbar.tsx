@@ -12,7 +12,11 @@ type SortingToolbarProps = {
 
 export const SortingToolbar = ({ balance }: SortingToolbarProps) => {
   return (
-    <Box paddingVertical={2} className="w-full">
+    <Box
+      paddingVertical={2}
+      className="w-full"
+      data-testid="batch-sell-select-sorting-toolbar"
+    >
       <Box
         gap={2}
         flexDirection={BoxFlexDirection.Row}

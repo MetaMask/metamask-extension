@@ -33,6 +33,7 @@ export const NetworkChip = ({
         isSelected ? 'bg-icon-default' : 'bg-muted hover:bg-muted-hover',
       )}
       onClick={() => onClick(network.chainId)}
+      data-testid="batch-sell-select-network-chip"
     >
       <AvatarNetwork
         name={network.name}

@@ -24,6 +24,9 @@ import { AssetList } from './components/AssetList';
 import { BatchSellEmptySelectTokens } from './components/BatchSellEmptySelectTokens';
 import { useInitialStateFromLocation } from './hooks/useInitialStateFromLocation';
 
+// TODO: go throught the acceptance criteria and verify all cases
+// TODO: start working on the select screen
+
 export const BatchSellSelectPage = () => {
   const t = useI18nContext();
   const { openBridgeExperience } = useBridging();
@@ -165,7 +168,11 @@ export const BatchSellSelectPage = () => {
   }
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} className="h-full">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      className="h-full"
+      data-testid="batch-sell-select-page"
+    >
       <Header />
       <NetworkToolbar
         networks={availableBatchSellNetworksList}

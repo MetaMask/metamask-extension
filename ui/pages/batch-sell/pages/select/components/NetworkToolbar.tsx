@@ -20,7 +20,11 @@ export const NetworkToolbar = ({
   onClick,
 }: NetworkToolbarProps) => {
   return (
-    <Box paddingHorizontal={4} className="w-full">
+    <Box
+      paddingHorizontal={4}
+      className="w-full"
+      data-testid="batch-sell-select-network-toolbar"
+    >
       <Box
         gap={2}
         paddingVertical={3}

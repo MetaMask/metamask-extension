@@ -57,6 +57,7 @@ export const AssetListItem = ({
       gap={3}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
+      data-testid="batch-sell-select-asset-list-item"
     >
       <AvatarToken
         size={AvatarTokenSize.Md}

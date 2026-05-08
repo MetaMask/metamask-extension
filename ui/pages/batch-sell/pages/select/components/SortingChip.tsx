@@ -24,6 +24,7 @@ export const SortingChip = ({ order, onClick }: SortingChipProps) => {
     <ButtonBase
       className="flex flex-row items-center gap-1 bg-inherit"
       onClick={() => onClick(order === 'asc' ? 'desc' : 'asc')}
+      data-testid="batch-sell-select-sorting-chip"
     >
       <Text
         variant={TextVariant.BodySm}

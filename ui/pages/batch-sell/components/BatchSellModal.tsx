@@ -47,6 +47,7 @@ export const BatchSellModal = ({
       isClosedOnEscapeKey
       isClosedOnOutsideClick
       onClose={onClose}
+      data-testid="batch-sell-modal"
     >
       <ModalOverlay />
       <ModalContent>

@@ -46,7 +46,11 @@ export const BatchSellEmptySelectTokens = () => {
   }, [metaMetricsId, isMetaMetricsEnabled, isMarketingEnabled]);
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} className="h-full w-full">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      className="h-full w-full"
+      data-testid="batch-sell-select-empty-page"
+    >
       <Box
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}

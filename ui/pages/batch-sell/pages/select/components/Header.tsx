@@ -11,7 +11,12 @@ export const Header = () => {
   const t = useI18nContext();
 
   return (
-    <Box paddingHorizontal={4} paddingVertical={3} gap={1}>
+    <Box
+      paddingHorizontal={4}
+      paddingVertical={3}
+      gap={1}
+      data-testid="batch-sell-select-header"
+    >
       <Text variant={TextVariant.HeadingLg}>
         {t('batchSellSelectHeaderTitle')}
       </Text>
