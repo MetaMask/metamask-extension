@@ -234,6 +234,97 @@ export async function detectUnlockState(
     .catch(() => false);
 }
 
+// Fetches the raw metamask Redux state via stateHooks. Uses CDP
+// Runtime.evaluate directly because Playwright's page.evaluate() wrapper
+// references setInterval internally, which is blocked by LavaMoat scuttling.
+const CDP_FETCH_METAMASK_STATE = `
+(async () => {
+  const hooks = globalThis.stateHooks;
+  if (typeof hooks?.getCleanAppState !== 'function') return null;
+  const state = await hooks.getCleanAppState();
+  return JSON.stringify(state?.metamask ?? null);
+})()
+`.trim();
+
+type MetamaskStateSlice = {
+  internalAccounts?: {
+    selectedAccount?: string;
+    accounts?: Record<string, { address?: string }>;
+  };
+  networkConfigurationsByChainId?: Record<
+    string,
+    {
+      name?: string;
+      chainId?: string | null;
+      rpcEndpoints?: Array<{ networkClientId?: string }>;
+    }
+  >;
+  selectedNetworkClientId?: string;
+};
+
+type IdentityData = {
+  accountAddress: string | null;
+  networkName: string | null;
+  chainId: string | null;
+};
+
+function resolveIdentity(metamaskState: MetamaskStateSlice): IdentityData {
+  const selectedId = metamaskState.internalAccounts?.selectedAccount;
+  const account = selectedId
+    ? metamaskState.internalAccounts?.accounts?.[selectedId]
+    : null;
+
+  const configs = Object.values(
+    metamaskState.networkConfigurationsByChainId ?? {},
+  );
+  const networkConfig =
+    configs.find((cfg) =>
+      cfg.rpcEndpoints?.some(
+        (ep) =>
+          ep.networkClientId === metamaskState.selectedNetworkClientId,
+      ),
+    ) ?? null;
+
+  return {
+    accountAddress: account?.address ?? null,
+    networkName: networkConfig?.name ?? null,
+    chainId: networkConfig?.chainId ?? null,
+  };
+}
+
+async function extractIdentityViaCDP(
+  page: Page,
+): Promise<IdentityData | null> {
+  let cdp;
+  try {
+    cdp = await page.context().newCDPSession(page);
+    const result = await cdp.send('Runtime.evaluate', {
+      expression: CDP_FETCH_METAMASK_STATE,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+
+    if (result.exceptionDetails || !result.result?.value) {
+      return null;
+    }
+
+    const parsed =
+      typeof result.result.value === 'string'
+        ? JSON.parse(result.result.value)
+        : result.result.value;
+
+    if (!parsed || typeof parsed !== 'object') {
+      return null;
+    }
+
+    return resolveIdentity(parsed as MetamaskStateSlice);
+  } catch {
+    return null;
+  } finally {
+    await cdp?.detach().catch(() => {});
+  }
+}
+
 export async function getBaseExtensionState(
   page: Page | undefined,
   options: {
@@ -251,14 +342,27 @@ export async function getBaseExtensionState(
 
   let accountAddress: string | null = null;
   let networkName: string | null = null;
-  const { chainId } = options;
+  let chainId: number | null = options.chainId;
   let balance: string | null = null;
 
-  if (currentScreen === 'home' && isUnlocked) {
-    const homePage = new HomePage(page);
+  const identity = await extractIdentityViaCDP(page);
 
-    accountAddress = (await homePage.getAccountAddress()) || null;
-    networkName = (await homePage.getNetworkName()) || null;
+  if (identity) {
+    accountAddress = identity.accountAddress;
+    networkName = identity.networkName;
+
+    if (identity.chainId) {
+      const parsed = Number(identity.chainId);
+      if (!Number.isNaN(parsed)) {
+        chainId = parsed;
+      }
+    }
+  }
+
+  // Balance remains DOM-based (home screen only) pending a separate
+  // investigation into extracting it from Redux state.
+  if (isUnlocked && currentScreen === 'home') {
+    const homePage = new HomePage(page);
     balance = (await homePage.getBalance()) || null;
   }
 

@@ -16,30 +16,58 @@ import {
   getBaseExtensionState,
 } from './state-inspector';
 
-const mockGetAccountAddress = jest.fn();
-const mockGetNetworkName = jest.fn();
 const mockGetBalance = jest.fn();
 
 jest.mock('../page-objects/home-page', () => {
   return {
     HomePage: jest.fn().mockImplementation(() => {
       return {
-        getAccountAddress: mockGetAccountAddress,
-        getNetworkName: mockGetNetworkName,
         getBalance: mockGetBalance,
       };
     }),
   };
 });
 
+const DEFAULT_METAMASK_STATE = {
+  internalAccounts: {
+    selectedAccount: 'account-1',
+    accounts: {
+      'account-1': { address: '0xABC123def456' },
+    },
+  },
+  networkConfigurationsByChainId: {
+    '0x539': {
+      name: 'Localhost 8545',
+      chainId: '0x539',
+      rpcEndpoints: [{ networkClientId: 'network-client-1' }],
+    },
+  },
+  selectedNetworkClientId: 'network-client-1',
+};
+
 function buildPage(
   currentUrl = 'chrome-extension://id/home.html',
   visibleBySelector: Record<string, boolean> = {},
   rejectSelectors: string[] = [],
+  cdpMetamaskState: unknown = null,
 ): Page {
   const rejectSet = new Set(rejectSelectors);
+  const mockCdpSend = jest.fn().mockImplementation(() => {
+    if (cdpMetamaskState === null) {
+      return Promise.resolve({ result: {} });
+    }
+    return Promise.resolve({
+      result: { value: JSON.stringify(cdpMetamaskState) },
+    });
+  });
   return {
     url: jest.fn().mockReturnValue(currentUrl),
+    context: jest.fn().mockReturnValue({
+      newCDPSession: jest.fn().mockResolvedValue({
+        send: mockCdpSend,
+        detach: jest.fn().mockResolvedValue(undefined),
+      }),
+    }),
     locator: jest.fn().mockImplementation((selector: string) => {
       return {
         isVisible: jest.fn().mockImplementation(() => {
@@ -56,8 +84,6 @@ function buildPage(
 describe('state-inspector', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetAccountAddress.mockResolvedValue('0xabc');
-    mockGetNetworkName.mockResolvedValue('Localhost 8545');
     mockGetBalance.mockResolvedValue('25 ETH');
   });
 
@@ -284,10 +310,13 @@ describe('state-inspector', () => {
       ).rejects.toThrow('Extension not initialized');
     });
 
-    it('returns minimal state for non-home screens', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/send', {
-        '[data-testid="account-menu-icon"]': false,
-      });
+    it('returns identity fields on unlocked non-home screens via stateHooks', async () => {
+      const page = buildPage(
+        'chrome-extension://id/home.html#/send',
+        {},
+        [],
+        DEFAULT_METAMASK_STATE,
+      );
 
       const state = await getBaseExtensionState(page, {
         extensionId: 'a'.repeat(32),
@@ -296,16 +325,22 @@ describe('state-inspector', () => {
 
       expect(state.isLoaded).toBe(true);
       expect(state.extensionId).toBe('a'.repeat(32));
-      expect(state.chainId).toBe(1);
       expect(state.currentScreen).toBe('send');
-      expect(state.accountAddress).toBeNull();
-      expect(state.networkName).toBeNull();
+      expect(state.isUnlocked).toBe(true);
+      expect(state.accountAddress).toBe('0xABC123def456');
+      expect(state.networkName).toBe('Localhost 8545');
+      expect(state.chainId).toBe(1337);
       expect(state.balance).toBeNull();
       expect(HomePage).not.toHaveBeenCalled();
     });
 
-    it('returns home details when unlocked on home', async () => {
-      const page = buildPage('chrome-extension://id/home.html#/');
+    it('returns identity and balance when unlocked on home', async () => {
+      const page = buildPage(
+        'chrome-extension://id/home.html#/',
+        {},
+        [],
+        DEFAULT_METAMASK_STATE,
+      );
 
       const state = await getBaseExtensionState(page, {
         extensionId: 'b'.repeat(32),
@@ -314,10 +349,91 @@ describe('state-inspector', () => {
 
       expect(state.currentScreen).toBe('home');
       expect(state.isUnlocked).toBe(true);
-      expect(state.accountAddress).toBe('0xabc');
+      expect(state.accountAddress).toBe('0xABC123def456');
       expect(state.networkName).toBe('Localhost 8545');
+      expect(state.chainId).toBe(1337);
       expect(state.balance).toBe('25 ETH');
       expect(HomePage).toHaveBeenCalledWith(page);
+    });
+
+    it('returns null identity when CDP session fails', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/');
+      (page.context().newCDPSession as jest.Mock).mockRejectedValue(
+        new Error('Page navigating'),
+      );
+
+      const state = await getBaseExtensionState(page, {
+        extensionId: 'e'.repeat(32),
+        chainId: 1337,
+      });
+
+      expect(state.accountAddress).toBeNull();
+      expect(state.networkName).toBeNull();
+      expect(state.chainId).toBe(1337);
+      expect(state.balance).toBe('25 ETH');
+    });
+
+    it('returns null identity when evaluate returns null', async () => {
+      const page = buildPage('chrome-extension://id/home.html#/', {}, [], null);
+
+      const state = await getBaseExtensionState(page, {
+        extensionId: 'f'.repeat(32),
+        chainId: 1,
+      });
+
+      expect(state.accountAddress).toBeNull();
+      expect(state.networkName).toBeNull();
+      expect(state.chainId).toBe(1);
+    });
+
+    it('parses hex chainId from Redux state to number', async () => {
+      const page = buildPage(
+        'chrome-extension://id/home.html#/',
+        {},
+        [],
+        {
+          ...DEFAULT_METAMASK_STATE,
+          networkConfigurationsByChainId: {
+            '0x1': {
+              name: 'Ethereum Mainnet',
+              chainId: '0x1',
+              rpcEndpoints: [{ networkClientId: 'network-client-1' }],
+            },
+          },
+        },
+      );
+
+      const state = await getBaseExtensionState(page, {
+        extensionId: 'g'.repeat(32),
+        chainId: 1337,
+      });
+
+      expect(state.chainId).toBe(1);
+    });
+
+    it('falls back to options.chainId when Redux chainId is null', async () => {
+      const page = buildPage(
+        'chrome-extension://id/home.html#/',
+        {},
+        [],
+        {
+          ...DEFAULT_METAMASK_STATE,
+          networkConfigurationsByChainId: {
+            '0x539': {
+              name: 'Localhost 8545',
+              chainId: null,
+              rpcEndpoints: [{ networkClientId: 'network-client-1' }],
+            },
+          },
+        },
+      );
+
+      const state = await getBaseExtensionState(page, {
+        extensionId: 'h'.repeat(32),
+        chainId: 42,
+      });
+
+      expect(state.chainId).toBe(42);
     });
 
     it('returns isUnlocked: true when URL is home even if account-menu-icon not visible', async () => {
@@ -349,6 +465,27 @@ describe('state-inspector', () => {
 
       expect(state.currentScreen).toBe('onboarding-welcome');
       expect(state.isUnlocked).toBe(false);
+    });
+
+    it('extracts identity even when locked but skips balance', async () => {
+      const page = buildPage(
+        'chrome-extension://id/home.html#/unlock',
+        {},
+        [],
+        DEFAULT_METAMASK_STATE,
+      );
+
+      const state = await getBaseExtensionState(page, {
+        extensionId: 'i'.repeat(32),
+        chainId: 1,
+      });
+
+      expect(state.isUnlocked).toBe(false);
+      expect(state.accountAddress).toBe('0xABC123def456');
+      expect(state.networkName).toBe('Localhost 8545');
+      expect(state.chainId).toBe(1337);
+      expect(state.balance).toBeNull();
+      expect(HomePage).not.toHaveBeenCalled();
     });
   });
 });
