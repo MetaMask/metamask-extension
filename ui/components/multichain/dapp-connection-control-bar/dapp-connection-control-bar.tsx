@@ -392,11 +392,13 @@ export const DappConnectionControlBar: React.FC = () => {
       )}
 
       {/* Inline network selector popover anchored to the network button */}
-      <DappBarEVMNetworkSelectorPopover
-        referenceElement={networkButtonElement}
-        isOpen={isNetworkPopoverOpen}
-        onClose={handleCloseNetworkPopover}
-      />
+      {isNetworkPopoverOpen && (
+        <DappBarEVMNetworkSelectorPopover
+          referenceElement={networkButtonElement}
+          isOpen={isNetworkPopoverOpen}
+          onClose={handleCloseNetworkPopover}
+        />
+      )}
     </>
   );
 };
