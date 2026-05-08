@@ -590,6 +590,10 @@
       "fcmToken": "",
       "isPushEnabled": true
     },
+    "ComplianceController": {
+      "lastCheckedAt": null,
+      "walletComplianceStatusMap": {}
+    },
     "OnboardingController": {
       "completedOnboarding": false,
       "firstTimeFlowType": null,
