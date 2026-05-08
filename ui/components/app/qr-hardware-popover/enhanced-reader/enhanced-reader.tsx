@@ -1,11 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  BarcodeFormat,
-  ChecksumException,
-  DecodeHintType,
-  FormatException,
-  NotFoundException,
-} from '@zxing/library';
+import { BarcodeFormat, DecodeHintType } from '@zxing/library';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import log from 'loglevel';
 import { MILLISECOND } from '../../../../../shared/constants/time';
@@ -16,19 +10,6 @@ import type { EnhancedReaderProps } from './enhanced-reader.types';
 const SCAN_INTERVAL_MS = MILLISECOND * 100;
 
 /**
- * Returns true for ZXing errors that occur on every frame without a QR code.
- * These are expected during normal scanning and are not camera failures.
- * @param error - The error emitted by ZXing's continuous decode callback.
- */
-function isRoutineScanError(error: Error): boolean {
-  return (
-    error instanceof NotFoundException ||
-    error instanceof ChecksumException ||
-    error instanceof FormatException
-  );
-}
-
-/**
  * Stateless QR code reader that streams decoded frames to the parent.
  *
  * Shows a spinner until the camera stream is ready to play, then displays
@@ -36,12 +17,8 @@ function isRoutineScanError(error: Error): boolean {
  * cleanup on unmount.
  * @param options0
  * @param options0.onFrame
- * @param options0.onCameraError
  */
-const EnhancedReader: React.FC<EnhancedReaderProps> = ({
-  onFrame,
-  onCameraError,
-}) => {
+const EnhancedReader: React.FC<EnhancedReaderProps> = ({ onFrame }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [canPlay, setCanPlay] = useState(false);
 
@@ -81,12 +58,9 @@ const EnhancedReader: React.FC<EnhancedReaderProps> = ({
     const promise = codeReader.decodeFromVideoDevice(
       undefined,
       videoElem,
-      (result, error) => {
+      (result) => {
         if (result) {
           onFrame(result.getText());
-        }
-        if (error && onCameraError && !isRoutineScanError(error)) {
-          onCameraError(error);
         }
       },
     );
@@ -94,7 +68,7 @@ const EnhancedReader: React.FC<EnhancedReaderProps> = ({
     return () => {
       promise.then((controls) => controls?.stop()).catch(log.info);
     };
-  }, [codeReader, onFrame, onCameraError]);
+  }, [codeReader, onFrame]);
 
   return (
     <div className="qr-scanner__content__video-wrapper">
