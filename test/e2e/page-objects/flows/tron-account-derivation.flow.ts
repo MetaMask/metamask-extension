@@ -16,7 +16,9 @@ import AccountListPage from '../pages/account-list-page';
  *
  * @param driver - The WebDriver instance.
  */
-async function waitUntilAccountTreeSyncIdle(driver: Driver): Promise<void> {
+export async function waitUntilAccountTreeSyncIdle(
+  driver: Driver,
+): Promise<void> {
   await driver.waitUntil(
     async () => {
       const uiState = await getCleanAppState(driver);

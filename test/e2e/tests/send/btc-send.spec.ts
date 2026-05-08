@@ -1,48 +1,24 @@
 import { Suite } from 'mocha';
-import { Mockttp } from 'mockttp';
 import { DEFAULT_BTC_BALANCE } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import BitcoinHomepage from '../../page-objects/pages/home/bitcoin-homepage';
 import BitcoinReviewTxPage from '../../page-objects/pages/send/bitcoin-review-tx-page';
 import SendPage from '../../page-objects/pages/send/send-page';
-import {
-  mockExchangeRates,
-  mockCurrencyExchangeRates,
-  mockFiatExchangeRates,
-  mockInitialFullScan,
-  mockSolanaSpotPrices,
-  mockSupportedVsCurrencies,
-} from '../btc/mocks';
-import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../btc/mocks/min-api';
-
-async function mockBtcSendMocks(mockServer: Mockttp) {
-  return [
-    await mockInitialFullScan(mockServer),
-    await mockExchangeRates(mockServer),
-    await mockCurrencyExchangeRates(mockServer),
-    await mockFiatExchangeRates(mockServer),
-    await mockSolanaSpotPrices(mockServer),
-    await mockSupportedVsCurrencies(mockServer),
-    await mockPriceMulti(mockServer),
-    await mockPriceMultiBtcAndSol(mockServer),
-  ];
-}
+import { withBitcoinFixtures } from '../btc/fixtures/with-bitcoin-fixtures';
 
 describe('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
   const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
 
   it('fields validation', async function () {
-    await withFixtures(
+    await withBitcoinFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
         await login(driver);
@@ -64,12 +40,11 @@ describe('BTC Account - Send', function (this: Suite) {
   });
 
   it('amount validation', async function () {
-    await withFixtures(
+    await withBitcoinFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
         await login(driver);
@@ -97,12 +72,11 @@ describe('BTC Account - Send', function (this: Suite) {
     const expectedFee = '0.00000281';
     const expectedTotal = '53381.50';
 
-    await withFixtures(
+    await withBitcoinFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
-        testSpecificMock: mockBtcSendMocks,
       },
       async ({ driver }) => {
         await login(driver);

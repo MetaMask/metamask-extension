@@ -240,6 +240,22 @@ async function withFixtures(options, testSuite) {
           localNodes.push(localNode);
           break;
 
+        case 'solana':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { SolanaNode } = require('./seeder/solana/node');
+          localNode = new SolanaNode();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
+        case 'bitcoin':
+          // eslint-disable-next-line n/global-require, no-case-declarations -- load this module conditionally
+          const { BitcoinRegtestNode } = require('./seeder/bitcoin/node');
+          localNode = new BitcoinRegtestNode();
+          await localNode.start(nodeOptions);
+          localNodes.push(localNode);
+          break;
+
         case 'none':
           break;
 

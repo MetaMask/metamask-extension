@@ -17417,6 +17417,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@ulissesferreira/bitcoin-regtest-up@file:../bitcoin-regtest-up::locator=metamask-crx%40workspace%3A.":
+  version: 0.1.0
+  resolution: "@ulissesferreira/bitcoin-regtest-up@file:../bitcoin-regtest-up#../bitcoin-regtest-up::hash=22507a&locator=metamask-crx%40workspace%3A."
+  bin:
+    bitcoin-regtest-up: dist/bin/bitcoin-regtest-up.js
+  checksum: 10/2a7296355365f18ef49903b946aa4ac55d5ce45b38c8fa6dc6315a1e269bee248f53ef3698b389098031d251e3b50d776d2a3bdece2580216e8669f284df2007
+  languageName: node
+  linkType: hard
+
+"@ulissesferreira/java-tron-up@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@ulissesferreira/java-tron-up@npm:0.1.1"
+  bin:
+    java-tron-up: dist/bin/java-tron-up.js
+  checksum: 10/58f154eb94522861c5085bf6834ca920ef923454b3650f3b4317914c9798f5f0679b25bba3aa5895dfb6bc9c280b71932f0e16e7d4012d9a5bd52e59ac706fea
+  languageName: node
+  linkType: hard
+
+"@ulissesferreira/solana-test-validator-up@file:../solana-test-validator-up::locator=metamask-crx%40workspace%3A.":
+  version: 0.1.0
+  resolution: "@ulissesferreira/solana-test-validator-up@file:../solana-test-validator-up#../solana-test-validator-up::hash=3946cf&locator=metamask-crx%40workspace%3A."
+  bin:
+    solana-test-validator-up: dist/bin/solana-test-validator-up.js
+  checksum: 10/6a2c99618cca4dcd9bfec43ed3bc47e988c8ec7fdac718a5cc3294d5884bb27b50e9bb6e4fe6c5f4a5b12f01b6e349cf8ca1547a6f87c032e7b031196fbc1e90
+  languageName: node
+  linkType: hard
+
 "@ungap/structured-clone@npm:^1.2.0":
   version: 1.2.0
   resolution: "@ungap/structured-clone@npm:1.2.0"
@@ -34372,6 +34399,9 @@ __metadata:
     "@types/yazl": "npm:^3.3.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.1.0"
     "@typescript-eslint/parser": "npm:^8.1.0"
+    "@ulissesferreira/bitcoin-regtest-up": "file:../bitcoin-regtest-up"
+    "@ulissesferreira/java-tron-up": "npm:0.1.1"
+    "@ulissesferreira/solana-test-validator-up": "file:../solana-test-validator-up"
     "@viem/anvil": "npm:^0.0.10"
     "@welldone-software/why-did-you-render": "npm:^8.0.3"
     "@zxing/browser": "npm:^0.1.5"

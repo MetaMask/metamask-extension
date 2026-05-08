@@ -1,22 +1,22 @@
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
-import { SOLANA_MAINNET_SCOPE } from '../../constants';
-import { withFixtures } from '../../helpers';
+import {
+  DEFAULT_FIXTURE_SOLANA_ACCOUNT,
+  SOLANA_MAINNET_SCOPE,
+} from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { login } from '../../page-objects/flows/login.flow';
-import { buildSolanaTestSpecificMock } from '../solana/common-solana';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
+import { withSolanaFixtures } from '../solana/fixtures/with-solana-fixtures';
 
 describe('Send Solana', function () {
   it('it should be possible to send SOL', async function () {
-    await withFixtures(
+    await withSolanaFixtures(
       {
+        accounts: [{ address: DEFAULT_FIXTURE_SOLANA_ACCOUNT, balanceSol: 50 }],
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: buildSolanaTestSpecificMock({
-          mockGetTransactionSuccess: true,
-        }),
       },
       async ({ driver }) => {
         await login(driver);
@@ -26,7 +26,7 @@ describe('Send Solana', function () {
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const sendPage = new SendPage(driver);
         const nonEvmHomepage = new NonEvmHomepage(driver);
-        await nonEvmHomepage.checkExpectedTokenBalanceIsDisplayed('50', 'SOL');
+        await nonEvmHomepage.checkPageIsLoaded({ amount: '50 SOL' });
         const snapTransactionConfirmation = new SnapTransactionConfirmation(
           driver,
         );

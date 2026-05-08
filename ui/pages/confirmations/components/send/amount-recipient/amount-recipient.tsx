@@ -27,7 +27,7 @@ export const AmountRecipient = () => {
   const t = useI18nContext();
   const [hexDataError, setHexDataError] = useState<string>();
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
-  const { asset, toResolved, nonEVMSubmitError } = useSendContext();
+  const { asset, to, toResolved, nonEVMSubmitError } = useSendContext();
   const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
   const { isNonEvmSendType } = useSendType();
   const { handleSubmit } = useSendActions();
@@ -44,7 +44,10 @@ export const AmountRecipient = () => {
       !recipientErrorAllowAcknowledge) ||
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError);
-  const isDisabled = hasBlockingError || !toResolved;
+  const isRecipientValidationPending =
+    Boolean(to) && recipientValidationResult.toAddressValidated !== to;
+  const isDisabled =
+    hasBlockingError || !toResolved || isRecipientValidationPending;
 
   const [shouldSubmitOnAcknowledge, setShouldSubmitOnAcknowledge] =
     useState(false);

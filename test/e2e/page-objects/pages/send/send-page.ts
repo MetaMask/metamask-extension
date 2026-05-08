@@ -6,6 +6,10 @@ class SendPage {
 
   private readonly amountInput = { testId: 'send-amount-input' };
 
+  private readonly amountRequiredError = {
+    text: 'Required',
+  };
+
   private readonly continueButton = { testId: 'send-continue-button' };
 
   private readonly header = {
@@ -32,10 +36,6 @@ class SendPage {
   };
 
   private readonly invalidAmountError = { text: 'Invalid value' };
-
-  private readonly insufficientFeeError = {
-    text: 'Insufficient balance to cover fees',
-  };
 
   private readonly maxButton = {
     text: 'Max',
@@ -75,6 +75,11 @@ class SendPage {
     await this.driver.findElement(this.insufficientFundsError);
   }
 
+  async checkAmountRequiredError(): Promise<void> {
+    console.log('Checking for amount required error');
+    await this.driver.waitForSelector(this.amountRequiredError);
+  }
+
   async checkInsufficientFundsErrorDetailed(): Promise<void> {
     console.log('Checking for detailed insufficient funds error');
     await this.driver.waitForSelector(this.insufficientFundsErrorDetailed);
@@ -82,17 +87,12 @@ class SendPage {
 
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
-    await this.driver.findElement(this.invalidAddressError);
+    await this.driver.waitForSelector(this.invalidAddressError);
   }
 
   async checkInvalidAmountError(): Promise<void> {
     console.log('Checking for invalid amount error');
     await this.driver.waitForSelector(this.invalidAmountError);
-  }
-
-  async checkInsufficientFeeError(): Promise<void> {
-    console.log('Checking for insufficient balance to cover fees error');
-    await this.driver.waitForSelector(this.insufficientFeeError);
   }
 
   async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
@@ -232,9 +232,11 @@ class SendPage {
 
   async checkContinueButtonIsDisabled(): Promise<void> {
     console.log('Checking that Continue button is disabled');
-    const button = await this.driver.findElement(this.continueButton);
-    const disabled = await button.getAttribute('disabled');
-    assert.notStrictEqual(disabled, null, 'Continue button should be disabled');
+    assert.strictEqual(
+      await this.isContinueButtonEnabled(),
+      false,
+      'Continue button should be disabled',
+    );
   }
 
   async pressContinueButton(): Promise<void> {
@@ -258,7 +260,9 @@ class SendPage {
 
   async selectToken(chainId: string, symbol: string): Promise<void> {
     console.log(`Selecting token ${symbol} on chain ${chainId}`);
-    await this.driver.clickElement(this.tokenAsset(chainId, symbol));
+    const tokenAsset = this.tokenAsset(chainId, symbol);
+    await this.driver.waitForSelector(tokenAsset);
+    await this.driver.clickElement(tokenAsset);
   }
 
   async selectNft(nftName: string): Promise<void> {
