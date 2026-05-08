@@ -1,8 +1,6 @@
 import { createSelector, lruMemoize, type Selector } from 'reselect';
 import {
   getDefaultComplianceControllerState,
-  selectAreAnyWalletsBlocked as coreSelectAreAnyWalletsBlocked,
-  selectIsWalletBlocked as coreSelectIsWalletBlocked,
   type ComplianceControllerState,
 } from '@metamask/compliance-controller';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
@@ -36,12 +34,8 @@ const getSelectIsWalletBlocked = lruMemoize(
   (address: string) =>
     createSelector(
       selectComplianceWalletStatusMap,
-      selectComplianceLastCheckedAtValue,
-      (walletComplianceStatusMap, lastCheckedAt) =>
-        coreSelectIsWalletBlocked(address)({
-          walletComplianceStatusMap,
-          lastCheckedAt,
-        }),
+      (walletComplianceStatusMap) =>
+        walletComplianceStatusMap[address]?.blocked ?? false,
     ),
   { maxSize: PARAMETERIZED_SELECTOR_CACHE_SIZE },
 );
@@ -55,15 +49,15 @@ const getAddressCacheKey = (addresses: string[]) =>
 
 const getSelectAreAnyWalletsBlocked = lruMemoize(
   (addresses: string[]) =>
-    createSelector(
-      selectComplianceWalletStatusMap,
-      selectComplianceLastCheckedAtValue,
-      (walletComplianceStatusMap, lastCheckedAt) =>
-        coreSelectAreAnyWalletsBlocked(addresses)({
-          walletComplianceStatusMap,
-          lastCheckedAt,
-        }),
-    ),
+    createSelector(selectComplianceWalletStatusMap, (statusMap) => {
+      if (addresses.length === 0) {
+        return false;
+      }
+
+      return addresses.some(
+        (address) => statusMap[address]?.blocked ?? false,
+      );
+    }),
   {
     equalityCheck: (firstAddressList, secondAddressList) =>
       getAddressCacheKey(firstAddressList) ===
