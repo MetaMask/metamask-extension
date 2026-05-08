@@ -224,6 +224,15 @@
           "eip155:1/slip44:60": {
             "amount": "25"
           },
+          "eip155:10/slip44:60": {
+            "amount": "25"
+          },
+          "eip155:56/slip44:60": {
+            "amount": "25"
+          },
+          "eip155:137/slip44:60": {
+            "amount": "25"
+          },
           "eip155:1337/slip44:1": {
             "amount": "25"
           },
@@ -250,6 +259,22 @@
           "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/slip44/60.png",
           "name": "Ether",
           "symbol": "ETH",
+          "type": "native"
+        },
+        "eip155:56/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/56/slip44/60.png",
+          "name": "BNB",
+          "symbol": "BNB",
+          "type": "native"
+        },
+        "eip155:137/slip44:60": {
+          "aggregators": [],
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/137/slip44/60.png",
+          "name": "POL",
+          "symbol": "POL",
           "type": "native"
         },
         "eip155:1337/slip44:1": {

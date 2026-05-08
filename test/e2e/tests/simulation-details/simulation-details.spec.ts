@@ -7,6 +7,8 @@ import { Fixtures, withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { login } from '../../page-objects/flows/login.flow';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { mockPriceApi } from '../tokens/utils/mocks';
+
 import {
   BUY_ERC1155_REQUEST_1_MOCK,
   BUY_ERC1155_REQUEST_2_MOCK,
@@ -94,6 +96,7 @@ describe('Simulation Details', function () {
   it('renders send eth transaction', async function () {
     const mockRequests = async (mockServer: MockttpServer) => {
       await mockRequest(mockServer, SEND_ETH_REQUEST_MOCK);
+      await mockPriceApi(mockServer, 1700);
     };
     await withFixturesForSimulationDetails(
       { title: this.test?.fullTitle(), mockRequests },

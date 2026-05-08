@@ -1318,26 +1318,72 @@ async function setupMocking(
       return { statusCode: 200, json: results };
     });
 
-  // Tokens API (assets-unify-state): v2 supported networks required alongside
-  // Accounts API v5 so EVM balances load. Only needed when unified state is enabled.
-  if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
-    await server
-      .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
-      .always()
-      .thenJson(200, {
-        fullSupport: [
-          'eip155:1',
-          'eip155:59144',
-          'eip155:42161',
-          'eip155:8453',
-          'eip155:10',
-          'eip155:137',
-          'eip155:56',
-          'eip155:1337',
-        ],
-        partialSupport: [],
-      });
-  } // end ASSETS_UNIFIED_STATE_ENABLED === 'true'
+  // Tokens API: v2 supported networks — mocked globally so all tests work
+  // regardless of the ASSETS_UNIFIED_STATE_ENABLED flag.
+  await server
+    .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        'eip155:1',
+        'eip155:10',
+        'eip155:25',
+        'eip155:56',
+        'eip155:100',
+        'eip155:137',
+        'eip155:143',
+        'eip155:250',
+        'eip155:324',
+        'eip155:1101',
+        'eip155:1284',
+        'eip155:1285',
+        'eip155:1329',
+        'eip155:8453',
+        'eip155:42161',
+        'eip155:42220',
+        'eip155:43114',
+        'eip155:59144',
+        'eip155:1313161554',
+        'eip155:1666600000',
+        'eip155:11297108109',
+        'eip155:13371',
+        'eip155:534352',
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        'tron:728126428',
+        'stellar:pubnet',
+        'eip155:698',
+        'eip155:16507',
+        'eip155:41923',
+        'eip155:747474',
+        'eip155:80094',
+        'eip155:33139',
+        'eip155:2741',
+        'eip155:1868',
+        'eip155:166',
+        'eip155:1440000',
+        'eip155:252',
+        'eip155:43111',
+        'eip155:50',
+        'eip155:42',
+        'eip155:9745',
+        'eip155:999',
+        'eip155:1776',
+        'eip155:4326',
+        'eip155:196',
+        'eip155:68414',
+        'eip155:42793',
+        'eip155:60808',
+        'eip155:30',
+        'bip122:000000000019d6689c085ae165831e93',
+        'eip155:88888',
+        'eip155:988',
+        'eip155:42431',
+        'eip155:4217',
+        'eip155:5000',
+        'eip155:1337',
+      ],
+      partialSupport: ['solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'],
+    });
 
   // Accounts API: v2 supported networks (used by AccountsApiDataSource when assetsUnifyState is enabled)
   await server
