@@ -248,16 +248,12 @@ describe('createMetaRPCHandler', () => {
       expect(api.foo).toHaveBeenCalledWith();
     });
 
-    it('preserves throw when params is undefined (matches original behavior)', async () => {
+    it('passes non-array cleanParams as a single argument (handles undefined and JSON-RPC by-name params)', async () => {
       const api = {
         foo: jest.fn().mockReturnValue('result'),
       };
       const streamTest = createThoughStream();
       const handler = createMetaRPCHandler(api, streamTest);
-
-      const dataPromise = new Promise((resolve) => {
-        streamTest.on('data', resolve);
-      });
 
       await handler({
         id: 1,
@@ -265,11 +261,8 @@ describe('createMetaRPCHandler', () => {
         params: undefined,
       });
 
-      const data = await dataPromise;
       expect(trace).not.toHaveBeenCalled();
-      expect(api.foo).not.toHaveBeenCalled();
-      expect(data.error).toBeDefined();
-      expect(data.error.message).toMatch(/not iterable|iterable|spread/iu);
+      expect(api.foo).toHaveBeenCalledWith(undefined);
     });
 
     it('does not strip last param when _traceContext has wrong shape (legitimate param preserved)', async () => {
