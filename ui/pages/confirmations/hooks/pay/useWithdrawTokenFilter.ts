@@ -2,12 +2,9 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { isNativeAddress } from '@metamask/bridge-controller';
-import {
-  TransactionType,
-  type TransactionMeta,
-} from '@metamask/transaction-controller';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
+import { getPostQuoteWithdrawTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { selectPayQuoteConfig } from '../../selectors/feature-flags';
 import { useConfirmContext } from '../../context/confirm';
 import type { Asset } from '../../types/send';
@@ -19,23 +16,22 @@ type WithdrawTokenFilterResult = {
 };
 
 /**
- * Returns a token filter for withdraw transactions backed by the
+ * Returns a token filter for post-quote withdraw transactions backed by the
  * `confirmations_pay_post_quote` remote feature flag.
  */
-export function useWithdrawTokenFilter(): WithdrawTokenFilterResult {
+export function usePostQuoteWithdrawTokenFilter(): WithdrawTokenFilterResult {
   const { currentConfirmation } = useConfirmContext<
     TransactionMeta | undefined
   >();
-  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
-  const transactionType = isWithdraw
-    ? TransactionType.perpsWithdraw
-    : currentConfirmation?.type;
+  const postQuoteWithdrawTransactionType =
+    getPostQuoteWithdrawTransactionType(currentConfirmation);
+  const isPostQuoteWithdraw = Boolean(postQuoteWithdrawTransactionType);
 
   const config = useSelector((state) =>
-    selectPayQuoteConfig(state, transactionType),
+    selectPayQuoteConfig(state, postQuoteWithdrawTransactionType),
   );
   const allowlist = config.tokens;
-  const isFilterApplied = isWithdraw && Boolean(allowlist);
+  const isFilterApplied = isPostQuoteWithdraw && Boolean(allowlist);
 
   const tokenFilter = useMemo(() => {
     if (!isFilterApplied || !allowlist) {
@@ -89,6 +85,8 @@ export function useWithdrawTokenFilter(): WithdrawTokenFilterResult {
     [filterTokens, isFilterApplied],
   );
 }
+
+export const useWithdrawTokenFilter = usePostQuoteWithdrawTokenFilter;
 
 function buildAllowlistLookup(
   allowlist: Record<Hex, Hex[]>,

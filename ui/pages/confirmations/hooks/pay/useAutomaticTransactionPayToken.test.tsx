@@ -12,7 +12,7 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
-import { useWithdrawTokenFilter } from './useWithdrawTokenFilter';
+import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
 
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
@@ -97,7 +97,9 @@ describe('useAutomaticTransactionPayToken', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
-  const useWithdrawTokenFilterMock = jest.mocked(useWithdrawTokenFilter);
+  const usePostQuoteWithdrawTokenFilterMock = jest.mocked(
+    usePostQuoteWithdrawTokenFilter,
+  );
 
   const setPayTokenMock = jest.fn();
 
@@ -117,7 +119,7 @@ describe('useAutomaticTransactionPayToken', () => {
     ]);
 
     useTransactionPayAvailableTokensMock.mockReturnValue([]);
-    useWithdrawTokenFilterMock.mockReturnValue({
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
       filterTokens: (tokens) => tokens,
       isFilterApplied: false,
     });
@@ -282,7 +284,7 @@ describe('useAutomaticTransactionPayToken', () => {
         chainId: CHAIN_ID_1_MOCK,
       },
     ] as Asset[]);
-    useWithdrawTokenFilterMock.mockReturnValue({
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
       filterTokens: () =>
         [
           {

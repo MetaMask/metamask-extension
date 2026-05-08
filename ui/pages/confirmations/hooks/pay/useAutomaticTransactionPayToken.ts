@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 import { getHardwareWalletType } from '../../../../selectors';
-import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
+import { isPostQuoteWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
-import { useWithdrawTokenFilter } from './useWithdrawTokenFilter';
+import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
 
 export function useAutomaticTransactionPayToken({
   disable = false,
@@ -27,18 +27,23 @@ export function useAutomaticTransactionPayToken({
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
-  const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  const isPostQuoteWithdraw =
+    isPostQuoteWithdrawTransaction(currentConfirmation);
   const {
-    filterTokens: withdrawTokenFilter,
-    isFilterApplied: isWithdrawTokenFilterApplied,
-  } = useWithdrawTokenFilter();
+    filterTokens: postQuoteWithdrawTokenFilter,
+    isFilterApplied: isPostQuoteWithdrawTokenFilterApplied,
+  } = usePostQuoteWithdrawTokenFilter();
 
   const tokens = useMemo(
     () =>
-      isWithdrawTokenFilterApplied
-        ? withdrawTokenFilter(availableTokens)
+      isPostQuoteWithdrawTokenFilterApplied
+        ? postQuoteWithdrawTokenFilter(availableTokens)
         : availableTokens,
-    [availableTokens, isWithdrawTokenFilterApplied, withdrawTokenFilter],
+    [
+      availableTokens,
+      isPostQuoteWithdrawTokenFilterApplied,
+      postQuoteWithdrawTokenFilter,
+    ],
   );
 
   const tokensWithBalance = useMemo(
@@ -69,8 +74,8 @@ export function useAutomaticTransactionPayToken({
 
     const automaticToken = getBestToken({
       isHardwareWallet,
-      isWithdraw,
-      isWithdrawTokenFilterApplied,
+      isPostQuoteWithdraw,
+      isPostQuoteWithdrawTokenFilterApplied,
       targetToken,
       tokens: tokensWithBalance,
       preferredToken,
@@ -89,8 +94,8 @@ export function useAutomaticTransactionPayToken({
   }, [
     disable,
     isHardwareWallet,
-    isWithdraw,
-    isWithdrawTokenFilterApplied,
+    isPostQuoteWithdraw,
+    isPostQuoteWithdrawTokenFilterApplied,
     payToken,
     preferredToken,
     requiredTokens,
@@ -103,15 +108,15 @@ export function useAutomaticTransactionPayToken({
 
 function getBestToken({
   isHardwareWallet,
-  isWithdraw,
-  isWithdrawTokenFilterApplied,
+  isPostQuoteWithdraw,
+  isPostQuoteWithdrawTokenFilterApplied,
   preferredToken,
   targetToken,
   tokens,
 }: {
   isHardwareWallet: boolean;
-  isWithdraw: boolean;
-  isWithdrawTokenFilterApplied: boolean;
+  isPostQuoteWithdraw: boolean;
+  isPostQuoteWithdrawTokenFilterApplied: boolean;
   preferredToken?: SetPayTokenRequest;
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
@@ -127,10 +132,10 @@ function getBestToken({
     return targetTokenFallback;
   }
 
-  // Without a withdraw allowlist, `preferredToken` is the destination: honor it
-  // even if the user has no wallet balance of it.
-  if (isWithdraw && preferredToken) {
-    if (!isWithdrawTokenFilterApplied) {
+  // Without a post-quote withdraw allowlist, `preferredToken` is the
+  // destination: honor it even if the user has no wallet balance of it.
+  if (isPostQuoteWithdraw && preferredToken) {
+    if (!isPostQuoteWithdrawTokenFilterApplied) {
       return preferredToken;
     }
 
@@ -159,7 +164,7 @@ function getBestToken({
     }
   }
 
-  if (isWithdrawTokenFilterApplied && tokens.length === 0) {
+  if (isPostQuoteWithdrawTokenFilterApplied && tokens.length === 0) {
     return undefined;
   }
 

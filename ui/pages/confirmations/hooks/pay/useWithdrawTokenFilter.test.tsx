@@ -11,7 +11,7 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { ConfirmContext } from '../../context/confirm';
 import type { Asset } from '../../types/send';
 import { useSendTokens } from '../send/useSendTokens';
-import { useWithdrawTokenFilter } from './useWithdrawTokenFilter';
+import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
 
 jest.mock('../send/useSendTokens');
 
@@ -33,12 +33,14 @@ const ALL_TOKENS_MOCK = [
   },
 ] as Asset[];
 
-function renderUseWithdrawTokenFilter({
+function renderUsePostQuoteWithdrawTokenFilter({
+  transactionMeta,
   type = TransactionType.perpsWithdraw,
   postQuoteFlags = {
     default: { enabled: false },
   },
 }: {
+  transactionMeta?: TransactionMeta;
   type?: TransactionType;
   postQuoteFlags?: Record<string, unknown>;
 } = {}) {
@@ -51,11 +53,13 @@ function renderUseWithdrawTokenFilter({
   });
 
   const confirmContextValue = {
-    currentConfirmation: {
-      id: 'tx-id',
-      type,
-      txParams: {},
-    } as TransactionMeta,
+    currentConfirmation:
+      transactionMeta ??
+      ({
+        id: 'tx-id',
+        type,
+        txParams: {},
+      } as TransactionMeta),
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: jest.fn(),
   };
@@ -68,17 +72,17 @@ function renderUseWithdrawTokenFilter({
     </Provider>
   );
 
-  return renderHook(() => useWithdrawTokenFilter(), { wrapper });
+  return renderHook(() => usePostQuoteWithdrawTokenFilter(), { wrapper });
 }
 
-describe('useWithdrawTokenFilter', () => {
+describe('usePostQuoteWithdrawTokenFilter', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseSendTokens.mockReturnValue(ALL_TOKENS_MOCK);
   });
 
   it('returns passed-in tokens unchanged for non-withdraw transaction types', () => {
-    const { result } = renderUseWithdrawTokenFilter({
+    const { result } = renderUsePostQuoteWithdrawTokenFilter({
       type: TransactionType.simpleSend,
     });
     const input = [ALL_TOKENS_MOCK[0]];
@@ -94,7 +98,7 @@ describe('useWithdrawTokenFilter', () => {
   });
 
   it('returns passed-in tokens unchanged when no allowlist is configured', () => {
-    const { result } = renderUseWithdrawTokenFilter({
+    const { result } = renderUsePostQuoteWithdrawTokenFilter({
       postQuoteFlags: {
         perpsWithdraw: { enabled: true },
       },
@@ -112,7 +116,7 @@ describe('useWithdrawTokenFilter', () => {
   });
 
   it('returns allowlisted wallet tokens for perps withdraw', () => {
-    const { result } = renderUseWithdrawTokenFilter({
+    const { result } = renderUsePostQuoteWithdrawTokenFilter({
       postQuoteFlags: {
         perpsWithdraw: {
           enabled: true,
@@ -137,7 +141,7 @@ describe('useWithdrawTokenFilter', () => {
   });
 
   it('passes a case-insensitive tokenFilter for allowlisted tokens', () => {
-    renderUseWithdrawTokenFilter({
+    renderUsePostQuoteWithdrawTokenFilter({
       postQuoteFlags: {
         perpsWithdraw: {
           enabled: true,
@@ -154,7 +158,7 @@ describe('useWithdrawTokenFilter', () => {
   });
 
   it('matches native tokens via zero address without requesting enrichment', () => {
-    renderUseWithdrawTokenFilter({
+    renderUsePostQuoteWithdrawTokenFilter({
       postQuoteFlags: {
         perpsWithdraw: {
           enabled: true,
@@ -171,5 +175,32 @@ describe('useWithdrawTokenFilter', () => {
 
     expect(filter?.('0x1', nativeAddress)).toBe(true);
     expect(args?.enrichTokenRequests).toEqual([]);
+  });
+
+  it('uses the matching post-quote withdraw type from nested transactions', () => {
+    renderUsePostQuoteWithdrawTokenFilter({
+      transactionMeta: {
+        id: 'tx-id',
+        type: TransactionType.batch,
+        txParams: {},
+        nestedTransactions: [{ type: TransactionType.perpsWithdraw }],
+      } as unknown as TransactionMeta,
+      postQuoteFlags: {
+        default: {
+          enabled: true,
+          tokens: { '0x1': ['0xbbb'] },
+        },
+        overrides: {
+          perpsWithdraw: {
+            tokens: { '0x1': ['0xaaa'] },
+          },
+        },
+      },
+    });
+
+    const filter = mockUseSendTokens.mock.calls[0][0]?.tokenFilter;
+
+    expect(filter?.('0x1', '0xaaa')).toBe(true);
+    expect(filter?.('0x1', '0xbbb')).toBe(false);
   });
 });
