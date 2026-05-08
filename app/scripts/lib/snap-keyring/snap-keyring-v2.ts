@@ -4,6 +4,7 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { KeyringBuilder, KeyringV2Builder } from '@metamask/keyring-controller';
 import { Keyring } from '@metamask/keyring-utils';
+import { assert } from '@metamask/utils';
 import { isFlask } from '../../../../shared/lib/build-types';
 import { SnapKeyringBuilderV2Messenger } from './types';
 import { SnapKeyringImpl, SnapKeyringHelpers } from './snap-keyring';
