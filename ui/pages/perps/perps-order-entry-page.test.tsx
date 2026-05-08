@@ -410,6 +410,40 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
     });
+
+    it('renders the order-size input with the default 0.00 placeholder (no "min $10")', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      expect(amountInput?.placeholder).toBe('0.00');
+      expect(amountInput?.placeholder).not.toMatch(/min\s*\$/iu);
+    });
+
+    it('keeps the submit button active at startup when no order size has been entered', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+
+      expect(amountInput?.value).toBe('');
+      expect(submitButton).not.toBeDisabled();
+      expect(submitButton).toHaveTextContent('Open long ETH');
+    });
+
+    it('disables submit only once the user enters an amount below the $10 minimum', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('5');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(/at least \$10/iu);
+    });
   });
 
   describe('redirects', () => {

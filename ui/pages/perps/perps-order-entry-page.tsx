@@ -587,7 +587,8 @@ const PerpsOrderEntryPage: React.FC = () => {
       return false;
     }
     const rawAmount = orderFormState.amount.replace(/,/gu, '').trim();
-    if (orderMode === 'modify' && rawAmount === '') {
+    // Empty input keeps the submit button active so the post-attempt error flow can surface.
+    if (rawAmount === '') {
       return false;
     }
     const amount = Number.parseFloat(rawAmount) || 0;
@@ -1438,11 +1439,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           initialLeverage={initialLeverage}
           autoFocusUsd={orderMode !== 'close'}
           autoFocusLimitPrice={orderMode !== 'close'}
-          usdPlaceholder={
-            orderType === 'market'
-              ? `min $${PERPS_MIN_MARKET_ORDER_USD}`
-              : undefined
-          }
           sizeDecimals={marketInfo?.szDecimals}
         />
       </Box>

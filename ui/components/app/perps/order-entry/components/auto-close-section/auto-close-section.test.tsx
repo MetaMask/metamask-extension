@@ -101,6 +101,42 @@ describe('AutoCloseSection', () => {
 
       expect(onEnabledChange).toHaveBeenCalledWith(true);
     });
+
+    it('scrolls the section into view when auto-close is enabled', () => {
+      const scrollIntoViewSpy = jest
+        .spyOn(window.HTMLElement.prototype, 'scrollIntoView')
+        .mockImplementation(() => undefined);
+      try {
+        renderWithProvider(
+          <AutoCloseSection {...defaultProps} enabled={true} />,
+          mockStore,
+        );
+
+        expect(screen.getByTestId('auto-close-section')).toBeInTheDocument();
+        expect(scrollIntoViewSpy).toHaveBeenCalledTimes(1);
+        expect(scrollIntoViewSpy.mock.calls[0][0]).toMatchObject({
+          behavior: 'smooth',
+        });
+      } finally {
+        scrollIntoViewSpy.mockRestore();
+      }
+    });
+
+    it('does not scroll the section into view while auto-close is disabled', () => {
+      const scrollIntoViewSpy = jest
+        .spyOn(window.HTMLElement.prototype, 'scrollIntoView')
+        .mockImplementation(() => undefined);
+      try {
+        renderWithProvider(
+          <AutoCloseSection {...defaultProps} enabled={false} />,
+          mockStore,
+        );
+
+        expect(scrollIntoViewSpy).not.toHaveBeenCalled();
+      } finally {
+        scrollIntoViewSpy.mockRestore();
+      }
+    });
   });
 
   describe('take profit input', () => {

@@ -8,7 +8,7 @@ import {
   BoxAlignItems,
   FontWeight,
 } from '@metamask/design-system-react';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
@@ -407,8 +407,27 @@ export const AutoCloseSection: React.FC<AutoCloseSectionProps> = ({
     return null;
   }, [isSlInvalid, isSlLiquidationInvalid, direction, priceLabel, t]);
 
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+
+  // Bring the expanded TP/SL inputs into view on smaller surfaces where the
+  // section would otherwise sit below the fold.
+  useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+    sectionRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    });
+  }, [enabled]);
+
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={3}>
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      gap={3}
+      ref={sectionRef}
+      data-testid="auto-close-section"
+    >
       {/* Toggle Row */}
       <Box
         flexDirection={BoxFlexDirection.Row}
