@@ -30,7 +30,6 @@ import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profil
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { isBeta } from '../../../shared/lib/build-types';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
@@ -110,7 +109,6 @@ export type AppStateControllerState = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
   canTrackWalletFundsObtained: boolean;
-  isRampCardClosed: boolean;
   pendingExtensionVersion: string | null;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
   lastUpdatedAt: number | null;
@@ -120,7 +118,6 @@ export type AppStateControllerState = {
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
   pna25Acknowledged: boolean;
-  nftsDetectionNoticeDismissed: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
   onboardingDate: number | null;
@@ -130,16 +127,10 @@ export type AppStateControllerState = {
   productTour?: string;
   recoveryPhraseReminderHasBeenShown: boolean;
   recoveryPhraseReminderLastShown: number;
-  showAccountBanner: boolean;
-  showBetaHeader: boolean;
   showDownloadMobileAppSlide: boolean;
-  showNetworkBanner: boolean;
-  showPermissionsTour: boolean;
-  showTestnetMessageInDropdown: boolean;
   signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   slides: CarouselSlide[];
   snapsInstallPrivacyWarningShown?: boolean;
-  surveyLinkLastClickedOrClosed: number | null;
   shieldSubscriptionError: ShieldSubscriptionError | null;
   shieldEndingToastLastClickedOrClosed: number | null;
   shieldPausedToastLastClickedOrClosed: number | null;
@@ -291,7 +282,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: false,
   canTrackWalletFundsObtained: true,
-  isRampCardClosed: false,
   pendingExtensionVersion: null,
   lastUpdatedAt: null,
   lastUpdatedFromVersion: null,
@@ -299,7 +289,6 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
   pna25Acknowledged: false,
-  nftsDetectionNoticeDismissed: false,
   notificationGasPollTokens: [],
   onboardingDate: null,
   outdatedBrowserWarningLastShown: null,
@@ -308,14 +297,8 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   productTour: 'accountIcon',
   recoveryPhraseReminderHasBeenShown: false,
   recoveryPhraseReminderLastShown: new Date().getTime(),
-  showAccountBanner: true,
-  showBetaHeader: isBeta(),
   showDownloadMobileAppSlide: true,
-  showNetworkBanner: true,
-  showPermissionsTour: true,
-  showTestnetMessageInDropdown: true,
   slides: [],
-  surveyLinkLastClickedOrClosed: null,
   shieldSubscriptionError: null,
   shieldEndingToastLastClickedOrClosed: null,
   shieldPausedToastLastClickedOrClosed: null,
@@ -426,12 +409,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: false,
   },
-  isRampCardClosed: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   pendingExtensionVersion: {
     includeInStateLogs: true,
     persist: false,
@@ -485,12 +462,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
-  },
-  nftsDetectionNoticeDismissed: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
   },
   nftsDropdownState: {
     includeInStateLogs: true,
@@ -546,41 +517,11 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
-  showAccountBanner: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  showBetaHeader: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
   showDownloadMobileAppSlide: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
     usedInUi: true,
-  },
-  showNetworkBanner: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  showPermissionsTour: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  showTestnetMessageInDropdown: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: false,
   },
   signatureSecurityAlertResponses: {
     includeInStateLogs: true,
@@ -595,12 +536,6 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   snapsInstallPrivacyWarningShown: {
-    includeInStateLogs: true,
-    persist: true,
-    includeInDebugSnapshot: true,
-    usedInUi: true,
-  },
-  surveyLinkLastClickedOrClosed: {
     includeInStateLogs: true,
     persist: true,
     includeInDebugSnapshot: true,
@@ -802,22 +737,15 @@ const MESSENGER_EXPOSED_METHODS = [
   'setPendingShieldCohort',
   'setPna25Acknowledged',
   'setProductTour',
-  'setRampCardClosed',
   'setRecoveryPhraseReminderHasBeenShown',
   'setRecoveryPhraseReminderLastShown',
   'setShieldEndingToastLastClickedOrClosed',
   'setShieldPausedToastLastClickedOrClosed',
   'setShieldSubscriptionError',
   'setShieldSubscriptionMetricsProps',
-  'setShowAccountBanner',
-  'setShowBetaHeader',
-  'setShowNetworkBanner',
-  'setShowPermissionsTour',
   'setShowShieldEntryModalOnce',
-  'setShowTestnetMessageInDropdown',
   'setSnapsInstallPrivacyWarningShownStatus',
   'setStorageWriteErrorType',
-  'setSurveyLinkLastClickedOrClosed',
   'setTermsOfUseLastAgreed',
   'setTrezorModel',
   'setUpdateModalLastDismissedAt',
@@ -995,12 +923,6 @@ export class AppStateController extends BaseController<
     });
   }
 
-  setSurveyLinkLastClickedOrClosed(time: number): void {
-    this.update((state) => {
-      state.surveyLinkLastClickedOrClosed = time;
-    });
-  }
-
   setOnboardingDate(): void {
     this.update((state) => {
       state.onboardingDate = Date.now();
@@ -1010,12 +932,6 @@ export class AppStateController extends BaseController<
   setLastViewedUserSurvey(id: number) {
     this.update((state) => {
       state.lastViewedUserSurvey = id;
-    });
-  }
-
-  setRampCardClosed(): void {
-    this.update((state) => {
-      state.isRampCardClosed = true;
     });
   }
 
@@ -1387,39 +1303,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether the testnet dismissal link should be shown in the network dropdown
-   *
-   * @param showTestnetMessageInDropdown
-   */
-  setShowTestnetMessageInDropdown(showTestnetMessageInDropdown: boolean): void {
-    this.update((state) => {
-      state.showTestnetMessageInDropdown = showTestnetMessageInDropdown;
-    });
-  }
-
-  /**
-   * Sets whether the beta notification heading on the home page
-   *
-   * @param showBetaHeader
-   */
-  setShowBetaHeader(showBetaHeader: boolean): void {
-    this.update((state) => {
-      state.showBetaHeader = showBetaHeader;
-    });
-  }
-
-  /**
-   * Sets whether the permissions tour should be shown to the user
-   *
-   * @param showPermissionsTour
-   */
-  setShowPermissionsTour(showPermissionsTour: boolean): void {
-    this.update((state) => {
-      state.showPermissionsTour = showPermissionsTour;
-    });
-  }
-
-  /**
    * Sets whether the multichain intro modal has been shown to the user
    *
    * @param hasShown - Whether the modal has been shown
@@ -1467,17 +1350,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether the Network Banner should be shown
-   *
-   * @param showNetworkBanner
-   */
-  setShowNetworkBanner(showNetworkBanner: boolean): void {
-    this.update((state) => {
-      state.showNetworkBanner = showNetworkBanner;
-    });
-  }
-
-  /**
    * Updates the network connection banner state
    *
    * @param networkConnectionBanner - The new banner state
@@ -1487,17 +1359,6 @@ export class AppStateController extends BaseController<
   ): void {
     this.update((state) => {
       state.networkConnectionBanner = networkConnectionBanner;
-    });
-  }
-
-  /**
-   * Sets whether the Account Banner should be shown
-   *
-   * @param showAccountBanner
-   */
-  setShowAccountBanner(showAccountBanner: boolean): void {
-    this.update((state) => {
-      state.showAccountBanner = showAccountBanner;
     });
   }
 
