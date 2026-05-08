@@ -510,7 +510,8 @@ describe('Import flow', function () {
 
         // Native Tokens: Ethereum ETH, Linea ETH, Base ETH
         // ERC20 Tokens: Chain Games, Chai, ChangeX
-        await tokenList.checkTokenItemNumber(6);
+        // Plus mUSD now added by default
+        await tokenList.checkTokenItemNumber(7);
         await tokenList.checkTokenExistsInList('Ethereum');
         await tokenList.checkTokenExistsInList('Chain Games');
         await tokenList.checkTokenExistsInList('ChangeX');
