@@ -15,7 +15,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import mockState from '../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -431,7 +432,7 @@ describe('PerpsOrderEntryPage', () => {
 
       expect(amountInput?.value).toBe('');
       expect(submitButton).not.toBeDisabled();
-      expect(submitButton).toHaveTextContent('Open long ETH');
+      expect(submitButton).toHaveTextContent(tEn('perpsOpenLong', ['ETH']));
     });
 
     it('disables submit only once the user enters an amount below the $10 minimum', () => {
@@ -442,7 +443,9 @@ describe('PerpsOrderEntryPage', () => {
 
       const submitButton = screen.getByTestId('submit-order-button');
       expect(submitButton).toBeDisabled();
-      expect(submitButton).toHaveTextContent(/at least \$10/iu);
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
     });
   });
 

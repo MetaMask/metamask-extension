@@ -8,7 +8,13 @@ import {
   BoxAlignItems,
   FontWeight,
 } from '@metamask/design-system-react';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   formatPerpsFiat,
   PRICE_RANGES_MINIMAL_VIEW,
