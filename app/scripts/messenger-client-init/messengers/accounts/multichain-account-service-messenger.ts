@@ -14,6 +14,7 @@ import {
 } from '@metamask/snaps-controllers';
 import {
   KeyringControllerWithKeyringAction,
+  KeyringControllerWithKeyringV2Action,
   KeyringControllerGetStateAction,
   KeyringControllerStateChangeEvent,
   KeyringControllerAddNewKeyringAction,
@@ -29,6 +30,7 @@ import {
   RemoteFeatureFlagControllerStateChangeEvent,
   RemoteFeatureFlagControllerGetStateAction,
 } from '@metamask/remote-feature-flag-controller';
+import { SnapAccountServiceEnsureReadyAction } from '@metamask/snap-account-service';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -44,12 +46,14 @@ type Actions =
   | SnapControllerHandleRequestAction
   | KeyringControllerGetStateAction
   | KeyringControllerWithKeyringAction
+  | KeyringControllerWithKeyringV2Action
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerCreateNewVaultAndKeychainAction
   | KeyringControllerCreateNewVaultAndRestoreAction
   | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction;
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | SnapAccountServiceEnsureReadyAction;
 
 type Events =
   | SnapControllerStateChangeEvent
@@ -100,12 +104,14 @@ export function getMultichainAccountServiceMessenger(
       'SnapController:handleRequest',
       'KeyringController:getState',
       'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2',
       'KeyringController:addNewKeyring',
       'KeyringController:getKeyringsByType',
       'KeyringController:createNewVaultAndKeychain',
       'KeyringController:createNewVaultAndRestore',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
+      'SnapAccountService:ensureReady',
     ],
   });
   return serviceMessenger;

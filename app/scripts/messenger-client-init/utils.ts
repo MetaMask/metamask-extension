@@ -137,6 +137,7 @@ export function initMessengerClients({
       initMessenger,
     };
 
+    console.log('Iinitializing messenger client', messengerClientName);
     const result = initFunction({
       ...finalInitRequest,
       controllerMessenger: finalInitRequest.controllerMessenger,

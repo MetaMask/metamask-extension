@@ -53,6 +53,8 @@ export type SnapKeyringBuilderMessenger = Messenger<
   SnapKeyringBuilderAllowActions
 >;
 
+export type SnapKeyringBuilderV2Messenger = SnapKeyringBuilderMessenger;
+
 /**
  * Interface for the MetaMask Controller used by the snap keyring.
  * This interface defines only the methods needed from the controller.

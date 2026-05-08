@@ -390,6 +390,7 @@ import { isRelaySupported } from './lib/transaction/transaction-relay';
 import { openUpdateTabAndReload } from './lib/open-update-tab-and-reload';
 import { AccountTreeControllerInit } from './messenger-client-init/accounts/account-tree-controller-init';
 import { MultichainAccountServiceInit } from './messenger-client-init/multichain/multichain-account-service-init';
+import { SnapAccountServiceInit } from './messenger-client-init/accounts/snap-account-service-init';
 import {
   OAuthServiceInit,
   SeedlessOnboardingControllerInit,
@@ -433,6 +434,7 @@ import { SubjectMetadataControllerInit } from './messenger-client-init/subject-m
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { KeyringControllerInit } from './messenger-client-init/keyring-controller-init';
 import { SnapKeyringBuilderInit } from './messenger-client-init/accounts/snap-keyring-builder-init';
+import { SnapKeyringBuilderV2Init } from './messenger-client-init/accounts/snap-keyring-builder-v2-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
@@ -629,6 +631,7 @@ export default class MetamaskController extends EventEmitter {
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
       SnapKeyringBuilder: SnapKeyringBuilderInit,
+      SnapKeyringBuilderV2: SnapKeyringBuilderV2Init,
       KeyringController: KeyringControllerInit,
       AccountsController: AccountsControllerInit,
       AddressBookController: AddressBookControllerInit,
@@ -700,6 +703,7 @@ export default class MetamaskController extends EventEmitter {
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
+      SnapAccountService: SnapAccountServiceInit,
       MultichainAccountService: MultichainAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
@@ -756,6 +760,7 @@ export default class MetamaskController extends EventEmitter {
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
     this.keyringController = messengerClientsByName.KeyringController;
+    this.snapAccountService = messengerClientsByName.SnapAccountService;
     this.accountsController = messengerClientsByName.AccountsController;
     this.addressBookController = messengerClientsByName.AddressBookController;
     this.alertController = messengerClientsByName.AlertController;
@@ -4937,12 +4942,18 @@ export default class MetamaskController extends EventEmitter {
 
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
+      // Initialize the snap account service so the accounts-controller will be able to
+      // fetch Snap accounts from Snap keyring v2.
+      await this.snapAccountService.init();
+
       // Once we have our first HD keyring available, we re-create the internal list of
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
       // there are some account migration happening in that function).
       await this.accountsController.updateAccounts();
+
       // Then we can build the initial tree.
       this.accountTreeController.reinit();
+
       // TODO: Move this logic to the SnapKeyring directly.
       // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
       await this.forwardSelectedAccountGroupToSnapKeyring(
@@ -5281,6 +5292,10 @@ export default class MetamaskController extends EventEmitter {
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
 
+      // Initialize the snap account service so the accounts-controller will be able to
+      // fetch Snap accounts from Snap keyring v2.
+      await this.snapAccountService.init();
+
       // We re-created the vault, meaning we only have 1 new HD keyring
       // now. We re-create the internal list of accounts (which is
       // not an expensive operation, since we should only have 1 HD
@@ -5512,6 +5527,12 @@ export default class MetamaskController extends EventEmitter {
       log.error('Error while unlocking extension.', error);
     }
 
+    // Initialize the snap account service so the accounts-controller will be able to
+    // fetch Snap accounts from Snap keyring v2.
+    await this.snapAccountService.init();
+
+    // Re-create accounts in the accounts-controller, after the keyring-controller gets
+    // unlocked.
     await this.accountsController.updateAccounts();
 
     // Init multichain accounts after creating internal accounts.

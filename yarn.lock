@@ -7102,7 +7102,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-snap-client@npm:^8.2.0, @metamask/keyring-snap-client@npm:^8.2.1":
+"@metamask/keyring-snap-client@npm:^8.2.1":
   version: 8.2.1
   resolution: "@metamask/keyring-snap-client@npm:8.2.1"
   dependencies:
@@ -7273,21 +7273,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "@metamask/multichain-account-service@npm:8.0.1"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@9.0.0-preview-fe37b4f9a":
+  version: 9.0.0-preview-fe37b4f9a
+  resolution: "@metamask-previews/multichain-account-service@npm:9.0.0-preview-fe37b4f9a"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/accounts-controller": "npm:^37.1.1"
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/eth-snap-keyring": "npm:^19.0.0"
+    "@metamask/accounts-controller": "npm:^38.0.0"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/eth-snap-keyring": "npm:^22.0.1"
     "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/keyring-api": "npm:^21.6.0"
-    "@metamask/keyring-controller": "npm:^25.1.1"
-    "@metamask/keyring-internal-api": "npm:^10.0.0"
-    "@metamask/keyring-snap-client": "npm:^8.2.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/keyring-api": "npm:^23.1.0"
+    "@metamask/keyring-controller": "npm:^25.5.0"
+    "@metamask/keyring-internal-api": "npm:^11.0.1"
+    "@metamask/keyring-snap-client": "npm:^9.0.2"
+    "@metamask/keyring-utils": "npm:^3.2.1"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/snap-account-service": "npm:^0.0.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
@@ -7296,10 +7297,10 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     lodash: "npm:^4.17.21"
   peerDependencies:
-    "@metamask/account-api": ^1.0.0
+    "@metamask/account-api": ^1.0.4
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/7ac3c38db8afd47593cd7ed4cc95de99195ccd2b2903281382be83990b2a47fa2f03de77e325c1ea3c7fd96367e3eac20039994d95154d478bebacd61215140a
+  checksum: 10/fb421fa6a8d2a4a46790ea7597fd4c2d8bab94c258eaa00a85d616e2141177e41f92d44ee7ec09eeb87e786f5e505c2a9617b0d82620ed87fb2ff9bd249d00b2
   languageName: node
   linkType: hard
 
@@ -8062,6 +8063,20 @@ __metadata:
     styled-components: "npm:5.3.9"
     webpack: "npm:^5.88.2"
   checksum: 10/c06f8900448351d61cbc6d519a52060149db3512429aea5a6e1d612587b80ebc22ba1b8ce6ad2e9f58499d431a4f43a7056223318d07ef904532812dd6c8fa0e
+  languageName: node
+  linkType: hard
+
+"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@0.0.0-preview-fe37b4f9a":
+  version: 0.0.0-preview-fe37b4f9a
+  resolution: "@metamask-previews/snap-account-service@npm:0.0.0-preview-fe37b4f9a"
+  dependencies:
+    "@metamask/keyring-controller": "npm:^25.5.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/snaps-controllers": "npm:^19.0.0"
+    "@metamask/snaps-sdk": "npm:^11.0.0"
+    "@metamask/utils": "npm:^11.9.0"
+    lodash: "npm:^4.17.21"
+  checksum: 10/0bac46e9c9e14001e743813d6f130d4bb3207587b779b5930bfb2b64390494f775aed54985b594094e050e752cd3cccf35f3f21332206bb83740037eda4b00cd
   languageName: node
   linkType: hard
 
@@ -34169,8 +34184,9 @@ __metadata:
     "@metamask/keyring-controller": "npm:^25.4.0"
     "@metamask/keyring-internal-api": "npm:^11.0.1"
     "@metamask/keyring-internal-snap-client": "npm:^10.0.3"
+    "@metamask/keyring-sdk": "npm:^2.1.1"
     "@metamask/keyring-snap-client": "npm:^9.0.2"
-    "@metamask/keyring-utils": "npm:^3.2.0"
+    "@metamask/keyring-utils": "npm:^3.3.1"
     "@metamask/logging-controller": "npm:^8.0.0"
     "@metamask/logo": "npm:^4.0.0"
     "@metamask/message-manager": "npm:^14.0.0"
@@ -34178,7 +34194,7 @@ __metadata:
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/messenger-cli": "npm:^0.1.0"
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-account-service": "npm:^8.0.1"
+    "@metamask/multichain-account-service": "npm:^9.0.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
     "@metamask/multichain-api-middleware": "npm:^3.0.0"
     "@metamask/multichain-network-controller": "npm:^3.1.0"
@@ -34216,6 +34232,7 @@ __metadata:
     "@metamask/signature-controller": "npm:^39.2.0"
     "@metamask/smart-transactions-controller": "npm:^24.1.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
+    "@metamask/snap-account-service": "npm:^0.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.1.1"
     "@metamask/snaps-controllers": "npm:^20.0.3"
     "@metamask/snaps-execution-environments": "npm:^11.0.2"

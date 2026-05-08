@@ -26,3 +26,13 @@ export {
   getSnapKeyringBuilderMessenger,
   getSnapKeyringBuilderInitMessenger,
 } from './snap-keyring-builder-messenger';
+export type {
+  SnapKeyringBuilderV2Messenger,
+  SnapKeyringBuilderV2InitMessenger,
+} from './snap-keyring-builder-v2-messenger';
+export {
+  getSnapKeyringBuilderV2Messenger,
+  getSnapKeyringBuilderV2InitMessenger,
+} from './snap-keyring-builder-v2-messenger';
+export type { SnapAccountServiceMessenger } from './snap-account-service-messenger';
+export { getSnapAccountServiceMessenger } from './snap-account-service-messenger';

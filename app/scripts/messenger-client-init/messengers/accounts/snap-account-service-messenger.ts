@@ -1,0 +1,55 @@
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { SnapAccountServiceMessenger } from '@metamask/snap-account-service';
+import { RootMessenger } from '../../../lib/messenger';
+
+type Actions = MessengerActions<SnapAccountServiceMessenger>;
+type Events = MessengerEvents<SnapAccountServiceMessenger>;
+
+/**
+ * Get a restricted messenger for the snap account service. This is scoped to the
+ * actions and events that this service is allowed to handle.
+ *
+ * @param messenger - The controller messenger to restrict.
+ * @returns The restricted controller messenger.
+ */
+export function getSnapAccountServiceMessenger(
+  messenger: RootMessenger<
+    MessengerActions<SnapAccountServiceMessenger>,
+    MessengerEvents<SnapAccountServiceMessenger>
+  >,
+) {
+  const serviceMessenger = new Messenger<
+    'SnapAccountService',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'SnapAccountService',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: serviceMessenger,
+    actions: [
+      // 'KeyringController:withController',
+      // 'KeyringController:withKeyringV2Unsafe',
+      'KeyringController:getState',
+      'SnapController:getState',
+      'SnapController:getRunnableSnaps',
+    ],
+    events: [
+      'KeyringController:stateChange',
+      'SnapController:stateChange',
+      'SnapController:snapInstalled',
+      'SnapController:snapEnabled',
+      'SnapController:snapDisabled',
+      'SnapController:snapBlocked',
+      'SnapController:snapUnblocked',
+      'SnapController:snapUninstalled',
+    ],
+  });
+  return serviceMessenger;
+}
