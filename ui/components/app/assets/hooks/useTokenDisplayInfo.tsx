@@ -1,12 +1,9 @@
 import { useSelector } from 'react-redux';
-import { isEqualCaseInsensitive } from '@metamask/controller-utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { isCaipChainId } from '@metamask/utils';
 import {
   getEnabledNetworksByNamespace,
   getShowFiatInTestnets,
-  getTokenList,
-  selectERC20TokensByChain,
 } from '../../../../selectors';
 import { TokenDisplayInfo, TokenWithFiatAmount } from '../types';
 import {
@@ -31,8 +28,6 @@ export const useTokenDisplayInfo = ({
   fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = isEvmChainId(token.chainId);
-  const tokenList = useSelector(getTokenList) || {};
-  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
   const currentCurrency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const tokenChainImage = getImageForChainId(token.chainId);
@@ -86,28 +81,8 @@ export const useTokenDisplayInfo = ({
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
   if (isEvm) {
-    const tokenData = Object.values(tokenList).find(
-      (tokenToFind) =>
-        isEqualCaseInsensitive(tokenToFind.symbol, token.symbol) &&
-        isEqualCaseInsensitive(tokenToFind.address, token.address),
-    );
-
-    const title =
-      tokenData?.name ||
-      (token.chainId === '0x1' && token.symbol === 'ETH'
-        ? 'Ethereum'
-        : token.chainId &&
-          erc20TokensByChain?.[token.chainId]?.data?.[
-            token.address.toLowerCase()
-          ]?.name) ||
-      token.symbol;
-
-    const tokenImage =
-      tokenData?.iconUrl ||
-      (token.chainId &&
-        erc20TokensByChain?.[token.chainId]?.data?.[token.address.toLowerCase()]
-          ?.iconUrl) ||
-      token.image;
+    const title = token.name || token.symbol;
+    const tokenImage = token.image;
 
     return {
       title,

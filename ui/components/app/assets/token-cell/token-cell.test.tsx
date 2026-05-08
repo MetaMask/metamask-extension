@@ -8,7 +8,6 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
-  getTokenList,
   getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
@@ -119,37 +118,16 @@ describe('Token Cell', () => {
 
   (useIsOriginalTokenSymbol as jest.Mock).mockReturnValue(true);
 
-  // two tokens with the same symbol but different addresses
-  const MOCK_GET_TOKEN_LIST = {
-    '0xAddress': {
-      name: 'TEST-2',
-      erc20: true,
-      symbol: 'TEST',
-      decimals: 18,
-      address: '0xAddress',
-      iconUrl: './images/test_1_image.svg',
-      aggregators: [],
-    },
-    '0xAnotherToken': {
-      name: 'TEST',
-      erc20: true,
-      symbol: 'TEST',
-      decimals: 18,
-      address: '0xANoTherToKen',
-      iconUrl: './images/test_image.svg',
-      aggregators: [],
-    },
-  };
-
   const mockStore = configureMockStore([thunk])(mockState);
   const propToken: Partial<TokenWithFiatAmount> & { currentCurrency: string } =
     {
       address: '0xAnotherToken' as Hex,
+      name: 'TEST',
       symbol: 'TEST',
       string: '5.000',
       currentCurrency: 'usd',
       balance: '5',
-      image: '',
+      image: './images/test_image.svg',
       chainId: '0x1' as Hex,
       tokenFiatAmount: 5,
       aggregators: [],
@@ -199,9 +177,6 @@ describe('Token Cell', () => {
   (useSelectorMock as jest.Mock).mockImplementation((selector) => {
     if (selector === getPreferences) {
       return { privacyMode: false };
-    }
-    if (selector === getTokenList) {
-      return MOCK_GET_TOKEN_LIST;
     }
     if (selector === getMultichainCurrentChainId) {
       return '0x89';
