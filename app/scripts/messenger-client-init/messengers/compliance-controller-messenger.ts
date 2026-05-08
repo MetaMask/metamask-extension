@@ -11,8 +11,6 @@ type AllowedActions =
   | ComplianceServiceCheckWalletComplianceAction
   | ComplianceServiceCheckWalletsComplianceAction;
 
-type AllowedEvents = never;
-
 export type ComplianceControllerMessenger = ReturnType<
   typeof getComplianceControllerMessenger
 >;
@@ -30,7 +28,7 @@ export function getComplianceControllerMessenger(
   const complianceControllerMessenger = new Messenger<
     'ComplianceController',
     ComplianceControllerActions | AllowedActions,
-    ComplianceControllerEvents | AllowedEvents,
+    ComplianceControllerEvents,
     typeof messenger
   >({
     namespace: 'ComplianceController',
