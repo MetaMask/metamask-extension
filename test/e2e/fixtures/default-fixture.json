@@ -831,12 +831,12 @@
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": null
     },
+    "PasskeyController": {
+      "passkeyRecord": null
+    },
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []
-    },
-    "PasskeyController": {
-      "passkeyRecord": null
     },
     "PermissionController": {},
     "PermissionLogController": {
