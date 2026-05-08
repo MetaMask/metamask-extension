@@ -126,7 +126,9 @@ describe('EnhancedReader', () => {
         },
       );
 
-      render(<EnhancedReader onFrame={jest.fn()} onCameraError={onCameraError} />);
+      render(
+        <EnhancedReader onFrame={jest.fn()} onCameraError={onCameraError} />,
+      );
 
       expect(onCameraError).toHaveBeenCalledWith(scanError);
     });
