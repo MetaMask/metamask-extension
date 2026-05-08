@@ -7,6 +7,7 @@ import {
   IconColor,
   IconSize,
 } from '@metamask/design-system-react';
+import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export type UnlockPasskeyIconButtonProps = {
@@ -19,11 +20,12 @@ export const UnlockPasskeyIconButton = ({
   onClick,
 }: UnlockPasskeyIconButtonProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
 
   return (
     <ButtonIcon
       variant={ButtonIconVariant.Filled}
-      ariaLabel={t('unlockWithPasskey')}
+      ariaLabel={t('unlockWithPasskey', [passkeyMethodLabel])}
       data-testid="unlock-with-passkey"
       iconName={IconName.Fingerprint}
       size={ButtonIconSize.Lg}

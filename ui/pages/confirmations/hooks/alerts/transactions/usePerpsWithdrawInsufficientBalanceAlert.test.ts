@@ -57,15 +57,15 @@ function runHook(state: ReturnType<typeof buildPerpsWithdrawState>) {
   );
 }
 
-function setAccountBalance(availableBalance: string | undefined) {
+function setAccountBalance(withdrawableBalance: string | undefined) {
   mockStreamManagerAccount(
-    availableBalance ? ({ availableBalance } as AccountState) : null,
+    withdrawableBalance ? ({ withdrawableBalance } as AccountState) : null,
   );
 }
 
 function setAccount(account: {
-  availableBalance?: string;
-  availableToTradeBalance?: string;
+  spendableBalance?: string;
+  withdrawableBalance?: string;
 }) {
   mockStreamManagerAccount(account as AccountState);
 }
@@ -141,18 +141,18 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
     expect(result.current).toStrictEqual([]);
   });
 
-  it('uses `availableToTradeBalance` over `availableBalance` for the threshold', () => {
-    // Unified mode: `availableBalance` is $0 (perps clearinghouse) but the
-    // user actually has $50 of unreserved spot USDC in
-    // `availableToTradeBalance`. Withdrawing $40 must NOT trigger the alert.
-    setAccount({ availableBalance: '0', availableToTradeBalance: '50' });
+  it('uses `withdrawableBalance` over `spendableBalance` for the threshold', () => {
+    // Unified mode: `spendableBalance` is $0 (perps clearinghouse) but the
+    // user actually has $50 of withdrawable balance.
+    // Withdrawing $40 must NOT trigger the alert.
+    setAccount({ spendableBalance: '0', withdrawableBalance: '50' });
     setEnteredAmount('40');
     const { result } = runHook(buildPerpsWithdrawState());
     expect(result.current).toStrictEqual([]);
   });
 
-  it('alerts when entered amount exceeds `availableToTradeBalance`', () => {
-    setAccount({ availableBalance: '0', availableToTradeBalance: '50' });
+  it('alerts when entered amount exceeds `withdrawableBalance`', () => {
+    setAccount({ spendableBalance: '0', withdrawableBalance: '50' });
     setEnteredAmount('51');
     const { result } = runHook(buildPerpsWithdrawState());
     expect(result.current).toStrictEqual([EXPECTED_ALERT]);
@@ -164,7 +164,7 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
     // `amountUsd` ≈ 39.84 (token count priced at $1). The HL balance is
     // 39.833436. Only `amountFiat` keeps the strict `>` semantic so a user
     // can withdraw exactly their available balance without a false-positive.
-    setAccount({ availableBalance: '0', availableToTradeBalance: '39.833436' });
+    setAccount({ spendableBalance: '0', withdrawableBalance: '39.833436' });
     mockUsePrimaryRequiredToken.mockReturnValue({
       amountFiat: '39.83000054846650769962',
       amountUsd: '39.838382',

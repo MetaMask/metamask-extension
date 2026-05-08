@@ -1560,10 +1560,6 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
-  "changePasswordPasskeyVerifyingTitle": {
-    "message": "Confirm with Biometrics",
-    "description": "Title shown while the wallet waits for passkey or device biometrics during change password."
-  },
   "changePasswordWarning": {
     "message": "Are you sure?"
   },
@@ -5333,62 +5329,77 @@
   "participateInMetaMetricsDescription": {
     "message": "Participate in MetaMetrics to help us make MetaMask better"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "Biometrics",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
   "passkeyDescription": {
-    "message": "Use Touch ID to unlock MetaMask instead of entering your password. This creates a passkey on this device only."
+    "message": "Use $1 to unlock MetaMask instead of entering your password. This creates a passkey on this device only.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
   },
   "passkeyErrorAlreadyEnrolled": {
-    "message": "Biometrics are already set up for this wallet.",
-    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
+    "message": "$1 is already set up for this wallet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
-    "message": "We couldn't verify your Biometrics. Try again.",
-    "description": "Shown when passkey authentication response verification fails."
+    "message": "We couldn't verify your $1. Try again.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorMissingKeyMaterial": {
-    "message": "Your Biometrics response was incomplete. Try again.",
-    "description": "Shown when the passkey assertion is missing required key material."
+    "message": "Your $1 response was incomplete. Try again.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNoAuthenticationCeremony": {
-    "message": "Biometrics sign-in session expired. Try again.",
-    "description": "Shown when passkey authentication runs without an active authentication ceremony."
+    "message": "$1 sign-in session expired. Try again.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNoRegistrationCeremony": {
-    "message": "Biometrics setup session expired. Try again from the beginning.",
-    "description": "Shown when passkey registration verification runs without an active registration ceremony."
+    "message": "$1 setup session expired. Try again from the beginning.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotEnrolled": {
-    "message": "Biometrics aren't set up for this wallet. Turn on Biometrics in Settings.",
-    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
+    "message": "$1 isn't set up for this wallet. Turn on $1 in Settings.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorRegistrationFailed": {
-    "message": "Biometrics setup failed. Try again",
-    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
+    "message": "$1 setup failed. Try again",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorRegistrationVerificationFailed": {
-    "message": "We couldn't verify your Biometrics setup. Try again.",
-    "description": "Shown when passkey registration response verification fails."
+    "message": "We couldn't verify your $1 setup. Try again.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVaultKeyDecryptionFailed": {
-    "message": "We couldn't unlock with Biometrics. Try again, or set up Biometrics again in Settings.",
-    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
+    "message": "We couldn't unlock with $1. Try again, or set up $1 again in Settings.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVaultKeyMismatch": {
-    "message": "Biometrics don't match your current wallet lock. Set up Biometrics again in Settings.",
-    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
+    "message": "$1 doesn't match your current wallet lock. Set up $1 again in Settings.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVaultKeyRenewalFailed": {
-    "message": "Your password was updated, but biometric unlock couldn't be turned on.",
-    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
+    "message": "Your password was updated, but $1 unlock couldn't be turned on.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVerificationFailed": {
-    "message": "We couldn't verify your Biometrics. Try again or use your password.",
-    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+    "message": "We couldn't verify your $1. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeySetupStepRegister": {
-    "message": "Register Biometrics"
+    "message": "Register $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeySetupStepVerify": {
-    "message": "Validate Biometrics"
+    "message": "Validate $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyTroubleshootModalDescription": {
     "message": "Try opening the extension in a full screen window and try again.",
@@ -5419,13 +5430,24 @@
     "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
   },
   "passkeyTurnedOff": {
-    "message": "Biometrics turned off"
+    "message": "$1 turned off",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyTurnedOn": {
-    "message": "Biometrics turned on"
+    "message": "$1 turned on",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyUnlockFailed": {
-    "message": "Biometrics unlock failed. Try your password."
+    "message": "$1 unlock failed. Try your password.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "Use $1 to verify instead of entering your password.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "Confirm with $1",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "Password"
@@ -7380,8 +7402,8 @@
     "message": "Password couldn’t be changed. Please try again."
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
-    "message": "New password saved, but biometric unlock couldn't be turned on.",
-    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
+    "message": "New password saved, but $1 unlock couldn't be turned on.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
@@ -7532,14 +7554,15 @@
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
   "setUpPasskey": {
-    "message": "Set up Biometrics"
+    "message": "Set up $1",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
   },
   "settingUpPasskey": {
-    "message": "Setting Up Biometrics",
-    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
+    "message": "Setting up $1",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "Settings"
@@ -9652,10 +9675,12 @@
     "message": "There was an error in disabling the notifications. Please try again later."
   },
   "turnOffPasskey": {
-    "message": "Turn off Biometrics"
+    "message": "Turn off $1",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "turnOffPasskeyFailed": {
-    "message": "We couldn't turn off Biometrics. Try again."
+    "message": "We couldn't turn off $1. Try again.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "turnOn": {
     "message": "Turn on"
@@ -9760,7 +9785,8 @@
     "description": "Label used for Private Keys row on multichain account details page."
   },
   "unlockWithPasskey": {
-    "message": "Unlock with Biometrics"
+    "message": "Unlock with $1",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "unpin": {
     "message": "Unpin"
