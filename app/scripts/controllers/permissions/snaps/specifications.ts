@@ -119,93 +119,9 @@ export function getSnapPermissionSpecifications(
           };
         },
 
-        clearSnapState: messenger.call.bind(
-          messenger,
-          'SnapController:clearSnapState',
-        ),
-
-        getMnemonic: getMnemonic.bind(null, messenger),
-        getMnemonicSeed: getMnemonicSeed.bind(null, messenger),
-
         getUnlockPromise: messenger.call.bind(
           messenger,
           'AppStateController:getUnlockPromise',
-        ),
-
-        getSnap: messenger.call.bind(messenger, 'SnapController:getSnap'),
-        handleSnapRpcRequest: messenger.call.bind(
-          messenger,
-          'SnapController:handleRequest',
-        ),
-
-        getSnapState: messenger.call.bind(
-          messenger,
-          'SnapController:getSnapState',
-        ),
-
-        requestUserApproval: hooks.addAndShowApprovalRequest,
-
-        /**
-         * Show a native (system) notification.
-         *
-         * @param origin - The origin requesting the notification.
-         * @param args - The notification arguments.
-         * @param args.message - The notification message.
-         * @returns A promise that resolves when the notification is shown.
-         */
-        showNativeNotification: (origin: string, args: { message: string }) =>
-          messenger.call(
-            'RateLimitController:call',
-            origin,
-            'showNativeNotification',
-            // @ts-expect-error: `RateLimitController` methods aren't properly
-            // typed yet.
-            origin,
-            args.message,
-          ),
-
-        /**
-         * Show an in-app notification.
-         *
-         * @param origin - The origin requesting the notification.
-         * @param args - The notification arguments.
-         * @param args.message - The notification message.
-         * @param args.title - The notification title.
-         * @param args.footerLink - The notification footer link.
-         * @param args.content - The notification content identifier.
-         * @returns A promise that resolves when the notification is shown.
-         */
-        showInAppNotification: (
-          origin: string,
-          args: {
-            message: string;
-            title?: string;
-            footerLink?: string;
-            content?: string;
-          },
-        ) => {
-          const { content, message, title, footerLink } = args;
-          const notificationArgs = {
-            interfaceId: content,
-            message,
-            title,
-            footerLink,
-          };
-
-          return messenger.call(
-            'RateLimitController:call',
-            origin,
-            'showInAppNotification',
-            // @ts-expect-error: `RateLimitController` methods aren't properly
-            // typed yet.
-            origin,
-            notificationArgs,
-          );
-        },
-
-        updateSnapState: messenger.call.bind(
-          messenger,
-          'SnapController:updateSnapState',
         ),
 
         /**
@@ -243,16 +159,6 @@ export function getSnapPermissionSpecifications(
           return messenger.call('PhishingController:testOrigin', url).result;
         },
 
-        createInterface: messenger.call.bind(
-          messenger,
-          'SnapInterfaceController:createInterface',
-        ),
-
-        getInterface: messenger.call.bind(
-          messenger,
-          'SnapInterfaceController:getInterface',
-        ),
-
         /**
          * Get custom cryptography implementations for the client.
          *
@@ -280,12 +186,8 @@ export function getSnapPermissionSpecifications(
 
           return snapKeyring;
         },
-
-        setInterfaceDisplayed: messenger.call.bind(
-          messenger,
-          'SnapInterfaceController:setInterfaceDisplayed',
-        ),
       },
+      messenger,
     ),
   };
 }
