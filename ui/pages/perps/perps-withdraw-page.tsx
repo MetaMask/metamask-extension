@@ -96,7 +96,7 @@ const PerpsWithdrawPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const availableBalance =
-    account?.availableToTradeBalance ?? account?.availableBalance ?? '0';
+    account?.withdrawableBalance ?? account?.spendableBalance ?? '0';
   const availableNum = parseFloat(availableBalance) || 0;
 
   const usdcAssetId = useMemo(

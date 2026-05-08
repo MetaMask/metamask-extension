@@ -1215,6 +1215,8 @@ export enum MetaMetricsHardwareWalletRecoveryErrorType {
   DeviceDisconnected = 'Device Disconnected',
   EthereumAppNotOpened = 'Ethereum App Not Opened',
   BlindSigningNotEnabled = 'Blind Signing Not Enabled',
+  CameraPermissionDenied = 'Camera Permission Denied',
+  CameraPermissionPromptDismissed = 'Camera Permission Prompt Dismissed',
   GenericError = 'Generic Error',
 }
 
