@@ -28,6 +28,8 @@ type SettingsV2HeaderProps = {
   searchPlaceholder?: string;
   onSearchChange?: (text: string) => void;
   onSearchClear?: () => void;
+  showSearchButton?: boolean;
+  showCloseButton?: boolean;
   showSearchBorder?: boolean;
 };
 
@@ -43,11 +45,14 @@ export const SettingsV2Header = ({
   searchPlaceholder,
   onSearchChange,
   onSearchClear,
+  showSearchButton = true,
+  showCloseButton = true,
   showSearchBorder = true,
 }: SettingsV2HeaderProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const showSearchButton = !isPopupOrSidepanel || isOnSettingsRoot;
+  const shouldShowSearchButton =
+    showSearchButton && (!isPopupOrSidepanel || isOnSettingsRoot);
 
   if (isSearchOpen) {
     return (
@@ -74,31 +79,32 @@ export const SettingsV2Header = ({
     );
   }
 
-  const endAccessory = (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={1}
-    >
-      {showSearchButton ? (
-        <ButtonIcon
-          iconName={IconName.Search}
-          ariaLabel={t('search')}
-          size={ButtonIconSize.Md}
-          onClick={onOpenSearch}
-          data-testid="settings-v2-header-search-button"
-        />
-      ) : (
-        <ButtonIcon
-          iconName={IconName.Close}
-          ariaLabel={t('close')}
-          size={ButtonIconSize.Md}
-          onClick={() => navigate(DEFAULT_ROUTE)}
-          data-testid="settings-v2-header-close-button"
-        />
-      )}
-    </Box>
-  );
+  const endAccessory =
+    shouldShowSearchButton || showCloseButton ? (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+      >
+        {shouldShowSearchButton ? (
+          <ButtonIcon
+            iconName={IconName.Search}
+            ariaLabel={t('search')}
+            size={ButtonIconSize.Md}
+            onClick={onOpenSearch}
+            data-testid="settings-v2-header-search-button"
+          />
+        ) : (
+          <ButtonIcon
+            iconName={IconName.Close}
+            ariaLabel={t('close')}
+            size={ButtonIconSize.Md}
+            onClick={() => navigate(DEFAULT_ROUTE)}
+            data-testid="settings-v2-header-close-button"
+          />
+        )}
+      </Box>
+    ) : undefined;
   const startAccessory = (
     <Box
       flexDirection={BoxFlexDirection.Row}

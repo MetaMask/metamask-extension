@@ -35,6 +35,22 @@ describe('TokenManagementCell', () => {
     expect(screen.getByText('200.23 mUSD')).toBeInTheDocument();
   });
 
+  it('renders a network badge when network metadata is provided', () => {
+    renderCell({
+      symbol: 'MUSD',
+      primaryLabel: 'MetaMask USD',
+      networkImage: './images/eth_logo.svg',
+      networkName: 'Ethereum Mainnet',
+      isOn: true,
+      onToggle: jest.fn(),
+      testIdSuffix: 'musd',
+    });
+
+    expect(
+      screen.getByTestId('token-management-cell-musd-network-badge'),
+    ).toBeInTheDocument();
+  });
+
   it('omits the secondary label when not provided', () => {
     renderCell({
       symbol: 'ETH',
@@ -85,5 +101,20 @@ describe('TokenManagementCell', () => {
     fireEvent.click(toggleInput);
 
     expect(onToggle).not.toHaveBeenCalled();
+  });
+
+  it('omits the toggle when showToggle is false', () => {
+    renderCell({
+      symbol: 'ETH',
+      primaryLabel: 'Ethereum',
+      isOn: true,
+      onToggle: jest.fn(),
+      showToggle: false,
+      testIdSuffix: 'eth',
+    });
+
+    expect(
+      screen.queryByTestId('token-management-cell-eth-toggle'),
+    ).not.toBeInTheDocument();
   });
 });
