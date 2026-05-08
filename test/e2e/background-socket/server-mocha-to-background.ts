@@ -1,6 +1,7 @@
 import events from 'events';
 import { WebSocketServer } from 'ws';
 import {
+  FixtureResetStrategy,
   MessageType,
   ServerMochaEventEmitterType,
   WindowProperties,
@@ -15,9 +16,13 @@ class ServerMochaToBackground {
 
   private ws: WebSocket | null = null;
 
+  private connectionVersion = 0;
+
   private eventEmitter;
 
   constructor() {
+    this.eventEmitter = new events.EventEmitter<ServerMochaEventEmitterType>();
+
     this.server = new WebSocketServer({ port: 8111 });
 
     console.debug('ServerMochaToBackground created');
@@ -32,8 +37,10 @@ class ServerMochaToBackground {
       }
 
       this.ws = ws;
+      this.connectionVersion += 1;
 
       console.debug('ServerMochaToBackground got a client connection');
+      this.eventEmitter.emit('connection');
 
       ws.onmessage = (ev: MessageEvent) => {
         let message: MessageType;
@@ -57,7 +64,6 @@ class ServerMochaToBackground {
       };
     });
 
-    this.eventEmitter = new events.EventEmitter<ServerMochaEventEmitterType>();
   }
 
   // This function is never explicitly called, but in the future it could be
@@ -82,6 +88,17 @@ class ServerMochaToBackground {
   private receivedMessage(message: MessageType) {
     if (message.command === 'openTabs' && message.tabs) {
       this.eventEmitter.emit('openTabs', message.tabs);
+    } else if (message.command === 'fixtureStateReset') {
+      this.eventEmitter.emit('fixtureStateReset', message);
+    } else if (message.command === 'fixtureStateResetError') {
+      const error = new Error(
+        message.error ?? 'Unknown fixture state reset error',
+      );
+      if (this.eventEmitter.listenerCount('error') > 0) {
+        this.eventEmitter.emit('error', error);
+      } else {
+        throw error;
+      }
     } else if (message.command === 'notFound') {
       const error = new Error(
         `No window found by background script with ${message.property}: ${message.value}`,
@@ -109,6 +126,67 @@ class ServerMochaToBackground {
     // The return value here is less useful than we had hoped, because the tabs
     // are not in the same order as driver.getAllWindowHandles()
     return tabs;
+  }
+
+  async resetFixtureState(strategy: FixtureResetStrategy) {
+    const { connectionVersion } = this;
+    const id = `fixture-state-reset-${Date.now()}-${Math.random()}`;
+
+    this.send({ command: 'resetFixtureState', id, strategy });
+
+    const response = await this.waitForFixtureStateResetResponse(id);
+    if (response.reloadRequired) {
+      await this.waitForConnectionAfter(connectionVersion);
+    }
+
+    return response;
+  }
+
+  async waitForConnectionAfter(connectionVersion: number) {
+    if (this.connectionVersion > connectionVersion) {
+      return;
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      const { eventEmitter } = this;
+      const getConnectionVersion = () => this.connectionVersion;
+      const timeoutRef: { id?: ReturnType<typeof setTimeout> } = {};
+
+      function onConnection() {
+        if (getConnectionVersion() > connectionVersion) {
+          eventEmitter.removeListener('connection', onConnection);
+          clearTimeout(timeoutRef.id);
+          resolve();
+        }
+      }
+
+      timeoutRef.id = setTimeout(() => {
+        eventEmitter.removeListener('connection', onConnection);
+        reject(new Error('Timed out waiting for background socket reconnect'));
+      }, 30000);
+
+      eventEmitter.on('connection', onConnection);
+    });
+  }
+
+  async waitForFixtureStateResetResponse(id: string) {
+    return new Promise<MessageType>((resolve, reject) => {
+      const onResponse = (message: MessageType) => {
+        this.eventEmitter.removeListener('error', reject);
+
+        if (message.id === id) {
+          resolve(message);
+          return;
+        }
+
+        reject(
+          new Error(`Unexpected fixture state reset response id: ${message.id}`),
+        );
+      };
+
+      this.eventEmitter.once('error', reject);
+      this.eventEmitter.once('fixtureStateReset', onResponse);
+    });
   }
 
   // This is a way to wait for an event async, without timeouts or polling

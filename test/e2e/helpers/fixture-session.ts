@@ -1,6 +1,6 @@
 import { createDeferredPromise } from '@metamask/utils';
 import type { Mockttp } from 'mockttp';
-import { PAGES } from '../webdriver/driver';
+import { getServerMochaToBackground } from '../background-socket/server-mocha-to-background';
 import type { Driver } from '../webdriver/driver';
 import { withFixtures } from '../helpers';
 
@@ -19,6 +19,7 @@ type FixtureSessionOptions = WithFixturesOptions & {
   fixtures: unknown;
   resetAfterEach?: boolean;
   resetStrategy?: FixtureResetStrategy;
+  waitForExtensionStartAfterReset?: boolean;
   testSpecificMock?: (mockServer: Mockttp) => unknown | Promise<unknown>;
 };
 type FixtureSessionContext = Parameters<WithFixturesTestSuite>[0] & {
@@ -30,7 +31,6 @@ export type FixtureSessionAccessors = {
   getFixtures: () => FixtureSessionContext;
 };
 
-const RESET_FIXTURE_STATE_MESSAGE = 'RESET_FIXTURE_STATE';
 const RESET_FIXTURE_STATE_STATUS = 'FIXTURE_STATE_RESET';
 const OFFSCREEN_PAGE_TITLE = 'MetaMask Offscreen Page';
 const PROFILE_MARKER = '[fixture-benchmark-profile] ';
@@ -112,54 +112,35 @@ async function getReloadSurvivorWindow(driver: Driver): Promise<string> {
     return currentWindow;
   }
 
-  const survivorWindow = await driver.openNewPage('about:blank');
-  await driver.switchToWindow(currentWindow);
-  return survivorWindow;
+  return await driver.openNewPage('about:blank');
 }
 
 /**
  * Sends the test-only background message that resets persisted fixture-backed
  * state.
  *
- * @param driver - The active shared-session driver.
+ * @param _driver - The active shared-session driver.
  * @param strategy - How the background script should reset fixture state.
  */
 async function requestFixtureStateReset(
-  driver: Driver,
+  _driver: Driver,
   strategy: FixtureResetStrategy,
 ): Promise<ResetFixtureStateResponse> {
-  const result = await driver.executeAsyncScript(`
-    const callback = arguments[arguments.length - 1];
-    const runtime = globalThis.browser?.runtime ?? globalThis.chrome?.runtime;
+  const response = await getServerMochaToBackground().resetFixtureState(
+    strategy,
+  );
 
-    runtime
-      .sendMessage(${JSON.stringify({
-        type: RESET_FIXTURE_STATE_MESSAGE,
-        strategy,
-      })})
-      .then((response) => callback({ response }))
-      .catch((error) =>
-        callback({
-          error: error?.message ?? error?.toString?.() ?? String(error),
-        }),
-      );
-  `);
-
-  if (result?.error) {
-    throw new Error(`Failed to reset shared fixture state: ${result.error}`);
-  }
-
-  if (result?.response?.status !== RESET_FIXTURE_STATE_STATUS) {
+  if (response?.status !== RESET_FIXTURE_STATE_STATUS) {
     throw new Error(
-      `Unexpected shared fixture reset response: ${JSON.stringify(result?.response)}`,
+      `Unexpected shared fixture reset response: ${JSON.stringify(response)}`,
     );
   }
 
-  for (const timing of result.response.timings ?? []) {
+  for (const timing of response.timings ?? []) {
     recordFixtureSessionProfile(timing.phase, timing.ms, { strategy });
   }
 
-  return result.response;
+  return response;
 }
 
 /**
@@ -198,24 +179,22 @@ async function closeAuxiliaryWindows(driver: Driver): Promise<void> {
  *
  * @param fixtureContext - The active shared-session fixture context.
  * @param resetStrategy - How the background script should reset fixture state.
+ * @param waitForExtensionStartAfterReset
  */
 async function resetSharedFixtureSession(
   fixtureContext: FixtureSessionContext,
   resetStrategy: FixtureResetStrategy,
+  waitForExtensionStartAfterReset: boolean,
 ): Promise<void> {
   const { driver } = fixtureContext;
-
-  const extensionWindow = await profileFixtureSessionPhase(
-    'reset.openExtensionPage',
-    () => driver.openNewPage(`${driver.extensionUrl}/${PAGES.HOME}.html`),
-    { resetStrategy },
-  );
-
-  await profileFixtureSessionPhase(
-    'reset.switchToExtensionPage',
-    () => driver.switchToWindow(extensionWindow),
-    { resetStrategy },
-  );
+  const reloadRequired = resetStrategy !== 'inPlace';
+  const survivorWindow = reloadRequired
+    ? await profileFixtureSessionPhase(
+        'reset.getReloadSurvivorWindow',
+        () => getReloadSurvivorWindow(driver),
+        { resetStrategy },
+      )
+    : undefined;
   const resetResponse = await profileFixtureSessionPhase(
     'reset.requestFixtureStateReset',
     () => requestFixtureStateReset(driver, resetStrategy),
@@ -225,19 +204,9 @@ async function resetSharedFixtureSession(
     return;
   }
 
-  const survivorWindow = await profileFixtureSessionPhase(
-    'reset.getReloadSurvivorWindow',
-    () => getReloadSurvivorWindow(driver),
-    { resetStrategy },
-  );
-  await profileFixtureSessionPhase(
-    'reset.executeRuntimeReload',
-    () =>
-      driver.executeScript(
-        `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
-      ),
-    { resetStrategy },
-  );
+  if (!survivorWindow) {
+    throw new Error('Reload reset did not prepare a survivor window.');
+  }
 
   await profileFixtureSessionPhase(
     'reset.switchToSurvivorWindow',
@@ -252,15 +221,17 @@ async function resetSharedFixtureSession(
     );
   }
 
-  await profileFixtureSessionPhase(
-    'reset.waitForExtensionStart',
-    () =>
-      driver.waitForExtensionStart({
-        waitForControllers: false,
-        waitForLoadingLogoToDisappear: false,
-      }),
-    { resetStrategy },
-  );
+  if (waitForExtensionStartAfterReset) {
+    await profileFixtureSessionPhase(
+      'reset.waitForExtensionStart',
+      () =>
+        driver.waitForExtensionStart({
+          waitForControllers: false,
+          waitForLoadingLogoToDisappear: false,
+        }),
+      { resetStrategy },
+    );
+  }
 }
 
 /**
@@ -303,6 +274,7 @@ export function configureFixtureSession(
       const {
         resetAfterEach: _resetAfterEach,
         resetStrategy: _resetStrategy,
+        waitForExtensionStartAfterReset: _waitForExtensionStartAfterReset,
         ...withFixturesOptions
       } = fixtureOptions;
       const { title } = withFixturesOptions as { title?: string };
@@ -354,6 +326,7 @@ export function configureFixtureSession(
             await resetSharedFixtureSession(
               fixtureContext,
               fixtureOptions.resetStrategy ?? 'inPlace',
+              fixtureOptions.waitForExtensionStartAfterReset ?? true,
             );
           }
 

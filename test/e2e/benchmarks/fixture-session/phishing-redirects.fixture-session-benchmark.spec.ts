@@ -19,6 +19,7 @@ type BenchmarkMode =
   | 'withFixtures'
   | 'sharedReset'
   | 'sharedResetNoPreload'
+  | 'sharedResetNoPreloadNoWait'
   | 'sharedNoReset';
 
 const benchmarkMode = process.env
@@ -27,6 +28,7 @@ const benchmarkModes = [
   'withFixtures',
   'sharedReset',
   'sharedResetNoPreload',
+  'sharedResetNoPreloadNoWait',
   'sharedNoReset',
 ];
 
@@ -244,11 +246,15 @@ if (benchmarkMode === 'withFixtures') {
       fixtures: fixtureState,
       resetAfterEach:
         benchmarkMode === 'sharedReset' ||
-        benchmarkMode === 'sharedResetNoPreload',
+        benchmarkMode === 'sharedResetNoPreload' ||
+        benchmarkMode === 'sharedResetNoPreloadNoWait',
       resetStrategy:
-        benchmarkMode === 'sharedResetNoPreload'
+        benchmarkMode === 'sharedResetNoPreload' ||
+        benchmarkMode === 'sharedResetNoPreloadNoWait'
           ? 'reloadSkipFixtureInitialization'
           : 'reload',
+      waitForExtensionStartAfterReset:
+        benchmarkMode !== 'sharedResetNoPreloadNoWait',
       testSpecificMock: setupPhishingMocks,
     },
     ({ getDriver, getFixtures }) => {
@@ -258,7 +264,8 @@ if (benchmarkMode === 'withFixtures') {
 
       if (
         benchmarkMode === 'sharedReset' ||
-        benchmarkMode === 'sharedResetNoPreload'
+        benchmarkMode === 'sharedResetNoPreload' ||
+        benchmarkMode === 'sharedResetNoPreloadNoWait'
       ) {
         beforeEach('Unlock extension and wait for blocklist', async function () {
           this.timeout(120000);

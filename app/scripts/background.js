@@ -2773,7 +2773,38 @@ async function resetFixtureStateInPlace() {
 }
 
 /* istanbul ignore next: test-only E2E control path */
+async function resetFixtureStateForTest(strategy) {
+  if (strategy === 'inPlace') {
+    await resetFixtureStateInPlace();
+    return { status: 'FIXTURE_STATE_RESET', reloadRequired: false };
+  }
+
+  const timings = [];
+  const time = async (phase, operation) => {
+    const startedAt = Date.now();
+    try {
+      return await operation();
+    } finally {
+      timings.push({ phase, ms: Date.now() - startedAt });
+    }
+  };
+  await time('background.evacuate', evacuate);
+  await time('background.persistenceReset', () =>
+    persistenceManager.reset({
+      initializeStore: strategy !== 'reloadSkipFixtureInitialization',
+    }),
+  );
+  return { status: 'FIXTURE_STATE_RESET', reloadRequired: true, timings };
+}
+
+/* istanbul ignore next: test-only E2E control path */
 if (inTest) {
+  const { setFixtureStateResetHandler } =
+    // Use `require` to make it easier to exclude this test code from the Browserify build.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, n/global-require
+    require('../../test/e2e/background-socket/socket-background-to-mocha');
+  setFixtureStateResetHandler(resetFixtureStateForTest);
+
   // listen for test messages from the background
   // Maintenance note: if no tests send one of these message types, remove only
   // the corresponding branch. Only remove `evacuate` if no call sites use it.
@@ -2783,26 +2814,7 @@ if (inTest) {
       return { status: 'PERSISTENCE_STOPPED' };
     }
     if (message.type === 'RESET_FIXTURE_STATE') {
-      if (message.strategy === 'inPlace') {
-        await resetFixtureStateInPlace();
-        return { status: 'FIXTURE_STATE_RESET', reloadRequired: false };
-      }
-      const timings = [];
-      const time = async (phase, operation) => {
-        const startedAt = Date.now();
-        try {
-          return await operation();
-        } finally {
-          timings.push({ phase, ms: Date.now() - startedAt });
-        }
-      };
-      await time('background.evacuate', evacuate);
-      await time('background.persistenceReset', () =>
-        persistenceManager.reset({
-          initializeStore: message.strategy !== 'reloadSkipFixtureInitialization',
-        }),
-      );
-      return { status: 'FIXTURE_STATE_RESET', reloadRequired: true, timings };
+      return await resetFixtureStateForTest(message.strategy);
     }
     return Promise.resolve();
   });

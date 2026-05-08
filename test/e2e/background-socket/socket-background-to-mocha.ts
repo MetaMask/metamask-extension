@@ -1,6 +1,21 @@
 import log from 'loglevel';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
-import { MessageType, WindowProperties } from './types';
+import {
+  FixtureResetStrategy,
+  FixtureResetTiming,
+  MessageType,
+  WindowProperties,
+} from './types';
+
+type FixtureStateResetResponse = {
+  status: string;
+  reloadRequired: boolean;
+  timings?: FixtureResetTiming[];
+};
+
+type FixtureStateResetHandler = (
+  strategy: FixtureResetStrategy,
+) => Promise<FixtureStateResetResponse>;
 
 /**
  * This singleton class runs on the Extension background script (service worker in MV3).
@@ -10,6 +25,8 @@ import { MessageType, WindowProperties } from './types';
  */
 class SocketBackgroundToMocha {
   private client: WebSocket;
+
+  private fixtureStateResetHandler?: FixtureStateResetHandler;
 
   constructor() {
     this.client = new WebSocket('ws://localhost:8111');
@@ -131,7 +148,52 @@ class SocketBackgroundToMocha {
       message.value
     ) {
       this.waitUntilWindowWithProperty(message.property, message.value);
+    } else if (
+      message.command === 'resetFixtureState' &&
+      message.id &&
+      message.strategy
+    ) {
+      await this.resetFixtureState(message.id, message.strategy);
     }
+  }
+
+  private async resetFixtureState(
+    id: string,
+    strategy: FixtureResetStrategy,
+  ) {
+    if (!this.fixtureStateResetHandler) {
+      this.send({
+        command: 'fixtureStateResetError',
+        error: 'Fixture state reset handler is not registered',
+        id,
+      });
+      return;
+    }
+
+    try {
+      const response = await this.fixtureStateResetHandler(strategy);
+      this.send({
+        command: 'fixtureStateReset',
+        id,
+        ...response,
+      });
+
+      if (response.reloadRequired) {
+        globalThis.setTimeout(() => {
+          chrome.runtime.reload();
+        }, 0);
+      }
+    } catch (error) {
+      this.send({
+        command: 'fixtureStateResetError',
+        error: error instanceof Error ? error.message : String(error),
+        id,
+      });
+    }
+  }
+
+  setFixtureStateResetHandler(handler: FixtureStateResetHandler) {
+    this.fixtureStateResetHandler = handler;
   }
 }
 
@@ -144,6 +206,12 @@ export function getSocketBackgroundToMocha() {
   }
 
   return _socketBackgroundToMocha;
+}
+
+export function setFixtureStateResetHandler(
+  handler: FixtureStateResetHandler,
+) {
+  getSocketBackgroundToMocha().setFixtureStateResetHandler(handler);
 }
 
 function startSocketBackgroundToMocha() {

@@ -13,17 +13,21 @@ const BENCHMARK_MODES = [
   'withFixtures',
   'sharedReset',
   'sharedResetNoPreload',
+  'sharedResetNoPreloadNoWait',
   'sharedNoReset',
 ] as const;
 
 const MODE_COMPARISONS = [
   ['withFixtures', 'sharedReset'],
   ['withFixtures', 'sharedResetNoPreload'],
+  ['withFixtures', 'sharedResetNoPreloadNoWait'],
   ['withFixtures', 'sharedNoReset'],
   ['sharedReset', 'sharedResetNoPreload'],
+  ['sharedResetNoPreload', 'sharedResetNoPreloadNoWait'],
   ['sharedReset', 'sharedNoReset'],
 ] as const;
 const PROFILE_MARKER = '[fixture-benchmark-profile] ';
+const ANSI_ESCAPE_CODE = 0x1b;
 
 type BenchmarkMode = (typeof BENCHMARK_MODES)[number];
 
@@ -60,6 +64,30 @@ type ParsedArgs = {
   out: string;
   spec: string;
 };
+
+function stripAnsiCodes(value: string) {
+  let strippedValue = '';
+
+  for (let index = 0; index < value.length; index += 1) {
+    if (
+      value.charCodeAt(index) === ANSI_ESCAPE_CODE &&
+      value[index + 1] === '['
+    ) {
+      index += 2;
+      while (
+        index < value.length &&
+        (value[index] < '@' || value[index] > '~')
+      ) {
+        index += 1;
+      }
+      continue;
+    }
+
+    strippedValue += value[index];
+  }
+
+  return strippedValue;
+}
 
 function calculateSummaryStats(values: number[]): SummaryStats {
   if (values.length === 0) {
@@ -183,12 +211,13 @@ async function runCommand(
     buffer = lines.pop() ?? '';
 
     for (const line of lines) {
-      const markerIndex = line.indexOf(PROFILE_MARKER);
+      const lineWithoutAnsi = stripAnsiCodes(line);
+      const markerIndex = lineWithoutAnsi.indexOf(PROFILE_MARKER);
       if (markerIndex === -1) {
         continue;
       }
 
-      const json = line.slice(markerIndex + PROFILE_MARKER.length);
+      const json = lineWithoutAnsi.slice(markerIndex + PROFILE_MARKER.length);
       try {
         profiles.push(JSON.parse(json));
       } catch (error) {
