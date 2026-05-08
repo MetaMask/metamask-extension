@@ -69,7 +69,8 @@ type AllowedInitializationActions =
   | MultichainRoutingServiceGetSupportedAccountsAction
   | MultichainRoutingServiceIsSupportedScopeAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
-  | SnapPermissionSpecificationsActions;
+  | SnapPermissionSpecificationsActions
+  | ApprovalControllerAddRequestAction;
 
 export type PermissionControllerInitMessenger = ReturnType<
   typeof getPermissionControllerInitMessenger
@@ -117,6 +118,7 @@ export function getPermissionControllerInitMessenger(
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
       'SnapInterfaceController:setInterfaceDisplayed',
+      'ApprovalController:addRequest',
     ],
   });
   return controllerInitMessenger;
