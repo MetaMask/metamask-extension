@@ -17,9 +17,7 @@ const mockStore = configureMockStore()({
   },
 });
 
-const renderCell = (
-  props: React.ComponentProps<typeof TokenManagementCell>,
-) =>
+const renderCell = (props: React.ComponentProps<typeof TokenManagementCell>) =>
   render(
     <Provider store={mockStore}>
       <TokenManagementCell {...props} />

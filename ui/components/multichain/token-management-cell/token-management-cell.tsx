@@ -91,11 +91,7 @@ export const TokenManagementCell = ({
   const hasNetworkBadge = Boolean(chainId);
 
   const tokenAvatar = (
-    <AvatarToken
-      name={symbol}
-      src={image}
-      size={AvatarTokenSize.Md}
-    />
+    <AvatarToken name={symbol} src={image} size={AvatarTokenSize.Md} />
   );
 
   return (

@@ -54,6 +54,7 @@ import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors
 import {
   ignoreTokens as ignoreTokensAction,
   multichainIgnoreAssets,
+  showImportTokensModal,
   showModal,
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -211,6 +212,10 @@ export const TokenManagementPage = () => {
     dispatch(showModal({ name: 'NETWORK_MANAGER' }));
   }, [dispatch]);
 
+  const handleAddCustomToken = useCallback(() => {
+    dispatch(showImportTokensModal());
+  }, [dispatch]);
+
   const networkFilterLabel = useMemo(() => {
     const enabledCount = enabledChainIds.length;
     if (enabledCount === 0) {
@@ -223,13 +228,10 @@ export const TokenManagementPage = () => {
     return t('allDefaultNetworks');
   }, [enabledChainIds, networkConfigurations, t]);
 
-  const getTokenKey = useCallback(
-    (token: ManagedAsset) => {
-      const address = 'address' in token ? token.address : token.assetId;
-      return `${token.chainId}:${address.toLowerCase()}`;
-    },
-    [],
-  );
+  const getTokenKey = useCallback((token: ManagedAsset) => {
+    const address = 'address' in token ? token.address : token.assetId;
+    return `${token.chainId}:${address.toLowerCase()}`;
+  }, []);
 
   const handleToggle = useCallback(
     async (token: ManagedAsset, nextValue: boolean) => {
@@ -262,7 +264,9 @@ export const TokenManagementPage = () => {
           return;
         }
 
-        await dispatch(multichainIgnoreAssets([token.assetId], token.accountId));
+        await dispatch(
+          multichainIgnoreAssets([token.assetId], token.accountId),
+        );
       } finally {
         setPendingKey(undefined);
       }
@@ -421,6 +425,30 @@ export const TokenManagementPage = () => {
           renderItem={renderToken}
         />
       </ScrollContainer>
+
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        paddingInline={4}
+        paddingTop={3}
+        paddingBottom={3}
+        style={{
+          bottom: 0,
+          position: 'sticky',
+          zIndex: 1,
+        }}
+      >
+        <ButtonBase
+          block
+          data-testid="token-management-add-custom-token-button"
+          backgroundColor={BackgroundColor.backgroundMuted}
+          color={TextColor.textDefault}
+          onClick={handleAddCustomToken}
+        >
+          {t('addCustomToken')}
+        </ButtonBase>
+      </Box>
     </Box>
   );
 };

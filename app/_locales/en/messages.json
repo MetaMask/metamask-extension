@@ -227,6 +227,9 @@
   "addCustomNetwork": {
     "message": "Add custom network"
   },
+  "addCustomToken": {
+    "message": "Add a custom token"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"

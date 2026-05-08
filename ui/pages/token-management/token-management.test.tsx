@@ -104,10 +104,7 @@ describe('TokenManagementPage', () => {
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
       .mockImplementation((message?: unknown, ...args: unknown[]) => {
-        if (
-          typeof message === 'string' &&
-          message.includes('componentWill')
-        ) {
+        if (typeof message === 'string' && message.includes('componentWill')) {
           return;
         }
         originalWarn(message, ...args);
@@ -175,18 +172,19 @@ describe('TokenManagementPage', () => {
     const store = configureStore({
       ...state,
     });
-    return renderWithProvider(
-      <TokenManagementPage />,
+    return {
       store,
-      TOKEN_MANAGEMENT_ROUTE,
-    );
+      ...renderWithProvider(
+        <TokenManagementPage />,
+        store,
+        TOKEN_MANAGEMENT_ROUTE,
+      ),
+    };
   };
 
   it('renders without crashing', () => {
     renderPage();
-    expect(
-      screen.getByTestId('token-management-page'),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('token-management-page')).toBeInTheDocument();
     expect(
       screen.getByTestId('token-management-header-back-button'),
     ).toBeInTheDocument();
@@ -194,8 +192,28 @@ describe('TokenManagementPage', () => {
       screen.getByPlaceholderText('Enter token name or address'),
     ).toBeInTheDocument();
     expect(
+      screen.getByTestId('token-management-add-custom-token-button'),
+    ).toHaveTextContent('Add a custom token');
+    expect(
       screen.queryByTestId('settings-v2-header-close-button'),
     ).not.toBeInTheDocument();
+  });
+
+  it('opens the import tokens modal from the sticky add custom token button', () => {
+    const { store } = renderPage();
+
+    const addCustomTokenButton = screen.getByTestId(
+      'token-management-add-custom-token-button',
+    );
+
+    expect(addCustomTokenButton.parentElement).toHaveStyle({
+      bottom: '0px',
+      position: 'sticky',
+    });
+
+    fireEvent.click(addCustomTokenButton);
+
+    expect(store.getState().appState.importTokensModalOpen).toBe(true);
   });
 
   it('shows tokens from the enabled home-page network filter', () => {
