@@ -265,9 +265,9 @@ describe('snapKeyringBuilderV2', () => {
       const second = builder.v1Builder();
 
       expect(first).not.toBe(second);
-      expect(
-        (first as unknown as KeyringV1Adapter).unwrap(),
-      ).not.toBe((second as unknown as KeyringV1Adapter).unwrap());
+      expect((first as unknown as KeyringV1Adapter).unwrap()).not.toBe(
+        (second as unknown as KeyringV1Adapter).unwrap(),
+      );
     });
   });
 
@@ -292,5 +292,4 @@ describe('snapKeyringBuilderV2', () => {
       expect(() => builder.v2Builder(notAnAdapter)).toThrow();
     });
   });
-
 });

@@ -62,8 +62,8 @@ describe('SnapKeyringBuilderV2Init', () => {
 
     SnapKeyringBuilderV2Init(requestMock);
 
-    const { persistKeyringHelper } = jest.mocked(snapKeyringBuilderV2).mock
-      .calls[0][1];
+    const { persistKeyringHelper } =
+      jest.mocked(snapKeyringBuilderV2).mock.calls[0][1];
     await persistKeyringHelper();
 
     expect(initMessengerCallSpy).toHaveBeenCalledWith(
@@ -78,8 +78,8 @@ describe('SnapKeyringBuilderV2Init', () => {
     const requestMock = buildInitRequestMock();
     SnapKeyringBuilderV2Init(requestMock);
 
-    const { removeAccountHelper } = jest.mocked(snapKeyringBuilderV2).mock
-      .calls[0][1];
+    const { removeAccountHelper } =
+      jest.mocked(snapKeyringBuilderV2).mock.calls[0][1];
     const address = '0x2a4d4b667D5f12C3F9Bf8F14a7B9f8D8d9b8c8fA';
     await removeAccountHelper(address);
 
