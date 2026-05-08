@@ -367,6 +367,7 @@ export const TokenManagementPage = () => {
           value={searchQuery}
           placeholder={t('enterTokenNameOrAddressManageTokens')}
           borderColor={BorderColor.borderMuted}
+          style={{ borderColor: 'var(--color-border-muted)' }}
           onChange={(event) => setSearchQuery(event.target.value)}
           clearButtonOnClick={() => setSearchQuery('')}
           inputProps={{

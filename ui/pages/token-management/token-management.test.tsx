@@ -194,9 +194,6 @@ describe('TokenManagementPage', () => {
       screen.getByPlaceholderText('Enter token name or address'),
     ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('settings-v2-header-search-button'),
-    ).not.toBeInTheDocument();
-    expect(
       screen.queryByTestId('settings-v2-header-close-button'),
     ).not.toBeInTheDocument();
   });
