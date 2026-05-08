@@ -14,8 +14,9 @@ type ComplianceBackgroundApi = {
 /**
  * Initialize the ComplianceController.
  *
- * The controller always exists so its persisted state slot is available. Perps
- * gates decide whether to call the API by checking the compliance feature flag.
+ * The controller always exists so persisted compliance state and background API
+ * wiring are available. Consumers decide whether to call the API based on their
+ * own gating logic.
  *
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger for the controller.
