@@ -10,6 +10,7 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
+import { useWithdrawTokenFilter } from './useWithdrawTokenFilter';
 
 export function useAutomaticTransactionPayToken({
   disable = false,
@@ -22,11 +23,23 @@ export function useAutomaticTransactionPayToken({
   const isUpdated = useRef<string | undefined>(undefined);
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
-  const tokens = useTransactionPayAvailableTokens();
+  const availableTokens = useTransactionPayAvailableTokens();
 
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id;
   const isWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+  const {
+    filterTokens: withdrawTokenFilter,
+    isFilterApplied: isWithdrawTokenFilterApplied,
+  } = useWithdrawTokenFilter();
+
+  const tokens = useMemo(
+    () =>
+      isWithdrawTokenFilterApplied
+        ? withdrawTokenFilter(availableTokens)
+        : availableTokens,
+    [availableTokens, isWithdrawTokenFilterApplied, withdrawTokenFilter],
+  );
 
   const tokensWithBalance = useMemo(
     () => tokens.filter((t) => !t.disabled),
@@ -57,6 +70,7 @@ export function useAutomaticTransactionPayToken({
     const automaticToken = getBestToken({
       isHardwareWallet,
       isWithdraw,
+      isWithdrawTokenFilterApplied,
       targetToken,
       tokens: tokensWithBalance,
       preferredToken,
@@ -76,6 +90,7 @@ export function useAutomaticTransactionPayToken({
     disable,
     isHardwareWallet,
     isWithdraw,
+    isWithdrawTokenFilterApplied,
     payToken,
     preferredToken,
     requiredTokens,
@@ -89,12 +104,14 @@ export function useAutomaticTransactionPayToken({
 function getBestToken({
   isHardwareWallet,
   isWithdraw,
+  isWithdrawTokenFilterApplied,
   preferredToken,
   targetToken,
   tokens,
 }: {
   isHardwareWallet: boolean;
   isWithdraw: boolean;
+  isWithdrawTokenFilterApplied: boolean;
   preferredToken?: SetPayTokenRequest;
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
@@ -110,10 +127,23 @@ function getBestToken({
     return targetTokenFallback;
   }
 
-  // For withdraws `preferredToken` is the destination — honour it even if
-  // the user has no wallet balance of it.
+  // Without a withdraw allowlist, `preferredToken` is the destination: honor it
+  // even if the user has no wallet balance of it.
   if (isWithdraw && preferredToken) {
-    return preferredToken;
+    if (!isWithdrawTokenFilterApplied) {
+      return preferredToken;
+    }
+
+    const preferredTokenAvailable = tokens.some(
+      (token) =>
+        token.address?.toLowerCase() === preferredToken.address.toLowerCase() &&
+        String(token.chainId)?.toLowerCase() ===
+          preferredToken.chainId.toLowerCase(),
+    );
+
+    if (preferredTokenAvailable) {
+      return preferredToken;
+    }
   }
 
   if (preferredToken) {
@@ -127,6 +157,10 @@ function getBestToken({
     if (preferredTokenAvailable) {
       return preferredToken;
     }
+  }
+
+  if (isWithdrawTokenFilterApplied && tokens.length === 0) {
+    return undefined;
   }
 
   if (tokens?.length) {

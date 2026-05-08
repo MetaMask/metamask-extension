@@ -4,6 +4,7 @@ import {
   selectEnforcedSimulationsSlippage,
   selectIsEnforcedSimulationsEnabled,
   selectIsMetaMaskPayDappsEnabled,
+  selectPayQuoteConfig,
 } from './feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -15,11 +16,23 @@ type EnforcedSimulationsFlag = {
   slippage?: number;
 };
 
+type PayPostQuoteConfig = {
+  enabled?: boolean;
+  tokens?: Record<string, string[]>;
+};
+
+type PayPostQuoteFlag = {
+  default?: PayPostQuoteConfig;
+  overrides?: Record<string, PayPostQuoteConfig>;
+  perpsWithdraw?: PayPostQuoteConfig;
+};
+
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
       confirmations_pay_dapps?: ConfirmationsPayDappsFlag;
       confirmations_enforced_simulations?: EnforcedSimulationsFlag;
+      confirmations_pay_post_quote?: PayPostQuoteFlag;
     };
   };
 };
@@ -43,6 +56,18 @@ const getMockEnforcedSimulationsState = (
     remoteFeatureFlags: {
       ...(confirmations_enforced_simulations !== undefined && {
         confirmations_enforced_simulations,
+      }),
+    },
+  },
+});
+
+const getMockPayPostQuoteState = (
+  confirmations_pay_post_quote?: PayPostQuoteFlag,
+): MockState => ({
+  metamask: {
+    remoteFeatureFlags: {
+      ...(confirmations_pay_post_quote !== undefined && {
+        confirmations_pay_post_quote,
       }),
     },
   },
@@ -77,6 +102,79 @@ describe('Confirmations Pay Feature Flags', () => {
         },
       };
       expect(selectIsMetaMaskPayDappsEnabled(state)).toBe(false);
+    });
+  });
+
+  describe('selectPayQuoteConfig', () => {
+    it('returns the default post-quote config when no transaction override is set', () => {
+      const state = getMockPayPostQuoteState({
+        default: {
+          enabled: true,
+          tokens: {
+            '0xa4b1': ['0xaf88d065e77c8cc2239327c5edb3a432268e5831'],
+          },
+        },
+      });
+
+      expect(selectPayQuoteConfig(state, 'perpsWithdraw')).toStrictEqual({
+        enabled: true,
+        tokens: {
+          '0xa4b1': ['0xaf88d065e77c8cc2239327c5edb3a432268e5831'],
+        },
+      });
+    });
+
+    it('merges mobile-compatible overrides with the default config', () => {
+      const state = getMockPayPostQuoteState({
+        default: {
+          enabled: true,
+          tokens: {
+            '0xa4b1': ['0xaf88d065e77c8cc2239327c5edb3a432268e5831'],
+          },
+        },
+        overrides: {
+          perpsWithdraw: {
+            tokens: {
+              '0x38': ['0x55d398326f99059ff775485246999027b3197955'],
+            },
+          },
+        },
+      });
+
+      expect(selectPayQuoteConfig(state, 'perpsWithdraw')).toStrictEqual({
+        enabled: true,
+        tokens: {
+          '0x38': ['0x55d398326f99059ff775485246999027b3197955'],
+        },
+      });
+    });
+
+    it('supports direct transaction config at perpsWithdraw.tokens', () => {
+      const state = getMockPayPostQuoteState({
+        default: { enabled: false },
+        perpsWithdraw: {
+          enabled: true,
+          tokens: {
+            '0x38': ['0x55d398326f99059ff775485246999027b3197955'],
+          },
+        },
+      });
+
+      expect(selectPayQuoteConfig(state, 'perpsWithdraw')).toStrictEqual({
+        enabled: true,
+        tokens: {
+          '0x38': ['0x55d398326f99059ff775485246999027b3197955'],
+        },
+      });
+    });
+
+    it('defaults to disabled when the post-quote flag is not set', () => {
+      const state = getMockPayPostQuoteState();
+
+      expect(selectPayQuoteConfig(state, 'perpsWithdraw')).toStrictEqual({
+        enabled: false,
+        tokens: undefined,
+      });
     });
   });
 });

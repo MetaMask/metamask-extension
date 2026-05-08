@@ -12,10 +12,12 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
+import { useWithdrawTokenFilter } from './useWithdrawTokenFilter';
 
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayAvailableTokens');
+jest.mock('./useWithdrawTokenFilter');
 jest.mock('../../../../selectors', () => ({
   getHardwareWalletType: jest.fn(() => null),
 }));
@@ -95,6 +97,7 @@ describe('useAutomaticTransactionPayToken', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const useWithdrawTokenFilterMock = jest.mocked(useWithdrawTokenFilter);
 
   const setPayTokenMock = jest.fn();
 
@@ -114,6 +117,10 @@ describe('useAutomaticTransactionPayToken', () => {
     ]);
 
     useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    useWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: (tokens) => tokens,
+      isFilterApplied: false,
+    });
   });
 
   it('selects first token', () => {
@@ -265,6 +272,38 @@ describe('useAutomaticTransactionPayToken', () => {
     expect(setPayTokenMock).toHaveBeenCalledWith({
       address: PREFERRED_TOKEN_ADDRESS_MOCK,
       chainId: PREFERRED_CHAIN_ID_MOCK,
+    });
+  });
+
+  it('selects the first allowlisted withdraw token when the preferred token is not allowlisted', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      },
+    ] as Asset[]);
+    useWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: () =>
+        [
+          {
+            address: TOKEN_ADDRESS_2_MOCK,
+            chainId: CHAIN_ID_2_MOCK,
+          },
+        ] as Asset[],
+      isFilterApplied: true,
+    });
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_2_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
     });
   });
 

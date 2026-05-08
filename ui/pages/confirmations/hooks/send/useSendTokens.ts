@@ -1,38 +1,132 @@
 import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
-import { Hex } from '@metamask/utils';
+import { useEffect, useMemo, useState } from 'react';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import { EthAccountType } from '@metamask/keyring-api';
+import {
+  isCaipAssetType,
+  parseCaipAssetType,
+  type CaipAssetType,
+  type Hex,
+} from '@metamask/utils';
 
 import {
   CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../../../../shared/constants/network';
+import {
+  fetchAssetMetadataForAssetIds,
+  getAssetImageUrl,
+  toAssetId,
+  type AssetMetadata,
+} from '../../../../../shared/lib/asset-utils';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
 
-type UseSendTokensOptions = {
-  includeNoBalance?: boolean;
+export type EnrichTokenRequest = {
+  chainId: Hex;
+  address: string;
 };
 
+type UseSendTokensOptions = {
+  enabled?: boolean;
+  includeNoBalance?: boolean;
+  tokenFilter?: (chainId: string, address: string) => boolean;
+  enrichTokenRequests?: EnrichTokenRequest[];
+};
+
+const EMPTY_ENRICH_TOKEN_REQUESTS: EnrichTokenRequest[] = [];
+const EMPTY_ASSETS: Asset[] = [];
+
 export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
-  const { includeNoBalance = false } = options;
+  const {
+    enabled = true,
+    includeNoBalance = false,
+    tokenFilter,
+    enrichTokenRequests = EMPTY_ENRICH_TOKEN_REQUESTS,
+  } = options;
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
   const assets = useSelector(getAssetsBySelectedAccountGroup);
+  const [enrichedTokensMetadata, setEnrichedTokensMetadata] = useState<
+    Record<CaipAssetType, AssetMetadata>
+  >({});
 
-  const flatAssets = useMemo(() => Object.values(assets).flat(), [assets]);
+  const flatAssets = useMemo(
+    () => (enabled ? Object.values(assets).flat() : EMPTY_ASSETS),
+    [assets, enabled],
+  );
+
+  const enrichAssetIds = useMemo(() => {
+    if (!enabled) {
+      return [];
+    }
+
+    return enrichTokenRequests
+      .map(({ address, chainId }) => toAssetId(address, chainId))
+      .filter((assetId): assetId is CaipAssetType => Boolean(assetId));
+  }, [enabled, enrichTokenRequests]);
+
+  const enrichAssetIdsKey = useMemo(
+    () => enrichAssetIds.join(','),
+    [enrichAssetIds],
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    if (enrichAssetIds.length === 0) {
+      setEnrichedTokensMetadata((current) =>
+        Object.keys(current).length === 0 ? current : {},
+      );
+      return undefined;
+    }
+
+    const abortController = new AbortController();
+
+    fetchAssetMetadataForAssetIds(enrichAssetIds, abortController.signal).then(
+      (metadata) => {
+        if (!cancelled) {
+          setEnrichedTokensMetadata(metadata ?? {});
+        }
+      },
+    );
+
+    return () => {
+      cancelled = true;
+      abortController.abort();
+    };
+  }, [enrichAssetIds, enrichAssetIdsKey]);
 
   const assetsWithBalance = useMemo(() => {
-    if (includeNoBalance) {
-      return flatAssets;
+    if (!enabled) {
+      return EMPTY_ASSETS;
     }
+
     return flatAssets.filter((asset) => {
+      if (tokenFilter) {
+        const chainId = String(asset.chainId ?? '');
+        const address = getTokenFilterAddress(asset);
+
+        if (!chainId || !address || !tokenFilter(chainId, address)) {
+          return false;
+        }
+      }
+
+      if (includeNoBalance) {
+        return true;
+      }
+
       const haveBalance = asset.rawBalance !== '0x0';
       return asset.isNative || haveBalance;
     });
-  }, [flatAssets, includeNoBalance]);
+  }, [enabled, flatAssets, includeNoBalance, tokenFilter]);
 
   const processedAssets = useMemo(() => {
-    return assetsWithBalance.map((asset) => {
+    if (!enabled) {
+      return EMPTY_ASSETS;
+    }
+
+    const processedWalletAssets = assetsWithBalance.map((asset) => {
       const chainNetworkNameAndImage = chainNetworkNAmeAndImageMap.get(
         asset.chainId as Hex,
       );
@@ -57,7 +151,77 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
         standard: asset.isNative ? AssetStandard.Native : AssetStandard.ERC20,
       };
     });
-  }, [assetsWithBalance, chainNetworkNAmeAndImageMap]);
+
+    if (enrichAssetIds.length === 0) {
+      return processedWalletAssets;
+    }
+
+    const existingTokenKeys = new Set(
+      processedWalletAssets.map(
+        (token) =>
+          `${String(token.chainId ?? '').toLowerCase()}:${String(
+            token.address ?? '',
+          ).toLowerCase()}`,
+      ),
+    );
+
+    const enrichedAssets = enrichTokenRequests
+      .map(({ address, chainId }) => {
+        const assetId = toAssetId(address, chainId);
+        if (!assetId) {
+          return undefined;
+        }
+
+        const tokenKey = `${chainId.toLowerCase()}:${address.toLowerCase()}`;
+        if (existingTokenKeys.has(tokenKey)) {
+          return undefined;
+        }
+
+        const metadata =
+          enrichedTokensMetadata[assetId] ??
+          enrichedTokensMetadata[assetId.toLowerCase() as CaipAssetType];
+
+        if (!metadata?.symbol && !metadata?.name) {
+          return undefined;
+        }
+
+        const chainNetworkNameAndImage = chainNetworkNAmeAndImageMap.get(
+          chainId,
+        );
+
+        return {
+          accountType: EthAccountType.Eoa,
+          address: address.toLowerCase(),
+          assetId,
+          balance: '0',
+          chainId,
+          decimals: metadata.decimals,
+          fiat: {
+            balance: 0,
+            currency: 'USD',
+          },
+          image: getAssetImageUrl(assetId, chainId) ?? '',
+          isNative: false,
+          name: metadata.name,
+          networkImage: chainNetworkNameAndImage?.networkImage,
+          networkName: chainNetworkNameAndImage?.networkName,
+          rawBalance: '0x0' as Hex,
+          shortenedBalance: '0',
+          standard: AssetStandard.ERC20,
+          symbol: metadata.symbol,
+        } satisfies Asset;
+      })
+      .filter((asset): asset is Asset => Boolean(asset));
+
+    return [...processedWalletAssets, ...enrichedAssets];
+  }, [
+    assetsWithBalance,
+    chainNetworkNAmeAndImageMap,
+    enabled,
+    enrichAssetIds.length,
+    enrichTokenRequests,
+    enrichedTokensMetadata,
+  ]);
 
   return useMemo(() => {
     return processedAssets.sort(
@@ -65,3 +229,25 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
     );
   }, [processedAssets]);
 };
+
+function getTokenFilterAddress(asset: Asset): string | undefined {
+  const chainId = String(asset.chainId ?? '');
+
+  if (asset.isNative && chainId) {
+    try {
+      return getNativeTokenAddress(chainId as Hex);
+    } catch {
+      return asset.address;
+    }
+  }
+
+  if (asset.address) {
+    return String(asset.address);
+  }
+
+  if (asset.assetId && isCaipAssetType(asset.assetId)) {
+    return parseCaipAssetType(asset.assetId).assetReference;
+  }
+
+  return asset.assetId;
+}

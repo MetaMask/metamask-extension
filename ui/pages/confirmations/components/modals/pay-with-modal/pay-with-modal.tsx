@@ -22,6 +22,7 @@ import {
   useMusdConversionTokens,
   useMusdPaymentToken,
 } from '../../../../../hooks/musd';
+import { useWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
 import { useConfirmContext } from '../../../context/confirm';
 import {
   addToken,
@@ -44,6 +45,10 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
     transactionType: currentConfirmation?.type,
   });
+  const {
+    filterTokens: withdrawTokenFilter,
+    isFilterApplied: isWithdrawTokenFilterApplied,
+  } = useWithdrawTokenFilter();
 
   // Use the mUSD-specific payment token handler for same-chain enforcement
   const { onPaymentTokenChange: onMusdPaymentTokenChange } =
@@ -125,13 +130,24 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
 
   const tokenFilter = useCallback(
     (tokens: AssetType[]) => {
+      if (isPerpsWithdraw && isWithdrawTokenFilterApplied) {
+        return withdrawTokenFilter(tokens);
+      }
+
       let available = getAvailableTokens({ payToken, requiredTokens, tokens });
 
       available = musdTokenFilter(available);
 
       return available;
     },
-    [payToken, requiredTokens, musdTokenFilter],
+    [
+      isPerpsWithdraw,
+      isWithdrawTokenFilterApplied,
+      musdTokenFilter,
+      payToken,
+      requiredTokens,
+      withdrawTokenFilter,
+    ],
   );
 
   return (

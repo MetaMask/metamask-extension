@@ -7,6 +7,7 @@ import mockState from '../../../../../../test/data/mock-state.json';
 import configureStore from '../../../../../store/store';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from '../../../hooks/pay/useTransactionPayData';
+import { useWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
 import { getAvailableTokens } from '../../../utils/transaction-pay';
 import {
   useMusdConversionTokens,
@@ -21,6 +22,7 @@ import { PayWithModal } from './pay-with-modal';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayData');
+jest.mock('../../../hooks/pay/useWithdrawTokenFilter');
 jest.mock('../../../utils/transaction-pay');
 jest.mock('../../../../../hooks/musd');
 jest.mock('../../../context/confirm', () => ({
@@ -113,6 +115,7 @@ describe('PayWithModal', () => {
   const useMusdConversionTokensMock = jest.mocked(useMusdConversionTokens);
   const useMusdPaymentTokenMock = jest.mocked(useMusdPaymentToken);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
+  const useWithdrawTokenFilterMock = jest.mocked(useWithdrawTokenFilter);
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -122,6 +125,10 @@ describe('PayWithModal', () => {
     } as ReturnType<typeof useConfirmContext>);
 
     getAvailableTokensMock.mockImplementation(({ tokens }) => tokens as never);
+    useWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: (tokens) => tokens,
+      isFilterApplied: false,
+    });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     useMusdConversionTokensMock.mockReturnValue({
       filterTokens: (tokens) => tokens,
@@ -323,6 +330,21 @@ describe('PayWithModal', () => {
         true,
       );
       expect(onCloseMock).toHaveBeenCalled();
+    });
+
+    it('uses the withdraw token filter without applying the regular available-token filter', () => {
+      const withdrawTokenFilterMock = jest
+        .fn()
+        .mockReturnValue([PERPS_WITHDRAW_TOKEN]);
+      useWithdrawTokenFilterMock.mockReturnValue({
+        filterTokens: withdrawTokenFilterMock,
+        isFilterApplied: true,
+      });
+
+      renderModal({ isOpen: true, onClose: onCloseMock });
+
+      expect(withdrawTokenFilterMock).toHaveBeenCalledWith([]);
+      expect(getAvailableTokensMock).not.toHaveBeenCalled();
     });
 
     it('keeps the modal open and skips setPayToken when token import fails', async () => {
