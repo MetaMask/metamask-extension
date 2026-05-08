@@ -422,7 +422,7 @@ describe('PerpsOrderEntryPage', () => {
       expect(amountInput?.placeholder).not.toMatch(/min\s*\$/iu);
     });
 
-    it('keeps the submit button active at startup when no order size has been entered', () => {
+    it('disables submit and shows the minimum-order message when no order size has been entered', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
@@ -431,11 +431,13 @@ describe('PerpsOrderEntryPage', () => {
       const amountInput = amountContainer.querySelector('input');
 
       expect(amountInput?.value).toBe('');
-      expect(submitButton).not.toBeDisabled();
-      expect(submitButton).toHaveTextContent(tEn('perpsOpenLong', ['ETH']));
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
     });
 
-    it('disables submit only once the user enters an amount below the $10 minimum', () => {
+    it('disables submit when the user enters an amount below the $10 minimum', () => {
       const store = mockStore(createMockState());
       renderWithProvider(<PerpsOrderEntryPage />, store);
 

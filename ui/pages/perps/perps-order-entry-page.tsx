@@ -587,8 +587,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       return false;
     }
     const rawAmount = orderFormState.amount.replace(/,/gu, '').trim();
-    // Empty input keeps the submit button active so the post-attempt error flow can surface.
-    if (rawAmount === '') {
+    if (orderMode === 'modify' && rawAmount === '') {
       return false;
     }
     const amount = Number.parseFloat(rawAmount) || 0;
