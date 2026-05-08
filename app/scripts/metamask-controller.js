@@ -7970,42 +7970,46 @@ export default class MetamaskController extends EventEmitter {
     );
 
     engine.push(
-      createSnapsMethodMiddleware(subjectType === SubjectType.Snap, {
-        getUnlockPromise: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'AppStateController:getUnlockPromise',
-        ),
-        getIsActive: () => {
-          const { isUnlocked } = this.controllerMessenger.call(
-            'KeyringController:getState',
-          );
+      createSnapsMethodMiddleware(
+        subjectType === SubjectType.Snap,
+        {
+          getUnlockPromise: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'AppStateController:getUnlockPromise',
+          ),
+          getIsActive: () => {
+            const { isUnlocked } = this.controllerMessenger.call(
+              'KeyringController:getState',
+            );
 
-          return Boolean(this._isClientOpen && isUnlocked);
+            return Boolean(this._isClientOpen && isUnlocked);
+          },
+          getVersion: () => {
+            return process.env.METAMASK_VERSION;
+          },
+          trackError: (error) => {
+            // `captureException` imported from `@sentry/browser` does not seem to
+            // work in E2E tests. This is a workaround which works in both E2E
+            // tests and production.
+            return global.sentry?.captureException?.(error);
+          },
+          trackEvent: this.metaMetricsController.trackEvent.bind(
+            this.metaMetricsController,
+          ),
+          startTrace: (options) => {
+            // We intentionally strip out `_isStandaloneSpan` since it can be undefined
+            // eslint-disable-next-line no-unused-vars
+            const { _isStandaloneSpan, ...result } = trace(options);
+            return result;
+          },
+          endTrace,
+          getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
+            this.subjectMetadataController,
+            origin,
+          ),
         },
-        getVersion: () => {
-          return process.env.METAMASK_VERSION;
-        },
-        trackError: (error) => {
-          // `captureException` imported from `@sentry/browser` does not seem to
-          // work in E2E tests. This is a workaround which works in both E2E
-          // tests and production.
-          return global.sentry?.captureException?.(error);
-        },
-        trackEvent: this.metaMetricsController.trackEvent.bind(
-          this.metaMetricsController,
-        ),
-        startTrace: (options) => {
-          // We intentionally strip out `_isStandaloneSpan` since it can be undefined
-          // eslint-disable-next-line no-unused-vars
-          const { _isStandaloneSpan, ...result } = trace(options);
-          return result;
-        },
-        endTrace,
-        getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
-          this.subjectMetadataController,
-          origin,
-        ),
-      }, this.controllerMessenger),
+        this.controllerMessenger,
+      ),
     );
 
     engine.push(filterMiddleware);
