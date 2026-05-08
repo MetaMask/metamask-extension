@@ -217,10 +217,7 @@ describe('UnlockPasskeySection', () => {
       getByTestId('passkey-troubleshoot-open-full-screen-button'),
     );
 
-    expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
-      UNLOCK_ROUTE,
-      'from=sidepanel',
-    );
+    expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(UNLOCK_ROUTE);
 
     await act(async () => {
       resolveCeremony({
@@ -289,10 +286,7 @@ describe('UnlockPasskeySection', () => {
 
       fireEvent.click(getByTestId('unlock-passkey-button'));
 
-      expect(openExtensionInBrowser).toHaveBeenCalledWith(
-        UNLOCK_ROUTE,
-        'from=sidepanel',
-      );
+      expect(openExtensionInBrowser).toHaveBeenCalledWith(UNLOCK_ROUTE);
       expect(onUnlockWithPasskey).not.toHaveBeenCalled();
     });
   });

@@ -48,6 +48,9 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../../shared/lib/passkey', () => ({
+  ...jest.requireActual<typeof import('../../../../shared/lib/passkey')>(
+    '../../../../shared/lib/passkey',
+  ),
   cancelPasskeyCeremony: jest.fn(),
 }));
 

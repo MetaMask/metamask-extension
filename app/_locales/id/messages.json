@@ -2800,10 +2800,6 @@
     "message": "Kode: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Detail kesalahan",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Terjadi kesalahan saat mendapatkan daftar rantai aman, lanjutkan dengan hati-hati."
   },
@@ -8695,9 +8691,6 @@
   "stillConnectingTo": {
     "message": "Masih terhubung ke $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "Masih menerima pesan ini?"
   },
   "storageErrorAction": {
     "message": "Cadangkan Frasa Pemulihan Rahasia"
