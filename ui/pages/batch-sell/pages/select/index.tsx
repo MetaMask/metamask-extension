@@ -6,7 +6,9 @@ import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   getAvailableBatchSellAssetsForNetworkSelector,
   getAvailableBatchSellNetworksSelector,
+  selectBatchSellDestStablecoins,
 } from '../../../../ducks/batch-sell/selectors';
+import type { BridgeAppState } from '../../../../ducks/bridge/selectors';
 import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 import { useSortBatchSellAssetsByBalance } from '../../../../hooks/batch-sell/useSortBatchSellAssetsByBalance';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -81,6 +83,10 @@ export const BatchSellSelectPage = () => {
     ),
   );
 
+  const batchSellDestStablecoins = useSelector((state: BridgeAppState) =>
+    selectBatchSellDestStablecoins(state, selectedNetworkChainId ?? undefined),
+  );
+
   const orderedAvailableBatchSellAssetsForNetworkList =
     useSortBatchSellAssetsByBalance(
       availableBatchSellAssetsForNetworkList,
@@ -111,7 +117,7 @@ export const BatchSellSelectPage = () => {
     const selectedAsset = availableBatchSellAssetsForNetworkList.find(
       (asset) => asset.assetId === selectedAssetsId[0],
     );
-    const bridgeToken =
+    const sourceToken =
       selectedAsset?.address === undefined
         ? undefined
         : {
@@ -121,11 +127,18 @@ export const BatchSellSelectPage = () => {
             chainId: selectedAsset.chainId,
           };
 
+    const destTokenAssetId = batchSellDestStablecoins[0];
+
     transitionForward(() =>
-      openBridgeExperience(MetaMetricsSwapsEventSource.MainView, bridgeToken),
+      openBridgeExperience(
+        MetaMetricsSwapsEventSource.MainView,
+        sourceToken,
+        destTokenAssetId,
+      ),
     );
   }, [
     availableBatchSellAssetsForNetworkList,
+    batchSellDestStablecoins,
     closeModal,
     openBridgeExperience,
     selectedAssetsId,
