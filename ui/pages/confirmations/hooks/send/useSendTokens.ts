@@ -28,18 +28,15 @@ export type EnrichTokenRequest = {
 };
 
 type UseSendTokensOptions = {
-  enabled?: boolean;
   includeNoBalance?: boolean;
   tokenFilter?: (chainId: string, address: string) => boolean;
   enrichTokenRequests?: EnrichTokenRequest[];
 };
 
 const EMPTY_ENRICH_TOKEN_REQUESTS: EnrichTokenRequest[] = [];
-const EMPTY_ASSETS: Asset[] = [];
 
 export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
   const {
-    enabled = true,
     includeNoBalance = false,
     tokenFilter,
     enrichTokenRequests = EMPTY_ENRICH_TOKEN_REQUESTS,
@@ -50,20 +47,13 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
     Record<CaipAssetType, AssetMetadata>
   >({});
 
-  const flatAssets = useMemo(
-    () => (enabled ? Object.values(assets).flat() : EMPTY_ASSETS),
-    [assets, enabled],
-  );
+  const flatAssets = useMemo(() => Object.values(assets).flat(), [assets]);
 
   const enrichAssetIds = useMemo(() => {
-    if (!enabled) {
-      return [];
-    }
-
     return enrichTokenRequests
       .map(({ address, chainId }) => toAssetId(address, chainId))
       .filter((assetId): assetId is CaipAssetType => Boolean(assetId));
-  }, [enabled, enrichTokenRequests]);
+  }, [enrichTokenRequests]);
 
   const enrichAssetIdsKey = useMemo(
     () => enrichAssetIds.join(','),
@@ -101,10 +91,6 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
   }, [enrichAssetIds, enrichAssetIdsKey]);
 
   const assetsWithBalance = useMemo(() => {
-    if (!enabled) {
-      return EMPTY_ASSETS;
-    }
-
     return flatAssets.filter((asset) => {
       if (tokenFilter) {
         const chainId = String(asset.chainId ?? '');
@@ -122,13 +108,9 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
       const haveBalance = asset.rawBalance !== '0x0';
       return asset.isNative || haveBalance;
     });
-  }, [enabled, flatAssets, includeNoBalance, tokenFilter]);
+  }, [flatAssets, includeNoBalance, tokenFilter]);
 
   const processedAssets = useMemo<Asset[]>(() => {
-    if (!enabled) {
-      return EMPTY_ASSETS;
-    }
-
     const processedWalletAssets: Asset[] = assetsWithBalance.map((asset) => {
       const chainNetworkNameAndImage = chainNetworkNAmeAndImageMap.get(
         asset.chainId as Hex,
@@ -222,7 +204,6 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
   }, [
     assetsWithBalance,
     chainNetworkNAmeAndImageMap,
-    enabled,
     enrichAssetIds.length,
     enrichTokenRequests,
     enrichedTokensMetadata,

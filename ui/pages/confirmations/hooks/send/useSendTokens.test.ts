@@ -114,26 +114,6 @@ describe('useSendTokens', () => {
     mockFetchAssetMetadataForAssetIds.mockResolvedValue({});
   });
 
-  it('skips token list construction when disabled', async () => {
-    const { result } = renderHookWithProvider(
-      () =>
-        useSendTokens({
-          enabled: false,
-          includeNoBalance: true,
-          enrichTokenRequests: [
-            {
-              address: '0x1111111111111111111111111111111111111111',
-              chainId: '0x1',
-            },
-          ],
-        }),
-      mockState,
-    );
-
-    expect(result.current).toEqual([]);
-    expect(mockFetchAssetMetadataForAssetIds).not.toHaveBeenCalled();
-  });
-
   it('includes testnet assets with non-zero raw balance', async () => {
     const testNetAssetData = [
       {

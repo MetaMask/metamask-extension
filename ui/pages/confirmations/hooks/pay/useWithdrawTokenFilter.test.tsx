@@ -90,7 +90,6 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
     expect(result.current.filterTokens(input)).toBe(input);
     expect(result.current.isFilterApplied).toBe(false);
     expect(mockUseSendTokens).toHaveBeenCalledWith({
-      enabled: false,
       includeNoBalance: false,
       tokenFilter: undefined,
       enrichTokenRequests: [],
@@ -108,7 +107,6 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
     expect(result.current.filterTokens(input)).toBe(input);
     expect(result.current.isFilterApplied).toBe(false);
     expect(mockUseSendTokens).toHaveBeenCalledWith({
-      enabled: false,
       includeNoBalance: false,
       tokenFilter: undefined,
       enrichTokenRequests: [],
@@ -128,7 +126,6 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
     expect(result.current.filterTokens([])).toBe(ALL_TOKENS_MOCK);
     expect(result.current.isFilterApplied).toBe(true);
     expect(mockUseSendTokens).toHaveBeenCalledWith({
-      enabled: true,
       includeNoBalance: true,
       tokenFilter: expect.any(Function),
       enrichTokenRequests: [

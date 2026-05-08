@@ -64,7 +64,6 @@ export function usePostQuoteWithdrawTokenFilter(): WithdrawTokenFilterResult {
   }, [allowlist, isFilterApplied]);
 
   const walletTokens = useSendTokens({
-    enabled: isFilterApplied,
     includeNoBalance: isFilterApplied,
     tokenFilter,
     enrichTokenRequests,
