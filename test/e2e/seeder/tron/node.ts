@@ -2,12 +2,16 @@
 /**
  * @file node.ts — Tron local node seeder
  *
- * Tronbox runs via Docker: `start()` and `quit()` shell out to
- * `docker run tronbox/tre` and `docker rm -f` respectively. Docker is a hard
- * prerequisite for running these E2E seeders locally and in CI.
+ * The local node runs a native java-tron private network. The
+ * `@ulissesferreira/java-tron-up` package installs the managed Java runtime,
+ * FullNode.jar, and the node_modules/.bin/java-tron wrapper used here.
  */
-import { execSync } from 'child_process';
-import bs58 from 'bs58';
+import { spawn, type ChildProcess } from 'child_process';
+import { mkdir, mkdtemp, rm, writeFile } from 'fs/promises';
+import { createServer, type Server } from 'net';
+import { tmpdir } from 'os';
+import { join, resolve } from 'path';
+import { createRequire } from 'module';
 import { keccak256 } from 'ethereum-cryptography/keccak';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1';
@@ -27,9 +31,20 @@ import {
   hexAddressToBase58,
   normalizeTronHexAddress,
 } from './assets';
+import { createJavaTronPrivateNetworkConfig } from './java-tron-config';
 
-const CONTAINER_NAME = 'tron-tre-e2e';
+type Base58Encoder = {
+  encode(input: Uint8Array): string;
+};
+
+const requireFromCurrentFile = createRequire(__filename);
+const bs58 = requireFromCurrentFile('bs58').default as Base58Encoder;
+
 const HTTP_PORT = 9090;
+const JAVA_TRON_GENESIS_PRIVATE_KEY =
+  '0000000000000000000000000000000000000000000000000000000000000001';
+const JAVA_TRON_GENESIS_ADDRESS = 'TMVQGm1qAQYVdetCeGRRkTWYYrLXuHK2HC';
+const JAVA_TRON_PROCESS_OUTPUT_LIMIT = 8_000;
 
 export const TRON_LOCAL_NODE_URL = `http://localhost:${HTTP_PORT}`;
 
@@ -52,10 +67,6 @@ const E2E_TEST_ACCOUNT_PRIVATE_KEYS: Readonly<Record<string, string>> = {
     '290f1eb76a3715ff19b888131d1b152ea755e7c5e1315d52a030107058bd631f',
 };
 
-type TreAccountsResponse = {
-  privateKeys?: string[];
-};
-
 type TronFundingAccount = {
   address: string;
   privateKey: string;
@@ -72,6 +83,16 @@ type FetchJsonOptions = RequestInit & {
 
 export class TronNode {
   #fundingAccount: TronFundingAccount | undefined;
+
+  #nodeProcess: ChildProcess | undefined;
+
+  #nodeProcessExitError: Error | undefined;
+
+  #runtimeDirectory: string | undefined;
+
+  #stderr = '';
+
+  #stdout = '';
 
   readonly #trc10Balances: Record<
     string,
@@ -92,10 +113,10 @@ export class TronNode {
   readonly trc20Tokens: Partial<Record<TronTrc20Symbol, TronTrc20Token>> = {};
 
   /**
-   * Starts a TronBox Runtime Environment (TRE) Docker container, waits for it
-   * to finish generating prefunded accounts, and seeds any requested balances
-   * into the MetaMask-controlled Tron account. This keeps the same async
-   * start() contract that Ganache and Anvil expose to withFixtures.
+   * Starts a native java-tron private network, waits for the funded genesis
+   * account to become available, and seeds any requested balances into the
+   * MetaMask-controlled Tron account. This keeps the same async start() contract
+   * that Ganache and Anvil expose to withFixtures.
    *
    * @param options - Start options.
    * @param options.initialBalances - Map of Tron address to amount in SUN.
@@ -108,66 +129,173 @@ export class TronNode {
   async start(options: TronLocalNodeOptions = {}): Promise<void> {
     this.#fundingAccount = undefined;
 
-    // Remove any leftover TRE container from a previous run so we can safely
-    // rebind port 9090.
     try {
-      execSync(`docker rm -f ${CONTAINER_NAME}`, { stdio: 'pipe' });
-    } catch {
-      // Container didn't exist — that's fine
-    }
+      await this.#startNativeJavaTron();
+      await this.waitForReady(120_000);
 
-    execSync(
-      [
-        'docker run -d',
-        '--rm',
-        `--name ${CONTAINER_NAME}`,
-        `-p ${HTTP_PORT}:9090`,
-        'tronbox/tre',
-      ].join(' '),
-      { stdio: 'pipe' },
+      for (const [address, amountInSun] of Object.entries(
+        options.initialBalances ?? {},
+      )) {
+        if (amountInSun > 0) {
+          await this.fundAccount(address, amountInSun);
+        }
+      }
+
+      await this.initializeTrc10Balances(options.trc10Balances ?? {});
+      await this.initializeTrc20Balances(options.trc20Balances ?? {});
+
+      await this.initializeStakedTrxBalances(options.stakedTrxBalances ?? {});
+      // `trc721Balances` and `trc1155Balances` are accepted and ignored — see the
+      // JSDoc on TronLocalNodeOptions.
+    } catch (error) {
+      await this.quit();
+      throw error;
+    }
+  }
+
+  async #startNativeJavaTron(): Promise<void> {
+    await this.#runPackageBinary('java-tron-up', ['install']);
+
+    const runtimeDirectory = await mkdtemp(join(tmpdir(), 'java-tron-e2e-'));
+    const configPath = join(runtimeDirectory, 'fullnode.conf');
+    const outputDirectory = join(runtimeDirectory, 'output');
+    const [
+      backupPort,
+      grpcPort,
+      grpcSolidityPort,
+      jsonRpcPort,
+      jsonRpcSolidityPort,
+      p2pPort,
+      solidityHttpPort,
+    ] = await getAvailablePorts(7);
+    await mkdir(outputDirectory, { recursive: true });
+    await writeFile(
+      configPath,
+      createJavaTronPrivateNetworkConfig({
+        backupPort,
+        fullNodePort: HTTP_PORT,
+        grpcPort,
+        grpcSolidityPort,
+        jsonRpcPort,
+        jsonRpcSolidityPort,
+        p2pPort,
+        solidityHttpPort,
+      }),
     );
 
-    await this.waitForReady(120_000);
+    this.#runtimeDirectory = runtimeDirectory;
+    this.#nodeProcessExitError = undefined;
+    this.#stderr = '';
+    this.#stdout = '';
 
-    for (const [address, amountInSun] of Object.entries(
-      options.initialBalances ?? {},
-    )) {
-      if (amountInSun > 0) {
-        await this.fundAccount(address, amountInSun);
-      }
-    }
+    const javaTronBinary = getPackageBinaryPath('java-tron');
+    const nodeProcess = spawn(
+      javaTronBinary,
+      ['-c', configPath, '--witness', '-d', outputDirectory],
+      {
+        cwd: runtimeDirectory,
+        detached: process.platform !== 'win32',
+        stdio: ['ignore', 'pipe', 'pipe'],
+      },
+    );
+    this.#nodeProcess = nodeProcess;
+    nodeProcess.stdout?.on('data', (chunk: Buffer) => {
+      this.#stdout = appendProcessOutput(this.#stdout, chunk);
+    });
+    nodeProcess.stderr?.on('data', (chunk: Buffer) => {
+      this.#stderr = appendProcessOutput(this.#stderr, chunk);
+    });
+    nodeProcess.once('error', (error) => {
+      this.#nodeProcessExitError = error;
+    });
+    nodeProcess.once('exit', (code, signal) => {
+      this.#nodeProcessExitError = new Error(
+        `java-tron exited with code ${code ?? 'null'} and signal ${
+          signal ?? 'null'
+        }.${this.#formatProcessOutput()}`,
+      );
+    });
+  }
 
-    await this.initializeTrc10Balances(options.trc10Balances ?? {});
-    await this.initializeTrc20Balances(options.trc20Balances ?? {});
+  async #runPackageBinary(command: string, args: string[]): Promise<void> {
+    const binaryPath = getPackageBinaryPath(command);
 
-    await this.initializeStakedTrxBalances(options.stakedTrxBalances ?? {});
-    // `trc721Balances` and `trc1155Balances` are accepted and ignored — see the
-    // JSDoc on TronLocalNodeOptions.
+    await new Promise<void>((resolvePromise, rejectPromise) => {
+      const child = spawn(binaryPath, args, {
+        cwd: process.cwd(),
+        stdio: ['ignore', 'pipe', 'pipe'],
+      });
+      let stdout = '';
+      let stderr = '';
+      child.stdout.on('data', (chunk: Buffer) => {
+        stdout = appendProcessOutput(stdout, chunk);
+      });
+      child.stderr.on('data', (chunk: Buffer) => {
+        stderr = appendProcessOutput(stderr, chunk);
+      });
+      child.once('error', rejectPromise);
+      child.once('close', (code, signal) => {
+        if (code === 0) {
+          resolvePromise();
+          return;
+        }
+
+        rejectPromise(
+          new Error(
+            `${command} ${args.join(' ')} exited with code ${
+              code ?? 'null'
+            } and signal ${signal ?? 'null'}.${formatProcessOutput(
+              stdout,
+              stderr,
+            )}`,
+          ),
+        );
+      });
+    });
   }
 
   async quit(): Promise<void> {
-    try {
-      execSync(`docker rm -f ${CONTAINER_NAME}`, { stdio: 'pipe' });
-    } catch {
-      // Already gone
+    const nodeProcess = this.#nodeProcess;
+    const runtimeDirectory = this.#runtimeDirectory;
+    this.#nodeProcess = undefined;
+    this.#runtimeDirectory = undefined;
+
+    if (nodeProcess) {
+      await stopProcess(nodeProcess);
+    }
+
+    if (runtimeDirectory) {
+      await rm(runtimeDirectory, { force: true, recursive: true });
     }
   }
 
   async waitForReady(timeoutMs = 60_000): Promise<void> {
     const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline) {
+      this.#throwIfNodeExited();
       try {
         const data = (await this.fetchJson('/wallet/getnowblock', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: '{}',
           timeoutMs: 5_000,
-        })) as { block_header?: unknown };
-        const accounts = await this.getTreAccounts();
+        })) as {
+          block_header?: {
+            raw_data?: {
+              number?: number | string;
+              timestamp?: number | string;
+            };
+          };
+        };
+        const blockNumber = Number(data.block_header?.raw_data?.number ?? 0);
+        const blockTimestamp = Number(
+          data.block_header?.raw_data?.timestamp ?? 0,
+        );
+
         if (
-          data.block_header &&
-          accounts.privateKeys?.length &&
-          (await this.hasFundedTreAccount())
+          blockNumber > 0 &&
+          blockTimestamp > Date.now() - 60_000 &&
+          (await this.hasFundedGenesisAccount())
         ) {
           return;
         }
@@ -181,7 +309,7 @@ export class TronNode {
     );
   }
 
-  async hasFundedTreAccount(): Promise<boolean> {
+  async hasFundedGenesisAccount(): Promise<boolean> {
     const fundingAccount = await this.getFundingAccount();
     const account = (await this.fetchJson('/wallet/getaccount', {
       method: 'POST',
@@ -223,7 +351,7 @@ export class TronNode {
     if (!tx.raw_data_hex) {
       throw new Error(
         `createtransaction failed: ${JSON.stringify(tx)}\n` +
-          `Check that the TRE funding address (${fundingAccount.address}) is funded and the node has produced at least one block.`,
+          `Check that the java-tron genesis address (${fundingAccount.address}) is funded and the node has produced at least one block.`,
       );
     }
 
@@ -369,19 +497,36 @@ export class TronNode {
     })) as {
       contract_address?: string;
       txID?: string;
+      raw_data?: {
+        contract?: {
+          parameter?: {
+            value?: {
+              contract_address?: string;
+              new_contract?: {
+                contract_address?: string;
+              };
+            };
+          };
+        }[];
+      };
     };
     await this.signAndBroadcastTransaction(tx, fundingAccount.privateKey);
 
-    const address =
-      tx.contract_address && normalizeTronHexAddress(tx.contract_address)
-        ? hexAddressToBase58(normalizeTronHexAddress(tx.contract_address))
-        : getContractAddressFromTx(fundingAccount.address, tx.txID ?? '');
+    const txContractValue = tx.raw_data?.contract?.[0]?.parameter?.value;
+    const contractAddress =
+      tx.contract_address ??
+      txContractValue?.new_contract?.contract_address ??
+      txContractValue?.contract_address;
+    const address = contractAddress
+      ? hexAddressToBase58(normalizeTronHexAddress(contractAddress))
+      : getContractAddressFromTx(fundingAccount.address, tx.txID ?? '');
     const token = {
       ...metadata,
       address,
       hexAddress: base58AddressToHex(address),
       symbol,
     };
+    await this.waitForContract(token);
     this.trc20Tokens[symbol] = token;
 
     return token;
@@ -407,6 +552,8 @@ export class TronNode {
    * the address is not in that map the call throws — add the BIP44-derived key
    * (`m/44'/195'/0'/0/<index>` from `E2E_SRP`) to `E2E_TEST_ACCOUNT_PRIVATE_KEYS`
    * in node.ts before calling this method with a new test address.
+   * @param targetAddress
+   * @param amountInSun
    */
   async freezeBalanceV2(
     targetAddress: string,
@@ -613,30 +760,49 @@ export class TronNode {
     throw new Error(`Transaction ${txId} was not confirmed within 30s`);
   }
 
+  private async waitForContract(token: TronTrc20Token): Promise<void> {
+    const deadline = Date.now() + 30_000;
+    const requests = [
+      { value: token.address, visible: true },
+      { value: token.hexAddress, visible: false },
+    ];
+
+    while (Date.now() < deadline) {
+      for (const request of requests) {
+        try {
+          const contract = (await this.fetchJson('/wallet/getcontract', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(request),
+            timeoutMs: 5_000,
+          })) as Record<string, unknown>;
+          if (
+            !contract.Error &&
+            (contract.contract_address || contract.abi || contract.bytecode)
+          ) {
+            return;
+          }
+        } catch {
+          // The contract is not indexed yet for this address representation.
+        }
+      }
+      await new Promise((r) => setTimeout(r, 500));
+    }
+
+    throw new Error(`Contract ${token.address} was not available within 30s`);
+  }
+
   async getFundingAccount(): Promise<TronFundingAccount> {
     if (this.#fundingAccount) {
       return this.#fundingAccount;
     }
 
-    const accounts = await this.getTreAccounts();
-    const privateKey = accounts.privateKeys?.[0];
-
-    if (!privateKey) {
-      throw new Error('TRE did not expose any prefunded private keys');
-    }
-
     this.#fundingAccount = {
-      address: this.deriveAddressFromPrivateKey(privateKey),
-      privateKey,
+      address: JAVA_TRON_GENESIS_ADDRESS,
+      privateKey: JAVA_TRON_GENESIS_PRIVATE_KEY,
     };
 
     return this.#fundingAccount;
-  }
-
-  async getTreAccounts(): Promise<TreAccountsResponse> {
-    return (await this.fetchJson('/admin/accounts-json', {
-      timeoutMs: 5_000,
-    })) as TreAccountsResponse;
   }
 
   deriveAddressFromPrivateKey(privateKeyHex: string): string {
@@ -670,5 +836,127 @@ export class TronNode {
     }
 
     return await response.json();
+  }
+
+  #formatProcessOutput(): string {
+    return formatProcessOutput(this.#stdout, this.#stderr);
+  }
+
+  #throwIfNodeExited(): void {
+    if (this.#nodeProcessExitError) {
+      throw this.#nodeProcessExitError;
+    }
+  }
+}
+
+function getPackageBinaryPath(command: string): string {
+  return resolve(process.cwd(), 'node_modules', '.bin', command);
+}
+
+function appendProcessOutput(output: string, chunk: Buffer): string {
+  return `${output}${chunk.toString()}`.slice(-JAVA_TRON_PROCESS_OUTPUT_LIMIT);
+}
+
+function formatProcessOutput(stdout: string, stderr: string): string {
+  const sections = [];
+  if (stdout.trim()) {
+    sections.push(`\nstdout:\n${stdout.trim()}`);
+  }
+  if (stderr.trim()) {
+    sections.push(`\nstderr:\n${stderr.trim()}`);
+  }
+  return sections.join('');
+}
+
+async function getAvailablePorts(count: number): Promise<number[]> {
+  const servers = await Promise.all(
+    Array.from({ length: count }, () => openEphemeralServer()),
+  );
+
+  try {
+    return servers.map(({ port }) => port);
+  } finally {
+    await Promise.all(
+      servers.map(
+        ({ server }) =>
+          new Promise<void>((resolvePromise, rejectPromise) => {
+            server.close((error) => {
+              if (error) {
+                rejectPromise(error);
+                return;
+              }
+              resolvePromise();
+            });
+          }),
+      ),
+    );
+  }
+}
+
+async function openEphemeralServer(): Promise<{
+  port: number;
+  server: Server;
+}> {
+  return await new Promise((resolvePromise, rejectPromise) => {
+    const server = createServer();
+    server.once('error', rejectPromise);
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address();
+      if (typeof address === 'object' && address?.port) {
+        resolvePromise({ port: address.port, server });
+        return;
+      }
+
+      server.close();
+      rejectPromise(new Error('Failed to allocate a port for java-tron.'));
+    });
+  });
+}
+
+async function stopProcess(childProcess: ChildProcess): Promise<void> {
+  if (childProcess.exitCode !== null || childProcess.signalCode !== null) {
+    return;
+  }
+
+  const exitPromise = new Promise<void>((resolvePromise) => {
+    childProcess.once('exit', () => resolvePromise());
+  });
+  killProcessTree(childProcess, 'SIGTERM');
+
+  const exitedAfterTerm = await Promise.race([
+    exitPromise,
+    new Promise<boolean>((resolvePromise) => {
+      setTimeout(() => {
+        resolvePromise(false);
+      }, 5_000);
+    }),
+  ]);
+
+  if (exitedAfterTerm !== false) {
+    return;
+  }
+
+  killProcessTree(childProcess, 'SIGKILL');
+  await Promise.race([
+    exitPromise,
+    new Promise<void>((resolvePromise) => setTimeout(resolvePromise, 1_000)),
+  ]);
+}
+
+function killProcessTree(
+  childProcess: ChildProcess,
+  signal: NodeJS.Signals,
+): void {
+  if (process.platform === 'win32') {
+    childProcess.kill(signal);
+    return;
+  }
+
+  if (childProcess.pid) {
+    try {
+      process.kill(-childProcess.pid, signal);
+    } catch {
+      childProcess.kill(signal);
+    }
   }
 }

@@ -28,10 +28,7 @@ import { SendAlerts } from '../send-alerts';
 export const AmountRecipient = () => {
   const t = useI18nContext();
   const [hexDataError, setHexDataError] = useState<string>();
-  const [isSmartContractAlertOpen, setIsSmartContractAlertOpen] =
-    useState(false);
-  const [shouldSubmitOnAcknowledge, setShouldSubmitOnAcknowledge] =
-    useState(false);
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   const { asset, to, toResolved, nonEVMSubmitError } = useSendContext();
   const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
   const { isNonEvmSendType } = useSendType();
@@ -58,9 +55,23 @@ export const AmountRecipient = () => {
     Boolean(amountError) ||
     recipientHasHardError ||
     Boolean(hexDataError) ||
-    Boolean(nonEVMSubmitError) ||
-    addressPoisoningDetectionResult.pending;
-  const isDisabled = hasBlockingError || !toResolved || isNetworkUnreliable;
+    Boolean(nonEVMSubmitError);
+  const isRecipientValidationPending =
+    Boolean(to) && recipientValidationResult.toAddressValidated !== to;
+  const isDisabled =
+    hasBlockingError || !toResolved || isRecipientValidationPending;
+
+  const [shouldSubmitOnAcknowledge, setShouldSubmitOnAcknowledge] =
+    useState(false);
+
+  const openAlertModal = useCallback(() => {
+    setShouldSubmitOnAcknowledge(false);
+    setIsAlertModalOpen(true);
+  }, []);
+
+  const handleAlertModalClose = useCallback(() => {
+    setIsAlertModalOpen(false);
+  }, []);
 
   const proceedWithSubmit = useCallback(async () => {
     if (isNonEvmSendType) {

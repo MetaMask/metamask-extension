@@ -11,13 +11,22 @@ type SectionTitle = (typeof SECTION_TITLES)[number];
 class TronAssetDetailsPage {
   private driver: Driver;
 
+  private readonly nativeReceiveButton =
+    '[data-testid="coin-overview-receive"]';
+
+  private readonly nativeSendButton = '[data-testid="coin-overview-send"]';
+
+  private readonly nativeSwapButton = '[data-testid="coin-overview-swap"]';
+
   private readonly priceChart = '[data-testid="asset-price-chart"]';
 
-  private readonly sendButton = '[data-testid="coin-overview-send"]';
+  private readonly priceHeader = '[data-testid="asset-hovered-price"]';
 
-  private readonly swapButton = '[data-testid="coin-overview-swap"]';
+  private readonly tokenBuyButton = '[data-testid="token-overview-buy"]';
 
-  private readonly receiveButton = '[data-testid="coin-overview-receive"]';
+  private readonly tokenSendButton = '[data-testid="eth-overview-send"]';
+
+  private readonly tokenSwapButton = '[data-testid="token-overview-swap"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -35,28 +44,43 @@ class TronAssetDetailsPage {
     receive?: boolean;
   }): Promise<void> {
     if (options.send === true) {
-      await this.driver.waitForSelector(this.sendButton);
+      await this.driver.waitForSelector(this.nativeSendButton);
     } else if (options.send === false) {
-      await this.driver.assertElementNotPresent(this.sendButton);
+      await this.driver.assertElementNotPresent(this.nativeSendButton);
     }
     if (options.swap === true) {
-      await this.driver.waitForSelector(this.swapButton);
+      await this.driver.waitForSelector(this.nativeSwapButton);
     } else if (options.swap === false) {
-      await this.driver.assertElementNotPresent(this.swapButton);
+      await this.driver.assertElementNotPresent(this.nativeSwapButton);
     }
     if (options.receive === true) {
-      await this.driver.waitForSelector(this.receiveButton);
+      await this.driver.waitForSelector(this.nativeReceiveButton);
     } else if (options.receive === false) {
-      await this.driver.assertElementNotPresent(this.receiveButton);
+      await this.driver.assertElementNotPresent(this.nativeReceiveButton);
     }
+  }
+
+  async checkTokenActionButtons(): Promise<void> {
+    await this.driver.waitForSelector(this.tokenBuyButton);
+    await this.driver.waitForSelector(this.tokenSendButton);
+    await this.driver.waitForSelector(this.tokenSwapButton);
+    await this.driver.assertElementNotPresent(this.nativeReceiveButton);
   }
 
   async checkPriceChart(): Promise<void> {
     await this.driver.waitForSelector(this.priceChart);
   }
 
+  async checkCurrentPriceHeader(): Promise<void> {
+    await this.driver.waitForSelector(this.priceHeader);
+  }
+
   async checkDailyResourcesSection(): Promise<void> {
     await this.driver.waitForSelector({ text: 'Daily resource', tag: 'h4' });
+    await this.driver.waitForSelector({
+      text: 'This is your daily allowance',
+      tag: 'p',
+    });
     await this.driver.waitForSelector({ text: 'Energy', tag: 'p' });
     await this.driver.waitForSelector({ text: 'Bandwidth', tag: 'p' });
   }

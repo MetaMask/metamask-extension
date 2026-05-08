@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { Numeric } from '../../../../../shared/lib/Numeric';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -25,16 +25,26 @@ export const useAmountValidation = () => {
   const { validateAmountWithSnap } = useSnapAmountOnInput();
   const { rawBalanceNumeric } = useBalance();
   const [amountError, setAmountError] = useState<string | undefined>(undefined);
+  const validationRunIdRef = useRef(0);
 
-  const setAndReturnError = useCallback((errorMessage: string | undefined) => {
-    setAmountError(errorMessage);
-    return errorMessage;
-  }, []);
+  const setAndReturnError = useCallback(
+    (errorMessage: string | undefined, runId?: number) => {
+      if (runId === undefined || runId === validationRunIdRef.current) {
+        setAmountError(errorMessage);
+      }
+      return errorMessage;
+    },
+    [],
+  );
 
   const validateNonEvmAmount = useCallback(
     async (amount: string): Promise<string | undefined> => {
       if (!isNonEvmSendType) {
         return undefined;
+      }
+
+      if (!value) {
+        return t('required');
       }
 
       if (rawBalanceNumeric.isZero()) {
@@ -54,12 +64,18 @@ export const useAmountValidation = () => {
         return t('invalidValue');
       }
     },
-    [t, validateAmountWithSnap, isNonEvmSendType, rawBalanceNumeric],
+    [t, validateAmountWithSnap, isNonEvmSendType, rawBalanceNumeric, value],
   );
 
   const validateAmountAsync = useCallback(async () => {
+    const runId = validationRunIdRef.current + 1;
+    validationRunIdRef.current = runId;
+
     if (!value) {
-      return setAndReturnError(undefined);
+      if (isNonEvmSendType) {
+        return setAndReturnError(t('required'), runId);
+      }
+      return setAndReturnError(undefined, runId);
     }
 
     const normalizedValue = normalizeAmount(value);
@@ -80,24 +96,27 @@ export const useAmountValidation = () => {
     for (const validation of validations) {
       const error = await Promise.resolve(validation());
       if (error) {
-        return setAndReturnError(error);
+        return setAndReturnError(error, runId);
       }
     }
 
-    return setAndReturnError(undefined);
+    return setAndReturnError(undefined, runId);
   }, [
     asset,
     rawBalanceNumeric,
     t,
     value,
     validateNonEvmAmount,
+    isNonEvmSendType,
     setAndReturnError,
   ]);
 
   // This callback is needed for non-EVM validation when nothing is typed into amount
   const validateNonEvmAmountAsync = useCallback(async () => {
+    const runId = validationRunIdRef.current + 1;
+    validationRunIdRef.current = runId;
     const error = await validateNonEvmAmount(normalizeAmount(value));
-    return setAndReturnError(error);
+    return setAndReturnError(error, runId);
   }, [value, validateNonEvmAmount, setAndReturnError]);
 
   useEffect(() => {

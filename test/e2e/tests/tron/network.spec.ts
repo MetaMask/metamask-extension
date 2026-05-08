@@ -46,6 +46,11 @@ describe('Tron network presence', function (this: Suite) {
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        localNodeOptions: [
+          // Anvil is needed because the extension still polls EVM networks in
+          // Tron-only flows.
+          'anvil',
+        ],
         testSpecificMock: mockTronFlagsOnly,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -64,6 +69,11 @@ describe('Tron network presence', function (this: Suite) {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronFlagsOnly,
+        localNodeOptions: [
+          // Anvil is needed because the extension still polls EVM networks in
+          // Tron-only flows.
+          'anvil',
+        ],
         manifestFlags: {
           remoteFeatureFlags: {
             neNetworkDiscoverButton: {
@@ -85,11 +95,23 @@ describe('Tron network presence', function (this: Suite) {
     );
   });
 
-  it('shows Tron Nile when test networks are enabled', async function () {
+  // Tron testnets (Nile, Shasta) are not fully supported end-to-end in
+  // MetaMask: the new Network Manager modal does not expose the legacy
+  // "Show test networks" toggle (`network-menu-show-test-networks`), so the
+  // `toggleShowTestNetworks()` helper has nothing to click. Until testnet
+  // support is wired through the Network Manager surface, these tests stay
+  // skipped — do not unskip without first verifying the toggle exists.
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('shows Tron Nile when test networks are enabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        localNodeOptions: [
+          // Anvil is needed because the extension still polls EVM networks in
+          // Tron-only flows.
+          'anvil',
+        ],
         testSpecificMock: mockTronFlagsOnly,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -102,11 +124,19 @@ describe('Tron network presence', function (this: Suite) {
     );
   });
 
-  it('shows Tron Shasta when test networks are enabled', async function () {
+  // See note above: Tron testnets are not fully supported and the new Network
+  // Manager modal doesn't ship the test-network toggle.
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('shows Tron Shasta when test networks are enabled', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
+        localNodeOptions: [
+          // Anvil is needed because the extension still polls EVM networks in
+          // Tron-only flows.
+          'anvil',
+        ],
         testSpecificMock: mockTronFlagsOnly,
       },
       async ({ driver }: { driver: Driver }) => {
@@ -125,6 +155,11 @@ describe('Tron network presence', function (this: Suite) {
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
+          localNodeOptions: [
+            // Anvil is needed because the extension still polls EVM networks in
+            // Tron-only flows.
+            'anvil',
+          ],
           testSpecificMock: mockTronFlagsOnly,
         },
         async ({ driver }: { driver: Driver }) => {

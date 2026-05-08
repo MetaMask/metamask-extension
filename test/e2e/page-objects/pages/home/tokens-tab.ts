@@ -1,3 +1,6 @@
+import { strict as assert } from 'assert';
+import { By, WebElement } from 'selenium-webdriver';
+import { Driver } from '../../../webdriver/driver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { veryLargeDelayMs } from '../../../helpers';
 import HomePage from './homepage';
@@ -391,7 +394,9 @@ class TokensTab extends HomePage {
    * `setEnabledAllPopularNetworks` and auto-dismisses the modal.
    */
   async selectAllNetworksInNetworkFilter(): Promise<void> {
-    console.log('Selecting all popular networks in the asset list network filter');
+    console.log(
+      'Selecting all popular networks in the asset list network filter',
+    );
     await this.openNetworksFilter();
     const networkManager = new NetworkManager(this.driver);
     await networkManager.selectTab('Popular');
@@ -654,6 +659,27 @@ class TokensTab extends HomePage {
       );
       console.log(`Token amount ${amount} was found`);
     }
+  }
+
+  async checkTokenRowContainsAllText(
+    tokenName: string,
+    expectedTexts: string[],
+  ): Promise<void> {
+    for (const expectedText of expectedTexts) {
+      await this.checkTokenRowContainsText(tokenName, expectedText);
+    }
+  }
+
+  async checkTokenRowContainsText(
+    tokenName: string,
+    expectedText: string,
+  ): Promise<void> {
+    console.log(`Checking token row "${tokenName}" contains "${expectedText}"`);
+    const row = await this.findTokenRowByName(tokenName);
+    assert.ok(
+      (await row.getText()).includes(expectedText),
+      `Expected "${tokenName}" row to contain "${expectedText}"`,
+    );
   }
 
   /**
@@ -929,6 +955,32 @@ class TokensTab extends HomePage {
         stableFor: veryLargeDelayMs,
       },
     );
+  }
+
+  private async findTokenRowByName(tokenName: string): Promise<WebElement> {
+    let matchingRow: WebElement | undefined;
+
+    await this.driver.waitUntil(
+      async () => {
+        const rows = await this.driver.findElements(this.tokenListItem);
+        for (const row of rows) {
+          const nameElement = await row.findElement(By.css(this.tokenName));
+          if ((await nameElement.getText()) === tokenName) {
+            matchingRow = row;
+            return true;
+          }
+        }
+
+        return false;
+      },
+      { timeout: 10000, interval: 500 },
+    );
+
+    if (!matchingRow) {
+      throw new Error(`Could not find token row for ${tokenName}`);
+    }
+
+    return matchingRow;
   }
 }
 
