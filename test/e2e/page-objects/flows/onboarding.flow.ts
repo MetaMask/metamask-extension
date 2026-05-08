@@ -96,10 +96,13 @@ export const skipPasskeySetup = async (
   driver: Driver,
   { timeout = 5000 }: { timeout?: number } = {},
 ): Promise<void> => {
-  const setupPasskeyPage = new SetupPasskeyPage(driver);
+  // passkey setup is only shown for chrome
+  if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
+    const setupPasskeyPage = new SetupPasskeyPage(driver);
 
-  await setupPasskeyPage.checkPageIsLoaded(timeout);
-  await setupPasskeyPage.skipPasskeySetup();
+    await setupPasskeyPage.checkPageIsLoaded(timeout);
+    await setupPasskeyPage.skipPasskeySetup();
+  }
 };
 
 /**
