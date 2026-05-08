@@ -3,7 +3,7 @@ import { getErrorMessage, hasProperty, isObject } from '@metamask/utils';
 import { captureException } from '../../../shared/lib/sentry';
 import type { Migrate } from './types';
 
-export const version = 208;
+export const version = 209;
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 
