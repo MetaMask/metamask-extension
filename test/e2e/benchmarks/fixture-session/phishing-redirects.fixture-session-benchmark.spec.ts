@@ -20,6 +20,7 @@ type BenchmarkMode =
   | 'sharedReset'
   | 'sharedResetNoPreload'
   | 'sharedResetNoPreloadNoWait'
+  | 'sharedResetFireAndForget'
   | 'sharedNoReset';
 
 const benchmarkMode = process.env
@@ -29,6 +30,7 @@ const benchmarkModes = [
   'sharedReset',
   'sharedResetNoPreload',
   'sharedResetNoPreloadNoWait',
+  'sharedResetFireAndForget',
   'sharedNoReset',
 ];
 
@@ -247,14 +249,19 @@ if (benchmarkMode === 'withFixtures') {
       resetAfterEach:
         benchmarkMode === 'sharedReset' ||
         benchmarkMode === 'sharedResetNoPreload' ||
-        benchmarkMode === 'sharedResetNoPreloadNoWait',
+        benchmarkMode === 'sharedResetNoPreloadNoWait' ||
+        benchmarkMode === 'sharedResetFireAndForget',
       resetStrategy:
         benchmarkMode === 'sharedResetNoPreload' ||
-        benchmarkMode === 'sharedResetNoPreloadNoWait'
+        benchmarkMode === 'sharedResetNoPreloadNoWait' ||
+        benchmarkMode === 'sharedResetFireAndForget'
           ? 'reloadSkipFixtureInitialization'
           : 'reload',
+      waitForBackgroundReconnectAfterReset:
+        benchmarkMode !== 'sharedResetFireAndForget',
       waitForExtensionStartAfterReset:
-        benchmarkMode !== 'sharedResetNoPreloadNoWait',
+        benchmarkMode !== 'sharedResetNoPreloadNoWait' &&
+        benchmarkMode !== 'sharedResetFireAndForget',
       testSpecificMock: setupPhishingMocks,
     },
     ({ getDriver, getFixtures }) => {
@@ -265,7 +272,8 @@ if (benchmarkMode === 'withFixtures') {
       if (
         benchmarkMode === 'sharedReset' ||
         benchmarkMode === 'sharedResetNoPreload' ||
-        benchmarkMode === 'sharedResetNoPreloadNoWait'
+        benchmarkMode === 'sharedResetNoPreloadNoWait' ||
+        benchmarkMode === 'sharedResetFireAndForget'
       ) {
         beforeEach('Unlock extension and wait for blocklist', async function () {
           this.timeout(120000);

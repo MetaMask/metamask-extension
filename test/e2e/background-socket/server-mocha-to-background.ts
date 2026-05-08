@@ -128,14 +128,17 @@ class ServerMochaToBackground {
     return tabs;
   }
 
-  async resetFixtureState(strategy: FixtureResetStrategy) {
+  async resetFixtureState(
+    strategy: FixtureResetStrategy,
+    { waitForReconnect = true }: { waitForReconnect?: boolean } = {},
+  ) {
     const { connectionVersion } = this;
     const id = `fixture-state-reset-${Date.now()}-${Math.random()}`;
 
     this.send({ command: 'resetFixtureState', id, strategy });
 
     const response = await this.waitForFixtureStateResetResponse(id);
-    if (response.reloadRequired) {
+    if (response.reloadRequired && waitForReconnect) {
       await this.waitForConnectionAfter(connectionVersion);
     }
 

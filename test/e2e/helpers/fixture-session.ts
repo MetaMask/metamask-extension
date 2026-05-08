@@ -18,6 +18,7 @@ type ResetFixtureStateResponse = {
 type FixtureSessionOptions = WithFixturesOptions & {
   fixtures: unknown;
   resetAfterEach?: boolean;
+  waitForBackgroundReconnectAfterReset?: boolean;
   resetStrategy?: FixtureResetStrategy;
   waitForExtensionStartAfterReset?: boolean;
   testSpecificMock?: (mockServer: Mockttp) => unknown | Promise<unknown>;
@@ -121,14 +122,16 @@ async function getReloadSurvivorWindow(driver: Driver): Promise<string> {
  *
  * @param _driver - The active shared-session driver.
  * @param strategy - How the background script should reset fixture state.
+ * @param waitForBackgroundReconnect
  */
 async function requestFixtureStateReset(
   _driver: Driver,
   strategy: FixtureResetStrategy,
+  waitForBackgroundReconnect: boolean,
 ): Promise<ResetFixtureStateResponse> {
-  const response = await getServerMochaToBackground().resetFixtureState(
-    strategy,
-  );
+  const response = await getServerMochaToBackground().resetFixtureState(strategy, {
+    waitForReconnect: waitForBackgroundReconnect,
+  });
 
   if (response?.status !== RESET_FIXTURE_STATE_STATUS) {
     throw new Error(
@@ -179,11 +182,13 @@ async function closeAuxiliaryWindows(driver: Driver): Promise<void> {
  *
  * @param fixtureContext - The active shared-session fixture context.
  * @param resetStrategy - How the background script should reset fixture state.
+ * @param waitForBackgroundReconnectAfterReset
  * @param waitForExtensionStartAfterReset
  */
 async function resetSharedFixtureSession(
   fixtureContext: FixtureSessionContext,
   resetStrategy: FixtureResetStrategy,
+  waitForBackgroundReconnectAfterReset: boolean,
   waitForExtensionStartAfterReset: boolean,
 ): Promise<void> {
   const { driver } = fixtureContext;
@@ -197,7 +202,12 @@ async function resetSharedFixtureSession(
     : undefined;
   const resetResponse = await profileFixtureSessionPhase(
     'reset.requestFixtureStateReset',
-    () => requestFixtureStateReset(driver, resetStrategy),
+    () =>
+      requestFixtureStateReset(
+        driver,
+        resetStrategy,
+        waitForBackgroundReconnectAfterReset,
+      ),
     { resetStrategy },
   );
   if (resetResponse.reloadRequired === false) {
@@ -273,6 +283,8 @@ export function configureFixtureSession(
     before('Set up shared fixture session', async function () {
       const {
         resetAfterEach: _resetAfterEach,
+        waitForBackgroundReconnectAfterReset:
+          _waitForBackgroundReconnectAfterReset,
         resetStrategy: _resetStrategy,
         waitForExtensionStartAfterReset: _waitForExtensionStartAfterReset,
         ...withFixturesOptions
@@ -326,6 +338,7 @@ export function configureFixtureSession(
             await resetSharedFixtureSession(
               fixtureContext,
               fixtureOptions.resetStrategy ?? 'inPlace',
+              fixtureOptions.waitForBackgroundReconnectAfterReset ?? true,
               fixtureOptions.waitForExtensionStartAfterReset ?? true,
             );
           }

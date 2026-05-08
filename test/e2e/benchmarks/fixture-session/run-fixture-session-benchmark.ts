@@ -14,6 +14,7 @@ const BENCHMARK_MODES = [
   'sharedReset',
   'sharedResetNoPreload',
   'sharedResetNoPreloadNoWait',
+  'sharedResetFireAndForget',
   'sharedNoReset',
 ] as const;
 
@@ -21,9 +22,11 @@ const MODE_COMPARISONS = [
   ['withFixtures', 'sharedReset'],
   ['withFixtures', 'sharedResetNoPreload'],
   ['withFixtures', 'sharedResetNoPreloadNoWait'],
+  ['withFixtures', 'sharedResetFireAndForget'],
   ['withFixtures', 'sharedNoReset'],
   ['sharedReset', 'sharedResetNoPreload'],
   ['sharedResetNoPreload', 'sharedResetNoPreloadNoWait'],
+  ['sharedResetNoPreloadNoWait', 'sharedResetFireAndForget'],
   ['sharedReset', 'sharedNoReset'],
 ] as const;
 const PROFILE_MARKER = '[fixture-benchmark-profile] ';
