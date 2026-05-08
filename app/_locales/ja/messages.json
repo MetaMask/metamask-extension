@@ -2800,10 +2800,6 @@
     "message": "コード: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "エラーの詳細",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "安全なチェーンリストの取得中にエラーが発生しました。慎重に続けてください。"
   },
@@ -8162,9 +8158,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "DAppからのスマートアカウントリクエスト"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "同じアドレスでよりスマートな機能。"
   },
@@ -8691,9 +8684,6 @@
     "message": "$1に引き続き接続中です...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "まだこのメッセージが表示されますか？"
-  },
   "storageErrorAction": {
     "message": "シークレットリカバリーフレーズをバックアップしてください"
   },
@@ -8797,12 +8787,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "サポートされている言語",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "アンケートに回答する"
-  },
-  "surveyTitle": {
-    "message": "MetaMaskの未来を形作りましょう"
   },
   "swap": {
     "message": "スワップ"

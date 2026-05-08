@@ -2800,10 +2800,6 @@
     "message": "코드: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "오류 세부 정보",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "안전 체인 목록을 가져오는 동안 오류가 발생했습니다. 주의하여 계속 진행하세요."
   },
@@ -8170,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "디앱의 스마트 계정 요청"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "디앱이 일반 계정에 스마트 계정 기능을 요청하도록 허용합니다. 이미 스마트 계정인 계정에는 영향을 미치지 않습니다."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "같은 주소. 더욱 스마트한 기능."
   },
@@ -8699,9 +8692,6 @@
     "message": "$1에 연결 중...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "아직 이 메시지가 표시되시나요?"
-  },
   "storageErrorAction": {
     "message": "비밀복구구문 백업"
   },
@@ -8805,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "지원 언어",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "설문조사에 참여하세요"
-  },
-  "surveyTitle": {
-    "message": "MetaMask의 미래를 그리세요"
   },
   "swap": {
     "message": "스왑"

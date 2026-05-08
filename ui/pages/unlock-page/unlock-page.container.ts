@@ -6,19 +6,17 @@ import type { PasskeyAuthenticationResponse } from '@metamask/passkey-controller
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
 import {
-  DEFAULT_ROUTE,
-  RESTORE_VAULT_ROUTE,
-} from '../../helpers/constants/routes';
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import {
   tryUnlockMetamask,
   tryUnlockMetamaskWithPasskey,
-  markPasswordForgotten,
   forceUpdateMetamaskState,
   checkIsSeedlessPasswordOutdated,
   resetOnboarding,
-  resetWallet,
   getIsSeedlessOnboardingUserAuthenticated,
 } from '../../store/actions';
 import {
@@ -26,6 +24,7 @@ import {
   getFirstTimeFlowType,
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from '../../selectors';
 import {
   getCompletedOnboarding,
@@ -48,17 +47,22 @@ const mapStateToProps = (state: MetaMaskReduxState) => {
   } = state;
   const isSocialLoginFlow = getIsSocialLoginFlow(state);
   const isOnboardingCompleted = getCompletedOnboarding(state);
+  const isPasskeyActive =
+    getIsPasskeyFeatureAvailable(state) &&
+    getIsPasskeyRegistered(state) &&
+    !isSocialLoginFlow &&
+    isOnboardingCompleted;
   return {
     isUnlocked,
     isSocialLoginFlow,
     isOnboardingCompleted,
     firstTimeFlowType: getFirstTimeFlowType(state),
     isWalletResetInProgress: getIsWalletResetInProgress(state),
-    isPasskeyActive:
-      getIsPasskeyFeatureAvailable(state) &&
-      getIsPasskeyRegistered(state) &&
-      !isSocialLoginFlow &&
-      isOnboardingCompleted,
+    isPasskeyActive,
+    mustDeferPasskeyToBrowserTab:
+      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
+      getIsEnrolledPasskeyIncompatibleWithSidepanel(state) &&
+      isPasskeyActive,
     passkeyAutoUnlockSuppressed: getPasskeyAutoUnlockSuppressed(state),
   };
 };
@@ -70,12 +74,10 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
     tryUnlockMetamaskWithPasskey: (
       authenticationResponse: PasskeyAuthenticationResponse,
     ) => dispatch(tryUnlockMetamaskWithPasskey(authenticationResponse)),
-    markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
     checkIsSeedlessPasswordOutdated: () =>
       dispatch(checkIsSeedlessPasswordOutdated()),
-    resetWallet: () => dispatch(resetWallet()),
     getIsSeedlessOnboardingUserAuthenticated: () =>
       dispatch(getIsSeedlessOnboardingUserAuthenticated()),
   };
@@ -87,7 +89,6 @@ const mergeProps = (
   ownProps: OwnProps,
 ) => {
   const {
-    markPasswordForgotten: propsMarkPasswordForgotten,
     tryUnlockMetamask: propsTryUnlockMetamask,
     tryUnlockMetamaskWithPasskey: propsTryUnlockMetamaskWithPasskey,
     ...restDispatchProps
@@ -100,15 +101,6 @@ const mergeProps = (
   } = ownProps;
 
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-
-  const onImport = async () => {
-    await propsMarkPasswordForgotten();
-    navigate(RESTORE_VAULT_ROUTE, { replace: true });
-
-    if (isPopup) {
-      global.platform.openExtensionInBrowser?.(RESTORE_VAULT_ROUTE);
-    }
-  };
 
   const navigateAfterUnlock = () => {
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
@@ -137,7 +129,6 @@ const mergeProps = (
     ...stateProps,
     ...restDispatchProps,
     ...restOwnProps,
-    onRestore: onImport,
     onSubmit: ownPropsSubmit || onSubmit,
     onUnlockWithPasskey,
     navigate,

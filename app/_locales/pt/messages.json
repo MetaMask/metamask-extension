@@ -2800,10 +2800,6 @@
     "message": "Código: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Detalhes do erro",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Erro ao obter uma lista segura da cadeia. Por favor, prossiga com cautela."
   },
@@ -8166,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Solicitações de conta inteligente vindas de dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Permite que dapps (aplicativos descentralizados) solicitem recursos de conta inteligente para contas padrão. Isso não afetará contas que já são contas inteligentes."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Mesmo endereço. Recursos mais inteligentes."
   },
@@ -8695,9 +8688,6 @@
     "message": "Ainda se conectando à $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Ainda está recebendo essa mensagem?"
-  },
   "storageErrorAction": {
     "message": "Fazer backup da Frase de Recuperação Secreta"
   },
@@ -8801,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Idiomas aceitos",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Responda à nossa pesquisa"
-  },
-  "surveyTitle": {
-    "message": "Molde o futuro da MetaMask"
   },
   "swap": {
     "message": "Trocar"

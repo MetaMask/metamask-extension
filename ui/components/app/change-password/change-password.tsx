@@ -35,6 +35,7 @@ import Spinner from '../../ui/spinner';
 import ToggleButton from '../../ui/toggle-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
@@ -57,6 +58,7 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from '../../../selectors';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -74,6 +76,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useBoolean } from '../../../hooks/useBoolean';
 import { SECOND } from '../../../../shared/constants/time';
+import PasskeyTroubleshootModal from '../passkey-troubleshoot-modal';
 import ChangePasswordWarning from './change-password-warning';
 
 const ChangePasswordSteps = {
@@ -93,6 +96,7 @@ const ChangePassword = ({
   redirectRoute = SECURITY_ROUTE,
 }: ChangePasswordProps) => {
   const t = useI18nContext();
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
@@ -100,15 +104,26 @@ const ChangePassword = ({
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
+  const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
+    getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  );
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  const mustDeferPasskeyToBrowserTab =
+    isSidePanel &&
+    isEnrolledPasskeyIncompatibleWithSidepanel &&
+    isPasskeyActive;
   const animationEventEmitter = useRef(new EventEmitter());
+  const hasDeferredPasskeyToBrowserTabRef = useRef(false);
 
   const [step, setStep] = useState(() =>
-    isPasskeyActive
+    isPasskeyActive && !mustDeferPasskeyToBrowserTab
       ? ChangePasswordSteps.VerifyPasskey
       : ChangePasswordSteps.VerifyCurrentPassword,
   );
 
-  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(isPasskeyActive);
+  const [isVerifyingPasskey, setIsVerifyingPasskey] = useState(
+    () => isPasskeyActive && !mustDeferPasskeyToBrowserTab,
+  );
 
   const [currentPassword, setCurrentPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -121,6 +136,8 @@ const ChangePassword = ({
   const [passkeyAuthenticationResponse, setPasskeyAuthenticationResponse] =
     useState<PasskeyAuthenticationResponse | null>(null);
   const [isPasskeyRenewalEnabled, setIsPasskeyRenewalEnabled] = useState(false);
+  const [showPasskeyTroubleshootModal, setShowPasskeyTroubleshootModal] =
+    useState(false);
 
   const renderMascot = () => {
     if (isFlask()) {
@@ -217,11 +234,14 @@ const ChangePassword = ({
 
       // upon successful password change, go back to the settings page
       navigate(redirectRoute);
-      const messageKey =
-        isPasskeyRenewalEnabled && !isPasskeyRenewalSuccessful
-          ? 'securityChangePasswordToastPasskeyRenewalFailed'
-          : 'securityChangePasswordToastSuccess';
-      toast.success(<ToastContent title={t(messageKey)} />, {
+      const isPasskeyRenewalToast =
+        isPasskeyRenewalEnabled && !isPasskeyRenewalSuccessful;
+      const toastTitle = isPasskeyRenewalToast
+        ? t('securityChangePasswordToastPasskeyRenewalFailed', [
+            passkeyMethodLabel,
+          ])
+        : t('securityChangePasswordToastSuccess');
+      toast.success(<ToastContent title={toastTitle} />, {
         duration: autoHideToastDelay,
       });
     } catch (error) {
@@ -293,8 +313,11 @@ const ChangePassword = ({
         toast.error(
           <ToastContent
             title={
-              translatePasskeyError(error, t as (key: string) => string) ??
-              t('passkeyErrorVerificationFailed')
+              translatePasskeyError(
+                error,
+                t as (key: string, substitutions?: string[]) => string,
+                passkeyMethodLabel,
+              ) ?? t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
             }
           />,
           { duration: autoHideToastDelay },
@@ -304,21 +327,31 @@ const ChangePassword = ({
     } finally {
       setIsVerifyingPasskey(false);
     }
-  }, [t]);
-
-  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+  }, [passkeyMethodLabel, t]);
 
   const openChangePasswordInFullScreen = useCallback(() => {
+    cancelPasskeyCeremony();
     globalThis.platform?.openExtensionInBrowser?.(
       SECURITY_PASSWORD_CHANGE_V2_ROUTE,
-      'from=sidepanel',
     );
   }, []);
+
+  useEffect(() => {
+    if (
+      !mustDeferPasskeyToBrowserTab ||
+      hasDeferredPasskeyToBrowserTabRef.current
+    ) {
+      return;
+    }
+    hasDeferredPasskeyToBrowserTabRef.current = true;
+    openChangePasswordInFullScreen();
+  }, [mustDeferPasskeyToBrowserTab, openChangePasswordInFullScreen]);
 
   // When a passkey is already enrolled, verify with WebAuthn on the dedicated step before new password.
   useEffect(() => {
     if (
       !isPasskeyActive ||
+      mustDeferPasskeyToBrowserTab ||
       step !== ChangePasswordSteps.VerifyPasskey ||
       passkeyAuthenticationResponse !== null
     ) {
@@ -360,6 +393,7 @@ const ChangePassword = ({
     };
   }, [
     isPasskeyActive,
+    mustDeferPasskeyToBrowserTab,
     passkeyAuthenticationResponse,
     step,
     performPasskeyAuthentication,
@@ -469,31 +503,33 @@ const ChangePassword = ({
             fontWeight={FontWeight.Medium}
             className="text-center"
           >
-            {t('changePasswordPasskeyVerifyingTitle')}
+            {t('passkeyVerifyingTitle', [passkeyMethodLabel])}
           </Text>
           <Text
             variant={TextVariant.BodySm}
             color={TextColor.TextAlternative}
             className="text-center"
           >
-            {t('changePasswordPasskeyVerifyingDescription')}
+            {t('passkeyVerifyingDescription', [passkeyMethodLabel])}
           </Text>
-          {isSidePanel && isVerifyingPasskey ? (
+          {isSidePanel &&
+          isVerifyingPasskey &&
+          !mustDeferPasskeyToBrowserTab ? (
             <TextButton
               type="button"
               data-testid="change-password-passkey-verifying-open-full-screen"
               color={TextColor.PrimaryDefault}
-              className="w-full text-center"
-              onClick={openChangePasswordInFullScreen}
+              className="text-center"
+              onClick={() => setShowPasskeyTroubleshootModal(true)}
             >
-              {t('passkeyTroubleshoot')}
+              {t('passkeyTroubleshootVerify')}
             </TextButton>
           ) : null}
           <TextButton
             type="button"
             data-testid="change-password-verify-passkey-use-password"
             color={TextColor.PrimaryDefault}
-            className="mt-6 w-full text-center"
+            className="text-center mt-4"
             onClick={handleUseVerifyPassword}
           >
             {t('usePassword')}
@@ -550,7 +586,7 @@ const ChangePassword = ({
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      {t('unlockWithPasskey')}
+                      {t('unlockWithPasskey', [passkeyMethodLabel])}
                     </Text>
                     <ToggleButton
                       value={isPasskeyRenewalEnabled}
@@ -560,15 +596,17 @@ const ChangePassword = ({
                       disabled={isVerifyingPasskey}
                     />
                   </Box>
-                  {isSidePanel && isVerifyingPasskey ? (
+                  {isSidePanel &&
+                  isVerifyingPasskey &&
+                  !mustDeferPasskeyToBrowserTab ? (
                     <TextButton
                       type="button"
                       data-testid="change-password-passkey-toggle-open-full-screen"
                       color={TextColor.PrimaryDefault}
                       className="mt-2 flex w-full justify-start text-left"
-                      onClick={openChangePasswordInFullScreen}
+                      onClick={() => setShowPasskeyTroubleshootModal(true)}
                     >
-                      {t('passkeyTroubleshoot')}
+                      {t('passkeyTroubleshootVerify')}
                     </TextButton>
                   ) : null}
                 </Box>
@@ -643,6 +681,13 @@ const ChangePassword = ({
           onCancel={() => setShowChangePasswordWarning(false)}
         />
       )}
+      {showPasskeyTroubleshootModal ? (
+        <PasskeyTroubleshootModal
+          mode="verify"
+          onClose={() => setShowPasskeyTroubleshootModal(false)}
+          onOpenFullScreen={openChangePasswordInFullScreen}
+        />
+      ) : null}
     </Box>
   );
 };

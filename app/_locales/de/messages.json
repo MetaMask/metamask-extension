@@ -2800,10 +2800,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Fehlerdetails",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Fehler beim Abrufen der Liste sicherer Ketten, bitte mit Vorsicht fortfahren."
   },
@@ -8166,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Anfragen für Smart-Konten von Dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Lassen Sie Dapps die Smart-Konto-Funktionen für Standardkonten anfordern. Dies wirkt sich nicht auf bereits bestehende Smart-Konten aus."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Dieselbe Adresse. Intelligentere Funktionen."
   },
@@ -8695,9 +8688,6 @@
     "message": "Noch beim Verbindungsaufbau zu $1 ...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Erhalten Sie diese Meldung immer noch?"
-  },
   "storageErrorAction": {
     "message": "Geheime Wiederherstellungsphrase sichern"
   },
@@ -8801,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Unterstützte Sprachen",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Nehmen Sie an unserer Umfrage teil"
-  },
-  "surveyTitle": {
-    "message": "Gestalten Sie die Zukunft von MetaMask"
   },
   "swap": {
     "message": "Swap"

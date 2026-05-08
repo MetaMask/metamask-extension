@@ -30,7 +30,6 @@ import {
 } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
-import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
   SETTINGS_V2_ROUTE,
@@ -73,6 +72,7 @@ import {
   SettingsV2SearchResults,
 } from './shared';
 import { useSettingsV2Search, MIN_SEARCH_LENGTH } from './useSettingsV2Search';
+import { useSettingsV2I18n } from './useSettingsV2I18n';
 
 const FIRST_TAB_PATH = SETTINGS_V2_TABS[0]?.path;
 const FirstTabComponent = SETTINGS_V2_TABS[0]?.component;
@@ -91,7 +91,7 @@ const getRoutePathname = (path: string) => path.split('?')[0];
 const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const t = useI18nContext();
+  const t = useSettingsV2I18n();
   const normalizedPathname = normalizeSettingsPath(location.pathname);
   const meta = getSettingsV2RouteMeta(normalizedPathname);
   const environmentType = getEnvironmentType();

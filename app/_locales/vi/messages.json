@@ -2800,10 +2800,6 @@
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Chi tiết lỗi",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Lỗi khi lấy danh sách chuỗi an toàn, vui lòng tiếp tục một cách thận trọng."
   },
@@ -8170,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Yêu cầu tài khoản thông minh từ dapp"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Cùng địa chỉ. Tính năng thông minh hơn."
   },
@@ -8699,9 +8692,6 @@
     "message": "Vẫn đang kết nối với $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Vẫn nhận được thông báo này?"
-  },
   "storageErrorAction": {
     "message": "Sao lưu Cụm từ khôi phục bí mật"
   },
@@ -8805,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Ngôn ngữ được hỗ trợ",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Tham gia khảo sát của chúng tôi"
-  },
-  "surveyTitle": {
-    "message": "Định hình tương lai của MetaMask"
   },
   "swap": {
     "message": "Hoán đổi"
