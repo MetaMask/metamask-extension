@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BarcodeFormat, DecodeHintType } from '@zxing/library';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import log from 'loglevel';
@@ -12,19 +12,19 @@ const SCAN_INTERVAL_MS = MILLISECOND * 100;
 /**
  * Stateless QR code reader that streams decoded frames to the parent.
  *
- * Visibility and lifecycle are driven externally via `isVisible`.
- * The component manages only the ZXing reader instance, and it's cleanup.
+ * Shows a spinner until the camera stream is ready to play, then displays
+ * the video feed. The component manages the ZXing reader instance and its
+ * cleanup on unmount.
  * @param options0
  * @param options0.onFrame
  * @param options0.onCameraError
- * @param options0.isVisible
  */
 const EnhancedReader: React.FC<EnhancedReaderProps> = ({
   onFrame,
   onCameraError,
-  isVisible,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [canPlay, setCanPlay] = useState(false);
 
   const codeReader = useMemo(() => {
     const hints = new Map();
@@ -35,7 +35,23 @@ const EnhancedReader: React.FC<EnhancedReaderProps> = ({
     });
   }, []);
 
-  // Side-effect: starts the camera stream and continuous QR decoding.
+  // Listens for the video element's canplay event to hide the spinner
+  // once the camera stream has buffered enough data to start rendering.
+  useEffect(() => {
+    const videoElem = videoRef.current;
+    if (!videoElem) {
+      return undefined;
+    }
+
+    const handleCanPlay = () => setCanPlay(true);
+    videoElem.addEventListener('canplay', handleCanPlay);
+
+    return () => {
+      videoElem.removeEventListener('canplay', handleCanPlay);
+    };
+  }, []);
+
+  // Starts the camera stream and continuous QR decoding.
   // Cleanup stops the stream when the component unmounts or deps change.
   useEffect(() => {
     const videoElem = videoRef.current;
@@ -66,12 +82,12 @@ const EnhancedReader: React.FC<EnhancedReaderProps> = ({
       <video
         ref={videoRef}
         style={{
-          display: isVisible ? 'block' : 'none',
+          display: canPlay ? 'block' : 'none',
           width: '100%',
           filter: 'blur(4px)',
         }}
       />
-      {isVisible ? null : <Spinner />}
+      {canPlay ? null : <Spinner />}
     </div>
   );
 };

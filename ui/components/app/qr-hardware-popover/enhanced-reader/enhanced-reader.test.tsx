@@ -38,10 +38,8 @@ describe('EnhancedReader', () => {
   });
 
   describe('rendering', () => {
-    it('hides video and shows spinner when isVisible is false', () => {
-      const { container } = render(
-        <EnhancedReader onFrame={jest.fn()} isVisible={false} />,
-      );
+    it('hides video and shows spinner before canplay fires', () => {
+      const { container } = render(<EnhancedReader onFrame={jest.fn()} />);
 
       const video = container.querySelector('video') as HTMLVideoElement;
       expect(video).toBeInTheDocument();
@@ -49,12 +47,15 @@ describe('EnhancedReader', () => {
       expect(container.querySelector('.spinner')).toBeInTheDocument();
     });
 
-    it('shows video and hides spinner when isVisible is true', () => {
-      const { container } = render(
-        <EnhancedReader onFrame={jest.fn()} isVisible />,
-      );
+    it('shows video and hides spinner after canplay fires', () => {
+      const { container } = render(<EnhancedReader onFrame={jest.fn()} />);
 
       const video = container.querySelector('video') as HTMLVideoElement;
+
+      act(() => {
+        video.dispatchEvent(new Event('canplay'));
+      });
+
       expect(video.style.display).toBe('block');
       expect(container.querySelector('.spinner')).not.toBeInTheDocument();
     });
@@ -62,7 +63,7 @@ describe('EnhancedReader', () => {
 
   describe('QR reader initialization', () => {
     it('configures BrowserQRCodeReader with scan interval options', () => {
-      render(<EnhancedReader onFrame={jest.fn()} isVisible />);
+      render(<EnhancedReader onFrame={jest.fn()} />);
 
       expect(MockBrowserQRCodeReader).toHaveBeenCalledWith(
         expect.any(Map),
@@ -74,7 +75,7 @@ describe('EnhancedReader', () => {
     });
 
     it('starts decoding from the video element ref', () => {
-      render(<EnhancedReader onFrame={jest.fn()} isVisible />);
+      render(<EnhancedReader onFrame={jest.fn()} />);
 
       expect(mockDecodeFromVideoDevice).toHaveBeenCalledWith(
         undefined,
@@ -94,7 +95,7 @@ describe('EnhancedReader', () => {
         },
       );
 
-      render(<EnhancedReader onFrame={onFrame} isVisible />);
+      render(<EnhancedReader onFrame={onFrame} />);
 
       expect(onFrame).toHaveBeenCalledWith('decoded-payload');
     });
@@ -108,7 +109,7 @@ describe('EnhancedReader', () => {
         },
       );
 
-      render(<EnhancedReader onFrame={onFrame} isVisible />);
+      render(<EnhancedReader onFrame={onFrame} />);
 
       expect(onFrame).not.toHaveBeenCalled();
     });
@@ -125,13 +126,7 @@ describe('EnhancedReader', () => {
         },
       );
 
-      render(
-        <EnhancedReader
-          onFrame={jest.fn()}
-          onCameraError={onCameraError}
-          isVisible
-        />,
-      );
+      render(<EnhancedReader onFrame={jest.fn()} onCameraError={onCameraError} />);
 
       expect(onCameraError).toHaveBeenCalledWith(scanError);
     });
@@ -145,16 +140,14 @@ describe('EnhancedReader', () => {
       );
 
       expect(() => {
-        render(<EnhancedReader onFrame={jest.fn()} isVisible />);
+        render(<EnhancedReader onFrame={jest.fn()} />);
       }).not.toThrow();
     });
   });
 
   describe('cleanup on unmount', () => {
     it('stops scanner controls when component unmounts', async () => {
-      const { unmount } = render(
-        <EnhancedReader onFrame={jest.fn()} isVisible />,
-      );
+      const { unmount } = render(<EnhancedReader onFrame={jest.fn()} />);
 
       unmount();
 
@@ -168,9 +161,7 @@ describe('EnhancedReader', () => {
     it('handles gracefully when controls resolve to undefined', async () => {
       mockDecodeFromVideoDevice.mockResolvedValue(undefined);
 
-      const { unmount } = render(
-        <EnhancedReader onFrame={jest.fn()} isVisible />,
-      );
+      const { unmount } = render(<EnhancedReader onFrame={jest.fn()} />);
 
       unmount();
 
@@ -185,9 +176,7 @@ describe('EnhancedReader', () => {
       const logInfoSpy = jest.spyOn(log, 'info');
       mockDecodeFromVideoDevice.mockRejectedValue(new Error('cleanup failed'));
 
-      const { unmount } = render(
-        <EnhancedReader onFrame={jest.fn()} isVisible />,
-      );
+      const { unmount } = render(<EnhancedReader onFrame={jest.fn()} />);
 
       unmount();
 
@@ -196,6 +185,19 @@ describe('EnhancedReader', () => {
       });
 
       expect(logInfoSpy).toHaveBeenCalled();
+    });
+
+    it('removes canplay listener on unmount', () => {
+      const { container, unmount } = render(
+        <EnhancedReader onFrame={jest.fn()} />,
+      );
+
+      const video = container.querySelector('video') as HTMLVideoElement;
+      const removeSpy = jest.spyOn(video, 'removeEventListener');
+
+      unmount();
+
+      expect(removeSpy).toHaveBeenCalledWith('canplay', expect.any(Function));
     });
   });
 });
