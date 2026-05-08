@@ -430,9 +430,8 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const simulationRevert = transaction.revert?.simulation;
   const showSimulationRevert = Boolean(
-    showAdvancedDetails && simulationRevert?.message,
+    showAdvancedDetails && transaction.revert?.simulation?.message,
   );
 
   const hasStaticData =
@@ -493,9 +492,9 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
         {error.code === SimulationErrorCode.Reverted && (
           <ErrorContent error={error} />
         )}
-        {showSimulationRevert && simulationRevert && (
+        {showSimulationRevert && (
           <RevertReason
-            revert={simulationRevert}
+            source="simulation"
             data-testid="simulation-details-revert-reason"
           />
         )}
@@ -512,9 +511,9 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
         transactionId={transactionId}
         inHeader={showSimulationRevert ? undefined : <EmptyContent />}
       >
-        {showSimulationRevert && simulationRevert && (
+        {showSimulationRevert && (
           <RevertReason
-            revert={simulationRevert}
+            source="simulation"
             data-testid="simulation-details-revert-reason"
           />
         )}
@@ -595,9 +594,9 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />
-        {showSimulationRevert && simulationRevert && (
+        {showSimulationRevert && (
           <RevertReason
-            revert={simulationRevert}
+            source="simulation"
             data-testid="simulation-details-revert-reason"
           />
         )}

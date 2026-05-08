@@ -1,31 +1,27 @@
-import React from 'react';
-import { Box, Text } from '../../../../components/component-library';
 import {
-  BackgroundColor,
-  BorderRadius,
+  Box,
+  BoxBackgroundColor,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import React from 'react';
+import { useConfirmContext } from '../../context/confirm';
 
-/**
- * Subset of the `Revert` type from `@metamask/transaction-controller`. Reproduced
- * here because the type is not exported from the package's public entrypoint.
- */
-export type RevertInfo = {
-  message?: string;
-  data?: string;
-};
+export type RevertReasonSource = 'gas' | 'simulation' | 'receipt';
 
 export type RevertReasonProps = {
-  revert: RevertInfo;
+  source: RevertReasonSource;
   'data-testid'?: string;
 };
 
 export function RevertReason({
-  revert,
+  source,
   'data-testid': dataTestId = 'revert-reason',
 }: RevertReasonProps) {
-  const { message } = revert;
+  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const message = currentConfirmation?.revert?.[source]?.message;
 
   if (!message) {
     return null;
@@ -33,18 +29,15 @@ export function RevertReason({
 
   return (
     <Box
-      backgroundColor={BackgroundColor.backgroundMuted}
-      borderRadius={BorderRadius.SM}
-      paddingInline={2}
-      paddingTop={2}
-      paddingBottom={2}
+      backgroundColor={BoxBackgroundColor.BackgroundMuted}
+      padding={2}
+      className="rounded"
       data-testid={dataTestId}
     >
       <Text
-        as="code"
-        variant={TextVariant.bodySm}
-        color={TextColor.textAlternative}
-        style={{ fontFamily: 'monospace', wordBreak: 'break-word' }}
+        variant={TextVariant.BodySm}
+        color={TextColor.TextAlternative}
+        className="font-mono break-words"
         data-testid={`${dataTestId}-message`}
       >
         {message}
