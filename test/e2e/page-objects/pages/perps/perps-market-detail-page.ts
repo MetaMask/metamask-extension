@@ -588,7 +588,7 @@ export class PerpsMarketDetailPage {
    * Dismisses the geo-block modal by clicking the "Got it" button.
    */
   async dismissGeoBlockModal(): Promise<void> {
-    await this.driver.clickElement(this.geoBlockModalDismiss);
+    await this.driver.clickElementAndWaitToDisappear(this.geoBlockModalDismiss);
   }
 
   /**
