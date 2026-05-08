@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, act } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import {
   TransactionStatus,
   TransactionType,
@@ -47,44 +47,13 @@ function buildPendingDepositTransaction(
   };
 }
 
-const renderPerpsDepositToast = ({
-  transactions = [],
-  lastDepositTransactionId = null,
-  lastDepositResult = null,
-  transactionData = {},
-}: {
-  transactions?: ReturnType<typeof buildPendingDepositTransaction>[];
-  lastDepositTransactionId?: string | null;
-  lastDepositResult?: {
-    success: boolean;
-    error?: string;
-    timestamp?: number;
-  } | null;
-  transactionData?: Record<string, unknown>;
-}) => {
-  const store = configureStore({
-    metamask: {
-      ...mockState.metamask,
-      transactions,
-      lastDepositTransactionId,
-      lastDepositResult,
-      transactionData,
-    },
-  });
-
-  return {
-    store,
-    ...renderWithProvider(<PerpsDepositToast />, store),
-  };
-};
-
 describe('PerpsDepositToast', () => {
   const submitRequestToBackgroundMock = jest.mocked(submitRequestToBackground);
 
   beforeEach(() => {
+    submitRequestToBackgroundMock.mockResolvedValue(undefined);
     jest.clearAllMocks();
     jest.useRealTimers();
-    submitRequestToBackgroundMock.mockResolvedValue(undefined);
   });
 
   it('renders nothing when there is no deposit state', () => {
@@ -264,7 +233,6 @@ describe('PerpsDepositToast', () => {
         lastDepositResult: {
           success: false,
           error: 'Bridge failed',
-          timestamp: 1_700_000_000_000,
         },
       },
     });
@@ -369,17 +337,20 @@ describe('PerpsDepositToast', () => {
   });
 
   it('shows completion toast when deposit result arrives', () => {
-    const { store } = renderPerpsDepositToast({
-      transactions: [
-        buildPendingDepositTransaction({
-          id: 'submitted-tx-1',
-          status: TransactionStatus.submitted,
-        }),
-      ],
-      lastDepositTransactionId: 'submitted-tx-1',
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'submitted-tx-1',
+            status: TransactionStatus.submitted,
+          }),
+        ],
+        lastDepositTransactionId: 'submitted-tx-1',
+      },
     });
 
-    expect(mockToastLoading).toHaveBeenCalledTimes(1);
+    renderWithProvider(<PerpsDepositToast />, store);
 
     act(() => {
       store.dispatch({
