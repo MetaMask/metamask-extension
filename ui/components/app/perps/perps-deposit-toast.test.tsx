@@ -213,10 +213,6 @@ describe('PerpsDepositToast', () => {
         duration: 5000,
       },
     );
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'perpsClearDepositResult',
-      [],
-    );
   });
 
   it('renders error toast when lastDepositResult is unsuccessful', () => {

@@ -52,10 +52,13 @@ export function PerpsDepositToast() {
         toast.error(content, options);
       }
 
-      submitRequestToBackground('perpsClearDepositResult', []).catch(
-        () => undefined,
-      );
-      return;
+      const timeoutId = setTimeout(() => {
+        submitRequestToBackground('perpsClearDepositResult', []).catch(
+          () => undefined,
+        );
+      }, duration);
+
+      return () => clearTimeout(timeoutId);
     }
 
     if (!depositInProgress) {
@@ -74,6 +77,10 @@ export function PerpsDepositToast() {
         duration: Infinity,
       },
     );
+
+    return () => {
+      toast.dismiss(id);
+    };
   }, [
     depositInProgress,
     hasDepositResult,

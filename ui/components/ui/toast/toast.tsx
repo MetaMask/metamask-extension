@@ -88,14 +88,14 @@ export const ToastContent = ({
   onActionClick?: () => void;
 }) => {
   return (
-    <div className="flex min-w-0 flex-1 flex-col" data-testid={dataTestId}>
-      <p className="text-m-body-md">{title}</p>
+    <div data-testid={dataTestId}>
+      <div className="flex min-w-0 flex-col">
+        <p className="text-m-body-md">{title}</p>
 
-      {description && (
-        <p className="mt-1 text-m-body-sm text-text-alternative">
-          {description}
-        </p>
-      )}
+        {description && (
+          <p className="text-s-body-sm text-text-alternative">{description}</p>
+        )}
+      </div>
 
       {onActionClick && (
         <Button
