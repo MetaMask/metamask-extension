@@ -118,9 +118,12 @@ export const trackUnifiedSwapBridgeEvent = <
 
 // User actions
 export const updateQuoteRequestParams = (
-  ...[params, context, quoteRequestIndex=0, quoteRequestCount=1]: Parameters<
-    BridgeController['updateBridgeQuoteRequestParams']
-  >
+  ...[
+    params,
+    context,
+    quoteRequestIndex = 0,
+    quoteRequestCount = 1,
+  ]: Parameters<BridgeController['updateBridgeQuoteRequestParams']>
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     await dispatch(
