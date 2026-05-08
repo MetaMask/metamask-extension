@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Hardware wallet"
   },
-  "addIPFSGateway": {
-    "message": "Add your preferred IPFS gateway"
-  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -726,9 +723,21 @@
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
+  "asterdexReferralConfirmText": {
+    "message": "Yes, get 4% back",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "Get 4% back on trades with a MetaMask referral code.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "Get 4% back on trades with a MetaMask referral code. This discount applies to all future trades, as per AsterDEX's $1. MetaMask earns a fee.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "Get 4% back on AsterDEX",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
@@ -1571,9 +1580,6 @@
     "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1, and for Solana accounts, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "click here"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
   },
@@ -2107,6 +2113,19 @@
   "creatorAddress": {
     "message": "Creator address"
   },
+  "criticalErrorAttemptRecovery": {
+    "message": "Attempt recovery"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "If none of the above works, $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "Reinstall MetaMask"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "Still having issues?"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -2245,12 +2264,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Get product updates, tips, and news - including by email. We may use your interactions to improve what we share."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Okay"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "You turned off data collection for our marketing purposes. This only applies to this device. If you use MetaMask on other devices, make sure to opt out there as well."
   },
   "dataUnavailable": {
     "message": "data unavailable"
@@ -2411,6 +2424,14 @@
   "defiReferralCheckboxLabel": {
     "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "No thanks",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "terms",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -2841,10 +2862,6 @@
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Error details",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Error while getting safe chain list, please continue with caution."
   },
@@ -3267,9 +3284,21 @@
     "message": "Get your wallet ready to use web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "Yes, save 5%",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "Save up to 5% on trades with a MetaMask referral code.",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "Save 5% in trades with a MetaMask referral code. This discount applies to all future trades, as per GMX's $1. MetaMask earns a fee.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "Save 5% on GMX",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Go to site"
@@ -3493,9 +3522,21 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "Yes, save 4%",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "Save 4% on trades with a MetaMask referral code. Applies to all future trades per Hyperliquid's $1. MetaMask earns a fee.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Save 4% on Hyperliquid",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "I understand"
@@ -4055,6 +4096,9 @@
   },
   "maxFeeTooltip": {
     "message": "A maximum fee provided to pay for the transaction."
+  },
+  "maybeLater": {
+    "message": "Maybe later"
   },
   "medium": {
     "message": "Market"
@@ -5285,6 +5329,126 @@
   "participateInMetaMetricsDescription": {
     "message": "Participate in MetaMetrics to help us make MetaMask better"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "Biometrics",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "Use $1 to unlock MetaMask instead of entering your password. This creates a passkey on this device only.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "$1 is already set up for this wallet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "We couldn't verify your $1. Try again.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Your $1 response was incomplete. Try again.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "$1 sign-in session expired. Try again.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "$1 setup session expired. Try again from the beginning.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "$1 isn't set up for this wallet. Turn on $1 in Settings.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "$1 setup failed. Try again",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "We couldn't verify your $1 setup. Try again.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "We couldn't unlock with $1. Try again, or set up $1 again in Settings.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1 doesn't match your current wallet lock. Set up $1 again in Settings.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Your password was updated, but $1 unlock couldn't be turned on.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "We couldn't verify your $1. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Register $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "Validate $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Try opening the extension in a full screen window and try again.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Open full screen window",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Still having trouble?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "Trouble unlocking?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "Trouble unlocking",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Trouble verifying?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Trouble verifying?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "$1 turned off",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "$1 turned on",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "$1 unlock failed. Try your password.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "Use $1 to verify instead of entering your password.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "Confirm with $1",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "password": {
     "message": "Password"
   },
@@ -5713,7 +5877,7 @@
     "message": "Cancel order"
   },
   "perpsCandleIntervals": {
-    "message": "Candle intervals"
+    "message": "Set candle interval"
   },
   "perpsCandlePeriodDays": {
     "message": "Days"
@@ -5728,7 +5892,7 @@
     "message": "Close all"
   },
   "perpsCloseAmount": {
-    "message": "Close Amount"
+    "message": "Close amount"
   },
   "perpsCloseLong": {
     "message": "Close long"
@@ -5930,6 +6094,10 @@
   },
   "perpsMid": {
     "message": "Mid"
+  },
+  "perpsMinOrderSize": {
+    "message": "Order size must be at least $1",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
   },
   "perpsModify": {
     "message": "Modify"
@@ -6373,6 +6541,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Withdrawal submitted"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask will swap to your desired token for you. No MetaMask fee applies when you swap to mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "You receive"
@@ -7226,14 +7398,12 @@
   "securityChangePassword": {
     "message": "Change password"
   },
-  "securityChangePasswordDescription": {
-    "message": "Choose a strong password to unlock MetaMask app on your device. If you lose this password, you will need your Secret Recovery Phrase to re-import your wallet."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Password"
-  },
   "securityChangePasswordToastError": {
     "message": "Password couldn’t be changed. Please try again."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "New password saved, but $1 unlock couldn't be turned on.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
@@ -7243,16 +7413,6 @@
   },
   "securityDescription": {
     "message": "Reduce your chances of joining unsafe networks and protect your accounts"
-  },
-  "securityLoginWithSocial": {
-    "message": "Log in with $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Secret Recovery Phrase backed up"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Back up Secret Recovery Phrase"
   },
   "securityMessageLinkForNetworks": {
     "message": "network scams and security risks"
@@ -7275,14 +7435,8 @@
     "message": "$1 RECOVERY",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Back up your Secret Recovery Phrase so you never lose access to your wallet. Be sure to store it in a safe place that only you can access and won’t forget."
-  },
   "securitySrpLabel": {
     "message": "SECRET RECOVERY PHRASES"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Manage recovery methods"
   },
   "seeAllPermissions": {
     "message": "See all permissions",
@@ -7399,8 +7553,16 @@
     "message": "Set up",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "Set up $1",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
+  },
+  "settingUpPasskey": {
+    "message": "Setting up $1",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "Settings"
@@ -8246,8 +8408,8 @@
   "smartAccountRequestsFromDapps": {
     "message": "Smart account requests from dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Let dapps request smart account features for standard accounts. This won't affect accounts that are already smart accounts."
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Let dapps request smart account features for standard accounts. MetaMask will only upgrade to our audited smart account."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Same address. Smarter features."
@@ -8260,9 +8422,6 @@
   },
   "smartContractAddressWarning": {
     "message": "The recipient address may not support direct token transfers, which could result in fund loss. Only continue if you're certain this contract can receive your transfer."
-  },
-  "smartContracts": {
-    "message": "Smart contracts"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart swap."
@@ -8778,9 +8937,6 @@
     "message": "Still connecting to $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Still getting this message?"
-  },
   "storageErrorAction": {
     "message": "Back up Secret Recovery Phrase"
   },
@@ -8884,12 +9040,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Supported languages",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Take our survey"
-  },
-  "surveyTitle": {
-    "message": "Shape the future of MetaMask"
   },
   "swap": {
     "message": "Swap"
@@ -9287,9 +9437,6 @@
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
-  "tokenAutoDetection": {
-    "message": "Token autodetection"
-  },
   "tokenContractAddress": {
     "message": "Token contract address"
   },
@@ -9527,6 +9674,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "There was an error in disabling the notifications. Please try again later."
   },
+  "turnOffPasskey": {
+    "message": "Turn off $1",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "We couldn't turn off $1. Try again.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "Turn on"
   },
@@ -9629,6 +9784,10 @@
     "message": "Unlock to reveal",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Unlock with $1",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "Unpin"
   },
@@ -9714,6 +9873,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
+  },
+  "usePassword": {
+    "message": "Use password"
   },
   "usePhishingDetection": {
     "message": "Use phishing detection"
@@ -9883,6 +10045,10 @@
   "willApproveAmountForSwapping": {
     "message": "Approves token for swap."
   },
+  "withdrawTo": {
+    "message": "Receive",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Withdrawing"
   },
@@ -9915,6 +10081,10 @@
   "youSent": {
     "message": "You sent",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "You'll receive",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Your activity"

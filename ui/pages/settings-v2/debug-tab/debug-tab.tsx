@@ -1,10 +1,10 @@
 import React from 'react';
 import { SettingsTab } from '../shared';
 import { SettingItemConfig } from '../types';
-import DebugTabContent from '../../settings/developer-options-tab/developer-options-tab';
+import DebugContent from './debug-content';
 
 const DEBUG_SETTING_ITEMS: SettingItemConfig[] = [
-  { id: 'debug', component: DebugTabContent },
+  { id: 'debug', component: DebugContent },
 ];
 
 const DebugTab = () => {

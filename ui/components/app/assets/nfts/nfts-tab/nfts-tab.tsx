@@ -19,6 +19,7 @@ import NftGrid from '../nft-grid/nft-grid';
 import { sortAssets } from '../../util/sort';
 import AssetListControlBar from '../../asset-list/asset-list-control-bar';
 import { NftEmptyState } from '../nft-empty-state';
+import { transitionForward } from '../../../../ui/transition';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -44,8 +45,10 @@ export default function NftsTab() {
   }, [nftsStillFetchingIndication]);
 
   const handleNftClick = (nft: NFT) => {
-    navigate(
-      `${ASSET_ROUTE}/${toHex(nft.chainId)}/${nft.address}/${nft.tokenId}`,
+    transitionForward(() =>
+      navigate(
+        `${ASSET_ROUTE}/${toHex(nft.chainId)}/${nft.address}/${nft.tokenId}`,
+      ),
     );
   };
 

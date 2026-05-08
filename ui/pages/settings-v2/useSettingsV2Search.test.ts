@@ -1,8 +1,17 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useSettingsV2Search } from './useSettingsV2Search';
 
+jest.mock('../../../shared/lib/passkey', () => ({
+  getPasskeyAuthMethodKey: () => 'passkeyAuthMethodBiometrics',
+}));
+
 jest.mock('../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => key,
+  useI18nContext: () => (key: string, substitutions?: string[]) => {
+    if (substitutions?.length) {
+      return `${key}(${substitutions.join(',')})`;
+    }
+    return key;
+  },
 }));
 
 jest.mock('./settings-registry', () => ({
@@ -28,16 +37,14 @@ jest.mock('./search-config', () => ({
   SETTINGS_V2_SEARCH_CONFIG: [
     {
       tabId: 'assets',
-      items: [
-        { id: 'local-currency', titleKey: 'localCurrency' },
-        { id: 'autodetect-tokens', titleKey: 'autoDetectTokens' },
-      ],
+      items: [{ id: 'autodetect-tokens', titleKey: 'autoDetectTokens' }],
     },
     {
       tabId: 'preferences-and-display',
       items: [
         { id: 'theme', titleKey: 'theme' },
         { id: 'language', titleKey: 'language' },
+        { id: 'local-currency', titleKey: 'localCurrency' },
       ],
     },
   ],

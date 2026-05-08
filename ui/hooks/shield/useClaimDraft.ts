@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { deleteClaimDraft, saveClaimDraft } from '../../store/actions';
 import { getClaimDrafts } from '../../selectors/shield/claims';
-import { MAX_DRAFT_CLAIMS } from '../../pages/settings/transaction-shield-tab/claims-form/constants';
+import { MAX_DRAFT_CLAIMS } from '../../pages/shield/transaction-shield/claims-form/constants';
 
 export const useClaimDraft = () => {
   const drafts = useSelector(getClaimDrafts);

@@ -11,6 +11,7 @@ import { withFixtures } from '../../../helpers';
 import {
   handleSidepanelPostOnboarding,
   onboardingMetricsFlow,
+  skipPasskeySetup,
 } from '../../../page-objects/flows/onboarding.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -49,7 +50,6 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         title: testTitle,
         manifestFlags: {
           testing: {
-            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },
@@ -106,6 +106,7 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
             driver,
             'createPwToRecoveryScreen',
             async () => {
+              await skipPasskeySetup(driver);
               const secureWalletPage = new SecureWalletPage(driver);
               await secureWalletPage.checkPageIsLoaded();
             },
