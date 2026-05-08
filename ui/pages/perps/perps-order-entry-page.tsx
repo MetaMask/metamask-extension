@@ -672,38 +672,11 @@ const PerpsOrderEntryPage: React.FC = () => {
     livePrice?.percentChange24h ?? market?.change24hPercent ?? '',
   );
 
-  const handleBackClick = useCallback(
-    (extraState?: Partial<PerpsToastRouteState>) => {
-      if (extraState?.pendingOrderSymbol) {
-        setPendingOrder({
-          symbol: extraState.pendingOrderSymbol,
-          filledDescription: extraState.pendingOrderFilledDescription,
-        });
-      }
-
-      if (!decodedSymbol) {
-        return;
-      }
-
-      const marketDetailPath = `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(
-        decodedSymbol,
-      )}`;
-
-      // Pending-order data is delivered imperatively via setPendingOrder above.
-      // Avoid route state so browser back/forward cannot replay filled toasts.
-      // Replace (not push) so the just-submitted order-entry page does not
-      // remain in history — otherwise the market-detail back button (which
-      // uses navigate(-1)) would return to a stale post-submit form.
-      navigate(marketDetailPath, { replace: true });
-    },
-    [decodedSymbol, navigate, setPendingOrder],
-  );
-
   // Visible header back button: pop the history stack so the user returns to
   // wherever they came from. Pushing marketDetailPath instead would create a
   // market-detail -> order-entry -> market-detail loop, since the
   // market-detail back button uses navigate(-1).
-  const handleBackButtonClick = useCallback(() => {
+  const navigateBack = useCallback(() => {
     if (typeof window !== 'undefined' && window.history.length > 1) {
       navigate(-1);
       return;
@@ -717,6 +690,21 @@ const PerpsOrderEntryPage: React.FC = () => {
     }
     navigate(DEFAULT_ROUTE, { replace: true });
   }, [decodedSymbol, navigate]);
+
+  const handleBackClick = useCallback(
+    (extraState?: Partial<PerpsToastRouteState>) => {
+      if (extraState?.pendingOrderSymbol) {
+        setPendingOrder({
+          symbol: extraState.pendingOrderSymbol,
+          filledDescription: extraState.pendingOrderFilledDescription,
+        });
+      }
+      navigateBack();
+    },
+    [setPendingOrder, navigateBack],
+  );
+
+
 
   const getTradeActionToastDescription = useCallback(() => {
     if (orderMode === 'modify' || !orderFormState) {
@@ -741,8 +729,8 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     const rawAmount = formattedPositionSize.endsWith(` ${displayAssetSymbol}`)
       ? formattedPositionSize
-          .slice(0, -` ${displayAssetSymbol}`.length)
-          .trimEnd()
+        .slice(0, -` ${displayAssetSymbol}`.length)
+        .trimEnd()
       : formattedPositionSize;
 
     if (!rawAmount) {
@@ -1130,9 +1118,9 @@ const PerpsOrderEntryPage: React.FC = () => {
       handleBackClick(
         orderFormState.type === 'market'
           ? {
-              pendingOrderSymbol: orderFormState.asset,
-              pendingOrderFilledDescription: tradeActionToastDescription,
-            }
+            pendingOrderSymbol: orderFormState.asset,
+            pendingOrderFilledDescription: tradeActionToastDescription,
+          }
           : undefined,
       );
 
@@ -1278,7 +1266,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
           <Box
             data-testid="perps-order-entry-back-button"
-            onClick={handleBackButtonClick}
+            onClick={() => handleBackClick()}
             aria-label={t('back')}
             className="p-2 cursor-pointer"
           >
@@ -1350,7 +1338,7 @@ const PerpsOrderEntryPage: React.FC = () => {
       >
         <Box
           data-testid="perps-order-entry-back-button"
-          onClick={handleBackButtonClick}
+          onClick={() => handleBackClick()}
           aria-label={t('back')}
           className="w-9 shrink-0 cursor-pointer"
         >
