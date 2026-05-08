@@ -26,7 +26,6 @@ import {
 } from '@metamask/keyring-api';
 import {
   type CaipAssetType,
-  type CaipChainId,
   Hex,
   isCaipChainId,
   parseCaipAssetType,
@@ -138,14 +137,12 @@ const AssetPage = ({
     getIsBridgeChain(state, chainId),
   );
 
-  const isSigningEnabled = Boolean(
-    accountForActions &&
-      (accountForActions.methods.includes(EthMethod.SignTransaction) ||
-        accountForActions.methods.includes(EthMethod.SignUserOperation) ||
-        accountForActions.methods.includes(SolMethod.SignTransaction) ||
-        accountForActions.methods.includes(BtcMethod.SignPsbt) ||
-        accountForActions.type === TrxAccountType.Eoa),
-  );
+  const isSigningEnabled =
+    accountForActions.methods.includes(EthMethod.SignTransaction) ||
+    accountForActions.methods.includes(EthMethod.SignUserOperation) ||
+    accountForActions.methods.includes(SolMethod.SignTransaction) ||
+    accountForActions.methods.includes(BtcMethod.SignPsbt) ||
+    accountForActions.type === TrxAccountType.Eoa;
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -166,10 +163,6 @@ const AssetPage = ({
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
-
-  const selectedMultichainNetworkConfiguration = useSelector(
-    getSelectedMultichainNetworkConfiguration,
-  );
 
   let address =
     (() => {
@@ -344,7 +337,7 @@ const AssetPage = ({
         asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
       <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-        {isUpdatedAssetNative && accountForActions ? (
+        {isUpdatedAssetNative ? (
           <CoinButtons
             {...{
               account: accountForActions,
@@ -499,9 +492,7 @@ const AssetPage = ({
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      {networkName ??
-                        selectedMultichainNetworkConfiguration?.name ??
-                        caipChainId}
+                      {networkName}
                     </Text>
                   </Box>,
                 )}
@@ -558,7 +549,6 @@ const AssetPage = ({
                   </Box>
                 )}
                 {shouldShowSpendingCaps &&
-                  selectedAccount &&
                   renderRow(
                     t('spendingCaps'),
                     <TextButton size={TextButtonSize.BodyMd} asChild>
@@ -591,7 +581,7 @@ const AssetPage = ({
                   type === AssetType.native
                     ? {
                         kind: 'native',
-                        ...(!isEvm && address && { caipAssetType: address }),
+                        ...(!isEvm && { caipAssetType: address }),
                       }
                     : { kind: 'token', tokenAddress: address },
               }}
