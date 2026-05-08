@@ -75,6 +75,7 @@ import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { useFormatters } from '../../hooks/useFormatters';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { PerpsGeoBlockModal } from '../../components/app/perps/perps-geo-block-modal';
+import { useSelectedAccountComplianceGate } from '../../components/app/compliance';
 import { usePerpsDepositConfirmation } from '../../components/app/perps/hooks/usePerpsDepositConfirmation';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
@@ -239,6 +240,7 @@ const PerpsOrderEntryPage = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const selectedAddress = selectedAccount?.address;
+  const { gate } = useSelectedAccountComplianceGate();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
@@ -1330,21 +1332,24 @@ const PerpsOrderEntryPage = () => {
   ]);
 
   const handlePrimaryAction = useCallback(async () => {
-    if (hasNoAvailableBalance) {
-      if (!isEligible) {
-        setIsGeoBlockModalOpen(true);
-        return;
-      }
-      if (!selectedAddress || isDepositLoading) {
+    await gate(async () => {
+      if (hasNoAvailableBalance) {
+        if (!isEligible) {
+          setIsGeoBlockModalOpen(true);
+          return;
+        }
+        if (!selectedAddress || isDepositLoading) {
+          return;
+        }
+
+        await triggerDeposit();
         return;
       }
 
-      await triggerDeposit();
-      return;
-    }
-
-    await handleOrderSubmit();
+      await handleOrderSubmit();
+    });
   }, [
+    gate,
     handleOrderSubmit,
     hasNoAvailableBalance,
     isDepositLoading,
