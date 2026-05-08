@@ -258,6 +258,10 @@ function withAutoInit<TArgs extends unknown[], TResult>(
  * `CLIENT_REINITIALIZING`) and benign WS disconnect-race errors
  * (`TERMINATED_BY_USER`, in-flight queue drained on socket close).
  * Re-submitting a fetch after `init()` rebinds the provider is always safe.
+ * @param controller
+ * @param fn
+ * @param controller
+ * @param fn
  */
 function guardRead<TArgs extends unknown[], TResult>(
   controller: PerpsController,
@@ -279,10 +283,14 @@ function guardRead<TArgs extends unknown[], TResult>(
  * `WebSocketRequestError("WebSocket connection closed")` and
  * `TERMINATED_BY_USER` errors can be thrown *after* the request was written
  * to the socket. Retrying those could:
- *  - Submit the same trade, withdrawal, or margin change twice.
- *  - Submit against a different account if `init()` rebinds the provider.
+ * - Submit the same trade, withdrawal, or margin change twice.
+ * - Submit against a different account if `init()` rebinds the provider.
  *
  * Benign disconnect-race errors are therefore intentionally excluded here.
+ * @param controller
+ * @param fn
+ * @param controller
+ * @param fn
  */
 function guardWrite<TArgs extends unknown[], TResult>(
   controller: PerpsController,
