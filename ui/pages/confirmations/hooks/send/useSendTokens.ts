@@ -55,11 +55,6 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
       .filter((assetId): assetId is CaipAssetType => Boolean(assetId));
   }, [enrichTokenRequests]);
 
-  const enrichAssetIdsKey = useMemo(
-    () => enrichAssetIds.join(','),
-    [enrichAssetIds],
-  );
-
   useEffect(() => {
     let cancelled = false;
 
@@ -88,7 +83,7 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
       cancelled = true;
       abortController.abort();
     };
-  }, [enrichAssetIds, enrichAssetIdsKey]);
+  }, [enrichAssetIds]);
 
   const assetsWithBalance = useMemo(() => {
     return flatAssets.filter((asset) => {
@@ -210,7 +205,7 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
   ]);
 
   return useMemo(() => {
-    return processedAssets.sort(
+    return [...processedAssets].sort(
       (a, b) => (b.fiat?.balance ?? 0) - (a.fiat?.balance ?? 0),
     );
   }, [processedAssets]);

@@ -113,6 +113,26 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
     });
   });
 
+  it('returns passed-in tokens unchanged when the allowlist is disabled', () => {
+    const { result } = renderUsePostQuoteWithdrawTokenFilter({
+      postQuoteFlags: {
+        perpsWithdraw: {
+          enabled: false,
+          tokens: { '0x1': ['0xaaa'] },
+        },
+      },
+    });
+    const input = [ALL_TOKENS_MOCK[0]];
+
+    expect(result.current.filterTokens(input)).toBe(input);
+    expect(result.current.isFilterApplied).toBe(false);
+    expect(mockUseSendTokens).toHaveBeenCalledWith({
+      includeNoBalance: false,
+      tokenFilter: undefined,
+      enrichTokenRequests: [],
+    });
+  });
+
   it('returns allowlisted wallet tokens for perps withdraw', () => {
     const { result } = renderUsePostQuoteWithdrawTokenFilter({
       postQuoteFlags: {
