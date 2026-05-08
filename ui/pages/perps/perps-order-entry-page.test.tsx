@@ -588,8 +588,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
@@ -608,8 +608,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
@@ -650,8 +650,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: true,
@@ -799,7 +799,7 @@ describe('PerpsOrderEntryPage', () => {
 
       const amountContainer = screen.getByTestId('amount-input-field');
       const amountInput = amountContainer.querySelector('input');
-      // availableBalance is 10125, default leverage is 3, so max amount = 30375
+      // spendableBalance is 10125, default leverage is 3, so max amount = 30375
       // Enter 50000 which requires margin of 50000/3 ≈ 16666 > 10125
       fireEvent.change(amountInput as HTMLInputElement, {
         target: { value: '50000' },
@@ -950,8 +950,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '100',
+          spendableBalance: '0',
+          withdrawableBalance: '100',
         },
         isInitialLoading: false,
       });
@@ -961,12 +961,12 @@ describe('PerpsOrderEntryPage', () => {
       expect(hasPerpBalance).toBe(true);
     });
 
-    it('falls back to availableBalance when availableToTradeBalance is absent', () => {
+    it('uses withdrawableBalance when both balances are set', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '100',
-          availableToTradeBalance: undefined,
+          spendableBalance: '100',
+          withdrawableBalance: '100',
         },
         isInitialLoading: false,
       });
@@ -980,8 +980,8 @@ describe('PerpsOrderEntryPage', () => {
       mockLiveAccount.mockReturnValue({
         account: {
           ...mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '0',
+          spendableBalance: '0',
+          withdrawableBalance: '0',
           totalBalance: '0',
         },
         isInitialLoading: false,
