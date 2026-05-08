@@ -583,7 +583,10 @@ const BaseReader = ({
       <>
         <div className="qr-scanner__content">
           {readyState === CameraReadyState.Ready ? (
-            <EnhancedReader handleScan={handleScan} />
+            <EnhancedReader
+              onFrame={handleScan}
+              isVisible={readyState === CameraReadyState.Ready}
+            />
           ) : null}
         </div>
         {scanProgress > 0 && (
