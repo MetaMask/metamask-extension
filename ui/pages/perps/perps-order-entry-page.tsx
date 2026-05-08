@@ -532,24 +532,24 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     const tpInvalid = Boolean(
       tp?.trim() &&
-      !isValidTakeProfitPrice(tp, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidTakeProfitPrice(tp, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-      !isValidStopLossPrice(sl, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidStopLossPrice(sl, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slLiquidationInvalid = Boolean(
       sl?.trim() &&
-      !isStopLossSafeFromLiquidation(sl, {
-        liquidationPrice,
-        direction: dir,
-      }),
+        !isStopLossSafeFromLiquidation(sl, {
+          liquidationPrice,
+          direction: dir,
+        }),
     );
 
     return tpInvalid || slInvalid || slLiquidationInvalid;
@@ -704,8 +704,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     [setPendingOrder, navigateBack],
   );
 
-
-
   const getTradeActionToastDescription = useCallback(() => {
     if (orderMode === 'modify' || !orderFormState) {
       return undefined;
@@ -729,8 +727,8 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     const rawAmount = formattedPositionSize.endsWith(` ${displayAssetSymbol}`)
       ? formattedPositionSize
-        .slice(0, -` ${displayAssetSymbol}`.length)
-        .trimEnd()
+          .slice(0, -` ${displayAssetSymbol}`.length)
+          .trimEnd()
       : formattedPositionSize;
 
     if (!rawAmount) {
@@ -1118,9 +1116,9 @@ const PerpsOrderEntryPage: React.FC = () => {
       handleBackClick(
         orderFormState.type === 'market'
           ? {
-            pendingOrderSymbol: orderFormState.asset,
-            pendingOrderFilledDescription: tradeActionToastDescription,
-          }
+              pendingOrderSymbol: orderFormState.asset,
+              pendingOrderFilledDescription: tradeActionToastDescription,
+            }
           : undefined,
       );
 
