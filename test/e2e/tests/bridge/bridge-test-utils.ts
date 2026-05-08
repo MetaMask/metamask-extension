@@ -156,7 +156,7 @@ export async function mockTopAssetsArbitrum(mockServer: Mockttp) {
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
-    .forGet(`https://token.api.cx.metamask.io/tokens/1`)
+    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -167,7 +167,7 @@ async function mockTokensEthereum(mockServer: Mockttp) {
 
 async function mockTokensLinea(mockServer: Mockttp) {
   return await mockServer
-    .forGet(`https://token.api.cx.metamask.io/tokens/59144`)
+    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/59144(\?.*)?$/u)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -178,7 +178,7 @@ async function mockTokensLinea(mockServer: Mockttp) {
 
 async function mockTokensArbitrum(mockServer: Mockttp) {
   return await mockServer
-    .forGet(`https://token.api.cx.metamask.io/tokens/42161`)
+    .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/42161(\?.*)?$/u)
     .thenCallback(() => {
       return {
         statusCode: 200,

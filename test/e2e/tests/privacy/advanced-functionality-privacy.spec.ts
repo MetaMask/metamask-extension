@@ -17,11 +17,24 @@ import { mockSpotPrices } from '../tokens/utils/mocks';
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
   return [
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
       .thenCallback(() => {
         return {
           statusCode: 200,
-          json: [{ fakedata: true }],
+          // Must include a valid `address` field — TokenListService passes this
+          // response through buildTokenListMap which calls token.address.toLowerCase().
+          // Without a valid address the queryFn throws, TanStack Query marks the
+          // entry as failed, and every subsequent fetchTokensByChainId call
+          // re-fetches from the network instead of returning the cached result.
+          json: [
+            {
+              address: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+              symbol: 'BAT',
+              decimals: 18,
+              name: 'Basic Attention Token',
+              aggregators: [],
+            },
+          ],
         };
       }),
     await mockServer
@@ -163,7 +176,7 @@ describe('MetaMask onboarding ', function () {
             continue;
           }
 
-          // Spot-prices endpoint may be called multiple times (initial load + refresh)
+          // spot-prices may be called more than once (initial load + refresh).
           if (mockUrl.includes('spot-prices')) {
             assert.ok(
               requests.length >= 1,
