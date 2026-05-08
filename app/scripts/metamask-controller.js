@@ -408,6 +408,7 @@ import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-c
 import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
+import { tokenListService } from './messenger-client-init/token-list-service';
 import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
@@ -3277,16 +3278,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       setTermsOfUseLastAgreed:
         appStateController.setTermsOfUseLastAgreed.bind(appStateController),
-      setSurveyLinkLastClickedOrClosed:
-        appStateController.setSurveyLinkLastClickedOrClosed.bind(
-          appStateController,
-        ),
       setOnboardingDate:
         appStateController.setOnboardingDate.bind(appStateController),
       setLastViewedUserSurvey:
         appStateController.setLastViewedUserSurvey.bind(appStateController),
-      setRampCardClosed:
-        appStateController.setRampCardClosed.bind(appStateController),
       setNewPrivacyPolicyToastClickedOrClosed:
         appStateController.setNewPrivacyPolicyToastClickedOrClosed.bind(
           appStateController,
@@ -3311,20 +3306,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       setLastUpdatedAt:
         appStateController.setLastUpdatedAt.bind(appStateController),
-      setShowTestnetMessageInDropdown:
-        appStateController.setShowTestnetMessageInDropdown.bind(
-          appStateController,
-        ),
-      setShowBetaHeader:
-        appStateController.setShowBetaHeader.bind(appStateController),
-      setShowPermissionsTour:
-        appStateController.setShowPermissionsTour.bind(appStateController),
-      setShowAccountBanner:
-        appStateController.setShowAccountBanner.bind(appStateController),
       setProductTour:
         appStateController.setProductTour.bind(appStateController),
-      setShowNetworkBanner:
-        appStateController.setShowNetworkBanner.bind(appStateController),
       updateNftDropDownState:
         appStateController.updateNftDropDownState.bind(appStateController),
       getLastInteractedConfirmationInfo:
@@ -3529,6 +3512,7 @@ export default class MetamaskController extends EventEmitter {
         accountsController,
         networkController,
         multichainNetworkController,
+        snapController: this.snapController,
         onPermittedAccountsAdded:
           this._handleDefiReferralOnPermittedAccountsAdded.bind(this),
       }),
@@ -9073,6 +9057,7 @@ export default class MetamaskController extends EventEmitter {
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
       this.subscriptionController.stopAllPolling();
+      tokenListService.destroy();
     } catch (error) {
       console.error(error);
     }

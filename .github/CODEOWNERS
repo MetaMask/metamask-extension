@@ -141,8 +141,7 @@ ui/contexts/claims                              @MetaMask/web3auth
 ui/contexts/shield                              @MetaMask/web3auth
 ui/hooks/claims                                 @MetaMask/web3auth
 ui/hooks/subscription                           @MetaMask/web3auth
-ui/pages/shield-plan                            @MetaMask/web3auth
-ui/pages/settings/transaction-shield-tab        @MetaMask/web3auth
+ui/pages/shield                                 @MetaMask/web3auth
 
 # Confirmations team to own code for confirmations on UI.
 app/scripts/controller-init/confirmations                                           @MetaMask/confirmations

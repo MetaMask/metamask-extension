@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { isCorrectDeveloperTransactionType } from '../../../shared/lib/confirmation.utils';
+import { isFirefoxBrowser } from '../../../shared/lib/browser-runtime.utils';
 import { isSignatureTransactionType } from '../../pages/confirmations/utils';
 import {
   useHardwareWalletActions,
@@ -132,6 +133,13 @@ export const useHardwareFooter = ({
     // primary footer CTA. The Confirm action still runs ensureDeviceReady,
     // which handles camera permission before signing.
     if (walletType === HardwareWalletType.Qr) {
+      return true;
+    }
+
+    // Trezor on Firefox uses a different connection flow and does not require
+    // the "Connect Trezor" preflight step before the Confirm CTA.
+    // ensureDeviceReady still runs on submit to establish the session.
+    if (walletType === HardwareWalletType.Trezor && isFirefoxBrowser()) {
       return true;
     }
 
