@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor, screen } from '@testing-library/react';
+import { fireEvent, waitFor, screen, render } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
@@ -19,6 +19,7 @@ import {
   generatePasskeyPostRegistrationAuthenticationOptions,
   forceUpdateMetamaskState,
 } from '../../../store/actions';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   startPasskeyRegistration,
   startPasskeyAuthentication,
@@ -128,7 +129,10 @@ const buildMockStore = (
 const PASSKEY_LABEL_BIOMETRICS = tEn('passkeyAuthMethodBiometrics');
 
 describe('SetupPasskey', () => {
+  let mockTrackEvent: jest.Mock;
+
   beforeEach(() => {
+    mockTrackEvent = jest.fn().mockResolvedValue(undefined);
     mockUseNavigate.mockClear();
     jest.mocked(startPasskeyRegistration).mockClear();
     jest.mocked(startPasskeyAuthentication).mockClear();
@@ -154,9 +158,19 @@ describe('SetupPasskey', () => {
       .mockResolvedValue(mockAuthenticationResponse);
   });
 
+  function renderSetupPasskey(mockStore) {
+    return renderWithProvider(
+      <SetupPasskey />,
+      mockStore,
+      '/',
+      render,
+      () => mockTrackEvent,
+    );
+  }
+
   it('renders core passkey setup actions', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    renderWithProvider(<SetupPasskey />, mockStore);
+    renderSetupPasskey(mockStore);
 
     expect(screen.getByTestId('passkey-set-up-button')).toBeInTheDocument();
     expect(
@@ -169,7 +183,7 @@ describe('SetupPasskey', () => {
 
   it('renders the heading text', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+    const { getByText } = renderSetupPasskey(mockStore);
 
     expect(
       getByText(tEn('unlockWithPasskey', [PASSKEY_LABEL_BIOMETRICS])),
@@ -178,7 +192,7 @@ describe('SetupPasskey', () => {
 
   it('renders the description text', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+    const { getByText } = renderSetupPasskey(mockStore);
 
     expect(
       getByText(tEn('passkeyDescription', [PASSKEY_LABEL_BIOMETRICS])),
@@ -187,7 +201,7 @@ describe('SetupPasskey', () => {
 
   it('renders the set up biometrics button', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+    const { getByText } = renderSetupPasskey(mockStore);
 
     expect(
       getByText(tEn('setUpPasskey', [PASSKEY_LABEL_BIOMETRICS])),
@@ -196,16 +210,141 @@ describe('SetupPasskey', () => {
 
   it('renders the maybe later button', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+    const { getByText } = renderSetupPasskey(mockStore);
 
     expect(getByText(messages.maybeLater.message)).toBeInTheDocument();
   });
 
   it('renders the biometrics image', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
-    const { getByAltText } = renderWithProvider(<SetupPasskey />, mockStore);
+    const { getByAltText } = renderSetupPasskey(mockStore);
 
     expect(getByAltText('Biometrics')).toBeInTheDocument();
+  });
+
+  describe('MetaMetrics passkey onboarding', () => {
+    /* eslint-disable @typescript-eslint/naming-convention -- Segment event properties are snake_case */
+    it('tracks setup viewed when the interactive screen is shown', () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.create);
+      renderSetupPasskey(mockStore);
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PasskeyOnboardingSetupViewed,
+          properties: expect.objectContaining({
+            account_type: 'metamask',
+          }),
+        }),
+      );
+    });
+
+    it('does not track viewed when passkey is already registered', async () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.create, {
+        passkeyRecord: testPasskeyRecord,
+      });
+      renderSetupPasskey(mockStore);
+      await waitFor(() => {
+        expect(mockUseNavigate).toHaveBeenCalled();
+      });
+      expect(mockTrackEvent).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PasskeyOnboardingSetupViewed,
+        }),
+      );
+    });
+
+    it('tracks skipped when the user chooses maybe later', () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.create);
+      const { getByText } = renderSetupPasskey(mockStore);
+      fireEvent.click(getByText(messages.maybeLater.message));
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PasskeyOnboardingSetupSkipped,
+        }),
+      );
+    });
+
+    it('tracks started and completed with duration when enrollment succeeds', async () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.create);
+      jest
+        .mocked(forceUpdateMetamaskState)
+        .mockImplementation(async (dispatch) => {
+          dispatch({
+            type: UPDATE_METAMASK_STATE,
+            value: { passkeyRecord: testPasskeyRecord },
+          });
+        });
+      const { getByTestId } = renderSetupPasskey(mockStore);
+      fireEvent.click(getByTestId('passkey-set-up-button'));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: MetaMetricsEventName.PasskeyOnboardingSetupStarted,
+          }),
+        );
+      });
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: MetaMetricsEventName.PasskeyOnboardingSetupCompleted,
+            properties: expect.objectContaining({
+              duration_ms: expect.any(Number),
+            }),
+          }),
+        );
+      });
+    });
+
+    it('tracks started and cancelled when registration is dismissed', async () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.create);
+      const { getByTestId } = renderSetupPasskey(mockStore);
+      jest
+        .mocked(startPasskeyRegistration)
+        .mockRejectedValueOnce(
+          new DOMException('User cancelled', 'NotAllowedError'),
+        );
+      fireEvent.click(getByTestId('passkey-set-up-button'));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: MetaMetricsEventName.PasskeyOnboardingSetupStarted,
+          }),
+        );
+      });
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: MetaMetricsEventName.PasskeyOnboardingSetupCancelled,
+            properties: expect.objectContaining({
+              duration_ms: expect.any(Number),
+            }),
+          }),
+        );
+      });
+    });
+
+    it('tracks failed with error_step when protectVaultKeyWithPasskey fails', async () => {
+      const mockStore = buildMockStore(FirstTimeFlowType.create);
+      const { getByTestId } = renderSetupPasskey(mockStore);
+      jest.mocked(protectVaultKeyWithPasskey).mockRejectedValueOnce({
+        code: PasskeyControllerErrorCode.RegistrationVerificationFailed,
+      });
+      fireEvent.click(getByTestId('passkey-set-up-button'));
+
+      await waitFor(() => {
+        expect(mockTrackEvent).toHaveBeenCalledWith(
+          expect.objectContaining({
+            event: MetaMetricsEventName.PasskeyOnboardingSetupFailed,
+            properties: expect.objectContaining({
+              error_step: 'enroll',
+              error_code: PasskeyControllerErrorCode.RegistrationVerificationFailed,
+            }),
+          }),
+        );
+      });
+    });
+    /* eslint-enable @typescript-eslint/naming-convention */
   });
 
   describe('maybe later navigation', () => {
@@ -215,7 +354,7 @@ describe('SetupPasskey', () => {
 
     it('navigates to SRP review route when flow type is create', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByText } = renderSetupPasskey(mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
@@ -232,7 +371,7 @@ describe('SetupPasskey', () => {
         .spyOn(BrowserRuntimeUtils, 'getBrowserName')
         .mockReturnValue('chrome');
       const mockStore = buildMockStore(FirstTimeFlowType.import);
-      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByText } = renderSetupPasskey(mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
@@ -246,7 +385,7 @@ describe('SetupPasskey', () => {
         .spyOn(BrowserRuntimeUtils, 'getBrowserName')
         .mockReturnValue(PLATFORM_FIREFOX);
       const mockStore = buildMockStore(FirstTimeFlowType.import);
-      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByText } = renderSetupPasskey(mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
@@ -265,7 +404,7 @@ describe('SetupPasskey', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.import, {
         participateInMetaMetrics: true,
       });
-      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByText } = renderSetupPasskey(mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
@@ -279,7 +418,7 @@ describe('SetupPasskey', () => {
 
     it('navigates to completion when flow type is socialCreate', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.socialCreate);
-      const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByText } = renderSetupPasskey(mockStore);
 
       fireEvent.click(getByText(messages.maybeLater.message));
 
@@ -303,7 +442,7 @@ describe('SetupPasskey', () => {
             value: { passkeyRecord: testPasskeyRecord },
           });
         });
-      const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByTestId } = renderSetupPasskey(mockStore);
 
       fireEvent.click(getByTestId('passkey-set-up-button'));
 
@@ -334,7 +473,7 @@ describe('SetupPasskey', () => {
 
     it('shows primary actions again when the user cancels passkey registration', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByTestId } = renderSetupPasskey(mockStore);
 
       jest
         .mocked(startPasskeyRegistration)
@@ -361,7 +500,7 @@ describe('SetupPasskey', () => {
 
     it('shows primary actions again when the user cancels post-registration authentication', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByTestId } = renderSetupPasskey(mockStore);
 
       jest
         .mocked(startPasskeyAuthentication)
@@ -387,7 +526,7 @@ describe('SetupPasskey', () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create, {
         passkeyRecord: testPasskeyRecord,
       });
-      renderWithProvider(<SetupPasskey />, mockStore);
+      renderSetupPasskey(mockStore);
 
       expect(
         screen.queryByTestId('passkey-set-up-button'),
@@ -405,7 +544,7 @@ describe('SetupPasskey', () => {
 
     it('shows an inline error when protecting the vault key with the passkey fails', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByTestId } = renderSetupPasskey(mockStore);
 
       jest.mocked(protectVaultKeyWithPasskey).mockRejectedValueOnce({
         code: PasskeyControllerErrorCode.RegistrationVerificationFailed,
@@ -427,7 +566,7 @@ describe('SetupPasskey', () => {
 
     it('shows registration error when protectVaultKeyWithPasskey fails after post-registration auth', async () => {
       const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderWithProvider(<SetupPasskey />, mockStore);
+      const { getByTestId } = renderSetupPasskey(mockStore);
 
       jest.mocked(protectVaultKeyWithPasskey).mockRejectedValueOnce({
         code: PasskeyControllerErrorCode.AuthenticationVerificationFailed,
