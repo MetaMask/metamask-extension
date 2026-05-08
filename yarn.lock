@@ -6182,6 +6182,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/compliance-controller@npm:2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/compliance-controller@npm:2.0.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/controller-utils": "npm:^11.20.0"
+    "@metamask/messenger": "npm:^1.1.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.9.0"
+    reselect: "npm:^5.1.1"
+  checksum: 10/a5052dac7860eb4cdd247ebccdb6d091092ea8564a3e8d986f0d38e0a3107ee35844c45eb2873ea7f388129603ad2a0bd9f788adc0b96a14d0987e8bedfa80bf
+  languageName: node
+  linkType: hard
+
 "@metamask/connectivity-controller@npm:^0.2.0":
   version: 0.2.0
   resolution: "@metamask/connectivity-controller@npm:0.2.0"
@@ -7340,7 +7354,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/messenger@npm:^1.0.0, @metamask/messenger@npm:^1.1.1, @metamask/messenger@npm:^1.2.0":
+"@metamask/messenger@npm:^1.0.0, @metamask/messenger@npm:^1.1.0, @metamask/messenger@npm:^1.1.1, @metamask/messenger@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/messenger@npm:1.2.0"
   dependencies:
@@ -33459,6 +33473,7 @@ __metadata:
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.5.0"
+    "@metamask/compliance-controller": "npm:2.0.0"
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.1.0"
@@ -37588,7 +37603,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:^6.10.0, qs@npm:^6.12.3, qs@npm:^6.14.0, qs@npm:^6.14.1, qs@npm:^6.15.2, qs@npm:^6.4.0":
+"qs@npm:^6.10.0, qs@npm:^6.12.3, qs@npm:^6.14.0, qs@npm:^6.14.1, qs@npm:^6.4.0":
+  version: 6.14.2
+  resolution: "qs@npm:6.14.2"
+  dependencies:
+    side-channel: "npm:^1.1.0"
+  checksum: 10/682933a85bb4b7bd0d66e13c0a40d9e612b5e4bcc2cb9238f711a9368cd22d91654097a74fff93551e58146db282c56ac094957dfdc60ce64ea72c3c9d7779ac
+  languageName: node
+  linkType: hard
+
+"qs@npm:^6.15.2":
   version: 6.15.2
   resolution: "qs@npm:6.15.2"
   dependencies:
