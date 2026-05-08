@@ -90,10 +90,6 @@ function schemaElementDomKey(
   return `${sectionTestId}-${element.testId}`;
 }
 
-function stopPropagation(event: React.SyntheticEvent): void {
-  event.stopPropagation();
-}
-
 // ---------------------------------------------------------------------------
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
@@ -125,12 +121,11 @@ const ReviewAddressDisplay: React.FC<{
         >
           {displayName}
         </Text>
-        <span onClick={stopPropagation} onKeyDown={stopPropagation}>
-          <CopyIcon
-            copyText={address}
-            style={{ position: 'static', right: 'auto', top: 'auto' }}
-          />
-        </span>
+        <CopyIcon
+          copyText={address}
+          style={{ position: 'static', right: 'auto', top: 'auto' }}
+          isStopPropagationEnabled
+        />
       </Box>
       {isNicknamePopoverShown ? (
         <NicknamePopovers
