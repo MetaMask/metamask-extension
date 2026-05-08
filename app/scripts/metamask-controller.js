@@ -408,7 +408,6 @@ import { MetaMetricsControllerInit } from './messenger-client-init/metametrics-c
 import { TokenListControllerInit } from './messenger-client-init/token-list-controller-init';
 import { TokenDetectionControllerInit } from './messenger-client-init/token-detection-controller-init';
 import { TokensControllerInit } from './messenger-client-init/tokens-controller-init';
-import { tokenListService } from './messenger-client-init/token-list-service';
 import { TokenBalancesControllerInit } from './messenger-client-init/token-balances-controller-init';
 import { StaticAssetsControllerInit } from './messenger-client-init/static-assets-controller-init';
 import { RatesControllerInit } from './messenger-client-init/rates-controller-init';
@@ -9057,7 +9056,6 @@ export default class MetamaskController extends EventEmitter {
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
       this.subscriptionController.stopAllPolling();
-      tokenListService.destroy();
     } catch (error) {
       console.error(error);
     }
