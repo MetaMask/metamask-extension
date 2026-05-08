@@ -26,7 +26,11 @@ jest.mock('./NetworkChip', () => ({
 }));
 
 const NETWORKS = [
-  { chainId: 'eip155:1' as CaipChainId, name: 'Mock Chain 1', imageUrl: 'eth.png' },
+  {
+    chainId: 'eip155:1' as CaipChainId,
+    name: 'Mock Chain 1',
+    imageUrl: 'eth.png',
+  },
   {
     chainId: 'eip155:137' as CaipChainId,
     name: 'Mock Chain 137',
