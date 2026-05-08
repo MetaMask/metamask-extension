@@ -2800,10 +2800,6 @@
     "message": "कोड: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "गड़बड़ी की जानकारी",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "सेफ चेन लिस्ट पाते समय गड़बड़ी हुई, कृपया सावधानी के साथ जारी रखें।"
   },
@@ -8687,9 +8683,6 @@
   "stillConnectingTo": {
     "message": "अब भी $1 से कनेक्ट किया जा रहा है...",
     "description": "Message shown when network connection is slow. $1 is the network name."
-  },
-  "stillGettingMessage": {
-    "message": "अभी भी यह मैसेज मिल रहा है?"
   },
   "storageErrorAction": {
     "message": "सीक्रेट रिकवरी फ्रेज़ का बैकअप लें"
