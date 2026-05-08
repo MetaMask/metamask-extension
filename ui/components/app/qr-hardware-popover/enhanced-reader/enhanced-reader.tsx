@@ -1,5 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { BarcodeFormat, DecodeHintType } from '@zxing/library';
+import {
+  BarcodeFormat,
+  ChecksumException,
+  DecodeHintType,
+  FormatException,
+  NotFoundException,
+} from '@zxing/library';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import log from 'loglevel';
 import { MILLISECOND } from '../../../../../shared/constants/time';
@@ -8,6 +14,19 @@ import type { EnhancedReaderProps } from './enhanced-reader.types';
 
 // Delay between ZXing scan attempts and successes to avoid CPU thrashing.
 const SCAN_INTERVAL_MS = MILLISECOND * 100;
+
+/**
+ * Returns true for ZXing errors that occur on every frame without a QR code.
+ * These are expected during normal scanning and are not camera failures.
+ * @param error - The error emitted by ZXing's continuous decode callback.
+ */
+function isRoutineScanError(error: Error): boolean {
+  return (
+    error instanceof NotFoundException ||
+    error instanceof ChecksumException ||
+    error instanceof FormatException
+  );
+}
 
 /**
  * Stateless QR code reader that streams decoded frames to the parent.
@@ -66,7 +85,7 @@ const EnhancedReader: React.FC<EnhancedReaderProps> = ({
         if (result) {
           onFrame(result.getText());
         }
-        if (error && onCameraError) {
+        if (error && onCameraError && !isRoutineScanError(error)) {
           onCameraError(error);
         }
       },

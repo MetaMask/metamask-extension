@@ -8,10 +8,24 @@ jest.mock('@zxing/browser', () => ({
   BrowserQRCodeReader: jest.fn(),
 }));
 
-jest.mock('@zxing/library', () => ({
-  BarcodeFormat: { QR_CODE: 'QR_CODE' },
-  DecodeHintType: { POSSIBLE_FORMATS: 'POSSIBLE_FORMATS' },
-}));
+jest.mock('@zxing/library', () => {
+  class NotFoundException extends Error {
+    static kind = 'NotFoundException';
+  }
+  class ChecksumException extends Error {
+    static kind = 'ChecksumException';
+  }
+  class FormatException extends Error {
+    static kind = 'FormatException';
+  }
+  return {
+    BarcodeFormat: { QR_CODE: 'QR_CODE' },
+    DecodeHintType: { POSSIBLE_FORMATS: 'POSSIBLE_FORMATS' },
+    NotFoundException,
+    ChecksumException,
+    FormatException,
+  };
+});
 
 const MockBrowserQRCodeReader = BrowserQRCodeReader as jest.MockedClass<
   typeof BrowserQRCodeReader
@@ -116,12 +130,12 @@ describe('EnhancedReader', () => {
   });
 
   describe('onCameraError callback', () => {
-    it('forwards the error directly when onCameraError is provided', () => {
+    it('forwards actual camera errors to onCameraError', () => {
       const onCameraError = jest.fn();
-      const scanError = new Error('Camera lost');
+      const cameraError = new Error('Camera device lost');
       mockDecodeFromVideoDevice.mockImplementation(
         (_device, _elem, callback) => {
-          callback(undefined, scanError);
+          callback(undefined, cameraError);
           return Promise.resolve(mockControls);
         },
       );
@@ -130,7 +144,65 @@ describe('EnhancedReader', () => {
         <EnhancedReader onFrame={jest.fn()} onCameraError={onCameraError} />,
       );
 
-      expect(onCameraError).toHaveBeenCalledWith(scanError);
+      expect(onCameraError).toHaveBeenCalledWith(cameraError);
+    });
+
+    it('filters out NotFoundException (routine no-QR-code frame)', () => {
+      const { NotFoundException } = jest.requireMock(
+        '@zxing/library',
+      ) as Record<string, new () => Error>;
+      const onCameraError = jest.fn();
+      mockDecodeFromVideoDevice.mockImplementation(
+        (_device, _elem, callback) => {
+          callback(undefined, new NotFoundException());
+          return Promise.resolve(mockControls);
+        },
+      );
+
+      render(
+        <EnhancedReader onFrame={jest.fn()} onCameraError={onCameraError} />,
+      );
+
+      expect(onCameraError).not.toHaveBeenCalled();
+    });
+
+    it('filters out ChecksumException (transient decode failure)', () => {
+      const { ChecksumException } = jest.requireMock(
+        '@zxing/library',
+      ) as Record<string, new () => Error>;
+      const onCameraError = jest.fn();
+      mockDecodeFromVideoDevice.mockImplementation(
+        (_device, _elem, callback) => {
+          callback(undefined, new ChecksumException());
+          return Promise.resolve(mockControls);
+        },
+      );
+
+      render(
+        <EnhancedReader onFrame={jest.fn()} onCameraError={onCameraError} />,
+      );
+
+      expect(onCameraError).not.toHaveBeenCalled();
+    });
+
+    it('filters out FormatException (transient format failure)', () => {
+      const { FormatException } = jest.requireMock('@zxing/library') as Record<
+        string,
+        new () => Error
+      >;
+      const onCameraError = jest.fn();
+      mockDecodeFromVideoDevice.mockImplementation(
+        (_device, _elem, callback) => {
+          callback(undefined, new FormatException());
+          return Promise.resolve(mockControls);
+        },
+      );
+
+      render(
+        <EnhancedReader onFrame={jest.fn()} onCameraError={onCameraError} />,
+      );
+
+      expect(onCameraError).not.toHaveBeenCalled();
     });
 
     it('does not throw when onCameraError is omitted and error occurs', () => {
