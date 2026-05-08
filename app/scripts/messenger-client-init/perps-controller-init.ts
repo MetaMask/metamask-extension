@@ -220,6 +220,7 @@ type PerpsBackgroundApi = {
  * Returns true when the error proves the request never left the client.
  * Both codes are thrown before any frame is written to the socket, so
  * retrying is idempotent for reads and writes alike.
+ * @param err
  */
 function isPreSendInitError(err: unknown): boolean {
   const message = err instanceof Error ? err.message : String(err);
@@ -232,6 +233,9 @@ function isPreSendInitError(err: unknown): boolean {
 /**
  * Core retry wrapper: calls `controller.init()` then retries once when
  * `shouldRetry` matches the thrown error.
+ * @param controller
+ * @param fn
+ * @param shouldRetry
  */
 function withAutoInit<TArgs extends unknown[], TResult>(
   controller: PerpsController,
@@ -260,8 +264,6 @@ function withAutoInit<TArgs extends unknown[], TResult>(
  * Re-submitting a fetch after `init()` rebinds the provider is always safe.
  * @param controller
  * @param fn
- * @param controller
- * @param fn
  */
 function guardRead<TArgs extends unknown[], TResult>(
   controller: PerpsController,
@@ -287,8 +289,6 @@ function guardRead<TArgs extends unknown[], TResult>(
  * - Submit against a different account if `init()` rebinds the provider.
  *
  * Benign disconnect-race errors are therefore intentionally excluded here.
- * @param controller
- * @param fn
  * @param controller
  * @param fn
  */
