@@ -160,7 +160,7 @@ describe('Smart Transactions', function () {
     );
   });
 
-  it('should Swap with gas included fee TEST', async function () {
+  it('should Swap with gas included fee', async function () {
     await withFixturesForSmartTransactions(
       {
         title: this.test?.fullTitle(),
