@@ -52,6 +52,7 @@ import {
 } from '@metamask/account-tree-controller';
 import { getHardwareWalletType } from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
@@ -104,7 +105,6 @@ import {
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
 import { getCurrentCurrency } from '../metamask/metamask';
-import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -146,8 +146,8 @@ export type BridgeAppState = {
   bridge: BridgeState;
 };
 
-// Only includes networks user has added
-const getAllBridgeableNetworks = createDeepEqualSelector(
+// getMultichainNetworkConfigurationsByChainId is memoized in ui/selectors/multichain.ts.
+const getAllBridgeableNetworks = createSelector(
   [getMultichainNetworkConfigurationsByChainId],
   (
     multichainNetworkConfigurationsByChainId,
@@ -345,8 +345,10 @@ export const getFromToken = createSelector(
 const getFromChainId = (state: BridgeAppState) => getFromToken(state).chainId;
 // For compatibility with old code
 export const getFromChain = createSelector(
-  [getFromChainId, getAllBridgeableNetworks],
-  (fromChainId, allBridgeableNetworks) => allBridgeableNetworks[fromChainId],
+  [getFromChainId, getAllBridgeableNetworks, getFromChains],
+  (fromChainId, allBridgeableNetworks, fromChains) =>
+    allBridgeableNetworks[fromChainId] ??
+    fromChains.find(({ chainId }) => chainId === fromChainId),
 );
 
 export const getToChains = createDeepEqualSelector(
@@ -441,12 +443,13 @@ export const getAccountGroupNameByInternalAccount = createSelector(
 
 export const getFromAccount = createSelector(
   [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    getFromChainId,
     (state: BridgeAppState) => state,
     getSelectedInternalAccount,
   ],
   (fromChainId, state, selectedInternalAccount) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId) ??
+    (fromChainId &&
+      getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId)) ??
     selectedInternalAccount,
 );
 
@@ -879,7 +882,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-
     const minimumBalanceToKeep =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
@@ -899,7 +901,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           !isLoading &&
           quotesRefreshCount > 0,
         ),
-      // Shown prior to fetching quotes
+      // Shown prior to fetching quotes (native reserve error takes precedence)
       isInsufficientGasBalance: Boolean(
         nativeBalance &&
         !activeQuote &&
@@ -1011,9 +1013,7 @@ export const getWarningLabels = (
   isPriceImpactWarning && warnings.push('price_impact');
   isPriceImpactError && warnings.push('price_impact');
   isTxAlertPresent && warnings.push('tx_alert');
-  // @ts-expect-error: market_closed is not a valid QuoteWarning yet
   isStockMarketClosed && warnings.push('market_closed');
-  // @ts-expect-error: quote_expired is not a valid QuoteWarning yet
   isQuoteExpired && warnings.push('quote_expired');
   isInsufficientNativeReserve &&
     // @ts-expect-error: market_closed is not a valid QuoteWarning yet
@@ -1115,7 +1115,7 @@ const getIsGasIncludedSwapSupported = createSelector(
       isSendBundleSupportedForChain,
   ],
   (fromChainId, isSendBundleSupportedForChain) => {
-    if (isNonEvmChainId(fromChainId)) {
+    if (!fromChainId || isNonEvmChainId(fromChainId)) {
       return false;
     }
     return isSendBundleSupportedForChain;

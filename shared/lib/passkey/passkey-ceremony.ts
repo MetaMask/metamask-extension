@@ -122,10 +122,6 @@ export async function startPasskeyRegistration(
   return runPasskeyCeremony(async () => {
     const optionsJSON: SwaPublicKeyCredentialCreationOptionsJSON = {
       ...options,
-      rp: {
-        ...options.rp,
-        id: undefined, // leave blank to accept the extension's default RP ID
-      },
       extensions: decodePrfInExtensionOptions(options.extensions),
     };
     const response = await startRegistration({ optionsJSON });
@@ -151,7 +147,6 @@ export async function startPasskeyAuthentication(
   return runPasskeyCeremony(async () => {
     const optionsJSON: SwaPublicKeyCredentialRequestOptionsJSON = {
       ...options,
-      rpId: undefined, // leave blank to accept the browser extension's default RP ID
       extensions: decodePrfInExtensionOptions(options.extensions),
     };
     const response = await startAuthentication({ optionsJSON });
