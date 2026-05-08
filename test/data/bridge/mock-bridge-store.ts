@@ -6,6 +6,7 @@ import {
   getNativeAssetForChainId,
   ChainId,
   GenericQuoteRequest,
+  DEFAULT_BRIDGE_CONTROLLER_STATE,
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
@@ -740,9 +741,13 @@ export const createBridgeMockStore = ({
       },
       ...bridgeStateOverrides,
       ...bridgeStatusStateOverrides,
-      ...(Array.isArray(bridgeStateOverrides?.quoteRequest)
-        ? { quoteRequest: { ...bridgeStateOverrides.quoteRequest } }
-        : { quoteRequest: [{ ...bridgeStateOverrides.quoteRequest }] }),
+      ...(bridgeStateOverrides?.quoteRequest
+        ? {
+            quoteRequest: Array.isArray(bridgeStateOverrides?.quoteRequest)
+              ? bridgeStateOverrides?.quoteRequest
+              : [bridgeStateOverrides?.quoteRequest],
+          }
+        : DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest),
     },
     DNS: {
       resolutions: [],
