@@ -23,6 +23,13 @@ import {
   SIGNATURE_REQUEST_PATH,
   UNLOCK_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
+import type { AccountsState } from '../../../../../ui/selectors/accounts';
+import { getMaybeSelectedInternalAccount } from '../../../../../ui/selectors/accounts';
+import type { ProviderConfigState } from '../../../../../shared/lib/selectors/networks';
+import {
+  getProviderConfig,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/lib/selectors/networks';
 import type { ExtensionState } from '../launcher-types';
 import { HomePage } from '../page-objects/home-page';
 
@@ -246,48 +253,42 @@ const CDP_FETCH_METAMASK_STATE = `
 })()
 `.trim();
 
-type MetamaskStateSlice = {
-  internalAccounts?: {
-    selectedAccount?: string;
-    accounts?: Record<string, { address?: string }>;
-  };
-  networkConfigurationsByChainId?: Record<
-    string,
-    {
-      name?: string;
-      chainId?: string | null;
-      rpcEndpoints?: { networkClientId?: string }[];
-    }
-  >;
-  selectedNetworkClientId?: string;
-};
-
 type IdentityData = {
   accountAddress: string | null;
   networkName: string | null;
   chainId: string | null;
 };
 
-function resolveIdentity(metamaskState: MetamaskStateSlice): IdentityData {
-  const selectedId = metamaskState.internalAccounts?.selectedAccount;
-  const account = selectedId
-    ? metamaskState.internalAccounts?.accounts?.[selectedId]
-    : null;
+// The CDP-fetched metamask slice is cast to the selector state types so that
+// identity extraction reuses the same logic as the extension UI. This keeps
+// the inspector in sync with future state-shape changes automatically.
+type SelectorState = AccountsState & ProviderConfigState;
 
-  const configs = Object.values(
-    metamaskState.networkConfigurationsByChainId ?? {},
-  );
-  const networkConfig =
-    configs.find((cfg) =>
-      cfg.rpcEndpoints?.some(
-        (ep) => ep.networkClientId === metamaskState.selectedNetworkClientId,
-      ),
-    ) ?? null;
+function resolveIdentity(
+  metamaskState: Record<string, unknown>,
+): IdentityData {
+  const state = { metamask: metamaskState } as SelectorState;
+
+  const selectedAccount = getMaybeSelectedInternalAccount(state);
+
+  let networkName: string | null = null;
+  let chainId: string | null = null;
+  try {
+    const providerConfig = getProviderConfig(state);
+    chainId = providerConfig.chainId ?? null;
+    // getProviderConfig returns nickname only for custom RPC endpoints.
+    // Fall back to the canonical network name for built-in networks.
+    const configs = getNetworkConfigurationsByChainId(state);
+    networkName =
+      providerConfig.nickname ?? configs[providerConfig.chainId]?.name ?? null;
+  } catch {
+    // getProviderConfig throws when configuration is not found
+  }
 
   return {
-    accountAddress: account?.address ?? null,
-    networkName: networkConfig?.name ?? null,
-    chainId: networkConfig?.chainId ?? null,
+    accountAddress: selectedAccount?.address ?? null,
+    networkName,
+    chainId,
   };
 }
 
@@ -314,7 +315,7 @@ async function extractIdentityViaCDP(page: Page): Promise<IdentityData | null> {
       return null;
     }
 
-    return resolveIdentity(parsed as MetamaskStateSlice);
+    return resolveIdentity(parsed as Record<string, unknown>);
   } catch {
     return null;
   } finally {
