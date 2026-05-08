@@ -48,6 +48,7 @@ const createMockRefs = (
   connectRef: { current: null },
   walletTypeRef: { current: null },
   previousWalletTypeRef: { current: null },
+  isSigningInProgressRef: { current: false },
   ...overrides,
 });
 
@@ -415,6 +416,46 @@ describe('useHardwareWalletAutoConnect', () => {
           webConnectionUtils.checkHardwareWalletPermission,
         ).toHaveBeenCalledWith(HardwareWalletType.Trezor);
       });
+    });
+
+    it('skips teardown when signing is in progress (Trezor SDK session close workaround)', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(true),
+        destroy: jest.fn(),
+      };
+
+      renderHook(
+        () =>
+          useHardwareWalletAutoConnect({
+            state: createMockState({ walletType: HardwareWalletType.Trezor }),
+            refs: createMockRefs({
+              adapterRef: { current: mockAdapter },
+              isSigningInProgressRef: { current: true },
+            }),
+            setHardwareConnectionPermissionState:
+              mockSetHardwareConnectionPermissionState,
+            updateConnectionState: mockUpdateConnectionState,
+            hardwareConnectionPermissionState:
+              HardwareConnectionPermissionState.Granted,
+            isWebHidAvailable: false,
+            isWebUsbAvailable: true,
+            handleDisconnect: mockHandleDisconnect,
+            resetAutoConnectState: mockResetAutoConnectState,
+            setAutoConnected: mockSetAutoConnected,
+          }),
+        { wrapper: createWrapper() },
+      );
+
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebUsbEvents as jest.Mock
+      ).mock.calls[0];
+      const disconnectCallback = subscribeCall[2];
+
+      disconnectCallback({ productId: 123 } as USBDevice);
+
+      expect(mockHandleDisconnect).not.toHaveBeenCalled();
     });
 
     it('ignores disconnect when not connected', async () => {

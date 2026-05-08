@@ -1135,6 +1135,10 @@
     "message": "You're all set",
     "description": "Title shown when all hardware wallet signatures have been confirmed and the transaction is submitted."
   },
+  "bridgeHwResendTransaction": {
+    "message": "Resend transaction",
+    "description": "Button label shown after a retry to cancel and resubmit the hardware wallet transaction."
+  },
   "bridgeLowestCost": {
     "message": "Lowest cost"
   },

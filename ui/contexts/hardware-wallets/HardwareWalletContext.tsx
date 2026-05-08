@@ -47,6 +47,12 @@ export type HardwareWalletActionsContextType = {
     walletType: HardwareWalletType,
   ) => Promise<boolean>;
   ensureDeviceReady: (options?: EnsureDeviceReadyOptions) => Promise<boolean>;
+  /**
+   * WORKAROUND: Trezor-specific flag to suppress WebUSB disconnect teardown
+   * during signing. See `isSigningInProgressRef` in `HardwareWalletStateManager`
+   * for full explanation.
+   */
+  setSigningInProgress: (value: boolean) => void;
 };
 
 /**
@@ -205,6 +211,10 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     updateConnectionState(ConnectionState.ready());
   }, [updateConnectionState]);
 
+  const setSigningInProgress = useCallback((value: boolean) => {
+    refs.isSigningInProgressRef.current = value;
+  }, [refs]);
+
   const stableActionsRef = useRef({
     connect,
     disconnect,
@@ -213,6 +223,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
     requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
     ensureDeviceReady,
+    setSigningInProgress,
   });
 
   // Update the ref when dependencies change
@@ -224,6 +235,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
     requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
     ensureDeviceReady,
+    setSigningInProgress,
   };
 
   useHardwareWalletAutoConnect({
@@ -366,6 +378,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       requestHardwareWalletPermission:
         stableActionsRef.current.requestHardwareWalletPermission,
       ensureDeviceReady: stableActionsRef.current.ensureDeviceReady,
+      setSigningInProgress: stableActionsRef.current.setSigningInProgress,
     }),
     // Actions are stable, so this memo only runs once
     [],

@@ -35,6 +35,7 @@ import { useHwSwapQrState } from '../../../hooks/swap/hardware-wallets/useHwSwap
 import { useHwSwapNavigation } from '../../../hooks/swap/hardware-wallets/useHwSwapNavigation';
 import {
   ConnectionStatus,
+  useHardwareWalletActions,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
@@ -57,6 +58,15 @@ import {
   hardwareWalletSignaturesReducer,
 } from './hardware-wallet-signatures-state-machine';
 import { useHwBatchSignTracker } from './useHwBatchSignTracker';
+
+const SIGNATURE_STUCK_TIMEOUT_MS = 5_000;
+
+function isAwaitingSignature(status: HardwareWalletSignatureStatus): boolean {
+  return (
+    status === HardwareWalletSignatureStatus.AwaitingFirstSignature ||
+    status === HardwareWalletSignatureStatus.AwaitingFinalSignature
+  );
+}
 
 export default function HardwareWalletSignatures() {
   const t = useI18nContext();
@@ -88,8 +98,18 @@ export default function HardwareWalletSignatures() {
 
   const hasTrackedPageView = useRef(false);
   const retryGenerationRef = useRef(0);
+  // Guards the HW callbacks (Submitted / Rejected / Failed) so that errors
+  // produced by the OLD submission during cancelCurrentBatch() don't race
+  // with the retry and prematurely transition the state machine.
   const isRetryingRef = useRef(false);
+  // Tracks whether the user has retried at least once. Once true, the
+  // "Resend transaction" button becomes eligible after SIGNATURE_STUCK_TIMEOUT_MS.
+  const hasRetriedRef = useRef(false);
   const [isRetrying, setIsRetrying] = useState(false);
+  // Set to true when the device has been in an awaiting-signature state for
+  // longer than SIGNATURE_STUCK_TIMEOUT_MS without progressing. Resets when
+  // the state leaves awaiting-signature or a retry starts.
+  const [hasSignatureTimedOut, setHasSignatureTimedOut] = useState(false);
   const { connectionState } = useHardwareWalletState();
 
   const handleHardwareWalletSubmitted = useCallback(() => {
@@ -177,6 +197,55 @@ export default function HardwareWalletSignatures() {
     retryGenerationRef,
   );
 
+  // WORKAROUND: Set the Trezor signing-in-progress flag to suppress
+  // spurious WebUSB disconnect teardowns during signing. See
+  // isSigningInProgressRef in HardwareWalletStateManager for details.
+  const { setSigningInProgress } = useHardwareWalletActions();
+
+  useEffect(() => {
+    const isAwaiting = isAwaitingSignature(signatureState.status);
+    const isTerminal =
+      signatureState.status === HardwareWalletSignatureStatus.Submitted ||
+      signatureState.status === HardwareWalletSignatureStatus.Failed ||
+      signatureState.status === HardwareWalletSignatureStatus.Rejected ||
+      signatureState.status === HardwareWalletSignatureStatus.Disconnected;
+
+    if (hasStartedSubmission.current && isAwaiting) {
+      setSigningInProgress(true);
+    } else if (isTerminal) {
+      setSigningInProgress(false);
+    }
+  }, [signatureState.status, setSigningInProgress]);
+
+  // Clean up on unmount (e.g. user cancels or navigates away)
+  useEffect(() => {
+    return () => {
+      setSigningInProgress(false);
+    };
+  }, [setSigningInProgress]);
+
+  useEffect(() => {
+    if (!isAwaitingSignature(signatureState.status)) {
+      setHasSignatureTimedOut(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setHasSignatureTimedOut(true);
+    }, SIGNATURE_STUCK_TIMEOUT_MS);
+
+    return () => clearTimeout(timer);
+  }, [signatureState.status]);
+
+  // Resets the stuck-timeout flag while a retry is in flight so the
+  // "Resend transaction" button disappears and the timer effectively
+  // restarts from zero once the state machine re-enters awaiting-signature.
+  useEffect(() => {
+    if (isRetrying) {
+      setHasSignatureTimedOut(false);
+    }
+  }, [isRetrying]);
+
   useEffect(() => {
     if (hasTrackedPageView.current || !lockedQuote) {
       return;
@@ -257,6 +326,14 @@ export default function HardwareWalletSignatures() {
     signatureState.status === HardwareWalletSignatureStatus.Rejected ||
     signatureState.status === HardwareWalletSignatureStatus.Failed ||
     signatureState.status === HardwareWalletSignatureStatus.Disconnected;
+  // "Resend transaction" button: only visible after the user has retried at
+  // least once (hasRetriedRef), the signature has been stuck for longer than
+  // SIGNATURE_STUCK_TIMEOUT_MS, and we are still awaiting a signature.
+  const showStuckRetryButton =
+    hasSignatureTimedOut &&
+    isAwaitingSignature(signatureState.status) &&
+    !isRetrying &&
+    hasRetriedRef.current;
   const showFooter =
     signatureState.status !== HardwareWalletSignatureStatus.Submitted;
   const title = getTitle({
@@ -291,6 +368,7 @@ export default function HardwareWalletSignatures() {
     );
 
     isRetryingRef.current = true;
+    hasRetriedRef.current = true;
     setIsRetrying(true);
 
     try {
@@ -374,7 +452,11 @@ export default function HardwareWalletSignatures() {
         {lockedQuote && (
           <>
             {isReadingQrSignature && qrSignRequest && (
-              <Box className="hardware-wallet-signatures__qr-reader" style={{ width: '100%' }} marginBottom={6}>
+              <Box
+                className="hardware-wallet-signatures__qr-reader"
+                style={{ width: '100%' }}
+                marginBottom={6}
+              >
                 <Reader
                   cancelQRHardwareSignRequest={handleQrSignatureCancel}
                   submitQRHardwareSignature={handleQrScanSuccess}
@@ -482,6 +564,16 @@ export default function HardwareWalletSignatures() {
               HardwareWalletSignatureStatus.Disconnected
                 ? t('hardwareWalletErrorReconnectButton')
                 : t('errorPageTryAgain')}
+            </Button>
+          )}
+          {showStuckRetryButton && (
+            <Button
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
+              isFullWidth
+              onClick={handleRetry}
+            >
+              {t('bridgeHwResendTransaction')}
             </Button>
           )}
           {showInlineQrSigning && !isRetryable && (
