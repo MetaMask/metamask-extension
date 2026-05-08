@@ -11,6 +11,7 @@ import { withFixtures } from '../../../helpers';
 import {
   handleSidepanelPostOnboarding,
   onboardingMetricsFlow,
+  skipPasskeySetupIfPresent,
 } from '../../../page-objects/flows/onboarding.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -105,6 +106,7 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
             driver,
             'createPwToRecoveryScreen',
             async () => {
+              await skipPasskeySetupIfPresent(driver);
               const secureWalletPage = new SecureWalletPage(driver);
               await secureWalletPage.checkPageIsLoaded();
             },

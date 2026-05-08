@@ -455,4 +455,4 @@ env:
   - FORCE_AUTH_MATCH_BUILD: false
 
   # Passkey / Biometrics unlock
-  - PASSKEY_ENABLED: 'true'
+  - PASSKEY_ENABLED: true

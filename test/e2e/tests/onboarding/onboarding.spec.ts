@@ -20,10 +20,11 @@ import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboa
 import {
   completeCreateNewWalletOnboardingFlow,
   completeImportSRPOnboardingFlow,
+  handleSidepanelPostOnboarding,
   importSRPOnboardingFlow,
   incompleteCreateNewWalletOnboardingFlow,
   onboardingMetricsFlow,
-  handleSidepanelPostOnboarding,
+  skipPasskeySetupIfPresent,
 } from '../../page-objects/flows/onboarding.flow';
 import LoginPage from '../../page-objects/pages/login-page';
 
@@ -59,6 +60,7 @@ describe('MetaMask onboarding', function () {
         const loginPage = new LoginPage(driver);
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
+        await skipPasskeySetupIfPresent(driver);
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();

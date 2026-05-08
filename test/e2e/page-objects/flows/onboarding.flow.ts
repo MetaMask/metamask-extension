@@ -6,6 +6,7 @@ import OnboardingPasswordPage from '../pages/onboarding/onboarding-password-page
 import OnboardingSrpPage from '../pages/onboarding/onboarding-srp-page';
 import StartOnboardingPage from '../pages/onboarding/start-onboarding-page';
 import SecureWalletPage from '../pages/onboarding/secure-wallet-page';
+import SetupPasskeyPage from '../pages/onboarding/setup-passkey-page';
 import OnboardingCompletePage from '../pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../pages/onboarding/onboarding-privacy-settings-page';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
@@ -80,6 +81,29 @@ const goToOnboardingWelcomeLoginPage = async ({
   await startOnboardingPage.checkLoginPageIsLoaded();
 
   return startOnboardingPage;
+};
+
+/**
+ * Skip the passkey setup page when it is presented during onboarding.
+ *
+ * @param driver - The WebDriver instance.
+ * @param options - The options object.
+ * @param [options.timeout] - The time to wait for the page to appear.
+ */
+export const skipPasskeySetupIfPresent = async (
+  driver: Driver,
+  { timeout = 5000 }: { timeout?: number } = {},
+): Promise<void> => {
+  const setupPasskeyPage = new SetupPasskeyPage(driver);
+
+  try {
+    await setupPasskeyPage.checkPageIsLoaded(timeout);
+  } catch {
+    console.log('Setup passkey page was not shown');
+    return;
+  }
+
+  await setupPasskeyPage.skipPasskeySetup();
 };
 
 /**
@@ -216,6 +240,7 @@ export const createNewWalletOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
+  await skipPasskeySetupIfPresent(driver);
 
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.checkPageIsLoaded();
@@ -269,6 +294,7 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
+  await skipPasskeySetupIfPresent(driver);
 
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.checkPageIsLoaded();
@@ -359,6 +385,7 @@ export const importSRPOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
+  await skipPasskeySetupIfPresent(driver);
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
     await onboardingMetricsFlow(driver, {
