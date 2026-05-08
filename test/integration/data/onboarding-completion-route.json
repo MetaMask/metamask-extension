@@ -247,7 +247,6 @@
     }
   },
   "nextNonce": null,
-  "nftsDetectionNoticeDismissed": false,
   "nftsDropdownState": {},
   "nonRPCGasFeeApisDisabled": false,
   "notificationGasPollTokens": [],
@@ -315,11 +314,6 @@
   "shieldEndingToastLastClickedOrClosed": null,
   "shieldPausedToastLastClickedOrClosed": null,
   "shieldSubscriptionError": null,
-  "showAccountBanner": true,
-  "showBetaHeader": false,
-  "showNetworkBanner": true,
-  "showPermissionsTour": true,
-  "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
   "slides": [],
   "smartTransactionsState": {
@@ -440,7 +434,6 @@
       }
     }
   },
-  "surveyLinkLastClickedOrClosed": null,
   "swapsState": {
     "quotes": {},
     "quotesPollingLimitEnabled": false,
@@ -508,6 +501,5 @@
   "userOperations": {},
   "versionFileETag": "",
   "versionInfo": [],
-  "web3ShimUsageOrigins": {},
-  "welcomeScreenSeen": false
+  "web3ShimUsageOrigins": {}
 }
