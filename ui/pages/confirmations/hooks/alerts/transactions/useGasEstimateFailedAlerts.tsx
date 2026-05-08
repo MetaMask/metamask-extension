@@ -8,7 +8,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React, { useMemo } from 'react';
 import {
   AlertActionKey,
@@ -18,14 +17,11 @@ import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { RevertReason } from '../../../components/revert-reason/revert-reason';
-import { useConfirmContext } from '../../../context/confirm';
 import { useEstimationFailed } from '../../gas/useEstimationFailed';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
   const t = useI18nContext();
   const estimationFailed = useEstimationFailed();
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const hasGasRevert = Boolean(currentConfirmation?.revert?.gas?.message);
 
   return useMemo(() => {
     if (!estimationFailed) {
@@ -40,21 +36,17 @@ export function useGasEstimateFailedAlerts(): Alert[] {
             label: t('alertActionUpdateGas'),
           },
         ],
-        content: <GasEstimateFailedAlertMessage hasGasRevert={hasGasRevert} />,
+        content: <GasEstimateFailedAlertMessage />,
         field: RowAlertKey.EstimatedFee,
         key: 'gasEstimateFailed',
         reason: t('alertReasonGasEstimateFailed'),
         severity: Severity.Warning,
       },
     ];
-  }, [estimationFailed, hasGasRevert, t]);
+  }, [estimationFailed, t]);
 }
 
-function GasEstimateFailedAlertMessage({
-  hasGasRevert,
-}: {
-  hasGasRevert: boolean;
-}) {
+function GasEstimateFailedAlertMessage() {
   const t = useI18nContext();
 
   return (
@@ -66,12 +58,10 @@ function GasEstimateFailedAlertMessage({
       >
         {t('alertMessageGasEstimateFailed')}
       </Text>
-      {hasGasRevert && (
-        <RevertReason
-          source="gas"
-          data-testid="gas-estimate-failed-revert-reason"
-        />
-      )}
+      <RevertReason
+        source="gas"
+        data-testid="gas-estimate-failed-revert-reason"
+      />
     </Box>
   );
 }

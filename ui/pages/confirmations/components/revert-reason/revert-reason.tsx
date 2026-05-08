@@ -5,23 +5,22 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { TransactionMeta } from '@metamask/transaction-controller';
 import React from 'react';
-import { useConfirmContext } from '../../context/confirm';
+import { useTransactionMetadataRequest } from '../../hooks/transactions/useTransactionMetadataRequest';
 
 export type RevertReasonSource = 'gas' | 'simulation' | 'receipt';
 
 export type RevertReasonProps = {
-  source: RevertReasonSource;
-  'data-testid'?: string;
+  readonly source: RevertReasonSource;
+  readonly 'data-testid'?: string;
 };
 
 export function RevertReason({
   source,
   'data-testid': dataTestId = 'revert-reason',
 }: RevertReasonProps) {
-  const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const message = currentConfirmation?.revert?.[source]?.message;
+  const transaction = useTransactionMetadataRequest();
+  const message = transaction.revert?.[source]?.message;
 
   if (!message) {
     return null;

@@ -49,17 +49,17 @@ import { useBalanceChanges } from './useBalanceChanges';
 import { useSimulationMetrics } from './useSimulationMetrics';
 
 export type StaticRow = {
-  label: string;
-  balanceChanges: BalanceChange[];
+  readonly label: string;
+  readonly balanceChanges: BalanceChange[];
 };
 
 export type SimulationDetailsProps = {
-  enableMetrics?: boolean;
-  isTransactionsRedesign?: boolean;
-  metricsOnly?: boolean;
-  staticRows?: StaticRow[];
-  transaction: TransactionMeta;
-  smartTransactionStatus?: string;
+  readonly enableMetrics?: boolean;
+  readonly isTransactionsRedesign?: boolean;
+  readonly metricsOnly?: boolean;
+  readonly staticRows?: StaticRow[];
+  readonly transaction: TransactionMeta;
+  readonly smartTransactionStatus?: string;
 };
 
 /**
@@ -509,15 +509,8 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
       <SimulationDetailsLayout
         isTransactionsRedesign={isTransactionsRedesign}
         transactionId={transactionId}
-        inHeader={showSimulationRevert ? undefined : <EmptyContent />}
-      >
-        {showSimulationRevert && (
-          <RevertReason
-            source="simulation"
-            data-testid="simulation-details-revert-reason"
-          />
-        )}
-      </SimulationDetailsLayout>
+        inHeader={<EmptyContent />}
+      />
     );
   }
 
@@ -594,12 +587,6 @@ export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
           balanceChanges={incoming}
           testId="simulation-rows-incoming"
         />
-        {showSimulationRevert && (
-          <RevertReason
-            source="simulation"
-            data-testid="simulation-details-revert-reason"
-          />
-        )}
       </Box>
     </SimulationDetailsLayout>
   );
