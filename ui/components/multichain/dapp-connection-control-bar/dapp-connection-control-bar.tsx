@@ -52,7 +52,7 @@ import { getCaip25CaveatValueFromPermissions } from '../../../pages/permissions-
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
 import { Tag } from '../../component-library/tag/tag';
 import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal';
-import { DappBarNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
+import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
 
 /**
  * DappConnectionControlBar - A contextual bar shown only during active dapp
@@ -392,7 +392,7 @@ export const DappConnectionControlBar: React.FC = () => {
       )}
 
       {/* Inline network selector popover anchored to the network button */}
-      <DappBarNetworkSelectorPopover
+      <DappBarEVMNetworkSelectorPopover
         referenceElement={networkButtonElement}
         isOpen={isNetworkPopoverOpen}
         onClose={handleCloseNetworkPopover}

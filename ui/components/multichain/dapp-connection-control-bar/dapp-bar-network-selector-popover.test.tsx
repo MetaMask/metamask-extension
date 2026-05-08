@@ -7,7 +7,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { DappBarNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
+import { DappBarEVMNetworkSelectorPopover } from './dapp-bar-network-selector-popover';
 
 const MAINNET_CLIENT_ID = 'mainnet-client';
 const BNB_CLIENT_ID = 'bnb-client';
@@ -207,7 +207,7 @@ const renderPopover = ({
         onboardingParentContext: { current: null },
       }}
     >
-      <DappBarNetworkSelectorPopover
+      <DappBarEVMNetworkSelectorPopover
         referenceElement={anchor}
         isOpen={isOpen}
         onClose={onClose}
@@ -332,7 +332,7 @@ describe('DappBarNetworkSelectorPopover', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x38',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          from_network: 'eip155:1',
+          from_network: '0x1',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           to_network: '0x38',
         },

@@ -1,11 +1,7 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { type CaipChainId, type Hex } from '@metamask/utils';
-import {
-  type MultichainNetworkConfiguration,
-  NON_EVM_TESTNET_IDS,
-  toEvmCaipChainId,
-} from '@metamask/multichain-network-controller';
+import { type Hex } from '@metamask/utils';
+import { type MultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
 import {
   Box,
   BoxAlignItems,
@@ -58,10 +54,7 @@ import {
   getRpcDataByChainId,
   sortNetworks,
 } from '../../../../shared/lib/network.utils';
-import {
-  TEST_CHAINS,
-  CAIP_FORMATTED_TEST_CHAINS,
-} from '../../../../shared/constants/network';
+import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -88,7 +81,7 @@ const POPOVER_MAX_HEIGHT = 320;
  * @param props.onClose - Callback fired when the popover should close
  * (click-outside, Esc key, or after a network is selected).
  */
-export const DappBarNetworkSelectorPopover: React.FC<
+export const DappBarEVMNetworkSelectorPopover: React.FC<
   DappBarNetworkSelectorPopoverProps
 > = ({ referenceElement, isOpen, onClose }) => {
   const dispatch = useDispatch();
@@ -109,17 +102,9 @@ export const DappBarNetworkSelectorPopover: React.FC<
   const { tokenNetworkFilter } = useSelector(getPreferences);
   const allChainIds = useSelector(getAllChainsToPoll);
 
-  // The `getDappActiveNetwork` selector returns a hex chainId for EVM and a
-  // CAIP chainId for non-EVM. Normalize both to CAIP here so downstream
-  // comparisons and testnet checks (which are CAIP-keyed) are consistent.
-  const activeDappChainId = useMemo<CaipChainId | undefined>(() => {
-    if (!dappActiveNetwork) {
-      return undefined;
-    }
-    return dappActiveNetwork.isEvm
-      ? toEvmCaipChainId(dappActiveNetwork.chainId as Hex)
-      : (dappActiveNetwork.chainId as CaipChainId);
-  }, [dappActiveNetwork]);
+  const activeDappChainId = dappActiveNetwork
+    ? (dappActiveNetwork.chainId as Hex)
+    : undefined;
 
   // Partition into EVM non-test vs EVM test networks. Non-EVM is intentionally
   // excluded: the dapp control bar is EVM-scoped today.
@@ -153,8 +138,7 @@ export const DappBarNetworkSelectorPopover: React.FC<
   );
 
   const currentlyOnTestnet = activeDappChainId
-    ? CAIP_FORMATTED_TEST_CHAINS.includes(activeDappChainId) ||
-      NON_EVM_TESTNET_IDS.includes(activeDappChainId)
+    ? TEST_CHAINS.includes(activeDappChainId)
     : false;
 
   // Only include test networks when the global "Show test networks" toggle is
@@ -169,14 +153,14 @@ export const DappBarNetworkSelectorPopover: React.FC<
 
   const handleSelectNetwork = useCallback(
     async (network: MultichainNetworkConfiguration) => {
-      // Always close the popover after a selection (or no-op selection).
-      if (network.chainId === activeDappChainId) {
+      const hexChainId = convertCaipToHexChainId(network.chainId);
+
+      if (hexChainId === activeDappChainId) {
         onClose();
         return;
       }
 
       try {
-        const hexChainId = convertCaipToHexChainId(network.chainId);
         const { defaultRpcEndpoint } = getRpcDataByChainId(
           network.chainId,
           evmNetworks,
@@ -293,10 +277,10 @@ export const DappBarNetworkSelectorPopover: React.FC<
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Between}
+          gap={2}
           paddingTop={2}
           paddingBottom={2}
           paddingLeft={4}
-          paddingRight={2}
           borderColor={BoxBorderColor.BorderMuted}
           className="shrink-0 border-x-0 border-t-0 border-b"
           data-testid="dapp-bar-network-selector-popover__testnet-toggle-row"
@@ -325,7 +309,8 @@ export const DappBarNetworkSelectorPopover: React.FC<
           data-testid="dapp-bar-network-selector-popover__list"
         >
           {visibleNetworks.map((network) => {
-            const isSelected = network.chainId === activeDappChainId;
+            const isSelected =
+              convertCaipToHexChainId(network.chainId) === activeDappChainId;
             return (
               <NetworkListItem
                 key={network.chainId}
