@@ -256,7 +256,7 @@ type MetamaskStateSlice = {
     {
       name?: string;
       chainId?: string | null;
-      rpcEndpoints?: Array<{ networkClientId?: string }>;
+      rpcEndpoints?: { networkClientId?: string }[];
     }
   >;
   selectedNetworkClientId?: string;
@@ -321,7 +321,7 @@ async function extractIdentityViaCDP(
   } catch {
     return null;
   } finally {
-    await cdp?.detach().catch(() => {});
+    await cdp?.detach().catch(() => undefined);
   }
 }
 
@@ -342,7 +342,7 @@ export async function getBaseExtensionState(
 
   let accountAddress: string | null = null;
   let networkName: string | null = null;
-  let chainId: number | null = options.chainId;
+  let { chainId } = options;
   let balance: string | null = null;
 
   const identity = await extractIdentityViaCDP(page);
