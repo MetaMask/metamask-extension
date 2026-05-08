@@ -1569,11 +1569,9 @@ describe('Bridge selectors', () => {
           valueInCurrency: '0.33900007473646602',
         },
       ];
-      result.recommendedQuotes
-        .slice(0, 1)
-        .forEach((quote: QuoteMetadata & QuoteResponse, idx: number) => {
-          expect(quote.cost).toStrictEqual(EXPECTED_SORTED_COSTS[idx]);
-        });
+      expect(result.recommendedQuotes[0]?.cost).toStrictEqual(
+        EXPECTED_SORTED_COSTS[0],
+      );
 
       const { recommendedQuotes, ...rest } = result;
       const {
