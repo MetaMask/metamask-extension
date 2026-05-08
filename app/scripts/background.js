@@ -2787,9 +2787,22 @@ if (inTest) {
         await resetFixtureStateInPlace();
         return { status: 'FIXTURE_STATE_RESET', reloadRequired: false };
       }
-      await evacuate();
-      await persistenceManager.reset();
-      return { status: 'FIXTURE_STATE_RESET', reloadRequired: true };
+      const timings = [];
+      const time = async (phase, operation) => {
+        const startedAt = Date.now();
+        try {
+          return await operation();
+        } finally {
+          timings.push({ phase, ms: Date.now() - startedAt });
+        }
+      };
+      await time('background.evacuate', evacuate);
+      await time('background.persistenceReset', () =>
+        persistenceManager.reset({
+          initializeStore: message.strategy !== 'reloadSkipFixtureInitialization',
+        }),
+      );
+      return { status: 'FIXTURE_STATE_RESET', reloadRequired: true, timings };
     }
     return Promise.resolve();
   });

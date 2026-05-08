@@ -6,10 +6,14 @@ import { withFixtures } from '../helpers';
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
-type FixtureResetStrategy = 'inPlace' | 'reload';
+type FixtureResetStrategy =
+  | 'inPlace'
+  | 'reload'
+  | 'reloadSkipFixtureInitialization';
 type ResetFixtureStateResponse = {
   status?: string;
   reloadRequired?: boolean;
+  timings?: { phase: string; ms: number }[];
 };
 type FixtureSessionOptions = WithFixturesOptions & {
   fixtures: unknown;
@@ -29,6 +33,39 @@ export type FixtureSessionAccessors = {
 const RESET_FIXTURE_STATE_MESSAGE = 'RESET_FIXTURE_STATE';
 const RESET_FIXTURE_STATE_STATUS = 'FIXTURE_STATE_RESET';
 const OFFSCREEN_PAGE_TITLE = 'MetaMask Offscreen Page';
+const PROFILE_MARKER = '[fixture-benchmark-profile] ';
+
+function recordFixtureSessionProfile(
+  phase: string,
+  ms: number,
+  extra: Record<string, unknown> = {},
+): void {
+  if (process.env.FIXTURE_SESSION_BENCHMARK_PROFILE !== 'true') {
+    return;
+  }
+
+  console.log(
+    `${PROFILE_MARKER}${JSON.stringify({
+      mode: process.env.FIXTURE_SESSION_BENCHMARK_MODE,
+      phase,
+      ms,
+      ...extra,
+    })}`,
+  );
+}
+
+async function profileFixtureSessionPhase<Result>(
+  phase: string,
+  operation: () => Promise<Result>,
+  extra: Record<string, unknown> = {},
+): Promise<Result> {
+  const startedAt = Date.now();
+  try {
+    return await operation();
+  } finally {
+    recordFixtureSessionProfile(phase, Date.now() - startedAt, extra);
+  }
+}
 
 function getRunnableTests(suite: Mocha.Suite): Mocha.Test[] {
   return [
@@ -118,6 +155,10 @@ async function requestFixtureStateReset(
     );
   }
 
+  for (const timing of result.response.timings ?? []) {
+    recordFixtureSessionProfile(timing.phase, timing.ms, { strategy });
+  }
+
   return result.response;
 }
 
@@ -164,30 +205,62 @@ async function resetSharedFixtureSession(
 ): Promise<void> {
   const { driver } = fixtureContext;
 
-  const extensionWindow = await driver.openNewPage(
-    `${driver.extensionUrl}/${PAGES.HOME}.html`,
+  const extensionWindow = await profileFixtureSessionPhase(
+    'reset.openExtensionPage',
+    () => driver.openNewPage(`${driver.extensionUrl}/${PAGES.HOME}.html`),
+    { resetStrategy },
   );
 
-  await driver.switchToWindow(extensionWindow);
-  const resetResponse = await requestFixtureStateReset(driver, resetStrategy);
+  await profileFixtureSessionPhase(
+    'reset.switchToExtensionPage',
+    () => driver.switchToWindow(extensionWindow),
+    { resetStrategy },
+  );
+  const resetResponse = await profileFixtureSessionPhase(
+    'reset.requestFixtureStateReset',
+    () => requestFixtureStateReset(driver, resetStrategy),
+    { resetStrategy },
+  );
   if (resetResponse.reloadRequired === false) {
     return;
   }
 
-  const survivorWindow = await getReloadSurvivorWindow(driver);
-  await driver.executeScript(
-    `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
+  const survivorWindow = await profileFixtureSessionPhase(
+    'reset.getReloadSurvivorWindow',
+    () => getReloadSurvivorWindow(driver),
+    { resetStrategy },
+  );
+  await profileFixtureSessionPhase(
+    'reset.executeRuntimeReload',
+    () =>
+      driver.executeScript(
+        `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
+      ),
+    { resetStrategy },
   );
 
-  await driver.switchToWindow(survivorWindow);
+  await profileFixtureSessionPhase(
+    'reset.switchToSurvivorWindow',
+    () => driver.switchToWindow(survivorWindow),
+    { resetStrategy },
+  );
   if (process.env.SELENIUM_BROWSER === 'firefox') {
-    await driver.openNewPage('about:blank');
+    await profileFixtureSessionPhase(
+      'reset.openFirefoxBlankPage',
+      () => driver.openNewPage('about:blank'),
+      { resetStrategy },
+    );
   }
 
-  await driver.waitForExtensionStart({
-    waitForControllers: false,
-    waitForLoadingLogoToDisappear: false,
-  });
+  await profileFixtureSessionPhase(
+    'reset.waitForExtensionStart',
+    () =>
+      driver.waitForExtensionStart({
+        waitForControllers: false,
+        waitForLoadingLogoToDisappear: false,
+      }),
+    { resetStrategy },
+  );
 }
 
 /**
@@ -284,8 +357,13 @@ export function configureFixtureSession(
             );
           }
 
-          await closeAuxiliaryWindows(driver);
-          await driver.openNewURL('about:blank');
+          await profileFixtureSessionPhase(
+            'afterEach.closeAuxiliaryWindows',
+            () => closeAuxiliaryWindows(driver),
+          );
+          await profileFixtureSessionPhase('afterEach.openAboutBlank', () =>
+            driver.openNewURL('about:blank'),
+          );
         } catch (error) {
           sessionPoisonedError =
             error instanceof Error ? error : new Error(String(error));

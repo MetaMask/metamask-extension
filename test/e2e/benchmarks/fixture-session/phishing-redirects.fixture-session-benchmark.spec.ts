@@ -15,21 +15,60 @@ import {
 
 /* eslint-disable mocha/no-top-level-hooks, mocha/no-sibling-hooks */
 
-type BenchmarkMode = 'withFixtures' | 'sharedReset' | 'sharedNoReset';
+type BenchmarkMode =
+  | 'withFixtures'
+  | 'sharedReset'
+  | 'sharedResetNoPreload'
+  | 'sharedNoReset';
 
 const benchmarkMode = process.env
   .FIXTURE_SESSION_BENCHMARK_MODE as BenchmarkMode;
+const benchmarkModes = [
+  'withFixtures',
+  'sharedReset',
+  'sharedResetNoPreload',
+  'sharedNoReset',
+];
 
-if (!['withFixtures', 'sharedReset', 'sharedNoReset'].includes(benchmarkMode)) {
+if (!benchmarkModes.includes(benchmarkMode)) {
   throw new Error(
-    `Expected FIXTURE_SESSION_BENCHMARK_MODE to be "withFixtures", "sharedReset", or "sharedNoReset"; received "${benchmarkMode}".`,
+    `Expected FIXTURE_SESSION_BENCHMARK_MODE to be one of ${benchmarkModes.join(
+      ', ',
+    )}; received "${benchmarkMode}".`,
   );
 }
 
+const PROFILE_MARKER = '[fixture-benchmark-profile] ';
 const redirectableStatusCodes = [200, 301, 302, 303, 307, 308] as const;
 const destination = 'https://metamask.github.io/test-dapp/';
 const blocked = '127.0.0.1';
 const fixtureState = new FixtureBuilderV2().build();
+
+function recordProfile(event: Record<string, unknown>): void {
+  if (process.env.FIXTURE_SESSION_BENCHMARK_PROFILE !== 'true') {
+    return;
+  }
+
+  console.log(
+    `${PROFILE_MARKER}${JSON.stringify({
+      mode: benchmarkMode,
+      ...event,
+    })}`,
+  );
+}
+
+async function profilePhase<Result>(
+  phase: string,
+  operation: () => Promise<Result>,
+  extra: Record<string, unknown> = {},
+): Promise<Result> {
+  const startedAt = Date.now();
+  try {
+    return await operation();
+  } finally {
+    recordProfile({ phase, ms: Date.now() - startedAt, ...extra });
+  }
+}
 
 async function setupPhishingMocks(mockServer: Mockttp): Promise<void> {
   await setupPhishingDetectionMocks(mockServer, {
@@ -110,18 +149,22 @@ function handleRequests(
 }
 
 async function unlockAndWaitForBlocklist(driver: Driver): Promise<void> {
-  await login(driver, {
-    validateBalance: false,
-    waitForNonEvmAccounts: false,
-  });
-  await driver.wait(async () => {
-    const state = await driver.executeScript(
-      'return window.stateHooks.getPersistedState()',
-    );
-    const lists = state?.data?.PhishingController?.phishingLists;
-    return Array.isArray(lists) && lists.length > 0;
-  }, 90000);
-  await driver.delay(2500);
+  await profilePhase('unlock.login', () =>
+    login(driver, {
+      validateBalance: false,
+      waitForNonEvmAccounts: false,
+    }),
+  );
+  await profilePhase('unlock.waitForBlocklist', () =>
+    driver.wait(async () => {
+      const state = await driver.executeScript(
+        'return window.stateHooks.getPersistedState()',
+      );
+      const lists = state?.data?.PhishingController?.phishingLists;
+      return Array.isArray(lists) && lists.length > 0;
+    }, 90000),
+  );
+  await profilePhase('unlock.blocklistSettleDelay', () => driver.delay(2500));
 }
 
 async function runRedirectCase(driver: Driver, server: Server, code: number) {
@@ -137,11 +180,18 @@ async function runRedirectCase(driver: Driver, server: Server, code: number) {
   handleRequests(server, name, value, code);
 
   const blockedUrl = `http://${blocked}:${port}/`;
-  await driver.openNewURL(blockedUrl);
+  await profilePhase('redirect.openBlockedUrl', () =>
+    driver.openNewURL(blockedUrl),
+  );
 
-  await driver.waitForUrl({
-    url: `http://localhost:9999/#hostname=${blocked}&href=http%3A%2F%2F${blocked}%3A${port}%2F`,
-  });
+  await profilePhase(
+    'redirect.waitForPhishingWarningUrl',
+    () =>
+      driver.waitForUrl({
+        url: `http://localhost:9999/#hostname=${blocked}&href=http%3A%2F%2F${blocked}%3A${port}%2F`,
+      }),
+    { code },
+  );
 }
 
 function defineRedirectTests(getDriver: () => Driver, getServer: () => Server) {
@@ -168,9 +218,20 @@ if (benchmarkMode === 'withFixtures') {
             title: this.test?.fullTitle(),
             testSpecificMock: setupPhishingMocks,
           },
-          async ({ driver }: { driver: Driver }) => {
+          async ({
+            driver,
+            fixtureServer,
+          }: {
+            driver: Driver;
+            fixtureServer: { getStateRequestStats?: () => unknown };
+          }) => {
             await unlockAndWaitForBlocklist(driver);
             await runRedirectCase(driver, getServer(), code);
+            recordProfile({
+              phase: 'fixtureServer.stateRequests',
+              code,
+              stats: fixtureServer.getStateRequestStats?.(),
+            });
           },
         );
       });
@@ -181,15 +242,24 @@ if (benchmarkMode === 'withFixtures') {
     `Phishing redirect benchmark (${benchmarkMode})`,
     {
       fixtures: fixtureState,
-      resetAfterEach: benchmarkMode === 'sharedReset',
+      resetAfterEach:
+        benchmarkMode === 'sharedReset' ||
+        benchmarkMode === 'sharedResetNoPreload',
+      resetStrategy:
+        benchmarkMode === 'sharedResetNoPreload'
+          ? 'reloadSkipFixtureInitialization'
+          : 'reload',
       testSpecificMock: setupPhishingMocks,
     },
-    ({ getDriver }) => {
+    ({ getDriver, getFixtures }) => {
       const { getServer, registerHooks } = createRedirectServerHooks();
 
       registerHooks();
 
-      if (benchmarkMode === 'sharedReset') {
+      if (
+        benchmarkMode === 'sharedReset' ||
+        benchmarkMode === 'sharedResetNoPreload'
+      ) {
         beforeEach('Unlock extension and wait for blocklist', async function () {
           this.timeout(120000);
           await unlockAndWaitForBlocklist(getDriver());
@@ -202,6 +272,13 @@ if (benchmarkMode === 'withFixtures') {
       }
 
       defineRedirectTests(getDriver, getServer);
+
+      after('Record fixture server stats', function () {
+        recordProfile({
+          phase: 'fixtureServer.stateRequests',
+          stats: getFixtures().fixtureServer.getStateRequestStats?.(),
+        });
+      });
     },
   );
 }

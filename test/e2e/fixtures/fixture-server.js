@@ -68,11 +68,13 @@ class FixtureServer {
     this._port = port;
     this._app = new Koa();
     this._stateMap = new Map([[DEFAULT_STATE_KEY, Object.create(null)]]);
+    this._stateRequests = [];
 
     this._app.use(async (ctx) => {
       // Firefox is _super_ strict about needing CORS headers
       ctx.set('Access-Control-Allow-Origin', '*');
       if (this._isStateRequest(ctx)) {
+        this._stateRequests.push(Date.now());
         ctx.body = this._stateMap.get(CURRENT_STATE_KEY);
       }
     });
@@ -111,6 +113,13 @@ class FixtureServer {
   loadJsonState(rawState, contractRegistry) {
     const state = performStateSubstitutions(rawState, contractRegistry);
     this._stateMap.set(CURRENT_STATE_KEY, state);
+  }
+
+  getStateRequestStats() {
+    return {
+      count: this._stateRequests.length,
+      timestamps: [...this._stateRequests],
+    };
   }
 
   _isStateRequest(ctx) {

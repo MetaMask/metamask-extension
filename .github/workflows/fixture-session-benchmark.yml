@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       iterations:
-        default: 1
+        default: 3
         description: Iterations to run per benchmark mode
         required: true
         type: number
@@ -17,16 +17,24 @@ permissions:
 
 jobs:
   fixture-session-benchmark:
-    name: fixture-session-benchmark
+    name: fixture-session-benchmark-${{ matrix.browser }}-webpack-reset-deep-dive
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: chrome
+            build-command: yarn build:test:webpack
+          - browser: firefox
+            build-command: yarn build:test:webpack:mv2
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
-      BENCHMARK_ITERATIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.iterations || 5 }}
+      BENCHMARK_ITERATIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.iterations || 3 }}
       FORCE_COLOR: '1'
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -51,11 +59,14 @@ jobs:
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
-      - name: Build test bundle
-        run: yarn build:test
+      - name: Run webpack tsc
+        run: yarn webpack:tsc
+
+      - name: Build webpack test bundle
+        run: ${{ matrix.build-command }}
 
       - name: Run fixture-session benchmark
-        run: yarn test:e2e:fixture-session:benchmark --iterations "$BENCHMARK_ITERATIONS"
+        run: yarn test:e2e:fixture-session:benchmark --iterations "$BENCHMARK_ITERATIONS" --browser=${{ matrix.browser }}
 
       - name: Publish benchmark summary
         run: cat test-artifacts/fixture-session-benchmark/summary.md >> "$GITHUB_STEP_SUMMARY"
@@ -64,5 +75,5 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: fixture-session-benchmark
+          name: fixture-session-benchmark-${{ matrix.browser }}-webpack-reset-deep-dive
           path: test-artifacts/fixture-session-benchmark

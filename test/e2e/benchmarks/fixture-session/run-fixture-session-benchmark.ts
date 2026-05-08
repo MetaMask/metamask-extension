@@ -12,26 +12,33 @@ import {
 const BENCHMARK_MODES = [
   'withFixtures',
   'sharedReset',
+  'sharedResetNoPreload',
   'sharedNoReset',
 ] as const;
 
 const MODE_COMPARISONS = [
   ['withFixtures', 'sharedReset'],
+  ['withFixtures', 'sharedResetNoPreload'],
   ['withFixtures', 'sharedNoReset'],
+  ['sharedReset', 'sharedResetNoPreload'],
   ['sharedReset', 'sharedNoReset'],
 ] as const;
+const PROFILE_MARKER = '[fixture-benchmark-profile] ';
 
 type BenchmarkMode = (typeof BENCHMARK_MODES)[number];
 
 type BenchmarkRun = {
   iteration: number;
   mode: BenchmarkMode;
+  profiles: BenchmarkProfile[];
   sequenceIndex: number;
   suiteMs: number;
   suiteNames: string[];
   wallMs: number;
   xmlFiles: string[];
 };
+
+type BenchmarkProfile = Record<string, unknown>;
 
 type SummaryStats = {
   maxMs: number;
@@ -162,11 +169,51 @@ async function runCommand(
   command: string,
   args: string[],
   env: NodeJS.ProcessEnv,
-): Promise<void> {
-  await new Promise((resolve, reject) => {
+): Promise<BenchmarkProfile[]> {
+  const profiles: BenchmarkProfile[] = [];
+  let stdoutBuffer = '';
+  let stderrBuffer = '';
+
+  const processLines = (chunk: Buffer, stream: NodeJS.WriteStream) => {
+    stream.write(chunk);
+
+    let buffer = stream === process.stdout ? stdoutBuffer : stderrBuffer;
+    buffer += chunk.toString('utf8');
+    const lines = buffer.split(/\r?\n/u);
+    buffer = lines.pop() ?? '';
+
+    for (const line of lines) {
+      const markerIndex = line.indexOf(PROFILE_MARKER);
+      if (markerIndex === -1) {
+        continue;
+      }
+
+      const json = line.slice(markerIndex + PROFILE_MARKER.length);
+      try {
+        profiles.push(JSON.parse(json));
+      } catch (error) {
+        console.warn(`Failed to parse benchmark profile line: ${line}`, error);
+      }
+    }
+
+    if (stream === process.stdout) {
+      stdoutBuffer = buffer;
+    } else {
+      stderrBuffer = buffer;
+    }
+  };
+
+  await new Promise<void>((resolve, reject) => {
     const childProcess = spawn(command, args, {
       env,
-      stdio: 'inherit',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+
+    childProcess.stdout.on('data', (chunk: Buffer) => {
+      processLines(chunk, process.stdout);
+    });
+    childProcess.stderr.on('data', (chunk: Buffer) => {
+      processLines(chunk, process.stderr);
     });
 
     childProcess.once('exit', (code, signal) => {
@@ -184,6 +231,8 @@ async function runCommand(
 
     childProcess.once('error', reject);
   });
+
+  return profiles;
 }
 
 async function parseSuiteResults(
@@ -242,7 +291,7 @@ async function runSingleBenchmark(
   );
 
   const startedAt = Date.now();
-  await runCommand(
+  const profiles = await runCommand(
     process.execPath,
     [
       'test/e2e/run-e2e-test.js',
@@ -253,6 +302,7 @@ async function runSingleBenchmark(
     ],
     {
       ...process.env,
+      FIXTURE_SESSION_BENCHMARK_PROFILE: 'true',
       FIXTURE_SESSION_BENCHMARK_MODE: mode,
     },
   );
@@ -272,6 +322,7 @@ async function runSingleBenchmark(
   return {
     iteration,
     mode,
+    profiles,
     sequenceIndex,
     suiteMs,
     suiteNames,

@@ -5,6 +5,7 @@ import type {
   MetaMaskStorageStructure,
   BaseStore,
   MetaData,
+  StoreResetOptions,
 } from './base-store';
 
 const { sentry } = globalThis;
@@ -180,14 +181,16 @@ export default class ExtensionStore implements BaseStore {
   /**
    * Removes all keys contained in the manifest from the `local` extension
    * storage area.
+   * @param _options
    */
-  async reset(): Promise<void> {
+  async reset(_options?: StoreResetOptions): Promise<void> {
     if (!this.isSupported) {
       throw new Error(
         'MetaMask - cannot persist state to local store as this browser does not support this action',
       );
     }
     const { local } = browser.storage;
-    return await local.remove(['manifest', ...this.#manifest]);
+    await local.remove(['manifest', ...this.#manifest]);
+    this.#manifest.clear();
   }
 }
