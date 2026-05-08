@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { isCaipChainId } from '@metamask/utils';
+import { Hex, isCaipChainId } from '@metamask/utils';
 import {
   getEnabledNetworksByNamespace,
   getShowFiatInTestnets,
@@ -17,6 +17,8 @@ import { useFormatters } from '../../../../hooks/useFormatters';
 import { isEvmChainId } from '../../../../../shared/lib/asset-utils';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../selectors/multichain-accounts/account-tree';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { useTokensData } from '../../../../hooks/useTokensData';
+import { buildEvmCaip19AssetId } from '../../../../../shared/lib/multichain/buildEvmCaip19AssetId';
 
 type UseTokenDisplayInfoProps = {
   token: TokenWithFiatAmount;
@@ -28,6 +30,24 @@ export const useTokenDisplayInfo = ({
   fixCurrencyToUSD,
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = isEvmChainId(token.chainId);
+
+  // Only fetch from the tokens API when token.name is missing (e.g. tokens added
+  // via swaps that bypass the name-aware import path). The module-level cache in
+  // useTokensData ensures at most one HTTP request per unique asset ID across all
+  // token rows, and the empty-array fast-path skips the effect entirely when name
+  // is already present. token.chainId is a hex chain ID when isEvm is true.
+  const evmChainId = token.chainId as Hex;
+  const fallbackAssetId =
+    isEvm && !token.isNative && !token.name && token.address && token.chainId
+      ? buildEvmCaip19AssetId(token.address, evmChainId)
+      : undefined;
+  const fallbackTokensByAssetId = useTokensData(
+    fallbackAssetId ? [fallbackAssetId] : [],
+  );
+  const fallbackEntry = fallbackAssetId
+    ? fallbackTokensByAssetId[fallbackAssetId]
+    : undefined;
+
   const currentCurrency = useSelector(getCurrentCurrency);
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const tokenChainImage = getImageForChainId(token.chainId);
@@ -46,9 +66,9 @@ export const useTokenDisplayInfo = ({
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTestnetSelected = Boolean(
     Object.keys(enabledNetworksByNamespace).length === 1 &&
-    TEST_CHAINS.includes(
-      Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
-    ),
+      TEST_CHAINS.includes(
+        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+      ),
   );
 
   const isMainnet = !isTestnetSelected;
@@ -81,8 +101,8 @@ export const useTokenDisplayInfo = ({
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
   if (isEvm) {
-    const title = token.name || token.symbol;
-    const tokenImage = token.image;
+    const title = token.name || fallbackEntry?.name || token.symbol;
+    const tokenImage = (token.image || fallbackEntry?.iconUrl) as string;
 
     return {
       title,

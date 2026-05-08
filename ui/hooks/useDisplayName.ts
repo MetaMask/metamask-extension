@@ -119,36 +119,38 @@ export function useDisplayName(
 function useERC20Tokens(
   nameRequests: UseDisplayNameRequest[],
 ): ({ name?: string; image?: string } | undefined)[] {
-  const assetIds = nameRequests
-    .filter(
-      ({ type, value, variation }) =>
+  // Compute the CAIP-19 asset ID for each request in a single pass so it can
+  // be reused as both the fetch input and the result-lookup key without calling
+  // buildEvmCaip19AssetId twice per request.
+  const requestsWithAssetIds = nameRequests.map(
+    ({ type, value, variation }) => ({
+      assetId:
         type === NameType.ETHEREUM_ADDRESS &&
         value &&
-        isStrictHexString(variation),
-    )
-    .map(({ value, variation }) =>
-      buildEvmCaip19AssetId(value as string, variation as Hex),
-    );
+        isStrictHexString(variation)
+          ? buildEvmCaip19AssetId(value as string, variation as Hex)
+          : undefined,
+    }),
+  );
+
+  const assetIds = requestsWithAssetIds
+    .map((r) => r.assetId)
+    .filter((id): id is string => id !== undefined);
 
   const tokensByAssetId = useTokensData(assetIds);
 
-  return nameRequests.map(
-    ({ preferContractSymbol, type, value, variation }) => {
-      if (type !== NameType.ETHEREUM_ADDRESS) {
-        return undefined;
-      }
+  return nameRequests.map(({ preferContractSymbol, type }, index) => {
+    if (type !== NameType.ETHEREUM_ADDRESS) {
+      return undefined;
+    }
 
-      const token = isStrictHexString(variation)
-        ? tokensByAssetId[
-            buildEvmCaip19AssetId(value as string, variation as Hex)
-          ]
-        : undefined;
-      const name =
-        preferContractSymbol && token?.symbol ? token.symbol : token?.name;
+    const { assetId } = requestsWithAssetIds[index];
+    const token = assetId ? tokensByAssetId[assetId] : undefined;
+    const name =
+      preferContractSymbol && token?.symbol ? token.symbol : token?.name;
 
-      return { name, image: token?.iconUrl };
-    },
-  );
+    return { name, image: token?.iconUrl };
+  });
 }
 
 function useWatchedNFTNames(
