@@ -8,7 +8,7 @@
  * (popup / side panel) cannot prompt for camera access.
  * 2. **Permission flow** — queries the Permissions API, calls `getUserMedia`,
  * and classifies the result into one of four {@link CameraReadyState} values.
- * 3. **QR decoding** — once the camera is ready, renders `EnhancedReader,`
+ * 3. **QR decoding** — once the camera is ready, renders `EnhancedReaderNimiq`
  * which continuously feeds scanned payloads into a `URDecoder` until a full
  * UR is assembled and forwarded to `handleSuccess`.
  * 4. **Error UI** — displays recoverable camera / scan errors with retry.
@@ -43,7 +43,7 @@ import {
   type CameraReadyStateValue,
   type WebcamError,
 } from './base-reader.types';
-import EnhancedReader from './enhanced-reader';
+import EnhancedReaderNimiq from './enhanced-reader-nimiq';
 
 // ---------------------------------------------------------------------------
 // Hooks – camera permission lifecycle
@@ -224,8 +224,8 @@ const BaseReader = ({
       return;
     }
 
-    // Skip getUserMedia when already granted — EnhancedReader will open the
-    // camera once, avoiding a redundant open/close cycle that slows scanning.
+    // Skip getUserMedia when already granted — EnhancedReaderNimiq will open
+    // the camera once, avoiding a redundant open/close cycle that slows scanning.
     if (state === CameraPermissionState.Granted) {
       if (mountedRef.current) {
         cleanupPermissionListener();
@@ -492,7 +492,7 @@ const BaseReader = ({
       <>
         <div className="qr-scanner__content">
           {readyState === CameraReadyState.Ready ? (
-            <EnhancedReader handleScan={handleScan} />
+            <EnhancedReaderNimiq handleScan={handleScan} />
           ) : null}
         </div>
         {scanProgress > 0 && (
