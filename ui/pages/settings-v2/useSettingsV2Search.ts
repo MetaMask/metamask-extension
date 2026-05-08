@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import Fuse from 'fuse.js';
-import { useI18nContext } from '../../hooks/useI18nContext';
 import { SETTINGS_V2_TABS, SETTINGS_V2_ROUTES } from './settings-registry';
 import { SETTINGS_V2_SEARCH_CONFIG } from './search-config';
+import { useSettingsV2I18n } from './useSettingsV2I18n';
 
 export const MIN_SEARCH_LENGTH = 3;
 
@@ -67,7 +67,7 @@ function buildSearchableItems(): SettingsV2SearchResult[] {
 export function useSettingsV2Search(
   searchValue: string,
 ): SettingsV2SearchResult[] {
-  const t = useI18nContext();
+  const t = useSettingsV2I18n();
 
   const fuse = useMemo(() => {
     const items = buildSearchableItems();
