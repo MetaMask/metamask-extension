@@ -726,96 +726,215 @@ describe('PerpsControllerInit', () => {
         });
       }
 
-      it('retries perpsGetPositions after TERMINATED_BY_USER and succeeds', async () => {
-        const { api, messengerClient } = initWithApi();
-        const getPositions = messengerClient.getPositions as jest.Mock;
-        getPositions
-          .mockRejectedValueOnce(makeTerminatedByUserError())
-          .mockResolvedValueOnce([{ symbol: 'ETH' }]);
+      describe('read methods retry on benign disconnect errors', () => {
+        it('retries perpsGetPositions after TERMINATED_BY_USER and succeeds', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getPositions = messengerClient.getPositions as jest.Mock;
+          getPositions
+            .mockRejectedValueOnce(makeTerminatedByUserError())
+            .mockResolvedValueOnce([{ symbol: 'ETH' }]);
 
-        const result = await api.perpsGetPositions();
+          const result = await api.perpsGetPositions();
 
-        expect(messengerClient.init).toHaveBeenCalledTimes(1);
-        expect(getPositions).toHaveBeenCalledTimes(2);
-        expect(result).toEqual([{ symbol: 'ETH' }]);
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(getPositions).toHaveBeenCalledTimes(2);
+          expect(result).toEqual([{ symbol: 'ETH' }]);
+        });
+
+        it('retries perpsGetUserHistory (provider passthrough) after TERMINATED_BY_USER', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getUserHistory = messengerClient.getActiveProvider()
+            .getUserHistory as jest.Mock;
+          getUserHistory
+            .mockRejectedValueOnce(makeTerminatedByUserError())
+            .mockResolvedValueOnce([{ id: 'h1' }]);
+
+          const result = await api.perpsGetUserHistory({ startTime: 0 });
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(result).toEqual([{ id: 'h1' }]);
+        });
+
+        it('retries perpsGetPositions after WebSocket connection closed and succeeds', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getPositions = messengerClient.getPositions as jest.Mock;
+          getPositions
+            .mockRejectedValueOnce(makeConnectionClosedError())
+            .mockResolvedValueOnce([{ symbol: 'BTC' }]);
+
+          const result = await api.perpsGetPositions();
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(getPositions).toHaveBeenCalledTimes(2);
+          expect(result).toEqual([{ symbol: 'BTC' }]);
+        });
+
+        it('retries perpsGetUserHistory after WebSocket connection closed and succeeds', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getUserHistory = messengerClient.getActiveProvider()
+            .getUserHistory as jest.Mock;
+          getUserHistory
+            .mockRejectedValueOnce(makeConnectionClosedError())
+            .mockResolvedValueOnce([{ id: 'h2' }]);
+
+          const result = await api.perpsGetUserHistory({ startTime: 0 });
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(result).toEqual([{ id: 'h2' }]);
+        });
+
+        it('does not retry when the cause code is not TERMINATED_BY_USER', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getPositions = messengerClient.getPositions as jest.Mock;
+          const cause = Object.assign(
+            new Error('Error when reconnecting WebSocket: UNKNOWN_ERROR'),
+            { name: 'ReconnectingWebSocketError', code: 'UNKNOWN_ERROR' },
+          );
+          const wsError = Object.assign(
+            new Error('Failed to establish WebSocket connection'),
+            { name: 'WebSocketRequestError', cause },
+          );
+          getPositions.mockRejectedValueOnce(wsError);
+
+          await expect(api.perpsGetPositions()).rejects.toThrow(
+            'Failed to establish WebSocket connection',
+          );
+          expect(messengerClient.init).not.toHaveBeenCalled();
+          expect(getPositions).toHaveBeenCalledTimes(1);
+        });
+
+        it('does not retry for a WebSocketRequestError with a different message', async () => {
+          const { api, messengerClient } = initWithApi();
+          const getPositions = messengerClient.getPositions as jest.Mock;
+          const wsError = Object.assign(
+            new Error('Failed to close WebSocket connection'),
+            { name: 'WebSocketRequestError' },
+          );
+          getPositions.mockRejectedValueOnce(wsError);
+
+          await expect(api.perpsGetPositions()).rejects.toThrow(
+            'Failed to close WebSocket connection',
+          );
+          expect(messengerClient.init).not.toHaveBeenCalled();
+          expect(getPositions).toHaveBeenCalledTimes(1);
+        });
       });
 
-      it('retries perpsGetUserHistory (provider passthrough) after TERMINATED_BY_USER', async () => {
-        const { api, messengerClient } = initWithApi();
-        const getUserHistory = messengerClient.getActiveProvider()
-          .getUserHistory as jest.Mock;
-        getUserHistory
-          .mockRejectedValueOnce(makeTerminatedByUserError())
-          .mockResolvedValueOnce([{ id: 'h1' }]);
+      describe('write methods do not retry on benign disconnect errors', () => {
+        // [apiMethod, controllerMethod] pairs for all guarded mutations
+        const writeMethods: [string, string][] = [
+          ['perpsPlaceOrder', 'placeOrder'],
+          ['perpsClosePosition', 'closePosition'],
+          ['perpsClosePositions', 'closePositions'],
+          ['perpsEditOrder', 'editOrder'],
+          ['perpsCancelOrder', 'cancelOrder'],
+          ['perpsCancelOrders', 'cancelOrders'],
+          ['perpsUpdatePositionTPSL', 'updatePositionTPSL'],
+          ['perpsUpdateMargin', 'updateMargin'],
+          ['perpsFlipPosition', 'flipPosition'],
+          ['perpsWithdraw', 'withdraw'],
+          ['perpsUpdateWithdrawalStatus', 'updateWithdrawalStatus'],
+          ['perpsUpdateWithdrawalProgress', 'updateWithdrawalProgress'],
+        ];
 
-        const result = await api.perpsGetUserHistory({ startTime: 0 });
+        for (const [apiMethod, controllerMethod] of writeMethods) {
+          it(`${apiMethod} surfaces "WebSocket connection closed" without retry`, async () => {
+            const { api, messengerClient } = initWithApi();
+            const fn = (
+              messengerClient as unknown as Record<string, jest.Mock>
+            )[controllerMethod];
+            fn.mockRejectedValueOnce(makeConnectionClosedError());
 
-        expect(messengerClient.init).toHaveBeenCalledTimes(1);
-        expect(result).toEqual([{ id: 'h1' }]);
-      });
+            await expect(
+              (api as Record<string, CallableFunction>)[apiMethod](),
+            ).rejects.toThrow('WebSocket connection closed');
+            expect(messengerClient.init).not.toHaveBeenCalled();
+            expect(fn).toHaveBeenCalledTimes(1);
+          });
 
-      it('retries perpsGetPositions after WebSocket connection closed and succeeds', async () => {
-        const { api, messengerClient } = initWithApi();
-        const getPositions = messengerClient.getPositions as jest.Mock;
-        getPositions
-          .mockRejectedValueOnce(makeConnectionClosedError())
-          .mockResolvedValueOnce([{ symbol: 'BTC' }]);
+          it(`${apiMethod} surfaces TERMINATED_BY_USER without retry`, async () => {
+            const { api, messengerClient } = initWithApi();
+            const fn = (
+              messengerClient as unknown as Record<string, jest.Mock>
+            )[controllerMethod];
+            fn.mockRejectedValueOnce(makeTerminatedByUserError());
 
-        const result = await api.perpsGetPositions();
+            await expect(
+              (api as Record<string, CallableFunction>)[apiMethod](),
+            ).rejects.toThrow();
+            expect(messengerClient.init).not.toHaveBeenCalled();
+            expect(fn).toHaveBeenCalledTimes(1);
+          });
 
-        expect(messengerClient.init).toHaveBeenCalledTimes(1);
-        expect(getPositions).toHaveBeenCalledTimes(2);
-        expect(result).toEqual([{ symbol: 'BTC' }]);
-      });
+          it(`${apiMethod} still retries on CLIENT_NOT_INITIALIZED (pre-send)`, async () => {
+            const { api, messengerClient } = initWithApi();
+            const fn = (
+              messengerClient as unknown as Record<string, jest.Mock>
+            )[controllerMethod];
+            fn.mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
+              .mockResolvedValueOnce(undefined);
 
-      it('retries perpsGetUserHistory after WebSocket connection closed and succeeds', async () => {
-        const { api, messengerClient } = initWithApi();
-        const getUserHistory = messengerClient.getActiveProvider()
-          .getUserHistory as jest.Mock;
-        getUserHistory
-          .mockRejectedValueOnce(makeConnectionClosedError())
-          .mockResolvedValueOnce([{ id: 'h2' }]);
+            await (api as Record<string, CallableFunction>)[apiMethod]();
 
-        const result = await api.perpsGetUserHistory({ startTime: 0 });
+            expect(messengerClient.init).toHaveBeenCalledTimes(1);
+            expect(fn).toHaveBeenCalledTimes(2);
+          });
+        }
 
-        expect(messengerClient.init).toHaveBeenCalledTimes(1);
-        expect(result).toEqual([{ id: 'h2' }]);
-      });
+        it('perpsDepositWithConfirmation surfaces "WebSocket connection closed" without retry', async () => {
+          const { api, messengerClient } = initWithApi();
+          (
+            messengerClient.depositWithConfirmation as jest.Mock
+          ).mockRejectedValueOnce(makeConnectionClosedError());
 
-      it('does not retry when the cause code is not TERMINATED_BY_USER', async () => {
-        const { api, messengerClient } = initWithApi();
-        const getPositions = messengerClient.getPositions as jest.Mock;
-        const cause = Object.assign(
-          new Error('Error when reconnecting WebSocket: UNKNOWN_ERROR'),
-          { name: 'ReconnectingWebSocketError', code: 'UNKNOWN_ERROR' },
-        );
-        const wsError = Object.assign(
-          new Error('Failed to establish WebSocket connection'),
-          { name: 'WebSocketRequestError', cause },
-        );
-        getPositions.mockRejectedValueOnce(wsError);
+          await expect(
+            api.perpsDepositWithConfirmation(
+              ...([] as unknown as Parameters<
+                typeof messengerClient.depositWithConfirmation
+              >),
+            ),
+          ).rejects.toThrow('WebSocket connection closed');
+          expect(messengerClient.init).not.toHaveBeenCalled();
+        });
 
-        await expect(api.perpsGetPositions()).rejects.toThrow(
-          'Failed to establish WebSocket connection',
-        );
-        expect(messengerClient.init).not.toHaveBeenCalled();
-        expect(getPositions).toHaveBeenCalledTimes(1);
-      });
+        it('perpsDepositWithConfirmation surfaces TERMINATED_BY_USER without retry', async () => {
+          const { api, messengerClient } = initWithApi();
+          (
+            messengerClient.depositWithConfirmation as jest.Mock
+          ).mockRejectedValueOnce(makeTerminatedByUserError());
 
-      it('does not retry for a WebSocketRequestError with a different message', async () => {
-        const { api, messengerClient } = initWithApi();
-        const getPositions = messengerClient.getPositions as jest.Mock;
-        const wsError = Object.assign(
-          new Error('Failed to close WebSocket connection'),
-          { name: 'WebSocketRequestError' },
-        );
-        getPositions.mockRejectedValueOnce(wsError);
+          await expect(
+            api.perpsDepositWithConfirmation(
+              ...([] as unknown as Parameters<
+                typeof messengerClient.depositWithConfirmation
+              >),
+            ),
+          ).rejects.toThrow();
+          expect(messengerClient.init).not.toHaveBeenCalled();
+        });
 
-        await expect(api.perpsGetPositions()).rejects.toThrow(
-          'Failed to close WebSocket connection',
-        );
-        expect(messengerClient.init).not.toHaveBeenCalled();
-        expect(getPositions).toHaveBeenCalledTimes(1);
+        it('perpsDepositWithConfirmation still retries on CLIENT_NOT_INITIALIZED (pre-send)', async () => {
+          const { api, messengerClient } = initWithApi();
+          (messengerClient.state as unknown as Record<string, string>).lastDepositTransactionId =
+            'tx-retry';
+          (
+            messengerClient.depositWithConfirmation as jest.Mock
+          )
+            .mockRejectedValueOnce(new Error('CLIENT_NOT_INITIALIZED'))
+            .mockResolvedValueOnce(undefined);
+
+          const result = await api.perpsDepositWithConfirmation(
+            ...([] as unknown as Parameters<
+              typeof messengerClient.depositWithConfirmation
+            >),
+          );
+
+          expect(messengerClient.init).toHaveBeenCalledTimes(1);
+          expect(
+            messengerClient.depositWithConfirmation,
+          ).toHaveBeenCalledTimes(2);
+          expect(result).toBe('tx-retry');
+        });
       });
     });
   });
