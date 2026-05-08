@@ -19,7 +19,7 @@ import {
   TextVariant,
   IconSize,
 } from '@metamask/design-system-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import classnames from 'clsx';
 import log from 'loglevel';
@@ -46,8 +46,9 @@ import { isValidEmail } from '../../../../../app/scripts/lib/util';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
-import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
+import { toast, ToastContent } from '../../../../components/ui/toast/toast';
+import { SECOND } from '../../../../../shared/constants/time';
 import {
   TRANSACTION_SHIELD_SUPPORT_LINK,
   FIND_TRANSACTION_HASH_LINK,
@@ -88,7 +89,6 @@ const ClaimsForm = ({
   const isNew = mode === CLAIMS_FORM_MODES.NEW;
   const isEditDraft = mode === CLAIMS_FORM_MODES.EDIT_DRAFT;
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { refetchClaims } = useClaims();
   const { hasMaxDrafts, saveDraft, deleteDraft } = useClaimDraft();
@@ -327,11 +327,21 @@ const ClaimsForm = ({
             ? t(messageFromErrorMap.messageKey, params)
             : message;
         }
-        // if message is not mapped we use toast
-        dispatch(setShowClaimSubmitToast(toastMessage));
+        toast.error(
+          <ToastContent
+            title={t('shieldClaimSubmitError')}
+            description={
+              toastMessage !== ClaimSubmitToastType.Errored
+                ? toastMessage
+                : undefined
+            }
+            dataTestId="claim-submit-toast-error"
+          />,
+          { duration: 5 * SECOND },
+        );
       }
     },
-    [dispatch, setErrorMessage, t, validSubmissionWindowDays],
+    [setErrorMessage, t, validSubmissionWindowDays],
   );
 
   const onClickFindTransactionHash = useCallback(async () => {
@@ -393,7 +403,14 @@ const ClaimsForm = ({
         }
       }
 
-      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
+      toast.success(
+        <ToastContent
+          title={t('shieldClaimSubmitSuccess')}
+          description={t('shieldClaimSubmitSuccessDescription')}
+          dataTestId="claim-submit-toast-success"
+        />,
+        { duration: 5 * SECOND },
+      );
       // update claims
       await refetchClaims();
       navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
@@ -416,7 +433,6 @@ const ClaimsForm = ({
     reimbursementWalletAddress,
     caseDescription,
     files,
-    dispatch,
     navigate,
     refetchClaims,
     claimSignature,
@@ -425,6 +441,7 @@ const ClaimsForm = ({
     latestShieldSubscription,
     currentDraftId,
     deleteDraft,
+    t,
   ]);
 
   const hasAnyDraftData = useMemo(() => {
@@ -467,13 +484,27 @@ const ClaimsForm = ({
           description: caseDescription,
           draftId: currentDraftId,
         });
-        dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
+        toast.success(
+          <ToastContent
+            title={t('shieldClaimDraftSaved')}
+            description={t('shieldClaimDraftSavedDescription')}
+            dataTestId="claim-draft-saved-toast"
+          />,
+          { duration: 5 * SECOND },
+        );
         if (!isEditDraft) {
           navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
         }
       } catch (error) {
         log.error('Error saving draft', error);
-        dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaveFailed));
+        toast.error(
+          <ToastContent
+            title={t('shieldClaimDraftSaveFailed')}
+            description={t('shieldClaimDraftSaveFailedDescription')}
+            dataTestId="claim-draft-save-failed-toast"
+          />,
+          { duration: 5 * SECOND },
+        );
       }
     },
     [
@@ -486,8 +517,8 @@ const ClaimsForm = ({
       caseDescription,
       currentDraftId,
       isEditDraft,
-      dispatch,
       navigate,
+      t,
     ],
   );
 
@@ -497,13 +528,27 @@ const ClaimsForm = ({
     }
     try {
       await deleteDraft(currentDraftId);
-      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftDeleted));
+      toast.success(
+        <ToastContent
+          title={t('shieldClaimDeletedDraft')}
+          description={t('shieldClaimDeleteDraftDescription')}
+          dataTestId="claim-draft-deleted-toast"
+        />,
+        { duration: 5 * SECOND },
+      );
       navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
     } catch (error) {
       log.error('Error deleting draft', error);
-      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftDeleteFailed));
+      toast.error(
+        <ToastContent
+          title={t('shieldClaimDraftDeleteFailed')}
+          description={t('shieldClaimDraftDeleteFailedDescription')}
+          dataTestId="claim-draft-delete-failed-toast"
+        />,
+        { duration: 5 * SECOND },
+      );
     }
-  }, [currentDraftId, deleteDraft, dispatch, navigate]);
+  }, [currentDraftId, deleteDraft, navigate, t]);
 
   const saveDeleteDraftButton = useMemo(() => {
     if (isEditDraft) {

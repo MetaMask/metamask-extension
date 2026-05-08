@@ -1,17 +1,11 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import { MetaMaskReduxState } from '../../../store/store';
-import {
-  ClaimSubmitToastType,
-  StorageWriteErrorType,
-} from '../../../../shared/constants/app-state';
+import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
   appState: Partial<
-    Pick<
-      MetaMaskReduxState['appState'],
-      'showClaimSubmitToast' | 'showInfuraSwitchToast'
-    >
+    Pick<MetaMaskReduxState['appState'], 'showInfuraSwitchToast'>
   >;
   metamask: Partial<
     Pick<
@@ -32,10 +26,12 @@ type State = {
 };
 
 /**
- * Determines if the privacy policy toast should be shown based on the current date and whether the new privacy policy toast was clicked or closed.
+ * Determines if the privacy policy toast should be shown based on the current
+ * date and whether the new privacy policy toast was clicked or closed.
  *
  * @param state - The application state containing the privacy policy data.
- * @returns Boolean is True if the toast should be shown, and the number is the date the toast was last shown.
+ * @returns Boolean is True if the toast should be shown, and the number is the
+ * date the toast was last shown.
  */
 export function selectShowPrivacyPolicyToast(state: Pick<State, 'metamask'>): {
   showPrivacyPolicyToast: boolean;
@@ -59,18 +55,6 @@ export function selectShowPrivacyPolicyToast(state: Pick<State, 'metamask'>): {
     (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf());
 
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
-}
-
-/**
- * Retrieves the state for the "Claim Submit" toast
- *
- * @param state - Redux state object.
- * @returns ClaimSubmitToastType or null
- */
-export function selectClaimSubmitToast(
-  state: Pick<State, 'appState'>,
-): ClaimSubmitToastType | null {
-  return state.appState.showClaimSubmitToast || null;
 }
 
 /**
@@ -111,7 +95,8 @@ export function selectShowShieldEndingToast(
 
 /**
  * Determines if the storage error toast should be shown based on:
- * - storageWriteErrorType is set (not null/undefined, indicates an error occurred)
+ * - storageWriteErrorType is set (not null/undefined, indicates an error
+ *   occurred)
  * - User has completed onboarding
  * - Wallet is unlocked
  *
@@ -162,8 +147,10 @@ export function selectShowSidePanelMigrationToast(
  * - User has opted into metrics (participateInMetaMetrics === true)
  * - User hasn't acknowledged the banner yet (pna25Acknowledged === false)
  *
- * Regular new users: Go through metametrics page → pna25Acknowledged = true → don't see banner
- * Social login users: Skip metametrics page → pna25Acknowledged = false → see banner
+ * Regular new users: Go through metametrics page → pna25Acknowledged = true →
+ * don't see banner
+ * Social login users: Skip metametrics page → pna25Acknowledged = false → see
+ * banner
  * Existing users: pna25Acknowledged = false (default) → see banner
  *
  * @param state - The application state containing the banner data.
@@ -186,6 +173,7 @@ export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
     return false; // User already acknowledged
   }
 
-  // Only show banner if explicitly false (existing users who haven't acknowledged)
+  // Only show banner if explicitly false (existing users who haven't
+  // acknowledged)
   return pna25Acknowledged === false;
 }
