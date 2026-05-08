@@ -687,7 +687,7 @@ export const getBridgeQuotes = createSelector(
   },
 );
 
-export const getBridgeQuotesBatch = createSelector(
+export const getBatchSellQuotes = createSelector(
   [
     ({ metamask }: BridgeAppState) => metamask,
     ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
