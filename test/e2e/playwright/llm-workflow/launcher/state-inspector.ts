@@ -280,8 +280,7 @@ function resolveIdentity(metamaskState: MetamaskStateSlice): IdentityData {
   const networkConfig =
     configs.find((cfg) =>
       cfg.rpcEndpoints?.some(
-        (ep) =>
-          ep.networkClientId === metamaskState.selectedNetworkClientId,
+        (ep) => ep.networkClientId === metamaskState.selectedNetworkClientId,
       ),
     ) ?? null;
 
@@ -292,9 +291,7 @@ function resolveIdentity(metamaskState: MetamaskStateSlice): IdentityData {
   };
 }
 
-async function extractIdentityViaCDP(
-  page: Page,
-): Promise<IdentityData | null> {
+async function extractIdentityViaCDP(page: Page): Promise<IdentityData | null> {
   let cdp;
   try {
     cdp = await page.context().newCDPSession(page);

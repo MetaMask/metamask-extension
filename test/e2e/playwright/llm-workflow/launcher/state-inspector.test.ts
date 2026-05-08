@@ -387,21 +387,16 @@ describe('state-inspector', () => {
     });
 
     it('parses hex chainId from Redux state to number', async () => {
-      const page = buildPage(
-        'chrome-extension://id/home.html#/',
-        {},
-        [],
-        {
-          ...DEFAULT_METAMASK_STATE,
-          networkConfigurationsByChainId: {
-            '0x1': {
-              name: 'Ethereum Mainnet',
-              chainId: '0x1',
-              rpcEndpoints: [{ networkClientId: 'network-client-1' }],
-            },
+      const page = buildPage('chrome-extension://id/home.html#/', {}, [], {
+        ...DEFAULT_METAMASK_STATE,
+        networkConfigurationsByChainId: {
+          '0x1': {
+            name: 'Ethereum Mainnet',
+            chainId: '0x1',
+            rpcEndpoints: [{ networkClientId: 'network-client-1' }],
           },
         },
-      );
+      });
 
       const state = await getBaseExtensionState(page, {
         extensionId: 'g'.repeat(32),
@@ -412,21 +407,16 @@ describe('state-inspector', () => {
     });
 
     it('falls back to options.chainId when Redux chainId is null', async () => {
-      const page = buildPage(
-        'chrome-extension://id/home.html#/',
-        {},
-        [],
-        {
-          ...DEFAULT_METAMASK_STATE,
-          networkConfigurationsByChainId: {
-            '0x539': {
-              name: 'Localhost 8545',
-              chainId: null,
-              rpcEndpoints: [{ networkClientId: 'network-client-1' }],
-            },
+      const page = buildPage('chrome-extension://id/home.html#/', {}, [], {
+        ...DEFAULT_METAMASK_STATE,
+        networkConfigurationsByChainId: {
+          '0x539': {
+            name: 'Localhost 8545',
+            chainId: null,
+            rpcEndpoints: [{ networkClientId: 'network-client-1' }],
           },
         },
-      );
+      });
 
       const state = await getBaseExtensionState(page, {
         extensionId: 'h'.repeat(32),
