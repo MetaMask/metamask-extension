@@ -157,6 +157,7 @@ export async function mockTopAssetsArbitrum(mockServer: Mockttp) {
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
     .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
+    .always()
     .thenCallback(() => {
       return {
         statusCode: 200,
