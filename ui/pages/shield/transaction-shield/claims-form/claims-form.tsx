@@ -80,6 +80,8 @@ import {
 } from './constants';
 import { isValidTransactionHash } from './utils';
 
+const duration = 5 * SECOND;
+
 const ClaimsForm = ({
   mode = CLAIMS_FORM_MODES.NEW,
 }: {
@@ -337,7 +339,7 @@ const ClaimsForm = ({
             }
             dataTestId="claim-submit-toast-error"
           />,
-          { duration: 5 * SECOND },
+          { duration },
         );
       }
     },
@@ -409,7 +411,7 @@ const ClaimsForm = ({
           description={t('shieldClaimSubmitSuccessDescription')}
           dataTestId="claim-submit-toast-success"
         />,
-        { duration: 5 * SECOND },
+        { duration },
       );
       // update claims
       await refetchClaims();
@@ -490,7 +492,7 @@ const ClaimsForm = ({
             description={t('shieldClaimDraftSavedDescription')}
             dataTestId="claim-draft-saved-toast"
           />,
-          { duration: 5 * SECOND },
+          { duration },
         );
         if (!isEditDraft) {
           navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
@@ -503,7 +505,7 @@ const ClaimsForm = ({
             description={t('shieldClaimDraftSaveFailedDescription')}
             dataTestId="claim-draft-save-failed-toast"
           />,
-          { duration: 5 * SECOND },
+          { duration },
         );
       }
     },
@@ -534,7 +536,7 @@ const ClaimsForm = ({
           description={t('shieldClaimDeleteDraftDescription')}
           dataTestId="claim-draft-deleted-toast"
         />,
-        { duration: 5 * SECOND },
+        { duration },
       );
       navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
     } catch (error) {
@@ -545,7 +547,7 @@ const ClaimsForm = ({
           description={t('shieldClaimDraftDeleteFailedDescription')}
           dataTestId="claim-draft-delete-failed-toast"
         />,
-        { duration: 5 * SECOND },
+        { duration },
       );
     }
   }, [currentDraftId, deleteDraft, navigate, t]);

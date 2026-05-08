@@ -23,6 +23,7 @@ import {
   PERPS_ROUTE,
   REVEAL_SEED_ROUTE,
   REVIEW_PERMISSIONS,
+  SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
@@ -95,6 +96,7 @@ export function ToastMaster() {
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
   const onPerpsScreen = currentPathname.startsWith(PERPS_ROUTE);
+  const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
   // Storage error toast should show on ALL screens
   const storageErrorToast = <StorageErrorToast />;
@@ -126,6 +128,10 @@ export function ToastMaster() {
         <PerpsWithdrawToast />
       </ToastContainer>
     );
+  }
+
+  if (onSettingsScreen) {
+    return <ToastContainer>{storageErrorToast}</ToastContainer>;
   }
 
   // On other screens, only render ToastContainer if storage error toast should show

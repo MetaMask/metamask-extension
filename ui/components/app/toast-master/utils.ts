@@ -2,12 +2,10 @@ import { SET_SHOW_INFURA_SWITCH_TOAST } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
 
 /**
- * Returns true if the privacy policy toast was shown either never, or less
- * than a day ago.
+ * Returns true if the privacy policy toast was shown either never, or less than a day ago.
  *
  * @param newPrivacyPolicyToastShownDate
- * @returns true if the privacy policy toast was shown either never, or less
- * than a day ago
+ * @returns true if the privacy policy toast was shown either never, or less than a day ago
  */
 export function getIsPrivacyToastRecent(
   newPrivacyPolicyToastShownDate?: number | null,
