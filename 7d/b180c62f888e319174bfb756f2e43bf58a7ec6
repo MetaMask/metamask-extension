@@ -1,0 +1,64 @@
+test/e2e/playwright/llm-workflow/capabilities/state-snapshot.ts
+  s_f8fca116ba41ea::t_10623d0a9c8f26 16-18
+test/e2e/playwright/llm-workflow/launcher/state-inspector.test.ts
+  s_f8fca116ba41ea::t_7cbda6fba7cae9 46-47,313-317,319,329-332,337-341,343,352,354,360,362-393,404-418,429-438,469-474,476-488
+  s_89830af61180c6::t_a2555f015f895c 52,56,60
+  s_f346398ad889c9::t_c15c05c5325824 359,361
+  s_f346398ad889c9::t_508638e9cae839 55,57-59,61-62,65-70
+  s_89830af61180c6::t_8c83d49a78016d 318
+  s_89830af61180c6::t_471987267c382e 475
+  s_89830af61180c6::t_4a8410a46c066b 342
+  s_89830af61180c6::t_fdc14a92775dfc 394-403
+  s_89830af61180c6::t_d3e6acf801c356 31-45
+  s_89830af61180c6::t_02531050c6fd68 419-428
+test/e2e/playwright/llm-workflow/launcher/state-inspector.ts
+  s_72e26b8ef878d6::t_40be957839f15e 241-244,246-247,264-270,295-301,303-314,319,321-327
+  s_89830af61180c6::t_c1c011275dfc2c 237-240,245,248-263,271-294,302,315-318,320
+  s_72e26b8ef878d6::t_bf079ca00890e8 348
+  s_f8fca116ba41ea::t_48d3d1ada3d4b3 345,350-365
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "7db180c62f888e319174bfb756f2e43bf58a7ec6",
+  "prompts": {},
+  "humans": {
+    "h_d6a04d82b61d5e": {
+      "author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  },
+  "sessions": {
+    "s_72e26b8ef878d6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1fc9f9f8fffe9LMhBhXSBMbNfl",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_89830af61180c6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1fb38747cffe0uhA9vs4zGcocd",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_f346398ad889c9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1fb47697affeIgnQndITLR04xF",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    },
+    "s_f8fca116ba41ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ses_1fbc38f20ffeiTqLvzxtP9Racg",
+        "model": "unknown"
+      },
+      "human_author": "cryptotavares <joao.tavares@consensys.net>"
+    }
+  }
+}
