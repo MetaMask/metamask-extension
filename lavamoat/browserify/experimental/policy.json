@@ -1595,6 +1595,15 @@
         "@metamask/json-rpc-engine>klona": true
       }
     },
+    "@metamask/multichain-api-middleware>@metamask/json-rpc-engine": {
+      "packages": {
+        "@metamask/messenger": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/safe-event-emitter": true,
+        "@metamask/utils": true,
+        "@metamask/json-rpc-engine>klona": true
+      }
+    },
     "@metamask/json-rpc-middleware-stream": {
       "globals": {
         "console.warn": true,
@@ -1833,7 +1842,7 @@
         "@metamask/chain-agnostic-permission": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
-        "@metamask/json-rpc-engine": true,
+        "@metamask/multichain-api-middleware>@metamask/json-rpc-engine": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,

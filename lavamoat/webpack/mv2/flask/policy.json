@@ -1706,7 +1706,7 @@
         "@metamask/chain-agnostic-permission": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-filters": true,
-        "@metamask/json-rpc-engine": true,
+        "@metamask/multichain-api-middleware>@metamask/json-rpc-engine": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/safe-event-emitter": true,
