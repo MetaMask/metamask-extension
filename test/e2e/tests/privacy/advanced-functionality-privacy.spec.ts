@@ -182,13 +182,23 @@ describe('MetaMask onboarding ', function () {
               requests.length >= 1,
               `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
             );
-          } else {
-            assert.equal(
-              requests.length,
-              1,
-              `${m} should make requests after onboarding`,
-            );
+            continue;
           }
+
+          // token api may be called more than once (initial load + mUSD added by default)
+          if (mockUrl.includes('token\\.api\\.cx\\.metamask\\.io/tokens/1')) {
+            assert.ok(
+              requests.length >= 1,
+              `${m} should make at least 1 request after onboarding (actual: ${requests.length})`,
+            );
+            continue;
+          }
+
+          assert.equal(
+            requests.length,
+            1,
+            `${m} should make requests after onboarding`,
+          );
         }
       },
     );
