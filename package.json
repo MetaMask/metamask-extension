@@ -301,9 +301,9 @@
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
     "@metamask/multichain-account-service@npm:^7.0.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
     "@metamask/multichain-account-service@npm:^7.1.0": "patch:@metamask/multichain-account-service@npm%3A7.1.0#~/.yarn/patches/@metamask-multichain-account-service-npm-7.1.0-4b0ce989c3.patch",
-    "@chainsafe/libp2p-noise": "16.1.5",
-    "@libp2p/crypto": "5.1.8",
-    "@libp2p/interface": "2.11.0",
+    "@chainsafe/libp2p-noise": "^17.0.0",
+    "@libp2p/crypto": "5.1.14",
+    "@libp2p/interface": "3.1.1",
     "@metamask/kernel-browser-runtime": "portal:ocap-kernel/packages/kernel-browser-runtime",
     "@metamask/kernel-errors": "portal:ocap-kernel/packages/kernel-errors",
     "@metamask/kernel-platforms": "portal:ocap-kernel/packages/kernel-platforms",
@@ -451,7 +451,7 @@
     "@metamask/signature-controller": "^39.2.0",
     "@metamask/smart-transactions-controller": "^24.1.0",
     "@metamask/snaps-controllers": "^20.0.4",
-    "@metamask/snaps-execution-environments": "^11.0.2",
+    "@metamask/snaps-execution-environments": "^11.1.0",
     "@metamask/snaps-rpc-methods": "^15.1.1",
     "@metamask/snaps-sdk": "^11.1.0",
     "@metamask/snaps-utils": "^12.2.0",
@@ -855,8 +855,6 @@
     "allowScripts": {
       "$root$": true,
       "@lavamoat/lavadome-core>@lavamoat/preinstall-always-fail": false,
-      "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": true,
-      "@metamask/kernel-shims>@libp2p/webrtc>@ipshipyard/node-datachannel": false,
       "@metamask/streams": false,
       "@metamask/test-dapp-solana>@solana/spl-token>@solana/buffer-layout-utils>bigint-buffer": false,
       "@storybook/test-runner>@storybook/core-common>esbuild": false,
@@ -886,7 +884,9 @@
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
       "tsx>esbuild#0.27.7": true,
-      "@metamask/kernel-utils": true
+      "@metamask/kernel-utils": true,
+      "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3#12.9.0": true,
+      "@metamask/kernel-shims>@libp2p/webrtc>node-datachannel#0.29.0": false
     }
   },
   "packageManager": "yarn@4.14.1",
