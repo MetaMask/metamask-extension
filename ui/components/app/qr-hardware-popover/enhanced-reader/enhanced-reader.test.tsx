@@ -82,12 +82,10 @@ describe('EnhancedReader', () => {
   it('invokes onFrame when a QR code is decoded', () => {
     const onFrame = jest.fn();
 
-    mockDecodeFromVideoDevice.mockImplementation(
-      (_device, _elem, callback) => {
-        callback({ getText: () => 'decoded-payload' }, null);
-        return Promise.resolve(mockControls);
-      },
-    );
+    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
+      callback({ getText: () => 'decoded-payload' }, null);
+      return Promise.resolve(mockControls);
+    });
 
     render(<EnhancedReader onFrame={onFrame} isVisible />);
 
@@ -97,12 +95,10 @@ describe('EnhancedReader', () => {
   it('does not invoke onFrame when result is null', () => {
     const onFrame = jest.fn();
 
-    mockDecodeFromVideoDevice.mockImplementation(
-      (_device, _elem, callback) => {
-        callback(null, null);
-        return Promise.resolve(mockControls);
-      },
-    );
+    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
+      callback(null, null);
+      return Promise.resolve(mockControls);
+    });
 
     render(<EnhancedReader onFrame={onFrame} isVisible />);
 
@@ -113,12 +109,10 @@ describe('EnhancedReader', () => {
     const onCameraError = jest.fn();
     const scanError = new Error('Camera lost');
 
-    mockDecodeFromVideoDevice.mockImplementation(
-      (_device, _elem, callback) => {
-        callback(null, scanError);
-        return Promise.resolve(mockControls);
-      },
-    );
+    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
+      callback(null, scanError);
+      return Promise.resolve(mockControls);
+    });
 
     render(
       <EnhancedReader
@@ -135,12 +129,10 @@ describe('EnhancedReader', () => {
     const onCameraError = jest.fn();
     const scanError = new Error('Device unavailable');
 
-    mockDecodeFromVideoDevice.mockImplementation(
-      (_device, _elem, callback) => {
-        callback(null, scanError);
-        return Promise.resolve(mockControls);
-      },
-    );
+    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
+      callback(null, scanError);
+      return Promise.resolve(mockControls);
+    });
 
     render(
       <EnhancedReader
@@ -168,12 +160,10 @@ describe('EnhancedReader', () => {
   });
 
   it('does not call onCameraError when callback is not provided', () => {
-    mockDecodeFromVideoDevice.mockImplementation(
-      (_device, _elem, callback) => {
-        callback(null, new Error('ignored'));
-        return Promise.resolve(mockControls);
-      },
-    );
+    mockDecodeFromVideoDevice.mockImplementation((_device, _elem, callback) => {
+      callback(null, new Error('ignored'));
+      return Promise.resolve(mockControls);
+    });
 
     expect(() => {
       render(<EnhancedReader onFrame={jest.fn()} isVisible />);

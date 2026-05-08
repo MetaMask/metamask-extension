@@ -57,9 +57,7 @@ const EnhancedReader: React.FC<EnhancedReaderProps> = ({
     );
 
     return () => {
-      promise
-        .then((controls) => controls?.stop())
-        .catch(log.info);
+      promise.then((controls) => controls?.stop()).catch(log.info);
     };
   }, [codeReader, onFrame, onCameraError]);
 
