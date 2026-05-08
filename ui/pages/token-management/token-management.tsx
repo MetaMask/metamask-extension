@@ -1,6 +1,14 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import {
+  Box as DSBox,
+  BoxAlignItems,
+  BoxFlexDirection,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName as DSIconName,
+} from '@metamask/design-system-react';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 
 import {
@@ -44,7 +52,6 @@ import {
   ignoreTokens as ignoreTokensAction,
   showModal,
 } from '../../store/actions';
-import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
@@ -55,6 +62,7 @@ import {
 } from '../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAssetsWithPriority';
 import { ScrollContainer } from '../../contexts/scroll-container';
+import { Header } from '../../components/multichain/pages/page';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -282,6 +290,22 @@ export const TokenManagementPage = () => {
     </Box>
   );
 
+  const startAccessory = (
+    <DSBox
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={1}
+    >
+      <ButtonIcon
+        iconName={DSIconName.ArrowLeft}
+        ariaLabel={t('back')}
+        size={ButtonIconSize.Sm}
+        onClick={handleClose}
+        data-testid="token-management-header-back-button"
+      />
+    </DSBox>
+  );
+
   return (
     <Box
       display={Display.Flex}
@@ -291,12 +315,7 @@ export const TokenManagementPage = () => {
       style={{ height: '100%', minHeight: 0 }}
       data-testid="token-management-page"
     >
-      <SettingsV2Header
-        title={t('manageTokens')}
-        onClose={handleClose}
-        showSearchButton={false}
-        showCloseButton={false}
-      />
+      <Header startAccessory={startAccessory}>{t('manageTokens')}</Header>
 
       <Box
         display={Display.Flex}

@@ -167,6 +167,9 @@ describe('TokenManagementPage', () => {
       screen.getByTestId('token-management-page'),
     ).toBeInTheDocument();
     expect(
+      screen.getByTestId('token-management-header-back-button'),
+    ).toBeInTheDocument();
+    expect(
       screen.queryByTestId('settings-v2-header-search-button'),
     ).not.toBeInTheDocument();
     expect(
