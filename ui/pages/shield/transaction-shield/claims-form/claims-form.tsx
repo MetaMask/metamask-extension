@@ -333,9 +333,9 @@ const ClaimsForm = ({
           <ToastContent
             title={t('shieldClaimSubmitError')}
             description={
-              toastMessage !== ClaimSubmitToastType.Errored
-                ? toastMessage
-                : undefined
+              toastMessage === ClaimSubmitToastType.Errored
+                ? undefined
+                : toastMessage
             }
             dataTestId="claim-submit-toast-error"
           />,
@@ -449,11 +449,11 @@ const ClaimsForm = ({
   const hasAnyDraftData = useMemo(() => {
     return Boolean(
       chainId ||
-      email ||
-      impactedWalletAddress ||
-      impactedTransactionHash ||
-      reimbursementWalletAddress ||
-      caseDescription,
+        email ||
+        impactedWalletAddress ||
+        impactedTransactionHash ||
+        reimbursementWalletAddress ||
+        caseDescription,
     );
   }, [
     chainId,

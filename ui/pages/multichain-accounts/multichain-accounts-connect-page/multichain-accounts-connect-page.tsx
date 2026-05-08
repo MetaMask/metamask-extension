@@ -335,6 +335,8 @@ export const MultichainAccountsConnectPage: React.FC<
     testNetworkConfigurations,
     requestedCaipChainIds,
     isEip1193Request,
+    isSolanaWalletStandardRequest,
+    isTronWalletAdapterRequest,
     currentlySelectedNetwork.chainId,
     requestedNamespaces,
     requestedNamespacesWithoutWallet,
