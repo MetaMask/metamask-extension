@@ -20,7 +20,8 @@ const ARBITRUM_USDC_FALLBACK: SetPayTokenRequest = {
   chainId: ARBITRUM_USDC.chainId,
 };
 
-type PerpsWithdrawDefaultTokenState = TransactionState & RemoteFeatureFlagsState;
+type PerpsWithdrawDefaultTokenState = TransactionState &
+  RemoteFeatureFlagsState;
 
 /**
  * Default destination token for Perps Withdraw: last confirmed
@@ -31,9 +32,8 @@ export function usePerpsWithdrawDefaultToken(): SetPayTokenRequest {
   const transactions = useSelector((state: PerpsWithdrawDefaultTokenState) =>
     selectTransactions(state),
   );
-  const preferredToken = useSelector(
-    (state: PerpsWithdrawDefaultTokenState) =>
-      selectPreferredPayToken(state, TransactionType.perpsWithdraw),
+  const preferredToken = useSelector((state: PerpsWithdrawDefaultTokenState) =>
+    selectPreferredPayToken(state, TransactionType.perpsWithdraw),
   );
 
   return useMemo(() => {

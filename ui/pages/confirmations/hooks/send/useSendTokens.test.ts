@@ -236,15 +236,46 @@ describe('useSendTokens', () => {
 
     await waitFor(() => {
       expect(
-        result.current.find((asset) => asset.address === enrichedAddress),
+        result.current.find(
+          (asset: Asset) => asset.address === enrichedAddress,
+        ),
       ).toBeDefined();
     });
 
     const enrichedAsset = result.current.find(
-      (asset) => asset.address === enrichedAddress,
+      (asset: Asset) => asset.address === enrichedAddress,
     );
     expect(enrichedAsset?.symbol).toBe('DAI');
     expect(enrichedAsset?.rawBalance).toBe('0x0');
+  });
+
+  it('handles metadata enrichment aborts without rejecting', async () => {
+    const abortError = new Error('Aborted');
+    abortError.name = 'AbortError';
+
+    mockFetchAssetMetadataForAssetIds.mockRejectedValueOnce(abortError);
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useSendTokens({
+          enrichTokenRequests: [
+            {
+              address: '0x1111111111111111111111111111111111111111',
+              chainId: '0x1',
+            },
+          ],
+          includeNoBalance: true,
+        }),
+      mockState,
+    );
+
+    await waitFor(() => {
+      expect(mockFetchAssetMetadataForAssetIds).toHaveBeenCalled();
+    });
+
+    expect(result.current.some((asset: Asset) => asset.symbol === 'DAI')).toBe(
+      false,
+    );
   });
 
   it('sorts assets by fiat balance descending', async () => {

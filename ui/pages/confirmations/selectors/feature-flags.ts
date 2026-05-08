@@ -120,10 +120,7 @@ export const selectPayQuoteConfig = createSelector(
 );
 
 export const selectPreferredPayToken = createSelector(
-  [
-    selectPayTokensFlag,
-    (_state, transactionType?: string) => transactionType,
-  ],
+  [selectPayTokensFlag, (_state, transactionType?: string) => transactionType],
   (flag, transactionType): PreferredPayToken | undefined => {
     const preferredTokens = getPreferredTokensForTransaction(
       flag?.preferredTokens,

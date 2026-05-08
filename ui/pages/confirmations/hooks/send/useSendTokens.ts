@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useMemo, useState } from 'react';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
-import { EthAccountType } from '@metamask/keyring-api';
 import {
   isCaipAssetType,
   parseCaipAssetType,
@@ -83,13 +82,17 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
 
     const abortController = new AbortController();
 
-    fetchAssetMetadataForAssetIds(enrichAssetIds, abortController.signal).then(
-      (metadata) => {
+    fetchAssetMetadataForAssetIds(enrichAssetIds, abortController.signal)
+      .then((metadata) => {
         if (!cancelled) {
           setEnrichedTokensMetadata(metadata ?? {});
         }
-      },
-    );
+      })
+      .catch((error) => {
+        if (!cancelled && !isAbortError(error)) {
+          setEnrichedTokensMetadata({});
+        }
+      });
 
     return () => {
       cancelled = true;
@@ -121,12 +124,12 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
     });
   }, [enabled, flatAssets, includeNoBalance, tokenFilter]);
 
-  const processedAssets = useMemo(() => {
+  const processedAssets = useMemo<Asset[]>(() => {
     if (!enabled) {
       return EMPTY_ASSETS;
     }
 
-    const processedWalletAssets = assetsWithBalance.map((asset) => {
+    const processedWalletAssets: Asset[] = assetsWithBalance.map((asset) => {
       const chainNetworkNameAndImage = chainNetworkNAmeAndImageMap.get(
         asset.chainId as Hex,
       );
@@ -147,7 +150,8 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
         image: imageSource,
         networkImage: chainNetworkNameAndImage?.networkImage,
         networkName: chainNetworkNameAndImage?.networkName,
-        shortenedBalance: asset.balance,
+        shortenedBalance:
+          asset.balance === undefined ? undefined : String(asset.balance),
         standard: asset.isNative ? AssetStandard.Native : AssetStandard.ERC20,
       };
     });
@@ -165,16 +169,16 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
       ),
     );
 
-    const enrichedAssets = enrichTokenRequests
-      .map(({ address, chainId }) => {
+    const enrichedAssets = enrichTokenRequests.reduce<Asset[]>(
+      (result, { address, chainId }) => {
         const assetId = toAssetId(address, chainId);
         if (!assetId) {
-          return undefined;
+          return result;
         }
 
         const tokenKey = `${chainId.toLowerCase()}:${address.toLowerCase()}`;
         if (existingTokenKeys.has(tokenKey)) {
-          return undefined;
+          return result;
         }
 
         const metadata =
@@ -182,15 +186,13 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
           enrichedTokensMetadata[assetId.toLowerCase() as CaipAssetType];
 
         if (!metadata?.symbol && !metadata?.name) {
-          return undefined;
+          return result;
         }
 
-        const chainNetworkNameAndImage = chainNetworkNAmeAndImageMap.get(
-          chainId,
-        );
+        const chainNetworkNameAndImage =
+          chainNetworkNAmeAndImageMap.get(chainId);
 
-        return {
-          accountType: EthAccountType.Eoa,
+        result.push({
           address: address.toLowerCase(),
           assetId,
           balance: '0',
@@ -209,9 +211,12 @@ export const useSendTokens = (options: UseSendTokensOptions = {}): Asset[] => {
           shortenedBalance: '0',
           standard: AssetStandard.ERC20,
           symbol: metadata.symbol,
-        } satisfies Asset;
-      })
-      .filter((asset): asset is Asset => Boolean(asset));
+        });
+
+        return result;
+      },
+      [],
+    );
 
     return [...processedWalletAssets, ...enrichedAssets];
   }, [
@@ -250,4 +255,8 @@ function getTokenFilterAddress(asset: Asset): string | undefined {
   }
 
   return asset.assetId;
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof Error && error.name === 'AbortError';
 }

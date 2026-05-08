@@ -11,10 +11,7 @@ import { isPerpsWithdrawTransaction } from '../../../../../shared/lib/transactio
 import { selectPayQuoteConfig } from '../../selectors/feature-flags';
 import { useConfirmContext } from '../../context/confirm';
 import type { Asset } from '../../types/send';
-import {
-  useSendTokens,
-  type EnrichTokenRequest,
-} from '../send/useSendTokens';
+import { useSendTokens, type EnrichTokenRequest } from '../send/useSendTokens';
 
 type WithdrawTokenFilterResult = {
   filterTokens: (tokens: Asset[]) => Asset[];
