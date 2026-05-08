@@ -42,7 +42,7 @@ export const BatchSellEmptySelectTokens = () => {
       isMetaMetricsEnabled,
       isMarketingEnabled,
     );
-    global.platform.openTab({ url });
+    globalThis.platform.openTab({ url });
   }, [metaMetricsId, isMetaMetricsEnabled, isMarketingEnabled]);
 
   return (
@@ -59,7 +59,7 @@ export const BatchSellEmptySelectTokens = () => {
         padding={4}
         className="flex-1"
       >
-        <img src={defiIcon} className="h-[72px] w-[72px]" />
+        <img alt={t('defiIcon')} src={defiIcon} className="h-[72px] w-[72px]" />
         <Box
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}

@@ -573,5 +573,99 @@ describe('batch-sell selectors', () => {
       expect(result[0].percentageChange).toBe(3.5);
       expect(result[0].address).toBeUndefined();
     });
+
+    it('does not filter out a stablecoin-listed ERC-20 asset that has no address property (isStablecoin address fallback)', () => {
+      // ERC-20 asset without `address` property falls back to assetId in
+      // isStablecoin; if the assetId happens to match a stablecoin it is filtered.
+      const USDT_ASSET_ID =
+        `${CAIP_MAINNET}/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7` as CaipChainId;
+      mockGetBridgeFeatureFlags.mockReturnValue({
+        chains: {
+          [CAIP_MAINNET]: { batchSellDestStablecoins: [USDT_ASSET_ID] },
+        },
+      } as never);
+      // Asset has no `address` property – isStablecoin must still work via assetId
+      const ERC20_WITHOUT_ADDRESS = {
+        assetId: USDT_ASSET_ID,
+        name: 'Tether USD',
+        symbol: 'USDT',
+        image: 'usdt.png',
+        balance: '100',
+        fiat: { balance: 100 },
+        rawBalance: '0x5F5E100',
+        isNative: false,
+        // no `address` property
+      };
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
+        [CHAIN_IDS.MAINNET]: [ETH_ASSET, ERC20_WITHOUT_ADDRESS],
+      } as never);
+
+      const result = getAvailableBatchSellAssetsForNetworkSelector(
+        buildState(),
+        CAIP_MAINNET,
+      );
+
+      // USDT (matched via assetId fallback) should be filtered out
+      expect(result).toHaveLength(1);
+      expect(result[0].symbol).toBe('ETH');
+    });
+  });
+
+  describe('selectChainsWithPositiveBalanceForSelectedAccount (non-EVM chain key)', () => {
+    it('includes a non-EVM chain id as-is when it has positive balance', () => {
+      const SOLANA_CHAIN_ID =
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId;
+
+      mockGetAllMultichainNetworkConfigurations.mockReturnValue({
+        [SOLANA_CHAIN_ID]: MOCK_SOLANA_NETWORK,
+      });
+      mockGetSelectedInternalAccount.mockReturnValue(
+        MOCK_SOLANA_ACCOUNT as never,
+      );
+      // The key is already a CAIP chain id (non-hex), positive balance
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
+        [SOLANA_CHAIN_ID]: [{ rawBalance: '0x1', fiat: { balance: 50 } }],
+      } as never);
+
+      const result =
+        getNetworksWithPositiveBalanceForSelectedAccount(buildState());
+
+      expect(result).toHaveProperty(SOLANA_CHAIN_ID);
+    });
+  });
+
+  describe('getNetworksForSelectedAccount (scopes nullish fallback)', () => {
+    it('treats undefined scopes as empty set for non-EVM accounts', () => {
+      mockGetAllMultichainNetworkConfigurations.mockReturnValue(ALL_NETWORKS);
+      mockGetSelectedInternalAccount.mockReturnValue({
+        ...MOCK_SOLANA_ACCOUNT,
+        scopes: undefined,
+      } as never);
+
+      const result = getNetworksForSelectedAccount(buildState());
+
+      expect(result).toStrictEqual({});
+    });
+  });
+
+  describe('selectFiatBalanceByChain (asset without fiat)', () => {
+    it('treats missing fiat.balance as 0 when computing chain fiat total', () => {
+      mockGetAllMultichainNetworkConfigurations.mockReturnValue({
+        [CAIP_MAINNET]: MOCK_MAINNET_NETWORK,
+        [CAIP_BASE]: MOCK_BASE_NETWORK,
+      });
+      mockGetSelectedInternalAccount.mockReturnValue(MOCK_EVM_ACCOUNT as never);
+      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
+        // Asset has no fiat property at all
+        [CHAIN_IDS.MAINNET]: [{ rawBalance: '0x1' }],
+        [CHAIN_IDS.BASE]: [{ rawBalance: '0x1', fiat: { balance: 100 } }],
+      } as never);
+
+      const result = getAvailableBatchSellNetworksSelector(buildState());
+
+      // Base ($100) should appear before Mainnet ($0)
+      expect(result[0].chainId).toBe(CAIP_BASE);
+      expect(result[1].chainId).toBe(CAIP_MAINNET);
+    });
   });
 });

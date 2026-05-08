@@ -6,7 +6,6 @@ import {
   type CaipAssetType,
   type CaipChainId,
 } from '@metamask/utils';
-import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import {
   MultichainNetworkConfiguration,
   toEvmCaipChainId,
@@ -15,7 +14,6 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_ID_TOKEN_IMAGE_MAP,
   CHAIN_IDS,
 } from '../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
@@ -33,8 +31,13 @@ import {
   getBridgeFeatureFlags,
   type BridgeAppState,
 } from '../bridge/selectors';
-import { BatchSellAsset } from './types';
-import { getChecksummedEvmAssetId } from './utils';
+import { BatchSellAsset, ChainAsset } from './types';
+import {
+  getChecksummedEvmAssetId,
+  resolveAssetImage,
+  resolveEvmTokenAddress,
+  resolvePricingData,
+} from './utils';
 
 /**
  * V1 of batch sell functionality relies on a hardcoded list
@@ -206,8 +209,11 @@ export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(
       ? convertCaipToHexChainId(selectedChainId)
       : selectedChainId;
     const assets = assetsByChain[lookupKey] ?? [];
+    const hexChainId = isEvm
+      ? convertCaipToHexChainId(selectedChainId)
+      : ('' as Hex);
 
-    const isStablecoin = (asset: (typeof assets)[number]): boolean => {
+    const isStablecoin = (asset: ChainAsset): boolean => {
       if (!stablecoins.length || asset.isNative) {
         return false;
       }
@@ -220,70 +226,32 @@ export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(
       .filter(
         (asset) => hexToBigInt(asset.rawBalance) > 0n && !isStablecoin(asset),
       )
-      .map((asset) => {
-        let tokenFiatPrice: number | undefined;
-        let percentageChange: number | undefined;
-        let tokenAddress: Hex | undefined;
-
-        if (isEvm) {
-          const hexChainId = convertCaipToHexChainId(selectedChainId);
-
-          if (asset.isNative) {
-            tokenAddress = getNativeTokenAddress(hexChainId);
-          } else {
-            tokenAddress = 'address' in asset ? asset.address : undefined;
-          }
-
-          const tokenMarketData = tokenAddress
-            ? marketData?.[hexChainId]?.[tokenAddress as Hex]
-            : undefined;
-          if (tokenMarketData) {
-            tokenFiatPrice = tokenMarketData.price;
-            percentageChange = tokenMarketData.pricePercentChange1d;
-          }
-        } else {
-          const assetRateData = assetsRates?.[asset.assetId as CaipAssetType];
-          tokenFiatPrice =
-            assetRateData?.rate === undefined
-              ? undefined
-              : Number(assetRateData.rate);
-          percentageChange = assetRateData?.marketData?.pricePercentChange?.P1D;
-        }
-
-        // For EVM native tokens use CHAIN_ID_TOKEN_IMAGE_MAP (same source as
-        // the dashboard asset list via getNativeCurrencyForChain), which returns
-        // the token logo (e.g. ETH) consistently across all EVM chains.
-        // For non-EVM native tokens fall back to the chain network image.
-        // For ERC-20/non-native tokens use the asset's own image.
-        let assetImage: string | undefined;
-        if (asset.isNative && isEvm) {
-          const hexChainId = convertCaipToHexChainId(selectedChainId);
-          assetImage =
-            CHAIN_ID_TOKEN_IMAGE_MAP[
-              hexChainId as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-            ];
-        } else if (asset.isNative) {
-          assetImage = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[selectedChainId];
-        } else {
-          assetImage = asset.image;
-        }
-
-        // For EVM, tokenAddress is already resolved above (native or contract).
-        // For non-EVM, there is no address concept so we leave it undefined.
-        const address = isEvm ? tokenAddress : undefined;
+      .map((asset): BatchSellAsset => {
+        const tokenAddress = isEvm
+          ? resolveEvmTokenAddress(asset, hexChainId)
+          : undefined;
+        const { tokenFiatPrice, percentageChange } = resolvePricingData(
+          asset,
+          isEvm,
+          hexChainId,
+          tokenAddress,
+          marketData,
+          assetsRates,
+        );
 
         return {
           assetId: asset.assetId,
           name: asset.name,
           symbol: asset.symbol,
-          image: assetImage,
+          image: resolveAssetImage(asset, isEvm, selectedChainId),
           balance: asset.balance,
           fiatBalance: asset.fiat?.balance,
           tokenFiatPrice,
           percentageChange,
           isNative: asset.isNative,
           chainId: selectedChainId,
-          address,
+          // For non-EVM there is no address concept
+          address: isEvm ? tokenAddress : undefined,
         };
       });
   },

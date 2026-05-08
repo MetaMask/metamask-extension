@@ -4,7 +4,6 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
-  BoxJustifyContent,
   Checkbox,
   FontWeight,
   Text,
@@ -71,7 +70,7 @@ export const AssetListItem = ({
           </Text>
         </Box>
         <Box flexDirection={BoxFlexDirection.Row} gap={1}>
-          {asset.tokenFiatPrice && (
+          {asset.tokenFiatPrice !== undefined && (
             <Text
               variant={TextVariant.BodySm}
               fontWeight={FontWeight.Medium}
@@ -85,7 +84,7 @@ export const AssetListItem = ({
               •
             </Text>
           )}
-          {asset.percentageChange && (
+          {asset.percentageChange !== undefined && asset.percentageChange !== 0 && (
             <Text
               variant={TextVariant.BodySm}
               fontWeight={FontWeight.Medium}
@@ -97,7 +96,7 @@ export const AssetListItem = ({
         </Box>
       </Box>
       <Box gap={1} className="text-right">
-        {asset.fiatBalance && (
+        {asset.fiatBalance !== undefined && (
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
             {formatCurrencyAmount(asset.fiatBalance.toString(), currency, 2)}
           </Text>

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { CaipChainId } from '@metamask/utils';
