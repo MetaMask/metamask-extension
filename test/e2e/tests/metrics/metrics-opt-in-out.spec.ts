@@ -9,7 +9,7 @@ import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboardi
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
-import { skipPasskeySetupIfPresent } from '../../page-objects/flows/onboarding.flow';
+import { skipPasskeySetup } from '../../page-objects/flows/onboarding.flow';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -94,7 +94,7 @@ describe('Metrics Opt In/Out events', function () {
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-        await skipPasskeySetupIfPresent(driver);
+        await skipPasskeySetup(driver);
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
@@ -148,7 +148,7 @@ describe('Metrics Opt In/Out events', function () {
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-        await skipPasskeySetupIfPresent(driver);
+        await skipPasskeySetup(driver);
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();

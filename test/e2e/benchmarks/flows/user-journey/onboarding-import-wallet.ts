@@ -12,7 +12,7 @@ import { withFixtures } from '../../../helpers';
 import {
   handleSidepanelPostOnboarding,
   onboardingMetricsFlow,
-  skipPasskeySetupIfPresent,
+  skipPasskeySetup,
 } from '../../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
@@ -137,14 +137,14 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
 
         // Measure: Password to Metrics (Chrome only)
         if (isFirefox) {
-          await skipPasskeySetupIfPresent(driver);
+          await skipPasskeySetup(driver);
         } else {
           steps.push(
             await measureStepWithLongTasks(
               driver,
               'pwFormToMetricsScreen',
               async () => {
-                await skipPasskeySetupIfPresent(driver);
+                await skipPasskeySetup(driver);
                 const onboardingMetricsPage = new OnboardingMetricsPage(driver);
                 await onboardingMetricsPage.checkPageIsLoaded();
               },

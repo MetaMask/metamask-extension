@@ -30,7 +30,7 @@ class SetupPasskeyPage {
 
   async skipPasskeySetup(): Promise<void> {
     console.log('Skip passkey setup during onboarding');
-    await this.driver.clickElement(this.maybeLaterButton);
+    await this.driver.clickElementAndWaitToDisappear(this.maybeLaterButton);
   }
 }
 

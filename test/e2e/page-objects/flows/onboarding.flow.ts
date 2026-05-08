@@ -86,23 +86,19 @@ const goToOnboardingWelcomeLoginPage = async ({
 /**
  * Skip the passkey setup page when it is presented during onboarding.
  *
+ * Note: Passkey setup page is only shown for the non-social login flows.
+ *
  * @param driver - The WebDriver instance.
  * @param options - The options object.
  * @param [options.timeout] - The time to wait for the page to appear.
  */
-export const skipPasskeySetupIfPresent = async (
+export const skipPasskeySetup = async (
   driver: Driver,
   { timeout = 5000 }: { timeout?: number } = {},
 ): Promise<void> => {
   const setupPasskeyPage = new SetupPasskeyPage(driver);
 
-  try {
-    await setupPasskeyPage.checkPageIsLoaded(timeout);
-  } catch {
-    console.log('Setup passkey page was not shown');
-    return;
-  }
-
+  await setupPasskeyPage.checkPageIsLoaded(timeout);
   await setupPasskeyPage.skipPasskeySetup();
 };
 
@@ -240,7 +236,7 @@ export const createNewWalletOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
-  await skipPasskeySetupIfPresent(driver);
+  await skipPasskeySetup(driver);
 
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.checkPageIsLoaded();
@@ -294,7 +290,7 @@ export const incompleteCreateNewWalletOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
-  await skipPasskeySetupIfPresent(driver);
+  await skipPasskeySetup(driver);
 
   const secureWalletPage = new SecureWalletPage(driver);
   await secureWalletPage.checkPageIsLoaded();
@@ -385,7 +381,7 @@ export const importSRPOnboardingFlow = async ({
   const onboardingPasswordPage = new OnboardingPasswordPage(driver);
   await onboardingPasswordPage.checkPageIsLoaded();
   await onboardingPasswordPage.createWalletPassword(password);
-  await skipPasskeySetupIfPresent(driver);
+  await skipPasskeySetup(driver);
 
   if (process.env.SELENIUM_BROWSER !== Browser.FIREFOX) {
     await onboardingMetricsFlow(driver, {

@@ -8,7 +8,7 @@ import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboa
 import { MOCK_META_METRICS_ID, WALLET_PASSWORD } from '../../constants';
 import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
 import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
-import { skipPasskeySetupIfPresent } from '../../page-objects/flows/onboarding.flow';
+import { skipPasskeySetup } from '../../page-objects/flows/onboarding.flow';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -72,7 +72,7 @@ describe('App Installed Events', function () {
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-        await skipPasskeySetupIfPresent(driver);
+        await skipPasskeySetup(driver);
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
@@ -127,7 +127,7 @@ describe('App Installed Events', function () {
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-        await skipPasskeySetupIfPresent(driver);
+        await skipPasskeySetup(driver);
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();

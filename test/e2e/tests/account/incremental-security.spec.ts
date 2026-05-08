@@ -15,7 +15,7 @@ import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboa
 import TestDappSendEthWithPrivateKey from '../../page-objects/pages/test-dapp-send-eth-with-private-key';
 import {
   handleSidepanelPostOnboarding,
-  skipPasskeySetupIfPresent,
+  skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
 
 async function mockSpotPrices(mockServer: Mockttp) {
@@ -85,7 +85,7 @@ describe('Incremental Security', function (this: Suite) {
         const onboardingPasswordPage = new OnboardingPasswordPage(driver);
         await onboardingPasswordPage.checkPageIsLoaded();
         await onboardingPasswordPage.createWalletPassword(WALLET_PASSWORD);
-        await skipPasskeySetupIfPresent(driver);
+        await skipPasskeySetup(driver);
 
         // secure wallet later
         const secureWalletPage = new SecureWalletPage(driver);
