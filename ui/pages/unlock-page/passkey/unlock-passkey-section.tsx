@@ -21,6 +21,7 @@ import {
   ButtonSize,
 } from '@metamask/design-system-react';
 import {
+  getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
@@ -42,6 +43,7 @@ export type UnlockPasskeySectionProps = {
   logoSection: ReactNode;
   isPasskeyActive: boolean;
   passkeyAutoUnlockSuppressed: boolean;
+  mustDeferPasskeyToBrowserTab: boolean;
   isPasswordInProgress: boolean;
   onUnlockWithPasskey: (
     authenticationResponse: PasskeyAuthenticationResponse,
@@ -53,11 +55,13 @@ export const UnlockPasskeySection = ({
   logoSection,
   isPasskeyActive,
   passkeyAutoUnlockSuppressed,
+  mustDeferPasskeyToBrowserTab,
   isPasswordInProgress,
   onUnlockWithPasskey,
   onUsePassword,
 }: UnlockPasskeySectionProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
@@ -65,7 +69,10 @@ export const UnlockPasskeySection = ({
   const [showTroubleshootModal, setShowTroubleshootModal] = useState(false);
 
   const [mountAutoUnlockEligible] = useState(
-    () => isPasskeyActive && !passkeyAutoUnlockSuppressed,
+    () =>
+      isPasskeyActive &&
+      !passkeyAutoUnlockSuppressed &&
+      !mustDeferPasskeyToBrowserTab,
   );
 
   const isMountedRef = useRef(true);
@@ -112,7 +119,8 @@ export const UnlockPasskeySection = ({
         setPasskeyError(null);
       } else {
         setPasskeyError(
-          translatePasskeyError(err, t) ?? t('passkeyUnlockFailed'),
+          translatePasskeyError(err, t, passkeyMethodLabel) ??
+            t('passkeyUnlockFailed', [passkeyMethodLabel]),
         );
       }
     } finally {
@@ -125,6 +133,7 @@ export const UnlockPasskeySection = ({
     passkeyInProgress,
     isPasskeyActive,
     onUnlockWithPasskey,
+    passkeyMethodLabel,
     t,
     trackEvent,
   ]);
@@ -143,10 +152,19 @@ export const UnlockPasskeySection = ({
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
-    globalThis.platform.openExtensionInBrowser(UNLOCK_ROUTE, 'from=sidepanel');
+    globalThis.platform?.openExtensionInBrowser?.(UNLOCK_ROUTE);
   }, []);
 
+  const handlePasskeyUnlockAction = useCallback(() => {
+    if (mustDeferPasskeyToBrowserTab) {
+      openUnlockInFullScreen();
+      return;
+    }
+    runPasskeyUnlock();
+  }, [mustDeferPasskeyToBrowserTab, openUnlockInFullScreen, runPasskeyUnlock]);
+
   const showTroubleshoot =
+    !mustDeferPasskeyToBrowserTab &&
     getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
     isPasskeyActive &&
     passkeyInProgress;
@@ -185,10 +203,10 @@ export const UnlockPasskeySection = ({
           isLoading={passkeyInProgress}
           data-testid="unlock-passkey-button"
           disabled={isPasswordInProgress || passkeyInProgress}
-          onClick={runPasskeyUnlock}
+          onClick={handlePasskeyUnlockAction}
           aria-busy={passkeyInProgress}
         >
-          {t('unlockWithPasskey')}
+          {t('unlockWithPasskey', [passkeyMethodLabel])}
         </Button>
         {showTroubleshoot ? (
           <TextButton
@@ -198,13 +216,14 @@ export const UnlockPasskeySection = ({
             className="text-center"
             onClick={() => setShowTroubleshootModal(true)}
           >
-            {t('passkeyTroubleshoot')}
+            {t('passkeyTroubleshootUnlock')}
           </TextButton>
         ) : null}
       </Box>
 
       {showTroubleshootModal ? (
         <PasskeyTroubleshootModal
+          mode="unlock"
           onClose={() => setShowTroubleshootModal(false)}
           onOpenFullScreen={openUnlockInFullScreen}
         />

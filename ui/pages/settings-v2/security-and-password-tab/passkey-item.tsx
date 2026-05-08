@@ -17,6 +17,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { SECOND } from '../../../../shared/constants/time';
 import {
+  getPasskeyAuthMethodKey,
   startPasskeyAuthentication,
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
@@ -33,6 +34,7 @@ import {
 import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from '../../../selectors';
 import {
   forceUpdateMetamaskState,
@@ -46,13 +48,23 @@ import { SECURITY_ITEMS } from '../search-config';
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
 const PasskeyItem = () => {
-  const t = useI18nContext() as (key: string) => string;
+  const t = useI18nContext() as (
+    key: string,
+    substitutions?: string[],
+  ) => string;
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
+  const passkeyMethodSpecificLabel = t(
+    getPasskeyAuthMethodKey({ specific: true }),
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
 
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
+    getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  );
 
   const [isPasskeyOperationPending, setIsPasskeyOperationPending] =
     useState(false);
@@ -87,6 +99,17 @@ const PasskeyItem = () => {
       return;
     }
 
+    if (
+      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
+      isEnrolledPasskeyIncompatibleWithSidepanel
+    ) {
+      cancelPasskeyCeremony();
+      globalThis.platform?.openExtensionInBrowser?.(
+        SECURITY_AND_PASSWORD_ROUTE,
+      );
+      return;
+    }
+
     setIsPasskeyOperationPending(true);
     try {
       const authOptions = await generatePasskeyAuthenticationOptions();
@@ -95,9 +118,12 @@ const PasskeyItem = () => {
       await removePasskeyWithPasskeyVerification(authenticationResponse);
       await forceUpdateMetamaskState(dispatch);
 
-      toast.success(<ToastContent title={t('passkeyTurnedOff')} />, {
-        duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-      });
+      toast.success(
+        <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
+        {
+          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+        },
+      );
 
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
@@ -123,8 +149,8 @@ const PasskeyItem = () => {
         toast.error(
           <ToastContent
             title={
-              translatePasskeyError(error, t) ??
-              t('passkeyErrorVerificationFailed')
+              translatePasskeyError(error, t, passkeyMethodLabel) ??
+              t('passkeyErrorVerificationFailed', [passkeyMethodLabel])
             }
           />,
           { duration: PASSKEY_SETTINGS_TOAST_DURATION_MS },
@@ -134,7 +160,15 @@ const PasskeyItem = () => {
     } finally {
       setIsPasskeyOperationPending(false);
     }
-  }, [dispatch, isPasskeyRegistered, navigate, t, trackEvent]);
+  }, [
+    dispatch,
+    isEnrolledPasskeyIncompatibleWithSidepanel,
+    isPasskeyRegistered,
+    navigate,
+    passkeyMethodLabel,
+    t,
+    trackEvent,
+  ]);
 
   const handlePasskeyToggle = useCallback(
     async (isPasskeyUnlockEnabled: boolean) => {
@@ -156,7 +190,7 @@ const PasskeyItem = () => {
   const description = useMemo(() => {
     const body = (
       <>
-        <span>{t('passkeyDescription')}</span>
+        <span>{t('passkeyDescription', [passkeyMethodSpecificLabel])}</span>
         {isPasskeyOperationPending &&
         getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL ? (
           <TextButton
@@ -166,13 +200,13 @@ const PasskeyItem = () => {
             className="mt-2 flex w-full justify-start text-left"
             onClick={() => setShowPasskeyTroubleshootModal(true)}
           >
-            {t('passkeyTroubleshoot')}
+            {t('passkeyTroubleshootVerify')}
           </TextButton>
         ) : null}
       </>
     );
     return body;
-  }, [isPasskeyOperationPending, t]);
+  }, [isPasskeyOperationPending, passkeyMethodSpecificLabel, t]);
 
   if (!isPasskeyFeatureAvailable) {
     return null;
@@ -181,7 +215,7 @@ const PasskeyItem = () => {
   return (
     <>
       <SettingsToggleItem
-        title={t(SECURITY_ITEMS.passkey)}
+        title={t(SECURITY_ITEMS.passkey, [passkeyMethodLabel])}
         description={description}
         value={Boolean(isPasskeyRegistered)}
         onToggle={handlePasskeyToggle}
@@ -191,6 +225,7 @@ const PasskeyItem = () => {
       />
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
+          mode="verify"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openSecurityAndPasswordInFullScreen}
         />
