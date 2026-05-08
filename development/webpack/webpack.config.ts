@@ -466,6 +466,9 @@ const config = {
           // SWC's env.targets downcompiles them to helper functions which
           // breaks the yamux muxer's async iterable protocol, causing
           // relay WebSocket connections to close after 7 frames.
+          // @noble/curves uses BigInt exponentiation (e.g. `_2n ** 254n`);
+          // SWC's env.targets transpiles ** to Math.pow even on modern
+          // chrome targets, and Math.pow rejects BigInt operands.
           // Process these with a pass-through SWC config (no env.targets).
           {
             test: /\.m?js$/u,
@@ -474,6 +477,7 @@ const config = {
               /[\\/]node_modules[\\/]@chainsafe[\\/]/u,
               /[\\/]node_modules[\\/]libp2p[\\/]/u,
               /[\\/]node_modules[\\/]@multiformats[\\/]/u,
+              /[\\/]node_modules[\\/]@noble[\\/]/u,
               /[\\/]node_modules[\\/]it-/u,
             ],
             resolve: { fullySpecified: false },
@@ -503,6 +507,7 @@ const config = {
               /[\\/]node_modules[\\/]@chainsafe[\\/]/u,
               /[\\/]node_modules[\\/]libp2p[\\/]/u,
               /[\\/]node_modules[\\/]@multiformats[\\/]/u,
+              /[\\/]node_modules[\\/]@noble[\\/]/u,
               /[\\/]node_modules[\\/]it-/u,
             ],
             use: npmLoader,
