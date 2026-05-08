@@ -12,8 +12,8 @@ import {
   IconColor,
   IconName,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { REQUEST_SETTING_URL } from '../../../../shared/lib/ui-utils';
+import { useSettingsV2I18n } from '../useSettingsV2I18n';
 import type { SettingsV2SearchResult } from '../useSettingsV2Search';
 import { Divider } from './divider';
 
@@ -26,7 +26,7 @@ export const SettingsV2SearchResults = ({
   results,
   onClickResult,
 }: SettingsV2SearchResultsProps) => {
-  const t = useI18nContext();
+  const t = useSettingsV2I18n();
 
   return (
     <Box
