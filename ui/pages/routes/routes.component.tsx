@@ -674,7 +674,7 @@ export default function Routes() {
     completedOnboarding &&
     !pendingConfirmations.some(
       (confirmation: Confirmation) =>
-        confirmation.type ===
+        (confirmation.type as string) ===
         SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ) &&
     // In the redesigned screens, we hide the general loading spinner and the
