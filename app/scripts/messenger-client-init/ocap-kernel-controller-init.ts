@@ -1,17 +1,17 @@
 import { OcapKernelController } from '../controllers/ocap-kernel-controller';
-import { ControllerInitFunction } from './types';
+import { MessengerClientInitFunction } from './types';
 import { OcapKernelControllerMessenger } from './messengers';
 
-export const OcapKernelControllerInit: ControllerInitFunction<
+export const OcapKernelControllerInit: MessengerClientInitFunction<
   OcapKernelController,
   OcapKernelControllerMessenger
 > = ({ controllerMessenger }) => {
-  const controller = new OcapKernelController({
+  const messengerClient = new OcapKernelController({
     messenger: controllerMessenger,
   });
 
   return {
-    controller,
+    messengerClient,
     persistedStateKey: null,
   };
 };
