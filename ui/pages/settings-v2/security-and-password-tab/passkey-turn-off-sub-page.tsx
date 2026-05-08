@@ -17,7 +17,10 @@ import {
 } from '../../../components/component-library';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { cancelPasskeyCeremony } from '../../../../shared/lib/passkey';
+import {
+  getPasskeyAuthMethodKey,
+  cancelPasskeyCeremony,
+} from '../../../../shared/lib/passkey';
 import {
   forceUpdateMetamaskState,
   removePasskeyWithPasswordVerification,
@@ -38,6 +41,7 @@ export default function PasskeyTurnOffSubPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
 
@@ -78,9 +82,12 @@ export default function PasskeyTurnOffSubPage() {
       try {
         await removePasskeyWithPasswordVerification(walletPassword);
         await forceUpdateMetamaskState(dispatch);
-        toast.success(<ToastContent title={t('passkeyTurnedOff')} />, {
-          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-        });
+        toast.success(
+          <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
+          {
+            duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+          },
+        );
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.SettingsUpdated,
@@ -91,9 +98,14 @@ export default function PasskeyTurnOffSubPage() {
         });
         goToSettings();
       } catch {
-        toast.error(<ToastContent title={t('turnOffPasskeyFailed')} />, {
-          duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-        });
+        toast.error(
+          <ToastContent
+            title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}
+          />,
+          {
+            duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+          },
+        );
         goToSettings();
       }
     } finally {

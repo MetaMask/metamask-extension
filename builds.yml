@@ -99,7 +99,6 @@ buildTypes:
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
-      - PASSKEY_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
@@ -456,4 +455,4 @@ env:
   - FORCE_AUTH_MATCH_BUILD: false
 
   # Passkey / Biometrics unlock
-  - PASSKEY_ENABLED: 'false'
+  - PASSKEY_ENABLED: true

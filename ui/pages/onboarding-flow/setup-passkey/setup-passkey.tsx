@@ -32,6 +32,7 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import {
+  getPasskeyAuthMethodKey,
   startPasskeyRegistration,
   startPasskeyAuthentication,
   translatePasskeyError,
@@ -64,7 +65,14 @@ const DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE: PasskeyEnrollmentStepStatus =
 export default function SetupPasskey() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const t = useI18nContext() as (key: string) => string;
+  const t = useI18nContext() as (
+    key: string,
+    substitutions?: string[],
+  ) => string;
+  const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
+  const passkeyMethodSpecificLabel = t(
+    getPasskeyAuthMethodKey({ specific: true }),
+  );
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
@@ -179,8 +187,8 @@ export default function SetupPasskey() {
       log.error('Onboarding passkey registration failed', error);
       if (isMountedRef.current) {
         setEnrollmentError(
-          translatePasskeyError(error, t) ??
-            t('passkeyErrorRegistrationFailed'),
+          translatePasskeyError(error, t, passkeyMethodLabel) ??
+            t('passkeyErrorRegistrationFailed', [passkeyMethodLabel]),
         );
       }
     } finally {
@@ -190,7 +198,7 @@ export default function SetupPasskey() {
         setVerifyStepPhase((prev) => (prev === 'loading' ? 'idle' : prev));
       }
     }
-  }, [dispatch, t, goToNextStep]);
+  }, [dispatch, t, passkeyMethodLabel, goToNextStep]);
 
   if (isPasskeyRegistered && !isEnrollmentInProgress) {
     return null;
@@ -219,14 +227,18 @@ export default function SetupPasskey() {
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
           >
-            {t('settingUpPasskey')}
+            {t('settingUpPasskey', [passkeyMethodLabel])}
           </Text>
 
           <PasskeyEnrollmentSteps
             registerStatus={registerStepPhase}
             verifyStatus={verifyStepPhase}
-            registerLabel={t('passkeySetupStepRegister')}
-            verifyLabel={t('passkeySetupStepVerify')}
+            registerLabel={t('passkeySetupStepRegister', [
+              passkeyMethodSpecificLabel,
+            ])}
+            verifyLabel={t('passkeySetupStepVerify', [
+              passkeyMethodSpecificLabel,
+            ])}
             className="w-full"
           />
         </>
@@ -237,10 +249,10 @@ export default function SetupPasskey() {
             fontWeight={FontWeight.Medium}
             color={TextColor.TextDefault}
           >
-            {t('unlockWithPasskey')}
+            {t('unlockWithPasskey', [passkeyMethodLabel])}
           </Text>
           <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            {t('passkeyDescription')}
+            {t('passkeyDescription', [passkeyMethodSpecificLabel])}
           </Text>
 
           {enrollmentError ? (
@@ -264,10 +276,10 @@ export default function SetupPasskey() {
               size={ButtonSize.Lg}
               className="w-full"
               data-testid="passkey-set-up-button"
-              aria-label={t('setUpPasskey')}
+              aria-label={t('setUpPasskey', [passkeyMethodLabel])}
               onClick={handleSetupPasskey}
             >
-              {t('setUpPasskey')}
+              {t('setUpPasskey', [passkeyMethodLabel])}
             </Button>
             <TextButton
               type="button"
