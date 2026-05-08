@@ -78,6 +78,27 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - [How to add custom build to Chrome](./docs/add-to-chrome.md)
   - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 
+## AI Agent Skills (`yarn skills`)
+
+AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [Consensys/skills](https://github.com/Consensys/skills) repo. Per [ADR #57](https://github.com/MetaMask/decisions/pull/162) this content is **not committed here** — `yarn skills` syncs it on demand into local-only paths under `.cursor/`, `.claude/`, and `.agents/`.
+
+One-time setup:
+
+```bash
+git clone git@github.com:Consensys/skills.git ~/path/to/consensys-skills
+export CONSENSYS_SKILLS_DIR=~/path/to/consensys-skills   # add to your shell rc
+```
+
+Then in this repo:
+
+```bash
+cp .skills.local.example .skills.local       # optional: pre-pick default domains
+yarn skills                                   # interactive prompt
+SKILLS_DOMAINS=perps,testing yarn skills      # non-interactive
+```
+
+If `CONSENSYS_SKILLS_DIR` is unset, `yarn skills` prints the same setup instructions and exits. Skipping it is fine — it only affects agent tooling, not the app build.
+
 ## Git Hooks
 
 To get quick feedback from our shared code quality fitness functions before committing the code, you can install our git hooks with Husky.

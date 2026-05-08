@@ -33,6 +33,8 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 
 ### Comprehensive Guidelines Location
 
+> **Setup required:** Paths under `.cursor/`, `.claude/`, and `.agents/` are **not committed**. They are synced on demand from [Consensys/skills](https://github.com/Consensys/skills) via `yarn skills` (see README → "AI Agent Skills"). Run `yarn skills` first; otherwise the references below will not exist locally.
+
 Read these files for detailed coding standards:
 
 - Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
