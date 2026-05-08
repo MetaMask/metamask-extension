@@ -35,7 +35,7 @@ describe('useBatchSellNavigation', () => {
   });
 
   describe('resetLocationState', () => {
-    it('navigates to the current pathname with merged state and stayOnHomePage=false by default', () => {
+    it('navigates to the current pathname with stayOnHomePage=false by default and ignores existing location state', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
@@ -45,7 +45,7 @@ describe('useBatchSellNavigation', () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         { pathname: mockPathname },
         {
-          state: { ...mockLocationState, stayOnHomePage: false },
+          state: { stayOnHomePage: false },
         },
       );
     });
@@ -58,7 +58,7 @@ describe('useBatchSellNavigation', () => {
       });
 
       expect(mockNavigate).toHaveBeenCalledWith('/custom-route', {
-        state: { ...mockLocationState, stayOnHomePage: false },
+        state: { stayOnHomePage: false },
       });
     });
 
@@ -70,13 +70,25 @@ describe('useBatchSellNavigation', () => {
       });
 
       expect(mockNavigate).toHaveBeenCalledWith('/custom-route', {
-        state: { ...mockLocationState, stayOnHomePage: true },
+        state: { stayOnHomePage: true },
       });
+    });
+
+    it('does not propagate batch sell selections from location state', () => {
+      const { result } = renderHook(() => useBatchSellNavigation());
+
+      act(() => {
+        result.current.resetLocationState();
+      });
+
+      const [, options] = mockNavigate.mock.calls[0];
+      expect(options.state).not.toHaveProperty('selectedNetworkChainId');
+      expect(options.state).not.toHaveProperty('selectedAssetsId');
     });
   });
 
   describe('navigateToDefaultRoute', () => {
-    it('navigates to the DEFAULT_ROUTE with stayOnHomePage=true', () => {
+    it('navigates to the DEFAULT_ROUTE with stayOnHomePage=true and no batch sell selections', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
@@ -84,13 +96,13 @@ describe('useBatchSellNavigation', () => {
       });
 
       expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
-        state: { ...mockLocationState, stayOnHomePage: true },
+        state: { stayOnHomePage: true },
       });
     });
   });
 
   describe('navigateToBatchSellSelectPage', () => {
-    it('navigates to BATCH_SELL_SELECT_ROUTE merging current location state', () => {
+    it('navigates to BATCH_SELL_SELECT_ROUTE with empty state when called without args, regardless of existing location state', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
@@ -99,11 +111,11 @@ describe('useBatchSellNavigation', () => {
 
       expect(mockNavigate).toHaveBeenCalledWith(
         { pathname: BATCH_SELL_SELECT_ROUTE },
-        { state: { ...mockLocationState } },
+        { state: {} },
       );
     });
 
-    it('merges extra state with the current location state', () => {
+    it('uses only the explicitly provided state and ignores existing location state', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
@@ -116,18 +128,18 @@ describe('useBatchSellNavigation', () => {
         { pathname: BATCH_SELL_SELECT_ROUTE },
         {
           state: {
-            ...mockLocationState,
             selectedNetworkChainId: 'eip155:8453',
           },
         },
       );
     });
 
-    it('extra state overrides matching keys from location state', () => {
+    it('passes selectedAssetsId through verbatim when provided', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
         result.current.navigateToBatchSellSelectPage({
+          selectedNetworkChainId: 'eip155:1',
           selectedAssetsId: ['asset-new'],
         });
       });
@@ -136,7 +148,7 @@ describe('useBatchSellNavigation', () => {
         { pathname: BATCH_SELL_SELECT_ROUTE },
         {
           state: {
-            ...mockLocationState,
+            selectedNetworkChainId: 'eip155:1',
             selectedAssetsId: ['asset-new'],
           },
         },
@@ -145,11 +157,12 @@ describe('useBatchSellNavigation', () => {
   });
 
   describe('navigateToBatchSellConfirmPage', () => {
-    it('navigates to BATCH_SELL_CONFIRM_ROUTE merging current location state', () => {
+    it('navigates to BATCH_SELL_CONFIRM_ROUTE with only the explicitly provided state', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
         result.current.navigateToBatchSellConfirmPage({
+          selectedNetworkChainId: 'eip155:1',
           selectedAssetsId: ['asset-1', 'asset-2'],
         });
       });
@@ -158,14 +171,14 @@ describe('useBatchSellNavigation', () => {
         { pathname: BATCH_SELL_CONFIRM_ROUTE },
         {
           state: {
-            ...mockLocationState,
+            selectedNetworkChainId: 'eip155:1',
             selectedAssetsId: ['asset-1', 'asset-2'],
           },
         },
       );
     });
 
-    it('extra state overrides matching keys from location state', () => {
+    it('does not merge existing location state into the new state', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {
@@ -178,7 +191,6 @@ describe('useBatchSellNavigation', () => {
         { pathname: BATCH_SELL_CONFIRM_ROUTE },
         {
           state: {
-            ...mockLocationState,
             selectedNetworkChainId: 'eip155:42161',
           },
         },
@@ -198,7 +210,7 @@ describe('useBatchSellNavigation', () => {
       });
     });
 
-    it('treats null location state as an empty object', () => {
+    it('navigates without throwing when location state is null', () => {
       const { result } = renderHook(() => useBatchSellNavigation());
 
       act(() => {

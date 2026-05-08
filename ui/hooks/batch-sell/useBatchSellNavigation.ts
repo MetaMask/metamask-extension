@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { To, useLocation, useNavigate } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import {
@@ -14,23 +14,17 @@ export type BatchSellNavigationState = {
 
 export const useBatchSellNavigation = () => {
   const navigate = useNavigate();
-
-  const { pathname, state: maybeLocationState } = useLocation();
-  const locationState: BatchSellNavigationState = useMemo(
-    () => maybeLocationState ?? {},
-    [maybeLocationState],
-  );
+  const { pathname } = useLocation();
 
   const resetLocationState = useCallback(
     (to: To = { pathname }, stayOnHomePage = false) => {
       navigate(to, {
         state: {
-          ...locationState,
           stayOnHomePage,
         },
       });
     },
-    [locationState, pathname, navigate],
+    [pathname, navigate],
   );
 
   const navigateToDefaultRoute = useCallback(() => {
@@ -39,22 +33,16 @@ export const useBatchSellNavigation = () => {
 
   const navigateToBatchSellSelectPage = useCallback(
     (state?: BatchSellNavigationState) => {
-      navigate(
-        { pathname: BATCH_SELL_SELECT_ROUTE },
-        { state: { ...locationState, ...state } },
-      );
+      navigate({ pathname: BATCH_SELL_SELECT_ROUTE }, { state: state ?? {} });
     },
-    [locationState, navigate],
+    [navigate],
   );
 
   const navigateToBatchSellConfirmPage = useCallback(
     (state: BatchSellNavigationState) => {
-      navigate(
-        { pathname: BATCH_SELL_CONFIRM_ROUTE },
-        { state: { ...locationState, ...state } },
-      );
+      navigate({ pathname: BATCH_SELL_CONFIRM_ROUTE }, { state });
     },
-    [locationState, navigate],
+    [navigate],
   );
 
   return {
