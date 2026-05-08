@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
@@ -17,6 +17,8 @@ jest.mock('../../selectors/assets', () => ({
 
 describe('TokenManagementPage', () => {
   let consoleWarnSpy: jest.SpyInstance;
+  const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+  const solanaTokenAssetId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
 
   const mainnetToken = {
     accountId: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
@@ -78,6 +80,25 @@ describe('TokenManagementPage', () => {
     },
   };
 
+  const solanaToken = {
+    accountId: 'solana-account-id',
+    accountType: 'solana:data-account',
+    assetId: solanaTokenAssetId,
+    chainId: solanaChainId,
+    image: '',
+    name: 'Solana Token',
+    symbol: 'SLT',
+    decimals: 6,
+    isNative: false,
+    rawBalance: '0x1',
+    balance: '2.5',
+    fiat: {
+      balance: 2.5,
+      currency: 'usd',
+      conversionRate: 1,
+    },
+  };
+
   beforeEach(() => {
     const originalWarn = console.warn;
     consoleWarnSpy = jest
@@ -99,12 +120,14 @@ describe('TokenManagementPage', () => {
 
   const createState = ({
     enabledNetworks = { '0x1': true },
+    enabledNetworkMap = { eip155: enabledNetworks },
     accountGroupAssets = {
       '0x1': [mainnetToken, nativeToken],
       '0x5': [goerliToken],
     },
   }: {
     enabledNetworks?: Record<string, boolean>;
+    enabledNetworkMap?: Record<string, Record<string, boolean>>;
     accountGroupAssets?: Record<string, unknown[]>;
   } = {}) => ({
     ...mockState,
@@ -120,9 +143,7 @@ describe('TokenManagementPage', () => {
           sortCallback: 'alphaNumeric',
         },
       },
-      enabledNetworkMap: {
-        eip155: enabledNetworks,
-      },
+      enabledNetworkMap,
       networkConfigurationsByChainId: {
         ...mockState.metamask.networkConfigurationsByChainId,
         '0x1': {
@@ -170,6 +191,9 @@ describe('TokenManagementPage', () => {
       screen.getByTestId('token-management-header-back-button'),
     ).toBeInTheDocument();
     expect(
+      screen.getByPlaceholderText('Enter token name or address'),
+    ).toBeInTheDocument();
+    expect(
       screen.queryByTestId('settings-v2-header-search-button'),
     ).not.toBeInTheDocument();
     expect(
@@ -203,17 +227,73 @@ describe('TokenManagementPage', () => {
     expect(screen.getByText('Alpha Token')).toBeInTheDocument();
     expect(screen.getByText('Ethereum')).toBeInTheDocument();
     expect(screen.getByText('Beta Token')).toBeInTheDocument();
-    expect(screen.getByText('All popular networks')).toBeInTheDocument();
+    expect(screen.getByText('All default networks')).toBeInTheDocument();
   });
 
-  it('does not render a toggle for native tokens', () => {
+  it('filters visible tokens by name or address', () => {
+    renderPage(
+      createState({
+        enabledNetworks: {
+          '0x1': true,
+          '0x5': true,
+        },
+      }),
+    );
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'Beta' },
+    });
+
+    expect(screen.queryByText('Alpha Token')).not.toBeInTheDocument();
+    expect(screen.queryByText('Ethereum')).not.toBeInTheDocument();
+    expect(screen.getByText('Beta Token')).toBeInTheDocument();
+  });
+
+  it('renders an enabled toggle for non-native Solana tokens', () => {
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          eip155: { '0x1': true },
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          '0x1': [mainnetToken],
+          [solanaChainId]: [solanaToken],
+        },
+      }),
+    );
+
+    const solanaToggle = screen.getByTestId(
+      `token-management-cell-${solanaChainId}:${solanaTokenAssetId.toLowerCase()}-toggle`,
+    );
+
+    expect(screen.getByText('Solana Token')).toBeInTheDocument();
+    expect(
+      screen.getByTestId(
+        `token-management-cell-${solanaChainId}:${solanaTokenAssetId.toLowerCase()}-network-badge`,
+      ),
+    ).toBeInTheDocument();
+    expect(solanaToggle).toBeInTheDocument();
+    expect(solanaToggle.closest('.toggle-button')).toHaveClass(
+      'toggle-button--on',
+    );
+    expect(solanaToggle.closest('.toggle-button')).not.toHaveClass(
+      'toggle-button--disabled',
+    );
+  });
+
+  it('renders a disabled on toggle for native tokens', () => {
     renderPage();
 
-    expect(
-      screen.queryByTestId(
-        'token-management-cell-0x1:0x0000000000000000000000000000000000000000-toggle',
-      ),
-    ).not.toBeInTheDocument();
+    const nativeToggle = screen.getByTestId(
+      'token-management-cell-0x1:0x0000000000000000000000000000000000000000-toggle',
+    );
+
+    expect(nativeToggle).toBeInTheDocument();
+    expect(nativeToggle.closest('.toggle-button')).toHaveClass(
+      'toggle-button--on',
+      'toggle-button--disabled',
+    );
     expect(
       screen.getByTestId(
         'token-management-cell-0x1:0x0000000000000000000000000000000000000001-toggle',

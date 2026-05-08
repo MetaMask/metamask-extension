@@ -1,10 +1,8 @@
 import React from 'react';
+import type { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   AvatarToken,
   AvatarTokenSize,
-  BadgeWrapper,
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
@@ -17,16 +15,19 @@ import {
 } from '@metamask/design-system-react';
 import ToggleButton from '../../ui/toggle-button';
 import { ASSET_CELL_HEIGHT } from '../../app/assets/constants';
+import { AssetCellBadge } from '../../app/assets/asset-list/cells/asset-cell-badge';
 
 export type TokenManagementCellProps = {
   /** Token symbol used as the avatar fallback text and aria-label. */
   symbol: string;
   /** Optional token icon URL. */
   image?: string;
-  /** Optional network icon URL rendered as a badge on the token avatar. */
-  networkImage?: string;
-  /** Optional network name used by the badge for fallback text and accessibility. */
-  networkName?: string;
+  /** Token chain id used to render the home-page network badge. */
+  chainId?: Hex | CaipChainId;
+  /** Whether the asset is native to the chain. */
+  isNative?: boolean;
+  /** Token asset id used by the home-page badge image fallback logic. */
+  assetId?: CaipAssetType | Hex;
   /** Primary label rendered as the row title (e.g. token name). */
   primaryLabel: string;
   /** Optional secondary label (e.g. balance / network). */
@@ -59,8 +60,9 @@ export type TokenManagementCellProps = {
  * @param props - Component props.
  * @param props.symbol - Token symbol used as the avatar fallback text.
  * @param props.image - Optional token icon URL.
- * @param props.networkImage - Optional network icon URL.
- * @param props.networkName - Optional network name.
+ * @param props.chainId - Token chain id used to render the home-page network badge.
+ * @param props.isNative - Whether the asset is native to the chain.
+ * @param props.assetId - Token asset id used by the home-page badge image fallback logic.
  * @param props.primaryLabel - Title rendered as the row's primary text.
  * @param props.secondaryLabel - Optional secondary text (e.g. balance).
  * @param props.isOn - Whether the toggle is currently in the ON state.
@@ -72,8 +74,9 @@ export type TokenManagementCellProps = {
 export const TokenManagementCell = ({
   symbol,
   image,
-  networkImage,
-  networkName,
+  chainId,
+  isNative,
+  assetId,
   primaryLabel,
   secondaryLabel,
   isOn,
@@ -85,7 +88,7 @@ export const TokenManagementCell = ({
   const dataTestId = testIdSuffix
     ? `token-management-cell-${testIdSuffix}`
     : 'token-management-cell';
-  const hasNetworkBadge = Boolean(networkImage || networkName);
+  const hasNetworkBadge = Boolean(chainId);
 
   const tokenAvatar = (
     <AvatarToken
@@ -114,20 +117,14 @@ export const TokenManagementCell = ({
         style={{ height: ASSET_CELL_HEIGHT }}
       >
         {hasNetworkBadge ? (
-          <BadgeWrapper
-            badge={
-              <AvatarNetwork
-                name={networkName ?? symbol}
-                src={networkImage}
-                size={AvatarNetworkSize.Xs}
-                hasBorder
-                data-testid={`${dataTestId}-network-badge`}
-              />
-            }
-            className="mr-4 self-center"
-          >
-            {tokenAvatar}
-          </BadgeWrapper>
+          <AssetCellBadge
+            chainId={chainId as Hex | CaipChainId}
+            isNative={isNative}
+            tokenImage={image ?? ''}
+            symbol={symbol}
+            assetId={assetId}
+            networkBadgeTestId={`${dataTestId}-network-badge`}
+          />
         ) : (
           <Box marginRight={4} className="self-center">
             {tokenAvatar}
@@ -160,7 +157,11 @@ export const TokenManagementCell = ({
           <ToggleButton
             value={isOn}
             disabled={disabled}
-            onToggle={(currentValue: boolean) => onToggle(!currentValue)}
+            onToggle={(currentValue: boolean) => {
+              if (!disabled) {
+                onToggle(!currentValue);
+              }
+            }}
             offLabel=""
             onLabel=""
             dataTestId={`${dataTestId}-toggle`}

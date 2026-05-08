@@ -609,6 +609,9 @@
   "all": {
     "message": "All"
   },
+  "allDefaultNetworks": {
+    "message": "All default networks"
+  },
   "allNetworks": {
     "message": "All networks"
   },
@@ -2826,6 +2829,9 @@
   },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Enter token name or address"
   },
   "enterYourPassword": {
     "message": "Enter your password"

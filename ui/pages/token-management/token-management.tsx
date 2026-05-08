@@ -2,20 +2,25 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box as DSBox,
   BoxAlignItems,
   BoxFlexDirection,
+  Box as DSBox,
   ButtonIcon,
   ButtonIconSize,
   IconName as DSIconName,
 } from '@metamask/design-system-react';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  type CaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderStyle,
   Display,
   FlexDirection,
   JustifyContent,
@@ -24,13 +29,12 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
   Box,
   ButtonBase,
   ButtonBaseSize,
   IconName,
   Text,
+  TextFieldSearch,
 } from '../../components/component-library';
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -40,7 +44,6 @@ import {
   getTokenSortConfig,
   getUseExternalServices,
 } from '../../selectors';
-import { getImageForChainId } from '../../selectors/multichain';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
@@ -50,6 +53,7 @@ import {
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
   ignoreTokens as ignoreTokensAction,
+  multichainIgnoreAssets,
   showModal,
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -85,6 +89,7 @@ export const TokenManagementPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [searchQuery, setSearchQuery] = useState('');
   const [pendingKey, setPendingKey] = useState<string | undefined>();
 
   const accountGroupIdAssets = useSelector(
@@ -177,6 +182,27 @@ export const TokenManagementPage = () => {
     useExternalServices,
   ]);
 
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const filteredVisibleTokens = useMemo(() => {
+    if (!normalizedSearchQuery) {
+      return visibleTokens;
+    }
+
+    return visibleTokens.filter((token) =>
+      [
+        token.name,
+        token.symbol,
+        'address' in token ? token.address : undefined,
+        token.assetId,
+        token.chainId,
+      ].some((value) =>
+        String(value ?? '')
+          .toLowerCase()
+          .includes(normalizedSearchQuery),
+      ),
+    );
+  }, [normalizedSearchQuery, visibleTokens]);
+
   const handleClose = useCallback(() => {
     navigate(DEFAULT_ROUTE);
   }, [navigate]);
@@ -194,38 +220,8 @@ export const TokenManagementPage = () => {
       const onlyChain = enabledChainIds[0];
       return networkConfigurations?.[onlyChain]?.name ?? t('currentNetwork');
     }
-    return t('allPopularNetworks');
+    return t('allDefaultNetworks');
   }, [enabledChainIds, networkConfigurations, t]);
-
-  const networkFilterIconUrl: string | undefined = useMemo(() => {
-    if (enabledChainIds.length !== 1) {
-      return undefined;
-    }
-    return getImageForChainId(enabledChainIds[0]);
-  }, [enabledChainIds]);
-
-  const handleToggle = useCallback(
-    async (token: ManagedAsset, nextValue: boolean) => {
-      if (nextValue || !('address' in token)) {
-        return;
-      }
-      const key = `${token.chainId}:${token.address.toLowerCase()}`;
-      setPendingKey(key);
-      try {
-        const { networkClientId } = getNetworkMeta(token.chainId as Hex);
-        await dispatch(
-          ignoreTokensAction({
-            tokensToIgnore: [token.address],
-            dontShowLoadingIndicator: true,
-            networkClientId,
-          }),
-        );
-      } finally {
-        setPendingKey(undefined);
-      }
-    },
-    [dispatch, getNetworkMeta],
-  );
 
   const getTokenKey = useCallback(
     (token: ManagedAsset) => {
@@ -233,6 +229,45 @@ export const TokenManagementPage = () => {
       return `${token.chainId}:${address.toLowerCase()}`;
     },
     [],
+  );
+
+  const handleToggle = useCallback(
+    async (token: ManagedAsset, nextValue: boolean) => {
+      const isNativeToken = Boolean(token.isNative);
+      const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
+      const canIgnoreEvmToken = isEvmToken && 'address' in token;
+      const canIgnoreMultichainToken =
+        !isEvmToken && Boolean(token.assetId) && Boolean(token.accountId);
+
+      if (
+        nextValue ||
+        isNativeToken ||
+        (!canIgnoreEvmToken && !canIgnoreMultichainToken)
+      ) {
+        return;
+      }
+
+      const key = getTokenKey(token);
+      setPendingKey(key);
+      try {
+        if (canIgnoreEvmToken) {
+          const { networkClientId } = getNetworkMeta(token.chainId as Hex);
+          await dispatch(
+            ignoreTokensAction({
+              tokensToIgnore: [token.address],
+              dontShowLoadingIndicator: true,
+              networkClientId,
+            }),
+          );
+          return;
+        }
+
+        await dispatch(multichainIgnoreAssets([token.assetId], token.accountId));
+      } finally {
+        setPendingKey(undefined);
+      }
+    },
+    [dispatch, getNetworkMeta, getTokenKey],
   );
 
   const getTokenImage = useCallback((token: ManagedAsset) => {
@@ -251,29 +286,30 @@ export const TokenManagementPage = () => {
     (info: { item: ManagedAsset }) => {
       const token = info.item;
       const key = getTokenKey(token);
-      const networkName =
-        networkConfigurations?.[token.chainId as Hex]?.name ?? token.chainId;
+      const isNativeToken = Boolean(token.isNative);
+      const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
       const isManageableToken =
-        !token.isNative &&
-        'address' in token &&
-        isEvmChainId(token.chainId as Hex | CaipChainId);
+        !isNativeToken &&
+        ((isEvmToken && 'address' in token) ||
+          (!isEvmToken && Boolean(token.assetId) && Boolean(token.accountId)));
       return (
         <TokenManagementCell
           symbol={token.symbol}
           image={getTokenImage(token)}
-          networkImage={getImageForChainId(token.chainId)}
-          networkName={networkName}
+          chainId={token.chainId as Hex | CaipChainId}
+          isNative={token.isNative}
+          assetId={token.assetId as CaipAssetType | Hex}
           primaryLabel={token.name ?? token.symbol}
           secondaryLabel={`${token.balance} ${token.symbol}`}
           isOn
-          disabled={pendingKey === key}
+          disabled={isNativeToken || pendingKey === key}
           onToggle={(nextValue) => handleToggle(token, nextValue)}
-          showToggle={isManageableToken}
+          showToggle={isManageableToken || isNativeToken}
           testIdSuffix={key}
         />
       );
     },
-    [getTokenImage, getTokenKey, handleToggle, networkConfigurations, pendingKey],
+    [getTokenImage, getTokenKey, handleToggle, pendingKey],
   );
 
   const emptyState = (
@@ -285,7 +321,9 @@ export const TokenManagementPage = () => {
       padding={6}
     >
       <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
-        {t('noTokensToManage')}
+        {normalizedSearchQuery
+          ? t('noTokensMatchSearch')
+          : t('noTokensToManage')}
       </Text>
     </Box>
   );
@@ -321,28 +359,42 @@ export const TokenManagementPage = () => {
         display={Display.Flex}
         alignItems={AlignItems.center}
         paddingInline={4}
-        paddingTop={3}
+        paddingTop={2}
+        paddingBottom={2}
+      >
+        <TextFieldSearch
+          className="w-full"
+          value={searchQuery}
+          placeholder={t('enterTokenNameOrAddressManageTokens')}
+          borderColor={BorderColor.borderMuted}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          clearButtonOnClick={() => setSearchQuery('')}
+          inputProps={{
+            'data-testid': 'token-management-search-input',
+          }}
+        />
+      </Box>
+
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        paddingInline={4}
+        paddingTop={2}
         paddingBottom={2}
       >
         <ButtonBase
           data-testid="token-management-network-filter"
           size={ButtonBaseSize.Sm}
-          endIconName={IconName.ArrowDown}
+          startIconName={IconName.Filter}
           backgroundColor={BackgroundColor.backgroundDefault}
           color={TextColor.textDefault}
           borderColor={BorderColor.borderMuted}
+          borderStyle={BorderStyle.solid}
+          borderWidth={1}
           onClick={handleOpenNetworkFilter}
           ellipsis
         >
           <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            {networkFilterIconUrl && (
-              <AvatarNetwork
-                name={networkFilterLabel}
-                src={networkFilterIconUrl}
-                size={AvatarNetworkSize.Xs}
-                borderWidth={0}
-              />
-            )}
             <Text variant={TextVariant.bodySmMedium} ellipsis>
               {networkFilterLabel}
             </Text>
@@ -360,7 +412,7 @@ export const TokenManagementPage = () => {
         }}
       >
         <VirtualizedList
-          data={visibleTokens}
+          data={filteredVisibleTokens}
           estimatedItemSize={TOKEN_MANAGEMENT_CELL_ESTIMATED_SIZE}
           overscan={10}
           keyExtractor={getTokenKey}

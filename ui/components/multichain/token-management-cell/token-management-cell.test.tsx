@@ -8,6 +8,12 @@ import { TokenManagementCell } from './token-management-cell';
 const mockStore = configureMockStore()({
   metamask: {
     theme: 'light',
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Ethereum Mainnet',
+      },
+    },
   },
 });
 
@@ -39,8 +45,8 @@ describe('TokenManagementCell', () => {
     renderCell({
       symbol: 'MUSD',
       primaryLabel: 'MetaMask USD',
-      networkImage: './images/eth_logo.svg',
-      networkName: 'Ethereum Mainnet',
+      chainId: '0x1',
+      assetId: '0x0000000000000000000000000000000000000001',
       isOn: true,
       onToggle: jest.fn(),
       testIdSuffix: 'musd',
@@ -99,6 +105,9 @@ describe('TokenManagementCell', () => {
     ) as HTMLInputElement;
 
     fireEvent.click(toggleInput);
+    fireEvent.keyDown(toggleInput.closest('.toggle-button') as HTMLElement, {
+      key: 'Enter',
+    });
 
     expect(onToggle).not.toHaveBeenCalled();
   });
