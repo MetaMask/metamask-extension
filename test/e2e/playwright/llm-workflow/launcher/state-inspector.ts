@@ -264,9 +264,7 @@ type IdentityData = {
 // the inspector in sync with future state-shape changes automatically.
 type SelectorState = AccountsState & ProviderConfigState;
 
-function resolveIdentity(
-  metamaskState: Record<string, unknown>,
-): IdentityData {
+function resolveIdentity(metamaskState: Record<string, unknown>): IdentityData {
   const state = { metamask: metamaskState } as SelectorState;
 
   const selectedAccount = getMaybeSelectedInternalAccount(state);
