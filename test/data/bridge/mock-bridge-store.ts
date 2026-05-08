@@ -747,7 +747,7 @@ export const createBridgeMockStore = ({
               ? bridgeStateOverrides?.quoteRequest
               : [bridgeStateOverrides?.quoteRequest],
           }
-        : DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest),
+        : { quoteRequest: DEFAULT_BRIDGE_CONTROLLER_STATE.quoteRequest }),
     },
     DNS: {
       resolutions: [],
