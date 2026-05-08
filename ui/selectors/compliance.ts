@@ -54,9 +54,7 @@ const getSelectAreAnyWalletsBlocked = lruMemoize(
         return false;
       }
 
-      return addresses.some(
-        (address) => statusMap[address]?.blocked ?? false,
-      );
+      return addresses.some((address) => statusMap[address]?.blocked ?? false);
     }),
   {
     equalityCheck: (firstAddressList, secondAddressList) =>
