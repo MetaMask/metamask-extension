@@ -6,7 +6,7 @@ import { Hex, isCaipChainId } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
-  getRpcPrefsForCurrentProvider,
+  getBlockExplorerUrlByChainId,
   getSelectedInternalAccount,
   getNativeCurrencyForChain,
 } from '../../../selectors';
@@ -29,7 +29,9 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   const image = getNativeCurrencyForChain(chainId);
   const { type } = useSelector(getProviderConfig) ?? {};
   const { address } = useSelector(getSelectedInternalAccount);
-  const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const blockExplorerUrl = useSelector((state) =>
+    getBlockExplorerUrlByChainId(state, chainId),
+  );
 
   const caipChainId = isCaipChainId(chainId)
     ? chainId
@@ -49,7 +51,14 @@ const NativeAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
   );
 
   const accountLink = isEvm
-    ? getAccountLink(address, chainId, rpcPrefs)
+    ? getAccountLink(
+        address,
+        chainId,
+        {
+          blockExplorerUrl: blockExplorerUrl ?? undefined,
+        },
+        undefined,
+      )
     : addressLink;
   const { trackEvent } = useContext(MetaMetricsContext);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
