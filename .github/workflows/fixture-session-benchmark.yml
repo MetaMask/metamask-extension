@@ -11,13 +11,18 @@ on:
         description: Iterations to run per benchmark mode
         required: true
         type: number
+      modes:
+        default: withFixtures,sharedResetCdpNoPreload,sharedResetCdpNoPreloadNoWait
+        description: Comma-separated benchmark modes to run
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 jobs:
   fixture-session-benchmark:
-    name: fixture-session-benchmark-${{ matrix.browser }}-webpack-reset-deep-dive
+    name: fixture-session-benchmark-${{ matrix.browser }}-webpack-cdp-worker
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -26,8 +31,6 @@ jobs:
         include:
           - browser: chrome
             build-command: yarn build:test:webpack
-          - browser: firefox
-            build-command: yarn build:test:webpack:mv2
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
       credentials:
@@ -35,6 +38,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
       BENCHMARK_ITERATIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.iterations || 3 }}
+      BENCHMARK_MODES: ${{ github.event_name == 'workflow_dispatch' && inputs.modes || 'withFixtures,sharedResetCdpNoPreload,sharedResetCdpNoPreloadNoWait' }}
       FORCE_COLOR: '1'
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -66,7 +70,7 @@ jobs:
         run: ${{ matrix.build-command }}
 
       - name: Run fixture-session benchmark
-        run: yarn test:e2e:fixture-session:benchmark --iterations "$BENCHMARK_ITERATIONS" --browser=${{ matrix.browser }}
+        run: yarn test:e2e:fixture-session:benchmark --iterations "$BENCHMARK_ITERATIONS" --browser=${{ matrix.browser }} --modes "$BENCHMARK_MODES"
 
       - name: Publish benchmark summary
         run: cat test-artifacts/fixture-session-benchmark/summary.md >> "$GITHUB_STEP_SUMMARY"
@@ -75,5 +79,5 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: fixture-session-benchmark-${{ matrix.browser }}-webpack-reset-deep-dive
+          name: fixture-session-benchmark-${{ matrix.browser }}-webpack-cdp-worker
           path: test-artifacts/fixture-session-benchmark

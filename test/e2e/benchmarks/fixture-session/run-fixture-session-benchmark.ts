@@ -12,6 +12,8 @@ import {
 const BENCHMARK_MODES = [
   'withFixtures',
   'sharedReset',
+  'sharedResetCdpNoPreload',
+  'sharedResetCdpNoPreloadNoWait',
   'sharedResetNoPreload',
   'sharedResetNoPreloadNoWait',
   'sharedNoReset',
@@ -19,10 +21,14 @@ const BENCHMARK_MODES = [
 
 const MODE_COMPARISONS = [
   ['withFixtures', 'sharedReset'],
+  ['withFixtures', 'sharedResetCdpNoPreload'],
+  ['withFixtures', 'sharedResetCdpNoPreloadNoWait'],
   ['withFixtures', 'sharedResetNoPreload'],
   ['withFixtures', 'sharedResetNoPreloadNoWait'],
   ['withFixtures', 'sharedNoReset'],
   ['sharedReset', 'sharedResetNoPreload'],
+  ['sharedResetNoPreload', 'sharedResetCdpNoPreload'],
+  ['sharedResetNoPreloadNoWait', 'sharedResetCdpNoPreloadNoWait'],
   ['sharedResetNoPreload', 'sharedResetNoPreloadNoWait'],
   ['sharedReset', 'sharedNoReset'],
 ] as const;
@@ -61,9 +67,11 @@ type ModeSummary = {
 type ParsedArgs = {
   browser: 'chrome' | 'firefox';
   iterations: number;
+  modes: BenchmarkMode[];
   out: string;
   spec: string;
 };
+type ModeSummaries = Partial<Record<BenchmarkMode, ModeSummary>>;
 
 function stripAnsiCodes(value: string) {
   let strippedValue = '';
@@ -113,10 +121,11 @@ function calculateSummaryStats(values: number[]): SummaryStats {
 }
 
 function createMarkdownTable(
-  modeSummaries: Record<BenchmarkMode, ModeSummary>,
+  modes: BenchmarkMode[],
+  modeSummaries: ModeSummaries,
 ) {
-  const rows = BENCHMARK_MODES.map((mode) => {
-    const summary = modeSummaries[mode];
+  const rows = modes.map((mode) => {
+    const summary = getModeSummary(modeSummaries, mode);
     return `| ${mode} | ${summary.runs.length} | ${formatTime(
       summary.wall.meanMs,
     )} | ${formatTime(summary.wall.medianMs)} | ${formatTime(
@@ -133,6 +142,18 @@ function createMarkdownTable(
   ].join('\n');
 }
 
+function getModeSummary(
+  modeSummaries: ModeSummaries,
+  mode: BenchmarkMode,
+): ModeSummary {
+  const summary = modeSummaries[mode];
+  if (!summary) {
+    throw new Error(`Missing benchmark summary for mode "${mode}".`);
+  }
+
+  return summary;
+}
+
 function formatSignedTime(ms: number) {
   const sign = ms < 0 ? '-' : '+';
   return `${sign}${formatTime(Math.abs(ms))}`;
@@ -145,10 +166,10 @@ function formatDeltaPercent(deltaMs: number, baselineMs: number) {
 function createModeComparison(
   baseline: BenchmarkMode,
   target: BenchmarkMode,
-  modeSummaries: Record<BenchmarkMode, ModeSummary>,
+  modeSummaries: ModeSummaries,
 ) {
-  const baselineSummary = modeSummaries[baseline];
-  const targetSummary = modeSummaries[target];
+  const baselineSummary = getModeSummary(modeSummaries, baseline);
+  const targetSummary = getModeSummary(modeSummaries, target);
   const wallDeltaMs =
     targetSummary.wall.medianMs - baselineSummary.wall.medianMs;
   const suiteDeltaMs =
@@ -166,9 +187,12 @@ function createModeComparison(
 
 function createMarkdownSummary(
   args: ParsedArgs,
-  modeSummaries: Record<BenchmarkMode, ModeSummary>,
+  modeSummaries: ModeSummaries,
 ) {
-  const comparisons = MODE_COMPARISONS.map(([baseline, target]) =>
+  const comparisons = MODE_COMPARISONS.filter(
+    ([baseline, target]) =>
+      args.modes.includes(baseline) && args.modes.includes(target),
+  ).map(([baseline, target]) =>
     createModeComparison(baseline, target, modeSummaries),
   );
 
@@ -178,14 +202,41 @@ function createMarkdownSummary(
     `- Spec: \`${args.spec}\``,
     `- Browser: \`${args.browser}\``,
     `- Iterations per mode: \`${args.iterations}\``,
-    `- Run order: ${BENCHMARK_MODES.map((mode) => `\`${mode}\``).join(
+    `- Run order: ${args.modes.map((mode) => `\`${mode}\``).join(
       ', ',
     )}`,
     '',
-    createMarkdownTable(modeSummaries),
+    createMarkdownTable(args.modes, modeSummaries),
     '',
     ...comparisons,
   ].join('\n');
+}
+
+function parseBenchmarkModes(value: string | string[]): BenchmarkMode[] {
+  const rawModes = (Array.isArray(value) ? value : [value]).flatMap((entry) =>
+    entry.split(','),
+  );
+  const modes = rawModes
+    .map((mode) => mode.trim())
+    .filter((mode) => mode.length > 0);
+
+  if (modes.length === 0) {
+    throw new Error('At least one benchmark mode is required.');
+  }
+
+  const unsupportedModes = modes.filter(
+    (mode): mode is string =>
+      !(BENCHMARK_MODES as readonly string[]).includes(mode),
+  );
+  if (unsupportedModes.length > 0) {
+    throw new Error(
+      `Unsupported benchmark mode(s): ${unsupportedModes.join(
+        ', ',
+      )}. Expected one of: ${BENCHMARK_MODES.join(', ')}.`,
+    );
+  }
+
+  return modes as BenchmarkMode[];
 }
 
 async function ensureEmptyDirectory(directoryPath: string) {
@@ -360,11 +411,11 @@ async function runSingleBenchmark(
   };
 }
 
-function getModeOrder(iteration: number): BenchmarkMode[] {
-  const offset = (iteration - 1) % BENCHMARK_MODES.length;
+function getModeOrder(iteration: number, modes: BenchmarkMode[]): BenchmarkMode[] {
+  const offset = (iteration - 1) % modes.length;
   return [
-    ...BENCHMARK_MODES.slice(offset),
-    ...BENCHMARK_MODES.slice(0, offset),
+    ...modes.slice(offset),
+    ...modes.slice(0, offset),
   ];
 }
 
@@ -381,6 +432,13 @@ async function main() {
       default: 5,
       description: 'Number of iterations to run for each benchmark mode',
       type: 'number',
+    })
+    .option('modes', {
+      coerce: parseBenchmarkModes,
+      default: BENCHMARK_MODES.join(','),
+      description:
+        'Comma-separated benchmark modes to run. Defaults to every mode.',
+      type: 'string',
     })
     .option('out', {
       default: 'test-artifacts/fixture-session-benchmark',
@@ -405,7 +463,7 @@ async function main() {
   await fs.mkdir(outDirectory, { recursive: true });
 
   for (let iteration = 1; iteration <= args.iterations; iteration += 1) {
-    for (const mode of getModeOrder(iteration)) {
+    for (const mode of getModeOrder(iteration, args.modes)) {
       sequenceIndex += 1;
       runs.push(
         await runSingleBenchmark(
@@ -422,7 +480,7 @@ async function main() {
   }
 
   const modeSummaries = Object.fromEntries(
-    BENCHMARK_MODES.map((mode) => {
+    args.modes.map((mode) => {
       const modeRuns = runs.filter((run) => run.mode === mode);
       return [
         mode,
@@ -433,7 +491,7 @@ async function main() {
         },
       ];
     }),
-  ) as Record<BenchmarkMode, ModeSummary>;
+  ) as ModeSummaries;
 
   const markdownSummary = createMarkdownSummary(
     {

@@ -153,13 +153,18 @@ class SocketBackgroundToMocha {
       message.id &&
       message.strategy
     ) {
-      await this.resetFixtureState(message.id, message.strategy);
+      await this.resetFixtureState(
+        message.id,
+        message.strategy,
+        message.reloadServiceWorker ?? true,
+      );
     }
   }
 
   private async resetFixtureState(
     id: string,
     strategy: FixtureResetStrategy,
+    reloadServiceWorker: boolean,
   ) {
     if (!this.fixtureStateResetHandler) {
       this.send({
@@ -178,7 +183,7 @@ class SocketBackgroundToMocha {
         ...response,
       });
 
-      if (response.reloadRequired) {
+      if (response.reloadRequired && reloadServiceWorker) {
         globalThis.setTimeout(() => {
           chrome.runtime.reload();
         }, 0);

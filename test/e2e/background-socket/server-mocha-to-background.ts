@@ -116,6 +116,10 @@ class ServerMochaToBackground {
     this.send({ command: 'queryTabs', title: tabTitle });
   }
 
+  getConnectionVersion() {
+    return this.connectionVersion;
+  }
+
   // Sends the message to the Extension, and waits for a response
   async waitUntilWindowWithProperty(property: WindowProperties, value: string) {
     this.send({ command: 'waitUntilWindowWithProperty', property, value });
@@ -128,14 +132,25 @@ class ServerMochaToBackground {
     return tabs;
   }
 
-  async resetFixtureState(strategy: FixtureResetStrategy) {
+  async resetFixtureState(
+    strategy: FixtureResetStrategy,
+    {
+      reloadServiceWorker = true,
+      waitForReconnect = true,
+    }: { reloadServiceWorker?: boolean; waitForReconnect?: boolean } = {},
+  ) {
     const { connectionVersion } = this;
     const id = `fixture-state-reset-${Date.now()}-${Math.random()}`;
 
-    this.send({ command: 'resetFixtureState', id, strategy });
+    this.send({
+      command: 'resetFixtureState',
+      id,
+      reloadServiceWorker,
+      strategy,
+    });
 
     const response = await this.waitForFixtureStateResetResponse(id);
-    if (response.reloadRequired) {
+    if (response.reloadRequired && waitForReconnect) {
       await this.waitForConnectionAfter(connectionVersion);
     }
 

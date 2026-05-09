@@ -10,6 +10,7 @@ type FixtureResetStrategy =
   | 'inPlace'
   | 'reload'
   | 'reloadSkipFixtureInitialization';
+type ServiceWorkerRestart = 'runtimeReload' | 'cdpStopStart';
 type ResetFixtureStateResponse = {
   status?: string;
   reloadRequired?: boolean;
@@ -19,6 +20,7 @@ type FixtureSessionOptions = WithFixturesOptions & {
   fixtures: unknown;
   resetAfterEach?: boolean;
   resetStrategy?: FixtureResetStrategy;
+  serviceWorkerRestart?: ServiceWorkerRestart;
   waitForExtensionStartAfterReset?: boolean;
   testSpecificMock?: (mockServer: Mockttp) => unknown | Promise<unknown>;
 };
@@ -34,6 +36,7 @@ export type FixtureSessionAccessors = {
 const RESET_FIXTURE_STATE_STATUS = 'FIXTURE_STATE_RESET';
 const OFFSCREEN_PAGE_TITLE = 'MetaMask Offscreen Page';
 const PROFILE_MARKER = '[fixture-benchmark-profile] ';
+const CHROME_EXTENSION_PROTOCOL = 'chrome-extension://';
 
 function recordFixtureSessionProfile(
   phase: string,
@@ -115,19 +118,95 @@ async function getReloadSurvivorWindow(driver: Driver): Promise<string> {
   return await driver.openNewPage('about:blank');
 }
 
+async function sendChromeDevToolsCommand<Result>(
+  driver: Driver,
+  command: string,
+  params: Record<string, unknown> = {},
+): Promise<Result> {
+  const seleniumDriver = driver.driver as {
+    sendAndGetDevToolsCommand?: (
+      commandName: string,
+      commandParams?: Record<string, unknown>,
+    ) => Promise<unknown>;
+  };
+
+  if (!seleniumDriver.sendAndGetDevToolsCommand) {
+    throw new Error('Chrome DevTools Protocol is not available.');
+  }
+
+  const result = await seleniumDriver.sendAndGetDevToolsCommand(
+    command,
+    params,
+  );
+  if (typeof result !== 'string') {
+    return result as Result;
+  }
+
+  try {
+    return JSON.parse(result) as Result;
+  } catch {
+    return result as Result;
+  }
+}
+
+async function restartExtensionServiceWorkerWithCdp(
+  driver: Driver,
+  connectionVersion: number,
+  resetStrategy: FixtureResetStrategy,
+): Promise<void> {
+  if (!driver.extensionUrl.startsWith(CHROME_EXTENSION_PROTOCOL)) {
+    throw new Error('CDP service-worker restart is only supported in Chrome.');
+  }
+
+  const scopeURL = driver.extensionUrl.endsWith('/')
+    ? driver.extensionUrl
+    : `${driver.extensionUrl}/`;
+  const backgroundSocket = getServerMochaToBackground();
+
+  await profileFixtureSessionPhase(
+    'reset.cdp.enableServiceWorker',
+    () => sendChromeDevToolsCommand(driver, 'ServiceWorker.enable'),
+    { resetStrategy },
+  );
+  await profileFixtureSessionPhase(
+    'reset.cdp.stopAllWorkers',
+    () => sendChromeDevToolsCommand(driver, 'ServiceWorker.stopAllWorkers'),
+    { resetStrategy },
+  );
+  await profileFixtureSessionPhase(
+    'reset.cdp.startWorker',
+    () =>
+      sendChromeDevToolsCommand(driver, 'ServiceWorker.startWorker', {
+        scopeURL,
+      }),
+    { resetStrategy },
+  );
+  await profileFixtureSessionPhase(
+    'reset.cdp.waitForBackgroundSocketReconnect',
+    () => backgroundSocket.waitForConnectionAfter(connectionVersion),
+    { resetStrategy },
+  );
+}
+
 /**
  * Sends the test-only background message that resets persisted fixture-backed
  * state.
  *
  * @param _driver - The active shared-session driver.
  * @param strategy - How the background script should reset fixture state.
+ * @param restartServiceWorker
  */
 async function requestFixtureStateReset(
   _driver: Driver,
   strategy: FixtureResetStrategy,
+  restartServiceWorker: ServiceWorkerRestart,
 ): Promise<ResetFixtureStateResponse> {
   const response = await getServerMochaToBackground().resetFixtureState(
     strategy,
+    {
+      reloadServiceWorker: restartServiceWorker === 'runtimeReload',
+      waitForReconnect: restartServiceWorker === 'runtimeReload',
+    },
   );
 
   if (response?.status !== RESET_FIXTURE_STATE_STATUS) {
@@ -179,16 +258,25 @@ async function closeAuxiliaryWindows(driver: Driver): Promise<void> {
  *
  * @param fixtureContext - The active shared-session fixture context.
  * @param resetStrategy - How the background script should reset fixture state.
+ * @param serviceWorkerRestart - How to restart the extension service worker after reset.
  * @param waitForExtensionStartAfterReset
  */
 async function resetSharedFixtureSession(
   fixtureContext: FixtureSessionContext,
   resetStrategy: FixtureResetStrategy,
+  serviceWorkerRestart: ServiceWorkerRestart,
   waitForExtensionStartAfterReset: boolean,
 ): Promise<void> {
   const { driver } = fixtureContext;
   const reloadRequired = resetStrategy !== 'inPlace';
-  const survivorWindow = reloadRequired
+  const usesRuntimeReload =
+    reloadRequired && serviceWorkerRestart === 'runtimeReload';
+  const usesCdpRestart =
+    reloadRequired && serviceWorkerRestart === 'cdpStopStart';
+  const connectionVersion = usesCdpRestart
+    ? getServerMochaToBackground().getConnectionVersion()
+    : undefined;
+  const survivorWindow = usesRuntimeReload
     ? await profileFixtureSessionPhase(
         'reset.getReloadSurvivorWindow',
         () => getReloadSurvivorWindow(driver),
@@ -197,28 +285,39 @@ async function resetSharedFixtureSession(
     : undefined;
   const resetResponse = await profileFixtureSessionPhase(
     'reset.requestFixtureStateReset',
-    () => requestFixtureStateReset(driver, resetStrategy),
+    () => requestFixtureStateReset(driver, resetStrategy, serviceWorkerRestart),
     { resetStrategy },
   );
   if (resetResponse.reloadRequired === false) {
     return;
   }
 
-  if (!survivorWindow) {
-    throw new Error('Reload reset did not prepare a survivor window.');
+  if (usesCdpRestart) {
+    if (connectionVersion === undefined) {
+      throw new Error('CDP reset did not capture a background connection.');
+    }
+    await restartExtensionServiceWorkerWithCdp(
+      driver,
+      connectionVersion,
+      resetStrategy,
+    );
   }
 
-  await profileFixtureSessionPhase(
-    'reset.switchToSurvivorWindow',
-    () => driver.switchToWindow(survivorWindow),
-    { resetStrategy },
-  );
-  if (process.env.SELENIUM_BROWSER === 'firefox') {
+  if (survivorWindow) {
     await profileFixtureSessionPhase(
-      'reset.openFirefoxBlankPage',
-      () => driver.openNewPage('about:blank'),
+      'reset.switchToSurvivorWindow',
+      () => driver.switchToWindow(survivorWindow),
       { resetStrategy },
     );
+    if (process.env.SELENIUM_BROWSER === 'firefox') {
+      await profileFixtureSessionPhase(
+        'reset.openFirefoxBlankPage',
+        () => driver.openNewPage('about:blank'),
+        { resetStrategy },
+      );
+    }
+  } else if (!usesCdpRestart) {
+    throw new Error('Reload reset did not prepare a survivor window.');
   }
 
   if (waitForExtensionStartAfterReset) {
@@ -274,6 +373,7 @@ export function configureFixtureSession(
       const {
         resetAfterEach: _resetAfterEach,
         resetStrategy: _resetStrategy,
+        serviceWorkerRestart: _serviceWorkerRestart,
         waitForExtensionStartAfterReset: _waitForExtensionStartAfterReset,
         ...withFixturesOptions
       } = fixtureOptions;
@@ -326,6 +426,7 @@ export function configureFixtureSession(
             await resetSharedFixtureSession(
               fixtureContext,
               fixtureOptions.resetStrategy ?? 'inPlace',
+              fixtureOptions.serviceWorkerRestart ?? 'runtimeReload',
               fixtureOptions.waitForExtensionStartAfterReset ?? true,
             );
           }

@@ -20,6 +20,7 @@ export type MessageType = {
   error?: string;
   id?: string;
   reloadRequired?: boolean;
+  reloadServiceWorker?: boolean;
   status?: string;
   strategy?: FixtureResetStrategy;
   tabs?: chrome.tabs.Tab[];

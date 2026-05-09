@@ -18,6 +18,8 @@ import {
 type BenchmarkMode =
   | 'withFixtures'
   | 'sharedReset'
+  | 'sharedResetCdpNoPreload'
+  | 'sharedResetCdpNoPreloadNoWait'
   | 'sharedResetNoPreload'
   | 'sharedResetNoPreloadNoWait'
   | 'sharedNoReset';
@@ -27,9 +29,32 @@ const benchmarkMode = process.env
 const benchmarkModes = [
   'withFixtures',
   'sharedReset',
+  'sharedResetCdpNoPreload',
+  'sharedResetCdpNoPreloadNoWait',
   'sharedResetNoPreload',
   'sharedResetNoPreloadNoWait',
   'sharedNoReset',
+];
+const resetAfterEachModes: BenchmarkMode[] = [
+  'sharedReset',
+  'sharedResetCdpNoPreload',
+  'sharedResetCdpNoPreloadNoWait',
+  'sharedResetNoPreload',
+  'sharedResetNoPreloadNoWait',
+];
+const noPreloadModes: BenchmarkMode[] = [
+  'sharedResetCdpNoPreload',
+  'sharedResetCdpNoPreloadNoWait',
+  'sharedResetNoPreload',
+  'sharedResetNoPreloadNoWait',
+];
+const cdpRestartModes: BenchmarkMode[] = [
+  'sharedResetCdpNoPreload',
+  'sharedResetCdpNoPreloadNoWait',
+];
+const noWaitModes: BenchmarkMode[] = [
+  'sharedResetCdpNoPreloadNoWait',
+  'sharedResetNoPreloadNoWait',
 ];
 
 if (!benchmarkModes.includes(benchmarkMode)) {
@@ -244,17 +269,14 @@ if (benchmarkMode === 'withFixtures') {
     `Phishing redirect benchmark (${benchmarkMode})`,
     {
       fixtures: fixtureState,
-      resetAfterEach:
-        benchmarkMode === 'sharedReset' ||
-        benchmarkMode === 'sharedResetNoPreload' ||
-        benchmarkMode === 'sharedResetNoPreloadNoWait',
-      resetStrategy:
-        benchmarkMode === 'sharedResetNoPreload' ||
-        benchmarkMode === 'sharedResetNoPreloadNoWait'
-          ? 'reloadSkipFixtureInitialization'
-          : 'reload',
-      waitForExtensionStartAfterReset:
-        benchmarkMode !== 'sharedResetNoPreloadNoWait',
+      resetAfterEach: resetAfterEachModes.includes(benchmarkMode),
+      resetStrategy: noPreloadModes.includes(benchmarkMode)
+        ? 'reloadSkipFixtureInitialization'
+        : 'reload',
+      serviceWorkerRestart: cdpRestartModes.includes(benchmarkMode)
+        ? 'cdpStopStart'
+        : 'runtimeReload',
+      waitForExtensionStartAfterReset: !noWaitModes.includes(benchmarkMode),
       testSpecificMock: setupPhishingMocks,
     },
     ({ getDriver, getFixtures }) => {
@@ -262,11 +284,7 @@ if (benchmarkMode === 'withFixtures') {
 
       registerHooks();
 
-      if (
-        benchmarkMode === 'sharedReset' ||
-        benchmarkMode === 'sharedResetNoPreload' ||
-        benchmarkMode === 'sharedResetNoPreloadNoWait'
-      ) {
+      if (resetAfterEachModes.includes(benchmarkMode)) {
         beforeEach('Unlock extension and wait for blocklist', async function () {
           this.timeout(120000);
           await unlockAndWaitForBlocklist(getDriver());
