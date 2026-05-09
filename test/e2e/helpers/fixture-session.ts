@@ -301,6 +301,13 @@ async function resetSharedFixtureSession(
       connectionVersion,
       resetStrategy,
     );
+    if (!waitForExtensionStartAfterReset) {
+      await profileFixtureSessionPhase(
+        'reset.openReusableBlankPage',
+        () => driver.openNewPage('about:blank'),
+        { resetStrategy },
+      );
+    }
   }
 
   if (survivorWindow) {
