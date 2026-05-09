@@ -98,6 +98,41 @@ async function restartChromeServiceWorker(driver: Driver): Promise<void> {
   await driver.openNewPage('about:blank');
 }
 
+async function moveToBlankPageForExtensionRestart(
+  driver: Driver,
+): Promise<void> {
+  const currentHandle = await driver.getCurrentWindowHandle();
+  const currentUrl = await driver.getCurrentUrl().catch(() => '');
+  let survivorWindow = currentHandle;
+
+  if (currentUrl.startsWith(driver.extensionUrl)) {
+    survivorWindow = await driver.openNewPage('about:blank');
+  }
+
+  const windowHandles = await driver.getAllWindowHandles();
+  for (const handle of windowHandles) {
+    if (handle === survivorWindow) {
+      continue;
+    }
+
+    try {
+      await driver.switchToWindow(handle);
+      const title = await driver.driver.getTitle();
+      const url = await driver.getCurrentUrl().catch(() => '');
+      if (
+        title !== OFFSCREEN_PAGE_TITLE &&
+        url.startsWith(driver.extensionUrl)
+      ) {
+        await driver.closeWindow();
+      }
+    } catch {
+      // Ignore handles that disappeared during cleanup.
+    }
+  }
+
+  await driver.switchToWindow(survivorWindow);
+}
+
 /**
  * Closes any user-visible auxiliary tabs/windows that were opened during a
  * shared-session test, while preserving the current tab and the MV3 offscreen
@@ -143,6 +178,7 @@ async function resetSharedFixtureSession(
   );
 
   if (canRestartWithCdp) {
+    await moveToBlankPageForExtensionRestart(driver);
     await getServerMochaToBackground().resetFixtureState({
       reloadServiceWorker: false,
       waitForReconnect: false,

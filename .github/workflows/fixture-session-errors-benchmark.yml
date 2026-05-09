@@ -91,8 +91,10 @@ jobs:
             local suite_seconds
 
             start_ms="$(date +%s%3N)"
+            set +e
             E2E_REPORTER=spec yarn test:e2e:single test/e2e/tests/metrics/errors.spec.ts --browser=chrome --debug=false --retries=0
             status="$?"
+            set -e
             end_ms="$(date +%s%3N)"
 
             wall_seconds="$(awk -v start="${start_ms}" -v end="${end_ms}" 'BEGIN { printf "%.3f", (end - start) / 1000 }')"
