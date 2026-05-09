@@ -49,10 +49,27 @@ function getInitRequestMock(): jest.Mocked<
     initMessenger: getKeyringControllerInitMessenger(baseMessenger),
   };
 
+  requestMock.getMessengerClient.mockImplementation((name) => {
+    if (name === 'SnapKeyringBuilderV2') {
+      return {
+        name: 'SnapKeyringBuilderV2',
+        state: null,
+        v1Builder: jest.fn(),
+        v2Builder: jest.fn(),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any;
+    }
+    return undefined as never;
+  });
+
   return requestMock;
 }
 
 describe('KeyringControllerInit', () => {
+  beforeEach(() => {
+    jest.mocked(KeyringController).mockClear();
+  });
+
   it('initializes the controller', () => {
     const { messengerClient } = KeyringControllerInit(getInitRequestMock());
     expect(messengerClient).toBeInstanceOf(KeyringController);
@@ -67,6 +84,7 @@ describe('KeyringControllerInit', () => {
       state: undefined,
       encryptor: expect.any(Object),
       keyringBuilders: expect.any(Array),
+      keyringV2Builders: expect.any(Array),
     });
   });
 });
