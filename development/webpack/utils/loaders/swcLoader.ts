@@ -23,6 +23,24 @@ const schema = {
     jsc: {
       type: 'object',
       properties: {
+        target: {
+          description:
+            'ECMAScript target version (e.g. "es2022"). When unset, swc defaults to ES5 and downcompiles modern syntax (BigInt **, async generators, etc.) even when env.targets is also unset.',
+          type: 'string',
+          enum: [
+            'es3',
+            'es5',
+            'es2015',
+            'es2016',
+            'es2017',
+            'es2018',
+            'es2019',
+            'es2020',
+            'es2021',
+            'es2022',
+            'esnext',
+          ],
+        },
         externalHelpers: {
           type: 'boolean',
           default: false,

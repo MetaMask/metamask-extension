@@ -486,6 +486,11 @@ const config = {
               options: {
                 jsc: {
                   parser: { syntax: 'ecmascript' as const },
+                  // Default jsc.target is 'es5'; with no target raised we
+                  // still get ** → Math.pow and other ES5 downlevels even
+                  // when env.targets is unset. Pin target to ES2022 so the
+                  // BigInt operators and async generators stay native.
+                  target: 'es2022' as const,
                 },
                 module: { type: 'es6' as const },
               },
