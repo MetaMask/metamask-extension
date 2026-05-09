@@ -44,6 +44,9 @@ jobs:
         if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
         run: yarn mm-foundryup
 
+      - name: Run webpack tsc
+        run: yarn webpack:tsc
+
       - name: Build webpack test extension
         run: yarn build:test:webpack
 
