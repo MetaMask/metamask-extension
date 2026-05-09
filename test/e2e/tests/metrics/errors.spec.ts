@@ -757,7 +757,7 @@ describe('Sentry errors', function () {
 
   describe('after initialization, after opting into metrics', function () {
     configureSentryFixtureSession({
-      title: 'background errors after initialization',
+      title: 'background error events after initialization',
       fixtures: buildMetaMetricsFixture({
         metaMetricsId: MOCK_META_METRICS_ID,
         participateInMetaMetrics: true,
@@ -789,7 +789,20 @@ describe('Sentry errors', function () {
           assert.equal(level, 'error');
           assert.equal(participateInMetaMetrics, true);
         });
+      },
+    });
 
+    configureSentryFixtureSession({
+      title: 'background application state after initialization',
+      fixtures: buildMetaMetricsFixture({
+        metaMetricsId: MOCK_META_METRICS_ID,
+        participateInMetaMetrics: true,
+      }),
+      mockSentryEndpoint: mockSentryTestError,
+      ignoredErrors: [
+        "TypeError: Cannot read properties of undefined (reading 'version')",
+      ],
+      defineSuite: ({ getDriver, getNextSentryRequest }) => {
         it('should capture background application state', async function () {
           const driver = getDriver();
           await login(driver);
