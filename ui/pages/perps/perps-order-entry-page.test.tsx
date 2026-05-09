@@ -33,6 +33,7 @@ import {
   mockCryptoMarkets,
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
+import { AccessRestrictedProvider } from '../../components/app/compliance';
 import PerpsOrderEntryPage, {
   shouldShowPerpsOrderSubmissionToasts,
 } from './perps-order-entry-page';
@@ -311,6 +312,7 @@ describe('PerpsOrderEntryPage', () => {
     mockReplacePerpsToastByKey.mockReset();
     mockHidePerpsToast.mockReset();
     mockTriggerDeposit.mockClear();
+    mockSubmitRequestToBackground.mockResolvedValue(undefined);
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
     mockSearchParams.delete('direction');
     mockSearchParams.delete('mode');
@@ -621,6 +623,46 @@ describe('PerpsOrderEntryPage', () => {
 
       const submitButton = screen.getByTestId('submit-order-button');
       expect(submitButton).toBeDisabled();
+    });
+
+    it('gates the amount input add funds action when compliance blocks the selected wallet', async () => {
+      const selectedAccountId = mockState.metamask.internalAccounts
+        .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts;
+      const selectedAddress =
+        mockState.metamask.internalAccounts.accounts[selectedAccountId].address;
+      mockSubmitRequestToBackground.mockResolvedValue([
+        {
+          address: selectedAddress,
+          blocked: true,
+          checkedAt: '2026-05-05T00:00:00.000Z',
+        },
+      ]);
+      const state = createMockState();
+      state.metamask.remoteFeatureFlags = {
+        ...state.metamask.remoteFeatureFlags,
+        complianceEnabled: true,
+      };
+      const store = mockStore(state);
+
+      renderWithProvider(
+        <AccessRestrictedProvider>
+          <PerpsOrderEntryPage />
+        </AccessRestrictedProvider>,
+        store,
+      );
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId('amount-input-add-funds'));
+      });
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'complianceCheckWalletsCompliance',
+          [[selectedAddress]],
+        );
+      });
+      expect(mockTriggerDeposit).not.toHaveBeenCalled();
+      expect(screen.getByTestId('access-restricted-modal')).toBeInTheDocument();
     });
 
     it('shows geo-block modal instead of placing order when user is not eligible and has balance', async () => {
