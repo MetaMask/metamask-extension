@@ -13,6 +13,9 @@ jobs:
     name: chrome-webpack-errors-suite
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    defaults:
+      run:
+        shell: bash
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
       credentials:
