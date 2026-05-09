@@ -431,6 +431,20 @@ describe('PersistenceManager', () => {
     });
   });
 
+  describe('reset', () => {
+    it('initializes the local store by default', async () => {
+      await manager.reset();
+
+      expect(mockStoreReset).toHaveBeenCalledWith({ initialize: true });
+    });
+
+    it('can skip local store initialization', async () => {
+      await manager.reset({ initializeStore: false });
+
+      expect(mockStoreReset).toHaveBeenCalledWith({ initialize: false });
+    });
+  });
+
   describe('Locks', () => {
     it('should acquire a lock when setting state', async () => {
       manager.storageKind = 'data';
