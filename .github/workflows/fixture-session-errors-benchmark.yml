@@ -1,0 +1,195 @@
+name: Fixture Session Errors Benchmark
+
+on:
+  push:
+    branches:
+      - davidm/e2e-shared-fixture-session-next-benchmark
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    name: chrome-webpack-errors-suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    container:
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    env:
+      ASSETS_UNIFIED_STATE_ENABLED: 'false'
+      FORCE_COLOR: '1'
+      HEADLESS: false
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SELENIUM_BROWSER: chrome
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v5
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true' }}
+        run: yarn mm-foundryup
+
+      - name: Build webpack test extension
+        run: yarn build:test:webpack
+
+      - name: Configure Xvfb
+        run: Xvfb -ac :99 -screen 0 1280x1024x16 &
+
+      - name: Prepare benchmark variants
+        run: |
+          mkdir -p /tmp/fixture-session-errors-benchmark
+          cp test/e2e/tests/metrics/errors.spec.ts /tmp/fixture-session-errors-benchmark/sharedReset.spec.ts
+          git fetch --no-tags --depth=1 origin davidm/e2e-shared-fixture-session
+          git show FETCH_HEAD:test/e2e/tests/metrics/errors.spec.ts > /tmp/fixture-session-errors-benchmark/withFixtures.spec.ts
+
+      - name: Run benchmark
+        run: |
+          set -uo pipefail
+
+          mkdir -p test-artifacts/fixture-session-errors-benchmark
+          results_csv="test-artifacts/fixture-session-errors-benchmark/results.csv"
+          summary_json="test-artifacts/fixture-session-errors-benchmark/summary.json"
+          echo "mode,iteration,status,wall_seconds,suite_seconds" > "${results_csv}"
+
+          exit_status=0
+
+          run_case() {
+            local mode="$1"
+            local iteration="$2"
+            local source_file="$3"
+
+            echo "::group::${mode} iteration ${iteration}"
+            cp "${source_file}" test/e2e/tests/metrics/errors.spec.ts
+            rm -rf test/test-results/e2e
+            mkdir -p test/test-results/e2e
+
+            local start_ms
+            local end_ms
+            local status
+            local wall_seconds
+            local suite_seconds
+
+            start_ms="$(date +%s%3N)"
+            E2E_REPORTER=spec yarn test:e2e:single test/e2e/tests/metrics/errors.spec.ts --browser=chrome --debug=false --retries=0
+            status="$?"
+            end_ms="$(date +%s%3N)"
+
+            wall_seconds="$(awk -v start="${start_ms}" -v end="${end_ms}" 'BEGIN { printf "%.3f", (end - start) / 1000 }')"
+            suite_seconds="$(node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+
+          const resultsDir = 'test/test-results/e2e';
+          let total = 0;
+          let found = false;
+
+          if (fs.existsSync(resultsDir)) {
+            for (const file of fs.readdirSync(resultsDir)) {
+              if (!file.endsWith('.xml')) {
+                continue;
+              }
+
+              const xml = fs.readFileSync(path.join(resultsDir, file), 'utf8');
+              for (const match of xml.matchAll(/<testsuite\b[^>]*\stime="([^"]+)"/gu)) {
+                total += Number(match[1]);
+                found = true;
+              }
+            }
+          }
+
+          process.stdout.write(found ? total.toFixed(3) : '');
+          NODE
+            )"
+
+            echo "${mode},${iteration},${status},${wall_seconds},${suite_seconds}" | tee -a "${results_csv}"
+            if [[ "${status}" != "0" ]]; then
+              exit_status="${status}"
+            fi
+
+            echo "::endgroup::"
+          }
+
+          for iteration in 1 2 3; do
+            run_case withFixtures "${iteration}" /tmp/fixture-session-errors-benchmark/withFixtures.spec.ts
+            run_case sharedReset "${iteration}" /tmp/fixture-session-errors-benchmark/sharedReset.spec.ts
+          done
+
+          node <<'NODE'
+          const fs = require('fs');
+
+          const resultsCsv = 'test-artifacts/fixture-session-errors-benchmark/results.csv';
+          const summaryJson = 'test-artifacts/fixture-session-errors-benchmark/summary.json';
+
+          const [header, ...lines] = fs.readFileSync(resultsCsv, 'utf8').trim().split('\n');
+          const keys = header.split(',');
+          const runs = lines.map((line) => {
+            const values = line.split(',');
+            return Object.fromEntries(
+              keys.map((key, index) => {
+                const value = values[index];
+                return [
+                  key,
+                  ['iteration', 'status'].includes(key)
+                    ? Number(value)
+                    : key.endsWith('_seconds') && value !== ''
+                      ? Number(value)
+                      : value,
+                ];
+              }),
+            );
+          });
+
+          function median(values) {
+            const sorted = values.toSorted((a, b) => a - b);
+            const middle = Math.floor(sorted.length / 2);
+            return sorted.length % 2 === 0
+              ? (sorted[middle - 1] + sorted[middle]) / 2
+              : sorted[middle];
+          }
+
+          const summary = Object.fromEntries(
+            ['withFixtures', 'sharedReset'].map((mode) => {
+              const modeRuns = runs.filter((run) => run.mode === mode && run.status === 0);
+              return [
+                mode,
+                {
+                  runs: modeRuns.length,
+                  wallSecondsMedian: median(modeRuns.map((run) => run.wall_seconds)),
+                  suiteSecondsMedian: median(modeRuns.map((run) => run.suite_seconds)),
+                },
+              ];
+            }),
+          );
+
+          fs.writeFileSync(
+            summaryJson,
+            `${JSON.stringify({ runs, summary }, null, 2)}\n`,
+          );
+
+          console.log(JSON.stringify({ summary }, null, 2));
+          NODE
+
+          exit "${exit_status}"
+
+      - name: Upload benchmark results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: fixture-session-errors-benchmark
+          path: test-artifacts/fixture-session-errors-benchmark
+          retention-days: 7

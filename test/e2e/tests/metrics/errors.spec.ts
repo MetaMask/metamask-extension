@@ -5,15 +5,51 @@ import { cloneDeep, get, has, set, unset } from 'lodash';
 import { Browser } from 'selenium-webdriver';
 import prettier from 'prettier';
 import { isObject, Json, JsonRpcResponse } from '@metamask/utils';
-import { Mockttp, MockttpServer } from 'mockttp';
+import type { MockedEndpoint, Mockttp } from 'mockttp';
 import { SENTRY_UI_STATE } from '../../../../app/scripts/constants/sentry-state';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { withFixtures, sentryRegEx } from '../../helpers';
-import { PAGES } from '../../webdriver/driver';
+import { sentryRegEx } from '../../helpers';
+import { configureFixtureSession } from '../../helpers/fixture-session';
+import { PAGES, type Driver } from '../../webdriver/driver';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import LoginPage from '../../page-objects/pages/login-page';
 import { login } from '../../page-objects/flows/login.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+
+type CompletedSentryRequest = Awaited<
+  ReturnType<MockedEndpoint['getSeenRequests']>
+>[number];
+type SentryPersistedState = JsonRpcResponse<Json> & {
+  data: JsonRpcResponse<Json>;
+};
+type SentryAppState = {
+  browser: string;
+  version: string;
+  persistedState: SentryPersistedState;
+  state: JsonRpcResponse<Json> &
+    Record<
+      'MetaMetricsController' | 'metamask',
+      { participateInMetaMetrics: boolean }
+    >;
+};
+type SentryRequestJsonBody = {
+  breadcrumbs?: { message?: string }[];
+  exception: {
+    values: { type: string; value: string }[];
+  };
+  extra: {
+    appState: SentryAppState;
+    extensionId: string;
+    installType: string;
+  };
+  level: string;
+};
+
+type SentrySessionAccessors = {
+  getDriver: () => Driver;
+  getNextSentryRequest: (driver: Driver) => Promise<CompletedSentryRequest>;
+  expectNoSentryRequest: (driver: Driver) => Promise<void>;
+};
 
 const FEATURE_FLAGS_RESPONSE = [
   { feature1: true },
@@ -39,7 +75,7 @@ const FEATURE_FLAGS_RESPONSE = [
   },
 ];
 
-async function mockRemoteFeatureFlags(server: MockttpServer): Promise<void> {
+async function mockRemoteFeatureFlags(server: Mockttp): Promise<void> {
   await server
     .forGet('https://client-config.api.cx.metamask.io/v1/flags')
     .withQuery({
@@ -51,6 +87,49 @@ async function mockRemoteFeatureFlags(server: MockttpServer): Promise<void> {
       statusCode: 200,
       json: FEATURE_FLAGS_RESPONSE,
     }));
+}
+
+async function mockExchangeRates(mockServer: Mockttp): Promise<void> {
+  await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .withQuery({ baseCurrency: 'usd' })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          usd: {
+            name: 'US Dollar',
+            ticker: 'usd',
+            value: 1,
+            currencyType: 'fiat',
+          },
+          eth: {
+            name: 'Ether',
+            ticker: 'eth',
+            value: 1 / 1700,
+            currencyType: 'crypto',
+          },
+          mon: {
+            name: 'Monad',
+            ticker: 'mon',
+            value: 1 / 0.2,
+            currencyType: 'crypto',
+          },
+        },
+      };
+    });
+}
+
+async function mockSentrySupportApis(mockServer: Mockttp): Promise<void> {
+  await mockRemoteFeatureFlags(mockServer);
+  await mockSpotPrices(mockServer, {
+    'eip155:1/slip44:60': {
+      price: 1700,
+      marketCap: 382623505141,
+      pricePercentChange1d: 0,
+    },
+  });
+  await mockExchangeRates(mockServer);
 }
 
 /**
@@ -245,11 +324,122 @@ function getMissingProperties(complete: object, object: object): object {
   return missing;
 }
 
+function buildMetaMetricsFixture({
+  metaMetricsId,
+  participateInMetaMetrics,
+  corruptMeta = false,
+  badPreferences = false,
+}: {
+  metaMetricsId: string | null;
+  participateInMetaMetrics: boolean;
+  corruptMeta?: boolean;
+  badPreferences?: boolean;
+}): unknown {
+  const builder = new FixtureBuilderV2().withMetaMetricsController({
+    metaMetricsId,
+    participateInMetaMetrics,
+  });
+
+  if (badPreferences) {
+    builder.withBadPreferencesControllerState();
+  }
+
+  const fixture = builder.build();
+
+  if (corruptMeta) {
+    return {
+      ...fixture,
+      meta: undefined,
+    };
+  }
+
+  return fixture;
+}
+
+function createSentryRequestTracker(
+  getMockedEndpoint: () => MockedEndpoint,
+): Pick<
+  SentrySessionAccessors,
+  'expectNoSentryRequest' | 'getNextSentryRequest'
+> {
+  let expectedRequestCount = 0;
+
+  return {
+    async expectNoSentryRequest(driver: Driver) {
+      await driver.delay(3000);
+      const requests = await getMockedEndpoint().getSeenRequests();
+      assert.equal(
+        requests.length,
+        0,
+        'A request to sentry was sent when it should not have been',
+      );
+    },
+
+    async getNextSentryRequest(driver: Driver) {
+      expectedRequestCount += 1;
+      await driver.wait(async () => {
+        const requests = await getMockedEndpoint().getSeenRequests();
+        return requests.length >= expectedRequestCount;
+      }, WAIT_FOR_SENTRY_MS);
+
+      const requests = await getMockedEndpoint().getSeenRequests();
+      return requests[expectedRequestCount - 1];
+    },
+  };
+}
+
+async function getSentryRequestJsonBody(
+  mockedRequest: CompletedSentryRequest,
+): Promise<SentryRequestJsonBody> {
+  const mockTextBody = (await mockedRequest.body.getText()).split('\n');
+  return JSON.parse(mockTextBody[2]);
+}
+
+function configureSentryFixtureSession({
+  title,
+  fixtures,
+  mockSentryEndpoint,
+  ignoredErrors = [],
+  defineSuite,
+}: {
+  title: string;
+  fixtures: unknown;
+  mockSentryEndpoint: (mockServer: Mockttp) => Promise<MockedEndpoint>;
+  ignoredErrors?: string[];
+  defineSuite: (accessors: SentrySessionAccessors) => void;
+}): void {
+  configureFixtureSession(
+    title,
+    {
+      fixtures,
+      testSpecificMock: async (mockServer: Mockttp) => {
+        await mockSentrySupportApis(mockServer);
+        return await mockSentryEndpoint(mockServer);
+      },
+      ignoredConsoleErrors: ignoredErrors,
+      manifestFlags: {
+        sentry: { forceEnable: false },
+      },
+    },
+    ({ getDriver, getFixtures }) => {
+      const getMockedEndpoint = () =>
+        getFixtures().mockedEndpoint as MockedEndpoint;
+      const requestTracker = createSentryRequestTracker(getMockedEndpoint);
+
+      defineSuite({
+        getDriver,
+        ...requestTracker,
+      });
+    },
+  );
+}
+
 describe('Sentry errors', function () {
   const migrationError =
     process.env.SELENIUM_BROWSER === Browser.CHROME
       ? `"type":"TypeError","value":"Cannot read properties of undefined (reading 'version')`
       : 'meta is undefined';
+
   async function mockSentryMigratorError(mockServer: Mockttp) {
     return await mockServer
       .forPost(sentryRegEx)
@@ -288,137 +478,42 @@ describe('Sentry errors', function () {
   }
 
   describe('before initialization, after opting out of metrics', function () {
-    it('should NOT send error events in the background', async function () {
-      await withFixtures(
-        {
-          fixtures: {
-            ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                metaMetricsId: null,
-                participateInMetaMetrics: false,
-              })
-              .build(),
-            // Intentionally corrupt state to trigger migration error during initialization
-            meta: undefined,
-          },
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryMigratorError(mockServer);
-          },
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-          ignoredConsoleErrors,
-        },
-        async ({ driver, mockedEndpoint }) => {
+    configureSentryFixtureSession({
+      title: 'should NOT send background error events',
+      fixtures: buildMetaMetricsFixture({
+        metaMetricsId: null,
+        participateInMetaMetrics: false,
+        corruptMeta: true,
+      }),
+      mockSentryEndpoint: mockSentryMigratorError,
+      ignoredErrors: ignoredConsoleErrors,
+      defineSuite: ({ getDriver, expectNoSentryRequest }) => {
+        it('should NOT send error events in the background', async function () {
+          const driver = getDriver();
+
           // we don't wait for the controllers to be loaded
           await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
-          // Wait for Sentry request
-          await driver.delay(3000);
-          const isPending = await mockedEndpoint.isPending();
-          assert.ok(
-            isPending,
-            'A request to sentry was sent when it should not have been',
-          );
-        },
-      );
+          await expectNoSentryRequest(driver);
+        });
+      },
     });
 
-    it('should NOT send error events in the UI', async function () {
-      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
-        this.skip();
-      }
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryTestError(mockServer);
-          },
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-          ignoredConsoleErrors,
-        },
-        async ({ driver, mockedEndpoint }) => {
+    configureSentryFixtureSession({
+      title: 'should NOT send UI error events',
+      fixtures: buildMetaMetricsFixture({
+        metaMetricsId: null,
+        participateInMetaMetrics: false,
+      }),
+      mockSentryEndpoint: mockSentryTestError,
+      ignoredErrors: ['TestError'],
+      defineSuite: ({ getDriver, expectNoSentryRequest }) => {
+        it('should NOT send error events in the UI', async function () {
+          if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+            this.skip();
+          }
+
+          const driver = getDriver();
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
@@ -426,89 +521,31 @@ describe('Sentry errors', function () {
             'window.stateHooks.getSentryAppState = undefined',
           );
 
-          // Wait for Sentry request
-          await driver.delay(3000);
-          const isPending = await mockedEndpoint.isPending();
-          assert.ok(
-            isPending,
-            'A request to sentry was sent when it should not have been',
-          );
-        },
-      );
+          await expectNoSentryRequest(driver);
+        });
+      },
     });
   });
 
   describe('before initialization, after opting into metrics', function () {
-    it('should send error events in background', async function () {
-      await withFixtures(
-        {
-          fixtures: {
-            ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                metaMetricsId: MOCK_META_METRICS_ID,
-                participateInMetaMetrics: true,
-              })
-              .build(),
-            // Intentionally corrupt state to trigger migration error during initialization
-            meta: undefined,
-          },
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryMigratorError(mockServer);
-          },
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-          ignoredConsoleErrors,
-        },
-        async ({ driver, mockedEndpoint }) => {
+    configureSentryFixtureSession({
+      title: 'background migration errors',
+      fixtures: buildMetaMetricsFixture({
+        metaMetricsId: MOCK_META_METRICS_ID,
+        participateInMetaMetrics: true,
+        corruptMeta: true,
+      }),
+      mockSentryEndpoint: mockSentryMigratorError,
+      ignoredErrors: ignoredConsoleErrors,
+      defineSuite: ({ getDriver, getNextSentryRequest }) => {
+        it('should send error events in background', async function () {
+          const driver = getDriver();
+
           // we don't wait for the controllers to be loaded
           await driver.navigate(PAGES.HOME, { waitForControllers: false });
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
 
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const mockedRequest = await getNextSentryRequest(driver);
+          const mockJsonBody = await getSentryRequestJsonBody(mockedRequest);
           // Verify request
           const escapedMigrationError = migrationError.replace(
             /[.*+?^${}()|[\]\\]/gu,
@@ -519,85 +556,20 @@ describe('Sentry errors', function () {
             JSON.stringify(mockJsonBody.exception),
             migrationErrorRegex,
           );
-        },
-      );
-    });
+        });
 
-    it('should capture background application state', async function () {
-      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
-        this.skip();
-      }
-      await withFixtures(
-        {
-          fixtures: {
-            ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                metaMetricsId: MOCK_META_METRICS_ID,
-                participateInMetaMetrics: true,
-              })
-              .build(),
-            // Intentionally corrupt state to trigger migration error during initialization
-            meta: undefined,
-          },
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryMigratorError(mockServer);
-          },
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-          ignoredConsoleErrors,
-        },
-        async ({ driver, mockedEndpoint }) => {
+        it('should capture background application state', async function () {
+          if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+            this.skip();
+          }
+
+          const driver = getDriver();
+
           // we don't wait for the controllers to be loaded
           await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
-
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
-
+          const mockedRequest = await getNextSentryRequest(driver);
+          const mockJsonBody = await getSentryRequestJsonBody(mockedRequest);
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
@@ -621,80 +593,28 @@ describe('Sentry errors', function () {
             },
             snapshot: 'errors-before-init-opt-in-background-state',
           });
-        },
-      );
+        });
+      },
     });
 
-    // todo: reenable this test https://github.com/MetaMask/metamask-extension/issues/21807
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
-      await withFixtures(
-        {
-          fixtures: {
-            ...new FixtureBuilderV2()
-              .withMetaMetricsController({
-                metaMetricsId: MOCK_META_METRICS_ID,
-                participateInMetaMetrics: true,
-              })
-              .withBadPreferencesControllerState()
-              .build(),
-          },
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryInvariantMigrationError(mockServer);
-          },
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-        },
-        async ({ driver, mockedEndpoint }) => {
+    configureSentryFixtureSession({
+      title: 'invariant migration breadcrumbs',
+      fixtures: buildMetaMetricsFixture({
+        metaMetricsId: MOCK_META_METRICS_ID,
+        participateInMetaMetrics: true,
+        badPreferences: true,
+      }),
+      mockSentryEndpoint: mockSentryInvariantMigrationError,
+      defineSuite: ({ getDriver, getNextSentryRequest }) => {
+        // todo: reenable this test https://github.com/MetaMask/metamask-extension/issues/21807
+        // eslint-disable-next-line mocha/no-skipped-tests
+        it.skip('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
+          const driver = getDriver();
+
           await driver.navigate();
 
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
-
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const mockedRequest = await getNextSentryRequest(driver);
+          const mockJsonBody = await getSentryRequestJsonBody(mockedRequest);
           const breadcrumbs = mockJsonBody?.breadcrumbs ?? [];
           const migrationLogBreadcrumbs = breadcrumbs.filter(
             (breadcrumb: { message?: string }) => {
@@ -713,65 +633,21 @@ describe('Sentry errors', function () {
           assert.equal(migrationLogMessages.length, 8);
           assert.equal(firstMigrationLog, 'Running migration 75');
           assert.equal(lastMigrationLog, 'Running migration 82');
-        },
-      );
+        });
+      },
     });
 
-    it('should send error events in UI', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryTestError(mockServer);
-          },
-          ignoredConsoleErrors: ['TestError'],
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-        },
-        async ({ driver, mockedEndpoint }) => {
+    configureSentryFixtureSession({
+      title: 'UI errors before initialization',
+      fixtures: buildMetaMetricsFixture({
+        metaMetricsId: MOCK_META_METRICS_ID,
+        participateInMetaMetrics: true,
+      }),
+      mockSentryEndpoint: mockSentryTestError,
+      ignoredErrors: ['TestError'],
+      defineSuite: ({ getDriver, getNextSentryRequest }) => {
+        it('should send error events in UI', async function () {
+          const driver = getDriver();
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
           // Erase `getSentryAppState` hook, simulating a "before initialization" state
@@ -782,82 +658,22 @@ describe('Sentry errors', function () {
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
 
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const mockedRequest = await getNextSentryRequest(driver);
+          const mockJsonBody = await getSentryRequestJsonBody(mockedRequest);
           const { level } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
           // Verify request
           assert.equal(type, 'TestError');
           assert.equal(value, 'Test Error');
           assert.equal(level, 'error');
-        },
-      );
-    });
+        });
 
-    it('should capture UI application state', async function () {
-      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
-        this.skip();
-      }
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryTestError(mockServer);
-          },
-          ignoredConsoleErrors: ['TestError'],
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-        },
-        async ({ driver, mockedEndpoint }) => {
+        it('should capture UI application state', async function () {
+          if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+            this.skip();
+          }
+
+          const driver = getDriver();
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
 
@@ -872,14 +688,8 @@ describe('Sentry errors', function () {
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
 
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const mockedRequest = await getNextSentryRequest(driver);
+          const mockJsonBody = await getSentryRequestJsonBody(mockedRequest);
           const appState = mockJsonBody?.extra?.appState;
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
@@ -903,67 +713,23 @@ describe('Sentry errors', function () {
             },
             snapshot: 'errors-before-init-opt-in-ui-state',
           });
-        },
-      );
+        });
+      },
     });
   });
 
   describe('after initialization, after opting out of metrics', function () {
-    it('should NOT send error events in the background', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryTestError(mockServer);
-          },
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-          ignoredConsoleErrors,
-        },
-        async ({ driver, mockedEndpoint }) => {
+    configureSentryFixtureSession({
+      title: 'errors after opting out',
+      fixtures: buildMetaMetricsFixture({
+        metaMetricsId: null,
+        participateInMetaMetrics: false,
+      }),
+      mockSentryEndpoint: mockSentryTestError,
+      ignoredErrors: ['TestError', ...ignoredConsoleErrors],
+      defineSuite: ({ getDriver, expectNoSentryRequest }) => {
+        it('should NOT send error events in the background', async function () {
+          const driver = getDriver();
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
 
@@ -972,147 +738,37 @@ describe('Sentry errors', function () {
             'window.stateHooks.throwTestBackgroundError()',
           );
 
-          // Wait for Sentry request
-          const isPending = await mockedEndpoint.isPending();
-          assert.ok(
-            isPending,
-            'A request to sentry was sent when it should not have been',
-          );
-        },
-      );
-    });
+          await expectNoSentryRequest(driver);
+        });
 
-    it('should NOT send error events in the UI', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: null,
-              participateInMetaMetrics: false,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryTestError(mockServer);
-          },
-          ignoredConsoleErrors: ['TestError'],
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-        },
-        async ({ driver, mockedEndpoint }) => {
+        it('should NOT send error events in the UI', async function () {
+          const driver = getDriver();
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
 
-          // Wait for Sentry request
-          const isPending = await mockedEndpoint.isPending();
-          assert.ok(
-            isPending,
-            'A request to sentry was sent when it should not have been',
-          );
-        },
-      );
+          await expectNoSentryRequest(driver);
+        });
+      },
     });
   });
 
   describe('after initialization, after opting into metrics', function () {
-    it('should send error events in background', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryTestError(mockServer);
-          },
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-          ignoredConsoleErrors: [
-            // The UI logs the expected error
-            "TypeError: Cannot read properties of undefined (reading 'version')",
-          ],
-        },
-        async ({ driver, mockedEndpoint }) => {
+    configureSentryFixtureSession({
+      title: 'background errors after initialization',
+      fixtures: buildMetaMetricsFixture({
+        metaMetricsId: MOCK_META_METRICS_ID,
+        participateInMetaMetrics: true,
+      }),
+      mockSentryEndpoint: mockSentryTestError,
+      ignoredErrors: [
+        "TypeError: Cannot read properties of undefined (reading 'version')",
+      ],
+      defineSuite: ({ getDriver, getNextSentryRequest }) => {
+        it('should send error events in background', async function () {
+          const driver = getDriver();
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
 
@@ -1121,14 +777,8 @@ describe('Sentry errors', function () {
             'window.stateHooks.throwTestBackgroundError()',
           );
 
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const mockedRequest = await getNextSentryRequest(driver);
+          const mockJsonBody = await getSentryRequestJsonBody(mockedRequest);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
           const { participateInMetaMetrics } =
@@ -1138,64 +788,10 @@ describe('Sentry errors', function () {
           assert.equal(value, 'Test Error');
           assert.equal(level, 'error');
           assert.equal(participateInMetaMetrics, true);
-        },
-      );
-    });
+        });
 
-    it('should capture background application state', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryTestError(mockServer);
-          },
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-        },
-        async ({ driver, mockedEndpoint }) => {
+        it('should capture background application state', async function () {
+          const driver = getDriver();
           await login(driver);
 
           // Wait for state to settle
@@ -1205,14 +801,8 @@ describe('Sentry errors', function () {
             'window.stateHooks.throwTestBackgroundError()',
           );
 
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const mockedRequest = await getNextSentryRequest(driver);
+          const mockJsonBody = await getSentryRequestJsonBody(mockedRequest);
           const appState = mockJsonBody?.extra?.appState;
           const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
@@ -1239,79 +829,29 @@ describe('Sentry errors', function () {
             data: transformBackgroundState(appState.state),
             snapshot: 'errors-after-init-opt-in-background-state',
           });
-        },
-      );
+        });
+      },
     });
 
-    it('should send error events in UI', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryTestError(mockServer);
-          },
-          ignoredConsoleErrors: ['TestError'],
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-        },
-        async ({ driver, mockedEndpoint }) => {
+    configureSentryFixtureSession({
+      title: 'UI errors after initialization',
+      fixtures: buildMetaMetricsFixture({
+        metaMetricsId: MOCK_META_METRICS_ID,
+        participateInMetaMetrics: true,
+      }),
+      mockSentryEndpoint: mockSentryTestError,
+      ignoredErrors: ['TestError'],
+      defineSuite: ({ getDriver, getNextSentryRequest }) => {
+        it('should send error events in UI', async function () {
+          const driver = getDriver();
           await driver.navigate();
           await new LoginPage(driver).checkPageIsLoaded();
 
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
 
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const mockedRequest = await getNextSentryRequest(driver);
+          const mockJsonBody = await getSentryRequestJsonBody(mockedRequest);
           const { level, extra } = mockJsonBody;
           const [{ type, value }] = mockJsonBody.exception.values;
           const { participateInMetaMetrics } = extra.appState.state.metamask;
@@ -1320,68 +860,14 @@ describe('Sentry errors', function () {
           assert.equal(value, 'Test Error');
           assert.equal(level, 'error');
           assert.equal(participateInMetaMetrics, true);
-        },
-      );
-    });
+        });
 
-    it('should capture UI application state', async function () {
-      if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
-        this.skip();
-      }
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilderV2()
-            .withMetaMetricsController({
-              metaMetricsId: MOCK_META_METRICS_ID,
-              participateInMetaMetrics: true,
-            })
-            .build(),
-          title: this.test?.fullTitle(),
-          testSpecificMock: async (mockServer: MockttpServer) => {
-            await mockRemoteFeatureFlags(mockServer);
-            await mockSpotPrices(mockServer, {
-              'eip155:1/slip44:60': {
-                price: 1700,
-                marketCap: 382623505141,
-                pricePercentChange1d: 0,
-              },
-            });
-            await mockServer
-              .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
-              .withQuery({ baseCurrency: 'usd' })
-              .thenCallback(() => {
-                return {
-                  statusCode: 200,
-                  json: {
-                    usd: {
-                      name: 'US Dollar',
-                      ticker: 'usd',
-                      value: 1,
-                      currencyType: 'fiat',
-                    },
-                    eth: {
-                      name: 'Ether',
-                      ticker: 'eth',
-                      value: 1 / 1700, // 1 USD = 1/1700 ETH, so conversionRate = 1/(1/1700) = 1700
-                      currencyType: 'crypto',
-                    },
-                    mon: {
-                      name: 'Monad',
-                      ticker: 'mon',
-                      value: 1 / 0.2, // 1 USD = 1/0.2 = 5 MON, so conversionRate = 1/5 = 0.2
-                      currencyType: 'crypto',
-                    },
-                  },
-                };
-              });
-            return await mockSentryTestError(mockServer);
-          },
-          ignoredConsoleErrors: ['TestError'],
-          manifestFlags: {
-            sentry: { forceEnable: false },
-          },
-        },
-        async ({ driver, mockedEndpoint }) => {
+        it('should capture UI application state', async function () {
+          if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'false') {
+            this.skip();
+          }
+
+          const driver = getDriver();
           await login(driver);
 
           // Wait for state to settle
@@ -1390,14 +876,8 @@ describe('Sentry errors', function () {
           // Trigger error
           await driver.executeScript('window.stateHooks.throwTestError()');
 
-          // Wait for Sentry request
-          await driver.wait(async () => {
-            const isPending = await mockedEndpoint.isPending();
-            return isPending === false;
-          }, WAIT_FOR_SENTRY_MS);
-          const [mockedRequest] = await mockedEndpoint.getSeenRequests();
-          const mockTextBody = (await mockedRequest.body.getText()).split('\n');
-          const mockJsonBody = JSON.parse(mockTextBody[2]);
+          const mockedRequest = await getNextSentryRequest(driver);
+          const mockJsonBody = await getSentryRequestJsonBody(mockedRequest);
           const appState = mockJsonBody?.extra?.appState;
           const { extensionId, installType } = mockJsonBody.extra;
           assert.deepStrictEqual(Object.keys(appState), [
@@ -1424,78 +904,79 @@ describe('Sentry errors', function () {
             data: transformUiState(appState.state),
             snapshot: 'errors-after-init-opt-in-ui-state',
           });
-        },
-      );
+        });
+      },
     });
   });
 
-  it('should not have extra properties in UI state mask', async function () {
-    const expectedMissingState = {
-      // This can get wiped out during initialization due to a bug in
-      // the "resetState" method
-      quoteRequest: {
-        destChainId: true,
-        destTokenAddress: true,
-        srcChainId: true,
-        srcTokenAmount: true,
-        walletAddress: false,
-        slippage: true,
+  configureFixtureSession(
+    'Sentry UI state mask',
+    {
+      fixtures: new FixtureBuilderV2().build(),
+      manifestFlags: {
+        sentry: { forceEnable: false },
       },
-      quotesLastFetched: true,
-      quotesLoadingStatus: true,
-      quotesRefreshCount: true,
-      quoteFetchError: true,
-      quotesInitialLoadTime: true,
-      currentPopupId: false, // Initialized as undefined
-      // Part of transaction controller store, but missing from the initial
-      // state
-      lastFetchedBlockNumbers: false,
-      preferences: {
-        autoLockTimeLimit: true, // Initialized as undefined
-        showConfirmationAdvancedDetails: true,
-        privacyMode: false,
+      testSpecificMock: async (mockServer: Mockttp) => {
+        await mockRemoteFeatureFlags(mockServer);
       },
-      balances: false,
-      accountsAssets: false,
-      assetsMetadata: false,
-      allIgnoredAssets: false,
-      assetsRates: false,
-      smartTransactionsState: {
-        fees: {
-          approvalTxFees: true, // Initialized as undefined
-          tradeTxFees: true, // Initialized as undefined
-        },
-        userOptIn: true, // Initialized as undefined
-        userOptInV2: true, // Initialized as undefined
-      },
-      // Part of the AuthenticationController store, but initialized as undefined
-      // Only populated once the client is authenticated
-      srpSessionData: {},
-      // This can get erased due to a bug in the app state controller's
-      // preferences state change handler
-      timeoutMinutes: true,
-      lastInteractedConfirmationInfo: undefined,
-      connectivityStatus: true,
-      rewardsPointsEstimateHistory: false,
-      // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
-      rewardsSubscriptionTokens: false,
-      storageWriteErrorType: true,
-      // Optional property on AppStateController; only set after a user
-      // interacts with a Snap install dialog, so absent from initial state.
-      snapsInstallPrivacyWarningShown: true,
-    };
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilderV2().build(),
-        title: this.test?.fullTitle(),
-        manifestFlags: {
-          sentry: { forceEnable: false },
-        },
-        testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockRemoteFeatureFlags(mockServer);
-        },
-      },
-      async ({ driver }) => {
+    },
+    ({ getDriver }) => {
+      it('should not have extra properties in UI state mask', async function () {
+        const expectedMissingState = {
+          // This can get wiped out during initialization due to a bug in
+          // the "resetState" method
+          quoteRequest: {
+            destChainId: true,
+            destTokenAddress: true,
+            srcChainId: true,
+            srcTokenAmount: true,
+            walletAddress: false,
+            slippage: true,
+          },
+          quotesLastFetched: true,
+          quotesLoadingStatus: true,
+          quotesRefreshCount: true,
+          quoteFetchError: true,
+          quotesInitialLoadTime: true,
+          currentPopupId: false, // Initialized as undefined
+          // Part of transaction controller store, but missing from the initial
+          // state
+          lastFetchedBlockNumbers: false,
+          preferences: {
+            autoLockTimeLimit: true, // Initialized as undefined
+            showConfirmationAdvancedDetails: true,
+            privacyMode: false,
+          },
+          balances: false,
+          accountsAssets: false,
+          assetsMetadata: false,
+          allIgnoredAssets: false,
+          assetsRates: false,
+          smartTransactionsState: {
+            fees: {
+              approvalTxFees: true, // Initialized as undefined
+              tradeTxFees: true, // Initialized as undefined
+            },
+            userOptIn: true, // Initialized as undefined
+            userOptInV2: true, // Initialized as undefined
+          },
+          // Part of the AuthenticationController store, but initialized as undefined
+          // Only populated once the client is authenticated
+          srpSessionData: {},
+          // This can get erased due to a bug in the app state controller's
+          // preferences state change handler
+          timeoutMinutes: true,
+          lastInteractedConfirmationInfo: undefined,
+          connectivityStatus: true,
+          rewardsPointsEstimateHistory: false,
+          // Filtered from UI state patches (sensitive auth tokens - see state-utils.ts)
+          rewardsSubscriptionTokens: false,
+          storageWriteErrorType: true,
+          // Optional property on AppStateController; only set after a user
+          // interacts with a Snap install dialog, so absent from initial state.
+          snapsInstallPrivacyWarningShown: true,
+        };
+        const driver = getDriver();
         await driver.navigate();
         await new LoginPage(driver).checkPageIsLoaded();
 
@@ -1515,7 +996,7 @@ describe('Sentry errors', function () {
           expectedMissingState,
         );
         assert.deepEqual(unexpectedExtraMaskProperties, {});
-      },
-    );
-  });
+      });
+    },
+  );
 });
