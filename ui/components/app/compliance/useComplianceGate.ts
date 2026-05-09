@@ -63,6 +63,9 @@ export function useComplianceGate(address?: AddressInput) {
         if (requestIdRef.current === requestId) {
           latestSuccessfulBlockedRef.current =
             results?.some((result) => result.blocked) ?? false;
+          if (prefetchRef.current === request) {
+            prefetchRef.current = null;
+          }
         }
       })
       .catch(() => {
@@ -96,8 +99,11 @@ export function useComplianceGate(address?: AddressInput) {
 
       const isLatestResultBlocked =
         latestResults?.some((result) => result.blocked) ?? false;
+      if (latestResults !== undefined) {
+        latestSuccessfulBlockedRef.current = isLatestResultBlocked;
+      }
 
-      if (latestSuccessfulBlockedRef.current || isLatestResultBlocked) {
+      if (latestSuccessfulBlockedRef.current) {
         showAccessRestrictedModal();
         return undefined;
       }
