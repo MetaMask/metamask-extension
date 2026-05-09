@@ -700,7 +700,7 @@ export default function Routes() {
       <ToastListener />
 
       <QRHardwarePopover />
-      <Modal />
+      {isUnlocked ? <Modal /> : null}
       <Alert visible={alertOpen} msg={alertMessage} />
 
       <NetworkConfirmationPopover />
@@ -741,7 +741,7 @@ export default function Routes() {
       <ToastMaster />
 
       {isUnlocked ? <Toaster /> : null}
-      <Modals />
+      {isUnlocked ? <Modals /> : null}
     </div>
   );
 }
