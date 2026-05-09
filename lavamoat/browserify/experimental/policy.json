@@ -797,12 +797,6 @@
         "@metamask/assets-controller>@metamask/assets-controllers>@metamask/abi-utils>@metamask/utils": true
       }
     },
-    "@metamask/gator-permissions-controller>@metamask/delegation-core>@metamask/abi-utils": {
-      "packages": {
-        "@metamask/superstruct": true,
-        "@metamask/utils": true
-      }
-    },
     "@metamask/gator-permissions-controller>@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
