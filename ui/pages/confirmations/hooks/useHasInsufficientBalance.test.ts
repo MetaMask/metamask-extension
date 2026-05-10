@@ -135,17 +135,25 @@ describe('useHasInsufficientBalance', () => {
     expect(result.hasInsufficientBalance).toBe(true);
   });
 
-  it('always return true for Tempo if `excludeNativeTokenForFee` is true', () => {
+  it('returns true for Tempo Mainnet when balance is insufficient (uses regular balance check)', () => {
     const result = runHook({
       balance: 0,
       chainId: '0x1079',
-      excludeNativeTokenForFee: true,
     });
     expect(result.hasInsufficientBalance).toBe(true);
     expect(result.nativeCurrency).toBe('pathUSD');
   });
 
-  it('always return true for Tempo Testnet if `excludeNativeTokenForFee` is true', () => {
+  it('returns false for Tempo Mainnet when balance is sufficient (uses regular balance check)', () => {
+    const result = runHook({
+      balance: 900000000000,
+      chainId: '0x1079',
+    });
+    expect(result.hasInsufficientBalance).toBe(false);
+    expect(result.nativeCurrency).toBe('pathUSD');
+  });
+
+  it('returns true for Tempo Testnet when `excludeNativeTokenForFee` is true', () => {
     const result = runHook({
       balance: 0,
       chainId: '0xa5bf',
@@ -155,16 +163,7 @@ describe('useHasInsufficientBalance', () => {
     expect(result.nativeCurrency).toBe('pathUSD');
   });
 
-  it('always return false for Tempo if `excludeNativeTokenForFee` is unset', () => {
-    const result = runHook({
-      balance: 0,
-      chainId: '0x1079',
-    });
-    expect(result.hasInsufficientBalance).toBe(false);
-    expect(result.nativeCurrency).toBe('pathUSD');
-  });
-
-  it('always return false for Tempo Testnet if `excludeNativeTokenForFee` is unset', () => {
+  it('returns false for Tempo Testnet when `excludeNativeTokenForFee` is unset', () => {
     const result = runHook({
       balance: 0,
       chainId: '0xa5bf',
