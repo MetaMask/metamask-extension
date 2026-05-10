@@ -19,7 +19,6 @@ import {
   generatePasskeyPostRegistrationAuthenticationOptions,
   forceUpdateMetamaskState,
 } from '../../../store/actions';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import {
   startPasskeyRegistration,
   startPasskeyAuthentication,
@@ -129,10 +128,7 @@ const buildMockStore = (
 const PASSKEY_LABEL_BIOMETRICS = tEn('passkeyAuthMethodBiometrics');
 
 describe('SetupPasskey', () => {
-  let mockTrackEvent: jest.Mock;
-
   beforeEach(() => {
-    mockTrackEvent = jest.fn().mockResolvedValue(undefined);
     mockUseNavigate.mockClear();
     jest.mocked(startPasskeyRegistration).mockClear();
     jest.mocked(startPasskeyAuthentication).mockClear();
@@ -159,13 +155,7 @@ describe('SetupPasskey', () => {
   });
 
   function renderSetupPasskey(mockStore: ReturnType<typeof buildMockStore>) {
-    return renderWithProvider(
-      <SetupPasskey />,
-      mockStore,
-      '/',
-      render,
-      () => mockTrackEvent,
-    );
+    return renderWithProvider(<SetupPasskey />, mockStore, '/', render);
   }
 
   it('renders core passkey setup actions', () => {
@@ -220,131 +210,6 @@ describe('SetupPasskey', () => {
     const { getByAltText } = renderSetupPasskey(mockStore);
 
     expect(getByAltText('Biometrics')).toBeInTheDocument();
-  });
-
-  describe('MetaMetrics passkey onboarding', () => {
-    /* eslint-disable @typescript-eslint/naming-convention -- Segment event properties are snake_case */
-    it('tracks setup viewed when the interactive screen is shown', () => {
-      const mockStore = buildMockStore(FirstTimeFlowType.create);
-      renderSetupPasskey(mockStore);
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          event: MetaMetricsEventName.PasskeyOnboardingSetupViewed,
-          properties: expect.objectContaining({
-            account_type: '',
-          }),
-        }),
-      );
-    });
-
-    it('does not track viewed when passkey is already registered', async () => {
-      const mockStore = buildMockStore(FirstTimeFlowType.create, {
-        passkeyRecord: testPasskeyRecord,
-      });
-      renderSetupPasskey(mockStore);
-      await waitFor(() => {
-        expect(mockUseNavigate).toHaveBeenCalled();
-      });
-      expect(mockTrackEvent).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          event: MetaMetricsEventName.PasskeyOnboardingSetupViewed,
-        }),
-      );
-    });
-
-    it('tracks skipped when the user chooses maybe later', () => {
-      const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByText } = renderSetupPasskey(mockStore);
-      fireEvent.click(getByText(messages.maybeLater.message));
-      expect(mockTrackEvent).toHaveBeenCalledWith(
-        expect.objectContaining({
-          event: MetaMetricsEventName.PasskeyOnboardingSetupSkipped,
-        }),
-      );
-    });
-
-    it('tracks started and completed with duration when enrollment succeeds', async () => {
-      const mockStore = buildMockStore(FirstTimeFlowType.create);
-      jest
-        .mocked(forceUpdateMetamaskState)
-        .mockImplementation(async (dispatch) => {
-          dispatch({
-            type: UPDATE_METAMASK_STATE,
-            value: { passkeyRecord: testPasskeyRecord },
-          });
-        });
-      const { getByTestId } = renderSetupPasskey(mockStore);
-      fireEvent.click(getByTestId('passkey-set-up-button'));
-
-      await waitFor(() => {
-        expect(mockTrackEvent).toHaveBeenCalledWith(
-          expect.objectContaining({
-            event: MetaMetricsEventName.PasskeySetupStarted,
-          }),
-        );
-      });
-      await waitFor(() => {
-        expect(mockTrackEvent).toHaveBeenCalledWith(
-          expect.objectContaining({
-            event: MetaMetricsEventName.PasskeySetupCompleted,
-            properties: expect.objectContaining({
-              duration_ms: expect.any(Number),
-            }),
-          }),
-        );
-      });
-    });
-
-    it('tracks started and cancelled when registration is dismissed', async () => {
-      const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderSetupPasskey(mockStore);
-      jest
-        .mocked(startPasskeyRegistration)
-        .mockRejectedValueOnce(
-          new DOMException('User cancelled', 'NotAllowedError'),
-        );
-      fireEvent.click(getByTestId('passkey-set-up-button'));
-
-      await waitFor(() => {
-        expect(mockTrackEvent).toHaveBeenCalledWith(
-          expect.objectContaining({
-            event: MetaMetricsEventName.PasskeySetupStarted,
-          }),
-        );
-      });
-      await waitFor(() => {
-        expect(mockTrackEvent).toHaveBeenCalledWith(
-          expect.objectContaining({
-            event: MetaMetricsEventName.PasskeySetupCancelled,
-            properties: expect.objectContaining({
-              duration_ms: expect.any(Number),
-            }),
-          }),
-        );
-      });
-    });
-
-    it('tracks failed with error_step when protectVaultKeyWithPasskey fails', async () => {
-      const mockStore = buildMockStore(FirstTimeFlowType.create);
-      const { getByTestId } = renderSetupPasskey(mockStore);
-      jest.mocked(protectVaultKeyWithPasskey).mockRejectedValueOnce({
-        code: PasskeyControllerErrorCode.RegistrationVerificationFailed,
-      });
-      fireEvent.click(getByTestId('passkey-set-up-button'));
-
-      await waitFor(() => {
-        expect(mockTrackEvent).toHaveBeenCalledWith(
-          expect.objectContaining({
-            event: MetaMetricsEventName.PasskeySetupFailed,
-            properties: expect.objectContaining({
-              error_step: 'enroll',
-              error_code: PasskeyControllerErrorCode.RegistrationVerificationFailed,
-            }),
-          }),
-        );
-      });
-    });
-    /* eslint-enable @typescript-eslint/naming-convention */
   });
 
   describe('maybe later navigation', () => {

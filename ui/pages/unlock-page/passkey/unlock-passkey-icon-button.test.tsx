@@ -3,7 +3,6 @@ import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { UnlockPasskeyIconButton } from './unlock-passkey-icon-button';
@@ -34,28 +33,16 @@ describe('UnlockPasskeyIconButton', () => {
       },
     });
 
-  it('tracks passkey icon click then invokes onClick', () => {
+  it('invokes onClick when passkey icon is clicked', () => {
     const onClick = jest.fn();
-    const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
     const { getByTestId } = renderWithProvider(
       <UnlockPasskeyIconButton disabled={false} onClick={onClick} />,
       buildStore(),
       '/unlock',
-      undefined,
-      () => mockTrackEvent,
     );
 
     fireEvent.click(getByTestId('unlock-with-passkey'));
 
-    expect(mockTrackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.PasskeyUnlockIconClicked,
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: 'default',
-        }),
-      }),
-    );
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

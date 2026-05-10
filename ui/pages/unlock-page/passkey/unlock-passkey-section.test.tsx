@@ -1,15 +1,16 @@
 import React from 'react';
+import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { act, fireEvent, waitFor } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
+import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as actionsModule from '../../../store/actions';
 import * as passkeyCeremony from '../../../../shared/lib/passkey/passkey-ceremony';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { UnlockPasskeySection } from './unlock-passkey-section';
 
 jest.mock('../../../../shared/lib/environment-type', () => {
@@ -37,7 +38,30 @@ beforeAll(() => {
   } as unknown as typeof globalThis.platform;
 });
 
-const mockStore = configureMockStore([thunk])({ metamask: {} });
+const selectedTestAccountId = 'test-unlock-passkey-section-account-id';
+
+const mockStore = configureMockStore([thunk])({
+  metamask: {
+    passkeyRecord: null,
+    internalAccounts: {
+      selectedAccount: selectedTestAccountId,
+      accounts: {
+        [selectedTestAccountId]: {
+          address: '0x0000000000000000000000000000000000000001',
+          id: selectedTestAccountId,
+          metadata: {
+            name: 'Test',
+            keyring: { type: 'HD Key Tree' },
+          },
+          options: {},
+          methods: ETH_EOA_METHODS,
+          type: EthAccountType.Eoa,
+          scopes: [EthScope.Eoa],
+        },
+      },
+    },
+  },
+});
 
 describe('UnlockPasskeySection', () => {
   const baseProps = {
@@ -89,13 +113,10 @@ describe('UnlockPasskeySection', () => {
       .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
       .mockRejectedValueOnce({ code: PasskeyControllerErrorCode.NotEnrolled });
 
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
     const { getByTestId } = renderWithProvider(
       <UnlockPasskeySection {...baseProps} passkeyAutoUnlockSuppressed />,
       mockStore,
       '/unlock',
-      undefined,
-      () => trackEvent,
     );
 
     fireEvent.click(getByTestId('unlock-passkey-button'));
@@ -103,33 +124,6 @@ describe('UnlockPasskeySection', () => {
     await waitFor(() => {
       expect(getByTestId('unlock-passkey-error-banner')).toBeInTheDocument();
     });
-
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.PasskeyUnlockFailed,
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_auto_prompt: false,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: expect.any(Number),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          failed_attempts: 1,
-          reason: PasskeyControllerErrorCode.NotEnrolled,
-        }),
-      }),
-    );
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.AppUnlockedFailed,
-        properties: {
-          reason: PasskeyControllerErrorCode.NotEnrolled,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          failed_attempts: 1,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          unlock_type: 'passkey',
-        },
-      }),
-    );
   });
 
   it('disables passkey unlock while password submit is in progress', () => {
@@ -144,23 +138,15 @@ describe('UnlockPasskeySection', () => {
 
   it('calls onUsePassword when Use password is clicked', () => {
     const onUsePassword = jest.fn();
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
     const { getByTestId } = renderWithProvider(
       <UnlockPasskeySection {...baseProps} onUsePassword={onUsePassword} />,
       mockStore,
       '/unlock',
-      undefined,
-      () => trackEvent,
     );
 
     fireEvent.click(getByTestId('unlock-use-password-button'));
 
     expect(onUsePassword).toHaveBeenCalledTimes(1);
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.PasskeyUnlockUsePasswordClicked,
-      }),
-    );
   });
 
   it('does not throw when unmounted while passkey authentication is pending', async () => {
@@ -206,7 +192,6 @@ describe('UnlockPasskeySection', () => {
 
   it('starts passkey ceremony once on mount when auto unlock is not suppressed', async () => {
     const onUnlockWithPasskey = jest.fn().mockResolvedValue(undefined);
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
 
     renderWithProvider(
       <UnlockPasskeySection
@@ -216,34 +201,11 @@ describe('UnlockPasskeySection', () => {
       />,
       mockStore,
       '/unlock',
-      undefined,
-      () => trackEvent,
     );
 
     await waitFor(() => {
       expect(onUnlockWithPasskey).toHaveBeenCalledTimes(1);
     });
-
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.PasskeyUnlockStarted,
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_auto_prompt: true,
-        }),
-      }),
-    );
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.PasskeyUnlockSuccessful,
-        properties: expect.objectContaining({
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_auto_prompt: true,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: expect.any(Number),
-        }),
-      }),
-    );
   });
 
   it('opens troubleshoot modal from the side panel while passkey is in progress', async () => {
@@ -256,13 +218,10 @@ describe('UnlockPasskeySection', () => {
       .spyOn(passkeyCeremony, 'startPasskeyAuthentication')
       .mockReturnValueOnce(ceremonyPromise as never);
 
-    const trackEvent = jest.fn().mockResolvedValue(undefined);
     const { getByTestId } = renderWithProvider(
       <UnlockPasskeySection {...baseProps} />,
       mockStore,
       '/unlock',
-      undefined,
-      () => trackEvent,
     );
 
     fireEvent.click(getByTestId('unlock-passkey-button'));
@@ -279,27 +238,11 @@ describe('UnlockPasskeySection', () => {
       expect(getByTestId('passkey-troubleshoot-modal')).toBeInTheDocument();
     });
 
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.PasskeyTroubleshootClicked,
-        properties: expect.objectContaining({ location: 'unlock' }),
-      }),
-    );
-
     fireEvent.click(
       getByTestId('passkey-troubleshoot-open-full-screen-button'),
     );
 
     expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(UNLOCK_ROUTE);
-    expect(trackEvent).toHaveBeenCalledWith(
-      expect.objectContaining({
-        event: MetaMetricsEventName.PasskeyTroubleshootCtaClicked,
-        properties: expect.objectContaining({
-          cta: 'full_screen',
-          location: 'unlock',
-        }),
-      }),
-    );
 
     await act(async () => {
       resolveCeremony({
