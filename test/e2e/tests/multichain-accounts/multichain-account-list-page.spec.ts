@@ -12,6 +12,53 @@ import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
 
+const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+
+async function mockEthMainnetAndMusd(mockServer: Mockttp) {
+  return [
+    ...(await mockPriceApi(mockServer, MOCK_ETH_CONVERSION_RATE)),
+    await mockServer
+      .forGet('https://accounts.api.cx.metamask.io/v2/supportedNetworks')
+      .always()
+      .thenJson(200, {
+        fullSupport: [],
+        partialSupport: { balances: [] },
+      }),
+    await mockServer
+      .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
+      .always()
+      .thenCallback((request) => {
+        const url = new URL(request.url);
+        const assetIds = url.searchParams.getAll('assetIds').join(',');
+        const results = [];
+
+        if (assetIds.includes('eip155:1')) {
+          results.push({
+            assetId: 'eip155:1/slip44:60',
+            name: 'Ethereum',
+            symbol: 'ETH',
+            decimals: 18,
+          });
+        }
+
+        if (
+          assetIds
+            .toLowerCase()
+            .includes(`eip155:1/erc20:${MUSD_ADDRESS.toLowerCase()}`)
+        ) {
+          results.push({
+            assetId: `eip155:1/erc20:${MUSD_ADDRESS}`,
+            name: 'MUSD',
+            symbol: 'MUSD',
+            decimals: 6,
+          });
+        }
+
+        return { statusCode: 200, json: { data: results } };
+      }),
+  ];
+}
+
 describe('Multichain Accounts - Multichain accounts list page', function (this: Suite) {
   it('displays wallet and accounts for hardware wallet', async function () {
     await withFixtures(
@@ -22,6 +69,7 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
           .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEthMainnetAndMusd,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
@@ -77,12 +125,10 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
         dappOptions: {
           customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
         },
-        testSpecificMock: async (mockServer: Mockttp) => {
-          return [
-            ...(await mockPriceApi(mockServer)),
-            ...(await mockSnapSimpleKeyringAndSite(mockServer)),
-          ];
-        },
+        testSpecificMock: async (mockServer: Mockttp) => [
+          ...(await mockEthMainnetAndMusd(mockServer)),
+          ...(await mockSnapSimpleKeyringAndSite(mockServer)),
+        ],
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { expectedBalance: '$85,025.00' });
