@@ -1,5 +1,7 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 
+import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
+
 /**
  * Stable programmatic codes for passkey-related errors thrown by the extension.
  */
@@ -50,6 +52,24 @@ export function getPasskeyControllerErrorCode(error: unknown): string | null {
     return causeCode;
   }
   return null;
+}
+
+/**
+ * Analytics-oriented passkey ceremony failure: `timeout`, `user_cancelled` (WebAuthn
+ * `NotAllowedError` / `AbortError`), else {@link getPasskeyControllerErrorCode}, else `null`.
+ *
+ * @param err - Thrown value from a passkey ceremony.
+ */
+export function getPasskeyErrorCode(err: unknown): string | null {
+  if (err instanceof PasskeyCeremonyTimeoutError) {
+    return 'timeout';
+  }
+  if (err instanceof Error) {
+    if (err.name === 'NotAllowedError' || err.name === 'AbortError') {
+      return 'user_cancelled';
+    }
+  }
+  return getPasskeyControllerErrorCode(err);
 }
 
 function translatePasskeyCode(

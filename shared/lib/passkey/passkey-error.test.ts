@@ -1,8 +1,10 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { JsonRpcError } from '@metamask/rpc-errors';
 
+import { PasskeyCeremonyTimeoutError } from './passkey-ceremony';
 import {
   ExtensionPasskeyErrorCode,
+  getPasskeyErrorCode,
   getPasskeyControllerErrorCode,
   translatePasskeyError,
 } from './passkey-error';
@@ -183,5 +185,46 @@ describe('getPasskeyControllerErrorCode', () => {
   it('returns null for non-objects', () => {
     expect(getPasskeyControllerErrorCode(null)).toBeNull();
     expect(getPasskeyControllerErrorCode('x')).toBeNull();
+  });
+});
+
+describe('getPasskeyErrorCode', () => {
+  it('returns timeout for PasskeyCeremonyTimeoutError', () => {
+    expect(
+      getPasskeyErrorCode(new PasskeyCeremonyTimeoutError()),
+    ).toBe('timeout');
+  });
+
+  it('returns user_cancelled for NotAllowedError and AbortError', () => {
+    const notAllowed = new Error('x');
+    notAllowed.name = 'NotAllowedError';
+    expect(getPasskeyErrorCode(notAllowed)).toBe('user_cancelled');
+
+    const abort = new Error('x');
+    abort.name = 'AbortError';
+    expect(getPasskeyErrorCode(abort)).toBe('user_cancelled');
+  });
+
+  it('returns controller code when present', () => {
+    expect(
+      getPasskeyErrorCode({
+        code: PasskeyControllerErrorCode.NotEnrolled,
+      }),
+    ).toBe(PasskeyControllerErrorCode.NotEnrolled);
+    expect(
+      getPasskeyErrorCode({
+        code: PasskeyControllerErrorCode.AuthenticationVerificationFailed,
+      }),
+    ).toBe(PasskeyControllerErrorCode.AuthenticationVerificationFailed);
+    expect(
+      getPasskeyErrorCode({
+        code: PasskeyControllerErrorCode.VaultKeyMismatch,
+      }),
+    ).toBe(PasskeyControllerErrorCode.VaultKeyMismatch);
+  });
+
+  it('returns null when no client outcome and no controller code', () => {
+    expect(getPasskeyErrorCode(new Error('x'))).toBeNull();
+    expect(getPasskeyErrorCode(null)).toBeNull();
   });
 });

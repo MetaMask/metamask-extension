@@ -101,8 +101,31 @@ describe('UnlockPage component (passkey UI)', () => {
 
     expect(trackEvent).toHaveBeenCalledWith(
       expect.objectContaining({
+        event: MetaMetricsEventName.PasskeyUnlockStarted,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_auto_prompt: false,
+        }),
+      }),
+    );
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.PasskeyUnlockSuccessful,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_auto_prompt: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: expect.any(Number),
+        }),
+      }),
+    );
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
         event: MetaMetricsEventName.AppUnlocked,
-        properties: { method: 'passkey' },
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          unlock_type: 'passkey',
+        }),
       }),
     );
   });
@@ -134,12 +157,15 @@ describe('UnlockPage component (passkey UI)', () => {
         new DOMException('Not allowed', 'NotAllowedError'),
       );
 
+    const trackEvent = jest.fn().mockResolvedValue(undefined);
     const props = buildProps();
 
     const { getByTestId, queryByTestId } = renderWithProvider(
       <UnlockPage {...props} />,
       mockStore,
       '/unlock',
+      undefined,
+      () => trackEvent,
     );
 
     fireEvent.click(getByTestId('unlock-passkey-button'));
@@ -151,31 +177,69 @@ describe('UnlockPage component (passkey UI)', () => {
     expect(
       queryByTestId('unlock-passkey-error-banner'),
     ).not.toBeInTheDocument();
+
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.PasskeyUnlockFailed,
+        properties: expect.objectContaining({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_auto_prompt: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: expect.any(Number),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failed_attempts: 1,
+          reason: 'user_cancelled',
+        }),
+      }),
+    );
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.AppUnlockedFailed,
+        properties: {
+          reason: 'user_cancelled',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failed_attempts: 1,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          unlock_type: 'passkey',
+        },
+      }),
+    );
   });
 
   it('switches to password unlock when Use password is clicked', async () => {
     const cancelSpy = jest.spyOn(passkeyCeremony, 'cancelPasskeyCeremony');
+    const trackEvent = jest.fn().mockResolvedValue(undefined);
     const props = buildProps();
 
     const { getByTestId } = renderWithProvider(
       <UnlockPage {...props} />,
       mockStore,
       '/unlock',
+      undefined,
+      () => trackEvent,
     );
 
     fireEvent.click(getByTestId('unlock-use-password-button'));
 
     expect(cancelSpy).toHaveBeenCalled();
     expect(getByTestId('unlock-password')).toBeInTheDocument();
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.PasskeyUnlockUsePasswordClicked,
+      }),
+    );
   });
 
   it('returns to passkey-first view when fingerprint is clicked from password mode', async () => {
+    const trackEvent = jest.fn().mockResolvedValue(undefined);
     const props = buildProps({ passkeyAutoUnlockSuppressed: true });
 
     const { getByTestId } = renderWithProvider(
       <UnlockPage {...props} />,
       mockStore,
       '/unlock',
+      undefined,
+      () => trackEvent,
     );
 
     fireEvent.click(getByTestId('unlock-use-password-button'));
@@ -186,6 +250,12 @@ describe('UnlockPage component (passkey UI)', () => {
     await waitFor(() => {
       expect(getByTestId('unlock-passkey-button')).toBeInTheDocument();
     });
+
+    expect(trackEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: MetaMetricsEventName.PasskeyUnlockIconClicked,
+      }),
+    );
   });
 
   it('cancels an in-flight passkey ceremony when the component unmounts', () => {

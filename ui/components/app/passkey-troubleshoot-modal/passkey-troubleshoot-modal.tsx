@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -25,22 +25,37 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 
 export type PasskeyTroubleshootModalMode = 'unlock' | 'verify';
 
 type PasskeyTroubleshootModalProps = Readonly<{
   mode: PasskeyTroubleshootModalMode;
+  location: string;
   onClose: () => void;
   onOpenFullScreen: () => void;
 }>;
 
 export default function PasskeyTroubleshootModal({
   mode,
+  location: troubleshootLocation,
   onClose,
   onOpenFullScreen,
 }: PasskeyTroubleshootModalProps) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshootClicked,
+      properties: {
+        location: troubleshootLocation,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        environment_type: getEnvironmentType(),
+      },
+    });
+  }, [trackEvent, troubleshootLocation]);
 
   const handleContactSupportTrackEvent = () => {
     trackEvent(
@@ -58,11 +73,29 @@ export default function PasskeyTroubleshootModal({
   };
 
   const handleOpenFullScreen = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshootCtaClicked,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        cta: 'full_screen',
+        location: troubleshootLocation,
+      },
+    });
     onOpenFullScreen();
     onClose();
   };
 
   const handleStillHavingTrouble = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshootCtaClicked,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        cta: 'support',
+        location: troubleshootLocation,
+      },
+    });
     handleContactSupportTrackEvent();
     onClose();
   };

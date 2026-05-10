@@ -226,6 +226,7 @@ const PasskeyItem = () => {
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
           mode="verify"
+          location="settings:passkey"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openSecurityAndPasswordInFullScreen}
         />
