@@ -2,6 +2,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
 import { Box } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { DateTime } from 'luxon';
@@ -139,6 +140,11 @@ export const SnapUIDateTimePicker: FunctionComponent<
           disableFuture={disableFuture}
           format={'D T'}
           ampm={false}
+          viewRenderers={{
+            hours: renderTimeViewClock,
+            minutes: renderTimeViewClock,
+            seconds: renderTimeViewClock,
+          }}
           slotProps={{
             textField: {
               placeholder,
@@ -181,6 +187,11 @@ export const SnapUIDateTimePicker: FunctionComponent<
           onChange={handleChange}
           disabled={disabled}
           ampm={false}
+          viewRenderers={{
+            hours: renderTimeViewClock,
+            minutes: renderTimeViewClock,
+            seconds: renderTimeViewClock,
+          }}
           slotProps={{
             textField: {
               placeholder,

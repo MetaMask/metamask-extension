@@ -14,8 +14,14 @@ const selectors = {
   rendererPanel: '.snap-ui-renderer__panel',
   exampleCheckbox: '.mm-checkbox__input',
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
-  exampleDatePicker: '.snap-ui-renderer__date-time-picker--date',
+  exampleDatePickerContainer: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
+  exampleDateTimePickerOpenButton:
+    '.snap-ui-renderer__date-time-picker--datetime .MuiIconButton-root',
+  exampleDatePickerOpenButton:
+    '.snap-ui-renderer__date-time-picker--date .MuiIconButton-root',
+  exampleTimePickerOpenButton:
+    '.snap-ui-renderer__date-time-picker--time .MuiIconButton-root',
   datePickerCalendarContainer: '.MuiDayCalendar-slideTransition',
   datePickerPreviousMonthButton: '.MuiPickersArrowSwitcher-previousIconButton',
   datePickerDayButton: '.MuiPickersDay-root',
@@ -85,7 +91,7 @@ class SnapInteractiveDialog {
       selectors.exampleDateTimePicker,
     );
     await this.driver.scrollToElement(dateTimePicker);
-    await this.driver.clickElement(selectors.exampleDateTimePicker);
+    await this.driver.clickElement(selectors.exampleDateTimePickerOpenButton);
 
     await this.#selectDateInPicker(day);
     await this.#selectTimeInPicker(hour, minute);
@@ -121,7 +127,7 @@ class SnapInteractiveDialog {
       selectors.exampleTimePicker,
     );
     await this.driver.scrollToElement(timePicker);
-    await this.driver.clickElement(selectors.exampleTimePicker);
+    await this.driver.clickElement(selectors.exampleTimePickerOpenButton);
 
     await this.#selectTimeInPicker(hour, minute);
 
@@ -145,10 +151,10 @@ class SnapInteractiveDialog {
    */
   async selectInDatePicker(day: number) {
     const datePicker = await this.driver.findElement(
-      selectors.exampleDatePicker,
+      selectors.exampleDatePickerContainer,
     );
     await this.driver.scrollToElement(datePicker);
-    await this.driver.clickElement(selectors.exampleDatePicker);
+    await this.driver.clickElement(selectors.exampleDatePickerOpenButton);
 
     await this.#selectDateInPicker(day);
 
