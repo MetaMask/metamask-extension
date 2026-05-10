@@ -30,6 +30,8 @@ import {
   translatePasskeyError,
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
+import { getPasskeyControllerErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
@@ -58,6 +60,8 @@ const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 500;
 /** Default row status before enrollment starts or after the user silently dismisses WebAuthn. */
 const DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS: PasskeyEnrollmentStepStatus =
   'idle';
+
+type PasskeySettingsSetupErrorStep = 'register' | 'verify' | 'enroll';
 
 const PasskeyRegisterSteps = {
   /** Shown when opening from side panel in a full tab so users see context before the password step. */
@@ -141,6 +145,17 @@ export default function PasskeyRegisterSubPage() {
       return;
     }
 
+    const enrollmentStartedAt = Date.now();
+    let currentStep: PasskeySettingsSetupErrorStep = 'register';
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.PasskeySetupStarted,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        environment_type: getEnvironmentType(),
+      },
+    });
+
     let registrationSucceeded = false;
 
     try {
@@ -151,6 +166,7 @@ export default function PasskeyRegisterSubPage() {
       setVerifyStepStatus('loading');
       registrationSucceeded = true;
 
+      currentStep = 'verify';
       const postRegAuthOptions =
         await generatePasskeyPostRegistrationAuthenticationOptions(
           registrationResponse,
@@ -158,6 +174,7 @@ export default function PasskeyRegisterSubPage() {
       const postRegAuthenticationResponse =
         await startPasskeyAuthentication(postRegAuthOptions);
 
+      currentStep = 'enroll';
       await protectVaultKeyWithPasskey(
         registrationResponse,
         postRegAuthenticationResponse,
@@ -166,6 +183,17 @@ export default function PasskeyRegisterSubPage() {
       await forceUpdateMetamaskState(dispatch);
       setVerifyStepStatus('success');
       setWalletPassword('');
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeySetupCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - enrollmentStartedAt,
+        },
+      });
 
       await new Promise((resolve) => {
         setTimeout(resolve, PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS);
@@ -180,13 +208,27 @@ export default function PasskeyRegisterSubPage() {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          passkey_registered: true,
+          /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
+          settings_group: 'security_privacy',
+          settings_type: 'passkey',
+          old_value: false,
+          new_value: true,
+          /* eslint-enable @typescript-eslint/naming-convention */
         },
       });
       goToSettings();
     } catch (error) {
       if (isPasskeyCeremonySilentError(error)) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeySetupCancelled,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            environment_type: getEnvironmentType(),
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - enrollmentStartedAt,
+          },
+        });
         log.debug(
           'Settings passkey enrollment ceremony cancelled or timed out',
           error,
@@ -197,6 +239,20 @@ export default function PasskeyRegisterSubPage() {
       }
 
       log.error('Settings passkey enrollment failed', error);
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeySetupFailed,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_step: currentStep,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - enrollmentStartedAt,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_code: getPasskeyControllerErrorCode(error) ?? '',
+        },
+      });
       setEnrollmentError(
         translatePasskeyError(error, t, passkeyMethodLabel) ??
           (registrationSucceeded
@@ -228,6 +284,14 @@ export default function PasskeyRegisterSubPage() {
     setIsIncorrectPasswordError(false);
     try {
       await verifyPassword(walletPassword);
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeySetupPasswordEntered,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: getEnvironmentType(),
+        },
+      });
       setStep(PasskeyRegisterSteps.RegisterPasskey);
       await beginPasskeyCeremonyFlow();
     } catch {

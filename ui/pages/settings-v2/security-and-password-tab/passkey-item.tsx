@@ -22,8 +22,8 @@ import {
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
   translatePasskeyError,
+  getPasskeyErrorCode,
 } from '../../../../shared/lib/passkey';
-import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -166,8 +166,12 @@ const PasskeyItem = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention -- MetaMetrics snake_case contract
-          passkey_registered: false,
+          /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
+          settings_group: 'security_privacy',
+          settings_type: 'passkey',
+          old_value: true,
+          new_value: false,
+          /* eslint-enable @typescript-eslint/naming-convention */
         },
       });
 

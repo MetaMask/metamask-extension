@@ -56,11 +56,11 @@ export function getPasskeyControllerErrorCode(error: unknown): string | null {
 
 /**
  * Analytics-oriented passkey ceremony failure: `timeout`, `user_cancelled` (WebAuthn
- * `NotAllowedError` / `AbortError`), else {@link getPasskeyControllerErrorCode}, else `null`.
+ * `NotAllowedError` / `AbortError`), else {@link getPasskeyControllerErrorCode}, else `unknown`.
  *
  * @param err - Thrown value from a passkey ceremony.
  */
-export function getPasskeyErrorCode(err: unknown): string | null {
+export function getPasskeyErrorCode(err: unknown): string {
   if (err instanceof PasskeyCeremonyTimeoutError) {
     return 'timeout';
   }
@@ -69,7 +69,7 @@ export function getPasskeyErrorCode(err: unknown): string | null {
       return 'user_cancelled';
     }
   }
-  return getPasskeyControllerErrorCode(err);
+  return getPasskeyControllerErrorCode(err) ?? "unknown";
 }
 
 function translatePasskeyCode(
