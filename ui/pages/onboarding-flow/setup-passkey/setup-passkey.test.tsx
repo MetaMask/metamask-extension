@@ -279,14 +279,14 @@ describe('SetupPasskey', () => {
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith(
           expect.objectContaining({
-            event: MetaMetricsEventName.PasskeyOnboardingSetupStarted,
+            event: MetaMetricsEventName.PasskeySetupStarted,
           }),
         );
       });
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith(
           expect.objectContaining({
-            event: MetaMetricsEventName.PasskeyOnboardingSetupCompleted,
+            event: MetaMetricsEventName.PasskeySetupCompleted,
             properties: expect.objectContaining({
               duration_ms: expect.any(Number),
             }),
@@ -308,14 +308,14 @@ describe('SetupPasskey', () => {
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith(
           expect.objectContaining({
-            event: MetaMetricsEventName.PasskeyOnboardingSetupStarted,
+            event: MetaMetricsEventName.PasskeySetupStarted,
           }),
         );
       });
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith(
           expect.objectContaining({
-            event: MetaMetricsEventName.PasskeyOnboardingSetupCancelled,
+            event: MetaMetricsEventName.PasskeySetupCancelled,
             properties: expect.objectContaining({
               duration_ms: expect.any(Number),
             }),
@@ -335,7 +335,7 @@ describe('SetupPasskey', () => {
       await waitFor(() => {
         expect(mockTrackEvent).toHaveBeenCalledWith(
           expect.objectContaining({
-            event: MetaMetricsEventName.PasskeyOnboardingSetupFailed,
+            event: MetaMetricsEventName.PasskeySetupFailed,
             properties: expect.objectContaining({
               error_step: 'enroll',
               error_code: PasskeyControllerErrorCode.RegistrationVerificationFailed,
