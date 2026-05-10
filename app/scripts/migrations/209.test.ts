@@ -1,3 +1,4 @@
+import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
 import migrate, { version } from './209';
 
 const oldVersion = version - 1;
@@ -78,7 +79,7 @@ describe(`migration #${version}`, () => {
       .value as { sessionProperties: Record<string, unknown> };
 
     expect(caveatValue.sessionProperties).toEqual({
-      'eip1193-compatible': true,
+      [KnownSessionProperties.Eip1193Compatible]: true,
     });
     expect(changed.has('PermissionController')).toBe(true);
   });
@@ -117,7 +118,7 @@ describe(`migration #${version}`, () => {
       .value as { sessionProperties: Record<string, unknown> };
 
     expect(caveatValue.sessionProperties).toEqual({
-      'eip1193-compatible': true,
+      [KnownSessionProperties.Eip1193Compatible]: true,
     });
     expect(changed.has('PermissionController')).toBe(true);
   });
@@ -142,7 +143,7 @@ describe(`migration #${version}`, () => {
                 },
                 isMultichainOrigin: false,
                 sessionProperties: {
-                  solana_accountChanged_notifications: true,
+                  [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
                 },
               }),
             },
@@ -164,8 +165,8 @@ describe(`migration #${version}`, () => {
       .value as { sessionProperties: Record<string, unknown> };
 
     expect(caveatValue.sessionProperties).toEqual({
-      solana_accountChanged_notifications: true,
-      'eip1193-compatible': true,
+      [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
+      [KnownSessionProperties.Eip1193Compatible]: true,
     });
     expect(changed.has('PermissionController')).toBe(true);
   });
@@ -216,7 +217,7 @@ describe(`migration #${version}`, () => {
                   'eip155:1': { accounts: ['eip155:1:0xabc'] },
                 },
                 isMultichainOrigin: false,
-                sessionProperties: { 'eip1193-compatible': false },
+                sessionProperties: { [KnownSessionProperties.Eip1193Compatible]: false },
               }),
             },
           },
@@ -244,7 +245,7 @@ describe(`migration #${version}`, () => {
                   'eip155:1': { accounts: ['eip155:1:0xabc'] },
                 },
                 isMultichainOrigin: false,
-                sessionProperties: { 'eip1193-compatible': true },
+                sessionProperties: { [KnownSessionProperties.Eip1193Compatible]: true },
               }),
             },
           },
@@ -297,7 +298,7 @@ describe(`migration #${version}`, () => {
       .value as { sessionProperties: Record<string, unknown> };
 
     expect(caveatValue.sessionProperties).toEqual({
-      'eip1193-compatible': true,
+      [KnownSessionProperties.Eip1193Compatible]: true,
     });
     expect(changed.has('PermissionController')).toBe(true);
   });
@@ -339,14 +340,14 @@ describe(`migration #${version}`, () => {
     const changed = new Set<string>();
     await migrate(state, changed);
 
-    const subjects = (
+    const { subjects } = (
       state.data.PermissionController as {
         subjects: Record<
           string,
           { permissions: Record<string, { caveats: { value: unknown }[] }> }
         >;
       }
-    ).subjects;
+    );
 
     const evmCaveat = subjects['https://evm-dapp.com'].permissions[
       'endowment:caip25'
@@ -356,7 +357,7 @@ describe(`migration #${version}`, () => {
     ].caveats[0].value as { sessionProperties?: Record<string, unknown> };
 
     expect(evmCaveat.sessionProperties).toEqual({
-      'eip1193-compatible': true,
+      [KnownSessionProperties.Eip1193Compatible]: true,
     });
     expect(solanaCaveat.sessionProperties).toBeUndefined();
     expect(changed.has('PermissionController')).toBe(true);
