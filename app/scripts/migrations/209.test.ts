@@ -384,5 +384,4 @@ describe(`migration #${version}`, () => {
     expect(state.data).toEqual(before);
     expect(changed.size).toBe(0);
   });
-
 });
