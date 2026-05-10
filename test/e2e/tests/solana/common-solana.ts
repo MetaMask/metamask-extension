@@ -5,7 +5,10 @@ import * as fs from 'fs/promises';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { DAPP_PATH } from '../../constants';
 import { mockProtocolSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import { mockTokensV2SupportedNetworks } from '../btc/mocks/tokens-api';
+import {
+  mockTokensV2SupportedNetworks,
+  mockTokensV3Assets,
+} from '../btc/mocks/tokens-api';
 
 /**
  * Holds the actual transaction signature captured from sendTransaction.
@@ -258,7 +261,7 @@ export async function mockPriceApiNative(mockServer: Mockttp) {
 }
 
 export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
-  return await mockServer.forGet(SPOT_PRICE_API).thenCallback(() => {
+  return await mockServer.forGet(SPOT_PRICE_API).always().thenCallback(() => {
     return {
       statusCode: 200,
       json: {
@@ -305,13 +308,19 @@ export async function mockPriceApiSpotPrice(mockServer: Mockttp) {
             pricePercentChange200d: 0.029482859180996183,
             pricePercentChange1y: -0.11068819291624574,
           },
+        // Localhost chain 1337 — native token uses slip44:1
+        'eip155:1337/slip44:1': {
+          id: 'ethereum',
+          price: 3401,
+          marketCap: 0,
+          pricePercentChange1d: 0,
+        },
       },
     };
   });
 }
 
 export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
-  console.log('mockPriceApiExchangeRates');
   const response = {
     statusCode: 200,
     json: {
@@ -337,6 +346,7 @@ export async function mockPriceApiExchangeRates(mockServer: Mockttp) {
   };
   return await mockServer
     .forGet(SOLANA_EXCHANGE_RATES_PRICE_API)
+    .always()
     .thenCallback(() => {
       return response;
     });
@@ -2153,7 +2163,7 @@ export function buildSolanaTestSpecificMock(options: SolanaMockOptions = {}) {
 
     mockList.push(
       await mockTokensV2SupportedNetworks(mockServer),
-      await mockTokenApiMainnetTest(mockServer),
+      await mockTokensV3Assets(mockServer),
       await mockAccountsApi(mockServer),
       await mockGetMultipleAccounts(mockServer),
       await mockGetAccountInfoDevnet(mockServer),
