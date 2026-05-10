@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { TextVariant } from '@metamask/design-system-react';
-import { BatchSellModal } from './BatchSellModal';
+import { BatchSellInfoModal } from './BatchSellInfoModal';
 
 const TITLE_PROPS = {
   variant: TextVariant.HeadingSm,
@@ -19,14 +19,16 @@ const DEFAULT_MODAL_PROPS = {
 
 describe('BatchSellModal', () => {
   it('renders nothing when modalProps is undefined', () => {
-    const { container } = render(<BatchSellModal open onClose={jest.fn()} />);
+    const { container } = render(
+      <BatchSellInfoModal open onClose={jest.fn()} />,
+    );
 
     expect(container.firstChild).toBeNull();
   });
 
   it('renders the modal when open=true and modalProps is provided', () => {
     const { getByText } = render(
-      <BatchSellModal
+      <BatchSellInfoModal
         open
         modalProps={DEFAULT_MODAL_PROPS}
         onClose={jest.fn()}
@@ -39,7 +41,7 @@ describe('BatchSellModal', () => {
 
   it('does not display modal content when open=false', () => {
     const { queryByText } = render(
-      <BatchSellModal
+      <BatchSellInfoModal
         open={false}
         modalProps={DEFAULT_MODAL_PROPS}
         onClose={jest.fn()}
@@ -53,7 +55,7 @@ describe('BatchSellModal', () => {
   it('calls onClose when the header close button is clicked', () => {
     const onClose = jest.fn();
     const { getByLabelText } = render(
-      <BatchSellModal
+      <BatchSellInfoModal
         open
         modalProps={DEFAULT_MODAL_PROPS}
         onClose={onClose}
@@ -68,7 +70,7 @@ describe('BatchSellModal', () => {
   it('renders the CTA button with the provided text', () => {
     const onClick = jest.fn();
     const { getByText } = render(
-      <BatchSellModal
+      <BatchSellInfoModal
         open
         modalProps={{
           ...DEFAULT_MODAL_PROPS,
@@ -85,7 +87,7 @@ describe('BatchSellModal', () => {
     const onClick = jest.fn();
     const onClose = jest.fn();
     const { getByText } = render(
-      <BatchSellModal
+      <BatchSellInfoModal
         open
         modalProps={{
           ...DEFAULT_MODAL_PROPS,
@@ -102,7 +104,7 @@ describe('BatchSellModal', () => {
 
   it('renders the CTA button area without text when ctaProps is omitted', () => {
     const { queryByRole } = render(
-      <BatchSellModal
+      <BatchSellInfoModal
         open
         modalProps={DEFAULT_MODAL_PROPS}
         onClose={jest.fn()}

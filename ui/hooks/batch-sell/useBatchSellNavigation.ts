@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { To, useLocation, useNavigate } from 'react-router-dom';
 import { CaipChainId } from '@metamask/utils';
 import {
-  BATCH_SELL_CONFIRM_ROUTE,
+  BATCH_SELL_REVIEW_ROUTE,
   BATCH_SELL_SELECT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
@@ -40,7 +40,7 @@ export const useBatchSellNavigation = () => {
 
   const navigateToBatchSellConfirmPage = useCallback(
     (state: BatchSellNavigationState) => {
-      navigate({ pathname: BATCH_SELL_CONFIRM_ROUTE }, { state });
+      navigate({ pathname: BATCH_SELL_REVIEW_ROUTE }, { state });
     },
     [navigate],
   );

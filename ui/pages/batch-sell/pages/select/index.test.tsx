@@ -52,8 +52,8 @@ jest.mock('./components/Footer', () => ({
 // out-of-scope variable restriction.
 const mockOpenModal = jest.fn();
 const mockCloseModal = jest.fn();
-jest.mock('../../hooks/useBatchSellModal', () => ({
-  useBatchSellModal: () => ({
+jest.mock('../../hooks/useBatchSellInfoModal', () => ({
+  useBatchSellnfoModal: () => ({
     openModal: (...args: unknown[]) => mockOpenModal(...args),
     closeModal: (...args: unknown[]) => mockCloseModal(...args),
   }),

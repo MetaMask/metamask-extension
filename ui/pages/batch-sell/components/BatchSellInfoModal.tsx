@@ -19,7 +19,7 @@ import {
   ModalFooter,
 } from '../../../components/component-library';
 
-export type BatchSellModalProps = {
+export type BatchSellInfoModalProps = {
   open: boolean;
   modalProps?: {
     ctaProps?: {
@@ -32,11 +32,11 @@ export type BatchSellModalProps = {
   onClose: () => void;
 };
 
-export const BatchSellModal = ({
+export const BatchSellInfoModal = ({
   open,
   modalProps,
   onClose,
-}: BatchSellModalProps) => {
+}: BatchSellInfoModalProps) => {
   if (!modalProps) {
     return null;
   }

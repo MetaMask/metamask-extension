@@ -115,7 +115,7 @@ exports[`AssetPage should render a native asset 1`] = `
       class="mt-4 pr-4 pl-4"
     >
       <div
-        class="mm-box relative mm-box--display-flex mm-box--gap-3 mm-box--justify-content-space-between mm-box--width-full"
+        class="flex flex-row gap-3 justify-between relative w-full"
       >
         <button
           class="mm-box mm-text mm-button-base mm-button-base--size-md icon-button coin-overview__button mm-text--body-md-medium mm-box--padding-0 mm-box--padding-top-3 mm-box--padding-right-2 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
@@ -143,10 +143,16 @@ exports[`AssetPage should render a native asset 1`] = `
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/swap-vertical.svg');"
-            />
+            <svg
+              class="inline-block w-5 h-5 text-icon-alternative"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M8 13V5.825L5.425 8.4 4 7l5-5 5 5-1.425 1.4L10 5.825V13zm7 9-5-5 1.425-1.4L14 18.175V11h2v7.175l2.575-2.575L20 17z"
+              />
+            </svg>
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
               style="margin-top: -4px;"
@@ -162,10 +168,16 @@ exports[`AssetPage should render a native asset 1`] = `
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/send.svg');"
-            />
+            <svg
+              class="inline-block w-5 h-5 text-icon-alternative"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M3 20V4l19 8zm2-3 11.85-5L5 7v3.5l6 1.5-6 1.5z"
+              />
+            </svg>
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
               style="margin-top: -4px;"
@@ -181,10 +193,16 @@ exports[`AssetPage should render a native asset 1`] = `
           <span
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
-            <span
-              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/more-horizontal.svg');"
-            />
+            <svg
+              class="inline-block w-5 h-5 text-icon-alternative"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M20 12q0 .824-.587 1.413C18.826 14 18.55 14 18 14s-1.02-.196-1.412-.587S16 12.55 16 12s.196-1.02.587-1.412S17.45 10 18 10s1.02.196 1.413.588S20 11.45 20 12m-6 0q0 .824-.587 1.413C12.825 14 12.55 14 12 14s-1.02-.196-1.412-.587S10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12m-6 0q0 .824-.587 1.413C6.825 14 6.55 14 6 14s-1.02-.196-1.412-.587S4 12.55 4 12s.196-1.02.588-1.412S5.45 10 6 10s1.02.196 1.413.588S8 11.45 8 12"
+              />
+            </svg>
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
               style="margin-top: -4px;"

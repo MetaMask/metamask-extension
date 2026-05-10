@@ -1,7 +1,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import {
   BATCH_SELL_SELECT_ROUTE,
-  BATCH_SELL_CONFIRM_ROUTE,
+  BATCH_SELL_REVIEW_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { useBatchSellNavigation } from './useBatchSellNavigation';
@@ -168,7 +168,7 @@ describe('useBatchSellNavigation', () => {
       });
 
       expect(mockNavigate).toHaveBeenCalledWith(
-        { pathname: BATCH_SELL_CONFIRM_ROUTE },
+        { pathname: BATCH_SELL_REVIEW_ROUTE },
         {
           state: {
             selectedNetworkChainId: 'eip155:1',
@@ -188,7 +188,7 @@ describe('useBatchSellNavigation', () => {
       });
 
       expect(mockNavigate).toHaveBeenCalledWith(
-        { pathname: BATCH_SELL_CONFIRM_ROUTE },
+        { pathname: BATCH_SELL_REVIEW_ROUTE },
         {
           state: {
             selectedNetworkChainId: 'eip155:42161',

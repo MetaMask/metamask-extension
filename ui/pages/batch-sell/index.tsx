@@ -14,13 +14,13 @@ import {
 } from '../../hooks/batch-sell/useBatchSellNavigation';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
-  BATCH_SELL_CONFIRM_ROUTE,
+  BATCH_SELL_REVIEW_ROUTE,
   BATCH_SELL_ROOT_ROUTE,
   BATCH_SELL_SELECT_ROUTE,
 } from '../../helpers/constants/routes';
 import { BatchSellSelectPage } from './pages/select';
-import { BatchSellConfirmPage } from './pages/confirm';
-import { BatchSellModalProvider } from './providers/BatchSellModalProvider';
+import { BatchSellReviewPage } from './pages/review';
+import { BatchSellInfoModalProvider } from './providers/BatchSellInfoModalProvider';
 
 const BatchSellPage = () => {
   const t = useI18nContext();
@@ -29,7 +29,7 @@ const BatchSellPage = () => {
     useBatchSellNavigation();
 
   const handleBack = () => {
-    const isOnConfirmPage = pathname === BATCH_SELL_CONFIRM_ROUTE;
+    const isOnConfirmPage = pathname === BATCH_SELL_REVIEW_ROUTE;
 
     if (isOnConfirmPage) {
       const { selectedNetworkChainId, selectedAssetsId } = (state ??
@@ -49,7 +49,7 @@ const BatchSellPage = () => {
   };
 
   return (
-    <BatchSellModalProvider>
+    <BatchSellInfoModalProvider>
       <Page>
         <Header
           startAccessory={
@@ -72,15 +72,15 @@ const BatchSellPage = () => {
             />
             <Route
               path={toRelativeRoutePath(
-                BATCH_SELL_CONFIRM_ROUTE,
+                BATCH_SELL_REVIEW_ROUTE,
                 BATCH_SELL_ROOT_ROUTE,
               )}
-              element={<BatchSellConfirmPage />}
+              element={<BatchSellReviewPage />}
             />
           </Routes>
         </Content>
       </Page>
-    </BatchSellModalProvider>
+    </BatchSellInfoModalProvider>
   );
 };
 

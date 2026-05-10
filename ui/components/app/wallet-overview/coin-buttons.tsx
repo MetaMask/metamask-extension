@@ -12,8 +12,15 @@ import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
   ButtonBase,
   FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextAlign,
   TextColor,
@@ -45,15 +52,12 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   BackgroundColor,
   BlockSize,
-  Display,
-  IconColor,
-  JustifyContent,
+  IconColor as IconColorLegacy,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
+  Icon as IconLegacy,
+  IconName as IconNameLegacy,
+  IconSize as IconSizeLegacy,
   Tag,
   TagProps,
 } from '../../component-library';
@@ -106,7 +110,7 @@ const MoreButtonsGroup = ({
         Icon={
           <Icon
             name={IconName.MoreHorizontal}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
             size={IconSize.Md}
           />
         }
@@ -125,7 +129,7 @@ const MoreButtonsGroup = ({
             >
               <Icon
                 name={action.iconName}
-                color={IconColor.iconAlternative}
+                color={IconColor.IconAlternative}
                 size={IconSize.Md}
               />
               <Text
@@ -153,7 +157,7 @@ const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
     <ToastContainer>
       <Toast
         startAdornment={
-          <Icon name={IconName.Export} color={IconColor.iconDefault} />
+          <Icon name={IconName.Export} color={IconColor.IconDefault} />
         }
         text={t('buyTabOpenedToastText')}
         description={t('buyTabOpenedToastDescription')}
@@ -462,20 +466,19 @@ const CoinButtons = ({
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
       gap={3}
-      className="relative"
+      className="relative w-full"
       ref={containerRef}
     >
       <IconButton
         className={`${classPrefix}-overview__button`}
         Icon={
-          <Icon
-            name={IconName.Dollar}
-            color={IconColor.iconAlternative}
-            size={IconSize.Md}
+          <IconLegacy
+            name={IconNameLegacy.Dollar}
+            color={IconColorLegacy.iconAlternative}
+            size={IconSizeLegacy.Md}
           />
         }
         disabled={!isBuyableChain}
@@ -493,7 +496,7 @@ const CoinButtons = ({
         Icon={
           <Icon
             name={IconName.SwapVertical}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
             size={IconSize.Md}
           />
         }
@@ -511,7 +514,7 @@ const CoinButtons = ({
         Icon={
           <Icon
             name={IconName.Send}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
             size={IconSize.Md}
           />
         }
@@ -542,11 +545,11 @@ const CoinButtons = ({
             label: t('batchSell'),
             onClick: handleBatchSellOnClick,
             testId: `${classPrefix}-overview-batchSell`,
-            iconName: IconName.Received,
+            iconName: IconName.Merge,
             tagProps: {
               label: t('perpsFilterNew'),
               labelProps: {
-                color: IconColor.primaryDefault,
+                color: IconColorLegacy.primaryDefault,
               },
               backgroundColor: BackgroundColor.primaryMuted,
             },

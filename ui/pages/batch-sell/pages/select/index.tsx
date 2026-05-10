@@ -11,7 +11,7 @@ import type { BridgeAppState } from '../../../../ducks/bridge/selectors';
 import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 import { useSortBatchSellAssetsByBalance } from '../../../../hooks/batch-sell/useSortBatchSellAssetsByBalance';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useBatchSellModal } from '../../hooks/useBatchSellModal';
+import { useBatchSellnfoModal } from '../../hooks/useBatchSellInfoModal';
 import { useBatchSellNavigation } from '../../../../hooks/batch-sell/useBatchSellNavigation';
 import { MIN_SELECTED_ALLOWED_TOKENS } from '../../../../constants/batch-sell';
 import { transitionForward } from '../../../../components/ui/transition';
@@ -31,7 +31,7 @@ import { useInitialStateFromLocation } from './hooks/useInitialStateFromLocation
 export const BatchSellSelectPage = () => {
   const t = useI18nContext();
   const { openBridgeExperience } = useBridging();
-  const { openModal, closeModal } = useBatchSellModal();
+  const { openModal, closeModal } = useBatchSellnfoModal();
   const { navigateToBatchSellConfirmPage } = useBatchSellNavigation();
 
   const [assetsOrderByBalance, setAssetsOrderByBalance] = useState<
