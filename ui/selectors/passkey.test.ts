@@ -2,6 +2,7 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  getPasskeyDerivationMethod,
 } from './selectors';
 
 jest.mock('../../shared/lib/environment', () => ({
@@ -128,6 +129,35 @@ describe('getIsPasskeyRegistered', () => {
     };
 
     expect(getIsPasskeyRegistered(state)).toBe(false);
+  });
+});
+
+describe('getPasskeyDerivationMethod', () => {
+  it('returns undefined when no passkey record exists', () => {
+    const state = { metamask: { passkeyRecord: null } };
+    expect(getPasskeyDerivationMethod(state)).toBeUndefined();
+  });
+
+  it('returns prf when record uses PRF key derivation', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          keyDerivation: { method: 'prf' as const, prfSalt: 'salt' },
+        },
+      },
+    };
+    expect(getPasskeyDerivationMethod(state)).toBe('prf');
+  });
+
+  it('returns userHandle when record uses userHandle key derivation', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          keyDerivation: { method: 'userHandle' as const },
+        },
+      },
+    };
+    expect(getPasskeyDerivationMethod(state)).toBe('userHandle');
   });
 });
 

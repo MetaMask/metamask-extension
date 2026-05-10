@@ -39,7 +39,10 @@ import {
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getAccountType } from '../../../selectors';
+import {
+  getAccountType,
+  getPasskeyDerivationMethod,
+} from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 
 export type UnlockPasskeySectionProps = {
@@ -67,6 +70,7 @@ export const UnlockPasskeySection = ({
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent } = useContext(MetaMetricsContext);
   const accountType = useSelector(getAccountType);
+  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
@@ -118,6 +122,8 @@ export const UnlockPasskeySection = ({
             environment_type: environmentType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_auto_prompt: isAutoPrompt,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            derivation_method: passkeyDerivationMethod,
           },
         });
 
@@ -137,6 +143,8 @@ export const UnlockPasskeySection = ({
             environment_type: environmentType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_auto_prompt: isAutoPrompt,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            derivation_method: passkeyDerivationMethod,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
           },
@@ -168,6 +176,8 @@ export const UnlockPasskeySection = ({
             environment_type: getEnvironmentType(),
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_auto_prompt: isAutoPrompt,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            derivation_method: passkeyDerivationMethod,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: durationMs,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -208,6 +218,7 @@ export const UnlockPasskeySection = ({
       onUnlockWithPasskey,
       accountType,
       passkeyMethodLabel,
+      passkeyDerivationMethod,
       t,
       trackEvent,
     ],
@@ -229,11 +240,13 @@ export const UnlockPasskeySection = ({
         account_type: accountType,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: getEnvironmentType(),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        derivation_method: passkeyDerivationMethod,
       },
     });
     cancelPasskeyCeremony();
     onUsePassword();
-  }, [onUsePassword, accountType, trackEvent]);
+  }, [onUsePassword, accountType, passkeyDerivationMethod, trackEvent]);
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();

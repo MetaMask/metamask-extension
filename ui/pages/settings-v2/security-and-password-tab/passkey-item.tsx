@@ -38,6 +38,7 @@ import {
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
   getIsSocialLoginFlow,
+  getPasskeyDerivationMethod,
 } from '../../../selectors';
 import {
   forceUpdateMetamaskState,
@@ -62,6 +63,7 @@ const PasskeyItem = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
+  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
@@ -121,6 +123,8 @@ const PasskeyItem = () => {
           is_social_login: isSocialLoginFlow,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: 'passkey',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
         },
       });
       globalThis.platform?.openExtensionInBrowser?.(
@@ -145,6 +149,8 @@ const PasskeyItem = () => {
         is_social_login: isSocialLoginFlow,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         verification_method: verificationMethod,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        derivation_method: passkeyDerivationMethod,
       },
     });
     try {
@@ -167,6 +173,8 @@ const PasskeyItem = () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
         },
       });
@@ -182,7 +190,7 @@ const PasskeyItem = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
+          /* eslint-disable @typescript-eslint/naming-convention */
           settings_group: 'security_privacy',
           settings_type: 'passkey',
           old_value: true,
@@ -205,6 +213,8 @@ const PasskeyItem = () => {
           is_social_login: isSocialLoginFlow,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
           reason: getPasskeyErrorCode(error),
@@ -241,6 +251,7 @@ const PasskeyItem = () => {
     navigate,
     accountType,
     isSocialLoginFlow,
+    passkeyDerivationMethod,
     passkeyMethodLabel,
     t,
     trackEvent,

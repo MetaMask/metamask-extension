@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -27,7 +27,10 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import { getAccountType } from '../../../selectors';
+import {
+  getAccountType,
+  getPasskeyDerivationMethod,
+} from '../../../selectors';
 
 export type PasskeyTroubleshootModalMode = 'unlock' | 'verify';
 
@@ -47,20 +50,28 @@ export default function PasskeyTroubleshootModal({
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const accountType = useSelector(getAccountType);
+  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+
+  const baseProperties = useMemo(
+    () => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      account_type: accountType,
+      location: troubleshootLocation,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      environment_type: getEnvironmentType(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      derivation_method: passkeyDerivationMethod,
+    }),
+    [accountType, passkeyDerivationMethod, troubleshootLocation],
+  );
 
   useEffect(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.PasskeyTroubleshootClicked,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountType,
-        location: troubleshootLocation,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        environment_type: getEnvironmentType(),
-      },
+      properties: baseProperties,
     });
-  }, [accountType, trackEvent, troubleshootLocation]);
+  }, [baseProperties, trackEvent]);
 
   const handleContactSupportTrackEvent = () => {
     trackEvent(
@@ -82,13 +93,9 @@ export default function PasskeyTroubleshootModal({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.PasskeyTroubleshootCtaClicked,
       properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountType,
+        ...baseProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         cta: 'full_screen',
-        location: troubleshootLocation,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        environment_type: getEnvironmentType(),
       },
     });
     onOpenFullScreen();
@@ -100,13 +107,9 @@ export default function PasskeyTroubleshootModal({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.PasskeyTroubleshootCtaClicked,
       properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountType,
+        ...baseProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         cta: 'support',
-        location: troubleshootLocation,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        environment_type: getEnvironmentType(),
       },
     });
     handleContactSupportTrackEvent();

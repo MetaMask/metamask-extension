@@ -61,6 +61,7 @@ import {
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
+  getPasskeyDerivationMethod,
 } from '../../../selectors';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -110,6 +111,7 @@ const ChangePassword = ({
   const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
     getIsEnrolledPasskeyIncompatibleWithSidepanel,
   );
+  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const mustDeferPasskeyToBrowserTab =
     isSidePanel &&
@@ -188,6 +190,8 @@ const ChangePassword = ({
         environment_type: getEnvironmentType(),
         // eslint-disable-next-line @typescript-eslint/naming-convention
         renew_vault_key_protection: isPasskeyRenewalEnabled,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        derivation_method: passkeyDerivationMethod,
       },
     });
 
@@ -211,6 +215,8 @@ const ChangePassword = ({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           passkey_renewal_enabled: isPasskeyRenewalEnabled,
@@ -225,6 +231,8 @@ const ChangePassword = ({
           account_type: accountType,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           passkey_renewal_enabled: isPasskeyRenewalEnabled,
           // eslint-disable-next-line @typescript-eslint/naming-convention

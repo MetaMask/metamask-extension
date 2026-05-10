@@ -50,6 +50,7 @@ import {
   getAccountType,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
+  getPasskeyDerivationMethod,
 } from '../../../selectors';
 import {
   PasskeyEnrollmentSteps,
@@ -90,6 +91,7 @@ export default function PasskeyRegisterSubPage() {
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const accountType = useSelector(getAccountType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const fromSidepanel =
     new URLSearchParams(location.search).get('from') === 'sidepanel';
@@ -163,6 +165,8 @@ export default function PasskeyRegisterSubPage() {
         environment_type: getEnvironmentType(),
         // eslint-disable-next-line @typescript-eslint/naming-convention
         is_social_login: isSocialLoginFlow,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        derivation_method: passkeyDerivationMethod,
       },
     });
 
@@ -205,6 +209,8 @@ export default function PasskeyRegisterSubPage() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_social_login: isSocialLoginFlow,
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - enrollmentStartedAt,
         },
       });
@@ -222,7 +228,7 @@ export default function PasskeyRegisterSubPage() {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
+          /* eslint-disable @typescript-eslint/naming-convention */
           settings_group: 'security_privacy',
           settings_type: 'passkey',
           old_value: false,
@@ -243,6 +249,8 @@ export default function PasskeyRegisterSubPage() {
             environment_type: getEnvironmentType(),
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_social_login: isSocialLoginFlow,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            derivation_method: passkeyDerivationMethod,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           },
@@ -267,6 +275,8 @@ export default function PasskeyRegisterSubPage() {
           environment_type: getEnvironmentType(),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_social_login: isSocialLoginFlow,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_step: currentStep,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -294,6 +304,7 @@ export default function PasskeyRegisterSubPage() {
     isPasskeyRegistered,
     accountType,
     isSocialLoginFlow,
+    passkeyDerivationMethod,
     passkeyMethodLabel,
     t,
     trackEvent,
@@ -318,6 +329,8 @@ export default function PasskeyRegisterSubPage() {
           environment_type: getEnvironmentType(),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           is_social_login: isSocialLoginFlow,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
         },
       });
       setStep(PasskeyRegisterSteps.RegisterPasskey);

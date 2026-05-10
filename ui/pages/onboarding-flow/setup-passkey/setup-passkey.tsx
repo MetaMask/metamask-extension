@@ -35,6 +35,7 @@ import {
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
+  getPasskeyDerivationMethod,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
@@ -102,6 +103,7 @@ export default function SetupPasskey() {
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const accountType = useSelector(getAccountType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
   const envType = getEnvironmentType();
   const [isEnrollmentInProgress, setIsEnrollmentInProgress] = useState(false);
   const [registerStepPhase, setRegisterStepPhase] =
@@ -237,6 +239,8 @@ export default function SetupPasskey() {
         properties: {
           ...getBaseEventProperties(),
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - enrollmentStartedAt,
         },
       });
@@ -302,6 +306,7 @@ export default function SetupPasskey() {
     dispatch,
     getBaseEventProperties,
     goToNextStep,
+    passkeyDerivationMethod,
     t,
     passkeyMethodLabel,
     trackEvent,

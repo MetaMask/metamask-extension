@@ -40,6 +40,7 @@ import {
 import {
   getAccountType,
   getIsPasskeyRegistered,
+  getPasskeyDerivationMethod,
 } from '../../../selectors';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
@@ -52,6 +53,7 @@ export default function PasskeyTurnOffSubPage() {
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const accountType = useSelector(getAccountType);
+  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const [walletPassword, setWalletPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -100,6 +102,8 @@ export default function PasskeyTurnOffSubPage() {
           environment_type: environmentType,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          derivation_method: passkeyDerivationMethod,
         },
       });
       try {
@@ -116,6 +120,8 @@ export default function PasskeyTurnOffSubPage() {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             verification_method: verificationMethod,
             // eslint-disable-next-line @typescript-eslint/naming-convention
+            derivation_method: passkeyDerivationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
           },
         });
@@ -129,7 +135,7 @@ export default function PasskeyTurnOffSubPage() {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.SettingsUpdated,
           properties: {
-            /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
+            /* eslint-disable @typescript-eslint/naming-convention */
             settings_group: 'security_privacy',
             settings_type: 'passkey',
             old_value: true,
@@ -149,6 +155,8 @@ export default function PasskeyTurnOffSubPage() {
             environment_type: environmentType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             verification_method: verificationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            derivation_method: passkeyDerivationMethod,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
             reason: getPasskeyErrorCode(error),
