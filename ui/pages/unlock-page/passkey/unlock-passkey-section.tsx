@@ -110,20 +110,20 @@ export const UnlockPasskeySection = ({
       }
 
       const startedAt = Date.now();
-      const environmentType = getEnvironmentType();
+      const baseProperties = {
+        /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
+        account_type: accountType,
+        environment_type: getEnvironmentType(),
+        is_auto_prompt: isAutoPrompt,
+        derivation_method: passkeyDerivationMethod,
+        /* eslint-enable @typescript-eslint/naming-convention */
+      };
       try {
         trackEvent?.({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.PasskeyUnlockStarted,
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: environmentType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_auto_prompt: isAutoPrompt,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: passkeyDerivationMethod,
+            ...baseProperties,
           },
         });
 
@@ -137,14 +137,7 @@ export const UnlockPasskeySection = ({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.PasskeyUnlockSuccessful,
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: environmentType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_auto_prompt: isAutoPrompt,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: passkeyDerivationMethod,
+            ...baseProperties,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
           },
@@ -170,14 +163,7 @@ export const UnlockPasskeySection = ({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.PasskeyUnlockFailed,
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: getEnvironmentType(),
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_auto_prompt: isAutoPrompt,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: passkeyDerivationMethod,
+            ...baseProperties,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: durationMs,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -236,17 +222,16 @@ export const UnlockPasskeySection = ({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.PasskeyUnlockUsePasswordClicked,
       properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+        /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
         account_type: accountType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: getEnvironmentType(),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         derivation_method: passkeyDerivationMethod,
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     });
     cancelPasskeyCeremony();
     onUsePassword();
-  }, [onUsePassword, accountType, passkeyDerivationMethod, trackEvent]);
+  }, [onUsePassword, trackEvent, accountType, passkeyDerivationMethod]);
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();

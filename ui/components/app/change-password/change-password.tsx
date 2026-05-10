@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -112,6 +113,17 @@ const ChangePassword = ({
     getIsEnrolledPasskeyIncompatibleWithSidepanel,
   );
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+  const baseProperties = useMemo(
+    () => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      account_type: accountType,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      environment_type: getEnvironmentType(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      derivation_method: passkeyDerivationMethod,
+    }),
+    [accountType, passkeyDerivationMethod],
+  );
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const mustDeferPasskeyToBrowserTab =
     isSidePanel &&
@@ -184,14 +196,9 @@ const ChangePassword = ({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.PasswordChangeWithPasskeyStarted,
       properties: {
+        ...baseProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        environment_type: getEnvironmentType(),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        renew_vault_key_protection: isPasskeyRenewalEnabled,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        derivation_method: passkeyDerivationMethod,
+        passkey_renewal_enabled: isPasskeyRenewalEnabled,
       },
     });
 
@@ -210,12 +217,7 @@ const ChangePassword = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasswordChangeWithPasskeyCompleted,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: getEnvironmentType(),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: passkeyDerivationMethod,
+          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -227,12 +229,7 @@ const ChangePassword = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasswordChangeWithPasskeyFailed,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: getEnvironmentType(),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: passkeyDerivationMethod,
+          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           passkey_renewal_enabled: isPasskeyRenewalEnabled,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -740,7 +737,7 @@ const ChangePassword = ({
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
           mode="verify"
-          location="settings:change-password"
+          location="change-password"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openChangePasswordInFullScreen}
         />

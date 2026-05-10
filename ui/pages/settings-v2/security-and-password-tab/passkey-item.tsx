@@ -73,6 +73,20 @@ const PasskeyItem = () => {
   const accountType = useSelector(getAccountType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
+  const baseProperties = useMemo(
+    () => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      environment_type: getEnvironmentType(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      account_type: accountType,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_social_login: isSocialLoginFlow,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      derivation_method: passkeyDerivationMethod,
+    }),
+    [accountType, isSocialLoginFlow, passkeyDerivationMethod],
+  );
+
   const [isPasskeyOperationPending, setIsPasskeyOperationPending] =
     useState(false);
   const [showPasskeyTroubleshootModal, setShowPasskeyTroubleshootModal] =
@@ -115,16 +129,9 @@ const PasskeyItem = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeyTurnOffStarted,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: getEnvironmentType(),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_social_login: isSocialLoginFlow,
+          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: 'passkey',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: passkeyDerivationMethod,
         },
       });
       globalThis.platform?.openExtensionInBrowser?.(
@@ -141,16 +148,9 @@ const PasskeyItem = () => {
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.PasskeyTurnOffStarted,
       properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        environment_type: environmentType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_social_login: isSocialLoginFlow,
+        ...baseProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         verification_method: verificationMethod,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        derivation_method: passkeyDerivationMethod,
       },
     });
     try {
@@ -164,16 +164,9 @@ const PasskeyItem = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeyTurnOffCompleted,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: environmentType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_social_login: isSocialLoginFlow,
+          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: passkeyDerivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
         },
@@ -205,16 +198,9 @@ const PasskeyItem = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeyTurnOffFailed,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: environmentType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_social_login: isSocialLoginFlow,
+          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: passkeyDerivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
           reason: getPasskeyErrorCode(error),
@@ -245,13 +231,11 @@ const PasskeyItem = () => {
       setIsPasskeyOperationPending(false);
     }
   }, [
+    baseProperties,
     dispatch,
     isEnrolledPasskeyIncompatibleWithSidepanel,
     isPasskeyRegistered,
     navigate,
-    accountType,
-    isSocialLoginFlow,
-    passkeyDerivationMethod,
     passkeyMethodLabel,
     t,
     trackEvent,
@@ -313,7 +297,7 @@ const PasskeyItem = () => {
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
           mode="verify"
-          location="settings:passkey"
+          location="passkey"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openSecurityAndPasswordInFullScreen}
         />

@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -66,8 +72,6 @@ const PASSKEY_ENROLLMENT_SUCCESS_DISPLAY_MS = 500;
 const DEFAULT_PASSKEY_ENROLLMENT_STEP_STATUS: PasskeyEnrollmentStepStatus =
   'idle';
 
-type PasskeySettingsSetupErrorStep = 'register' | 'verify' | 'enroll';
-
 const PasskeyRegisterSteps = {
   /** Shown when opening from side panel in a full tab so users see context before the password step. */
   Intro: 0,
@@ -92,6 +96,18 @@ export default function PasskeyRegisterSubPage() {
   const accountType = useSelector(getAccountType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+
+  const baseProperties = useMemo(
+    () => ({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      account_type: accountType,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      environment_type: getEnvironmentType(),
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_social_login: isSocialLoginFlow,
+    }),
+    [accountType, isSocialLoginFlow],
+  );
 
   const fromSidepanel =
     new URLSearchParams(location.search).get('from') === 'sidepanel';
@@ -154,19 +170,12 @@ export default function PasskeyRegisterSubPage() {
     }
 
     const enrollmentStartedAt = Date.now();
-    let currentStep: PasskeySettingsSetupErrorStep = 'register';
+    let currentStep = 'register';
     trackEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.PasskeySetupStarted,
       properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        account_type: accountType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        environment_type: getEnvironmentType(),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        is_social_login: isSocialLoginFlow,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        derivation_method: passkeyDerivationMethod,
+        ...baseProperties,
       },
     });
 
@@ -202,12 +211,7 @@ export default function PasskeyRegisterSubPage() {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeySetupCompleted,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: getEnvironmentType(),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_social_login: isSocialLoginFlow,
+          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           derivation_method: passkeyDerivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -243,14 +247,7 @@ export default function PasskeyRegisterSubPage() {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.PasskeySetupCancelled,
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: getEnvironmentType(),
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_social_login: isSocialLoginFlow,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: passkeyDerivationMethod,
+            ...baseProperties,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           },
@@ -269,14 +266,7 @@ export default function PasskeyRegisterSubPage() {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeySetupFailed,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: getEnvironmentType(),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_social_login: isSocialLoginFlow,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: passkeyDerivationMethod,
+          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_step: currentStep,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -298,18 +288,7 @@ export default function PasskeyRegisterSubPage() {
       setRegisterStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
       setVerifyStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
     }
-  }, [
-    dispatch,
-    goToSettings,
-    isPasskeyRegistered,
-    accountType,
-    isSocialLoginFlow,
-    passkeyDerivationMethod,
-    passkeyMethodLabel,
-    t,
-    trackEvent,
-    walletPassword,
-  ]);
+  }, [baseProperties, dispatch, goToSettings, isPasskeyRegistered, passkeyDerivationMethod, passkeyMethodLabel, t, trackEvent, walletPassword]);
 
   const handleSubmitCurrentPassword = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -323,14 +302,7 @@ export default function PasskeyRegisterSubPage() {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeySetupPasswordEntered,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: getEnvironmentType(),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_social_login: isSocialLoginFlow,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: passkeyDerivationMethod,
+          ...baseProperties,
         },
       });
       setStep(PasskeyRegisterSteps.RegisterPasskey);

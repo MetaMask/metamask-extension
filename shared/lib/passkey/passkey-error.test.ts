@@ -223,8 +223,8 @@ describe('getPasskeyErrorCode', () => {
     ).toBe(PasskeyControllerErrorCode.VaultKeyMismatch);
   });
 
-  it('returns null when no client outcome and no controller code', () => {
-    expect(getPasskeyErrorCode(new Error('x'))).toBeNull();
-    expect(getPasskeyErrorCode(null)).toBeNull();
+  it('returns unknown when no client outcome and no controller code', () => {
+    expect(getPasskeyErrorCode(new Error('x'))).toBe('unknown');
+    expect(getPasskeyErrorCode(null)).toBe('unknown');
   });
 });

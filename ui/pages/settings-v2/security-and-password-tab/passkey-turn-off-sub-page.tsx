@@ -90,20 +90,19 @@ export default function PasskeyTurnOffSubPage() {
       }
 
       const startedAt = Date.now();
-      const environmentType = getEnvironmentType();
-      const verificationMethod = 'password';
+      const baseProperties = {
+        /* eslint-disable @typescript-eslint/naming-convention */
+        account_type: accountType,
+        environment_type: getEnvironmentType(),
+        verification_method: 'password',
+        derivation_method: passkeyDerivationMethod,
+        /* eslint-enable @typescript-eslint/naming-convention */
+      };
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeyTurnOffStarted,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: accountType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          environment_type: environmentType,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: verificationMethod,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: passkeyDerivationMethod,
+          ...baseProperties,
         },
       });
       try {
@@ -113,14 +112,7 @@ export default function PasskeyTurnOffSubPage() {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.PasskeyTurnOffCompleted,
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: environmentType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: verificationMethod,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: passkeyDerivationMethod,
+            ...baseProperties,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
           },
@@ -149,14 +141,7 @@ export default function PasskeyTurnOffSubPage() {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.PasskeyTurnOffFailed,
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            account_type: accountType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            environment_type: environmentType,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            verification_method: verificationMethod,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            derivation_method: passkeyDerivationMethod,
+            ...baseProperties,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
             reason: getPasskeyErrorCode(error),
