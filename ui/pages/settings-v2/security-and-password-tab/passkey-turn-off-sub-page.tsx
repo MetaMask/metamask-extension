@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import log from 'loglevel';
 import {
   Box,
   BoxAlignItems,
@@ -20,7 +21,10 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPasskeyAuthMethodKey,
   cancelPasskeyCeremony,
+  isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   forceUpdateMetamaskState,
   removePasskeyWithPasswordVerification,
@@ -79,9 +83,34 @@ export default function PasskeyTurnOffSubPage() {
         return;
       }
 
+      const startedAt = Date.now();
+      const environmentType = getEnvironmentType();
+      const verificationMethod = 'password';
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOffStarted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: environmentType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: verificationMethod,
+        },
+      });
       try {
         await removePasskeyWithPasswordVerification(walletPassword);
         await forceUpdateMetamaskState(dispatch);
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeyTurnOffCompleted,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            environment_type: environmentType,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+          },
+        });
         toast.success(
           <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
           {
@@ -97,15 +126,39 @@ export default function PasskeyTurnOffSubPage() {
           },
         });
         goToSettings();
-      } catch {
-        toast.error(
-          <ToastContent
-            title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}
-          />,
-          {
-            duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+      } catch (error: unknown) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeyTurnOffFailed,
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            environment_type: environmentType,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            verification_method: verificationMethod,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+            reason: getPasskeyErrorCode(error),
           },
-        );
+        });
+        if (isPasskeyCeremonySilentError(error)) {
+          log.debug(
+            'Passkey turn off with password verification cancelled or timed out after password was verified',
+            error,
+          );
+        } else {
+          log.error(
+            'Passkey turn off with password verification failed after password was verified',
+            error,
+          );
+          toast.error(
+            <ToastContent
+              title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}
+            />,
+            {
+              duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+            },
+          );
+        }
         goToSettings();
       }
     } finally {

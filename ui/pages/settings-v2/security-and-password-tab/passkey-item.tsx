@@ -23,6 +23,7 @@ import {
   isPasskeyCeremonySilentError,
   translatePasskeyError,
 } from '../../../../shared/lib/passkey';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -104,6 +105,16 @@ const PasskeyItem = () => {
       isEnrolledPasskeyIncompatibleWithSidepanel
     ) {
       cancelPasskeyCeremony();
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOffStarted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: 'passkey',
+        },
+      });
       globalThis.platform?.openExtensionInBrowser?.(
         SECURITY_AND_PASSWORD_ROUTE,
       );
@@ -111,12 +122,38 @@ const PasskeyItem = () => {
     }
 
     setIsPasskeyOperationPending(true);
+    const startedAt = Date.now();
+    const environmentType = getEnvironmentType();
+    const verificationMethod = 'passkey';
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.PasskeyTurnOffStarted,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        environment_type: environmentType,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        verification_method: verificationMethod,
+      },
+    });
     try {
       const authOptions = await generatePasskeyAuthenticationOptions();
       const authenticationResponse =
         await startPasskeyAuthentication(authOptions);
       await removePasskeyWithPasskeyVerification(authenticationResponse);
       await forceUpdateMetamaskState(dispatch);
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOffCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: environmentType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: verificationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - startedAt,
+        },
+      });
 
       toast.success(
         <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
@@ -136,6 +173,19 @@ const PasskeyItem = () => {
 
       navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
     } catch (error: unknown) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOffFailed,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: environmentType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: verificationMethod,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - startedAt,
+          reason: getPasskeyErrorCode(error),
+        },
+      });
       if (isPasskeyCeremonySilentError(error)) {
         log.debug(
           'Passkey verification for disable cancelled or timed out',
