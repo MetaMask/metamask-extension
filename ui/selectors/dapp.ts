@@ -104,6 +104,6 @@ export const getIsEip1193CompatibleConnection = createDeepEqualSelector(
     }
 
     const caveatValue = getCaip25CaveatValueFromPermissions(permissions);
-    return Boolean(caveatValue.sessionProperties?.['eip1193-compatible']);
+    return caveatValue.sessionProperties?.['eip1193-compatible'] === true;
   },
 );
