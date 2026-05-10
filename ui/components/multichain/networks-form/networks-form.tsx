@@ -792,11 +792,7 @@ export const NetworksForm = ({
         className={`networks-form__footer${
           usePageFooterStyle ? ' networks-form__footer--page' : ''
         }`}
-        backgroundColor={
-          usePageFooterStyle
-            ? BackgroundColor.transparent
-            : BackgroundColor.backgroundDefault
-        }
+        backgroundColor={BackgroundColor.backgroundDefault}
         padding={4}
         width={BlockSize.Full}
       >
