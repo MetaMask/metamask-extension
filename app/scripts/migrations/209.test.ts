@@ -217,7 +217,9 @@ describe(`migration #${version}`, () => {
                   'eip155:1': { accounts: ['eip155:1:0xabc'] },
                 },
                 isMultichainOrigin: false,
-                sessionProperties: { [KnownSessionProperties.Eip1193Compatible]: false },
+                sessionProperties: {
+                  [KnownSessionProperties.Eip1193Compatible]: false,
+                },
               }),
             },
           },
@@ -245,7 +247,9 @@ describe(`migration #${version}`, () => {
                   'eip155:1': { accounts: ['eip155:1:0xabc'] },
                 },
                 isMultichainOrigin: false,
-                sessionProperties: { [KnownSessionProperties.Eip1193Compatible]: true },
+                sessionProperties: {
+                  [KnownSessionProperties.Eip1193Compatible]: true,
+                },
               }),
             },
           },
@@ -340,14 +344,12 @@ describe(`migration #${version}`, () => {
     const changed = new Set<string>();
     await migrate(state, changed);
 
-    const { subjects } = (
-      state.data.PermissionController as {
-        subjects: Record<
-          string,
-          { permissions: Record<string, { caveats: { value: unknown }[] }> }
-        >;
-      }
-    );
+    const { subjects } = state.data.PermissionController as {
+      subjects: Record<
+        string,
+        { permissions: Record<string, { caveats: { value: unknown }[] }> }
+      >;
+    };
 
     const evmCaveat = subjects['https://evm-dapp.com'].permissions[
       'endowment:caip25'
