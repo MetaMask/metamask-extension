@@ -43,6 +43,7 @@ import {
 } from '../../../../shared/lib/passkey';
 import {
   ExtensionPasskeyErrorCode,
+  getPasskeyErrorCode,
   getPasskeyControllerErrorCode,
 } from '../../../../shared/lib/passkey/passkey-error';
 import {
@@ -174,7 +175,19 @@ const ChangePassword = ({
       return false;
     }
 
-    let isPasskeyRenewalSuccessful = false;
+    const startedAt = Date.now();
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.PasswordChangeWithPasskeyStarted,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        environment_type: getEnvironmentType(),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        renew_vault_key_protection: isPasskeyRenewalEnabled,
+      },
+    });
+
+    let isPasskeyRenewed = false;
     try {
       await dispatch(
         changePasswordWithPasskeyVerification(
@@ -183,8 +196,35 @@ const ChangePassword = ({
           { renewVaultKeyProtection: isPasskeyRenewalEnabled },
         ),
       );
-      isPasskeyRenewalSuccessful = isPasskeyRenewalEnabled;
+      isPasskeyRenewed = isPasskeyRenewalEnabled;
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChangeWithPasskeyCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - startedAt,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_renewal_enabled: isPasskeyRenewalEnabled,
+        },
+      });
     } catch (error) {
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasswordChangeWithPasskeyFailed,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          environment_type: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_renewal_enabled: isPasskeyRenewalEnabled,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - startedAt,
+          reason: getPasskeyErrorCode(error),
+        },
+      });
+
       if (!isPasskeyRenewalEnabled) {
         throw error;
       }
@@ -197,7 +237,7 @@ const ChangePassword = ({
 
     setPasskeyAuthenticationResponse(null);
     await forceUpdateMetamaskState(dispatch);
-    return isPasskeyRenewalSuccessful;
+    return isPasskeyRenewed;
   };
 
   const onChangePassword = async () => {
