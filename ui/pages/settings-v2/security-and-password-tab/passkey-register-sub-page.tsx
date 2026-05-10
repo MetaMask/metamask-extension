@@ -46,7 +46,11 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getIsPasskeyRegistered } from '../../../selectors';
+import {
+  getAccountType,
+  getIsPasskeyRegistered,
+  getIsSocialLoginFlow,
+} from '../../../selectors';
 import {
   PasskeyEnrollmentSteps,
   type PasskeyEnrollmentStepStatus,
@@ -84,6 +88,8 @@ export default function PasskeyRegisterSubPage() {
   );
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const accountType = useSelector(getAccountType);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const fromSidepanel =
     new URLSearchParams(location.search).get('from') === 'sidepanel';
@@ -152,7 +158,11 @@ export default function PasskeyRegisterSubPage() {
       event: MetaMetricsEventName.PasskeySetupStarted,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountType,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: getEnvironmentType(),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        is_social_login: isSocialLoginFlow,
       },
     });
 
@@ -189,7 +199,11 @@ export default function PasskeyRegisterSubPage() {
         event: MetaMetricsEventName.PasskeySetupCompleted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_social_login: isSocialLoginFlow,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - enrollmentStartedAt,
         },
@@ -224,7 +238,11 @@ export default function PasskeyRegisterSubPage() {
           event: MetaMetricsEventName.PasskeySetupCancelled,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountType,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: getEnvironmentType(),
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_social_login: isSocialLoginFlow,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           },
@@ -244,7 +262,11 @@ export default function PasskeyRegisterSubPage() {
         event: MetaMetricsEventName.PasskeySetupFailed,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_social_login: isSocialLoginFlow,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_step: currentStep,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -270,6 +292,8 @@ export default function PasskeyRegisterSubPage() {
     dispatch,
     goToSettings,
     isPasskeyRegistered,
+    accountType,
+    isSocialLoginFlow,
     passkeyMethodLabel,
     t,
     trackEvent,
@@ -289,7 +313,11 @@ export default function PasskeyRegisterSubPage() {
         event: MetaMetricsEventName.PasskeySetupPasswordEntered,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_social_login: isSocialLoginFlow,
         },
       });
       setStep(PasskeyRegisterSteps.RegisterPasskey);

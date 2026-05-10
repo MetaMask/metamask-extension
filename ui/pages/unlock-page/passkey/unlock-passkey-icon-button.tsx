@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import {
   ButtonIcon,
   ButtonIconVariant,
@@ -8,7 +9,14 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey';
+import { getEnvironmentType } from '../../../../shared/lib/environment-type';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getAccountType } from '../../../selectors';
 
 export type UnlockPasskeyIconButtonProps = {
   disabled: boolean;
@@ -21,6 +29,22 @@ export const UnlockPasskeyIconButton = ({
 }: UnlockPasskeyIconButtonProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const accountType = useSelector(getAccountType);
+
+  const handleClick = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyUnlockIconClicked,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountType,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        environment_type: getEnvironmentType(),
+      },
+    });
+    onClick();
+  }, [accountType, onClick, trackEvent]);
 
   return (
     <ButtonIcon
@@ -36,7 +60,7 @@ export const UnlockPasskeyIconButton = ({
       }}
       className="flex self-start mb-4 h-12 w-12 rounded-lg"
       disabled={disabled}
-      onClick={onClick}
+      onClick={handleClick}
       type="button"
     />
   );

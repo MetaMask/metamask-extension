@@ -56,6 +56,7 @@ import {
   verifyPassword,
 } from '../../../store/actions';
 import {
+  getAccountType,
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
@@ -102,6 +103,7 @@ const ChangePassword = ({
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const accountType = useSelector(getAccountType);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
@@ -181,6 +183,8 @@ const ChangePassword = ({
       event: MetaMetricsEventName.PasswordChangeWithPasskeyStarted,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountType,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: getEnvironmentType(),
         // eslint-disable-next-line @typescript-eslint/naming-convention
         renew_vault_key_protection: isPasskeyRenewalEnabled,
@@ -203,6 +207,8 @@ const ChangePassword = ({
         event: MetaMetricsEventName.PasswordChangeWithPasskeyCompleted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
@@ -215,6 +221,8 @@ const ChangePassword = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasswordChangeWithPasskeyFailed,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountType,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: getEnvironmentType(),
           // eslint-disable-next-line @typescript-eslint/naming-convention

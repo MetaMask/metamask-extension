@@ -37,7 +37,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getIsPasskeyRegistered } from '../../../selectors';
+import {
+  getAccountType,
+  getIsPasskeyRegistered,
+} from '../../../selectors';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -48,6 +51,7 @@ export default function PasskeyTurnOffSubPage() {
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const accountType = useSelector(getAccountType);
 
   const [walletPassword, setWalletPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -91,6 +95,8 @@ export default function PasskeyTurnOffSubPage() {
         event: MetaMetricsEventName.PasskeyTurnOffStarted,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: accountType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
@@ -103,6 +109,8 @@ export default function PasskeyTurnOffSubPage() {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.PasskeyTurnOffCompleted,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: environmentType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -135,6 +143,8 @@ export default function PasskeyTurnOffSubPage() {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.PasskeyTurnOffFailed,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: environmentType,
             // eslint-disable-next-line @typescript-eslint/naming-convention

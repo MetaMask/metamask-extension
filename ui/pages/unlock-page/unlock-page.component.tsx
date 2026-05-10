@@ -49,7 +49,6 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { cancelPasskeyCeremony } from '../../../shared/lib/passkey';
-import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { isFlask, isBeta } from '../../../shared/lib/build-types';
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
@@ -549,14 +548,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   handleUnlockPasskeyFromPasswordForm = () => {
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PasskeyUnlockIconClicked,
-      properties: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        environment_type: getEnvironmentType(),
-      },
-    });
     if (this.props.mustDeferPasskeyToBrowserTab) {
       cancelPasskeyCeremony();
       globalThis.platform?.openExtensionInBrowser?.(UNLOCK_ROUTE);

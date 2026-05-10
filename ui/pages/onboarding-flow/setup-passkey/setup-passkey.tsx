@@ -30,6 +30,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getAccountType,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyRegistered,
@@ -99,6 +100,7 @@ export default function SetupPasskey() {
     getIsParticipateInMetaMetricsSet,
   );
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
+  const accountType = useSelector(getAccountType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const envType = getEnvironmentType();
   const [isEnrollmentInProgress, setIsEnrollmentInProgress] = useState(false);
@@ -116,11 +118,13 @@ export default function SetupPasskey() {
   const getBaseEventProperties = useCallback(() => {
     return {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      account_type: isSocialLoginFlow ? 'social' : 'metamask',
+      account_type: accountType,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       environment_type: envType,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_social_login: isSocialLoginFlow,
     };
-  }, [isSocialLoginFlow, envType]);
+  }, [accountType, envType, isSocialLoginFlow]);
 
   useEffect(() => {
     isMountedRef.current = true;

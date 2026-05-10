@@ -158,7 +158,7 @@ describe('SetupPasskey', () => {
       .mockResolvedValue(mockAuthenticationResponse);
   });
 
-  function renderSetupPasskey(mockStore) {
+  function renderSetupPasskey(mockStore: ReturnType<typeof buildMockStore>) {
     return renderWithProvider(
       <SetupPasskey />,
       mockStore,
@@ -231,7 +231,7 @@ describe('SetupPasskey', () => {
         expect.objectContaining({
           event: MetaMetricsEventName.PasskeyOnboardingSetupViewed,
           properties: expect.objectContaining({
-            account_type: 'metamask',
+            account_type: '',
           }),
         }),
       );

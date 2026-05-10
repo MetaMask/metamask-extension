@@ -6,6 +6,7 @@ import React, {
   useState,
   type ReactNode,
 } from 'react';
+import { useSelector } from 'react-redux';
 import { type PasskeyAuthenticationResponse } from '@metamask/passkey-controller';
 import {
   Box,
@@ -38,6 +39,7 @@ import {
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getAccountType } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 
 export type UnlockPasskeySectionProps = {
@@ -64,6 +66,7 @@ export const UnlockPasskeySection = ({
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent } = useContext(MetaMetricsContext);
+  const accountType = useSelector(getAccountType);
 
   const [passkeyError, setPasskeyError] = useState<string | null>(null);
   const [passkeyInProgress, setPasskeyInProgress] = useState(false);
@@ -110,6 +113,8 @@ export const UnlockPasskeySection = ({
           event: MetaMetricsEventName.PasskeyUnlockStarted,
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountType,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: environmentType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             is_auto_prompt: isAutoPrompt,
@@ -126,6 +131,8 @@ export const UnlockPasskeySection = ({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.PasskeyUnlockSuccessful,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: environmentType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -155,6 +162,8 @@ export const UnlockPasskeySection = ({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.PasskeyUnlockFailed,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            account_type: accountType,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             environment_type: getEnvironmentType(),
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -197,6 +206,7 @@ export const UnlockPasskeySection = ({
       passkeyInProgress,
       isPasskeyActive,
       onUnlockWithPasskey,
+      accountType,
       passkeyMethodLabel,
       t,
       trackEvent,
@@ -216,12 +226,14 @@ export const UnlockPasskeySection = ({
       event: MetaMetricsEventName.PasskeyUnlockUsePasswordClicked,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: accountType,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: getEnvironmentType(),
       },
     });
     cancelPasskeyCeremony();
     onUsePassword();
-  }, [onUsePassword, trackEvent]);
+  }, [onUsePassword, accountType, trackEvent]);
 
   const openUnlockInFullScreen = useCallback(() => {
     cancelPasskeyCeremony();
