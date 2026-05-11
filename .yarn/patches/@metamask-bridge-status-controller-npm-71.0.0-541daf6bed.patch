@@ -64,3 +64,17 @@ index 7e0788fe9dcdeb3d8328643d023b37ec2cbdd538..c75f6c339ff534a3b99b5a222dbed5ff
                          quoteResponse,
                          slippagePercentage: 0,
                          isStxEnabled: false,
+diff --git a/package.json b/package.json
+index 0e8915a3d2cfdde8510d4132261219c6c2fe8f7d..a1f75ac07e75815fab3716dd47061c5bdc50efdb 100644
+--- a/package.json
++++ b/package.json
+@@ -63,8 +63,8 @@
+     "@metamask/polling-controller": "^16.0.4",
+     "@metamask/profile-sync-controller": "^28.0.2",
+     "@metamask/snaps-controllers": "^19.0.0",
+     "@metamask/superstruct": "^3.1.0",
+-    "@metamask/transaction-controller": "^64.3.0",
++    "@metamask/transaction-controller": "^65.1.0",
+     "@metamask/utils": "^11.9.0",
+     "bignumber.js": "^9.1.2",
+     "uuid": "^8.3.2"
