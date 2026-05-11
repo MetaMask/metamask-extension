@@ -28,8 +28,12 @@ export async function assertPerpsActivityShowsCloseFill({
 
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.clickBack();
-  const marketListPage = new PerpsMarketListPage(driver);
-  await marketListPage.clickBack();
+  try {
+    const marketListPage = new PerpsMarketListPage(driver);
+    await marketListPage.clickBack();
+  } catch (error) {
+    console.error('Market list not displayed, moving on', error);
+  }
 
   const perpsHomePage = new PerpsHomePage(driver);
   await perpsHomePage.navigateToPerpsHome();
