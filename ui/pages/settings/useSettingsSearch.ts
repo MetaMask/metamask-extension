@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 import Fuse from 'fuse.js';
-import { SETTINGS_V2_TABS, SETTINGS_V2_ROUTES } from './settings-registry';
-import { SETTINGS_V2_SEARCH_CONFIG } from './search-config';
-import { useSettingsV2I18n } from './useSettingsV2I18n';
+import { SETTINGS_TABS, SETTINGS_ROUTES } from './settings-registry';
+import { SETTINGS_SEARCH_CONFIG } from './search-config';
+import { useSettingsI18n } from './useSettingsI18n';
 
 export const MIN_SEARCH_LENGTH = 3;
 
-export type SettingsV2SearchResult = {
+export type SettingsSearchResult = {
   /** Setting item id — used as hash fragment for scroll-to-setting */
   settingId: string;
   tabLabelKey: string;
@@ -21,16 +21,16 @@ export type SettingsV2SearchResult = {
  * Builds a flat list of searchable items by joining the lightweight
  * search config (id + titleKey pairs) with the registry (labelKey, path, iconName).
  */
-function buildSearchableItems(): SettingsV2SearchResult[] {
-  const tabById = new Map(SETTINGS_V2_TABS.map((t) => [t.id, t]));
+function buildSearchableItems(): SettingsSearchResult[] {
+  const tabById = new Map(SETTINGS_TABS.map((t) => [t.id, t]));
 
-  return SETTINGS_V2_SEARCH_CONFIG.flatMap((cfg) => {
+  return SETTINGS_SEARCH_CONFIG.flatMap((cfg) => {
     const tab = tabById.get(cfg.tabId);
     if (!tab) {
       return [];
     }
 
-    const tabItems: SettingsV2SearchResult[] = cfg.items.map((item) => ({
+    const tabItems: SettingsSearchResult[] = cfg.items.map((item) => ({
       settingId: item.id,
       tabLabelKey: tab.labelKey,
       titleKey: item.titleKey,
@@ -38,9 +38,9 @@ function buildSearchableItems(): SettingsV2SearchResult[] {
       iconName: tab.iconName,
     }));
 
-    const subPageItems: SettingsV2SearchResult[] = (cfg.subPages ?? []).flatMap(
+    const subPageItems: SettingsSearchResult[] = (cfg.subPages ?? []).flatMap(
       (subPage) => {
-        const meta = SETTINGS_V2_ROUTES[subPage.path];
+        const meta = SETTINGS_ROUTES[subPage.path];
         return subPage.items.map((item) => ({
           settingId: item.id,
           parentTabLabelKey: tab.labelKey,
@@ -57,17 +57,15 @@ function buildSearchableItems(): SettingsV2SearchResult[] {
 }
 
 /**
- * Hook that provides fuzzy search over Settings V2 items.
+ * Hook that provides fuzzy search over Settings items.
  * Items are derived from the lightweight search config — importing this
  * does NOT eagerly load any tab component module.
  *
  * @param searchValue - Current search input value
  * @returns Matching search results (empty if query is shorter than 3 characters)
  */
-export function useSettingsV2Search(
-  searchValue: string,
-): SettingsV2SearchResult[] {
-  const t = useSettingsV2I18n();
+export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
+  const t = useSettingsI18n();
 
   const fuse = useMemo(() => {
     const items = buildSearchableItems();
@@ -92,6 +90,6 @@ export function useSettingsV2Search(
     }
     // Fuse.js v3 returns T[] directly (not FuseResult<T>[] like v6+).
     // The bundled types describe the v6 API, so the cast is needed.
-    return fuse.search(query) as unknown as SettingsV2SearchResult[];
+    return fuse.search(query) as unknown as SettingsSearchResult[];
   }, [fuse, searchValue]);
 }

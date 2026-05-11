@@ -18,14 +18,14 @@ function translateBareLabelKey(t: TranslateMessage, labelKey: string): string {
 }
 
 /**
- * Settings V2 i18n: same as {@link useI18nContext}, but bare `t(key)` calls
+ * Settings i18n: same as {@link useI18nContext}, but bare `t(key)` calls
  * resolve passkey-related label keys that need the OS-specific auth-method
  * noun. Calls with any additional arguments forward unchanged (substitutions,
  * React nodes, etc.).
  *
  * @returns Wrapped translate function
  */
-export function useSettingsV2I18n() {
+export function useSettingsI18n() {
   const rawT = useI18nContext();
 
   return useCallback(
