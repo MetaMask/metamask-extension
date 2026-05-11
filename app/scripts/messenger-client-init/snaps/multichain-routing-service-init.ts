@@ -4,7 +4,6 @@ import {
   MultichainRoutingServiceMessenger,
 } from '@metamask/snaps-controllers';
 import { MessengerClientInitFunction } from '../types';
-import { KeyringType } from '../../../../shared/constants/keyring';
 
 /**
  * Initialize the multichain routing service.
@@ -18,30 +17,16 @@ export const MultichainRoutingServiceInit: MessengerClientInitFunction<
   MultichainRoutingService,
   MultichainRoutingServiceMessenger
 > = ({ controllerMessenger, getMessengerClient }) => {
-  const keyringController = getMessengerClient('KeyringController');
+  const snapAccountService = getMessengerClient('SnapAccountService');
   const appStateController = getMessengerClient('AppStateController');
 
   const getSnapKeyring = async (): Promise<SnapKeyring> => {
     // Ensure the client is unlocked before attempting to access keyrings.
     await appStateController.getUnlockPromise(true);
 
-    // TODO: Use `withKeyring` instead
-    let [snapKeyring] = keyringController.getKeyringsByType(KeyringType.snap);
-
-    if (!snapKeyring) {
-      await keyringController.addNewKeyring(KeyringType.snap);
-      // TODO: Use `withKeyring` instead
-      [snapKeyring] = keyringController.getKeyringsByType(KeyringType.snap);
-    }
-
-    return snapKeyring as SnapKeyring;
+    return await snapAccountService.getLegacySnapKeyring();
   };
 
-  // @TODO(snaps): This fixes an issue where `withKeyring` would lock the
-  // `KeyringController` mutex. That meant that if a snap requested a keyring
-  // operation (like requesting entropy) while the `KeyringController` was
-  // locked, it would cause a deadlock. This is a temporary fix until we can
-  // refactor how we handle requests to the Snaps Keyring.
   // @ts-expect-error: Types of `SnapKeyring` are incompatible.
   const withSnapKeyring: ConstructorParameters<
     typeof MultichainRoutingService

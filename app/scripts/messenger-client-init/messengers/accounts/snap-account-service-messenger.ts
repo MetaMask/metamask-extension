@@ -33,14 +33,18 @@ export function getSnapAccountServiceMessenger(
   messenger.delegate({
     messenger: serviceMessenger,
     actions: [
-      // 'KeyringController:withController',
       // 'KeyringController:withKeyringV2Unsafe',
+      'KeyringController:withController',
       'KeyringController:getState',
       'SnapController:getState',
+      'SnapController:getSnap',
       'SnapController:getRunnableSnaps',
+      'AccountTreeController:getAccountGroupObject',
+      'AccountTreeController:getSelectedAccountGroup',
     ],
     events: [
       'KeyringController:stateChange',
+      'KeyringController:unlock',
       'SnapController:stateChange',
       'SnapController:snapInstalled',
       'SnapController:snapEnabled',
@@ -48,6 +52,7 @@ export function getSnapAccountServiceMessenger(
       'SnapController:snapBlocked',
       'SnapController:snapUnblocked',
       'SnapController:snapUninstalled',
+      'AccountTreeController:selectedAccountGroupChange',
     ],
   });
   return serviceMessenger;

@@ -101,7 +101,7 @@ export function getPermissionControllerInitMessenger(
       'AccountsController:listAccounts',
       'CurrencyRateController:getState',
       'KeyringController:getKeyringsByType',
-      'KeyringController:withKeyring',
+      'KeyringController:withKeyringV2Unsafe',
       'MultichainRoutingService:isSupportedScope',
       'MultichainRoutingService:getSupportedAccounts',
       'NetworkController:findNetworkClientIdByChainId',

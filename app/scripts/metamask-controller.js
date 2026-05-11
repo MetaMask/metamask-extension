@@ -703,8 +703,8 @@ export default class MetamaskController extends EventEmitter {
       MultichainAssetsRatesController: MultichainAssetsRatesControllerInit,
       MultichainBalancesController: MultichainBalancesControllerInit,
       MultichainTransactionsController: MultichainTransactionsControllerInit,
-      SnapAccountService: SnapAccountServiceInit,
       MultichainAccountService: MultichainAccountServiceInit,
+      SnapAccountService: SnapAccountServiceInit,
       MultichainRoutingService: MultichainRoutingServiceInit,
       AuthenticationController: AuthenticationControllerInit,
       UserStorageController: UserStorageControllerInit,
@@ -1811,70 +1811,7 @@ export default class MetamaskController extends EventEmitter {
    * @returns {SnapKeyring}
    */
   async getSnapKeyring() {
-    // TODO: Use `withKeyring` instead
-    let [snapKeyring] = this.keyringController.getKeyringsByType(
-      KeyringType.snap,
-    );
-    if (!snapKeyring) {
-      await this.keyringController.addNewKeyring(KeyringType.snap);
-      // TODO: Use `withKeyring` instead
-      [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
-      );
-    }
-    return snapKeyring;
-  }
-
-  /**
-   * Get the snap keyring instance if available.
-   *
-   * @returns {SnapKeyring}
-   */
-  getSnapKeyringIfAvailable() {
-    // Check if the controller has been unlocked, otherwise this will throw.
-    if (this.keyringController.isUnlocked()) {
-      // TODO: Use `withKeyring` instead
-      const [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
-      );
-
-      return snapKeyring;
-    }
-    return undefined;
-  }
-
-  /**
-   * Forward currently selected account group to the Snap keyring.
-   *
-   * @param snapKeyring - Snap keyring instance or undefined if not available.
-   * @param groupId - Currently selected account group.
-   */
-  async forwardSelectedAccountGroupToSnapKeyring(snapKeyring, groupId) {
-    if (!snapKeyring) {
-      // Nothing to forward if the Snap keyring is not available.
-      return;
-    }
-
-    if (groupId) {
-      const group = this.accountTreeController.getAccountGroupObject(groupId);
-      if (group) {
-        // FIXME: For now, only our non-EVM Snaps support this `keyring_setSelectedAccounts`
-        // method. There's also no way to know which optional method is supported on an
-        // account management Snap for now.
-        // Calling this on the SSK has an undesired side-effect on the Snap itself, to avoid
-        // making it fail, we ONLY scope this call to "multichain account groups" which are
-        // backed by non-EVM Snaps.
-        const hasNonEvmAccounts = group.accounts.some((id) => {
-          const account = this.accountsController.getAccount(id);
-
-          return Boolean(account) && !isEvmAccountType(account.type);
-        });
-
-        if (hasNonEvmAccounts) {
-          await snapKeyring.setSelectedAccounts(group.accounts);
-        }
-      }
-    }
+    return this.snapAccountService.getLegacySnapKeyring();
   }
 
   trackInsightSnapView(snapId) {
@@ -2155,7 +2092,7 @@ export default class MetamaskController extends EventEmitter {
     // wallet_notify for multichain accountChanged when selected account group changes
     this.controllerMessenger.subscribe(
       `${this.accountTreeController.name}:selectedAccountGroupChange`,
-      (groupId) => {
+      () => {
         const authorizationsByOrigin = getAuthorizedScopesByOrigin(
           this.permissionController.state,
         );
@@ -2166,14 +2103,6 @@ export default class MetamaskController extends EventEmitter {
         ] of authorizationsByOrigin.entries()) {
           this._notifyAuthorizationChange(origin, authorization);
         }
-
-        // TODO: Move this logic to the SnapKeyring directly.
-        // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-        // eslint-disable-next-line no-void
-        void this.forwardSelectedAccountGroupToSnapKeyring(
-          this.getSnapKeyringIfAvailable(),
-          groupId,
-        );
 
         NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
           ({ network, accountType, notificationProperty, chains }) => {
@@ -2226,23 +2155,6 @@ export default class MetamaskController extends EventEmitter {
             }
           },
         );
-      },
-    );
-
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    this.controllerMessenger.subscribe(
-      `${this.multichainAccountService.name}:multichainAccountGroupUpdated`,
-      (group) => {
-        // If the current group gets updated, then maybe there are more accounts being "selected"
-        // now, so we have to forward them to the Snap keyring too!
-        if (this.accountTreeController.getSelectedAccountGroup() === group.id) {
-          // eslint-disable-next-line no-void
-          void this.forwardSelectedAccountGroupToSnapKeyring(
-            this.getSnapKeyringIfAvailable(),
-            group.id,
-          );
-        }
       },
     );
 
@@ -4954,13 +4866,6 @@ export default class MetamaskController extends EventEmitter {
       // Then we can build the initial tree.
       this.accountTreeController.reinit();
 
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await this.getSnapKeyring(),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
-
       return primaryKeyring;
     } finally {
       releaseLock();
@@ -5312,12 +5217,6 @@ export default class MetamaskController extends EventEmitter {
       // TODO: Remove this once the `accounts-controller` once only
       // depends only on keyrings `:stateChange`.
       this.accountTreeController.reinit();
-      // TODO: Move this logic to the SnapKeyring directly.
-      // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-      await this.forwardSelectedAccountGroupToSnapKeyring(
-        await this.getSnapKeyring(),
-        this.accountTreeController.getSelectedAccountGroup(),
-      );
 
       if (completedOnboarding) {
         // check if external services are enabled
@@ -5540,18 +5439,6 @@ export default class MetamaskController extends EventEmitter {
 
     // Force account-tree refresh after all accounts have been updated.
     this.accountTreeController.init();
-
-    // TODO: Move this logic to the SnapKeyring directly.
-    // Forward selected accounts to the Snap keyring, so each Snaps can fetch those accounts.
-    // It is not necessary to await this since it is just expected for the snap to receive
-    // the information without blocking the login flow. Despite not awaiting for
-    // forwardSelectedAccountGroupToSnapKeyring to be completed, we still want to await for
-    // getSnapKeyring to ensure the Snap keyring is available.
-    // eslint-disable-next-line no-void
-    void this.forwardSelectedAccountGroupToSnapKeyring(
-      await this.getSnapKeyring(),
-      this.accountTreeController.getSelectedAccountGroup(),
-    );
 
     const resyncAndAlignAccounts = async () => {
       // READ THIS CAREFULLY:
