@@ -432,7 +432,7 @@
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.1.2",
     "@metamask/transaction-controller": "^65.1.0",
-    "@metamask/transaction-pay-controller": "^20.1.0",
+    "@metamask/transaction-pay-controller": "^22.0.0",
     "@metamask/tron-wallet-snap": "^1.25.3",
     "@metamask/user-operation-controller": "^41.2.0",
     "@metamask/utils": "^11.11.0",
