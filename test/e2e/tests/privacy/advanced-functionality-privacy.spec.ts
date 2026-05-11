@@ -15,15 +15,20 @@ import {
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+  // The unified-assets feature prefetches token lists for all popular chains
+  // via the old token-list API regardless of the privacy toggles.
+  // Mock every chainId variant to prevent real network requests, but do not
+  // include this endpoint in the returned array so it is not subject to the
+  // "0 requests when privacy is off / 1 request when privacy is on" assertions.
+  await mockServer
+    .forGet(/https:\/\/token\.api\.cx\.metamask\.io\/tokens\/\d+/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
   return [
-    await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [{ fakedata: true }],
-        };
-      }),
     await mockServer
       .forGet('https://on-ramp-content.api.cx.metamask.io/regions/networks')
       .thenCallback(() => {
