@@ -296,8 +296,8 @@
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
-    "@metamask/snap-account-service": "npm:@metamask-previews/snap-account-service@0.0.0-preview-fe37b4f9a",
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@9.0.0-preview-fe37b4f9a"
+    "@metamask/snap-account-service": "npm:@metamask-previews/snap-account-service@0.0.0-preview-2c98bc214",
+    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@9.0.0-preview-2c98bc214"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",

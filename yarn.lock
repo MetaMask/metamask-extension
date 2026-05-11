@@ -7273,9 +7273,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@9.0.0-preview-fe37b4f9a":
-  version: 9.0.0-preview-fe37b4f9a
-  resolution: "@metamask-previews/multichain-account-service@npm:9.0.0-preview-fe37b4f9a"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@9.0.0-preview-2c98bc214":
+  version: 9.0.0-preview-2c98bc214
+  resolution: "@metamask-previews/multichain-account-service@npm:9.0.0-preview-2c98bc214"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/accounts-controller": "npm:^38.0.0"
@@ -7300,7 +7300,7 @@ __metadata:
     "@metamask/account-api": ^1.0.4
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/fb421fa6a8d2a4a46790ea7597fd4c2d8bab94c258eaa00a85d616e2141177e41f92d44ee7ec09eeb87e786f5e505c2a9617b0d82620ed87fb2ff9bd249d00b2
+  checksum: 10/0a000b6ffaf7c91ad22c1520584fe820f349f59956d007f05de84b562237ba079913af861bed0987f5af40c08761023c4f1067988f6cefecb2a82f77d3318cfe
   languageName: node
   linkType: hard
 
@@ -8036,17 +8036,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@0.0.0-preview-fe37b4f9a":
-  version: 0.0.0-preview-fe37b4f9a
-  resolution: "@metamask-previews/snap-account-service@npm:0.0.0-preview-fe37b4f9a"
+"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@0.0.0-preview-2c98bc214":
+  version: 0.0.0-preview-2c98bc214
+  resolution: "@metamask-previews/snap-account-service@npm:0.0.0-preview-2c98bc214"
   dependencies:
+    "@metamask/account-api": "npm:^1.0.4"
+    "@metamask/eth-snap-keyring": "npm:^22.0.1"
     "@metamask/keyring-controller": "npm:^25.5.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/utils": "npm:^11.9.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/0bac46e9c9e14001e743813d6f130d4bb3207587b779b5930bfb2b64390494f775aed54985b594094e050e752cd3cccf35f3f21332206bb83740037eda4b00cd
+  checksum: 10/550aeb4db0fac3ecc3adb960addc2f6ce547836bfbef26f0370e04fb86b910ef0b87273259c42435587731a6373c1d3bbea4b326b5e3286429a707bafff6c69d
   languageName: node
   linkType: hard
 
