@@ -112,6 +112,27 @@ jest.mock('./messenger-client-init/perps-controller-init', () => ({
   })),
 }));
 
+jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
+  SnapAccountServiceInit: jest
+    .fn()
+    .mockImplementation(({ controllerMessenger }) => {
+      controllerMessenger.registerActionHandler(
+        'SnapAccountService:ensureReady',
+        // Never-resolving promise: prevents any Snap provider from proceeding
+        // past `ensureReady`, so no Snap accounts get created during init.
+        () => new Promise(() => undefined),
+      );
+      return {
+        memStateKey: null,
+        persistedStateKey: null,
+        messengerClient: {
+          init: jest.fn().mockResolvedValue(undefined),
+          name: 'SnapAccountService',
+        },
+      };
+    }),
+}));
+
 jest.mock('webextension-polyfill', () => ({
   runtime: {
     id: 'fake-extension-id',
