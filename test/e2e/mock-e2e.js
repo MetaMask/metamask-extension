@@ -159,7 +159,7 @@ const privateHostMatchers = [
  * @param {(server: Mockttp) => Promise<MockedEndpoint[]>} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
- * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010 when ASSETS_UNIFIED_STATE_ENABLED=true, otherwise 1700.
+ * @param {string} options.ethConversionInUsd - The USD conversion rate for ETH. Defaults to 3010.
  * @param {object | undefined} [options.unifiedEvmAccountsApiBalances] - Overrides default Accounts API v5 balances (assets-unify-state). See UnifiedEvmAccountsApiBalances typedef in helpers.js.
  * @returns {Promise<SetupMockReturn>}
  */
@@ -168,9 +168,7 @@ async function setupMocking(
   testSpecificMock,
   {
     chainId,
-    ethConversionInUsd = process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
-      ? 3010
-      : 1700,
+    ethConversionInUsd = 3010,
     unifiedEvmAccountsApiBalances = {},
   } = {},
 ) {
@@ -1318,8 +1316,7 @@ async function setupMocking(
       return { statusCode: 200, json: results };
     });
 
-  // Tokens API: v2 supported networks — mocked globally so all tests work
-  // regardless of the ASSETS_UNIFIED_STATE_ENABLED flag.
+  // Tokens API: v2 supported networks — mocked globally so all tests work.
   await server
     .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
     .always()

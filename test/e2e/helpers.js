@@ -339,13 +339,12 @@ async function withFixtures(options, testSuite) {
       [WEBSOCKET_SERVICES.perps]: { mocks: perpsWebSocketSpecificMocks },
     });
 
-    // In unified path, sync the localhost native balance to what's actually on
-    // the node. This ensures the Accounts API v5 mock returns the correct
-    // balance even after smart-contract deployment has consumed gas.
+    // Sync the localhost native balance to what's actually on the node.
+    // This ensures the Accounts API v5 mock returns the correct balance
+    // even after smart-contract deployment has consumed gas.
     let effectiveUnifiedEvmAccountsApiBalances =
       unifiedEvmAccountsApiBalances ?? {};
     if (
-      process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true' &&
       localNodes[0] &&
       !effectiveUnifiedEvmAccountsApiBalances.localhostNativeEthHuman
     ) {

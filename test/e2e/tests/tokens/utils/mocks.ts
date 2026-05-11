@@ -63,11 +63,7 @@ export async function mockPriceApi(
   ethPrice?: number,
   chainId: `0x${string}` = '0x1',
 ) {
-  const resolvedEthPrice =
-    ethPrice ??
-    (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
-      ? MOCK_ETH_CONVERSION_RATE
-      : 1);
+  const resolvedEthPrice = ethPrice ?? MOCK_ETH_CONVERSION_RATE;
   const chainIdDecimal = Number.parseInt(chainId, 16);
   const nativeAssetId = `eip155:${chainIdDecimal}/slip44:60`;
 

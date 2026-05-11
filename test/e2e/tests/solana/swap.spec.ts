@@ -42,8 +42,7 @@ import {
   mockGetSignaturesForWalletOnly,
 } from './common-solana';
 
-const isUnifiedAssetsEnabled =
-  process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true';
+const isUnifiedAssetsEnabled = true;
 
 const SOLANA_CHAIN_ID = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_WALLET_ADDRESS = '4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer';

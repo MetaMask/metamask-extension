@@ -224,9 +224,7 @@ class FixtureBuilderV2 {
     ac.customAssets ??= {};
     ac.assetPreferences ??= {};
     merge(ac.assetsBalance, assetsBalance);
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true') {
-      merge(ac.assetsPrice, assetsPrice);
-    }
+    merge(ac.assetsPrice, assetsPrice);
     merge(ac.assetsInfo, assetsInfo);
     merge(ac.customAssets, customAssets);
     merge(ac.assetPreferences, assetPreferences);
@@ -1440,19 +1438,6 @@ class FixtureBuilderV2 {
   }
 
   build(): FixtureBuildResult {
-    if (process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true') {
-      const ac = (this.fixture.data as Record<string, unknown>)
-        .AssetsController as
-        | {
-            assetsPrice?: Record<string, unknown>;
-            assetsInfo?: Record<string, unknown>;
-          }
-        | undefined;
-      if (ac) {
-        ac.assetsPrice = {};
-        ac.assetsInfo = {};
-      }
-    }
     return {
       ...this.fixture,
       storageServiceData: this.storageServiceData,

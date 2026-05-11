@@ -21,37 +21,6 @@ const POLYGON_USDT_ADDRESS = '0xc2132d05d31c914a87c6611c10748aeb04b58e8f';
 
 const SPOT_PRICES_V3_URL =
   /^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u;
-const EXCHANGE_RATES_V1_URL =
-  'https://price.api.cx.metamask.io/v1/exchange-rates';
-
-/**
- * v1 exchange-rates for ETH/USD, aligned with {@link ETH_CONVERSION_RATE_USD}.
- *
- * @param mockServer - Mockttp instance.
- */
-async function mockEthExchangeRates(mockServer: Mockttp) {
-  return await mockServer
-    .forGet(EXCHANGE_RATES_V1_URL)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        eth: {
-          name: 'Ether',
-          ticker: 'eth',
-          value: 1 / ETH_CONVERSION_RATE_USD,
-          currencyType: 'crypto',
-        },
-        usd: {
-          name: 'US Dollar',
-          ticker: 'usd',
-          value: 1,
-          currencyType: 'fiat',
-        },
-      },
-    }));
-}
-
 /**
  * Spot payload for native ETH when unified assets are on — USD price is normalized
  * against conversionRate in selectors (`shared/lib/selectors/assets-migration.ts`).
@@ -64,40 +33,6 @@ const NATIVE_ETH_SPOT_ENTRY_USD = {
   dilutedMarketCap: 120000000,
   pricePercentChange1d: 0,
 };
-
-/**
- * Legacy path (unified assets off): `getEvmExchangeRates` multiplies
- * `currencyRates.conversionRate` × TokenRates `marketData[native].price`.
- * Fiat conversion already lives in CurrencyController (~1700 from exchange-rates),
- * so spot native `price` must be 1 — otherwise fiat shows as ~rate² (e.g. 1700×1700).
- * Same pattern as `show-native-as-main-balance.spec.ts` mockPriceApi.
- */
-const NATIVE_ETH_SPOT_ENTRY_LEGACY = {
-  ...NATIVE_ETH_SPOT_ENTRY_USD,
-  price: 1,
-};
-
-/**
- * When unified assets state is off: mock v3 spot-prices + v1 exchange-rates only.
- *
- * @param mockServer - Mockttp instance.
- */
-async function mockNonUnifiedStateSpotAndExchangeRates(mockServer: Mockttp) {
-  const spotPricesMock = await mockServer
-    .forGet(SPOT_PRICES_V3_URL)
-    .always()
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: {
-        'eip155:1/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
-        'eip155:59144/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
-        'eip155:8453/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
-        'eip155:42161/slip44:60': NATIVE_ETH_SPOT_ENTRY_LEGACY,
-      },
-    }));
-  const exchangeRatesMock = await mockEthExchangeRates(mockServer);
-  return [spotPricesMock, exchangeRatesMock];
-}
 
 /**
  * Shared HTTP mocks for all import-token tests (both unified and legacy price paths).
@@ -119,12 +54,6 @@ async function importTokensTestMock(mockServer: Mockttp) {
     ...(await mockTokens(mockServer)),
     ...(await mockPolygonBridgeApi(mockServer)),
   ];
-
-  if (process.env.ASSETS_UNIFIED_STATE_ENABLED !== 'true') {
-    const priceMocks =
-      await mockNonUnifiedStateSpotAndExchangeRates(mockServer);
-    return [...priceMocks, ...sharedMocks];
-  }
 
   return [
     await mockPriceFetch(mockServer),
