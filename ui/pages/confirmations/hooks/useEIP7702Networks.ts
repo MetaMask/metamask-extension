@@ -7,8 +7,8 @@ import { useSelector } from 'react-redux';
 import { KEYRING_TYPES_SUPPORTING_7702 } from '../../../../shared/constants/keyring';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
+import type { AccountsState } from '../../../../shared/lib/selectors/accounts';
 import {
-  AccountsState,
   getInternalAccountByAddress,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../selectors';

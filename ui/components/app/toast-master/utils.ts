@@ -1,9 +1,5 @@
-import {
-  SET_SHOW_CLAIM_SUBMIT_TOAST,
-  SET_SHOW_INFURA_SWITCH_TOAST,
-} from '../../../store/actionConstants';
+import { SET_SHOW_INFURA_SWITCH_TOAST } from '../../../store/actionConstants';
 import { submitRequestToBackground } from '../../../store/background-connection';
-import { ClaimSubmitToastType } from '../../../../shared/constants/app-state';
 
 /**
  * Returns true if the privacy policy toast was shown either never, or less than a day ago.
@@ -51,15 +47,6 @@ export function submitRequestToBackgroundAndCatch(
   submitRequestToBackground(method, args)?.catch((error) => {
     console.error('Error caught in submitRequestToBackground', error);
   });
-}
-
-export function setShowClaimSubmitToast(
-  value: ClaimSubmitToastType | string | null,
-) {
-  return {
-    type: SET_SHOW_CLAIM_SUBMIT_TOAST,
-    payload: value,
-  };
 }
 
 export function setShowInfuraSwitchToast(value: boolean) {

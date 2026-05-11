@@ -7,7 +7,7 @@ import {
 } from '../../../../../shared/lib/selectors';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { isSendBundleSupported } from '../../../../store/actions';
-import { isHardwareWallet } from '../../../../selectors';
+import { isHardwareWallet } from '../../../../../shared/lib/selectors/keyring';
 import { useConfirmContext } from '../../context/confirm';
 
 export function useGaslessSupportedSmartTransactions(): {

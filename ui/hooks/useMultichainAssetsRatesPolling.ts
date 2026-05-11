@@ -3,10 +3,8 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
-import {
-  getSelectedInternalAccount,
-  getUseCurrencyRateCheck,
-} from '../selectors';
+import { getUseCurrencyRateCheck } from '../selectors';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
   multichainAssetsRatesStartPolling,
   multichainAssetsRatesStopPollingByPollingToken,

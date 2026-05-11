@@ -7,10 +7,10 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
-  getPreferences,
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
 import * as multichainSelectors from '../../../../selectors/multichain';
@@ -29,6 +29,7 @@ jest.mock('../../../../selectors/multichain', () => ({
   ...jest.requireActual('../../../../selectors/multichain'),
   getMultichainIsTestnet: jest.fn(),
 }));
+jest.mock('../../../../../shared/lib/selectors/preferences');
 
 describe('AccountGroupBalance', () => {
   const createMockBalance = (): AccountGroupBalanceType => ({
@@ -52,9 +53,10 @@ describe('AccountGroupBalance', () => {
       .mocked(selectAnyEnabledNetworksAreAvailable)
       .mockReturnValue(anyEnabledNetworksAreAvailable);
 
-    const mockGetPreferences = jest
-      .mocked(getPreferences)
-      .mockReturnValue({ privacyMode: false, showNativeTokenAsMainBalance });
+    const mockGetPreferences = jest.mocked(getPreferences).mockReturnValue({
+      privacyMode: false,
+      showNativeTokenAsMainBalance,
+    } as ReturnType<typeof getPreferences>);
 
     const mockGetEnabledNetworksByNamespace = jest
       .mocked(getEnabledNetworksByNamespace)
@@ -212,7 +214,7 @@ describe('AccountGroupBalance', () => {
     jest.mocked(getPreferences).mockReturnValue({
       privacyMode: true,
       showNativeTokenAsMainBalance: false,
-    });
+    } as ReturnType<typeof getPreferences>);
     const { getByText } = renderComponent();
     // SensitiveText shows bullet pattern when isHidden (privacyMode) is true
     expect(getByText('••••••')).toBeInTheDocument();
