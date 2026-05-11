@@ -8,7 +8,12 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { Driver } from '../../webdriver/driver';
-import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_PATH,
+  DEFAULT_FIXTURE_ACCOUNT_ID,
+  HARDWARE_WALLET_ACCOUNT_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { mockSnapSimpleKeyringAndSite } from '../account/snap-keyring-site-mocks';
 import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
 
@@ -67,9 +72,25 @@ describe('Multichain Accounts - Multichain accounts list page', function (this: 
           .withLedgerAccount()
           .withShowNativeTokenAsMainBalanceDisabled()
           .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withAssetsController(
+            {
+              assetsBalance: {
+                [DEFAULT_FIXTURE_ACCOUNT_ID]: {
+                  'eip155:1337/slip44:1': {
+                    amount: '0',
+                  },
+                },
+                [HARDWARE_WALLET_ACCOUNT_ID]: {
+                  'eip155:1337/slip44:1': {
+                    amount: '0',
+                  },
+                },
+              },
+            },
+            { overwrite: true },
+          )
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockEthMainnetAndMusd,
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, {
