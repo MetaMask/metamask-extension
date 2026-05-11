@@ -1,9 +1,17 @@
-import { Messenger } from '@metamask/messenger';
-import { KeyringControllerPersistAllKeyringsAction } from '@metamask/keyring-controller';
-import { AccountsControllerUpdateAccountsAction } from '@metamask/accounts-controller';
-import { SnapKeyringBuilderAllowActions } from '../../../lib/snap-keyring/types';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
+import { MessengerActions } from '@metamask/messenger';
 import { RootMessenger } from '../../../lib/messenger';
+import {
+  getSnapKeyringBuilderInitMessenger,
+  getSnapKeyringBuilderMessenger,
+} from './snap-keyring-builder-messenger';
+
+export type SnapKeyringBuilderMessenger = ReturnType<
+  typeof getSnapKeyringBuilderMessenger
+>;
+
+export type SnapKeyringBuilderInitMessenger = ReturnType<
+  typeof getSnapKeyringBuilderInitMessenger
+>;
 
 export type SnapKeyringBuilderV2Messenger = ReturnType<
   typeof getSnapKeyringBuilderV2Messenger
@@ -17,48 +25,15 @@ export type SnapKeyringBuilderV2Messenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getSnapKeyringBuilderV2Messenger(
-  messenger: RootMessenger<SnapKeyringBuilderAllowActions, never>,
+  messenger: RootMessenger<
+    MessengerActions<SnapKeyringBuilderMessenger>,
+    never
+  >,
 ) {
-  const keyringMessenger = new Messenger<
-    'SnapKeyring',
-    SnapKeyringBuilderAllowActions,
-    never,
-    typeof messenger
-  >({
-    namespace: 'SnapKeyring',
-    parent: messenger,
-  });
-  messenger.delegate({
-    messenger: keyringMessenger,
-    actions: [
-      'ApprovalController:addRequest',
-      'ApprovalController:acceptRequest',
-      'ApprovalController:rejectRequest',
-      'ApprovalController:startFlow',
-      'ApprovalController:endFlow',
-      'ApprovalController:showSuccess',
-      'ApprovalController:showError',
-      'PhishingController:testOrigin',
-      'PhishingController:maybeUpdateState',
-      'KeyringController:getAccounts',
-      'AccountsController:setSelectedAccount',
-      'AccountsController:getAccountByAddress',
-      'AccountsController:setAccountName',
-      'AccountsController:listMultichainAccounts',
-      'SnapController:handleRequest',
-      'SnapController:getSnap',
-      'SnapController:isMinimumPlatformVersion',
-      'PreferencesController:getState',
-      'RemoteFeatureFlagController:getState',
-    ],
-  });
-  return keyringMessenger;
+  // We re-use the same messenger to preserve the same namespace and avoid duplicating the events
+  // and actions of the Snap keyring v2 for ALL consumers.
+  return getSnapKeyringBuilderMessenger(messenger);
 }
-
-type AllowedInitializationActions =
-  | AccountsControllerUpdateAccountsAction
-  | KeyringControllerPersistAllKeyringsAction
-  | MetaMetricsControllerTrackEventAction;
 
 export type SnapKeyringBuilderV2InitMessenger = ReturnType<
   typeof getSnapKeyringBuilderV2InitMessenger
@@ -72,24 +47,11 @@ export type SnapKeyringBuilderV2InitMessenger = ReturnType<
  * messenger.
  */
 export function getSnapKeyringBuilderV2InitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<
+    MessengerActions<SnapKeyringBuilderInitMessenger>,
+    never
+  >,
 ) {
-  const keyringInitMessenger = new Messenger<
-    'SnapKeyringV2Init',
-    AllowedInitializationActions,
-    never,
-    typeof messenger
-  >({
-    namespace: 'SnapKeyringV2Init',
-    parent: messenger,
-  });
-  messenger.delegate({
-    messenger: keyringInitMessenger,
-    actions: [
-      'AccountsController:updateAccounts',
-      'KeyringController:persistAllKeyrings',
-      'MetaMetricsController:trackEvent',
-    ],
-  });
-  return keyringInitMessenger;
+  // Same here, v2 Snap keyrings are built the same way as v1, so we can re-use the same messenger.
+  return getSnapKeyringBuilderInitMessenger(messenger);
 }
