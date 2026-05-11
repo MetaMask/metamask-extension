@@ -2,6 +2,7 @@ import type { Driver } from '../../webdriver/driver';
 import { PerpsActivityPage } from '../pages/perps/perps-activity-page';
 import { PerpsHomePage } from '../pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../pages/perps/perps-market-detail-page';
+import { PerpsMarketListPage } from '../pages/perps/perps-market-list-page';
 
 /**
  * After a simulated position change in E2E, pushes a `userFills` snapshot via
@@ -27,6 +28,8 @@ export async function assertPerpsActivityShowsCloseFill({
 
   const marketDetailPage = new PerpsMarketDetailPage(driver);
   await marketDetailPage.clickBack();
+  const marketListPage = new PerpsMarketListPage(driver);
+  await marketListPage.clickBack();
 
   const perpsHomePage = new PerpsHomePage(driver);
   await perpsHomePage.navigateToPerpsHome();
