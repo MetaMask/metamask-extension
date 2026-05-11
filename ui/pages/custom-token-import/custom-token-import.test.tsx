@@ -76,12 +76,10 @@ describe('CustomTokenImportPage', () => {
   it('renders the form scaffolding without crashing', () => {
     renderPage();
 
-    expect(
-      screen.getByTestId('custom-token-import-page'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('custom-token-import-warning'),
-    ).toHaveTextContent(messages.importTokenWarning.message);
+    expect(screen.getByTestId('custom-token-import-page')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-token-import-warning')).toHaveTextContent(
+      messages.importTokenWarning.message,
+    );
     expect(
       screen.getByTestId('custom-token-import-network-picker'),
     ).toHaveTextContent('Ethereum Mainnet');
@@ -124,9 +122,7 @@ describe('CustomTokenImportPage', () => {
   it('opens the network manager modal when the network picker is clicked', () => {
     const { store } = renderPage();
 
-    fireEvent.click(
-      screen.getByTestId('custom-token-import-network-picker'),
-    );
+    fireEvent.click(screen.getByTestId('custom-token-import-network-picker'));
 
     // The network picker reuses the existing global modal; the manage tokens
     // page uses the same one so both flows stay in sync.

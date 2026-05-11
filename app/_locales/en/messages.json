@@ -2852,11 +2852,11 @@
   "enterSymbol": {
     "message": "Enter symbol"
   },
-  "enterTokenNameOrAddress": {
-    "message": "Enter token name or paste address"
-  },
   "enterTokenAddress": {
     "message": "Enter token address"
+  },
+  "enterTokenNameOrAddress": {
+    "message": "Enter token name or paste address"
   },
   "enterTokenNameOrAddressManageTokens": {
     "message": "Enter token name or address"

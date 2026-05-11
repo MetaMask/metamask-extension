@@ -2852,6 +2852,9 @@
   "enterSymbol": {
     "message": "Enter symbol"
   },
+  "enterTokenAddress": {
+    "message": "Enter token address"
+  },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
   },

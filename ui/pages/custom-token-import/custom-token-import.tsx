@@ -8,11 +8,25 @@ import React, {
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
   BoxAlignItems,
-  Box as DSBox,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  Button,
+  ButtonBase,
+  ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
-  IconName as DSIconName,
+  ButtonSize,
+  FontWeight,
+  IconName,
+  Input,
+  Text,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { type Hex } from '@metamask/utils';
 import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
@@ -20,32 +34,6 @@ import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { addHexPrefix } from '../../../app/scripts/lib/util';
 
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-  BorderStyle,
-  Display,
-  FlexDirection,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../helpers/constants/design-system';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-  Box,
-  ButtonBase,
-  ButtonBaseSize,
-  ButtonPrimary,
-  ButtonPrimarySize,
-  FormTextField,
-  FormTextFieldSize,
-  IconName,
-  Text,
-  TextFieldType,
-} from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { Header } from '../../components/multichain/pages/page';
 import { ScrollContainer } from '../../contexts/scroll-container';
@@ -73,6 +61,45 @@ const ERC721 = 'ERC721';
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 const MIN_DECIMAL_VALUE = 0;
 const MAX_DECIMAL_VALUE = 36;
+
+type LabeledFieldProps = {
+  id: string;
+  label: string;
+  error?: string | null;
+  children: React.ReactNode;
+};
+
+/**
+ * Wraps a DS `Input` with a label + optional error row to mirror the
+ * affordances of the legacy `FormTextField`, which DS doesn't currently
+ * provide a direct replacement for.
+ * @param options0
+ * @param options0.id
+ * @param options0.label
+ * @param options0.error
+ * @param options0.children
+ */
+const LabeledField = ({ id, label, error, children }: LabeledFieldProps) => (
+  <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+    <Text
+      variant={TextVariant.BodySm}
+      fontWeight={FontWeight.Medium}
+      asChild
+    >
+      <label htmlFor={id}>{label}</label>
+    </Text>
+    {children}
+    {error ? (
+      <Text
+        variant={TextVariant.BodySm}
+        color={TextColor.ErrorDefault}
+        role="alert"
+      >
+        {error}
+      </Text>
+    ) : null}
+  </Box>
+);
 
 /**
  * Full-screen "Add a custom token" page.
@@ -204,10 +231,7 @@ export const CustomTokenImportPage = () => {
       // Best-effort auto-fill of symbol/decimals from on-chain metadata. The
       // user can still edit either value before submitting.
       try {
-        const info = await infoGetter.current(
-          standardAddress,
-          undefined,
-        );
+        const info = await infoGetter.current(standardAddress, undefined);
         const nextSymbol = info?.symbol ?? '';
         const nextDecimals =
           typeof info?.decimals === 'number' ? info.decimals : '';
@@ -329,36 +353,30 @@ export const CustomTokenImportPage = () => {
   ]);
 
   const startAccessory = (
-    <DSBox alignItems={BoxAlignItems.Center} gap={1}>
-      <ButtonIcon
-        iconName={DSIconName.ArrowLeft}
-        ariaLabel={t('back')}
-        size={ButtonIconSize.Sm}
-        onClick={handleClose}
-        data-testid="custom-token-import-back-button"
-      />
-    </DSBox>
+    <ButtonIcon
+      iconName={IconName.ArrowLeft}
+      ariaLabel={t('back')}
+      size={ButtonIconSize.Sm}
+      onClick={handleClose}
+      data-testid="custom-token-import-back-button"
+    />
   );
 
   const endAccessory = (
-    <DSBox alignItems={BoxAlignItems.Center} gap={1}>
-      <ButtonIcon
-        iconName={DSIconName.Close}
-        ariaLabel={t('close')}
-        size={ButtonIconSize.Sm}
-        onClick={handleHardClose}
-        data-testid="custom-token-import-close-button"
-      />
-    </DSBox>
+    <ButtonIcon
+      iconName={IconName.Close}
+      ariaLabel={t('close')}
+      size={ButtonIconSize.Sm}
+      onClick={handleHardClose}
+      data-testid="custom-token-import-close-button"
+    />
   );
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      width={BlockSize.Full}
-      style={{ height: '100%', minHeight: 0 }}
+      flexDirection={BoxFlexDirection.Column}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      className="w-full h-full min-h-0"
       data-testid="custom-token-import-page"
     >
       <Header startAccessory={startAccessory} endAccessory={endAccessory}>
@@ -374,10 +392,9 @@ export const CustomTokenImportPage = () => {
         }}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           gap={4}
-          paddingInline={4}
+          paddingHorizontal={4}
           paddingTop={3}
           paddingBottom={4}
         >
@@ -385,123 +402,106 @@ export const CustomTokenImportPage = () => {
             severity={BannerAlertSeverity.Warning}
             data-testid="custom-token-import-warning"
           >
-            <Text variant={TextVariant.bodySm}>{t('importTokenWarning')}</Text>
+            <Text variant={TextVariant.BodySm}>{t('importTokenWarning')}</Text>
           </BannerAlert>
 
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={1}
-          >
-            <Text variant={TextVariant.bodySmMedium}>{t('network')}</Text>
+          <Box flexDirection={BoxFlexDirection.Column} gap={1}>
+            <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              {t('network')}
+            </Text>
             <ButtonBase
-              block
+              isFullWidth
               data-testid="custom-token-import-network-picker"
               size={ButtonBaseSize.Lg}
               endIconName={IconName.ArrowDown}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              color={TextColor.textDefault}
-              borderColor={BorderColor.borderMuted}
-              borderStyle={BorderStyle.solid}
-              borderWidth={1}
+              className="bg-default text-default border border-muted justify-between"
+              textProps={{ textAlign: TextAlign.Left, ellipsis: true }}
               onClick={handleOpenNetworkPicker}
-              ellipsis
-              textProps={{ textAlign: TextAlign.Left }}
             >
-              <Text
-                variant={TextVariant.bodyMd}
-                color={TextColor.textDefault}
-                ellipsis
-              >
-                {networkName}
-              </Text>
+              {networkName}
             </ButtonBase>
           </Box>
 
-          <FormTextField
+          <LabeledField
             id="custom-token-import-address"
             label={t('tokenContractAddress')}
-            size={FormTextFieldSize.Lg}
-            placeholder={t('enterTokenAddress')}
-            value={address}
-            error={Boolean(addressError)}
-            helpText={addressError ?? undefined}
-            inputProps={{
-              'data-testid': 'custom-token-import-address-input',
-            }}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              handleAddressChange(event.target.value)
-            }
-          />
+            error={addressError}
+          >
+            <Input
+              id="custom-token-import-address"
+              data-testid="custom-token-import-address-input"
+              placeholder={t('enterTokenAddress')}
+              value={address}
+              aria-invalid={Boolean(addressError)}
+              className="h-12 px-4"
+              onChange={(event) => handleAddressChange(event.target.value)}
+            />
+          </LabeledField>
 
           {warning ? (
             <BannerAlert
               severity={BannerAlertSeverity.Warning}
               data-testid="custom-token-import-mainnet-warning"
             >
-              <Text variant={TextVariant.bodySm}>{warning}</Text>
+              <Text variant={TextVariant.BodySm}>{warning}</Text>
             </BannerAlert>
           ) : null}
 
           {showSymbolAndDecimals ? (
             <>
-              <FormTextField
+              <LabeledField
                 id="custom-token-import-symbol"
                 label={t('tokenSymbol')}
-                size={FormTextFieldSize.Lg}
-                value={symbol}
-                error={Boolean(symbolError)}
-                helpText={symbolError ?? undefined}
-                inputProps={{
-                  'data-testid': 'custom-token-import-symbol-input',
-                }}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  handleSymbolChange(event.target.value)
-                }
-              />
-              <FormTextField
+                error={symbolError}
+              >
+                <Input
+                  id="custom-token-import-symbol"
+                  data-testid="custom-token-import-symbol-input"
+                  value={symbol}
+                  aria-invalid={Boolean(symbolError)}
+                  className="h-12 px-4"
+                  onChange={(event) => handleSymbolChange(event.target.value)}
+                />
+              </LabeledField>
+              <LabeledField
                 id="custom-token-import-decimal"
                 label={t('tokenDecimal')}
-                size={FormTextFieldSize.Lg}
-                type={TextFieldType.Number}
-                value={decimals === '' ? '' : String(decimals)}
-                error={Boolean(decimalsError)}
-                helpText={decimalsError ?? undefined}
-                inputProps={{
-                  'data-testid': 'custom-token-import-decimal-input',
-                }}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  handleDecimalsChange(event.target.value)
-                }
-              />
+                error={decimalsError}
+              >
+                <Input
+                  id="custom-token-import-decimal"
+                  data-testid="custom-token-import-decimal-input"
+                  type="number"
+                  value={decimals === '' ? '' : String(decimals)}
+                  aria-invalid={Boolean(decimalsError)}
+                  className="h-12 px-4"
+                  onChange={(event) => handleDecimalsChange(event.target.value)}
+                />
+              </LabeledField>
             </>
           ) : null}
         </Box>
       </ScrollContainer>
 
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        paddingInline={4}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        paddingHorizontal={4}
         paddingTop={3}
         paddingBottom={3}
-        style={{
-          bottom: 0,
-          position: 'sticky',
-          zIndex: 1,
-        }}
+        className="sticky bottom-0 z-10"
       >
-        <ButtonPrimary
-          block
-          size={ButtonPrimarySize.Lg}
+        <Button
+          isFullWidth
+          size={ButtonSize.Lg}
           data-testid="custom-token-import-submit-button"
-          disabled={!isValid || isSubmitting}
-          loading={isSubmitting}
+          isDisabled={!isValid || isSubmitting}
+          isLoading={isSubmitting}
           onClick={handleSubmit}
         >
           {t('addToken')}
-        </ButtonPrimary>
+        </Button>
       </Box>
     </Box>
   );
