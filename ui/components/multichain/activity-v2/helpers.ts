@@ -1,15 +1,25 @@
 import type { Transaction } from '@metamask/keyring-api';
+import { TransactionStatus as KeyringTransactionStatus } from '@metamask/keyring-api';
 import type { CaipChainId } from '@metamask/utils';
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import type {
   Token,
   TokenAmount,
   TransactionGroup,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
+import {
+  IN_PROGRESS_TRANSACTION_STATUSES,
+  NATIVE_TOKEN_ADDRESS,
+  SmartTransactionStatus,
+  TransactionGroupStatus,
+} from '../../../../shared/constants/transaction';
 import { resolveTransactionType as resolveMusdClaimType } from '../../app/transaction-list-item/helpers';
 import { formatUnits } from '../../../../shared/lib/unit';
+import { getStatusKey } from '../../../helpers/utils/transactions.util';
 
 export type AssetScope =
   | { kind: 'native'; caipAssetType?: string }
@@ -90,10 +100,78 @@ export function filterLocalNotInApi(
   });
 }
 
-type MergedItem =
+export type MergedItem =
   | { type: 'local'; group: TransactionGroup; time: number; nonce: number }
   | { type: 'completed'; tx: TransactionViewModel; time: number; nonce: number }
   | { type: 'non-evm'; transaction: Transaction; time: number; nonce: number };
+
+const isTerminalEvmActivityStatus = (status: string): boolean => {
+  return (
+    status === TransactionStatus.confirmed ||
+    status === TransactionStatus.failed ||
+    status === TransactionStatus.dropped ||
+    status === TransactionStatus.rejected ||
+    status === TransactionStatus.cancelled ||
+    status === TransactionGroupStatus.cancelled
+  );
+}
+
+const isInProgressTransactionControllerStatus = (status: string): boolean => {
+  return IN_PROGRESS_TRANSACTION_STATUSES.some((s) => s === status);
+}
+
+const isLocalTransactionGroupPending = (group: TransactionGroup): boolean => {
+  const { primaryTransaction, initialTransaction } = group;
+
+  if (initialTransaction?.isSmartTransaction) {
+    const status = initialTransaction.status as string | undefined;
+    return status === SmartTransactionStatus.pending;
+  }
+
+  const effectiveStatus = getStatusKey(primaryTransaction) as string;
+
+  if (isTerminalEvmActivityStatus(effectiveStatus)) {
+    return false;
+  }
+
+  return isInProgressTransactionControllerStatus(effectiveStatus);
+}
+
+const isCompletedTransactionPending = (tx: TransactionViewModel): boolean => {
+  const effectiveStatus = getStatusKey(tx);
+
+  if (isTerminalEvmActivityStatus(effectiveStatus)) {
+    return false;
+  }
+
+  return isInProgressTransactionControllerStatus(effectiveStatus);
+}
+
+const isNonEvmTransactionPending = (transaction: Transaction): boolean => {
+  const { status } = transaction;
+  return (
+    status === KeyringTransactionStatus.Unconfirmed ||
+    status === KeyringTransactionStatus.Submitted
+  );
+}
+
+/**
+ * Whether a merged activity row belongs in the Pending section.
+ * Aligns local/API flows with `getStatusKey` (receipt-aware failure),
+ * smart-transaction pending, and Keyring Unconfirmed/Submitted for non-EVM.
+ *
+ * @param item - A merged activity item.
+ * @returns True if the transaction should appear under the Pending header.
+ */
+export const isActivityPendingMergedItem = (item: MergedItem): boolean => {
+  if (item.type === 'local') {
+    return isLocalTransactionGroupPending(item.group);
+  }
+  if (item.type === 'completed') {
+    return isCompletedTransactionPending(item.tx);
+  }
+  return isNonEvmTransactionPending(item.transaction);
+}
 
 export function mergeAllTransactionsByTime(
   localTransactionGroups: TransactionGroup[],

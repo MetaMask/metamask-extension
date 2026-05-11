@@ -1,8 +1,13 @@
 import {
+  TransactionStatus,
   TransactionType,
   type TransactionMeta,
 } from '@metamask/transaction-controller';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
+import { TransactionStatus as KeyringTransactionStatus } from '@metamask/keyring-api';
+import {
+  NATIVE_TOKEN_ADDRESS,
+  SmartTransactionStatus,
+} from '../../../../shared/constants/transaction';
 import {
   MERKL_DISTRIBUTOR_ADDRESS,
   MERKL_CLAIM_METHOD_ID,
@@ -21,6 +26,7 @@ import {
   matchesApiTransaction,
   matchesLocalTransaction,
   matchesNonEvmTransaction,
+  isActivityPendingMergedItem,
 } from './helpers';
 
 const ethToken: Token = {
@@ -103,7 +109,11 @@ describe('calculateFiatFromMarketRates', () => {
 });
 
 function makeLocalGroup(
-  overrides: Partial<TransactionMeta> & { time: number; nonce?: string },
+  overrides: Partial<TransactionMeta> & {
+    time: number;
+    nonce?: string;
+    isSmartTransaction?: boolean;
+  },
 ): TransactionGroup {
   const { time, nonce = '0x0', ...rest } = overrides;
   const tx = {
@@ -135,6 +145,138 @@ function makeApiTx(
     ...rest,
   } as TransactionViewModel;
 }
+
+describe('isActivityPendingMergedItem', () => {
+  it('returns true for a local transaction in IN_PROGRESS_TRANSACTION_STATUSES', () => {
+    const merged = mergeAllTransactionsByTime(
+      [
+        makeLocalGroup({
+          time: 1000,
+          status: TransactionStatus.submitted,
+        }),
+      ],
+      [],
+    );
+    expect(isActivityPendingMergedItem(merged[0])).toBe(true);
+  });
+
+  it('returns false for a local confirmed transaction', () => {
+    const merged = mergeAllTransactionsByTime(
+      [
+        makeLocalGroup({
+          time: 1000,
+          status: TransactionStatus.confirmed,
+        }),
+      ],
+      [],
+    );
+    expect(isActivityPendingMergedItem(merged[0])).toBe(false);
+  });
+
+  it('returns false when getStatusKey resolves receipt failure on a local tx', () => {
+    const merged = mergeAllTransactionsByTime(
+      [
+        makeLocalGroup({
+          time: 1000,
+          status: TransactionStatus.submitted,
+          txReceipt: { status: '0x0' },
+        }),
+      ],
+      [],
+    );
+    expect(isActivityPendingMergedItem(merged[0])).toBe(false);
+  });
+
+  it('returns true for smart transactions while status is pending', () => {
+    const merged = mergeAllTransactionsByTime(
+      [
+        makeLocalGroup({
+          time: 1000,
+          isSmartTransaction: true,
+          status: SmartTransactionStatus.pending as unknown as TransactionMeta['status'],
+        }),
+      ],
+      [],
+    );
+    expect(isActivityPendingMergedItem(merged[0])).toBe(true);
+  });
+
+  it('returns false for smart transactions after success', () => {
+    const merged = mergeAllTransactionsByTime(
+      [
+        makeLocalGroup({
+          time: 1000,
+          isSmartTransaction: true,
+          status: SmartTransactionStatus.success as unknown as TransactionMeta['status'],
+        }),
+      ],
+      [],
+    );
+    expect(isActivityPendingMergedItem(merged[0])).toBe(false);
+  });
+
+  it('returns true for API transactions still in progress', () => {
+    const merged = mergeAllTransactionsByTime(
+      [],
+      [makeApiTx({ time: 1000, status: TransactionStatus.submitted })],
+    );
+    expect(isActivityPendingMergedItem(merged[0])).toBe(true);
+  });
+
+  it('returns false for confirmed API transactions', () => {
+    const merged = mergeAllTransactionsByTime(
+      [],
+      [makeApiTx({ time: 1000, status: TransactionStatus.confirmed })],
+    );
+    expect(isActivityPendingMergedItem(merged[0])).toBe(false);
+  });
+
+  it('returns true for non-EVM Unconfirmed and Submitted', () => {
+    const unconfirmed = mergeAllTransactionsByTime(
+      [],
+      [],
+      [
+        {
+          id: 'ne1',
+          chain: 'solana:mainnet',
+          status: KeyringTransactionStatus.Unconfirmed,
+          timestamp: 1,
+        } as unknown as import('@metamask/keyring-api').Transaction,
+      ],
+    );
+    expect(isActivityPendingMergedItem(unconfirmed[0])).toBe(true);
+
+    const submitted = mergeAllTransactionsByTime(
+      [],
+      [],
+      [
+        {
+          id: 'ne2',
+          chain: 'solana:mainnet',
+          status: KeyringTransactionStatus.Submitted,
+          timestamp: 1,
+        } as unknown as import('@metamask/keyring-api').Transaction,
+      ],
+    );
+    expect(isActivityPendingMergedItem(submitted[0])).toBe(true);
+  });
+
+  it('returns false for non-EVM Confirmed', () => {
+    const merged = mergeAllTransactionsByTime(
+      [],
+      [],
+      [
+        {
+          id: 'ne3',
+          chain: 'solana:mainnet',
+          status: KeyringTransactionStatus.Confirmed,
+          timestamp: 1,
+        } as unknown as import('@metamask/keyring-api').Transaction,
+      ],
+    );
+    expect(isActivityPendingMergedItem(merged[0])).toBe(false);
+  });
+});
 
 describe('mergeAllTransactionsByTime', () => {
   it('returns empty array when no transactions', () => {
