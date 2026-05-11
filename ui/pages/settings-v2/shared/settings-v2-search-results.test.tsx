@@ -4,19 +4,23 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import type { SettingsV2SearchResult } from '../useSettingsV2Search';
 import { SettingsV2SearchResults } from './settings-v2-search-results';
+
+jest.mock('../../../../shared/lib/passkey', () => ({
+  getPasskeyAuthMethodKey: () => 'passkeyAuthMethodBiometrics',
+}));
 
 const createMockStore = () => configureMockStore([thunk])(mockState);
 
 const mockItems: SettingsV2SearchResult[] = [
   {
     settingId: 'local-currency',
-    tabLabelKey: 'assets',
+    tabLabelKey: 'preferencesAndDisplay',
     titleKey: 'localCurrency',
-    tabRoute: '/settings-v2/assets',
-    iconName: 'Coin',
+    tabRoute: '/settings-v2/preferences-and-display',
+    iconName: 'Customize',
   },
   {
     settingId: 'theme',
@@ -36,12 +40,36 @@ describe('SettingsV2SearchResults', () => {
 
     expect(
       screen.getByText(
-        `${messages.assets.message} > ${messages.localCurrency.message}`,
+        `${messages.preferencesAndDisplay.message} > ${messages.localCurrency.message}`,
       ),
     ).toBeInTheDocument();
     expect(
       screen.getByText(
         `${messages.preferencesAndDisplay.message} > ${messages.theme.message}`,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('resolves passkey title keys with auth-method substitution', () => {
+    const passkeyItem: SettingsV2SearchResult = {
+      settingId: 'passkey',
+      tabLabelKey: 'securityAndPassword',
+      titleKey: 'unlockWithPasskey',
+      tabRoute: '/settings-v2/security-and-password',
+      iconName: 'SecurityKey',
+    };
+
+    renderWithProvider(
+      <SettingsV2SearchResults
+        results={[passkeyItem]}
+        onClickResult={jest.fn()}
+      />,
+      createMockStore(),
+    );
+
+    expect(
+      screen.getByText(
+        `${messages.securityAndPassword.message} > ${tEn('unlockWithPasskey', [tEn('passkeyAuthMethodBiometrics')])}`,
       ),
     ).toBeInTheDocument();
   });

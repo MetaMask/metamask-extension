@@ -259,16 +259,38 @@ export class LedgerOffscreenHandler {
     const selector = getSelectorWithLegacyFallback(tx);
     const isNftTx = Boolean(selector && NFT_ONLY_SELECTORS.has(selector));
     const isERC20Tx = Boolean(selector && ERC20_WRITE_SELECTORS.has(selector));
-    const result = await app.clearSignTransaction(hdPath, tx, {
-      externalPlugins: true,
-      erc20: isERC20Tx,
-      nft: isNftTx,
-    });
-    return {
-      v: result.v,
-      r: result.r,
-      s: result.s,
-    };
+
+    try {
+      const result = await app.clearSignTransaction(hdPath, tx, {
+        externalPlugins: true,
+        erc20: isERC20Tx,
+        nft: isNftTx,
+      });
+      return {
+        v: result.v,
+        r: result.r,
+        s: result.s,
+      };
+    } catch (error) {
+      if (this.#isUserRejectedError(error)) {
+        throw error;
+      }
+
+      // Clear-signing resolution failed (no Ledger plugin for this contract /
+      // chain, external plugin lookup error, etc). Retry with resolution=null
+      // so the device performs a raw "blind sign" — which works when the user
+      // has blind signing enabled on device. See GH 41602.
+      console.warn(
+        'Ledger clearSignTransaction failed; falling back to blind signTransaction',
+        error,
+      );
+      const result = await app.signTransaction(hdPath, tx, null);
+      return {
+        v: result.v,
+        r: result.r,
+        s: result.s,
+      };
+    }
   }
 
   /**
@@ -365,6 +387,22 @@ export class LedgerOffscreenHandler {
     return (
       error instanceof Error &&
       (error as { statusText?: string }).statusText === 'INS_NOT_SUPPORTED'
+    );
+  }
+
+  // Ledger status 0x6985 (CONDITIONS_OF_USE_NOT_SATISFIED) is the device
+  // rejection path. Preserving this prevents clear-sign failures from
+  // silently re-prompting the user with a blind-sign retry.
+  #isUserRejectedError(error: unknown): boolean {
+    if (!error || typeof error !== 'object') {
+      return false;
+    }
+    const { statusCode, statusText } = error as {
+      statusCode?: unknown;
+      statusText?: unknown;
+    };
+    return (
+      statusCode === 0x6985 || statusText === 'CONDITIONS_OF_USE_NOT_SATISFIED'
     );
   }
 

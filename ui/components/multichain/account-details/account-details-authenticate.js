@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   BoxFlexDirection,
   Button,
@@ -9,12 +11,10 @@ import {
 } from '@metamask/design-system-react';
 import {
   FontWeight,
-  Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { exportAccount, hideWarning } from '../../../store/actions';
-import { BannerAlert } from '../../component-library';
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 
 export const AccountDetailsAuthenticate = ({
@@ -72,7 +72,7 @@ export const AccountDetailsAuthenticate = ({
       />
       <BannerAlert
         marginTop={6}
-        severity={Severity.Danger}
+        severity={BannerAlertSeverity.Danger}
         description={t('privateKeyWarning')}
       />
       <Box flexDirection={BoxFlexDirection.Row} marginTop={6} gap={2}>

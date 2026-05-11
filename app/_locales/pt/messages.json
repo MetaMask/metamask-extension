@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Adicionar uma rede personalizada"
   },
-  "addAHardwareWallet": {
-    "message": "Adicionar uma carteira de hardware"
-  },
   "addANetwork": {
     "message": "Adicionar uma rede"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Adicionar um URL"
+  },
+  "addAWallet": {
+    "message": "Adicionar uma carteira"
   },
   "addAccount": {
     "message": "Adicionar conta"
@@ -269,9 +269,6 @@
   },
   "addHardwareWalletLabel": {
     "message": "Carteira de hardware"
-  },
-  "addIPFSGateway": {
-    "message": "Adicione seu gateway IPFS preferencial"
   },
   "addMemo": {
     "message": "Adicionar observação"
@@ -1089,6 +1086,12 @@
   "bridgeLowestCost": {
     "message": "Custo mais baixo"
   },
+  "bridgeMalicious": {
+    "message": "Malicioso"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Token malicioso"
+  },
   "bridgeMarketClosedAction": {
     "message": "Mercado fechado"
   },
@@ -1109,6 +1112,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Sem taxa da MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Sem informações de preço"
   },
   "bridgePoints": {
     "message": "Est. de pontos",
@@ -1205,6 +1211,102 @@
   "bridgeReceiveLoading": {
     "message": "Recebendo na cadeia de destino"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Airdrop (distribuição de tokens) suspeito"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Oferta concentrada"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Comportamento suspeito"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Número inflado de traders"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Volume falso"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Atividade intensa de bots"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Oferta não divulgada"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Taxa de compra elevada"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Taxa de venda elevada"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Taxa de transferência elevada"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Risco de armadilha (honeypot)"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Impostor"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Alega ser um ativo sensível"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Provável impostor"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Possível impostor"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Conteúdo impróprio"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Volume artificial"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Baixa liquidez bloqueada"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "O criador tem baixa reputação"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Conhecido como malicioso"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Metadados suspeitos"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Possível manipulação de preços"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Risco de golpe (rug pull)"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Criador sancionado"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Assemelha-se a um contrato malicioso"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Atividade de bots no lançamento"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Texto de spam"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Código suspeito"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Backdoor de token"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Token não vendável"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Preço instável"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Negociação simulada"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Selecione uma conta de destino"
   },
@@ -1260,6 +1362,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Realizando swap de $1 para $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Suspeito"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Token suspeito"
   },
   "bridgeTo": {
     "message": "Fazer ponte para"
@@ -1434,9 +1542,6 @@
     "message": "Quando você utiliza nossas configurações e definições padrão, utilizamos a Infura como nosso provedor padrão de chamada de procedimento remoto (RPC) para oferecer o acesso mais confiável e privado possível aos dados Ethereum. Em alguns casos, podemos utilizar outros provedores de RPC para proporcionar a melhor experiência possível aos nossos usuários. Você pode escolher sua própria RPC, mas lembre-se de que qualquer uma delas receberá seu endereço IP e sua carteira Ethereum para realizar transações. Para saber mais sobre como a Infura trata os dados de contas EVM, leia a nossa $1 e, para contas Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "clique aqui"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Você precisa usar a MetaMask no Google Chrome para se conectar com a sua carteira de hardware."
   },
@@ -1448,9 +1553,6 @@
   },
   "clearActivity": {
     "message": "Limpar dados de atividades e nonce"
-  },
-  "clearActivityButton": {
-    "message": "Limpar dados da aba de atividades"
   },
   "clearActivityDescription": {
     "message": "Redefine o nonce da conta e apaga os dados da guia de atividades da sua carteira. Somente a conta e a rede atuais serão afetadas. Seus saldos e transações recebidas não serão alterados."
@@ -1732,6 +1834,9 @@
   },
   "connect": {
     "message": "Conectar"
+  },
+  "connectAHardwareWallet": {
+    "message": "Conectar uma carteira de hardware"
   },
   "connectAccounts": {
     "message": "Conectar contas"
@@ -2106,12 +2211,6 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Receba atualizações de produtos, dicas e novidades, inclusive por e-mail. Podemos usar suas interações para aprimorar o que compartilharmos."
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "OK"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Você desativou a coleta de dados para fins de marketing. Isso é aplicável apenas a este dispositivo. Se você usa a MetaMask em outros dispositivos, desative-a neles também."
-  },
   "dataUnavailable": {
     "message": "dados não disponíveis"
   },
@@ -2228,9 +2327,6 @@
   },
   "deepLink_thePerpsMarketDetailPage": {
     "message": "a página de mercado de perps"
-  },
-  "deepLink_thePerpsMarketListPage": {
-    "message": "a página da lista de mercado de perps"
   },
   "deepLink_thePerpsPage": {
     "message": "a página de perps"
@@ -2704,10 +2800,6 @@
     "message": "Código: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Detalhes do erro",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Erro ao obter uma lista segura da cadeia. Por favor, prossiga com cautela."
   },
@@ -3014,6 +3106,9 @@
   "gasUsed": {
     "message": "Gás usado"
   },
+  "gatorNoJustificationProvided": {
+    "message": "Nenhuma justificativa foi fornecida para a permissão"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "Anual",
     "description": "Time period for annual recurring permissions redemption"
@@ -3085,6 +3180,14 @@
   "gatorPermissionsStartDate": {
     "message": "Data de início",
     "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStatusExpired": {
+    "message": "Expirada",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Revogada",
+    "description": "Tag label for a gator permission that has been revoked"
   },
   "gatorPermissionsStreamRate": {
     "message": "Taxa de fluxo",
@@ -3365,6 +3468,9 @@
   "importAWallet": {
     "message": "Importar uma carteira"
   },
+  "importAWalletDescription": {
+    "message": "Usando uma frase semente de 12, 18 ou 24 palavras"
+  },
   "importAccountError": {
     "message": "Erro de importação de conta."
   },
@@ -3395,6 +3501,9 @@
   },
   "importAnAccount": {
     "message": "Importar uma conta"
+  },
+  "importAnAccountDescription": {
+    "message": "Por meio de uma chave privada"
   },
   "importNFT": {
     "message": "Importar NFT"
@@ -3784,9 +3893,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Trancando a MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "O tempo de bloqueio deve ser um número entre 0 e 10080"
-  },
   "logOut": {
     "message": "Sair"
   },
@@ -4096,6 +4202,102 @@
     "message": "$1 quer usar Snaps de $2",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdAssetBonusAccruing": {
+    "message": "Acumulando próximo bônus",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "Resgate bônus de $1",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Bônus anual estimado",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Informações sobre seu bônus",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Uma projeção do que você ganharia em um ano com base no seu saldo e taxa atuais. A taxa é variável e pode mudar.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Saiba mais.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "O total de bônus que você resgatou desde que começou.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1% de bônus anualizado que você ganha apenas por manter mUSD. Você pode resgatá-lo diariamente na Linea. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Bônus vitalício resgatado",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Sem bônus acumulado",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "$1% de bônus",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Seu bônus",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Bônus diário",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Lastreado em dólar",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Sem bloqueios",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "Sem taxas da MetaMask",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% de bônus anualizado",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Receba um ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " ao converter USDC, USDT e DAI em mUSD.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Saiba mais.",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Converta suas stablecoins",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Saldo",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Sua posição",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Valor",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
+  },
   "musdBonusExplanation": {
     "message": "Converta suas stablecoins em mUSD e ganhe um \nbônus anualizado de até $1% que você pode\nresgatar diariamente. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
@@ -4199,6 +4401,10 @@
   "musdMetaMaskUsd": {
     "message": "USD MetaMask",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Sujeito a termos e condições."
@@ -4763,6 +4969,14 @@
     "message": "Visualizar em $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Falha na transação! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Transação confirmada!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
+  },
   "notifications": {
     "message": "Notificações"
   },
@@ -4886,9 +5100,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Termos de uso"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Coletaremos dados básicos de uso do produto, como localização aproximada, cliques e visualizações. Nenhuma outra informação será armazenada."
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Coletaremos dados básicos de uso do produto. Podemos associar essas informações a dados na rede."
@@ -5426,7 +5637,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Saldo de perps disponível: "
+    "message": "Saldo disponível: "
   },
   "perpsAvailableToAdd": {
     "message": "Disponível para adicionar"
@@ -5453,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "Cancelar ordem"
   },
-  "perpsCandleIntervals": {
-    "message": "Intervalos de velas"
-  },
   "perpsCandlePeriodDays": {
     "message": "Dias"
   },
@@ -5468,11 +5676,8 @@
   "perpsCloseAll": {
     "message": "Encerrar tudo"
   },
-  "perpsCloseAmount": {
-    "message": "Valor de encerramento"
-  },
   "perpsCloseLong": {
-    "message": "Encerrar long"
+    "message": "Encerrar posição long"
   },
   "perpsClosePartialMinNotional": {
     "message": "Fechamentos parciais devem ter um valor mínimo de $1 em USD. Aumente o valor do fechamento ou defina o controle deslizante para 100%."
@@ -5481,19 +5686,25 @@
     "message": "Encerrar posição"
   },
   "perpsCloseShort": {
-    "message": "Encerrar short"
+    "message": "Encerrar posição short"
   },
   "perpsConfirmCloseLong": {
-    "message": "Encerrar long"
+    "message": "Encerrar posição long"
   },
   "perpsConfirmCloseShort": {
-    "message": "Encerrar short"
+    "message": "Encerrar posição short"
   },
   "perpsConnectionTimeout": {
     "message": "Conexão expirou. Tente novamente."
   },
   "perpsContactSupport": {
     "message": "Falar com o suporte"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "Os perps da MetaMask oferecem suporte apenas para negociações com margem isolada. Você precisa primeiro fechar sua posição em margem cruzada antes de poder negociar na MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Não há suporte para margem cruzada"
   },
   "perpsDateToday": {
     "message": "Hoje"
@@ -5685,24 +5896,24 @@
     "message": "Ainda não há transações"
   },
   "perpsOpenInterest": {
-    "message": "Interesse em aberto"
+    "message": "Contrato em aberto"
   },
   "perpsOpenInterestTooltip": {
     "message": "O valor combinado de todas as posições em aberto para esse perp"
   },
   "perpsOpenLong": {
-    "message": "Abrir long de $1",
+    "message": "Abrir posição long de $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOpenOrders": {
     "message": "Ordens em aberto"
   },
   "perpsOpenShort": {
-    "message": "Abrir short de $1",
+    "message": "Abrir posição short de $1",
     "description": "$1 is the asset symbol (e.g., BTC, ETH)"
   },
   "perpsOraclePrice": {
-    "message": "Preço da Oracle"
+    "message": "Preço do oráculo"
   },
   "perpsOraclePriceTooltip": {
     "message": "A mediana dos preços externos reportados pelos validadores, utilizada para calcular a taxa de financiamento"
@@ -5776,15 +5987,12 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Inverta sua posição short para uma posição long"
   },
-  "perpsSaveChanges": {
-    "message": "Salvar alterações",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "Pesquisar mercados"
   },
   "perpsSeeAll": {
-    "message": "Ver tudo"
+    "message": "Ver tudo",
+    "description": "Accessible label for the arrow button that navigates to the full activity list"
   },
   "perpsServiceUnavailable": {
     "message": "Serviço temporariamente indisponível. Tente novamente mais tarde."
@@ -5985,6 +6193,9 @@
   "perpsTrades": {
     "message": "Negociações"
   },
+  "perpsTriggerPrice": {
+    "message": "Preço de disparo"
+  },
   "perpsTutorialChooseLeverageDescription": {
     "message": "A alavancagem amplifica tanto os ganhos quanto as perdas. Com alavancagem de 40x, uma variação de 1% no preço representa um ganho ou uma perda de 40% em sua margem."
   },
@@ -6045,6 +6256,10 @@
   "perpsWithdraw": {
     "message": "Sacar"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Perps sacados",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Tempo estimado"
   },
@@ -6092,6 +6307,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Saque enviado"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "A MetaMask fará a conversão para o token desejado para você. A MetaMask não aplica taxas quando você converte para mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Você recebe"
@@ -6217,6 +6436,10 @@
   },
   "provide": {
     "message": "Fornecer"
+  },
+  "providerFee": {
+    "message": "Taxa do provedor",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Endereço público"
@@ -6424,8 +6647,16 @@
   "receiveCrypto": {
     "message": "Receba criptomoedas"
   },
+  "receiveToken": {
+    "message": "Receber token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Recebido"
+  },
+  "receivedTotal": {
+    "message": "Total recebido",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Endereço de recebimento",
@@ -6933,12 +7164,6 @@
   "securityChangePassword": {
     "message": "Alterar senha"
   },
-  "securityChangePasswordDescription": {
-    "message": "Escolha uma senha forte para desbloquear o aplicativo MetaMask em seu dispositivo. Se você perder essa senha, precisará da sua Frase de Recuperação Secreta para importar sua carteira novamente."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Senha"
-  },
   "securityChangePasswordToastError": {
     "message": "Não foi possível alterar a senha. Tente novamente."
   },
@@ -6950,16 +7175,6 @@
   },
   "securityDescription": {
     "message": "Reduza suas chances de ingressar em redes perigosas e proteja suas contas"
-  },
-  "securityLoginWithSocial": {
-    "message": "Fazer login com $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Backup da Frase de Recuperação Secreta concluído"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Fazer backup da Frase de Recuperação Secreta"
   },
   "securityMessageLinkForNetworks": {
     "message": "golpes de rede e riscos de segurança"
@@ -6982,14 +7197,8 @@
     "message": "RECUPERAÇÃO DE $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Faça backup de sua Frase de Recuperação Secreta para nunca perder o acesso à sua carteira. Certifique-se de guardá-la em um local seguro que só você pode acessar e que você não vai esquecer."
-  },
   "securitySrpLabel": {
     "message": "FRASE DE RECUPERAÇÃO SECRETA"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Gerenciar métodos de recuperação"
   },
   "seeAllPermissions": {
     "message": "Ver todas as permissões",
@@ -7947,20 +8156,11 @@
   "smartAccount": {
     "message": "Conta inteligente"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Permite que dapps (aplicativos descentralizados) solicitem recursos de conta inteligente para contas padrão. Isso não afetará contas que já são contas inteligentes."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Solicitações de conta inteligente vindas de dapps"
-  },
   "smartAccountLabel": {
     "message": "Conta inteligente"
   },
   "smartAccountRequestsFromDapps": {
     "message": "Solicitações de conta inteligente vindas de dapps"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Permite que dapps (aplicativos descentralizados) solicitem recursos de conta inteligente para contas padrão. Isso não afetará contas que já são contas inteligentes."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Mesmo endereço. Recursos mais inteligentes."
@@ -7973,9 +8173,6 @@
   },
   "smartContractAddressWarning": {
     "message": "O endereço do destinatário pode não aceitar transferências diretas de tokens, o que pode resultar na perda de fundos. Prossiga apenas se tiver certeza de que este contrato pode receber sua transferência."
-  },
-  "smartContracts": {
-    "message": "Contratos inteligentes"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Fundos insuficientes para uma troca inteligente."
@@ -8491,9 +8688,6 @@
     "message": "Ainda se conectando à $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Ainda está recebendo essa mensagem?"
-  },
   "storageErrorAction": {
     "message": "Fazer backup da Frase de Recuperação Secreta"
   },
@@ -8597,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Idiomas aceitos",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Responda à nossa pesquisa"
-  },
-  "surveyTitle": {
-    "message": "Molde o futuro da MetaMask"
   },
   "swap": {
     "message": "Trocar"
@@ -8999,9 +9187,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Esse token já foi adicionado."
-  },
-  "tokenAutoDetection": {
-    "message": "Detecção automática de tokens"
   },
   "tokenContractAddress": {
     "message": "Endereço de contrato do token"
@@ -9596,6 +9781,10 @@
   "willApproveAmountForSwapping": {
     "message": "Aprova o token para realização de troca."
   },
+  "withdrawTo": {
+    "message": "Receber",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Sacando"
   },
@@ -9628,6 +9817,10 @@
   "youSent": {
     "message": "Você enviou",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Você receberá",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Sua atividade"

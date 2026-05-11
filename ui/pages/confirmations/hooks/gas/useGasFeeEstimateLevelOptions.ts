@@ -19,6 +19,7 @@ import { toHumanEstimatedTimeRange } from '../../utils/time';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
 import { CURRENCY_SYMBOLS } from '../../../../../shared/constants/network';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/lib/selectors/networks';
+import { useTransactionGasLimit } from './useTransactionGasLimit';
 
 const HEX_ZERO = '0x0';
 
@@ -51,6 +52,9 @@ export const useGasFeeEstimateLevelOptions = ({
           ?.nativeCurrency,
     ) ?? CURRENCY_SYMBOLS.ETH;
   const { calculateGasEstimate } = useFeeCalculations(effectiveTransactionMeta);
+  const { gasLimit: displayGas } = useTransactionGasLimit(
+    effectiveTransactionMeta,
+  );
   const { gasFeeEstimates: networkGasFeeEstimates } = useGasFeeEstimates(
     transactionMeta?.networkClientId,
   ) as {
@@ -119,7 +123,7 @@ export const useGasFeeEstimateLevelOptions = ({
 
       let feePerGas = HEX_ZERO;
       let gasPrice = HEX_ZERO;
-      const gas = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
+      const gas = displayGas || HEX_ZERO;
       let shouldUseEIP1559FeeLogic = true;
       let priorityFeePerGas = HEX_ZERO;
 

@@ -132,7 +132,6 @@ function setupDefaultMocks({
       useTransactionCustomAmountAlertsModule.useTransactionCustomAmountAlerts,
     )
     .mockReturnValue({
-      alertMessage: undefined,
       hideResults,
       disableUpdate: false,
     });
@@ -163,6 +162,15 @@ function setupDefaultMocks({
   jest
     .mocked(useTransactionPayDataModule.useTransactionPaySourceAmounts)
     .mockReturnValue([]);
+  jest
+    .mocked(useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken)
+    .mockReturnValue({
+      address: '0xrequired',
+      skipIfBalance: false,
+      decimals: 18,
+    } as unknown as ReturnType<
+      typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+    >);
   jest
     .mocked(useTransactionPayTokenModule.useTransactionPayToken)
     .mockReturnValue({
@@ -243,6 +251,14 @@ describe('MusdConversionInfo', () => {
         },
       }),
     );
+  });
+
+  it('passes usd as currency to CustomAmountInfo so the hero symbol is always $', () => {
+    render();
+
+    expect(
+      useTransactionCustomAmountModule.useTransactionCustomAmount,
+    ).toHaveBeenCalledWith(expect.objectContaining({ currency: 'usd' }));
   });
 
   it('renders the custom amount input', () => {

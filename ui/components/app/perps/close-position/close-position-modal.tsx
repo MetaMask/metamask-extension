@@ -17,6 +17,7 @@ import {
 } from '@metamask/design-system-react';
 import {
   formatPerpsFiat,
+  formatPnl,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import {
@@ -495,7 +496,21 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <ModalHeader onClose={onClose}>{t('perpsClosePosition')}</ModalHeader>
+          <ModalHeader onClose={onClose}>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              <Icon name={IconName.CircleX} size={IconSize.Xl} />
+              <Text
+                variant={TextVariant.HeadingSm}
+                textAlign={TextAlign.Center}
+              >
+                {t('perpsClosePosition')}
+              </Text>
+            </Box>
+          </ModalHeader>
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
               {/* Close Amount Section (input + slider) */}
@@ -519,8 +534,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 >
                   <Icon
                     name={IconName.Warning}
-                    size={IconSize.Sm}
+                    size={IconSize.Md}
                     color={IconColor.WarningDefault}
+                    className="shrink-0"
                   />
                   <Text
                     variant={TextVariant.BodySm}
@@ -575,11 +591,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                           }
                           asChild
                         >
-                          <span>
-                            {`${unrealizedPnl >= 0 ? '+' : '-'}${formatFiat(
-                              Math.abs(unrealizedPnl),
-                            )}`}
-                          </span>
+                          <span>{formatPnl(unrealizedPnl)}</span>
                         </Text>,
                       ])}
                     </Text>
@@ -660,6 +672,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               'data-testid': 'perps-close-position-modal-submit',
               children: t('perpsClosePosition'),
               disabled: isSubmitDisabled,
+              autoFocus: true,
             }}
           />
         </ModalContent>

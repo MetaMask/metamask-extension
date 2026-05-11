@@ -1,5 +1,5 @@
 import { NameOrigin, NameType } from '@metamask/name-controller';
-import { Hex } from '@metamask/utils';
+import { Hex, isStrictHexString } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 import {
@@ -8,7 +8,6 @@ import {
 } from '../../shared/constants/first-party-contracts';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { getDomainResolutions } from '../ducks/domains';
-import { selectERC20TokensByChain } from '../selectors';
 import { getNftContractsByAddressByChain } from '../selectors/nft';
 import { getTrustSignalIcon, IconProps } from '../helpers/utils/trust-signals';
 import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
@@ -17,8 +16,10 @@ import {
   getWalletIdAndNameByAccountAddress,
   getAccountTree,
 } from '../selectors/multichain-accounts/account-tree';
+import { buildEvmCaip19AssetId } from '../../shared/lib/multichain/buildEvmCaip19AssetId';
 import { useNames } from './useName';
 import { TrustSignalDisplayState, useTrustSignals } from './useTrustSignals';
+import { useTokensData } from './useTokensData';
 
 export type UseDisplayNameRequest = {
   preferContractSymbol?: boolean;
@@ -118,7 +119,18 @@ export function useDisplayName(
 function useERC20Tokens(
   nameRequests: UseDisplayNameRequest[],
 ): ({ name?: string; image?: string } | undefined)[] {
-  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
+  const assetIds = nameRequests
+    .filter(
+      ({ type, value, variation }) =>
+        type === NameType.ETHEREUM_ADDRESS &&
+        value &&
+        isStrictHexString(variation),
+    )
+    .map(({ value, variation }) =>
+      buildEvmCaip19AssetId(value as string, variation as Hex),
+    );
+
+  const tokensByAssetId = useTokensData(assetIds);
 
   return nameRequests.map(
     ({ preferContractSymbol, type, value, variation }) => {
@@ -126,17 +138,15 @@ function useERC20Tokens(
         return undefined;
       }
 
-      const contractAddress = value.toLowerCase();
+      const token = isStrictHexString(variation)
+        ? tokensByAssetId[
+            buildEvmCaip19AssetId(value as string, variation as Hex)
+          ]
+        : undefined;
+      const name =
+        preferContractSymbol && token?.symbol ? token.symbol : token?.name;
 
-      const {
-        iconUrl: image,
-        name: tokenName,
-        symbol,
-      } = erc20TokensByChain?.[variation]?.data?.[contractAddress] ?? {};
-
-      const name = preferContractSymbol && symbol ? symbol : tokenName;
-
-      return { name, image };
+      return { name, image: token?.iconUrl };
     },
   );
 }

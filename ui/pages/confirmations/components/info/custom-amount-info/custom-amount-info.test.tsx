@@ -5,13 +5,13 @@ import configureMockStore from 'redux-mock-store';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import * as useTransactionCustomAmountModule from '../../../hooks/transactions/useTransactionCustomAmount';
 import * as useTransactionCustomAmountAlertsModule from '../../../hooks/transactions/useTransactionCustomAmountAlerts';
 import * as useAutomaticTransactionPayTokenModule from '../../../hooks/pay/useAutomaticTransactionPayToken';
 import * as useTransactionPayMetricsModule from '../../../hooks/pay/useTransactionPayMetrics';
 import * as useTransactionPayAvailableTokensModule from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import * as useTransactionPayDataModule from '../../../hooks/pay/useTransactionPayData';
-import * as useTransactionPayTokenModule from '../../../hooks/pay/useTransactionPayToken';
 import {
   CustomAmountInfo,
   CustomAmountInfoSkeleton,
@@ -23,10 +23,17 @@ jest.mock('../../../hooks/pay/useAutomaticTransactionPayToken');
 jest.mock('../../../hooks/pay/useTransactionPayMetrics');
 jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
 jest.mock('../../../hooks/pay/useTransactionPayData');
-jest.mock('../../../hooks/pay/useTransactionPayToken');
 jest.mock('../../transactions/custom-amount/custom-amount', () => ({
-  CustomAmount: ({ amountFiat }: { amountFiat: string }) => (
-    <div data-testid="custom-amount">{amountFiat}</div>
+  CustomAmount: ({
+    amountFiat,
+    disabled,
+  }: {
+    amountFiat: string;
+    disabled?: boolean;
+  }) => (
+    <div data-testid="custom-amount" data-disabled={String(Boolean(disabled))}>
+      {amountFiat}
+    </div>
   ),
   CustomAmountSkeleton: () => <div data-testid="custom-amount-skeleton" />,
 }));
@@ -75,45 +82,57 @@ const MOCK_AVAILABLE_TOKEN = {
   balanceUsd: '100',
 };
 
-const DEFAULT_PAY_TOKEN_HOOK_RETURN = {
-  isNative: false,
-  payToken: undefined,
-  setPayToken: jest.fn(),
-};
-
-const DEFAULT_ALERTS_HOOK_RETURN = {
+const DEFAULT_ALERTS_HOOK_RETURN: {
+  alertMessage?: string;
+  hideResults: boolean;
+  disableUpdate: boolean;
+} = {
   alertMessage: undefined,
   hideResults: false,
   disableUpdate: false,
 };
 
-function render({
-  hasMax = false,
-  disableAutomaticToken,
-  disablePay = false,
-  hidePayTokenAmount = false,
-  availableTokens = [MOCK_AVAILABLE_TOKEN],
-  customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
-  payTokenHookReturn = DEFAULT_PAY_TOKEN_HOOK_RETURN,
-  alertsHookReturn = DEFAULT_ALERTS_HOOK_RETURN,
-  isQuotesLoading = false,
-  hasQuotes = false,
-  sourceAmounts = [],
-  requiredTokens = [],
-}: {
-  hasMax?: boolean;
-  disableAutomaticToken?: boolean;
-  disablePay?: boolean;
-  hidePayTokenAmount?: boolean;
-  availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
-  customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
-  payTokenHookReturn?: typeof DEFAULT_PAY_TOKEN_HOOK_RETURN;
-  alertsHookReturn?: typeof DEFAULT_ALERTS_HOOK_RETURN;
-  isQuotesLoading?: boolean;
-  hasQuotes?: boolean;
-  sourceAmounts?: { targetTokenAddress: string }[];
-  requiredTokens?: { address: string; skipIfBalance: boolean }[];
-} = {}) {
+const MOCK_PRIMARY_REQUIRED_TOKEN = {
+  address: '0xrequired',
+  skipIfBalance: false,
+  decimals: 18,
+};
+
+function render(
+  options: {
+    hasMax?: boolean;
+    disableAutomaticToken?: boolean;
+    disablePay?: boolean;
+    hidePayTokenAmount?: boolean;
+    availableTokens?: (typeof MOCK_AVAILABLE_TOKEN)[];
+    customAmountHookReturn?: typeof DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN;
+    alertsHookReturn?: typeof DEFAULT_ALERTS_HOOK_RETURN;
+    isQuotesLoading?: boolean;
+    hasQuotes?: boolean;
+    sourceAmounts?: { targetTokenAddress: string }[];
+    requiredTokens?: { address: string; skipIfBalance: boolean }[];
+    primaryRequiredToken?: typeof MOCK_PRIMARY_REQUIRED_TOKEN | undefined;
+  } = {},
+) {
+  const {
+    hasMax = false,
+    disableAutomaticToken,
+    disablePay = false,
+    hidePayTokenAmount = false,
+    availableTokens = [MOCK_AVAILABLE_TOKEN],
+    customAmountHookReturn = DEFAULT_CUSTOM_AMOUNT_HOOK_RETURN,
+    alertsHookReturn = DEFAULT_ALERTS_HOOK_RETURN,
+    isQuotesLoading = false,
+    hasQuotes = false,
+    sourceAmounts = [],
+    requiredTokens = [],
+  } = options;
+  const primaryRequiredToken = Object.prototype.hasOwnProperty.call(
+    options,
+    'primaryRequiredToken',
+  )
+    ? options.primaryRequiredToken
+    : MOCK_PRIMARY_REQUIRED_TOKEN;
   jest
     .mocked(useTransactionCustomAmountModule.useTransactionCustomAmount)
     .mockReturnValue(customAmountHookReturn);
@@ -160,8 +179,12 @@ function render({
       >,
     );
   jest
-    .mocked(useTransactionPayTokenModule.useTransactionPayToken)
-    .mockReturnValue(payTokenHookReturn);
+    .mocked(useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken)
+    .mockReturnValue(
+      primaryRequiredToken as ReturnType<
+        typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+      >,
+    );
 
   const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 
@@ -236,6 +259,52 @@ describe('CustomAmountInfo', () => {
     });
     expect(queryByTestId('pay-token-amount')).not.toBeInTheDocument();
     expect(getByTestId('pay-with-row')).toBeInTheDocument();
+  });
+
+  describe('input disabled state', () => {
+    it('disables the input when no tokens are available', () => {
+      const { getByTestId } = render({ availableTokens: [] });
+
+      expect(getByTestId('custom-amount')).toHaveAttribute(
+        'data-disabled',
+        'true',
+      );
+    });
+  });
+
+  describe('awaiting required token', () => {
+    it('renders the skeleton when pay is enabled but no primary required token is resolved', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: false,
+        primaryRequiredToken: undefined,
+      });
+
+      expect(getByTestId('custom-amount-info-skeleton')).toBeInTheDocument();
+      expect(queryByTestId('custom-amount-info')).not.toBeInTheDocument();
+    });
+
+    it('does not render the skeleton when pay is disabled and no primary required token is resolved', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: true,
+        primaryRequiredToken: undefined,
+      });
+
+      expect(getByTestId('custom-amount-info')).toBeInTheDocument();
+      expect(
+        queryByTestId('custom-amount-info-skeleton'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders the full UI once a primary required token is resolved', () => {
+      const { getByTestId, queryByTestId } = render({
+        disablePay: false,
+      });
+
+      expect(getByTestId('custom-amount-info')).toBeInTheDocument();
+      expect(
+        queryByTestId('custom-amount-info-skeleton'),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('renders pay with row when tokens available and disablePay is false', () => {
@@ -317,6 +386,34 @@ describe('CustomAmountInfo', () => {
     });
   });
 
+  it('does not render alert body text when reason and message are the same', () => {
+    const { queryByText } = render({
+      alertsHookReturn: {
+        alertMessage: undefined,
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(
+      queryByText(messages.alertInsufficientPayTokenBalance.message),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders alert message as body text when reason differs from message', () => {
+    const { getByText } = render({
+      alertsHookReturn: {
+        alertMessage: messages.alertNoPayTokenQuotesMessage.message,
+        hideResults: true,
+        disableUpdate: false,
+      },
+    });
+
+    expect(
+      getByText(messages.alertNoPayTokenQuotesMessage.message),
+    ).toBeInTheDocument();
+  });
+
   describe('overrideCenterContent', () => {
     it('renders override content when provided', () => {
       jest
@@ -355,8 +452,12 @@ describe('CustomAmountInfo', () => {
         .mocked(useTransactionPayDataModule.useTransactionPaySourceAmounts)
         .mockReturnValue([]);
       jest
-        .mocked(useTransactionPayTokenModule.useTransactionPayToken)
-        .mockReturnValue(DEFAULT_PAY_TOKEN_HOOK_RETURN);
+        .mocked(
+          useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken,
+        )
+        .mockReturnValue({ skipIfBalance: false } as ReturnType<
+          typeof useTransactionPayDataModule.useTransactionPayPrimaryRequiredToken
+        >);
 
       const state = getMockConfirmStateForTransaction(MOCK_TRANSACTION_META);
 

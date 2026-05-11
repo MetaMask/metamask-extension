@@ -20,6 +20,30 @@ const FIRST_SEND_TRANSACTION_HASH =
 const SECOND_SEND_TRANSACTION_HASH =
   '0x5f87bf1e29d3325113d0a1ad033befac747e800699abf8172e26113bb3c615d9';
 
+const SWAP_DAI_TOKEN = {
+  assetId: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
+  symbol: 'DAI',
+  name: 'Dai Stablecoin',
+  decimals: 18,
+  iconUrl: null,
+};
+
+const SWAP_ETH_TOKEN = {
+  assetId: 'eip155:1/slip44:60',
+  symbol: 'ETH',
+  name: 'Ethereum',
+  decimals: 18,
+  iconUrl: null,
+};
+
+const SWAP_MUSD_TOKEN = {
+  assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
+  symbol: 'MUSD',
+  name: 'MetaMask USD',
+  decimals: 6,
+  iconUrl: null,
+};
+
 const GET_FEES_RESPONSE = {
   blockNumber: 20728974,
   id: '19d4eea3-8a49-463e-9e9c-099f9d9571ca',
@@ -646,14 +670,33 @@ export async function mockGasIncludedTransactionRequests(
   // Sentinel /networks (sendBundle: true so quote request includes gasIncluded: true).
   await mockSentinelNetworks(mockServer);
 
+  // Mock bridge token list endpoints. Without these, the catch-all in
+  // mock-e2e.js returns an empty body and `JSON.parse('')` throws
+  // "Unexpected end of JSON input" when fetchPopularTokens consumes it.
+  await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+    statusCode: 200,
+    json: [SWAP_ETH_TOKEN, SWAP_MUSD_TOKEN],
+  }));
+
+  await mockServer.forPost(/getTokens\/search/u).thenCallback(() => ({
+    statusCode: 200,
+    json: {
+      data: [SWAP_ETH_TOKEN, SWAP_MUSD_TOKEN],
+      pageInfo: { hasNextPage: false, endCursor: null },
+    },
+  }));
+
   // Mock getQuoteStream (SSE) so the swap page receives a quote (ETH -> MUSD).
+  // thenStream only supports a single read, so use thenCallback with the SSE
+  // payload serialized as a string body so every request gets a fresh response.
   await mockServer
     .forGet(/getQuoteStream/u)
-    .thenStream(
-      200,
-      mockSseEventSource(MOCK_ETH_MUSD_QUOTE_STREAM),
-      SSE_RESPONSE_HEADER,
-    );
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      headers: SSE_RESPONSE_HEADER,
+      body: ssePayload(MOCK_ETH_MUSD_QUOTE_STREAM),
+    }));
 
   await mockServer
     .forPost(
@@ -799,22 +842,6 @@ export async function mockSentinelNetworks(mockServer: MockttpServer) {
     });
 }
 
-const SWAP_DAI_TOKEN = {
-  assetId: 'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
-  symbol: 'DAI',
-  name: 'Dai Stablecoin',
-  decimals: 18,
-  iconUrl: null,
-};
-
-const SWAP_ETH_TOKEN = {
-  assetId: 'eip155:1/slip44:60',
-  symbol: 'ETH',
-  name: 'Ethereum',
-  decimals: 18,
-  iconUrl: null,
-};
-
 /** Quote payload sent via mockSseEventSource for getQuoteStream (SSE data: field). */
 const MOCK_ETH_DAI_QUOTE = [
   {
@@ -936,6 +963,15 @@ const MOCK_ETH_DAI_QUOTE = [
     estimatedProcessingTimeInSeconds: 0,
   },
 ];
+
+function ssePayload(mockQuotes: unknown[]): string {
+  return mockQuotes
+    .map(
+      (quote, i) =>
+        `event: quote\nid: ${Date.now().toString()}-${i + 1}\ndata: ${JSON.stringify(quote)}\n\n`,
+    )
+    .join('');
+}
 
 function mockSseEventSource(mockQuotes: unknown[], delay: number = 2000) {
   let index = 0;

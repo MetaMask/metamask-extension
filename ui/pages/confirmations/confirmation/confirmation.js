@@ -33,6 +33,7 @@ import MetaMaskTemplateRenderer from '../../../components/app/metamask-template-
 import ConfirmationWarningModal from '../components/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useHideToasts } from '../../../hooks/useHideToasts';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   getUnapprovedTemplatedConfirmations,
@@ -234,6 +235,8 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
 }) {
+  useHideToasts();
+
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();

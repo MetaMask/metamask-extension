@@ -28,7 +28,6 @@ function createSearchItemMeta(
 // The search config array below is auto-derived from them.
 
 export const ASSET_ITEMS = {
-  'local-currency': 'localCurrency',
   'show-network-token': 'showNativeTokenAsMainBalance',
   'hide-zero-balance-tokens': 'hideZeroBalanceTokens',
   'display-nft-media': 'displayNftMedia',
@@ -48,6 +47,7 @@ export const TRANSACTION_ITEMS = {
 export const PREFERENCES_ITEMS = {
   theme: 'theme',
   language: 'language',
+  'local-currency': 'localCurrency',
   'account-identicon': 'accountIdenticon',
   'show-default-address': 'showDefaultAddress',
   'show-extension': 'showExtensionInFullSizeView',
@@ -79,6 +79,7 @@ export const THIRD_PARTY_API_ITEMS = {
 export const SECURITY_ITEMS = {
   'manage-wallet-recovery': 'manageWalletRecovery',
   password: 'password',
+  passkey: 'unlockWithPasskey',
   'auto-lock': 'autoLock',
   'phishing-detection': 'usePhishingDetection',
 } as const;
