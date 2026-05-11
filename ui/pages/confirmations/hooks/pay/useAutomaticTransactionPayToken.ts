@@ -121,7 +121,10 @@ function getBestToken({
   isHardwareWallet: boolean;
   isPostQuoteWithdraw: boolean;
   isPostQuoteWithdrawTokenFilterApplied: boolean;
-  isPostQuoteWithdrawTokenAllowed: (chainId: string, address: string) => boolean;
+  isPostQuoteWithdrawTokenAllowed: (
+    chainId: string,
+    address: string,
+  ) => boolean;
   preferredToken?: SetPayTokenRequest;
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
