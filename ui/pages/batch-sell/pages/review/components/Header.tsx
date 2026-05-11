@@ -29,13 +29,13 @@ type HeaderProps = {
     image?: string | null;
   };
   onTotalReceivedFiatIconClick: () => void;
-  onSelectAssetClick: () => void;
+  onSelectReceivedAssetClick: () => void;
 };
 
 export const Header = ({
   totalReceivedFiat,
   selectedAsset,
-  onSelectAssetClick,
+  onSelectReceivedAssetClick: onSelectAssetClick,
   onTotalReceivedFiatIconClick,
 }: HeaderProps) => {
   const t = useI18nContext();

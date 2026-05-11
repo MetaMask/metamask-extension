@@ -15,7 +15,7 @@ import { formatTokenAmount } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 
 type AssetsReceivedSummaryList = {
-  sentAssets: {
+  sendAssets: {
     id: string;
     symbol: string;
     slippagePercent: number;
@@ -26,7 +26,7 @@ type AssetsReceivedSummaryList = {
   };
 };
 
-type AssetsReceivedListItemProps = AssetsReceivedSummaryList['sentAssets'][0] &
+type AssetsReceivedListItemProps = AssetsReceivedSummaryList['sendAssets'][0] &
   Pick<AssetsReceivedSummaryList, 'receivedAsset'>;
 
 const AssetsReceivedListItem = ({
@@ -75,11 +75,11 @@ const AssetsReceivedListItem = ({
 
 export const AssetsReceivedSummaryList = ({
   receivedAsset,
-  sentAssets,
+  sendAssets,
 }: AssetsReceivedSummaryList) => {
   return (
     <>
-      {sentAssets.map((asset) => (
+      {sendAssets.map((asset) => (
         <AssetsReceivedListItem
           key={asset.id}
           {...asset}

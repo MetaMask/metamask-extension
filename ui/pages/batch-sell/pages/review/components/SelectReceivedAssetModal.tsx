@@ -113,7 +113,7 @@ const AssetList = ({
   );
 };
 
-export const SelectReceiveAssetModal = ({
+export const SelectReceivedAssetModal = ({
   assets,
   open,
   onClose,

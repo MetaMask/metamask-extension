@@ -5,24 +5,31 @@ import { useSelector } from 'react-redux';
 import { CaipAssetType } from '@metamask/utils';
 import { BatchSellNavigationState } from '../../../../hooks/batch-sell/useBatchSellNavigation';
 import { BridgeAppState } from '../../../../ducks/bridge/selectors';
-import { getAvailableBatchSellReceiveAssetsForNetwork } from '../../../../ducks/batch-sell/selectors';
+import {
+  getAvailableBatchSellReceiveAssetsForNetwork as getAvailableBatchSellReceivedAssetsForNetwork,
+  getAvailableBatchSellSwapAssetsForNetwork,
+} from '../../../../ducks/batch-sell/selectors';
+import {
+  DEFAULT_SEND_AMOUNT_PERCENT,
+  DEFAULT_SLIPPAGE_PERCENT,
+} from '../../../../constants/batch-sell';
 import { Header } from './components/Header';
 import { QuotesList } from './components/QuotesList';
 import { Footer } from './components/Footer';
-import { SelectReceiveAssetModal } from './components/SelectReceiveAssetModal';
+import { SelectReceivedAssetModal } from './components/SelectReceivedAssetModal';
 import { TotalReceiveModal } from './components/TotalReceiveModal';
 
 export const BatchSellReviewPage = () => {
   const { state } = useLocation();
   const { selectedNetworkChainId, selectedAssetsId } = (state ??
     {}) as BatchSellNavigationState;
-  const [selectReceiveAssetModalIsOpen, setSelectReceiveAssetModalIsOpen] =
+  const [selectReceivedAssetModalIsOpen, setSelectReceivedAssetModalIsOpen] =
     useState(false);
   const [totalReceivedModalIsOpen, setTotalReceivedAssetModalIsOpen] =
     useState(false);
 
-  const receiveAssets = useSelector((_state: BridgeAppState) =>
-    getAvailableBatchSellReceiveAssetsForNetwork(
+  const receivedAssets = useSelector((_state: BridgeAppState) =>
+    getAvailableBatchSellReceivedAssetsForNetwork(
       _state,
       selectedNetworkChainId ?? undefined,
     ).map((asset) => ({
@@ -33,20 +40,46 @@ export const BatchSellReviewPage = () => {
     })),
   );
 
-  const [selectedReceiveAsset, setSelectedReceiveAsset] = useState(
-    receiveAssets[0],
+  const availableBatchSellAssetsForNetworkList = useSelector((_state) =>
+    getAvailableBatchSellSwapAssetsForNetwork(
+      _state,
+      selectedNetworkChainId ?? null,
+    ).filter((asset) => selectedAssetsId?.includes(asset.assetId)),
   );
 
-  const onSelectAsset = useCallback(
+  const [selectedReceiveAsset, setSelectedReceiveAsset] = useState(
+    receivedAssets[0],
+  );
+
+  const [quoteConfigs, setQuoteConfigs] = useState(() =>
+    Object.fromEntries(
+      availableBatchSellAssetsForNetworkList.map((asset) => [
+        asset.assetId,
+        {
+          asset,
+          sendAmountPercent: DEFAULT_SEND_AMOUNT_PERCENT,
+          slippagePercent: DEFAULT_SLIPPAGE_PERCENT,
+        },
+      ]),
+    ),
+  );
+
+  const onSelectReceivedAsset = useCallback(
     (assetId: CaipAssetType) => {
-      const newAsset = receiveAssets.find((asset) => asset.id === assetId);
+      const newAsset = receivedAssets.find((asset) => asset.id === assetId);
       if (newAsset) {
         setSelectedReceiveAsset(newAsset);
-        setSelectReceiveAssetModalIsOpen(false);
+        setSelectReceivedAssetModalIsOpen(false);
       }
     },
-    [receiveAssets],
+    [receivedAssets],
   );
+
+  console.log(
+    'availableBatchSellAssetsForNetworkList',
+    availableBatchSellAssetsForNetworkList,
+  );
+  // TODO: if availableBatchSellAssetsForNetworkList or selectedAssetsId is empty render error
 
   return (
     <Box
@@ -63,19 +96,25 @@ export const BatchSellReviewPage = () => {
         onTotalReceivedFiatIconClick={() =>
           setTotalReceivedAssetModalIsOpen(true)
         }
-        onSelectAssetClick={() => setSelectReceiveAssetModalIsOpen(true)}
+        onSelectReceivedAssetClick={() =>
+          setSelectReceivedAssetModalIsOpen(true)
+        }
       />
-      <QuotesList />
+      <QuotesList
+        config={quoteConfigs}
+        onSendAmountChange={console.log}
+        onSlippageChange={console.log}
+      />
       <Footer />
-      <SelectReceiveAssetModal
-        assets={receiveAssets}
+      <SelectReceivedAssetModal
+        assets={receivedAssets}
         selectedAssetId={selectedReceiveAsset.id}
-        onClose={() => setSelectReceiveAssetModalIsOpen(false)}
-        open={selectReceiveAssetModalIsOpen}
-        onSelectAsset={onSelectAsset}
+        onClose={() => setSelectReceivedAssetModalIsOpen(false)}
+        open={selectReceivedAssetModalIsOpen}
+        onSelectAsset={onSelectReceivedAsset}
       />
       <TotalReceiveModal
-        sentAssets={[
+        sendAssets={[
           {
             id: '1',
             symbol: 'ETH',

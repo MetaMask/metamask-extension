@@ -20,7 +20,7 @@ import { AssetsReceivedTotalAmountsSummary } from './AssetsReceivedTotalAmountsS
 type TotalReceiveModalProps = {
   open: boolean;
   onClose: () => void;
-  sentAssets: {
+  sendAssets: {
     id: string;
     symbol: string;
     slippagePercent: number;
@@ -36,7 +36,7 @@ type TotalReceiveModalProps = {
 export const TotalReceiveModal = ({
   open,
   onClose,
-  sentAssets,
+  sendAssets,
   receivedAsset,
   totalReceivedAmount,
   minimumReceivedAmount,
@@ -61,7 +61,7 @@ export const TotalReceiveModal = ({
         <ModalBody>
           <AssetsReceivedSummaryList
             receivedAsset={receivedAsset}
-            sentAssets={sentAssets}
+            sendAssets={sendAssets}
           />
         </ModalBody>
         <ModalFooter>
