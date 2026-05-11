@@ -162,8 +162,9 @@
   },
   "resolutions": {
     "@metamask/bridge-controller": "71.0.0",
-    "@metamask/bridge-status-controller>@metamask/transaction-controller": "^65.1.0",
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller": "^65.1.0",
+    "@metamask/transaction-controller@npm:^64.0.0": "^65.1.0",
+    "@metamask/transaction-controller@npm:^64.2.0": "^65.1.0",
+    "@metamask/transaction-controller@npm:^64.3.0": "^65.1.0",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "30.0.1",
     "follow-redirects": "^1.16.0",
