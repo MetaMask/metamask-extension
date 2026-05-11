@@ -11,6 +11,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Aligned previously base-enabled custom network logos (Stable, Flow, XDC, Fraxtal, Hemi, Plasma, Lukso, Rootstock, MSU, Sonic, Lens, Plume) to a square format consistent with Popular networks (#42555)
 
+## [13.30.0]
+
+### Added
+
+- Added Tempo chain to the additional networks list (#42270)
+- Added an editable USD input for close-position amount in perpetuals trading (#42261)
+- Added auto-slippage support for RWA tokens (#42289)
+- Reopening the extension within 5 minutes of closing it on a Perps screen now returns the user to that screen instead of the wallet home (#42009)
+- Added Perps Withdraw to any token submission flow (#42259)
+- Added a low-native-balance warning in Swap and Bridge when a transaction would leave native balance below a minimum threshold (#42113)
+- Added filtering of malicious non-EVM activity transactions (#42176)
+- Added Clear buttons for Take Profit and Stop Loss inputs in the Perps order entry screen (#42156)
+- Added support for HyperLiquid unified account tradeable balance in Perps (#42101)
+- Added consumption of swap token warnings on the Swap screen (#41495)
+- Added camera permission handling and recovery flow for QR hardware wallets (#41612)
+- Added a new page for choosing wallet type during new wallet onboarding (#42048)
+- Added expired or revoked status for Advanced Permissions in Dapp Connections (#41985)
+- Added support for ENS v2 (#42079)
+- Added header icons to the Add Margin, Decrease Margin, Reverse Position, and Close Position modals in Perpetuals (#42147)
+
+### Changed
+
+- Updated Perps Withdraw activity rows to show the destination token and amount, and tailored the Transaction Details modal accordingly (#42263)
+- Updated Perps stop-loss inputs to default initial unsigned percentages to negative RoE, normalize leading-zero values, preserve intentional positive edits, and block liquidation-unsafe stop-loss trigger prices (#42232)
+
+### Fixed
+
+- Fixed a Perps bug where a position-level TP/SL appeared in the orders list of the market detail page instead of the auto-close section (#42292)
+- Fixed the modify menu popover width on the Perps market detail page (#42281)
+- Fixed a bug that caused Perps TP/SL RoE signs to disappear or default incorrectly in the Auto close modal (#42284)
+- Fixed a bug where Ledger users could not complete swaps on networks without Ledger plugin support (e.g. Monad), which previously surfaced as a misleading "blind signing is not enabled" error (#41948)
+- Fixed a bug where NFT details showed placeholder description text when no description metadata was available (#42236)
+- Fixed a memory leak that would degrade performance over time when using Firefox (#42203)
+- Fixed Perps native token deposit pending toast not being derived from transaction state (#41913)
+- Fixed unlock redirect back loop (#42184)
+- Fixed EIP-712 Permit confirmation parsing to prevent decoy spending cap values from being displayed (#42197)
+- Fixed hardware wallet detection in the pay alert so Ledger and other hardware wallets are correctly identified during mUSD conversion (#42117)
+- Fixed invalid bridge transaction hashes being persisted in transaction history (#41981)
+- Fixed confirmation footer showing "Connect Ledger" when a Ledger transport was already connected; the primary action now shows "Confirm" in that state (#42138)
+- Fixed Perps deposit confirmation and activity UI by correcting amount input alignment, showing the send icon in activity, and restoring percentage buttons for native payment assets (#41838)
+- Fixed a crash that could occur when account ordering briefly contained invalid entries during hardware wallet or multichain account sync (#41834)
+- Fixed Perps reverse-position failing with `ORDER_PRICE_REQUIRED` (#42401)
+- Fixed Perps unified-account funding flows to support deposits without an any-token withdraw flow (#42418)
+- Fixed bridge activity transaction link for Ondo (#42416)
+
 ## [13.29.0]
 
 ### Added
@@ -2226,7 +2271,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...HEAD
+[13.30.0]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...v13.30.0
 [13.29.0]: https://github.com/MetaMask/metamask-extension/compare/v13.28.0...v13.29.0
 [13.28.0]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...v13.28.0
 [13.27.0]: https://github.com/MetaMask/metamask-extension/compare/v13.26.0...v13.27.0
