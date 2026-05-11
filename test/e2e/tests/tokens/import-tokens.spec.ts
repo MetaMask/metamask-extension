@@ -501,7 +501,7 @@ describe('Import flow', function () {
         const assetListPage = new AssetListPage(driver);
         await homePage.checkPageIsLoaded();
         await assetListPage.importMultipleTokensBySearch({
-          tokenNames: ['CHAIN', 'CHANGE', 'CHAI'],
+          tokenNames: ['CHANGE', 'CHAI', 'CHAIN'],
           network: 'Ethereum',
         });
 
