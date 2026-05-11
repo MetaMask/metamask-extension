@@ -10,6 +10,21 @@ jest.mock('../webConnectionUtils', () => ({
   isWebUsbAvailable: jest.fn(),
 }));
 
+const mockIsManifestV3 = jest.fn(() => true);
+const mockIsFirefoxBrowser = jest.fn(() => false);
+
+jest.mock('../../../../shared/lib/mv3.utils', () => ({
+  get isManifestV3() {
+    return mockIsManifestV3();
+  },
+}));
+
+jest.mock('../../../../shared/lib/browser-runtime.utils', () => ({
+  get isFirefoxBrowser() {
+    return mockIsFirefoxBrowser;
+  },
+}));
+
 const mockGetConnectedTrezorDevices =
   webConnectionUtils.getConnectedTrezorDevices as jest.MockedFunction<
     typeof webConnectionUtils.getConnectedTrezorDevices
@@ -35,6 +50,8 @@ describe('TrezorAdapter', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsManifestV3.mockReturnValue(true);
+    mockIsFirefoxBrowser.mockReturnValue(false);
     mockOptions = createMockOptions();
     consoleLogSpy = jest
       .spyOn(console, 'log')
@@ -139,6 +156,34 @@ describe('TrezorAdapter', () => {
 
       await expect(adapter.connect()).rejects.toThrow(HardwareWalletError);
       expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('skips WebUSB check on MV2 (Firefox) and defers to TrezorConnectBridge', async () => {
+      mockIsManifestV3.mockReturnValue(false);
+
+      const mv2Adapter = new TrezorAdapter(mockOptions);
+
+      await mv2Adapter.connect();
+
+      expect(mockIsWebUsbAvailable).not.toHaveBeenCalled();
+      expect(mockGetConnectedTrezorDevices).not.toHaveBeenCalled();
+      expect(mv2Adapter.isConnected()).toBe(true);
+
+      mv2Adapter.destroy();
+    });
+
+    it('skips WebUSB check on Firefox even under MV3', async () => {
+      mockIsFirefoxBrowser.mockReturnValue(true);
+
+      const firefoxAdapter = new TrezorAdapter(mockOptions);
+
+      await firefoxAdapter.connect();
+
+      expect(mockIsWebUsbAvailable).not.toHaveBeenCalled();
+      expect(mockGetConnectedTrezorDevices).not.toHaveBeenCalled();
+      expect(firefoxAdapter.isConnected()).toBe(true);
+
+      firefoxAdapter.destroy();
     });
   });
 

@@ -546,10 +546,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   handleUnlockPasskeyFromPasswordForm = () => {
     if (this.props.mustDeferPasskeyToBrowserTab) {
       cancelPasskeyCeremony();
-      globalThis.platform?.openExtensionInBrowser?.(
-        UNLOCK_ROUTE,
-        'from=sidepanel',
-      );
+      globalThis.platform?.openExtensionInBrowser?.(UNLOCK_ROUTE);
       return;
     }
     this.setPasswordUnlockMode(false);
