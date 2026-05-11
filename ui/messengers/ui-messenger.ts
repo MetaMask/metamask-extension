@@ -83,11 +83,20 @@ export type UIMessengerEvents = WithJsonPayload<
 
 const UI_MESSENGER_NAMESPACE = 'UI';
 
+type HandlerFunction = () => void | Promise<void>;
+
+type UnsubscribeFunction = () => Promise<void>;
+
 export class UIMessenger extends Messenger<
   typeof UI_MESSENGER_NAMESPACE,
   UIMessengerActions,
   UIMessengerEvents
 > {
+  #unsubscribeFunctions: Map<
+    UIMessengerEvents['type'],
+    Map<HandlerFunction, UnsubscribeFunction>
+  > = new Map();
+
   constructor() {
     super({ namespace: UI_MESSENGER_NAMESPACE, captureException });
   }
@@ -127,6 +136,7 @@ export class UIMessenger extends Messenger<
    * @param handler - The event handler. The type of the parameters for this
    * event handler must match the type of the payload for this event type.
    * @returns A cleanup function that can be invoked to unsubscribe.
+   * @throws If the given handler is already subscribed to this event type.
    */
   // @ts-expect-error: Intentionally different type than `messenger.subscribe`.
   async subscribe<EventType extends UIMessengerEvents['type']>(
@@ -134,8 +144,18 @@ export class UIMessenger extends Messenger<
     handler: (
       ...payload: ExtractEventPayload<UIMessengerEvents, EventType>
     ) => void,
-  ): Promise<() => Promise<void>> {
-    return await subscribeToMessengerEvent(
+  ): Promise<void> {
+    if (!this.#unsubscribeFunctions.has(eventType)) {
+      this.#unsubscribeFunctions.set(eventType, new Map());
+    }
+
+    if (this.#unsubscribeFunctions.get(eventType)?.has(handler)) {
+      throw new Error(
+        `The handler is already subscribed to the event "${eventType}".`,
+      );
+    }
+
+    const unsubscribeFunction = await subscribeToMessengerEvent(
       eventType,
       // @ts-expect-error: TypeScript cannot verify that the payload is
       // JSON-serializable, because
@@ -145,6 +165,39 @@ export class UIMessenger extends Messenger<
       // know that the payload must be JSON-serializable.
       handler,
     );
+
+    this.#unsubscribeFunctions
+      .get(eventType)
+      ?.set(handler, unsubscribeFunction);
+  }
+
+  /**
+   * Unsubscribe from an event emitted by the background.
+   *
+   * Unregisters the given function as an event handler for the given event
+   * type and ignores the call if the given function is not currently subscribed
+   * to this event type.
+   *
+   * @param eventType - The event type. This is a unique identifier for this
+   * event.
+   * @param handler - The event handler to unsubscribe. Must be the same
+   * function that was used to subscribe to this event type.
+   */
+  // @ts-expect-error: Intentionally different type than `messenger.unsubscribe`.
+  async unsubscribe<EventType extends UIMessengerEvents['type']>(
+    eventType: EventType,
+    handler: (
+      ...payload: ExtractEventPayload<UIMessengerEvents, EventType>
+    ) => void,
+  ): Promise<void> {
+    const unsubscribeFunction = this.#unsubscribeFunctions
+      .get(eventType)
+      ?.get(handler);
+
+    if (unsubscribeFunction) {
+      await unsubscribeFunction();
+      this.#unsubscribeFunctions.get(eventType)?.delete(handler);
+    }
   }
 }
 
