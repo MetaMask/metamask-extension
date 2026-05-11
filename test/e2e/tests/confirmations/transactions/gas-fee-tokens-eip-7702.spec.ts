@@ -48,6 +48,11 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
               marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
+            'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
+              price: 1,
+              marketCap: 0,
+              pricePercentChange1d: 0,
+            },
           });
         },
         title: this.test?.fullTitle(),
