@@ -393,6 +393,7 @@ class AssetListPage {
       await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
       await this.driver.waitForSelector(this.tokenSearchSelected);
+      await this.driver.delay(3000);
     }
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.clickElementAndWaitToDisappear(
