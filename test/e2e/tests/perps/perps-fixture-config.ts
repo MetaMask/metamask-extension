@@ -75,7 +75,10 @@ export function getPerpsGeoBlockConfig(title?: string) {
      */
     testSpecificMock: async (server: Mockttp) => {
       const geoBlockedFlags = [
-        ...getProductionRemoteFlagApiResponse(),
+        ...getProductionRemoteFlagApiResponse().filter(
+          (entry) =>
+            !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
+        ),
         { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] } },
       ];
       await server

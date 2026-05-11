@@ -1,22 +1,16 @@
 /**
  * WebSocket mock helpers for Perps E2E tests that require pre-existing positions.
  *
- * These mocks override the default `user` subscription response (which returns
- * empty positions) with data that simulates a user who already has open positions.
+ * These mocks override the HIP-3 clearinghouseState/webData2/webData3 subscription
+ * responses with data that simulates a user who already has open positions.
  *
  * Usage — pass as `perpsWebSocketSpecificMocks` in withFixtures:
  * ```ts
  * await withFixtures({
  *   ...getPerpsConfigEligible(this.test?.fullTitle()),
- *   perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG,
+ *   perpsWebSocketSpecificMocks: WS_USER_WITH_ETH_LONG_POSITION,
  * }, ...)
  * ```
- *
- * NOTE: The `positions` array format inside the `user` channel response must match
- * what @metamask/perps-controller expects from the Hyperliquid WebSocket API.
- * The structures below use the internal Position schema observed in
- * ui/components/app/perps/mocks.ts. Verify against the running controller
- * (PERPS_ENABLED=true build) if the UI does not show the expected position data.
  */
 
 import type { WebSocketMessageMock } from '../../../websocket/types';
@@ -25,98 +19,6 @@ import {
   buildWsPostResponse,
   parseWsPost,
 } from './websocketDefaultMocks';
-
-/**
- * A single ETH long position (2.5 ETH, 3x isolated, entry $2850).
- * Use for tests that need an open long to test Close, Reverse, or TP/SL update.
- */
-export const WS_USER_WITH_ETH_LONG: WebSocketMessageMock[] = [
-  {
-    messageIncludes: ['"method":"subscribe"', '"type":"user"'],
-    response: () => ({
-      channel: 'user',
-      data: {
-        positions: [
-          {
-            symbol: 'ETH',
-            size: '2.5',
-            entryPrice: '2850.00',
-            positionValue: '7125.00',
-            unrealizedPnl: '375.00',
-            marginUsed: '2600.00',
-            leverage: { type: 'isolated', value: 3, rawUsd: '2600.00' },
-            liquidationPrice: '2400.00',
-            maxLeverage: 20,
-            returnOnEquity: '0.1579',
-            cumulativeFunding: {
-              allTime: '12.50',
-              sinceOpen: '8.30',
-              sinceChange: '0.00',
-            },
-            takeProfitPrice: undefined,
-            stopLossPrice: undefined,
-            takeProfitCount: 0,
-            stopLossCount: 0,
-          },
-        ],
-        balances: [{ coin: 'USDC', hold: '2600.00', total: '12500.00' }],
-        accountValue: '12875.00',
-        totalMarginUsed: '2600.00',
-        totalNtlPos: '7125.00',
-        totalRawUsd: '12875.00',
-      },
-      time: Date.now(),
-    }),
-    delay: 100,
-    logMessage: 'Perps user mock: ETH long position (2.5 ETH, 3x isolated)',
-  },
-];
-
-/**
- * A single BTC short position (-0.5 BTC, 15x cross, entry $45000).
- * Use for tests that need an open short to test Reverse or partial close.
- */
-export const WS_USER_WITH_BTC_SHORT: WebSocketMessageMock[] = [
-  {
-    messageIncludes: ['"method":"subscribe"', '"type":"user"'],
-    response: () => ({
-      channel: 'user',
-      data: {
-        positions: [
-          {
-            symbol: 'BTC',
-            size: '-0.5',
-            entryPrice: '45000.00',
-            positionValue: '22500.00',
-            unrealizedPnl: '-250.00',
-            marginUsed: '1500.00',
-            leverage: { type: 'cross', value: 15 },
-            liquidationPrice: '48000.00',
-            maxLeverage: 20,
-            returnOnEquity: '-0.1667',
-            cumulativeFunding: {
-              allTime: '-5.20',
-              sinceOpen: '-3.10',
-              sinceChange: '0.00',
-            },
-            takeProfitPrice: undefined,
-            stopLossPrice: '47000.00',
-            takeProfitCount: 0,
-            stopLossCount: 1,
-          },
-        ],
-        balances: [{ coin: 'USDC', hold: '1500.00', total: '11000.00' }],
-        accountValue: '10750.00',
-        totalMarginUsed: '1500.00',
-        totalNtlPos: '22500.00',
-        totalRawUsd: '10750.00',
-      },
-      time: Date.now(),
-    }),
-    delay: 100,
-    logMessage: 'Perps user mock: BTC short position (-0.5 BTC, 15x cross)',
-  },
-];
 
 /**
  * Funded clearing-house state with 10 000 USDC, no open positions.
@@ -721,50 +623,3 @@ export function pushUserFillsClosePositionSnapshot(
     }),
   );
 }
-
-/**
- * ETH long with TP and SL already set.
- * Use for tests that need to verify the auto-close row is already displayed,
- * or to test updating existing TP/SL values.
- */
-export const WS_USER_WITH_ETH_LONG_AND_TPSL: WebSocketMessageMock[] = [
-  {
-    messageIncludes: ['"method":"subscribe"', '"type":"user"'],
-    response: () => ({
-      channel: 'user',
-      data: {
-        positions: [
-          {
-            symbol: 'ETH',
-            size: '2.5',
-            entryPrice: '2850.00',
-            positionValue: '7125.00',
-            unrealizedPnl: '375.00',
-            marginUsed: '2600.00',
-            leverage: { type: 'isolated', value: 3, rawUsd: '2600.00' },
-            liquidationPrice: '2400.00',
-            maxLeverage: 20,
-            returnOnEquity: '0.1579',
-            cumulativeFunding: {
-              allTime: '12.50',
-              sinceOpen: '8.30',
-              sinceChange: '0.00',
-            },
-            takeProfitPrice: '3200.00',
-            stopLossPrice: '2600.00',
-            takeProfitCount: 1,
-            stopLossCount: 1,
-          },
-        ],
-        balances: [{ coin: 'USDC', hold: '2600.00', total: '12500.00' }],
-        accountValue: '12875.00',
-        totalMarginUsed: '2600.00',
-        totalNtlPos: '7125.00',
-        totalRawUsd: '12875.00',
-      },
-      time: Date.now(),
-    }),
-    delay: 100,
-    logMessage: 'Perps user mock: ETH long with TP=$3200 / SL=$2600',
-  },
-];

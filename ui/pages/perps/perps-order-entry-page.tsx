@@ -1264,7 +1264,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
           <Box
             data-testid="perps-order-entry-back-button"
-            onClick={handleBackClick}
+            onClick={() => handleBackClick()}
             aria-label={t('back')}
             className="p-2 cursor-pointer"
           >
