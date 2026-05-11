@@ -64,9 +64,7 @@ function buildSearchableItems(): SettingsSearchResult[] {
  * @param searchValue - Current search input value
  * @returns Matching search results (empty if query is shorter than 3 characters)
  */
-export function useSettingsSearch(
-  searchValue: string,
-): SettingsSearchResult[] {
+export function useSettingsSearch(searchValue: string): SettingsSearchResult[] {
   const t = useSettingsI18n();
 
   const fuse = useMemo(() => {

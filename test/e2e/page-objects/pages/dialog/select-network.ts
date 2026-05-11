@@ -8,8 +8,7 @@ class SelectNetwork {
 
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 
-  private readonly closeButton =
-    '[data-testid="settings-header-back-button"]';
+  private readonly closeButton = '[data-testid="settings-header-back-button"]';
 
   private readonly confirmDeleteNetworkButton = {
     text: 'Delete',
@@ -39,8 +38,7 @@ class SelectNetwork {
   private readonly searchButton =
     '[data-testid="settings-header-search-button"]';
 
-  private readonly searchInput =
-    '[data-testid="settings-header-search-input"]';
+  private readonly searchInput = '[data-testid="settings-header-search-input"]';
 
   private readonly selectNetworkMessage = {
     text: 'Networks',

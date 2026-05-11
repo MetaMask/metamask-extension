@@ -66,11 +66,7 @@ import {
   SETTINGS_RENDERABLE_ROUTES,
   getSettingsRouteMeta,
 } from './settings-registry';
-import {
-  SettingsHeader,
-  SettingsRoot,
-  SettingsSearchResults,
-} from './shared';
+import { SettingsHeader, SettingsRoot, SettingsSearchResults } from './shared';
 import { useSettingsSearch, MIN_SEARCH_LENGTH } from './useSettingsSearch';
 import { useSettingsI18n } from './useSettingsI18n';
 

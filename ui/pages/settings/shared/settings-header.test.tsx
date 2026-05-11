@@ -34,9 +34,7 @@ describe('SettingsHeader', () => {
     );
 
     expect(screen.getByText(messages.settings.message)).toBeInTheDocument();
-    expect(
-      screen.getByTestId('settings-header-search-button'),
-    ).toBeVisible();
+    expect(screen.getByTestId('settings-header-search-button')).toBeVisible();
   });
 
   it('renders close button in end accessory for popup subpages', () => {

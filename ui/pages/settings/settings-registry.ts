@@ -123,8 +123,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     labelKey: 'accountIdenticon',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
     component: mmLazy(
-      () =>
-        import('./preferences-and-display-tab/account-identicon-sub-page'),
+      () => import('./preferences-and-display-tab/account-identicon-sub-page'),
     ),
   },
   [CURRENCY_ROUTE]: {
@@ -198,9 +197,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [THIRD_PARTY_APIS_ROUTE]: {
     labelKey: 'thirdPartyApis',
     parentPath: PRIVACY_ROUTE,
-    component: mmLazy(
-      () => import('./privacy-tab/third-party-apis-sub-page'),
-    ),
+    component: mmLazy(() => import('./privacy-tab/third-party-apis-sub-page')),
   },
 
   // --- Backup and sync tab ---
@@ -243,9 +240,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [TRANSACTION_SHIELD_CLAIMS_WILDCARD_ROUTE]: {
     labelKey: 'shieldClaimsListTitle',
     parentPath: TRANSACTION_SHIELD_ROUTE,
-    component: mmLazy(
-      () => import('../shield/transaction-shield/claims-area'),
-    ),
+    component: mmLazy(() => import('../shield/transaction-shield/claims-area')),
   },
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: {
     labelKey: 'shieldClaim',

@@ -14,10 +14,7 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  SETTINGS_ROOT_SECTIONS,
-  SETTINGS_TABS,
-} from '../settings-registry';
+import { SETTINGS_ROOT_SECTIONS, SETTINGS_TABS } from '../settings-registry';
 
 type RootListItem = {
   id: string;

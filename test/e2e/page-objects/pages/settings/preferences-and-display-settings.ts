@@ -10,8 +10,7 @@ class PreferencesAndDisplaySettings {
   private readonly preferencesTabButton =
     '[data-testid="settings-tab-item-preferences-and-display"]';
 
-  private readonly assetsTabButton =
-    '[data-testid="settings-tab-item-assets"]';
+  private readonly assetsTabButton = '[data-testid="settings-tab-item-assets"]';
 
   private readonly languageSubpageLink = `a[href="#${LANGUAGE_ROUTE}"]`;
 
