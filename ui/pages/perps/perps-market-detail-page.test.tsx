@@ -578,7 +578,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates back in history when back button is clicked', async () => {
+    it('navigates to wallet Perps tab when back button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -586,7 +586,10 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: '/',
+        search: 'tab=perps',
+      });
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {
