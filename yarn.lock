@@ -6121,9 +6121,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/client-mcp-core@npm:0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/client-mcp-core@npm:0.2.0"
+"@metamask/client-mcp-core@npm:0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/client-mcp-core@npm:0.3.0"
   dependencies:
     cosmiconfig: "npm:^9.0.0"
     express: "npm:^5.2.1"
@@ -6133,7 +6133,7 @@ __metadata:
     playwright: ^1.49.0
   bin:
     mm: ./dist/cli/mm.cjs
-  checksum: 10/d5c0a56e92e21d9ef242a3ba80f452bfb1c1bfe15939bcb0790998cb7f3698f55e41a3cdced7aec4a298c724a3c1789e871bbb1d458fc25731bdd4c171b7ed84
+  checksum: 10/58f070b64ac3188e36fcb6a26d7b64e94e6cfa1ca8ebbde7fa09a8e4263150bb4e3a0a6b3e1e46e97942eaa2f8357819295898a79420c7c5ff3cfbdd30112a8c
   languageName: node
   linkType: hard
 
@@ -34158,7 +34158,7 @@ __metadata:
     "@metamask/chain-agnostic-permission": "npm:^1.5.0"
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
-    "@metamask/client-mcp-core": "npm:0.2.0"
+    "@metamask/client-mcp-core": "npm:0.3.0"
     "@metamask/connectivity-controller": "npm:^0.1.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.18.0"
