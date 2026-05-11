@@ -275,6 +275,9 @@ const PrepareBridgePage = ({
       token_symbol_destination: toToken?.symbol ?? '',
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_security_type_destination: toToken?.securityData?.type ?? null,
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       security_warnings: securityWarnings,
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -463,6 +466,10 @@ const PrepareBridgePage = ({
                         : null,
                       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                       // eslint-disable-next-line @typescript-eslint/naming-convention
+                      token_security_type_destination:
+                        toToken?.securityData?.type ?? null,
+                      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                      // eslint-disable-next-line @typescript-eslint/naming-convention
                       security_warnings: securityWarnings,
                     },
                   ),
@@ -597,6 +604,10 @@ const PrepareBridgePage = ({
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   token_symbol_destination: toToken?.symbol ?? '',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_security_type_destination:
+                    toToken?.securityData?.type ?? null,
                   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                   // eslint-disable-next-line @typescript-eslint/naming-convention
                   security_warnings: securityWarnings,

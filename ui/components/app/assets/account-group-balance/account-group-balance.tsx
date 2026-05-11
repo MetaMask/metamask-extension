@@ -5,7 +5,6 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
 import {
   getMultichainNativeTokenBalance,
-  selectAggregatedBalanceForSelectedAccount,
   selectBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
@@ -59,9 +58,6 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   const anyEnabledNetworksAreAvailable = useSelector(
     selectAnyEnabledNetworksAreAvailable,
   );
-  const aggregatedBalance = useSelector(
-    selectAggregatedBalanceForSelectedAccount,
-  );
 
   const caipChainId = isCaipChainId(chainId)
     ? chainId
@@ -109,23 +105,9 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
     ? (selectedGroupBalance.userCurrency ?? fallbackCurrency)
     : undefined;
 
-  const useAggregatedBalance =
-    aggregatedBalance &&
-    (aggregatedBalance.entries.length > 0 ||
-      aggregatedBalance.totalBalanceInFiat !== undefined);
-
   const formattedTotal = useMemo(() => {
     if (showNativeTokenAsMain || isTestnet) {
       return formattedNativeBalance;
-    }
-    if (
-      useAggregatedBalance &&
-      aggregatedBalance?.totalBalanceInFiat !== undefined
-    ) {
-      return formatCurrency(
-        aggregatedBalance.totalBalanceInFiat,
-        fallbackCurrency,
-      );
     }
     if (total === undefined) {
       return null;
@@ -134,12 +116,9 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
   }, [
     showNativeTokenAsMain,
     isTestnet,
-    useAggregatedBalance,
-    aggregatedBalance,
     total,
     formatCurrency,
     currency,
-    fallbackCurrency,
     formattedNativeBalance,
   ]);
 

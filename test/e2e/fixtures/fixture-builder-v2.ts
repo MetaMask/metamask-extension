@@ -25,6 +25,7 @@ import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
+import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
   type NetworkMetadata,
   type NetworkState,
@@ -38,6 +39,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
+import type { PerpsControllerState } from '@metamask/perps-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
@@ -313,6 +315,17 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPerpsController(data: Partial<PerpsControllerState>): this {
+    if (!(this.fixture.data as Record<string, unknown>).PerpsController) {
+      (this.fixture.data as Record<string, unknown>).PerpsController = {};
+    }
+    merge(
+      (this.fixture.data as Record<string, unknown>).PerpsController,
+      data as Record<string, unknown>,
+    );
+    return this;
+  }
+
   withPreferencesController(
     data: Omit<Partial<PreferencesControllerState>, 'preferences'> & {
       preferences?: Partial<Preferences>;
@@ -374,6 +387,11 @@ class FixtureBuilderV2 {
       );
       target.transactions = combined;
     }
+    return this;
+  }
+
+  withUserStorageController(data: Partial<UserStorageControllerState>): this {
+    merge(this.fixture.data.UserStorageController, data);
     return this;
   }
 
@@ -799,7 +817,7 @@ class FixtureBuilderV2 {
       selectedNetworkClientId: seiClientId,
       networkConfigurationsByChainId: {
         [seiChainId]: {
-          blockExplorerUrls: ['https://seitrace.com'],
+          blockExplorerUrls: ['https://seiscan.io'],
           chainId: seiChainId,
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
@@ -1213,6 +1231,14 @@ class FixtureBuilderV2 {
       preferences: {
         smartTransactionsOptInStatus: false,
       },
+    });
+  }
+
+  withSyncDisabled(): this {
+    return this.withUserStorageController({
+      isAccountSyncingEnabled: false,
+      isBackupAndSyncEnabled: false,
+      isContactSyncingEnabled: false,
     });
   }
 

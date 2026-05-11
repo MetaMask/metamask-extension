@@ -137,7 +137,7 @@ import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
 import { Toaster } from '../../components/ui/toast/toast';
-import { ToastListener } from '../../app/toast-listener/toast-listener';
+import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { getConnectingLabel, setTheme } from './utils';
@@ -223,7 +223,7 @@ const SmartAccountPage = mmLazy(
 const NonEvmBalanceCheck = mmLazy(
   () => import('../nonevm-balance-check/index.tsx'),
 );
-const ShieldPlan = mmLazy(() => import('../shield-plan/index.ts'));
+const ShieldPlan = mmLazy(() => import('../shield/plan/index.ts'));
 const PerpsMarketDetailPage = mmLazy(
   () => import('../perps/perps-market-detail-page.tsx'),
 );
@@ -700,7 +700,7 @@ export default function Routes() {
       <ToastListener />
 
       <QRHardwarePopover />
-      <Modal />
+      {isUnlocked ? <Modal /> : null}
       <Alert visible={alertOpen} msg={alertMessage} />
 
       <NetworkConfirmationPopover />
@@ -741,7 +741,7 @@ export default function Routes() {
       <ToastMaster />
 
       {isUnlocked ? <Toaster /> : null}
-      <Modals />
+      {isUnlocked ? <Modals /> : null}
     </div>
   );
 }

@@ -25,7 +25,7 @@ describe('PerpsWithdrawBalance', () => {
 
   it('renders the formatted Perps available balance', () => {
     usePerpsLiveAccountMock.mockReturnValue({
-      account: { availableBalance: '1232.39' } as never,
+      account: { spendableBalance: '1232.39' } as never,
       isInitialLoading: false,
     });
 
@@ -37,6 +37,24 @@ describe('PerpsWithdrawBalance', () => {
           `${messages.perpsAvailableBalance.message}\\$1,232\\.39`,
           'u',
         ),
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('prefers available-to-trade balance when provided', () => {
+    usePerpsLiveAccountMock.mockReturnValue({
+      account: {
+        spendableBalance: '0',
+        withdrawableBalance: '456.78',
+      } as never,
+      isInitialLoading: false,
+    });
+
+    renderBalance();
+
+    expect(
+      screen.getByText(
+        new RegExp(`${messages.perpsAvailableBalance.message}\\$456\\.78`, 'u'),
       ),
     ).toBeInTheDocument();
   });
