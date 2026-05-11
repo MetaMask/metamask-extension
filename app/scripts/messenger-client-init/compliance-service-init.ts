@@ -2,13 +2,11 @@ import {
   ComplianceService,
   type ComplianceServiceMessenger,
 } from '@metamask/compliance-controller';
-import { ENVIRONMENT } from '../../../development/build/constants';
+import { isProduction } from '../../../shared/lib/environment';
 import { MessengerClientInitFunction } from './types';
 
 function getComplianceServiceEnvironment(): 'production' | 'development' {
-  return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.PRODUCTION
-    ? 'production'
-    : 'development';
+  return isProduction() ? 'production' : 'development';
 }
 
 /**
