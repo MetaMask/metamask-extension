@@ -35,6 +35,137 @@ export type ParsedAdvisory = {
   dependents: string[];
 };
 
+const YARN_SEVERITIES: ReadonlySet<YarnSeverity> = new Set([
+  'info',
+  'low',
+  'moderate',
+  'high',
+  'critical',
+]);
+
+/** Effective severities that block the build (moderate and above). */
+export const BLOCKING_SEVERITIES: ReadonlySet<YarnSeverity> = new Set([
+  'moderate',
+  'high',
+  'critical',
+]);
+
+export function advisoryIdentityKey(
+  advisory: Pick<ParsedAdvisory, 'id' | 'moduleName' | 'title' | 'url'>,
+): string {
+  const moduleName = advisory.moduleName.trim();
+  const ghsaId = advisory.url.match(/github\.com\/advisories\/(GHSA-[\w-]+)/iu);
+
+  if (ghsaId?.[1]) {
+    return `${moduleName}|ghsa:${ghsaId[1].toUpperCase()}`;
+  }
+
+  const normalizedUrl = advisory.url.trim().replace(/\/+$/u, '').toLowerCase();
+  if (normalizedUrl) {
+    return `${moduleName}|url:${normalizedUrl}`;
+  }
+
+  if (advisory.id !== null) {
+    return `${moduleName}|id:${advisory.id}`;
+  }
+
+  return `${moduleName}|title:${advisory.title.trim().toLowerCase()}`;
+}
+
+export function isBlockingAdvisory(advisory: ParsedAdvisory): boolean {
+  return (
+    advisory.affectsProduction &&
+    BLOCKING_SEVERITIES.has(advisory.effectiveSeverity)
+  );
+}
+
+export function uniqueAdvisoriesByIdentity(
+  advisories: ParsedAdvisory[],
+): ParsedAdvisory[] {
+  const seen = new Set<string>();
+  const result: ParsedAdvisory[] = [];
+
+  for (const advisory of advisories) {
+    const key = advisoryIdentityKey(advisory);
+    if (seen.has(key)) {
+      continue;
+    }
+    seen.add(key);
+    result.push(advisory);
+  }
+
+  return result;
+}
+
+export function mergeAdvisoriesByIdentity(
+  advisories: ParsedAdvisory[],
+): ParsedAdvisory[] {
+  const merged = new Map<string, ParsedAdvisory>();
+
+  for (const advisory of advisories) {
+    const key = advisoryIdentityKey(advisory);
+    const existing = merged.get(key);
+    if (!existing) {
+      merged.set(key, {
+        ...advisory,
+        treeVersions: [...new Set(advisory.treeVersions)],
+        dependents: [...new Set(advisory.dependents)],
+      });
+      continue;
+    }
+
+    const primary =
+      advisory.affectsProduction && !existing.affectsProduction
+        ? advisory
+        : existing;
+    const affectsProduction =
+      existing.affectsProduction || advisory.affectsProduction;
+
+    merged.set(key, {
+      ...primary,
+      id: primary.id ?? existing.id ?? advisory.id,
+      affectsProduction,
+      isDevOnly: !affectsProduction,
+      treeVersions: [
+        ...new Set([...existing.treeVersions, ...advisory.treeVersions]),
+      ],
+      dependents: [
+        ...new Set([...existing.dependents, ...advisory.dependents]),
+      ],
+    });
+  }
+
+  return [...merged.values()];
+}
+
+export function diffAdvisories(
+  current: ParsedAdvisory[],
+  baseline: ParsedAdvisory[],
+): {
+  allNewAdvisories: ParsedAdvisory[];
+  newlyBlockingAdvisories: ParsedAdvisory[];
+} {
+  const baselineIdentityKeys = new Set(
+    baseline.map((advisory) => advisoryIdentityKey(advisory)),
+  );
+  const baselineBlockingIdentityKeys = new Set(
+    baseline
+      .filter(isBlockingAdvisory)
+      .map((advisory) => advisoryIdentityKey(advisory)),
+  );
+
+  return {
+    allNewAdvisories: current.filter(
+      (advisory) => !baselineIdentityKeys.has(advisoryIdentityKey(advisory)),
+    ),
+    newlyBlockingAdvisories: current.filter(
+      (advisory) =>
+        isBlockingAdvisory(advisory) &&
+        !baselineBlockingIdentityKeys.has(advisoryIdentityKey(advisory)),
+    ),
+  };
+}
+
 // ---------------------------------------------------------------------------
 // GitHub Actions helpers
 // ---------------------------------------------------------------------------
@@ -68,22 +199,16 @@ export function stripAnsi(text: string): string {
   return text.replace(/\x1b\[[0-9;]*m/g, '');
 }
 
-/** Effective severities that block the build (moderate and above). */
-export const BLOCKING_SEVERITIES: ReadonlySet<YarnSeverity> = new Set([
-  'moderate',
-  'high',
-  'critical',
-]);
-
 // ---------------------------------------------------------------------------
 // Advisory I/O
 // ---------------------------------------------------------------------------
 
-/** Default undefined/missing severity to 'info'. */
-export function normalizeSeverity(
-  severity: YarnSeverity | undefined,
-): YarnSeverity {
-  return severity ?? 'info';
+/** Default missing or unexpected severity labels to 'info'. */
+export function normalizeSeverity(severity: string | undefined): YarnSeverity {
+  if (severity && YARN_SEVERITIES.has(severity as YarnSeverity)) {
+    return severity as YarnSeverity;
+  }
+  return 'info';
 }
 
 /** Read a JSON array of ParsedAdvisory from disk. Returns null on I/O error. */
@@ -121,6 +246,57 @@ export function extractNativeBlocks(
     const idMatch = plain.match(/ID:\s*(\d+)/);
     return idMatch !== null && ids.has(Number(idMatch[1]));
   });
+}
+
+/**
+ * Render selected advisories using Yarn's native audit blocks when available,
+ * falling back to the normalized JSON representation when native output cannot
+ * be matched by advisory ID. Native blocks are an advisory-level enhancement,
+ * not an all-or-nothing replacement, so a partial native match cannot hide
+ * unmatched advisories from the rendered output.
+ */
+export function formatAdvisoryTreeText(
+  advisories: ParsedAdvisory[],
+  nativeOutput?: string,
+  { stripAnsiOutput = false }: { stripAnsiOutput?: boolean } = {},
+): string {
+  const advisoryIds = new Set(
+    advisories.map((a) => a.id).filter((id): id is number => id !== null),
+  );
+  const nativeBlocksById = new Map<number, string[]>();
+  const nativeBlocks =
+    nativeOutput && advisoryIds.size > 0
+      ? extractNativeBlocks(nativeOutput, advisoryIds)
+      : [];
+
+  // Keep all native blocks for an ID; `--all` output can include the same
+  // advisory through multiple paths or environments.
+  for (const nativeBlock of nativeBlocks) {
+    const plain = stripAnsi(nativeBlock);
+    const idMatch = plain.match(/ID:\s*(\d+)/);
+    if (!idMatch) {
+      continue;
+    }
+
+    const id = Number(idMatch[1]);
+    const renderedBlock = stripAnsiOutput ? plain : nativeBlock;
+    nativeBlocksById.set(id, [
+      ...(nativeBlocksById.get(id) ?? []),
+      renderedBlock,
+    ]);
+  }
+
+  return advisories
+    .map((advisory) => {
+      if (advisory.id === null) {
+        return formatAdvisoryTree(advisory);
+      }
+
+      const matchingBlocks = nativeBlocksById.get(advisory.id);
+      // Fall back per advisory so unmatched IDs still appear in the details.
+      return matchingBlocks?.shift() ?? formatAdvisoryTree(advisory);
+    })
+    .join('\n\n');
 }
 
 /** Format an advisory in the same tree style as `yarn npm audit` (plain text). */
