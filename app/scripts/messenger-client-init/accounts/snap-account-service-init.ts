@@ -1,6 +1,6 @@
-import { SnapAccountService } from '@metamask/snap-account-service';
-import { MessengerClientInitFunction } from '../types';
-import { SnapAccountServiceMessenger } from '../messengers/accounts';
+import { SnapAccountService } from "@metamask/snap-account-service";
+import { MessengerClientInitFunction } from "../types";
+import { SnapAccountServiceMessenger } from "../messengers/accounts";
 
 /**
  * Initialize the Snap account service.
@@ -19,7 +19,7 @@ export const SnapAccountServiceInit: MessengerClientInitFunction<
     config: {
       snapPlatformWatcher: {
         ensureOnboardingComplete,
-      }
+      },
     },
   });
 

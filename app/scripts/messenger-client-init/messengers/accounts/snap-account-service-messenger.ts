@@ -1,10 +1,6 @@
-import {
-  Messenger,
-  MessengerActions,
-  MessengerEvents,
-} from '@metamask/messenger';
-import { SnapAccountServiceMessenger as ServiceMessenger } from '@metamask/snap-account-service';
-import { RootMessenger } from '../../../lib/messenger';
+import { Messenger, MessengerActions, MessengerEvents } from "@metamask/messenger";
+import { SnapAccountServiceMessenger as ServiceMessenger } from "@metamask/snap-account-service";
+import { RootMessenger } from "../../../lib/messenger";
 
 type Actions = MessengerActions<ServiceMessenger>;
 type Events = MessengerEvents<ServiceMessenger>;
@@ -19,18 +15,10 @@ export type SnapAccountServiceMessenger = ServiceMessenger;
  * @returns The restricted controller messenger.
  */
 export function getSnapAccountServiceMessenger(
-  messenger: RootMessenger<
-    Actions,
-    Events
-  >,
+  messenger: RootMessenger<Actions, Events>,
 ): SnapAccountServiceMessenger {
-  const serviceMessenger = new Messenger<
-    'SnapAccountService',
-    Actions,
-    Events,
-    typeof messenger
-  >({
-    namespace: 'SnapAccountService',
+  const serviceMessenger = new Messenger<"SnapAccountService", Actions, Events, typeof messenger>({
+    namespace: "SnapAccountService",
     parent: messenger,
   });
   messenger.delegate({
@@ -38,19 +26,19 @@ export function getSnapAccountServiceMessenger(
     actions: [
       // 'KeyringController:withController',
       // 'KeyringController:withKeyringV2Unsafe',
-      'KeyringController:getState',
-      'SnapController:getState',
-      'SnapController:getRunnableSnaps',
+      "KeyringController:getState",
+      "SnapController:getState",
+      "SnapController:getRunnableSnaps",
     ],
     events: [
-      'KeyringController:stateChange',
-      'SnapController:stateChange',
-      'SnapController:snapInstalled',
-      'SnapController:snapEnabled',
-      'SnapController:snapDisabled',
-      'SnapController:snapBlocked',
-      'SnapController:snapUnblocked',
-      'SnapController:snapUninstalled',
+      "KeyringController:stateChange",
+      "SnapController:stateChange",
+      "SnapController:snapInstalled",
+      "SnapController:snapEnabled",
+      "SnapController:snapDisabled",
+      "SnapController:snapBlocked",
+      "SnapController:snapUnblocked",
+      "SnapController:snapUninstalled",
     ],
   });
   return serviceMessenger;
