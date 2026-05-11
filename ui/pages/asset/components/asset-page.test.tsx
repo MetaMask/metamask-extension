@@ -402,7 +402,7 @@ describe('AssetPage', () => {
     expect(buyButton).toBeEnabled();
   });
 
-  it('should disable the buy button on unsupported chains', () => {
+  it('should enable the buy button even when the current chain is not in buyableChains', () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -411,11 +411,12 @@ describe('AssetPage', () => {
           ...mockStore.metamask,
           ...mockNetworkState({ chainId: CHAIN_IDS.SEPOLIA }),
         },
+        ramps: { buyableChains: [], isFetched: true },
       }),
     );
     const buyButton = queryByTestId('token-overview-buy');
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
+    expect(buyButton).toBeEnabled();
   });
 
   it('should open the buy crypto URL for a buyable chain ID', async () => {
