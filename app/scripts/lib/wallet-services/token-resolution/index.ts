@@ -50,7 +50,11 @@ export type TokenResolutionMessenger = {
     networkClientId?: string,
   ): Promise<
     | {
-        balance?: string | number | bigint | { toString(radix?: number): string };
+        balance?:
+          | string
+          | number
+          | bigint
+          | { toString(radix?: number): string };
         decimals?:
           | string
           | number
@@ -373,18 +377,15 @@ export function registerActions(
       )) as (...args: unknown[]) => unknown,
   );
 
-  messenger.registerActionHandler(
-    'TokenResolution:getBalancesInSingleCall',
-    ((
-      selectedAddress: string,
-      tokensToDetect: string[],
-      networkClientId?: string,
-    ) =>
-      getBalancesInSingleCall(
-        messenger,
-        selectedAddress,
-        tokensToDetect,
-        networkClientId,
-      )) as (...args: unknown[]) => unknown,
-  );
+  messenger.registerActionHandler('TokenResolution:getBalancesInSingleCall', ((
+    selectedAddress: string,
+    tokensToDetect: string[],
+    networkClientId?: string,
+  ) =>
+    getBalancesInSingleCall(
+      messenger,
+      selectedAddress,
+      tokensToDetect,
+      networkClientId,
+    )) as (...args: unknown[]) => unknown);
 }
