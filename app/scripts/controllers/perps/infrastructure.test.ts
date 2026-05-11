@@ -263,9 +263,7 @@ describe('createPerpsInfrastructure', () => {
 
           // Real-world shape: WebSocketRequestError { cause: ReconnectingWebSocketError { code } }
           const cause = Object.assign(
-            new Error(
-              'Error when reconnecting WebSocket: TERMINATED_BY_USER',
-            ),
+            new Error('Error when reconnecting WebSocket: TERMINATED_BY_USER'),
             {
               name: 'ReconnectingWebSocketError',
               code: 'TERMINATED_BY_USER',
