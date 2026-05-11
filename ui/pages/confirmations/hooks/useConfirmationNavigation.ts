@@ -6,7 +6,7 @@ import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates/approval-types';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -154,7 +154,11 @@ export function getConfirmationRoute(
 
   const type = nextConfirmation.type as ApprovalType;
 
-  if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
+  if (
+    TEMPLATED_CONFIRMATION_APPROVAL_TYPES.find(
+      (approvalType) => approvalType === type,
+    ) !== undefined
+  ) {
     return `${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`;
   }
 
