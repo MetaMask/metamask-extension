@@ -27,6 +27,32 @@ describe('getIsTokenManagementFilterEnabled', () => {
     ).toBe(false);
   });
 
+  it('returns false when the flag object is disabled', () => {
+    expect(
+      getIsTokenManagementFilterEnabled(
+        buildState({
+          extensionUxTokenManagementFilter: {
+            enabled: false,
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns true when the flag object is enabled', () => {
+    expect(
+      getIsTokenManagementFilterEnabled(
+        buildState({
+          extensionUxTokenManagementFilter: {
+            enabled: true,
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
   it('returns false when the flag is missing', () => {
     expect(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

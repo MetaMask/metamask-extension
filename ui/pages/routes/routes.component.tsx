@@ -141,6 +141,7 @@ import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -255,6 +256,18 @@ const SettingsV2LegacyRedirect = () => {
   return <Navigate to={`${canonicalPath}${search}${hash}`} replace />;
 };
 
+export const TokenManagementFeatureRoute = () => {
+  const isTokenManagementFilterEnabled = useAppSelector(
+    getIsTokenManagementFilterEnabled,
+  );
+
+  if (!isTokenManagementFilterEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  return <TokenManagementPage />;
+};
+
 export const routeConfig = [
   {
     element: <LegacyLayout />,
@@ -307,7 +320,7 @@ export const routeConfig = [
       },
       {
         path: TOKEN_MANAGEMENT_ROUTE,
-        element: <TokenManagementPage />,
+        element: <TokenManagementFeatureRoute />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
