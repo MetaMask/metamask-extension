@@ -69,7 +69,7 @@ export function getPasskeyErrorCode(err: unknown): string {
       return 'user_cancelled';
     }
   }
-  return getPasskeyControllerErrorCode(err) ?? "unknown";
+  return getPasskeyControllerErrorCode(err) ?? 'unknown';
 }
 
 function translatePasskeyCode(

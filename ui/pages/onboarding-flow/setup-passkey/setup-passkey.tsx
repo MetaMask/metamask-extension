@@ -280,7 +280,7 @@ export default function SetupPasskey() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - enrollmentStartedAt,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_code: getPasskeyControllerErrorCode(error) ?? "",
+          error_code: getPasskeyControllerErrorCode(error) ?? '',
         },
       });
       if (isMountedRef.current) {
@@ -296,7 +296,15 @@ export default function SetupPasskey() {
         setVerifyStepPhase((prev) => (prev === 'loading' ? 'idle' : prev));
       }
     }
-  }, [baseProperties, dispatch, goToNextStep, store, t, passkeyMethodLabel, trackEvent]);
+  }, [
+    baseProperties,
+    dispatch,
+    goToNextStep,
+    store,
+    t,
+    passkeyMethodLabel,
+    trackEvent,
+  ]);
 
   if (isPasskeyRegistered && !isEnrollmentInProgress) {
     return null;

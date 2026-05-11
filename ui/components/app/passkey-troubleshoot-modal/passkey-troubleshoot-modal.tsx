@@ -27,10 +27,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import {
-  getAccountType,
-  getPasskeyDerivationMethod,
-} from '../../../selectors';
+import { getAccountType, getPasskeyDerivationMethod } from '../../../selectors';
 
 export type PasskeyTroubleshootModalMode = 'unlock' | 'verify';
 

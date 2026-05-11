@@ -39,10 +39,7 @@ import {
 import { UNLOCK_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getAccountType,
-  getPasskeyDerivationMethod,
-} from '../../../selectors';
+import { getAccountType, getPasskeyDerivationMethod } from '../../../selectors';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 
 export type UnlockPasskeySectionProps = {

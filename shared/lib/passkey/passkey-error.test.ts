@@ -190,9 +190,9 @@ describe('getPasskeyControllerErrorCode', () => {
 
 describe('getPasskeyErrorCode', () => {
   it('returns timeout for PasskeyCeremonyTimeoutError', () => {
-    expect(
-      getPasskeyErrorCode(new PasskeyCeremonyTimeoutError()),
-    ).toBe('timeout');
+    expect(getPasskeyErrorCode(new PasskeyCeremonyTimeoutError())).toBe(
+      'timeout',
+    );
   });
 
   it('returns user_cancelled for NotAllowedError and AbortError', () => {
