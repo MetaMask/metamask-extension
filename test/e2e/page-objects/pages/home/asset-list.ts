@@ -393,9 +393,9 @@ class AssetListPage {
       await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
       await this.driver.clickElement({ text: name, tag: 'p' });
       await this.driver.waitForSelector(this.tokenSearchSelected);
-      await this.driver.delay(3000);
     }
     await this.driver.clickElement(this.importTokensNextButton);
+    await this.waitUntilConfirmTokenCount(tokenNames.length);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
     );
@@ -886,6 +886,21 @@ class AssetListPage {
         timeout: this.driver.timeout,
         interval: 200,
         stableFor: veryLargeDelayMs,
+      },
+    );
+  }
+
+  async waitUntilConfirmTokenCount(numberOfPendingTokens: number) {
+    await this.driver.waitUntil(
+      async () => {
+        const confirmTokens = await this.driver.findElements(
+          this.tokenConfirmListItem,
+        );
+        return confirmTokens.length === numberOfPendingTokens;
+      },
+      {
+        timeout: this.driver.timeout,
+        interval: 200,
       },
     );
   }
