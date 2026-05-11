@@ -5,7 +5,7 @@ import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
-import { getConfig } from './helpers';
+import { getPerpsConfigEligible } from './perps-fixture-config';
 
 async function waitForPerpsWebsocketConnections(
   driver: Driver,
@@ -42,7 +42,7 @@ describe.skip('Perps Web Socket', function (this: Suite) {
   it('a websocket connection is open when Perps view is open', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -59,7 +59,7 @@ describe.skip('Perps Web Socket', function (this: Suite) {
   it('the websocket connection is maintained for a grace period when MetaMask window is closed', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
@@ -83,7 +83,7 @@ describe.skip('Perps Web Socket', function (this: Suite) {
   it('websocket connection is shared between multiple MetaMask windows', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
