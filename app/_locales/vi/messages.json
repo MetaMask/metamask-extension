@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Ví cứng"
   },
-  "addIPFSGateway": {
-    "message": "Thêm cổng IPFS ưa thích của bạn"
-  },
   "addMemo": {
     "message": "Thêm bản ghi nhớ"
   },
@@ -1545,9 +1542,6 @@
     "message": "Khi bạn sử dụng các chế độ cài đặt và cấu hình mặc định của chúng tôi, chúng tôi sử dụng Infura làm nhà cung cấp gọi hàm từ xa (RPC) mặc định để cung cấp quyền truy cập dữ liệu Ethereum đáng tin cậy và riêng tư nhất có thể. Trong một số trường hợp giới hạn, chúng tôi có thể sử dụng các nhà cung cấp RPC khác nhằm mang đến trải nghiệm tốt nhất cho người dùng. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ nhận được địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Để tìm hiểu thêm về cách Infura xử lý dữ liệu đối với các tài khoản EVM, hãy đọc $1, và đối với các tài khoản Solana, hãy đọc $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "nhấp vào đây"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Bạn cần sử dụng MetaMask trên Google Chrome để kết nối với Ví cứng của bạn."
   },
@@ -2217,12 +2211,6 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Nhận thông tin cập nhật về sản phẩm, lời khuyên và tin tức - bao gồm qua email. Chúng tôi có thể sử dụng cách tương tác của bạn để cải thiện nội dung chia sẻ."
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Đồng ý"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Bạn đã tắt tùy chọn thu thập dữ liệu cho mục đích tiếp thị của chúng tôi. Thao tác này chỉ áp dụng cho thiết bị này. Nếu bạn sử dụng MetaMask trên các thiết bị khác, nhớ chọn không tham gia trên các thiết bị đó."
-  },
   "dataUnavailable": {
     "message": "dữ liệu không khả dụng"
   },
@@ -2811,10 +2799,6 @@
   "errorCode": {
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "Chi tiết lỗi",
-    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Lỗi khi lấy danh sách chuỗi an toàn, vui lòng tiếp tục một cách thận trọng."
@@ -7184,12 +7168,6 @@
   "securityChangePassword": {
     "message": "Thay đổi mật khẩu"
   },
-  "securityChangePasswordDescription": {
-    "message": "Chọn một mật khẩu mạnh để mở khóa ứng dụng MetaMask trên thiết bị của bạn. Nếu bạn mất mật khẩu này, bạn sẽ cần Cụm từ khôi phục bí mật để nhập lại ví."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Mật khẩu"
-  },
   "securityChangePasswordToastError": {
     "message": "Không thể thay đổi mật khẩu. Vui lòng thử lại."
   },
@@ -7201,16 +7179,6 @@
   },
   "securityDescription": {
     "message": "Giảm khả năng tham gia các mạng không an toàn và bảo vệ tài khoản của bạn"
-  },
-  "securityLoginWithSocial": {
-    "message": "Đăng nhập bằng $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Cụm từ khôi phục bí mật đã được sao lưu"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Sao lưu Cụm từ khôi phục bí mật"
   },
   "securityMessageLinkForNetworks": {
     "message": "lừa đảo mạng và rủi ro bảo mật"
@@ -7233,14 +7201,8 @@
     "message": "KHÔI PHỤC $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Sao lưu Cụm từ khôi phục bí mật để bạn không bao giờ mất quyền truy cập vào ví. Hãy chắc chắn lưu trữ cụm từ này ở nơi an toàn mà chỉ bạn mới có thể truy cập và không bị quên."
-  },
   "securitySrpLabel": {
     "message": "CỤM TỪ KHÔI PHỤC BÍ MẬT"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Quản lý phương thức khôi phục"
   },
   "seeAllPermissions": {
     "message": "Xem tất cả quyền",
@@ -8204,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Yêu cầu tài khoản thông minh từ dapp"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Cùng địa chỉ. Tính năng thông minh hơn."
   },
@@ -8218,9 +8177,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Địa chỉ người nhận có thể không hỗ trợ chuyển khoản token trực tiếp, điều này có thể dẫn đến mất tiền. Chỉ tiếp tục nếu bạn chắc chắn hợp đồng này có thể nhận khoản chuyển của bạn."
-  },
-  "smartContracts": {
-    "message": "Hợp đồng thông minh"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Không có đủ tiền để thực hiện hoán đổi thông minh."
@@ -8736,9 +8692,6 @@
     "message": "Vẫn đang kết nối với $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Vẫn nhận được thông báo này?"
-  },
   "storageErrorAction": {
     "message": "Sao lưu Cụm từ khôi phục bí mật"
   },
@@ -8842,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Ngôn ngữ được hỗ trợ",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Tham gia khảo sát của chúng tôi"
-  },
-  "surveyTitle": {
-    "message": "Định hình tương lai của MetaMask"
   },
   "swap": {
     "message": "Hoán đổi"
@@ -9244,9 +9191,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Đã thêm token."
-  },
-  "tokenAutoDetection": {
-    "message": "Tự động phát hiện token"
   },
   "tokenContractAddress": {
     "message": "Địa chỉ hợp đồng của token"

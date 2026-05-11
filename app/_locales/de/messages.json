@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Hardware-Wallet"
   },
-  "addIPFSGateway": {
-    "message": "Fügen Sie Ihr bevorzugtes IPFS-Gateway hinzu."
-  },
   "addMemo": {
     "message": "Notiz hinzufügen"
   },
@@ -1545,9 +1542,6 @@
     "message": "Wenn Sie unsere Standardeinstellungen und -konfigurationen verwenden, nutzen wir Infura als Standard-RPC-Anbieter (Remote Procedure Call), um einen möglichst zuverlässigen und privaten Zugriff auf Ethereum-Daten zu gewährleisten. In Ausnahmefällen können wir auch andere RPC-Anbieter einsetzen, um unseren Nutzern das bestmögliche Erlebnis zu bieten. Sie können Ihren eigenen RPC wählen, doch bedenken Sie dabei, dass jeder RPC Ihre IP-Adresse und Ihr Ethereum-Wallet zur Durchführung von Transaktionen erhalten wird. Weitere Informationen darüber, wie Infura Daten für EVM-Konten verarbeitet, finden Sie in unserer $1 und für Solana-Konten in der $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "klicken Sie hier"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrer Hardware-Wallet zu verbinden."
   },
@@ -2217,12 +2211,6 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Erhalten Sie Produkt-Updates, Tipps und Neuigkeiten – auch per E-Mail. Wir können Ihre Interaktionen zur Verbesserung unseres Angebots nutzen."
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Okay"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Sie haben die Datenerhebung für unsere Marketingzwecke deaktiviert. Dies gilt nur für dieses Gerät. Wenn Sie MetaMask auf anderen Geräten verwenden, stellen Sie sicher, dass Sie sich auch dort abmelden."
-  },
   "dataUnavailable": {
     "message": "Daten nicht verfügbar"
   },
@@ -2811,10 +2799,6 @@
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "Fehlerdetails",
-    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Fehler beim Abrufen der Liste sicherer Ketten, bitte mit Vorsicht fortfahren."
@@ -7180,12 +7164,6 @@
   "securityChangePassword": {
     "message": "Passwort ändern"
   },
-  "securityChangePasswordDescription": {
-    "message": "Wählen Sie ein sicheres Passwort, um die MetaMask-App auf Ihrem Gerät zu entsperren. Wenn Sie dieses Passwort verlieren, benötigen Sie für den erneuten Import Ihrer Wallet Ihre geheime Wiederherstellungsphrase."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Passwort"
-  },
   "securityChangePasswordToastError": {
     "message": "Passwort konnte nicht geändert werden. Bitte versuchen Sie es erneut."
   },
@@ -7197,16 +7175,6 @@
   },
   "securityDescription": {
     "message": "Verringern Sie das Risiko, sich mit unsicheren Netzwerken zu verbinden und sichern Sie Ihre Konten"
-  },
-  "securityLoginWithSocial": {
-    "message": "Mit $1 anmelden",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Geheime Wiederherstellungsphrase gesichert"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Geheime Wiederherstellungsphrase sichern"
   },
   "securityMessageLinkForNetworks": {
     "message": "Netzwerk-Betrügereien und Sicherheitsrisiken"
@@ -7229,14 +7197,8 @@
     "message": "$1 WIEDERHERSTELLUNG",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Sichern Sie Ihre geheime Wiederherstellungsphrase, damit Sie nie den Zugriff auf Ihre Wallet verlieren. Bewahren Sie sie an einem sicheren Ort auf, auf den nur Sie Zugriff haben und den Sie nie vergessen werden."
-  },
   "securitySrpLabel": {
     "message": "GEHEIME WIEDERHERSTELLUNGSPHRASEN"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Wiederherstellungsmethoden verwalten"
   },
   "seeAllPermissions": {
     "message": "Alle Genehmigungen ansehen",
@@ -8200,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Anfragen für Smart-Konten von Dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Lassen Sie Dapps die Smart-Konto-Funktionen für Standardkonten anfordern. Dies wirkt sich nicht auf bereits bestehende Smart-Konten aus."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Dieselbe Adresse. Intelligentere Funktionen."
   },
@@ -8214,9 +8173,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Die Empfängeradresse unterstützt womöglich keine direkten Token-Übertragungen, was zu Geldverlusten führen kann. Fahren Sie nur fort, wenn Sie sicher sind, dass dieser Contract Ihre Übertragung empfangen kann."
-  },
-  "smartContracts": {
-    "message": "Smart Contracts"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Nicht genügend Gelder für einen Smart Swap."
@@ -8732,9 +8688,6 @@
     "message": "Noch beim Verbindungsaufbau zu $1 ...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Erhalten Sie diese Meldung immer noch?"
-  },
   "storageErrorAction": {
     "message": "Geheime Wiederherstellungsphrase sichern"
   },
@@ -8838,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Unterstützte Sprachen",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Nehmen Sie an unserer Umfrage teil"
-  },
-  "surveyTitle": {
-    "message": "Gestalten Sie die Zukunft von MetaMask"
   },
   "swap": {
     "message": "Swap"
@@ -9240,9 +9187,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Token wurde bereits hinzugefügt."
-  },
-  "tokenAutoDetection": {
-    "message": "Automatische Token-Erkennung"
   },
   "tokenContractAddress": {
     "message": "Token-Contract-Adresse"

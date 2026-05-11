@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Portefeuille matériel"
   },
-  "addIPFSGateway": {
-    "message": "Ajoutez votre passerelle IPFS préférée"
-  },
   "addMemo": {
     "message": "Ajouter un mémo"
   },
@@ -1545,9 +1542,6 @@
     "message": "Lorsque vous utilisez nos paramètres et configurations par défaut, nous utilisons Infura comme fournisseur de RPC (appel de procédure à distance) par défaut, afin d’offrir l’accès le plus fiable et le plus privé possible aux données Ethereum.\nDans certains cas limités, nous pouvons utiliser d’autres fournisseurs de RPC afin de garantir la meilleure expérience utilisateur possible. Vous pouvez choisir votre propre RPC, mais n’oubliez pas que tout RPC a besoin d’accéder à votre adresse IP et à l’adresse de votre portefeuille Ethereum pour valider les transactions. Pour en savoir plus sur la façon dont Infura gère les données pour les comptes EVM, lisez notre $1, et pour les comptes Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "cliquez ici"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Pour connecter votre portefeuille matériel, vous devez utiliser MetaMask pour Google Chrome."
   },
@@ -2217,12 +2211,6 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Recevez des mises à jour sur les produits, des conseils et des nouvelles, notamment par e-mail. Nous pouvons utiliser vos interactions pour trier le contenu que nous partageons avec vous."
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "OK"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Vous avez désactivé la collecte de données à des fins de marketing. Cela ne s’applique qu’à cet appareil. Si vous utilisez MetaMask sur d’autres appareils, n’oubliez pas de désactiver cette fonctionnalité sur ces appareils aussi."
-  },
   "dataUnavailable": {
     "message": "données non disponibles"
   },
@@ -2811,10 +2799,6 @@
   "errorCode": {
     "message": "Code : $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "Détails de l’erreur",
-    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Erreur lors de l’obtention de la liste des chaînes sécurisées, veuillez continuer avec précaution."
@@ -7180,12 +7164,6 @@
   "securityChangePassword": {
     "message": "Modifier le mot de passe"
   },
-  "securityChangePasswordDescription": {
-    "message": "Choisissez un mot de passe fort pour déverrouiller l’application MetaMask sur votre appareil. Si vous oubliez ce mot de passe, vous aurez besoin de votre phrase secrète de récupération pour réimporter votre portefeuille."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Mot de passe"
-  },
   "securityChangePasswordToastError": {
     "message": "Le mot de passe n’a pas pu être modifié. Veuillez réessayer."
   },
@@ -7197,16 +7175,6 @@
   },
   "securityDescription": {
     "message": "Réduisez le risque de rejoindre des réseaux dangereux et protégez vos comptes"
-  },
-  "securityLoginWithSocial": {
-    "message": "Se connecter avec $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Phrase secrète de récupération sauvegardée"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Sauvegarder la phrase secrète de récupération privée"
   },
   "securityMessageLinkForNetworks": {
     "message": "arnaques et risques de piratage informatique"
@@ -7229,14 +7197,8 @@
     "message": "RÉCUPÉRATION $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Sauvegardez votre phrase secrète de récupération pour ne jamais perdre l’accès à votre portefeuille. Veillez à la conserver dans un endroit sûr auquel personne d’autre que vous ne peut y accéder et que vous ne risquez pas d’oublier."
-  },
   "securitySrpLabel": {
     "message": "PHRASES SECRÈTES DE RÉCUPÉRATION"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Gérer les méthodes de récupération"
   },
   "seeAllPermissions": {
     "message": "Voir toutes les autorisations",
@@ -8200,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Demandes de comptes intelligents émanant de dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Autoriser les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. Cela n’affectera pas les comptes qui sont déjà des comptes intelligents."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Même adresse. Des fonctionnalités plus intelligentes."
   },
@@ -8214,9 +8173,6 @@
   },
   "smartContractAddressWarning": {
     "message": "L’adresse du destinataire ne prend peut-être pas en charge les transferts directs de jetons, ce qui pourrait entraîner une perte de fonds. Ne poursuivez que si vous êtes certain que ce contrat est capable de recevoir votre transfert."
-  },
-  "smartContracts": {
-    "message": "Contrats intelligents"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Fonds insuffisants pour souscrire un contrat de swap intelligent."
@@ -8732,9 +8688,6 @@
     "message": "Toujours en cours de connexion à $1…",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Vous recevez toujours ce message ?"
-  },
   "storageErrorAction": {
     "message": "Sauvegarder la phrase secrète de récupération"
   },
@@ -8838,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Langues prises en charge",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Répondez à notre sondage"
-  },
-  "surveyTitle": {
-    "message": "Façonnez l’avenir de MetaMask"
   },
   "swap": {
     "message": "Swap"
@@ -9240,9 +9187,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Ce jeton a déjà été ajouté."
-  },
-  "tokenAutoDetection": {
-    "message": "Détection automatique des jetons"
   },
   "tokenContractAddress": {
     "message": "Adresse du contrat de jeton"

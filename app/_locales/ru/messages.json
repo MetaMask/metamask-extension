@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Аппаратный кошелек"
   },
-  "addIPFSGateway": {
-    "message": "Добавьте предпочтительный шлюз IPFS"
-  },
   "addMemo": {
     "message": "Добавить примечание"
   },
@@ -1545,9 +1542,6 @@
     "message": "Когда вы используете наши настройки и конфигурации по умолчанию, мы используем Infura в качестве нашего поставщика удаленного вызова процедур (RPC) по умолчанию, чтобы предложить наиболее надежный и конфиденциальный доступ к данным Ethereum, который мы можем предложить. В ограниченных случаях мы можем использовать других поставщиков RPC, чтобы обеспечить наилучший опыт для наших пользователей. Вы можете выбрать свой собственный RPC, но помните, что любой RPC получит ваш IP-адрес и кошелек Ethereum для совершения транзакций. Чтобы узнать больше о том, как Infura обрабатывает данные для учетных записей EVM, прочтите нашу статью $1, а для счетов Solana — статью $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "нажмите здесь"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к аппаратному кошельку."
   },
@@ -2217,12 +2211,6 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Получайте обновления, советы и новости о продуктах, в том числе по эл. почте. Мы можем использовать ваши сообщения для улучшения того, чем мы делимся."
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Хорошо"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Вы отключили сбор данных для наших маркетинговых целей. Это касается только этого устройства. Если вы используете MetaMask на других устройствах, обязательно отключите его и там."
-  },
   "dataUnavailable": {
     "message": "данные недоступны"
   },
@@ -2811,10 +2799,6 @@
   "errorCode": {
     "message": "Код: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "Сведения об ошибке",
-    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Ошибка при получении списка безопасных блокчейнов. Продолжайте с осторожностью."
@@ -7180,12 +7164,6 @@
   "securityChangePassword": {
     "message": "Изменить пароль"
   },
-  "securityChangePasswordDescription": {
-    "message": "Выберите надежный пароль для разблокировки приложения MetaMask на вашем устройстве. Если вы потеряете этот пароль, для восстановления доступа к кошельку потребуется ваша секретная фраза для восстановления."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Пароль"
-  },
   "securityChangePasswordToastError": {
     "message": "Не удалось изменить пароль. Попробуйте еще раз."
   },
@@ -7197,16 +7175,6 @@
   },
   "securityDescription": {
     "message": "Уменьшите свои шансы присоединиться к небезопасным сетям и защитите свои счета"
-  },
-  "securityLoginWithSocial": {
-    "message": "Войти с помощью $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Создана резервная копия секретной фразы для восстановления"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Создать резервную копию секретной фразы для восстановления"
   },
   "securityMessageLinkForNetworks": {
     "message": "мошенничества с сетью и угроз безопасности"
@@ -7229,14 +7197,8 @@
     "message": "ВОССТАНОВЛЕНИЕ $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Сохраните свою секретную фразу для восстановления, чтобы никогда не терять доступ к своему кошельку. Обязательно сохраните ее в безопасном месте, к которому сможете получить доступ только вы и которое вы не забудете."
-  },
   "securitySrpLabel": {
     "message": "СЕКРЕТНЫЕ ФРАЗЫ ДЛЯ ВОССТАНОВЛЕНИЯ"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Управление способами восстановления"
   },
   "seeAllPermissions": {
     "message": "Смотреть все разрешения",
@@ -8200,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Запросы на создание смарт-счетов от dapps"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Разрешите dapps запрашивать функции смарт-счетов для стандартных счетов. Это не повлияет на счета, которые уже являются смарт-счетами."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Один и тот же адрес. Более умные функции."
   },
@@ -8214,9 +8173,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Адрес получателя может не поддерживать прямые переводы токенов, что может привести к потере средств. Продолжайте только в том случае, если вы уверены, что этот контракт может получить ваш перевод."
-  },
-  "smartContracts": {
-    "message": "Смарт-контракты"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Недостаточно средств для смарт-свопа."
@@ -8732,9 +8688,6 @@
     "message": "Все еще подключаюсь к $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Все еще получаете это сообщение?"
-  },
   "storageErrorAction": {
     "message": "Создать резервную копию секретной фразы для восстановления"
   },
@@ -8838,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Поддерживаемые языки",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Пройдите наш опрос"
-  },
-  "surveyTitle": {
-    "message": "Сформируйте будущее MetaMask"
   },
   "swap": {
     "message": "Обменять"
@@ -9240,9 +9187,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Токен уже добавлен."
-  },
-  "tokenAutoDetection": {
-    "message": "Автоопределение токена"
   },
   "tokenContractAddress": {
     "message": "Адрес контракта токена"
