@@ -3,9 +3,16 @@ import { useSelector } from 'react-redux';
 import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
 import { useSmartTransactionToasts } from './useSmartTransactionToasts';
+import { usePerpsWithdrawTransactionToasts } from './usePerpsWithdrawTransactionToasts';
 
-const ToastListenerInner = () => {
+const SmartTransactionToastListener = () => {
   useSmartTransactionToasts();
+
+  return null;
+};
+
+const PerpsWithdrawTransactionToastListener = () => {
+  usePerpsWithdrawTransactionToasts();
 
   return null;
 };
@@ -16,9 +23,14 @@ export function ToastListener() {
   );
   const isInteractive = isInteractiveUI();
 
-  if (!transactionToastEnabled || !isInteractive) {
+  if (!isInteractive) {
     return null;
   }
 
-  return <ToastListenerInner />;
+  return (
+    <>
+      <PerpsWithdrawTransactionToastListener />
+      {transactionToastEnabled ? <SmartTransactionToastListener /> : null}
+    </>
+  );
 }

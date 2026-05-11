@@ -4,6 +4,7 @@ import { ToastListener } from './toast-listener';
 
 const mockUseSelector = jest.fn();
 const mockUseSmartTransactionToasts = jest.fn();
+const mockUsePerpsWithdrawTransactionToasts = jest.fn();
 const mockIsInteractiveUI = jest.fn();
 
 jest.mock('react-redux', () => ({
@@ -20,6 +21,11 @@ jest.mock('../../../../shared/lib/environment-type', () => ({
 
 jest.mock('./useSmartTransactionToasts', () => ({
   useSmartTransactionToasts: () => mockUseSmartTransactionToasts(),
+}));
+
+jest.mock('./usePerpsWithdrawTransactionToasts', () => ({
+  usePerpsWithdrawTransactionToasts: () =>
+    mockUsePerpsWithdrawTransactionToasts(),
 }));
 
 describe('ToastListener', () => {
@@ -39,30 +45,33 @@ describe('ToastListener', () => {
     render(<ToastListener />);
   }
 
-  it('mounts the smart transaction toast hook when enabled in interactive UI', () => {
+  it('mounts toast hooks when smart transaction toasts are enabled in interactive UI', () => {
     renderToastListener({
       transactionToastEnabled: true,
       isInteractive: true,
     });
 
     expect(mockUseSmartTransactionToasts).toHaveBeenCalledTimes(1);
+    expect(mockUsePerpsWithdrawTransactionToasts).toHaveBeenCalledTimes(1);
   });
 
-  it('does not mount the smart transaction toast hook when the flag is disabled', () => {
+  it('mounts only the perps withdraw toast hook when the smart transaction toast flag is disabled', () => {
     renderToastListener({
       transactionToastEnabled: false,
       isInteractive: true,
     });
 
     expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
+    expect(mockUsePerpsWithdrawTransactionToasts).toHaveBeenCalledTimes(1);
   });
 
-  it('does not mount the smart transaction toast hook in non-interactive UI', () => {
+  it('does not mount toast hooks in non-interactive UI', () => {
     renderToastListener({
       transactionToastEnabled: true,
       isInteractive: false,
     });
 
     expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
+    expect(mockUsePerpsWithdrawTransactionToasts).not.toHaveBeenCalled();
   });
 });

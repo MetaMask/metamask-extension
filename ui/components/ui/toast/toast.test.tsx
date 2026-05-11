@@ -12,6 +12,19 @@ describe('ToastContent', () => {
     expect(screen.getByText('Transaction pending')).toBeInTheDocument();
   });
 
+  it('renders the description when provided', () => {
+    render(
+      <ToastContent
+        title="Withdrawal complete"
+        description="$20.73 BNB moved to your wallet"
+      />,
+    );
+
+    expect(
+      screen.getByText('$20.73 BNB moved to your wallet'),
+    ).toBeInTheDocument();
+  });
+
   it('renders an action button when onActionClick is provided', () => {
     const onActionClick = jest.fn();
     render(

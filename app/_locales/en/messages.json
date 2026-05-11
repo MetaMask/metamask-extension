@@ -6532,6 +6532,28 @@
   "perpsWithdrawRoutesError": {
     "message": "Could not load withdrawal limits. Try again later."
   },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Failed to proceed with withdrawal"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Something went wrong"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Available in about 1 minute"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Withdrawal in progress"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2 moved to your wallet",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Funds moved to your wallet"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Withdrawal complete"
+  },
   "perpsWithdrawToastErrorTitle": {
     "message": "Withdrawal failed"
   },

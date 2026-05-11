@@ -13,6 +13,24 @@ export const ToastContent = ({ status }: { status: TransactionStatus }) => {
   return <ToastContentBase title={title} />;
 };
 
+export const CustomToastContent = ({
+  title,
+  description,
+  dataTestId,
+}: {
+  title: string;
+  description?: string;
+  dataTestId?: string;
+}) => {
+  return (
+    <ToastContentBase
+      title={title}
+      description={description}
+      dataTestId={dataTestId}
+    />
+  );
+};
+
 export function showPendingToast(id: string) {
   toast.loading(<ToastContent status="pending" />, { id });
 }
@@ -27,6 +45,27 @@ export function showFailedToast(id: string) {
 
 export function dismissToast(id: string) {
   toast.dismiss(id);
+}
+
+export function showCustomPendingToast(
+  id: string,
+  props: React.ComponentProps<typeof CustomToastContent>,
+) {
+  toast.loading(<CustomToastContent {...props} />, { id });
+}
+
+export function showCustomSuccessToast(
+  id: string,
+  props: React.ComponentProps<typeof CustomToastContent>,
+) {
+  toast.success(<CustomToastContent {...props} />, { id });
+}
+
+export function showCustomFailedToast(
+  id: string,
+  props: React.ComponentProps<typeof CustomToastContent>,
+) {
+  toast.error(<CustomToastContent {...props} />, { id });
 }
 
 export function showToast(id: string, status: ToastStatus) {

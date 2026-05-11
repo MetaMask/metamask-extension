@@ -1,7 +1,13 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
-import { ToastContent, showToast, type ToastStatus } from './shared';
+import {
+  CustomToastContent,
+  ToastContent,
+  showCustomSuccessToast,
+  showToast,
+  type ToastStatus,
+} from './shared';
 
 const mockToastLoading = jest.fn();
 const mockToastSuccess = jest.fn();
@@ -21,7 +27,18 @@ jest.mock('../../../helpers/utils/transaction-display', () => ({
 }));
 
 jest.mock('../../ui/toast/toast', () => ({
-  ToastContent: ({ title }: { title: string }) => <div>{title}</div>,
+  ToastContent: ({
+    title,
+    description,
+  }: {
+    title: string;
+    description?: string;
+  }) => (
+    <div>
+      <p>{title}</p>
+      {description ? <p>{description}</p> : null}
+    </div>
+  ),
 }));
 
 describe('toast-listener/shared', () => {
@@ -38,6 +55,20 @@ describe('toast-listener/shared', () => {
     expect(mockUseTransactionDisplay).toHaveBeenCalledWith('pending');
     expect(
       screen.getByText(messages.transactionSubmitted.message),
+    ).toBeInTheDocument();
+  });
+
+  it('renders custom toast content', () => {
+    render(
+      <CustomToastContent
+        title="Withdrawal complete"
+        description="$20.73 BNB moved to your wallet"
+      />,
+    );
+
+    expect(screen.getByText('Withdrawal complete')).toBeInTheDocument();
+    expect(
+      screen.getByText('$20.73 BNB moved to your wallet'),
     ).toBeInTheDocument();
   });
 
@@ -61,6 +92,17 @@ describe('toast-listener/shared', () => {
     showToast('toast-id', 'failed' as ToastStatus);
 
     expect(mockToastError).toHaveBeenCalledWith(expect.any(Object), {
+      id: 'toast-id',
+    });
+  });
+
+  it('shows a custom success toast', () => {
+    showCustomSuccessToast('toast-id', {
+      title: 'Withdrawal complete',
+      description: '$20.73 BNB moved to your wallet',
+    });
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(expect.any(Object), {
       id: 'toast-id',
     });
   });
