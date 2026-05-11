@@ -1944,31 +1944,7 @@ export function removeSlide(
   };
 }
 
-// TODO: Not a thunk, but rather a wrapper around a background call
-export function updateTransactionGasFees(
-  txId: string,
-  txGasFees: Partial<TxGasFees>,
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateTransactionGasFees',
-        [txId, txGasFees],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
+export { updateTransactionGasFees } from './actions/update-transaction-gas-fees';
 
 export function updateTransaction(
   txMeta: TransactionMeta,
