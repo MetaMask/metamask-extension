@@ -133,10 +133,7 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
             </Box>
 
             {/* Sort field options */}
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              className="w-full"
-            >
+            <Box flexDirection={BoxFlexDirection.Column} className="w-full">
               {SORT_FIELD_OPTIONS.map((option, index) => {
                 const isSelected = pendingField === option.id;
                 const isLast = index === SORT_FIELD_OPTIONS.length - 1;
@@ -180,10 +177,7 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
             </Box>
 
             {/* Sort direction options */}
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              className="w-full"
-            >
+            <Box flexDirection={BoxFlexDirection.Column} className="w-full">
               {(
                 [
                   { value: 'desc' as const, labelKey: 'perpsSortByHighToLow' },
