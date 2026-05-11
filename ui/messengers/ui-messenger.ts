@@ -1,6 +1,7 @@
 import {
   Messenger,
   type ActionConstraint,
+  type EventConstraint,
   type ExtractEventPayload,
 } from '@metamask/messenger';
 import type { Json } from '@metamask/utils';
@@ -92,9 +93,14 @@ export class UIMessenger extends Messenger<
   UIMessengerActions,
   UIMessengerEvents
 > {
-  #unsubscribeFunctions: Map<
+  /**
+   * Background subscriptions established for delegated events, keyed by event
+   * type. Each event type only needs one background subscription regardless of
+   * how many route messengers have been delegated that event.
+   */
+  #delegatedEventSubscriptions: Map<
     UIMessengerEvents['type'],
-    Map<HandlerFunction, UnsubscribeFunction>
+    UnsubscribeFunction
   > = new Map();
 
   constructor() {
@@ -127,76 +133,41 @@ export class UIMessenger extends Messenger<
   }
 
   /**
-   * Subscribe to an event emitted by the background.
+   * Delegate actions and/or events to another messenger.
    *
-   * Registers the given function as an event handler for the given event type.
+   * This overrides the base implementation to additionally subscribe to
+   * delegated events from the background connection, so that events emitted
+   * by the background are forwarded to route messengers via the standard
+   * delegation relay mechanism.
    *
-   * @param eventType - The event type. This is a unique identifier for this
-   * event.
-   * @param handler - The event handler. The type of the parameters for this
-   * event handler must match the type of the payload for this event type.
-   * @returns A cleanup function that can be invoked to unsubscribe.
-   * @throws If the given handler is already subscribed to this event type.
+   * @param args - Arguments for this function.
+   * @param args.actions - The action types to delegate.
+   * @param args.events - The event types to delegate.
+   * @param args.messenger - The messenger to delegate to.
    */
-  // @ts-expect-error: Intentionally different type than `messenger.subscribe`.
-  async subscribe<EventType extends UIMessengerEvents['type']>(
-    eventType: EventType,
-    handler: (
-      ...payload: ExtractEventPayload<UIMessengerEvents, EventType>
-    ) => void,
-  ): Promise<void> {
-    if (!this.#unsubscribeFunctions.has(eventType)) {
-      this.#unsubscribeFunctions.set(eventType, new Map());
-    }
+  override delegate({
+    actions,
+    events,
+    messenger,
+  }: {
+    actions?: UIMessengerActions['type'][];
+    events?: UIMessengerEvents['type'][];
+    messenger: Messenger<string, ActionConstraint, EventConstraint>;
+  }): void {
+    super.delegate({ actions, events, messenger });
 
-    if (this.#unsubscribeFunctions.get(eventType)?.has(handler)) {
-      throw new Error(
-        `The handler is already subscribed to the event "${eventType}".`,
-      );
-    }
-
-    const unsubscribeFunction = await subscribeToMessengerEvent(
-      eventType,
-      // @ts-expect-error: TypeScript cannot verify that the payload is
-      // JSON-serializable, because
-      // `ExtractEventPayload<UIMessengerEvents, EventType>` is a deferred
-      // conditional type which cannot be resolved when `EventType` is generic.
-      // However, UIMessengerEvents is defined as WithJsonPayload<...>, so we
-      // know that the payload must be JSON-serializable.
-      handler,
-    );
-
-    this.#unsubscribeFunctions
-      .get(eventType)
-      ?.set(handler, unsubscribeFunction);
-  }
-
-  /**
-   * Unsubscribe from an event emitted by the background.
-   *
-   * Unregisters the given function as an event handler for the given event
-   * type and ignores the call if the given function is not currently subscribed
-   * to this event type.
-   *
-   * @param eventType - The event type. This is a unique identifier for this
-   * event.
-   * @param handler - The event handler to unsubscribe. Must be the same
-   * function that was used to subscribe to this event type.
-   */
-  // @ts-expect-error: Intentionally different type than `messenger.unsubscribe`.
-  async unsubscribe<EventType extends UIMessengerEvents['type']>(
-    eventType: EventType,
-    handler: (
-      ...payload: ExtractEventPayload<UIMessengerEvents, EventType>
-    ) => void,
-  ): Promise<void> {
-    const unsubscribeFunction = this.#unsubscribeFunctions
-      .get(eventType)
-      ?.get(handler);
-
-    if (unsubscribeFunction) {
-      await unsubscribeFunction();
-      this.#unsubscribeFunctions.get(eventType)?.delete(handler);
+    for (const eventType of events ?? []) {
+      if (!this.#delegatedEventSubscriptions.has(eventType)) {
+        subscribeToMessengerEvent(eventType, (...payload: unknown[]) => {
+          // @ts-expect-error: The payload type cannot be statically verified
+          // since it arrives as `unknown[]` from the background connection,
+          // but the background always sends the correct payload for each
+          // event type.
+          this._internalPublishDelegated(eventType, ...payload);
+        }).then((unsubscribe) => {
+          this.#delegatedEventSubscriptions.set(eventType, unsubscribe);
+        });
+      }
     }
   }
 }
