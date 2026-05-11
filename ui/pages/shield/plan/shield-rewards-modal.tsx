@@ -13,14 +13,14 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-} from '../../components/component-library';
-import { RewardsBadge } from '../../components/app/rewards/RewardsBadge';
-import { useI18nContext } from '../../hooks/useI18nContext';
+} from '../../../components/component-library';
+import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   AlignItems,
   Display,
   FlexDirection,
-} from '../../helpers/constants/design-system';
+} from '../../../helpers/constants/design-system';
 
 export const ShieldRewardsModal = ({
   isOpen,

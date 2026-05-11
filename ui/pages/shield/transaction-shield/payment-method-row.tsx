@@ -30,7 +30,7 @@ import {
   TokenWithApprovalAmount,
 } from '../../../hooks/subscription/useSubscriptionPricing';
 import Tooltip from '../../../components/ui/tooltip';
-import { ShieldPaymentModal } from '../../shield-plan/shield-payment-modal';
+import { ShieldPaymentModal } from '../plan/shield-payment-modal';
 import {
   getIsShieldSubscriptionCanChangePaymentMethodToCard,
   getIsShieldSubscriptionEndingSoon,

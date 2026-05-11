@@ -94,6 +94,24 @@ describe('hardware-wallet-recovery-metrics', () => {
       ).toBe(MetaMetricsHardwareWalletRecoveryErrorType.EthereumAppNotOpened);
     });
 
+    it('maps camera permission denied to CameraPermissionDenied', () => {
+      expect(
+        mapHardwareWalletRecoveryErrorType({
+          code: ErrorCode.PermissionCameraDenied,
+        }),
+      ).toBe(MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionDenied);
+    });
+
+    it('maps camera permission prompt dismissed to CameraPermissionPromptDismissed', () => {
+      expect(
+        mapHardwareWalletRecoveryErrorType({
+          code: ErrorCode.PermissionCameraPromptDismissed,
+        }),
+      ).toBe(
+        MetaMetricsHardwareWalletRecoveryErrorType.CameraPermissionPromptDismissed,
+      );
+    });
+
     it('maps unrecognized codes to GenericError', () => {
       expect(
         mapHardwareWalletRecoveryErrorType({ code: ErrorCode.Unknown }),

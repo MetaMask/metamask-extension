@@ -94,8 +94,8 @@ describe('PerpsWithdrawInfo', () => {
   it('passes available-to-trade balance as the custom amount max source', () => {
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
-        availableBalance: '0',
-        availableToTradeBalance: '321.09',
+        spendableBalance: '0',
+        withdrawableBalance: '321.09',
       } as never,
       isInitialLoading: false,
     });
@@ -142,14 +142,14 @@ describe('PerpsWithdrawInfo', () => {
     );
   });
 
-  it('uses `availableToTradeBalance` for the percentage-button balance override', () => {
-    // HyperLiquid Unified Account mode: `availableBalance` is $0 because USDC
-    // sits in the spot clearinghouse. `availableToTradeBalance` is the unified
+  it('uses `withdrawableBalance` for the percentage-button balance override', () => {
+    // HyperLiquid Unified Account mode: `spendableBalance` is $0 because USDC
+    // sits in the spot clearinghouse. `withdrawableBalance` is the unified
     // value — must take precedence. Mirrors metamask-mobile#29492.
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
-        availableBalance: '0',
-        availableToTradeBalance: '41.13',
+        spendableBalance: '0',
+        withdrawableBalance: '41.13',
       } as never,
       isInitialLoading: false,
     });
