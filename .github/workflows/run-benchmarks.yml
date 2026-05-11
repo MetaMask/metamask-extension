@@ -85,10 +85,9 @@ jobs:
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
         shell: bash
 
-      - name: Install AWS CLI (needed for S3 upload on main/release only)
+      - name: Install AWS CLI (needed for S3 upload)
         if: >-
           ${{
-            env.MAIN_OR_RELEASE == 'true' &&
             vars.AWS_REGION != '' &&
             vars.AWS_IAM_ROLE != '' &&
             vars.AWS_S3_BUCKET != ''
@@ -121,7 +120,6 @@ jobs:
       - name: Upload benchmark to S3
         if: >-
           ${{
-            env.MAIN_OR_RELEASE == 'true' &&
             vars.AWS_REGION != '' &&
             vars.AWS_IAM_ROLE != '' &&
             vars.AWS_S3_BUCKET != ''
@@ -200,7 +198,6 @@ jobs:
       - name: Upload benchmark to S3
         if: >-
           ${{
-            env.MAIN_OR_RELEASE == 'true' &&
             vars.AWS_REGION != '' &&
             vars.AWS_IAM_ROLE != '' &&
             vars.AWS_S3_BUCKET != ''

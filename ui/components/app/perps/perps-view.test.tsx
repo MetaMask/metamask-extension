@@ -628,8 +628,8 @@ describe('PerpsView', () => {
       jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
-          availableBalance: '0',
-          availableToTradeBalance: '100',
+          spendableBalance: '0',
+          withdrawableBalance: '100',
         },
         isInitialLoading: false,
       });
@@ -651,7 +651,7 @@ describe('PerpsView', () => {
       );
     });
 
-    it('falls back to availableBalance when availableToTradeBalance is absent', () => {
+    it('reports no perp balance when withdrawableBalance is zero even if spendableBalance is positive', () => {
       const mockTrackEvent = jest.fn();
       const mockMetaMetricsContext = {
         trackEvent: mockTrackEvent,
@@ -663,8 +663,8 @@ describe('PerpsView', () => {
       jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
         account: {
           ...mocks.mockAccountState,
-          availableBalance: '100',
-          availableToTradeBalance: undefined,
+          spendableBalance: '100',
+          withdrawableBalance: '0',
         },
         isInitialLoading: false,
       });
@@ -680,7 +680,7 @@ describe('PerpsView', () => {
         expect.objectContaining({
           event: MetaMetricsEventName.PerpsScreenViewed,
           properties: expect.objectContaining({
-            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
           }),
         }),
       );
