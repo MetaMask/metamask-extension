@@ -717,7 +717,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   const handleBackClick = useCallback(() => {
-    navigate(-1);
+    navigate({ pathname: '/', search: 'tab=perps' });
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
