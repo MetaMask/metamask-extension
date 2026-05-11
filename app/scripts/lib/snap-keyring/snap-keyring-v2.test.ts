@@ -6,6 +6,7 @@ import { KeyringV1Adapter } from '@metamask/keyring-sdk/v2';
 import { SnapId } from '@metamask/snaps-sdk';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import { KeyringMetadata } from '@metamask/keyring-controller';
 import { getRootMessenger } from '../messenger';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
@@ -15,7 +16,6 @@ import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderV2Messenger,
 } from './types';
-import { KeyringMetadata } from '@metamask/keyring-controller';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
