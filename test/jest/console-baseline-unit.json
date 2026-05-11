@@ -1580,9 +1580,6 @@
     "ui/pages/swaps/notification-page/notification-page.test.js": {
       "React: PropTypes validation failures": 1
     },
-    "ui/pages/swaps/selected-token/selected-token.test.js": {
-      "React: PropTypes validation failures": 1
-    },
     "ui/pages/swaps/smart-transaction-status/smart-transaction-status.test.js": {
       "React: Act warnings (component updates not wrapped)": 1,
       "Reselect: Identity function warnings": 1
