@@ -132,6 +132,24 @@ describe('useTokenDisplayInfo', () => {
   });
 
   describe('tokenImage resolution', () => {
+    it('returns empty string (not undefined) when token.image is empty and API has not responded yet', () => {
+      // useTokensData returns {} while the fetch is in-flight
+      useTokensDataMock.mockReturnValue({});
+
+      const token = {
+        ...BASE_TOKEN,
+        name: 'Test Token',
+        image: '',
+      } as TokenWithFiatAmount;
+
+      const { result } = renderHookWithProvider(
+        () => useTokenDisplayInfo({ token }),
+        buildState(),
+      );
+
+      expect(result.current.tokenImage).toBe('');
+    });
+
     it('uses token.image when present', () => {
       const token = {
         ...BASE_TOKEN,

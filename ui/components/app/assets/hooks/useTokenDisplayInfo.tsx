@@ -113,7 +113,7 @@ export const useTokenDisplayInfo = ({
     const title = token.isNative
       ? token.title || token.symbol
       : token.name || fallbackEntry?.name || token.symbol;
-    const tokenImage = (token.image || fallbackEntry?.iconUrl) as string;
+    const tokenImage = (token.image || fallbackEntry?.iconUrl) ?? '';
 
     return {
       title,
