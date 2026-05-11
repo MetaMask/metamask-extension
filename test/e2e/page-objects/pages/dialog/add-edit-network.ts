@@ -24,7 +24,7 @@ class AddEditNetworkModal {
   };
 
   private readonly backButton =
-    '[data-testid="settings-v2-header-back-button"]';
+    '[data-testid="settings-header-back-button"]';
 
   private readonly chainIdInputField = {
     testId: 'network-form-chain-id',

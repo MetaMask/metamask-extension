@@ -15,8 +15,8 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  SETTINGS_V2_ROOT_SECTIONS,
-  SETTINGS_V2_TABS,
+  SETTINGS_ROOT_SECTIONS,
+  SETTINGS_TABS,
 } from '../settings-registry';
 
 type RootListItem = {
@@ -26,24 +26,24 @@ type RootListItem = {
   labelKey: string;
 };
 
-type SettingsV2RootProps = {
+type SettingsRootProps = {
   /** Called before navigating. Return `true` to prevent navigation. */
   onBeforeNavigate?: (path: string) => boolean | void;
 };
 
-export const SettingsV2Root = ({ onBeforeNavigate }: SettingsV2RootProps) => {
+export const SettingsRoot = ({ onBeforeNavigate }: SettingsRootProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 
   const groupedItems = useMemo(() => {
-    const rootItems: RootListItem[] = SETTINGS_V2_TABS.map((item) => ({
+    const rootItems: RootListItem[] = SETTINGS_TABS.map((item) => ({
       id: item.id,
       path: item.path,
       iconName: item.iconName,
       labelKey: item.labelKey,
     }));
 
-    return SETTINGS_V2_ROOT_SECTIONS.map(({ titleKeys, paths }) => ({
+    return SETTINGS_ROOT_SECTIONS.map(({ titleKeys, paths }) => ({
       titleKeys,
       items: rootItems.filter((item) => paths.includes(item.path)),
     })).filter(({ items }) => items.length > 0);
@@ -60,7 +60,7 @@ export const SettingsV2Root = ({ onBeforeNavigate }: SettingsV2RootProps) => {
     <Box
       flexDirection={BoxFlexDirection.Column}
       className="w-full h-full overflow-y-auto"
-      data-testid="settings-v2-root"
+      data-testid="settings-root"
     >
       {groupedItems.map(({ titleKeys, items }, index) => {
         return (
@@ -83,7 +83,7 @@ export const SettingsV2Root = ({ onBeforeNavigate }: SettingsV2RootProps) => {
                   type="button"
                   className="w-full border-0 bg-transparent p-0 text-left text-inherit cursor-pointer hover:bg-background-default-hover"
                   onClick={() => handleSelectItem(item)}
-                  data-testid={`settings-v2-root-item-${item.id}`}
+                  data-testid={`settings-root-item-${item.id}`}
                 >
                   <Box
                     flexDirection={BoxFlexDirection.Row}

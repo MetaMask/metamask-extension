@@ -69,7 +69,6 @@ import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
-  SETTINGS_V2_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
@@ -153,7 +152,7 @@ const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
-const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
+const Settings = mmLazy(() => import('../settings/index.ts'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
@@ -303,7 +302,7 @@ export const routeConfig = [
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
-        element: <SettingsV2 />,
+        element: <Settings />,
       },
       {
         path: `${LEGACY_SETTINGS_V2_ROUTE}/*`,
