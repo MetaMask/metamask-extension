@@ -68,10 +68,9 @@ import {
 import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAssetsWithPriority';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { Header } from '../../components/multichain/pages/page';
+import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
-
-const TOKEN_MANAGEMENT_CELL_ESTIMATED_SIZE = 72;
 
 /**
  * Full-screen Token Management page.
@@ -418,7 +417,7 @@ export const TokenManagementPage = () => {
       >
         <VirtualizedList
           data={filteredVisibleTokens}
-          estimatedItemSize={TOKEN_MANAGEMENT_CELL_ESTIMATED_SIZE}
+          estimatedItemSize={ASSET_CELL_HEIGHT}
           overscan={10}
           keyExtractor={getTokenKey}
           listEmptyComponent={emptyState}

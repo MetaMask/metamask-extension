@@ -36,7 +36,9 @@ describe('TokenManagementCell', () => {
       testIdSuffix: 'musd',
     });
 
-    expect(screen.getByText(messages.musdMetaMaskUsd.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.musdMetaMaskUsd.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('200.23 mUSD')).toBeInTheDocument();
   });
 
@@ -64,7 +66,9 @@ describe('TokenManagementCell', () => {
       onToggle: jest.fn(),
     });
 
-    expect(screen.getByText(messages.networkNameEthereum.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
     expect(screen.queryByText('200.23 mUSD')).not.toBeInTheDocument();
   });
 
