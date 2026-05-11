@@ -3,11 +3,13 @@ import {
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import { SnapAccountServiceMessenger } from '@metamask/snap-account-service';
+import { SnapAccountServiceMessenger as ServiceMessenger } from '@metamask/snap-account-service';
 import { RootMessenger } from '../../../lib/messenger';
 
-type Actions = MessengerActions<SnapAccountServiceMessenger>;
-type Events = MessengerEvents<SnapAccountServiceMessenger>;
+type Actions = MessengerActions<ServiceMessenger>;
+type Events = MessengerEvents<ServiceMessenger>;
+
+export type SnapAccountServiceMessenger = ServiceMessenger;
 
 /**
  * Get a restricted messenger for the snap account service. This is scoped to the
@@ -18,10 +20,10 @@ type Events = MessengerEvents<SnapAccountServiceMessenger>;
  */
 export function getSnapAccountServiceMessenger(
   messenger: RootMessenger<
-    MessengerActions<SnapAccountServiceMessenger>,
-    MessengerEvents<SnapAccountServiceMessenger>
+    Actions,
+    Events
   >,
-) {
+): SnapAccountServiceMessenger {
   const serviceMessenger = new Messenger<
     'SnapAccountService',
     Actions,

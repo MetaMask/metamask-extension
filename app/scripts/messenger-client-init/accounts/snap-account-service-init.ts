@@ -16,7 +16,11 @@ export const SnapAccountServiceInit: MessengerClientInitFunction<
 > = ({ controllerMessenger, ensureOnboardingComplete }) => {
   const service = new SnapAccountService({
     messenger: controllerMessenger,
-    ensureOnboardingComplete,
+    config: {
+      snapPlatformWatcher: {
+        ensureOnboardingComplete,
+      }
+    },
   });
 
   return {

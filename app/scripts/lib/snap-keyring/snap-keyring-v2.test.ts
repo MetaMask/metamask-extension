@@ -15,6 +15,7 @@ import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderV2Messenger,
 } from './types';
+import { KeyringMetadata } from '@metamask/keyring-controller';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -62,6 +63,11 @@ const mockInternalAccount = {
     },
     importTime: 0,
   },
+};
+
+const mockKeyringMetadata: KeyringMetadata = {
+  name: 'mock-keyring-name',
+  id: 'mock-keyring-id',
 };
 
 jest.mock('../../../../shared/lib/snaps/snaps', () => ({
@@ -277,7 +283,7 @@ describe('snapKeyringBuilderV2', () => {
 
       const adapter = builder.v1Builder();
       const inner = (adapter as unknown as KeyringV1Adapter).unwrap();
-      const v2 = builder.v2Builder(adapter);
+      const v2 = builder.v2Builder(adapter, mockKeyringMetadata);
 
       expect(v2).toBeInstanceOf(SnapKeyringV2);
       expect(v2).toBe(inner);
@@ -289,7 +295,7 @@ describe('snapKeyringBuilderV2', () => {
         type: KeyringType.Snap,
       } as unknown as Parameters<typeof builder.v2Builder>[0];
 
-      expect(() => builder.v2Builder(notAnAdapter)).toThrow();
+      expect(() => builder.v2Builder(notAnAdapter, mockKeyringMetadata)).toThrow();
     });
   });
 });
