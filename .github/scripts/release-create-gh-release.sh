@@ -148,7 +148,6 @@ fi
 printf '%s\n' "Creating GitHub Release for ${tag}..."
 
 # Collect and validate webpack artifacts
-# These use the canonical asset names because webpack is the preferred build.
 webpack_artifacts=()
 for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
                 build-dist-mv2-webpack/builds/metamask-firefox-*.zip \
