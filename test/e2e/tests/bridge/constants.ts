@@ -55,7 +55,7 @@ export const LOCATOR = {
     `[data-testid="import-tokens-modal-${suffix}"]`,
 };
 
-export const ETH_CONVERSION_RATE_USD = 3010;
+export const ETH_CONVERSION_RATE_USD = 1;
 export const MOCK_CURRENCY_RATES = {
   currencyRates: {
     ETH: {

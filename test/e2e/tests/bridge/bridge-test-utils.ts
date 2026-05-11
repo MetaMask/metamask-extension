@@ -863,10 +863,7 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 }
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
-  const resolvedEthPrice =
-    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
-      ? ETH_CONVERSION_RATE_USD
-      : 1;
+  const resolvedEthPrice = 3010;
 
   const tokenEntry = (
     id: string,
@@ -1371,7 +1368,7 @@ export const getBridgeFixtures = ({
         ),
         await mockAccountsTransactions(mockServer),
         await mockAccountsBalances(mockServer),
-        await mockPriceSpotPrices(mockServer),
+        // await mockPriceSpotPrices(mockServer),
         await mockPriceSpotPricesV3(mockServer),
         await mockSwapAggregatorLinea(mockServer),
         await mockGasPricesArbitrum(mockServer),
