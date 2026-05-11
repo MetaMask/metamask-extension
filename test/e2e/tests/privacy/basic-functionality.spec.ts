@@ -78,6 +78,19 @@ async function mockApis(
   );
   await mockIdentityServices(mockServer, userStorageMockttpController);
 
+  // The unified-assets feature prefetches token lists for all popular chains
+  // via the old token-list API regardless of the basic-functionality toggle.
+  // Mock every chainId variant to prevent real network requests, but do not
+  // include this endpoint in the returned array so it is not subject to the
+  // "0 requests when privacy is off / ≥1 requests when privacy is on" assertions.
+  await mockServer
+    .forGet(/https:\/\/token\.api\.cx\.metamask\.io\/tokens\/\d+/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [],
+    }));
+
   return [
     await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
       return {
@@ -85,14 +98,6 @@ async function mockApis(
         json: [{ fakedata: true }],
       };
     }),
-    await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: [{ fakedata: true }],
-        };
-      }),
     await mockSpotPrices(mockServer, {
       'eip155:1/slip44:60': {
         price: 1700,
