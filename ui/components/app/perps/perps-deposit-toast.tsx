@@ -14,6 +14,11 @@ import { toast, ToastContent } from '../../ui/toast/toast';
 const id = 'perps-deposit-toast';
 const duration = 5 * SECOND;
 
+const clearDepositResult = () =>
+  submitRequestToBackground('perpsClearDepositResult', []).catch(
+    () => undefined,
+  );
+
 export function PerpsDepositToast() {
   const t = useI18nContext();
   const depositInProgress = useSelector(selectPerpsDepositPending);
@@ -52,13 +57,23 @@ export function PerpsDepositToast() {
         toast.error(content, options);
       }
 
-      const timeoutId = setTimeout(() => {
-        submitRequestToBackground('perpsClearDepositResult', []).catch(
-          () => undefined,
-        );
-      }, duration);
+      let clearDepositResultRequested = false;
+      const clearDepositResultOnce = () => {
+        if (clearDepositResultRequested) {
+          return;
+        }
 
-      return () => clearTimeout(timeoutId);
+        clearDepositResultRequested = true;
+        clearDepositResult();
+      };
+
+      const timeoutId = setTimeout(clearDepositResultOnce, duration);
+
+      return () => {
+        clearTimeout(timeoutId);
+        toast.dismiss(id);
+        clearDepositResultOnce();
+      };
     }
 
     if (!depositInProgress) {

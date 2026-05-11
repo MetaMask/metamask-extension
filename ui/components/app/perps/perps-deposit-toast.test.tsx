@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, screen } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import {
   TransactionStatus,
   TransactionType,
@@ -56,7 +56,7 @@ describe('PerpsDepositToast', () => {
     jest.useRealTimers();
   });
 
-  it('renders nothing when there is no deposit state', () => {
+  it('dismisses and does not show a toast when there is no deposit state', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -67,7 +67,10 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+    expect(mockToastDismiss).toHaveBeenCalledWith('perps-deposit-toast');
+    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(mockToastSuccess).not.toHaveBeenCalled();
+    expect(mockToastError).not.toHaveBeenCalled();
   });
 
   it('renders pending toast when mounting with deposit already in progress', () => {
@@ -213,6 +216,80 @@ describe('PerpsDepositToast', () => {
         duration: 5000,
       },
     );
+  });
+
+  it('clears deposit result when completion toast duration elapses', () => {
+    jest.useFakeTimers();
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'perpsClearDepositResult',
+      [],
+    );
+  });
+
+  it('clears deposit result when unmounted during completion toast', () => {
+    jest.useFakeTimers();
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    const { unmount } = renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(mockToastDismiss).toHaveBeenCalledWith('perps-deposit-toast');
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'perpsClearDepositResult',
+      [],
+    );
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
   });
 
   it('renders error toast when lastDepositResult is unsuccessful', () => {
