@@ -46,7 +46,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
-import { getPasskeyControllerErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
   startPasskeyRegistration,
@@ -280,7 +280,7 @@ export default function SetupPasskey() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - enrollmentStartedAt,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_code: getPasskeyControllerErrorCode(error) ?? '',
+          reason: getPasskeyErrorCode(error),
         },
       });
       if (isMountedRef.current) {

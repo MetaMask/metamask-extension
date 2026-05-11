@@ -154,37 +154,48 @@ export const UnlockPasskeySection = ({
         if (!isMountedRef.current) {
           return;
         }
-        const unlockFailureReason = getPasskeyErrorCode(err);
+
+        const errorCode = getPasskeyErrorCode(err);
         passkeyFailedAttemptCount.current += 1;
         const durationMs = Date.now() - startedAt;
 
-        trackEvent?.({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.PasskeyUnlockFailed,
-          properties: {
-            ...baseProperties,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: durationMs,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            failed_attempts: passkeyFailedAttemptCount.current,
-            reason: unlockFailureReason,
-          },
-        });
-        trackEvent?.({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.AppUnlockedFailed,
-          properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            failed_attempts: passkeyFailedAttemptCount.current,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            unlock_type: 'passkey',
-            reason: unlockFailureReason,
-          },
-        });
-
         if (isPasskeyCeremonySilentError(err)) {
+          trackEvent?.({
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.PasskeyUnlockCancelled,
+            properties: {
+              ...baseProperties,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              duration_ms: durationMs,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              reason: errorCode,
+            },
+          });
           setPasskeyError(null);
         } else {
+          trackEvent?.({
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.PasskeyUnlockFailed,
+            properties: {
+              ...baseProperties,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              duration_ms: durationMs,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              failed_attempts: passkeyFailedAttemptCount.current,
+              reason: errorCode,
+            },
+          });
+          trackEvent?.({
+            category: MetaMetricsEventCategory.Navigation,
+            event: MetaMetricsEventName.AppUnlockedFailed,
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              failed_attempts: passkeyFailedAttemptCount.current,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              unlock_type: 'passkey',
+              reason: errorCode,
+            },
+          });
           setPasskeyError(
             translatePasskeyError(err, t, passkeyMethodLabel) ??
               t('passkeyUnlockFailed', [passkeyMethodLabel]),

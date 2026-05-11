@@ -36,7 +36,7 @@ import {
   translatePasskeyError,
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
-import { getPasskeyControllerErrorCode } from '../../../../shared/lib/passkey/passkey-error';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   protectVaultKeyWithPasskey,
@@ -276,7 +276,7 @@ export default function PasskeyRegisterSubPage() {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - enrollmentStartedAt,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_code: getPasskeyControllerErrorCode(error) ?? '',
+          reason: getPasskeyErrorCode(error),
         },
       });
       setEnrollmentError(

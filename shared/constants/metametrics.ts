@@ -1047,6 +1047,7 @@ export enum MetaMetricsEventName {
   PasskeyOnboardingSetupViewed = 'Passkey Onboarding Setup Viewed',
   PasskeyUnlockStarted = 'Passkey Unlock Started',
   PasskeyUnlockCompleted = 'Passkey Unlock Completed',
+  PasskeyUnlockCancelled = 'Passkey Unlock Cancelled',
   PasskeyUnlockFailed = 'Passkey Unlock Failed',
   PasskeyUnlockUsePasswordClicked = 'Passkey Unlock Use Password Clicked',
   PasskeyUnlockIconClicked = 'Passkey Unlock Icon Clicked',
