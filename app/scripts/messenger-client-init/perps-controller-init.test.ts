@@ -295,6 +295,7 @@ describe('PerpsControllerInit', () => {
         getStorageItem: expect.any(Function),
         setStorageItem: expect.any(Function),
         removeStorageItem: expect.any(Function),
+        isDisconnecting: expect.any(Function),
       });
     });
 

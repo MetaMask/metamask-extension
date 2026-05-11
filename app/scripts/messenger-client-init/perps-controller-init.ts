@@ -54,6 +54,7 @@ export const PerpsControllerInit: MessengerClientInitFunction<
   const trackEvent = (payload: MetaMetricsEventPayload) => {
     controllerMessenger.call('MetaMetricsController:trackEvent', payload);
   };
+  let isDisconnecting = false;
   const infrastructure = createPerpsInfrastructure({
     trackEvent,
     getStorageItem: (key: string) =>
@@ -75,6 +76,7 @@ export const PerpsControllerInit: MessengerClientInitFunction<
         storageNamespace,
         key,
       ),
+    isDisconnecting: () => isDisconnecting,
   });
   const fallbackBlockedRegions = getFallbackBlockedRegions();
   const hyperLiquidBuilderAddresses = getHyperLiquidBuilderAddresses();
@@ -107,7 +109,15 @@ export const PerpsControllerInit: MessengerClientInitFunction<
     deferEligibilityCheck: !completedOnboarding || !useExternalServices,
   });
 
-  const api = getApi(messengerClient);
+  const api = getApi(
+    messengerClient,
+    () => {
+      isDisconnecting = true;
+    },
+    () => {
+      isDisconnecting = false;
+    },
+  );
 
   return { messengerClient, api };
 };
@@ -299,7 +309,11 @@ function guardWrite<TArgs extends unknown[], TResult>(
   return withAutoInit(controller, fn, isPreSendInitError);
 }
 
-function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
+function getApi(
+  messengerClient: PerpsController,
+  onDisconnectStart: () => void,
+  onDisconnectEnd: () => void,
+): PerpsBackgroundApi {
   const read = <TArgs extends unknown[], TResult>(
     fn: (...args: TArgs) => TResult,
   ) => guardRead(messengerClient, fn);
@@ -311,7 +325,16 @@ function getApi(messengerClient: PerpsController): PerpsBackgroundApi {
   return {
     // -- Lifecycle (no guard — IS the init itself) --
     perpsInit: messengerClient.init.bind(messengerClient),
-    perpsDisconnect: messengerClient.disconnect.bind(messengerClient),
+    perpsDisconnect: async (
+      ...args: Parameters<typeof messengerClient.disconnect>
+    ) => {
+      onDisconnectStart();
+      try {
+        return await messengerClient.disconnect(...args);
+      } finally {
+        onDisconnectEnd();
+      }
+    },
 
     // -- Trading mutations (write-guard: no benign-disconnect retry) --
     perpsPlaceOrder: write(messengerClient.placeOrder.bind(messengerClient)),

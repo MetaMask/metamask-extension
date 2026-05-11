@@ -50,17 +50,27 @@ export type InfrastructureDeps = {
   }>;
   setStorageItem: (key: string, value: string) => Promise<void>;
   removeStorageItem: (key: string) => Promise<void>;
+  /**
+   * Returns true while a self-initiated disconnect() is in progress (e.g.
+   * during an account switch). Used to suppress benign WS-race errors that
+   * are guaranteed to be side-effects of our own teardown rather than real
+   * failures.
+   */
+  isDisconnecting?: () => boolean;
 };
 
 const debugLog = createProjectLogger('perps');
 
-function createLogger(): PerpsLogger {
+function createLogger(deps: InfrastructureDeps): PerpsLogger {
   return {
     error: (error, options) => {
-      // Benign disconnect-race errors are always side-effects of our own
-      // disconnect() during account switches — never real connection failures.
-      // Route these to the debug log and skip Sentry/console entirely.
-      if (isBenignDisconnectError(error)) {
+      // Suppress benign WS-close errors only while our own disconnect() is
+      // active (account switch in progress). Outside that window the same
+      // error shapes indicate real connectivity problems and must reach Sentry.
+      if (
+        isBenignDisconnectError(error) &&
+        (deps.isDisconnecting?.() ?? false)
+      ) {
         debugLog('Suppressed benign perps WS disconnect race', error, options);
         return;
       }
@@ -309,7 +319,7 @@ export function createPerpsInfrastructure(
   deps: InfrastructureDeps,
 ): PerpsPlatformDependencies {
   return {
-    logger: createLogger(),
+    logger: createLogger(deps),
     debugLogger: createDebugLogger(),
     metrics: createMetrics(deps),
     performance: createPerformance(),
