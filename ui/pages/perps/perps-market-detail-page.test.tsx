@@ -246,6 +246,10 @@ const mockLivePositions = jest.fn(() => ({
   positions: mockPositions,
   isInitialLoading: false,
 }));
+const mockLiveMarketData = jest.fn(() => ({
+  markets: [...mockCryptoMarkets, ...mockHip3Markets],
+  isInitialLoading: false,
+}));
 
 // Mock the perps stream hooks
 jest.mock('../../hooks/perps/stream', () => ({
@@ -255,10 +259,7 @@ jest.mock('../../hooks/perps/stream', () => ({
     isInitialLoading: false,
   }),
   usePerpsLiveAccount: () => mockLiveAccount(),
-  usePerpsLiveMarketData: () => ({
-    markets: [...mockCryptoMarkets, ...mockHip3Markets],
-    isInitialLoading: false,
-  }),
+  usePerpsLiveMarketData: () => mockLiveMarketData(),
   usePerpsLiveCandles: () => ({
     candleData: {
       symbol: 'ETH',
@@ -382,6 +383,10 @@ describe('PerpsMarketDetailPage', () => {
     });
     mockLivePositions.mockReturnValue({
       positions: mockPositions,
+      isInitialLoading: false,
+    });
+    mockLiveMarketData.mockReturnValue({
+      markets: [...mockCryptoMarkets, ...mockHip3Markets],
       isInitialLoading: false,
     });
     mockUsePerpsMarketFills.mockReturnValue({
@@ -558,6 +563,33 @@ describe('PerpsMarketDetailPage', () => {
       expect(getByText('ETH-USD')).toBeInTheDocument();
     });
 
+    it('displays the market max leverage pill in the header', async () => {
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-market-max-leverage')).toHaveTextContent('20x');
+    });
+
+    it('omits the market max leverage pill when max leverage is unavailable', async () => {
+      mockLiveMarketData.mockReturnValue({
+        markets: [
+          {
+            ...mockCryptoMarkets[1],
+            maxLeverage: '',
+          },
+        ],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(
+        screen.queryByTestId('perps-market-max-leverage'),
+      ).not.toBeInTheDocument();
+    });
+
     it('renders market detail page for BTC', async () => {
       mockUseParams.mockReturnValue({ symbol: 'BTC' });
       const store = mockStore(createMockState(true));
@@ -578,7 +610,7 @@ describe('PerpsMarketDetailPage', () => {
       ).toBeInTheDocument();
     });
 
-    it('navigates back in history when back button is clicked', async () => {
+    it('navigates to wallet Perps tab when back button is clicked', async () => {
       const store = mockStore(createMockState(true));
 
       const { getByTestId } = await renderPage(store);
@@ -586,7 +618,10 @@ describe('PerpsMarketDetailPage', () => {
       const backButton = getByTestId('perps-market-detail-back-button');
       backButton.click();
 
-      expect(mockUseNavigate).toHaveBeenCalledWith(-1);
+      expect(mockUseNavigate).toHaveBeenCalledWith({
+        pathname: '/',
+        search: 'tab=perps',
+      });
     });
 
     it('uses market 24h change as fallback when no live percent update exists', async () => {
