@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useQuery } from '@tanstack/react-query';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Balance, CaipAssetId, CaipAssetType } from '@metamask/keyring-api';
-import { isCaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { KeyringClient } from '@metamask/keyring-snap-client';
 import { SnapId } from '@metamask/snaps-sdk';
 import { isTronSpecialAsset } from '../../../../shared/lib/asset-utils';
@@ -42,12 +41,97 @@ const TRON_RESOURCE_BALANCES_QUERY_KEY_ROOT = [
   'v1',
 ] as const;
 
-const getAssetCaipType = (assetId: string): string | undefined => {
-  if (!isCaipAssetType(assetId)) {
-    return undefined;
-  }
-  const { assetNamespace, assetReference } = parseCaipAssetType(assetId);
-  return `${assetNamespace}:${assetReference}`;
+/**
+ * Internal hook that reads Tron resource balances from Redux state.
+ * This is the legacy data path, used when the unified AssetsController
+ * feature flag is disabled.
+ * @param account
+ * @param chainId
+ */
+const useReduxTronBalances = (
+  account: InternalAccount | undefined,
+  chainId: string,
+): Record<CaipAssetId, Balance> => {
+  const accountGroupAssets = useSelector(
+    getAssetsBySelectedAccountGroupWithTronSpecialAssets,
+  );
+  const multichainBalances = useSelector(getMultichainBalances);
+
+  return useMemo(() => {
+    if (!account || !chainId) {
+      return {} as Record<CaipAssetId, Balance>;
+    }
+
+    const assets = accountGroupAssets[chainId] || [];
+    const accountBalances = multichainBalances?.[account.id];
+    const tronSpecialAssets = assets.filter((asset) =>
+      isTronSpecialAsset(asset.assetId),
+    );
+
+    return Object.fromEntries(
+      tronSpecialAssets.map((asset) => [
+        asset.assetId,
+        accountBalances?.[asset.assetId as CaipAssetId] ?? {
+          amount: '0',
+          unit: '',
+        },
+      ]),
+    ) as Record<CaipAssetId, Balance>;
+  }, [account, chainId, accountGroupAssets, multichainBalances]);
+};
+
+/**
+ * Internal hook that fetches Tron resource balances directly from the Tron
+ * wallet snap. Used when the unified AssetsController is enabled, because the
+ * new SnapDataSource does not call `onAssetsLookup` and therefore the resource
+ * assets (energy, bandwidth and their daily maximums) are stripped from Redux
+ * state.
+ * @param account
+ * @param chainId
+ * @param enabled
+ */
+const useSnapTronBalances = (
+  account: InternalAccount | undefined,
+  chainId: string,
+  enabled: boolean,
+): Record<CaipAssetId, Balance> | undefined => {
+  const snapId = account?.metadata?.snap?.id;
+  const accountId = account?.id;
+  const isTronChain = TRON_CHAINS.includes(
+    chainId as (typeof TRON_CHAINS)[number],
+  );
+
+  const queryKey = useMemo(
+    () =>
+      [
+        ...TRON_RESOURCE_BALANCES_QUERY_KEY_ROOT,
+        snapId,
+        accountId,
+        chainId,
+      ] as const,
+    [snapId, accountId, chainId],
+  );
+
+  const { data } = useQuery({
+    queryKey,
+    queryFn: async (): Promise<Record<string, Balance>> => {
+      // `enabled` guarantees snapId, accountId, and chainId are defined here.
+      const assetIds = TRON_RESOURCE_CAIP_TYPES.map(
+        (caipType) => `${chainId}/${caipType}` as CaipAssetType,
+      );
+      const client = new KeyringClient(
+        new MultichainWalletSnapSender(snapId as SnapId),
+      );
+      return (await client.getAccountBalances(
+        accountId as string,
+        assetIds,
+      )) as Record<string, Balance>;
+    },
+    enabled: enabled && Boolean(accountId && chainId && isTronChain && snapId),
+    retry: false,
+  });
+
+  return data as Record<CaipAssetId, Balance> | undefined;
 };
 
 /**
@@ -64,57 +148,19 @@ export const useTronResources = (
   energy: TronResource;
   bandwidth: TronResource;
 } => {
-  const accountGroupAssets = useSelector(
-    getAssetsBySelectedAccountGroupWithTronSpecialAssets,
-  );
-  const multichainBalances = useSelector(getMultichainBalances);
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
 
-  // When the unified AssetsController is enabled, the new SnapDataSource never
-  // calls `onAssetsLookup` on the wallet snap, so the Tron resource assets
-  // (energy/bandwidth and their daily maximums) end up without metadata in
-  // `assetsInfo` and get filtered out of every downstream selector. To keep the
-  // Tron daily-resources view working we bypass redux and ask the snap directly
-  // for the balances using the same KeyringClient that the legacy
-  // MultichainBalancesController used internally.
-  const snapId = account?.metadata?.snap?.id;
-  const accountId = account?.id;
-  const isTronChain = TRON_CHAINS.includes(
-    chainId as (typeof TRON_CHAINS)[number],
+  // Both hooks are always called (no conditional hook calls). The inactive
+  // path is a no-op: useQuery with enabled:false returns undefined immediately,
+  // and useReduxTronBalances returns a stable empty map when data is absent.
+  // When the feature flag is removed, delete useReduxTronBalances and its call,
+  // and drop the isAssetsUnifyStateEnabled ternary below.
+  const reduxBalances = useReduxTronBalances(account, chainId);
+  const snapBalances = useSnapTronBalances(
+    account,
+    chainId,
+    isAssetsUnifyStateEnabled,
   );
-  const directFetchEnabled = Boolean(
-    isAssetsUnifyStateEnabled && accountId && chainId && isTronChain && snapId,
-  );
-
-  const queryKey = useMemo(
-    () =>
-      [
-        ...TRON_RESOURCE_BALANCES_QUERY_KEY_ROOT,
-        snapId,
-        accountId,
-        chainId,
-      ] as const,
-    [snapId, accountId, chainId],
-  );
-
-  const { data: directBalances } = useQuery({
-    queryKey,
-    queryFn: async (): Promise<Record<string, Balance>> => {
-      // `enabled` above guarantees snapId, accountId, and chainId are defined when queryFn runs.
-      const assetIds = TRON_RESOURCE_CAIP_TYPES.map(
-        (caipType) => `${chainId}/${caipType}` as CaipAssetType,
-      );
-      const client = new KeyringClient(
-        new MultichainWalletSnapSender(snapId as SnapId),
-      );
-      return (await client.getAccountBalances(
-        accountId as string,
-        assetIds,
-      )) as Record<string, Balance>;
-    },
-    enabled: directFetchEnabled,
-    retry: false,
-  });
 
   return useMemo(() => {
     const defaultResources = {
@@ -136,33 +182,11 @@ export const useTronResources = (
       return defaultResources;
     }
 
-    const assets = accountGroupAssets[chainId] || [];
-    const balances = multichainBalances?.[account.id];
-    const tronSpecialAssets = assets.filter((asset) =>
-      isTronSpecialAsset(asset.assetId),
-    );
-
-    const findByCaipType = (caipType: string) =>
-      tronSpecialAssets.find(
-        (asset) => getAssetCaipType(asset.assetId) === caipType,
-      );
+    const balances = isAssetsUnifyStateEnabled ? snapBalances : reduxBalances;
 
     const getBalanceForCaipType = (caipType: string): number => {
-      // Prefer the value we fetched directly from the snap (when the new
-      // AssetsController has stripped it from redux state).
-      const directAssetId = `${chainId}/${caipType}` as CaipAssetId;
-      const direct = directBalances?.[directAssetId];
-      if (direct?.amount) {
-        return parseFloat(direct.amount);
-      }
-
-      const asset = findByCaipType(caipType);
-      if (!asset) {
-        return 0;
-      }
-      return parseFloat(
-        balances?.[asset.assetId as CaipAssetId]?.amount || '0',
-      );
+      const assetId = `${chainId}/${caipType}` as CaipAssetId;
+      return parseFloat(balances?.[assetId]?.amount || '0');
     };
 
     const energyData = {
@@ -197,8 +221,8 @@ export const useTronResources = (
   }, [
     account,
     chainId,
-    accountGroupAssets,
-    multichainBalances,
-    directBalances,
+    isAssetsUnifyStateEnabled,
+    reduxBalances,
+    snapBalances,
   ]);
 };

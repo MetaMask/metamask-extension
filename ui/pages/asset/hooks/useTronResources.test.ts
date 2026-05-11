@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { renderHook, cleanup } from '@testing-library/react-hooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -40,9 +39,9 @@ jest.mock('../../../selectors/assets-unify-state', () => ({
   getIsAssetsUnifyStateEnabled: jest.fn(),
 }));
 
-// Mock react-redux
 jest.mock('react-redux', () => ({
-  useSelector: (selector: any) => selector(),
+  useSelector: <State, Result>(selector: (state: State) => Result): Result =>
+    selector({} as State),
 }));
 
 let queryClient: QueryClient;
@@ -77,7 +76,11 @@ describe('useTronResources', () => {
     ...mockAccount,
     metadata: {
       ...mockAccount.metadata,
-      snap: { id: 'npm:@metamask/tron-wallet-snap', enabled: true, name: 'Tron' },
+      snap: {
+        id: 'npm:@metamask/tron-wallet-snap',
+        enabled: true,
+        name: 'Tron',
+      },
     },
   } as unknown as InternalAccount;
 
@@ -663,7 +666,10 @@ describe('useTronResources', () => {
     it('does not call the snap when the chainId is not a Tron chain', () => {
       mockSelector({}, {}, true);
 
-      renderTronResourcesHook(mockSnapAccount, 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp');
+      renderTronResourcesHook(
+        mockSnapAccount,
+        'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      );
 
       expect(mockGetAccountBalances).not.toHaveBeenCalled();
     });
