@@ -106,11 +106,7 @@ export function mergeAdvisoriesByIdentity(
     const key = advisoryIdentityKey(advisory);
     const existing = merged.get(key);
     if (!existing) {
-      merged.set(key, {
-        ...advisory,
-        treeVersions: [...new Set(advisory.treeVersions)],
-        dependents: [...new Set(advisory.dependents)],
-      });
+      merged.set(key, advisory);
       continue;
     }
 
@@ -126,6 +122,8 @@ export function mergeAdvisoriesByIdentity(
       id: primary.id ?? existing.id ?? advisory.id,
       affectsProduction,
       isDevOnly: !affectsProduction,
+      // The same advisory can appear in both prod and dev audit output with
+      // overlapping package paths, so merge paths without repeating them.
       treeVersions: [
         ...new Set([...existing.treeVersions, ...advisory.treeVersions]),
       ],
