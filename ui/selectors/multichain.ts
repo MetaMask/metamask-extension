@@ -7,6 +7,10 @@ import type {
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import {
+  AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+  MULTICHAIN_NETWORK_TICKER,
+} from '@metamask/multichain-network-controller';
 import { isBtcTestnetAddress } from '@metamask/keyring-utils';
 
 import {
@@ -18,7 +22,6 @@ import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
-  MULTICHAIN_PROVIDER_CONFIGS,
   MULTICHAIN_TOKEN_IMAGE_MAP,
   MultichainNetworks,
   MultichainProviderConfig,
@@ -49,6 +52,7 @@ import {
 } from '../../shared/lib/selectors/networks';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import {
   type AccountsState,
   getSelectedInternalAccount,
@@ -417,103 +421,60 @@ export function getMultichainConversionRate(
   return parsedConversionRate;
 }
 
-// Memoized: a plain `{ ...getNetworkConfigurationsByChainId(state), … }` returns a new object
-// every call and breaks Reselect input-stability and downstream createSelector memoization.
-export const getMultichainNetworkConfigurationsByChainId = createSelector(
-  [getNetworkConfigurationsByChainId],
-  (
-    evmNetworkConfigurationsByChainId,
-  ): Record<Hex | CaipChainId, NetworkConfiguration> => ({
-    ...evmNetworkConfigurationsByChainId,
-    [MultichainNetworks.SOLANA]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.SOLANA].nickname ?? '',
-      nativeCurrency: 'sol',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.SOLANA as unknown as Hex,
-    },
-    [MultichainNetworks.BITCOIN]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].nickname ?? '',
-      nativeCurrency: 'BTC',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.BITCOIN as unknown as Hex,
-    },
-    [MultichainNetworks.BITCOIN_TESTNET]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET]
-          .nickname ?? '',
-      nativeCurrency: 'tBTC',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.BITCOIN_TESTNET as unknown as Hex,
-    },
-    [MultichainNetworks.BITCOIN_SIGNET]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET]
-          .nickname ?? '',
-      nativeCurrency: 'sBTC',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.BITCOIN_SIGNET as unknown as Hex,
-    },
-    [MultichainNetworks.TRON]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON],
-      blockExplorerUrls: [],
-      name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON].nickname ?? '',
-      nativeCurrency: 'TRX',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.TRON as unknown as Hex,
-    },
-    [MultichainNetworks.TRON_NILE]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE].nickname ??
-        '',
-      nativeCurrency: 'TRX',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.TRON_NILE as unknown as Hex,
-    },
-    [MultichainNetworks.TRON_SHASTA]: {
-      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA],
-      blockExplorerUrls: [],
-      name:
-        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA].nickname ??
-        '',
-      nativeCurrency: 'TRX',
-      rpcEndpoints: [
-        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
-      ],
-      defaultRpcEndpointIndex: 0,
-      chainId: MultichainNetworks.TRON_SHASTA as unknown as Hex,
-    },
-  }),
-);
+const SYNTHETIC_MULTICHAIN_RPC_PLACEHOLDER = {
+  url: '',
+  type: RpcEndpointType.Custom,
+  networkClientId: '',
+} as const;
+
+/** Non-EVM chains merged into {@link getMultichainNetworkConfigurationsByChainId} as synthetic rows. */
+const SYNTHETIC_MULTICHAIN_CHAIN_IDS: readonly MultichainNetworks[] = [
+  MultichainNetworks.SOLANA,
+  MultichainNetworks.BITCOIN,
+  MultichainNetworks.BITCOIN_TESTNET,
+  MultichainNetworks.BITCOIN_SIGNET,
+  MultichainNetworks.TRON,
+  MultichainNetworks.TRON_NILE,
+  MultichainNetworks.TRON_SHASTA,
+];
+
+/**
+ * Builds a {@link NetworkConfiguration} for a supported non-EVM CAIP chain using names from
+ * {@link AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS} and tickers from {@link MULTICHAIN_NETWORK_TICKER}.
+ * RPC fields are placeholders until these networks use real endpoints in NetworkController state.
+ * @param chainId - Supported multichain network chain id.
+ */
+function syntheticNetworkConfigurationFromMultichainController(
+  chainId: MultichainNetworks,
+): NetworkConfiguration {
+  const { name } = AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS[chainId];
+  const nativeCurrency = MULTICHAIN_NETWORK_TICKER[chainId];
+
+  return {
+    blockExplorerUrls: [],
+    name,
+    nativeCurrency,
+    rpcEndpoints: [{ ...SYNTHETIC_MULTICHAIN_RPC_PLACEHOLDER }],
+    defaultRpcEndpointIndex: 0,
+    chainId: chainId as unknown as Hex,
+  };
+}
+
+export const getMultichainNetworkConfigurationsByChainId =
+  createDeepEqualSelector(
+    [getNetworkConfigurationsByChainId],
+    (
+      networkConfigurationsByChainId,
+    ): Record<Hex | CaipChainId, NetworkConfiguration> => ({
+      ...networkConfigurationsByChainId,
+      ...Object.fromEntries(
+        SYNTHETIC_MULTICHAIN_CHAIN_IDS.map((id) => [
+          id,
+          syntheticNetworkConfigurationFromMultichainController(id),
+        ]),
+      ),
+    }),
+  );
 
 export const getLastSelectedNonEvmAccount = createSelector(
   getInternalAccounts,

@@ -11,10 +11,7 @@ import {
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
-import {
-  selectBalanceBySelectedAccountGroup,
-  selectAggregatedBalanceForSelectedAccount,
-} from '../../../../selectors/assets';
+import { selectBalanceBySelectedAccountGroup } from '../../../../selectors/assets';
 import * as useMultichainSelectorHook from '../../../../hooks/useMultichainSelector';
 import * as multichainSelectors from '../../../../selectors/multichain';
 import {
@@ -46,23 +43,11 @@ describe('AccountGroupBalance', () => {
     selectedGroupBalance: AccountGroupBalanceType | null = null,
     showNativeTokenAsMainBalance: boolean = false,
     isTestnet: boolean = false,
-    aggregatedBalance: {
-      entries: unknown[];
-      totalBalanceInFiat?: number;
-    } | null = null,
     anyEnabledNetworksAreAvailable: boolean = true,
   ) => {
     const mockSelectBalanceBySelectedAccountGroup = jest
       .mocked(selectBalanceBySelectedAccountGroup)
       .mockReturnValue(selectedGroupBalance);
-
-    jest
-      .mocked(selectAggregatedBalanceForSelectedAccount)
-      .mockReturnValue(
-        aggregatedBalance as ReturnType<
-          typeof selectAggregatedBalanceForSelectedAccount
-        >,
-      );
 
     jest
       .mocked(selectAnyEnabledNetworksAreAvailable)
@@ -144,7 +129,7 @@ describe('AccountGroupBalance', () => {
   });
 
   it('renders a skeleton when no selected group balance and no networks available', () => {
-    arrange(null, false, false, null, false);
+    arrange(null, false, false, false);
     actAssertSkeletonPresent();
   });
 
@@ -184,11 +169,8 @@ describe('AccountGroupBalance', () => {
     });
   });
 
-  it('renders aggregated balance when selectAggregatedBalanceForSelectedAccount returns totalBalanceInFiat', () => {
-    arrange(null, false, false, {
-      entries: [],
-      totalBalanceInFiat: 99.5,
-    });
+  it('renders balance from selectedGroupBalance.totalBalanceInUserCurrency', () => {
+    arrange({ ...createMockBalance(), totalBalanceInUserCurrency: 99.5 });
     const { getByText } = renderComponent({
       balance: '1000000000000000000',
       chainId: '0x1',
@@ -200,8 +182,8 @@ describe('AccountGroupBalance', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders legacy balance when aggregatedBalance is null and selectedGroupBalance is set', () => {
-    arrange(createMockBalance(), false, false, null);
+  it('renders formatted balance from selectedGroupBalance', () => {
+    arrange(createMockBalance());
     actAssertBalanceContent({
       currency: 'USD',
       amount: '$123.45',
@@ -211,7 +193,7 @@ describe('AccountGroupBalance', () => {
   });
 
   it('renders skeleton when no networks available and no balance', () => {
-    arrange(null, false, false, null, false);
+    arrange(null, false, false, false);
     actAssertSkeletonPresent();
   });
 
