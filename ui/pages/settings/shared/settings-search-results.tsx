@@ -13,33 +13,33 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { REQUEST_SETTING_URL } from '../../../../shared/lib/ui-utils';
-import { useSettingsV2I18n } from '../useSettingsV2I18n';
-import type { SettingsV2SearchResult } from '../useSettingsV2Search';
+import { useSettingsI18n } from '../useSettingsI18n';
+import type { SettingsSearchResult } from '../useSettingsSearch';
 import { Divider } from './divider';
 
-type SettingsV2SearchResultsProps = {
-  results: SettingsV2SearchResult[];
-  onClickResult: (item: SettingsV2SearchResult) => void;
+type SettingsSearchResultsProps = {
+  results: SettingsSearchResult[];
+  onClickResult: (item: SettingsSearchResult) => void;
 };
 
-export const SettingsV2SearchResults = ({
+export const SettingsSearchResults = ({
   results,
   onClickResult,
-}: SettingsV2SearchResultsProps) => {
-  const t = useSettingsV2I18n();
+}: SettingsSearchResultsProps) => {
+  const t = useSettingsI18n();
 
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
       className="flex-1 overflow-y-auto"
-      data-testid="settings-v2-search-results"
+      data-testid="settings-search-results"
     >
       {results.map((item) => (
         <button
           key={`${item.tabRoute}-${item.titleKey}`}
           className="border-none bg-transparent w-full text-left hover:bg-background-default-hover"
           onClick={() => onClickResult(item)}
-          data-testid="settings-v2-search-result-item"
+          data-testid="settings-search-result-item"
         >
           <Box
             flexDirection={BoxFlexDirection.Row}

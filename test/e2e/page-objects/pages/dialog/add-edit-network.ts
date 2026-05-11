@@ -23,6 +23,8 @@ class AddEditNetworkModal {
     tag: 'button',
   };
 
+  private readonly backButton = '[data-testid="settings-header-back-button"]';
+
   private readonly chainIdInputField = {
     testId: 'network-form-chain-id',
   };

@@ -16,7 +16,7 @@ import {
 } from '../../../components/component-library';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
-type SettingsV2HeaderProps = {
+type SettingsHeaderProps = {
   title: string;
   isPopupOrSidepanel?: boolean;
   isOnSettingsRoot?: boolean;
@@ -31,7 +31,7 @@ type SettingsV2HeaderProps = {
   showSearchBorder?: boolean;
 };
 
-export const SettingsV2Header = ({
+export const SettingsHeader = ({
   title,
   isPopupOrSidepanel = false,
   isOnSettingsRoot = false,
@@ -44,7 +44,7 @@ export const SettingsV2Header = ({
   onSearchChange,
   onSearchClear,
   showSearchBorder = true,
-}: SettingsV2HeaderProps) => {
+}: SettingsHeaderProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const showSearchButton = !isPopupOrSidepanel || isOnSettingsRoot;
@@ -67,7 +67,7 @@ export const SettingsV2Header = ({
           onClickClearButton: onSearchClear,
           autoFocus: true,
           inputProps: {
-            'data-testid': 'settings-v2-header-search-input',
+            'data-testid': 'settings-header-search-input',
           },
         }}
       />
@@ -86,7 +86,7 @@ export const SettingsV2Header = ({
           ariaLabel={t('search')}
           size={ButtonIconSize.Md}
           onClick={onOpenSearch}
-          data-testid="settings-v2-header-search-button"
+          data-testid="settings-header-search-button"
         />
       ) : (
         <ButtonIcon
@@ -94,7 +94,7 @@ export const SettingsV2Header = ({
           ariaLabel={t('close')}
           size={ButtonIconSize.Md}
           onClick={() => navigate(DEFAULT_ROUTE)}
-          data-testid="settings-v2-header-close-button"
+          data-testid="settings-header-close-button"
         />
       )}
     </Box>
@@ -110,7 +110,7 @@ export const SettingsV2Header = ({
         ariaLabel={t('back')}
         size={ButtonIconSize.Sm}
         onClick={onClose}
-        data-testid="settings-v2-header-back-button"
+        data-testid="settings-header-back-button"
       />
     </Box>
   );

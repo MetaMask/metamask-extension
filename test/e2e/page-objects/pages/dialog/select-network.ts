@@ -10,7 +10,7 @@ class SelectNetwork {
 
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 
-  private readonly closeButton = 'button[aria-label="Close"]';
+  private readonly closeButton = '[data-testid="settings-header-back-button"]';
 
   private readonly confirmDeleteNetworkButton = {
     text: 'Delete',
@@ -45,6 +45,9 @@ class SelectNetwork {
 
   private readonly settingsV2AddCustomNetworkButton =
     '[data-testid="networks-page-add-custom-network-button"]';
+
+  private readonly searchButton =
+    '[data-testid="settings-header-search-button"]';
 
   private readonly selectNetworkMessage = {
     text: 'Manage networks',
