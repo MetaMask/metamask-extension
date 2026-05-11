@@ -56,6 +56,7 @@ import {
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
   NONEVM_BALANCE_CHECK_ROUTE,
   NETWORKS_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
@@ -140,6 +141,7 @@ import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../components/app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
+import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationHandler } from './confirmation-handler';
 import { Modals } from './modals';
@@ -155,6 +157,9 @@ const RevealSeedConfirmation = mmLazy(
 );
 const SettingsV2 = mmLazy(() => import('../settings-v2/index.ts'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
+const TokenManagementPage = mmLazy(
+  () => import('../token-management/index.ts'),
+);
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
 );
@@ -251,6 +256,18 @@ const SettingsV2LegacyRedirect = () => {
   return <Navigate to={`${canonicalPath}${search}${hash}`} replace />;
 };
 
+export const TokenManagementFeatureRoute = () => {
+  const isTokenManagementFilterEnabled = useAppSelector(
+    getIsTokenManagementFilterEnabled,
+  );
+
+  if (!isTokenManagementFilterEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  return <TokenManagementPage />;
+};
+
 export const routeConfig = [
   {
     element: <LegacyLayout />,
@@ -300,6 +317,10 @@ export const routeConfig = [
       {
         path: NETWORKS_ROUTE,
         element: <NetworksPage />,
+      },
+      {
+        path: TOKEN_MANAGEMENT_ROUTE,
+        element: <TokenManagementFeatureRoute />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,

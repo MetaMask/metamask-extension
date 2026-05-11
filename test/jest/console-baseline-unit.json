@@ -527,6 +527,9 @@
     "ui/components/multichain/receive-modal/receive-modal.test.js": {
       "React: DOM nesting violations": 1
     },
+    "ui/components/multichain/token-management-cell/token-management-cell.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1
+    },
     "ui/components/ui/qr-code-view/qr-code-view.test.tsx": {
       "React: DOM nesting violations": 1
     },
