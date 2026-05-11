@@ -101,7 +101,7 @@ const TabBar = ({
       <Box
         flexDirection={BoxFlexDirection.Column}
         className="w-full h-full overflow-y-auto py-4"
-        data-testid="settings-v2-tab-bar-grouped"
+        data-testid="settings-tab-bar-grouped"
       >
         {sections.map(({ key, title, items }, sectionIndex) => (
           <Box

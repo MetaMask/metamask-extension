@@ -6,7 +6,7 @@ export type SearchItemMeta = {
 };
 
 type SearchableSubPage = {
-  /** Route path — labelKey is derived from SETTINGS_V2_ROUTE_META */
+  /** Route path — labelKey is derived from SETTINGS_ROUTE_META */
   path: string;
   items: SearchItemMeta[];
 };
@@ -114,7 +114,7 @@ export const ABOUT_ITEMS = {
 
 // ── Registry (auto-derived) ─────────────────────────────────────────────
 
-export const SETTINGS_V2_SEARCH_CONFIG: TabSearchConfig[] = [
+export const SETTINGS_SEARCH_CONFIG: TabSearchConfig[] = [
   { tabId: 'assets', items: createSearchItemMeta(ASSET_ITEMS) },
   { tabId: 'transactions', items: createSearchItemMeta(TRANSACTION_ITEMS) },
   {
