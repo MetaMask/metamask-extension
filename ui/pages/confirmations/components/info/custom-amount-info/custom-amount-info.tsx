@@ -58,6 +58,10 @@ export type CustomAmountInfoProps = {
    */
   balanceUsdOverride?: number;
   children?: ReactNode;
+  /**
+   * When true, focuses the input on mount and selects the value so typing replaces it
+   */
+  autoFocusAmount?: boolean;
   currency?: string;
   /**
    * When true, it prevents automatic selection of payment token based on balance and feature flags
@@ -78,6 +82,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
   ({
     balanceUsdOverride,
     children,
+    autoFocusAmount = false,
     currency,
     disableAutomaticToken,
     disablePay,
@@ -138,6 +143,7 @@ export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
         data-testid="custom-amount-info"
       >
         <CenterContainer
+          autoFocusAmount={autoFocusAmount}
           amountFiat={amountFiat}
           amountHuman={amountHuman}
           currency={currency}
@@ -171,6 +177,7 @@ export function CustomAmountInfoSkeleton() {
 }
 
 type CenterContainerProps = {
+  autoFocusAmount: boolean;
   amountFiat: string;
   amountHuman: string;
   children?: ReactNode;
@@ -185,6 +192,7 @@ type CenterContainerProps = {
 };
 
 function CenterContainer({
+  autoFocusAmount,
   amountFiat,
   amountHuman,
   children,
@@ -208,6 +216,7 @@ function CenterContainer({
     >
       <CustomAmount
         amountFiat={amountFiat}
+        autoFocus={autoFocusAmount}
         currency={currency}
         disabled={!hasTokens}
         onChange={onAmountChange}

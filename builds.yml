@@ -425,9 +425,6 @@ env:
   ###
   - DEEP_LINK_PUBLIC_KEY: BD8cWMMR2J33ax8hvSz8LNt99H3wGBPWuAgw+lsfWcBrw4ZtTHFnWyNkbgXglqJOoc+1OA5ZC4kW4GYU/QIeBNA=
 
-  # Enforce simulation balance changes by converting external transactions to delegations.
-  - ENABLE_ENFORCED_SIMULATIONS: false
-
   # Force enforced simulations to apply whenever a transaction has balance
   # changes, bypassing the trust signal check. Intended for local
   # development and QA only; must remain false for production builds.
@@ -458,4 +455,4 @@ env:
   - FORCE_AUTH_MATCH_BUILD: false
 
   # Passkey / Biometrics unlock
-  - PASSKEY_ENABLED: 'false'
+  - PASSKEY_ENABLED: true

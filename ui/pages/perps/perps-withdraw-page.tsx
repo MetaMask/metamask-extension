@@ -96,7 +96,7 @@ const PerpsWithdrawPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const availableBalance =
-    account?.availableToTradeBalance ?? account?.availableBalance ?? '0';
+    account?.withdrawableBalance ?? account?.spendableBalance ?? '0';
   const availableNum = parseFloat(availableBalance) || 0;
 
   const usdcAssetId = useMemo(
@@ -452,6 +452,7 @@ const PerpsWithdrawPage: React.FC = () => {
             style={{ flex: 1, minHeight: 0 }}
           >
             <PerpsFiatHeroAmountInput
+              autoFocus
               value={amount}
               onChange={handleHeroAmountChange}
               disabled={isSubmitting}

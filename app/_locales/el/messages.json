@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Πορτοφόλι υλικού"
   },
-  "addIPFSGateway": {
-    "message": "Προσθέστε την πύλη IPFS που προτιμάτε"
-  },
   "addMemo": {
     "message": "Προσθήκη σημειώματος"
   },
@@ -1545,9 +1542,6 @@
     "message": "Όταν χρησιμοποιείτε τις προεπιλεγμένες ρυθμίσεις και παραμέτρους μας, χρησιμοποιούμε την Infura ως προεπιλεγμένο πάροχο κλήσεων απομακρυσμένης διαδικασίας (RPC) για να προσφέρουμε την πιο αξιόπιστη και ιδιωτική πρόσβαση στα δεδομένα του Ethereum που μπορούμε. Σε ορισμένες περιπτώσεις, ενδέχεται να χρησιμοποιήσουμε άλλους παρόχους RPC προκειμένου να παρέχουμε την καλύτερη δυνατή εμπειρία στους χρήστες μας. Μπορείτε να επιλέξετε το δικό σας RPC, αλλά να θυμάστε ότι οποιοδήποτε RPC θα λάβει τη διεύθυνση IP και το πορτοφόλι σας στο Ethereum για να πραγματοποιήσει συναλλαγές. Για να μάθετε περισσότερα σχετικά με το πώς η Infura χειρίζεται τα δεδομένα για λογαριασμούς EVM, διαβάστε την $1 μας και για λογαριασμούς Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "κάντε κλικ εδώ"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
   },
@@ -2217,12 +2211,6 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Λάβετε ενημερώσεις προϊόντων, συμβουλές και νέα – και μέσω email. Ενδέχεται να χρησιμοποιήσουμε τις αλληλεπιδράσεις σας για τη βελτίωση του περιεχομένου που κοινοποιούμε."
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Εντάξει"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Απενεργοποιήσατε τη συλλογή δεδομένων για σκοπούς μάρκετινγκ. Αυτό ισχύει μόνο για αυτή τη συσκευή. Εάν χρησιμοποιείτε το MetaMask και σε άλλες συσκευές, βεβαιωθείτε ότι έχετε επιλέξει την απενεργοποίηση και εκεί."
-  },
   "dataUnavailable": {
     "message": "μη διαθέσιμα δεδομένα"
   },
@@ -2811,10 +2799,6 @@
   "errorCode": {
     "message": "Κωδικός: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "Λεπτομέρειες σφάλματος",
-    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Σφάλμα κατά τη λήψη της λίστας ασφαλών αλυσίδων, συνεχίστε με προσοχή."
@@ -7180,12 +7164,6 @@
   "securityChangePassword": {
     "message": "Αλλαγή κωδικού πρόσβασης"
   },
-  "securityChangePasswordDescription": {
-    "message": "Επιλέξτε έναν ισχυρό κωδικό πρόσβασης για να ξεκλειδώσετε την εφαρμογή MetaMask στη συσκευή σας. Αν χάσετε τον κωδικό πρόσβασης, θα πρέπει να επαναφέρετε το πορτοφόλι σας χρησιμοποιώντας τη Μυστική Φράση Ανάκτησης."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Κωδικός πρόσβασης"
-  },
   "securityChangePasswordToastError": {
     "message": "Δεν ήταν δυνατή η αλλαγή του κωδικού πρόσβασης. Προσπαθήστε ξανά."
   },
@@ -7197,16 +7175,6 @@
   },
   "securityDescription": {
     "message": "Μειώστε τις πιθανότητες σύνδεσης σε μη ασφαλή δίκτυα και προστατέψτε τους λογαριασμούς σας"
-  },
-  "securityLoginWithSocial": {
-    "message": "Σύνδεση με $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Δημιουργήθηκε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Δημιουργήστε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
   "securityMessageLinkForNetworks": {
     "message": "διαδικτυακές απάτες και κίνδυνοι ασφαλείας"
@@ -7229,14 +7197,8 @@
     "message": "ΑΝΑΚΤΗΣΗ ΜΕΣΩ $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Δημιουργήστε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης, για να διασφαλίσετε ότι δεν θα χάσετε ποτέ πρόσβαση στο πορτοφόλι σας. Φυλάξτε την σε ασφαλές μέρος στο οποίο μόνο εσείς θα έχετε πρόσβαση και δεν θα το ξεχάσετε."
-  },
   "securitySrpLabel": {
     "message": "ΜΥΣΤΙΚΕΣ ΦΡΑΣΕΙΣ ΑΝΑΚΤΗΣΗΣ"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Διαχείριση μεθόδων ανάκτησης"
   },
   "seeAllPermissions": {
     "message": "Δείτε όλες τις άδειες",
@@ -8200,9 +8162,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Αιτήματα έξυπνου λογαριασμού από αποκεντρωμένες εφαρμογές (dapps)"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Επιτρέψτε στις αποκεντρωμένες εφαρμογές (dapps) να ζητούν λειτουργίες έξυπνου λογαριασμού για τυπικούς λογαριασμούς. Δεν θα επηρεαστούν οι λογαριασμοί που είναι ήδη έξυπνοι λογαριασμοί."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Ίδια διεύθυνση. Πιο έξυπνες λειτουργίες."
   },
@@ -8214,9 +8173,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Η διεύθυνση παραλήπτη ενδέχεται να μην υποστηρίζει άμεσες μεταφορές tokens, γεγονός που μπορεί να οδηγήσει σε απώλεια κεφαλαίων. Συνεχίστε μόνο εάν είστε βέβαιοι ότι το συγκεκριμένο συμβόλαιο μπορεί να λάβει τη μεταφορά."
-  },
-  "smartContracts": {
-    "message": "Έξυπνα συμβόλαια"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Δεν υπάρχουν αρκετά κεφάλαια για έξυπνες ανταλλαγές."
@@ -8732,9 +8688,6 @@
     "message": "Ακόμα συνδέεται με το $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Ακόμα λαμβάνετε αυτό το μήνυμα;"
-  },
   "storageErrorAction": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
@@ -8838,12 +8791,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Υποστηριζόμενες γλώσσες",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Πάρτε μέρος στην έρευνά μας"
-  },
-  "surveyTitle": {
-    "message": "Διαμορφώστε το μέλλον του MetaMask"
   },
   "swap": {
     "message": "Ανταλλαγή"
@@ -9240,9 +9187,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Το token έχει ήδη προστεθεί."
-  },
-  "tokenAutoDetection": {
-    "message": "Αυτόματος εντοπισμός token"
   },
   "tokenContractAddress": {
     "message": "Διεύθυνση συμβολαίου token"

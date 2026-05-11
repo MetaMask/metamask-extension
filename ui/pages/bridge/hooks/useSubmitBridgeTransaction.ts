@@ -20,6 +20,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getToToken,
   getWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
@@ -73,6 +74,7 @@ export default function useSubmitBridgeTransaction() {
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
+  const toToken = useSelector(getToToken);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
@@ -131,6 +133,7 @@ export default function useSubmitBridgeTransaction() {
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
       } else {
@@ -146,6 +149,7 @@ export default function useSubmitBridgeTransaction() {
               recommendedQuote,
               fromTokenBalanceInUsd,
             ),
+            toToken?.securityData?.type ?? null,
           ),
         );
       }

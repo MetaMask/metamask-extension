@@ -143,7 +143,6 @@
     "ensResolutionsByAddress": {},
     "isUnlocked": true,
     "completedOnboarding": true,
-    "showTestnetMessageInDropdown": true,
     "alertEnabledness": {
       "unconnectedAccount": true
     },

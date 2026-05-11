@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "Dompet perangkat keras"
   },
-  "addIPFSGateway": {
-    "message": "Tambahkan gateway IPFS pilihan Anda"
-  },
   "addMemo": {
     "message": "Tambahkan memo"
   },
@@ -1545,9 +1542,6 @@
     "message": "Bila Anda menggunakan pengaturan dan konfigurasi default, kami menggunakan Infura sebagai penyedia panggilan prosedur jarak jauh (RPC) default kami untuk menawarkan akses paling andal dan pribadi ke data Ethereum yang kami bisa. Dalam kasus terbatas, kami dapat menggunakan penyedia RPC lain untuk memberikan pengalaman terbaik bagi pengguna kami. Anda dapat memilih RPC sendiri, tetapi ingatlah bahwa setiap RPC akan menerima alamat IP dan dompet Ethereum Anda untuk melakukan transaksi. Untuk mempelajari selengkapnya tentang cara Infura menangani data untuk akun EVM, baca $1, dan untuk akun Solana, $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "klik di sini"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
   },
@@ -2217,12 +2211,6 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Dapatkan pembaruan produk, kiat, dan berita - termasuk melalui email. Kami dapat menggunakan interaksi Anda untuk meningkatkan konten yang kami bagikan."
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Oke"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Anda menonaktifkan pengumpulan data untuk tujuan pemasaran kami. Ini hanya berlaku untuk perangkat ini. Jika Anda menggunakan MetaMask di perangkat lain, pastikan untuk keluar terlebih dahulu."
-  },
   "dataUnavailable": {
     "message": "data tidak tersedia"
   },
@@ -2811,10 +2799,6 @@
   "errorCode": {
     "message": "Kode: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "Detail kesalahan",
-    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "Terjadi kesalahan saat mendapatkan daftar rantai aman, lanjutkan dengan hati-hati."
@@ -7184,12 +7168,6 @@
   "securityChangePassword": {
     "message": "Ubah kata sandi"
   },
-  "securityChangePasswordDescription": {
-    "message": "Pilih kata sandi yang kuat untuk membuka aplikasi MetaMask pada perangkat Anda. Jika kehilangan kata sandi ini, Anda perlu Frasa Pemulihan Rahasia untuk mengimpor ulang dompet Anda."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Kata sandi"
-  },
   "securityChangePasswordToastError": {
     "message": "Kata sandi tidak dapat diubah. Coba lagi."
   },
@@ -7201,16 +7179,6 @@
   },
   "securityDescription": {
     "message": "Kurangi kemungkinan Anda bergabung dengan jaringan yang tidak aman dan lindungi akun Anda"
-  },
-  "securityLoginWithSocial": {
-    "message": "Masuk dengan $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Frasa Pemulihan Rahasia dicadangkan"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Cadangkan Frasa Pemulihan Rahasia"
   },
   "securityMessageLinkForNetworks": {
     "message": "penipuan jaringan dan risiko keamanan"
@@ -7233,14 +7201,8 @@
     "message": "PEMULIHAN $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Cadangkan Frasa Pemulihan Rahasia agar Anda tidak pernah kehilangan akses ke dompet Anda. Pastikan untuk menyimpannya di tempat yang aman yang hanya dapat diakses oleh Anda dan tidak akan terlupakan."
-  },
   "securitySrpLabel": {
     "message": "FRASA PEMULIHAN RAHASIA"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Kelola metode pemulihan"
   },
   "seeAllPermissions": {
     "message": "Lihat semua izin",
@@ -8204,9 +8166,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Permintaan akun cerdas dari dapp"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. Ini tidak akan memengaruhi akun yang sudah menjadi akun cerdas."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Alamat sama. Fitur lebih cerdas."
   },
@@ -8218,9 +8177,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Alamat penerima mungkin tidak mendukung transfer token langsung, yang dapat mengakibatkan hilangnya dana. Lanjutkan hanya jika Anda yakin kontrak ini dapat menerima transfer."
-  },
-  "smartContracts": {
-    "message": "Kontrak cerdas"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Dana tidak cukup untuk pertukaran cerdas."
@@ -8736,9 +8692,6 @@
     "message": "Masih terhubung ke $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Masih menerima pesan ini?"
-  },
   "storageErrorAction": {
     "message": "Cadangkan Frasa Pemulihan Rahasia"
   },
@@ -8842,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Bahasa yang didukung",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Ikuti survei kami"
-  },
-  "surveyTitle": {
-    "message": "Bentuk masa depan MetaMask"
   },
   "swap": {
     "message": "Swap"
@@ -9244,9 +9191,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Token telah ditambahkan."
-  },
-  "tokenAutoDetection": {
-    "message": "Deteksi otomatis token"
   },
   "tokenContractAddress": {
     "message": "Alamat kontrak token"
