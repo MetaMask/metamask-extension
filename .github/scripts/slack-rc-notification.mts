@@ -5,7 +5,7 @@
  * metamask-mobile/scripts/slack-rc-notification.mjs (bot token + chat.postMessage).
  *
  * Build URLs use `getBuildLinks` from development/metamaskbot-build-announce/artifacts.ts
- * (main Chrome/Firefox for Browserify + Webpack).
+ * (main Chrome/Firefox for preferred Webpack + deprecated Browserify fallback).
  *
  * Local / manual testing
  * ----------------------
@@ -269,30 +269,6 @@ function buildSlackMessage(options: {
       type: 'section',
       text: {
         type: 'mrkdwn',
-        text: '*📦 Main build zips (Browserify)*',
-      },
-    },
-    {
-      type: 'section',
-      fields: [
-        {
-          type: 'mrkdwn',
-          text: isValidUrl(b.chrome)
-            ? `*Chrome (MV3):*\n<${b.chrome}|Download zip>`
-            : '*Chrome (MV3):*\n_Not available_',
-        },
-        {
-          type: 'mrkdwn',
-          text: isValidUrl(b.firefox)
-            ? `*Firefox (MV2):*\n<${b.firefox}|Download zip>`
-            : '*Firefox (MV2):*\n_Not available_',
-        },
-      ],
-    },
-    {
-      type: 'section',
-      text: {
-        type: 'mrkdwn',
         text: '*📦 Main build zips (Webpack)*',
       },
     },
@@ -309,6 +285,30 @@ function buildSlackMessage(options: {
           type: 'mrkdwn',
           text: isValidUrl(w.firefox)
             ? `*Firefox (MV2):*\n<${w.firefox}|Download zip>`
+            : '*Firefox (MV2):*\n_Not available_',
+        },
+      ],
+    },
+    {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: '*📦 Deprecated main build zips (Browserify)*',
+      },
+    },
+    {
+      type: 'section',
+      fields: [
+        {
+          type: 'mrkdwn',
+          text: isValidUrl(b.chrome)
+            ? `*Chrome (MV3):*\n<${b.chrome}|Download zip>`
+            : '*Chrome (MV3):*\n_Not available_',
+        },
+        {
+          type: 'mrkdwn',
+          text: isValidUrl(b.firefox)
+            ? `*Firefox (MV2):*\n<${b.firefox}|Download zip>`
             : '*Firefox (MV2):*\n_Not available_',
         },
       ],

@@ -112,32 +112,6 @@ export function getBuildLinks({
   releaseVersion?: string;
 }): BuildLinks {
   return {
-    browserify: {
-      main: {
-        chrome: `${hostUrl}/build-dist-browserify/builds/metamask-chrome-${version}.zip`,
-        firefox: `${hostUrl}/build-dist-mv2-browserify/builds/metamask-firefox-${version}.zip`,
-      },
-      beta: {
-        chrome: `${hostUrl}/build-beta-browserify/builds/metamask-beta-chrome-${version}-beta.${releaseVersion}.zip`,
-        firefox: `${hostUrl}/build-beta-mv2-browserify/builds/metamask-beta-firefox-${version}-beta.${releaseVersion}.zip`,
-      },
-      experimental: {
-        chrome: `${hostUrl}/build-experimental-browserify/builds/metamask-experimental-chrome-${version}-experimental.${releaseVersion}.zip`,
-        firefox: `${hostUrl}/build-experimental-mv2-browserify/builds/metamask-experimental-firefox-${version}-experimental.${releaseVersion}.zip`,
-      },
-      flask: {
-        chrome: `${hostUrl}/build-flask-browserify/builds/metamask-flask-chrome-${version}-flask.${releaseVersion}.zip`,
-        firefox: `${hostUrl}/build-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.${releaseVersion}.zip`,
-      },
-      test: {
-        chrome: `${hostUrl}/build-test-browserify/builds/metamask-chrome-${version}.zip`,
-        firefox: `${hostUrl}/build-test-mv2-browserify/builds/metamask-firefox-${version}.zip`,
-      },
-      'test-flask': {
-        chrome: `${hostUrl}/build-test-flask-browserify/builds/metamask-flask-chrome-${version}-flask.${releaseVersion}.zip`,
-        firefox: `${hostUrl}/build-test-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.${releaseVersion}.zip`,
-      },
-    },
     webpack: {
       main: {
         chrome: `${hostUrl}/build-dist-webpack/builds/metamask-chrome-${version}.zip`,
@@ -164,6 +138,32 @@ export function getBuildLinks({
         firefox: `${hostUrl}/build-test-flask-mv2-webpack/builds/metamask-firefox-${version}-flask.${releaseVersion}.zip`,
       },
     },
+    browserify: {
+      main: {
+        chrome: `${hostUrl}/build-dist-browserify/builds/metamask-chrome-${version}.zip`,
+        firefox: `${hostUrl}/build-dist-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+      },
+      beta: {
+        chrome: `${hostUrl}/build-beta-browserify/builds/metamask-beta-chrome-${version}-beta.${releaseVersion}.zip`,
+        firefox: `${hostUrl}/build-beta-mv2-browserify/builds/metamask-beta-firefox-${version}-beta.${releaseVersion}.zip`,
+      },
+      experimental: {
+        chrome: `${hostUrl}/build-experimental-browserify/builds/metamask-experimental-chrome-${version}-experimental.${releaseVersion}.zip`,
+        firefox: `${hostUrl}/build-experimental-mv2-browserify/builds/metamask-experimental-firefox-${version}-experimental.${releaseVersion}.zip`,
+      },
+      flask: {
+        chrome: `${hostUrl}/build-flask-browserify/builds/metamask-flask-chrome-${version}-flask.${releaseVersion}.zip`,
+        firefox: `${hostUrl}/build-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.${releaseVersion}.zip`,
+      },
+      test: {
+        chrome: `${hostUrl}/build-test-browserify/builds/metamask-chrome-${version}.zip`,
+        firefox: `${hostUrl}/build-test-mv2-browserify/builds/metamask-firefox-${version}.zip`,
+      },
+      'test-flask': {
+        chrome: `${hostUrl}/build-test-flask-browserify/builds/metamask-flask-chrome-${version}-flask.${releaseVersion}.zip`,
+        firefox: `${hostUrl}/build-test-flask-mv2-browserify/builds/metamask-flask-firefox-${version}-flask.${releaseVersion}.zip`,
+      },
+    },
   };
 }
 
@@ -175,7 +175,10 @@ export function getBuildLinks({
  */
 function formatBuildLinks(buildLinks: BuildLinks): string[] {
   return Object.entries(buildLinks).flatMap(([bundler, types]) => {
-    const prefix = bundler === 'browserify' ? 'builds' : 'webpack builds';
+    const prefix =
+      bundler === 'webpack'
+        ? 'Webpack builds'
+        : 'Deprecated Browserify fallback builds';
     return (
       Object.entries(types)
         // Experimental builds are only created nightly, not on PRs

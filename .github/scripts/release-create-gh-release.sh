@@ -147,24 +147,8 @@ fi
 
 printf '%s\n' "Creating GitHub Release for ${tag}..."
 
-# Collect and validate browserify artifacts
-browserify_artifacts=()
-for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
-                build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
-                build-flask-browserify/builds/metamask-flask-chrome-*.zip \
-                build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip; do
-    if ! compgen -G "${artifact}" > /dev/null; then
-        echo "::error::Required browserify artifact not found: ${artifact}"
-        exit 1
-    fi
-    while IFS= read -r file; do
-        browserify_artifacts+=("${file}")
-    done < <(compgen -G "${artifact}")
-done
-
 # Collect and validate webpack artifacts
-# Also rename them to include "-webpack" suffix before the .zip extension
-# so they don't collide with browserify artifacts on the release.
+# These use the canonical asset names because webpack is the preferred build.
 webpack_artifacts=()
 for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
                 build-dist-mv2-webpack/builds/metamask-firefox-*.zip \
@@ -175,16 +159,33 @@ for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
         exit 1
     fi
     while IFS= read -r file; do
-        renamed="${file%.zip}-webpack.zip"
+        webpack_artifacts+=("${file}")
+    done < <(compgen -G "${artifact}")
+done
+
+# Collect and validate deprecated browserify fallback artifacts.
+# Rename them so release consumers can clearly distinguish them from
+# the preferred webpack assets while still having them available.
+browserify_artifacts=()
+for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
+                build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
+                build-flask-browserify/builds/metamask-flask-chrome-*.zip \
+                build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip; do
+    if ! compgen -G "${artifact}" > /dev/null; then
+        echo "::error::Required browserify artifact not found: ${artifact}"
+        exit 1
+    fi
+    while IFS= read -r file; do
+        renamed="${file%.zip}-browserify-deprecated.zip"
         mv "${file}" "${renamed}"
-        webpack_artifacts+=("${renamed}")
+        browserify_artifacts+=("${renamed}")
     done < <(compgen -G "${artifact}")
 done
 
 release_body="$(awk -v version="[${VERSION}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
 gh release create "${tag}" \
-    "${browserify_artifacts[@]}" \
     "${webpack_artifacts[@]}" \
+    "${browserify_artifacts[@]}" \
     --title "Version ${VERSION}" \
     --notes "${release_body}" \
     --target "${RELEASE_SHA}"
