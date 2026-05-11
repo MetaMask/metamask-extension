@@ -40,7 +40,11 @@ describe('SnapAccountServiceInit', () => {
     expect(SnapAccountService).toHaveBeenCalledTimes(1);
     expect(SnapAccountService).toHaveBeenCalledWith({
       messenger: requestMock.controllerMessenger,
-      ensureOnboardingComplete: requestMock.ensureOnboardingComplete,
+      config: {
+        snapPlatformWatcher: {
+          ensureOnboardingComplete: requestMock.ensureOnboardingComplete,
+        },
+      },
     });
   });
 
