@@ -31,6 +31,7 @@ export type ActivityListFilter = {
 };
 
 export type FlattenedItem =
+  | { type: 'pending-header' }
   | { type: 'date-header'; date: number }
   | { type: 'local'; transactionGroup: TransactionGroup; id: string }
   | { type: 'completed'; data: TransactionViewModel; id: string }
@@ -114,11 +115,11 @@ const isTerminalEvmActivityStatus = (status: string): boolean => {
     status === TransactionStatus.cancelled ||
     status === TransactionGroupStatus.cancelled
   );
-}
+};
 
 const isInProgressTransactionControllerStatus = (status: string): boolean => {
   return IN_PROGRESS_TRANSACTION_STATUSES.some((s) => s === status);
-}
+};
 
 const isLocalTransactionGroupPending = (group: TransactionGroup): boolean => {
   const { primaryTransaction, initialTransaction } = group;
@@ -135,7 +136,7 @@ const isLocalTransactionGroupPending = (group: TransactionGroup): boolean => {
   }
 
   return isInProgressTransactionControllerStatus(effectiveStatus);
-}
+};
 
 const isCompletedTransactionPending = (tx: TransactionViewModel): boolean => {
   const effectiveStatus = getStatusKey(tx);
@@ -145,7 +146,7 @@ const isCompletedTransactionPending = (tx: TransactionViewModel): boolean => {
   }
 
   return isInProgressTransactionControllerStatus(effectiveStatus);
-}
+};
 
 const isNonEvmTransactionPending = (transaction: Transaction): boolean => {
   const { status } = transaction;
@@ -153,7 +154,7 @@ const isNonEvmTransactionPending = (transaction: Transaction): boolean => {
     status === KeyringTransactionStatus.Unconfirmed ||
     status === KeyringTransactionStatus.Submitted
   );
-}
+};
 
 /**
  * Whether a merged activity row belongs in the Pending section.
@@ -171,7 +172,7 @@ export const isActivityPendingMergedItem = (item: MergedItem): boolean => {
     return isCompletedTransactionPending(item.tx);
   }
   return isNonEvmTransactionPending(item.transaction);
-}
+};
 
 export function mergeAllTransactionsByTime(
   localTransactionGroups: TransactionGroup[],
@@ -207,23 +208,22 @@ export function mergeAllTransactionsByTime(
   );
 }
 
-export function groupAndFlattenMergedTransactions(
-  mergedItems: MergedItem[],
-): FlattenedItem[] {
-  if (mergedItems.length === 0) {
-    return [];
-  }
-
-  const flattened: FlattenedItem[] = [];
+function appendFlattenedMergedTransactions(
+  flattened: FlattenedItem[],
+  items: MergedItem[],
+  withDateHeaders: boolean,
+): void {
   let currentDate: number | null = null;
 
-  for (const item of mergedItems) {
-    const date = parseDate(item.time);
+  for (const item of items) {
+    if (withDateHeaders) {
+      const date = parseDate(item.time);
 
-    // Add date header when date changes
-    if (date !== currentDate) {
-      flattened.push({ type: 'date-header', date });
-      currentDate = date;
+      // Add date header when date changes
+      if (date !== currentDate) {
+        flattened.push({ type: 'date-header', date });
+        currentDate = date;
+      }
     }
 
     // Add the transaction item based on type
@@ -247,6 +247,33 @@ export function groupAndFlattenMergedTransactions(
       });
     }
   }
+}
+
+/**
+ * Flatten merged transactions for the activity list: optional Pending section
+ * (header + in-flight rows), then date-grouped historical rows. When nothing
+ * is pending, output is date headers + rows only.
+ *
+ * @param mergedItems - Transactions merged via {@link mergeAllTransactionsByTime}.
+ */
+export function groupAndFlattenMergedTransactions(
+  mergedItems: MergedItem[],
+): FlattenedItem[] {
+  if (mergedItems.length === 0) {
+    return [];
+  }
+
+  const pending = mergedItems.filter(isActivityPendingMergedItem);
+  const historical = mergedItems.filter((m) => !isActivityPendingMergedItem(m));
+
+  const flattened: FlattenedItem[] = [];
+
+  if (pending.length > 0) {
+    flattened.push({ type: 'pending-header' });
+    appendFlattenedMergedTransactions(flattened, pending, false);
+  }
+
+  appendFlattenedMergedTransactions(flattened, historical, true);
 
   return flattened;
 }

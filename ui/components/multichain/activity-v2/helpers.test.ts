@@ -193,7 +193,8 @@ describe('isActivityPendingMergedItem', () => {
         makeLocalGroup({
           time: 1000,
           isSmartTransaction: true,
-          status: SmartTransactionStatus.pending as unknown as TransactionMeta['status'],
+          status:
+            SmartTransactionStatus.pending as unknown as TransactionMeta['status'],
         }),
       ],
       [],
@@ -207,7 +208,8 @@ describe('isActivityPendingMergedItem', () => {
         makeLocalGroup({
           time: 1000,
           isSmartTransaction: true,
-          status: SmartTransactionStatus.success as unknown as TransactionMeta['status'],
+          status:
+            SmartTransactionStatus.success as unknown as TransactionMeta['status'],
         }),
       ],
       [],
@@ -336,6 +338,30 @@ describe('groupAndFlattenMergedTransactions', () => {
       'completed',
       'date-header',
       'completed',
+      'completed',
+    ]);
+  });
+
+  it('puts pending rows under a pending header then date-groups the rest', () => {
+    const jan2 = new Date('2025-01-02T12:00:00Z').getTime();
+    const jan1 = new Date('2025-01-01T10:00:00Z').getTime();
+
+    const merged = mergeAllTransactionsByTime(
+      [
+        makeLocalGroup({
+          time: jan1,
+          status: TransactionStatus.submitted,
+        }),
+      ],
+      [makeApiTx({ time: jan2, status: TransactionStatus.confirmed })],
+    );
+
+    const result = groupAndFlattenMergedTransactions(merged);
+
+    expect(result.map((r) => r.type)).toStrictEqual([
+      'pending-header',
+      'local',
+      'date-header',
       'completed',
     ]);
   });

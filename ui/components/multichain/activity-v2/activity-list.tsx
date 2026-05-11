@@ -48,6 +48,12 @@ const ITEM_HEIGHT = 70;
 const HEADER_HEIGHT = 36;
 const EVM_PAGINATION_ROOT_MARGIN = '300px 0px';
 
+const SectionHeader = ({ label }: { label: string }): JSX.Element => (
+  <Box className="px-4 py-2 bg-background-default">
+    <Text className="text-sm text-alternative">{label}</Text>
+  </Box>
+);
+
 type Props = {
   filter?: ActivityListFilter;
 };
@@ -160,7 +166,10 @@ export const ActivityList = ({ filter }: Props) => {
     getScrollElement: () => scrollContainerRef?.current || null,
     estimateSize: (index: number) => {
       const item = flattenedItems[index];
-      return item && item.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT;
+      return item &&
+        (item.type === 'date-header' || item.type === 'pending-header')
+        ? HEADER_HEIGHT
+        : ITEM_HEIGHT;
     },
     overscan: 5,
     scrollMargin,
@@ -230,13 +239,15 @@ export const ActivityList = ({ filter }: Props) => {
   };
 
   const renderItem = (item: FlattenedItem) => {
+    if (item.type === 'pending-header') {
+      return <SectionHeader label={t('pending')} />;
+    }
+
     if (item.type === 'date-header') {
       return (
-        <Box className="px-4 py-2 bg-background-default">
-          <Text className="text-sm text-alternative">
-            {formatDateWithYearContext(item.date, 'MMM d, y', 'MMM d, y')}
-          </Text>
-        </Box>
+        <SectionHeader
+          label={formatDateWithYearContext(item.date, 'MMM d, y', 'MMM d, y')}
+        />
       );
     }
 
