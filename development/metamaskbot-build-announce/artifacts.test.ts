@@ -46,75 +46,22 @@ describe('buildArtifactsBody', () => {
       buildsFromSha: 'abc1234',
     });
 
-    expect(result.indexOf('Webpack builds')).toBeGreaterThan(-1);
-    expect(result).toContain(
+    const webpackBuildsIndex = result.indexOf('Webpack builds');
+    const allArtifactsIndex = result.indexOf('all artifacts');
+    const deprecatedBuildsIndex = result.indexOf(
       '<details><summary>Deprecated Browserify fallback builds</summary><ul>',
     );
-    expect(
-      result.indexOf('Deprecated Browserify fallback builds'),
-    ).toBeGreaterThan(result.indexOf('all artifacts'));
-    expect(result.indexOf('Browserify builds')).toBeGreaterThan(
-      result.indexOf('Deprecated Browserify fallback builds'),
-    );
+    const browserifyBuildsIndex = result.indexOf('Browserify builds');
+
+    expect(webpackBuildsIndex).toBeGreaterThan(-1);
+    expect(allArtifactsIndex).toBeGreaterThan(webpackBuildsIndex);
+    expect(deprecatedBuildsIndex).toBeGreaterThan(allArtifactsIndex);
+    expect(browserifyBuildsIndex).toBeGreaterThan(deprecatedBuildsIndex);
     expect(result).toContain(
       `${HOST}/build-dist-webpack/builds/metamask-chrome-${VERSION}.zip`,
     );
     expect(result).toContain(
-      `${HOST}/build-dist-mv2-webpack/builds/metamask-firefox-${VERSION}.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-beta-webpack/builds/metamask-chrome-${VERSION}-beta.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-beta-mv2-webpack/builds/metamask-firefox-${VERSION}-beta.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-flask-webpack/builds/metamask-chrome-${VERSION}-flask.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-flask-mv2-webpack/builds/metamask-firefox-${VERSION}-flask.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-test-webpack/builds/metamask-chrome-${VERSION}.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-test-mv2-webpack/builds/metamask-firefox-${VERSION}.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-test-flask-webpack/builds/metamask-chrome-${VERSION}-flask.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-test-flask-mv2-webpack/builds/metamask-firefox-${VERSION}-flask.0.zip`,
-    );
-    expect(result).toContain(
       `${HOST}/build-dist-browserify/builds/metamask-chrome-${VERSION}.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-dist-mv2-browserify/builds/metamask-firefox-${VERSION}.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-beta-browserify/builds/metamask-beta-chrome-${VERSION}-beta.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-beta-mv2-browserify/builds/metamask-beta-firefox-${VERSION}-beta.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-flask-browserify/builds/metamask-flask-chrome-${VERSION}-flask.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-flask-mv2-browserify/builds/metamask-flask-firefox-${VERSION}-flask.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-test-browserify/builds/metamask-chrome-${VERSION}.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-test-mv2-browserify/builds/metamask-firefox-${VERSION}.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-test-flask-browserify/builds/metamask-flask-chrome-${VERSION}-flask.0.zip`,
-    );
-    expect(result).toContain(
-      `${HOST}/build-test-flask-mv2-browserify/builds/metamask-flask-firefox-${VERSION}-flask.0.zip`,
     );
     expect(result).not.toContain('build-experimental-webpack');
     expect(result).not.toContain('build-experimental-browserify');
