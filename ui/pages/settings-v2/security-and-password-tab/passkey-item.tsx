@@ -72,11 +72,12 @@ const PasskeyItem = () => {
   );
   const accountType = useSelector(getAccountType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const environmentType = getEnvironmentType();
 
   const baseProperties = useMemo(
     () => ({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      environment_type: getEnvironmentType(),
+      environment_type: environmentType,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: accountType,
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -84,7 +85,7 @@ const PasskeyItem = () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       derivation_method: passkeyDerivationMethod,
     }),
-    [accountType, isSocialLoginFlow, passkeyDerivationMethod],
+    [accountType, environmentType, isSocialLoginFlow, passkeyDerivationMethod],
   );
 
   const [isPasskeyOperationPending, setIsPasskeyOperationPending] =
@@ -105,7 +106,7 @@ const PasskeyItem = () => {
 
   const registerPasskey = useCallback(() => {
     cancelPasskeyCeremony();
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
+    if (environmentType === ENVIRONMENT_TYPE_SIDEPANEL) {
       globalThis.platform?.openExtensionInBrowser?.(
         `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=sidepanel`,
       );
@@ -113,7 +114,7 @@ const PasskeyItem = () => {
     }
 
     navigate(SECURITY_REGISTER_PASSKEY_ROUTE, { replace: true });
-  }, [navigate]);
+  }, [environmentType, navigate]);
 
   const removePasskey = useCallback(async () => {
     if (!isPasskeyRegistered) {
@@ -121,7 +122,7 @@ const PasskeyItem = () => {
     }
 
     if (
-      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
+      environmentType === ENVIRONMENT_TYPE_SIDEPANEL &&
       isEnrolledPasskeyIncompatibleWithSidepanel
     ) {
       cancelPasskeyCeremony();
@@ -142,7 +143,6 @@ const PasskeyItem = () => {
 
     setIsPasskeyOperationPending(true);
     const startedAt = Date.now();
-    const environmentType = getEnvironmentType();
     const verificationMethod = 'passkey';
     trackEvent({
       category: MetaMetricsEventCategory.Settings,
@@ -233,6 +233,7 @@ const PasskeyItem = () => {
   }, [
     baseProperties,
     dispatch,
+    environmentType,
     isEnrolledPasskeyIncompatibleWithSidepanel,
     isPasskeyRegistered,
     navigate,
@@ -263,7 +264,7 @@ const PasskeyItem = () => {
       <>
         <span>{t('passkeyDescription', [passkeyMethodSpecificLabel])}</span>
         {isPasskeyOperationPending &&
-        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL ? (
+        environmentType === ENVIRONMENT_TYPE_SIDEPANEL ? (
           <TextButton
             type="button"
             data-testid="security-passkey-sidepanel-continue-full-screen"
@@ -277,7 +278,12 @@ const PasskeyItem = () => {
       </>
     );
     return body;
-  }, [isPasskeyOperationPending, passkeyMethodSpecificLabel, t]);
+  }, [
+    environmentType,
+    isPasskeyOperationPending,
+    passkeyMethodSpecificLabel,
+    t,
+  ]);
 
   if (!isPasskeyFeatureAvailable) {
     return null;

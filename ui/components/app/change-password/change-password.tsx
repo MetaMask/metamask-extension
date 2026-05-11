@@ -121,8 +121,10 @@ const ChangePassword = ({
       environment_type: getEnvironmentType(),
       // eslint-disable-next-line @typescript-eslint/naming-convention
       derivation_method: passkeyDerivationMethod,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_social_login: isSocialLoginFlow,
     }),
-    [accountType, passkeyDerivationMethod],
+    [accountType, isSocialLoginFlow, passkeyDerivationMethod],
   );
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const mustDeferPasskeyToBrowserTab =
