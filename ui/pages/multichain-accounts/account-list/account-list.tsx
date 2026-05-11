@@ -41,8 +41,10 @@ import {
   getIsDefaultAddressEnabled,
   getShowDefaultAddressPreference,
 } from '../../../selectors';
-import { PREVIOUS_ROUTE } from '../../../helpers/constants/routes';
-import { AddWalletModal } from '../../../components/multichain-accounts/add-wallet-modal';
+import {
+  PREVIOUS_ROUTE,
+  CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+} from '../../../helpers/constants/routes';
 import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
 import {
   TextFieldSearch,
@@ -115,15 +117,9 @@ export const AccountList = () => {
     [filteredWallets],
   );
 
-  const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
-
-  const handleOpenAddWalletModal = useCallback(() => {
-    setIsAddWalletModalOpen(true);
-  }, [setIsAddWalletModalOpen]);
-
-  const handleCloseAddWalletModal = useCallback(() => {
-    setIsAddWalletModalOpen(false);
-  }, [setIsAddWalletModalOpen]);
+  const handleNavigateToChooseNewWalletType = useCallback(() => {
+    navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE);
+  }, [navigate]);
 
   const handleBack = useCallback(() => {
     transitionBack(() => navigate(PREVIOUS_ROUTE));
@@ -199,7 +195,7 @@ export const AccountList = () => {
         <Button
           variant={ButtonVariant.Secondary}
           size={ButtonSize.Lg}
-          onClick={handleOpenAddWalletModal}
+          onClick={handleNavigateToChooseNewWalletType}
           isDisabled={isAccountTreeSyncingInProgress}
           isFullWidth
           data-testid="account-list-add-wallet-button"
@@ -226,10 +222,6 @@ export const AccountList = () => {
           </Box>
         </Button>
       </Footer>
-      <AddWalletModal
-        isOpen={isAddWalletModalOpen}
-        onClose={handleCloseAddWalletModal}
-      />
     </Page>
   );
 };

@@ -122,6 +122,7 @@ export const MusdConversionInfo = () => {
 
   return (
     <CustomAmountInfo
+      autoFocusAmount
       currency="usd"
       disableAutomaticToken={true}
       preferredToken={preferredToken}

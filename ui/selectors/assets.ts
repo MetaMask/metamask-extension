@@ -127,6 +127,7 @@ export type BalanceCalculationState = {
     MultichainNetworkControllerState['metamask'] &
     RatesState['metamask'] & {
       networkConfigurationsByChainId: NetworkState['metamask']['networkConfigurationsByChainId'];
+      snaps: Record<string, { enabled: boolean }>;
     };
 };
 
@@ -530,6 +531,10 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
             state,
             chainId as CaipChainId,
           ));
+
+    if (!accountToUse) {
+      return null;
+    }
 
     const assetsToSearch = isEvm
       ? (getSelectedAccountTokensAcrossChains(state) as Record<

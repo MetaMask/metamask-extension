@@ -77,8 +77,6 @@ function buildDefaultProps(overrides: Record<string, unknown> = {}) {
     setTermsOfUseLastAgreed: jest.fn(),
     showOutdatedBrowserWarning: false,
     setOutdatedBrowserWarningLastShown: jest.fn(),
-    setNewNftAddedMessage: jest.fn(),
-    setRemoveNftMessage: jest.fn(),
     attemptCloseNotificationPopup: jest.fn(),
     setNewTokensImported: jest.fn(),
     setNewTokensImportedError: jest.fn(),
@@ -91,6 +89,11 @@ function buildDefaultProps(overrides: Record<string, unknown> = {}) {
     clearPendingRedirectRoute: jest.fn(),
     redirectAfterDefaultPage: null,
     clearRedirectAfterDefaultPage: jest.fn(),
+    lastVisitedPerpsRoute: null as {
+      path: string;
+      timestamp: number;
+    } | null,
+    clearLastVisitedPerpsRoute: jest.fn(),
     ...overrides,
   };
 }
@@ -208,5 +211,109 @@ describe('Home — checkPendingRedirectRoute', () => {
       path: '/shield-plan',
     });
     expect(clearPendingRedirectRoute).toHaveBeenCalled();
+  });
+});
+
+describe('Home — checkLastVisitedPerpsRoute', () => {
+  const FRESH_ENOUGH_OFFSET_MS = 60_000;
+  const TTL_MS = 5 * 60_000;
+
+  it('does nothing when lastVisitedPerpsRoute is null', () => {
+    const { props } = renderHome({ lastVisitedPerpsRoute: null });
+
+    expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(props.clearLastVisitedPerpsRoute).not.toHaveBeenCalled();
+  });
+
+  it('redirects to the persisted perps path when within the TTL', () => {
+    const { props } = renderHome({
+      lastVisitedPerpsRoute: {
+        path: '/perps/market/BTC',
+        timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).toHaveBeenCalledWith({
+      path: '/perps/market/BTC',
+    });
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('does not redirect but still clears when TTL has expired', () => {
+    const { props } = renderHome({
+      lastVisitedPerpsRoute: {
+        path: '/perps/market/BTC',
+        timestamp: Date.now() - (TTL_MS + 1_000),
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('ignores persisted path that does not start with /perps', () => {
+    const { props } = renderHome({
+      lastVisitedPerpsRoute: {
+        path: '/settings',
+        timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('defers to pendingRedirectRoute when both are set but still clears the persisted perps entry', () => {
+    const { props } = renderHome({
+      pendingRedirectRoute: { path: '/shield-plan' },
+      lastVisitedPerpsRoute: {
+        path: '/perps/market/BTC',
+        timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).toHaveBeenCalledWith({
+      path: '/shield-plan',
+    });
+    expect(props.setRedirectAfterDefaultPage).toHaveBeenCalledTimes(1);
+    // Even when pendingRedirectRoute wins, the perps entry must be cleared
+    // so a later home mount cannot replay it after the higher-priority
+    // redirect has already fired.
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('rejects a path with the /perps prefix that is not actually a /perps subroute', () => {
+    const { props } = renderHome({
+      lastVisitedPerpsRoute: {
+        path: '/perpsNew/market/BTC',
+        timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+      },
+    });
+
+    expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+    expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+  });
+
+  it('skips the redirect but still clears when PerpsLayout just unmounted in-app (covers the componentDidMount vs useEffect-cleanup race)', async () => {
+    const markerModulePath = '../../helpers/perps/in-app-leave-marker';
+    const {
+      markPerpsUnmountInApp,
+      __resetPerpsInAppLeaveMarkerForTests: resetPerpsInAppLeaveMarkerForTests,
+    } = await import(markerModulePath);
+    try {
+      markPerpsUnmountInApp();
+
+      const { props } = renderHome({
+        lastVisitedPerpsRoute: {
+          path: '/perps/market/BTC',
+          timestamp: Date.now() - FRESH_ENOUGH_OFFSET_MS,
+        },
+      });
+
+      expect(props.setRedirectAfterDefaultPage).not.toHaveBeenCalled();
+      expect(props.clearLastVisitedPerpsRoute).toHaveBeenCalled();
+    } finally {
+      resetPerpsInAppLeaveMarkerForTests();
+    }
   });
 });

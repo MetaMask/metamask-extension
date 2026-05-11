@@ -32,7 +32,7 @@ import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
   type SafeChain,
   useSafeChains,
-} from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+} from '../../networks-form/use-safe-chains';
 import { useRWAToken } from '../../../../pages/bridge/hooks/useRWAToken';
 import { hexToDecimal } from '../../../../../shared/lib/conversion.utils';
 import AssetComponent from './Asset';

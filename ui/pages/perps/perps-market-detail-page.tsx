@@ -45,6 +45,7 @@ import {
 } from '../../../shared/constants/perps-events';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getPreferences } from '../../selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useTheme } from '../../hooks/useTheme';
 import {
@@ -66,6 +67,7 @@ import {
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
+import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsMarketRecentActivity } from '../../components/app/perps/perps-market-recent-activity';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
@@ -365,7 +367,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, [symbol]);
 
   const hasPerpBalance = Boolean(
-    account && Number.parseFloat(account.availableBalance) > 0,
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -377,7 +379,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.ASSET]: decodedSymbol,
       }),
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.MARKET_LIST,
-      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance ? 'yes' : 'no',
+      [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: hasPerpBalance,
     },
     resetKey: decodedSymbol,
   });
@@ -464,7 +466,9 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Filter and sort open orders for this market, then normalize for display.
   // Normalization adds synthetic TP/SL rows for parent orders when no matching
-  // real trigger exists; full-position TP/SL also appear in this Orders list.
+  // real trigger exists. Full-position TP/SL is excluded from this list — it
+  // appears in the auto-close section above (driven by position.takeProfitPrice
+  // / stopLossPrice).
   const orders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
@@ -483,10 +487,19 @@ const PerpsMarketDetailPage: React.FC = () => {
     });
   }, [decodedSymbol, allOrders, position]);
 
-  // Candle period state and chart ref
-  const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
-    CandlePeriod.FiveMinutes,
-  );
+  // Candle period: persisted in PreferencesController across sessions/markets.
+  // Local override gives instant UI feedback; background save persists for next visit.
+  const { perpsSelectedCandlePeriod: persistedCandlePeriod } = useSelector(
+    getPreferences,
+  ) as { perpsSelectedCandlePeriod?: string };
+  const resolvedPersistedPeriod =
+    persistedCandlePeriod &&
+    Object.values(CandlePeriod).includes(persistedCandlePeriod as CandlePeriod)
+      ? (persistedCandlePeriod as CandlePeriod)
+      : CandlePeriod.FiveMinutes;
+  const [localPeriodOverride, setLocalPeriodOverride] =
+    useState<CandlePeriod | null>(null);
+  const selectedPeriod = localPeriodOverride ?? resolvedPersistedPeriod;
   const chartRef = useRef<PerpsCandlestickChartRef>(null);
 
   // Live candle data from CandleStreamChannel
@@ -689,8 +702,13 @@ const PerpsMarketDetailPage: React.FC = () => {
   // 5. MOBILE REFERENCE: See usePerpsLiveCandles hook, CandleStreamChannel,
   // and HyperLiquidClientService.subscribeToCandles() in the mobile app.
   const handlePeriodChange = useCallback((period: CandlePeriod) => {
-    setSelectedPeriod(period);
-    // Apply default zoom when period changes
+    setLocalPeriodOverride(period);
+    submitRequestToBackground('setPreference', [
+      'perpsSelectedCandlePeriod',
+      period,
+    ]).catch(() => {
+      // Preference save is best-effort; chart still updates via local state.
+    });
     if (chartRef.current) {
       chartRef.current.applyZoom(ZOOM_CONFIG.DEFAULT_CANDLES, true);
     }
@@ -1781,8 +1799,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 flip
                 offset={[0, 8]}
                 padding={0}
-                matchWidth
-                className="rounded-lg z-[1050]"
+                className="rounded-lg z-[1050] w-[294px]"
                 data-testid="perps-modify-menu"
               >
                 <Box flexDirection={BoxFlexDirection.Column}>
@@ -1809,6 +1826,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     onClick={handleReduceExposure}
                     data-testid="perps-modify-menu-reduce-exposure"
                   />
+                  {/* Reverse Position temporarily disabled — see TAT-XXXX
                   <PopoverMenuItem
                     icon={IconName.SwapHorizontal}
                     label={t('perpsReversePosition')}
@@ -1821,6 +1839,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     className="rounded-b-lg"
                     data-testid="perps-modify-menu-reverse-position"
                   />
+                  */}
                 </Box>
               </Popover>
             </Box>
@@ -1888,7 +1907,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         />
       )}
 
-      {/* Reverse position modal (from Modify menu) */}
+      {/* Reverse position modal temporarily disabled — see TAT-XXXX
       {position && isReverseModalOpen && (
         <ReversePositionModal
           isOpen={isReverseModalOpen}
@@ -1898,6 +1917,7 @@ const PerpsMarketDetailPage: React.FC = () => {
           sizeDecimals={marketInfo?.szDecimals}
         />
       )}
+      */}
 
       {/* TP/SL update modal (from Auto Close row) */}
       {position && isTPSLModalOpen && (
