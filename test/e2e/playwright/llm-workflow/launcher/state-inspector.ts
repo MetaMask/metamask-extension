@@ -23,8 +23,10 @@ import {
   SIGNATURE_REQUEST_PATH,
   UNLOCK_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
-import type { AccountsState } from '../../../../../ui/selectors/accounts';
-import { getMaybeSelectedInternalAccount } from '../../../../../ui/selectors/accounts';
+import {
+  type AccountsState,
+  getMaybeSelectedInternalAccount,
+} from '../../../../../shared/lib/selectors/accounts';
 import type { ProviderConfigState } from '../../../../../shared/lib/selectors/networks';
 import {
   getProviderConfig,

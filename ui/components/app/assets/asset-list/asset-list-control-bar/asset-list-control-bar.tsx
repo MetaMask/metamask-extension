@@ -14,10 +14,10 @@ import {
   getAllChainsToPoll,
   getIsLineaMainnet,
   getIsMainnet,
-  getSelectedInternalAccount,
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,

@@ -17,10 +17,12 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   getRpcPrefsForCurrentProvider,
   getUSDConversionRate,
-  isHardwareWallet,
-  getHardwareWalletType,
   getFullTxData,
 } from '../../../selectors';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../../shared/lib/selectors/keyring';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
 import {
   getSmartTransactionsEnabled,
