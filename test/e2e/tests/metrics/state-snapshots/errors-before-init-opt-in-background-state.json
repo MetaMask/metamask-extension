@@ -42,13 +42,11 @@
       "isWalletResetInProgress": "boolean",
       "lastUpdatedAt": null,
       "lastViewedUserSurvey": null,
-      "lastVisitedRoute": null,
       "musdConversionDismissedCtaKeys": "object",
       "musdConversionEducationSeen": "boolean",
       "newPrivacyPolicyToastClickedOrClosed": "boolean",
       "newPrivacyPolicyToastShownDate": "number",
       "outdatedBrowserWarningLastShown": "object",
-      "passkeyAutoUnlockSuppressed": "boolean",
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
       "pna25Acknowledged": "boolean",
@@ -69,19 +67,9 @@
     "ClaimsController": "object",
     "CurrencyController": {
       "currencyRates": {
-        "BNB": {
-          "conversionDate": null,
-          "conversionRate": null,
-          "usdConversionRate": null
-        },
         "ETH": {
           "conversionDate": "object",
           "conversionRate": 1700,
-          "usdConversionRate": null
-        },
-        "POL": {
-          "conversionDate": null,
-          "conversionRate": null,
           "usdConversionRate": null
         }
       },
