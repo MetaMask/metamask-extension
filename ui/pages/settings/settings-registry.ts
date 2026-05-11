@@ -101,7 +101,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [PREFERENCES_AND_DISPLAY_ROUTE]: {
     labelKey: 'preferencesAndDisplay',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./preferences-and-display-tab')),
+    component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
     isTab: true,
     iconName: IconName.Customize,
   },
@@ -109,34 +109,34 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     labelKey: 'theme',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
     component: mmLazy(
-      () => import('./preferences-and-display-tab/theme-sub-page'),
+      () => import('./preferences-and-display-tab/theme-sub-page.tsx'),
     ),
   },
   [LANGUAGE_ROUTE]: {
     labelKey: 'language',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
     component: mmLazy(
-      () => import('./preferences-and-display-tab/language-sub-page'),
+      () => import('./preferences-and-display-tab/language-sub-page.tsx'),
     ),
   },
   [ACCOUNT_IDENTICON_ROUTE]: {
     labelKey: 'accountIdenticon',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
     component: mmLazy(
-      () => import('./preferences-and-display-tab/account-identicon-sub-page'),
+      () => import('./preferences-and-display-tab/account-identicon-sub-page.tsx'),
     ),
   },
   [CURRENCY_ROUTE]: {
     labelKey: 'localCurrency',
     parentPath: PREFERENCES_AND_DISPLAY_ROUTE,
-    component: mmLazy(() => import('./assets-tab/currency-sub-page')),
+    component: mmLazy(() => import('./assets-tab/currency-sub-page.tsx')),
   },
 
   // --- Notifications tab ---
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
     labelKey: 'notifications',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./notifications-tab')),
+    component: mmLazy(() => import('./notifications-tab/index.ts')),
     isTab: true,
     iconName: IconName.Notification,
   },
@@ -145,7 +145,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [SECURITY_AND_PASSWORD_ROUTE]: {
     labelKey: 'securityAndPassword',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./security-and-password-tab')),
+    component: mmLazy(() => import('./security-and-password-tab/index.ts')),
     isTab: true,
     iconName: IconName.SecurityKey,
   },
@@ -153,7 +153,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     labelKey: 'autoLock',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
-      () => import('./security-and-password-tab/auto-lock-sub-page'),
+      () => import('./security-and-password-tab/auto-lock-sub-page.tsx'),
     ),
   },
   [MANAGE_WALLET_RECOVERY_ROUTE]: {
@@ -161,28 +161,28 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
       () =>
-        import('./security-and-password-tab/manage-wallet-recovery-sub-page'),
+        import('./security-and-password-tab/manage-wallet-recovery-sub-page.tsx'),
     ),
   },
   [SECURITY_PASSWORD_CHANGE_V2_ROUTE]: {
     labelKey: 'password',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
-      () => import('./security-and-password-tab/password-sub-page'),
+      () => import('./security-and-password-tab/password-sub-page.tsx'),
     ),
   },
   [SECURITY_REGISTER_PASSKEY_ROUTE]: {
     labelKey: 'setUpPasskey',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
-      () => import('./security-and-password-tab/passkey-register-sub-page'),
+      () => import('./security-and-password-tab/passkey-register-sub-page.tsx'),
     ),
   },
   [SECURITY_TURN_OFF_PASSKEY_ROUTE]: {
     labelKey: 'turnOffPasskey',
     parentPath: SECURITY_AND_PASSWORD_ROUTE,
     component: mmLazy(
-      () => import('./security-and-password-tab/passkey-turn-off-sub-page'),
+      () => import('./security-and-password-tab/passkey-turn-off-sub-page.tsx'),
     ),
   },
 
@@ -190,14 +190,14 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [PRIVACY_ROUTE]: {
     labelKey: 'privacy',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./privacy-tab')),
+    component: mmLazy(() => import('./privacy-tab/index.ts')),
     isTab: true,
     iconName: IconName.Lock,
   },
   [THIRD_PARTY_APIS_ROUTE]: {
     labelKey: 'thirdPartyApis',
     parentPath: PRIVACY_ROUTE,
-    component: mmLazy(() => import('./privacy-tab/third-party-apis-sub-page')),
+    component: mmLazy(() => import('./privacy-tab/third-party-apis-sub-page.tsx')),
   },
 
   // --- Backup and sync tab ---
@@ -205,7 +205,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     labelKey: 'backupAndSync',
     parentPath: SETTINGS_ROUTE,
     component: mmLazy(
-      () => import('./backup-and-sync-tab/backup-and-sync-tab'),
+      () => import('./backup-and-sync-tab/backup-and-sync-tab.tsx'),
     ),
     isTab: true,
     iconName: IconName.SecurityTime,
@@ -215,7 +215,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [TRANSACTION_SHIELD_ROUTE]: {
     labelKey: 'shieldTx',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('../shield/transaction-shield')),
+    component: mmLazy(() => import('../shield/transaction-shield/index.ts')),
     isTab: true,
     iconName: IconName.ShieldLock,
   },
@@ -223,14 +223,14 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     labelKey: 'shieldManagePlan',
     parentPath: TRANSACTION_SHIELD_ROUTE,
     component: mmLazy(
-      () => import('./transaction-shield-tab/manage-plan-sub-page'),
+      () => import('./transaction-shield-tab/manage-plan-sub-page.tsx'),
     ),
   },
   [TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE]: {
     labelKey: 'shieldPastPlansTitle',
     parentPath: TRANSACTION_SHIELD_ROUTE,
     component: mmLazy(
-      () => import('./transaction-shield-tab/manage-past-plan-sub-page'),
+      () => import('./transaction-shield-tab/manage-past-plan-sub-page.tsx'),
     ),
   },
   [TRANSACTION_SHIELD_CLAIM_ROUTES.BASE]: {
@@ -240,7 +240,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [TRANSACTION_SHIELD_CLAIMS_WILDCARD_ROUTE]: {
     labelKey: 'shieldClaimsListTitle',
     parentPath: TRANSACTION_SHIELD_ROUTE,
-    component: mmLazy(() => import('../shield/transaction-shield/claims-area')),
+    component: mmLazy(() => import('../shield/transaction-shield/claims-area/index.ts')),
   },
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: {
     labelKey: 'shieldClaim',
@@ -263,7 +263,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [ASSETS_ROUTE]: {
     labelKey: 'assets',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./assets-tab')),
+    component: mmLazy(() => import('./assets-tab/index.ts')),
     isTab: true,
     iconName: IconName.Coin,
   },
@@ -272,7 +272,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [TRANSACTIONS_ROUTE]: {
     labelKey: 'transactions',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./transactions-tab')),
+    component: mmLazy(() => import('./transactions-tab/index.ts')),
     isTab: true,
     iconName: IconName.SwapVertical,
   },
@@ -281,7 +281,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [EXPERIMENTAL_ROUTE]: {
     labelKey: 'experimental',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./experimental-tab/experimental-tab')),
+    component: mmLazy(() => import('./experimental-tab/experimental-tab.tsx')),
     isTab: true,
     iconName: IconName.Flask,
   },
@@ -292,7 +292,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
         [DEVELOPER_OPTIONS_ROUTE]: {
           labelKey: 'debug',
           parentPath: SETTINGS_ROUTE,
-          component: mmLazy(() => import('./debug-tab')),
+          component: mmLazy(() => import('./debug-tab/index.ts')),
           isTab: true,
           iconName: IconName.Sparkle,
         },
@@ -303,7 +303,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [DEVELOPER_TOOLS_ROUTE]: {
     labelKey: 'developerTools',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./developer-tools-tab')),
+    component: mmLazy(() => import('./developer-tools-tab/index.ts')),
     isTab: true,
     iconName: IconName.Code,
   },
@@ -312,7 +312,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [ABOUT_US_ROUTE]: {
     labelKey: 'aboutMetaMask',
     parentPath: SETTINGS_ROUTE,
-    component: mmLazy(() => import('./about-tab')),
+    component: mmLazy(() => import('./about-tab/index.ts')),
     isTab: true,
     iconName: IconName.Info,
   },
