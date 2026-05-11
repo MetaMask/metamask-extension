@@ -31,14 +31,20 @@ export const useTokenDisplayInfo = ({
 }: UseTokenDisplayInfoProps): TokenDisplayInfo => {
   const isEvm = isEvmChainId(token.chainId);
 
-  // Only fetch from the tokens API when token.name is missing (e.g. tokens added
-  // via swaps that bypass the name-aware import path). The module-level cache in
-  // useTokensData ensures at most one HTTP request per unique asset ID across all
-  // token rows, and the empty-array fast-path skips the effect entirely when name
-  // is already present. token.chainId is a hex chain ID when isEvm is true.
+  // Fetch from the tokens API when name or image is missing (e.g. tokens added
+  // via swaps that bypass the name-aware import path). Both fields are checked
+  // independently because a token can have a name but no image, or an image but
+  // no name. The module-level cache in useTokensData ensures at most one HTTP
+  // request per unique asset ID across all token rows, and the empty-array
+  // fast-path skips the effect entirely when both fields are already present.
+  // token.chainId is a hex chain ID when isEvm is true.
   const evmChainId = token.chainId as Hex;
   const fallbackAssetId =
-    isEvm && !token.isNative && !token.name && token.address && token.chainId
+    isEvm &&
+    !token.isNative &&
+    (!token.name || !token.image) &&
+    token.address &&
+    token.chainId
       ? buildEvmCaip19AssetId(token.address, evmChainId)
       : undefined;
   const fallbackTokensByAssetId = useTokensData(
@@ -66,9 +72,9 @@ export const useTokenDisplayInfo = ({
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTestnetSelected = Boolean(
     Object.keys(enabledNetworksByNamespace).length === 1 &&
-    TEST_CHAINS.includes(
-      Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
-    ),
+      TEST_CHAINS.includes(
+        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+      ),
   );
 
   const isMainnet = !isTestnetSelected;
