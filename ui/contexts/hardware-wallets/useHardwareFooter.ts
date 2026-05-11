@@ -143,6 +143,13 @@ export const useHardwareFooter = ({
       return true;
     }
 
+    // Trezor on Firefox uses a different connection flow and does not require
+    // the "Connect Trezor" preflight step before the Confirm CTA.
+    // ensureDeviceReady still runs on submit to establish the session.
+    if (walletType === HardwareWalletType.Trezor && isFirefoxBrowser()) {
+      return true;
+    }
+
     return isHardwareConnectionReadyForConfirmFooter(connectionState.status);
   }, [
     connectionState.status,
