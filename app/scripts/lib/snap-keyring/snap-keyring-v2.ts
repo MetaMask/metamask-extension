@@ -63,7 +63,7 @@ export function snapKeyringBuilderV2(
   const SnapKeyringBuilderV2 = (keyring: Keyring) => {
     assert(
       keyring instanceof KeyringV1Adapter,
-      'Expected SnapKeyringV2 instance',
+      'Expected KeyringV1Adapter instance (that wraps a SnapKeyringV2)',
     );
 
     // We retrieve the original v2 reference from the adapter to ensure both v1 and v2
