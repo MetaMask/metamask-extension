@@ -1,5 +1,100 @@
-import React from 'react';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  BoxJustifyContent,
+  Button,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonVariant,
+  FontWeight,
+  IconName,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { formatCurrencyAmount } from '../../../../bridge/utils/quote';
 
-export const Header = () => {
-  return null;
+type HeaderProps = {
+  totalReceivedFiat: number;
+  selectedAsset: {
+    symbol: string;
+    image?: string | null;
+  };
+  onTotalReceivedFiatIconClick: () => void;
+  onSelectAssetClick: () => void;
+};
+
+export const Header = ({
+  totalReceivedFiat,
+  selectedAsset,
+  onSelectAssetClick,
+  onTotalReceivedFiatIconClick,
+}: HeaderProps) => {
+  const t = useI18nContext();
+  const currency = useSelector(getCurrentCurrency);
+  const formattedTotalReceive = useMemo(
+    () => formatCurrencyAmount(totalReceivedFiat.toString(), currency, 2),
+    [totalReceivedFiat, currency],
+  );
+
+  return (
+    <Box paddingHorizontal={4} paddingBottom={6} gap={1}>
+      <Box
+        alignItems={BoxAlignItems.Center}
+        flexDirection={BoxFlexDirection.Row}
+        gap={1}
+      >
+        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+          {t('totalReceived')}
+        </Text>
+        <ButtonIcon
+          size={ButtonIconSize.Sm}
+          iconName={IconName.Info}
+          onClick={onTotalReceivedFiatIconClick}
+          ariaLabel={t('totalReceived')}
+        />
+      </Box>
+      <Box
+        alignItems={BoxAlignItems.Center}
+        flexDirection={BoxFlexDirection.Row}
+        gap={1}
+        justifyContent={BoxJustifyContent.Between}
+        flexWrap={BoxFlexWrap.Wrap}
+      >
+        <Text
+          variant={
+            (formattedTotalReceive?.length ?? 0) > 10
+              ? TextVariant.DisplayMd
+              : TextVariant.DisplayLg
+          }
+          color={TextColor.SuccessDefault}
+          className="min-w-0 break-words"
+        >
+          {formattedTotalReceive}
+        </Text>
+        <Button
+          variant={ButtonVariant.Secondary}
+          onClick={onSelectAssetClick}
+          className="flex flex-row items-center gap-2 shrink-0"
+        >
+          <AvatarToken
+            size={AvatarTokenSize.Sm}
+            name={selectedAsset.symbol}
+            src={selectedAsset.image ?? undefined}
+          />
+          <Text variant={TextVariant.ButtonLabelMd}>
+            {selectedAsset.symbol}
+          </Text>
+        </Button>
+      </Box>
+    </Box>
+  );
 };

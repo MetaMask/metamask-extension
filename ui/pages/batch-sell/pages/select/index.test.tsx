@@ -53,7 +53,7 @@ jest.mock('./components/Footer', () => ({
 const mockOpenModal = jest.fn();
 const mockCloseModal = jest.fn();
 jest.mock('../../hooks/useBatchSellInfoModal', () => ({
-  useBatchSellnfoModal: () => ({
+  useBatchSellInfoModal: () => ({
     openModal: (...args: unknown[]) => mockOpenModal(...args),
     closeModal: (...args: unknown[]) => mockCloseModal(...args),
   }),
@@ -106,9 +106,9 @@ const mockAssetList: (
 )[] = [mockAsset];
 
 jest.mock('../../../../ducks/batch-sell/selectors', () => ({
-  getAvailableBatchSellNetworksSelector: () => mockNetworks,
-  getAvailableBatchSellAssetsForNetworkSelector: () => mockAssetList,
-  selectBatchSellDestStablecoins: () => mockDestStablecoins,
+  getAvailableBatchSellNetworks: () => mockNetworks,
+  getAvailableBatchSellSwapAssetsForNetwork: () => mockAssetList,
+  getBatchSellDestStablecoinsForNetwork: () => mockDestStablecoins,
 }));
 
 jest.mock('react-redux', () => ({

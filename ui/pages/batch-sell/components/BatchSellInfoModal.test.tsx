@@ -17,102 +17,136 @@ const DEFAULT_MODAL_PROPS = {
   descriptionProps: DESCRIPTION_PROPS,
 };
 
-describe('BatchSellModal', () => {
-  it('renders nothing when modalProps is undefined', () => {
-    const { container } = render(
-      <BatchSellInfoModal open onClose={jest.fn()} />,
-    );
+describe('BatchSellInfoModal', () => {
+  describe('when modalProps is undefined', () => {
+    it('renders nothing', () => {
+      const { container } = render(
+        <BatchSellInfoModal open onClose={jest.fn()} />,
+      );
 
-    expect(container.firstChild).toBeNull();
+      expect(container.firstChild).toBeNull();
+    });
   });
 
-  it('renders the modal when open=true and modalProps is provided', () => {
-    const { getByText } = render(
-      <BatchSellInfoModal
-        open
-        modalProps={DEFAULT_MODAL_PROPS}
-        onClose={jest.fn()}
-      />,
-    );
+  describe('when open=true and modalProps is provided', () => {
+    it('renders the title and description', () => {
+      const { getByText } = render(
+        <BatchSellInfoModal
+          open
+          modalProps={DEFAULT_MODAL_PROPS}
+          onClose={jest.fn()}
+        />,
+      );
 
-    expect(getByText('Modal title')).toBeInTheDocument();
-    expect(getByText('Modal description')).toBeInTheDocument();
+      expect(getByText('Modal title')).toBeInTheDocument();
+      expect(getByText('Modal description')).toBeInTheDocument();
+    });
+
+    it('calls onClose when the header close button is clicked', () => {
+      const onClose = jest.fn();
+      const { getByLabelText } = render(
+        <BatchSellInfoModal
+          open
+          modalProps={DEFAULT_MODAL_PROPS}
+          onClose={onClose}
+        />,
+      );
+
+      fireEvent.click(getByLabelText('[close]'));
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onClose when Escape key is pressed', () => {
+      const onClose = jest.fn();
+      render(
+        <BatchSellInfoModal
+          open
+          modalProps={DEFAULT_MODAL_PROPS}
+          onClose={onClose}
+        />,
+      );
+
+      fireEvent.keyDown(document, { key: 'Escape' });
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('calls onClose when clicking outside the modal dialog', () => {
+      const onClose = jest.fn();
+      render(
+        <BatchSellInfoModal
+          open
+          modalProps={DEFAULT_MODAL_PROPS}
+          onClose={onClose}
+        />,
+      );
+
+      fireEvent.mouseDown(document.body);
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not render the CTA footer when ctaProps is omitted', () => {
+      const { queryByRole } = render(
+        <BatchSellInfoModal
+          open
+          modalProps={DEFAULT_MODAL_PROPS}
+          onClose={jest.fn()}
+        />,
+      );
+
+      expect(queryByRole('button', { name: /sell/iu })).not.toBeInTheDocument();
+    });
   });
 
-  it('does not display modal content when open=false', () => {
-    const { queryByText } = render(
-      <BatchSellInfoModal
-        open={false}
-        modalProps={DEFAULT_MODAL_PROPS}
-        onClose={jest.fn()}
-      />,
-    );
+  describe('when open=false', () => {
+    it('does not display the modal content', () => {
+      const { queryByText } = render(
+        <BatchSellInfoModal
+          open={false}
+          modalProps={DEFAULT_MODAL_PROPS}
+          onClose={jest.fn()}
+        />,
+      );
 
-    expect(queryByText('Modal title')).not.toBeInTheDocument();
-    expect(queryByText('Modal description')).not.toBeInTheDocument();
+      expect(queryByText('Modal title')).not.toBeInTheDocument();
+      expect(queryByText('Modal description')).not.toBeInTheDocument();
+    });
   });
 
-  it('calls onClose when the header close button is clicked', () => {
-    const onClose = jest.fn();
-    const { getByLabelText } = render(
-      <BatchSellInfoModal
-        open
-        modalProps={DEFAULT_MODAL_PROPS}
-        onClose={onClose}
-      />,
-    );
+  describe('CTA button', () => {
+    it('renders the CTA button with the provided text', () => {
+      const { getByText } = render(
+        <BatchSellInfoModal
+          open
+          modalProps={{
+            ...DEFAULT_MODAL_PROPS,
+            ctaProps: { text: 'Sell now', onClick: jest.fn() },
+          }}
+          onClose={jest.fn()}
+        />,
+      );
 
-    fireEvent.click(getByLabelText('[close]'));
+      expect(getByText('Sell now')).toBeInTheDocument();
+    });
 
-    expect(onClose).toHaveBeenCalledTimes(1);
-  });
+    it('calls ctaProps.onClick when the CTA button is clicked', () => {
+      const onClick = jest.fn();
+      const { getByText } = render(
+        <BatchSellInfoModal
+          open
+          modalProps={{
+            ...DEFAULT_MODAL_PROPS,
+            ctaProps: { text: 'Sell now', onClick },
+          }}
+          onClose={jest.fn()}
+        />,
+      );
 
-  it('renders the CTA button with the provided text', () => {
-    const onClick = jest.fn();
-    const { getByText } = render(
-      <BatchSellInfoModal
-        open
-        modalProps={{
-          ...DEFAULT_MODAL_PROPS,
-          ctaProps: { text: 'Sell now', onClick },
-        }}
-        onClose={jest.fn()}
-      />,
-    );
+      fireEvent.click(getByText('Sell now'));
 
-    expect(getByText('Sell now')).toBeInTheDocument();
-  });
-
-  it('calls ctaProps.onClick when the CTA button is clicked', () => {
-    const onClick = jest.fn();
-    const onClose = jest.fn();
-    const { getByText } = render(
-      <BatchSellInfoModal
-        open
-        modalProps={{
-          ...DEFAULT_MODAL_PROPS,
-          ctaProps: { text: 'Sell now', onClick },
-        }}
-        onClose={onClose}
-      />,
-    );
-
-    fireEvent.click(getByText('Sell now'));
-
-    expect(onClick).toHaveBeenCalledTimes(1);
-  });
-
-  it('renders the CTA button area without text when ctaProps is omitted', () => {
-    const { queryByRole } = render(
-      <BatchSellInfoModal
-        open
-        modalProps={DEFAULT_MODAL_PROPS}
-        onClose={jest.fn()}
-      />,
-    );
-
-    // The button element is still rendered but its text node is empty
-    const button = queryByRole('button', { name: /sell/iu });
-    expect(button).not.toBeInTheDocument();
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
   });
 });

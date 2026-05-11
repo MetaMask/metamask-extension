@@ -961,6 +961,12 @@
   "batchSellMaxSelectedTokens": {
     "message": "Max $1 tokens allowed"
   },
+  "batchSellMinimumReceiveExplanation": {
+    "message": "The minimum amount you'll receive if the price changes while your transaction is processing, based on your slippage tolerance. This is an estimate from our liquidity providers. Final amounts may differ."
+  },
+  "batchSellReceiveStablecoin": {
+    "message": "Select a stablecoin"
+  },
   "batchSellSelectHeaderSubtitle": {
     "message": "All tokens need to be on the same network."
   },
@@ -9542,6 +9548,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalReceived": {
+    "message": "Total received"
   },
   "totalVolume": {
     "message": "Total volume"

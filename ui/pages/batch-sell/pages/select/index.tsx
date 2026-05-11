@@ -3,15 +3,15 @@ import { useSelector } from 'react-redux';
 import { CaipChainId } from '@metamask/utils';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
-  getAvailableBatchSellAssetsForNetworkSelector,
-  getAvailableBatchSellNetworksSelector,
-  selectBatchSellDestStablecoins,
+  getAvailableBatchSellSwapAssetsForNetwork,
+  getAvailableBatchSellNetworks,
+  getBatchSellDestStablecoinsForNetwork,
 } from '../../../../ducks/batch-sell/selectors';
 import type { BridgeAppState } from '../../../../ducks/bridge/selectors';
 import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 import { useSortBatchSellAssetsByBalance } from '../../../../hooks/batch-sell/useSortBatchSellAssetsByBalance';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useBatchSellnfoModal } from '../../hooks/useBatchSellInfoModal';
+import { useBatchSellInfoModal } from '../../hooks/useBatchSellInfoModal';
 import { useBatchSellNavigation } from '../../../../hooks/batch-sell/useBatchSellNavigation';
 import { MIN_SELECTED_ALLOWED_TOKENS } from '../../../../constants/batch-sell';
 import { transitionForward } from '../../../../components/ui/transition';
@@ -25,13 +25,10 @@ import { AssetList } from './components/AssetList';
 import { BatchSellEmptySelectTokens } from './components/BatchSellEmptySelectTokens';
 import { useInitialStateFromLocation } from './hooks/useInitialStateFromLocation';
 
-// TODO: go throught the acceptance criteria and verify all cases
-// TODO: start working on the select screen
-
 export const BatchSellSelectPage = () => {
   const t = useI18nContext();
   const { openBridgeExperience } = useBridging();
-  const { openModal, closeModal } = useBatchSellnfoModal();
+  const { openModal, closeModal } = useBatchSellInfoModal();
   const { navigateToBatchSellConfirmPage } = useBatchSellNavigation();
 
   const [assetsOrderByBalance, setAssetsOrderByBalance] = useState<
@@ -39,7 +36,7 @@ export const BatchSellSelectPage = () => {
   >('desc');
 
   const availableBatchSellNetworksList = useSelector(
-    getAvailableBatchSellNetworksSelector,
+    getAvailableBatchSellNetworks,
   );
 
   const availableNetworkChainIds = useMemo(
@@ -52,7 +49,7 @@ export const BatchSellSelectPage = () => {
   const allAssetsByNetwork = useSelector((state) => {
     const result: Record<string, string[]> = {};
     for (const chainId of availableNetworkChainIds) {
-      result[chainId] = getAvailableBatchSellAssetsForNetworkSelector(
+      result[chainId] = getAvailableBatchSellSwapAssetsForNetwork(
         state,
         chainId,
       ).map((a) => a.assetId);
@@ -76,14 +73,14 @@ export const BatchSellSelectPage = () => {
     useState<string[]>(initialAssetsId);
 
   const availableBatchSellAssetsForNetworkList = useSelector((state) =>
-    getAvailableBatchSellAssetsForNetworkSelector(
-      state,
-      selectedNetworkChainId,
-    ),
+    getAvailableBatchSellSwapAssetsForNetwork(state, selectedNetworkChainId),
   );
 
   const batchSellDestStablecoins = useSelector((state: BridgeAppState) =>
-    selectBatchSellDestStablecoins(state, selectedNetworkChainId ?? undefined),
+    getBatchSellDestStablecoinsForNetwork(
+      state,
+      selectedNetworkChainId ?? undefined,
+    ),
   );
 
   const orderedAvailableBatchSellAssetsForNetworkList =

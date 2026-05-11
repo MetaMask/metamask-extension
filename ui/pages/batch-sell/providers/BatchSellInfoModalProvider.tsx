@@ -9,12 +9,14 @@ type InfoModalProps = BatchSellInfoModalProps['modalProps'];
 type BatchSellInfoModalContextValue = {
   openModal: (props: InfoModalProps) => void;
   closeModal: () => void;
+  isInfoModalOpen: boolean;
 };
 
 export const BatchSellInfoModalContext =
   createContext<BatchSellInfoModalContextValue>({
     openModal: () => undefined,
     closeModal: () => undefined,
+    isInfoModalOpen: false,
   });
 
 export const BatchSellInfoModalProvider = ({
@@ -36,8 +38,8 @@ export const BatchSellInfoModalProvider = ({
   }, []);
 
   const contextValue = useMemo(
-    () => ({ openModal, closeModal }),
-    [openModal, closeModal],
+    () => ({ openModal, closeModal, isInfoModalOpen: isOpen }),
+    [openModal, closeModal, isOpen],
   );
 
   return (

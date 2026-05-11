@@ -16,9 +16,9 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   getNetworksForSelectedAccount,
   getNetworksWithPositiveBalanceForSelectedAccount,
-  getAvailableBatchSellNetworksSelector,
-  selectBatchSellDestStablecoins,
-  getAvailableBatchSellAssetsForNetworkSelector,
+  getAvailableBatchSellNetworks,
+  getBatchSellDestStablecoinsForNetwork,
+  getAvailableBatchSellSwapAssetsForNetwork,
 } from './selectors';
 
 jest.mock('../../selectors/assets', () => ({
@@ -34,6 +34,14 @@ jest.mock('../../selectors', () => ({
 
 jest.mock('../bridge/selectors', () => ({
   getBridgeFeatureFlags: jest.fn(),
+}));
+
+jest.mock('../bridge/asset-selectors', () => ({
+  getBridgeAssetsByAssetId: jest.fn().mockReturnValue({}),
+}));
+
+jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
+  getSelectedAccountGroup: jest.fn().mockReturnValue(undefined),
 }));
 
 const mockGetAllMultichainNetworkConfigurations = jest.mocked(
@@ -247,7 +255,7 @@ describe('batch-sell selectors', () => {
         '0xa': [{ rawBalance: '0x1', fiat: { balance: 300 } }],
       } as never);
 
-      const result = getAvailableBatchSellNetworksSelector(buildState());
+      const result = getAvailableBatchSellNetworks(buildState());
 
       const chainIds = result.map((n) => n.chainId);
       // Optimism (0xa / eip155:10) is not in BATCH_SELL_SUPPORTED_CHAIN_IDS
@@ -265,7 +273,7 @@ describe('batch-sell selectors', () => {
         '0xa': [{ rawBalance: '0x1', fiat: { balance: 300 } }],
       } as never);
 
-      const result = getAvailableBatchSellNetworksSelector(buildState());
+      const result = getAvailableBatchSellNetworks(buildState());
 
       expect(result).toStrictEqual([]);
     });
@@ -279,7 +287,7 @@ describe('batch-sell selectors', () => {
         [CHAIN_IDS.MAINNET]: [{ rawBalance: '0x1', fiat: { balance: 100 } }],
       } as never);
 
-      const [network] = getAvailableBatchSellNetworksSelector(buildState());
+      const [network] = getAvailableBatchSellNetworks(buildState());
 
       expect(network).toMatchObject({
         chainId: CAIP_MAINNET,
@@ -309,7 +317,7 @@ describe('batch-sell selectors', () => {
         ],
       } as never);
 
-      const result = getAvailableBatchSellNetworksSelector(buildState());
+      const result = getAvailableBatchSellNetworks(buildState());
 
       expect(result).toHaveLength(6);
     });
@@ -324,7 +332,10 @@ describe('batch-sell selectors', () => {
         chains: {},
       } as never);
 
-      const result = selectBatchSellDestStablecoins(buildState(), undefined);
+      const result = getBatchSellDestStablecoinsForNetwork(
+        buildState(),
+        undefined,
+      );
 
       expect(result).toStrictEqual([]);
     });
@@ -338,7 +349,10 @@ describe('batch-sell selectors', () => {
         },
       } as never);
 
-      const result = selectBatchSellDestStablecoins(buildState(), CAIP_MAINNET);
+      const result = getBatchSellDestStablecoinsForNetwork(
+        buildState(),
+        CAIP_MAINNET,
+      );
 
       expect(result).toHaveLength(1);
       expect(result[0]).toContain('erc20:');
@@ -351,7 +365,10 @@ describe('batch-sell selectors', () => {
         },
       } as never);
 
-      const result = selectBatchSellDestStablecoins(buildState(), CAIP_MAINNET);
+      const result = getBatchSellDestStablecoinsForNetwork(
+        buildState(),
+        CAIP_MAINNET,
+      );
 
       expect(result).toStrictEqual([]);
     });
@@ -361,7 +378,10 @@ describe('batch-sell selectors', () => {
         chains: {},
       } as never);
 
-      const result = selectBatchSellDestStablecoins(buildState(), CAIP_BASE);
+      const result = getBatchSellDestStablecoinsForNetwork(
+        buildState(),
+        CAIP_BASE,
+      );
 
       expect(result).toStrictEqual([]);
     });
@@ -413,7 +433,7 @@ describe('batch-sell selectors', () => {
     it('returns empty array when selectedChainId is null', () => {
       mockGetAssetsBySelectedAccountGroup.mockReturnValue({} as never);
 
-      const result = getAvailableBatchSellAssetsForNetworkSelector(
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         null,
       );
@@ -426,7 +446,7 @@ describe('batch-sell selectors', () => {
         [CHAIN_IDS.MAINNET]: [ETH_ASSET, ERC20_ASSET],
       } as never);
 
-      const result = getAvailableBatchSellAssetsForNetworkSelector(
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
       );
@@ -454,7 +474,7 @@ describe('batch-sell selectors', () => {
         [CHAIN_IDS.MAINNET]: [{ ...ETH_ASSET, rawBalance: '0x0' }, ERC20_ASSET],
       } as never);
 
-      const result = getAvailableBatchSellAssetsForNetworkSelector(
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
       );
@@ -477,7 +497,7 @@ describe('batch-sell selectors', () => {
         [CHAIN_IDS.MAINNET]: [ETH_ASSET, ERC20_ASSET],
       } as never);
 
-      const result = getAvailableBatchSellAssetsForNetworkSelector(
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
       );
@@ -491,7 +511,7 @@ describe('batch-sell selectors', () => {
         [CHAIN_IDS.MAINNET]: [ETH_ASSET],
       } as never);
 
-      const [ethResult] = getAvailableBatchSellAssetsForNetworkSelector(
+      const [ethResult] = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
       );
@@ -503,7 +523,7 @@ describe('batch-sell selectors', () => {
     it('returns empty array when chain has no assets', () => {
       mockGetAssetsBySelectedAccountGroup.mockReturnValue({} as never);
 
-      const result = getAvailableBatchSellAssetsForNetworkSelector(
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
       );
@@ -516,7 +536,7 @@ describe('batch-sell selectors', () => {
         [CHAIN_IDS.MAINNET]: [ETH_ASSET],
       } as never);
 
-      const [ethResult] = getAvailableBatchSellAssetsForNetworkSelector(
+      const [ethResult] = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
       );
@@ -530,7 +550,7 @@ describe('batch-sell selectors', () => {
         [CHAIN_IDS.MAINNET]: [ERC20_ASSET],
       } as never);
 
-      const [erc20Result] = getAvailableBatchSellAssetsForNetworkSelector(
+      const [erc20Result] = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
       );
@@ -563,7 +583,7 @@ describe('batch-sell selectors', () => {
         },
       } as never);
 
-      const result = getAvailableBatchSellAssetsForNetworkSelector(
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         SOLANA_CHAIN_ID,
       );
@@ -600,7 +620,7 @@ describe('batch-sell selectors', () => {
         [CHAIN_IDS.MAINNET]: [ETH_ASSET, ERC20_WITHOUT_ADDRESS],
       } as never);
 
-      const result = getAvailableBatchSellAssetsForNetworkSelector(
+      const result = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
       );
@@ -661,7 +681,7 @@ describe('batch-sell selectors', () => {
         [CHAIN_IDS.BASE]: [{ rawBalance: '0x1', fiat: { balance: 100 } }],
       } as never);
 
-      const result = getAvailableBatchSellNetworksSelector(buildState());
+      const result = getAvailableBatchSellNetworks(buildState());
 
       // Base ($100) should appear before Mainnet ($0)
       expect(result[0].chainId).toBe(CAIP_BASE);

@@ -3,6 +3,7 @@ import {
   Hex,
   hexToBigInt,
   KnownCaipNamespace,
+  parseCaipAssetType,
   type CaipAssetType,
   type CaipChainId,
 } from '@metamask/utils';
@@ -11,7 +12,10 @@ import {
   toEvmCaipChainId,
 } from '@metamask/multichain-network-controller';
 import { isEvmAccountType } from '@metamask/keyring-api';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  formatChainIdToHex,
+} from '@metamask/bridge-controller';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_IDS,
@@ -26,11 +30,18 @@ import {
   getMarketData,
   getSelectedInternalAccount,
 } from '../../selectors';
-import { isEvmChainId, toAssetId } from '../../../shared/lib/asset-utils';
+import {
+  getAssetImageUrl,
+  isEvmChainId,
+  toAssetId,
+} from '../../../shared/lib/asset-utils';
 import {
   getBridgeFeatureFlags,
   type BridgeAppState,
 } from '../bridge/selectors';
+import { getBridgeAssetsByAssetId } from '../bridge/asset-selectors';
+import { getSelectedAccountGroup } from '../../selectors/multichain-accounts/account-tree';
+import { type BridgeToken } from '../bridge/types';
 import { BatchSellAsset, ChainAsset } from './types';
 import {
   getChecksummedEvmAssetId,
@@ -85,7 +96,7 @@ export const getNetworksForSelectedAccount = createSelector(
   },
 );
 
-const selectChainsWithPositiveBalanceForSelectedAccount = createSelector(
+const getChainsWithPositiveBalanceForSelectedAccount = createSelector(
   getAssetsBySelectedAccountGroup,
   (assetsByChain): Set<CaipChainId> => {
     return new Set(
@@ -106,7 +117,7 @@ const selectChainsWithPositiveBalanceForSelectedAccount = createSelector(
 
 export const getNetworksWithPositiveBalanceForSelectedAccount = createSelector(
   getNetworksForSelectedAccount,
-  selectChainsWithPositiveBalanceForSelectedAccount,
+  getChainsWithPositiveBalanceForSelectedAccount,
   (networksForAccount, chainsWithBalance) =>
     Object.fromEntries(
       Object.entries(networksForAccount).filter(([chainId]) =>
@@ -132,7 +143,7 @@ const selectFiatBalanceByChain = createSelector(
   },
 );
 
-export const getAvailableBatchSellNetworksSelector = createSelector(
+export const getAvailableBatchSellNetworks = createSelector(
   getNetworksWithPositiveBalanceForSelectedAccount,
   selectFiatBalanceByChain,
   (networksWithBalance, fiatBalanceByChain) =>
@@ -155,7 +166,7 @@ export const getAvailableBatchSellNetworksSelector = createSelector(
       ),
 );
 
-export const selectBatchSellDestStablecoins = createSelector(
+export const getBatchSellDestStablecoinsForNetwork = createSelector(
   [
     getBridgeFeatureFlags,
     (_state: BridgeAppState, chainId?: CaipChainId) => chainId,
@@ -185,13 +196,13 @@ export const selectBatchSellDestStablecoins = createSelector(
   },
 );
 
-export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(
+export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
   getAssetsBySelectedAccountGroup,
   getMarketData,
   getAssetsRates,
   (_state: unknown, selectedChainId: CaipChainId | null) => selectedChainId,
   (state: BridgeAppState, selectedChainId: CaipChainId | null) =>
-    selectBatchSellDestStablecoins(state, selectedChainId ?? undefined),
+    getBatchSellDestStablecoinsForNetwork(state, selectedChainId ?? undefined),
   (
     assetsByChain,
     marketData,
@@ -255,4 +266,66 @@ export const getAvailableBatchSellAssetsForNetworkSelector = createSelector(
         };
       });
   },
+);
+
+export const getAvailableBatchSellReceiveAssetsForNetwork = createSelector(
+  [
+    (state: BridgeAppState, chainId?: CaipChainId) =>
+      getBatchSellDestStablecoinsForNetwork(state, chainId),
+    (state: BridgeAppState) =>
+      getBridgeAssetsByAssetId(state, getSelectedAccountGroup(state)),
+    (state: BridgeAppState) =>
+      (
+        state.metamask as {
+          tokensChainsCache?: Record<
+            string,
+            {
+              data?: Record<
+                string,
+                {
+                  symbol?: string;
+                  name?: string;
+                  decimals?: number;
+                  iconUrl?: string;
+                }
+              >;
+            }
+          >;
+        }
+      ).tokensChainsCache ?? {},
+  ],
+  (stablecoinAssetIds, assetsByAssetId, tokensChainsCache): BridgeToken[] =>
+    stablecoinAssetIds
+      .map((assetId): BridgeToken | undefined => {
+        const lowercasedAssetId = assetId.toLowerCase() as CaipAssetType;
+        const heldAsset = assetsByAssetId[lowercasedAssetId];
+        if (heldAsset) {
+          return heldAsset;
+        }
+        // Stablecoin not held by user, build a minimal BridgeToken from token list cache
+        const { chainId, assetReference: address } =
+          parseCaipAssetType(assetId);
+        const hexChainId = formatChainIdToHex(chainId);
+        const tokenData =
+          tokensChainsCache[hexChainId]?.data?.[address.toLowerCase()] ??
+          tokensChainsCache[hexChainId]?.data?.[address];
+        if (!tokenData) {
+          return undefined;
+        }
+        return {
+          assetId: lowercasedAssetId,
+          chainId,
+          symbol: tokenData.symbol ?? '',
+          name: tokenData.name ?? tokenData.symbol ?? '',
+          decimals: tokenData.decimals ?? 18,
+          balance: '0',
+          iconUrl: tokenData.iconUrl,
+        };
+      })
+      .filter((asset): asset is BridgeToken => Boolean(asset))
+      .map((asset) => ({
+        ...asset,
+        iconUrl:
+          asset.iconUrl ?? getAssetImageUrl(asset.assetId, asset.chainId),
+      })),
 );

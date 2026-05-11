@@ -61,23 +61,25 @@ export const BatchSellInfoModal = ({
         <ModalBody>
           <Text variant={TextVariant.BodySm} {...modalProps.descriptionProps} />
         </ModalBody>
-        <ModalFooter>
-          <Button
-            size={ButtonSize.Lg}
-            variant={ButtonVariant.Primary}
-            isFullWidth
-            onClick={modalProps.ctaProps?.onClick}
-          >
-            <Text
-              variant={TextVariant.ButtonLabelMd}
-              fontWeight={FontWeight.Medium}
-              textAlign={TextAlign.Center}
-              color={TextColor.PrimaryInverse}
+        {modalProps.ctaProps && (
+          <ModalFooter>
+            <Button
+              size={ButtonSize.Lg}
+              variant={ButtonVariant.Primary}
+              isFullWidth
+              onClick={modalProps.ctaProps.onClick}
             >
-              {modalProps.ctaProps?.text}
-            </Text>
-          </Button>
-        </ModalFooter>
+              <Text
+                variant={TextVariant.ButtonLabelMd}
+                fontWeight={FontWeight.Medium}
+                textAlign={TextAlign.Center}
+                color={TextColor.PrimaryInverse}
+              >
+                {modalProps.ctaProps.text}
+              </Text>
+            </Button>
+          </ModalFooter>
+        )}
       </ModalContent>
     </Modal>
   );
