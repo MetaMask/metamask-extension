@@ -93,6 +93,7 @@ describe('Send ERC20 - Gas Customization', function () {
         await assetListPage.checkTokenExistsInList(
           symbol,
           valueWithSymbol('9'),
+          { amountTimeout: 20000 },
         );
       },
     );
@@ -165,6 +166,7 @@ describe('Send ERC20 - Gas Customization', function () {
         await assetListPage.checkTokenExistsInList(
           symbol,
           valueWithSymbol('8.5'),
+          { amountTimeout: 20000 },
         );
       },
     );
@@ -229,6 +231,7 @@ describe('Send ERC20 - Gas Customization', function () {
         await assetListPage.checkTokenExistsInList(
           symbol,
           valueWithSymbol('8.5'),
+          { amountTimeout: 20000 },
         );
       },
     );
