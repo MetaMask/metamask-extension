@@ -73,6 +73,15 @@ type HardwareWalletSignaturesAction =
       needsTwoConfirmations: boolean;
     };
 
+/**
+ * Returns the initial state for the hardware wallet signatures state machine.
+ *
+ * @param needsTwoConfirmations - Whether the transaction requires two separate
+ * signature confirmations on the hardware device (e.g. for bridge/swaps which
+ * need both an approval and a transfer). When `true`, the initial status is
+ * `AwaitingFirstSignature`; when `false`, it skips directly to `AwaitingFinalSignature`.
+ * @returns The initial hardware wallet signatures state.
+ */
 export const getInitialHardwareWalletSignaturesState = (
   needsTwoConfirmations: boolean,
 ): HardwareWalletSignaturesState => ({
@@ -143,13 +152,19 @@ function handleInterruptedSignature(
         status: HardwareWalletSignatureStatus.Disconnected,
         disconnectedSignature: signature,
       };
-    default: {
-      const _exhaustiveCheck: never = event;
-      return _exhaustiveCheck;
-    }
+    default:
+      return state;
   }
 }
 
+/**
+ * Reducer that transitions the hardware wallet signature state machine
+ * based on the dispatched action event.
+ *
+ * @param state - The current hardware wallet signatures state.
+ * @param action - The action event to process.
+ * @returns The updated hardware wallet signatures state.
+ */
 export const hardwareWalletSignaturesReducer = (
   state: HardwareWalletSignaturesState,
   action: HardwareWalletSignaturesAction,

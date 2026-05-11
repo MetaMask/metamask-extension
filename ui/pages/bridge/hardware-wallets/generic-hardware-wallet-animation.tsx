@@ -18,7 +18,7 @@ import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-stat
 const GENERIC_HARDWARE_WALLET_RIVE_URL =
   './images/riv_animations/generic_hardware_wallet.riv';
 const GENERIC_HARDWARE_WALLET_STATE_MACHINE = 'wallet_states';
-const GENERIC_HARDWARE_WALLET_STATE_INPUTS = {
+const GenericHardwareWalletStateInputs = {
   RESET: 'reset',
   WALLET_LOCKED: 'wallet_locked',
   ERROR: 'error',
@@ -26,24 +26,24 @@ const GENERIC_HARDWARE_WALLET_STATE_INPUTS = {
 } as const;
 
 type GenericHardwareWalletAnimationInput =
-  (typeof GENERIC_HARDWARE_WALLET_STATE_INPUTS)[keyof typeof GENERIC_HARDWARE_WALLET_STATE_INPUTS];
+  (typeof GenericHardwareWalletStateInputs)[keyof typeof GenericHardwareWalletStateInputs];
 
 const GENERIC_HARDWARE_WALLET_INPUT_BY_STATUS: Record<
   HardwareWalletSignatureStatus,
   GenericHardwareWalletAnimationInput
 > = {
   [HardwareWalletSignatureStatus.AwaitingFirstSignature]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.RESET,
+    GenericHardwareWalletStateInputs.RESET,
   [HardwareWalletSignatureStatus.AwaitingFinalSignature]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.RESET,
+    GenericHardwareWalletStateInputs.RESET,
   [HardwareWalletSignatureStatus.Submitted]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.FOUND,
+    GenericHardwareWalletStateInputs.FOUND,
   [HardwareWalletSignatureStatus.Rejected]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.WALLET_LOCKED,
+    GenericHardwareWalletStateInputs.WALLET_LOCKED,
   [HardwareWalletSignatureStatus.Failed]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.ERROR,
+    GenericHardwareWalletStateInputs.ERROR,
   [HardwareWalletSignatureStatus.Disconnected]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.WALLET_LOCKED,
+    GenericHardwareWalletStateInputs.WALLET_LOCKED,
 };
 
 const GENERIC_HARDWARE_WALLET_LAYOUT = new Layout({
@@ -99,7 +99,7 @@ const GenericHardwareWalletAnimation = ({
     }
 
     inputsRef.current = Object.values(
-      GENERIC_HARDWARE_WALLET_STATE_INPUTS,
+      GenericHardwareWalletStateInputs,
     ).reduce<Record<string, StateMachineInput | undefined>>(
       (cachedInputs, inputName) => ({
         ...cachedInputs,
