@@ -1,6 +1,9 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
+import {
+  en as messages,
+  renderWithProvider,
+} from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { TOKEN_MANAGEMENT_ROUTE } from '../../helpers/constants/routes';
@@ -189,7 +192,9 @@ describe('TokenManagementPage', () => {
       screen.getByTestId('token-management-header-back-button'),
     ).toBeInTheDocument();
     expect(
-      screen.getByPlaceholderText('Enter token name or address'),
+      screen.getByPlaceholderText(
+        messages.enterTokenNameOrAddressManageTokens.message,
+      ),
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('token-management-add-custom-token-button'),
@@ -220,7 +225,9 @@ describe('TokenManagementPage', () => {
     renderPage();
 
     expect(screen.getByText('Alpha Token')).toBeInTheDocument();
-    expect(screen.getByText('Ethereum')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
     expect(screen.queryByText('Beta Token')).not.toBeInTheDocument();
     expect(
       screen.getByTestId(
@@ -240,9 +247,13 @@ describe('TokenManagementPage', () => {
     );
 
     expect(screen.getByText('Alpha Token')).toBeInTheDocument();
-    expect(screen.getByText('Ethereum')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.networkNameEthereum.message),
+    ).toBeInTheDocument();
     expect(screen.getByText('Beta Token')).toBeInTheDocument();
-    expect(screen.getByText('All default networks')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.allDefaultNetworks.message),
+    ).toBeInTheDocument();
   });
 
   it('filters visible tokens by name or address', () => {
@@ -260,7 +271,9 @@ describe('TokenManagementPage', () => {
     });
 
     expect(screen.queryByText('Alpha Token')).not.toBeInTheDocument();
-    expect(screen.queryByText('Ethereum')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(messages.networkNameEthereum.message),
+    ).not.toBeInTheDocument();
     expect(screen.getByText('Beta Token')).toBeInTheDocument();
   });
 

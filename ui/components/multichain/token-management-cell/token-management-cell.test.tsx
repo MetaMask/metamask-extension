@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, render, screen } from '@testing-library/react';
 
+import { en as messages } from '../../../../test/lib/render-helpers-navigate';
 import { TokenManagementCell } from './token-management-cell';
 
 const mockStore = configureMockStore()({
@@ -35,7 +36,7 @@ describe('TokenManagementCell', () => {
       testIdSuffix: 'musd',
     });
 
-    expect(screen.getByText('MetaMask USD')).toBeInTheDocument();
+    expect(screen.getByText(messages.musdMetaMaskUsd.message)).toBeInTheDocument();
     expect(screen.getByText('200.23 mUSD')).toBeInTheDocument();
   });
 
@@ -63,7 +64,7 @@ describe('TokenManagementCell', () => {
       onToggle: jest.fn(),
     });
 
-    expect(screen.getByText('Ethereum')).toBeInTheDocument();
+    expect(screen.getByText(messages.networkNameEthereum.message)).toBeInTheDocument();
     expect(screen.queryByText('200.23 mUSD')).not.toBeInTheDocument();
   });
 
