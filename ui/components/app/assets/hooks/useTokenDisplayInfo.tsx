@@ -66,9 +66,9 @@ export const useTokenDisplayInfo = ({
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTestnetSelected = Boolean(
     Object.keys(enabledNetworksByNamespace).length === 1 &&
-      TEST_CHAINS.includes(
-        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
-      ),
+    TEST_CHAINS.includes(
+      Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+    ),
   );
 
   const isMainnet = !isTestnetSelected;
@@ -101,7 +101,12 @@ export const useTokenDisplayInfo = ({
     token.isStakeable || (isEvmMainnet && isEvm && token.isNative);
 
   if (isEvm) {
-    const title = token.name || fallbackEntry?.name || token.symbol;
+    // For native tokens, token.name is not populated — the upstream selector
+    // sets token.title to 'Ethereum' (for ETH on mainnet) or the network name.
+    // For ERC-20 tokens, prefer token.name, then the API fallback, then symbol.
+    const title = token.isNative
+      ? token.title || token.symbol
+      : token.name || fallbackEntry?.name || token.symbol;
     const tokenImage = (token.image || fallbackEntry?.iconUrl) as string;
 
     return {
