@@ -238,18 +238,16 @@ function formatAdvisoryLine(advisory: ParsedAdvisory): string {
 }
 
 function applySeverityPolicy(advisory: ParsedAdvisory): ParsedAdvisory {
-  const isDevOnly = !advisory.affectsProduction;
   const issueText = `${advisory.title} ${advisory.moduleName}`;
   const matchedIssueRule =
     advisory.originalSeverity === 'high' &&
-    isDevOnly &&
+    advisory.isDevOnly &&
     isRedosOrDosIssue(issueText)
       ? 'redos-dos-downgrade'
       : 'none';
 
   return {
     ...advisory,
-    isDevOnly,
     matchedIssueRule,
     effectiveSeverity:
       matchedIssueRule === 'redos-dos-downgrade'
