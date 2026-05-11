@@ -9,7 +9,7 @@ import {
   firstPendingConfirmationSelector,
   internalSelectPendingApproval,
 } from '../../../selectors';
-import { internalSelectUnapprovedMessage } from '../../../selectors/signatures';
+import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
@@ -44,8 +44,11 @@ const useCurrentConfirmation = (providedConfirmationId?: string) => {
     (getUnapprovedTransaction as any)(state, confirmationIdForSelectors),
   ) as TransactionMeta | undefined;
 
+  // TODO: Migrate to selectUnapprovedSignatureRequestById once all consumers
+  // of currentConfirmation are updated from msgParams to messageParams.
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const signatureMessage = useSelector((state) =>
-    internalSelectUnapprovedMessage(state, confirmationIdForSelectors),
+    selectUnapprovedMessage(state, confirmationIdForSelectors),
   );
 
   const useRedesignedForSignatures = shouldUseRedesignForSignatures({

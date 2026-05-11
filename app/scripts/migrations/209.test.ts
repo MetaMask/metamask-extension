@@ -1,390 +1,573 @@
-import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
-import migrate, { version } from './209';
+import { cloneDeep } from 'lodash';
+import { migrate, version } from './209';
 
-const oldVersion = version - 1;
+const VERSION = version;
+const OLD_VERSION = VERSION - 1;
 
-const makeCaip25Permission = (
-  caveatValue: Record<string, unknown>,
-): Record<string, unknown> => ({
-  'endowment:caip25': {
-    parentCapability: 'endowment:caip25',
-    caveats: [
-      {
-        type: 'authorizedScopes',
-        value: caveatValue,
-      },
-    ],
-  },
-});
+// Shared account / address fixtures
+const ACCOUNT_1_ID = 'account-uuid-1';
+const ACCOUNT_1_ADDRESS = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
-describe(`migration #${version}`, () => {
-  it('bumps the state version', async () => {
-    const state = { meta: { version: oldVersion }, data: {} };
-    await migrate(state, new Set());
-    expect(state.meta.version).toBe(version);
-  });
+const ACCOUNT_2_ID = 'account-uuid-2';
+const ACCOUNT_2_ADDRESS = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
 
-  it('is a no-op when PermissionController state is missing', async () => {
-    const state = { meta: { version: oldVersion }, data: {} };
-    const changed = new Set<string>();
-    await migrate(state, changed);
-    expect(state.data).toEqual({});
-    expect(changed.size).toBe(0);
-  });
+// EVM token addresses (checksummed)
+const USDC_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+const DAI_ADDRESS = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
 
-  it('is a no-op when PermissionController.subjects is missing', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: { PermissionController: {} },
-    };
-    const before = JSON.parse(JSON.stringify(state.data));
-    const changed = new Set<string>();
-    await migrate(state, changed);
-    expect(state.data).toEqual(before);
-    expect(changed.size).toBe(0);
-  });
+// CAIP-19 equivalents (checksummed ERC-20)
+const USDC_CAIP19_MAINNET = `eip155:1/erc20:${USDC_ADDRESS}`;
+const DAI_CAIP19_MAINNET = `eip155:1/erc20:${DAI_ADDRESS}`;
 
-  it('adds eip1193-compatible: true for a connection that has eip155 scopes in optionalScopes', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: makeCaip25Permission({
-                requiredScopes: {},
-                optionalScopes: {
-                  'eip155:1': { accounts: ['eip155:1:0xabc'] },
-                },
-                isMultichainOrigin: false,
-                sessionProperties: {},
-              }),
-            },
+// Non-EVM (Solana)
+const SOL_USDC_ASSET_ID =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/spl:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+// Native Solana (slip44) — should never be migrated.
+const SOL_NATIVE_ASSET_ID =
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
+
+type TestAssetsController = {
+  assetsInfo: Record<string, unknown>;
+  assetsBalance: Record<string, Record<string, { amount: string }>>;
+  customAssets: Record<string, string[]>;
+};
+
+function getAC(vd: { data: unknown }): TestAssetsController {
+  return (vd.data as Record<string, unknown>)
+    .AssetsController as TestAssetsController;
+}
+
+function buildBaseStorage(
+  overrides: Record<string, unknown> = {},
+  options: { selectedAccount?: string } = {},
+) {
+  return {
+    meta: { version: OLD_VERSION },
+    data: {
+      AccountsController: {
+        internalAccounts: {
+          selectedAccount: options.selectedAccount ?? ACCOUNT_1_ID,
+          accounts: {
+            [ACCOUNT_1_ID]: { address: ACCOUNT_1_ADDRESS, id: ACCOUNT_1_ID },
+            [ACCOUNT_2_ID]: { address: ACCOUNT_2_ADDRESS, id: ACCOUNT_2_ID },
           },
         },
       },
-    };
+      ...overrides,
+    } as Record<string, unknown>,
+  };
+}
+
+describe(`migration #${VERSION}`, () => {
+  // ─── version bump ──────────────────────────────────────────────────────────
+
+  it('bumps the version regardless of whether data changed', async () => {
+    const vd = cloneDeep(buildBaseStorage());
+    await migrate(vd, new Set());
+    expect(vd.meta.version).toBe(VERSION);
+  });
+
+  // ─── EVM tokens → customAssets ─────────────────────────────────────────────
+
+  it('adds EVM tokens to customAssets and writes metadata to assetsInfo', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                {
+                  address: USDC_ADDRESS,
+                  symbol: 'USDC',
+                  decimals: 6,
+                  name: 'USD Coin',
+                  image: 'https://example.com/usdc.png',
+                  aggregators: ['1inch', 'Uniswap'],
+                },
+              ],
+            },
+          },
+        },
+        // Even with a balance, the migration writes to customAssets only.
+        TokenBalancesController: {
+          tokenBalances: {
+            [ACCOUNT_1_ADDRESS]: {
+              '0x1': { [USDC_ADDRESS]: '0x5f5e100' },
+            },
+          },
+        },
+      }),
+    );
+
     const changed = new Set<string>();
-    await migrate(state, changed);
+    await migrate(vd, changed);
 
-    const caveatValue = (
-      state.data.PermissionController as {
-        subjects: Record<
-          string,
-          { permissions: Record<string, { caveats: { value: unknown }[] }> }
-        >;
-      }
-    ).subjects['https://example.com'].permissions['endowment:caip25'].caveats[0]
-      .value as { sessionProperties: Record<string, unknown> };
-
-    expect(caveatValue.sessionProperties).toEqual({
-      [KnownSessionProperties.Eip1193Compatible]: true,
+    expect(changed).toContain('AssetsController');
+    const ac = getAC(vd);
+    expect(ac.customAssets[ACCOUNT_1_ID]).toContain(USDC_CAIP19_MAINNET);
+    expect(
+      ac.assetsBalance[ACCOUNT_1_ID]?.[USDC_CAIP19_MAINNET],
+    ).toBeUndefined();
+    expect(ac.assetsInfo[USDC_CAIP19_MAINNET]).toMatchObject({
+      type: 'erc20',
+      symbol: 'USDC',
+      name: 'USD Coin',
+      decimals: 6,
+      image: 'https://example.com/usdc.png',
+      aggregators: ['1inch', 'Uniswap'],
     });
-    expect(changed.has('PermissionController')).toBe(true);
   });
 
-  it('adds eip1193-compatible: true for a connection that has eip155 scopes in requiredScopes', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: makeCaip25Permission({
-                requiredScopes: {
-                  'eip155:1': { accounts: ['eip155:1:0xabc'] },
-                },
-                optionalScopes: {},
-                isMultichainOrigin: false,
-              }),
+  it('falls back to symbol when token name is missing', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 },
+              ],
             },
           },
         },
-      },
-    };
-    const changed = new Set<string>();
-    await migrate(state, changed);
+      }),
+    );
 
-    const caveatValue = (
-      state.data.PermissionController as {
-        subjects: Record<
-          string,
-          { permissions: Record<string, { caveats: { value: unknown }[] }> }
-        >;
-      }
-    ).subjects['https://example.com'].permissions['endowment:caip25'].caveats[0]
-      .value as { sessionProperties: Record<string, unknown> };
-
-    expect(caveatValue.sessionProperties).toEqual({
-      [KnownSessionProperties.Eip1193Compatible]: true,
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.assetsInfo[DAI_CAIP19_MAINNET]).toMatchObject({
+      type: 'erc20',
+      symbol: 'DAI',
+      name: 'DAI',
+      decimals: 18,
     });
-    expect(changed.has('PermissionController')).toBe(true);
   });
 
-  it('preserves existing session properties when adding eip1193-compatible', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: makeCaip25Permission({
-                requiredScopes: {},
-                optionalScopes: {
-                  'eip155:1': { accounts: ['eip155:1:0xabc'] },
-                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-                    accounts: [
-                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4Hx',
-                    ],
-                  },
+  it('skips ERC-721 tokens', async () => {
+    const NFT_ADDRESS = '0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D';
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                {
+                  address: NFT_ADDRESS,
+                  symbol: 'BAYC',
+                  decimals: 0,
+                  isERC721: true,
                 },
-                isMultichainOrigin: false,
-                sessionProperties: {
-                  [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
-                },
-              }),
+              ],
             },
           },
         },
-      },
+      }),
+    );
+
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    const nftId = `eip155:1/erc20:${NFT_ADDRESS}`;
+    expect(ac.assetsInfo[nftId]).toBeUndefined();
+    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(nftId);
+  });
+
+  it('handles multiple accounts and chains correctly', async () => {
+    const POLYGON_CHAIN_ID = '0x89';
+    const USDC_CAIP19_POLYGON = `eip155:137/erc20:${USDC_ADDRESS}`;
+
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
+              ],
+              [ACCOUNT_2_ADDRESS]: [
+                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 },
+              ],
+            },
+            [POLYGON_CHAIN_ID]: {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
+              ],
+            },
+          },
+        },
+      }),
+    );
+
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.customAssets[ACCOUNT_1_ID]).toEqual(
+      expect.arrayContaining([USDC_CAIP19_MAINNET, USDC_CAIP19_POLYGON]),
+    );
+    expect(ac.customAssets[ACCOUNT_2_ID]).toContain(DAI_CAIP19_MAINNET);
+  });
+
+  // ─── Idempotency ───────────────────────────────────────────────────────────
+
+  it('does not overwrite existing assetsInfo entries', async () => {
+    const existingMeta = {
+      type: 'erc20',
+      symbol: 'USDC-API',
+      name: 'USD Coin from API',
+      decimals: 6,
     };
-    const changed = new Set<string>();
-    await migrate(state, changed);
 
-    const caveatValue = (
-      state.data.PermissionController as {
-        subjects: Record<
-          string,
-          { permissions: Record<string, { caveats: { value: unknown }[] }> }
-        >;
-      }
-    ).subjects['https://example.com'].permissions['endowment:caip25'].caveats[0]
-      .value as { sessionProperties: Record<string, unknown> };
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                {
+                  address: USDC_ADDRESS,
+                  symbol: 'USDC-OLD',
+                  decimals: 6,
+                  name: 'Old',
+                },
+              ],
+            },
+          },
+        },
+        AssetsController: {
+          assetsInfo: { [USDC_CAIP19_MAINNET]: existingMeta },
+          assetsBalance: {},
+          customAssets: {},
+        },
+      }),
+    );
 
-    expect(caveatValue.sessionProperties).toEqual({
-      [KnownSessionProperties.SolanaAccountChangedNotifications]: true,
-      [KnownSessionProperties.Eip1193Compatible]: true,
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.assetsInfo[USDC_CAIP19_MAINNET]).toMatchObject(existingMeta);
+  });
+
+  it('does not duplicate entries already present in customAssets', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 },
+              ],
+            },
+          },
+        },
+        AssetsController: {
+          assetsInfo: {},
+          assetsBalance: {},
+          customAssets: { [ACCOUNT_1_ID]: [DAI_CAIP19_MAINNET] },
+        },
+      }),
+    );
+
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    const count = ac.customAssets[ACCOUNT_1_ID].filter(
+      (id) => id === DAI_CAIP19_MAINNET,
+    ).length;
+    expect(count).toBe(1);
+  });
+
+  it('does not add to customAssets when the asset is already in assetsBalance (mutual exclusion)', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 },
+              ],
+            },
+          },
+        },
+        AssetsController: {
+          assetsInfo: {},
+          assetsBalance: {
+            [ACCOUNT_1_ID]: { [DAI_CAIP19_MAINNET]: { amount: '42' } },
+          },
+          customAssets: {},
+        },
+      }),
+    );
+
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(
+      DAI_CAIP19_MAINNET,
+    );
+    // pre-existing balance is preserved
+    expect(ac.assetsBalance[ACCOUNT_1_ID][DAI_CAIP19_MAINNET]).toEqual({
+      amount: '42',
     });
-    expect(changed.has('PermissionController')).toBe(true);
   });
 
-  it('does not modify connections without any eip155 scopes (e.g. Solana-only)', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'https://solana-dapp.com': {
-              origin: 'https://solana-dapp.com',
-              permissions: makeCaip25Permission({
-                requiredScopes: {},
-                optionalScopes: {
-                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-                    accounts: [
-                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4Hx',
-                    ],
-                  },
-                },
-                isMultichainOrigin: false,
-                sessionProperties: {},
-              }),
+  // ─── Non-EVM (Solana) → customAssets ───────────────────────────────────────
+
+  it('adds non-EVM SPL tokens to customAssets and writes metadata to assetsInfo', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        MultichainAssetsController: {
+          accountsAssets: { [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID] },
+          assetsMetadata: {
+            [SOL_USDC_ASSET_ID]: {
+              fungible: true,
+              name: 'USD Coin',
+              symbol: 'USDC',
+              iconUrl: 'https://example.com/usdc.png',
+              units: [{ decimals: 6, symbol: 'USDC' }],
             },
           },
         },
-      },
-    };
-    const before = JSON.parse(JSON.stringify(state.data));
-    const changed = new Set<string>();
-    await migrate(state, changed);
-    expect(state.data).toEqual(before);
-    expect(changed.size).toBe(0);
-  });
-
-  it('does not overwrite an explicitly false eip1193-compatible value', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: makeCaip25Permission({
-                requiredScopes: {},
-                optionalScopes: {
-                  'eip155:1': { accounts: ['eip155:1:0xabc'] },
-                },
-                isMultichainOrigin: false,
-                sessionProperties: {
-                  [KnownSessionProperties.Eip1193Compatible]: false,
-                },
-              }),
+        // A balance is present but the migration still writes to customAssets only.
+        MultichainBalancesController: {
+          balances: {
+            [ACCOUNT_1_ID]: {
+              [SOL_USDC_ASSET_ID]: { amount: '500.5', unit: 'USDC' },
             },
           },
         },
-      },
-    };
-    const before = JSON.parse(JSON.stringify(state.data));
+      }),
+    );
+
     const changed = new Set<string>();
-    await migrate(state, changed);
-    expect(state.data).toEqual(before);
-    expect(changed.size).toBe(0);
-  });
+    await migrate(vd, changed);
 
-  it('does not overwrite an existing eip1193-compatible: true value', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: makeCaip25Permission({
-                requiredScopes: {},
-                optionalScopes: {
-                  'eip155:1': { accounts: ['eip155:1:0xabc'] },
-                },
-                isMultichainOrigin: false,
-                sessionProperties: {
-                  [KnownSessionProperties.Eip1193Compatible]: true,
-                },
-              }),
-            },
-          },
-        },
-      },
-    };
-    const before = JSON.parse(JSON.stringify(state.data));
-    const changed = new Set<string>();
-    await migrate(state, changed);
-    expect(state.data).toEqual(before);
-    expect(changed.size).toBe(0);
-  });
-
-  it('processes mixed-EVM-and-non-EVM connections (both get the property)', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: makeCaip25Permission({
-                requiredScopes: {},
-                optionalScopes: {
-                  'eip155:1': { accounts: ['eip155:1:0xabc'] },
-                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-                    accounts: [
-                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4Hx',
-                    ],
-                  },
-                },
-                isMultichainOrigin: false,
-              }),
-            },
-          },
-        },
-      },
-    };
-    const changed = new Set<string>();
-    await migrate(state, changed);
-
-    const caveatValue = (
-      state.data.PermissionController as {
-        subjects: Record<
-          string,
-          { permissions: Record<string, { caveats: { value: unknown }[] }> }
-        >;
-      }
-    ).subjects['https://example.com'].permissions['endowment:caip25'].caveats[0]
-      .value as { sessionProperties: Record<string, unknown> };
-
-    expect(caveatValue.sessionProperties).toEqual({
-      [KnownSessionProperties.Eip1193Compatible]: true,
+    expect(changed).toContain('AssetsController');
+    const ac = getAC(vd);
+    expect(ac.customAssets[ACCOUNT_1_ID]).toContain(SOL_USDC_ASSET_ID);
+    expect(ac.assetsBalance[ACCOUNT_1_ID]?.[SOL_USDC_ASSET_ID]).toBeUndefined();
+    expect(ac.assetsInfo[SOL_USDC_ASSET_ID]).toMatchObject({
+      type: 'spl',
+      symbol: 'USDC',
+      name: 'USD Coin',
+      decimals: 6,
+      image: 'https://example.com/usdc.png',
     });
-    expect(changed.has('PermissionController')).toBe(true);
   });
 
-  it('updates multiple subjects independently', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'https://evm-dapp.com': {
-              origin: 'https://evm-dapp.com',
-              permissions: makeCaip25Permission({
-                requiredScopes: {},
-                optionalScopes: {
-                  'eip155:1': { accounts: ['eip155:1:0xabc'] },
-                },
-                isMultichainOrigin: false,
-              }),
+  it('writes a placeholder assetsInfo entry when snap metadata is missing', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        MultichainAssetsController: {
+          accountsAssets: { [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID] },
+          assetsMetadata: {},
+        },
+      }),
+    );
+
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.assetsInfo[SOL_USDC_ASSET_ID]).toMatchObject({
+      type: 'spl',
+      symbol: '',
+      name: '',
+      decimals: 0,
+    });
+    expect(ac.customAssets[ACCOUNT_1_ID]).toContain(SOL_USDC_ASSET_ID);
+  });
+
+  // ─── Native (slip44) is skipped ────────────────────────────────────────────
+
+  it('skips native (slip44) assets entirely', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        MultichainAssetsController: {
+          accountsAssets: {
+            [ACCOUNT_1_ID]: [SOL_NATIVE_ASSET_ID, SOL_USDC_ASSET_ID],
+          },
+          assetsMetadata: {
+            [SOL_NATIVE_ASSET_ID]: {
+              fungible: true,
+              symbol: 'SOL',
+              units: [{ decimals: 9 }],
             },
-            'https://solana-dapp.com': {
-              origin: 'https://solana-dapp.com',
-              permissions: makeCaip25Permission({
-                requiredScopes: {},
-                optionalScopes: {
-                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
-                    accounts: [
-                      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:7S3P4Hx',
-                    ],
-                  },
-                },
-                isMultichainOrigin: false,
-              }),
+            [SOL_USDC_ASSET_ID]: {
+              fungible: true,
+              symbol: 'USDC',
+              units: [{ decimals: 6 }],
             },
           },
         },
-      },
-    };
-    const changed = new Set<string>();
-    await migrate(state, changed);
+      }),
+    );
 
-    const { subjects } = state.data.PermissionController as {
-      subjects: Record<
-        string,
-        { permissions: Record<string, { caveats: { value: unknown }[] }> }
-      >;
-    };
-
-    const evmCaveat = subjects['https://evm-dapp.com'].permissions[
-      'endowment:caip25'
-    ].caveats[0].value as { sessionProperties?: Record<string, unknown> };
-    const solanaCaveat = subjects['https://solana-dapp.com'].permissions[
-      'endowment:caip25'
-    ].caveats[0].value as { sessionProperties?: Record<string, unknown> };
-
-    expect(evmCaveat.sessionProperties).toEqual({
-      [KnownSessionProperties.Eip1193Compatible]: true,
-    });
-    expect(solanaCaveat.sessionProperties).toBeUndefined();
-    expect(changed.has('PermissionController')).toBe(true);
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.assetsInfo[SOL_NATIVE_ASSET_ID]).toBeUndefined();
+    expect(ac.customAssets[ACCOUNT_1_ID] ?? []).not.toContain(
+      SOL_NATIVE_ASSET_ID,
+    );
+    expect(ac.customAssets[ACCOUNT_1_ID]).toContain(SOL_USDC_ASSET_ID);
   });
 
-  it('skips subjects without an endowment:caip25 permission', async () => {
-    const state = {
-      meta: { version: oldVersion },
-      data: {
-        PermissionController: {
-          subjects: {
-            'https://example.com': {
-              origin: 'https://example.com',
-              permissions: {
-                otherPermission: { parentCapability: 'otherPermission' },
+  it('does not create per-account entries for accounts that hold only native assets', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        MultichainAssetsController: {
+          accountsAssets: {
+            [ACCOUNT_1_ID]: [SOL_USDC_ASSET_ID],
+            [ACCOUNT_2_ID]: [SOL_NATIVE_ASSET_ID],
+          },
+          assetsMetadata: {},
+        },
+      }),
+    );
+
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.customAssets[ACCOUNT_1_ID]).toContain(SOL_USDC_ASSET_ID);
+    expect(ac.customAssets[ACCOUNT_2_ID]).toBeUndefined();
+  });
+
+  // ─── Relevant-account gating ───────────────────────────────────────────────
+
+  it('skips per-account writes for accounts that have no imported tokens and are not selected', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage(
+        {
+          TokensController: {
+            allTokens: {
+              '0x1': {
+                [ACCOUNT_1_ADDRESS]: [
+                  { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
+                ],
               },
             },
           },
         },
-      },
-    };
-    const before = JSON.parse(JSON.stringify(state.data));
+        { selectedAccount: ACCOUNT_1_ID },
+      ),
+    );
+
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.customAssets[ACCOUNT_1_ID]).toContain(USDC_CAIP19_MAINNET);
+    expect(ac.customAssets[ACCOUNT_2_ID]).toBeUndefined();
+  });
+
+  it('migrates non-selected accounts that have imported tokens', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage(
+        {
+          TokensController: {
+            allTokens: {
+              '0x1': {
+                [ACCOUNT_1_ADDRESS]: [
+                  { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
+                ],
+              },
+            },
+          },
+        },
+        { selectedAccount: ACCOUNT_2_ID },
+      ),
+    );
+
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.customAssets[ACCOUNT_1_ID]).toContain(USDC_CAIP19_MAINNET);
+    expect(ac.customAssets[ACCOUNT_2_ID]).toBeUndefined();
+  });
+
+  it('skips per-account writes for unrecognized addresses but still writes metadata', async () => {
+    const UNKNOWN_ADDRESS = '0xdeaddeaddeaddeaddeaddeaddeaddeaddeaddead';
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [UNKNOWN_ADDRESS]: [
+                { address: USDC_ADDRESS, symbol: 'USDC', decimals: 6 },
+              ],
+            },
+          },
+        },
+      }),
+    );
+
+    await migrate(vd, new Set());
+    const ac = getAC(vd);
+    expect(ac.assetsInfo[USDC_CAIP19_MAINNET]).toBeDefined();
+    expect(Object.keys(ac.customAssets)).toHaveLength(0);
+  });
+
+  // ─── Cleanup of pre-existing buggy customAssets entries ────────────────────
+
+  it('removes pre-existing native (slip44) entries from customAssets but preserves SPL/ERC-20 entries', async () => {
+    const NATIVE_ETH_MAINNET = 'eip155:1/slip44:60';
+    const vd = cloneDeep(
+      buildBaseStorage({
+        AssetsController: {
+          assetsInfo: {},
+          assetsBalance: {},
+          customAssets: {
+            [ACCOUNT_1_ID]: [
+              SOL_USDC_ASSET_ID, // SPL — preserved
+              NATIVE_ETH_MAINNET, // native — removed
+              USDC_CAIP19_MAINNET, // ERC-20 — preserved
+            ],
+            [ACCOUNT_2_ID]: [SOL_NATIVE_ASSET_ID, SOL_USDC_ASSET_ID],
+          },
+        },
+      }),
+    );
+
     const changed = new Set<string>();
-    await migrate(state, changed);
-    expect(state.data).toEqual(before);
+    await migrate(vd, changed);
+
+    const ac = getAC(vd);
+    expect(changed).toContain('AssetsController');
+    expect(ac.customAssets[ACCOUNT_1_ID]).toEqual([
+      SOL_USDC_ASSET_ID,
+      USDC_CAIP19_MAINNET,
+    ]);
+    expect(ac.customAssets[ACCOUNT_2_ID]).toEqual([SOL_USDC_ASSET_ID]);
+  });
+
+  // ─── No-op cases ───────────────────────────────────────────────────────────
+
+  it('does nothing when both source controllers are absent', async () => {
+    const vd = cloneDeep(buildBaseStorage());
+    const changed = new Set<string>();
+    await migrate(vd, changed);
+
+    expect(vd.meta.version).toBe(VERSION);
+    expect(changed.size).toBe(0);
+  });
+
+  it('does not mark AssetsController changed when all entries already exist', async () => {
+    const vd = cloneDeep(
+      buildBaseStorage({
+        TokensController: {
+          allTokens: {
+            '0x1': {
+              [ACCOUNT_1_ADDRESS]: [
+                { address: DAI_ADDRESS, symbol: 'DAI', decimals: 18 },
+              ],
+            },
+          },
+        },
+        AssetsController: {
+          assetsInfo: {
+            [DAI_CAIP19_MAINNET]: {
+              type: 'erc20',
+              symbol: 'DAI',
+              name: 'DAI',
+              decimals: 18,
+            },
+          },
+          assetsBalance: {},
+          customAssets: { [ACCOUNT_1_ID]: [DAI_CAIP19_MAINNET] },
+        },
+      }),
+    );
+
+    const changed = new Set<string>();
+    await migrate(vd, changed);
     expect(changed.size).toBe(0);
   });
 });
