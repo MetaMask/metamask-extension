@@ -27,7 +27,6 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowValueDouble,
 } from '../confirm/info/row';
-import MetaMaskTranslation from '../metamask-translation';
 import { Copyable } from '../snaps/copyable';
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { SnapUIAddress } from '../snaps/snap-ui-address';
@@ -85,7 +84,6 @@ export const safeComponentList = {
   div: 'div',
   FormTextField,
   i: 'i',
-  MetaMaskTranslation,
   OriginPill,
   p: 'p',
   Popover,

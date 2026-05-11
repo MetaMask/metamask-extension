@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import MetaMaskTemplateRenderer from '../metamask-template-renderer';
+import MetaMaskTemplateRenderer from '../metamask-template-renderer/metamask-template-renderer';
+import { safeComponentList } from '../metamask-template-renderer/safe-component-list';
 import { SectionShape } from '../metamask-template-renderer/section-shape';
 
 /**
@@ -87,3 +88,5 @@ MetaMaskTranslation.propTypes = {
     ]),
   ),
 };
+
+safeComponentList.MetaMaskTranslation = MetaMaskTranslation;
