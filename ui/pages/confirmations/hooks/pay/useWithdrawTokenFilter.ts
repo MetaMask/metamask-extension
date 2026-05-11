@@ -16,6 +16,7 @@ import { useSendTokens, type EnrichTokenRequest } from '../send/useSendTokens';
 type WithdrawTokenFilterResult = {
   filterTokens: (tokens: Asset[]) => Asset[];
   isFilterApplied: boolean;
+  isTokenAllowed: (chainId: string, address: string) => boolean;
 };
 
 /**
@@ -81,12 +82,19 @@ export function usePostQuoteWithdrawTokenFilter(): WithdrawTokenFilterResult {
     [isFilterApplied, walletTokens],
   );
 
+  const isTokenAllowed = useCallback(
+    (chainId: string, address: string): boolean =>
+      Boolean(isFilterApplied && tokenFilter?.(chainId, address)),
+    [isFilterApplied, tokenFilter],
+  );
+
   return useMemo(
     () => ({
       filterTokens,
       isFilterApplied,
+      isTokenAllowed,
     }),
-    [filterTokens, isFilterApplied],
+    [filterTokens, isFilterApplied, isTokenAllowed],
   );
 }
 

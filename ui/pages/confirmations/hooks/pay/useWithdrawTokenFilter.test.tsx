@@ -89,6 +89,7 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
 
     expect(result.current.filterTokens(input)).toBe(input);
     expect(result.current.isFilterApplied).toBe(false);
+    expect(result.current.isTokenAllowed('0x1', '0xaaa')).toBe(false);
     expect(mockUseSendTokens).toHaveBeenCalledWith({
       includeNoBalance: false,
       tokenFilter: undefined,
@@ -106,6 +107,7 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
 
     expect(result.current.filterTokens(input)).toBe(input);
     expect(result.current.isFilterApplied).toBe(false);
+    expect(result.current.isTokenAllowed('0x1', '0xaaa')).toBe(false);
     expect(mockUseSendTokens).toHaveBeenCalledWith({
       includeNoBalance: false,
       tokenFilter: undefined,
@@ -126,6 +128,7 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
 
     expect(result.current.filterTokens(input)).toBe(input);
     expect(result.current.isFilterApplied).toBe(false);
+    expect(result.current.isTokenAllowed('0x1', '0xaaa')).toBe(false);
     expect(mockUseSendTokens).toHaveBeenCalledWith({
       includeNoBalance: false,
       tokenFilter: undefined,
@@ -145,6 +148,8 @@ describe('usePostQuoteWithdrawTokenFilter', () => {
 
     expect(result.current.filterTokens([])).toBe(ALL_TOKENS_MOCK);
     expect(result.current.isFilterApplied).toBe(true);
+    expect(result.current.isTokenAllowed('0x1', '0xaaa')).toBe(true);
+    expect(result.current.isTokenAllowed('0x1', '0xbbb')).toBe(false);
     expect(mockUseSendTokens).toHaveBeenCalledWith({
       includeNoBalance: true,
       tokenFilter: expect.any(Function),

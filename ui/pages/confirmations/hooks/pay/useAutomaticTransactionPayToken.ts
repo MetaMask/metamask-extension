@@ -32,6 +32,7 @@ export function useAutomaticTransactionPayToken({
   const {
     filterTokens: postQuoteWithdrawTokenFilter,
     isFilterApplied: isPostQuoteWithdrawTokenFilterApplied,
+    isTokenAllowed: isPostQuoteWithdrawTokenAllowed,
   } = usePostQuoteWithdrawTokenFilter();
 
   const tokens = useMemo(
@@ -76,6 +77,7 @@ export function useAutomaticTransactionPayToken({
       isHardwareWallet,
       isPostQuoteWithdraw,
       isPostQuoteWithdrawTokenFilterApplied,
+      isPostQuoteWithdrawTokenAllowed,
       targetToken,
       tokens: tokensWithBalance,
       preferredToken,
@@ -96,6 +98,7 @@ export function useAutomaticTransactionPayToken({
     isHardwareWallet,
     isPostQuoteWithdraw,
     isPostQuoteWithdrawTokenFilterApplied,
+    isPostQuoteWithdrawTokenAllowed,
     payToken,
     preferredToken,
     requiredTokens,
@@ -110,6 +113,7 @@ function getBestToken({
   isHardwareWallet,
   isPostQuoteWithdraw,
   isPostQuoteWithdrawTokenFilterApplied,
+  isPostQuoteWithdrawTokenAllowed,
   preferredToken,
   targetToken,
   tokens,
@@ -117,6 +121,7 @@ function getBestToken({
   isHardwareWallet: boolean;
   isPostQuoteWithdraw: boolean;
   isPostQuoteWithdrawTokenFilterApplied: boolean;
+  isPostQuoteWithdrawTokenAllowed: (chainId: string, address: string) => boolean;
   preferredToken?: SetPayTokenRequest;
   targetToken?: { address: Hex; chainId: Hex };
   tokens: Asset[];
@@ -139,19 +144,15 @@ function getBestToken({
       return preferredToken;
     }
 
-    const preferredTokenAvailable = tokens.some(
-      (token) =>
-        token.address?.toLowerCase() === preferredToken.address.toLowerCase() &&
-        String(token.chainId)?.toLowerCase() ===
-          preferredToken.chainId.toLowerCase(),
-    );
-
-    if (preferredTokenAvailable) {
+    if (
+      isPostQuoteWithdrawTokenAllowed(
+        preferredToken.chainId,
+        preferredToken.address,
+      )
+    ) {
       return preferredToken;
     }
-  }
-
-  if (preferredToken) {
+  } else if (preferredToken) {
     const preferredTokenAvailable = tokens.some(
       (token) =>
         token.address?.toLowerCase() === preferredToken.address.toLowerCase() &&

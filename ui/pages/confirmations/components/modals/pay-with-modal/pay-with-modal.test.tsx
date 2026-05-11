@@ -130,6 +130,7 @@ describe('PayWithModal', () => {
     usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
       filterTokens: (tokens) => tokens,
       isFilterApplied: false,
+      isTokenAllowed: () => false,
     });
     useTransactionPayRequiredTokensMock.mockReturnValue([]);
     useMusdConversionTokensMock.mockReturnValue({
@@ -341,6 +342,7 @@ describe('PayWithModal', () => {
       usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
         filterTokens: withdrawTokenFilterMock,
         isFilterApplied: true,
+        isTokenAllowed: () => true,
       });
 
       renderModal({ isOpen: true, onClose: onCloseMock });
