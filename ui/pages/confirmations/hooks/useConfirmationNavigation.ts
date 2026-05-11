@@ -155,7 +155,9 @@ export function getConfirmationRoute(
   const type = nextConfirmation.type as ApprovalType;
 
   if (
-    (TEMPLATED_CONFIRMATION_APPROVAL_TYPES as readonly string[]).includes(type)
+    TEMPLATED_CONFIRMATION_APPROVAL_TYPES.find(
+      (approvalType) => approvalType === type,
+    ) !== undefined
   ) {
     return `${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`;
   }
