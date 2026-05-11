@@ -23,6 +23,15 @@ import {
   SIGNATURE_REQUEST_PATH,
   UNLOCK_ROUTE,
 } from '../../../../../ui/helpers/constants/routes';
+import {
+  type AccountsState,
+  getMaybeSelectedInternalAccount,
+} from '../../../../../shared/lib/selectors/accounts';
+import type { ProviderConfigState } from '../../../../../shared/lib/selectors/networks';
+import {
+  getProviderConfig,
+  getNetworkConfigurationsByChainId,
+} from '../../../../../shared/lib/selectors/networks';
 import type { ExtensionState } from '../launcher-types';
 import { HomePage } from '../page-objects/home-page';
 
@@ -234,6 +243,86 @@ export async function detectUnlockState(
     .catch(() => false);
 }
 
+// Fetches the raw metamask Redux state via stateHooks. Uses CDP
+// Runtime.evaluate directly because Playwright's page.evaluate() wrapper
+// references setInterval internally, which is blocked by LavaMoat scuttling.
+const CDP_FETCH_METAMASK_STATE = `
+(async () => {
+  const hooks = globalThis.stateHooks;
+  if (typeof hooks?.getCleanAppState !== 'function') return null;
+  const state = await hooks.getCleanAppState();
+  return JSON.stringify(state?.metamask ?? null);
+})()
+`.trim();
+
+type IdentityData = {
+  accountAddress: string | null;
+  networkName: string | null;
+  chainId: string | null;
+};
+
+// The CDP-fetched metamask slice is cast to the selector state types so that
+// identity extraction reuses the same logic as the extension UI. This keeps
+// the inspector in sync with future state-shape changes automatically.
+type SelectorState = AccountsState & ProviderConfigState;
+
+function resolveIdentity(metamaskState: Record<string, unknown>): IdentityData {
+  const state = { metamask: metamaskState } as SelectorState;
+
+  const selectedAccount = getMaybeSelectedInternalAccount(state);
+
+  let networkName: string | null = null;
+  let chainId: string | null = null;
+  try {
+    const providerConfig = getProviderConfig(state);
+    chainId = providerConfig.chainId ?? null;
+    // getProviderConfig returns nickname only for custom RPC endpoints.
+    // Fall back to the canonical network name for built-in networks.
+    const configs = getNetworkConfigurationsByChainId(state);
+    networkName =
+      providerConfig.nickname ?? configs[providerConfig.chainId]?.name ?? null;
+  } catch {
+    // getProviderConfig throws when configuration is not found
+  }
+
+  return {
+    accountAddress: selectedAccount?.address ?? null,
+    networkName,
+    chainId,
+  };
+}
+
+async function extractIdentityViaCDP(page: Page): Promise<IdentityData | null> {
+  let cdp;
+  try {
+    cdp = await page.context().newCDPSession(page);
+    const result = await cdp.send('Runtime.evaluate', {
+      expression: CDP_FETCH_METAMASK_STATE,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+
+    if (result.exceptionDetails || !result.result?.value) {
+      return null;
+    }
+
+    const parsed =
+      typeof result.result.value === 'string'
+        ? JSON.parse(result.result.value)
+        : result.result.value;
+
+    if (!parsed || typeof parsed !== 'object') {
+      return null;
+    }
+
+    return resolveIdentity(parsed as Record<string, unknown>);
+  } catch {
+    return null;
+  } finally {
+    await cdp?.detach().catch(() => undefined);
+  }
+}
+
 export async function getBaseExtensionState(
   page: Page | undefined,
   options: {
@@ -251,14 +340,27 @@ export async function getBaseExtensionState(
 
   let accountAddress: string | null = null;
   let networkName: string | null = null;
-  const { chainId } = options;
+  let { chainId } = options;
   let balance: string | null = null;
 
-  if (currentScreen === 'home' && isUnlocked) {
-    const homePage = new HomePage(page);
+  const identity = await extractIdentityViaCDP(page);
 
-    accountAddress = (await homePage.getAccountAddress()) || null;
-    networkName = (await homePage.getNetworkName()) || null;
+  if (identity) {
+    accountAddress = identity.accountAddress;
+    networkName = identity.networkName;
+
+    if (identity.chainId) {
+      const parsed = Number(identity.chainId);
+      if (!Number.isNaN(parsed)) {
+        chainId = parsed;
+      }
+    }
+  }
+
+  // Balance remains DOM-based (home screen only) pending a separate
+  // investigation into extracting it from Redux state.
+  if (isUnlocked && currentScreen === 'home') {
+    const homePage = new HomePage(page);
     balance = (await homePage.getBalance()) || null;
   }
 

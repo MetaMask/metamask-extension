@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import type { MetaMaskReduxState } from '../../store/store';
-import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getUseExternalServices } from '../../selectors/selectors';
 import {
   validatedVersionGatedFeatureFlag,

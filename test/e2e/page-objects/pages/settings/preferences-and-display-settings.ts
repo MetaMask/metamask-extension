@@ -8,10 +8,9 @@ class PreferencesAndDisplaySettings {
   private readonly driver: Driver;
 
   private readonly preferencesTabButton =
-    '[data-testid="settings-v2-tab-item-preferences-and-display"]';
+    '[data-testid="settings-tab-item-preferences-and-display"]';
 
-  private readonly assetsTabButton =
-    '[data-testid="settings-v2-tab-item-assets"]';
+  private readonly assetsTabButton = '[data-testid="settings-tab-item-assets"]';
 
   private readonly languageSubpageLink = `a[href="#${LANGUAGE_ROUTE}"]`;
 

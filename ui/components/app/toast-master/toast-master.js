@@ -57,7 +57,7 @@ import {
 import {
   isCardPaymentMethod,
   isCryptoPaymentMethod,
-} from '../../../pages/settings/transaction-shield-tab/types';
+} from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {

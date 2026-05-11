@@ -12,12 +12,16 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
+import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
 
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayAvailableTokens');
-jest.mock('../../../../selectors', () => ({
-  getHardwareWalletType: jest.fn(() => null),
+jest.mock('./useWithdrawTokenFilter');
+jest.mock('../../../../selectors', () => ({}));
+jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
+  getHardwareWalletType: jest.fn(),
 }));
 
 const TOKEN_ADDRESS_1_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
@@ -95,6 +99,9 @@ describe('useAutomaticTransactionPayToken', () => {
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
   );
+  const usePostQuoteWithdrawTokenFilterMock = jest.mocked(
+    usePostQuoteWithdrawTokenFilter,
+  );
 
   const setPayTokenMock = jest.fn();
 
@@ -114,6 +121,11 @@ describe('useAutomaticTransactionPayToken', () => {
     ]);
 
     useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: (tokens) => tokens,
+      isFilterApplied: false,
+      isTokenAllowed: () => false,
+    });
   });
 
   it('selects first token', () => {
@@ -253,6 +265,74 @@ describe('useAutomaticTransactionPayToken', () => {
         chainId: CHAIN_ID_1_MOCK,
       },
     ] as Asset[]);
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: PREFERRED_TOKEN_ADDRESS_MOCK,
+      chainId: PREFERRED_CHAIN_ID_MOCK,
+    });
+  });
+
+  it('selects the first allowlisted withdraw token when the preferred token is not allowlisted', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      },
+    ] as Asset[]);
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: () =>
+        [
+          {
+            address: TOKEN_ADDRESS_2_MOCK,
+            chainId: CHAIN_ID_2_MOCK,
+          },
+        ] as Asset[],
+      isFilterApplied: true,
+      isTokenAllowed: () => false,
+    });
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_2_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
+    });
+  });
+
+  it('selects an allowlisted preferred withdraw token before enrichment adds it to the token list', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      },
+    ] as Asset[]);
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: () =>
+        [
+          {
+            address: TOKEN_ADDRESS_2_MOCK,
+            chainId: CHAIN_ID_2_MOCK,
+          },
+        ] as Asset[],
+      isFilterApplied: true,
+      isTokenAllowed: (chainId, address) =>
+        chainId.toLowerCase() === PREFERRED_CHAIN_ID_MOCK &&
+        address.toLowerCase() === PREFERRED_TOKEN_ADDRESS_MOCK,
+    });
 
     renderHookWithProvider({
       transactionType: TransactionType.perpsWithdraw,
