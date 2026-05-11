@@ -873,7 +873,6 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
     assetPriceType: 'fungible',
     id,
     price,
-    usdPrice: price,
     pricePercentChange1d,
   });
 
