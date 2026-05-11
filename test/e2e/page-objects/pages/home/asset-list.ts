@@ -890,13 +890,13 @@ class AssetListPage {
     );
   }
 
-  async waitUntilConfirmTokenCount(numberOfPendingTokens: number) {
+  async waitUntilConfirmTokenCount(numberOfTokensToImport: number) {
     await this.driver.waitUntil(
       async () => {
         const confirmTokens = await this.driver.findElements(
           this.tokenConfirmListItem,
         );
-        return confirmTokens.length === numberOfPendingTokens;
+        return confirmTokens.length === numberOfTokensToImport;
       },
       {
         timeout: this.driver.timeout,
