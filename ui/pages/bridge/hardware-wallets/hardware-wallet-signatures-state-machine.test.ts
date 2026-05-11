@@ -304,20 +304,17 @@ describe('hardwareWalletSignaturesReducer', () => {
     });
 
     it('returns current disconnected state on DeviceDisconnected', () => {
-      expect(
-        hardwareWalletSignaturesReducer(
-          {
-            status: HardwareWalletSignatureStatus.Disconnected,
-            disconnectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
-          },
-          { type: HardwareWalletSignatureEvent.DeviceDisconnected },
-        ),
-      ).toStrictEqual({
+      const state = {
         status: HardwareWalletSignatureStatus.Disconnected,
         disconnectedSignature:
           HardwareWalletSignatureStatus.AwaitingFirstSignature,
+      } as const;
+
+      const nextState = hardwareWalletSignaturesReducer(state, {
+        type: HardwareWalletSignatureEvent.DeviceDisconnected,
       });
+
+      expect(nextState).toBe(state);
     });
 
     it('ignores DeviceDisconnected when Submitted', () => {

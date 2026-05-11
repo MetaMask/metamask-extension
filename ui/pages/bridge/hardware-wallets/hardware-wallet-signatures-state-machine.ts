@@ -148,6 +148,9 @@ function handleInterruptedSignature(
         failedSignature: signature,
       };
     case HardwareWalletSignatureEvent.DeviceDisconnected:
+      if (state.status === HardwareWalletSignatureStatus.Disconnected) {
+        return state;
+      }
       return {
         status: HardwareWalletSignatureStatus.Disconnected,
         disconnectedSignature: signature,
