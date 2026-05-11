@@ -9,8 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.31.0]
 
+### Uncategorized
+
+- chore: sync stable into release/13.31.0 (#42559)
+- Updates internal Debug tab feature flag output styles (#42486)
+- chore(6939): add @mui/material v5, Emotion, and @mui/x-date-pickers dependencies (#41954)
+- Moved shared tabs to security-tab (#42255)
+
 ### Added
 
+- Tempo disable tx management for testnet moderato (#42201)
 - Redesigned the critical error screen (#42421)
 - Added "Restore accounts" on the critical error screen when a backup exists (#40306)
 - Added passkey setup during onboarding and passkey-based unlock with password fallback (#42169)
