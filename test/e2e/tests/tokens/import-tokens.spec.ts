@@ -157,7 +157,7 @@ async function mockSpotPricesV3(mockServer: Mockttp) {
 async function mockTokens(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/1')
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/1(\?.*)?$/u)
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -229,7 +229,7 @@ async function mockTokens(mockServer: Mockttp) {
         };
       }),
     await mockServer
-      .forGet('https://token.api.cx.metamask.io/tokens/137')
+      .forGet(/^https:\/\/token\.api\.cx\.metamask\.io\/tokens\/137(\?.*)?$/u)
       .thenCallback(() => {
         return {
           statusCode: 200,
