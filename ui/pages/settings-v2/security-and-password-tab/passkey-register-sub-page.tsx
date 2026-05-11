@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import log from 'loglevel';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -83,6 +83,7 @@ export default function PasskeyRegisterSubPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const store = useStore();
   const t = useI18nContext() as (
     key: string,
     substitutions?: string[],
@@ -95,7 +96,6 @@ export default function PasskeyRegisterSubPage() {
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const accountType = useSelector(getAccountType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const baseProperties = useMemo(
     () => ({
@@ -207,13 +207,15 @@ export default function PasskeyRegisterSubPage() {
       setVerifyStepStatus('success');
       setWalletPassword('');
 
+      currentStep = 'complete';
+      const derivationMethod = getPasskeyDerivationMethod(store.getState());
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeySetupCompleted,
         properties: {
           ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          derivation_method: passkeyDerivationMethod,
+          derivation_method: derivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - enrollmentStartedAt,
         },
@@ -248,6 +250,8 @@ export default function PasskeyRegisterSubPage() {
           event: MetaMetricsEventName.PasskeySetupCancelled,
           properties: {
             ...baseProperties,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            current_step: currentStep,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           },
@@ -288,7 +292,17 @@ export default function PasskeyRegisterSubPage() {
       setRegisterStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
       setVerifyStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
     }
-  }, [baseProperties, dispatch, goToSettings, isPasskeyRegistered, passkeyDerivationMethod, passkeyMethodLabel, t, trackEvent, walletPassword]);
+  }, [
+    baseProperties,
+    dispatch,
+    goToSettings,
+    isPasskeyRegistered,
+    passkeyMethodLabel,
+    store,
+    t,
+    trackEvent,
+    walletPassword,
+  ]);
 
   const handleSubmitCurrentPassword = async (
     event: React.FormEvent<HTMLFormElement>,

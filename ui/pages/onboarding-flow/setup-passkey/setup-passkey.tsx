@@ -257,6 +257,8 @@ export default function SetupPasskey() {
           properties: {
             ...baseProperties,
             // eslint-disable-next-line @typescript-eslint/naming-convention
+            current_step: currentStep,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - enrollmentStartedAt,
           },
         });

@@ -135,7 +135,7 @@ export const UnlockPasskeySection = ({
 
         trackEvent?.({
           category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.PasskeyUnlockSuccessful,
+          event: MetaMetricsEventName.PasskeyUnlockCompleted,
           properties: {
             ...baseProperties,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -146,6 +146,8 @@ export const UnlockPasskeySection = ({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.AppUnlocked,
           properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            failed_attempts: passkeyFailedAttemptCount.current,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             unlock_type: 'passkey',
           },
