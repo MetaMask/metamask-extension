@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Box,
   BoxFlexDirection,
@@ -31,6 +32,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { captureException } from '../../../../shared/lib/sentry';
+import {
+  createTrackErrorEventSession,
+  TrackErrorTelemetrySeverity,
+} from '../../../../shared/lib/track-error-event';
+import { getMetaMetricsId } from '../../../selectors';
 import { PrivacyPolicyLink } from '../shared';
 
 type DeleteMetametricsModalProps = {
@@ -46,6 +52,11 @@ export default function DeleteMetametricsModal({
 }: Readonly<DeleteMetametricsModalProps>) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
+  const metaMetricsId = useSelector(getMetaMetricsId);
+  const errorTelemetrySession = useMemo(
+    () => createTrackErrorEventSession({ metaMetricsId }),
+    [metaMetricsId],
+  );
 
   const deleteMetaMetricsData = async () => {
     try {
@@ -62,10 +73,14 @@ export default function DeleteMetametricsModal({
       onSuccess();
     } catch (error) {
       captureException(error);
-      trackEvent(
+      await errorTelemetrySession.trackErrorEvent(
+        trackEvent,
         {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.ErrorOccured,
+          source: 'delete_metametrics_modal',
+          severity: TrackErrorTelemetrySeverity.Error,
+          error,
         },
         {
           excludeMetaMetricsId: true,
