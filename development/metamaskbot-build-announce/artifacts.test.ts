@@ -47,9 +47,15 @@ describe('buildArtifactsBody', () => {
     });
 
     expect(result.indexOf('Webpack builds')).toBeGreaterThan(-1);
+    expect(result).toContain(
+      '<details><summary>Deprecated Browserify fallback builds</summary><ul>',
+    );
     expect(
       result.indexOf('Deprecated Browserify fallback builds'),
-    ).toBeGreaterThan(result.indexOf('Webpack builds'));
+    ).toBeGreaterThan(result.indexOf('all artifacts'));
+    expect(result.indexOf('Browserify builds')).toBeGreaterThan(
+      result.indexOf('Deprecated Browserify fallback builds'),
+    );
     expect(result).toContain(
       `${HOST}/build-dist-webpack/builds/metamask-chrome-${VERSION}.zip`,
     );
