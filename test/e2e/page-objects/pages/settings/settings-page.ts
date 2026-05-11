@@ -7,6 +7,9 @@ class SettingsPage {
   private readonly aboutViewButton =
     '[data-testid="settings-v2-tab-item-about-us"]';
 
+  private readonly backButton =
+    '[data-testid="settings-v2-header-back-button"]';
+
   private readonly autoLockSettingsButton = '[data-testid="auto-lock-button"]';
 
   private readonly assetsSettingsButton =
@@ -88,6 +91,8 @@ class SettingsPage {
   private readonly deleteActivityAndNonceConfirmButton =
     '[data-testid="delete-activity-and-nonce-data-button"]';
 
+  private readonly drawerCloseButton = '[data-testid="drawer-close-button"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -115,10 +120,9 @@ class SettingsPage {
    * waits for the home page. Kept E2E-local to avoid importing `ui` routes.
    */
   async clickBackButton(): Promise<void> {
-    await this.driver.executeScript(
-      `window.location.hash = ${JSON.stringify('/')}`,
-    );
+    await this.driver.clickElement(this.backButton);
     await new HomePage(this.driver).checkPageIsLoaded();
+    await this.driver.clickElementAndWaitToDisappear(this.drawerCloseButton);
   }
 
   async waitForTransactionShieldButtonReady(): Promise<void> {
