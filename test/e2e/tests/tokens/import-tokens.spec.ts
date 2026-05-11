@@ -500,11 +500,10 @@ describe('Import flow', function () {
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await homePage.checkPageIsLoaded();
-        await assetListPage.importMultipleTokensBySearch([
-          'CHAIN',
-          'CHANGE',
-          'CHAI',
-        ]);
+        await assetListPage.importMultipleTokensBySearch({
+          tokenNames: ['CHAIN', 'CHANGE', 'CHAI'],
+          network: 'Ethereum',
+        });
 
         const tokenList = new AssetListPage(driver);
 

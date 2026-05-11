@@ -377,7 +377,13 @@ class AssetListPage {
     );
   }
 
-  async importMultipleTokensBySearch(tokenNames: string[]) {
+  async importMultipleTokensBySearch({
+    tokenNames,
+    network,
+  }: {
+    tokenNames: string[];
+    network: string;
+  }) {
     console.log(
       `Importing tokens ${tokenNames.join(', ')} on homepage by search`,
     );
@@ -387,6 +393,8 @@ class AssetListPage {
     await this.driver.waitForSelector(this.importTokenModalTitle, {
       waitAtLeastGuard: 2000,
     });
+
+    await this.driver.waitForSelector(this.selectedNetwork(network));
 
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenSearchInput, name);
