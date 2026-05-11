@@ -5,8 +5,8 @@ import thunk from 'redux-thunk';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
-import type { SettingsV2SearchResult } from '../useSettingsV2Search';
-import { SettingsV2SearchResults } from './settings-v2-search-results';
+import type { SettingsSearchResult } from '../useSettingsSearch';
+import { SettingsSearchResults } from './settings-search-results';
 
 jest.mock('../../../../shared/lib/passkey', () => ({
   getPasskeyAuthMethodKey: () => 'passkeyAuthMethodBiometrics',
@@ -14,27 +14,27 @@ jest.mock('../../../../shared/lib/passkey', () => ({
 
 const createMockStore = () => configureMockStore([thunk])(mockState);
 
-const mockItems: SettingsV2SearchResult[] = [
+const mockItems: SettingsSearchResult[] = [
   {
     settingId: 'local-currency',
     tabLabelKey: 'preferencesAndDisplay',
     titleKey: 'localCurrency',
-    tabRoute: '/settings-v2/preferences-and-display',
+    tabRoute: '/settings/preferences-and-display',
     iconName: 'Customize',
   },
   {
     settingId: 'theme',
     tabLabelKey: 'preferencesAndDisplay',
     titleKey: 'theme',
-    tabRoute: '/settings-v2/preferences-and-display',
+    tabRoute: '/settings/preferences-and-display',
     iconName: 'Customize',
   },
 ];
 
-describe('SettingsV2SearchResults', () => {
+describe('SettingsSearchResults', () => {
   it('renders search result items', () => {
     renderWithProvider(
-      <SettingsV2SearchResults results={mockItems} onClickResult={jest.fn()} />,
+      <SettingsSearchResults results={mockItems} onClickResult={jest.fn()} />,
       createMockStore(),
     );
 
@@ -51,16 +51,16 @@ describe('SettingsV2SearchResults', () => {
   });
 
   it('resolves passkey title keys with auth-method substitution', () => {
-    const passkeyItem: SettingsV2SearchResult = {
+    const passkeyItem: SettingsSearchResult = {
       settingId: 'passkey',
       tabLabelKey: 'securityAndPassword',
       titleKey: 'unlockWithPasskey',
-      tabRoute: '/settings-v2/security-and-password',
+      tabRoute: '/settings/security-and-password',
       iconName: 'SecurityKey',
     };
 
     renderWithProvider(
-      <SettingsV2SearchResults
+      <SettingsSearchResults
         results={[passkeyItem]}
         onClickResult={jest.fn()}
       />,
@@ -77,14 +77,14 @@ describe('SettingsV2SearchResults', () => {
   it('calls onClickResult when a result is clicked', () => {
     const onClickResult = jest.fn();
     renderWithProvider(
-      <SettingsV2SearchResults
+      <SettingsSearchResults
         results={mockItems}
         onClickResult={onClickResult}
       />,
       createMockStore(),
     );
 
-    const items = screen.getAllByTestId('settings-v2-search-result-item');
+    const items = screen.getAllByTestId('settings-search-result-item');
     fireEvent.click(items[0]);
 
     expect(onClickResult).toHaveBeenCalledWith(mockItems[0]);
@@ -92,7 +92,7 @@ describe('SettingsV2SearchResults', () => {
 
   it('shows no-match message and request link when results are empty', () => {
     renderWithProvider(
-      <SettingsV2SearchResults results={[]} onClickResult={jest.fn()} />,
+      <SettingsSearchResults results={[]} onClickResult={jest.fn()} />,
       createMockStore(),
     );
 

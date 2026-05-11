@@ -6,6 +6,7 @@ import {
   formatChainIdToCaip,
   isValidQuoteRequest,
   isNativeAddress,
+  isSolanaChainId,
   UnifiedSwapBridgeEventName,
   type BridgeController,
   formatAddressToCaipReference,
@@ -157,7 +158,8 @@ const PrepareBridgePage = ({
 
   const shouldShowMaxButton =
     fromToken && isNativeAddress(fromToken.assetId)
-      ? effectiveGasIncluded || effectiveGasIncluded7702
+      ? !isSolanaChainId(fromToken.chainId) &&
+        (effectiveGasIncluded || effectiveGasIncluded7702)
       : true;
   const locale = useSelector(getIntlLocale);
 

@@ -7,18 +7,17 @@ import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../store/background-connection';
 import {
-  ASSETS_ROUTE,
   CURRENCY_ROUTE,
   DEFAULT_ROUTE,
   PREFERENCES_AND_DISPLAY_ROUTE,
-  SETTINGS_V2_ROUTE,
+  SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../shared/constants/app';
-import SettingsV2 from './settings-v2';
+import Settings from './settings';
 
 const mockNavigate = jest.fn();
 const mockGetEnvironmentType = jest.fn(() => ENVIRONMENT_TYPE_POPUP);
@@ -41,51 +40,51 @@ jest.mock(
   }),
 );
 
-let mockPathname = SETTINGS_V2_ROUTE;
+let mockPathname = SETTINGS_ROUTE;
 
 const backgroundConnectionMock = new Proxy(
   {},
   { get: () => jest.fn().mockResolvedValue(undefined) },
 );
 
-const renderSettingsV2 = (
+const renderSettings = (
   store: ReturnType<ReturnType<typeof configureMockStore>>,
 ) => {
-  return renderWithProvider(<SettingsV2 />, store, mockPathname, render);
+  return renderWithProvider(<Settings />, store, mockPathname, render);
 };
 
-describe('SettingsV2', () => {
+describe('Settings', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   beforeEach(() => {
     jest.clearAllMocks();
     setBackgroundConnection(backgroundConnectionMock as never);
-    mockPathname = SETTINGS_V2_ROUTE;
+    mockPathname = SETTINGS_ROUTE;
     mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
   });
 
   describe('navigation', () => {
     it('renders transaction shield on the settings root page', () => {
-      renderSettingsV2(mockStore);
+      renderSettings(mockStore);
 
       expect(
-        screen.getByTestId('settings-v2-root-item-transaction-shield'),
+        screen.getByTestId('settings-root-item-transaction-shield'),
       ).toBeInTheDocument();
     });
 
     it('shows grouped tabs in fullscreen at the settings root', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
 
-      renderSettingsV2(mockStore);
+      renderSettings(mockStore);
 
       expect(
-        screen.getByTestId('settings-v2-tab-bar-grouped'),
+        screen.getByTestId('settings-tab-bar-grouped'),
       ).toBeInTheDocument();
       expect(screen.getByText(messages.general.message)).toBeInTheDocument();
       expect(
-        screen.getByTestId('settings-v2-tab-item-transaction-shield'),
+        screen.getByTestId('settings-tab-item-transaction-shield'),
       ).toBeInTheDocument();
-      expect(screen.queryByTestId('settings-v2-root')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
       expect(
         await screen.findByText(messages.theme.message),
       ).toBeInTheDocument();
@@ -99,24 +98,24 @@ describe('SettingsV2', () => {
 
     it('treats trailing-slash fullscreen settings route as the root route', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
-      mockPathname = `${SETTINGS_V2_ROUTE}/`;
+      mockPathname = `${SETTINGS_ROUTE}/`;
 
-      renderSettingsV2(mockStore);
+      renderSettings(mockStore);
 
       expect(
-        screen.getByTestId('settings-v2-tab-bar-grouped'),
+        screen.getByTestId('settings-tab-bar-grouped'),
       ).toBeInTheDocument();
-      expect(screen.queryByTestId('settings-v2-root')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('settings-root')).not.toBeInTheDocument();
       expect(
         await screen.findByText(messages.theme.message),
       ).toBeInTheDocument();
     });
 
     it('navigates to transaction shield from the root page', async () => {
-      renderSettingsV2(mockStore);
+      renderSettings(mockStore);
 
       fireEvent.click(
-        screen.getByTestId('settings-v2-root-item-transaction-shield'),
+        screen.getByTestId('settings-root-item-transaction-shield'),
       );
 
       await waitFor(() => {
@@ -125,10 +124,10 @@ describe('SettingsV2', () => {
     });
 
     it('navigates to home with the global menu drawer open when back is clicked at settings root', async () => {
-      renderSettingsV2(mockStore);
+      renderSettings(mockStore);
 
       const backButton = await screen.findByTestId(
-        'settings-v2-header-back-button',
+        'settings-header-back-button',
       );
 
       fireEvent.click(backButton);
@@ -141,11 +140,11 @@ describe('SettingsV2', () => {
     });
 
     it('navigates to home with the drawer open when back is clicked at settings root regardless of settings URL query', async () => {
-      mockPathname = `${SETTINGS_V2_ROUTE}?drawerOpen=true`;
-      renderSettingsV2(mockStore);
+      mockPathname = `${SETTINGS_ROUTE}?drawerOpen=true`;
+      renderSettings(mockStore);
 
       const backButton = await screen.findByTestId(
-        'settings-v2-header-back-button',
+        'settings-header-back-button',
       );
 
       fireEvent.click(backButton);
@@ -159,10 +158,10 @@ describe('SettingsV2', () => {
 
     it('navigates to parent tab when back is clicked on a sub-page', async () => {
       mockPathname = CURRENCY_ROUTE;
-      renderSettingsV2(mockStore);
+      renderSettings(mockStore);
 
       const backButton = await screen.findByTestId(
-        'settings-v2-header-back-button',
+        'settings-header-back-button',
       );
 
       fireEvent.click(backButton);
