@@ -99,12 +99,6 @@ test/e2e/tests/perps/ @MetaMask/perps
 docs/perps/ @MetaMask/perps
 **/perps/** @MetaMask/perps
 
-# Compliance infrastructure
-app/scripts/messenger-client-init/compliance-*.ts @MetaMask/perps @MetaMask/core-platform
-app/scripts/messenger-client-init/messengers/compliance-*.ts @MetaMask/perps @MetaMask/core-platform
-ui/selectors/compliance.ts @MetaMask/perps @MetaMask/core-platform
-ui/selectors/compliance.test.ts @MetaMask/perps @MetaMask/core-platform
-
 # Snaps
 **/snaps/**                          @MetaMask/core-platform
 shared/constants/permissions.ts      @MetaMask/core-platform
