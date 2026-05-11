@@ -195,14 +195,16 @@ describe('getPasskeyErrorCode', () => {
     );
   });
 
-  it('returns user_cancelled for NotAllowedError and AbortError', () => {
+  it('returns not_allowed for NotAllowedError', () => {
     const notAllowed = new Error('x');
     notAllowed.name = 'NotAllowedError';
-    expect(getPasskeyErrorCode(notAllowed)).toBe('user_cancelled');
+    expect(getPasskeyErrorCode(notAllowed)).toBe('not_allowed');
+  });
 
+  it('returns aborted for AbortError', () => {
     const abort = new Error('x');
     abort.name = 'AbortError';
-    expect(getPasskeyErrorCode(abort)).toBe('user_cancelled');
+    expect(getPasskeyErrorCode(abort)).toBe('aborted');
   });
 
   it('returns controller code when present', () => {

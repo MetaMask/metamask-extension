@@ -739,7 +739,7 @@ const ChangePassword = ({
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
           mode="verify"
-          location="change-password"
+          location="settings-change-password"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openChangePasswordInFullScreen}
         />
