@@ -1,13 +1,25 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
+  Box,
   BoxAlignItems,
+  BoxBackgroundColor,
   BoxFlexDirection,
-  Box as DSBox,
+  BoxJustifyContent,
+  ButtonBase,
+  ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
-  IconName as DSIconName,
+  FontWeight,
+  Icon,
+  IconSize,
+  Input,
+  IconName,
+  Text,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import {
   type CaipAssetType,
@@ -15,27 +27,6 @@ import {
   type Hex,
 } from '@metamask/utils';
 
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderColor,
-  BorderStyle,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../helpers/constants/design-system';
-import {
-  Box,
-  ButtonBase,
-  ButtonBaseSize,
-  IconName,
-  Text,
-  TextFieldSearch,
-} from '../../components/component-library';
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -87,7 +78,6 @@ type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 export const TokenManagementPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [pendingKey, setPendingKey] = useState<string | undefined>();
@@ -203,10 +193,6 @@ export const TokenManagementPage = () => {
     );
   }, [normalizedSearchQuery, visibleTokens]);
 
-  const handleClose = useCallback(() => {
-    navigate(DEFAULT_ROUTE);
-  }, [navigate]);
-
   const handleOpenNetworkFilter = useCallback(() => {
     dispatch(showModal({ name: 'NETWORK_MANAGER' }));
   }, [dispatch]);
@@ -317,13 +303,12 @@ export const TokenManagementPage = () => {
 
   const emptyState = (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
       padding={6}
     >
-      <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+      <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
         {normalizedSearchQuery
           ? t('noTokensMatchSearch')
           : t('noTokensToManage')}
@@ -332,57 +317,63 @@ export const TokenManagementPage = () => {
   );
 
   const startAccessory = (
-    <DSBox
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={1}
-    >
+    <Link to={DEFAULT_ROUTE} aria-label={t('back')}>
       <ButtonIcon
-        iconName={DSIconName.ArrowLeft}
+        iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
         size={ButtonIconSize.Sm}
-        onClick={handleClose}
         data-testid="token-management-header-back-button"
       />
-    </DSBox>
+    </Link>
   );
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      width={BlockSize.Full}
-      style={{ height: '100%', minHeight: 0 }}
+      flexDirection={BoxFlexDirection.Column}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      className="w-full h-full min-h-0"
       data-testid="token-management-page"
     >
       <Header startAccessory={startAccessory}>{t('manageTokens')}</Header>
 
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        paddingInline={4}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        paddingHorizontal={4}
         paddingTop={2}
         paddingBottom={2}
       >
-        <TextFieldSearch
-          className="w-full"
-          value={searchQuery}
-          placeholder={t('enterTokenNameOrAddressManageTokens')}
-          borderColor={BorderColor.borderMuted}
-          style={{ borderColor: 'var(--color-border-muted)' }}
-          onChange={(event) => setSearchQuery(event.target.value)}
-          clearButtonOnClick={() => setSearchQuery('')}
-          inputProps={{
-            'data-testid': 'token-management-search-input',
-          }}
-        />
+        <Box className="relative w-full">
+          <Icon
+            name={IconName.Search}
+            size={IconSize.Sm}
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-icon-alternative"
+          />
+          <Input
+            type="search"
+            value={searchQuery}
+            placeholder={t('enterTokenNameOrAddressManageTokens')}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            data-testid="token-management-search-input"
+            className="h-14 rounded-full border border-muted bg-muted py-0 pl-12 pr-12 text-default focus:border-muted"
+          />
+          {searchQuery ? (
+            <ButtonIcon
+              type="button"
+              ariaLabel={t('clear')}
+              iconName={IconName.CircleX}
+              size={ButtonIconSize.Sm}
+              onClick={() => setSearchQuery('')}
+              className="absolute right-3 top-1/2 -translate-y-1/2"
+            />
+          ) : null}
+        </Box>
       </Box>
 
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        paddingInline={4}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        paddingHorizontal={4}
         paddingTop={2}
         paddingBottom={2}
       >
@@ -390,19 +381,17 @@ export const TokenManagementPage = () => {
           data-testid="token-management-network-filter"
           size={ButtonBaseSize.Sm}
           startIconName={IconName.Filter}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          color={TextColor.textDefault}
-          borderColor={BorderColor.borderMuted}
-          borderStyle={BorderStyle.solid}
-          borderWidth={1}
+          className="bg-default text-default border border-muted"
           onClick={handleOpenNetworkFilter}
-          ellipsis
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-            <Text variant={TextVariant.bodySmMedium} ellipsis>
-              {networkFilterLabel}
-            </Text>
-          </Box>
+          <Text
+            variant={TextVariant.BodySm}
+            fontWeight={FontWeight.Medium}
+            color={TextColor.TextDefault}
+            ellipsis
+          >
+            {networkFilterLabel}
+          </Text>
         </ButtonBase>
       </Box>
 
@@ -426,23 +415,17 @@ export const TokenManagementPage = () => {
       </ScrollContainer>
 
       <Box
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        paddingInline={4}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        paddingHorizontal={4}
         paddingTop={3}
         paddingBottom={3}
-        style={{
-          bottom: 0,
-          position: 'sticky',
-          zIndex: 1,
-        }}
+        className="sticky bottom-0 z-10"
       >
         <ButtonBase
-          block
           data-testid="token-management-add-custom-token-button"
-          backgroundColor={BackgroundColor.backgroundMuted}
-          color={TextColor.textDefault}
+          className="w-full bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed"
           onClick={handleAddCustomToken}
         >
           {t('addCustomToken')}

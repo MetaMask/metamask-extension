@@ -211,10 +211,11 @@ describe('TokenManagementPage', () => {
       'token-management-add-custom-token-button',
     );
 
-    expect(addCustomTokenButton.parentElement).toHaveStyle({
-      bottom: '0px',
-      position: 'sticky',
-    });
+    // Sticky positioning is now applied via Tailwind utility classes on the
+    // wrapper Box (`sticky bottom-0 z-10`) rather than inline styles, matching
+    // the design-system migration in this file.
+    expect(addCustomTokenButton.parentElement?.className).toMatch(/sticky/u);
+    expect(addCustomTokenButton.parentElement?.className).toMatch(/bottom-0/u);
 
     fireEvent.click(addCustomTokenButton);
 
