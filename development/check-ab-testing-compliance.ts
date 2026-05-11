@@ -349,7 +349,7 @@ function main(): void {
       const line = addedLines[index];
 
       if (
-        /(^|[^A-Za-z0-9_])ab_tests\s*:/.test(line) &&
+        /(^|[^A-Za-z0-9_])ab_tests\s*:/u.test(line) &&
         !line.includes('LEGACY_AB_TEST_ALLOWED')
       ) {
         failures.push(
@@ -357,17 +357,17 @@ function main(): void {
         );
       }
 
-      if (/active_ab_tests\s*:/.test(line)) {
-        if (/active_ab_tests\s*:\s*(\[|\{)/.test(line)) {
+      if (/active_ab_tests\s*:/u.test(line)) {
+        if (/active_ab_tests\s*:\s*(\[|\{)/u.test(line)) {
           const payload = extractActiveABTestsPayload(addedLines, index) ?? '';
           const hasLiteralAssignmentFields =
-            /key\s*:/.test(payload) ||
-            /value\s*:/.test(payload) ||
-            /key_value_pair\s*:/.test(payload);
+            /key\s*:/u.test(payload) ||
+            /value\s*:/u.test(payload) ||
+            /key_value_pair\s*:/u.test(payload);
           const hasCompleteLiteralAssignment =
-            /key\s*:/.test(payload) &&
-            /value\s*:/.test(payload) &&
-            /key_value_pair\s*:/.test(payload);
+            /key\s*:/u.test(payload) &&
+            /value\s*:/u.test(payload) &&
+            /key_value_pair\s*:/u.test(payload);
 
           if (hasLiteralAssignmentFields && !hasCompleteLiteralAssignment) {
             failures.push(
@@ -377,7 +377,7 @@ function main(): void {
         }
       }
 
-      if (/useABTest\s*\(/.test(line)) {
+      if (/useABTest\s*\(/u.test(line)) {
         const callSegments: string[] = [];
         let parenDepth = 0;
 
@@ -401,10 +401,10 @@ function main(): void {
         }
 
         const callWindow = callSegments.join('\n');
-        const normalizedCall = callWindow.replace(/\n/g, ' ');
+        const normalizedCall = callWindow.replace(/\n/gu, ' ');
         if (
-          /useABTest\s*\([^,]+,\s*\{/.test(normalizedCall) &&
-          !/control\s*:/.test(callWindow)
+          /useABTest\s*\([^,]+,\s*\{/u.test(normalizedCall) &&
+          !/control\s*:/u.test(callWindow)
         ) {
           failures.push(
             `${file}: inline useABTest variants object is missing control.`,
