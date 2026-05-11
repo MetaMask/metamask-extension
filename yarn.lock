@@ -6913,8 +6913,8 @@ __metadata:
   linkType: hard
 
 "@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1, @metamask/json-rpc-engine@npm:^10.2.2, @metamask/json-rpc-engine@npm:^10.2.3, @metamask/json-rpc-engine@npm:^10.2.4, @metamask/json-rpc-engine@npm:^10.3.0":
-  version: 10.3.0
-  resolution: "@metamask/json-rpc-engine@npm:10.3.0"
+  version: 10.5.0
+  resolution: "@metamask/json-rpc-engine@npm:10.5.0"
   dependencies:
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
@@ -6923,7 +6923,7 @@ __metadata:
     "@types/deep-freeze-strict": "npm:^1.1.0"
     deep-freeze-strict: "npm:^1.1.1"
     klona: "npm:^2.0.6"
-  checksum: 10/8d4da5d933e4be2a85783871b6f1282763cbb5bc559e3228da099c75517530e3ac42a040109f17a4d4ff768f1c8cbcc4358f5e06b820b893af29a13f95180bd6
+  checksum: 10/2fa42bc57e6e268f0dfcdfe22d15f3c1c593acb5c96df1469403c389fc2a4e4ccb7c75efc00a02d987834d7f0dfb52f31328929ebb37d73b6719aa2e53a75466
   languageName: node
   linkType: hard
 
@@ -8190,7 +8190,7 @@ __metadata:
 
 "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A15.1.1#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-15.1.1-95e9049d30.patch":
   version: 15.1.1
-  resolution: "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A15.1.1#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-15.1.1-95e9049d30.patch::version=15.1.1&hash=8fd5f3"
+  resolution: "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A15.1.1#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-15.1.1-95e9049d30.patch::version=15.1.1&hash=70a696"
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/permission-controller": "npm:^12.3.0"
@@ -8201,7 +8201,7 @@ __metadata:
     "@metamask/utils": "npm:^11.11.0"
     "@noble/hashes": "npm:^1.7.1"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/62147e98f8fa1d7a61048cd387caa42ea94607c9056700509100af956852361903cd8234cf3c29e694ff0edc3326fd88f3bd90f4c194213cb38c4f5ffa17575f
+  checksum: 10/cb8c64be31e0ecad6d5c95136cb6c5c009843b90a97de05c07b13afcaca23e906edeca6d29bcf1c929a44c9decee02d2e3e547f902c5654861d0c9cb9698a12e
   languageName: node
   linkType: hard
 
