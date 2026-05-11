@@ -10,9 +10,7 @@ type State = {
   appState: Partial<
     Pick<
       MetaMaskReduxState['appState'],
-      | 'showPasswordChangeToast'
-      | 'showClaimSubmitToast'
-      | 'showInfuraSwitchToast'
+      'showClaimSubmitToast' | 'showInfuraSwitchToast'
     >
   >;
   metamask: Partial<

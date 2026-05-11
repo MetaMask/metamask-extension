@@ -473,7 +473,7 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   // Order-entry surface — use tradeable balance so HyperLiquid unified accounts
   // funded by spot USDC are recognized as tradeable. Withdraw screens still
-  // read `account.availableBalance` directly.
+  // read `account.spendableBalance` directly.
   const availableBalance = Number.parseFloat(getTradeableBalance(account));
   const hasNoAvailableBalance =
     orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
