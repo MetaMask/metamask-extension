@@ -21,7 +21,7 @@ type CommandResult = {
 
 const checkerSourcePath = path.resolve(
   __dirname,
-  '../../.agents/skills/ab-testing-implementation/scripts/check-ab-testing-compliance.ts',
+  '../../development/check-ab-testing-compliance.ts',
 );
 const tsxLoaderPath = path.resolve(
   __dirname,
