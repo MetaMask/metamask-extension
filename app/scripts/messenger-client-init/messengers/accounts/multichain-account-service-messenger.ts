@@ -1,67 +1,20 @@
-import { Messenger } from '@metamask/messenger';
-import {
-  AccountsControllerAccountAddedEvent,
-  AccountsControllerAccountRemovedEvent,
-  AccountsControllerGetAccountAction,
-  AccountsControllerGetAccountsAction,
-  AccountsControllerGetAccountByAddressAction,
-  AccountsControllerListMultichainAccountsAction,
-} from '@metamask/accounts-controller';
-import {
-  SnapControllerStateChangeEvent,
-  SnapControllerGetStateAction,
-  SnapControllerHandleRequestAction,
-} from '@metamask/snaps-controllers';
-import {
-  KeyringControllerWithKeyringAction,
-  KeyringControllerWithKeyringV2Action,
-  KeyringControllerGetStateAction,
-  KeyringControllerStateChangeEvent,
-  KeyringControllerAddNewKeyringAction,
-  KeyringControllerGetKeyringsByTypeAction,
-  KeyringControllerCreateNewVaultAndKeychainAction,
-  KeyringControllerCreateNewVaultAndRestoreAction,
-} from '@metamask/keyring-controller';
-import {
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerGetNetworkClientByIdAction,
-} from '@metamask/network-controller';
+import { Messenger, MessengerActions, MessengerEvents } from '@metamask/messenger';
 import {
   RemoteFeatureFlagControllerStateChangeEvent,
   RemoteFeatureFlagControllerGetStateAction,
 } from '@metamask/remote-feature-flag-controller';
 import { SnapAccountServiceEnsureReadyAction } from '@metamask/snap-account-service';
 import {
+  MultichainAccountServiceMessenger as ServiceMessenger,
+} from '@metamask/multichain-account-service';
+import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
-type Actions =
-  | AccountsControllerListMultichainAccountsAction
-  | AccountsControllerGetAccountAction
-  | AccountsControllerGetAccountsAction
-  | AccountsControllerGetAccountByAddressAction
-  | SnapControllerGetStateAction
-  | SnapControllerHandleRequestAction
-  | KeyringControllerGetStateAction
-  | KeyringControllerWithKeyringAction
-  | KeyringControllerWithKeyringV2Action
-  | KeyringControllerAddNewKeyringAction
-  | KeyringControllerGetKeyringsByTypeAction
-  | KeyringControllerCreateNewVaultAndKeychainAction
-  | KeyringControllerCreateNewVaultAndRestoreAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | SnapAccountServiceEnsureReadyAction;
-
-type Events =
-  | SnapControllerStateChangeEvent
-  | KeyringControllerStateChangeEvent
-  | AccountsControllerAccountAddedEvent
-  | AccountsControllerAccountRemovedEvent
-  | RemoteFeatureFlagControllerStateChangeEvent
-  | SnapControllerStateChangeEvent;
+type Actions = MessengerActions<ServiceMessenger>;
+type Events = MessengerEvents<ServiceMessenger>;
 
 export type MultichainAccountServiceMessenger = ReturnType<
   typeof getMultichainAccountServiceMessenger
@@ -89,19 +42,15 @@ export function getMultichainAccountServiceMessenger(
   messenger.delegate({
     messenger: serviceMessenger,
     events: [
-      'KeyringController:stateChange',
-      'SnapController:stateChange',
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
-      'RemoteFeatureFlagController:stateChange',
+      'KeyringController:stateChange',
     ],
     actions: [
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccountByAddress',
       'AccountsController:getAccount',
       'AccountsController:getAccounts',
-      'SnapController:getState',
-      'SnapController:handleRequest',
       'KeyringController:getState',
       'KeyringController:withKeyring',
       'KeyringController:withKeyringV2',
@@ -111,6 +60,7 @@ export function getMultichainAccountServiceMessenger(
       'KeyringController:createNewVaultAndRestore',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
+      'SnapController:handleRequest',
       'SnapAccountService:ensureReady',
     ],
   });
