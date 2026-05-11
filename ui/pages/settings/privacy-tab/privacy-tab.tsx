@@ -1,7 +1,7 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createToggleItem } from '../shared';
-import { getPreferences } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import {
   setUseMultiAccountBalanceChecker,
   setSkipDeepLinkInterstitial,
