@@ -98,9 +98,9 @@ const GenericHardwareWalletAnimation = ({
       return false;
     }
 
-    inputsRef.current = Object.values(
-      GenericHardwareWalletStateInputs,
-    ).reduce<Record<string, StateMachineInput | undefined>>(
+    inputsRef.current = Object.values(GenericHardwareWalletStateInputs).reduce<
+      Record<string, StateMachineInput | undefined>
+    >(
       (cachedInputs, inputName) => ({
         ...cachedInputs,
         [inputName]: inputs.find((input) => input.name === inputName),
