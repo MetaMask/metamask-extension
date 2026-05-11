@@ -41,14 +41,14 @@ const YARN_SEVERITIES: ReadonlySet<YarnSeverity> = new Set([
   'moderate',
   'high',
   'critical',
-]);
+] as const);
 
 /** Effective severities that block the build (moderate and above). */
 export const BLOCKING_SEVERITIES: ReadonlySet<YarnSeverity> = new Set([
   'moderate',
   'high',
   'critical',
-]);
+] as const);
 
 export function advisoryIdentityKey(
   advisory: Pick<ParsedAdvisory, 'id' | 'moduleName' | 'title' | 'url'>,
