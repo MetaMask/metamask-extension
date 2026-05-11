@@ -2855,6 +2855,9 @@
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
   },
+  "enterTokenAddress": {
+    "message": "Enter token address"
+  },
   "enterTokenNameOrAddressManageTokens": {
     "message": "Enter token name or address"
   },
