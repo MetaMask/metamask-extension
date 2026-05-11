@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useSettingsV2Search } from './useSettingsV2Search';
+import { useSettingsSearch } from './useSettingsSearch';
 
 jest.mock('../../../shared/lib/passkey', () => ({
   getPasskeyAuthMethodKey: () => 'passkeyAuthMethodBiometrics',
@@ -15,17 +15,17 @@ jest.mock('../../hooks/useI18nContext', () => ({
 }));
 
 jest.mock('./settings-registry', () => ({
-  SETTINGS_V2_TABS: [
+  SETTINGS_TABS: [
     {
       id: 'assets',
-      path: '/settings-v2/assets',
+      path: '/settings/assets',
       labelKey: 'assets',
       iconName: 'Coin',
       component: () => null,
     },
     {
       id: 'preferences-and-display',
-      path: '/settings-v2/preferences-and-display',
+      path: '/settings/preferences-and-display',
       labelKey: 'preferencesAndDisplay',
       iconName: 'Customize',
       component: () => null,
@@ -34,7 +34,7 @@ jest.mock('./settings-registry', () => ({
 }));
 
 jest.mock('./search-config', () => ({
-  SETTINGS_V2_SEARCH_CONFIG: [
+  SETTINGS_SEARCH_CONFIG: [
     {
       tabId: 'assets',
       items: [{ id: 'autodetect-tokens', titleKey: 'autoDetectTokens' }],
@@ -50,25 +50,25 @@ jest.mock('./search-config', () => ({
   ],
 }));
 
-describe('useSettingsV2Search', () => {
+describe('useSettingsSearch', () => {
   it('returns empty results for queries shorter than 3 characters', () => {
-    const { result } = renderHook(() => useSettingsV2Search('th'));
+    const { result } = renderHook(() => useSettingsSearch('th'));
     expect(result.current).toEqual([]);
   });
 
   it('returns empty results for empty string', () => {
-    const { result } = renderHook(() => useSettingsV2Search(''));
+    const { result } = renderHook(() => useSettingsSearch(''));
     expect(result.current).toEqual([]);
   });
 
   it('returns matching results for a valid query', () => {
-    const { result } = renderHook(() => useSettingsV2Search('theme'));
+    const { result } = renderHook(() => useSettingsSearch('theme'));
     expect(result.current.length).toBeGreaterThan(0);
     expect(result.current[0].titleKey).toBe('theme');
   });
 
   it('returns matching results for partial queries', () => {
-    const { result } = renderHook(() => useSettingsV2Search('curr'));
+    const { result } = renderHook(() => useSettingsSearch('curr'));
     expect(result.current.length).toBeGreaterThan(0);
 
     const titleKeys = result.current.map((item) => item.titleKey);
@@ -76,7 +76,7 @@ describe('useSettingsV2Search', () => {
   });
 
   it('returns empty array for non-matching queries', () => {
-    const { result } = renderHook(() => useSettingsV2Search('xyznonexistent'));
+    const { result } = renderHook(() => useSettingsSearch('xyznonexistent'));
     expect(result.current).toEqual([]);
   });
 });

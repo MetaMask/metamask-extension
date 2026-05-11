@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useSettingsV2I18n } from './useSettingsV2I18n';
+import { useSettingsI18n } from './useSettingsI18n';
 
 jest.mock('../../../shared/lib/passkey', () => ({
   getPasskeyAuthMethodKey: jest.fn(() => 'passkeyAuthMethodBiometrics'),
@@ -14,7 +14,7 @@ const { getPasskeyAuthMethodKey } = jest.requireMock<
   typeof import('../../../shared/lib/passkey')
 >('../../../shared/lib/passkey');
 
-describe('useSettingsV2I18n', () => {
+describe('useSettingsI18n', () => {
   beforeEach(() => {
     mockUseI18nContext.mockReset();
   });
@@ -23,7 +23,7 @@ describe('useSettingsV2I18n', () => {
     const rawT = jest.fn(() => 'forwarded');
     mockUseI18nContext.mockReturnValue(rawT);
 
-    const { result } = renderHook(() => useSettingsV2I18n());
+    const { result } = renderHook(() => useSettingsI18n());
     expect(result.current('settingsSearchCantFindSetting', [{}])).toBe(
       'forwarded',
     );
@@ -43,7 +43,7 @@ describe('useSettingsV2I18n', () => {
     });
     mockUseI18nContext.mockReturnValue(rawT);
 
-    const { result } = renderHook(() => useSettingsV2I18n());
+    const { result } = renderHook(() => useSettingsI18n());
     expect(result.current('unlockWithPasskey')).toBe('Unlock with Biometrics');
     expect(getPasskeyAuthMethodKey).toHaveBeenCalled();
     expect(rawT).toHaveBeenCalledWith('passkeyAuthMethodBiometrics');
@@ -62,7 +62,7 @@ describe('useSettingsV2I18n', () => {
     });
     mockUseI18nContext.mockReturnValue(rawT);
 
-    const { result } = renderHook(() => useSettingsV2I18n());
+    const { result } = renderHook(() => useSettingsI18n());
     expect(result.current('setUpPasskey')).toBe('setUpPasskey done');
     expect(result.current('turnOffPasskey')).toBe('turnOffPasskey done');
   });
@@ -71,7 +71,7 @@ describe('useSettingsV2I18n', () => {
     const rawT = jest.fn((key: string) => `:${key}:`);
     mockUseI18nContext.mockReturnValue(rawT);
 
-    const { result } = renderHook(() => useSettingsV2I18n());
+    const { result } = renderHook(() => useSettingsI18n());
     expect(result.current('theme')).toBe(':theme:');
     expect(rawT).toHaveBeenCalledWith('theme');
   });

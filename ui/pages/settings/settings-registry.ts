@@ -21,7 +21,7 @@ import {
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   SECURITY_REGISTER_PASSKEY_ROUTE,
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
-  SETTINGS_V2_ROUTE,
+  SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
   TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
@@ -36,9 +36,9 @@ import { mmLazy } from '../../helpers/utils/mm-lazy';
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
 
 /**
- * Route definition for a Settings V2 page.
+ * Route definition for a Settings page.
  */
-export type SettingsV2RouteMeta = {
+export type SettingsRouteMeta = {
   /** i18n key for the route label (used in header, breadcrumbs, TabBar) */
   labelKey: string;
   /** Parent path for back navigation; undefined = settings root */
@@ -51,7 +51,7 @@ export type SettingsV2RouteMeta = {
   iconName?: IconName;
 };
 
-export const SETTINGS_V2_ROOT_SECTIONS: readonly {
+export const SETTINGS_ROOT_SECTIONS: readonly {
   titleKeys: readonly string[];
   paths: readonly string[];
 }[] = [
@@ -88,19 +88,19 @@ const TRANSACTION_SHIELD_VIEW_PENDING_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES
 const TRANSACTION_SHIELD_VIEW_HISTORY_ROUTE = `${TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL}/:claimId`;
 
 /**
- * Single source of truth for all Settings V2 routes.
+ * Single source of truth for all Settings routes.
  * Order of tabs in the TabBar is determined by declaration order of isTab entries.
  */
-export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
+export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   // Settings root (no component - renders first tab content)
-  [SETTINGS_V2_ROUTE]: {
+  [SETTINGS_ROUTE]: {
     labelKey: 'settings',
   },
 
   // --- Preferences and Display tab ---
   [PREFERENCES_AND_DISPLAY_ROUTE]: {
     labelKey: 'preferencesAndDisplay',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('./preferences-and-display-tab/index.ts')),
     isTab: true,
     iconName: IconName.Customize,
@@ -136,7 +136,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Notifications tab ---
   [NOTIFICATIONS_SETTINGS_ROUTE]: {
     labelKey: 'notifications',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('./notifications-tab/index.ts')),
     isTab: true,
     iconName: IconName.Notification,
@@ -145,7 +145,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Security and Password tab ---
   [SECURITY_AND_PASSWORD_ROUTE]: {
     labelKey: 'securityAndPassword',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('./security-and-password-tab/index.ts')),
     isTab: true,
     iconName: IconName.SecurityKey,
@@ -190,7 +190,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Privacy tab ---
   [PRIVACY_ROUTE]: {
     labelKey: 'privacy',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('./privacy-tab/index.ts')),
     isTab: true,
     iconName: IconName.Lock,
@@ -206,7 +206,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Backup and sync tab ---
   [BACKUPANDSYNC_ROUTE]: {
     labelKey: 'backupAndSync',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(
       () => import('./backup-and-sync-tab/backup-and-sync-tab.tsx'),
     ),
@@ -217,7 +217,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Transaction Shield tab ---
   [TRANSACTION_SHIELD_ROUTE]: {
     labelKey: 'shieldTx',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('../shield/transaction-shield/index.ts')),
     isTab: true,
     iconName: IconName.ShieldLock,
@@ -267,7 +267,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Assets tab ---
   [ASSETS_ROUTE]: {
     labelKey: 'assets',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('./assets-tab/index.ts')),
     isTab: true,
     iconName: IconName.Coin,
@@ -276,7 +276,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Transactions tab ---
   [TRANSACTIONS_ROUTE]: {
     labelKey: 'transactions',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('./transactions-tab/index.ts')),
     isTab: true,
     iconName: IconName.SwapVertical,
@@ -285,7 +285,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Experimental tab ---
   [EXPERIMENTAL_ROUTE]: {
     labelKey: 'experimental',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('./experimental-tab/experimental-tab.tsx')),
     isTab: true,
     iconName: IconName.Flask,
@@ -296,7 +296,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     ? {
         [DEVELOPER_OPTIONS_ROUTE]: {
           labelKey: 'debug',
-          parentPath: SETTINGS_V2_ROUTE,
+          parentPath: SETTINGS_ROUTE,
           component: mmLazy(() => import('./debug-tab/index.ts')),
           isTab: true,
           iconName: IconName.Sparkle,
@@ -307,7 +307,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Developer Tools tab ---
   [DEVELOPER_TOOLS_ROUTE]: {
     labelKey: 'developerTools',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('./developer-tools-tab/index.ts')),
     isTab: true,
     iconName: IconName.Code,
@@ -316,7 +316,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- About tab ---
   [ABOUT_US_ROUTE]: {
     labelKey: 'aboutMetaMask',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
     component: mmLazy(() => import('./about-tab/index.ts')),
     isTab: true,
     iconName: IconName.Info,
@@ -325,7 +325,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   // --- Snap settings (navigated via URL, not shown as a tab) ---
   [SNAP_SETTINGS_ROUTE]: {
     labelKey: 'snaps',
-    parentPath: SETTINGS_V2_ROUTE,
+    parentPath: SETTINGS_ROUTE,
   },
 };
 
@@ -334,19 +334,19 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
  *
  * @param pathname - The route pathname to look up
  */
-export function getSettingsV2RouteMeta(
+export function getSettingsRouteMeta(
   pathname: string,
-): SettingsV2RouteMeta | null {
+): SettingsRouteMeta | null {
   if (!pathname) {
     return null;
   }
 
-  const exactMeta = SETTINGS_V2_ROUTES[pathname];
+  const exactMeta = SETTINGS_ROUTES[pathname];
   if (exactMeta) {
     return exactMeta;
   }
 
-  const matchingRoute = Object.keys(SETTINGS_V2_ROUTES)
+  const matchingRoute = Object.keys(SETTINGS_ROUTES)
     .filter((routePath) => routePath.includes('*') || routePath.includes(':'))
     .sort((routeA, routeB) => routeB.length - routeA.length)
     .find((routePath) =>
@@ -361,19 +361,19 @@ export function getSettingsV2RouteMeta(
       ),
     );
 
-  return matchingRoute ? SETTINGS_V2_ROUTES[matchingRoute] : null;
+  return matchingRoute ? SETTINGS_ROUTES[matchingRoute] : null;
 }
 
-type TabRouteMeta = SettingsV2RouteMeta &
-  Required<Pick<SettingsV2RouteMeta, 'iconName' | 'component'>>;
+type TabRouteMeta = SettingsRouteMeta &
+  Required<Pick<SettingsRouteMeta, 'iconName' | 'component'>>;
 
-type RenderableRouteMeta = SettingsV2RouteMeta &
-  Required<Pick<SettingsV2RouteMeta, 'component'>>;
+type RenderableRouteMeta = SettingsRouteMeta &
+  Required<Pick<SettingsRouteMeta, 'component'>>;
 
 /**
  * Derived list of tabs for the TabBar, in order of declaration.
  */
-export const SETTINGS_V2_TABS = Object.entries(SETTINGS_V2_ROUTES)
+export const SETTINGS_TABS = Object.entries(SETTINGS_ROUTES)
   .filter((entry): entry is [string, TabRouteMeta] => {
     const [, meta] = entry;
     return Boolean(meta.isTab && meta.iconName && meta.component);
@@ -389,7 +389,7 @@ export const SETTINGS_V2_TABS = Object.entries(SETTINGS_V2_ROUTES)
 /**
  * All routes that have a component (for generating Route elements).
  */
-export const SETTINGS_V2_RENDERABLE_ROUTES = Object.entries(SETTINGS_V2_ROUTES)
+export const SETTINGS_RENDERABLE_ROUTES = Object.entries(SETTINGS_ROUTES)
   .filter((entry): entry is [string, RenderableRouteMeta] => {
     const [, meta] = entry;
     return Boolean(meta.component);

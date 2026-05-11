@@ -32,7 +32,7 @@ import classnames from 'clsx';
 import { useSelector } from 'react-redux';
 import {
   DEFAULT_ROUTE,
-  SETTINGS_V2_ROUTE,
+  SETTINGS_ROUTE,
   SNAP_SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
@@ -61,21 +61,17 @@ import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shiel
 import { toRelativeRoutePath } from '../routes/utils';
 import TabBar from './tab-bar';
 import {
-  SETTINGS_V2_ROOT_SECTIONS,
-  SETTINGS_V2_TABS,
-  SETTINGS_V2_RENDERABLE_ROUTES,
-  getSettingsV2RouteMeta,
+  SETTINGS_ROOT_SECTIONS,
+  SETTINGS_TABS,
+  SETTINGS_RENDERABLE_ROUTES,
+  getSettingsRouteMeta,
 } from './settings-registry';
-import {
-  SettingsV2Header,
-  SettingsV2Root,
-  SettingsV2SearchResults,
-} from './shared';
-import { useSettingsV2Search, MIN_SEARCH_LENGTH } from './useSettingsV2Search';
-import { useSettingsV2I18n } from './useSettingsV2I18n';
+import { SettingsHeader, SettingsRoot, SettingsSearchResults } from './shared';
+import { useSettingsSearch, MIN_SEARCH_LENGTH } from './useSettingsSearch';
+import { useSettingsI18n } from './useSettingsI18n';
 
-const FIRST_TAB_PATH = SETTINGS_V2_TABS[0]?.path;
-const FirstTabComponent = SETTINGS_V2_TABS[0]?.component;
+const FIRST_TAB_PATH = SETTINGS_TABS[0]?.path;
+const FirstTabComponent = SETTINGS_TABS[0]?.component;
 
 const normalizeSettingsPath = (path: string) =>
   path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
@@ -83,32 +79,32 @@ const normalizeSettingsPath = (path: string) =>
 const getRoutePathname = (path: string) => path.split('?')[0];
 
 /**
- * Layout for Settings V2: header, tab bar, and content area.
+ * Layout for Settings: header, tab bar, and content area.
  *
  * @param props - Component props
  * @param props.children - Route content to render in the main area
  */
-const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
+const SettingsLayout = ({ children }: { children: React.ReactNode }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const t = useSettingsV2I18n();
+  const t = useSettingsI18n();
   const normalizedPathname = normalizeSettingsPath(location.pathname);
-  const meta = getSettingsV2RouteMeta(normalizedPathname);
+  const meta = getSettingsRouteMeta(normalizedPathname);
   const environmentType = getEnvironmentType();
 
   const isPopupOrSidepanel =
     environmentType === ENVIRONMENT_TYPE_POPUP ||
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  const isOnSettingsRoot = normalizedPathname === SETTINGS_V2_ROUTE;
+  const isOnSettingsRoot = normalizedPathname === SETTINGS_ROUTE;
   const showRootLandingPage = isOnSettingsRoot && isPopupOrSidepanel;
   const backRoute = isOnSettingsRoot
     ? `${DEFAULT_ROUTE}?drawerOpen=true`
-    : (meta?.parentPath ?? SETTINGS_V2_ROUTE);
+    : (meta?.parentPath ?? SETTINGS_ROUTE);
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const searchResults = useSettingsV2Search(searchValue);
+  const searchResults = useSettingsSearch(searchValue);
 
   // --- Shield entry modal interception ---
   const hasSubscribedToShield = useSelector(getHasSubscribedToShield);
@@ -153,15 +149,15 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
 
   // Breadcrumbs: shown on sub-pages (2+ levels deep from settings root)
   const breadcrumbs = useMemo((): { labelKey: string; path: string }[] => {
-    if (!meta?.parentPath || meta.parentPath === SETTINGS_V2_ROUTE) {
+    if (!meta?.parentPath || meta.parentPath === SETTINGS_ROUTE) {
       return [];
     }
     const crumbs: { labelKey: string; path: string }[] = [];
     let currentPath: string | undefined = normalizedPathname;
 
     // Walk up the parent chain to build breadcrumbs
-    while (currentPath && getRoutePathname(currentPath) !== SETTINGS_V2_ROUTE) {
-      const routeMeta = getSettingsV2RouteMeta(getRoutePathname(currentPath));
+    while (currentPath && getRoutePathname(currentPath) !== SETTINGS_ROUTE) {
+      const routeMeta = getSettingsRouteMeta(getRoutePathname(currentPath));
       if (!routeMeta) {
         break;
       }
@@ -184,7 +180,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
 
   const itemTabs = useMemo(
     () =>
-      SETTINGS_V2_TABS.map((item) => ({
+      SETTINGS_TABS.map((item) => ({
         key: item.path,
         content: t(item.labelKey),
         iconName: item.iconName,
@@ -192,14 +188,14 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
     [t],
   );
   const groupedItemTabs = useMemo(() => {
-    const sections = SETTINGS_V2_ROOT_SECTIONS.map(({ titleKeys, paths }) => {
-      const items = SETTINGS_V2_TABS.filter((item) =>
+    const sections = SETTINGS_ROOT_SECTIONS.map(({ titleKeys, paths }) => {
+      const items = SETTINGS_TABS.filter((item) =>
         paths.includes(item.path),
       ).map((item) => ({
         key: item.path,
         content: t(item.labelKey),
         iconName: item.iconName,
-        dataTestId: `settings-v2-tab-item-${item.id}`,
+        dataTestId: `settings-tab-item-${item.id}`,
       }));
 
       return {
@@ -217,7 +213,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
           key: `${SNAP_SETTINGS_ROUTE}?snapId=${encodeURIComponent(snapId)}`,
           content: snapNameGetter(snapId),
           iconName: IconName.Snaps,
-          dataTestId: `settings-v2-tab-item-snap-${snapId}`,
+          dataTestId: `settings-tab-item-snap-${snapId}`,
         })),
       });
     }
@@ -238,7 +234,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   if (showSearchResults) {
     mainContent = (
       <Box className="flex-1 overflow-y-auto">
-        <SettingsV2SearchResults
+        <SettingsSearchResults
           results={searchResults}
           onClickResult={(item) => {
             navigate(`${item.tabRoute}#${item.settingId}`);
@@ -250,7 +246,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
   } else if (showRootLandingPage) {
     mainContent = (
       <Box className="flex-1 overflow-y-auto">
-        <SettingsV2Root onBeforeNavigate={handleTabClick} />
+        <SettingsRoot onBeforeNavigate={handleTabClick} />
       </Box>
     );
   } else {
@@ -281,7 +277,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
               // First tab is active when at settings root
               if (
                 key === FIRST_TAB_PATH &&
-                normalizedPathname === SETTINGS_V2_ROUTE
+                normalizedPathname === SETTINGS_ROUTE
               ) {
                 return true;
               }
@@ -395,7 +391,7 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
           onClose={() => setShowShieldEntryModal(false)}
         />
       )}
-      <SettingsV2Header
+      <SettingsHeader
         title={headerTitle}
         isPopupOrSidepanel={isPopupOrSidepanel}
         isOnSettingsRoot={isOnSettingsRoot}
@@ -413,42 +409,42 @@ const SettingsV2Layout = ({ children }: { children: React.ReactNode }) => {
 };
 
 /**
- * Settings V2 router component.
- * All routes are derived from the centralized SETTINGS_V2_ROUTES registry.
+ * Settings router component.
+ * All routes are derived from the centralized SETTINGS_ROUTES registry.
  */
-const SettingsV2 = () => {
+const Settings = () => {
   return (
     <RouterRoutes>
-      {SETTINGS_V2_RENDERABLE_ROUTES.map(({ path, component: Component }) => (
+      {SETTINGS_RENDERABLE_ROUTES.map(({ path, component: Component }) => (
         <Route
           key={path}
-          path={toRelativeRoutePath(path, SETTINGS_V2_ROUTE)}
+          path={toRelativeRoutePath(path, SETTINGS_ROUTE)}
           element={
-            <SettingsV2Layout>
+            <SettingsLayout>
               <Component />
-            </SettingsV2Layout>
+            </SettingsLayout>
           }
         />
       ))}
       <Route
-        path={toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_V2_ROUTE)}
+        path={toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}
         element={
-          <SettingsV2Layout>
+          <SettingsLayout>
             <SnapSettingsRenderer />
-          </SettingsV2Layout>
+          </SettingsLayout>
         }
       />
       {/* Catch-all and root: layout handles popup root and fullscreen first-tab rendering */}
       <Route
         path="*"
         element={
-          <SettingsV2Layout>
+          <SettingsLayout>
             {FirstTabComponent && <FirstTabComponent />}
-          </SettingsV2Layout>
+          </SettingsLayout>
         }
       />
     </RouterRoutes>
   );
 };
 
-export default SettingsV2;
+export default Settings;
