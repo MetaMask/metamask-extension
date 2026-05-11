@@ -164,7 +164,7 @@ done
 
 # Collect and validate deprecated browserify fallback artifacts.
 # Rename them so release consumers can clearly distinguish them from
-# the preferred webpack assets while still having them available.
+# the webpack assets while still having them available.
 browserify_artifacts=()
 for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
                 build-dist-mv2-browserify/builds/metamask-firefox-*.zip \

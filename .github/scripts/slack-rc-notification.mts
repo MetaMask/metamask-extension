@@ -5,7 +5,7 @@
  * metamask-mobile/scripts/slack-rc-notification.mjs (bot token + chat.postMessage).
  *
  * Build URLs use `getBuildLinks` from development/metamaskbot-build-announce/artifacts.ts
- * (main Chrome/Firefox for preferred Webpack + deprecated Browserify fallback).
+ * (main Chrome/Firefox for Webpack + deprecated Browserify fallback).
  *
  * Local / manual testing
  * ----------------------
