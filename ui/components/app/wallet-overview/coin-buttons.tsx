@@ -84,7 +84,6 @@ type CoinButtonsProps = {
   trackingLocation: string;
   isSwapsChain: boolean;
   isSigningEnabled: boolean;
-  isBuyableChain: boolean;
   classPrefix?: string;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
@@ -96,7 +95,6 @@ const CoinButtons = ({
   trackingLocation,
   isSwapsChain,
   isSigningEnabled,
-  isBuyableChain,
   classPrefix = 'coin',
   disableSendForNonEvm = false,
 }: CoinButtonsProps) => {
@@ -147,7 +145,6 @@ const CoinButtons = ({
   const isEvmAsset = isEvmChainId(normalizedChainId);
 
   const buttonTooltips = {
-    buyButton: [{ condition: !isBuyableChain, message: '' }],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
       {
@@ -356,14 +353,10 @@ const CoinButtons = ({
             size={IconSize.Md}
           />
         }
-        disabled={!isBuyableChain}
         data-testid={`${classPrefix}-overview-buy`}
         label={t('buy')}
         onClick={handleBuyAndSellOnClick}
         width={BlockSize.Full}
-        tooltipRender={(contents: React.ReactElement) =>
-          generateTooltip('buyButton', contents)
-        }
       />
       <IconButton
         className={`${classPrefix}-overview__button`}
