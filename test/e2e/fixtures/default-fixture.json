@@ -220,7 +220,6 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "AssetsController": {},
     "AuthenticationController": {},
     "BridgeStatusController": {
       "txHistory": {}
@@ -839,6 +838,9 @@
       "completedOnboarding": true,
       "firstTimeFlowType": "import",
       "seedPhraseBackedUp": null
+    },
+    "PasskeyController": {
+      "passkeyRecord": null
     },
     "PPOMController": {
       "storageMetadata": [],

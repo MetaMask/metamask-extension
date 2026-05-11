@@ -25,12 +25,12 @@ import {
   PERMISSIONS,
   GATOR_PERMISSIONS,
   CONTACTS_ROUTE,
+  NETWORKS_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   lockMetamask,
   setShowSupportDataConsentModal,
   showConfirmTurnOnMetamaskNotifications,
-  toggleNetworkMenu,
   toggleDefaultView,
 } from '../../../store/actions';
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../shared/lib/environment';
@@ -370,10 +370,7 @@ export function useGlobalMenuSections(
           id: 'global-menu-networks',
           iconName: IconName.Hierarchy,
           label: t('networks'),
-          onClick: () => {
-            dispatch(toggleNetworkMenu());
-            onClose();
-          },
+          to: `${NETWORKS_ROUTE}?drawerOpen=true`,
         },
         {
           id: 'global-menu-snaps',
@@ -494,10 +491,8 @@ export function useGlobalMenuSections(
     snapsUpdatesAvailable,
     showPriorityTag,
     notificationsUnreadCount,
-    notificationsReadCount,
     isMetamaskNotificationFeatureSeen,
     onClose,
-    navigate,
     dispatch,
     trackEvent,
     metaMetricsId,

@@ -456,20 +456,15 @@ class HomePage {
    *
    * @param expectedTokenBalance - The expected balance to be displayed.
    * @param symbol - The symbol of the currency or token.
-   * @param timeout - Max ms to wait; defaults to `driver.timeout` (10s unless overridden on `Driver`).
    */
   async checkExpectedTokenBalanceIsDisplayed(
     expectedTokenBalance: string,
     symbol: string,
-    timeout: number = this.driver.timeout,
   ): Promise<void> {
-    await this.driver.waitForSelector(
-      {
-        css: '[data-testid="multichain-token-list-item-value"]',
-        text: `${expectedTokenBalance} ${symbol}`,
-      },
-      { timeout },
-    );
+    await this.driver.waitForSelector({
+      css: '[data-testid="multichain-token-list-item-value"]',
+      text: `${expectedTokenBalance} ${symbol}`,
+    });
   }
 
   /**

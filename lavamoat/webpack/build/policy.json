@@ -46,6 +46,7 @@
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/core>@babel/helpers": true,
         "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@babel/preset-typescript": true,
         "@babel/core>@babel/template": true,
         "depcheck>@babel/traverse": true,
@@ -206,7 +207,7 @@
     "@babel/core>@babel/template": {
       "packages": {
         "@babel/code-frame": true,
-        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@babel/core>@babel/types": true
       }
     },
@@ -219,6 +220,7 @@
         "@babel/core>@babel/generator": true,
         "depcheck>@babel/traverse>@babel/helper-globals": true,
         "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@babel/core>@babel/template": true,
         "@babel/core>@babel/types": true,
         "depcheck>@babel": true,
@@ -315,7 +317,7 @@
         "process._rawDebug": true
       },
       "packages": {
-        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
         "@lavamoat/webpack>lavamoat-core": true,
@@ -438,21 +440,21 @@
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-cms>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-csr": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-csr>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-ecc": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-ecc>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx": {
@@ -461,14 +463,14 @@
         "mockttp>@peculiar/asn1-pkcs8": true,
         "mockttp>@peculiar/x509>@peculiar/asn1-rsa": true,
         "mockttp>@peculiar/asn1-schema": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/asn1-pkcs8": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/asn1-pkcs8>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9": {
@@ -479,35 +481,35 @@
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-rsa": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-rsa>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/asn1-schema": {
       "packages": {
         "mockttp>@peculiar/asn1-x509>asn1js": true,
         "mockttp>@peculiar/x509>pvtsutils": true,
-        "mockttp>@peculiar/asn1-schema>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/asn1-x509": true,
-        "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/asn1-x509": {
       "packages": {
         "mockttp>@peculiar/asn1-schema": true,
         "mockttp>@peculiar/x509>pvtsutils": true,
-        "mockttp>@peculiar/asn1-x509>tslib": true
+        "tslib": true
       }
     },
     "mockttp>@peculiar/x509": {
@@ -524,7 +526,7 @@
         "mockttp>@peculiar/asn1-x509": true,
         "mockttp>@peculiar/x509>pvtsutils": true,
         "mockttp>@peculiar/x509>reflect-metadata": true,
-        "mockttp>@peculiar/x509>tslib": true,
+        "tslib": true,
         "mockttp>@peculiar/x509>tsyringe": true
       }
     },
@@ -1080,7 +1082,7 @@
         "webpack-dev-server>compression>debug": true,
         "webpack-dev-server>compression>negotiator": true,
         "webpack-dev-server>compression>on-headers": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "koa>vary": true
       }
     },
@@ -1092,12 +1094,12 @@
         "console": true
       }
     },
-    "koa>content-disposition": {
+    "mockttp>express>content-disposition": {
       "builtin": {
         "path.basename": true
       },
       "packages": {
-        "koa>content-disposition>safe-buffer": true
+        "mockttp>express>safe-buffer": true
       }
     },
     "@babel/core>convert-source-map": {
@@ -1150,7 +1152,7 @@
       "packages": {
         "postcss-loader>cosmiconfig>env-paths": true,
         "eslint>@eslint/eslintrc>import-fresh": true,
-        "eslint>js-yaml": true,
+        "mocha>js-yaml": true,
         "depcheck>cosmiconfig>parse-json": true,
         "typescript": true
       }
@@ -1512,7 +1514,7 @@
         "koa>accepts": true,
         "mockttp>express>array-flatten": true,
         "mockttp>body-parser": true,
-        "koa>content-disposition": true,
+        "mockttp>express>content-disposition": true,
         "koa>content-type": true,
         "mockttp>express>cookie-signature": true,
         "mockttp>express>cookie": true,
@@ -1532,7 +1534,7 @@
         "mockttp>express>proxy-addr": true,
         "mockttp>express>qs": true,
         "mockttp>express>range-parser": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "mockttp>express>send": true,
         "mockttp>express>serve-static": true,
         "koa>http-errors>setprototypeof": true,
@@ -2043,7 +2045,7 @@
         "console.log": true
       },
       "packages": {
-        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/parser": true,
         "depcheck>@babel/traverse": true
       }
     },
@@ -2520,7 +2522,7 @@
         "setTimeout": true
       }
     },
-    "koa>content-disposition>safe-buffer": {
+    "mockttp>express>safe-buffer": {
       "builtin": {
         "buffer": true
       }
@@ -2995,90 +2997,8 @@
         "Buffer": true
       }
     },
-    "mockttp>@peculiar/x509>@peculiar/asn1-cms>tslib": {
+    "tslib": {
       "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-csr>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-ecc>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>@peculiar/asn1-pfx>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/asn1-pkcs8>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-pkcs9>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-rsa>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/asn1-schema>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>@peculiar/asn1-cms>@peculiar/asn1-x509-attr>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/asn1-x509>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
-        "SuppressedError": true,
-        "define": true
-      }
-    },
-    "mockttp>@peculiar/x509>tslib": {
-      "globals": {
-        "AsyncIterator": true,
-        "Iterator": true,
         "SuppressedError": true,
         "define": true
       }
@@ -3482,7 +3402,7 @@
       },
       "packages": {
         "webpack-dev-server>sockjs>websocket-driver>http-parser-js": true,
-        "koa>content-disposition>safe-buffer": true,
+        "mockttp>express>safe-buffer": true,
         "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
       }
     },

@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
   },
-  "addAHardwareWallet": {
-    "message": "Ajouter un portefeuille matériel"
-  },
   "addANetwork": {
     "message": "Ajouter un réseau"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Ajouter une URL"
+  },
+  "addAWallet": {
+    "message": "Ajouter un portefeuille"
   },
   "addAccount": {
     "message": "Ajouter un compte"
@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Coût le moins élevé"
   },
+  "bridgeMalicious": {
+    "message": "Malveillant"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Jeton malveillant"
+  },
   "bridgeMarketClosedAction": {
     "message": "Marché fermé"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Pas de frais MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Aucune information sur le prix"
   },
   "bridgePoints": {
     "message": "Points estimés",
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Réception sur la chaîne de destination"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Airdrop suspect"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Offre concentrée"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Comportement suspect"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Nombre exagéré de traders"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Volume fictif"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Activité intense des bots"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Offre non divulguée"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Frais d’achat élevés"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Frais de vente élevés"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Frais de transfert élevés"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Risque de honeypot"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Imposteur"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Se fait passer pour un actif sensible"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Probablement un imposteur"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Peut-être un imposteur"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Contenu inapproprié"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Volume artificiel"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Liquidité bloquée insuffisante"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Ce créateur a une réputation douteuse"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Reconnu comme malveillant"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Métadonnées suspectes"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Manipulation potentielle du prix"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Risque de rug pull"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Créateur sanctionné"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Ressemble à un contrat malveillant"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Activité de bot au lancement"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Texte indésirable"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Code suspect"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Porte dérobée dans le jeton"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Jeton invendable"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Prix instable"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Wash trading"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Sélectionnez un compte de destination"
   },
@@ -1260,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Échange de $1 contre $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Suspect"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Jeton suspect"
   },
   "bridgeTo": {
     "message": "Établir une passerelle vers"
@@ -1448,9 +1559,6 @@
   },
   "clearActivity": {
     "message": "Effacer les données d’activité et de nonce"
-  },
-  "clearActivityButton": {
-    "message": "Effacer les données de l’onglet « Activité »"
   },
   "clearActivityDescription": {
     "message": "Cela réinitialise le nonce du compte et efface les données de l’onglet « Activité » dans votre portefeuille. Seuls le compte et le réseau actuels seront affectés. Aucun changement ne sera apporté aux soldes ou transactions entrantes."
@@ -1732,6 +1840,9 @@
   },
   "connect": {
     "message": "Connecter"
+  },
+  "connectAHardwareWallet": {
+    "message": "Connecter un portefeuille matériel"
   },
   "connectAccounts": {
     "message": "Connecter les comptes"
@@ -3086,6 +3197,14 @@
     "message": "Date de début",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "Expiré",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Révoqué",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "Taux de transfert",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3484,9 @@
   "importAWallet": {
     "message": "Importer un portefeuille"
   },
+  "importAWalletDescription": {
+    "message": "À l’aide d’une phrase de récupération de 12, 18 ou 24 mots"
+  },
   "importAccountError": {
     "message": "Erreur d’importation de compte."
   },
@@ -3395,6 +3517,9 @@
   },
   "importAnAccount": {
     "message": "Importer un compte"
+  },
+  "importAnAccountDescription": {
+    "message": "Via une clé privée"
   },
   "importNFT": {
     "message": "Importer des NFT"
@@ -3783,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Verrouillage de MetaMask…"
-  },
-  "lockTimeInvalid": {
-    "message": "Le temps de verrouillage doit être un nombre compris entre 0 et 10 080"
   },
   "logOut": {
     "message": "Déconnexion"
@@ -4995,9 +5117,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Conditions d’utilisation"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Nous collecterons des données de base sur l’utilisation du produit, telles que l’emplacement général, les clics et les vues. Aucune autre information ne sera stockée."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Nous collecterons des données de base sur l’utilisation des produits. Nous pouvons associer ces informations aux données disponibles sur la chaîne."
   },
@@ -5561,9 +5680,6 @@
   "perpsCancelOrder": {
     "message": "Annuler l’ordre"
   },
-  "perpsCandleIntervals": {
-    "message": "Intervalles de bougies"
-  },
   "perpsCandlePeriodDays": {
     "message": "Jours"
   },
@@ -5575,9 +5691,6 @@
   },
   "perpsCloseAll": {
     "message": "Tout fermer"
-  },
-  "perpsCloseAmount": {
-    "message": "Montant à clôturer"
   },
   "perpsCloseLong": {
     "message": "Fermer la position longue"
@@ -6159,6 +6272,10 @@
   "perpsWithdraw": {
     "message": "Retirer"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Retrait du compte de trading de contrats à terme perpétuels",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Délai estimé"
   },
@@ -6206,6 +6323,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Demande de retrait envoyée avec succès"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask échangera vos jetons pour vous. Aucuns frais MetaMask ne s’appliquent lorsque vous effectuez un échange contre des mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Vous recevez"
@@ -6331,6 +6452,10 @@
   },
   "provide": {
     "message": "Fournir"
+  },
+  "providerFee": {
+    "message": "Commission du fournisseur",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Adresse publique"
@@ -6538,8 +6663,16 @@
   "receiveCrypto": {
     "message": "Recevoir des crypto-actifs"
   },
+  "receiveToken": {
+    "message": "Recevoir le jeton",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Reçu"
+  },
+  "receivedTotal": {
+    "message": "Total reçu",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Adresse de réception",
@@ -8060,12 +8193,6 @@
   },
   "smartAccount": {
     "message": "Compte intelligent"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Autoriser les dapps à demander des fonctionnalités de compte intelligent pour les comptes standards. Cela n’affectera pas les comptes qui sont déjà des comptes intelligents."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Demandes de comptes intelligents émanant de dapps"
   },
   "smartAccountLabel": {
     "message": "Compte intelligent"
@@ -9710,6 +9837,10 @@
   "willApproveAmountForSwapping": {
     "message": "Approuve le jeton pour le swap."
   },
+  "withdrawTo": {
+    "message": "Recevoir",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Retrait en cours"
   },
@@ -9742,6 +9873,10 @@
   "youSent": {
     "message": "Vous avez envoyé",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Vous recevrez",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Votre activité"

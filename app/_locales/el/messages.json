@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Προσθήκη προσαρμοσμένου δικτύου"
   },
-  "addAHardwareWallet": {
-    "message": "Προσθέστε ένα πορτοφόλι υλικού"
-  },
   "addANetwork": {
     "message": "Προσθήκη δικτύου"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Προσθήκη διεύθυνσης URL"
+  },
+  "addAWallet": {
+    "message": "Προσθήκη πορτοφολιού"
   },
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
@@ -1089,6 +1089,12 @@
   "bridgeLowestCost": {
     "message": "Χαμηλότερο κόστος"
   },
+  "bridgeMalicious": {
+    "message": "Κακόβουλο"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Κακόβουλο token"
+  },
   "bridgeMarketClosedAction": {
     "message": "Κλειστή αγορά"
   },
@@ -1109,6 +1115,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Χωρίς προμήθεια στο MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Δεν υπάρχουν πληροφορίες τιμών"
   },
   "bridgePoints": {
     "message": "Εκτ. πόντοι",
@@ -1205,6 +1214,102 @@
   "bridgeReceiveLoading": {
     "message": "Λήψη στο δίκτυο προορισμού"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Ύποπτο airdrop"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Συγκεντρωμένη προσφορά"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Ύποπτη συμπεριφορά"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Τεχνητά αυξημένος αριθμός traders"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Ψεύτικος όγκος συναλλαγών"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Έντονη δραστηριότητα του bot"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Απροσδιόριστη προσφορά"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Υψηλή χρέωση αγοράς"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Υψηλή χρέωση πώλησης"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Υψηλή χρέωση μεταφοράς"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Κίνδυνος κακόβουλης παγίδευσης (honeypot)"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Πλαστοπροσωπία"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Προσποιείται ευαίσθητο περιουσιακό στοιχείο"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Πιθανή πλαστοπροσωπία"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Ενδεχόμενη πλαστοπροσωπία"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Ακατάλληλο περιεχόμενο"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Τεχνητός όγκος συναλλαγών"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Χαμηλή δεσμευμένη ρευστότητα"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Ο δημιουργός έχει κακή φήμη"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Γνωστό κακόβουλο"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Ύποπτα μεταδεδομένα"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Πιθανή χειραγώγηση τιμής"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Κίνδυνος εξαπάτησης τύπου rugpull"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Δημιουργός που υπόκειται σε κυρώσεις"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Μοιάζει με κακόβουλο συμβόλαιο"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Δραστηριότητα bot κατά την εκκίνηση"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Κείμενο ανεπιθύμητης αλληλογραφίας (spam)"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Ύποπτος κωδικός"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Κρυφή πρόσβαση στο token"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Μη ρευστοποιήσιμο token"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Ασταθής τιμή"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Εικονικές συναλλαγές"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Επιλέξτε λογαριασμό προορισμού"
   },
@@ -1260,6 +1365,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Ανταλλαγή $1 για $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Ύποπτο"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Ύποπτο token"
   },
   "bridgeTo": {
     "message": "Διασύνδεση προς"
@@ -1448,9 +1559,6 @@
   },
   "clearActivity": {
     "message": "Εκκαθάριση δραστηριότητας και «nonce» δεδομένων"
-  },
-  "clearActivityButton": {
-    "message": "Εκκαθάριση δεδομένων καρτέλας δραστηριότητας"
   },
   "clearActivityDescription": {
     "message": "Επαναφέρει το nonce του λογαριασμού και διαγράφει τα δεδομένα από την καρτέλα δραστηριότητας στο πορτοφόλι σας. Μόνο ο τρέχων λογαριασμός και το δίκτυο θα επηρεαστούν. Δεν θα υπάρξει καμία αλλαγή στα υπόλοιπα ή στις εισερχόμενες συναλλαγές σας."
@@ -1732,6 +1840,9 @@
   },
   "connect": {
     "message": "Σύνδεση"
+  },
+  "connectAHardwareWallet": {
+    "message": "Συνδέστε ένα πορτοφόλι υλικού"
   },
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
@@ -3086,6 +3197,14 @@
     "message": "Ημερομηνία έναρξης",
     "description": "Label for the start date of a permission"
   },
+  "gatorPermissionsStatusExpired": {
+    "message": "Έληξε",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Ανακλήθηκαν",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "Ρυθμός ροής",
     "description": "Label for the stream rate of a permission"
@@ -3365,6 +3484,9 @@
   "importAWallet": {
     "message": "Εισαγωγή πορτοφολιού"
   },
+  "importAWalletDescription": {
+    "message": "Χρησιμοποιώντας φράση ανάκτησης 12, 18 ή 24 λέξεων"
+  },
   "importAccountError": {
     "message": "Σφάλμα κατά την εισαγωγή του λογαριασμού."
   },
@@ -3395,6 +3517,9 @@
   },
   "importAnAccount": {
     "message": "Εισαγωγή λογαριασμού"
+  },
+  "importAnAccountDescription": {
+    "message": "Μέσω ιδιωτικού κλειδιού"
   },
   "importNFT": {
     "message": "Εισαγωγή NFT"
@@ -3783,9 +3908,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Γίνεται κλείδωμα του MetaMask..."
-  },
-  "lockTimeInvalid": {
-    "message": "Ο χρόνος κλειδώματος πρέπει να είναι ένας αριθμός μεταξύ 0 και 10080"
   },
   "logOut": {
     "message": "Αποσύνδεση"
@@ -4995,9 +5117,6 @@
   "onboardingLoginFooterTermsOfUse": {
     "message": "Όρους Χρήσης"
   },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Θα συλλέξουμε βασικά δεδομένα χρήσης προϊόντος, όπως γενική τοποθεσία, κλικ και προβολές. Δεν θα αποθηκευτούν άλλες πληροφορίες."
-  },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Θα συλλέξουμε βασικά δεδομένα χρήσης του προϊόντος. Ενδέχεται να συσχετίσουμε αυτές τις πληροφορίες με δεδομένα εντός αλυσίδας."
   },
@@ -5561,9 +5680,6 @@
   "perpsCancelOrder": {
     "message": "Ακύρωση εντολής"
   },
-  "perpsCandleIntervals": {
-    "message": "Χρονικά διαστήματα κεριών"
-  },
   "perpsCandlePeriodDays": {
     "message": "Ημέρες"
   },
@@ -5575,9 +5691,6 @@
   },
   "perpsCloseAll": {
     "message": "Κλείσιμο όλων"
-  },
-  "perpsCloseAmount": {
-    "message": "Ποσό κλεισίματος"
   },
   "perpsCloseLong": {
     "message": "Κλείσιμο θέσης αγοράς"
@@ -6159,6 +6272,10 @@
   "perpsWithdraw": {
     "message": "Ανάληψη"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Ανάληψη από Perps",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Εκτιμώμενος χρόνος"
   },
@@ -6206,6 +6323,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Το αίτημα ανάληψης υποβλήθηκε"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "Το MetaMask θα κάνει ανταλλαγή στο token που θέλετε. Δεν υπάρχει χρέωση στο MetaMask όταν κάνετε ανταλλαγή σε mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Θα λάβετε"
@@ -6331,6 +6452,10 @@
   },
   "provide": {
     "message": "Παροχή"
+  },
+  "providerFee": {
+    "message": "Τέλη παρόχου",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Δημόσια διεύθυνση"
@@ -6538,8 +6663,16 @@
   "receiveCrypto": {
     "message": "Λάβετε κρυπτονομίσματα"
   },
+  "receiveToken": {
+    "message": "Λήψη token",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Ελήφθη"
+  },
+  "receivedTotal": {
+    "message": "Σύνολο που ελήφθη",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Διεύθυνση παραλαβής",
@@ -8060,12 +8193,6 @@
   },
   "smartAccount": {
     "message": "Έξυπνος λογαριασμός"
-  },
-  "smartAccountDappRequestsDescription": {
-    "message": "Επιτρέψτε στις αποκεντρωμένες εφαρμογές (dapps) να ζητούν λειτουργίες έξυπνου λογαριασμού για τυπικούς λογαριασμούς. Δεν θα επηρεαστούν οι λογαριασμοί που είναι ήδη έξυπνοι λογαριασμοί."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Αιτήματα έξυπνου λογαριασμού από αποκεντρωμένες εφαρμογές (dapps)"
   },
   "smartAccountLabel": {
     "message": "Έξυπνος λογαριασμός"
@@ -9710,6 +9837,10 @@
   "willApproveAmountForSwapping": {
     "message": "Εγκρίνει το token για ανταλλαγή."
   },
+  "withdrawTo": {
+    "message": "Λήψη",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Ανάληψη"
   },
@@ -9742,6 +9873,10 @@
   "youSent": {
     "message": "Στείλατε",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Θα λάβετε",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Η δραστηριότητά σας"

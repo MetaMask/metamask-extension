@@ -2,7 +2,10 @@ import { ReadableStream as ReadableStreamWeb } from 'stream/web';
 import { strict as assert } from 'assert';
 import { Readable } from 'stream';
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { type FeatureFlagResponse } from '@metamask/bridge-controller';
+import {
+  TokenFeature,
+  type FeatureFlagResponse,
+} from '@metamask/bridge-controller';
 
 import { emptyHtmlPage } from '../../mock-e2e';
 import { getRegistryEntry } from '../../feature-flags/feature-flag-registry';
@@ -37,6 +40,7 @@ import {
   EXPECTED_INPUT_CHANGES,
   BRIDGE_REFRESH_RATE,
   BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  getMockAssetsPrice,
 } from './constants';
 import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
@@ -226,6 +230,50 @@ async function mockHistoricalPrices(mockServer: Mockttp) {
   }));
 }
 
+const MUSD_ASSET_ID =
+  'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da';
+
+/**
+ * Overrides the popular and search token endpoints so the MUSD token includes
+ * the given securityData. The bridge UI reads securityData from the token list
+ * response, not from SSE token_warning events.
+ *
+ * @param mockServer - The Mockttp server instance to register mocks on.
+ * @param securityData - The securityData object to attach to the MUSD token.
+ */
+export async function mockTokensWithSecurityData(
+  mockServer: Mockttp,
+  securityData: Record<string, unknown>,
+) {
+  const tokensWithSecurity = MOCK_TOKENS_ETHEREUM.map((token) => {
+    const base = toBridgeTokenResponse(1, token);
+    if (base.assetId === MUSD_ASSET_ID) {
+      return { ...base, securityData };
+    }
+    return base;
+  });
+
+  await mockServer
+    .forPost(/getTokens\/popular/u)
+    .asPriority(99)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: tokensWithSecurity,
+    }));
+
+  await mockServer
+    .forPost(/getTokens\/search/u)
+    .withJsonBodyIncluding({ chainIds: ['eip155:1'] })
+    .asPriority(99)
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: tokensWithSecurity,
+        pageInfo: { hasNextPage: false, endCursor: null },
+      },
+    }));
+}
+
 async function mockGetPopularTokens(mockServer: Mockttp) {
   return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
     statusCode: 200,
@@ -240,6 +288,21 @@ async function mockGetPopularTokens(mockServer: Mockttp) {
   }));
 }
 
+function filterTokensByQuery<Token extends { symbol: string; name: string }>(
+  tokens: Token[],
+  query: string,
+): Token[] {
+  if (!query) {
+    return tokens;
+  }
+  const q = query.toLowerCase();
+  return tokens.filter(
+    (token) =>
+      token.symbol.toLowerCase() === q ||
+      token.name.toLowerCase().startsWith(q),
+  );
+}
+
 async function mockSearchTokens(mockServer: Mockttp) {
   return [
     await mockServer
@@ -247,13 +310,16 @@ async function mockSearchTokens(mockServer: Mockttp) {
       .withJsonBodyIncluding({
         chainIds: ['eip155:1'],
       })
-      .thenCallback(() => {
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(
+          MOCK_TOKENS_ETHEREUM,
+          body.query ?? '',
+        );
         return {
           statusCode: 200,
           json: {
-            data: MOCK_TOKENS_ETHEREUM.map((token) =>
-              toBridgeTokenResponse(1, token),
-            ),
+            data: tokens.map((token) => toBridgeTokenResponse(1, token)),
             pageInfo: {
               hasNextPage: false,
               endCursor: null,
@@ -263,17 +329,16 @@ async function mockSearchTokens(mockServer: Mockttp) {
       }),
     await mockServer
       .forPost(/getTokens\/search/u)
-
       .withJsonBodyIncluding({
         chainIds: ['eip155:59144'],
       })
-      .thenCallback(() => {
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const tokens = filterTokensByQuery(MOCK_TOKENS_LINEA, body.query ?? '');
         return {
           statusCode: 200,
           json: {
-            data: MOCK_TOKENS_LINEA.map((token) =>
-              toBridgeTokenResponse(59144, token),
-            ),
+            data: tokens.map((token) => toBridgeTokenResponse(59144, token)),
             pageInfo: {
               hasNextPage: false,
               endCursor: null,
@@ -283,17 +348,20 @@ async function mockSearchTokens(mockServer: Mockttp) {
       }),
     await mockServer
       .forPost(/getTokens\/search/u)
-
       .withJsonBodyIncluding({
         chainIds: ['eip155:42161'],
       })
-      .thenCallback(() => {
+      .thenCallback(async (request) => {
+        const body = (await request.body.getJson()) as { query?: string };
+        const allArbitrum = [
+          MOCK_TOKENS_ARBITRUM,
+          MOCK_GET_TOKEN_ARBITRUM,
+        ].flat();
+        const tokens = filterTokensByQuery(allArbitrum, body.query ?? '');
         return {
           statusCode: 200,
           json: {
-            data: [MOCK_TOKENS_ARBITRUM, MOCK_GET_TOKEN_ARBITRUM]
-              .flat()
-              .map((token) => toBridgeTokenResponse(42161, token)),
+            data: tokens.map((token) => toBridgeTokenResponse(42161, token)),
             pageInfo: {
               hasNextPage: false,
               endCursor: null,
@@ -418,31 +486,56 @@ async function mockDAItoETH(mockServer: Mockttp, sseEnabled?: boolean) {
     });
 }
 
-const getEventId = (index: number) => `${Date.now().toString()}-${index}`;
-const emitLine = (controller: ReadableStreamDefaultController, line: string) =>
-  controller.enqueue(Buffer.from(line));
+const emitEvent = (
+  controller: ReadableStreamDefaultController,
+  type: 'quote' | 'token_warning' | 'complete',
+  index: number,
+  data: unknown,
+) => {
+  const eventId = `${Date.now().toString()}-${index}`;
+  controller.enqueue(Buffer.from(`event: ${type}\n`));
+  controller.enqueue(Buffer.from(`id: ${eventId}\n`));
+  controller.enqueue(Buffer.from(`data: ${JSON.stringify(data)}\n\n`));
+};
 
 /**
  * Mocks the bridge-api getQuoteStream endpoint's response body
  *
  * @param mockQuotes - The quotes to emit
  * @param delay - The delay to wait between emitting each quote
+ * @param tokenWarnings - The token warnings to emit after the quotes
  * @returns The Readable stream
  */
-function mockSseEventSource(mockQuotes: unknown[], delay: number = 2000) {
+function mockSseEventSource(
+  mockQuotes: unknown[],
+  delay: number = 2000,
+  tokenWarnings: TokenFeature[] = [],
+) {
   let index = 0;
   return Readable.fromWeb(
     new ReadableStreamWeb({
       async pull(controller) {
-        const quote = mockQuotes[index];
-        if (index === mockQuotes.length) {
+        // Emit a quote every 2 seconds
+        if (index < mockQuotes.length) {
+          emitEvent(controller, 'quote', index, mockQuotes[index]);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        } else {
+          // Emit token warnings
+          const tokenWarning = tokenWarnings[index - mockQuotes.length];
+          tokenWarning &&
+            emitEvent(controller, 'token_warning', index, tokenWarning);
+        }
+
+        index += 1;
+
+        // Emit complete event and close stream
+        if (index === mockQuotes.length + tokenWarnings.length) {
+          emitEvent(controller, 'complete', index, {
+            quoteCount: mockQuotes.length,
+            hasQuotes: true,
+          });
           controller.close();
         }
-        emitLine(controller, `event: quote\n`);
-        emitLine(controller, `id: ${getEventId(index + 1)}\n`);
-        emitLine(controller, `data: ${JSON.stringify(quote)}\n\n`);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        index += 1;
       },
     }),
   );
@@ -466,7 +559,6 @@ async function mockFeatureFlags(
         json: [
           {
             bridgeConfig: featureFlags,
-            extensionUxPna25: true,
             extensionSkipTransactionStatusPage,
             ...additionalFlags,
           },
@@ -475,10 +567,12 @@ async function mockFeatureFlags(
     });
 }
 
-async function mockSwapETHtoMUSD(mockServer: Mockttp) {
+async function mockSwapETHtoMUSD(
+  mockServer: Mockttp,
+  tokenWarnings?: TokenFeature[],
+) {
   return await mockServer
     .forGet(/getQuoteStream/u)
-    .once()
 
     .withQuery({
       srcTokenAddress: '0x0000000000000000000000000000000000000000',
@@ -486,7 +580,7 @@ async function mockSwapETHtoMUSD(mockServer: Mockttp) {
     })
     .thenStream(
       200,
-      mockSseEventSource(MOCK_SWAP_QUOTES_ETH_MUSD),
+      mockSseEventSource(MOCK_SWAP_QUOTES_ETH_MUSD, 2000, tokenWarnings),
       SSE_RESPONSE_HEADER,
     );
 }
@@ -769,38 +863,78 @@ async function mockPriceSpotPrices(mockServer: Mockttp) {
 }
 
 async function mockPriceSpotPricesV3(mockServer: Mockttp) {
+  const resolvedEthPrice =
+    process.env.ASSETS_UNIFIED_STATE_ENABLED === 'true'
+      ? ETH_CONVERSION_RATE_USD
+      : 1;
+
+  const tokenEntry = (
+    id: string,
+    price: number,
+    pricePercentChange1d: number = 0.1,
+  ) => ({
+    assetPriceType: 'fungible',
+    id,
+    price,
+    usdPrice: price,
+    pricePercentChange1d,
+  });
+
   return await mockServer
     .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
-            usd: 1.0,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 0.1,
-          },
-          'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': {
-            usd: 1.0,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 0.1,
-          },
-          'eip155:1/slip44:60': {
-            usd: 2000.0,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 2.5,
-          },
-          'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': {
-            usd: 0.9999,
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            usd_24h_change: 0.1,
-          },
-        },
+    .thenCallback((request) => {
+      const url = new URL(request.url);
+      const vsCurrency = url.searchParams.get('vsCurrency')?.toLowerCase();
+
+      const stablecoins: Record<string, ReturnType<typeof tokenEntry>> = {
+        'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f': tokenEntry(
+          'dai',
+          1.0,
+        ),
+        'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f':
+          tokenEntry('dai', 1.0),
+        'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da': tokenEntry(
+          'musd',
+          0.9999,
+        ),
       };
+
+      const json =
+        vsCurrency === 'usd'
+          ? {
+              'eip155:1/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                2.5,
+              ),
+              'eip155:59144/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                2.5,
+              ),
+              'eip155:42161/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                2.5,
+              ),
+              ...stablecoins,
+            }
+          : {
+              'eip155:1/slip44:60': tokenEntry('ethereum', resolvedEthPrice, 0),
+              'eip155:59144/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                0,
+              ),
+              'eip155:42161/slip44:60': tokenEntry(
+                'ethereum',
+                resolvedEthPrice,
+                0,
+              ),
+              ...stablecoins,
+            };
+
+      return { statusCode: 200, json };
     });
 }
 
@@ -1134,10 +1268,12 @@ export const getBridgeFixtures = ({
   title,
   featureFlags = {},
   withErc20 = true,
+  tokenWarnings = [],
 }: {
   title?: string;
   featureFlags?: Partial<FeatureFlagResponse>;
   withErc20?: boolean;
+  tokenWarnings?: TokenFeature[];
 } = {}) => {
   const fixtureBuilder = new FixtureBuilderV2()
     .withNetworkRpcUrlOnLocalhost('0x1')
@@ -1194,6 +1330,16 @@ export const getBridgeFixtures = ({
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   if (withErc20) {
@@ -1216,7 +1362,7 @@ export const getBridgeFixtures = ({
         await mockETHtoETH(mockServer, featureFlags.sse?.enabled),
         await mockETHtoUSDC(mockServer, featureFlags.sse?.enabled),
         await mockDAItoETH(mockServer, featureFlags.sse?.enabled),
-        await mockSwapETHtoMUSD(mockServer),
+        await mockSwapETHtoMUSD(mockServer, tokenWarnings),
         await mockUSDCtoDAI(mockServer, featureFlags.sse?.enabled),
         await mockFeatureFlags(
           mockServer,
@@ -1275,6 +1421,9 @@ export const getBridgeFixtures = ({
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225730.11 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1520,6 +1669,16 @@ export const getBridgeL2Fixtures = (
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {
@@ -1572,6 +1731,9 @@ export const getBridgeL2Fixtures = (
       },
     },
     ethConversionInUsd: ETH_CONVERSION_RATE_USD,
+    unifiedEvmAccountsApiBalances: {
+      mainnetNativeEthHuman: String(225750 / ETH_CONVERSION_RATE_USD),
+    },
     smartContract: SMART_CONTRACTS.HST,
     localNodeOptions: [
       {
@@ -1688,6 +1850,16 @@ export const getGasIncludedSwapFixtures = (title?: string) => {
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {
@@ -1777,6 +1949,16 @@ export const getGasless7702SwapFixtures = (title?: string) => {
         '0xe708': true,
         '0xa4b1': true,
       },
+    })
+    .withAssetsController({
+      assetsBalance: {
+        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+          'eip155:1/slip44:60': { amount: '25' },
+          'eip155:59144/slip44:60': { amount: '25' },
+          'eip155:42161/slip44:60': { amount: '25' },
+        },
+      },
+      assetsPrice: getMockAssetsPrice(ETH_CONVERSION_RATE_USD),
     });
 
   return {

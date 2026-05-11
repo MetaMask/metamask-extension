@@ -375,7 +375,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             onChange={handleSliderChange}
           />
         </Box>
-        <Box className="shrink-0 w-20">
+        <Box className="shrink-0" style={{ width: '4.5rem' }}>
           <TextField
             size={TextFieldSize.Sm}
             value={percentInputValue}
@@ -388,7 +388,7 @@ export const AmountInput: React.FC<AmountInputProps> = ({
             data-testid="balance-percent-input"
             inputProps={{
               inputMode: 'numeric',
-              style: { textAlign: 'center' },
+              style: { textAlign: 'right', paddingLeft: '8px' },
             }}
             endAccessory={
               <Text
