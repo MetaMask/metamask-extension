@@ -42,13 +42,13 @@ const TRON_RESOURCE_BALANCES_QUERY_KEY_ROOT = [
 ] as const;
 
 /**
- * Internal hook that reads Tron resource balances from Redux state.
+ * Internal hook that reads Tron resource balances from state.
  * This is the legacy data path, used when the unified AssetsController
  * feature flag is disabled.
  * @param account
  * @param chainId
  */
-const useReduxTronBalances = (
+const useMultichainStateTronBalances = (
   account: InternalAccount | undefined,
   chainId: string,
 ): Record<CaipAssetId, Balance> => {
@@ -84,8 +84,7 @@ const useReduxTronBalances = (
  * Internal hook that fetches Tron resource balances directly from the Tron
  * wallet snap. Used when the unified AssetsController is enabled, because the
  * new SnapDataSource does not call `onAssetsLookup` and therefore the resource
- * assets (energy, bandwidth and their daily maximums) are stripped from Redux
- * state.
+ * assets (energy, bandwidth and their daily maximums) are stripped from state.
  * @param account
  * @param chainId
  * @param enabled
@@ -152,10 +151,13 @@ export const useTronResources = (
 
   // Both hooks are always called (no conditional hook calls). The inactive
   // path is a no-op: useQuery with enabled:false returns undefined immediately,
-  // and useReduxTronBalances returns a stable empty map when data is absent.
-  // When the feature flag is removed, delete useReduxTronBalances and its call,
+  // and useMultichainStateTronBalances returns a stable empty map when data is absent.
+  // When the feature flag is removed, delete useMultichainStateTronBalances and its call,
   // and drop the isAssetsUnifyStateEnabled ternary below.
-  const reduxBalances = useReduxTronBalances(account, chainId);
+  const multichainStateBalances = useMultichainStateTronBalances(
+    account,
+    chainId,
+  );
   const snapBalances = useSnapTronBalances(
     account,
     chainId,
@@ -182,7 +184,9 @@ export const useTronResources = (
       return defaultResources;
     }
 
-    const balances = isAssetsUnifyStateEnabled ? snapBalances : reduxBalances;
+    const balances = isAssetsUnifyStateEnabled
+      ? snapBalances
+      : multichainStateBalances;
 
     const getBalanceForCaipType = (caipType: string): number => {
       const assetId = `${chainId}/${caipType}` as CaipAssetId;
@@ -222,7 +226,7 @@ export const useTronResources = (
     account,
     chainId,
     isAssetsUnifyStateEnabled,
-    reduxBalances,
+    multichainStateBalances,
     snapBalances,
   ]);
 };
