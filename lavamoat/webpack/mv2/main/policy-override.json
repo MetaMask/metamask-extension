@@ -62,6 +62,12 @@
     "^ background; v popup": {},
     "axios": {
       "globals": {
+        "Buffer": false,
+        "Buffer.alloc": true,
+        "Buffer.byteLength": true,
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
         "postMessage": true,
         "fetch": true,
         "Request": true,
