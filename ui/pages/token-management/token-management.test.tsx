@@ -18,6 +18,53 @@ jest.mock('../../selectors/assets', () => ({
   }) => state.metamask?.accountGroupAssets ?? {},
 }));
 
+type MockSearchState = {
+  results: Array<{
+    assetId: string;
+    symbol: string;
+    decimals: number;
+    name: string;
+  }>;
+  isLoading: boolean;
+  error: Error | null;
+  hasNextPage: boolean;
+};
+
+const mockTokenSearch = {
+  state: {
+    results: [],
+    isLoading: false,
+    error: null,
+    hasNextPage: false,
+  } as MockSearchState,
+  spy: jest.fn(),
+};
+
+jest.mock('../../hooks/useTokenSearch', () => ({
+  useTokenSearch: (options: { query: string; networks?: string[] }) => {
+    mockTokenSearch.spy(options);
+    const trimmed = options.query.trim();
+    return {
+      ...mockTokenSearch.state,
+      hasQuery: trimmed.length > 0,
+      hasResults: mockTokenSearch.state.results.length > 0,
+    };
+  },
+}));
+
+const setTokenSearchState = (next: Partial<MockSearchState>): void => {
+  Object.assign(mockTokenSearch.state, next);
+};
+const resetTokenSearchState = (): void => {
+  setTokenSearchState({
+    results: [],
+    isLoading: false,
+    error: null,
+    hasNextPage: false,
+  });
+  mockTokenSearch.spy.mockClear();
+};
+
 describe('TokenManagementPage', () => {
   let consoleWarnSpy: jest.SpyInstance;
   const solanaChainId = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
@@ -103,6 +150,7 @@ describe('TokenManagementPage', () => {
   };
 
   beforeEach(() => {
+    resetTokenSearchState();
     const originalWarn = console.warn;
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
@@ -257,7 +305,7 @@ describe('TokenManagementPage', () => {
     ).toBeInTheDocument();
   });
 
-  it('filters visible tokens by name or address', () => {
+  it('drives the search hook with the user query and the enabled networks as CAIP-2 ids', () => {
     renderPage(
       createState({
         enabledNetworks: {
@@ -271,11 +319,82 @@ describe('TokenManagementPage', () => {
       target: { value: 'Beta' },
     });
 
+    // The hook is called with the current query and the enabled networks
+    // converted from hex chain ids to CAIP-2 ids. We assert on the *last*
+    // call because the hook also runs on the initial empty-query render.
+    const calls = mockTokenSearch.spy.mock.calls;
+    expect(calls[calls.length - 1][0]).toEqual(
+      expect.objectContaining({
+        query: 'Beta',
+        networks: ['eip155:1', 'eip155:5'],
+      }),
+    );
+  });
+
+  it('renders API-backed results in place of the home-page list while a query is active', () => {
+    setTokenSearchState({
+      results: [
+        {
+          assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    // Home-page tokens are hidden once the search drives the list.
     expect(screen.queryByText('Alpha Token')).not.toBeInTheDocument();
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+  });
+
+  it('shows the empty-state copy when the API returns no matches', () => {
+    setTokenSearchState({ results: [] });
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'unknown' },
+    });
+
     expect(
-      screen.queryByText(messages.networkNameEthereum.message),
+      screen.getByTestId('token-management-empty-state'),
+    ).toHaveTextContent(messages.noTokensMatchSearch.message);
+  });
+
+  it('surfaces a friendly error message when the search request fails', () => {
+    setTokenSearchState({ error: new Error('boom') });
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    expect(
+      screen.getByTestId('token-management-search-error'),
+    ).toBeInTheDocument();
+  });
+
+  it('hides the Add a custom token CTA when only a non-EVM network is enabled', () => {
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          [solanaChainId]: [solanaToken],
+        },
+      }),
+    );
+
+    expect(
+      screen.queryByTestId('token-management-add-custom-token-button'),
     ).not.toBeInTheDocument();
-    expect(screen.getByText('Beta Token')).toBeInTheDocument();
   });
 
   it('renders an enabled toggle for non-native Solana tokens', () => {

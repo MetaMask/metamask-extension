@@ -4915,6 +4915,9 @@
   "noTokensMatchSearch": {
     "message": "No tokens match your search"
   },
+  "tokenSearchError": {
+    "message": "Couldn't load search results. Please try again."
+  },
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
   },

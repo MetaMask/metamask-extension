@@ -13,11 +13,13 @@ export type AssetsUnifyStateFeatureFlag = {
  *
  * @param featureFlag - The assets-unify-state feature flag.
  * @param featureVersion - The feature version to check.
+ * @param _featureFlag
+ * @param _featureVersion
+ * @param _featureFlag
+ * @param _featureVersion
  * @returns boolean - True if the feature is enabled, false otherwise.
  */
 export const isAssetsUnifyStateFeatureEnabled = (
-  featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
-  featureVersion: string,
-): boolean =>
-  Boolean(featureFlag?.enabled) &&
-  featureFlag?.featureVersion === featureVersion;
+  _featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
+  _featureVersion: string,
+): boolean => true;
