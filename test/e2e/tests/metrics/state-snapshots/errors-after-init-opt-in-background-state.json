@@ -116,7 +116,6 @@
     "lastCheckedAt": null,
     "walletComplianceStatusMap": "object"
   },
-  "ComplianceService": "undefined",
   "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
