@@ -5845,12 +5845,12 @@ export default class MetamaskController extends EventEmitter {
     const oldAccounts = await this.keyringController.getAccounts();
     const keyringSelector = _keyringId
       ? { id: _keyringId }
-      : { type: KeyringTypes.hd };
+      : { type: KeyringTypes.hdKeyTree };
 
     const addedAccountAddress = await this.keyringController.withKeyring(
       keyringSelector,
       async ({ keyring }) => {
-        if (keyring.type !== KeyringTypes.hd) {
+        if (keyring.type !== KeyringTypes.hdKeyTree) {
           throw new Error('Cannot add account to non-HD keyring');
         }
         const accountsInKeyring = await keyring.getAccounts();
