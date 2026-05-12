@@ -18,14 +18,14 @@ import {
 import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerWithKeyringAction,
-  KeyringTypes,
-  KeyringMetadata,
+  KeyringControllerAddNewKeyringAction,
 } from '@metamask/keyring-controller';
 import {
   RateLimitControllerCallApiAction,
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
+import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
 import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
@@ -49,20 +49,14 @@ export type SnapPermissionSpecificationsActions =
   | SnapControllerHandleRequestAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerWithKeyringAction
+  | KeyringControllerAddNewKeyringAction
   | MaybeUpdateState
   | PreferencesControllerGetStateAction
   | RateLimitControllerCallApiAction<RateLimitedApiMap>
   | SnapInterfaceControllerSetInterfaceDisplayedAction
   | TestOrigin
-  | SnapControllerUpdateSnapStateAction;
-
-type SnapPermissionSpecificationsHooks = {
-  addAndShowApprovalRequest(request: unknown): Promise<unknown>;
-  addNewKeyring(
-    type: KeyringTypes | string,
-    opts?: unknown,
-  ): Promise<KeyringMetadata>;
-};
+  | SnapControllerUpdateSnapStateAction
+  | ApprovalControllerAddRequestAction;
 
 /**
  * Get the permission specifications for Snaps.
@@ -74,7 +68,6 @@ type SnapPermissionSpecificationsHooks = {
  */
 export function getSnapPermissionSpecifications(
   messenger: RootMessenger<SnapPermissionSpecificationsActions, never>,
-  hooks: SnapPermissionSpecificationsHooks,
 ) {
   return {
     ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
@@ -176,7 +169,10 @@ export function getSnapPermissionSpecifications(
           );
 
           if (!snapKeyring) {
-            await hooks.addNewKeyring(KeyringType.snap);
+            await messenger.call(
+              'KeyringController:addNewKeyring',
+              KeyringType.snap,
+            );
 
             return messenger.call(
               'KeyringController:getKeyringsByType',

@@ -32,15 +32,7 @@ export const PermissionControllerInit: MessengerClientInitFunction<
   >,
   PermissionControllerMessenger,
   PermissionControllerInitMessenger
-> = ({
-  controllerMessenger,
-  persistedState,
-  initMessenger,
-  getMessengerClient,
-}) => {
-  const approvalController = getMessengerClient('ApprovalController');
-  const keyringController = getMessengerClient('KeyringController');
-
+> = ({ controllerMessenger, persistedState, initMessenger }) => {
   const messengerClient = new PermissionController({
     state: persistedState.PermissionController,
     // @ts-expect-error PermissionController messenger parameter type is incompatible with our messenger alias (handler unions).
@@ -68,11 +60,7 @@ export const PermissionControllerInit: MessengerClientInitFunction<
     }),
     permissionSpecifications: {
       ...getPermissionSpecifications(),
-      ...getSnapPermissionSpecifications(initMessenger, {
-        addAndShowApprovalRequest:
-          approvalController.addAndShowApprovalRequest.bind(approvalController),
-        addNewKeyring: keyringController.addNewKeyring.bind(keyringController),
-      }),
+      ...getSnapPermissionSpecifications(initMessenger),
     },
     unrestrictedMethods,
   });
