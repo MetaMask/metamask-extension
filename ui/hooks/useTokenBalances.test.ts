@@ -103,8 +103,6 @@ describe('useTokenTracker', () => {
       })),
     );
   });
-
-
 });
 
 describe('stringifyBalance', () => {

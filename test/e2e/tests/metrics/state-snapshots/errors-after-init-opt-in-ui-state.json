@@ -116,10 +116,20 @@
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
     "currencyRates": {
+      "BNB": {
+        "conversionDate": null,
+        "conversionRate": null,
+        "usdConversionRate": null
+      },
       "ETH": {
-        "conversionDate": "number",
+        "conversionDate": "object",
         "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "usdConversionRate": null
+      },
+      "POL": {
+        "conversionDate": null,
+        "conversionRate": null,
+        "usdConversionRate": null
       }
     },
     "currentAppVersion": "string",

@@ -14,6 +14,7 @@
   "untilOnboardingComplete": [
     "accounts.api.cx.metamask.io",
     "token.api.cx.metamask.io",
+    "static.cx.metamask.io",
     "accounts.google.com",
     "arbitrum-mainnet.infura.io",
     "base-mainnet.infura.io",
