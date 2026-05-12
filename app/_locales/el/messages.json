@@ -2718,10 +2718,6 @@
   "enableSnap": {
     "message": "Ενεργοποίηση"
   },
-  "enableToken": {
-    "message": "ενεργοποίηση $1",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
   "enabled": {
     "message": "Ενεργοποιημένο"
   },
@@ -3522,12 +3518,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "Εισαγωγή της Μυστικής Φράσης Ανάκτησης"
-  },
-  "importTokenQuestion": {
-    "message": "Εισαγωγή του token;"
-  },
-  "importTokenWarning": {
-    "message": "Οποιοσδήποτε μπορεί να δημιουργήσει ένα token με οποιοδήποτε όνομα, συμπεριλαμβανομένων ψεύτικων εκδόσεων υφιστάμενων tokens. Προσθέστε και ανταλλάξτε με δική σας ευθύνη!"
   },
   "importTokensCamelCase": {
     "message": "Εισαγωγή tokens"
@@ -8795,21 +8785,12 @@
   "swap": {
     "message": "Ανταλλαγή"
   },
-  "swapAdjustSlippage": {
-    "message": "Ρύθμιση ολίσθησης"
-  },
   "swapAggregator": {
     "message": "Φορέας συγκέντρωσης οικονομικών πληροφοριών"
   },
   "swapAllowSwappingOf": {
     "message": "Επιτρέψτε την ανταλλαγή του $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Εγγυημένο ποσό"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Αυτό είναι το ελάχιστο ποσό που θα λάβετε. Ενδέχεται να λάβετε περισσότερα ανάλογα με την ολίσθηση."
   },
   "swapAndSend": {
     "message": "Ανταλλαγή & Αποστολή"
@@ -8833,9 +8814,6 @@
   "swapContractDataDisabledErrorTitle": {
     "message": "Τα δεδομένα συμβολαίων δεν είναι ενεργοποιημένα στο Ledger σας"
   },
-  "swapCustom": {
-    "message": "προσαρμογή"
-  },
   "swapDecentralizedExchange": {
     "message": "Αποκεντρωμένη ανταλλαγή"
   },
@@ -8845,23 +8823,6 @@
   },
   "swapDirectContract": {
     "message": "Άμεσο συμβόλαιο"
-  },
-  "swapEditLimit": {
-    "message": "Επεξεργασία ορίου"
-  },
-  "swapEnableDescription": {
-    "message": "Αυτό είναι απαραίτητο και δίνει στο MetaMask την άδεια να ανταλλάξει τα $1 σας.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "Αυτό θα $1 για ανταλλαγή",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Εκτιμώμενα τέλη δικτύου"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Πρόκειται για μια εκτίμηση της χρέωσης του δικτύου που θα χρησιμοποιηθεί για την ολοκλήρωση της ανταλλαγής σας. Το πραγματικό ποσό μπορεί να αλλάξει ανάλογα με τις συνθήκες του δικτύου."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Συμβαίνουν αποτυχίες συναλλαγών και είμαστε εδώ για να βοηθήσουμε. Εάν αυτό το πρόβλημα επιμένει, μπορείτε να επικοινωνήσετε με την υποστήριξη πελατών μας στο $1 για περαιτέρω βοήθεια.",
@@ -8887,14 +8848,6 @@
     "message": "Η ανταλλαγή από $1 έως $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "Το MetaMask δεν κερδίζει χρήματα από τα τέλη συναλλαγών. Αυτές οι χρεώσεις είναι εκτιμήσεις και μπορούν να αλλάξουν ανάλογα με το πόσο απασχολημένο είναι το δίκτυο και πόσο περίπλοκη είναι μια συναλλαγή. Μάθετε περισσότερα $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "εδώ",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " Περιλαμβάνεται"
   },
@@ -8907,30 +8860,6 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Το MetaMask περιλαμβάνει αυτά τα τέλη δικτύου, οπότε μπορείτε να συνεχίσετε τις συναλλαγές ακόμη κι αν δεν έχετε $1 στον λογαριασμό σας."
   },
-  "swapIncludesMMFee": {
-    "message": "Περιλαμβάνει μια χρέωση $1% στο MetaMask.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Μάθετε περισσότερα για τις Ανταλλαγές"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "Αναζητούμε πολλαπλές πηγές ρευστότητας (χρηματιστήρια, συσσωρευτές και επαγγελματίες διαπραγματευτές αγοράς) για να συγκρίνουμε τις ισοτιμίες ανταλλαγής και τα τέλη δικτύου."
-  },
-  "swapMaxSlippage": {
-    "message": "Μέγιστη απόκλιση"
-  },
-  "swapMetaMaskFee": {
-    "message": "Χρεώσεις στο MetaMask"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "Μια χρέωση $1% συνυπολογίζεται αυτόματα σε αυτή την προσφορά. Την καταβάλλετε ως αντάλλαγμα για την άδεια χρήσης του λογισμικού συγκέντρωσης πληροφοριών για τους παρόχους ρευστότητας του MetaMask.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 προσφορές.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Το $1 σας θα προστεθεί στον λογαριασμό σας μόλις ολοκληρωθεί αυτή η συναλλαγή.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8938,20 +8867,11 @@
   "swapProcessing": {
     "message": "Επεξεργασία"
   },
-  "swapQuoteDetails": {
-    "message": "Λεπτομέρειες προσφοράς"
-  },
-  "swapQuoteSource": {
-    "message": "Πηγή προσφοράς"
-  },
   "swapQuotesExpiredErrorDescription": {
     "message": "Ζητήστε νέες προσφορές για να λάβετε τις πιο πρόσφατες τιμές."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Λήξη προσφοράς"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "Αυτή η διαδρομή της συναλλαγής δεν είναι διαθέσιμη προς το παρόν. Δοκιμάστε να αλλάξετε το ποσό, το δίκτυο ή το token και θα βρούμε την καλύτερη επιλογή."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Δοκιμάστε να προσαρμόσετε το ποσό ή τις ρυθμίσεις ολίσθησης και προσπαθήστε ξανά."
@@ -8962,26 +8882,8 @@
   "swapRate": {
     "message": "Τιμή"
   },
-  "swapReceiving": {
-    "message": "Ελήφθη"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Πρόκειται για εκτίμηση. Το ακριβές ποσό εξαρτάται από την ολίσθηση."
-  },
   "swapRequestForQuotation": {
     "message": "Αίτημα για προσφορά"
-  },
-  "swapSelect": {
-    "message": "Επιλέξτε"
-  },
-  "swapSelectAQuote": {
-    "message": "Επιλέξτε μια προσφορά"
-  },
-  "swapSelectAToken": {
-    "message": "Επιλέξτε token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Παρακάτω παρατίθενται όλες οι προσφορές που συγκεντρώθηκαν από πολλαπλές πηγές ρευστότητας."
   },
   "swapSelectToken": {
     "message": "Επιλέξτε token"
@@ -8992,13 +8894,6 @@
   "swapSlippageAutoDescription": {
     "message": "Αυτόματα"
   },
-  "swapSlippageHighDescription": {
-    "message": "Η απόκλιση που καταχωρήσατε ($1%) θεωρείται πολύ υψηλή και μπορεί να επιφέρει χαμηλό επιτόκιο",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "Υψηλή απόκλιση"
-  },
   "swapSlippageLowDescription": {
     "message": "Μια τόσο χαμηλή τιμή ($1%) μπορεί να οδηγήσει σε αποτυχημένη ανταλλαγή",
     "description": "$1 is the amount of % for slippage"
@@ -9006,33 +8901,8 @@
   "swapSlippageLowTitle": {
     "message": "Χαμηλή ολίσθηση"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "Η απόκλιση πρέπει να είναι μεγαλύτερη ή ίση με το μηδέν"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "Αυξήστε την απόκλιση για να συνεχίσετε"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "Το περιθώριο απόκλισης πρέπει να είναι 15% ή λιγότερο. Οτιδήποτε υψηλότερο θα οδηγήσει σε δυσμενή τιμή."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Πολύ υψηλή απόκλιση"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "Εάν η τιμή αλλάξει μεταξύ της ώρας που η εντολή αγοράς σας υποβάλλεται και επιβεβαιώνεται, αυτό ονομάζεται «απόκλιση». Η συναλλαγή θα ακυρωθεί αυτόματα εάν η απόκλιση υπερβαίνει τη ρύθμιση «ανοχή απόκλισης»."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "Υπάρχουν λίγοι πάροχοι προσφορών με μηδενική απόκλιση, γεγονός που θα οδηγήσει σε λιγότερο ανταγωνιστική προσφορά."
-  },
-  "swapSlippageZeroTitle": {
-    "message": "Εξεύρεση παρόχων με μηδενική απόκλιση"
-  },
-  "swapSource": {
-    "message": "Πηγή ρευστότητας"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Οι ανταλλαγές είναι πολύπλοκες και με επείγοντα χαρακτήρα συναλλαγές. Συνιστούμε αυτό το τέλος συναλλαγής για μια καλή ισορροπία μεταξύ κόστους και εμπιστοσύνης σε μια επιτυχημένη Ανταλλαγή."
@@ -9065,9 +8935,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη συναλλαγών για αυτήν την ανταλλαγή. Εισάγετε μικρότερο ποσό ή αγοράστε περισσότερα $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0% Απόκλιση"
   },
   "swapsMaxSlippage": {
     "message": "Ανοχή απόκλισης"
@@ -9272,9 +9139,6 @@
   },
   "transactionDataFunction": {
     "message": "Λειτουργία"
-  },
-  "transactionDetailGasHeading": {
-    "message": "Εκτιμώμενα τέλη συναλλαγών"
   },
   "transactionError": {
     "message": "Σφάλμα συναλλαγής. Βρέθηκε εξαίρεση στον κωδικό του συμβολαίου."

@@ -2718,10 +2718,6 @@
   "enableSnap": {
     "message": "활성화"
   },
-  "enableToken": {
-    "message": "$1 활성화",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
   "enabled": {
     "message": "활성화됨"
   },
@@ -3522,12 +3518,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "비밀복구구문 가져오기"
-  },
-  "importTokenQuestion": {
-    "message": "토큰을 가져오시겠습니까?"
-  },
-  "importTokenWarning": {
-    "message": "기존 토큰의 가짜 버전을 포함하여 누구나 어떤 이름으로든 토큰을 만들 수 있습니다. 추가 및 트랜잭션은 사용자의 책임입니다."
   },
   "importTokensCamelCase": {
     "message": "토큰 가져오기"
@@ -8799,21 +8789,12 @@
   "swap": {
     "message": "스왑"
   },
-  "swapAdjustSlippage": {
-    "message": "슬리피지 조정"
-  },
   "swapAggregator": {
     "message": "애그리게이터"
   },
   "swapAllowSwappingOf": {
     "message": "$1 스왑 허용",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "보장되는 금액"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "수신하는 최소 금액입니다. 슬리패지에 따라 추가 금액을 받을 수도 있습니다."
   },
   "swapAndSend": {
     "message": "스왑 및 전송"
@@ -8837,9 +8818,6 @@
   "swapContractDataDisabledErrorTitle": {
     "message": "Ledger에서 계약 데이터를 사용할 수 없습니다."
   },
-  "swapCustom": {
-    "message": "맞춤"
-  },
   "swapDecentralizedExchange": {
     "message": "분산형 교환"
   },
@@ -8849,23 +8827,6 @@
   },
   "swapDirectContract": {
     "message": "직접 계약"
-  },
-  "swapEditLimit": {
-    "message": "한도 편집"
-  },
-  "swapEnableDescription": {
-    "message": "이는 MetaMask에게 $1 스왑 권한을 부여하는 것으로, 필수 사항입니다.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "스왑하려면 $1이(가) 필요합니다.",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "예상 네트워크 수수료"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "스왑을 완료하는 데 사용될 예상 네트워크 수수료입니다. 실제 금액은 네트워크 상태에 따라 달라질 수 있습니다."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "트랜잭션이 실패할 경우 언제든 문의하세요. 오류가 해결되지 않는다면 고객 지원 $1에 문의하세요.",
@@ -8891,14 +8852,6 @@
     "message": "$1을(를) $2(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask는 가스비로 수익을 얻지 않습니다. 이 가스비는 추정치이며 네트워크의 혼잡도와 거래의 복잡성에 따라 변할 수 있습니다. 자세히 알아보기 $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "확인하세요",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " 포함됨"
   },
@@ -8911,30 +8864,6 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "이 네트워크 수수료는 MetaMask가 지불하므로 계정에 $1이(가) 없어도 거래할 수 있습니다."
   },
-  "swapIncludesMMFee": {
-    "message": "$1%의 MetaMask 요금이 포함됩니다.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "스왑 자세히 알아보기"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "저희는 여러 유동성 공급원(거래소, 애그리게이터, 투자전문기관)을 검색하여 환율과 네트워크 수수료를 비교해 드립니다."
-  },
-  "swapMaxSlippage": {
-    "message": "최대 슬리패지"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask 수수료"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "$1%의 수수료는 자동으로 각 견적에 반영됩니다. 이는 MetaMask의 유동성 공급자 정보 집계용 소프트웨어 사용 라이선스 비용입니다.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 견적.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "$1토큰은 이 트랜잭션이 처리되면 회원님의 계정에 추가됩니다.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8942,20 +8871,11 @@
   "swapProcessing": {
     "message": "처리 중"
   },
-  "swapQuoteDetails": {
-    "message": "견적 세부 사항"
-  },
-  "swapQuoteSource": {
-    "message": "견적 소스"
-  },
   "swapQuotesExpiredErrorDescription": {
     "message": "새 견적을 요청해 최신 요율을 확인하세요."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "견적 만료"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "트랜잭션 규모를 줄이거나 다른 토큰을 사용하세요."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "금액 또는 슬리패지 설정을 조정한 후 다시 시도해 보세요."
@@ -8966,26 +8886,8 @@
   "swapRate": {
     "message": "환율"
   },
-  "swapReceiving": {
-    "message": "받는 중"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "이것은 예상치입니다. 정확한 금액은 슬리패지에 따라 달라집니다."
-  },
   "swapRequestForQuotation": {
     "message": "견적 요청"
-  },
-  "swapSelect": {
-    "message": "선택"
-  },
-  "swapSelectAQuote": {
-    "message": "견적 선택"
-  },
-  "swapSelectAToken": {
-    "message": "토큰 선택"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "다음은 여러 유동성 소스에서 수집한 전체 견적입니다."
   },
   "swapSelectToken": {
     "message": "토큰 선택"
@@ -8996,13 +8898,6 @@
   "swapSlippageAutoDescription": {
     "message": "자동"
   },
-  "swapSlippageHighDescription": {
-    "message": "입력한 슬리피지($1%)가 매우 높은 것으로 간주되어 불량률이 발생할 수 있습니다.",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "높은 슬리피지"
-  },
   "swapSlippageLowDescription": {
     "message": "이렇게 낮은 값은($1%) 스왑 실패로 이어질 수 있습니다",
     "description": "$1 is the amount of % for slippage"
@@ -9010,33 +8905,8 @@
   "swapSlippageLowTitle": {
     "message": "낮은 슬리피지"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "슬리피지는 0보다 크거나 같아야 합니다."
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "계속하려면 슬리피지를 높이세요"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "슬리피지 허용치는 반드시 15% 이하여야 합니다. 이 보다 높으면 비율이 나빠집니다."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "너무 높은 슬리피지"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "주문 시점과 확인 시점 사이에 가격이 변동되는 현상을 \"슬리피지\"라고 합니다. 슬리피지가 \"최대 슬리피지\" 설정을 초과하면 스왑이 자동으로 취소됩니다."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "제로 슬리피지 견적 제공자가 거의 없어 견적의 경쟁력이 약화될 수 있습니다"
-  },
-  "swapSlippageZeroTitle": {
-    "message": "제로 슬리피지 견적 제공자 소싱"
-  },
-  "swapSource": {
-    "message": "유동성 소스"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "스왑은 복잡하고 시간에 민감한 트랜잭션입니다. 성공적인 스왑의 비용과 확신 사이의 적절한 균형을 위해 이 가스비를 권장합니다."
@@ -9069,9 +8939,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "$1이 부족해서 이 스왑에 대한 가스비를 지불할 수 없습니다. 더 적은 금액을 입력하거나 $1을(를) 더 구매하세요."
-  },
-  "swapZeroSlippage": {
-    "message": "0% 슬리패지"
   },
   "swapsMaxSlippage": {
     "message": "슬리피지 허용치"
@@ -9276,9 +9143,6 @@
   },
   "transactionDataFunction": {
     "message": "기능"
-  },
-  "transactionDetailGasHeading": {
-    "message": "예상 가스비"
   },
   "transactionError": {
     "message": "트랜잭션 오류입니다. 계약 코드에 예외가 발생했습니다."

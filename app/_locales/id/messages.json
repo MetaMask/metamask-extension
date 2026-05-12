@@ -2718,10 +2718,6 @@
   "enableSnap": {
     "message": "Aktifkan"
   },
-  "enableToken": {
-    "message": "aktifkan $1",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
   "enabled": {
     "message": "Diaktifkan"
   },
@@ -3522,12 +3518,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "Impor Frasa Pemulihan Rahasia"
-  },
-  "importTokenQuestion": {
-    "message": "Impor token?"
-  },
-  "importTokenWarning": {
-    "message": "Siapa pun dapat membuat token dengan nama apa pun, termasuk versi palsu dari token yang ada. Tambahkan dan perdagangkan dengan risiko ditanggung sendiri!"
   },
   "importTokensCamelCase": {
     "message": "Impor token"
@@ -8799,21 +8789,12 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdjustSlippage": {
-    "message": "Sesuaikan selip"
-  },
   "swapAggregator": {
     "message": "Agregator"
   },
   "swapAllowSwappingOf": {
     "message": "Izinkan menukar $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Jumlah yang dijamin"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Ini merupakan jumlah minimum yang akan Anda terima. Anda bisa mendapatkan lebih banyak lagi tergantung pada selip."
   },
   "swapAndSend": {
     "message": "Tukar & Kirim"
@@ -8837,9 +8818,6 @@
   "swapContractDataDisabledErrorTitle": {
     "message": "Data kontrak tidak diaktifkan di Ledger Anda"
   },
-  "swapCustom": {
-    "message": "kustom"
-  },
   "swapDecentralizedExchange": {
     "message": "Bursa terdesentralisasi"
   },
@@ -8849,23 +8827,6 @@
   },
   "swapDirectContract": {
     "message": "Kontrak langsung"
-  },
-  "swapEditLimit": {
-    "message": "Edit batas"
-  },
-  "swapEnableDescription": {
-    "message": "Ini diwajibkan dan memberikan MetaMask izin untuk menukar $1 Anda.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "Ini akan $1 untuk menukar",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Estimasi biaya jaringan"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Ini merupakan estimasi biaya jaringan yang akan digunakan untuk menyelesaikan pertukaran Anda. Jumlah aktual dapat berubah sesuai dengan kondisi jaringan."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Kegagalan transaksi terjadi dan kami siap membantu. Jika masalah terus berlanjut, Anda dapat menghubungi dukungan pelanggan kami di $1 untuk mendapatkan bantuan lebih lanjut.",
@@ -8891,14 +8852,6 @@
     "message": "Pertukaran dari $1 ke $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask tidak menghasilkan uang dari biaya gas. Biaya ini merupakan estimasi dan dapat berubah berdasarkan seberapa sibuk jaringan dan seberapa rumit transaksinya. Pelajari selengkapnya $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "di sini",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " Termasuk"
   },
@@ -8911,30 +8864,6 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Biaya jaringan ini dibayar oleh MetaMask, jadi Anda dapat bertransaksi tanpa $1 di akun Anda."
   },
-  "swapIncludesMMFee": {
-    "message": "Termasuk $1% biaya MetaMask.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Pelajari selengkapnya seputar Swap"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "Kami mencari beberapa sumber likuiditas (bursa, agregator, dan pendiri pasar profesional) untuk membandingkan tarif bursa dan biaya jaringan."
-  },
-  "swapMaxSlippage": {
-    "message": "Selip maks"
-  },
-  "swapMetaMaskFee": {
-    "message": "Biaya MetaMask"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "Biaya sebesar $1% otomatis diperhitungkan ke dalam kuotasi ini. Anda membayarnya sebagai ganti lisensi untuk menggunakan perangkat lunak pengumpul informasi penyedia likuiditas MetaMask.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 kuota.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "$1 akan ditambahkan ke akun Anda setelah transaksi ini diproses.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8942,20 +8871,11 @@
   "swapProcessing": {
     "message": "Memproses"
   },
-  "swapQuoteDetails": {
-    "message": "Detail kuotasi"
-  },
-  "swapQuoteSource": {
-    "message": "Sumber kuotasi"
-  },
   "swapQuotesExpiredErrorDescription": {
     "message": "Minta kuotasi baru untuk mendapatkan tarif terbaru."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Waktu kuotasi habis"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "Kurangi ukuran perdagangan Anda atau gunakan token yang berbeda."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Cobalah untuk menyesuaikan pengaturan selip atau jumlahnya dan coba lagi."
@@ -8966,26 +8886,8 @@
   "swapRate": {
     "message": "Tarif"
   },
-  "swapReceiving": {
-    "message": "Menerima"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Ini hanyalah perkiraan. Jumlah yang tepat bergantung pada selip."
-  },
   "swapRequestForQuotation": {
     "message": "Minta kuotasi"
-  },
-  "swapSelect": {
-    "message": "Pilih"
-  },
-  "swapSelectAQuote": {
-    "message": "Pilih kuotasi"
-  },
-  "swapSelectAToken": {
-    "message": "Pilih token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Di bawah ini merupakan semua kuotasi yang dikumpulkan dari beberapa sumber likuiditas."
   },
   "swapSelectToken": {
     "message": "Pilih token"
@@ -8996,13 +8898,6 @@
   "swapSlippageAutoDescription": {
     "message": "Otomatis"
   },
-  "swapSlippageHighDescription": {
-    "message": "Selip yang dimasukkan ($1%) dianggap sangat tinggi dan dapat mengakibatkan tarif yang tidak efektif",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "Selip tinggi"
-  },
   "swapSlippageLowDescription": {
     "message": "Nilai serendah ini ($1%) dapat menyebabkan pertukaran gagal",
     "description": "$1 is the amount of % for slippage"
@@ -9010,33 +8905,8 @@
   "swapSlippageLowTitle": {
     "message": "Selip rendah"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "Selip harus lebih besar atau sama dengan nol"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "Tingkatkan selip untuk melanjutkan"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "Toleransi selip harus 15% atau kurang. Nilai yang lebih tinggi akan menghasilkan tarif yang tidak efektif."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Selip sangat tinggi"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "Jika harga berubah antara waktu penempatan dan konfirmasi order Anda, ini disebut “selip”. Pertukaran Anda akan otomatis dibatalkan jika selip melebihi pengaturan “toleransi selip”."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "Ada lebih sedikit penyedia kuotasi nol selip sehingga akan menghasilkan kuotasi yang kurang kompetitif."
-  },
-  "swapSlippageZeroTitle": {
-    "message": "Sumber penyedia nol selip"
-  },
-  "swapSource": {
-    "message": "Sumber likuiditas"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Pertukaran adalah transaksi yang kompleks dan sensitif terhadap waktu. Kami merekomendasikan biaya gas ini untuk keseimbangan yang baik antara biaya dan konfidensi dari keberhasilan Pertukaran."
@@ -9069,9 +8939,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Anda tidak memiliki cukup $1 untuk membayar biaya gas untuk swap ini. Masukkan jumlah yang lebih kecil atau beli $1 lebih banyak."
-  },
-  "swapZeroSlippage": {
-    "message": "Selip 0%"
   },
   "swapsMaxSlippage": {
     "message": "Toleransi selip"
@@ -9276,9 +9143,6 @@
   },
   "transactionDataFunction": {
     "message": "Fungsi"
-  },
-  "transactionDetailGasHeading": {
-    "message": "Estimasi biaya gas"
   },
   "transactionError": {
     "message": "Kesalahan transaksi. Pengecualian diberikan dalam kode kontrak."

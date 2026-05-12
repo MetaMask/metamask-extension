@@ -2718,10 +2718,6 @@
   "enableSnap": {
     "message": "Bật"
   },
-  "enableToken": {
-    "message": "bật $1",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
   "enabled": {
     "message": "Đã bật"
   },
@@ -3522,12 +3518,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "Nhập Cụm từ khôi phục bí mật"
-  },
-  "importTokenQuestion": {
-    "message": "Nhập token?"
-  },
-  "importTokenWarning": {
-    "message": "Bất kỳ ai cũng tạo được token bằng bất kỳ tên nào, kể cả phiên bản giả của token hiện có. Bạn tự chịu rủi ro khi thêm và giao dịch!"
   },
   "importTokensCamelCase": {
     "message": "Nhập token"
@@ -8799,21 +8789,12 @@
   "swap": {
     "message": "Hoán đổi"
   },
-  "swapAdjustSlippage": {
-    "message": "Điều chỉnh mức trượt giá"
-  },
   "swapAggregator": {
     "message": "Trình tổng hợp"
   },
   "swapAllowSwappingOf": {
     "message": "Cho phép hoán đổi $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Số tiền được đảm bảo"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Đây là số tiền tối thiểu mà bạn sẽ nhận được. Bạn sẽ nhận được nhiều hơn tùy thuộc vào mức trượt giá."
   },
   "swapAndSend": {
     "message": "Hoán đổi và gửi"
@@ -8837,9 +8818,6 @@
   "swapContractDataDisabledErrorTitle": {
     "message": "Chưa bật dữ liệu hợp đồng trên Ledger của bạn"
   },
-  "swapCustom": {
-    "message": "tùy chỉnh"
-  },
   "swapDecentralizedExchange": {
     "message": "Sàn giao dịch phi tập trung"
   },
@@ -8849,23 +8827,6 @@
   },
   "swapDirectContract": {
     "message": "Hợp đồng trực tiếp"
-  },
-  "swapEditLimit": {
-    "message": "Sửa hạn mức"
-  },
-  "swapEnableDescription": {
-    "message": "Thao tác này là bắt buộc và cấp cho MetaMask quyền hoán đổi $1 của bạn.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "Điều này sẽ $1 để hoán đổi",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Phí mạng ước tính"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Đây là giá trị ước tính của phí mạng sẽ dùng để hoàn thành giao dịch hoán đổi của bạn. Số tiền thực tế có thể thay đổi tùy theo tình trạng mạng."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Đã xảy ra lỗi giao dịch và chúng tôi sẵn sàng trợ giúp bạn. Nếu vấn đề này tiếp diễn, bạn có thể liên hệ với bộ phận hỗ trợ khách hàng tại $1 để được hỗ trợ thêm.",
@@ -8891,14 +8852,6 @@
     "message": "Giao dịch hoán đổi $1 sang $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask không kiếm tiền từ phí gas. Các khoản phí này là ước tính và có thể thay đổi dựa trên lưu lượng của mạng và độ phức tạp của giao dịch. Tìm hiểu thêm $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "tại đây",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " Đã bao gồm"
   },
@@ -8911,30 +8864,6 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "Phí mạng này do MetaMask chi trả, vì vậy bạn có thể giao dịch mà không cần có $1 trong tài khoản."
   },
-  "swapIncludesMMFee": {
-    "message": "Bao gồm $1% phí của MetaMask.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Tìm hiểu thêm về Hoán đổi"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "Chúng tôi tìm kiếm nhiều nguồn thanh khoản (sàn giao dịch, nền tảng tổng hợp thanh khoản và nhà tạo lập thị trường chuyên nghiệp) để so sánh tỷ giá và phí mạng."
-  },
-  "swapMaxSlippage": {
-    "message": "Mức trượt giá tối đa"
-  },
-  "swapMetaMaskFee": {
-    "message": "Phí MetaMask"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "Khoản phí $1% sẽ tự động được tính vào báo giá này. Bạn trả tiền để đổi lấy giấy phép sử dụng phần mềm tổng hợp thông tin từ nhà cung cấp thanh khoản của MetaMask.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 báo giá.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "$1 của bạn sẽ được thêm vào tài khoản sau khi xử lý xong giao dịch.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8942,20 +8871,11 @@
   "swapProcessing": {
     "message": "Đang xử lý"
   },
-  "swapQuoteDetails": {
-    "message": "Chi tiết về báo giá"
-  },
-  "swapQuoteSource": {
-    "message": "Nguồn báo giá"
-  },
   "swapQuotesExpiredErrorDescription": {
     "message": "Vui lòng yêu cầu báo giá mới để biết các tỷ giá mới nhất."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Hết thời gian chờ báo giá"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "Tuyến giao dịch này hiện không khả dụng. Hãy thử thay đổi số tiền, mạng hoặc token và chúng tôi sẽ tìm ra tùy chọn tốt nhất."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Hãy thử điều chỉnh số tiền hoặc tùy chọn cài đặt mức trượt giá và thử lại."
@@ -8966,26 +8886,8 @@
   "swapRate": {
     "message": "Tỷ giá"
   },
-  "swapReceiving": {
-    "message": "Đang nhận"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Đây là giá trị ước tính. Số tiền chính xác phụ thuộc vào mức trượt giá."
-  },
   "swapRequestForQuotation": {
     "message": "Yêu cầu báo giá"
-  },
-  "swapSelect": {
-    "message": "Chọn"
-  },
-  "swapSelectAQuote": {
-    "message": "Chọn một báo giá"
-  },
-  "swapSelectAToken": {
-    "message": "Chọn token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Dưới đây là tất cả các báo giá thu thập từ nhiều nguồn thanh khoản."
   },
   "swapSelectToken": {
     "message": "Chọn token"
@@ -8996,13 +8898,6 @@
   "swapSlippageAutoDescription": {
     "message": "Tự động"
   },
-  "swapSlippageHighDescription": {
-    "message": "Mức trượt giá đã nhập ($1%) được xem là quá cao và có thể dẫn đến tỷ giá không sinh lời",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "Mức trượt giá cao"
-  },
   "swapSlippageLowDescription": {
     "message": "Giá trị thấp như thế này ($1%) có thể dẫn đến hoán đổi không thành công",
     "description": "$1 is the amount of % for slippage"
@@ -9010,33 +8905,8 @@
   "swapSlippageLowTitle": {
     "message": "Mức trượt giá thấp"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "Mức trượt giá phải lớn hơn hoặc bằng 0"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "Tăng mức trượt giá để tiếp tục"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "Giới hạn trượt giá phải từ 15% trở xuống. Mức trượt giá cao hơn sẽ dẫn đến tỷ giá không sinh lời."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Mức trượt giá quá cao"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "Khi giá giữa thời điểm đặt lệnh và thời điểm xác nhận lệnh thay đổi, hiện tượng này được gọi là \"trượt giá\". Giao dịch hoán đổi của bạn sẽ tự động hủy nếu mức trượt giá vượt quá \"mức trượt giá cho phép\" đã đặt."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "Có ít nhà cung cấp báo giá có mức trượt giá bằng 0 hơn sẽ dẫn đến báo giá kém cạnh tranh hơn."
-  },
-  "swapSlippageZeroTitle": {
-    "message": "Tìm nguồn nhà cung cấp có mức trượt giá bằng 0"
-  },
-  "swapSource": {
-    "message": "Nguồn thanh khoản"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Hoán đổi là các giao dịch phức tạp và nhạy cảm với thời gian. Chúng tôi đề xuất mức phí gas này để có sự cân bằng tốt giữa chi phí và tỉ lệ Hoán đổi thành công."
@@ -9069,9 +8939,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "Bạn không có đủ $1 để thanh toán phí gas cho giao dịch hoán đổi này. Nhập số lượng nhỏ hơn hoặc mua thêm $1."
-  },
-  "swapZeroSlippage": {
-    "message": "Mức trượt giá 0%"
   },
   "swapsMaxSlippage": {
     "message": "Giới hạn trượt giá"
@@ -9276,9 +9143,6 @@
   },
   "transactionDataFunction": {
     "message": "Chức năng"
-  },
-  "transactionDetailGasHeading": {
-    "message": "Phí gas ước tính"
   },
   "transactionError": {
     "message": "Lỗi giao dịch. Đã xảy ra ngoại lệ trong mã hợp đồng."

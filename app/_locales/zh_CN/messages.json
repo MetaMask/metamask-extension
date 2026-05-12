@@ -2718,10 +2718,6 @@
   "enableSnap": {
     "message": "启用"
   },
-  "enableToken": {
-    "message": "启用 $1",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
   "enabled": {
     "message": "已启用"
   },
@@ -3518,12 +3514,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "导入私钥助记词"
-  },
-  "importTokenQuestion": {
-    "message": "导入代币？"
-  },
-  "importTokenWarning": {
-    "message": "任何人都可以用任何名称创建代币，包括现有代币的虚假版本。添加和交易风险自负！"
   },
   "importTokensCamelCase": {
     "message": "添加代币"
@@ -8791,21 +8781,12 @@
   "swap": {
     "message": "兑换"
   },
-  "swapAdjustSlippage": {
-    "message": "调整滑点"
-  },
   "swapAggregator": {
     "message": "聚合器"
   },
   "swapAllowSwappingOf": {
     "message": "允许交换 $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "保证金额"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "这是您将收到的最低金额。根据滑点值，您可能会收到更多。"
   },
   "swapAndSend": {
     "message": "兑换并发送"
@@ -8829,9 +8810,6 @@
   "swapContractDataDisabledErrorTitle": {
     "message": "您的 Ledger 上未启用合约数据"
   },
-  "swapCustom": {
-    "message": "自定义"
-  },
   "swapDecentralizedExchange": {
     "message": "去中心化交易所"
   },
@@ -8841,23 +8819,6 @@
   },
   "swapDirectContract": {
     "message": "直接合约"
-  },
-  "swapEditLimit": {
-    "message": "编辑限制"
-  },
-  "swapEnableDescription": {
-    "message": "这是必须的，并且允许 MetaMask 兑换您的 $1。",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "这将 $1 进行交换",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "预估网络费用"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "这是预估的网络费用，将用于完成您的交换。实际金额可能会根据网络条件而变化。"
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "交易有时会失败，我们随时为您提供帮助。如果此问题仍然存在，您可以在 $1 联系我们的客服，以获得进一步的帮助。",
@@ -8883,14 +8844,6 @@
     "message": "$1 到 $2 的交换",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask 不从燃料费中赚钱。这些费用是估计值，可能会根据网络的繁忙程度和交易的复杂程度而变化。了解更多信息 $1。",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "参见此处",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " 已包含"
   },
@@ -8903,30 +8856,6 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "该网络费用由 MetaMask 支付，因此即使您账户中没有 $1 也可进行交易。"
   },
-  "swapIncludesMMFee": {
-    "message": "包括 $1% 的 MetaMask 费用。",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "了解有关 Swaps 的更多信息"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "我们搜索多种流动性来源（交易所、聚合器和专业做市商），以比较汇率和网络费用。"
-  },
-  "swapMaxSlippage": {
-    "message": "最大滑点"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask 费用"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "该报价中会自动计入一笔 $1% 的费用。您支付该费用以换取使用 MetaMask 流动性提供商信息聚合软件的许可证。",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 报价。",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "处理完此交易后，您的 $1 将被添加到您的账户中。",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8934,20 +8863,11 @@
   "swapProcessing": {
     "message": "处理中"
   },
-  "swapQuoteDetails": {
-    "message": "报价详情"
-  },
-  "swapQuoteSource": {
-    "message": "报价来源"
-  },
   "swapQuotesExpiredErrorDescription": {
     "message": "请请求新的报价，以获得最新的价格。"
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "报价超时"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "缩小您的交易规模或者使用不同的代币。"
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "尝试调整金额或滑点设置，然后重试。"
@@ -8958,26 +8878,8 @@
   "swapRate": {
     "message": "价格"
   },
-  "swapReceiving": {
-    "message": "正在接收"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "这是一个预估额。确切的金额取决于滑点。"
-  },
   "swapRequestForQuotation": {
     "message": "请求报价"
-  },
-  "swapSelect": {
-    "message": "选择"
-  },
-  "swapSelectAQuote": {
-    "message": "选择一个报价"
-  },
-  "swapSelectAToken": {
-    "message": "选择代币"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "以下是从多个流动性来源收集到的所有报价。"
   },
   "swapSelectToken": {
     "message": "选择代币"
@@ -8988,13 +8890,6 @@
   "swapSlippageAutoDescription": {
     "message": "自动"
   },
-  "swapSlippageHighDescription": {
-    "message": "输入的滑点（$1%）被认为是很高的，可能会因而得到较差的汇率",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "高滑点"
-  },
   "swapSlippageLowDescription": {
     "message": "此值过低（$1%），可能会导致兑换失败",
     "description": "$1 is the amount of % for slippage"
@@ -9002,33 +8897,8 @@
   "swapSlippageLowTitle": {
     "message": "低滑点"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "滑点必须大于或等于 0"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "提高滑点以继续"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "滑点容差必须小于等于 15%。任何更高的比例将导致不良费率。"
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "非常高的滑点"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "如果价格于下单到订单确认期间发生变化，这被称为“滑点”。如果滑点超过“最大滑点”设置，您的兑换将会自动取消。"
-  },
-  "swapSlippageZeroDescription": {
-    "message": "零滑点报价供应商较少，这将导致报价竞争力下降。"
-  },
-  "swapSlippageZeroTitle": {
-    "message": "寻找零滑点供应商"
-  },
-  "swapSource": {
-    "message": "流动性来源"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "交换是复杂和时间敏感的交易。我们建议使用此燃料费用，以便在成本和成功交换的信心之间保持良好的平衡。"
@@ -9061,9 +8931,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "您没有足够的 $1 用于支付此次兑换的燃料费。请输入更小金额或者购买更多 $1。"
-  },
-  "swapZeroSlippage": {
-    "message": "0%滑点"
   },
   "swapsMaxSlippage": {
     "message": "滑点容差"
@@ -9268,9 +9135,6 @@
   },
   "transactionDataFunction": {
     "message": "功能"
-  },
-  "transactionDetailGasHeading": {
-    "message": "估算燃料费用"
   },
   "transactionError": {
     "message": "交易出错。合约代码中抛出异常。"

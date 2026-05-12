@@ -545,10 +545,6 @@
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
-  "enableToken": {
-    "message": "ativar $1",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
   "encryptionPublicKeyNotice": {
     "message": "$1 gostaria da sua chave pública de criptografia. Ao consentir, este site conseguirá redigir mensagens criptografadas para você.",
     "description": "$1 is the web3 site name"
@@ -745,12 +741,6 @@
   },
   "importAccountMsg": {
     "message": "As contas importadas não estarão associadas à Frase de Recuperação Secreta da conta da MetaMask criada originalmente. Saiba mais sobre as contas importadas"
-  },
-  "importTokenQuestion": {
-    "message": "Importar token?"
-  },
-  "importTokenWarning": {
-    "message": "Qualquer pessoa pode criar um token com qualquer nome, incluindo versões falsas de tokens existentes. Adicione e negocie por sua conta e risco!"
   },
   "importTokensCamelCase": {
     "message": "Importar tokens"
@@ -1409,12 +1399,6 @@
     "message": "Permitir troca de $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
   },
-  "swapAmountReceived": {
-    "message": "Valor garantido"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Esse é o valor mínimo que você receberá. Você pode receber mais, dependendo do slippage."
-  },
   "swapApproval": {
     "message": "Aprovar $1 para trocas",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
@@ -1428,31 +1412,11 @@
   "swapContractDataDisabledErrorTitle": {
     "message": "Os dados do contrato não estão habilitados em seu Ledger"
   },
-  "swapCustom": {
-    "message": "personalizado"
-  },
   "swapDecentralizedExchange": {
     "message": "Exchange descentralizada"
   },
   "swapDirectContract": {
     "message": "Contrato direto"
-  },
-  "swapEditLimit": {
-    "message": "Editar limite"
-  },
-  "swapEnableDescription": {
-    "message": "Isso é obrigatório e dá à MetaMask permissão para trocar o seu $1.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "Isso vai $1 para trocas",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Taxas de rede estimadas"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Essa é a estimativa da taxa de rede que será usada para concluir sua troca. O valor real pode mudar conforme as condições de rede."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Falhas na transação acontecem, e estamos aqui para ajudar. Se esse problema persistir, você pode entrar em contato com nosso atendimento ao cliente em $1 para receber assistência adicional.",
@@ -1477,36 +1441,12 @@
   "swapGasFeesSplit": {
     "message": "As taxas de gás da tela anterior estão divididas entre essas duas transações."
   },
-  "swapIncludesMMFee": {
-    "message": "Inclui uma taxa de $1% da MetaMask.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapMaxSlippage": {
-    "message": "Slippage máximo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Taxa da MetaMask"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "Encontramos o melhor preço das principais fontes de liquidez – todas as vezes. Uma taxa de $1% é automaticamente incorporada nessa cotação.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 cotações.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Seu $1 será adicionado à sua conta quando essa transação for processada.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
   "swapProcessing": {
     "message": "Processando"
-  },
-  "swapQuoteDetails": {
-    "message": "Detalhes da cotação"
-  },
-  "swapQuoteSource": {
-    "message": "Fonte da cotação"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Solicite novas cotações para receber as taxas mais recentes."
@@ -1523,29 +1463,8 @@
   "swapRate": {
     "message": "Taxa"
   },
-  "swapReceiving": {
-    "message": "Recebendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Essa é uma estimativa. O valor exato dependerá do slippage."
-  },
   "swapRequestForQuotation": {
     "message": "Solicitação de cotação"
-  },
-  "swapSelect": {
-    "message": "Selecione"
-  },
-  "swapSelectAQuote": {
-    "message": "Selecione uma cotação"
-  },
-  "swapSelectAToken": {
-    "message": "Selecione um token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Abaixo estão todas as cotações reunidas de diversas fontes de liquidez."
-  },
-  "swapSource": {
-    "message": "Fonte de liquidez"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Trocas (swaps) são transações complexas e urgentes. Recomendamos essa taxa de gás para atingir o equilíbrio ideal entre o custo e a confiança de uma troca bem-sucedida."
@@ -1569,9 +1488,6 @@
   },
   "swapUnknown": {
     "message": "Desconhecido"
-  },
-  "swapZeroSlippage": {
-    "message": "0% de slippage"
   },
   "swapsMaxSlippage": {
     "message": "Tolerância a slippage"
@@ -1638,9 +1554,6 @@
   },
   "transaction": {
     "message": "transação"
-  },
-  "transactionDetailGasHeading": {
-    "message": "Taxa de gás estimada"
   },
   "transactionError": {
     "message": "Erro de transação. Exceção gerada no código do contrato."

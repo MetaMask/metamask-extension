@@ -2780,10 +2780,6 @@
   "enableSnap": {
     "message": "Enable"
   },
-  "enableToken": {
-    "message": "enable $1",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
   "enabled": {
     "message": "Enabled"
   },
@@ -3608,12 +3604,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
-  },
-  "importTokenQuestion": {
-    "message": "Import token?"
-  },
-  "importTokenWarning": {
-    "message": "Anyone can create a token with any name, including fake versions of existing tokens. Add and trade at your own risk!"
   },
   "importTokensCamelCase": {
     "message": "Import tokens"
@@ -9050,21 +9040,12 @@
   "swap": {
     "message": "Swap"
   },
-  "swapAdjustSlippage": {
-    "message": "Adjust slippage"
-  },
   "swapAggregator": {
     "message": "Aggregator"
   },
   "swapAllowSwappingOf": {
     "message": "Allow swapping of $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Guaranteed amount"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "This is the minimum amount you will receive. You may receive more depending on slippage."
   },
   "swapAndSend": {
     "message": "Swap & Send"
@@ -9088,9 +9069,6 @@
   "swapContractDataDisabledErrorTitle": {
     "message": "Contract data is not enabled on your Ledger"
   },
-  "swapCustom": {
-    "message": "custom"
-  },
   "swapDecentralizedExchange": {
     "message": "Decentralized exchange"
   },
@@ -9100,23 +9078,6 @@
   },
   "swapDirectContract": {
     "message": "Direct contract"
-  },
-  "swapEditLimit": {
-    "message": "Edit limit"
-  },
-  "swapEnableDescription": {
-    "message": "This is required and gives MetaMask permission to swap your $1.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "This will $1 for swapping",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Estimated network fees"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "This is an estimate of the network fee that will be used to complete your swap. The actual amount may change according to network conditions."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Transaction failures happen and we are here to help. If this issue persists, you can reach our customer support at $1 for further assistance.",
@@ -9142,14 +9103,6 @@
     "message": "The swap of $1 to $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is. Learn more $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "here",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " Included"
   },
@@ -9162,30 +9115,6 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "This network fee is paid by MetaMask, so you can transact without $1 in your account."
   },
-  "swapIncludesMMFee": {
-    "message": "Includes a $1% MetaMask fee.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Learn more about Swaps"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "We search multiple liquidity sources (exchanges, aggregators and professional market makers) to compare exchange rates and network fees."
-  },
-  "swapMaxSlippage": {
-    "message": "Max slippage"
-  },
-  "swapMetaMaskFee": {
-    "message": "MetaMask fee"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "The fee of $1% is automatically factored into this quote. You pay it in exchange for a license to use MetaMask's liquidity provider information aggregation software.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 quotes.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Your $1 will be added to your account once this transaction has processed.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -9193,20 +9122,11 @@
   "swapProcessing": {
     "message": "Processing"
   },
-  "swapQuoteDetails": {
-    "message": "Quote details"
-  },
-  "swapQuoteSource": {
-    "message": "Quote source"
-  },
   "swapQuotesExpiredErrorDescription": {
     "message": "Please request new quotes to get the latest rates."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Quotes timeout"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Try adjusting the amount or slippage settings and try again."
@@ -9217,26 +9137,8 @@
   "swapRate": {
     "message": "Rate"
   },
-  "swapReceiving": {
-    "message": "Receiving"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "This is an estimate. The exact amount depends on slippage."
-  },
   "swapRequestForQuotation": {
     "message": "Request for quotation"
-  },
-  "swapSelect": {
-    "message": "Select"
-  },
-  "swapSelectAQuote": {
-    "message": "Select a quote"
-  },
-  "swapSelectAToken": {
-    "message": "Select token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Below are all the quotes gathered from multiple liquidity sources."
   },
   "swapSelectToken": {
     "message": "Select token"
@@ -9247,13 +9149,6 @@
   "swapSlippageAutoDescription": {
     "message": "Auto"
   },
-  "swapSlippageHighDescription": {
-    "message": "The slippage entered ($1%) is considered very high and may result in a bad rate",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "High slippage"
-  },
   "swapSlippageLowDescription": {
     "message": "A value this low ($1%) may result in a failed swap",
     "description": "$1 is the amount of % for slippage"
@@ -9261,33 +9156,8 @@
   "swapSlippageLowTitle": {
     "message": "Low slippage"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "Slippage must be greater or equal to zero"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "Increase slippage to continue"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "Slippage tolerance must be 15% or less. Anything higher will result in a bad rate."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Very high slippage"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "If the price changes between the time your order is placed and confirmed it’s called “slippage”. Your swap will automatically cancel if slippage exceeds your “slippage tolerance” setting."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "There are fewer zero-slippage quote providers which will result in a less competitive quote."
-  },
-  "swapSlippageZeroTitle": {
-    "message": "Sourcing zero-slippage providers"
-  },
-  "swapSource": {
-    "message": "Liquidity source"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Swaps are complex and time sensitive transactions. We recommend this gas fee for a good balance between cost and confidence of a successful Swap."
@@ -9320,9 +9190,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "You don't have enough $1 to pay the gas fee for this swap. Enter a smaller amount or buy more $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0% Slippage"
   },
   "swapsMaxSlippage": {
     "message": "Slippage tolerance"
@@ -9527,9 +9394,6 @@
   },
   "transactionDataFunction": {
     "message": "Function"
-  },
-  "transactionDetailGasHeading": {
-    "message": "Estimated gas fee"
   },
   "transactionError": {
     "message": "Transaction error. Exception thrown in contract code."

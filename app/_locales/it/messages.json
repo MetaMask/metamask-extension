@@ -1028,34 +1028,12 @@
   "swapAggregator": {
     "message": "Aggregatore"
   },
-  "swapAmountReceived": {
-    "message": "Importo garantito"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Questo è l'importo minimo che riceverai. Potresti ricevere di più a seconda dello slippage."
-  },
   "swapApproval": {
     "message": "Approva $1 per gli scambi",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be swapped.. $1 is the symbol of a token that has been approved."
   },
-  "swapCustom": {
-    "message": "personalizza"
-  },
   "swapDecentralizedExchange": {
     "message": "Sito di scambio decentralizzato"
-  },
-  "swapEditLimit": {
-    "message": "Modifica limite"
-  },
-  "swapEnableDescription": {
-    "message": "Questo è richiesto e darà a MetaMask il permesso di scambiare $1.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Tasse di rete stimate"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Questa è una stima della tassa di rete che verrà pagata per completare lo scambio. L'importo reale può cambiare a seconda della condizione della rete."
   },
   "swapFailedErrorTitle": {
     "message": "Scambio fallito"
@@ -1066,28 +1044,12 @@
   "swapFetchingQuotesErrorTitle": {
     "message": "Errore recuperando le quotazioni"
   },
-  "swapMaxSlippage": {
-    "message": "Slippage massimo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Tassa MetaMask"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
   "swapOnceTransactionHasProcess": {
     "message": "I tuoi $1 saranno aggiunti al tuo account quando la transazione sarà processata.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
   },
   "swapProcessing": {
     "message": "In elaborazione"
-  },
-  "swapQuoteDetails": {
-    "message": "Dettagli quotazione"
-  },
-  "swapQuoteSource": {
-    "message": "Sorgente della quota"
   },
   "swapQuotesExpiredErrorDescription": {
     "message": "Richiedi nuove quotazioni per ottenere le ultime tariffe."
@@ -1104,29 +1066,8 @@
   "swapRate": {
     "message": "Tariffa"
   },
-  "swapReceiving": {
-    "message": "Ricevendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Questa è una stima. L'importo esatto dipende dallo slippage."
-  },
   "swapRequestForQuotation": {
     "message": "Richiedi quotazione"
-  },
-  "swapSelect": {
-    "message": "Selezione"
-  },
-  "swapSelectAQuote": {
-    "message": "Seleziona una quotazione"
-  },
-  "swapSelectAToken": {
-    "message": "Seleziona un token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "Sotto trovi tutte le quotazioni raccolte da multiple sorgenti di liquidità."
-  },
-  "swapSource": {
-    "message": "Sorgente di liquidità"
   },
   "swapTokenAvailable": {
     "message": "I $1 sono stati aggiunti al tuo account.",

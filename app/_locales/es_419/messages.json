@@ -2718,10 +2718,6 @@
   "enableSnap": {
     "message": "Habilitar"
   },
-  "enableToken": {
-    "message": "activar $1",
-    "description": "$1 is a token symbol, e.g. ETH"
-  },
   "enabled": {
     "message": "Activada"
   },
@@ -3522,12 +3518,6 @@
   },
   "importSecretRecoveryPhrase": {
     "message": "Importar frase secreta de recuperación"
-  },
-  "importTokenQuestion": {
-    "message": "¿Importar token?"
-  },
-  "importTokenWarning": {
-    "message": "Toda persona puede crear un token con cualquier nombre, incluso versiones falsas de tokens existentes. ¡Agréguelo y realice transacciones bajo su propio riesgo!"
   },
   "importTokensCamelCase": {
     "message": "Importar tokens"
@@ -8799,21 +8789,12 @@
   "swap": {
     "message": "Canjear"
   },
-  "swapAdjustSlippage": {
-    "message": "Ajustar deslizamiento"
-  },
   "swapAggregator": {
     "message": "Agregador"
   },
   "swapAllowSwappingOf": {
     "message": "Permitir intercambio de $1",
     "description": "Shows a user that they need to allow a token for swapping on their hardware wallet"
-  },
-  "swapAmountReceived": {
-    "message": "Monto garantizado"
-  },
-  "swapAmountReceivedInfo": {
-    "message": "Se refiere al monto mínimo que recibirá. Puede recibir más en función del deslizamiento."
   },
   "swapAndSend": {
     "message": "Canjear y enviar"
@@ -8837,9 +8818,6 @@
   "swapContractDataDisabledErrorTitle": {
     "message": "Los datos de contrato no se habilitaron en su Ledger"
   },
-  "swapCustom": {
-    "message": "personalizar"
-  },
   "swapDecentralizedExchange": {
     "message": "Cambio descentralizado"
   },
@@ -8849,23 +8827,6 @@
   },
   "swapDirectContract": {
     "message": "Contrato directo"
-  },
-  "swapEditLimit": {
-    "message": "Editar límite"
-  },
-  "swapEnableDescription": {
-    "message": "Esta acción es obligatoria y le da permiso a MetaMask para intercambiar su $1.",
-    "description": "Gives the user info about the required approval transaction for swaps. $1 will be the symbol of a token being approved for swaps."
-  },
-  "swapEnableTokenForSwapping": {
-    "message": "Esto será $1 por intercambiar",
-    "description": "$1 is for the 'enableToken' key, e.g. 'enable ETH'"
-  },
-  "swapEstimatedNetworkFees": {
-    "message": "Tarifas de red estimadas"
-  },
-  "swapEstimatedNetworkFeesInfo": {
-    "message": "Un estimado de la tarifa de red que se usará para realizar el intercambio. El monto real puede cambiar según las condiciones de la red."
   },
   "swapFailedErrorDescriptionWithSupportLink": {
     "message": "Pueden ocurrir fallas en las transacciones, por lo que estamos aquí para ayudarlo. Si el problema persiste, comuníquese con nuestro soporte al cliente al $1 para recibir ayuda adicional.",
@@ -8891,14 +8852,6 @@
     "message": "El intercambio de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesExplanation": {
-    "message": "MetaMask no obtiene dinero de las tarifas de gas. Estas tarifas son estimaciones y pueden cambiar según el nivel de tráfico de la red y la complejidad de la transacción. Más información $1.",
-    "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
-  },
-  "swapGasFeesExplanationLinkText": {
-    "message": "aquí",
-    "description": "Text for link in swapGasFeesExplanation"
-  },
   "swapGasFeesIncluded": {
     "message": " Incluida"
   },
@@ -8911,30 +8864,6 @@
   "swapGasFeesSponsoredExplanation": {
     "message": "MetaMask paga esta tarifa de red, por lo que puedes realizar transacciones sin tener $1 en tu cuenta."
   },
-  "swapIncludesMMFee": {
-    "message": "Incluye una tasa de MetaMask del $1%.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapLearnMore": {
-    "message": "Más información sobre los intercambios"
-  },
-  "swapLiquiditySourceInfo": {
-    "message": "Buscamos varias fuentes de liquidez (sitios de cambio, agregadores y creadores de mercado profesionales) para comparar las mejores tasas de cambio y las tarifas de red."
-  },
-  "swapMaxSlippage": {
-    "message": "Deslizamiento máximo"
-  },
-  "swapMetaMaskFee": {
-    "message": "Tarifa de MetaMask"
-  },
-  "swapMetaMaskFeeDescription": {
-    "message": "La tarifa de $1% se incluye automáticamente en esta cotización. Lo paga a cambio de una licencia para usar el software de agregación de información del proveedor de liquidez de MetaMask.",
-    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapNQuotesWithDot": {
-    "message": "$1 cotizaciones.",
-    "description": "$1 is the number of quotes that the user can select from when opening the list of quotes on the 'view quote' screen"
-  },
   "swapOnceTransactionHasProcess": {
     "message": "Su $1 se agregará a la cuenta una vez que se procese esta transacción.",
     "description": "This message communicates the token that is being transferred. It is shown on the awaiting swap screen. The $1 will be a token symbol."
@@ -8942,20 +8871,11 @@
   "swapProcessing": {
     "message": "Procesando"
   },
-  "swapQuoteDetails": {
-    "message": "Detalles de cotización"
-  },
-  "swapQuoteSource": {
-    "message": "Fuente de la cotización"
-  },
   "swapQuotesExpiredErrorDescription": {
     "message": "Solicite cotizaciones nuevas para tener los costos más recientes."
   },
   "swapQuotesExpiredErrorTitle": {
     "message": "Cotizaciones vencidas"
-  },
-  "swapQuotesNotAvailableDescription": {
-    "message": "Esta ruta de operaciones no está disponible en este momento. Intente cambiar el importe, la red o el token y encontraremos la mejor opción."
   },
   "swapQuotesNotAvailableErrorDescription": {
     "message": "Intente ajustar la configuración de monto o deslizamiento y vuelva a intentarlo."
@@ -8966,26 +8886,8 @@
   "swapRate": {
     "message": "Tasa"
   },
-  "swapReceiving": {
-    "message": "Recibiendo"
-  },
-  "swapReceivingInfoTooltip": {
-    "message": "Este es un valor estimado. El monto exacto depende del deslizamiento."
-  },
   "swapRequestForQuotation": {
     "message": "Solicitud de cotización"
-  },
-  "swapSelect": {
-    "message": "Seleccionar"
-  },
-  "swapSelectAQuote": {
-    "message": "Seleccionar una cotización"
-  },
-  "swapSelectAToken": {
-    "message": "Selecciona un token"
-  },
-  "swapSelectQuotePopoverDescription": {
-    "message": "A continuación se muestran todas las cotizaciones recopiladas de diversas fuentes de liquidez."
   },
   "swapSelectToken": {
     "message": "Selecciona un token"
@@ -8996,13 +8898,6 @@
   "swapSlippageAutoDescription": {
     "message": "Automático"
   },
-  "swapSlippageHighDescription": {
-    "message": "El deslizamiento ingresado ($1%) se considera muy alto y puede resultar en una mala tasa",
-    "description": "$1 is the amount of % for slippage"
-  },
-  "swapSlippageHighTitle": {
-    "message": "Deslizamiento alto"
-  },
   "swapSlippageLowDescription": {
     "message": "Un valor tan bajo ($1%) puede resultar en un intercambio fallido",
     "description": "$1 is the amount of % for slippage"
@@ -9010,33 +8905,8 @@
   "swapSlippageLowTitle": {
     "message": "Deslizamiento bajo"
   },
-  "swapSlippageNegativeDescription": {
-    "message": "El deslizamiento debe ser mayor o igual que cero"
-  },
-  "swapSlippageNegativeTitle": {
-    "message": "Aumentar el deslizamiento para continuar"
-  },
-  "swapSlippageOverLimitDescription": {
-    "message": "La tolerancia al deslizamiento debe ser del 15 % o menos. Cualquier cosa más alta resultará en una mala tasa."
-  },
-  "swapSlippageOverLimitTitle": {
-    "message": "Desfase muy alto"
-  },
-  "swapSlippagePercent": {
-    "message": "$1%",
-    "description": "$1 is the amount of % for slippage"
-  },
   "swapSlippageTooltip": {
     "message": "Si el precio cambia entre el momento en que hace el pedido y cuando se confirma, se denomina \"deslizamiento\". El canje se cancelará automáticamente si el deslizamiento supera lo establecido en la configuración de la \"tolerancia de deslizamiento\"."
-  },
-  "swapSlippageZeroDescription": {
-    "message": "Hay menos proveedores de cotizaciones de deslizamiento cero, lo que resultará en una cotización menos competitiva."
-  },
-  "swapSlippageZeroTitle": {
-    "message": "Abastecimiento de proveedores de deslizamiento cero"
-  },
-  "swapSource": {
-    "message": "Fuente de liquidez"
   },
   "swapSuggestedGasSettingToolTipMessage": {
     "message": "Los intercambios son transacciones complejas y urgentes. Recomendamos esta tarifa de gas para lograr un buen equilibrio entre el costo y la garantía de un intercambio exitoso."
@@ -9069,9 +8939,6 @@
   },
   "swapValidationInsufficientGasMessage": {
     "message": "No dispones de suficiente $1 para pagar la tarifa de gas de este canje. Ingresa un monto menor o compra más $1."
-  },
-  "swapZeroSlippage": {
-    "message": "0 % de deslizamiento"
   },
   "swapsMaxSlippage": {
     "message": "Tolerancia de deslizamiento"
@@ -9276,9 +9143,6 @@
   },
   "transactionDataFunction": {
     "message": "Función"
-  },
-  "transactionDetailGasHeading": {
-    "message": "Tarifa estimada de gas"
   },
   "transactionError": {
     "message": "Error de transacción. Excepción generada en el código de contrato."
