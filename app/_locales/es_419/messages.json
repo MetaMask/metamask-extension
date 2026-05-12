@@ -6950,9 +6950,6 @@
   "rewardsLinkAccountError": {
     "message": "Error al agregar la cuenta"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Gana puntos por tu actividad. \nAvanza a través de los niveles para desbloquear recompensas."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "No podemos determinar si tu país permite optar por el programa de recompensas. Verifica tu conexión e inténtalo nuevamente."
   },
@@ -6965,84 +6962,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Reintentar"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "Reclama 250 puntos"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Comprobando elegibilidad..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Comprobando región.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Ahora no"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Las recompensas están aquí"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Las recompensas aún no son compatibles en tu región. Estamos trabajando para ampliar el acceso, así que vuelve a consultar más tarde."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Región no admitida"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Cada canje y operación con contratos perpetuos que hagas en MetaMask te acerca a las recompensas. Añade tus cuentas y observa cómo acumulas puntos."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Gana puntos en cada operación"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Consigue hitos de puntos para obtener beneficios como un 50 % de descuento en las tarifas de contratos perpetuos, tokens exclusivos y una tarjeta metálica MetaMask gratis."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Sube de nivel para obtener mayores beneficios"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Puedes ganar puntos en la extensión, pero necesitarás la aplicación móvil para operar con contratos perpetuos, realizar un seguimiento de tu progreso y canjear recompensas."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Desbloquea recompensas en tu celular"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "Al hacer clic en \"Reclamar puntos\", aceptas nuestros $1. Seguiremos tu actividad en la cadena para recompensarte automáticamente. $2.",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Conozca más"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Términos y Aviso de Privacidad"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Error al registrarte"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Código de recomendación no válido"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Utiliza un código de recomendación para ganar 250 puntos"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Código de recomendación (opcional)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "El código de recomendación no se pudo validar."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Comprueba tu conexión y vuelve a intentarlo."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "¡Ganarás 250 puntos al registrarte!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "¡Ganarás 500 puntos al registrarte con un código!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Siguiente"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Reclamar puntos"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Verificando código de recomendación...",

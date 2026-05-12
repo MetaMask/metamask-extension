@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Modal,
@@ -13,30 +13,23 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import {
-  selectOnboardingModalOpen,
-  selectOnboardingActiveStep,
+  selectRewardsModalOpen,
   selectCandidateSubscriptionId,
 } from '../../../../ducks/rewards/selectors';
 import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
-  setOnboardingActiveStep,
-  setOnboardingModalOpen,
-  setOnboardingModalRendered,
+  setRewardsModalOpen,
   setOnboardingReferralCode,
+  setRewardsDeeplinkUrl,
 } from '../../../../ducks/rewards';
-import { OnboardingStep } from '../../../../ducks/rewards/types';
 import { useTheme } from '../../../../hooks/useTheme';
 import RewardsErrorToast from '../RewardsErrorToast';
 import RewardsQRCode from '../RewardsQRCode';
 import { useAppSelector } from '../../../../store/store';
 import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
-import OnboardingIntroStep from './OnboardingIntroStep';
-import OnboardingStep1 from './OnboardingStep1';
-import OnboardingStep2 from './OnboardingStep2';
-import OnboardingStep3 from './OnboardingStep3';
-import OnboardingStep4 from './OnboardingStep4';
+import OnboardingMainStep from './OnboardingMainStep';
 
-type OnboardingModalProps = {
+type RewardsModalProps = {
   onClose?: () => void;
 
   /**
@@ -51,13 +44,12 @@ type OnboardingModalProps = {
 };
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function OnboardingModal({
+export default function RewardsModal({
   onClose,
   rewardPoints,
   shieldSubscriptionId,
-}: OnboardingModalProps) {
-  const isOpen = useSelector(selectOnboardingModalOpen);
-  const onboardingStep = useSelector(selectOnboardingActiveStep);
+}: Readonly<RewardsModalProps>) {
+  const isOpen = useSelector(selectRewardsModalOpen);
   const candidateSubscriptionId = useSelector(selectCandidateSubscriptionId);
   const rewardActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
@@ -78,55 +70,23 @@ export default function OnboardingModal({
     [candidateSubscriptionId],
   );
 
+  const isOptedIn =
+    Boolean(rewardActiveAccountSubscriptionId) ||
+    Boolean(isValidCandidateSubscriptionId);
+
   const handleClose = useCallback(() => {
-    dispatch(setOnboardingModalOpen(false));
-    dispatch(setOnboardingActiveStep(OnboardingStep.INTRO));
+    dispatch(setRewardsModalOpen(false));
     dispatch(setOnboardingReferralCode(null));
+    dispatch(setRewardsDeeplinkUrl(null));
     onClose?.();
   }, [dispatch, onClose]);
 
-  const renderContent = useCallback(() => {
-    if (rewardActiveAccountSubscriptionId || isValidCandidateSubscriptionId) {
-      return <RewardsQRCode />;
-    }
-
-    switch (onboardingStep) {
-      case OnboardingStep.INTRO:
-        return <OnboardingIntroStep />;
-      case OnboardingStep.STEP1:
-        return <OnboardingStep1 />;
-      case OnboardingStep.STEP2:
-        return <OnboardingStep2 />;
-      case OnboardingStep.STEP3:
-        return <OnboardingStep3 />;
-      case OnboardingStep.STEP4:
-        return (
-          <OnboardingStep4
-            rewardPoints={rewardPoints}
-            shieldSubscriptionId={shieldSubscriptionId}
-          />
-        );
-      default:
-        return <OnboardingIntroStep />;
-    }
-  }, [
-    isValidCandidateSubscriptionId,
-    onboardingStep,
-    rewardActiveAccountSubscriptionId,
-    rewardPoints,
-    shieldSubscriptionId,
-  ]);
-
-  useEffect(() => {
-    dispatch(setOnboardingModalRendered(true));
-  }, [dispatch]);
-
   return (
     <Modal
-      data-testid="rewards-onboarding-modal"
+      data-testid="rewards-modal"
       isOpen={isOpen}
       onClose={handleClose}
-      // qr code hadware wallet uses a popover signing modal, so we don't want to close the onboarding modal when clicking to sign a message
+      // qr code hadware wallet uses a popover signing modal, so we don't want to close the rewards modal when clicking to sign a message
       isClosedOnOutsideClick={hardwareWalletType !== HardwareKeyringType.qr}
     >
       <ModalOverlay className="rewards-onboarding-modal__overlay" />
@@ -139,11 +99,8 @@ export default function OnboardingModal({
           paddingTop: 0,
           paddingBottom: 0,
           style: {
-            height:
-              rewardActiveAccountSubscriptionId ||
-              isValidCandidateSubscriptionId
-                ? 'auto'
-                : '740px',
+            height: 'auto',
+            minHeight: isOptedIn ? undefined : '600px',
             alignItems: 'center',
             justifyContent: 'center',
           },
@@ -151,24 +108,26 @@ export default function OnboardingModal({
       >
         <ModalHeader
           data-theme={theme === 'light' ? ThemeType.light : ThemeType.dark}
-          data-testid="rewards-onboarding-modal-header"
+          data-testid="rewards-modal-header"
           closeButtonProps={{
             className: 'absolute z-10',
             style: {
               top: '24px',
               right: '12px',
-              display:
-                !candidateSubscriptionId &&
-                onboardingStep === OnboardingStep.INTRO
-                  ? 'none'
-                  : 'block',
             },
           }}
           paddingBottom={0}
           onClose={handleClose}
         />
 
-        {renderContent()}
+        {isOptedIn ? (
+          <RewardsQRCode />
+        ) : (
+          <OnboardingMainStep
+            rewardPoints={rewardPoints}
+            shieldSubscriptionId={shieldSubscriptionId}
+          />
+        )}
         <RewardsErrorToast />
       </ModalContent>
     </Modal>

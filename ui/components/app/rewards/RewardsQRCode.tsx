@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   Text,
@@ -9,15 +9,15 @@ import {
 } from '@metamask/design-system-react';
 import qrCode from 'qrcode-generator';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSocialLoginType } from '../../../selectors/seedless-onboarding/social-sync';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setOnboardingModalOpen } from '../../../ducks/rewards';
-import { ModalBody } from '../../component-library/modal-body/modal-body';
 import {
-  APPLE_ONBOARDING_URL,
-  GOOGLE_ONBOARDING_URL,
-  SRP_ONBOARDING_URL,
-} from './utils/constants';
+  setRewardsModalOpen,
+  setOnboardingReferralCode,
+  setRewardsDeeplinkUrl,
+} from '../../../ducks/rewards';
+import { selectRewardsDeeplinkUrl } from '../../../ducks/rewards/selectors';
+import { ModalBody } from '../../component-library/modal-body/modal-body';
+import { REWARDS_DEEPLINK_BASE_URL } from './utils/constants';
 
 const QrCodeView = ({ data }: { data: string }) => {
   const qrImage = qrCode(0, 'M');
@@ -44,22 +44,17 @@ const QrCodeView = ({ data }: { data: string }) => {
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export default function RewardsQRCode() {
-  const socialType = useSelector(getSocialLoginType);
+  const rewardsDeeplinkUrl = useSelector(selectRewardsDeeplinkUrl);
   const t = useI18nContext();
   const dispatch = useDispatch();
 
   const handleClose = useCallback(() => {
-    dispatch(setOnboardingModalOpen(false));
+    dispatch(setRewardsModalOpen(false));
+    dispatch(setOnboardingReferralCode(null));
+    dispatch(setRewardsDeeplinkUrl(null));
   }, [dispatch]);
 
-  const dataToEncode = useMemo(() => {
-    if (socialType === 'apple') {
-      return APPLE_ONBOARDING_URL;
-    } else if (socialType === 'google') {
-      return GOOGLE_ONBOARDING_URL;
-    }
-    return SRP_ONBOARDING_URL;
-  }, [socialType]);
+  const dataToEncode = rewardsDeeplinkUrl ?? REWARDS_DEEPLINK_BASE_URL;
 
   return (
     <ModalBody
@@ -83,7 +78,7 @@ export default function RewardsQRCode() {
           onClick={handleClose}
           className="w-full my-2"
         >
-          {t('gotIt')}
+          {t('done')}
         </Button>
       </Box>
     </ModalBody>
