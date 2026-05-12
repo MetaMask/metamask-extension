@@ -1,20 +1,21 @@
 #!/usr/bin/env node
 /**
- * Claude Agent SDK runner with Langfuse tracing.
+ * Provider-agnostic agent runner with Langfuse tracing.
  *
  * Usage:
- *   npx tsx test/e2e/playwright/llm-workflow/claude-runner.ts \
+ *   npx tsx test/e2e/playwright/llm-workflow/agent-runner.ts \
  *     --prompt "Navigate to settings and verify Ethereum Mainnet is listed"
  */
 import path from 'path';
-import { parseArgs } from 'node:util';
 import { config } from 'dotenv';
+import { parseArgs } from 'node:util';
+
 import { resolveRepoRoot } from './resolve-repo-root';
-import { query } from '@anthropic-ai/claude-agent-sdk';
 import { otelSdk } from './langfuse/instrumentation';
 import { ensureDaemon, getDaemonSessionId, cleanupDaemon } from './langfuse/runner-daemon';
 import { resolveUserId, flushTracing } from './langfuse/runner-tracing';
 import { evaluateRun } from './langfuse/runner-eval';
+import { createClaudeAdapter, createClaudeJudge } from './langfuse/adapters/claude-adapter';
 import {
   createInitialState,
   handleMessage,
@@ -29,16 +30,16 @@ const { values: args } = parseArgs({
   options: {
     prompt: { type: 'string', short: 'p' },
     model: { type: 'string', short: 'm', default: 'claude-sonnet-4-6' },
+    'max-turns': { type: 'string', default: '50' },
     redact: { type: 'boolean', default: false },
     verbose: { type: 'boolean', short: 'v', default: false },
-    'max-turns': { type: 'string', default: '10' },
   },
   strict: true,
 });
 
 if (!args.prompt) {
   process.stderr.write(
-    'Usage: claude-runner.ts --prompt "your task description"\n',
+    'Usage: agent-runner.ts --prompt "your task description"\n',
   );
   process.exit(1);
 }
@@ -74,10 +75,14 @@ Important:
 - The extension default password is: correct horse battery staple
 - Be methodical: observe → act → verify`;
 
+const adapter = createClaudeAdapter();
+const judge = createClaudeJudge('claude-sonnet-4-6');
+
 async function run(): Promise<void> {
   const daemonPort = await ensureDaemon(repoRoot);
   const daemonSessionId = await getDaemonSessionId(daemonPort);
   const maxTurns = parseInt(args['max-turns'] ?? '50', 10);
+  const model = args.model ?? 'claude-sonnet-4-6';
 
   if (daemonSessionId) {
     process.stderr.write(
@@ -85,13 +90,14 @@ async function run(): Promise<void> {
     );
   }
 
-  process.stderr.write(`\n[RUNNER] Prompt: ${args.prompt}\n`);
-  process.stderr.write(`[RUNNER] Model: ${args.model}\n`);
+  process.stderr.write(`\n[RUNNER] Provider: ${adapter.name}\n`);
+  process.stderr.write(`[RUNNER] Prompt: ${args.prompt}\n`);
+  process.stderr.write(`[RUNNER] Model: ${model}\n`);
   process.stderr.write(`[RUNNER] Max turns: ${maxTurns}\n\n`);
 
   const runnerConfig = {
     prompt: args.prompt!,
-    model: args.model ?? 'claude-sonnet-4-6',
+    model,
     maxTurns,
     redact: args.redact ?? false,
     verbose: args.verbose ?? false,
@@ -103,21 +109,14 @@ async function run(): Promise<void> {
   const state = createInitialState(runnerConfig);
 
   try {
-    for await (const message of query({
+    for await (const message of adapter.run({
       prompt: runnerConfig.prompt,
-      options: {
-        model: runnerConfig.model,
-        maxTurns: runnerConfig.maxTurns,
-        cwd: repoRoot,
-        permissionMode: 'bypassPermissions',
-        allowDangerouslySkipPermissions: true,
-        systemPrompt: METAMASK_SYSTEM_PROMPT,
-        // options.env replaces process.env entirely — always spread first
-        env: { ...process.env },
-        ...(runnerConfig.verbose
-          ? { stderr: (data: string) => process.stderr.write(data) }
-          : {}),
-      },
+      model: runnerConfig.model,
+      maxTurns: runnerConfig.maxTurns,
+      systemPrompt: METAMASK_SYSTEM_PROMPT,
+      cwd: repoRoot,
+      env: { ...process.env },
+      verbose: runnerConfig.verbose,
     })) {
       handleMessage(message, state, runnerConfig);
     }
@@ -130,14 +129,17 @@ async function run(): Promise<void> {
     finalizeSessionSpan(state);
     await flushTracing();
 
-    await evaluateRun({
-      prompt: runnerConfig.prompt,
-      result: state.finalResult,
-      conversationLog: state.conversationLog,
-      turns: state.turns,
-      traceId: state.traceId,
-      success: state.finalResult !== undefined,
-    });
+    await evaluateRun(
+      {
+        prompt: runnerConfig.prompt,
+        result: state.finalResult,
+        conversationLog: state.conversationLog,
+        turns: state.turns,
+        traceId: state.traceId,
+        success: state.finalResult !== undefined,
+      },
+      judge,
+    );
   }
 }
 

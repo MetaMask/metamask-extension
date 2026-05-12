@@ -1,3 +1,5 @@
+import type { JudgeConfig } from './provider-types';
+
 const JUDGE_PROMPT = `You are evaluating an AI agent that was given a task to interact with the MetaMask browser extension.
 
 Score the agent's performance on these dimensions:
@@ -71,31 +73,23 @@ async function postLangfuseScore(params: {
   }
 }
 
-export async function evaluateRun(params: EvalParams): Promise<void> {
+export async function evaluateRun(
+  params: EvalParams,
+  judge: JudgeConfig,
+): Promise<void> {
   if (process.env.LANGFUSE_ENABLED !== 'true' || !params.traceId) return;
-  if (!process.env.ANTHROPIC_API_KEY) return;
 
-  process.stderr.write('[EVAL] Running LLM-as-a-judge evaluation...\n');
+  process.stderr.write(
+    `[EVAL] Running LLM-as-a-judge evaluation (${judge.model})...\n`,
+  );
 
   try {
-    const Anthropic = (await import('@anthropic-ai/sdk')).default;
-    const client = new Anthropic();
-
     const transcript = params.conversationLog.join('\n\n').slice(0, 30000);
 
-    const response = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: `${JUDGE_PROMPT}\n\n---\n\nTASK: ${params.prompt}\n\nCOMPLETED: ${params.success ? 'Yes' : `No (stopped after ${params.turns} turns)`}\n\nFINAL RESULT: ${params.result?.slice(0, 2000) ?? 'None'}\n\nAGENT TRANSCRIPT:\n${transcript}`,
-        },
-      ],
-    });
+    const evalPrompt = `${JUDGE_PROMPT}\n\n---\n\nTASK: ${params.prompt}\n\nCOMPLETED: ${params.success ? 'Yes' : `No (stopped after ${params.turns} turns)`}\n\nFINAL RESULT: ${params.result?.slice(0, 2000) ?? 'None'}\n\nAGENT TRANSCRIPT:\n${transcript}`;
 
-    const text =
-      response.content[0]?.type === 'text' ? response.content[0].text : '';
+    const text = await judge.evaluate(evalPrompt, 1024);
+
     const jsonMatch = /\{[\s\S]*\}/.exec(text);
     if (!jsonMatch) {
       process.stderr.write('[EVAL] Judge did not return valid JSON\n');

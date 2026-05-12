@@ -4,7 +4,9 @@ Observability for the MetaMask LLM workflow — traces every tool call, LLM prom
 
 ## Overview
 
-Tracing is handled by the Claude runner (`claude-runner.ts`), which captures LLM prompts, completions, token usage, cost, and tool calls from the Claude Agent SDK message stream. Spans are created using `@langfuse/tracing` and exported via the `LangfuseSpanProcessor` from `@langfuse/otel`.
+Tracing is handled by the agent runner (`agent-runner.ts`), which is provider-agnostic. It uses a `ProviderAdapter` interface to support different LLM backends. Currently ships with a Claude adapter (`adapters/claude-adapter.ts`).
+
+The runner captures LLM prompts, completions, token usage, cost, and tool calls from the provider's message stream. Spans are created using `@langfuse/tracing` and exported via the `LangfuseSpanProcessor` from `@langfuse/otel`.
 
 ## Setup
 
@@ -44,41 +46,40 @@ yarn build:test
 
 ## Usage
 
-Run Claude against MetaMask with full tracing:
+Run an agent against MetaMask with full tracing:
 
 ```bash
-npx tsx test/e2e/playwright/llm-workflow/claude-runner.ts \
+npx tsx test/e2e/playwright/llm-workflow/agent-runner.ts \
   --prompt "Navigate to settings and verify Ethereum Mainnet is listed"
 ```
 
-The daemon auto-starts if not running. Claude interacts with MetaMask via `mm` CLI commands through Bash.
+The daemon auto-starts if not running. The agent interacts with MetaMask via `mm` CLI commands through Bash.
 
 ### Runner options
 
 | Flag | Default | Description |
 |---|---|---|
-| `--prompt`, `-p` | (required) | Task for Claude to perform |
-| `--model`, `-m` | `claude-sonnet-4-6` | Claude model to use |
+| `--prompt`, `-p` | (required) | Task for the agent to perform |
+| `--model`, `-m` | `claude-sonnet-4-6` | Model to use |
 | `--max-turns` | `50` | Max agent turns before stopping |
 | `--redact` | `false` | Strip prompt/completion content from traces |
-| `--verbose`, `-v` | `false` | Print Claude's reasoning to stderr |
+| `--verbose`, `-v` | `false` | Print agent reasoning to stderr |
 
 ### Examples
 
 ```bash
 # Quick test with verbose output
-npx tsx test/e2e/playwright/llm-workflow/claude-runner.ts \
+npx tsx test/e2e/playwright/llm-workflow/agent-runner.ts \
   --prompt "Check the account balance on the home screen" \
   --verbose
 
-# Use a different model with more turns
-npx tsx test/e2e/playwright/llm-workflow/claude-runner.ts \
+# More turns for complex flows
+npx tsx test/e2e/playwright/llm-workflow/agent-runner.ts \
   --prompt "Complete the full send flow: send 0.1 ETH to 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045" \
-  --model claude-sonnet-4-6 \
   --max-turns 80
 
 # Redacted run (no prompt/completion content in Langfuse)
-npx tsx test/e2e/playwright/llm-workflow/claude-runner.ts \
+npx tsx test/e2e/playwright/llm-workflow/agent-runner.ts \
   --prompt "Navigate through onboarding" \
   --redact
 ```
@@ -88,7 +89,7 @@ npx tsx test/e2e/playwright/llm-workflow/claude-runner.ts \
 A session trace shows the full agent interaction:
 
 ```
-claude-runner (agent span)
+agent-runner (agent span)
 │
 ├── claude-sonnet-4-6 (generation)
 │   input: "Navigate to settings and verify Ethereum Mainnet is listed"
@@ -121,18 +122,17 @@ claude-runner (agent span)
 
 ```
 ┌──────────────────────────────────────────────┐
-│  claude-runner.ts                            │
+│  agent-runner.ts                             │
 │                                              │
-│  query({ prompt, options })                  │
-│    → spawns Claude Code CLI subprocess       │
-│    → iterates SDKMessage stream              │
-│    → creates Langfuse spans:                 │
+│  ProviderAdapter.run(config)                 │
+│    → provider streams AgentMessages          │
+│    → runner creates Langfuse spans:          │
 │        generation (per LLM turn)             │
 │        tool (per tool_use / tool_result)     │
 │    → runs LLM-as-a-judge evaluation          │
 │    → posts scores to Langfuse API            │
 └──────────────┬───────────────────────────────┘
-               │ Claude calls `mm` CLI via Bash
+               │ Agent calls `mm` CLI via Bash
                ▼
 ┌──────────────────────────────────────────────┐
 │  daemon.ts                                   │
@@ -153,9 +153,23 @@ claude-runner (agent span)
 └──────────────────────────────────────────────┘
 ```
 
+### Provider adapter pattern
+
+The runner is provider-agnostic. All LLM-specific logic lives in adapter files:
+
+```
+langfuse/
+├── provider-types.ts              # AgentMessage, ProviderAdapter, JudgeConfig interfaces
+├── adapters/
+│   └── claude-adapter.ts          # Claude Agent SDK → AgentMessage translation
+│   └── (future: openai-adapter.ts, gemini-adapter.ts, etc.)
+```
+
+To add a new provider, implement `ProviderAdapter` and `JudgeConfig` from `provider-types.ts`.
+
 ## LLM-as-a-judge evaluation
 
-After each run, the runner automatically evaluates Claude's performance by calling `claude-sonnet-4-6` as a judge. The judge receives the task prompt, the full conversation transcript, and scores on three dimensions:
+After each run, the runner evaluates the agent's performance using a configurable judge (defaults to `claude-sonnet-4-6`). The judge receives the task prompt, full conversation transcript, and scores on three dimensions:
 
 | Score | Range | Description |
 |---|---|---|
@@ -171,7 +185,7 @@ The runner manages the full lifecycle automatically:
 
 1. **Start**: Checks if daemon is running via `GET /status`, starts it with `mm launch --state default --force` if not
 2. **Session ID**: Reads the daemon's active session ID from `/status` and uses it as the Langfuse session ID
-3. **Run**: Iterates the Claude Agent SDK message stream, creating Langfuse spans for each generation and tool call
+3. **Run**: Iterates the provider's `AgentMessage` stream, creating Langfuse spans for each generation and tool call
 4. **Evaluate**: Calls LLM-as-a-judge and posts scores to Langfuse
 5. **Cleanup**: Runs `mm cleanup` to tear down the browser session, then shuts down the OTel SDK
 
@@ -179,18 +193,21 @@ The runner manages the full lifecycle automatically:
 
 | File | Purpose |
 |---|---|
+| `provider-types.ts` | `AgentMessage`, `ProviderAdapter`, `JudgeConfig`, `RunConfig` interfaces |
+| `adapters/claude-adapter.ts` | Claude Agent SDK adapter + judge implementation |
 | `instrumentation.ts` | OTel SDK + `LangfuseSpanProcessor` init |
 | `runner-tracing.ts` | Span helpers: `createSessionSpan`, `traceSpan`, `setOtelAttrs` |
-| `runner-message-handler.ts` | SDK message → Langfuse span mapping (generation, tool, result) |
+| `runner-message-handler.ts` | `AgentMessage` → Langfuse span mapping (generation, tool, result) |
 | `runner-eval.ts` | LLM-as-a-judge evaluation + score posting |
 | `runner-daemon.ts` | Daemon lifecycle: start, session ID, cleanup |
-| `message-parser.ts` | Extract text content and tool use blocks from Claude messages |
+| `message-parser.ts` | Extract text content and tool use blocks from messages, sensitive field redaction |
 | `.env.langfuse` | Credentials file (gitignored) |
 
 ## Sensitive data handling
 
+- Fields with keys containing `password`, `secret`, `srp`, `seed`, `mnemonic`, or `privatekey` are automatically redacted in tool span inputs
 - Tool results longer than 4000 chars are truncated
-- Use `--redact` flag on the runner to strip all prompt/completion content from traces
+- Use `--redact` flag to strip all prompt/completion content from traces
 
 ## Disabling tracing
 
@@ -204,3 +221,4 @@ Set `LANGFUSE_ENABLED=false` in `.env.langfuse` or remove the file entirely. The
 | Runner fails with "ANTHROPIC_API_KEY required" | Add your Anthropic key to `.env.langfuse` |
 | Runner hits max turns | Increase with `--max-turns 100` |
 | Daemon not auto-starting | Ensure extension is built: `yarn build:test` |
+| Trace shows no input/output on error | Fixed — finalization runs in `finally` block regardless of success/failure |

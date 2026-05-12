@@ -1,9 +1,5 @@
-import type { SDKMessage } from '@anthropic-ai/claude-agent-sdk' with { 'resolution-mode': 'import' };
-import {
-  extractTextContent,
-  extractToolUseBlocks,
-  redactSensitive,
-} from './message-parser';
+import type { AgentMessage } from './provider-types';
+import { redactSensitive } from './message-parser';
 import {
   type SpanHandle,
   traceSpan,
@@ -74,24 +70,22 @@ export function createInitialState(config: RunnerConfig): RunnerState {
 }
 
 export function handleMessage(
-  message: SDKMessage,
+  message: AgentMessage,
   state: RunnerState,
   config: RunnerConfig,
 ): void {
   switch (message.type) {
-    case 'system':
-      handleSystemMessage(message, state, config);
+    case 'init':
+      handleInit(message, state, config);
       break;
-    case 'assistant':
-      handleAssistantMessage(message, state, config);
+    case 'generation':
+      handleGeneration(message, state, config);
       break;
-    case 'user':
-      handleUserMessage(message, state, config);
+    case 'tool_result':
+      handleToolResult(message, state, config);
       break;
     case 'result':
-      handleResultMessage(message, state, config);
-      break;
-    default:
+      handleResult(message, state, config);
       break;
   }
 }
@@ -118,18 +112,15 @@ export function finalizeSessionSpan(state: RunnerState): void {
   state.sessionSpan.end();
 }
 
-function handleSystemMessage(
-  message: SDKMessage,
+function handleInit(
+  message: AgentMessage & { type: 'init' },
   state: RunnerState,
   config: RunnerConfig,
 ): void {
-  if (!('subtype' in message) || message.subtype !== 'init') return;
-
-  const claudeSessionId = message.session_id;
   if (!state.langfuseSessionId) {
-    state.langfuseSessionId = claudeSessionId;
+    state.langfuseSessionId = message.sessionId;
   }
-  process.stderr.write(`[RUNNER] Claude session: ${claudeSessionId}\n`);
+  process.stderr.write(`[RUNNER] Agent session: ${message.sessionId}\n`);
   process.stderr.write(
     `[RUNNER] Langfuse session: ${state.langfuseSessionId}\n`,
   );
@@ -140,7 +131,7 @@ function handleSystemMessage(
       {
         model: config.model,
         maxTurns: config.maxTurns,
-        claudeSessionId,
+        agentSessionId: message.sessionId,
         langfuseSessionId: state.langfuseSessionId,
       },
       config.redact,
@@ -156,96 +147,65 @@ function handleSystemMessage(
   }
 }
 
-function handleAssistantMessage(
-  message: SDKMessage,
+function handleGeneration(
+  message: AgentMessage & { type: 'generation' },
   state: RunnerState,
   config: RunnerConfig,
 ): void {
   state.turns++;
-  const msg = message as SDKMessage & {
-    type: 'assistant';
-    message: {
-      model?: string;
-      usage?: {
-        input_tokens?: number;
-        output_tokens?: number;
-        cache_read_input_tokens?: number;
-        cache_creation_input_tokens?: number;
-      };
-      content?: unknown[];
-      stop_reason?: string;
-    };
-  };
+  state.totalInputTokens += message.usage.inputTokens;
+  state.totalOutputTokens += message.usage.outputTokens;
 
-  const usage = msg.message?.usage;
-  if (usage) {
-    state.totalInputTokens += usage.input_tokens ?? 0;
-    state.totalOutputTokens += usage.output_tokens ?? 0;
-  }
-
-  const textContent = extractTextContent(
-    msg.message as unknown as Record<string, unknown>,
-  );
-  const toolUses = extractToolUseBlocks(
-    msg.message as unknown as Record<string, unknown>,
-  );
-
-  if (textContent) {
+  if (message.text) {
     state.conversationLog.push(
-      `[ASSISTANT turn ${state.turns}] ${textContent}`,
+      `[ASSISTANT turn ${state.turns}] ${message.text}`,
     );
     if (config.verbose) {
-      process.stderr.write(`[CLAUDE] ${textContent}\n`);
+      process.stderr.write(`[AGENT] ${message.text}\n`);
     }
   }
-  if (toolUses.length > 0) {
+  if (message.toolCalls.length > 0) {
     state.conversationLog.push(
-      `[TOOL CALLS turn ${state.turns}] ${toolUses.map((t) => `${t.name}(${JSON.stringify(t.input).slice(0, 200)})`).join(', ')}`,
+      `[TOOL CALLS turn ${state.turns}] ${message.toolCalls.map((t) => `${t.name}(${JSON.stringify(t.input).slice(0, 200)})`).join(', ')}`,
     );
   }
-
-  const modelName = msg.message?.model ?? config.model ?? 'unknown';
 
   traceSpan(state.langfuseSessionId, config.userId, () => {
     const parent = state.sessionSpan;
     if (!parent) return;
 
     const genSpan = parent.startObservation(
-      modelName,
+      message.model,
       {
         input: config.redact ? '[REDACTED]' : state.lastTurnInput,
         output: config.redact
           ? '[REDACTED]'
-          : textContent || JSON.stringify(toolUses),
+          : message.text || JSON.stringify(message.toolCalls),
       },
       { asType: 'generation' },
     );
 
     setOtelAttrs(genSpan, {
-      'langfuse.observation.model.name': modelName,
-      ...(usage
+      'langfuse.observation.model.name': message.model,
+      'gen_ai.usage.input_tokens': message.usage.inputTokens,
+      'gen_ai.usage.output_tokens': message.usage.outputTokens,
+      ...(message.usage.cacheReadTokens
         ? {
-            'gen_ai.usage.input_tokens': usage.input_tokens ?? 0,
-            'gen_ai.usage.output_tokens': usage.output_tokens ?? 0,
-            ...(usage.cache_read_input_tokens
-              ? {
-                  'gen_ai.usage.cache_read_input_tokens':
-                    usage.cache_read_input_tokens,
-                }
-              : {}),
-            ...(usage.cache_creation_input_tokens
-              ? {
-                  'gen_ai.usage.cache_creation_input_tokens':
-                    usage.cache_creation_input_tokens,
-                }
-              : {}),
+            'gen_ai.usage.cache_read_input_tokens':
+              message.usage.cacheReadTokens,
+          }
+        : {}),
+      ...(message.usage.cacheCreationTokens
+        ? {
+            'gen_ai.usage.cache_creation_input_tokens':
+              message.usage.cacheCreationTokens,
           }
         : {}),
     });
 
     genSpan.end();
 
-    for (const tool of toolUses) {
+    for (const tool of message.toolCalls) {
       if (!tool.id) continue;
       const toolLabel = formatToolLabel(tool.name, tool.input);
       const toolSpan = parent.startObservation(
@@ -262,96 +222,53 @@ function handleAssistantMessage(
   });
 }
 
-function handleUserMessage(
-  message: SDKMessage,
+function handleToolResult(
+  message: AgentMessage & { type: 'tool_result' },
   state: RunnerState,
   config: RunnerConfig,
 ): void {
-  const userMsg = message as SDKMessage & {
-    type: 'user';
-    message: { content?: unknown[] | string };
-  };
-  const content = userMsg.message?.content;
-  if (!Array.isArray(content)) return;
+  const pending = state.pendingTools.get(message.toolUseId);
+  if (!pending) return;
 
-  for (const block of content) {
-    if (
-      typeof block !== 'object' ||
-      block === null ||
-      !('type' in block) ||
-      block.type !== 'tool_result' ||
-      !('tool_use_id' in block)
-    ) {
-      continue;
-    }
+  const truncated =
+    message.content.length > 4000
+      ? `${message.content.slice(0, 4000)}... [truncated ${message.content.length} chars]`
+      : message.content;
 
-    const toolUseId = block.tool_use_id as string;
-    const pending = state.pendingTools.get(toolUseId);
-    if (!pending) continue;
+  pending.span.update({
+    output: config.redact ? '[REDACTED]' : truncated,
+    level: message.isError ? 'ERROR' : 'DEFAULT',
+  });
+  pending.span.end();
+  state.pendingTools.delete(message.toolUseId);
 
-    let resultText: string;
-    if ('content' in block && typeof block.content === 'string') {
-      resultText = block.content;
-    } else if ('content' in block && Array.isArray(block.content)) {
-      resultText = (
-        block.content as unknown as Array<Record<string, unknown>>
-      )
-        .filter((b) => b.type === 'text' && typeof b.text === 'string')
-        .map((b) => b.text as string)
-        .join('\n');
-    } else {
-      resultText = JSON.stringify(block);
-    }
-
-    const truncated =
-      resultText.length > 4000
-        ? `${resultText.slice(0, 4000)}... [truncated ${resultText.length} chars]`
-        : resultText;
-
-    pending.span.update({
-      output: config.redact ? '[REDACTED]' : truncated,
-      level: 'is_error' in block && block.is_error ? 'ERROR' : 'DEFAULT',
-    });
-    pending.span.end();
-    state.pendingTools.delete(toolUseId);
-
-    state.lastTurnInput = `[${pending.name} result] ${truncated.slice(0, 2000)}`;
-    state.conversationLog.push(
-      `[TOOL RESULT ${pending.name}] ${truncated.slice(0, 500)}`,
-    );
-  }
+  state.lastTurnInput = `[${pending.name} result] ${truncated.slice(0, 2000)}`;
+  state.conversationLog.push(
+    `[TOOL RESULT ${pending.name}] ${truncated.slice(0, 500)}`,
+  );
 }
 
-function handleResultMessage(
-  message: SDKMessage,
+function handleResult(
+  message: AgentMessage & { type: 'result' },
   state: RunnerState,
   config: RunnerConfig,
 ): void {
-  const result = message as SDKMessage & {
-    type: 'result';
-    subtype: string;
-    result?: string;
-    total_cost_usd?: number;
-    num_turns?: number;
-    duration_ms?: number;
-  };
-
-  if (result.subtype === 'success') {
-    state.finalResult = result.result;
+  if (message.success) {
+    state.finalResult = message.result;
     const durationSec = (
-      (result.duration_ms ?? Date.now() - config.startTime) / 1000
+      (message.durationMs ?? Date.now() - config.startTime) / 1000
     ).toFixed(1);
     process.stderr.write('\n─────────────────────────────────────\n');
     process.stderr.write(`[RUNNER] ✓ Completed in ${durationSec}s\n`);
     process.stderr.write(
-      `[RUNNER] Turns: ${result.num_turns ?? state.turns}\n`,
+      `[RUNNER] Turns: ${message.turns ?? state.turns}\n`,
     );
     process.stderr.write(
       `[RUNNER] Tokens: ${state.totalInputTokens} in / ${state.totalOutputTokens} out\n`,
     );
-    if (result.total_cost_usd !== undefined) {
+    if (message.costUsd !== undefined) {
       process.stderr.write(
-        `[RUNNER] Cost: $${result.total_cost_usd.toFixed(4)}\n`,
+        `[RUNNER] Cost: $${message.costUsd.toFixed(4)}\n`,
       );
     }
     process.stderr.write('─────────────────────────────────────\n\n');
@@ -359,9 +276,11 @@ function handleResultMessage(
       process.stdout.write(state.finalResult + '\n');
     }
   } else {
-    process.stderr.write(`[RUNNER] ✗ Failed: ${result.subtype}\n`);
-    if (result.result) {
-      process.stderr.write(`[RUNNER] Error: ${result.result}\n`);
+    process.stderr.write(
+      `[RUNNER] ✗ Failed: ${message.error ?? 'unknown'}\n`,
+    );
+    if (message.result) {
+      process.stderr.write(`[RUNNER] Error: ${message.result}\n`);
     }
     process.exitCode = 1;
   }

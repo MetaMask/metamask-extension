@@ -41,7 +41,7 @@ export function createSessionSpan(
   if (!langfuseProcessor) return undefined;
 
   const obs = startObservation(
-    `claude-runner`,
+    `agent-runner`,
     {
       input: redact ? '[REDACTED]' : prompt,
       metadata,
