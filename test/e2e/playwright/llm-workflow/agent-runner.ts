@@ -111,6 +111,8 @@ async function run(): Promise<void> {
         result: state.finalResult,
         conversationLog: state.conversationLog,
         turns: state.turns,
+        totalInputTokens: state.totalInputTokens,
+        totalOutputTokens: state.totalOutputTokens,
         traceId: state.traceId,
         success: state.finalResult !== undefined,
       },

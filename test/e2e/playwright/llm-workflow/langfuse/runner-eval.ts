@@ -1,20 +1,12 @@
+import path from 'path';
+import { readFileSync } from 'fs';
 import type { JudgeConfig } from './provider-types';
+import { runDeterministicEvals, type EvalScore } from './evals';
 
-const JUDGE_PROMPT = `You are evaluating an AI agent that was given a task to interact with the MetaMask browser extension.
-
-Score the agent's performance on these dimensions:
-
-1. **task_completion** (0.0-1.0): Did the agent complete the requested task? 1.0 = fully completed, 0.5 = partially, 0.0 = failed
-2. **efficiency** (0.0-1.0): How efficiently did it work? 1.0 = minimal steps, 0.5 = some wasted steps, 0.0 = very wasteful
-3. **correctness** (0.0-1.0): Were the agent's actions correct? 1.0 = no mistakes, 0.5 = minor errors recovered, 0.0 = major errors
-
-Respond in this exact JSON format (no other text):
-{
-  "task_completion": { "score": <float>, "reason": "<brief reason>" },
-  "efficiency": { "score": <float>, "reason": "<brief reason>" },
-  "correctness": { "score": <float>, "reason": "<brief reason>" },
-  "summary": "<one sentence overall assessment>"
-}`;
+const JUDGE_PROMPT = readFileSync(
+  path.join(__dirname, 'evals', 'judge-prompt.md'),
+  'utf-8',
+).trim();
 
 type EvalResult = {
   task_completion: { score: number; reason: string };
@@ -28,6 +20,8 @@ export type EvalParams = {
   result: string | undefined;
   conversationLog: string[];
   turns: number;
+  totalInputTokens: number;
+  totalOutputTokens: number;
   traceId: string | undefined;
   success: boolean;
 };
@@ -79,14 +73,37 @@ export async function evaluateRun(
 ): Promise<void> {
   if (process.env.LANGFUSE_ENABLED !== 'true' || !params.traceId) return;
 
+  process.stderr.write('[EVAL] Running deterministic evaluations...\n');
+  const deterministicScores = runDeterministicEvals({
+    conversationLog: params.conversationLog,
+    turns: params.turns,
+    totalInputTokens: params.totalInputTokens,
+    totalOutputTokens: params.totalOutputTokens,
+    traceId: params.traceId,
+  });
+
+  for (const score of deterministicScores) {
+    await postLangfuseScore({
+      traceId: params.traceId,
+      name: score.name,
+      value: score.value,
+      dataType: 'NUMERIC',
+      comment: score.comment,
+    });
+    process.stderr.write(
+      `[EVAL] ${score.name}: ${score.value.toFixed(1)} — ${score.comment}\n`,
+    );
+  }
+
   process.stderr.write(
     `[EVAL] Running LLM-as-a-judge evaluation (${judge.model})...\n`,
   );
 
   try {
     const transcript = params.conversationLog.join('\n\n').slice(0, 30000);
+    const metricsBlock = formatMetricsBlock(deterministicScores);
 
-    const evalPrompt = `${JUDGE_PROMPT}\n\n---\n\nTASK: ${params.prompt}\n\nCOMPLETED: ${params.success ? 'Yes' : `No (stopped after ${params.turns} turns)`}\n\nFINAL RESULT: ${params.result?.slice(0, 2000) ?? 'None'}\n\nAGENT TRANSCRIPT:\n${transcript}`;
+    const evalPrompt = `${JUDGE_PROMPT}\n\n---\n\nTASK: ${params.prompt}\n\nCOMPLETED: ${params.success ? 'Yes' : `No (stopped after ${params.turns} turns)`}\n\nFINAL RESULT: ${params.result?.slice(0, 2000) ?? 'None'}\n\nAUTOMATED METRICS:\n${metricsBlock}\n\nAGENT TRANSCRIPT:\n${transcript}`;
 
     const text = await judge.evaluate(evalPrompt, 1024);
 
@@ -120,6 +137,12 @@ export async function evaluateRun(
     process.stderr.write(`[EVAL] Summary: ${evaluation.summary}\n`);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    process.stderr.write(`[EVAL] Evaluation failed: ${msg}\n`);
+    process.stderr.write(`[EVAL] LLM judge failed: ${msg}\n`);
   }
+}
+
+function formatMetricsBlock(scores: EvalScore[]): string {
+  return scores
+    .map((s) => `- ${s.name}: ${s.value.toFixed(2)} (${s.comment})`)
+    .join('\n');
 }
