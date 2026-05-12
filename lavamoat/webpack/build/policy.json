@@ -1083,7 +1083,7 @@
         "webpack-dev-server>compression>debug": true,
         "webpack-dev-server>compression>negotiator": true,
         "webpack-dev-server>compression>on-headers": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "koa>vary": true
       }
     },
@@ -1095,12 +1095,12 @@
         "console": true
       }
     },
-    "mockttp>express>content-disposition": {
+    "koa>content-disposition": {
       "builtin": {
         "path.basename": true
       },
       "packages": {
-        "mockttp>express>safe-buffer": true
+        "koa>content-disposition>safe-buffer": true
       }
     },
     "@babel/core>convert-source-map": {
@@ -1515,7 +1515,7 @@
         "koa>accepts": true,
         "mockttp>express>array-flatten": true,
         "mockttp>body-parser": true,
-        "mockttp>express>content-disposition": true,
+        "koa>content-disposition": true,
         "koa>content-type": true,
         "mockttp>express>cookie-signature": true,
         "mockttp>express>cookie": true,
@@ -1535,7 +1535,7 @@
         "mockttp>express>proxy-addr": true,
         "mockttp>express>qs": true,
         "mockttp>express>range-parser": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "mockttp>express>send": true,
         "mockttp>express>serve-static": true,
         "koa>http-errors>setprototypeof": true,
@@ -2523,7 +2523,7 @@
         "setTimeout": true
       }
     },
-    "mockttp>express>safe-buffer": {
+    "koa>content-disposition>safe-buffer": {
       "builtin": {
         "buffer": true
       }
@@ -3403,7 +3403,7 @@
       },
       "packages": {
         "webpack-dev-server>sockjs>websocket-driver>http-parser-js": true,
-        "mockttp>express>safe-buffer": true,
+        "koa>content-disposition>safe-buffer": true,
         "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
       }
     },
