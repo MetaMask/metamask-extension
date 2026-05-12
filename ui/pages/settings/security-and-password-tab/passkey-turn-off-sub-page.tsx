@@ -37,8 +37,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { getAccountType } from '../../../../shared/lib/selectors/keyring';
 import {
-  getAccountType,
   getIsPasskeyRegistered,
   getPasskeyDerivationMethod,
 } from '../../../selectors';

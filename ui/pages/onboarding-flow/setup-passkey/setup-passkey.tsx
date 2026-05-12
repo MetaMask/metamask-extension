@@ -30,8 +30,8 @@ import {
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getAccountType } from '../../../../shared/lib/selectors/keyring';
 import {
-  getAccountType,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyRegistered,

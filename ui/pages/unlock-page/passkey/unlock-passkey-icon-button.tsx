@@ -16,7 +16,8 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getAccountType, getPasskeyDerivationMethod } from '../../../selectors';
+import { getAccountType } from '../../../../shared/lib/selectors/keyring';
+import { getPasskeyDerivationMethod } from '../../../selectors';
 
 export type UnlockPasskeyIconButtonProps = {
   disabled: boolean;

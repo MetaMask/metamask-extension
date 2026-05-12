@@ -56,8 +56,8 @@ import {
   removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
+import { getAccountType } from '../../../../shared/lib/selectors/keyring';
 import {
-  getAccountType,
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,

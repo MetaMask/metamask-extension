@@ -24,6 +24,7 @@ import {
   translatePasskeyError,
   getPasskeyErrorCode,
 } from '../../../../shared/lib/passkey';
+import { getAccountType } from '../../../../shared/lib/selectors/keyring';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -33,7 +34,6 @@ import {
   SECURITY_TURN_OFF_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  getAccountType,
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
