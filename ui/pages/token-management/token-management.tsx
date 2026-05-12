@@ -39,6 +39,7 @@ import {
 } from '../../selectors';
 import {
   getAllEnabledNetworksForAllNamespaces,
+  getAllMultichainNetworkConfigurations,
   getEnabledNetworksByNamespace,
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
@@ -122,6 +123,12 @@ export const TokenManagementPage = () => {
     }
   });
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  // Includes non-EVM (Solana, Bitcoin, ...) networks keyed by CAIP-2 chain id.
+  // Used to resolve a display name when the active enabled network is non-EVM,
+  // which is missing from the EVM-only `networkConfigurations` map above.
+  const allMultichainNetworkConfigurations = useSelector(
+    getAllMultichainNetworkConfigurations,
+  );
   // Raw TokensController state. `accountGroupIdAssets` (via
   // `selectAssetsBySelectedAccountGroup`) filters out tokens that don't yet
   // have a balance entry, which is exactly the case right after the user
@@ -346,10 +353,22 @@ export const TokenManagementPage = () => {
     }
     if (enabledCount === 1) {
       const onlyChain = enabledChainIds[0];
-      return networkConfigurations?.[onlyChain]?.name ?? t('currentNetwork');
+      // EVM chains are keyed by hex (`0x1`) in `networkConfigurations`; non-EVM
+      // chains (Solana, Bitcoin, …) live only in the multichain map keyed by
+      // their CAIP-2 id (`solana:…`). Try both before falling back.
+      const evmName = networkConfigurations?.[onlyChain]?.name;
+      const multichainName =
+        allMultichainNetworkConfigurations?.[onlyChain as CaipChainId]?.name;
+      return evmName ?? multichainName ?? currentNetwork?.name ?? t('currentNetwork');
     }
     return t('allDefaultNetworks');
-  }, [enabledChainIds, networkConfigurations, t]);
+  }, [
+    allMultichainNetworkConfigurations,
+    currentNetwork?.name,
+    enabledChainIds,
+    networkConfigurations,
+    t,
+  ]);
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
