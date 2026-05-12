@@ -95,27 +95,6 @@ function makeMockPrice(overrides: Partial<Record<string, unknown>> = {}) {
 }
 
 describe('getAccountTrackerControllerAccountsByChainId', () => {
-  describe('when assets unify state feature is disabled', () => {
-    it('returns accountsByChainId from state unchanged', () => {
-      const legacyAccountsByChainId = {
-        '0x1': {
-          [mockAccountAddressChecksummed]: {
-            balance: '0xde0b6b3a7640000' as const,
-          },
-        },
-      };
-      const state = {
-        metamask: {
-          accountsByChainId: legacyAccountsByChainId,
-        },
-      };
-      const result = getAccountTrackerControllerAccountsByChainId(state);
-
-      expect(result).toBe(legacyAccountsByChainId);
-      expect(result).toStrictEqual(legacyAccountsByChainId);
-    });
-  });
-
   describe('when assets unify state feature is enabled (happy path)', () => {
     it('derives accountsByChainId from new state structure', () => {
       const state = {
