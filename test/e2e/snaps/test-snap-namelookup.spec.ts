@@ -67,22 +67,16 @@ describe('Name lookup', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork()
-          .withNetworkEnablementController({
-            enabledNetworkMap: { eip155: { '0x1': true } },
-          })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
+          .withShowNativeTokenAsMainBalanceEnabled()
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockLookupSnap(mockServer),
           await mockSpotPrices(mockServer, {
             'eip155:1/slip44:60': {
-              price: 1700,
-              marketCap: 382623505141,
-              pricePercentChange1d: 0,
-            },
-            'eip155:1337/slip44:1': {
               price: 1,
-              marketCap: 0,
+              marketCap: 382623505141,
               pricePercentChange1d: 0,
             },
           }),
