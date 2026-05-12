@@ -33,6 +33,11 @@ import type {
  * `ocapURLIssuerService.issue(...)` resolves.
  * @param options.expectedToken - The registration token the matcher must
  * present to validate registration.
+ * @param options.providerTag - The provider-local identifier for the
+ * service. Must be unique among services hosted by this provider and
+ * must persist across restarts of the same logical service; the matcher
+ * uses (peerId, providerTag) as the dedup key when re-registrations
+ * arrive.
  * @returns A ContactPoint exo.
  */
 export function makeContactEndpoint(options: {
@@ -42,6 +47,7 @@ export function makeContactEndpoint(options: {
   remotableSpec: RemotableSpec;
   getContactUrl: () => string;
   expectedToken: string;
+  providerTag: string;
 }): ContactPoint {
   const {
     name,
@@ -50,6 +56,7 @@ export function makeContactEndpoint(options: {
     remotableSpec,
     getContactUrl,
     expectedToken,
+    providerTag,
   } = options;
   let consumed = false;
 
@@ -72,6 +79,7 @@ export function makeContactEndpoint(options: {
         }),
         description,
         contact: harden(contact),
+        providerTag,
       });
     },
 
