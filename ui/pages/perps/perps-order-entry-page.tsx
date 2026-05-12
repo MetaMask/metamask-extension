@@ -312,11 +312,14 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const isOrderPending = isSubmitting;
 
-  // Dynamic fee rate for close-mode order submission tracking
-  const { feeRate: closeFeeRate } = usePerpsOrderFees({
-    symbol: decodedSymbol ?? '',
-    orderType: 'market',
-  });
+  // Dynamic fee rate for close-mode order submission tracking. Also surfaces
+  // the MetaMask fee discount percentage (when applicable) so the
+  // OrderSummary can render the inline `-X%` badge next to the estimated fees.
+  const { feeRate: closeFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: decodedSymbol ?? '',
+      orderType: 'market',
+    });
 
   const isLimitPriceInvalid = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -1443,6 +1446,9 @@ const PerpsOrderEntryPage: React.FC = () => {
             marginRequired={orderCalculations.marginRequired}
             estimatedFees={orderCalculations.estimatedFees}
             liquidationPrice={orderCalculations.liquidationPrice}
+            metamaskFeeRateDiscountPercentage={
+              metamaskFeeRateDiscountPercentage
+            }
           />
         )}
         {submitError && (
