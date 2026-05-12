@@ -208,7 +208,9 @@ async function mockSolanaTokenApiAssets(mockServer: Mockttp) {
 
 // --- Mock builders ---
 
-const mockSendWithUSDCVisible = async (mockServer: Mockttp): Promise<MockedEndpoint[]> => [
+const mockSendWithUSDCVisible = async (
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> => [
   ...(isUnifiedAssetsEnabled
     ? [
         await mockAccountsApiV2WithSolana(mockServer),
@@ -227,11 +229,9 @@ const mockSendWithUSDCVisible = async (mockServer: Mockttp): Promise<MockedEndpo
   await mockPriceApiExchangeRates(mockServer),
   await mockGetMultipleAccounts(mockServer),
   await mockSendSolanaTransaction(mockServer),
-    await mockGetTokenAccountBalance(mockServer),
-    await mockGetSuccessSplTokenTransaction(mockServer),
-    await mockGetMintAccountInfo(mockServer),
-
-
+  await mockGetTokenAccountBalance(mockServer),
+  await mockGetSuccessSplTokenTransaction(mockServer),
+  await mockGetMintAccountInfo(mockServer),
 
   isUnifiedAssetsEnabled
     ? await mockSolanaTokenApiAssets(mockServer)
