@@ -1,9 +1,11 @@
 import semver from 'semver';
-import { CarouselSlide } from '../../../shared/constants/app-state';
+import type { CarouselSlide } from '../../../shared/constants/app-state';
 import { isProduction } from '../../../shared/lib/environment';
 import { captureException } from '../../../shared/lib/sentry';
 import packageJson from '../../../package.json';
 import { getNormalizedLocale } from '../../../shared/constants/locales';
+import { DEEP_LINK_HOST } from '../../../shared/lib/deep-links/constants';
+import { parse } from '../../../shared/lib/deep-links/parse';
 
 const APP_VERSION = packageJson.version;
 const CONTENT_TYPE = 'promotionalBanner';
@@ -84,6 +86,35 @@ export class UnknownLocaleError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'UnknownLocaleError';
+  }
+}
+
+function toInternalHref(path: string, query: URLSearchParams): string {
+  const queryString = query.toString();
+  return queryString ? `${path}?${queryString}` : path;
+}
+
+async function resolveCarouselHref(linkUrl: string): Promise<string> {
+  try {
+    const url = new URL(linkUrl);
+
+    if (url.hostname !== DEEP_LINK_HOST) {
+      return linkUrl;
+    }
+
+    const parsed = await parse(url);
+
+    if (!parsed) {
+      return linkUrl;
+    }
+
+    if ('redirectTo' in parsed.destination) {
+      return parsed.destination.redirectTo.toString();
+    }
+
+    return toInternalHref(parsed.destination.path, parsed.destination.query);
+  } catch {
+    return linkUrl;
   }
 }
 
@@ -174,12 +205,14 @@ export async function fetchCarouselSlidesFromContentful(
       extensionMinimumVersionNumber,
     } = entry.fields;
 
+    const href = await resolveCarouselHref(linkUrl);
+
     const slide: CarouselSlide = {
       id: `contentful-${entry.sys.id}`,
       title: headline,
       description: teaser,
       image: resolveImage(image),
-      href: linkUrl,
+      href,
       undismissable,
       dismissed: false,
       startDate,
