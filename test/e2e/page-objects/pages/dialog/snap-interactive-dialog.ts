@@ -190,7 +190,7 @@ class SnapInteractiveDialog {
     );
 
     await this.driver.clickElement({
-      xpath: `//button[span[contains(text(), "${day}")]]`,
+      xpath: `//button[contains(@class, "MuiPickersDay-root") and normalize-space(.)="${day}"]`,
     });
   }
 
