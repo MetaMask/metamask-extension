@@ -1,0 +1,17 @@
+## zizmor configuration
+## Reference: https://docs.zizmor.sh/configuration/
+
+# Rule-specific tweaks. The CI workflow gates on `--min-severity` and is
+# tightened over time as findings are resolved.
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # Trusted first-party publishers — tag pins (e.g. `@v4`) are accepted.
+        # Hash pinning is still preferred but not required for these.
+        actions/*: ref-pin
+        github/*: ref-pin
+        MetaMask/*: ref-pin
+        metamask/*: ref-pin
+        # Default for everything else: require a hash pin.
+        "*": hash-pin
