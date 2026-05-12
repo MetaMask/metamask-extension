@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,10 +20,6 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  getNumberOfSettingRoutesInTab,
-  handleSettingsRefs,
-} from '../../../../helpers/utils/settings-search';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -63,18 +59,6 @@ const DebugContent = () => {
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
 
-  const settingsRefs = Array(
-    getNumberOfSettingRoutesInTab(t, t('developerOptions')),
-  )
-    .fill(undefined)
-    .map(() => {
-      return React.createRef();
-    });
-
-  useEffect(() => {
-    handleSettingsRefs(t, t('developerOptions'), settingsRefs);
-  }, [t, settingsRefs]);
-
   const handleResetAnnouncementClick = useCallback((): void => {
     resetViewedNotifications();
     setHasResetAnnouncements(true);
@@ -107,7 +91,6 @@ const DebugContent = () => {
   const renderAnnouncementReset = () => {
     return (
       <Box
-        ref={settingsRefs[1] as React.RefObject<HTMLDivElement>}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -154,7 +137,6 @@ const DebugContent = () => {
   const renderOnboardingReset = () => {
     return (
       <Box
-        ref={settingsRefs[2] as React.RefObject<HTMLDivElement>}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -213,7 +195,6 @@ const DebugContent = () => {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
         dataTestId="developer-options-service-worker-alive-toggle"
-        settingsRef={settingsRefs[3] as React.RefObject<HTMLDivElement>}
       />
     );
   };
@@ -269,7 +250,6 @@ const DebugContent = () => {
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
         paddingTop={6}
-        ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
       >
         Current States
       </Text>
@@ -280,7 +260,6 @@ const DebugContent = () => {
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
         paddingTop={6}
-        ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
       >
         Reset States
       </Text>
