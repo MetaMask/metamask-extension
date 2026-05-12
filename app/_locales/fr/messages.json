@@ -6946,9 +6946,6 @@
   "rewardsLinkAccountError": {
     "message": "Échec de l’ajout du compte"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Gagnez des points pour votre activité. \nProgressez à travers les niveaux pour débloquer des récompenses."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Nous ne pouvons pas déterminer si votre pays autorise l’adhésion au programme de récompenses. Veuillez vérifier votre connexion et réessayer."
   },
@@ -6961,84 +6958,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Réessayer"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "Réclamer 250 points"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Vérification de l’admissibilité…"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Vérification de la région…"
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Pas maintenant"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Les récompenses sont arrivées"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Les récompenses ne sont pas encore prises en charge dans votre région. Nous travaillons actuellement à l’élargissement de l’accès au programme des récompenses, veuillez donc revenir plus tard."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Région non prise en charge"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Chaque échange que vous effectuez et chaque contrat à terme perpétuel que vous tradez dans MetaMask vous rapproche des récompenses. Ajoutez vos comptes et regardez vos points s’accumuler."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Gagnez des points sur chaque transaction"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Atteignez des niveaux de points pour obtenir des avantages tels que 50 % de réduction sur les frais de trading de contrats à terme perpétuels, des jetons exclusifs et une carte MetaMask Metal gratuite."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Passez au niveau supérieur pour bénéficier d’avantages plus importants"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Vous pouvez gagner des points dans l’extension, mais vous devrez utiliser l’application mobile pour trader des contrats à terme perpétuels, suivre vos progrès et échanger vos récompenses."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Débloquer les récompenses sur mobile"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "En cliquant sur « Réclamer des points », vous acceptez nos $1. Nous suivrons votre activité sur la chaîne pour vous récompenser automatiquement. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "En savoir plus"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "conditions générales et notre politique de confidentialité"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Échec de l’inscription"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Code de parrainage non valide"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Utilisez un code de parrainage pour gagner 250 points"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Code de parrainage (facultatif)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Impossible de valider le code de parrainage."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Vérifiez votre connexion et réessayez."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Vous gagnerez 250 points quand vous vous inscrirez !"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Vous gagnerez 500 points lorsque vous vous inscrirez en utilisant un code de parrainage !"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Suivant"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Réclamer des points"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Vérification du code de parrainage…",

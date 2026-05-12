@@ -309,6 +309,8 @@ describe('Ducks - Bridge', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source: 1000,
         },
+        0,
+        1,
       );
     });
   });
