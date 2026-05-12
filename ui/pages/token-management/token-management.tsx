@@ -309,9 +309,27 @@ export const TokenManagementPage = () => {
    */
   const handleSearchResultToggle = useCallback(
     async (result: TokenSearchResult, nextValue: boolean) => {
-      const parsed = parseCaipAssetType(result.assetId as CaipAssetType);
+      // eslint-disable-next-line no-console
+      console.log('[TokenManagement] toggle clicked', {
+        assetId: result.assetId,
+        nextValue,
+      });
+      let parsed;
+      try {
+        parsed = parseCaipAssetType(result.assetId as CaipAssetType);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[TokenManagement] failed to parse assetId',
+          result.assetId,
+          err,
+        );
+        return;
+      }
       const { chainId: caipChainId, assetReference } = parsed;
       if (!caipChainId || !assetReference) {
+        // eslint-disable-next-line no-console
+        console.warn('[TokenManagement] missing chainId or reference', parsed);
         return;
       }
 
@@ -325,15 +343,31 @@ export const TokenManagementPage = () => {
           const [, reference] = caipChainId.split(':');
           const decimalChainId = Number(reference);
           if (!Number.isFinite(decimalChainId)) {
+            // eslint-disable-next-line no-console
+            console.warn(
+              '[TokenManagement] non-numeric chain reference',
+              caipChainId,
+            );
             return;
           }
           const hexChainId = `0x${decimalChainId.toString(16)}` as Hex;
           const { networkClientId } = getNetworkMeta(hexChainId);
           if (!networkClientId) {
+            // eslint-disable-next-line no-console
+            console.warn(
+              '[TokenManagement] no network client for chain',
+              hexChainId,
+            );
             return;
           }
 
           if (nextValue) {
+            // eslint-disable-next-line no-console
+            console.log('[TokenManagement] dispatching addImportedTokens', {
+              address: assetReference,
+              symbol: result.symbol,
+              networkClientId,
+            });
             await dispatch(
               addImportedTokens(
                 [
@@ -343,10 +377,7 @@ export const TokenManagementPage = () => {
                     decimals: result.decimals,
                     isERC721: false,
                     name: result.name,
-                    image:
-                      result.iconUrl ||
-                      getAssetImageUrl(result.assetId, caipChainId) ||
-                      undefined,
+                    ...(result.iconUrl ? { image: result.iconUrl } : {}),
                   },
                 ],
                 networkClientId,
@@ -364,10 +395,15 @@ export const TokenManagementPage = () => {
           return;
         }
 
-        // Non-EVM path (e.g. Solana, Tron). Mirrors mobile's
+        // Non-EVM path. Mirrors mobile's
         // `MultichainAssetsController.addAssets([assetId], accountId)`.
         const account = getAccountForChain(caipChainId);
         if (!account?.id) {
+          // eslint-disable-next-line no-console
+          console.warn(
+            '[TokenManagement] no account for non-EVM chain',
+            caipChainId,
+          );
           return;
         }
         if (nextValue) {
