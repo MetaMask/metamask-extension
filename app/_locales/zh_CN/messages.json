@@ -6942,9 +6942,6 @@
   "rewardsLinkAccountError": {
     "message": "添加账户失败"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "通过活动赚取积分。 \n提升等级即可解锁奖励。"
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "我们暂时无法确定您所在国家/地区是否允许参与奖励计划。请检查连接后重试。"
   },
@@ -6957,84 +6954,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "重试"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "领取 250 积分"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "正在检查资格..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "正在检查地区..."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "暂时不"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "奖励已到"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "您所在地区暂不支持奖励计划。我们正在努力拓展覆盖范围，敬请期待后续更新。"
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "不支持此地区"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "您在 MetaMask 进行的每次兑换和永续合约交易都将助您加速解锁奖励。添加您的账户，见证积分不断累积。"
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "每笔交易均可赚取积分"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "达成积分里程碑可享专属福利：永续合约手续费5折优惠、独家代币及免费 MetaMask Metal Card 等。"
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "升级以获取更多福利"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "您可在扩展程序中赚取积分，但需通过移动应用进行永续合约交易、追踪进度及兑换奖励。"
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "在移动端解锁奖励"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "点击“领取积分”即表示您同意我们的$1。我们将追踪您的链上活动，以便为您自动发放奖励。$2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "了解详情"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "服务条款与隐私说明"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "参与失败"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "推荐码无效"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "使用推荐码赚取 250 积分"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "推荐码（可选）"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "推荐码验证失败."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "请检查连接后重试。"
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "注册即可赚取 250 积分！"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "使用代码注册即可赚取 500 积分！"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "下一步"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "领取积分"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "正在验证推荐码…",

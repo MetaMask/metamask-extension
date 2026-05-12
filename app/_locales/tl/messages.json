@@ -6946,9 +6946,6 @@
   "rewardsLinkAccountError": {
     "message": "Bigong maidagdag ang account"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Mag-ipon ng points mula sa aktibidad mo. \nMagpatuloy sa mas mataas na antas upang ma-unlock ang mga reward."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Hindi namin matukoy kung pinapayagan ng iyong bansa na mag-opt in sa programa ng mga reward. Suriin ang iyong koneksyon at subukang muli."
   },
@@ -6961,84 +6958,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Subukang muli"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "I-claim ang 250 point"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Sinusuri ang pagiging kwalipikado..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Sinusuri ang rehiyon.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Hindi sa ngayon"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Narito na ang mga reward"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Hindi pa sinusuportahan ang mga reward sa iyong rehiyon. Nagsisikap kaming palawakin ang access, kaya mangyaring bumalik muli sa ibang pagkakataon."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Hindi sinusuportahan ang rehiyon"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Ang bawat pag-swap at pag-trade sa perps na isinasagawa mo sa MetaMask ay nagpapalapit sa iyo sa mga reward. Idagdag ang iyong mga account at makikita mong nadaragdagan ang iyong mga point."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Makakakuha ng mga point sa bawat pag-trade"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Abutin ang milestones ng mga point para makuha ang perks gaya ng 50% off na bayad sa perps, mga eksklusibong token, at libreng MetaMask Metal Card."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Mag-level up para sa mas malalaking perk"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Puwede kang makakuha ng mga point sa extension, pero kakailangin mo ng mobile app para mag-trade ng perps, subaybayan ang progreso mo, at mag-redeem ng mga reward."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Mag-unlock ng mga reward sa mobile"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "Sa pag-click sa \"Mag-claim ng points\", sumasang-ayon ka sa aming $1. Susubaybayan namin ang aktibidad mo sa chain para awtomatiko kang mabigyan ng reward. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Matuto pa"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Abiso sa Mga Tuntunin at Pagkapribado"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Nabigong mag-opt-in"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Hindi valid na referral code"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Gamitin ang referral code para makaipon ng 250 point"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Referral code (opsyonal)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Hindi ma-validate ang referral code."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Suriin ang iyong koneksyon at subukang muli."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Makakaipon ka ng 250 point kapag nag-sign up ka!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Makakaipon ka ng 500 point kapag nag-sign up ka gamit ang code!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Susunod"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "I-claim ang mga point"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Vine-verify ang referral code...",

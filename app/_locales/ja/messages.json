@@ -6942,9 +6942,6 @@
   "rewardsLinkAccountError": {
     "message": "アカウントの追加に失敗しました"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "アクティビティに対してポイントを獲得できます。\nレベルを上げてリワードのロックを解除しましょう。"
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "お住いの国でリワードプログラムへのオプトインが許可されているかを確認できません。接続を確認して、もう一度お試しください。"
   },
@@ -6957,84 +6954,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "再試行"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "250ポイントを請求する"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "資格の有無を確認中..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "地域を確認中…"
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "後で"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "リワードのご紹介"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "現在、お住まいの地域ではリワードをご利用いただけません。対象地域を拡大中ですので、後日再度ご確認ください。"
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "未対応の地域です"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "MetaMaskでスワップやパーペチュアル取引を行うたびに、リワード獲得のチャンスが近づきます。アカウントを追加して、ポイントが貯まる様子をご覧ください。"
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "すべての取引でポイントを獲得"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "ポイント数のマイルストーンに達すると、パーペチュアル手数料50%オフ、限定トークン、無料のMetaMaskメタルカードといった特典を獲得できます。"
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "レベルアップして特典を増やそう"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "拡張機能でポイントを獲得できますが、パーペチュアルの取引、進捗状況の追跡、リワードの引き換えにはモバイルアプリが必要です。"
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "モバイルでリワードをアンロック"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "「ポイントを請求」をクリックすることで、当社の$1に同意したものとみなされます。当社は報酬を自動的に付与できるよう、お客様のオンチェーンアクティビティを追跡します。$2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "詳細"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "規約およびプライバシー通知"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "オプトインに失敗しました"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "無効な紹介コード"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "紹介コードを使って250ポイントを獲得"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "紹介コード（オプション）"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "紹介コードを検証できませんでした."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "接続を確認して、もう一度お試しください。"
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "サインアップすると250ポイントを獲得できます！"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "コードを使ってサインアップすると500ポイントを獲得できます！"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "次へ"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "ポイントを請求する"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "紹介コードを検証中...",
