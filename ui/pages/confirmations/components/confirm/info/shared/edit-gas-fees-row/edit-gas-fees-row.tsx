@@ -1,4 +1,7 @@
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -58,6 +61,7 @@ export const EditGasFeesRow = ({
     chainId,
     isGasFeeSponsored: doesSentinelAllowSponsorship,
     simulationData,
+    type: transactionType,
   } = transactionMeta;
 
   const estimationFailed = useEstimationFailed();
@@ -72,10 +76,11 @@ export const EditGasFeesRow = ({
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
 
-  // This prevents the gas fee row from showing as sponsored if stx is disabled
-  // by the user and 7702 is not supported in the chain.
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
-  const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
+  const isGasFeeSponsored =
+    isGaslessSupported &&
+    doesSentinelAllowSponsorship &&
+    transactionType !== TransactionType.revokeDelegation;
 
   let tooltip = t('estimatedFeeTooltip');
   if (isGasFeeSponsored) {
