@@ -67,26 +67,12 @@ export function useHwSwapSubmission({
   useEffect(() => {
     const requestId = lockedQuote?.quote.requestId;
 
-    console.log(
-      '[HW-Batch] useHwSwapSubmission reset effect',
-      JSON.stringify({
-        requestId: requestId ?? null,
-        prevRequestId: quoteRequestIdRef.current ?? null,
-        hasStartedSubmission: hasStartedSubmission.current,
-        needsTwoConfirmations,
-      }),
-    );
-
     if (!requestId || quoteRequestIdRef.current === requestId) {
       return;
     }
 
     quoteRequestIdRef.current = requestId;
     hasStartedSubmission.current = false;
-    console.log(
-      '[HW-Batch] useHwSwapSubmission dispatching Reset',
-      JSON.stringify({ needsTwoConfirmations }),
-    );
     dispatchSignatureEvent({
       type: HardwareWalletSignatureEvent.Reset,
       needsTwoConfirmations,
@@ -98,32 +84,14 @@ export function useHwSwapSubmission({
   ]);
 
   useEffect(() => {
-    console.log(
-      '[HW-Batch] useHwSwapSubmission auto-submit effect',
-      JSON.stringify({
-        hasStartedSubmission: hasStartedSubmission.current,
-        hasLockedQuote: Boolean(lockedQuote),
-      }),
-    );
-
     if (hasStartedSubmission.current || !lockedQuote) {
       return;
     }
 
     hasStartedSubmission.current = true;
-    console.log('[HW-Batch] useHwSwapSubmission calling submitActiveQuote');
     submitActiveQuoteRef
       .current()
-      .then(() => {
-        console.log(
-          '[HW-Batch] useHwSwapSubmission submitActiveQuote resolved',
-        );
-      })
-      .catch((err) => {
-        console.log(
-          '[HW-Batch] useHwSwapSubmission submitActiveQuote rejected',
-          err,
-        );
+      .catch(() => {
         hasStartedSubmission.current = false;
       });
   }, [lockedQuote]);
@@ -131,22 +99,14 @@ export function useHwSwapSubmission({
   const retrySubmission = useCallback(async () => {
     hasStartedSubmission.current = true;
     if (!lockedQuote) {
-      console.log('[HW-Batch] retrySubmission: no lockedQuote, returning');
       return;
     }
-    console.log('[HW-Batch] retrySubmission: calling submitBridgeTransaction');
     try {
       await submitBridgeTransaction(lockedQuote, {
         rpcTimeoutMs: RETRY_RPC_TIMEOUT_MS,
       });
-      console.log(
-        '[HW-Batch] retrySubmission: submitBridgeTransaction resolved',
-      );
-    } catch (err) {
-      console.log(
-        '[HW-Batch] retrySubmission: submitBridgeTransaction threw',
-        err,
-      );
+    } catch (_err) {
+      // submission failed
     }
   }, [lockedQuote, submitBridgeTransaction]);
 

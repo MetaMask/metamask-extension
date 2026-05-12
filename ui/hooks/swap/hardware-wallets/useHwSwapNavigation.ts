@@ -35,9 +35,6 @@ export function useHwSwapNavigation({
       return;
     }
 
-    console.log(
-      '[HW-Batch] useHwSwapNavigation: Submitted → scheduling toast + navigate in 1s',
-    );
     hasNavigatedAfterSubmission.current = true;
 
     const toastId = `bridge-hw-submitted-${Date.now()}`;

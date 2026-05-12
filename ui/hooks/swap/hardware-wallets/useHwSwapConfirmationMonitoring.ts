@@ -62,17 +62,6 @@ export function useHwSwapConfirmationMonitoring({
     const currentId = confirmationTxData?.id;
     const previousId = previousTxIdRef.current;
 
-    console.log(
-      '[HW-Batch] useHwSwapConfirmationMonitoring effect',
-      JSON.stringify({
-        currentId: currentId ?? null,
-        previousId: previousId ?? null,
-        hardwareWalletUsed,
-        signatureState: signatureState.status,
-        isDeviceDisconnected: isDeviceDisconnectedRef?.current ?? false,
-      }),
-    );
-
     if (
       hardwareWalletUsed &&
       (signatureState.status ===
@@ -83,13 +72,6 @@ export function useHwSwapConfirmationMonitoring({
       !currentId &&
       !isDeviceDisconnectedRef?.current
     ) {
-      console.log(
-        '[HW-Batch] useHwSwapConfirmationMonitoring → TransactionRejected',
-        JSON.stringify({
-          previousId,
-          currentId: currentId ?? null,
-        }),
-      );
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });
