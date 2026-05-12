@@ -144,6 +144,8 @@ export const UnlockPasskeySection = ({
             failed_attempts: passkeyFailedAttemptCount.current,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             unlock_type: 'passkey',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            passkey_enabled: isPasskeyActive,
           },
         });
         passkeyFailedAttemptCount.current = 0;
@@ -191,6 +193,8 @@ export const UnlockPasskeySection = ({
               // eslint-disable-next-line @typescript-eslint/naming-convention
               unlock_type: 'passkey',
               reason: errorCode,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              passkey_enabled: isPasskeyActive,
             },
           });
           setPasskeyError(

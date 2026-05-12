@@ -1,9 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import log from 'loglevel';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
