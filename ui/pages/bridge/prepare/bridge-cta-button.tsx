@@ -147,7 +147,7 @@ export const BridgeCTAButton = ({
       };
     }
 
-    if (!isNetworkFeeUnavailable) {
+    if (isNetworkFeeUnavailable) {
       return {
         disabled: false,
         onClick: onFetchNewQuotes,
