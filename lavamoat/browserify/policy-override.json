@@ -138,6 +138,13 @@
         "WorkerGlobalScope": false,
         "importScripts": false
       }
+    },
+    "@emotion/react>@emotion/cache": {
+      "globals": {
+        "document": false,
+        "document.head": true,
+        "document.querySelectorAll": true
+      }
     }
   }
 }
