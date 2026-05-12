@@ -36,10 +36,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
-        await testDapp.initCreateSessionScopes(
-          EVM_SCOPES,
-          CAIP_ACCOUNT_IDS,
-        );
+        await testDapp.initCreateSessionScopes(EVM_SCOPES, CAIP_ACCOUNT_IDS);
 
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
@@ -106,10 +103,7 @@ describe('Initializing a session w/ several scopes and accounts, then calling `w
         await testDapp.checkPageIsLoaded();
         await testDapp.connectExternallyConnectable(extensionId);
 
-        await testDapp.initCreateSessionScopes(
-          EVM_SCOPES,
-          CAIP_ACCOUNT_IDS,
-        );
+        await testDapp.initCreateSessionScopes(EVM_SCOPES, CAIP_ACCOUNT_IDS);
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
         );
