@@ -1,4 +1,6 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
+import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
+import { isEqualCaseInsensitive } from '../../string-utils';
 import type { ActivityListItem, Status } from '../types';
 
 export function mapMultiAccountTransaction({
@@ -8,15 +10,17 @@ export function mapMultiAccountTransaction({
   subjectAddress: string;
   transaction: V1TransactionByHashResponse;
 }): ActivityListItem {
-  const address = subjectAddress.toLowerCase();
-  const chainId = `eip155:${transaction.chainId}` as const;
+  const chainId = toCaipChainId(
+    KnownCaipNamespace.Eip155,
+    transaction.chainId.toString(),
+  );
   const status: Status = transaction.isError ? 'failed' : 'success';
   const timestamp = new Date(transaction.timestamp).getTime();
   const sentTransfer = transaction.valueTransfers?.find(
-    ({ from }) => from?.toLowerCase() === address,
+    ({ from }) => isEqualCaseInsensitive(from, subjectAddress),
   );
   const receivedTransfer = transaction.valueTransfers?.find(
-    ({ to }) => to?.toLowerCase() === address,
+    ({ to }) => isEqualCaseInsensitive(to, subjectAddress),
   );
 
   if (
@@ -53,8 +57,10 @@ export function mapMultiAccountTransaction({
   ) {
     const isReceive =
       Boolean(receivedTransfer) ||
-      (transaction.to?.toLowerCase() === address &&
-        transaction.from?.toLowerCase() !== address);
+      (isEqualCaseInsensitive(transaction.to, subjectAddress) &&
+        !isEqualCaseInsensitive(transaction.from, subjectAddress));
+
+    const transfer = isReceive ? receivedTransfer : sentTransfer;
 
     return {
       type: isReceive ? 'receive' : 'send',
@@ -62,8 +68,8 @@ export function mapMultiAccountTransaction({
       status,
       timestamp,
       data: {
-        from: transaction.from,
-        to: transaction.to,
+        from: transfer?.from ?? transaction.from,
+        to: transfer?.to ?? transaction.to,
         tokenSymbol: isReceive
           ? receivedTransfer?.symbol
           : sentTransfer?.symbol,
