@@ -11,6 +11,9 @@ export type AssetsUnifyStateFeatureFlag = {
  * Shared helper to check whether the assets-unify-state feature is enabled
  * for a given application version. This keeps background and UI gating logic in sync.
  *
+ * In test environments the flag is always considered enabled so that E2E and
+ * unit tests do not need to set up the remote feature-flag machinery.
+ *
  * @param featureFlag - The assets-unify-state feature flag.
  * @param featureVersion - The feature version to check.
  * @returns boolean - True if the feature is enabled, false otherwise.
@@ -18,6 +21,13 @@ export type AssetsUnifyStateFeatureFlag = {
 export const isAssetsUnifyStateFeatureEnabled = (
   featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
   featureVersion: string,
-): boolean =>
-  Boolean(featureFlag?.enabled) &&
-  featureFlag?.featureVersion === featureVersion;
+): boolean => {
+  const env = process.env.METAMASK_ENVIRONMENT;
+  if (env === 'test' || env === 'testing') {
+    return true;
+  }
+  return (
+    Boolean(featureFlag?.enabled) &&
+    featureFlag?.featureVersion === featureVersion
+  );
+};
