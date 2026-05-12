@@ -71,7 +71,7 @@ const NftDetailInformationRow: React.FC<
       {icon ? (
         <Box display={Display.Flex}>
           {buttonAddressValue ? (
-            { ...buttonAddressValue }
+            ({ ...buttonAddressValue } as unknown as React.ReactNode)
           ) : (
             <Text
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880

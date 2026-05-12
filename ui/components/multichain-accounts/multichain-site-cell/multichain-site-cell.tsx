@@ -131,6 +131,7 @@ export const MultichainSiteCell: React.FC<
           onClick={handleOpenAccountsModal}
           paddingBottomValue={2}
           paddingTopValue={0}
+          // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
           content={
             selectedAccountGroupIds.length === 1 ? (
               <PreferredAvatar
@@ -155,6 +156,7 @@ export const MultichainSiteCell: React.FC<
           onClick={handleOpenNetworksModal}
           paddingTopValue={2}
           paddingBottomValue={0}
+          // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
           content={<MultichainSiteCellTooltip networks={selectedNetworks} />}
         />
       </Box>

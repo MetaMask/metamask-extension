@@ -44,7 +44,7 @@ const NftDetailInformationFrame = ({
         >
           {' '}
           {buttonAddressValue ? (
-            { ...buttonAddressValue }
+            ({ ...buttonAddressValue } as unknown as React.ReactNode)
           ) : (
             <Text style={frameTextValueStyle} {...frameTextValueProps}>
               {value}

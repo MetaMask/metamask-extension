@@ -57,7 +57,7 @@ const mockStore = configureMockStore()({
 
 function renderQueryHook<Result>(callback: () => Result) {
   return renderHookBase(callback, {
-    wrapper: ({ children }) =>
+    wrapper: ({ children }: React.PropsWithChildren) =>
       React.createElement(Provider, { store: mockStore }, children),
   });
 }

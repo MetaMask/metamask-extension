@@ -57,15 +57,15 @@ export function useIsGaslessSupported() {
 
   const is7702Supported = Boolean(
     !isHardwareWalletAccount &&
-      relaySupportsChain &&
-      // contract deployments can't be delegated
-      transactionMeta?.txParams?.to !== undefined,
+    relaySupportsChain &&
+    // contract deployments can't be delegated
+    transactionMeta?.txParams?.to !== undefined,
   );
 
   const isSupported = Boolean(
     !isHardwareWalletAccount &&
-      !isDowngradeTransaction &&
-      (isSmartTransactionAndBundleSupported || is7702Supported),
+    !isDowngradeTransaction &&
+    (isSmartTransactionAndBundleSupported || is7702Supported),
   );
 
   const isPending =

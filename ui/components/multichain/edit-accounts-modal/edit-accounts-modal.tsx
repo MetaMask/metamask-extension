@@ -183,6 +183,7 @@ export const EditAccountsModal: React.FC<
                   key={account.caipAccountId}
                   isPinned={Boolean(account.pinned)}
                   showConnectedStatus={false}
+                  // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
                   startAccessory={
                     <Checkbox
                       isChecked={selectedAccountAddresses.some(

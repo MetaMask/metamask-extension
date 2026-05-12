@@ -15,6 +15,7 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import type { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -59,7 +60,13 @@ import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { useRiveWasmContext } from '../../../contexts/rive-wasm';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import WelcomeLogin from './welcome-login';
-import { LOGIN_ERROR, LOGIN_OPTION, LOGIN_TYPE, LoginErrorType } from './types';
+import {
+  LOGIN_ERROR,
+  LOGIN_OPTION,
+  LOGIN_TYPE,
+  LoginErrorType,
+  LoginType,
+} from './types';
 import LoginErrorModal from './login-error-modal';
 
 const MetaMaskWordMarkAnimation = lazy(
@@ -113,7 +120,7 @@ export default function OnboardingWelcome() {
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
     animationCompleted?.MetamaskWordMarkAnimation ||
-      process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
+    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
   );
 
   // In test environments or when returning from another page, skip animations
@@ -239,7 +246,7 @@ export default function OnboardingWelcome() {
   }, [dispatch, navigate, trackEvent, onboardingParentContext, bufferedTrace]);
 
   const handleSocialLogin = useCallback(
-    async (socialConnectionType) => {
+    async (socialConnectionType: LoginType) => {
       if (isSeedlessOnboardingFeatureEnabled) {
         bufferedTrace?.({
           name: TraceName.OnboardingSocialLoginAttempt,
@@ -249,7 +256,7 @@ export default function OnboardingWelcome() {
         });
         const isNewUser = await dispatch(
           startOAuthLogin(
-            socialConnectionType,
+            socialConnectionType as AuthConnection,
             bufferedTrace,
             bufferedEndTrace,
             trackEvent,
@@ -271,12 +278,12 @@ export default function OnboardingWelcome() {
   );
 
   const handleSocialLoginError = useCallback(
-    (error) => {
+    (error: unknown) => {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
       // Map raw OAuth error messages to UI modal-friendly constants
-      if (isUserCancelledLoginError(error)) {
+      if (isUserCancelledLoginError(error as Error | undefined)) {
         setLoginError(null);
         return;
       }
@@ -302,7 +309,7 @@ export default function OnboardingWelcome() {
   );
 
   const onSocialLoginCreateClick = useCallback(
-    async (socialConnectionType) => {
+    async (socialConnectionType: LoginType) => {
       setIsLoggingIn(true);
       setNewAccountCreationInProgress(true);
 
@@ -357,7 +364,7 @@ export default function OnboardingWelcome() {
   );
 
   const onSocialLoginImportClick = useCallback(
-    async (socialConnectionType) => {
+    async (socialConnectionType: LoginType) => {
       setIsLoggingIn(true);
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
@@ -410,8 +417,8 @@ export default function OnboardingWelcome() {
     ],
   );
 
-  const handleLoginError = useCallback((error) => {
-    if (isUserCancelledLoginError(error)) {
+  const handleLoginError = useCallback((error: unknown) => {
+    if (isUserCancelledLoginError(error as Error | undefined)) {
       setLoginError(null);
     } else {
       setLoginError(LOGIN_ERROR.GENERIC);
@@ -419,7 +426,7 @@ export default function OnboardingWelcome() {
   }, []);
 
   const handleLogin = useCallback(
-    async (loginType, loginOption) => {
+    async (loginType: LoginType, loginOption: string) => {
       try {
         if (!isFireFox) {
           // reset the participate in meta metrics in case it was set to true from previous login attempts

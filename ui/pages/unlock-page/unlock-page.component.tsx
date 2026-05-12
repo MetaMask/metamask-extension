@@ -129,6 +129,8 @@ const FoxAppearAnimation = lazy(
 );
 
 class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
+  declare context: UnlockPageContext;
+
   static contextTypes = {
     trackEvent: PropTypes.func,
     bufferedTrace: PropTypes.func,

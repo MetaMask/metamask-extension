@@ -82,27 +82,34 @@ function AlertDetails({
   return (
     <Box marginTop={1}>
       <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
-        {Array.isArray(details) ? (
-          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
-            {details.map((detail, index) => (
-              <Box as="li" key={`disclosure-detail-${index}`}>
-                <Text
-                  variant={TextVariant.bodyMdMedium}
-                  fontWeight={FontWeight.Normal}
-                >
-                  {detail}
-                </Text>
-              </Box>
-            ))}
-          </Box>
-        ) : (
-          <>{details}</>
-        )}
-        <ReportLink
-          reportUrl={reportUrl}
-          provider={provider}
-          onClickSupportLink={onClickSupportLink}
-        />
+        {
+          (Array.isArray(details) ? (
+            <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
+              {details.map((detail, index) => (
+                <Box as="li" key={`disclosure-detail-${index}`}>
+                  <Text
+                    variant={TextVariant.bodyMdMedium}
+                    fontWeight={FontWeight.Normal}
+                  >
+                    {detail}
+                  </Text>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <>{details}</>
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          )) as any
+        }
+        {
+          (
+            <ReportLink
+              reportUrl={reportUrl}
+              provider={provider}
+              onClickSupportLink={onClickSupportLink}
+            /> // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ) as any
+        }
       </Disclosure>
     </Box>
   );

@@ -131,7 +131,7 @@ function renderQrCameraFlowContent({
   onRetry: () => Promise<void>;
   isLoading: boolean;
   redirectQueryString?: string | null;
-}): React.JSX.Element {
+}): JSX.Element {
   const handleOpenSettings = () => {
     globalThis.platform.openTab({
       url: getChromiumExtensionCameraSiteSettingsUrl(),

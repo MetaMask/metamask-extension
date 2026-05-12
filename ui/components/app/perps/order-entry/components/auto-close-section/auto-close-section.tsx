@@ -373,11 +373,11 @@ export const AutoCloseSection: React.FC<
     () =>
       Boolean(
         takeProfitPrice.trim() &&
-          validationReferencePrice > 0 &&
-          !isValidTakeProfitPrice(takeProfitPrice, {
-            currentPrice: validationReferencePrice,
-            direction,
-          }),
+        validationReferencePrice > 0 &&
+        !isValidTakeProfitPrice(takeProfitPrice, {
+          currentPrice: validationReferencePrice,
+          direction,
+        }),
       ),
     [takeProfitPrice, validationReferencePrice, direction],
   );
@@ -386,11 +386,11 @@ export const AutoCloseSection: React.FC<
     () =>
       Boolean(
         stopLossPrice.trim() &&
-          validationReferencePrice > 0 &&
-          !isValidStopLossPrice(stopLossPrice, {
-            currentPrice: validationReferencePrice,
-            direction,
-          }),
+        validationReferencePrice > 0 &&
+        !isValidStopLossPrice(stopLossPrice, {
+          currentPrice: validationReferencePrice,
+          direction,
+        }),
       ),
     [stopLossPrice, validationReferencePrice, direction],
   );
@@ -399,10 +399,10 @@ export const AutoCloseSection: React.FC<
     () =>
       Boolean(
         stopLossPrice.trim() &&
-          !isStopLossSafeFromLiquidation(stopLossPrice, {
-            liquidationPrice,
-            direction,
-          }),
+        !isStopLossSafeFromLiquidation(stopLossPrice, {
+          liquidationPrice,
+          direction,
+        }),
       ),
     [stopLossPrice, liquidationPrice, direction],
   );

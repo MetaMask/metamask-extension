@@ -174,7 +174,7 @@ export function AssetPickerModal({
   }, [searchQuery, debouncedSetSearchQuery]);
 
   const handleAssetChange = useCallback(
-    (newAsset) => {
+    (newAsset: Parameters<typeof onAssetChange>[0]) => {
       onAssetChange(newAsset);
       setSearchQuery('');
     },
@@ -417,8 +417,8 @@ export function AssetPickerModal({
 
       return Boolean(
         isTokenInSelectedChain &&
-          isMatchedBySearchQuery &&
-          !filteredTokensAddresses.has(getTokenKey(address, tokenChainId)),
+        isMatchedBySearchQuery &&
+        !filteredTokensAddresses.has(getTokenKey(address, tokenChainId)),
       );
     };
 

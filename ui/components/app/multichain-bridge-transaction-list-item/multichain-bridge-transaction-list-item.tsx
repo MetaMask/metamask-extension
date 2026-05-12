@@ -117,6 +117,7 @@ const MultichainBridgeTransactionListItem: React.FC<
       className="multichain-bridge-transaction-list-item"
       data-testid="multichain-bridge-activity-item"
       onClick={() => toggleShowDetails(transaction)}
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       icon={
         <BadgeWrapper
           anchorElementShape={BadgeWrapperAnchorElementShape.circular}
@@ -143,6 +144,7 @@ const MultichainBridgeTransactionListItem: React.FC<
           />
         </BadgeWrapper>
       }
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       rightContent={
         <>
           <Text
@@ -169,6 +171,7 @@ const MultichainBridgeTransactionListItem: React.FC<
         </>
       }
       title={title}
+      // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
       subtitle={
         <Box
           display={Display.Flex}
