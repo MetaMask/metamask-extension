@@ -4,14 +4,7 @@ Observability for the MetaMask LLM workflow — traces every tool call, LLM prom
 
 ## Overview
 
-Two tracing layers work together:
-
-| Layer | What it captures | Source |
-|---|---|---|
-| **Daemon hooks** | Every `mm` tool call (click, type, screenshot) with input/output | `langfuse-hooks.ts` via `@langfuse/tracing` |
-| **Claude runner** | LLM prompts, completions, token usage, cost, tool calls | `claude-runner.ts` via Claude Agent SDK message stream |
-
-Both share the same Langfuse session ID — all spans appear in a single unified trace.
+Tracing is handled by the Claude runner (`claude-runner.ts`), which captures LLM prompts, completions, token usage, cost, and tool calls from the Claude Agent SDK message stream. Spans are created using `@langfuse/tracing` and exported via the `LangfuseSpanProcessor` from `@langfuse/otel`.
 
 ## Setup
 
@@ -27,14 +20,14 @@ LANGFUSE_BASE_URL="https://langfuse.svc.consensys.info"
 ANTHROPIC_API_KEY="sk-ant-..."
 ```
 
-| Variable | Required for | Description |
+| Variable | Required | Description |
 |---|---|---|
-| `LANGFUSE_ENABLED` | Both | Set `true` to enable tracing |
-| `LANGFUSE_SECRET_KEY` | Both | Langfuse project secret key |
-| `LANGFUSE_PUBLIC_KEY` | Both | Langfuse project public key |
-| `LANGFUSE_BASE_URL` | Both | Self-hosted Langfuse URL |
-| `ANTHROPIC_API_KEY` | Claude runner only | Anthropic API key for Claude |
-| `LANGFUSE_USER_ID` | Optional | Override the default userId (defaults to OS username) |
+| `LANGFUSE_ENABLED` | Yes | Set `true` to enable tracing |
+| `LANGFUSE_SECRET_KEY` | Yes | Langfuse project secret key |
+| `LANGFUSE_PUBLIC_KEY` | Yes | Langfuse project public key |
+| `LANGFUSE_BASE_URL` | Yes | Self-hosted Langfuse URL |
+| `ANTHROPIC_API_KEY` | Yes | Anthropic API key (used by both the agent and the LLM-as-a-judge evaluator) |
+| `LANGFUSE_USER_ID` | No | Override the default userId (defaults to OS username) |
 
 ### 2. Install dependencies
 
@@ -51,20 +44,7 @@ yarn build:test
 
 ## Usage
 
-### Interactive (daemon-only tracing)
-
-When using `mm` CLI from OpenCode or terminal, tool calls are automatically traced. No extra setup beyond `.env.langfuse`.
-
-```bash
-mm launch
-mm describe-screen   # → tool:mm_describe_screen span in Langfuse
-mm click e3          # → tool:mm_click span in Langfuse
-mm cleanup
-```
-
-### Automated (Claude runner with full LLM tracing)
-
-For scripted runs where you need prompts, completions, and token usage traced:
+Run Claude against MetaMask with full tracing:
 
 ```bash
 npx tsx test/e2e/playwright/llm-workflow/claude-runner.ts \
@@ -116,7 +96,7 @@ claude-runner (agent span)
 │   model: claude-sonnet-4-6
 │   tokens: 3 in / 95 out
 │
-├── tool:Bash (tool span)
+├── Bash: mm describe-screen (tool span)
 │   input: { command: "mm describe-screen" }
 │   output: "{ state: { screen: 'home', ... }, a11y: [...] }"
 │
@@ -125,15 +105,16 @@ claude-runner (agent span)
 │   output: "I can see the home screen. I'll click Settings..."
 │   tokens: 1200 in / 50 out
 │
-├── tool:Bash (tool span)
+├── Bash: mm click e5 (tool span)
 │   input: { command: "mm click e5" }
 │   output: "Clicked Settings button"
 │
-├── tool:mm_click (tool span, from daemon hooks)
-│   input: { a11yRef: "e5" }
-│   output: { clicked: true, target: "Settings" }
+├── ...
 │
-└── ...
+└── Scores (from LLM-as-a-judge, posted after run completes)
+    task_completion: 0.9 — "Successfully navigated to settings"
+    efficiency: 0.8 — "Minimal steps, one extra screenshot"
+    correctness: 1.0 — "All actions correct"
 ```
 
 ## Architecture
@@ -148,18 +129,15 @@ claude-runner (agent span)
 │    → creates Langfuse spans:                 │
 │        generation (per LLM turn)             │
 │        tool (per tool_use / tool_result)     │
+│    → runs LLM-as-a-judge evaluation          │
+│    → posts scores to Langfuse API            │
 └──────────────┬───────────────────────────────┘
                │ Claude calls `mm` CLI via Bash
                ▼
 ┌──────────────────────────────────────────────┐
 │  daemon.ts                                   │
-│                                              │
 │  HTTP daemon (createServer from mcp-core)    │
-│  langfuse-hooks.ts:                          │
-│    onSessionStart → agent span               │
-│    onToolEnd → tool span with input/output   │
-│    onToolError → error span                  │
-│    onSessionEnd / onServerStop → flush       │
+│  Manages Playwright browser session          │
 └──────────────┬───────────────────────────────┘
                │ Playwright
                ▼
@@ -167,7 +145,7 @@ claude-runner (agent span)
 │  Chrome + MetaMask Extension + Anvil         │
 └──────────────────────────────────────────────┘
 
-        All spans → same Langfuse session
+        All spans → Langfuse
                        ▼
 ┌──────────────────────────────────────────────┐
 │  Langfuse (self-hosted)                      │
@@ -175,40 +153,54 @@ claude-runner (agent span)
 └──────────────────────────────────────────────┘
 ```
 
-### Session ID correlation
+## LLM-as-a-judge evaluation
 
-The runner fetches the daemon's active session ID via `GET /status` and uses it as the Langfuse `sessionId` for all its spans. This ensures daemon tool spans and runner generation spans appear in the same Langfuse session view.
+After each run, the runner automatically evaluates Claude's performance by calling `claude-sonnet-4-6` as a judge. The judge receives the task prompt, the full conversation transcript, and scores on three dimensions:
 
-If no daemon session is active, the runner falls back to the Claude SDK session ID.
+| Score | Range | Description |
+|---|---|---|
+| `task_completion` | 0.0–1.0 | Did the agent complete the requested task? |
+| `efficiency` | 0.0–1.0 | How many wasted steps? |
+| `correctness` | 0.0–1.0 | Were the agent's actions correct? |
+
+Scores are posted to Langfuse via `POST /api/public/scores` and appear on the trace detail page. Each score includes a brief reasoning comment from the judge.
+
+## Session lifecycle
+
+The runner manages the full lifecycle automatically:
+
+1. **Start**: Checks if daemon is running via `GET /status`, starts it with `mm launch --state default --force` if not
+2. **Session ID**: Reads the daemon's active session ID from `/status` and uses it as the Langfuse session ID
+3. **Run**: Iterates the Claude Agent SDK message stream, creating Langfuse spans for each generation and tool call
+4. **Evaluate**: Calls LLM-as-a-judge and posts scores to Langfuse
+5. **Cleanup**: Runs `mm cleanup` to tear down the browser session, then shuts down the OTel SDK
 
 ## Key files
 
 | File | Purpose |
 |---|---|
-| `instrumentation.ts` | OTel SDK + `LangfuseSpanProcessor` init, imported by both daemon and runner |
-| `langfuse-hooks.ts` | `ToolHooks` implementation — creates Langfuse tool spans for each `mm` tool call |
-| `claude-runner.ts` | Standalone script — runs Claude Agent SDK with client-side Langfuse instrumentation |
-| `daemon.ts` | HTTP daemon entry point — wires session manager, knowledge store, and Langfuse hooks |
+| `instrumentation.ts` | OTel SDK + `LangfuseSpanProcessor` init |
+| `runner-tracing.ts` | Span helpers: `createSessionSpan`, `traceSpan`, `setOtelAttrs` |
+| `runner-message-handler.ts` | SDK message → Langfuse span mapping (generation, tool, result) |
+| `runner-eval.ts` | LLM-as-a-judge evaluation + score posting |
+| `runner-daemon.ts` | Daemon lifecycle: start, session ID, cleanup |
+| `message-parser.ts` | Extract text content and tool use blocks from Claude messages |
 | `.env.langfuse` | Credentials file (gitignored) |
 
 ## Sensitive data handling
 
-- Passwords, SRPs, seed phrases, mnemonics, and private keys are redacted from tool span inputs
-- Base64 screenshots are replaced with `[REDACTED base64 NKB]`
 - Tool results longer than 4000 chars are truncated
 - Use `--redact` flag on the runner to strip all prompt/completion content from traces
 
 ## Disabling tracing
 
-Set `LANGFUSE_ENABLED=false` in `.env.langfuse` or remove the file entirely. Both the daemon and runner check this flag at startup and skip all tracing when disabled. There is zero performance impact when tracing is off.
+Set `LANGFUSE_ENABLED=false` in `.env.langfuse` or remove the file entirely. The runner checks this flag at startup and skips all tracing when disabled. There is zero performance impact when tracing is off.
 
 ## Troubleshooting
 
 | Issue | Fix |
 |---|---|
 | No traces appearing | Check `LANGFUSE_ENABLED=true` and that public/secret keys are set in `.env.langfuse` |
-| Two separate sessions in Langfuse | Restart daemon (`mm cleanup --shutdown && mm launch`) so runner can read the session ID from `/status` |
-| Empty input/output on spans | This is expected for Claude CLI native OTel spans — the runner's client-side spans have content |
 | Runner fails with "ANTHROPIC_API_KEY required" | Add your Anthropic key to `.env.langfuse` |
 | Runner hits max turns | Increase with `--max-turns 100` |
 | Daemon not auto-starting | Ensure extension is built: `yarn build:test` |
