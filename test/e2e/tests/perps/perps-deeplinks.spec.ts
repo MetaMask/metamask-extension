@@ -140,9 +140,7 @@ async function getPerpsDeepLinkConfig(options: {
             statusCode: 200,
             json: [
               {
-                universe: [
-                  { name: 'TSLA', szDecimals: 2, maxLeverage: 10 },
-                ],
+                universe: [{ name: 'TSLA', szDecimals: 2, maxLeverage: 10 }],
               },
               [
                 {
@@ -311,11 +309,11 @@ describe('Perps Deep Links', function (this: Suite) {
 
     await withFixtures(
       {
-        ...await getPerpsDeepLinkConfig({
+        ...(await getPerpsDeepLinkConfig({
           title: this.test?.fullTitle(),
           deepLinkPublicKey,
           enableHip3: true,
-        }),
+        })),
         // WS mocks to inject the xyz HIP-3 DEX with a TSLA equity market
         perpsWebSocketSpecificMocks: WS_WITH_STOCKS_MARKET,
       },

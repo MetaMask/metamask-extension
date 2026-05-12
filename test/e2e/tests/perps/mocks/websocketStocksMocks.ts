@@ -20,9 +20,7 @@
 import type { WebSocketMessageMock } from '../../../websocket/types';
 import { buildWsPostResponse, parseWsPost } from './websocketDefaultMocks';
 
-const TSLA_UNIVERSE = [
-  { name: 'TSLA', szDecimals: 2, maxLeverage: 10 },
-];
+const TSLA_UNIVERSE = [{ name: 'TSLA', szDecimals: 2, maxLeverage: 10 }];
 
 const TSLA_ASSET_CTX = {
   funding: '0.0001',
