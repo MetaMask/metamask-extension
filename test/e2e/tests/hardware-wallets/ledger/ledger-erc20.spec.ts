@@ -12,6 +12,7 @@ import TokenTransferTransactionConfirmation from '../../../page-objects/pages/co
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { mockEmptyPrices } from '../../tokens/utils/mocks';
 
 describe('Ledger Hardware', function (this: Suite) {
   it('can create an ERC20 token', async function () {
@@ -25,6 +26,7 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEmptyPrices,
       },
       async ({ driver, localNodes }) => {
         const symbol = 'TST';
@@ -75,6 +77,7 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc20,
@@ -138,6 +141,7 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc20,
@@ -195,6 +199,7 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc20,

@@ -17,6 +17,7 @@ import { type GasOption } from '../../types/gas';
 import { EMPTY_VALUE_STRING } from '../../constants/gas';
 import { useTransactionNativeTicker } from '../transactions/useTransactionNativeTicker';
 import { hexWEIToDecGWEI } from '../../../../../shared/lib/conversion.utils';
+import { useTransactionGasLimit } from './useTransactionGasLimit';
 
 const HEX_ZERO = '0x0';
 
@@ -30,6 +31,7 @@ export const useGasPriceEstimateOption = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
   const { calculateGasEstimate } = useFeeCalculations(transactionMeta);
+  const { gasLimit: displayGas } = useTransactionGasLimit(transactionMeta);
   const nativeTicker = useTransactionNativeTicker();
 
   const {
@@ -97,7 +99,7 @@ export const useGasPriceEstimateOption = ({
 
     let feePerGas = HEX_ZERO;
     let gasPrice = HEX_ZERO;
-    const gas = transactionMeta.gasLimitNoBuffer || HEX_ZERO;
+    const gas = displayGas || HEX_ZERO;
     let shouldUseEIP1559FeeLogic = false;
     let priorityFeePerGas = HEX_ZERO;
 
@@ -148,6 +150,7 @@ export const useGasPriceEstimateOption = ({
     onGasPriceEstimateLevelClick,
     t,
     nativeTicker,
+    displayGas,
   ]);
 
   return options;

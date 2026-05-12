@@ -338,9 +338,14 @@ class AssetListPage {
     await this.driver.waitForSelector(this.tokenDecimalsTitle);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.tokenConfirmListItem);
+    // Same readiness condition as `importTokenBySearch`: confirm copy means
+    // `pendingTokens` is populated and the confirm step finished rendering before Import.
+    await this.driver.waitForSelector(this.confirmImportTokenMessage);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
+      5000,
     );
+
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);
   }
 
@@ -376,7 +381,9 @@ class AssetListPage {
     await this.driver.waitForSelector(this.multichainTokenListButton);
     await this.driver.clickElement(this.tokenOptionsButton);
     await this.driver.clickElement(this.importTokensButton);
-    await this.driver.waitForSelector(this.importTokenModalTitle);
+    await this.driver.waitForSelector(this.importTokenModalTitle, {
+      waitAtLeastGuard: 2000,
+    });
 
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenSearchInput, name);
@@ -598,23 +605,40 @@ class AssetListPage {
 
   /**
    * Checks if a token exists in the token list and optionally verifies the token amount.
+   * Waits for the list row’s name cell (`multichain-token-list-item-token-name`), not the
+   * whole row button text (which mixes name, balance, fiat, etc.).
    *
    * @param tokenName - The name of the token to check in the list.
    * @param amount - (Optional) The amount of the token to verify if it is displayed.
+   * @param [options] - Optional wait timeouts (driver default applies when omitted).
+   * @param [options.timeout] - Max ms to wait for the token name cell.
+   * @param [options.amountTimeout] - Max ms to wait for the amount text when `amount` is set.
    */
   async checkTokenExistsInList(
     tokenName: string,
     amount?: string,
+    options: { timeout?: number; amountTimeout?: number } = {},
   ): Promise<void> {
+    const { timeout, amountTimeout } = options;
     console.log(`Checking if token ${tokenName} exists in token list`);
-    await this.driver.waitForSelector({
-      css: this.tokenListItem,
-      text: tokenName,
-    });
+    await this.driver.waitForSelector(
+      {
+        css: this.tokenName,
+        text: tokenName,
+      },
+      timeout === undefined ? {} : { timeout },
+    );
     console.log(`Token "${tokenName}" was found in the token list`);
 
     if (amount) {
-      await this.checkTokenAmountIsDisplayed(amount);
+      await this.driver.waitForSelector(
+        {
+          css: this.tokenAmountValue,
+          text: amount,
+        },
+        amountTimeout === undefined ? {} : { timeout: amountTimeout },
+      );
+      console.log(`Token amount ${amount} was found`);
     }
   }
 

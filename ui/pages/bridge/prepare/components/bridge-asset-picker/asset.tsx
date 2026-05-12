@@ -41,6 +41,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Column, Row } from '../../../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../../../utils/quote';
 import { useRWAToken } from '../../../hooks/useRWAToken';
+import { AssetBanner } from './asset-banner';
 
 export const BridgeAsset = React.forwardRef(
   <Element extends React.ElementType = typeof Row>(
@@ -130,14 +131,7 @@ export const BridgeAsset = React.forwardRef(
               <Text ellipsis data-testid="bridge-asset-symbol">
                 {asset.symbol}
               </Text>
-              {asset.isVerified && (
-                <Icon
-                  data-testid="bridge-asset-verified-badge"
-                  name={IconName.VerifiedFilled}
-                  size={IconSize.Sm}
-                  color={IconColor.InfoDefault}
-                />
-              )}
+              <AssetBanner asset={asset} />
               {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
                 <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
               )}

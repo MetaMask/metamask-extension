@@ -34,6 +34,7 @@ import {
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import type { Json, Hex } from '@metamask/utils';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   PLATFORM_FIREFOX,
@@ -73,7 +74,7 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
-import Analytics from '../lib/segment/analytics';
+import type { SegmentClient } from '../lib/segment';
 import {
   trace,
   endTrace,
@@ -365,7 +366,7 @@ type CaptureException = typeof captureException | ((err: unknown) => void);
 export type MetaMetricsControllerOptions = {
   state?: Partial<MetaMetricsControllerState>;
   messenger: MetaMetricsControllerMessenger;
-  segment: Analytics;
+  segment: SegmentClient;
   version: string;
   environment: string;
   extension: Browser;
@@ -905,8 +906,15 @@ export class MetaMetricsController extends BaseController<
       this.clearEventsAfterMetricsOptIn();
       this.trackTracesAfterMetricsOptIn();
       this.clearTracesAfterMetricsOptIn();
-    } else if (this.state.marketingCampaignCookieId) {
-      this.setMarketingCampaignCookieId(null);
+    } else {
+      if (participateInMetaMetrics === false) {
+        // Drop any UI-buffered pre-submit events/traces; they must not be sent after opt-out.
+        this.clearEventsAfterMetricsOptIn();
+        this.clearTracesAfterMetricsOptIn();
+      }
+      if (this.state.marketingCampaignCookieId) {
+        this.setMarketingCampaignCookieId(null);
+      }
     }
 
     if (
@@ -1044,14 +1052,31 @@ export class MetaMetricsController extends BaseController<
 
     let identifiedPayload = payload;
 
-    if (hasABTestAnalyticsMappingForEvent(payload.event)) {
+    const hasABTestAnalyticsMapping = hasABTestAnalyticsMappingForEvent(
+      payload.event,
+    );
+    const hasActiveABTests = payload.properties?.active_ab_tests !== undefined;
+
+    let normalizedPayload = payload;
+
+    if (hasActiveABTests) {
+      try {
+        normalizedPayload = enrichWithABTests(payload, null, []);
+      } catch {
+        normalizedPayload = payload;
+      }
+    }
+
+    identifiedPayload = normalizedPayload;
+
+    if (hasABTestAnalyticsMapping) {
       try {
         identifiedPayload = enrichWithABTests(
-          payload,
+          normalizedPayload,
           this.#getRemoteFeatureFlags(),
         );
       } catch {
-        identifiedPayload = payload;
+        identifiedPayload = normalizedPayload;
       }
     }
 
@@ -1074,7 +1099,7 @@ export class MetaMetricsController extends BaseController<
         // @ts-expect-error This property may not exist. We check for it below.
         overrideAnonymousEventNames[`${payload.event}`];
       const anonymousPayload = {
-        ...payload,
+        ...normalizedPayload,
         event: anonymousEventName ?? payload.event,
       };
 
@@ -1417,9 +1442,6 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.NumberOfTokens]: this.#getNumberOfTokens(
         getTokensControllerAllTokens({ metamask: metamaskState }),
       ),
-      [MetaMetricsUserTrait.NumberOfHDEntropies]:
-        this.#getNumberOfHDEntropies(metamaskState) ??
-        this.previousUserTraits?.number_of_hd_entropies,
       [MetaMetricsUserTrait.OpenSeaApiEnabled]: metamaskState.openSeaEnabled,
       [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
@@ -1450,6 +1472,7 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.InstallType]: getInstallType(),
       [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
       [MetaMetricsUserTrait.Os]: getOs(),
+      ...this.#getAccountCompositionTraits(metamaskState),
     };
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
@@ -1542,16 +1565,88 @@ export class MetaMetricsController extends BaseController<
   }
 
   /**
-   * Returns the number of HD Entropies the user has.
+   * Computes wallet composition traits from internalAccounts, which is always
+   * available regardless of lock state (unlike keyrings).
+   *
+   * number_of_account_groups deduplicates BIP44 multichain accounts by their
+   * entropy source and group index so that EVM + BTC + SOL addresses derived
+   * from the same SRP slot count as one account group, matching what users see
+   * in the Account Management UI.
    *
    * @param metamaskState
    */
-  #getNumberOfHDEntropies(metamaskState: MetaMaskState): number {
-    return (
-      metamaskState.keyrings?.filter(
-        (keyring) => keyring.type === KeyringType.hdKeyTree,
-      ).length ?? 0
-    );
+  #getAccountCompositionTraits(
+    metamaskState: MetaMaskState,
+  ): Partial<MetaMetricsUserTraits> {
+    const accountGroupKeys = new Set<string>();
+    const hdEntropyIds = new Set<string>();
+    let numberOfImportedAccounts = 0;
+    let numberOfLedgerAccounts = 0;
+    let numberOfTrezorAccounts = 0;
+    let numberOfLatticeAccounts = 0;
+    let numberOfQrHardwareAccounts = 0;
+
+    for (const [accountId, account] of Object.entries(
+      metamaskState.internalAccounts.accounts,
+    )) {
+      const keyringType = account.metadata?.keyring?.type;
+
+      switch (keyringType) {
+        case KeyringType.imported:
+          numberOfImportedAccounts += 1;
+          break;
+        case KeyringType.ledger:
+          numberOfLedgerAccounts += 1;
+          break;
+        case KeyringType.trezor:
+          numberOfTrezorAccounts += 1;
+          break;
+        case KeyringType.lattice:
+          numberOfLatticeAccounts += 1;
+          break;
+        case KeyringType.qr:
+        case KeyringType.oneKey:
+          numberOfQrHardwareAccounts += 1;
+          break;
+        default:
+          break;
+      }
+
+      // BIP44 multichain accounts share an entropy source id and group index
+      // across all chains (EVM, BTC, SOL, …). Deduplicating on that key gives
+      // the count of account groups rather than individual chain addresses.
+      const entropy: InternalAccount['options']['entropy'] =
+        account.options?.entropy;
+
+      if (
+        entropy?.type === 'mnemonic' &&
+        'id' in entropy &&
+        'groupIndex' in entropy
+      ) {
+        accountGroupKeys.add(`${entropy.id}:${entropy.groupIndex}`);
+        hdEntropyIds.add(entropy.id);
+      } else {
+        accountGroupKeys.add(accountId);
+      }
+    }
+
+    return {
+      [MetaMetricsUserTrait.NumberOfHDEntropies]: hdEntropyIds.size,
+      [MetaMetricsUserTrait.NumberOfAccountGroups]: accountGroupKeys.size,
+      [MetaMetricsUserTrait.NumberOfImportedAccounts]: numberOfImportedAccounts,
+      [MetaMetricsUserTrait.NumberOfLedgerAccounts]: numberOfLedgerAccounts,
+      [MetaMetricsUserTrait.NumberOfTrezorAccounts]: numberOfTrezorAccounts,
+      [MetaMetricsUserTrait.NumberOfLatticeAccounts]: numberOfLatticeAccounts,
+      [MetaMetricsUserTrait.NumberOfQrHardwareAccounts]:
+        numberOfQrHardwareAccounts,
+      // MetaMask enforces one paired device per hardware wallet type, so
+      // "types in use" equals "distinct devices".
+      [MetaMetricsUserTrait.NumberOfHardwareWallets]:
+        (numberOfLedgerAccounts > 0 ? 1 : 0) +
+        (numberOfTrezorAccounts > 0 ? 1 : 0) +
+        (numberOfLatticeAccounts > 0 ? 1 : 0) +
+        (numberOfQrHardwareAccounts > 0 ? 1 : 0),
+    };
   }
 
   /**

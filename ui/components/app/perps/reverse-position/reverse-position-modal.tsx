@@ -6,8 +6,12 @@ import {
   BoxAlignItems,
   Text,
   TextVariant,
+  TextAlign,
   TextColor,
   FontWeight,
+  Icon,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
@@ -191,7 +195,19 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
           <ModalHeader onClose={onClose}>
-            {t('perpsReversePosition')}
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              <Icon name={IconName.SwapHorizontal} size={IconSize.Xl} />
+              <Text
+                variant={TextVariant.HeadingSm}
+                textAlign={TextAlign.Center}
+              >
+                {t('perpsReversePosition')}
+              </Text>
+            </Box>
           </ModalHeader>
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>

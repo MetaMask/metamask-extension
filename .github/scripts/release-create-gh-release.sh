@@ -53,8 +53,8 @@ publish_tag() {
     local ref_response
     if ref_response=$(gh api "/repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag_name}" 2>/dev/null); then
         local ref_sha ref_type existing_sha
-        ref_sha=$(echo "$ref_response" | jq -r '.object.sha')
-        ref_type=$(echo "$ref_response" | jq -r '.object.type')
+        ref_sha=$(echo "${ref_response}" | jq -r '.object.sha')
+        ref_type=$(echo "${ref_response}" | jq -r '.object.type')
 
         if [[ "${ref_type}" == "tag" ]]; then
             existing_sha=$(gh api "/repos/${GITHUB_REPOSITORY}/git/tags/${ref_sha}" --jq '.object.sha')
@@ -78,11 +78,11 @@ publish_tag() {
 
     local tag_payload
     tag_payload=$(jq -n \
-        --arg tag "$tag_name" \
-        --arg message "$tag_message" \
-        --arg object "$target_sha" \
+        --arg tag "${tag_name}" \
+        --arg message "${tag_message}" \
+        --arg object "${target_sha}" \
         --arg email "metamaskbot@users.noreply.github.com" \
-        --arg date "$tag_date" \
+        --arg date "${tag_date}" \
         '{
             tag: $tag,
             message: $message,
@@ -96,7 +96,7 @@ publish_tag() {
         }')
 
     local tag_sha
-    tag_sha=$(echo "$tag_payload" | gh api \
+    tag_sha=$(echo "${tag_payload}" | gh api \
         --method POST \
         "/repos/${GITHUB_REPOSITORY}/git/tags" \
         --input - \
@@ -147,23 +147,44 @@ fi
 
 printf '%s\n' "Creating GitHub Release for ${tag}..."
 
-# Validate artifacts exist (fail fast with clear error)
+# Collect and validate browserify artifacts
+browserify_artifacts=()
 for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
                 build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
                 build-flask-browserify/builds/metamask-flask-chrome-*.zip \
                 build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip; do
-    if ! compgen -G "$artifact" > /dev/null; then
-        echo "::error::Required artifact not found: ${artifact}"
+    if ! compgen -G "${artifact}" > /dev/null; then
+        echo "::error::Required browserify artifact not found: ${artifact}"
         exit 1
     fi
+    while IFS= read -r file; do
+        browserify_artifacts+=("${file}")
+    done < <(compgen -G "${artifact}")
+done
+
+# Collect and validate webpack artifacts
+# Also rename them to include "-webpack" suffix before the .zip extension
+# so they don't collide with browserify artifacts on the release.
+webpack_artifacts=()
+for artifact in build-dist-webpack/builds/metamask-chrome-*.zip \
+                build-dist-mv2-webpack/builds/metamask-firefox-*.zip \
+                build-flask-webpack/builds/metamask-chrome-*.zip \
+                build-flask-mv2-webpack/builds/metamask-firefox-*.zip; do
+    if ! compgen -G "${artifact}" > /dev/null; then
+        echo "::error::Required webpack artifact not found: ${artifact}"
+        exit 1
+    fi
+    while IFS= read -r file; do
+        renamed="${file%.zip}-webpack.zip"
+        mv "${file}" "${renamed}"
+        webpack_artifacts+=("${renamed}")
+    done < <(compgen -G "${artifact}")
 done
 
 release_body="$(awk -v version="[${VERSION}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
 gh release create "${tag}" \
-    build-dist-browserify/builds/metamask-chrome-*.zip \
-    build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
-    build-flask-browserify/builds/metamask-flask-chrome-*.zip \
-    build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip \
+    "${browserify_artifacts[@]}" \
+    "${webpack_artifacts[@]}" \
     --title "Version ${VERSION}" \
     --notes "${release_body}" \
     --target "${RELEASE_SHA}"

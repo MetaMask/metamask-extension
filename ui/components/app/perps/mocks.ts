@@ -26,7 +26,8 @@ import type { PerpsTransaction } from './types';
  */
 export const mockAccountState: AccountState = {
   totalBalance: '15250.00',
-  availableBalance: '10125.00',
+  spendableBalance: '10125.00',
+  withdrawableBalance: '10125.00',
   marginUsed: '5125.00',
   unrealizedPnl: '375.00',
   returnOnEquity: '7.32',

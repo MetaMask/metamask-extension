@@ -17,6 +17,7 @@ import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
 import { MusdClaimInfo } from '../../info/musd-claim-info';
 import { MusdConversionInfo } from '../../info/musd-conversion-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
+import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -162,6 +163,7 @@ const Info = () => {
       [TransactionType.musdClaim]: () => MusdClaimInfo,
       [TransactionType.musdConversion]: () => MusdConversionInfo,
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
+      [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,
     }),
     [currentConfirmation],
   );

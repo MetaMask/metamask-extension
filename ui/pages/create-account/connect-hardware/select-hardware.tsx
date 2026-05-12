@@ -2,6 +2,8 @@ import classnames from 'clsx';
 import React, { useCallback, useContext, useState } from 'react';
 import { upperFirst } from 'lodash';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   Button,
   ButtonSize,
@@ -19,10 +21,6 @@ import {
   TextVariant,
   FontWeight,
 } from '@metamask/design-system-react';
-import {
-  BannerAlert,
-  BannerAlertSeverity,
-} from '../../../components/component-library';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
 import LogoTrezor from '../../../components/ui/logo/logo-trezor';

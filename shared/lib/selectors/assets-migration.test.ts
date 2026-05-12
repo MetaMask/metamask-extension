@@ -5,6 +5,7 @@ import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from '../assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../environment';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -27,6 +28,11 @@ import {
 jest.mock('../assets-unify-state/remote-feature-flag', () =>
   jest.requireActual('../assets-unify-state/remote-feature-flag'),
 );
+
+jest.mock('../environment', () => ({
+  ...jest.requireActual('../environment'),
+  getIsAssetsUnifiedStateIncludedInBuild: jest.fn(() => true),
+}));
 
 const mockAccountId = 'mock-account-id-1';
 const mockAccountId2 = 'mock-account-id-2';
@@ -2241,5 +2247,54 @@ describe('getRatesControllerFiatCurrency', () => {
 
       expect(result).toBe('usd');
     });
+  });
+});
+
+describe('getIsAssetsUnifiedStateIncludedInBuild compile-time gate', () => {
+  afterEach(() => {
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(true);
+  });
+
+  it('returns legacy accountsByChainId when the build excludes unified state even if the remote flag is enabled', () => {
+    jest.mocked(getIsAssetsUnifiedStateIncludedInBuild).mockReturnValue(false);
+    const legacyAccountsByChainId = {
+      '0x1': {
+        [mockAccountAddressChecksummed]: {
+          balance: '0xabc' as const,
+        },
+      },
+    };
+    const state = {
+      metamask: {
+        // `getIsAssetsUnifyStateEnabled` is memoized on `remoteFeatureFlags` only; vary
+        // the object so this test does not reuse a cached `true` from earlier examples.
+        remoteFeatureFlags: {
+          ...enabledFlags.remoteFeatureFlags,
+          compileTimeGateCacheBust: 'accountsByChainId',
+        },
+        accountsByChainId: legacyAccountsByChainId,
+        assetsInfo: {
+          [nativeEthAssetId]: { type: 'native', decimals: 18 },
+        },
+        assetsBalance: {
+          [mockAccountId]: {
+            [nativeEthAssetId]: { amount: '999' },
+          },
+        },
+        internalAccounts: {
+          accounts: {
+            [mockAccountId]: {
+              id: mockAccountId,
+              address: mockAccountAddressLowercase,
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
+    };
+
+    expect(getAccountTrackerControllerAccountsByChainId(state)).toBe(
+      legacyAccountsByChainId,
+    );
   });
 });

@@ -1,8 +1,14 @@
+import {
+  TransactionStatus,
+  type TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { createSelector } from 'reselect';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import type { MetaMaskReduxState } from '../store/store';
 import {
+  TOAST_EXCLUDED_NESTED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_TRANSACTION_TYPES,
   TOAST_EXCLUDED_NON_EVM_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
@@ -139,11 +145,52 @@ type TxRequest = {
   approvalId: string;
   txId: string;
   smartTransactionStatus: string | undefined;
+  evmStatus: string | undefined;
 };
+
+function isTransactionTypeExcluded(transaction: TransactionMeta | undefined) {
+  const type = transaction?.type;
+  const isExcludedType = Boolean(
+    type && TOAST_EXCLUDED_TRANSACTION_TYPES.has(type),
+  );
+  const isExcludedNestedType = Boolean(
+    transaction?.nestedTransactions?.some(
+      (nested) =>
+        nested.type && TOAST_EXCLUDED_NESTED_TRANSACTION_TYPES.has(nested.type),
+    ),
+  );
+
+  return isExcludedType || isExcludedNestedType;
+}
+
+function getEffectiveEvmStatus(
+  txId: string,
+  transactions: ReturnType<typeof selectTransactions>,
+) {
+  const originalTx = transactions.find((tx) => tx.id === txId);
+  if (!originalTx) {
+    return undefined;
+  }
+
+  if (
+    originalTx.status === TransactionStatus.dropped &&
+    originalTx.replacedById
+  ) {
+    const replacement = transactions.find(
+      (tx) => tx.id === originalTx.replacedById,
+    );
+    if (replacement?.type === TransactionType.retry) {
+      return replacement.status;
+    }
+  }
+
+  return originalTx.status;
+}
 
 export const selectSmartTransactions = createDeepEqualSelector(
   getPendingApprovals,
-  (pendingApprovals) => {
+  selectTransactions,
+  (pendingApprovals, transactions) => {
     const result: TxRequest[] = [];
 
     for (const approval of pendingApprovals) {
@@ -164,10 +211,17 @@ export const selectSmartTransactions = createDeepEqualSelector(
         continue;
       }
 
+      const transaction = transactions.find((tx) => tx.id === txId);
+      if (isTransactionTypeExcluded(transaction)) {
+        continue;
+      }
+
       result.push({
         approvalId: approval.id,
         txId,
         smartTransactionStatus: smartTransaction?.status,
+        // Track EVM transaction status to detect cancels and speed ups
+        evmStatus: getEffectiveEvmStatus(txId, transactions),
       });
     }
 

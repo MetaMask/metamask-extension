@@ -618,6 +618,19 @@ export class RewardsDataService {
       }
     }
 
+    // If current season's end date has already passed, coerce it to previous
+    if (data.current?.endDate) {
+      const endDate =
+        data.current.endDate instanceof Date
+          ? data.current.endDate
+          : new Date(data.current.endDate);
+
+      if (endDate <= new Date()) {
+        data.previous = data.current;
+        data.current = null;
+      }
+    }
+
     return data as DiscoverSeasonsDto;
   }
 
@@ -647,6 +660,10 @@ export class RewardsDataService {
     }
     if (data.endDate) {
       data.endDate = new Date(data.endDate);
+    }
+
+    if (!Array.isArray(data.activityTypes)) {
+      data.activityTypes = [];
     }
 
     return data as SeasonMetadataDto;

@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
   TransactionMeta,
@@ -21,7 +22,13 @@ import {
   useMusdConversionTokens,
   useMusdPaymentToken,
 } from '../../../../../hooks/musd';
+import { usePostQuoteWithdrawTokenFilter } from '../../../hooks/pay/useWithdrawTokenFilter';
 import { useConfirmContext } from '../../../context/confirm';
+import {
+  addToken,
+  findNetworkClientIdByChainId,
+} from '../../../../../store/actions';
+import { isPostQuoteWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 export type PayWithModalProps = {
   isOpen: boolean;
@@ -30,6 +37,7 @@ export type PayWithModalProps = {
 
 export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const t = useI18nContext();
+  const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { payToken, setPayToken } = useTransactionPayToken();
   const requiredTokens = useTransactionPayRequiredTokens();
@@ -37,17 +45,24 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
   const { filterTokens: musdTokenFilter } = useMusdConversionTokens({
     transactionType: currentConfirmation?.type,
   });
+  const {
+    filterTokens: postQuoteWithdrawTokenFilter,
+    isFilterApplied: isPostQuoteWithdrawTokenFilterApplied,
+  } = usePostQuoteWithdrawTokenFilter();
 
   // Use the mUSD-specific payment token handler for same-chain enforcement
   const { onPaymentTokenChange: onMusdPaymentTokenChange } =
     useMusdPaymentToken();
+
+  const isPostQuoteWithdraw =
+    isPostQuoteWithdrawTransaction(currentConfirmation);
 
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
 
   const handleTokenSelect = useCallback(
-    (token: AssetType) => {
+    async (token: AssetType) => {
       if (token.disabled) {
         return;
       }
@@ -64,27 +79,76 @@ export const PayWithModal = ({ isOpen, onClose }: PayWithModalProps) => {
         return;
       }
 
-      // Default behavior for other transaction types
+      // Withdraw flows (e.g. Perps Withdraw) let the user pick a destination
+      // token they don't necessarily hold. TransactionPayController requires
+      // the token to be tracked by TokensController before `updatePaymentToken`
+      // can resolve its metadata, otherwise it throws "Payment token not
+      // found" and the selection silently fails. Ensure the token is imported
+      // first, then update the pay token.
+      if (
+        isPostQuoteWithdraw &&
+        !token.isNative &&
+        (token.rawBalance === '0x0' || !token.rawBalance)
+      ) {
+        try {
+          const networkClientId = await findNetworkClientIdByChainId(
+            tokenSelection.chainId,
+          );
+          await dispatch(
+            addToken(
+              {
+                address: tokenSelection.address,
+                symbol: token.symbol,
+                decimals: Number(token.decimals ?? 18),
+                networkClientId,
+                image: token.image,
+              },
+              true,
+            ),
+          );
+        } catch (error) {
+          // `setPayToken` resolves the token via `TokensController`. If the
+          // import failed, the controller will throw "Payment token not
+          // found", leaving the user with a silently broken selection.
+          // Keep the modal open so they can retry or pick a different token.
+          console.error('Failed to import withdraw destination token', error);
+          return;
+        }
+      }
+
       setPayToken(tokenSelection);
       handleClose();
     },
     [
-      handleClose,
-      setPayToken,
-      onMusdPaymentTokenChange,
       currentConfirmation?.type,
+      dispatch,
+      handleClose,
+      isPostQuoteWithdraw,
+      onMusdPaymentTokenChange,
+      setPayToken,
     ],
   );
 
   const tokenFilter = useCallback(
     (tokens: AssetType[]) => {
+      if (isPostQuoteWithdraw && isPostQuoteWithdrawTokenFilterApplied) {
+        return postQuoteWithdrawTokenFilter(tokens);
+      }
+
       let available = getAvailableTokens({ payToken, requiredTokens, tokens });
 
       available = musdTokenFilter(available);
 
       return available;
     },
-    [payToken, requiredTokens, musdTokenFilter],
+    [
+      isPostQuoteWithdraw,
+      isPostQuoteWithdrawTokenFilterApplied,
+      musdTokenFilter,
+      payToken,
+      postQuoteWithdrawTokenFilter,
+      requiredTokens,
+    ],
   );
 
   return (

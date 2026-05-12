@@ -61,11 +61,10 @@ describe('Custom RPC history', function (this: Suite) {
         await addRpcUrlModal.fillAddRpcNameInput('test-name');
         await addRpcUrlModal.saveAddRpcUrl();
         await addEditNetworkModal.saveEditedNetwork();
-
         // Validate the network was added
-        const homepage = new Homepage(driver);
-        await homepage.checkPageIsLoaded();
-        await homepage.checkAddNetworkMessageIsDisplayed(networkName);
+        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
+          networkName,
+        );
       },
     );
   });
@@ -262,14 +261,16 @@ describe('Custom RPC history', function (this: Suite) {
 
         // Delete network from network list
         await selectNetworkDialog.deleteNetwork('eip155:1344');
+        await selectNetworkDialog.clickCloseButton();
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
         await homepage.checkExpectedBalanceIsDisplayed();
+        await homepage.closeUseNetworkNotificationModal();
 
         // Check custom network http://127.0.0.1:8545/2 is removed from network list
         // need a hard delay to avoid the background error message "network configuration not found" for removed network
         await driver.delay(2000);
-        await headerNavbar.openGlobalNetworksMenu();
+        await headerNavbar.openGlobalNetworksMenu({ isDrawerOpen: true });
         await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.checkNetworkOptionIsDisplayed(
           'http://127.0.0.1:8545/2',

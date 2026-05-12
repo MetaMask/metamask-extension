@@ -255,6 +255,14 @@
         "document": false,
         "document.createElement": true
       }
+    },
+    "@segment/analytics-node": {
+      "globals": {
+        "EdgeRuntime": false,
+        "WebSocketPair": false,
+        "WorkerGlobalScope": false,
+        "importScripts": false
+      }
     }
   }
 }

@@ -19,6 +19,14 @@ jest.mock('../../../../../shared/lib/perps-formatters', () => ({
       .replace(/(\.\d*?[1-9])0+$/u, '$1')
       .replace(/\.0+$/u, '')}`;
   },
+  formatPnl: (value: number | string) => {
+    const amount = Number(value);
+    const abs = Math.abs(amount).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return amount >= 0 ? `+$${abs}` : `-$${abs}`;
+  },
   formatPositionSize: (value: number, decimals?: number) =>
     Number(value).toLocaleString('en-US', {
       minimumFractionDigits: 0,
@@ -137,6 +145,26 @@ describe('ClosePositionModal', () => {
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
+  describe('auto-focus', () => {
+    it('auto-focuses the Close Position submit button on mount', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-close-position-modal-submit'),
+        ).toHaveFocus();
+      });
+    });
+  });
+
   describe('ORDER_SIZE_MIN from background', () => {
     it('shows localized min-notional message when close rejects with ORDER_SIZE_MIN', async () => {
       const user = userEvent.setup();
@@ -220,7 +248,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       await user.keyboard('{ArrowLeft}');
@@ -271,7 +299,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -341,7 +369,7 @@ describe('ClosePositionModal', () => {
 
       // Move slider left to get a partial close
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -369,7 +397,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -403,7 +431,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -463,7 +491,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -521,7 +549,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -556,7 +584,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       await user.keyboard(
@@ -595,7 +623,7 @@ describe('ClosePositionModal', () => {
       ).not.toBeDisabled();
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       await user.keyboard('{ArrowLeft}');

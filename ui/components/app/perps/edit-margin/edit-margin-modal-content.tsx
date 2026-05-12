@@ -19,6 +19,7 @@ import {
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
+  PRICE_RANGES_MINIMAL_VIEW,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -410,7 +411,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           data-testid="perps-edit-margin-available-value"
         >
           {`${formatPerpsFiat(maxAmount, {
-            ranges: PRICE_RANGES_UNIVERSAL,
+            ranges: PRICE_RANGES_MINIMAL_VIEW,
           })} USDC`}
         </Text>
       </Box>
@@ -444,14 +445,36 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
           <Box className="shrink-0">
             <TextField
               size={TextFieldSize.Md}
+              data-testid="perps-edit-margin-amount-input"
               value={marginAmount}
               onChange={handleAmountChange}
+              onFocus={(event: React.FocusEvent<HTMLInputElement>) =>
+                event.target.select()
+              }
               placeholder="0.00"
               borderRadius={BorderRadius.MD}
               borderWidth={0}
               backgroundColor={BackgroundColor.backgroundMuted}
               disabled={isSaving}
-              inputProps={{ inputMode: 'decimal', size: 10 }}
+              autoFocus
+              inputProps={{
+                inputMode: 'decimal',
+                size: 10,
+                onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (
+                    event.key !== 'Enter' ||
+                    event.shiftKey ||
+                    event.nativeEvent.isComposing ||
+                    confirmDisabled
+                  ) {
+                    return;
+                  }
+                  event.preventDefault();
+                  handleSaveMargin().catch(() => {
+                    // Errors are surfaced via the perps toast system.
+                  });
+                },
+              }}
               startAccessory={
                 <Text
                   variant={TextVariant.BodyMd}

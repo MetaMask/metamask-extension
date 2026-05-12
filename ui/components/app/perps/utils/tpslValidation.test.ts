@@ -1,8 +1,10 @@
 import {
   isValidTakeProfitPrice,
   isValidStopLossPrice,
+  isStopLossSafeFromLiquidation,
   getTakeProfitErrorDirection,
   getStopLossErrorDirection,
+  getStopLossLiquidationErrorDirection,
 } from './tpslValidation';
 
 describe('tpslValidation', () => {
@@ -223,6 +225,111 @@ describe('tpslValidation', () => {
 
     it('returns empty string for undefined', () => {
       expect(getStopLossErrorDirection(undefined)).toBe('');
+    });
+  });
+
+  describe('isStopLossSafeFromLiquidation', () => {
+    describe('long direction', () => {
+      it('returns true when SL is above liquidation price', () => {
+        expect(
+          isStopLossSafeFromLiquidation('45000', {
+            liquidationPrice: 40000,
+            direction: 'long',
+          }),
+        ).toBe(true);
+      });
+
+      it('returns false when SL is below liquidation price', () => {
+        expect(
+          isStopLossSafeFromLiquidation('39000', {
+            liquidationPrice: 40000,
+            direction: 'long',
+          }),
+        ).toBe(false);
+      });
+
+      it('returns false when SL equals liquidation price', () => {
+        expect(
+          isStopLossSafeFromLiquidation('40000', {
+            liquidationPrice: 40000,
+            direction: 'long',
+          }),
+        ).toBe(false);
+      });
+    });
+
+    describe('short direction', () => {
+      it('returns true when SL is below liquidation price', () => {
+        expect(
+          isStopLossSafeFromLiquidation('45000', {
+            liquidationPrice: 50000,
+            direction: 'short',
+          }),
+        ).toBe(true);
+      });
+
+      it('returns false when SL is above liquidation price', () => {
+        expect(
+          isStopLossSafeFromLiquidation('51000', {
+            liquidationPrice: 50000,
+            direction: 'short',
+          }),
+        ).toBe(false);
+      });
+
+      it('returns false when SL equals liquidation price', () => {
+        expect(
+          isStopLossSafeFromLiquidation('50000', {
+            liquidationPrice: 50000,
+            direction: 'short',
+          }),
+        ).toBe(false);
+      });
+    });
+
+    describe('edge cases', () => {
+      it('returns true when inputs are incomplete', () => {
+        expect(
+          isStopLossSafeFromLiquidation('', {
+            liquidationPrice: 40000,
+            direction: 'long',
+          }),
+        ).toBe(true);
+        expect(
+          isStopLossSafeFromLiquidation('39000', {
+            liquidationPrice: null,
+            direction: 'long',
+          }),
+        ).toBe(true);
+        expect(
+          isStopLossSafeFromLiquidation('39000', {
+            liquidationPrice: 40000,
+          }),
+        ).toBe(true);
+      });
+
+      it('handles formatted stop loss prices with commas and dollar signs', () => {
+        expect(
+          isStopLossSafeFromLiquidation('$45,000', {
+            liquidationPrice: 40000,
+            direction: 'long',
+          }),
+        ).toBe(true);
+      });
+    });
+  });
+
+  describe('getStopLossLiquidationErrorDirection', () => {
+    it('returns "above" for long', () => {
+      expect(getStopLossLiquidationErrorDirection('long')).toBe('above');
+    });
+
+    it('returns "below" for short', () => {
+      expect(getStopLossLiquidationErrorDirection('short')).toBe('below');
+    });
+
+    it('returns empty string for undefined', () => {
+      expect(getStopLossLiquidationErrorDirection(undefined)).toBe('');
     });
   });
 });

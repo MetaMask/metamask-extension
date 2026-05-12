@@ -1,4 +1,12 @@
+import { createSelector } from 'reselect';
+import {
+  TransactionStatus,
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import type { PerpsControllerState } from '@metamask/perps-controller';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
+import type { Hex } from '@metamask/utils';
 
 /**
  * The PerpsController state is flattened into state.metamask by
@@ -9,7 +17,31 @@ export type PerpsState = {
   metamask: Partial<PerpsControllerState>;
 };
 
+/**
+ * Transaction statuses that represent the "deposit is pending" window on the
+ * extension. We start showing the pending toast once the user has confirmed
+ * the transaction (it reaches `approved`) and keep it up through `signed` and
+ * `submitted` until `lastDepositResult` populates and the completion branch
+ * takes over. `unapproved` (confirmation screen open) and `rejected` (user
+ * cancel) are intentionally excluded so we don't toast before confirm or on
+ * cancel, matching mobile's behavior in `usePerpsDepositStatus`.
+ */
+const PERPS_DEPOSIT_PENDING_STATUSES: ReadonlySet<TransactionStatus> = new Set([
+  TransactionStatus.approved,
+  TransactionStatus.signed,
+  TransactionStatus.submitted,
+]);
+
+const PERPS_DEPOSIT_TRANSACTION_TYPES: ReadonlySet<TransactionType> = new Set([
+  TransactionType.perpsDeposit,
+  TransactionType.perpsDepositAndOrder,
+]);
+
 const EMPTY_ARRAY: never[] = [];
+const EMPTY_TRANSACTION_DATA: Record<
+  string,
+  { paymentToken?: { address: Hex; chainId: Hex } }
+> = {};
 const EMPTY_TRADE_CONFIGURATIONS: PerpsControllerState['tradeConfigurations'] =
   { testnet: {}, mainnet: {} };
 
@@ -35,8 +67,121 @@ export const selectPerpsIsTestnet = (state: PerpsState): boolean =>
 export const selectPerpsActiveProvider = (state: PerpsState) =>
   state.metamask.activeProvider ?? 'hyperliquid';
 
-export const selectPerpsDepositInProgress = (state: PerpsState): boolean =>
-  state.metamask.depositInProgress ?? false;
+/**
+ * State shape consumed by `selectPerpsDepositPending`. Kept narrow so tests
+ * can supply a partial `metamask` slice without satisfying the full
+ * `TransactionControllerState` contract.
+ */
+type PerpsDepositPendingState = {
+  metamask: {
+    transactions?: TransactionMeta[];
+    lastDepositTransactionId?: string | null;
+    transactionData?: Record<
+      string,
+      {
+        paymentToken?: {
+          address: Hex;
+          chainId: Hex;
+        };
+      }
+    >;
+  };
+};
+
+const isNativePayToken = (
+  paymentToken?:
+    | {
+        address: Hex;
+        chainId: Hex;
+      }
+    | undefined,
+) => {
+  if (!paymentToken) {
+    return true;
+  }
+
+  return (
+    paymentToken.address.toLowerCase() ===
+    getNativeTokenAddress(paymentToken.chainId).toLowerCase()
+  );
+};
+
+const isPerpsToastOwnedDepositTransaction = (
+  transaction?: TransactionMeta,
+  paymentToken?:
+    | {
+        address: Hex;
+        chainId: Hex;
+      }
+    | undefined,
+) => {
+  if (!transaction?.type) {
+    return false;
+  }
+
+  return (
+    PERPS_DEPOSIT_TRANSACTION_TYPES.has(transaction.type) &&
+    isNativePayToken(paymentToken)
+  );
+};
+
+const selectPerpsActiveDepositTransaction = createSelector(
+  (state: PerpsDepositPendingState): TransactionMeta[] =>
+    state.metamask.transactions ?? EMPTY_ARRAY,
+  (state: PerpsDepositPendingState) =>
+    state.metamask.lastDepositTransactionId ?? null,
+  (transactions, lastDepositTransactionId) => {
+    if (!lastDepositTransactionId) {
+      return null;
+    }
+
+    return (
+      transactions.find((tx) => tx.id === lastDepositTransactionId) ?? null
+    );
+  },
+);
+
+export const selectPerpsShouldShowDepositToast = createSelector(
+  selectPerpsActiveDepositTransaction,
+  (state: PerpsDepositPendingState) =>
+    state.metamask.transactionData ?? EMPTY_TRANSACTION_DATA,
+  (transaction, transactionData) =>
+    isPerpsToastOwnedDepositTransaction(
+      transaction ?? undefined,
+      transaction ? transactionData[transaction.id]?.paymentToken : undefined,
+    ),
+);
+
+/**
+ * Whether the **active** Perps deposit (identified by `lastDepositTransactionId`)
+ * is in its pending window (post-confirm, pre-completion). Scoped to that id so
+ * unrelated perps deposit rows left in `approved` / `signed` / `submitted` do
+ * not keep the deposit toast alive — aligned with `PerpsDepositToast` dismissal
+ * keyed on `lastDepositTransactionId`.
+ *
+ * Derived from TransactionController + PerpsController flattened state rather
+ * than `depositInProgress`, which the perps controller only sets briefly
+ * alongside the success result.
+ *
+ * @param state - Combined Perps + TransactionController state.
+ */
+export const selectPerpsDepositPending = createSelector(
+  selectPerpsActiveDepositTransaction,
+  (state: PerpsDepositPendingState) =>
+    state.metamask.transactionData ?? EMPTY_TRANSACTION_DATA,
+  (tx, transactionData) => {
+    if (
+      !isPerpsToastOwnedDepositTransaction(
+        tx ?? undefined,
+        tx ? transactionData[tx.id]?.paymentToken : undefined,
+      )
+    ) {
+      return false;
+    }
+
+    return tx ? PERPS_DEPOSIT_PENDING_STATUSES.has(tx.status) : false;
+  },
+);
 
 export const selectPerpsLastDepositTransactionId = (state: PerpsState) =>
   state.metamask.lastDepositTransactionId ?? null;

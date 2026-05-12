@@ -16,9 +16,9 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
+import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
@@ -440,11 +440,12 @@ const config = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
+                config: false,
                 plugins: [
                   tailwindcss(),
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
-                  discardFonts(['woff2']), // keep woff2 fonts
+                  discardFontFace(['woff2']), // keep woff2 fonts
                 ],
               },
             },

@@ -13,12 +13,14 @@ import HeaderNavbar from '../pages/header-navbar';
  */
 export const enableTestNetworks = async (driver: Driver): Promise<void> => {
   const headerNavbar = new HeaderNavbar(driver);
+  const homePage = new HomePage(driver);
   await headerNavbar.openGlobalNetworksMenu();
 
   const selectNetworkDialog = new SelectNetwork(driver);
   await selectNetworkDialog.checkPageIsLoaded();
   await selectNetworkDialog.toggleShowTestNetwork();
   await selectNetworkDialog.clickCloseButton();
+  await homePage.headerNavbar.clickDrawerBackButton();
 };
 
 /**

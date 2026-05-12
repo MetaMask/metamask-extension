@@ -76,7 +76,7 @@ exports[`Onboarding Metametrics Component renders match snapshot 1`] = `
       <p
         class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-left"
       >
-        We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored.
+        We’ll collect basic product usage data. We may associate this information with on-chain data.
       </p>
     </div>
     <div
@@ -225,7 +225,7 @@ exports[`Onboarding Metametrics Component renders match snapshot after new polic
       <p
         class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default text-left"
       >
-        We’ll collect basic product usage data like general location, clicks, and views. No other information will be stored.
+        We’ll collect basic product usage data. We may associate this information with on-chain data.
       </p>
     </div>
     <div
