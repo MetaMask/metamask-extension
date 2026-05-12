@@ -117,9 +117,9 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: {
-      minimumVersion: null,
-      enabled: false,
-      featureVersion: null,
+      minimumVersion: '13.0.0',
+      enabled: true,
+      featureVersion: '1',
     },
     status: FeatureFlagStatus.Active,
   },
