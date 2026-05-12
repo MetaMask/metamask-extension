@@ -4,7 +4,7 @@ import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import { getBridgeFixtures } from '../bridge/bridge-test-utils';
 import { DEFAULT_BRIDGE_FEATURE_FLAGS } from '../bridge/constants';
 
-describe('Swap', function () {
+describe('Swap TEST', function () {
   const swapTestCases = [
     {
       name: 'should swap DAI to ETH',
