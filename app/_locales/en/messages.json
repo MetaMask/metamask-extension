@@ -5469,6 +5469,9 @@
     "message": "Pay with",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "Payee"
+  },
   "pending": {
     "message": "Pending"
   },
@@ -6897,6 +6900,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your wallet"
+  },
+  "redeemer": {
+    "message": "Redeemer"
   },
   "redeposit": {
     "message": "Redeposit"
