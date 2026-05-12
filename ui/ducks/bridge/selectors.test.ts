@@ -69,6 +69,7 @@ import {
   getIsStockMarketClosed,
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
+  getBatchSellQuotes,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -1056,9 +1057,7 @@ describe('Bridge selectors', () => {
         quoteFetchError: null,
       });
     });
-  });
 
-  describe('getBridgeQuotes', () => {
     it('should return empty values when quotes are not present', () => {
       const state = createBridgeMockStore({
         bridgeStateOverrides: { quotes: [] },
@@ -1156,6 +1155,464 @@ describe('Bridge selectors', () => {
       expect(sortedQuotes[2]?.quote.requestId).toStrictEqual(
         mockBridgeQuotesNativeErc20[0]?.quote.requestId,
       );
+    });
+  });
+
+  describe('getBatchSellQuotes', () => {
+    it('returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=5', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            maxRefreshCount: 5,
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenExchangeRate: 1,
+          fromToken: { address: zeroAddress(), symbol: 'TEST' },
+          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
+        },
+        bridgeStateOverrides: {
+          quoteRequest: {
+            insufficientBal: false,
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
+          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotesRefreshCount: 5,
+          quotesLastFetched: 100,
+          quotesInitialLoadTime: 11000,
+        },
+        metamaskStateOverrides: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 1,
+              usdConversionRate: 1,
+            },
+            POL: {
+              conversionRate: 0.99,
+              usdConversionRate: 0.99,
+            },
+          },
+          marketData: {},
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+            { chainId: CHAIN_IDS.POLYGON },
+            { chainId: CHAIN_IDS.OPTIMISM },
+          ),
+        },
+      });
+
+      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+      const { recommendedQuotes, ...rest } = result;
+      expect(result.recommendedQuotes).toHaveLength(1);
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(rest).toMatchInlineSnapshot(`
+        {
+          "isLoading": false,
+          "isQuoteGoingToRefresh": false,
+          "minimumReceived": {
+            "amount": "13.98428",
+            "usd": "13.8444372",
+            "valueInCurrency": "13.8444372",
+          },
+          "quoteFetchError": null,
+          "quotesInitialLoadTimeMs": 11000,
+          "quotesLastFetchedMs": 100,
+          "quotesRefreshCount": 5,
+          "totalNetworkFee": {
+            "amount": "0.00100006442841952",
+            "usd": "0.00100006442841952",
+            "valueInCurrency": "0.00100006442841952",
+          },
+          "totalReceived": {
+            "amount": "13.98428",
+            "usd": "13.8444372",
+            "valueInCurrency": "13.8444372",
+          },
+        }
+      `);
+    });
+
+    it('returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=2', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            maxRefreshCount: 5,
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
+          },
+        },
+        bridgeSliceOverrides: {
+          fromToken: { address: zeroAddress(), symbol: 'ETH' },
+          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
+          fromTokenExchangeRate: 1,
+        },
+        bridgeStateOverrides: {
+          quoteRequest: {
+            insufficientBal: false,
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
+          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotesRefreshCount: 2,
+          quotesInitialLoadTime: 11000,
+          quotesLastFetched: 100,
+        },
+        metamaskStateOverrides: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 1,
+              usdConversionRate: 20,
+            },
+            POL: {
+              conversionRate: 0.9899999999999999,
+              usdConversionRate: 0.99 / 0.354073,
+            },
+          },
+          marketData: {},
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+            { chainId: CHAIN_IDS.POLYGON },
+          ),
+        },
+      });
+      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+
+      expect(result.recommendedQuotes).toHaveLength(1);
+      const EXPECTED_SORTED_COSTS = [
+        {
+          usd: '240.919484728424019402436',
+          valueInCurrency: '0.156562864428420918428',
+        },
+        {
+          usd: '241.43473800386724486',
+          valueInCurrency: '0.33900007473646602',
+        },
+      ];
+      expect(result.recommendedQuotes[0]?.cost).toStrictEqual(
+        EXPECTED_SORTED_COSTS[0],
+      );
+
+      const { recommendedQuotes, ...rest } = result;
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(rest).toMatchInlineSnapshot(`
+        {
+          "isLoading": false,
+          "isQuoteGoingToRefresh": true,
+          "minimumReceived": {
+            "amount": "13.98428",
+            "usd": "39.100516560144370997564",
+            "valueInCurrency": "13.844437199999998601572",
+          },
+          "quoteFetchError": null,
+          "quotesInitialLoadTimeMs": 11000,
+          "quotesLastFetchedMs": 100,
+          "quotesRefreshCount": 2,
+          "totalNetworkFee": {
+            "amount": "0.00100006442841952",
+            "usd": "0.0200012885683904",
+            "valueInCurrency": "0.00100006442841952",
+          },
+          "totalReceived": {
+            "amount": "13.98428",
+            "usd": "39.100516560144370997564",
+            "valueInCurrency": "13.844437199999998601572",
+          },
+        }
+      `);
+    });
+
+    it('returns quote list and fetch data, insufficientBal=true', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            maxRefreshCount: 5,
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
+          },
+        },
+        bridgeSliceOverrides: {
+          fromToken: { address: zeroAddress(), symbol: 'ETH' },
+          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
+          fromTokenExchangeRate: 1,
+        },
+        bridgeStateOverrides: {
+          quoteRequest: {
+            insufficientBal: true,
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
+          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotesRefreshCount: 1,
+          quotesLastFetched: 100,
+          quotesInitialLoadTime: 11000,
+        },
+        metamaskStateOverrides: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 1,
+              usdConversionRate: 20,
+            },
+            POL: {
+              conversionRate: 0.99,
+              usdConversionRate: 0.99,
+            },
+          },
+          marketData: {},
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+            { chainId: CHAIN_IDS.POLYGON },
+          ),
+        },
+      });
+      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+
+      expect(result.recommendedQuotes).toHaveLength(1);
+
+      const EXPECTED_SORTED_COSTS = [
+        {
+          usd: '266.1755640885683904',
+          valueInCurrency: '0.15656286442841952',
+        },
+        {
+          usd: '266.3580014947292928',
+          valueInCurrency: '0.33900007473646464',
+        },
+      ];
+      expect(result.recommendedQuotes[0]?.cost).toStrictEqual(
+        EXPECTED_SORTED_COSTS[0],
+      );
+
+      const { recommendedQuotes, ...rest } = result;
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect(rest).toMatchInlineSnapshot(`
+        {
+          "isLoading": false,
+          "isQuoteGoingToRefresh": false,
+          "minimumReceived": {
+            "amount": "13.98428",
+            "usd": "13.8444372",
+            "valueInCurrency": "13.8444372",
+          },
+          "quoteFetchError": null,
+          "quotesInitialLoadTimeMs": 11000,
+          "quotesLastFetchedMs": 100,
+          "quotesRefreshCount": 1,
+          "totalNetworkFee": {
+            "amount": "0.00100006442841952",
+            "usd": "0.0200012885683904",
+            "valueInCurrency": "0.00100006442841952",
+          },
+          "totalReceived": {
+            "amount": "13.98428",
+            "usd": "13.8444372",
+            "valueInCurrency": "13.8444372",
+          },
+        }
+      `);
+    });
+
+    it('should return empty values when quotes are not present', () => {
+      const state = createBridgeMockStore({
+        bridgeStateOverrides: { quotes: [] },
+      });
+
+      const result = getBatchSellQuotes(state as never, { requestCount: 1 });
+
+      expect(result).toMatchInlineSnapshot(`
+        {
+          "isLoading": false,
+          "isQuoteGoingToRefresh": true,
+          "minimumReceived": {
+            "amount": "0",
+            "usd": "0",
+            "valueInCurrency": "0",
+          },
+          "quoteFetchError": null,
+          "quotesInitialLoadTimeMs": null,
+          "quotesLastFetchedMs": null,
+          "quotesRefreshCount": 0,
+          "recommendedQuotes": [
+            null,
+          ],
+          "totalNetworkFee": {
+            "amount": "0",
+            "usd": "0",
+            "valueInCurrency": "0",
+          },
+          "totalReceived": {
+            "amount": "0",
+            "usd": "0",
+            "valueInCurrency": "0",
+          },
+        }
+      `);
+    });
+
+    it('returns null quotes if requestCount is greater than the number of quotes', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            maxRefreshCount: 5,
+            chainRanking: [
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
+              { chainId: formatChainIdToCaip(ChainId.POLYGON) },
+            ],
+          },
+        },
+        bridgeSliceOverrides: {
+          fromToken: { address: zeroAddress(), symbol: 'ETH' },
+          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
+          fromTokenExchangeRate: 1,
+        },
+        bridgeStateOverrides: {
+          quoteRequest: {
+            insufficientBal: false,
+            srcChainId: 10,
+            srcTokenAddress: zeroAddress(),
+            destChainId: '0x89',
+            destTokenAddress: zeroAddress(),
+          },
+          quotes: mockErc20Erc20Quotes as unknown as QuoteResponse[],
+          quotesRefreshCount: 2,
+          quotesInitialLoadTime: 11000,
+          quotesLastFetched: 100,
+        },
+        metamaskStateOverrides: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 1,
+              usdConversionRate: 20,
+            },
+            POL: {
+              conversionRate: 0.9899999999999999,
+              usdConversionRate: 0.99 / 0.354073,
+            },
+          },
+          marketData: {},
+          ...mockNetworkState(
+            { chainId: CHAIN_IDS.OPTIMISM },
+            { chainId: CHAIN_IDS.MAINNET },
+            { chainId: CHAIN_IDS.LINEA_MAINNET },
+            { chainId: CHAIN_IDS.POLYGON },
+          ),
+        },
+      });
+      const result = getBatchSellQuotes(state as never, { requestCount: 4 });
+
+      expect(result.recommendedQuotes).toHaveLength(4);
+      const EXPECTED_SORTED_COSTS = [
+        {
+          usd: '240.919484728424019402436',
+          valueInCurrency: '0.156562864428420918428',
+        },
+        {
+          usd: '241.43473800386724486',
+          valueInCurrency: '0.33900007473646602',
+        },
+      ];
+      expect(result.recommendedQuotes[0]?.cost).toStrictEqual(
+        EXPECTED_SORTED_COSTS[0],
+      );
+
+      const { recommendedQuotes, ...rest } = result;
+      const {
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+        ...calculatedQuoteMetadata
+      } = recommendedQuotes[0] as QuoteMetadata & QuoteResponse;
+      expect(calculatedQuoteMetadata).toMatchSnapshot();
+      expect({
+        quote,
+        approval,
+        trade,
+        estimatedProcessingTimeInSeconds,
+      }).toStrictEqual(mockErc20Erc20Quotes[0]);
+      expect(rest).toMatchInlineSnapshot(`
+        {
+          "isLoading": false,
+          "isQuoteGoingToRefresh": true,
+          "minimumReceived": {
+            "amount": "13.98428",
+            "usd": "39.100516560144370997564",
+            "valueInCurrency": "13.844437199999998601572",
+          },
+          "quoteFetchError": null,
+          "quotesInitialLoadTimeMs": 11000,
+          "quotesLastFetchedMs": 100,
+          "quotesRefreshCount": 2,
+          "totalNetworkFee": {
+            "amount": "0.00100006442841952",
+            "usd": "0.0200012885683904",
+            "valueInCurrency": "0.00100006442841952",
+          },
+          "totalReceived": {
+            "amount": "13.98428",
+            "usd": "39.100516560144370997564",
+            "valueInCurrency": "13.844437199999998601572",
+          },
+        }
+      `);
     });
   });
 
