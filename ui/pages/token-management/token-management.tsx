@@ -45,7 +45,9 @@ import {
 } from '../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
+  addCustomAsset,
   addImportedTokens,
+  hideAsset,
   ignoreTokens as ignoreTokensAction,
   multichainAddAssets,
   multichainIgnoreAssets,
@@ -64,6 +66,7 @@ import {
   getAssetImageUrl,
   isEvmChainId,
   isTronSpecialAsset,
+  toAssetId,
 } from '../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAssetsWithPriority';
 import { ScrollContainer } from '../../contexts/scroll-container';
@@ -414,12 +417,34 @@ export const TokenManagementPage = () => {
               networkClientId,
             }),
           );
+          // Also drive the unified AssetsController hide so the home list
+          // reflects the change when `ASSETS_UNIFIED_STATE_ENABLED` is on.
+          // Mirrors `hide-token-confirmation-modal.js`. Wrapped in try/catch
+          // so a build without the unified controller is a no-op.
+          try {
+            const caipAssetId = toAssetId(
+              token.address as Hex,
+              token.chainId as Hex,
+            );
+            if (caipAssetId) {
+              await dispatch(hideAsset(caipAssetId));
+            }
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.warn('[TokenManagement] hideAsset failed', err);
+          }
           return;
         }
 
         await dispatch(
           multichainIgnoreAssets([token.assetId], token.accountId),
         );
+        try {
+          await dispatch(hideAsset(token.assetId as CaipAssetType));
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.warn('[TokenManagement] hideAsset failed', err);
+        }
       } finally {
         setPendingKey(undefined);
       }
@@ -481,6 +506,10 @@ export const TokenManagementPage = () => {
             return;
           }
 
+          // Look up the EVM account in the current group so we can also feed
+          // the unified AssetsController via addCustomAsset/hideAsset.
+          const evmAccount = getAccountForChain(caipChainId);
+
           if (nextValue) {
             // eslint-disable-next-line no-console
             console.log('[TokenManagement] dispatching addImportedTokens', {
@@ -488,21 +517,59 @@ export const TokenManagementPage = () => {
               symbol: result.symbol,
               networkClientId,
             });
-            await dispatch(
-              addImportedTokens(
-                [
+            try {
+              await dispatch(
+                addImportedTokens(
+                  [
+                    {
+                      address: assetReference,
+                      symbol: result.symbol,
+                      decimals: result.decimals,
+                      isERC721: false,
+                      name: result.name,
+                      ...(result.iconUrl ? { image: result.iconUrl } : {}),
+                    },
+                  ],
+                  networkClientId,
+                ),
+              );
+              // eslint-disable-next-line no-console
+              console.log('[TokenManagement] addImportedTokens resolved');
+            } catch (err) {
+              // eslint-disable-next-line no-console
+              console.error('[TokenManagement] addImportedTokens failed', err);
+            }
+            // Also feed the unified AssetsController so the home list
+            // recognizes the imported asset when the feature flag is on.
+            try {
+              if (evmAccount?.id) {
+                // eslint-disable-next-line no-console
+                console.log(
+                  '[TokenManagement] dispatching addCustomAsset',
                   {
-                    address: assetReference,
-                    symbol: result.symbol,
-                    decimals: result.decimals,
-                    isERC721: false,
-                    name: result.name,
-                    ...(result.iconUrl ? { image: result.iconUrl } : {}),
+                    accountId: evmAccount.id,
+                    assetId: result.assetId,
                   },
-                ],
-                networkClientId,
-              ),
-            );
+                );
+                await dispatch(
+                  addCustomAsset(
+                    evmAccount.id,
+                    result.assetId as CaipAssetType,
+                  ),
+                );
+                // eslint-disable-next-line no-console
+                console.log('[TokenManagement] addCustomAsset resolved');
+              } else {
+                // eslint-disable-next-line no-console
+                console.warn(
+                  '[TokenManagement] skipping addCustomAsset (no evmAccount)',
+                  { caipChainId },
+                );
+              }
+            } catch (err) {
+              // eslint-disable-next-line no-console
+              console.warn('[TokenManagement] addCustomAsset failed', err);
+            }
             return;
           }
           await dispatch(
@@ -512,6 +579,12 @@ export const TokenManagementPage = () => {
               networkClientId,
             }),
           );
+          try {
+            await dispatch(hideAsset(result.assetId as CaipAssetType));
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.warn('[TokenManagement] hideAsset failed', err);
+          }
           return;
         }
 
@@ -523,9 +596,23 @@ export const TokenManagementPage = () => {
         }
         if (nextValue) {
           await dispatch(multichainAddAssets([result.assetId], account.id));
+          try {
+            await dispatch(
+              addCustomAsset(account.id, result.assetId as CaipAssetType),
+            );
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.warn('[TokenManagement] addCustomAsset failed', err);
+          }
           return;
         }
         await dispatch(multichainIgnoreAssets([result.assetId], account.id));
+        try {
+          await dispatch(hideAsset(result.assetId as CaipAssetType));
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.warn('[TokenManagement] hideAsset failed', err);
+        }
       } finally {
         setPendingKey(undefined);
       }
@@ -612,6 +699,21 @@ export const TokenManagementPage = () => {
       const isImported =
         importedAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
+
+      if (
+        // eslint-disable-next-line no-restricted-globals
+        typeof window !== 'undefined' &&
+        (window as unknown as { __TOKEN_MGMT_DEBUG?: boolean })
+          .__TOKEN_MGMT_DEBUG
+      ) {
+        // eslint-disable-next-line no-console
+        console.log('[TokenManagement] row state', {
+          lowerAssetId,
+          evmImportedKey,
+          isImported,
+          importedSize: importedAssetIds.size,
+        });
+      }
 
       return (
         <TokenManagementCell
