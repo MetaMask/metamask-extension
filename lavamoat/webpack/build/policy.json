@@ -1095,7 +1095,7 @@
         "console": true
       }
     },
-    "koa>content-disposition": {
+    "mockttp>express>content-disposition": {
       "builtin": {
         "path.basename": true
       },
@@ -1515,7 +1515,7 @@
         "koa>accepts": true,
         "mockttp>express>array-flatten": true,
         "mockttp>body-parser": true,
-        "koa>content-disposition": true,
+        "mockttp>express>content-disposition": true,
         "koa>content-type": true,
         "mockttp>express>cookie-signature": true,
         "mockttp>express>cookie": true,
