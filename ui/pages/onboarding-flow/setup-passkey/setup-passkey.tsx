@@ -110,6 +110,7 @@ export default function SetupPasskey() {
     );
   const [enrollmentError, setEnrollmentError] = useState<string | null>(null);
   const isMountedRef = useRef(true);
+  const hasTrackedView = useRef(false);
 
   const baseProperties = useMemo(
     () => ({
@@ -134,6 +135,10 @@ export default function SetupPasskey() {
     if (isPasskeyRegistered) {
       return;
     }
+    if (hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.PasskeyOnboardingSetupViewed,

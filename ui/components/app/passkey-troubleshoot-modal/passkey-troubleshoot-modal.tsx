@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Box,
@@ -63,7 +63,13 @@ export default function PasskeyTroubleshootModal({
     [accountType, passkeyDerivationMethod, troubleshootLocation],
   );
 
+  const hasTrackedView = useRef(false);
+
   useEffect(() => {
+    if (hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.PasskeyTroubleshootClicked,
