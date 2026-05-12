@@ -4,7 +4,7 @@ import {
   type ComplianceControllerState,
 } from '@metamask/compliance-controller';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
-import { getRemoteFeatureFlags } from './remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 
 const DEFAULT_COMPLIANCE_ENABLED = false;
 const DEFAULT_COMPLIANCE_STATE = getDefaultComplianceControllerState();
