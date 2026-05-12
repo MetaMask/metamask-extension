@@ -128,7 +128,7 @@ function useERC20Tokens(
         type === NameType.ETHEREUM_ADDRESS &&
         value &&
         isStrictHexString(variation)
-          ? buildEvmCaip19AssetId(value as string, variation as Hex)
+          ? buildEvmCaip19AssetId(value, variation as Hex)
           : undefined,
     }),
   );

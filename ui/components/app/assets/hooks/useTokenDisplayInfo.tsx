@@ -37,15 +37,10 @@ export const useTokenDisplayInfo = ({
   // no name. The module-level cache in useTokensData ensures at most one HTTP
   // request per unique asset ID across all token rows, and the empty-array
   // fast-path skips the effect entirely when both fields are already present.
-  // token.chainId is a hex chain ID when isEvm is true.
-  const evmChainId = token.chainId as Hex;
+  // token.chainId is a hex chain ID when isEvm is true (guaranteed by isEvmChainId above).
   const fallbackAssetId =
-    isEvm &&
-    !token.isNative &&
-    (!token.name || !token.image) &&
-    token.address &&
-    token.chainId
-      ? buildEvmCaip19AssetId(token.address, evmChainId)
+    isEvm && !token.isNative && (!token.name || !token.image) && token.address
+      ? buildEvmCaip19AssetId(token.address, token.chainId as Hex)
       : undefined;
   const fallbackTokensByAssetId = useTokensData(
     fallbackAssetId ? [fallbackAssetId] : [],

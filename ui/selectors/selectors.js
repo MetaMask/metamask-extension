@@ -1987,6 +1987,10 @@ export function getNativeCurrencyForChain(chainId) {
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId] ?? undefined;
 }
 
+/**
+ * @deprecated Use the `useTokensData` hook instead.
+ * @param {object} state - Redux state.
+ */
 export const selectERC20TokensByChain = (state) =>
   state.metamask.tokensChainsCache;
 

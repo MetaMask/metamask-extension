@@ -304,6 +304,67 @@ describe('useDisplayName', () => {
         subtitle: null,
       });
     });
+
+    it('returns no name when variation is not a hex chain ID', () => {
+      // CAIP chain IDs (e.g. "eip155:1") are not strict hex strings, so
+      // useERC20Tokens must skip building a CAIP-19 asset ID and call
+      // useTokensData with an empty array rather than an invalid key.
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: 'eip155:1',
+          }),
+        state,
+      );
+
+      expect(useTokensDataMock).toHaveBeenCalledWith([]);
+      expect(result.current).toStrictEqual({
+        contractDisplayName: undefined,
+        hasPetname: false,
+        image: undefined,
+        isAccount: false,
+        name: null,
+        displayState: TrustSignalDisplayState.Unknown,
+        icon: {
+          name: IconName.Question,
+          color: undefined,
+        },
+        subtitle: null,
+      });
+    });
+
+    it('uses the same asset ID for fetching and result lookup', () => {
+      // Regression guard: the single-pass refactor computes the CAIP-19 asset
+      // ID once and reuses it for both useTokensData input and tokensByAssetId
+      // lookup. Verify the token data is actually resolved when the IDs match.
+      mockERC20Token(
+        VALUE_MOCK,
+        VARIATION_MOCK,
+        ERC20_TOKEN_NAME_MOCK,
+        SYMBOL_MOCK,
+        ERC20_IMAGE_MOCK,
+      );
+
+      const { result } = renderHookWithProvider(
+        () =>
+          useDisplayName({
+            value: VALUE_MOCK,
+            type: NameType.ETHEREUM_ADDRESS,
+            variation: VARIATION_MOCK,
+          }),
+        state,
+      );
+
+      const expectedAssetId = buildEvmCaip19AssetId(
+        VALUE_MOCK,
+        VARIATION_MOCK as Hex,
+      );
+      expect(useTokensDataMock).toHaveBeenCalledWith([expectedAssetId]);
+      expect(result.current.name).toBe(ERC20_TOKEN_NAME_MOCK);
+      expect(result.current.image).toBe(ERC20_IMAGE_MOCK);
+    });
   });
 
   describe('First-party Contract', () => {
