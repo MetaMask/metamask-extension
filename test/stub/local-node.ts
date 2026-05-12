@@ -5,12 +5,9 @@ import { AddressInfo } from 'net';
  * Lightweight in-process JSON-RPC HTTP server used by controller unit tests
  * that need an RPC endpoint reachable on `http://localhost:<port>`.
  *
- * Unit tests previously relied on `ganache` (an in-process EVM) and then on
- * `anvil` for the same purpose, but those approaches require either heavy
- * dependencies or a Foundry binary that isn't installed in our unit-test
- * environment. This stub responds with hard-coded defaults for the JSON-RPC
- * methods MetaMask's networking layers issue at start-up so that the
- * controller can be instantiated without an actual EVM running.
+ * Unit tests previously relied on Ganache. For Anvil we require the Foundry binary, that isn't installed in our unit-test environment.
+ * This stub responds with hard-coded defaults for the JSON-RPC methods MetaMask's networking layers
+ * so that the controllers can be instantiated without an actual EVM running.
  *
  * The stub is deliberately minimal: tests that need richer behavior should
  * mock at a higher level (e.g. via `nock` or by injecting their own provider).
@@ -50,6 +47,8 @@ const defaultBlock = {
   baseFeePerGas: '0x0',
 };
 
+// JSON-RPC method names are snake_case by spec, so disable naming-convention here.
+/* eslint-disable @typescript-eslint/naming-convention */
 const defaultResponses: Record<string, unknown> = {
   eth_chainId: '0x1',
   net_version: '1',
@@ -67,6 +66,7 @@ const defaultResponses: Record<string, unknown> = {
   net_listening: true,
   web3_clientVersion: 'metamask-test-stub/0.0.0',
 };
+/* eslint-enable @typescript-eslint/naming-convention */
 
 function handleRpc(rpc: JsonRpcRequest) {
   const result =
@@ -88,7 +88,7 @@ export class LocalNodeStub {
       this.#port = opts.port;
     }
 
-    this.#server = createServer((req, res) => {
+    const server = createServer((req, res) => {
       const chunks: Buffer[] = [];
       req.on('data', (chunk: Buffer) => chunks.push(chunk));
       req.on('end', () => {
@@ -111,23 +111,20 @@ export class LocalNodeStub {
         }
       });
     });
+    this.#server = server;
 
     await new Promise<void>((resolve, reject) => {
-      const onError = (err: Error) => {
-        this.#server?.removeListener('listening', onListening);
-        reject(err);
-      };
-      const onListening = () => {
-        this.#server?.removeListener('error', onError);
-        const address = this.#server?.address() as AddressInfo | null;
+      // Both listeners use `.once()` so they auto-detach after firing, and
+      // resolve/reject are idempotent — no manual cleanup needed.
+      server.once('error', reject);
+      server.once('listening', () => {
+        const address = server.address() as AddressInfo | null;
         if (address && typeof address === 'object') {
           this.#port = address.port;
         }
         resolve();
-      };
-      this.#server!.once('error', onError);
-      this.#server!.once('listening', onListening);
-      this.#server!.listen(this.#port, '127.0.0.1');
+      });
+      server.listen(this.#port, '127.0.0.1');
     });
   }
 
@@ -136,11 +133,12 @@ export class LocalNodeStub {
   }
 
   async quit(): Promise<void> {
-    if (!this.#server) {
+    const server = this.#server;
+    if (!server) {
       return;
     }
     await new Promise<void>((resolve, reject) => {
-      this.#server!.close((err) => {
+      server.close((err) => {
         if (err) {
           reject(err);
         } else {
