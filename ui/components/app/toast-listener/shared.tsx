@@ -8,64 +8,43 @@ import { ToastContent as ToastContentBase } from '../../ui/toast/toast';
 
 export type ToastStatus = 'pending' | 'success' | 'failed';
 
-export const ToastContent = ({ status }: { status: TransactionStatus }) => {
-  const { title } = useTransactionDisplay(status);
-  return <ToastContentBase title={title} />;
+type ToastContentOptions = {
+  title?: string;
+  description?: string;
+  dataTestId?: string;
 };
 
-export const CustomToastContent = ({
+export const ToastContent = ({
+  status,
   title,
   description,
   dataTestId,
-}: {
-  title: string;
-  description?: string;
-  dataTestId?: string;
-}) => {
+}: { status: TransactionStatus } & ToastContentOptions) => {
+  const { title: statusTitle } = useTransactionDisplay(status);
+
   return (
     <ToastContentBase
-      title={title}
+      title={title ?? statusTitle}
       description={description}
       dataTestId={dataTestId}
     />
   );
 };
 
-export function showPendingToast(id: string) {
-  toast.loading(<ToastContent status="pending" />, { id });
+export function showPendingToast(id: string, options?: ToastContentOptions) {
+  toast.loading(<ToastContent status="pending" {...options} />, { id });
 }
 
-export function showSuccessToast(id: string) {
-  toast.success(<ToastContent status="success" />, { id });
+export function showSuccessToast(id: string, options?: ToastContentOptions) {
+  toast.success(<ToastContent status="success" {...options} />, { id });
 }
 
-export function showFailedToast(id: string) {
-  toast.error(<ToastContent status="failed" />, { id });
+export function showFailedToast(id: string, options?: ToastContentOptions) {
+  toast.error(<ToastContent status="failed" {...options} />, { id });
 }
 
 export function dismissToast(id: string) {
   toast.dismiss(id);
-}
-
-export function showCustomPendingToast(
-  id: string,
-  props: React.ComponentProps<typeof CustomToastContent>,
-) {
-  toast.loading(<CustomToastContent {...props} />, { id });
-}
-
-export function showCustomSuccessToast(
-  id: string,
-  props: React.ComponentProps<typeof CustomToastContent>,
-) {
-  toast.success(<CustomToastContent {...props} />, { id });
-}
-
-export function showCustomFailedToast(
-  id: string,
-  props: React.ComponentProps<typeof CustomToastContent>,
-) {
-  toast.error(<CustomToastContent {...props} />, { id });
 }
 
 export function showToast(id: string, status: ToastStatus) {

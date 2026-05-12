@@ -8,9 +8,9 @@ import {
 } from '../../../selectors/toast';
 import {
   dismissToast,
-  showCustomFailedToast,
-  showCustomPendingToast,
-  showCustomSuccessToast,
+  showFailedToast,
+  showPendingToast,
+  showSuccessToast,
 } from './shared';
 
 const PENDING_STATUSES = new Set<TransactionStatus>([
@@ -79,7 +79,7 @@ export function usePerpsWithdrawTransactionToasts() {
         !pendingToastShownIdsRef.current.has(id)
       ) {
         pendingToastShownIdsRef.current.add(id);
-        showCustomPendingToast(toastId, {
+        showPendingToast(toastId, {
           title: t('perpsWithdrawPostQuoteToastPendingTitle'),
           description: t('perpsWithdrawPostQuoteToastPendingDescription'),
           dataTestId: 'perps-withdraw-pending-toast',
@@ -88,7 +88,7 @@ export function usePerpsWithdrawTransactionToasts() {
       }
 
       if (status === TransactionStatus.confirmed) {
-        showCustomSuccessToast(toastId, {
+        showSuccessToast(toastId, {
           title: t('perpsWithdrawPostQuoteToastSuccessTitle'),
           description: getSuccessDescription(transaction, t),
           dataTestId: 'perps-withdraw-success-toast',
@@ -97,7 +97,7 @@ export function usePerpsWithdrawTransactionToasts() {
       }
 
       if (FAILED_STATUSES.has(status)) {
-        showCustomFailedToast(toastId, {
+        showFailedToast(toastId, {
           title: t('perpsWithdrawPostQuoteToastErrorTitle'),
           description: t('perpsWithdrawPostQuoteToastErrorDescription'),
           dataTestId: 'perps-withdraw-failed-toast',

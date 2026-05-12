@@ -4,9 +4,9 @@ import type { PerpsWithdrawToastTransaction } from '../../../selectors/toast';
 import { usePerpsWithdrawTransactionToasts } from './usePerpsWithdrawTransactionToasts';
 
 const mockUseSelector = jest.fn();
-const mockShowCustomPendingToast = jest.fn();
-const mockShowCustomSuccessToast = jest.fn();
-const mockShowCustomFailedToast = jest.fn();
+const mockShowPendingToast = jest.fn();
+const mockShowSuccessToast = jest.fn();
+const mockShowFailedToast = jest.fn();
 const mockDismissToast = jest.fn();
 
 jest.mock('react-redux', () => ({
@@ -21,15 +21,12 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 jest.mock('./shared', () => ({
   dismissToast: (...args: Parameters<typeof mockDismissToast>) =>
     mockDismissToast(...args),
-  showCustomPendingToast: (
-    ...args: Parameters<typeof mockShowCustomPendingToast>
-  ) => mockShowCustomPendingToast(...args),
-  showCustomSuccessToast: (
-    ...args: Parameters<typeof mockShowCustomSuccessToast>
-  ) => mockShowCustomSuccessToast(...args),
-  showCustomFailedToast: (
-    ...args: Parameters<typeof mockShowCustomFailedToast>
-  ) => mockShowCustomFailedToast(...args),
+  showPendingToast: (...args: Parameters<typeof mockShowPendingToast>) =>
+    mockShowPendingToast(...args),
+  showSuccessToast: (...args: Parameters<typeof mockShowSuccessToast>) =>
+    mockShowSuccessToast(...args),
+  showFailedToast: (...args: Parameters<typeof mockShowFailedToast>) =>
+    mockShowFailedToast(...args),
 }));
 
 describe('usePerpsWithdrawTransactionToasts', () => {
@@ -54,7 +51,7 @@ describe('usePerpsWithdrawTransactionToasts', () => {
 
     renderHook(() => usePerpsWithdrawTransactionToasts());
 
-    expect(mockShowCustomSuccessToast).not.toHaveBeenCalled();
+    expect(mockShowSuccessToast).not.toHaveBeenCalled();
   });
 
   it('shows a pending toast when a withdraw is approved', () => {
@@ -81,7 +78,7 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     ];
     rerender();
 
-    expect(mockShowCustomPendingToast).toHaveBeenCalledWith(
+    expect(mockShowPendingToast).toHaveBeenCalledWith(
       'perps-withdraw-tx-1',
       {
         title: 'perpsWithdrawPostQuoteToastPendingTitle',
@@ -105,7 +102,7 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     ];
     rerender();
 
-    expect(mockShowCustomPendingToast).toHaveBeenCalledWith(
+    expect(mockShowPendingToast).toHaveBeenCalledWith(
       'perps-withdraw-tx-1',
       expect.objectContaining({
         title: 'perpsWithdrawPostQuoteToastPendingTitle',
@@ -148,7 +145,7 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     ];
     rerender();
 
-    expect(mockShowCustomPendingToast).toHaveBeenCalledTimes(1);
+    expect(mockShowPendingToast).toHaveBeenCalledTimes(1);
   });
 
   it('dismisses the pending toast when a withdraw disappears before resolving', () => {
@@ -195,7 +192,7 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     ];
     rerender();
 
-    expect(mockShowCustomSuccessToast).toHaveBeenCalledWith(
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
       'perps-withdraw-tx-1',
       {
         title: 'perpsWithdrawPostQuoteToastSuccessTitle',
@@ -228,7 +225,7 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     ];
     rerender();
 
-    expect(mockShowCustomSuccessToast).toHaveBeenCalledWith(
+    expect(mockShowSuccessToast).toHaveBeenCalledWith(
       'perps-withdraw-tx-1',
       expect.objectContaining({
         description: 'perpsWithdrawPostQuoteToastSuccessGenericDescription',
@@ -260,7 +257,7 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     ];
     rerender();
 
-    expect(mockShowCustomFailedToast).toHaveBeenCalledWith(
+    expect(mockShowFailedToast).toHaveBeenCalledWith(
       'perps-withdraw-tx-1',
       {
         title: 'perpsWithdrawPostQuoteToastErrorTitle',

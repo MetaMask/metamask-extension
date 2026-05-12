@@ -2,9 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import {
-  CustomToastContent,
   ToastContent,
-  showCustomSuccessToast,
+  showSuccessToast,
   showToast,
   type ToastStatus,
 } from './shared';
@@ -60,7 +59,8 @@ describe('toast-listener/shared', () => {
 
   it('renders custom toast content', () => {
     render(
-      <CustomToastContent
+      <ToastContent
+        status="success"
         title={messages.perpsWithdrawPostQuoteToastSuccessTitle.message}
         description="$20.73 BNB moved to your wallet"
       />,
@@ -99,7 +99,7 @@ describe('toast-listener/shared', () => {
   });
 
   it('shows a custom success toast', () => {
-    showCustomSuccessToast('toast-id', {
+    showSuccessToast('toast-id', {
       title: messages.perpsWithdrawPostQuoteToastSuccessTitle.message,
       description: '$20.73 BNB moved to your wallet',
     });
