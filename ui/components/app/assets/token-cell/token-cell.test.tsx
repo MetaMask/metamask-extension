@@ -8,12 +8,12 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
-  getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
   getUseSafeChainsListValidation,
   getEnabledNetworksByNamespace,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
   getMultichainCurrentChainId,
   getMultichainIsEvm,
@@ -47,6 +47,10 @@ jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
     useIsOriginalTokenSymbol: jest.fn(),
   };
 });
+
+jest.mock('../../../../hooks/useTokensData', () => ({
+  useTokensData: jest.fn().mockReturnValue({}),
+}));
 
 const mockShouldShowTokenListItemCta = jest.fn().mockReturnValue(false);
 jest.mock('../../../../hooks/musd', () => ({

@@ -11,10 +11,11 @@ import { useSelector } from 'react-redux';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../../../../../../shared/constants/network';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { PreferredAvatar } from '../../../../../../../components/app/preferred-avatar';
+import { selectERC20TokensByChain } from '../../../../../../../selectors';
 import {
-  selectERC20TokensByChain,
   selectNetworkConfigurationByChainId,
-} from '../../../../../../../selectors';
+  type NetworkConfigurationsByChainIdState,
+} from '../../../../../../../../shared/lib/selectors/networks';
 import { useConfirmContext } from '../../../../../context/confirm';
 
 export enum GasFeeTokenIconSize {
@@ -34,8 +35,9 @@ export function GasFeeTokenIcon({
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const { chainId } = currentConfirmation ?? {};
 
-  const networkConfiguration = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
+  const networkConfiguration = useSelector(
+    (state: NetworkConfigurationsByChainIdState) =>
+      selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);

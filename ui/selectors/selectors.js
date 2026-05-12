@@ -39,7 +39,10 @@ import {
   getProviderConfig,
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
+  selectNetworkConfigurationByChainId,
+  selectDefaultRpcEndpointByChainId,
 } from '../../shared/lib/selectors/networks';
+import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -55,11 +58,7 @@ import {
 } from '../../shared/lib/passkey';
 import { getIsPasskeyFeatureEnabled } from '../../shared/lib/environment';
 import { isFirefoxBrowser } from '../../shared/lib/browser-runtime.utils';
-// TODO: Fix circular dependency
-// To avoid import evaluating as `undefined` due to circular dependency,
-// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import-x/order
-import { getRemoteFeatureFlags } from './remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
@@ -134,7 +133,7 @@ import {
   sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates/approval-types';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -175,13 +174,9 @@ import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/lib/feature-flags';
-// eslint-disable-next-line import-x/order
-import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-  getInternalAccountByAddress,
-} from './accounts';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
+import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
 import { getIsSocialLoginFlow } from './first-time-flow';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getApprovalRequestsByType } from './approvals';
@@ -391,16 +386,6 @@ export function getIsSigningQRHardwareTransaction(state) {
   );
 }
 
-export function getCurrentKeyring(state) {
-  const internalAccount = getSelectedInternalAccount(state);
-
-  if (!internalAccount) {
-    return null;
-  }
-
-  return internalAccount.metadata?.keyring;
-}
-
 /**
  * The function returns true if network and account details are fetched and
  * both of them support EIP-1559.
@@ -422,67 +407,6 @@ export function checkNetworkAndAccountSupports1559(state, networkClientId) {
 export function checkNetworkOrAccountNotSupports1559(state) {
   const networkNotSupports1559 = isNotEIP1559Network(state);
   return networkNotSupports1559;
-}
-
-/**
- * Checks if the current wallet is a hardware wallet.
- *
- * @param {object} state
- * @returns {boolean}
- */
-export function isHardwareWallet(state) {
-  const keyring = getCurrentKeyring(state);
-  return Boolean(keyring?.type?.includes('Hardware'));
-}
-
-/**
- * Checks if the account supports smart transactions.
- *
- * @param {object} state - The state object.
- * @returns {boolean}
- */
-export function accountSupportsSmartTx(state) {
-  const accountType = getAccountType(state);
-  return Boolean(accountType !== 'snap');
-}
-
-/**
- * Get a HW wallet type, e.g. "Ledger Hardware"
- *
- * @param {object} state
- * @returns {string | undefined}
- */
-export function getHardwareWalletType(state) {
-  const keyring = getCurrentKeyring(state);
-  return isHardwareWallet(state) ? keyring.type : undefined;
-}
-
-export function getAccountType(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  return getAccountTypeForKeyring(currentKeyring);
-}
-
-export function getAccountTypeForKeyring(keyring) {
-  if (!keyring) {
-    return '';
-  }
-
-  const { type } = keyring;
-
-  switch (type) {
-    case KeyringType.trezor:
-    case KeyringType.oneKey:
-    case KeyringType.ledger:
-    case KeyringType.lattice:
-    case KeyringType.qr:
-      return 'hardware';
-    case KeyringType.imported:
-      return 'imported';
-    case KeyringType.snap:
-      return 'snap';
-    default:
-      return 'default';
-  }
 }
 
 /**
@@ -1308,28 +1232,6 @@ export const getNetworkConfigurationIdByChainId = createSelector(
 );
 
 /**
- * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
- */
-export const selectNetworkConfigurationByChainId = createSelector(
-  getNetworkConfigurationsByChainId,
-  (_state, chainId) => chainId,
-  (networkConfigurationsByChainId, chainId) =>
-    networkConfigurationsByChainId[chainId],
-);
-
-export const selectDefaultRpcEndpointByChainId = createSelector(
-  selectNetworkConfigurationByChainId,
-  (networkConfiguration) => {
-    if (!networkConfiguration) {
-      return undefined;
-    }
-
-    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
-    return rpcEndpoints[defaultRpcEndpointIndex];
-  },
-);
-
-/**
  * @type (state: RemoteFeatureFlagsState) => boolean
  */
 export const getIsRpcFailoverEnabled = createSelector(
@@ -1454,9 +1356,6 @@ export function getIsLineaMainnet(state) {
 export function getIsTestnet(state) {
   const chainId = getCurrentChainId(state);
   return TEST_CHAINS.includes(chainId);
-}
-export function getPreferences({ metamask }) {
-  return metamask.preferences ?? {};
 }
 
 export function getShowTestNetworks(state) {

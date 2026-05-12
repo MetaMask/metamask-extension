@@ -50,7 +50,6 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import { getHardwareWalletType } from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
@@ -78,15 +77,14 @@ import {
 } from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
+import { getInternalAccountsByScope } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getGasFeesSponsoredNetworkEnabled } from '../../selectors';
 import {
-  getInternalAccountsByScope,
-  getSelectedInternalAccount,
-} from '../../selectors/accounts';
-import {
-  getGasFeesSponsoredNetworkEnabled,
+  getHardwareWalletType,
   isHardwareWallet,
-} from '../../selectors';
-import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+} from '../../../shared/lib/selectors/keyring';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
   getInternalAccountBySelectedAccountGroupAndCaip,
@@ -1137,8 +1135,16 @@ export const getIsStxEnabled = createSelector(
 );
 
 export const getIsGasIncluded = createSelector(
-  [getIsStxEnabled, getIsGasIncludedSwapSupported],
-  (isStxEnabled, isGasIncludedSwapSupported) => {
+  [
+    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    getIsStxEnabled,
+    getIsGasIncludedSwapSupported,
+  ],
+  // Enable gas-included swaps for solana
+  (fromChainId, isStxEnabled, isGasIncludedSwapSupported) => {
+    if (isSolanaChainId(fromChainId)) {
+      return true;
+    }
     return isStxEnabled && isGasIncludedSwapSupported;
   },
 );
