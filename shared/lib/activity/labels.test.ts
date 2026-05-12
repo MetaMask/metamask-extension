@@ -12,11 +12,11 @@ describe('getLabels', () => {
       }),
     ).toStrictEqual({
       title: {
-        key: 'activity.swap.pending.title',
+        key: 'activity_swap_pending_title',
         substitutions,
       },
       description: {
-        key: 'activity.swap.pending.description',
+        key: 'activity_swap_pending_description',
         substitutions,
       },
     });
