@@ -10,13 +10,18 @@ import type { EnhancedReaderProps } from './enhanced-reader.types';
 const SCAN_INTERVAL_MS = MILLISECOND * 100;
 
 /**
- * Stateless QR code reader that streams decoded frames to the parent.
+ * `EnhancedReader` — continuous QR code scanner using ZXing.
  *
- * Shows a spinner until the camera stream is ready to play, then displays
- * the video feed. The component manages the ZXing reader instance and its
- * cleanup on unmount.
- * @param options0
- * @param options0.onFrame
+ * Renders a `<video>` element backed by `BrowserQRCodeReader` and invokes
+ * {@link EnhancedReaderProps.onFrame} with the decoded text on each
+ * successful scan. A spinner is shown until the camera stream fires
+ * `canplay`, at which point the video becomes visible.
+ *
+ * The component handles its own cleanup: the camera stream and ZXing
+ * decode loop are stopped when the component unmounts.
+ *
+ * @param props - Component props.
+ * @param props.onFrame - Callback receiving the decoded QR text per frame.
  */
 const EnhancedReader: React.FC<EnhancedReaderProps> = ({ onFrame }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -66,7 +71,7 @@ const EnhancedReader: React.FC<EnhancedReaderProps> = ({ onFrame }) => {
     );
 
     return () => {
-      promise.then((controls) => controls?.stop()).catch(log.info);
+      promise.then((controls) => controls?.stop()).catch(log.debug);
     };
   }, [codeReader, onFrame]);
 

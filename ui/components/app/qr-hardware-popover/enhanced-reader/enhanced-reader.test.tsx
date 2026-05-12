@@ -143,7 +143,7 @@ describe('EnhancedReader', () => {
     });
 
     it('logs rejection instead of throwing when cleanup fails', async () => {
-      const logInfoSpy = jest.spyOn(log, 'info');
+      const logDebugSpy = jest.spyOn(log, 'debug');
       mockDecodeFromVideoDevice.mockRejectedValue(new Error('cleanup failed'));
 
       const { unmount } = render(<EnhancedReader onFrame={jest.fn()} />);
@@ -154,7 +154,7 @@ describe('EnhancedReader', () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
-      expect(logInfoSpy).toHaveBeenCalled();
+      expect(logDebugSpy).toHaveBeenCalled();
     });
 
     it('removes canplay listener on unmount', () => {
