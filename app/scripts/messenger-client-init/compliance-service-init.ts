@@ -26,5 +26,5 @@ export const ComplianceServiceInit: MessengerClientInitFunction<
     env: getComplianceServiceEnvironment(),
   });
 
-  return { messengerClient };
+  return { messengerClient, persistedStateKey: null, memStateKey: null };
 };

@@ -39,6 +39,8 @@ describe('ComplianceServiceInit', () => {
     const result = ComplianceServiceInit(request);
 
     expect(result.messengerClient).toBeDefined();
+    expect(result.persistedStateKey).toBeNull();
+    expect(result.memStateKey).toBeNull();
     expect(ComplianceServiceMock).toHaveBeenCalledWith({
       messenger: request.controllerMessenger,
       fetch: expect.any(Function),
