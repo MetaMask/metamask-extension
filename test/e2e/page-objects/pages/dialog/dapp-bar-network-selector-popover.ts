@@ -8,14 +8,14 @@ import { Driver } from '../../../webdriver/driver';
 class DappBarNetworkSelectorPopover {
   private driver: Driver;
 
+  private readonly networkOptionByName = (networkName: string) =>
+      `${this.popover} [data-testid="${networkName}"]`;
+
   private readonly popover =
     '[data-testid="dapp-bar-network-selector-popover"]';
 
   private readonly popoverList =
     '[data-testid="dapp-bar-network-selector-popover__list"]';
-
-  private readonly networkOptionByName = (networkName: string) =>
-    `${this.popover} [data-testid="${networkName}"]`;
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -35,10 +35,6 @@ class DappBarNetworkSelectorPopover {
       throw e;
     }
     console.log('Dapp bar network selector popover is loaded');
-  }
-
-  async checkPopoverIsClosed(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.popover);
   }
 
   /**
@@ -63,7 +59,9 @@ class DappBarNetworkSelectorPopover {
     if (shouldBeDisplayed) {
       await this.driver.waitForSelector(selector);
     } else {
-      await this.driver.assertElementNotPresent(selector);
+      await this.driver.assertElementNotPresent(selector, {
+        waitAtLeastGuard: 1000,
+      });
     }
   }
 
