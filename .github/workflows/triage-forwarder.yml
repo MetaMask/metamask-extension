@@ -24,7 +24,7 @@ jobs:
         env:
           OIDC_TOKEN: ${{ steps.oidc.outputs.oidc_token }}
         run: |
-          RESPONSE=$(curl -sSf -X POST "https://token-exchange-service-prd-app.proudtree-e6e81681.westeurope.azurecontainerapps.io/api/exchange/token" \
+          RESPONSE=$(curl -sSf -X POST "${{ vars.TOKEN_EXCHANGE_URL }}/api/exchange/token" \
             -H "Content-Type: application/json" \
             -d "$(jq -cn \
               --arg oidcToken "$OIDC_TOKEN" \
