@@ -107,7 +107,10 @@ jobs:
         run: yarn webpack:tsc
 
       - name: Run build
-        run: ${{ inputs.build-command }}${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        env:
+          BUILD_COMMAND: ${{ inputs.build-command }}
+          BUNDLE_ANALYZER_FLAG: ${{ inputs.bundle-analyzer && ' --bundleAnalyzer' || '' }}
+        run: $BUILD_COMMAND$BUNDLE_ANALYZER_FLAG
 
       - name: Validate source maps
         run: ${{ contains(inputs.build-name, 'webpack') && 'yarn validate-source-maps:webpack' || 'yarn validate-source-maps' }}
