@@ -63,8 +63,6 @@ export type SnapPermissionSpecificationsActions =
  *
  * @param messenger - The messenger to use for communication with other
  * controllers.
- * @param hooks - Hooks for various operations. This is needed since some
- * controllers don't expose the required methods over the messenger yet.
  */
 export function getSnapPermissionSpecifications(
   messenger: RootMessenger<SnapPermissionSpecificationsActions, never>,

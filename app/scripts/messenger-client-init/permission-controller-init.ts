@@ -21,8 +21,7 @@ import { MessengerClientInitFunction } from './types';
  * @param request - The request object.
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
- * @param request.initMessenger
- * @param request.getMessengerClient
+ * @param request.initMessenger - The messenger to use for initialization.
  * @returns The initialized controller.
  */
 export const PermissionControllerInit: MessengerClientInitFunction<
