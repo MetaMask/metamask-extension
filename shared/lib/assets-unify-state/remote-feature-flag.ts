@@ -22,8 +22,7 @@ export const isAssetsUnifyStateFeatureEnabled = (
   featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
   featureVersion: string,
 ): boolean => {
-  const env = process.env.METAMASK_ENVIRONMENT;
-  if (env === 'test' || env === 'testing') {
+  if (process.env.IN_TEST) {
     return true;
   }
   return (
