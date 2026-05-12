@@ -60,6 +60,7 @@ import {
   NONEVM_BALANCE_CHECK_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
+  CUSTOM_TOKEN_IMPORT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
@@ -158,6 +159,9 @@ const Settings = mmLazy(() => import('../settings/index.ts'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
+);
+const CustomTokenImportPage = mmLazy(
+  () => import('../custom-token-import/index.ts'),
 );
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
@@ -267,6 +271,18 @@ export const TokenManagementFeatureRoute = () => {
   return <TokenManagementPage />;
 };
 
+export const CustomTokenImportFeatureRoute = () => {
+  const isTokenManagementFilterEnabled = useAppSelector(
+    getIsTokenManagementFilterEnabled,
+  );
+
+  if (!isTokenManagementFilterEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  return <CustomTokenImportPage />;
+};
+
 export const routeConfig = [
   {
     element: <LegacyLayout />,
@@ -320,6 +336,10 @@ export const routeConfig = [
       {
         path: TOKEN_MANAGEMENT_ROUTE,
         element: <TokenManagementFeatureRoute />,
+      },
+      {
+        path: CUSTOM_TOKEN_IMPORT_ROUTE,
+        element: <CustomTokenImportFeatureRoute />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
