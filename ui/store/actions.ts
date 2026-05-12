@@ -1944,8 +1944,6 @@ export function removeSlide(
   };
 }
 
-export { updateTransactionGasFees } from './actions/update-transaction-gas-fees';
-
 export function updateTransaction(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
