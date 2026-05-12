@@ -9,7 +9,7 @@ import {
   SmartTransactionsState,
 } from '../../../../shared/lib/selectors';
 import { isRelaySupported } from '../../../store/actions';
-import { isHardwareWallet } from '../../../selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { getMaybeHexChainId } from '../../../ducks/bridge/utils';
 

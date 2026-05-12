@@ -78,6 +78,13 @@
         "addEventListener": false
       }
     },
+    "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
+    },
     "@metamask/notification-services-controller>firebase>@firebase/messaging": {
       "globals": {
         "PushManager.getSubscription": true,

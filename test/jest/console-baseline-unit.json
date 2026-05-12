@@ -496,6 +496,10 @@
     "ui/components/multichain/network-manager/network-manager.test.tsx": {
       "error: Unexpected key \"internalAccounts\" found in": 1
     },
+    "ui/components/multichain/networks-form/networks-form.test.js": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "React: State updates on unmounted components": 1
+    },
     "ui/components/multichain/notifications-settings-box/notifications-settings-box.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
@@ -522,6 +526,9 @@
     },
     "ui/components/multichain/receive-modal/receive-modal.test.js": {
       "React: DOM nesting violations": 1
+    },
+    "ui/components/multichain/token-management-cell/token-management-cell.test.tsx": {
+      "React: componentWill* lifecycle deprecations": 1
     },
     "ui/components/ui/qr-code-view/qr-code-view.test.tsx": {
       "React: DOM nesting violations": 1
@@ -1462,102 +1469,98 @@
       "React: PropTypes validation failures": 1,
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/settings-v2/about-tab/about-info.test.tsx": {
+    "ui/pages/settings/about-tab/about-info.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
     },
-    "ui/pages/settings-v2/assets-tab/assets-tab.test.tsx": {
+    "ui/pages/settings/assets-tab/assets-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
+    "ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Input stability warnings": 1
     },
-    "ui/pages/settings-v2/debug-tab/developer-options-tab/developer-options-tab.test.tsx": {
+    "ui/pages/settings/debug-tab/debug-content/debug-content.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 11,
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/debug-tab/developer-options-tab/developer-options-toggle-row-component.test.tsx": {
+    "ui/pages/settings/debug-tab/debug-content/toggle-row-component.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/developer-tools-tab/developer-tools-tab.test.tsx": {
+    "ui/pages/settings/developer-tools-tab/developer-tools-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/experimental-tab/experimental-tab.test.tsx": {
+    "ui/pages/settings/experimental-tab/experimental-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-item.test.tsx": {
+    "ui/pages/settings/preferences-and-display-tab/account-identicon-item.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 4
     },
-    "ui/pages/settings-v2/preferences-and-display-tab/account-identicon-sub-page.test.tsx": {
+    "ui/pages/settings/preferences-and-display-tab/account-identicon-sub-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 2
     },
-    "ui/pages/settings-v2/preferences-and-display-tab/preferences-and-display-tab.test.tsx": {
+    "ui/pages/settings/preferences-and-display-tab/preferences-and-display-tab.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/preferences-and-display-tab/show-default-address-item.test.tsx": {
+    "ui/pages/settings/preferences-and-display-tab/show-default-address-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/privacy-tab/basic-functionality-item.test.tsx": {
+    "ui/pages/settings/privacy-tab/basic-functionality-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/privacy-tab/data-collection-item.test.tsx": {
+    "ui/pages/settings/privacy-tab/data-collection-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/privacy-tab/metametrics-item.test.tsx": {
+    "ui/pages/settings/privacy-tab/metametrics-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/privacy-tab/privacy-tab.test.tsx": {
+    "ui/pages/settings/privacy-tab/privacy-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/privacy-tab/third-party-apis-sub-page.test.tsx": {
+    "ui/pages/settings/privacy-tab/third-party-apis-sub-page.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/security-and-password-tab/passkey-item.test.tsx": {
+    "ui/pages/settings/security-and-password-tab/passkey-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/security-and-password-tab/security-and-password-tab.test.tsx": {
+    "ui/pages/settings/security-and-password-tab/security-and-password-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/settings-v2.test.tsx": {
+    "ui/pages/settings/settings.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/shared/autodetect-nfts-item.test.tsx": {
+    "ui/pages/settings/shared/autodetect-nfts-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/shared/create-toggle-item.test.tsx": {
+    "ui/pages/settings/shared/create-toggle-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/shared/display-nft-media-item.test.tsx": {
+    "ui/pages/settings/shared/display-nft-media-item.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/pages/settings-v2/transactions-tab/transactions-tab.test.tsx": {
+    "ui/pages/settings/transactions-tab/transactions-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "Reselect: Identity function warnings": 1
     },
-    "ui/pages/settings/networks-tab/networks-form/networks-form.test.js": {
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: State updates on unmounted components": 1
+    "ui/pages/shield/plan/shield-payment-modal.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 6
     },
-    "ui/pages/settings/transaction-shield-tab/claims-form/claims-form.test.tsx": {
+    "ui/pages/shield/plan/shield-plan.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 8,
+      "error: [useShieldRewards error]: Error: Actions must": 14
+    },
+    "ui/pages/shield/transaction-shield/claims-form/claims-form.test.tsx": {
       "MetaMask: Background connection not initialized": 4,
       "React: Act warnings (component updates not wrapped)": 8
     },
-    "ui/pages/settings/transaction-shield-tab/manage-shield-plan/manage-shield-plan.test.tsx": {
+    "ui/pages/shield/transaction-shield/manage-shield-plan/manage-shield-plan.test.tsx": {
       "MetaMask: Background connection not initialized": 2,
       "React: Act warnings (component updates not wrapped)": 12
     },
-    "ui/pages/settings/transaction-shield-tab/transaction-shield.test.tsx": {
+    "ui/pages/shield/transaction-shield/transaction-shield.test.tsx": {
       "MetaMask: Background connection not initialized": 6,
       "React: Act warnings (component updates not wrapped)": 14
-    },
-    "ui/pages/shield-plan/shield-payment-modal.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 6
-    },
-    "ui/pages/shield-plan/shield-plan.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 8,
-      "error: [useShieldRewards error]: Error: Actions must": 14
     },
     "ui/pages/snaps/snap-view/snap-view.test.js": {
       "React: Missing key props in lists": 1,

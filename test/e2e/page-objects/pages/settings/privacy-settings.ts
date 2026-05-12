@@ -14,9 +14,9 @@ class PrivacySettings {
   private readonly blockaidAlertsToggle =
     '[data-testid="securityAlert"] .toggle-button';
 
-  /** Security alerts (Blockaid) live under Transactions in Settings V2, not Privacy. */
+  /** Security alerts (Blockaid) live under Transactions in Settings, not Privacy. */
   private readonly settingsTransactionsTab =
-    '[data-testid="settings-v2-tab-item-transactions"]';
+    '[data-testid="settings-tab-item-transactions"]';
 
   private readonly closeRevealSrpDialogButton = {
     text: tEn('close'),
@@ -74,7 +74,7 @@ class PrivacySettings {
   private readonly selectSrpContainer = '[data-testid="select-srp-container"]';
 
   private readonly privacyTabButton =
-    '[data-testid="settings-v2-tab-item-privacy"]';
+    '[data-testid="settings-tab-item-privacy"]';
 
   private readonly thirdPartyApisSubpageLink = `a[href="#${THIRD_PARTY_APIS_ROUTE}"]`;
 
@@ -199,7 +199,7 @@ class PrivacySettings {
   }
 
   /**
-   * Settings V2 Privacy → Export your data: opens confirmation modal then downloads
+   * Settings Privacy → Export your data: opens confirmation modal then downloads
    * the JSON backup (preferences, accounts, address book, networks) from `backupUserData`.
    */
   async exportYourData(): Promise<void> {
@@ -325,7 +325,7 @@ class PrivacySettings {
   }
 
   /**
-   * Settings V2 does not show the legacy “device only” popover when opting out;
+   * Settings does not show the legacy “device only” popover when opting out;
    * this only toggles the control off.
    */
   async optOutDataCollectionForMarketing(): Promise<void> {
@@ -359,7 +359,7 @@ class PrivacySettings {
 
   /**
    * Opens Third-party APIs (nested under Privacy) by clicking the sidebar Privacy
-   * tab when needed, then the in-page link — same path a user takes in Settings V2.
+   * tab when needed, then the in-page link — same path a user takes in Settings.
    */
   async goToThirdPartyApisSettings(): Promise<void> {
     console.log('Go to Third-party APIs settings page');

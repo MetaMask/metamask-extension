@@ -4,10 +4,8 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { sendMultichainTransaction } from '../../../../store/actions';
-import {
-  getUnapprovedTemplatedConfirmations,
-  getSelectedInternalAccount,
-} from '../../../../selectors';
+import { getUnapprovedTemplatedConfirmations } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { getSelectedMultichainNetworkConfiguration } from '../../../../selectors/multichain/networks';
 import { isMultichainWalletSnap } from '../../../../../shared/lib/accounts/snaps';
 import { CONFIRMATION_V_NEXT_ROUTE } from '../../../../helpers/constants/routes';

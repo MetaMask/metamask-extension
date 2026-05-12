@@ -8,6 +8,7 @@ import React, {
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Navigate,
+  createSearchParams,
   useLocation,
   useNavigate,
   useParams,
@@ -39,13 +40,14 @@ import {
   formatPositionSize,
   PRICE_RANGES_MINIMAL_VIEW,
 } from '../../../shared/lib/perps-formatters';
+import { AccountOverviewTabKey } from '../../../shared/constants/app-state';
 import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../shared/constants/perps-events';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
-import { getPreferences } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useTheme } from '../../hooks/useTheme';
 import {
@@ -715,7 +717,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   const handleBackClick = useCallback(() => {
-    navigate(-1);
+    navigate({ pathname: '/', search: 'tab=perps' });
   }, [navigate]);
 
   const buildOrderEntryUrl = useCallback(
@@ -1044,9 +1046,28 @@ const PerpsMarketDetailPage: React.FC = () => {
         {/* Token Logo */}
         <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
 
-        {/* Header Content: symbol-USD, price + change */}
+        {/* Header Content: symbol-USD, max leverage, price + change */}
         <Box flexDirection={BoxFlexDirection.Column}>
-          <Text variant={TextVariant.HeadingMd}>{displayName}-USD</Text>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+          >
+            <Text variant={TextVariant.HeadingMd}>{displayName}-USD</Text>
+            {market.maxLeverage && (
+              <Box
+                className="shrink-0 rounded-md bg-background-muted px-1.5"
+                data-testid="perps-market-max-leverage"
+              >
+                <Text
+                  variant={TextVariant.BodyXs}
+                  color={TextColor.TextAlternative}
+                >
+                  {market.maxLeverage}
+                </Text>
+              </Box>
+            )}
+          </Box>
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Baseline}
