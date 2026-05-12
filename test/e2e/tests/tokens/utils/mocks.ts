@@ -45,6 +45,7 @@ export const mockSpotPrices = async (
 ) => {
   return mockServer
     .forGet(`${PRICE_API_URL}/v3/spot-prices`)
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: prices,
