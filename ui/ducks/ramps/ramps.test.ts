@@ -51,6 +51,11 @@ describe('rampsSlice', () => {
         ramps: rampsReducer,
         metamask: (state = { completedOnboarding: true }) => state,
       },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          serializableCheck: false,
+          immutabilityCheck: false,
+        }),
     });
     mockedRampAPI.getNetworks.mockReset();
   });

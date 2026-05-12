@@ -1100,6 +1100,14 @@
         "@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": true
       }
     },
+    "@metamask/keyring-snap-client": {
+      "packages": {
+        "@metamask/keyring-api": true,
+        "@metamask/keyring-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/keyring-snap-client>uuid": true
+      }
+    },
     "@metamask/keyring-utils": {
       "globals": {
         "URL": true
@@ -4825,6 +4833,11 @@
       }
     },
     "@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": {
+      "globals": {
+        "crypto": true
+      }
+    },
+    "@metamask/keyring-snap-client>uuid": {
       "globals": {
         "crypto": true
       }
