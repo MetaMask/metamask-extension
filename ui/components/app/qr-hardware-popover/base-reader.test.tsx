@@ -108,17 +108,16 @@ describe('BaseReader', () => {
   it('renders progress bar when scan produces partial data', async () => {
     setupWebcamUtilsSuccess();
     mockEnhancedReader.mockImplementation((({
-      handleScan,
+      onFrame,
     }: {
-      handleScan: (data: string) => void;
+      onFrame: (data: string) => void;
     }) => {
-      // Call handleScan in useEffect to avoid state updates during render
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
-        handleScan(
+        onFrame(
           'UR:CRYPTO-HDKEY/24-2/LPCSCSAOCSNYCYNLAMSKJPHDGTEHOEADCSFNAOAEAMTAADDYOTADLNCSDWYKCSFNYKAEYKAOCYJKSKTNBKAXAXATTAADDYOEADLRAEWKLAWKAXAEAYCYTEDMFEAYASISGRIHKKJKJYJLJTIHBKJOHSIAIAJLKPJTJYDMJKJYHSJTIEHSJPIEHTSTGSAO',
         );
-      }, [handleScan]);
+      }, [onFrame]);
       return null;
     }) as unknown as typeof EnhancedReader);
     renderWithProvider(<BaseReader {...defaultProps} />);
@@ -704,14 +703,14 @@ describe('BaseReader', () => {
   it('renders unknown QR code error when scan throws during wallet read', async () => {
     setupWebcamUtilsSuccess();
     mockEnhancedReader.mockImplementation((({
-      handleScan,
+      onFrame,
     }: {
-      handleScan: (data: string) => void;
+      onFrame: (data: string) => void;
     }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
-        handleScan('not-a-valid-ur-payload');
-      }, [handleScan]);
+        onFrame('not-a-valid-ur-payload');
+      }, [onFrame]);
       return null;
     }) as unknown as typeof EnhancedReader);
 
@@ -728,14 +727,14 @@ describe('BaseReader', () => {
   it('renders unknown QR code error for signing flow when scan throws', async () => {
     setupWebcamUtilsSuccess();
     mockEnhancedReader.mockImplementation((({
-      handleScan,
+      onFrame,
     }: {
-      handleScan: (data: string) => void;
+      onFrame: (data: string) => void;
     }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
-        handleScan('not-a-valid-ur-payload');
-      }, [handleScan]);
+        onFrame('not-a-valid-ur-payload');
+      }, [onFrame]);
       return null;
     }) as unknown as typeof EnhancedReader);
 
