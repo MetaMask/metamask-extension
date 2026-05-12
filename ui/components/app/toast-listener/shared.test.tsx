@@ -61,12 +61,14 @@ describe('toast-listener/shared', () => {
   it('renders custom toast content', () => {
     render(
       <CustomToastContent
-        title="Withdrawal complete"
+        title={messages.perpsWithdrawPostQuoteToastSuccessTitle.message}
         description="$20.73 BNB moved to your wallet"
       />,
     );
 
-    expect(screen.getByText('Withdrawal complete')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsWithdrawPostQuoteToastSuccessTitle.message),
+    ).toBeInTheDocument();
     expect(
       screen.getByText('$20.73 BNB moved to your wallet'),
     ).toBeInTheDocument();
@@ -98,7 +100,7 @@ describe('toast-listener/shared', () => {
 
   it('shows a custom success toast', () => {
     showCustomSuccessToast('toast-id', {
-      title: 'Withdrawal complete',
+      title: messages.perpsWithdrawPostQuoteToastSuccessTitle.message,
       description: '$20.73 BNB moved to your wallet',
     });
 

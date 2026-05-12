@@ -7,6 +7,7 @@ const mockUseSelector = jest.fn();
 const mockShowCustomPendingToast = jest.fn();
 const mockShowCustomSuccessToast = jest.fn();
 const mockShowCustomFailedToast = jest.fn();
+const mockDismissToast = jest.fn();
 
 jest.mock('react-redux', () => ({
   useSelector: (selector: unknown) => mockUseSelector(selector),
@@ -18,6 +19,8 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 }));
 
 jest.mock('./shared', () => ({
+  dismissToast: (...args: Parameters<typeof mockDismissToast>) =>
+    mockDismissToast(...args),
   showCustomPendingToast: (
     ...args: Parameters<typeof mockShowCustomPendingToast>
   ) => mockShowCustomPendingToast(...args),
@@ -146,6 +149,26 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     rerender();
 
     expect(mockShowCustomPendingToast).toHaveBeenCalledTimes(1);
+  });
+
+  it('dismisses the pending toast when a withdraw disappears before resolving', () => {
+    const { rerender } = renderHook(() => usePerpsWithdrawTransactionToasts());
+
+    mockTransactions = [
+      {
+        id: 'tx-1',
+        isPostQuote: true,
+        status: TransactionStatus.submitted,
+        targetFiat: 20.73,
+        tokenSymbol: 'BNB',
+      },
+    ];
+    rerender();
+
+    mockTransactions = [];
+    rerender();
+
+    expect(mockDismissToast).toHaveBeenCalledWith('perps-withdraw-tx-1');
   });
 
   it('shows a success toast with the post-quote amount and token symbol', () => {

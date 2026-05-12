@@ -6553,12 +6553,6 @@
   "perpsWithdrawNoAccount": {
     "message": "No account selected. Select an account and try again."
   },
-  "perpsWithdrawReceive": {
-    "message": "Receive"
-  },
-  "perpsWithdrawRoutesError": {
-    "message": "Could not load withdrawal limits. Try again later."
-  },
   "perpsWithdrawPostQuoteToastErrorDescription": {
     "message": "Failed to proceed with withdrawal"
   },
@@ -6580,6 +6574,12 @@
   },
   "perpsWithdrawPostQuoteToastSuccessTitle": {
     "message": "Withdrawal complete"
+  },
+  "perpsWithdrawReceive": {
+    "message": "Receive"
+  },
+  "perpsWithdrawRoutesError": {
+    "message": "Could not load withdrawal limits. Try again later."
   },
   "perpsWithdrawToastErrorTitle": {
     "message": "Withdrawal failed"

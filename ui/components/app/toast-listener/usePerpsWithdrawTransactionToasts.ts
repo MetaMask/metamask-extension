@@ -7,6 +7,7 @@ import {
   type PerpsWithdrawToastTransaction,
 } from '../../../selectors/toast';
 import {
+  dismissToast,
   showCustomFailedToast,
   showCustomPendingToast,
   showCustomSuccessToast,
@@ -101,6 +102,19 @@ export function usePerpsWithdrawTransactionToasts() {
           description: t('perpsWithdrawPostQuoteToastErrorDescription'),
           dataTestId: 'perps-withdraw-failed-toast',
         });
+      }
+    }
+
+    for (const [id, previousStatus] of Object.entries(
+      previousStatusesRef.current,
+    )) {
+      if (previousStatus && PENDING_STATUSES.has(previousStatus)) {
+        const toastId = generateToastId(id);
+
+        if (!(id in nextStatuses)) {
+          dismissToast(toastId);
+          pendingToastShownIdsRef.current.delete(id);
+        }
       }
     }
 
