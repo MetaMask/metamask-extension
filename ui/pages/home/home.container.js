@@ -16,21 +16,20 @@ import {
   getNewNetworkAdded,
   getIsSigningQRHardwareTransaction,
   getIsHardwareWalletErrorModalVisible,
-  getNewNftAddedMessage,
   getNewTokensImported,
-  getRemoveNftMessage,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
-  getSelectedInternalAccount,
   getEditedNetwork,
   getShowUpdateModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
   getPendingRedirectRoute,
+  getLastVisitedPerpsRoute,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -41,8 +40,6 @@ import {
   setTermsOfUseLastAgreed,
   setOutdatedBrowserWarningLastShown,
   setNewNetworkAdded,
-  setNewNftAddedMessage,
-  setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
   setNewTokensImportedError,
@@ -51,6 +48,7 @@ import {
   lookupSelectedNetworks,
   setPendingShieldCohort,
   setPendingRedirectRoute,
+  setLastVisitedPerpsRoute,
 } from '../../store/actions';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
@@ -155,8 +153,6 @@ const mapStateToProps = (state) => {
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     isHardwareWalletErrorModalVisible:
       getIsHardwareWalletErrorModalVisible(state),
-    newNftAddedMessage: getNewNftAddedMessage(state),
-    removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
@@ -176,6 +172,7 @@ const mapStateToProps = (state) => {
     rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
     pendingRedirectRoute: getPendingRedirectRoute(state),
+    lastVisitedPerpsRoute: getLastVisitedPerpsRoute(state),
   };
 };
 
@@ -199,14 +196,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     setOutdatedBrowserWarningLastShown: (lastShown) => {
       dispatch(setOutdatedBrowserWarningLastShown(lastShown));
-    },
-    setNewNftAddedMessage: (message) => {
-      dispatch(setRemoveNftMessage(''));
-      dispatch(setNewNftAddedMessage(message));
-    },
-    setRemoveNftMessage: (message) => {
-      dispatch(setNewNftAddedMessage(''));
-      dispatch(setRemoveNftMessage(message));
     },
     setNewTokensImported: (newTokens) => {
       dispatch(setNewTokensImported(newTokens));
@@ -234,6 +223,7 @@ const mapDispatchToProps = (dispatch) => {
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
     clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
+    clearLastVisitedPerpsRoute: () => dispatch(setLastVisitedPerpsRoute(null)),
   };
 };
 

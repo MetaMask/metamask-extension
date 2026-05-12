@@ -2125,16 +2125,33 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
-  extensionUxPna25: {
-    name: 'extensionUxPna25',
+  coreExtensionUxCeux1024AbtestReferralUi: {
+    name: 'coreExtensionUxCeux1024AbtestReferralUi',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: true,
+    productionDefault: [
+      {
+        name: 'control',
+        scope: { type: 'threshold', value: 1 },
+      },
+      {
+        name: 'treatment',
+        scope: { type: 'threshold', value: 0 },
+      },
+    ],
     status: FeatureFlagStatus.Active,
   },
 
   extensionUxSidepanel: {
     name: 'extensionUxSidepanel',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
+
+  extensionUxTokenManagementFilter: {
+    name: 'extensionUxTokenManagementFilter',
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: false,
@@ -2472,7 +2489,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     name: 'perpsHip3BlocklistMarkets',
     type: FeatureFlagType.Remote,
     inProd: true,
-    productionDefault: 'variation 2',
+    productionDefault: '',
     status: FeatureFlagStatus.Active,
   },
 };

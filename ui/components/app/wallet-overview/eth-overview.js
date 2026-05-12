@@ -7,10 +7,10 @@ import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import {
   isBalanceCached,
   getIsSwapsChain,
-  getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
   getIsBridgeChain,
 } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { CoinOverview } from './coin-overview';
 

@@ -21,6 +21,7 @@ import type {
   ComparisonKey,
 } from '../../shared/constants/benchmarks';
 import {
+  BENCHMARK_PLATFORMS,
   PERCENTILE_KEY,
   STAT_KEY,
   THRESHOLD_SEVERITY,
@@ -206,5 +207,109 @@ export function compareBenchmarkEntries(
         (v: ThresholdViolation) => v.severity === THRESHOLD_SEVERITY.Warn,
       ),
     absoluteFailed: !passed,
+  };
+}
+
+/**
+ * Per-browser multipliers applied uniformly to all P75/P95 threshold values
+ * before comparison. Calibrated so that effective fail > p95(P75) across
+ * CI runs, targeting <5% false-positive rate on clean PRs.
+ *
+ * Firefox is ~2× slower than Chrome on multi-step flows; a uniform 2× factor
+ * keeps the schema consistent (no per-metric overrides) at the cost of some
+ * gate precision on less-divergent metrics.
+ */
+export const BROWSER_MULTIPLIERS: Readonly<Record<string, number>> = {
+  [BENCHMARK_PLATFORMS.FIREFOX]: 2,
+};
+
+/**
+ * Returns a new `ThresholdConfig` with all P75/P95 values scaled by the
+ * per-browser multiplier from `BROWSER_MULTIPLIERS`. `ciMultiplier` is
+ * unchanged. Returns `config` unchanged when `browser` is undefined or has
+ * no entry in `BROWSER_MULTIPLIERS`.
+ *
+ * @param config - Base threshold configuration.
+ * @param browser - Browser name from the CI artifact (e.g. 'firefox', 'chrome').
+ */
+export function scaleThresholdsForBrowser(
+  config: ThresholdConfig,
+  browser?: string,
+): ThresholdConfig {
+  if (!browser) {
+    return config;
+  }
+  const multiplier = BROWSER_MULTIPLIERS[browser];
+  if (!multiplier || multiplier === 1) {
+    return config;
+  }
+  return Object.fromEntries(
+    Object.entries(config).map(([metricId, metric]) => {
+      // ciMultiplier === 1 (CI_MULTIPLIER.NONE) marks unitless metrics (e.g. CLS).
+      // Browser timing multipliers don't apply to dimensionless scores.
+      if (metric.ciMultiplier === 1) {
+        return [metricId, metric];
+      }
+      return [
+        metricId,
+        {
+          ...metric,
+          ...(metric.p75 && {
+            p75: {
+              warn: metric.p75.warn * multiplier,
+              fail: metric.p75.fail * multiplier,
+            },
+          }),
+          ...(metric.p95 && {
+            p95: {
+              warn: metric.p95.warn * multiplier,
+              fail: metric.p95.fail * multiplier,
+            },
+          }),
+        },
+      ];
+    }),
+  );
+}
+
+/**
+ * Applies the GATED_METRICS allowlist policy to a comparison entry.
+ *
+ * THRESHOLD_REGISTRY decides what is a regression; GATED_METRICS decides
+ * which regressions block PRs. For each `Fail`-severity violation whose
+ * `<benchmarkName>.<metricId>` key is not in `gatedMetrics`, downgrade to
+ * `Warn`. `absoluteFailed` and `hasWarning` are recomputed accordingly.
+ * `Warn`-severity violations and `relativeMetrics` are never modified.
+ *
+ * Returns a new comparison object — does not mutate the input.
+ *
+ * @param comparison - Comparison entry to gate.
+ * @param gatedMetrics - Allowlist of dotted gate keys.
+ */
+export function applyGatingPolicy(
+  comparison: BenchmarkEntryComparison,
+  gatedMetrics: ReadonlySet<string>,
+): BenchmarkEntryComparison {
+  const downgraded = comparison.absoluteViolations.map((v) => {
+    if (v.severity !== THRESHOLD_SEVERITY.Fail) {
+      return v;
+    }
+    const key = `${comparison.benchmarkName}.${v.metricId}`;
+    if (gatedMetrics.has(key)) {
+      return v;
+    }
+    return { ...v, severity: THRESHOLD_SEVERITY.Warn };
+  });
+
+  return {
+    ...comparison,
+    absoluteViolations: downgraded,
+    absoluteFailed: downgraded.some(
+      (v) => v.severity === THRESHOLD_SEVERITY.Fail,
+    ),
+    hasWarning:
+      comparison.relativeMetrics.some(
+        (m) => m.severity === COMPARISON_SEVERITY.Warn.value,
+      ) || downgraded.some((v) => v.severity === THRESHOLD_SEVERITY.Warn),
   };
 }

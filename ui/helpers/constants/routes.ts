@@ -15,9 +15,8 @@ export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
-export const SETTINGS_V2_ROUTE = SETTINGS_ROUTE;
 export const ASSETS_ROUTE = '/settings/assets';
-export const CURRENCY_ROUTE = '/settings/assets/currency';
+export const CURRENCY_ROUTE = '/settings/preferences-and-display/currency';
 export const TRANSACTIONS_ROUTE = '/settings/transactions';
 export const PREFERENCES_AND_DISPLAY_ROUTE =
   '/settings/preferences-and-display';
@@ -33,6 +32,10 @@ export const MANAGE_WALLET_RECOVERY_ROUTE =
   '/settings/security-and-password/manage-wallet-recovery';
 export const SECURITY_PASSWORD_CHANGE_V2_ROUTE =
   '/settings/security-and-password/password';
+export const SECURITY_REGISTER_PASSKEY_ROUTE =
+  '/settings/security-and-password/register-passkey';
+export const SECURITY_TURN_OFF_PASSKEY_ROUTE =
+  '/settings/security-and-password/turn-off-passkey';
 export const DEVELOPER_TOOLS_ROUTE = '/settings/developer-tools';
 export const DEBUG_ROUTE = '/settings/debug';
 export const GENERAL_ROUTE = '/settings/general';
@@ -88,6 +91,7 @@ export const RESTORE_VAULT_ROUTE = '/restore-vault';
 export const IMPORT_TOKEN_ROUTE = '/import-token';
 export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
+export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
@@ -95,6 +99,7 @@ export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
 export const MULTICHAIN_ACCOUNT_PRIVATE_KEY_LIST_PAGE_ROUTE =
   '/multichain-account-private-key-list';
 export const ADD_WALLET_PAGE_ROUTE = '/add-wallet-page';
+export const CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE = '/choose-new-wallet-type';
 export const MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE =
   '/multichain-account-details';
 export const MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE =
@@ -156,6 +161,7 @@ export const ONBOARDING_DOWNLOAD_APP_ROUTE = '/onboarding/download-app';
 export const NONEVM_BALANCE_CHECK_ROUTE = '/nonevm-balance-check';
 export const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+export const ONBOARDING_SETUP_PASSKEY_ROUTE = '/onboarding/setup-passkey';
 
 export const DEEP_LINK_ROUTE = '/link';
 
@@ -171,6 +177,11 @@ export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';
 export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
+
+// Window during which reopening the extension resumes the last Perps screen
+// instead of landing on the wallet home. Keeps the cap short so stale sessions
+// do not hijack the user's home view after a long break.
+export const PERPS_REOPEN_TTL_MS = 5 * 60 * 1000;
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
@@ -223,6 +234,11 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+    label: 'Choose New Wallet Type Page',
+    trackInAnalytics: true,
+  },
+  {
     path: `${MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE}/:address`,
     label: 'Smart Account Page',
     trackInAnalytics: true,
@@ -257,6 +273,16 @@ export const ROUTES = [
   {
     path: SECURITY_PASSWORD_CHANGE_V2_ROUTE,
     label: 'Password Settings Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_REGISTER_PASSKEY_ROUTE,
+    label: 'Register Passkey',
+    trackInAnalytics: true,
+  },
+  {
+    path: SECURITY_TURN_OFF_PASSKEY_ROUTE,
+    label: 'Turn Off Passkey',
     trackInAnalytics: true,
   },
   {
@@ -398,6 +424,11 @@ export const ROUTES = [
   {
     path: CONFIRM_IMPORT_TOKEN_ROUTE,
     label: 'Confirm Import Token Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: TOKEN_MANAGEMENT_ROUTE,
+    label: 'Token Management Page',
     trackInAnalytics: true,
   },
   {

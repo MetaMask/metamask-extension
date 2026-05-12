@@ -8,7 +8,7 @@ import { Json } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
-import { getRemoteFeatureFlags } from './remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {
@@ -120,15 +120,10 @@ export const selectPendingApprovalsForNavigation = createDeepEqualSelector(
     }),
 );
 
-const internalSelectPendingApproval = createSelector(
+export const internalSelectPendingApproval = createSelector(
   getPendingApprovals,
   (_state: ApprovalsMetaMaskState, id: string) => id,
   (approvals, id) => approvals.find(({ id: approvalId }) => approvalId === id),
-);
-
-export const selectPendingApproval = createDeepEqualSelector(
-  internalSelectPendingApproval,
-  (approval) => approval,
 );
 
 export const getApprovalsByOrigin = (

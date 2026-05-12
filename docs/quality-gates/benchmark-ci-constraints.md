@@ -39,7 +39,7 @@ Estimated delta:
 
 - **+$0.016/minute per job**
 - **+$0.48** for a 30-minute benchmark job
-- **Up to about +$11.04 per full `run-benchmarks.yml` run** if all 23 benchmark jobs each consume their full 30-minute timeout on an 8-core runner instead of `ubuntu-latest`
+- **Up to about +$8.16 per full `run-benchmarks.yml` run** at the current workflow shape (16 matrix benchmark jobs + 1 page-load job, each using the full 30-minute timeout on an 8-core runner instead of `ubuntu-latest`)
 
 Actual spend will be lower when jobs finish early, but larger runners are always billable and do not consume included free minutes.
 

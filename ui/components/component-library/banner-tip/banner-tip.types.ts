@@ -9,8 +9,7 @@ export enum BannerTipLogoType {
 
 // TODO: Convert to a `type` in a future major version.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface BannerTipStyleUtilityProps
-  extends BannerBaseStyleUtilityProps {
+export interface BannerTipStyleUtilityProps extends BannerBaseStyleUtilityProps {
   /**
    * An additional className to apply to the Banner
    */

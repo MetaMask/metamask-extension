@@ -12,7 +12,6 @@
   "appState": {
     "confirmationExchangeRates": {},
     "nextNonce": 71,
-    "welcomeScreenSeen": false,
     "pendingTokens": {},
     "customTokenAmount": "10",
     "networkDropdownOpen": false,
@@ -67,8 +66,8 @@
     "usePhishDetect": true,
     "useMultiAccountBalanceChecker": false,
     "participateInMetaMetrics": false,
+    "passkeyRecord": null,
     "gasEstimateType": "fee-market",
-    "showBetaHeader": false,
     "pendingExtensionVersion": null,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
