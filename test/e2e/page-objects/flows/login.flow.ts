@@ -3,7 +3,6 @@ import HomePage from '../pages/home/homepage';
 import HeaderNavbar from '../pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
-import { Ganache } from '../../seeder/ganache';
 
 /**
  * Unlocks the wallet and lands the user on the homepage.
@@ -22,7 +21,7 @@ export const login = async (
   driver: Driver,
   options?: {
     expectedBalance?: string;
-    localNode?: Ganache | Anvil;
+    localNode?: Anvil;
     password?: string;
     validateBalance?: boolean;
     waitForNonEvmAccounts?: boolean;

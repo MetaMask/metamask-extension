@@ -177,8 +177,8 @@ Single e2e tests can be run with `yarn test:e2e:single test/e2e/tests/TEST_NAME.
   --retries           Set how many times the test should be retried upon failure.
                                                               [number] [default: 0]
   --leave-running     Leaves the browser running after a test fails, along with
-                      anything else that the test used (ganache, the test dapp,
-                      etc.)                              [boolean] [default: false]
+                      anything else that the test used (the local node, the
+                      test dapp, etc.)                   [boolean] [default: false]
   --update-snapshot   Update E2E test snapshots
                                              [alias: -u] [boolean] [default: false]
 ```

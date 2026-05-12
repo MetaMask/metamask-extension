@@ -147,9 +147,9 @@ jest.mock('webextension-polyfill', () => ({
 // shares the same mock instance
 const browserPolyfillMock = jest.mocked(browser);
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+const { Anvil } = require('../../test/e2e/seeder/anvil');
 
-const ganacheServer = new Ganache();
+const localNodeServer = new Anvil();
 
 const mockULIDs = [
   '01JKAF3DSGM3AB87EM9N0K41AJ',
@@ -458,7 +458,7 @@ function createMockCronjobControllerStorageManager() {
 
 describe('MetaMaskController', () => {
   beforeAll(async () => {
-    await ganacheServer.start();
+    await localNodeServer.start();
   });
 
   beforeEach(() => {
@@ -541,7 +541,7 @@ describe('MetaMaskController', () => {
   });
 
   afterAll(async () => {
-    await ganacheServer.quit();
+    await localNodeServer.quit();
   });
 
   describe('Phishing Detection Mock', () => {

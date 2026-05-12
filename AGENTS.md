@@ -97,7 +97,7 @@ In `.metamaskrc`, you can also configure:
 | `command not found: yarn`        | Run `corepack enable`                                                                                   |
 | Build fails with policy errors   | Run `yarn lavamoat:auto`                                                                                |
 | Invalid Infura key error         | Check `INFURA_PROJECT_ID` in `.metamaskrc`                                                              |
-| Ganache won't start              | Ensure port 8545 is available                                                                           |
+| Anvil won't start                | Ensure port 8545 is available and `yarn foundryup` has installed the binary                             |
 | Git hooks not working in VS Code | Follow [Husky troubleshooting](https://typicode.github.io/husky/troubleshooting.html#command-not-found) |
 
 ---
@@ -199,7 +199,7 @@ yarn lint:changed:fix
 yarn dapp                  # Start test dapp on :8080
 yarn dapp-multichain       # Multichain test dapp
 yarn dapp-solana           # Solana test dapp
-yarn dapp-chain            # Dapp with local Ganache
+yarn dapp-chain            # Dapp with local Anvil
 
 # DevTools
 yarn devtools:react        # React DevTools
@@ -207,8 +207,7 @@ yarn devtools:redux        # Redux DevTools
 yarn start:dev             # Start with both DevTools
 
 # Local Blockchain
-yarn ganache:start         # Start Ganache on port 8545
-yarn anvil                 # Start Anvil (Foundry)
+yarn anvil                 # Start Anvil (Foundry) on port 8545
 
 # Storybook
 yarn storybook             # Component documentation/development
@@ -1503,7 +1502,7 @@ Before marking a component complete:
 | Problem                 | Solution                                          |
 | ----------------------- | ------------------------------------------------- |
 | E2E tests fail to start | Build test build first: `yarn build:test`         |
-| Tests hang indefinitely | Check if port 8545 (Ganache) is available         |
+| Tests hang indefinitely | Check if port 8545 (Anvil) is available           |
 | Snapshot tests fail     | Update snapshots: `yarn test:unit -u`             |
 | Browser not launching   | Check if browser is installed and in PATH         |
 | Random E2E failures     | Use `--retries` flag or check for race conditions |
