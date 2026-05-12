@@ -361,11 +361,31 @@ export const TokenManagementPage = () => {
       const canIgnoreMultichainToken =
         !isEvmToken && Boolean(token.assetId) && Boolean(token.accountId);
 
+      // eslint-disable-next-line no-console
+      console.log('[TokenManagement] handleToggle', {
+        nextValue,
+        chainId: token.chainId,
+        address: 'address' in token ? token.address : undefined,
+        assetId: token.assetId,
+        accountId: token.accountId,
+        isNativeToken,
+        isEvmToken,
+        canIgnoreEvmToken,
+        canIgnoreMultichainToken,
+      });
+
       if (
         nextValue ||
         isNativeToken ||
         (!canIgnoreEvmToken && !canIgnoreMultichainToken)
       ) {
+        // eslint-disable-next-line no-console
+        console.warn('[TokenManagement] handleToggle early-exit', {
+          nextValue,
+          isNativeToken,
+          canIgnoreEvmToken,
+          canIgnoreMultichainToken,
+        });
         return;
       }
 
@@ -374,6 +394,19 @@ export const TokenManagementPage = () => {
       try {
         if (canIgnoreEvmToken) {
           const { networkClientId } = getNetworkMeta(token.chainId as Hex);
+          if (!networkClientId) {
+            // eslint-disable-next-line no-console
+            console.warn(
+              '[TokenManagement] handleToggle missing networkClientId',
+              token.chainId,
+            );
+            return;
+          }
+          // eslint-disable-next-line no-console
+          console.log('[TokenManagement] dispatching ignoreTokens', {
+            address: token.address,
+            networkClientId,
+          });
           await dispatch(
             ignoreTokensAction({
               tokensToIgnore: [token.address],
@@ -405,14 +438,23 @@ export const TokenManagementPage = () => {
    */
   const handleSearchResultToggle = useCallback(
     async (result: TokenSearchResult, nextValue: boolean) => {
+      // eslint-disable-next-line no-console
+      console.log('[TokenManagement] handleSearchResultToggle', {
+        assetId: result.assetId,
+        nextValue,
+      });
       let parsed;
       try {
         parsed = parseCaipAssetType(result.assetId as CaipAssetType);
-      } catch {
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn('[TokenManagement] failed to parse assetId', err);
         return;
       }
       const { chainId: caipChainId, assetReference } = parsed;
       if (!caipChainId || !assetReference) {
+        // eslint-disable-next-line no-console
+        console.warn('[TokenManagement] missing chain/reference', parsed);
         return;
       }
 
@@ -431,10 +473,21 @@ export const TokenManagementPage = () => {
           const hexChainId = `0x${decimalChainId.toString(16)}` as Hex;
           const { networkClientId } = getNetworkMeta(hexChainId);
           if (!networkClientId) {
+            // eslint-disable-next-line no-console
+            console.warn(
+              '[TokenManagement] no network client for',
+              hexChainId,
+            );
             return;
           }
 
           if (nextValue) {
+            // eslint-disable-next-line no-console
+            console.log('[TokenManagement] dispatching addImportedTokens', {
+              address: assetReference,
+              symbol: result.symbol,
+              networkClientId,
+            });
             await dispatch(
               addImportedTokens(
                 [
