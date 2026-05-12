@@ -1913,6 +1913,7 @@ export function addTransactionAndRouteToConfirmationPage(
  * @param options - Additional options for the transaction.
  * @param options.method
  * @param options.networkClientId - ID of the network client to use for the transaction.
+ * @param options.requestId - Optional request ID to persist on the transaction.
  * @param options.requireApproval - Whether the transaction requires approval.
  * @param options.swaps - Options specific to swaps transactions.
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
@@ -1925,6 +1926,7 @@ export async function addTransactionAndWaitForPublish(
   options: {
     method?: string;
     networkClientId: NetworkClientId;
+    requestId?: string;
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;
@@ -1961,6 +1963,7 @@ export async function addTransactionAndWaitForPublish(
  * @param options.swaps.hasApproveTx - Whether the swap required an approval transaction.
  * @param options.swaps.meta - Additional transaction metadata required by swaps.
  * @param options.type
+ * @param options.requestId
  * @returns
  */
 export async function addTransaction(
@@ -1968,6 +1971,7 @@ export async function addTransaction(
   options: {
     method?: string;
     networkClientId: NetworkClientId;
+    requestId?: string;
     requireApproval?: boolean;
     swaps?: { hasApproveTx?: boolean; meta?: Record<string, unknown> };
     type?: TransactionType;

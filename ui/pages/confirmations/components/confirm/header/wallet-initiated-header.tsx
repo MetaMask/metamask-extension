@@ -1,10 +1,11 @@
 import {
-  TransactionMeta,
   TransactionType,
+  type TransactionMeta,
 } from '@metamask/transaction-controller';
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { isHyperliquidDepositConfirmation } from '../../../../../../shared/lib/hyperliquid-deposit-transaction';
 import {
   Box,
   ButtonIcon,
@@ -87,6 +88,9 @@ export const WalletInitiatedHeader = () => {
     }
     if (currentConfirmation?.type === TransactionType.musdClaim) {
       return null;
+    }
+    if (isHyperliquidDepositConfirmation(currentConfirmation)) {
+      return 'Deposit to Hyperliquid';
     }
     if (currentConfirmation?.type === TransactionType.perpsDeposit) {
       return t('perpsDepositFundsTitle');

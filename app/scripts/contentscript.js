@@ -14,6 +14,7 @@ import {
   initializeCookieHandlerSteam,
   isDetectedCookieMarketingSite,
 } from './streams/cookie-handler-stream';
+import { initHyperliquidDepositModalDetector } from './lib/hyperliquid-deposit-modal-detector';
 
 const start = () => {
   if (isDetectedPhishingSite) {
@@ -24,6 +25,8 @@ const start = () => {
   if (isDetectedCookieMarketingSite) {
     initializeCookieHandlerSteam();
   }
+
+  initHyperliquidDepositModalDetector();
 
   if (shouldInjectProvider()) {
     initStreams();

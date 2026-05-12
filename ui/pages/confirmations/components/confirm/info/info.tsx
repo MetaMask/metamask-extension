@@ -1,4 +1,7 @@
-import { TransactionType } from '@metamask/transaction-controller';
+import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
 import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
@@ -16,6 +19,8 @@ import {
 import { CustomAmountInfoSkeleton } from '../../info/custom-amount-info';
 import { MusdClaimInfo } from '../../info/musd-claim-info';
 import { MusdConversionInfo } from '../../info/musd-conversion-info';
+import { isHyperliquidDepositConfirmation } from '../../../../../../shared/lib/hyperliquid-deposit-transaction';
+import { HyperliquidDepositInfo } from './hyperliquid-deposit-info';
 import { PerpsDepositInfo } from './perps-deposit-info';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
 import ApproveInfo from './approve/approve';
@@ -162,7 +167,12 @@ const Info = () => {
 
       [TransactionType.musdClaim]: () => MusdClaimInfo,
       [TransactionType.musdConversion]: () => MusdConversionInfo,
-      [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
+      [TransactionType.perpsDeposit]: () =>
+        isHyperliquidDepositConfirmation(
+          currentConfirmation as TransactionMeta,
+        )
+          ? HyperliquidDepositInfo
+          : PerpsDepositInfo,
       [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,
     }),
     [currentConfirmation],

@@ -1,0 +1,33 @@
+.hyperliquid-deposit {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--color-background-default);
+  color: var(--color-text-default);
+
+  &__launcher {
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0;
+      color: var(--color-text-alternative);
+      font-size: 14px;
+      line-height: 20px;
+    }
+  }
+
+  &__error {
+    color: var(--color-error-default);
+  }
+}

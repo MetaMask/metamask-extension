@@ -3,6 +3,10 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { useParams } from 'react-router-dom';
 import {
+  TransactionType,
+  type TransactionMeta,
+} from '@metamask/transaction-controller';
+import {
   getMockAddEthereumChainConfirmState,
   getMockApproveConfirmState,
   getMockContractInteractionConfirmState,
@@ -17,6 +21,7 @@ import {
 } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
 import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
+import { HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID } from '../../../../../../shared/lib/hyperliquid-deposit-transaction';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -57,6 +62,28 @@ jest.mock('../../../hooks/useAssetDetails', () => ({
 jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
   useTransactionFocusEffect: jest.fn(),
 }));
+
+jest.mock('./hyperliquid-deposit-info', () => {
+  const ReactActual = jest.requireActual('react');
+
+  return {
+    HyperliquidDepositInfo: () =>
+      ReactActual.createElement('div', {
+        'data-testid': 'hyperliquid-deposit-info',
+      }),
+  };
+});
+
+jest.mock('./perps-deposit-info', () => {
+  const ReactActual = jest.requireActual('react');
+
+  return {
+    PerpsDepositInfo: () =>
+      ReactActual.createElement('div', {
+        'data-testid': 'perps-deposit-info',
+      }),
+  };
+});
 
 jest.mock('../../../../../../shared/lib/environment', () => ({
   ...jest.requireActual('../../../../../../shared/lib/environment'),
@@ -107,6 +134,7 @@ describe('Info', () => {
     }));
     mockedUseParams.mockReturnValue({});
     mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
+    mockConfirmContextValue = null;
   });
 
   it('renders info section for personal sign request', () => {
@@ -201,6 +229,41 @@ describe('Info', () => {
     expect(screen.getByText('example.com')).toBeInTheDocument();
     expect(screen.getByText('rpc.example.com')).toBeInTheDocument();
     expect(screen.getByText('RPC')).toBeInTheDocument();
+  });
+
+  it('renders Hyperliquid deposit info for marked perpsDeposit confirmations', () => {
+    mockConfirmContextValue = {
+      currentConfirmation: {
+        requestId: HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID,
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta,
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: jest.fn(),
+      goBackTo: undefined,
+    };
+
+    const state = getMockPersonalSignConfirmState();
+    const mockStore = configureMockStore([])(state);
+    renderWithConfirmContextProvider(<Info />, mockStore);
+
+    expect(screen.getByTestId('hyperliquid-deposit-info')).toBeInTheDocument();
+  });
+
+  it('renders perps deposit info for unmarked perpsDeposit confirmations', () => {
+    mockConfirmContextValue = {
+      currentConfirmation: {
+        type: TransactionType.perpsDeposit,
+      } as TransactionMeta,
+      isScrollToBottomCompleted: true,
+      setIsScrollToBottomCompleted: jest.fn(),
+      goBackTo: undefined,
+    };
+
+    const state = getMockPersonalSignConfirmState();
+    const mockStore = configureMockStore([])(state);
+    renderWithConfirmContextProvider(<Info />, mockStore);
+
+    expect(screen.getByTestId('perps-deposit-info')).toBeInTheDocument();
   });
 
   describe('when no confirmation type exists', () => {

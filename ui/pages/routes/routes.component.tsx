@@ -4,8 +4,9 @@
 import classnames from 'clsx';
 import React, { Suspense, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { useLocation, Navigate, Outlet } from 'react-router-dom';
+import { useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
+import extensionBrowser from 'webextension-polyfill';
 
 import { useAppSelector } from '../../store/store';
 import Loading from '../../components/ui/loading-screen';
@@ -70,6 +71,7 @@ import {
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
   SETTINGS_V2_ROUTE,
+  HYPERLIQUID_DEPOSIT_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
@@ -136,6 +138,7 @@ import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
+import { isHyperliquidDepositSidePanelRouteMessage } from '../../../shared/lib/hyperliquid-deposit-transaction';
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
@@ -239,6 +242,9 @@ const PerpsOrderEntryPage = mmLazy(
 );
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
+const HyperliquidDepositPage = mmLazy(
+  () => import('../hyperliquid-deposit/index.ts'),
+);
 // End Lazy Routes
 
 const SettingsV2LegacyRedirect = () => {
@@ -466,6 +472,10 @@ export const routeConfig = [
             element: <RewardsPage />,
           },
           {
+            path: HYPERLIQUID_DEPOSIT_ROUTE,
+            element: <HyperliquidDepositPage />,
+          },
+          {
             element: <PerpsLayout />,
             children: [
               {
@@ -500,6 +510,7 @@ export const routeConfig = [
 export default function Routes() {
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const alertOpen = useAppSelector((state) => state.appState.alertOpen);
   const alertMessage = useAppSelector((state) => state.appState.alertMessage);
@@ -624,6 +635,36 @@ export default function Routes() {
       global.platform?.openExtensionInBrowser?.();
     }
   }, [showExtensionInFullSizeView]);
+
+  useEffect(() => {
+    if (getEnvironmentType() !== ENVIRONMENT_TYPE_SIDEPANEL) {
+      return undefined;
+    }
+
+    const handleHyperliquidDepositRouteMessage = (message: unknown) => {
+      if (!isHyperliquidDepositSidePanelRouteMessage(message)) {
+        return undefined;
+      }
+
+      navigate(
+        `${HYPERLIQUID_DEPOSIT_ROUTE}?trigger=${encodeURIComponent(
+          message.payload.triggerId,
+        )}`,
+      );
+
+      return undefined;
+    };
+
+    extensionBrowser.runtime.onMessage.addListener(
+      handleHyperliquidDepositRouteMessage,
+    );
+
+    return () => {
+      extensionBrowser.runtime.onMessage.removeListener(
+        handleHyperliquidDepositRouteMessage,
+      );
+    };
+  }, [navigate]);
 
   // Track location changes for metrics
   useEffect(() => {

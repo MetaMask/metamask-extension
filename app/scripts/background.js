@@ -56,6 +56,7 @@ import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE } from '../../shared/lib/hyperliquid-deposit-transaction';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
@@ -115,6 +116,7 @@ import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
+import { registerHyperliquidDepositModalListener } from './lib/hyperliquid-deposit-modal-background';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -2141,6 +2143,84 @@ async function triggerUi() {
     }
   }
 }
+
+const HYPERLIQUID_DEPOSIT_MODAL_SIDE_PANEL_PATH =
+  'sidepanel.html#/hyperliquid-deposit';
+
+async function openHyperliquidDepositModalSidePanel({ tabId, windowId }) {
+  if (!browser?.sidePanel?.open) {
+    log.warn('Unable to open Hyperliquid deposit flow in side panel', {
+      reason: 'side-panel-unavailable',
+    });
+    return;
+  }
+
+  const triggerId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+  try {
+    if (browser.sidePanel.setOptions) {
+      await browser.sidePanel.setOptions({
+        ...(tabId ? { tabId } : {}),
+        enabled: true,
+        path: getHyperliquidDepositModalSidePanelPath(triggerId),
+      });
+    }
+
+    if (tabId) {
+      await browser.sidePanel.open({ tabId });
+    } else {
+      const sidePanelWindowId =
+        windowId ?? (await platform.getLastFocusedWindow()).id;
+
+      if (sidePanelWindowId) {
+        await browser.sidePanel.open({ windowId: sidePanelWindowId });
+      }
+    }
+
+    await notifyHyperliquidDepositSidePanelRoute({
+      tabId,
+      triggerId,
+      windowId,
+    });
+  } catch (error) {
+    log.warn('Unable to open Hyperliquid deposit flow in side panel', {
+      reason: 'side-panel-open-failed',
+      error,
+    });
+  }
+}
+
+function getHyperliquidDepositModalSidePanelPath(triggerId) {
+  return `${HYPERLIQUID_DEPOSIT_MODAL_SIDE_PANEL_PATH}?trigger=${encodeURIComponent(
+    triggerId,
+  )}`;
+}
+
+async function notifyHyperliquidDepositSidePanelRoute({
+  tabId,
+  triggerId,
+  windowId,
+}) {
+  try {
+    await browser.runtime.sendMessage({
+      type: HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE,
+      payload: {
+        ...(tabId ? { tabId } : {}),
+        triggerId,
+        ...(windowId ? { windowId } : {}),
+      },
+    });
+  } catch (error) {
+    log.debug('No open side panel received Hyperliquid deposit route message', {
+      error,
+    });
+  }
+}
+
+registerHyperliquidDepositModalListener({
+  runtime: browser.runtime,
+  openDepositFlow: openHyperliquidDepositModalSidePanel,
+});
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
 const addAppInstalledEvent = async () => {
