@@ -9,7 +9,7 @@ class DappBarNetworkSelectorPopover {
   private driver: Driver;
 
   private readonly networkOptionByName = (networkName: string) =>
-      `${this.popover} [data-testid="${networkName}"]`;
+    `${this.popover} [data-testid="${networkName}"]`;
 
   private readonly popover =
     '[data-testid="dapp-bar-network-selector-popover"]';
