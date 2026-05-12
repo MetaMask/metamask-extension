@@ -841,7 +841,8 @@
       "core-js-pure#3.41.0": true,
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
-      "tsx>esbuild#0.27.7": true
+      "tsx>esbuild#0.27.7": true,
+      "ethereumjs-util>ethereum-cryptography>secp256k1#4.0.4": false
     }
   },
   "packageManager": "yarn@4.14.1",
