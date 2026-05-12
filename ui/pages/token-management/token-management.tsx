@@ -186,8 +186,27 @@ export const TokenManagementPage = () => {
       },
     );
 
+    // Dedupe by (chainId, address|assetId). The upstream asset selector
+    // currently emits a duplicate entry for the same token on some chains
+    // (seen on Linea, chainId 0xe708). That manifests as a React "two
+    // children with the same key" warning AND breaks the hide-token flow,
+    // because clicking the toggle ignores one copy but the duplicate stays
+    // in the list, making the row appear unchanged.
+    const seen = new Set<string>();
+    const dedupedAssets: typeof accountAssetsPreSort = [];
+    accountAssetsPreSort.forEach((asset) => {
+      const id =
+        'address' in asset && asset.address ? asset.address : asset.assetId;
+      const key = `${asset.chainId}:${String(id).toLowerCase()}`;
+      if (seen.has(key)) {
+        return;
+      }
+      seen.add(key);
+      dedupedAssets.push(asset);
+    });
+
     const accountAssets = sortAssetsWithPriority(
-      accountAssetsPreSort,
+      dedupedAssets,
       tokenSortConfig,
     ) as ManagedAsset[];
 
