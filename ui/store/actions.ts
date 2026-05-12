@@ -121,13 +121,13 @@ import {
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
   getInternalAccountByAddress,
-  getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
   getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
 } from '../selectors';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
   getSelectedNetworkClientId,
   getProviderConfig,
