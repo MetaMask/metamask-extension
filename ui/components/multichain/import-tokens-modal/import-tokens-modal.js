@@ -390,7 +390,7 @@ export const ImportTokensModal = ({ onClose }) => {
               symbol: token.symbol,
               name: token.name ?? token.symbol,
               decimals: token.decimals,
-              iconUrl: token.image,
+              iconUrl: token.image ?? token.iconUrl,
               aggregators: token.aggregators,
               occurrences: token.occurrences,
               chainId: token.chainId,
@@ -624,7 +624,13 @@ export const ImportTokensModal = ({ onClose }) => {
     if (address in selectedTokensCopy) {
       delete selectedTokensCopy[address];
     } else {
-      selectedTokensCopy[address] = token;
+      // Token list search results use `iconUrl`; TokensController.addTokens and
+      // AssetsController.addCustomAsset both expect `image`. Normalize here so
+      // the image is persisted regardless of which code path runs on import.
+      selectedTokensCopy[address] = {
+        ...token,
+        image: token.image ?? token.iconUrl,
+      };
     }
 
     setSelectedTokens(selectedTokensCopy);
