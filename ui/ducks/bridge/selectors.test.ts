@@ -2535,6 +2535,50 @@ describe('Bridge selectors', () => {
       const result = getIsGasIncluded(state as never, false);
       expect(result).toBe(false);
     });
+
+    it('returns true for Solana chain regardless of STX enabled and send bundle supported', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(
+            getNativeAssetForChainId(MultichainNetworks.SOLANA),
+          ),
+        },
+      });
+
+      const result = getIsGasIncluded(state as never, true);
+      expect(result).toBe(true);
+    });
+
+    it('returns true for Solana chain when STX is disabled', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(
+            getNativeAssetForChainId(MultichainNetworks.SOLANA),
+          ),
+        },
+        metamaskStateOverrides: {
+          preferences: {
+            smartTransactionsOptInStatus: false,
+          },
+        },
+      });
+
+      const result = getIsGasIncluded(state as never, false);
+      expect(result).toBe(true);
+    });
+
+    it('returns true for Solana chain when send bundle is not supported', () => {
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromToken: toBridgeToken(
+            getNativeAssetForChainId(MultichainNetworks.SOLANA),
+          ),
+        },
+      });
+
+      const result = getIsGasIncluded(state as never, false);
+      expect(result).toBe(true);
+    });
   });
 
   describe('getSlippage', () => {
