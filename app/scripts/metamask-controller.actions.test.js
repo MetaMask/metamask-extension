@@ -69,9 +69,9 @@ jest.mock('webextension-polyfill', () => ({
 // shares the same mock instance
 const browserPolyfillMock = jest.mocked(browser);
 
-const { Anvil } = require('../../test/e2e/seeder/anvil');
+const { LocalNodeStub } = require('../../test/stub/local-node');
 
-const localNodeServer = new Anvil();
+const localNodeServer = new LocalNodeStub();
 
 let loggerMiddlewareMock;
 const initializeMockMiddlewareLog = () => {
