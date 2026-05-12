@@ -175,6 +175,122 @@
   "activity": {
     "message": "Activity"
   },
+  "activity.buy.failed.description": {
+    "message": "Buy failed"
+  },
+  "activity.buy.failed.title": {
+    "message": "Buy failed"
+  },
+  "activity.buy.pending.description": {
+    "message": "Buying $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.buy.pending.title": {
+    "message": "Buying $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.buy.success.description": {
+    "message": "Bought $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.buy.success.title": {
+    "message": "Bought $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.deposit.failed.description": {
+    "message": "Deposit failed"
+  },
+  "activity.deposit.failed.title": {
+    "message": "Deposit failed"
+  },
+  "activity.deposit.pending.description": {
+    "message": "Depositing $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.deposit.pending.title": {
+    "message": "Depositing $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.deposit.success.description": {
+    "message": "Deposited $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.deposit.success.title": {
+    "message": "Deposited $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.fallback.description": {
+    "message": "Transaction"
+  },
+  "activity.fallback.title": {
+    "message": "Transaction"
+  },
+  "activity.receive.failed.description": {
+    "message": "Receive failed"
+  },
+  "activity.receive.failed.title": {
+    "message": "Receive failed"
+  },
+  "activity.receive.pending.description": {
+    "message": "Receiving $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.receive.pending.title": {
+    "message": "Receiving $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.receive.success.description": {
+    "message": "Received $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.receive.success.title": {
+    "message": "Received $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.sell.failed.description": {
+    "message": "Sell failed"
+  },
+  "activity.sell.failed.title": {
+    "message": "Sell failed"
+  },
+  "activity.sell.pending.description": {
+    "message": "Selling $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.sell.pending.title": {
+    "message": "Selling $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.sell.success.description": {
+    "message": "Sold $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.sell.success.title": {
+    "message": "Sold $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity.swap.failed.description": {
+    "message": "Swap failed"
+  },
+  "activity.swap.failed.title": {
+    "message": "Swap failed"
+  },
+  "activity.swap.pending.description": {
+    "message": "Swapping $1 to $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity.swap.pending.title": {
+    "message": "Swapping $1 to $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity.swap.success.description": {
+    "message": "Swapped $1 to $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity.swap.success.title": {
+    "message": "Swapped $1 to $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
   "activityEmptyDescription": {
     "message": "Nothing to see yet. Swap your first token today."
   },

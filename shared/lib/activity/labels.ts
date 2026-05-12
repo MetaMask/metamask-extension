@@ -1,22 +1,26 @@
 import type { I18NSubstitution } from '../i18n';
 import type { ActivityType, Status } from './types';
 
+const fallbackLabelKey = 'activity.fallback';
+
 export function getLabels({
+  type,
   status,
   substitutions,
-  type,
 }: {
+  type: ActivityType;
   status: Status;
   substitutions?: I18NSubstitution[];
-  type: ActivityType;
 }) {
+  const key = type && status ? `activity.${type}.${status}` : fallbackLabelKey;
+
   return {
-    description: {
-      key: `activity.${type}.${status}.description`,
+    title: {
+      key: `${key}.title`,
       substitutions,
     },
-    title: {
-      key: `activity.${type}.${status}.title`,
+    description: {
+      key: `${key}.description`,
       substitutions,
     },
   };
