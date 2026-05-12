@@ -460,6 +460,14 @@
     "ui/components/multichain/connected-site-popover/connected-site-popover.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 4
     },
+    "ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 6,
+      "React: componentWill* lifecycle deprecations": 1
+    },
+    "ui/components/multichain/dapp-connection-control-bar/dapp-connection-control-bar.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "React: componentWill* lifecycle deprecations": 1
+    },
     "ui/components/multichain/edit-accounts-modal/edit-accounts-modal.test.tsx": {
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 1,
