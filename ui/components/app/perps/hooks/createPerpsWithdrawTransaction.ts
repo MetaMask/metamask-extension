@@ -31,7 +31,9 @@ export type CreatedPerpsWithdrawTransaction = {
 export async function createPerpsWithdrawTransaction({
   accountAddress,
 }: CreatePerpsWithdrawTransactionParams): Promise<CreatedPerpsWithdrawTransaction> {
-  const networkClientId = await findNetworkClientIdByChainId(CHAIN_IDS.ARBITRUM);
+  const networkClientId = await findNetworkClientIdByChainId(
+    CHAIN_IDS.ARBITRUM,
+  );
   const transferData = generateERC20TransferData({
     toAddress: accountAddress,
     amount: '0x0',
