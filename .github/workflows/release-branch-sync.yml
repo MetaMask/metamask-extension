@@ -37,8 +37,25 @@ jobs:
     if: needs.validate-branch.outputs.is-valid == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Sync release branches with stable
-        uses: metamask/github-tools/.github/actions/release-branch-sync@v1
+      # We use an in-repo script (rather than
+      # metamask/github-tools/.github/actions/release-branch-sync) because
+      # that action's `gh pr list` call did not pass `--limit`, defaulting
+      # to 30 results. When the next release PR fell outside the first 30
+      # open PRs (which happened after hotfix releases like 13.20.1), no
+      # sync PR was created. See MCRM-66.
+      - name: Checkout repository
+        uses: actions/checkout@v6
         with:
-          merged-release-branch: ${{ github.event.pull_request.head.ref }}
-          github-token: ${{ secrets.STABLE_SYNC_TOKEN }}
+          fetch-depth: 0
+          token: ${{ secrets.STABLE_SYNC_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "metamaskbot"
+          git config --global user.email "metamaskbot@users.noreply.github.com"
+
+      - name: Sync stable into open release branches
+        env:
+          MERGED_RELEASE_BRANCH: ${{ github.event.pull_request.head.ref }}
+          GITHUB_TOKEN: ${{ secrets.STABLE_SYNC_TOKEN }}
+        run: bash .github/scripts/release-branch-sync.sh
