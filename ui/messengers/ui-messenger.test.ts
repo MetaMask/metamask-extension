@@ -52,10 +52,9 @@ describe('UIMessenger', () => {
           messenger: delegatee,
         });
 
-        const result = await delegatee.call(
-          'SnapController:installSnaps',
-          { 'npm:my-snap': {} },
-        );
+        const result = await delegatee.call('SnapController:installSnaps', {
+          'npm:my-snap': {},
+        });
 
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
           'messengerCall',
@@ -72,9 +71,7 @@ describe('UIMessenger', () => {
           messenger: delegatee,
         });
 
-        expect(() =>
-          delegatee.call('KeyringController:addKeyring'),
-        ).toThrow(
+        expect(() => delegatee.call('KeyringController:addKeyring')).toThrow(
           'The action "KeyringController:addKeyring" has not been exposed to the UI.',
         );
       });
