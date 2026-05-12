@@ -67,7 +67,9 @@ describe('toast-listener/shared', () => {
     );
 
     expect(
-      screen.getByText(messages.perpsWithdrawPostQuoteToastSuccessTitle.message),
+      screen.getByText(
+        messages.perpsWithdrawPostQuoteToastSuccessTitle.message,
+      ),
     ).toBeInTheDocument();
     expect(
       screen.getByText('$20.73 BNB moved to your wallet'),

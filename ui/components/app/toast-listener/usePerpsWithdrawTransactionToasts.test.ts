@@ -78,14 +78,11 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     ];
     rerender();
 
-    expect(mockShowPendingToast).toHaveBeenCalledWith(
-      'perps-withdraw-tx-1',
-      {
-        title: 'perpsWithdrawPostQuoteToastPendingTitle',
-        description: 'perpsWithdrawPostQuoteToastPendingDescription',
-        dataTestId: 'perps-withdraw-pending-toast',
-      },
-    );
+    expect(mockShowPendingToast).toHaveBeenCalledWith('perps-withdraw-tx-1', {
+      title: 'perpsWithdrawPostQuoteToastPendingTitle',
+      description: 'perpsWithdrawPostQuoteToastPendingDescription',
+      dataTestId: 'perps-withdraw-pending-toast',
+    });
   });
 
   it('shows a pending toast when a new withdraw first appears as submitted', () => {
@@ -192,15 +189,11 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     ];
     rerender();
 
-    expect(mockShowSuccessToast).toHaveBeenCalledWith(
-      'perps-withdraw-tx-1',
-      {
-        title: 'perpsWithdrawPostQuoteToastSuccessTitle',
-        description:
-          'perpsWithdrawPostQuoteToastSuccessDescription:$20.73|BNB',
-        dataTestId: 'perps-withdraw-success-toast',
-      },
-    );
+    expect(mockShowSuccessToast).toHaveBeenCalledWith('perps-withdraw-tx-1', {
+      title: 'perpsWithdrawPostQuoteToastSuccessTitle',
+      description: 'perpsWithdrawPostQuoteToastSuccessDescription:$20.73|BNB',
+      dataTestId: 'perps-withdraw-success-toast',
+    });
   });
 
   it('shows the generic success description when post-quote details are missing', () => {
@@ -257,13 +250,10 @@ describe('usePerpsWithdrawTransactionToasts', () => {
     ];
     rerender();
 
-    expect(mockShowFailedToast).toHaveBeenCalledWith(
-      'perps-withdraw-tx-1',
-      {
-        title: 'perpsWithdrawPostQuoteToastErrorTitle',
-        description: 'perpsWithdrawPostQuoteToastErrorDescription',
-        dataTestId: 'perps-withdraw-failed-toast',
-      },
-    );
+    expect(mockShowFailedToast).toHaveBeenCalledWith('perps-withdraw-tx-1', {
+      title: 'perpsWithdrawPostQuoteToastErrorTitle',
+      description: 'perpsWithdrawPostQuoteToastErrorDescription',
+      dataTestId: 'perps-withdraw-failed-toast',
+    });
   });
 });
