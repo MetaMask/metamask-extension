@@ -1808,13 +1808,13 @@ export default class MetamaskController extends EventEmitter {
   async getSnapKeyring() {
     // TODO: Use `withKeyring` instead
     let [snapKeyring] = this.keyringController.getKeyringsByType(
-      KeyringType.snap,
+      KeyringType.Snap,
     );
     if (!snapKeyring) {
-      await this.keyringController.addNewKeyring(KeyringType.snap);
+      await this.keyringController.addNewKeyring(KeyringType.Snap);
       // TODO: Use `withKeyring` instead
       [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
+        KeyringType.Snap,
       );
     }
     return snapKeyring;
@@ -1830,7 +1830,7 @@ export default class MetamaskController extends EventEmitter {
     if (this.keyringController.isUnlocked()) {
       // TODO: Use `withKeyring` instead
       const [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.snap,
+        KeyringType.Snap,
       );
 
       return snapKeyring;
@@ -6881,7 +6881,7 @@ export default class MetamaskController extends EventEmitter {
   getHDEntropyIndex() {
     const selectedAccount = this.accountsController.getSelectedAccount();
     const hdKeyrings = this.keyringController.state.keyrings.filter(
-      (keyring) => keyring.type === KeyringTypes.hd,
+      (keyring) => keyring.type === KeyringType.Hd,
     );
     const index = hdKeyrings.findIndex((keyring) =>
       keyring.accounts.includes(selectedAccount.address),
@@ -8089,7 +8089,7 @@ export default class MetamaskController extends EventEmitter {
 
           return state.keyrings
             .map((keyring, index) => {
-              if (keyring.type === KeyringTypes.hd) {
+              if (keyring.type === KeyringType.Hd) {
                 return {
                   id: keyring.metadata.id,
                   name: keyring.metadata.name,
