@@ -125,4 +125,46 @@ describe('buildTransactionMetricsContext', () => {
     expect(context.transactionTypeForMetrics).toBe('perps_withdraw');
     expect(context.isContractInteraction).toBe(false);
   });
+
+  describe('retry transactions', () => {
+    it('returns snake_case transaction type for retried perps deposit transactions', async () => {
+      const context = await buildTransactionMetricsContext({
+        transactionMeta: createTransactionMeta({
+          type: TransactionType.retry,
+          originalType: TransactionType.perpsDeposit,
+          txParams: { data: '0xa9059cbb' },
+        }),
+        transactionMetricsRequest: createRequest(),
+      });
+
+      expect(context.transactionTypeForMetrics).toBe('perps_deposit');
+    });
+
+    it('returns snake_case transaction type for retried mUSD conversion transactions', async () => {
+      const context = await buildTransactionMetricsContext({
+        transactionMeta: createTransactionMeta({
+          type: TransactionType.retry,
+          originalType: TransactionType.musdConversion,
+          txParams: { data: '0xa9059cbb' },
+        }),
+        transactionMetricsRequest: createRequest(),
+      });
+
+      expect(context.transactionTypeForMetrics).toBe('musd_conversion');
+    });
+
+    it('returns mm_swap as transaction type for retried swap transactions', async () => {
+      const context = await buildTransactionMetricsContext({
+        transactionMeta: createTransactionMeta({
+          type: TransactionType.retry,
+          originalType: TransactionType.swap,
+          txParams: { data: '0xa9059cbb' },
+        }),
+        transactionMetricsRequest: createRequest(),
+      });
+
+      expect(context.transactionTypeForMetrics).toBe('mm_swap');
+      expect(context.isContractInteraction).toBe(true);
+    });
+  });
 });

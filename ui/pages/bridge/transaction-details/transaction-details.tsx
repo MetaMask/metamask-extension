@@ -55,7 +55,8 @@ import {
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getNativeTokenInfo, isHardwareWallet } from '../../../selectors';
+import { getNativeTokenInfo } from '../../../selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,

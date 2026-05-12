@@ -311,9 +311,7 @@
     "previousMigrationVersion": 0,
     "productTour": "accountIcon",
     "quoteFetchError": null,
-    "quoteRequest": {
-      "srcTokenAddress": "0x0000000000000000000000000000000000000000"
-    },
+    "quoteRequest": "object",
     "quoteStreamComplete": null,
     "quotes": "object",
     "quotesInitialLoadTime": null,

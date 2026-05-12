@@ -227,6 +227,9 @@
   "addCustomNetwork": {
     "message": "Add custom network"
   },
+  "addCustomToken": {
+    "message": "Add a custom token"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -608,6 +611,9 @@
   },
   "all": {
     "message": "All"
+  },
+  "allDefaultNetworks": {
+    "message": "All default networks"
   },
   "allNetworks": {
     "message": "All networks"
@@ -2846,8 +2852,14 @@
   "enterSymbol": {
     "message": "Enter symbol"
   },
+  "enterTokenAddress": {
+    "message": "Enter token address"
+  },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Enter token name or address"
   },
   "enterYourPassword": {
     "message": "Enter your password"
@@ -4064,6 +4076,9 @@
   "managePermissions": {
     "message": "Manage permissions"
   },
+  "manageTokens": {
+    "message": "Manage tokens"
+  },
   "manageWalletRecovery": {
     "message": "Manage wallet recovery"
   },
@@ -4900,8 +4915,14 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
+  "noTokensMatchSearch": {
+    "message": "No tokens match your search"
+  },
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
+  },
+  "noTokensToManage": {
+    "message": "You don't have any tokens yet. Search by name or address to discover popular tokens."
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
@@ -5490,6 +5511,9 @@
   "payWithModalTitle": {
     "message": "Pay with",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
+  "payee": {
+    "message": "Payee"
   },
   "pending": {
     "message": "Pending"
@@ -6919,6 +6943,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protect your wallet"
+  },
+  "redeemer": {
+    "message": "Redeemer"
   },
   "redeposit": {
     "message": "Redeposit"
