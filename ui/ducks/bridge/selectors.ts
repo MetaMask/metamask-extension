@@ -187,6 +187,7 @@ const getChainRanking = (state: BridgeAppState) =>
 const MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN: { [key: CaipChainId]: string } =
   {
     'eip155:143': '10',
+    [MultichainNetworks.BITCOIN]: '0.00003',
   };
 
 const getMinimumReserveBalanceForCaipAssetId = (
@@ -791,8 +792,8 @@ export const getFormattedPriceImpactFiat = createSelector(
     formatPriceImpactFiat(activeQuote, currentCurrency),
 );
 
-// Initially for gas-sponsored networks with a native reserve balance
-// logic, such as for Monad that needs 10 MON at all times.
+// Native reserve balances are used for gas-sponsored networks like Monad,
+// and for BTC as a buffer between quote-time and submit-time fee computation.
 export const getInsufficientNativeReserveError = createSelector(
   [
     getFromToken,
@@ -820,8 +821,16 @@ export const getInsufficientNativeReserveError = createSelector(
             ],
           );
 
-    const minimumNativeBalanceToBeKeptInAccount = isNetworkGasSponsored
-      ? getMinimumReserveBalanceForCaipAssetId(fromToken?.assetId)
+    const minimumNativeReserveBalance = getMinimumReserveBalanceForCaipAssetId(
+      fromToken?.assetId,
+    );
+    const shouldApplyNativeReserve =
+      minimumNativeReserveBalance !== '0' &&
+      (isNetworkGasSponsored ||
+        Boolean(fromToken?.chainId && isBitcoinChainId(fromToken.chainId)));
+
+    const minimumNativeBalanceToBeKeptInAccount = shouldApplyNativeReserve
+      ? minimumNativeReserveBalance
       : '0';
 
     const maxSwappableNativeBalance = BigNumber.max(
@@ -897,19 +906,27 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    const minimumBalanceToKeep =
+    const minimumBalanceToKeepBeforeQuote =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
+    let minimumBalanceToKeepForQuote = '0';
+    if (srcChainId && isSolanaChainId(srcChainId)) {
+      minimumBalanceToKeepForQuote = minimumBalanceForRentExemptionInSOL;
+    } else if (srcChainId && isBitcoinChainId(srcChainId)) {
+      minimumBalanceToKeepForQuote = getMinimumReserveBalanceForCaipAssetId(
+        fromToken?.assetId,
+      );
+    }
 
     const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
     const isNetworkFeeUnavailable = Boolean(
       activeQuote &&
-        srcChainId &&
-        isBitcoinChainId(srcChainId) &&
-        !isGasless &&
-        (activeQuote.totalNetworkFee?.amount === undefined ||
-          new BigNumber(activeQuote.totalNetworkFee?.amount ?? '0').lte(0)),
+      srcChainId &&
+      isBitcoinChainId(srcChainId) &&
+      !isGasless &&
+      (activeQuote.totalNetworkFee?.amount === undefined ||
+        new BigNumber(activeQuote.totalNetworkFee?.amount ?? '0').lte(0)),
     );
 
     return {
@@ -933,7 +950,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         !isGasless &&
         (isNativeAddress(fromToken.assetId)
           ? new BigNumber(nativeBalance)
-              .sub(minimumBalanceToKeep)
+              .sub(minimumBalanceToKeepBeforeQuote)
               .lte(validatedSrcAmount)
           : new BigNumber(nativeBalance).lte(0)),
       ),
@@ -950,7 +967,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           ? new BigNumber(nativeBalance)
               .sub(activeQuote.totalNetworkFee.amount)
               .sub(activeQuote.sentAmount.amount)
-              .sub(minimumBalanceToKeep)
+              .sub(minimumBalanceToKeepForQuote)
               .lte(0)
           : new BigNumber(nativeBalance).lte(
               activeQuote.totalNetworkFee.amount,

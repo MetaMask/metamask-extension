@@ -542,6 +542,12 @@ describe('BridgeCTAButton', () => {
       { isInsufficientGasForQuote: true },
       messages.insufficientFundsSend.message,
     ],
+    [
+      'disable',
+      'there is insufficient native reserve',
+      { isInsufficientNativeReserve: true },
+      messages.insufficientFundsSend.message,
+    ],
     ['enable', 'the estimated return is low', { isEstimatedReturnLow: true }],
     ['enable', 'there are no validation errors', {}, messages.swap.message],
     [
