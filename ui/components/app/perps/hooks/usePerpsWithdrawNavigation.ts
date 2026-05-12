@@ -5,7 +5,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
 
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
-import type { RemoteFeatureFlagsState } from '../../../../selectors/remote-feature-flags';
+import type { RemoteFeatureFlagsState } from '../../../../../shared/lib/selectors/remote-feature-flags';
 import {
   CONFIRM_TRANSACTION_ROUTE,
   PERPS_WITHDRAW_ROUTE,
