@@ -12,6 +12,7 @@ import {
   useIsTransactionPayLoading,
   useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
+import { HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID } from '../../../../../../shared/lib/hyperliquid-deposit-transaction';
 import { SingleActionFooter } from './single-action-footer';
 
 jest.mock('../../../hooks/pay/useTransactionPayData');
@@ -31,6 +32,13 @@ function genMusdConversion() {
 function genPerpsDeposit() {
   const base = genUnapprovedContractInteractionConfirmation({ chainId: '0x1' });
   return { ...base, type: TransactionType.perpsDeposit, origin: 'metamask' };
+}
+
+function genHyperliquidDeposit() {
+  return {
+    ...genPerpsDeposit(),
+    requestId: HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID,
+  };
 }
 
 function genPerpsWithdraw() {
@@ -53,6 +61,7 @@ function render({
   confirmation?:
     | ReturnType<typeof genMusdConversion>
     | ReturnType<typeof genPerpsDeposit>
+    | ReturnType<typeof genHyperliquidDeposit>
     | ReturnType<typeof genPerpsWithdraw>;
   alerts?: {
     key: string;
@@ -206,6 +215,30 @@ describe('<SingleActionFooter />', () => {
     expect(getByTestId('confirm-footer-button')).toHaveTextContent(
       messages.addFunds.message,
     );
+  });
+
+  it('shows Confirm deposit label for Hyperliquid deposit transactions', () => {
+    const { getByTestId } = render({ confirmation: genHyperliquidDeposit() });
+
+    expect(getByTestId('confirm-footer-button')).toHaveTextContent(
+      'Confirm deposit',
+    );
+  });
+
+  it('disables Hyperliquid deposit transactions below the minimum amount', () => {
+    jest
+      .mocked(useTransactionPayRequiredTokens)
+      .mockReturnValue([
+        { amountUsd: '4.99', skipIfBalance: false } as ReturnType<
+          typeof useTransactionPayRequiredTokens
+        >[number],
+      ]);
+
+    const { getByTestId } = render({ confirmation: genHyperliquidDeposit() });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Minimum 5 USDC');
   });
 
   it('shows Withdraw label for perpsWithdraw transaction type', () => {

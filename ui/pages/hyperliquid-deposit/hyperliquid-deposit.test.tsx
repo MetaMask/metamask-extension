@@ -1,6 +1,9 @@
 import React from 'react';
-import { screen, waitFor } from '@testing-library/react';
-import { TransactionType } from '@metamask/transaction-controller';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
@@ -46,12 +49,29 @@ const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 const MOCK_NETWORK_CLIENT_ID = 'arbitrum-mainnet';
 const MOCK_TX_ID = 'hyperliquid-deposit-tx-id';
 
-function renderPage(state = mockState) {
+function renderPage(route = '/hyperliquid-deposit', state = mockState) {
   return renderWithProvider(
     <HyperliquidDepositPage />,
     configureStore(state),
-    '/hyperliquid-deposit',
+    route,
   );
+}
+
+function renderStatusPage(status: TransactionStatus) {
+  return renderPage('/hyperliquid-deposit?step=status&txId=status-tx-id', {
+    ...mockState,
+    metamask: {
+      ...mockState.metamask,
+      transactions: [
+        ...mockState.metamask.transactions,
+        {
+          id: 'status-tx-id',
+          status,
+          time: Date.now(),
+        },
+      ],
+    },
+  });
 }
 
 describe('HyperliquidDepositPage', () => {
@@ -69,14 +89,23 @@ describe('HyperliquidDepositPage', () => {
     } as never);
   });
 
-  it('creates a Hyperliquid perps deposit transaction and navigates to confirmation on mount', async () => {
+  it('starts on the intro screen without creating a transaction', () => {
     renderPage();
 
     expect(
-      screen.getByRole('heading', {
-        name: 'Preparing Hyperliquid deposit confirmation',
-      }),
+      screen.getByRole('heading', { name: 'Deposit to Hyperliquid' }),
     ).toBeInTheDocument();
+    expect(screen.getByText('Review deposit')).toBeInTheDocument();
+    expect(
+      screen.queryByLabelText('Deposit amount in USDC'),
+    ).not.toBeInTheDocument();
+    expect(addTransactionMock).not.toHaveBeenCalled();
+  });
+
+  it('creates a Hyperliquid deposit transaction and opens the MetaMask confirmation', async () => {
+    renderPage();
+
+    fireEvent.click(screen.getByTestId('hyperliquid-deposit-intro-button'));
 
     await waitFor(() => {
       expect(addTransactionMock).toHaveBeenCalledTimes(1);
@@ -101,14 +130,52 @@ describe('HyperliquidDepositPage', () => {
     expect(addTransactionMock.mock.calls[0][0].data).toContain('05f5e100');
     expect(HYPERLIQUID_DEPOSIT_DEFAULT_AMOUNT_USDC).toBe('100');
     expect(navigateToTransactionMock).toHaveBeenCalledWith(MOCK_TX_ID, {
+      goBackTo: '/hyperliquid-deposit?step=status&txId=hyperliquid-deposit-tx-id',
       loader: ConfirmationLoader.CustomAmount,
     });
   });
 
+  it('shows a pending status before the deposit transaction confirms', () => {
+    renderStatusPage(TransactionStatus.submitted);
+
+    expect(screen.getByText('Deposit Submitted')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Your Arbitrum transaction is pending. We will mark this funded once it confirms.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Wallet Funded')).not.toBeInTheDocument();
+    expect(screen.getByText('View activity')).toBeInTheDocument();
+  });
+
+  it('shows the funded status after the deposit transaction confirms', () => {
+    renderStatusPage(TransactionStatus.confirmed);
+
+    expect(screen.getByText('Wallet Funded')).toBeInTheDocument();
+    expect(
+      screen.getByText('Your perps wallet is ready to trade on Hyperliquid.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Total balance')).not.toBeInTheDocument();
+    expect(screen.getByText('Trade Perps on MetaMask')).toBeInTheDocument();
+  });
+
+  it('shows a failed status when the deposit transaction fails', () => {
+    renderStatusPage(TransactionStatus.failed);
+
+    expect(screen.getByText('Deposit Failed')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'The transaction did not complete. Review activity for details.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Review activity')).toBeInTheDocument();
+  });
+
   it('shows an error if creating the confirmation fails', async () => {
     addTransactionMock.mockRejectedValue(new Error('failed'));
-
     renderPage();
+
+    fireEvent.click(screen.getByTestId('hyperliquid-deposit-intro-button'));
 
     expect(await screen.findByText('failed')).toBeInTheDocument();
     expect(navigateToTransactionMock).not.toHaveBeenCalled();

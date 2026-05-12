@@ -1,33 +1,159 @@
 .hyperliquid-deposit {
   min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 24px;
-  background: var(--color-background-default);
-  color: var(--color-text-default);
+  padding: 0;
+  background: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
 
-  &__launcher {
+  &__panel {
+    position: relative;
     width: 100%;
-    max-width: 320px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: rgb(0, 0, 0);
+  }
+
+  &__step {
+    min-height: 100vh;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 20px 24px;
+
+    &--intro,
+    &--status {
+      justify-content: center;
+      gap: 28px;
+      padding-top: 72px;
+    }
+  }
+
+  &__close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(31, 31, 31);
+    color: rgb(177, 177, 177);
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  &__glyph-wrap {
+    position: relative;
+    width: 76px;
+    height: 76px;
+  }
+
+  &__glyph {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: rgb(140, 241, 223);
+  }
+
+  &__glyph-node,
+  &__glyph-link {
+    position: absolute;
+    top: 50%;
+    display: block;
+    background: rgb(6, 43, 42);
+    transform: translateY(-50%);
+  }
+
+  &__glyph-node {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+
+    &--left {
+      left: 20px;
+    }
+
+    &--right {
+      right: 20px;
+    }
+  }
+
+  &__glyph-link {
+    left: 31px;
+    width: 24px;
+    height: 9px;
+    border-radius: 999px;
+  }
+
+  &__success-mark {
+    position: absolute;
+    right: -8px;
+    bottom: -8px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid rgb(0, 0, 0);
+    border-radius: 50%;
+    background: rgb(0, 199, 111);
+    color: rgb(255, 255, 255);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  &__copy {
+    max-width: 260px;
     text-align: center;
 
     h1 {
-      margin: 0 0 12px;
-      font-size: 18px;
-      line-height: 24px;
+      margin: 0;
+      color: rgb(255, 255, 255);
+      font-size: 20px;
       font-weight: 700;
+      line-height: 28px;
     }
 
     p {
-      margin: 0;
-      color: var(--color-text-alternative);
-      font-size: 14px;
-      line-height: 20px;
+      margin: 12px 0 0;
+      color: rgb(177, 177, 177);
+      font-size: 16px;
+      line-height: 24px;
+    }
+  }
+
+  &__button {
+    width: 100%;
+    min-height: 56px;
+    margin-top: auto;
+    border: 0;
+    border-radius: 14px;
+    background: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 22px;
+    cursor: pointer;
+
+    &:disabled {
+      background: rgb(67, 67, 67);
+      color: rgb(177, 177, 177);
+      cursor: default;
     }
   }
 
   &__error {
-    color: var(--color-error-default);
+    width: 100%;
+    margin: 16px 0 0;
+    color: rgb(255, 95, 95);
+    font-size: 13px;
+    line-height: 18px;
+    text-align: center;
   }
 }

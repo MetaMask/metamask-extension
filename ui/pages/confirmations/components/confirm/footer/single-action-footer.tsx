@@ -12,6 +12,10 @@ import {
   useTransactionPayRequiredTokens,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
+import {
+  HYPERLIQUID_MIN_DEPOSIT_USDC,
+  isHyperliquidDepositConfirmation,
+} from '../../../../../../shared/lib/hyperliquid-deposit-transaction';
 
 type ButtonState = {
   buttonText: string;
@@ -40,33 +44,44 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     [alerts],
   );
 
-  const hasAmount = useMemo(
+  const requiredAmountUsd = useMemo(
     () =>
       (requiredTokens ?? [])
         .filter((token) => !token.skipIfBalance)
         .reduce(
           (acc, token) => acc.plus(new BigNumber(token.amountUsd ?? 0)),
           new BigNumber(0),
-        )
-        .gt(0),
+        ),
     [requiredTokens],
   );
+  const hasAmount = requiredAmountUsd.gt(0);
 
   return useMemo(() => {
     const isLoadingState = isGaslessLoading || isPayLoading;
-    const i18nKey =
-      (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
-    const defaultButtonText = t(i18nKey);
+    const isHyperliquidDeposit =
+      isHyperliquidDepositConfirmation(currentConfirmation);
+    const defaultButtonText = isHyperliquidDeposit
+      ? 'Confirm deposit'
+      : t((transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm');
 
     const hasBlockingAlerts = blockingAlerts.length > 0;
-    const isDisabled = hasBlockingAlerts || !hasAmount;
+    const hyperliquidAmountError =
+      isHyperliquidDeposit &&
+      hasAmount &&
+      requiredAmountUsd.lt(HYPERLIQUID_MIN_DEPOSIT_USDC)
+        ? `Minimum ${HYPERLIQUID_MIN_DEPOSIT_USDC} USDC`
+        : undefined;
+    const isDisabled =
+      hasBlockingAlerts || !hasAmount || Boolean(hyperliquidAmountError);
 
     const firstAlert = blockingAlerts[0];
     const alertText =
       firstAlert?.reason ?? (firstAlert?.message as string | undefined);
 
     const buttonText =
-      hasBlockingAlerts && alertText ? alertText : defaultButtonText;
+      (hasBlockingAlerts && alertText) ||
+      hyperliquidAmountError ||
+      defaultButtonText;
 
     return {
       buttonText,
@@ -78,7 +93,9 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
     hasAmount,
     isGaslessLoading,
     isPayLoading,
+    currentConfirmation,
     transactionType,
+    requiredAmountUsd,
     t,
   ]);
 }
