@@ -14,8 +14,8 @@ jobs:
       - name: Get OIDC Token
         id: oidc
         run: |
-          OIDC_TOKEN=$(curl -sf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL" | jq -r '.value')
+          OIDC_TOKEN=$(curl -sSf -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=api://token-exchange-service" | jq -r '.value')
           echo "::add-mask::$OIDC_TOKEN"
           echo "oidc_token=$OIDC_TOKEN" >> "$GITHUB_OUTPUT"
 
@@ -24,9 +24,12 @@ jobs:
         env:
           OIDC_TOKEN: ${{ steps.oidc.outputs.oidc_token }}
         run: |
-          RESPONSE=$(curl -sf -X POST "${{ vars.TOKEN_EXCHANGE_URL }}/api/v1/exchange" \
+          RESPONSE=$(curl -sSf -X POST "https://token-exchange-service-prd-app.proudtree-e6e81681.westeurope.azurecontainerapps.io/api/exchange/token" \
             -H "Content-Type: application/json" \
-            -d "{\"token\": \"$OIDC_TOKEN\", \"repository\": \"MetaMask/triage-agent\"}")
+            -d "$(jq -cn \
+              --arg oidcToken "$OIDC_TOKEN" \
+              --arg targetRepo "MetaMask/triage-agent" \
+              '{oidcToken: $oidcToken, targetRepo: $targetRepo, requested_permissions: {contents: "write", metadata: "read"}}')")
           TOKEN=$(echo "$RESPONSE" | jq -r '.token')
           echo "::add-mask::$TOKEN"
           echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
