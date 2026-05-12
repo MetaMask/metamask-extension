@@ -2066,6 +2066,65 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientGasForQuote).toStrictEqual(false);
     });
 
+    it('should return isNetworkFeeUnavailable=true for a BTC quote with zero network fee', () => {
+      const btcAsset = getNativeAssetForChainId(ChainId.BTC);
+      const ethAsset = getNativeAssetForChainId(ChainId.ETH);
+      const btcQuote = {
+        quote: {
+          requestId: 'btc-quote-without-fee',
+          bridgeId: 'rango',
+          aggregator: 'rango',
+          srcChainId: ChainId.BTC,
+          srcTokenAmount: '100000000',
+          srcAsset: btcAsset,
+          destChainId: ChainId.ETH,
+          destTokenAmount: '1000000000000000000',
+          destAsset: ethAsset,
+          minDestTokenAmount: '990000000000000000',
+          feeData: {
+            metabridge: {
+              amount: '0',
+              asset: btcAsset,
+            },
+          },
+          bridges: ['rango'],
+          protocols: ['rango'],
+          steps: [],
+        },
+        trade: {
+          unsignedPsbtBase64: 'psbt',
+          inputsToSign: null,
+        },
+        estimatedProcessingTimeInSeconds: 600,
+        nonEvmFeesInNative: '0',
+      };
+      const state = createBridgeMockStore({
+        bridgeSliceOverrides: {
+          fromTokenInputValue: '1',
+          fromToken: toBridgeToken(btcAsset),
+          toToken: toBridgeToken(ethAsset),
+        },
+        bridgeStateOverrides: {
+          quotesLastFetched: Date.now(),
+          quoteRequest: {
+            srcChainId: ChainId.BTC,
+          },
+          quotes: [btcQuote] as unknown as QuoteResponse[],
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: MOCK_BITCOIN_ACCOUNT.id,
+          },
+        },
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+      ).toStrictEqual('0');
+      expect(result.isNetworkFeeUnavailable).toBe(true);
+    });
+
     it('should return isEstimatedReturnLow=true return value is less than 65% of sent funds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {

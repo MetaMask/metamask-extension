@@ -61,6 +61,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientNativeReserve,
+    isNetworkFeeUnavailable,
     isStockMarketClosed: isMarketClosed,
     isQuoteExpired,
   } = useSelector(
@@ -146,6 +147,14 @@ export const BridgeCTAButton = ({
       };
     }
 
+    if (!isNetworkFeeUnavailable) {
+      return {
+        disabled: false,
+        onClick: onFetchNewQuotes,
+        children: t('bridgeGetNewQuote'),
+      };
+    }
+
     const submitHandler = async () => {
       if (onOpenAlertModals) {
         onOpenAlertModals?.();
@@ -191,6 +200,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientNativeReserve,
+    isNetworkFeeUnavailable,
     isSubmitting,
     isTxSubmittable,
     onFetchNewQuotes,

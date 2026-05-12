@@ -903,6 +903,14 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         : '0';
 
     const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
+    const isNetworkFeeUnavailable = Boolean(
+      activeQuote &&
+        srcChainId &&
+        isBitcoinChainId(srcChainId) &&
+        !isGasless &&
+        (activeQuote.totalNetworkFee?.amount === undefined ||
+          new BigNumber(activeQuote.totalNetworkFee?.amount ?? '0').lte(0)),
+    );
 
     return {
       isTxAlertPresent: Boolean(txAlert),
@@ -930,6 +938,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           : new BigNumber(nativeBalance).lte(0)),
       ),
       isInsufficientNativeReserve,
+      isNetworkFeeUnavailable,
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
         nativeBalance &&
