@@ -36,7 +36,12 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../shared/lib/selectors/networks';
-import { getSelectedEvmInternalAccount, getAllTokens } from '../../selectors';
+import {
+  getInternalAccounts,
+  getSelectedEvmInternalAccount,
+  getAllTokens,
+  selectERC20TokensByChain,
+} from '../../selectors';
 import { checkExistingAddresses } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -63,9 +68,20 @@ export const CustomTokenImportPage = () => {
     getAllNetworkConfigurationsByCaipChainId,
   );
   const selectedAccount = useSelector(getSelectedEvmInternalAccount);
+  const internalAccounts = useSelector(getInternalAccounts) as {
+    address: string;
+  }[];
   const allTokens = useSelector(getAllTokens) as Record<
     string,
     Record<string, { address: string }[]>
+  >;
+  // Chain-scoped token-list cache, same source the backend uses inside
+  // `getTokenStandardAndDetailsByChain`. Provides the metadata fallback for
+  // `tokenInfoGetter` when on-chain `symbol()`/`decimals()`/`name()` calls
+  // can't return a value.
+  const erc20TokensByChain = useSelector(selectERC20TokensByChain) as Record<
+    string,
+    { data?: Record<string, unknown> } | undefined
   >;
 
   const [selectedNetwork, setSelectedNetwork] =
@@ -106,6 +122,9 @@ export const CustomTokenImportPage = () => {
     [allTokens, selectedNetwork, selectedAccount?.address],
   );
 
+  const tokenListForSelectedNetwork =
+    erc20TokensByChain?.[selectedNetwork]?.data;
+
   const [address, setAddress] = useState('');
   const [symbol, setSymbol] = useState('');
   const [decimals, setDecimals] = useState('');
@@ -117,6 +136,9 @@ export const CustomTokenImportPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const infoGetter = useRef(tokenInfoGetter());
+  // Tracks the in-flight `handleAddressChange` invocation so async results
+  // from previous calls (stale address or stale network) can be discarded.
+  const addressLookupRef = useRef(0);
 
   const resetValidation = useCallback(() => {
     setAddressError(null);
@@ -138,28 +160,65 @@ export const CustomTokenImportPage = () => {
       const trimmed = value.trim();
       setAddress(trimmed);
       resetValidation();
+      setSymbol('');
+      setDecimals('');
 
-      if (!trimmed) {
-        setSymbol('');
-        setDecimals('');
-        return;
-      }
+      // Invalidate any in-flight lookup so its eventual result is ignored.
+      const lookupId = ++addressLookupRef.current;
+      const isLatestLookup = () => addressLookupRef.current === lookupId;
 
+      const addressIsEmpty = trimmed.length === 0 || trimmed === EMPTY_ADDRESS;
       const addressIsValid = isValidHexAddress(trimmed, {
         allowNonPrefixed: false,
       });
-      if (!addressIsValid || trimmed === EMPTY_ADDRESS) {
+      const standardAddress = addHexPrefix(trimmed).toLowerCase();
+      const isMainnetToken = Object.keys(STATIC_MAINNET_TOKEN_LIST).some(
+        (key) => key.toLowerCase() === standardAddress,
+      );
+
+      // Probe the chain *before* applying validation branches so the NFT
+      // branch wins over the mainnet-warning/personal-address/existing-token
+      // branches, matching the order of the legacy `import-tokens-modal`
+      // switch.
+      let standard: string | undefined;
+      if (addressIsValid) {
+        try {
+          const result = await getTokenStandardAndDetailsByChain(
+            standardAddress,
+            selectedAccount?.address,
+            undefined,
+            selectedNetwork,
+          );
+          standard = result?.standard;
+        } catch {
+          // ignore probe failures
+        }
+      }
+
+      if (!isLatestLookup()) {
+        return;
+      }
+
+      if (!addressIsValid && !addressIsEmpty) {
         setAddressError(t('invalidAddress'));
         return;
       }
 
-      const standardAddress = addHexPrefix(trimmed).toLowerCase();
+      if (standard === ERC721 || standard === ERC1155) {
+        setAddressError(t('nftAddressError', [t('importNFTPage')]));
+        return;
+      }
 
-      const isMainnetToken = Object.keys(STATIC_MAINNET_TOKEN_LIST).some(
-        (key) => key.toLowerCase() === standardAddress,
-      );
       if (isMainnetToken && selectedNetwork !== CHAIN_IDS.MAINNET) {
         setWarning(t('mainnetToken'));
+        return;
+      }
+
+      const isOwnAccountAddress = internalAccounts.some(
+        (account) => account.address?.toLowerCase() === standardAddress,
+      );
+      if (isOwnAccountAddress) {
+        setAddressError(t('personalAddressDetected'));
         return;
       }
 
@@ -168,43 +227,44 @@ export const CustomTokenImportPage = () => {
         return;
       }
 
-      let standard: string | undefined;
-      try {
-        const result = await getTokenStandardAndDetailsByChain(
-          standardAddress,
-          selectedAccount?.address,
-          undefined,
-          selectedNetwork,
-        );
-        standard = result?.standard;
-      } catch {
-        // Probe failures shouldn't block the user; symbol/decimal auto-fill
-        // below will surface its own errors if it also fails.
-      }
-
-      if (standard === ERC721 || standard === ERC1155) {
-        setAddressError(t('nftAddressError', [t('importNFTPage')]));
+      // Empty address (length 0 or `0x000…0`) falls through with no error and
+      // skips the auto-fill, mirroring the legacy switch's default branch.
+      if (addressIsEmpty) {
         return;
       }
 
+      // Mirror `attemptToAutoFillTokenParams` from the legacy modal.
       try {
-        const info = await infoGetter.current(standardAddress, undefined);
-        const nextSymbol = info?.symbol ?? '';
+        const info = await infoGetter.current(
+          standardAddress,
+          tokenListForSelectedNetwork,
+        );
+        if (!isLatestLookup()) {
+          return;
+        }
+        const rawDecimals = info?.decimals;
         const nextDecimals =
-          typeof info?.decimals === 'number' ? String(info.decimals) : '';
-        setSymbol(nextSymbol);
+          rawDecimals === undefined || rawDecimals === null
+            ? ''
+            : String(rawDecimals);
+        setSymbol(info?.symbol ?? '');
         setDecimals(nextDecimals);
         setShowSymbolAndDecimals(true);
       } catch {
+        if (!isLatestLookup()) {
+          return;
+        }
         setShowSymbolAndDecimals(true);
       }
     },
     [
       existingTokens,
+      internalAccounts,
       resetValidation,
       selectedAccount?.address,
       selectedNetwork,
       t,
+      tokenListForSelectedNetwork,
     ],
   );
 
@@ -248,6 +308,9 @@ export const CustomTokenImportPage = () => {
   }, [currentChainId]);
 
   useEffect(() => {
+    // Bump the lookup token so any address lookup started on the previous
+    // network can't apply its result here.
+    addressLookupRef.current += 1;
     clearFormData();
   }, [selectedNetwork, clearFormData]);
 
