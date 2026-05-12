@@ -1,5 +1,9 @@
 import type { SDKMessage } from '@anthropic-ai/claude-agent-sdk' with { 'resolution-mode': 'import' };
-import { extractTextContent, extractToolUseBlocks } from './message-parser';
+import {
+  extractTextContent,
+  extractToolUseBlocks,
+  redactSensitive,
+} from './message-parser';
 import {
   type SpanHandle,
   traceSpan,
@@ -246,7 +250,7 @@ function handleAssistantMessage(
       const toolLabel = formatToolLabel(tool.name, tool.input);
       const toolSpan = parent.startObservation(
         toolLabel,
-        { input: config.redact ? '[REDACTED]' : tool.input },
+        { input: config.redact ? '[REDACTED]' : redactSensitive(tool.input) },
         { asType: 'tool' },
       );
       state.pendingTools.set(tool.id, {

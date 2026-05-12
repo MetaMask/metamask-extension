@@ -31,6 +31,7 @@ const { values: args } = parseArgs({
     model: { type: 'string', short: 'm', default: 'claude-sonnet-4-6' },
     redact: { type: 'boolean', default: false },
     verbose: { type: 'boolean', short: 'v', default: false },
+    'max-turns': { type: 'string', default: '10' },
   },
   strict: true,
 });
@@ -101,37 +102,43 @@ async function run(): Promise<void> {
 
   const state = createInitialState(runnerConfig);
 
-  for await (const message of query({
-    prompt: runnerConfig.prompt,
-    options: {
-      model: runnerConfig.model,
-      maxTurns: runnerConfig.maxTurns,
-      cwd: repoRoot,
-      permissionMode: 'bypassPermissions',
-      allowDangerouslySkipPermissions: true,
-      systemPrompt: METAMASK_SYSTEM_PROMPT,
-      // options.env replaces process.env entirely — always spread first
-      env: { ...process.env },
-      ...(runnerConfig.verbose
-        ? { stderr: (data: string) => process.stderr.write(data) }
-        : {}),
-    },
-  })) {
-    handleMessage(message, state, runnerConfig);
+  try {
+    for await (const message of query({
+      prompt: runnerConfig.prompt,
+      options: {
+        model: runnerConfig.model,
+        maxTurns: runnerConfig.maxTurns,
+        cwd: repoRoot,
+        permissionMode: 'bypassPermissions',
+        allowDangerouslySkipPermissions: true,
+        systemPrompt: METAMASK_SYSTEM_PROMPT,
+        // options.env replaces process.env entirely — always spread first
+        env: { ...process.env },
+        ...(runnerConfig.verbose
+          ? { stderr: (data: string) => process.stderr.write(data) }
+          : {}),
+      },
+    })) {
+      handleMessage(message, state, runnerConfig);
+    }
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    process.stderr.write(`[RUNNER] ✗ Failed: ${msg}\n`);
+    process.exitCode = 1;
+  } finally {
+    finalizePendingTools(state);
+    finalizeSessionSpan(state);
+    await flushTracing();
+
+    await evaluateRun({
+      prompt: runnerConfig.prompt,
+      result: state.finalResult,
+      conversationLog: state.conversationLog,
+      turns: state.turns,
+      traceId: state.traceId,
+      success: state.finalResult !== undefined,
+    });
   }
-
-  finalizePendingTools(state);
-  finalizeSessionSpan(state);
-  await flushTracing();
-
-  await evaluateRun({
-    prompt: runnerConfig.prompt,
-    result: state.finalResult,
-    conversationLog: state.conversationLog,
-    turns: state.turns,
-    traceId: state.traceId,
-    success: state.finalResult !== undefined,
-  });
 }
 
 run()

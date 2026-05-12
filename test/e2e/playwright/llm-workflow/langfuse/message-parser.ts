@@ -1,3 +1,28 @@
+const SENSITIVE_KEYS = [
+  'password',
+  'secret',
+  'srp',
+  'seed',
+  'mnemonic',
+  'privatekey',
+  'private_key',
+];
+
+export function redactSensitive(input: unknown): unknown {
+  if (typeof input !== 'object' || input === null) return input;
+  if (Array.isArray(input)) return input.map(redactSensitive);
+
+  const obj = { ...(input as Record<string, unknown>) };
+  for (const [key, value] of Object.entries(obj)) {
+    if (SENSITIVE_KEYS.some((s) => key.toLowerCase().includes(s))) {
+      obj[key] = '[REDACTED]';
+    } else if (typeof value === 'object' && value !== null) {
+      obj[key] = redactSensitive(value);
+    }
+  }
+  return obj;
+}
+
 export function extractTextContent(message: Record<string, unknown>): string {
   const content = message?.content;
   if (typeof content === 'string') return content;
