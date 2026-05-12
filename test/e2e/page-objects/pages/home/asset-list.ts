@@ -142,6 +142,18 @@ class AssetListPage {
     return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
 
+  /**
+   * Builds an XPath matching the import-token search row whose name or
+   * symbol `<p>` is an EXACT match for `tokenText`. Substring (`contains`)
+   * matches are unsafe here because, e.g., searching `CHAI` returns rows
+   * for `CHAIN`/`Chain Games` too, and `contains(text(),'CHAI')` would
+   * match `<p>CHAIN</p>` first — clicking the wrong row and toggling an
+   * existing selection.
+   */
+  private exactTokenRowXpath(tokenText: string): string {
+    return `//*[contains(@class,'token-list__token_component')][.//p[text()=${JSON.stringify(tokenText)}]]`;
+  }
+
   private readonly tokenChainDropdown =
     '[data-testid="test-import-tokens-drop-down-custom-import"]';
 
@@ -398,9 +410,17 @@ class AssetListPage {
 
     for (const name of tokenNames) {
       await this.driver.pasteIntoField(this.tokenSearchInput, name);
-      await this.driver.waitForElementToStopMoving({ text: name, tag: 'p' });
-      await this.driver.clickElement({ text: name, tag: 'p' });
-      await this.driver.waitForSelector(this.tokenSearchSelected);
+      // Scope to the row whose `<p>` text exactly matches the searched
+      // token. Avoids the bug where `contains(text(),'CHAI')` matches the
+      // `<p>CHAIN</p>` symbol and clicks the wrong (already-selected) row.
+      const rowXpath = this.exactTokenRowXpath(name);
+      await this.driver.waitForSelector({ xpath: rowXpath });
+      await this.driver.waitForElementToStopMoving({ xpath: rowXpath });
+      await this.driver.clickElement({ xpath: rowXpath });
+      // Verify the row's checkbox is checked
+      await this.driver.waitForSelector({
+        xpath: `${rowXpath}//input[contains(@class,'mm-checkbox__input--checked')]`,
+      });
     }
     await this.driver.clickElement(this.importTokensNextButton);
     await this.waitUntilConfirmTokenCount(tokenNames.length);

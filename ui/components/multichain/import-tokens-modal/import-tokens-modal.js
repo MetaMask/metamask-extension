@@ -491,19 +491,6 @@ export const ImportTokensModal = ({ onClose }) => {
       const networkConfig =
         allNetworks[selectedNetwork] || networkConfigurations[selectedNetwork];
       if (networkConfig) {
-        // eslint-disable-next-line no-console
-        console.error(
-          'Warning: [ImportTokensModal] rebuild networkFilter',
-          JSON.stringify({
-            selectedNetwork,
-            cause: {
-              networkConfigurationsRef: Object.keys(
-                networkConfigurations ?? {},
-              ).length,
-              allNetworksRef: Object.keys(allNetworks ?? {}).length,
-            },
-          }),
-        );
         setNetworkFilter({
           [selectedNetwork]: networkConfig,
         });
@@ -512,13 +499,6 @@ export const ImportTokensModal = ({ onClose }) => {
   }, [selectedNetwork, networkConfigurations, allNetworks]);
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.error(
-      'Warning: [ImportTokensModal] reset selectedTokens via networkFilter effect',
-      JSON.stringify({
-        networkFilterKeys: Object.keys(networkFilter ?? {}),
-      }),
-    );
     setSelectedTokens({});
   }, [networkFilter]);
 
