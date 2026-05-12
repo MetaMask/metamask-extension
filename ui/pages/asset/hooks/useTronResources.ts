@@ -190,7 +190,7 @@ export const useTronResources = (
 
     const getBalanceForCaipType = (caipType: string): number => {
       const assetId = `${chainId}/${caipType}` as CaipAssetId;
-      return parseFloat(balances?.[assetId]?.amount || '0');
+      return Number.parseFloat(balances?.[assetId]?.amount || '0');
     };
 
     const energyData = {
