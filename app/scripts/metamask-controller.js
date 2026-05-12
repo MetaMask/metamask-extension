@@ -465,6 +465,7 @@ import { ProfileMetricsServiceInit } from './messenger-client-init/profile-metri
 import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-tx-utils';
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
+import { KeyringType } from '@metamask/keyring-api/v2';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1807,13 +1808,13 @@ export default class MetamaskController extends EventEmitter {
   async getSnapKeyring() {
     // TODO: Use `withKeyring` instead
     let [snapKeyring] = this.keyringController.getKeyringsByType(
-      KeyringTypes.snap,
+      KeyringType.snap,
     );
     if (!snapKeyring) {
-      await this.keyringController.addNewKeyring(KeyringTypes.snap);
+      await this.keyringController.addNewKeyring(KeyringType.snap);
       // TODO: Use `withKeyring` instead
       [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringTypes.snap,
+        KeyringType.snap,
       );
     }
     return snapKeyring;
@@ -1829,7 +1830,7 @@ export default class MetamaskController extends EventEmitter {
     if (this.keyringController.isUnlocked()) {
       // TODO: Use `withKeyring` instead
       const [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringTypes.snap,
+        KeyringType.snap,
       );
 
       return snapKeyring;
@@ -5372,7 +5373,7 @@ export default class MetamaskController extends EventEmitter {
       const isHdKeyring = await this.keyringController.withKeyringV2(
         { id: metadata.id },
         async ({ keyring }) => {
-          return keyring.type === KeyringTypes.hd;
+          return keyring.type === KeyringType.Hd;
         },
       );
       if (isHdKeyring) {
