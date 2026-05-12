@@ -98,7 +98,9 @@ export const ConfirmContextProvider: React.FC<{
   );
 
   return (
-    <ConfirmContext.Provider value={value}>{children}</ConfirmContext.Provider>
+    <ConfirmContext.Provider value={value as ConfirmContextType}>
+      {children}
+    </ConfirmContext.Provider>
   );
 };
 

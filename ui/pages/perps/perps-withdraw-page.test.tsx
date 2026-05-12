@@ -6,7 +6,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { usePerpsEligibility } from '../../hooks/perps';
-import * as accountsSelectors from '../../selectors/accounts';
+import * as accountsSelectors from '../../../shared/lib/selectors/accounts';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { PERPS_EVENT_PROPERTY } from '../../../shared/constants/perps-events';

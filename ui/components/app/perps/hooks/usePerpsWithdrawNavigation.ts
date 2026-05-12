@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { getSelectedInternalAccount } from '../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { PERPS_WITHDRAW_ROUTE } from '../../../../helpers/constants/routes';
 
 export type PerpsWithdrawNavigationResponse = {
