@@ -196,12 +196,15 @@ export function getPerpsConfigEligibleWithActivity(title?: string) {
 
   const mockFunding = {
     time: now - 7200000,
-    coin: 'ETH',
-    usdc: '-2.50',
-    szi: '2.5',
-    fundingRate: '0.0001',
-    nSamples: 1,
     hash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+    delta: {
+      type: 'funding',
+      coin: 'ETH',
+      usdc: '-2.50',
+      szi: '2.5',
+      fundingRate: '0.0001',
+      nSamples: 1,
+    },
   };
 
   const mockDeposit = {

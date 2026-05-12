@@ -5,15 +5,15 @@
  * navigate to the correct Perps screen with the actual Perps UI loaded:
  *
  * - `/perps`, `/perps?screen=tabs`, `/perps?screen=home`, `/perps?screen=markets`
- *     → Wallet home with Perps tab selected (PerpsHomePage).
- *       Asserts: balance dropdown + "Explore markets" row visible.
+ * → Wallet home with Perps tab selected (PerpsHomePage).
+ * Asserts: balance dropdown + "Explore markets" row visible.
  * - `/perps?screen=market-list`
- *     → Perps market-list page with "All" filter active and market rows visible.
+ * → Perps market-list page with "All" filter active and market rows visible.
  * - `/perps?screen=market-list&tab=crypto`
- *     → Perps market-list page with the "Crypto" filter label showing.
+ * → Perps market-list page with the "Crypto" filter label showing.
  * - `/perps?screen=market-list&tab=stocks`
- *     → Perps market-list page with the "Stocks" filter label showing and
- *       at least one equity market row (TSLA, via HIP-3 xyz DEX mock).
+ * → Perps market-list page with the "Stocks" filter label showing and at least one
+ * equity market row (TSLA, via HIP-3 xyz DEX mock).
  *
  * Unlike the generic deep-link route tests in
  * `tests/deep-link/deep-link-route-perps.spec.ts` (which only check the URL
@@ -70,8 +70,8 @@ const PERPS_ELIGIBLE_FLAGS = {
  * @param options.title
  * @param options.deepLinkPublicKey
  * @param options.enableHip3 - When true, adds perpsHip3Enabled flag and HTTP
- *   mocks for the xyz HIP-3 DEX (metaAndAssetCtxs + allMids), enabling the
- *   Stocks filter to show equity markets.
+ * mocks for the xyz HIP-3 DEX (metaAndAssetCtxs + allMids), enabling the Stocks
+ * filter to show equity markets.
  */
 async function getPerpsDeepLinkConfig(options: {
   title?: string;
