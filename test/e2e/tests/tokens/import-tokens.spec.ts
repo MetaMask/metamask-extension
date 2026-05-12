@@ -7,6 +7,7 @@ import { NETWORK_CLIENT_ID } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { login } from '../../page-objects/flows/login.flow';
+import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
 import { getMockAssetsPrice } from './utils/mocks';
 
 const ETH_CONVERSION_RATE_USD = 1700;
@@ -115,6 +116,40 @@ async function importTokensTestMock(mockServer: Mockttp) {
     await mockPriceFetch(mockServer),
     ...sharedTokenMocks,
     await mockSpotPricesV3(mockServer),
+  ];
+}
+
+/**
+ * Disables the AccountActivity backend WebSocket via the
+ * `backendWebSocketConnection` remote feature flag. Combined with the
+ * `manifestFlags` overlay on the test fixture, this stops the modal-open
+ * `system-notification: chains-up` push that mutates `NetworkController`
+ * state mid-selection and wipes `selectedTokens` in `ImportTokensModal`.
+ *
+ * @param mockServer - Mockttp instance.
+ */
+async function mockBackendWebSocketDisabled(mockServer: Mockttp) {
+  const prodFlags = getProductionRemoteFlagApiResponse();
+  return await mockServer
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [
+        ...prodFlags,
+        { backendWebSocketConnection: { value: false } },
+      ],
+    }));
+}
+
+/**
+ * Composed mock for the multi-token search import test.
+ * @param mockServer - Mockttp instance.
+ */
+async function importTokensMultiSearchMock(mockServer: Mockttp) {
+  return [
+    await mockBackendWebSocketDisabled(mockServer),
+    ...(await importTokensTestMock(mockServer)),
   ];
 }
 
@@ -492,7 +527,15 @@ describe('Import flow', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: importTokensTestMock,
+        // Disable the AccountActivity backend websocket for this test:
+        // The modal-open `chains-up` system-notification mutates `NetworkController` state,
+        // which collapses `networkFilter` in `ImportTokensModal` and wipes selections mid-loop.
+        manifestFlags: {
+          remoteFeatureFlags: {
+            backendWebSocketConnection: { value: false },
+          },
+        },
+        testSpecificMock: importTokensMultiSearchMock,
       },
       async ({ driver }) => {
         await login(driver, { expectedBalance: '$127,500.00' });
