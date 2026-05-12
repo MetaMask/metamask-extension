@@ -14,7 +14,11 @@
 
 import type { Mockttp } from 'mockttp';
 import { setPassThroughInterceptor } from '../../mock-e2e-pass-through';
-import { BRIDGE_FEATURE_FLAGS, CLIENT_CONFIG_FLAGS } from './mock-responses';
+import {
+  BRIDGE_FEATURE_FLAGS,
+  CLIENT_CONFIG_FLAGS,
+  solanaGetBalanceResponse,
+} from './mock-responses';
 import bridgeNetworkTokens from './bridge-network-tokens.json';
 import bridgeTokens from './bridge-tokens.json';
 import bridgeTokensPopular from './bridge-tokens-popular.json';
@@ -63,6 +67,10 @@ export function getSwapBenchmarkInterceptorResponse(req: {
   url: string;
   method: string;
 }): { response: Record<string, unknown> } | null {
+  if (req.url.includes('solana-mainnet.infura.io')) {
+    return { response: solanaGetBalanceResponse() };
+  }
+
   // Bridge feature flags (enables SSE + Solana chain)
   if (req.url.includes('bridge.api.cx.metamask.io/featureFlags')) {
     return {

@@ -123,6 +123,7 @@ jobs:
       MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
       CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ inputs.builds-from-run }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       BENCHMARK_WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id || github.run_id }}
       BUILDS_FROM_SHA: ${{ inputs.builds-from-sha }}
       BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}

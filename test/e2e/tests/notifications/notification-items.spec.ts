@@ -41,7 +41,14 @@ async function mockFeatureFlagsWithoutAutoEnableNotifications(server: Mockttp) {
 
 describe('Notification List - View Items and Details', function () {
   it('find each notification type we support, and navigates to their details page', async function () {
-    if (process.env.IS_FORK === 'true') {
+    // Feature announcements are fetched from Contentful, which requires CONTENTFUL_ACCESS_SPACE_ID
+    // and CONTENTFUL_ACCESS_TOKEN baked in at build time (run-build.yml). Fork repos and
+    // cross-repo PRs don't have these secrets, so the built extension uses placeholder values,
+    // never contacts Contentful, and this test times out waiting for announcement items.
+    if (
+      process.env.IS_FORK === 'true' ||
+      process.env.IS_CROSS_REPO_PR === 'true'
+    ) {
       this.skip();
     }
     await withFixtures(

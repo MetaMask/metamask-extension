@@ -3,7 +3,7 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { ConfirmMetamaskState } from '../types/confirm';
 import {
-  oldestPendingConfirmationSelector,
+  firstPendingConfirmationSelector,
   pendingConfirmationsSortedSelector,
   selectDappSwapComparisonData,
 } from './confirm';
@@ -108,9 +108,9 @@ describe('confirm selectors', () => {
     });
   });
 
-  describe('oldestPendingConfirmationSelector', () => {
-    it('should return oldest pending confirmation from state', () => {
-      const result = oldestPendingConfirmationSelector(mockedState);
+  describe('firstPendingConfirmationSelector', () => {
+    it('should return first pending confirmation from state', () => {
+      const result = firstPendingConfirmationSelector(mockedState);
 
       expect(result).toStrictEqual(mockedState.metamask.pendingApprovals[3]);
     });

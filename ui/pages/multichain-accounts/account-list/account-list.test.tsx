@@ -6,6 +6,7 @@ import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useA
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import { AccountList } from './account-list';
 
 const mockUseNavigate = jest.fn();
@@ -75,10 +76,9 @@ describe('AccountList', () => {
     expect(mockUseNavigate).toHaveBeenCalledWith(-1);
   });
 
-  it('opens the add wallet modal when the add wallet button is clicked', () => {
+  it('navigates to choose wallet type page when add wallet button is clicked', () => {
     renderComponent();
 
-    // First, let's verify the button is rendered by looking for it with role
     const addWalletButton = screen.getByRole('button', {
       name: messages.addWallet.message,
     });
@@ -86,16 +86,9 @@ describe('AccountList', () => {
 
     fireEvent.click(addWalletButton);
 
-    // The modal renders with portal, so we need to look for modal content
-    expect(
-      screen.getByText(messages.importAWallet.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.importAnAccount.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.addAHardwareWallet.message),
-    ).toBeInTheDocument();
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
+    );
   });
 
   it('displays the search field with correct placeholder', () => {

@@ -11,7 +11,6 @@ import {
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
   getCaipAccountIdsFromCaip25CaveatValue,
-  KnownSessionProperties,
 } from '@metamask/chain-agnostic-permission';
 import {
   CaipAccountId,
@@ -90,7 +89,6 @@ import { AccountGroupWithInternalAccounts } from '../../../selectors/multichain-
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
 import { useOriginTrustSignals } from '../../../hooks/useOriginTrustSignals';
-import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 
 export type MultichainAccountsConnectPageRequest = {
   permissions?: PermissionsRequest;
@@ -135,7 +133,6 @@ export const MultichainAccountsConnectPage: React.FC<
     MultichainAccountsConnectPageMode.Summary,
   );
   const [activeTab, setActiveTab] = useState('accounts');
-  const { isEip1193Request } = request.metadata ?? {};
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
   const wallets = allBalances?.wallets;
@@ -161,24 +158,6 @@ export const MultichainAccountsConnectPage: React.FC<
     () => getCaip25CaveatValueFromPermissions(request.permissions),
     [request.permissions],
   );
-
-  const requestedScopes = getAllScopesFromCaip25CaveatValue(
-    requestedCaip25CaveatValue,
-  );
-
-  const isSolanaWalletStandardRequest =
-    requestedScopes.length === 1 &&
-    requestedScopes[0] === MultichainNetworks.SOLANA &&
-    requestedCaip25CaveatValue.sessionProperties[
-      KnownSessionProperties.SolanaAccountChangedNotifications
-    ];
-
-  const isTronWalletAdapterRequest =
-    requestedScopes.length === 1 &&
-    requestedScopes[0] === MultichainNetworks.TRON &&
-    requestedCaip25CaveatValue.sessionProperties[
-      KnownSessionProperties.TronAccountChangedNotifications
-    ];
 
   const requestedCaip25CaveatValueWithExistingPermissions = useMemo(
     () =>
@@ -209,6 +188,20 @@ export const MultichainAccountsConnectPage: React.FC<
         (namespace) => namespace !== KnownCaipNamespace.Wallet,
       ),
     [requestedNamespaces],
+  );
+
+  // Namespaces implied by the connecting client itself (independent of any
+  // already-granted scopes for this origin). These determine which networks
+  // we default-select when no specific chains are requested. We do NOT merge
+  // with already-granted scopes here so that, for example, an EIP-1193
+  // connect to an origin that already has Solana scopes does not silently
+  // default-select Solana networks again.
+  const requestedNamespacesFromRequestWithoutWallet = useMemo(
+    () =>
+      getAllNamespacesFromCaip25CaveatValue(requestedCaip25CaveatValue).filter(
+        (namespace) => namespace !== KnownCaipNamespace.Wallet,
+      ),
+    [requestedCaip25CaveatValue],
   );
 
   const networkConfigurationsByCaipChainId = useSelector(
@@ -273,42 +266,20 @@ export const MultichainAccountsConnectPage: React.FC<
         )
       : nonTestNetworkConfigurations.map(({ caipChainId }) => caipChainId);
 
-    // If the request is an EIP-1193 request (with no specific chains requested), a Solana wallet standard or a tronWallet library request , return the default selected network list
-    if (
-      (requestedCaipChainIds.length === 0 && isEip1193Request) ||
-      isSolanaWalletStandardRequest ||
-      isTronWalletAdapterRequest
-    ) {
-      return defaultSelectedNetworkList;
-    }
-
-    const walletRequest =
-      requestedCaipChainIds.filter(
-        (caipChainId) =>
-          parseCaipChainId(caipChainId).namespace === KnownCaipNamespace.Wallet,
-      ).length > 0;
-
-    let additionalChains: CaipChainId[] = [];
-    if (walletRequest && isEip1193Request) {
-      additionalChains = nonTestNetworkConfigurations
-        .map(({ caipChainId }) => caipChainId)
-        .filter((caipChainId) =>
-          requestedNamespacesWithoutWallet.includes(
-            parseCaipChainId(caipChainId).namespace,
-          ),
-        );
-    }
-
-    const supportedRequestedCaipChainIds = Array.from(
-      new Set([
-        ...requestedCaipChainIds.filter((requestedCaipChainId) =>
-          allNetworksList.includes(requestedCaipChainId as CaipChainId),
-        ),
-        ...additionalChains,
-      ]),
+    const supportedRequestedCaipChainIds = requestedCaipChainIds.filter(
+      (requestedCaipChainId) =>
+        allNetworksList.includes(requestedCaipChainId as CaipChainId),
     );
 
-    // if we have specifically requested chains, return the supported requested chains plus the already connected chains
+    // If the request specified supported chains, default-select those merged
+    // with previously-permitted scopes. This covers requests that arrive with
+    // explicit scopes:
+    //   - EIP-1193 wallet_requestPermissions with restrictNetworkSwitching
+    //     (single eip155 chain)
+    //   - Solana Wallet Standard (single solana scope)
+    //   - Tron Wallet Adapter (single tron scope)
+    //   - Bitcoin / BIP-122 client (single bip122 scope)
+    //   - Multichain API requests with explicit non-wallet scopes
     if (supportedRequestedCaipChainIds.length > 0) {
       return Array.from(
         new Set([
@@ -318,26 +289,45 @@ export const MultichainAccountsConnectPage: React.FC<
       );
     }
 
-    if (requestedNamespaces.length > 0) {
+    // No specific chains were requested. Default the permitted-chains set to
+    // the namespace(s) the requesting client itself represents — do NOT
+    // grant cross-namespace access by default. This covers:
+    //   - EIP-1193 connect with no specific chains
+    //     (`wallet:eip155` only, requestedNamespaces = ['eip155'])
+    //     -> EVM popular networks only
+    //   - Multichain API requesting only wallet-namespaced scopes
+    //     (e.g. `wallet:eip155 + wallet:solana`)
+    //     -> popular networks for those namespaces only
+    // Previously-granted scopes for this origin are preserved by unioning in
+    // `alreadyConnectedCaipChainIds`, so a returning user does not lose scopes
+    // from another namespace they already approved.
+    if (requestedNamespacesFromRequestWithoutWallet.length > 0) {
+      const defaultSelectedNetworkListForRequestedNamespaces =
+        defaultSelectedNetworkList.filter((caipChainId) => {
+          const { namespace } = parseCaipChainId(caipChainId);
+          return requestedNamespacesFromRequestWithoutWallet.includes(
+            namespace,
+          );
+        });
+
       return Array.from(
-        new Set(
-          defaultSelectedNetworkList.filter((caipChainId) => {
-            const { namespace } = parseCaipChainId(caipChainId);
-            return requestedNamespaces.includes(namespace);
-          }),
-        ),
+        new Set([
+          ...defaultSelectedNetworkListForRequestedNamespaces,
+          ...alreadyConnectedCaipChainIds,
+        ]),
       );
     }
 
-    return defaultSelectedNetworkList;
+    // Fallback: no scopes and no namespaces could be inferred from the
+    // request. Preserve previously-granted scopes only; do not seed any new
+    // defaults.
+    return alreadyConnectedCaipChainIds;
   }, [
     nonTestNetworkConfigurations,
     testNetworkConfigurations,
     requestedCaipChainIds,
-    isEip1193Request,
     currentlySelectedNetwork.chainId,
-    requestedNamespaces,
-    requestedNamespacesWithoutWallet,
+    requestedNamespacesFromRequestWithoutWallet,
     alreadyConnectedCaipChainIds,
   ]);
 

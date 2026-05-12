@@ -78,6 +78,13 @@
         "addEventListener": false
       }
     },
+    "@metamask/assets-controller>@metamask/assets-controllers>@tanstack/query-core": {
+      "globals": {
+        "document": false,
+        "document.visibilityState": true,
+        "addEventListener": false
+      }
+    },
     "@metamask/notification-services-controller>firebase>@firebase/messaging": {
       "globals": {
         "PushManager.getSubscription": true,
@@ -129,6 +136,14 @@
         "__REACT_DEVTOOLS_GLOBAL_HOOK__": false,
         "document": false,
         "document.createElement": true
+      }
+    },
+    "@segment/analytics-node": {
+      "globals": {
+        "EdgeRuntime": false,
+        "WebSocketPair": false,
+        "WorkerGlobalScope": false,
+        "importScripts": false
       }
     }
   }

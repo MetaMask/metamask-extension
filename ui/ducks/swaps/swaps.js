@@ -58,13 +58,15 @@ import {
   getTokenExchangeRates,
   getUSDConversionRate,
   getSwapsDefaultToken,
-  isHardwareWallet,
-  getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
-  getSelectedInternalAccount,
   getSelectedNetwork,
   getHDEntropyIndex,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import {
+  isHardwareWallet,
+  getHardwareWalletType,
+} from '../../../shared/lib/selectors/keyring';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsFeatureFlagsForChain,
@@ -778,11 +780,8 @@ export const fetchQuotesAndSetQuoteState = (
     const stablecoinsForChain = StablecoinsByChainId[chainId];
     const isStableTokenPair = Boolean(
       stablecoinsForChain &&
-        checkAddressInSetCaseInsensitive(
-          stablecoinsForChain,
-          fromTokenAddress,
-        ) &&
-        checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
+      checkAddressInSetCaseInsensitive(stablecoinsForChain, fromTokenAddress) &&
+      checkAddressInSetCaseInsensitive(stablecoinsForChain, toTokenAddress),
     );
 
     const slippageForFetch = isStableTokenPair ? Slippage.stable : maxSlippage;

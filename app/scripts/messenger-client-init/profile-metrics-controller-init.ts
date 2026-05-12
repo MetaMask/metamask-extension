@@ -22,14 +22,9 @@ export const ProfileMetricsControllerInit: MessengerClientInitFunction<
   ProfileMetricsController,
   ProfileMetricsControllerMessenger
 > = ({ controllerMessenger, persistedState, getMessengerClient }) => {
-  const remoteFeatureFlagController = getMessengerClient(
-    'RemoteFeatureFlagController',
-  );
   const metaMetricsController = getMessengerClient('MetaMetricsController');
   const appStateController = getMessengerClient('AppStateController');
   const assertUserOptedIn = () =>
-    remoteFeatureFlagController.state.remoteFeatureFlags.extensionUxPna25 ===
-      true &&
     appStateController.state.pna25Acknowledged === true &&
     metaMetricsController.state.participateInMetaMetrics === true;
 

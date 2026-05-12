@@ -98,11 +98,13 @@ export const ConfirmContextProvider: React.FC<{
   );
 
   return (
-    <ConfirmContext.Provider value={value}>{children}</ConfirmContext.Provider>
+    <ConfirmContext.Provider value={value as ConfirmContextType}>
+      {children}
+    </ConfirmContext.Provider>
   );
 };
 
-export const useConfirmContext = <CurrentConfirmation = Confirmation,>() => {
+export const useConfirmContext = <CurrentConfirmation = Confirmation>() => {
   const context = useContext(ConfirmContext);
   if (!context) {
     throw new Error(

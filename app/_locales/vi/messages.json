@@ -184,9 +184,6 @@
   "addACustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
   },
-  "addAHardwareWallet": {
-    "message": "Thêm ví cứng"
-  },
   "addANetwork": {
     "message": "Thêm mạng"
   },
@@ -195,6 +192,9 @@
   },
   "addAUrl": {
     "message": "Thêm URL"
+  },
+  "addAWallet": {
+    "message": "Thêm ví"
   },
   "addAccount": {
     "message": "Thêm tài khoản"
@@ -269,9 +269,6 @@
   },
   "addHardwareWalletLabel": {
     "message": "Ví cứng"
-  },
-  "addIPFSGateway": {
-    "message": "Thêm cổng IPFS ưa thích của bạn"
   },
   "addMemo": {
     "message": "Thêm bản ghi nhớ"
@@ -1089,6 +1086,12 @@
   "bridgeLowestCost": {
     "message": "Chi phí thấp nhất"
   },
+  "bridgeMalicious": {
+    "message": "Độc hại"
+  },
+  "bridgeMaliciousTokenTitle": {
+    "message": "Token độc hại"
+  },
   "bridgeMarketClosedAction": {
     "message": "Thị trường đã đóng cửa"
   },
@@ -1109,6 +1112,9 @@
   },
   "bridgeNoMMFee": {
     "message": "Không có phí MM"
+  },
+  "bridgeNoPriceInfoTitle": {
+    "message": "Không có thông tin giá"
   },
   "bridgePoints": {
     "message": "Điểm ước tính",
@@ -1205,6 +1211,102 @@
   "bridgeReceiveLoading": {
     "message": "Đang nhận trên chuỗi đích"
   },
+  "bridgeSecurityDataKnownAirdrop": {
+    "message": "Tặng thưởng đáng ngờ"
+  },
+  "bridgeSecurityDataKnownConcentratedSupply": {
+    "message": "Nguồn cung tập trung"
+  },
+  "bridgeSecurityDataKnownDynamicAnalysis": {
+    "message": "Hành vi đáng ngờ"
+  },
+  "bridgeSecurityDataKnownFakeTradeMakerCount": {
+    "message": "Số lượng nhà giao dịch bị thổi phồng"
+  },
+  "bridgeSecurityDataKnownFakeVolume": {
+    "message": "Khối lượng giao dịch giả"
+  },
+  "bridgeSecurityDataKnownHeavilySniped": {
+    "message": "Hoạt động bot dày đặc"
+  },
+  "bridgeSecurityDataKnownHiddenSupplyByKeyHolder": {
+    "message": "Nguồn cung chưa được công bố"
+  },
+  "bridgeSecurityDataKnownHighBuyFee": {
+    "message": "Phí mua cao"
+  },
+  "bridgeSecurityDataKnownHighSellFee": {
+    "message": "Phí bán cao"
+  },
+  "bridgeSecurityDataKnownHighTransferFee": {
+    "message": "Phí chuyển khoản cao"
+  },
+  "bridgeSecurityDataKnownHoneypot": {
+    "message": "Rủi ro bẫy lừa đảo"
+  },
+  "bridgeSecurityDataKnownImpersonator": {
+    "message": "Mạo danh"
+  },
+  "bridgeSecurityDataKnownImpersonatorAsset": {
+    "message": "Mạo danh tài sản nhạy cảm"
+  },
+  "bridgeSecurityDataKnownImpersonatorHigh": {
+    "message": "Có khả năng mạo danh"
+  },
+  "bridgeSecurityDataKnownImpersonatorMedium": {
+    "message": "Có thể là mạo danh"
+  },
+  "bridgeSecurityDataKnownInappropriateContent": {
+    "message": "Nội dung không phù hợp"
+  },
+  "bridgeSecurityDataKnownInorganicVoume": {
+    "message": "Khối lượng giả mạo"
+  },
+  "bridgeSecurityDataKnownInsufficientLiquidity": {
+    "message": "Thanh khoản bị khóa thấp"
+  },
+  "bridgeSecurityDataKnownLowReputation": {
+    "message": "Người tạo có uy tín thấp"
+  },
+  "bridgeSecurityDataKnownMalicious": {
+    "message": "Đã biết là độc hại"
+  },
+  "bridgeSecurityDataKnownMetadata": {
+    "message": "Metadata đáng ngờ"
+  },
+  "bridgeSecurityDataKnownPostDump": {
+    "message": "Có khả năng thao túng giá"
+  },
+  "bridgeSecurityDataKnownRugpull": {
+    "message": "Rủi ro rút vốn bất ngờ"
+  },
+  "bridgeSecurityDataKnownSanctionedCreator": {
+    "message": "Người tạo bị trừng phạt"
+  },
+  "bridgeSecurityDataKnownSimilarMaliciousContract": {
+    "message": "Giống hợp đồng độc hại"
+  },
+  "bridgeSecurityDataKnownSnipeMint": {
+    "message": "Hoạt động của bot khi ra mắt"
+  },
+  "bridgeSecurityDataKnownSpamText": {
+    "message": "Tin nhắn rác"
+  },
+  "bridgeSecurityDataKnownStaticCodeSign": {
+    "message": "Mã đáng ngờ"
+  },
+  "bridgeSecurityDataKnownTokenBackdoor": {
+    "message": "Lỗ hổng token"
+  },
+  "bridgeSecurityDataKnownUnsellable": {
+    "message": "Token không thể bán"
+  },
+  "bridgeSecurityDataKnownUnstablePrice": {
+    "message": "Giá không ổn định"
+  },
+  "bridgeSecurityDataKnownWashTrading": {
+    "message": "Giao dịch giả tạo"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Chọn tài khoản đích"
   },
@@ -1260,6 +1362,12 @@
   "bridgeStepActionSwapPending": {
     "message": "Đang hoán đổi $1 thành $2",
     "description": "$1 is the amount of the source asset, $2 is the amount of the destination asset"
+  },
+  "bridgeSuspicious": {
+    "message": "Đáng ngờ"
+  },
+  "bridgeSuspiciousTokenTitle": {
+    "message": "Token đáng ngờ"
   },
   "bridgeTo": {
     "message": "Cầu nối đến"
@@ -1434,9 +1542,6 @@
     "message": "Khi bạn sử dụng các chế độ cài đặt và cấu hình mặc định của chúng tôi, chúng tôi sử dụng Infura làm nhà cung cấp gọi hàm từ xa (RPC) mặc định để cung cấp quyền truy cập dữ liệu Ethereum đáng tin cậy và riêng tư nhất có thể. Trong một số trường hợp giới hạn, chúng tôi có thể sử dụng các nhà cung cấp RPC khác nhằm mang đến trải nghiệm tốt nhất cho người dùng. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ nhận được địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Để tìm hiểu thêm về cách Infura xử lý dữ liệu đối với các tài khoản EVM, hãy đọc $1, và đối với các tài khoản Solana, hãy đọc $2.",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "nhấp vào đây"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "Bạn cần sử dụng MetaMask trên Google Chrome để kết nối với Ví cứng của bạn."
   },
@@ -1448,9 +1553,6 @@
   },
   "clearActivity": {
     "message": "Xóa dữ liệu hoạt động và số nonce"
-  },
-  "clearActivityButton": {
-    "message": "Xóa dữ liệu thẻ hoạt động"
   },
   "clearActivityDescription": {
     "message": "Đặt lại số nonce của tài khoản và xóa dữ liệu trong tab hoạt động trong ví của bạn. Chỉ có tài khoản và mạng hiện tại sẽ bị ảnh hưởng. Số dư và các giao dịch đến của bạn sẽ không thay đổi."
@@ -1732,6 +1834,9 @@
   },
   "connect": {
     "message": "Kết nối"
+  },
+  "connectAHardwareWallet": {
+    "message": "Kết nối ví cứng"
   },
   "connectAccounts": {
     "message": "Kết nối tài khoản"
@@ -2105,12 +2210,6 @@
   },
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "Nhận thông tin cập nhật về sản phẩm, lời khuyên và tin tức - bao gồm qua email. Chúng tôi có thể sử dụng cách tương tác của bạn để cải thiện nội dung chia sẻ."
-  },
-  "dataCollectionWarningPopoverButton": {
-    "message": "Đồng ý"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "Bạn đã tắt tùy chọn thu thập dữ liệu cho mục đích tiếp thị của chúng tôi. Thao tác này chỉ áp dụng cho thiết bị này. Nếu bạn sử dụng MetaMask trên các thiết bị khác, nhớ chọn không tham gia trên các thiết bị đó."
   },
   "dataUnavailable": {
     "message": "dữ liệu không khả dụng"
@@ -2701,10 +2800,6 @@
     "message": "Mã: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Chi tiết lỗi",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Lỗi khi lấy danh sách chuỗi an toàn, vui lòng tiếp tục một cách thận trọng."
   },
@@ -3011,6 +3106,9 @@
   "gasUsed": {
     "message": "Gas đã dùng"
   },
+  "gatorNoJustificationProvided": {
+    "message": "Không có lý do nào được đưa ra cho quyền này"
+  },
   "gatorPermissionAnnualFrequency": {
     "message": "Hằng năm",
     "description": "Time period for annual recurring permissions redemption"
@@ -3082,6 +3180,14 @@
   "gatorPermissionsStartDate": {
     "message": "Ngày bắt đầu",
     "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStatusExpired": {
+    "message": "Đã hết hạn",
+    "description": "Tag label for a gator permission that has expired"
+  },
+  "gatorPermissionsStatusRevoked": {
+    "message": "Đã bị thu hồi",
+    "description": "Tag label for a gator permission that has been revoked"
   },
   "gatorPermissionsStreamRate": {
     "message": "Tốc độ thanh toán liên tục",
@@ -3362,6 +3468,9 @@
   "importAWallet": {
     "message": "Nhập ví"
   },
+  "importAWalletDescription": {
+    "message": "Sử dụng cụm từ khôi phục có 12, 18 hoặc 24 từ"
+  },
   "importAccountError": {
     "message": "Lỗi khi nhập tài khoản."
   },
@@ -3392,6 +3501,9 @@
   },
   "importAnAccount": {
     "message": "Nhập tài khoản"
+  },
+  "importAnAccountDescription": {
+    "message": "Thông qua khóa riêng tư"
   },
   "importNFT": {
     "message": "Nhập NFT"
@@ -3781,9 +3893,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Đang khóa MetaMask..."
   },
-  "lockTimeInvalid": {
-    "message": "Thời gian khóa phải là một số từ 0 đến 10080"
-  },
   "logOut": {
     "message": "Đăng xuất"
   },
@@ -4093,6 +4202,102 @@
     "message": "$1 muốn sử dụng $2 Snap",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdAssetBonusAccruing": {
+    "message": "Đang tích lũy khoản thưởng tiếp theo",
+    "description": "Disabled claim button label shown when user holds mUSD but has no claimable bonus yet"
+  },
+  "musdAssetBonusClaimAmount": {
+    "message": "Nhận thưởng $1",
+    "description": "Label for the claim button in the mUSD asset details Your bonus section, where $1 is the formatted fiat amount (e.g., $10.27)"
+  },
+  "musdAssetBonusEstimatedAnnual": {
+    "message": "Thưởng hằng năm ước tính",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusInfoAria": {
+    "message": "Thông tin thưởng của bạn",
+    "description": "Accessible name for the info icon that opens the Your bonus tooltip"
+  },
+  "musdAssetBonusInfoEstimatedAnnual": {
+    "message": "Dự đoán số tiền bạn sẽ nhận được trong một năm dựa trên số dư và lãi suất hiện tại. Lãi suất có thể thay đổi.",
+    "description": "Explanation for Estimated annual bonus in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLearnMore": {
+    "message": "Tìm hiểu thêm.",
+    "description": "Link label at the bottom of the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoLifetimeClaimed": {
+    "message": "Tổng khoản thưởng bạn đã nhận được kể từ khi bắt đầu.",
+    "description": "Explanation for Lifetime bonus claimed in the Your bonus info tooltip"
+  },
+  "musdAssetBonusInfoYourBonus": {
+    "message": "$1% khoản thưởng theo năm mà bạn nhận được chỉ bằng cách nắm giữ mUSD. Bạn có thể nhận thưởng hằng ngày trên Linea. $2",
+    "description": "$1 is the APY %, $2 is the 'Terms apply.' link"
+  },
+  "musdAssetBonusLifetimeClaimed": {
+    "message": "Thưởng trọn đời đã nhận được",
+    "description": "Label in the mUSD asset details Your bonus section"
+  },
+  "musdAssetBonusNoAccruing": {
+    "message": "Không có thưởng tích lũy",
+    "description": "Disabled claim button label shown when user holds no mUSD and has no bonus to claim"
+  },
+  "musdAssetBonusRate": {
+    "message": "Thưởng $1%",
+    "description": "Tag next to Your bonus on the mUSD asset details page, where $1 is the bonus APY percentage (e.g., 3)"
+  },
+  "musdAssetBonusTitle": {
+    "message": "Thưởng của bạn",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetConvertBenefitDailyBonus": {
+    "message": "Thưởng hằng ngày",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitDollarBacked": {
+    "message": "Được đảm bảo bằng đồng đô la Mỹ",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoLockups": {
+    "message": "Không bị khóa vốn",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertBenefitNoMetaMaskFee": {
+    "message": "Không có phí MetaMask",
+    "description": "Benefit tag on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionHighlight": {
+    "message": "$1% thưởng theo năm",
+    "description": "Shown in Figma accent lime (#baf24a) inside the mUSD asset details convert section description. $1 is the APY percentage."
+  },
+  "musdAssetConvertDescriptionLead": {
+    "message": "Nhận ",
+    "description": "Text before the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertDescriptionTail": {
+    "message": " bằng cách chuyển đổi USDC, USDT và DAI sang mUSD.",
+    "description": "Text after the green APY phrase on the mUSD asset details convert section"
+  },
+  "musdAssetConvertLearnMore": {
+    "message": "Tìm hiểu thêm",
+    "description": "Button to open the mUSD support article from the asset details convert section"
+  },
+  "musdAssetConvertTitle": {
+    "message": "Chuyển đổi đồng ổn định của bạn",
+    "description": "Title of the convert section on the mUSD asset details page"
+  },
+  "musdAssetPositionBalance": {
+    "message": "Số dư",
+    "description": "Label in the mUSD asset details Your position section"
+  },
+  "musdAssetPositionTitle": {
+    "message": "Vị thế của bạn",
+    "description": "Section title on the mUSD asset details page"
+  },
+  "musdAssetPositionValue": {
+    "message": "Giá trị",
+    "description": "Label in the mUSD asset details Your position section (fiat value)"
+  },
   "musdBonusExplanation": {
     "message": "Chuyển đổi đồng ổn định của bạn sang mUSD và nhận thưởng quy đổi theo năm lên đến $1% mà bạn có thể nhận hằng ngày. $2",
     "description": "$1 is the bonus APY percentage, $2 is the 'Terms apply' link"
@@ -4196,6 +4401,10 @@
   "musdMetaMaskUsd": {
     "message": "MetaMask USD",
     "description": "Product name shown as the title line on the home token list mUSD Buy/Get CTA"
+  },
+  "musdSymbol": {
+    "message": "mUSD",
+    "description": "Token ticker for MetaMask USD (displayed next to balance on the mUSD asset details page)"
   },
   "musdTermsApply": {
     "message": "Áp dụng điều khoản."
@@ -4760,6 +4969,14 @@
     "message": "Xem trên $1",
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
+  "notificationTransactionWithoutNonceFailedMessage": {
+    "message": "Giao dịch không thành công! $1",
+    "description": "Content of the browser notification that appears when a EIP-7702 transaction fails"
+  },
+  "notificationTransactionWithoutNonceSuccessMessage": {
+    "message": "Giao dịch đã được xác nhận!",
+    "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
+  },
   "notifications": {
     "message": "Thông báo"
   },
@@ -4883,9 +5100,6 @@
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Điều khoản sử dụng"
-  },
-  "onboardingMetametricCheckboxDescriptionOne": {
-    "message": "Chúng tôi sẽ thu thập dữ liệu sử dụng sản phẩm cơ bản như vị trí chung, lượt nhấp và lượt xem. Chúng tôi không lưu trữ thông tin nào khác."
   },
   "onboardingMetametricCheckboxDescriptionOneUpdated": {
     "message": "Chúng tôi sẽ thu thập dữ liệu sử dụng sản phẩm cơ bản. Chúng tôi có thể liên kết thông tin này với dữ liệu trên chuỗi."
@@ -5423,7 +5637,7 @@
     "description": "is the available balance amount"
   },
   "perpsAvailableBalance": {
-    "message": "Số dư Hợp đồng vĩnh cửu khả dụng: "
+    "message": "Số dư khả dụng: "
   },
   "perpsAvailableToAdd": {
     "message": "Có thể cộng"
@@ -5450,9 +5664,6 @@
   "perpsCancelOrder": {
     "message": "Hủy lệnh"
   },
-  "perpsCandleIntervals": {
-    "message": "Khoảng nến"
-  },
   "perpsCandlePeriodDays": {
     "message": "Ngày"
   },
@@ -5464,9 +5675,6 @@
   },
   "perpsCloseAll": {
     "message": "Đóng tất cả"
-  },
-  "perpsCloseAmount": {
-    "message": "Số lượng đóng"
   },
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
@@ -5491,6 +5699,12 @@
   },
   "perpsContactSupport": {
     "message": "Liên hệ bộ phận hỗ trợ"
+  },
+  "perpsCrossMarginNotSupportedDescription": {
+    "message": "MetaMask Hợp đồng vĩnh cửu chỉ hỗ trợ giao dịch với ký quỹ riêng biệt. Bạn cần đóng vị thế ký quỹ chéo trước khi có thể giao dịch trên MetaMask."
+  },
+  "perpsCrossMarginNotSupportedTitle": {
+    "message": "Không hỗ trợ ký quỹ chéo"
   },
   "perpsDateToday": {
     "message": "Hôm nay"
@@ -5773,10 +5987,6 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Đảo vị thế bán khống của bạn thành mua khống"
   },
-  "perpsSaveChanges": {
-    "message": "Lưu thay đổi",
-    "description": "Button text for saving TP/SL changes"
-  },
   "perpsSearchMarkets": {
     "message": "Tìm kiếm thị trường"
   },
@@ -5987,6 +6197,9 @@
   "perpsTrades": {
     "message": "Giao dịch"
   },
+  "perpsTriggerPrice": {
+    "message": "Giá kích hoạt"
+  },
   "perpsTutorialChooseLeverageDescription": {
     "message": "Đòn bẩy sẽ khuếch đại cả lợi nhuận và thua lỗ. Với đòn bẩy 40x, biến động giá 1% tương đương với lợi nhuận hoặc thua lỗ 40% trên số tiền ký quỹ của bạn."
   },
@@ -6047,6 +6260,10 @@
   "perpsWithdraw": {
     "message": "Rút tiền"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "Rút tiền hợp đồng vĩnh cửu",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "Thời gian ước tính"
   },
@@ -6094,6 +6311,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "Yêu cầu rút tiền đã được gửi"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMask sẽ hoán đổi sang token mà bạn mong muốn. Không áp dụng phí MetaMask khi bạn hoán đổi sang mUSD.",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "Bạn nhận được"
@@ -6219,6 +6440,10 @@
   },
   "provide": {
     "message": "Cung cấp"
+  },
+  "providerFee": {
+    "message": "Phí nhà cung cấp",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "Địa chỉ công khai"
@@ -6426,8 +6651,16 @@
   "receiveCrypto": {
     "message": "Nhận tiền mã hóa"
   },
+  "receiveToken": {
+    "message": "Token nhận được",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "Đã nhận"
+  },
+  "receivedTotal": {
+    "message": "Tổng số lượng nhận được",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "Địa chỉ nhận",
@@ -6935,12 +7168,6 @@
   "securityChangePassword": {
     "message": "Thay đổi mật khẩu"
   },
-  "securityChangePasswordDescription": {
-    "message": "Chọn một mật khẩu mạnh để mở khóa ứng dụng MetaMask trên thiết bị của bạn. Nếu bạn mất mật khẩu này, bạn sẽ cần Cụm từ khôi phục bí mật để nhập lại ví."
-  },
-  "securityChangePasswordTitle": {
-    "message": "Mật khẩu"
-  },
   "securityChangePasswordToastError": {
     "message": "Không thể thay đổi mật khẩu. Vui lòng thử lại."
   },
@@ -6952,16 +7179,6 @@
   },
   "securityDescription": {
     "message": "Giảm khả năng tham gia các mạng không an toàn và bảo vệ tài khoản của bạn"
-  },
-  "securityLoginWithSocial": {
-    "message": "Đăng nhập bằng $1",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "Cụm từ khôi phục bí mật đã được sao lưu"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "Sao lưu Cụm từ khôi phục bí mật"
   },
   "securityMessageLinkForNetworks": {
     "message": "lừa đảo mạng và rủi ro bảo mật"
@@ -6984,14 +7201,8 @@
     "message": "KHÔI PHỤC $1",
     "description": "The $1 is the text 'Google' or 'Apple'"
   },
-  "securitySrpDescription": {
-    "message": "Sao lưu Cụm từ khôi phục bí mật để bạn không bao giờ mất quyền truy cập vào ví. Hãy chắc chắn lưu trữ cụm từ này ở nơi an toàn mà chỉ bạn mới có thể truy cập và không bị quên."
-  },
   "securitySrpLabel": {
     "message": "CỤM TỪ KHÔI PHỤC BÍ MẬT"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "Quản lý phương thức khôi phục"
   },
   "seeAllPermissions": {
     "message": "Xem tất cả quyền",
@@ -7949,20 +8160,11 @@
   "smartAccount": {
     "message": "Tài khoản thông minh"
   },
-  "smartAccountDappRequestsDescription": {
-    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
-  },
-  "smartAccountDappRequestsTitle": {
-    "message": "Yêu cầu tài khoản thông minh từ dapp"
-  },
   "smartAccountLabel": {
     "message": "Tài khoản thông minh"
   },
   "smartAccountRequestsFromDapps": {
     "message": "Yêu cầu tài khoản thông minh từ dapp"
-  },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. Điều này sẽ không ảnh hưởng đến các tài khoản đã là tài khoản thông minh."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Cùng địa chỉ. Tính năng thông minh hơn."
@@ -7975,9 +8177,6 @@
   },
   "smartContractAddressWarning": {
     "message": "Địa chỉ người nhận có thể không hỗ trợ chuyển khoản token trực tiếp, điều này có thể dẫn đến mất tiền. Chỉ tiếp tục nếu bạn chắc chắn hợp đồng này có thể nhận khoản chuyển của bạn."
-  },
-  "smartContracts": {
-    "message": "Hợp đồng thông minh"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Không có đủ tiền để thực hiện hoán đổi thông minh."
@@ -8493,9 +8692,6 @@
     "message": "Vẫn đang kết nối với $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Vẫn nhận được thông báo này?"
-  },
   "storageErrorAction": {
     "message": "Sao lưu Cụm từ khôi phục bí mật"
   },
@@ -8599,12 +8795,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Ngôn ngữ được hỗ trợ",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Tham gia khảo sát của chúng tôi"
-  },
-  "surveyTitle": {
-    "message": "Định hình tương lai của MetaMask"
   },
   "swap": {
     "message": "Hoán đổi"
@@ -9001,9 +9191,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "Đã thêm token."
-  },
-  "tokenAutoDetection": {
-    "message": "Tự động phát hiện token"
   },
   "tokenContractAddress": {
     "message": "Địa chỉ hợp đồng của token"
@@ -9598,6 +9785,10 @@
   "willApproveAmountForSwapping": {
     "message": "Phê duyệt token cho hoán đổi."
   },
+  "withdrawTo": {
+    "message": "Nhận",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "Đang rút tiền"
   },
@@ -9630,6 +9821,10 @@
   "youSent": {
     "message": "Bạn đã gửi",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "Bạn sẽ nhận được",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "Hoạt động của bạn"

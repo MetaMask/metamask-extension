@@ -30,11 +30,13 @@ function assertScuttling() {
 function assertLockdown() {
   if (
     !(
-      Object.isFrozen(window.Object) &&
-      Object.isFrozen(window.Object.prototype) &&
-      Object.isFrozen(window.Function) &&
-      Object.isFrozen(window.Function.prototype) &&
-      Function.prototype.constructor !== window.Function // this is proof that repairIntrinsics part of lockdown worked
+      (
+        Object.isFrozen(window.Object) &&
+        Object.isFrozen(window.Object.prototype) &&
+        Object.isFrozen(window.Function) &&
+        Object.isFrozen(window.Function.prototype) &&
+        Function.prototype.constructor !== window.Function
+      ) // this is proof that repairIntrinsics part of lockdown worked
     )
   ) {
     throw Error('Lockdown is not in effect');

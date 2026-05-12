@@ -10,20 +10,18 @@ import {
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
 } from '../../constants/smartTransactions';
 import { getBooleanFeatureFlag } from '../remote-feature-flag-utils';
+import { isProduction } from '../environment';
+import { accountSupportsSmartTx } from './keyring';
 import {
-  accountSupportsSmartTx,
-  getPreferences,
+  getCurrentChainId,
   selectDefaultRpcEndpointByChainId,
-  // TODO: Remove restricted import
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+  type NetworkState,
+} from './networks';
+import { getPreferences } from './preferences';
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
-  // eslint-disable-next-line import-x/no-restricted-paths
-} from '../../../ui/selectors/remote-feature-flags';
-import { isProduction } from '../environment';
-import { getCurrentChainId, type NetworkState } from './networks';
+} from './remote-feature-flags';
 import { createDeepEqualSelector } from './selector-creators';
 
 export type SmartTransactionsMetaMaskState = {
@@ -127,7 +125,6 @@ export const getSmartTransactionsMigrationAppliedInternal = createSelector(
  * @returns true if the user has explicitly opted in, false if they have opted out,
  * or null if they have not explicitly opted in or out.
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsOptInStatusForMetrics = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => optInStatus,
@@ -140,7 +137,6 @@ export const getSmartTransactionsOptInStatusForMetrics = createSelector(
  * @param state
  * @returns
  */
-// @ts-expect-error TODO: Fix types for `getSmartTransactionsOptInStatusInternal` once `getPreferences is converted to TypeScript
 export const getSmartTransactionsPreferenceEnabled = createSelector(
   getSmartTransactionsOptInStatusInternal,
   (optInStatus: boolean): boolean => {
@@ -197,6 +193,7 @@ export const getSmartTransactionsEnabled = (
 ): boolean => {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const effectiveChainId = (chainId || getCurrentChainId(state)) as Hex;
+  // @ts-expect-error Smart transaction selector types does not match controller state
   const supportedAccount = accountSupportsSmartTx(state);
   const featureFlags = getSmartTransactionsFeatureFlagsForChain(
     state,
@@ -209,10 +206,10 @@ export const getSmartTransactionsEnabled = (
     ];
   return Boolean(
     getChainSupportsSmartTransactions(state, chainId) &&
-      getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
-      supportedAccount &&
-      smartTransactionsFeatureFlagEnabled &&
-      smartTransactionsLiveness,
+    getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
+    supportedAccount &&
+    smartTransactionsFeatureFlagEnabled &&
+    smartTransactionsLiveness,
   );
 };
 
