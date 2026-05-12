@@ -421,6 +421,7 @@ class AssetListPage {
       await this.driver.waitForSelector({
         xpath: `${rowXpath}//input[contains(@class,'mm-checkbox__input--checked')]`,
       });
+      await this.driver.delay(5000);
     }
     await this.driver.clickElement(this.importTokensNextButton);
     await this.waitUntilConfirmTokenCount(tokenNames.length);
