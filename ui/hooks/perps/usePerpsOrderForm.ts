@@ -62,8 +62,8 @@ export type UsePerpsOrderFormOptions = {
   existingPosition?: ExistingPositionData;
   /**
    * Tradeable balance for the active account (used to compute balancePercent).
-   * For HyperLiquid unified accounts this should be `availableToTradeBalance`
-   * (withdrawable + unreserved spot USDC), falling back to `availableBalance`.
+   * For HyperLiquid unified accounts this should be `withdrawableBalance`
+   * (withdrawable + unreserved spot USDC), falling back to `spendableBalance`.
    * See `getTradeableBalance` helper.
    */
   availableBalance?: number;

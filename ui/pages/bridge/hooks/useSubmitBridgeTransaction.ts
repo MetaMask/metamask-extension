@@ -7,8 +7,8 @@ import {
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
-import { isHardwareWallet } from '../../../../shared/lib/selectors';
 import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
@@ -20,6 +20,7 @@ import {
   getFromAccount,
   getFromTokenBalanceInUsd,
   getIsStxEnabled,
+  getToToken,
   getWarningLabels,
   type BridgeAppState,
 } from '../../../ducks/bridge/selectors';
@@ -73,6 +74,7 @@ export default function useSubmitBridgeTransaction() {
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
   const fromAccount = useSelector(getFromAccount);
+  const toToken = useSelector(getToToken);
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(
     (state) => getWarningLabels(state as BridgeAppState, Date.now()),
@@ -131,6 +133,7 @@ export default function useSubmitBridgeTransaction() {
           submitBridgeIntent({
             quoteResponse,
             accountAddress: fromAccount.address,
+            tokenSecurityTypeDestination: toToken?.securityData?.type ?? null,
           }),
         );
       } else {
@@ -146,6 +149,7 @@ export default function useSubmitBridgeTransaction() {
               recommendedQuote,
               fromTokenBalanceInUsd,
             ),
+            toToken?.securityData?.type ?? null,
           ),
         );
       }

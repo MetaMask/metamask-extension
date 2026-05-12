@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { useNetworkFormState } from '../../../pages/settings/networks-tab/networks-form/networks-form-state';
+import { useNetworkFormState } from '../networks-form/networks-form-state';
 import {
   getEditedNetwork,
   getMultichainNetworkConfigurationsByChainId,

@@ -55,6 +55,7 @@ import {
   createMockInternalAccount,
   createMockInternalAccounts,
 } from '../../../test/data/mock-accounts';
+import type { Preferences } from '../../../shared/types/preferences';
 import {
   MetaMetricsController,
   AllowedActions,
@@ -63,7 +64,6 @@ import {
 } from './metametrics-controller';
 import {
   getDefaultPreferencesControllerState,
-  Preferences,
   PreferencesControllerState,
 } from './preferences-controller';
 

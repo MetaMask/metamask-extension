@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as URI from 'uri-js';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useNetworkFormState } from '../settings/networks-tab/networks-form/networks-form-state';
+import { useNetworkFormState } from '../../components/multichain/networks-form/networks-form-state';
 import { setActiveNetwork, setEditedNetwork } from '../../store/actions';
 import AddBlockExplorerModal from '../../components/multichain/network-list-menu/add-block-explorer-modal/add-block-explorer-modal';
 import { SelectRpcUrlModal } from '../../components/multichain/network-list-menu/select-rpc-url-modal/select-rpc-url-modal';
@@ -32,7 +32,7 @@ import {
   getSelectedMultichainNetworkChainId,
 } from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
-import { SettingsV2Header } from '../settings-v2/shared/settings-v2-header';
+import { SettingsHeader } from '../settings/shared/settings-header';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import { NetworksPageList } from './networks-page-list';
 
@@ -264,7 +264,7 @@ export const NetworksPage = () => {
     <Box className="flex h-full min-h-0 w-full flex-col overflow-hidden bg-background-default">
       {view === '' ? (
         <>
-          <SettingsV2Header
+          <SettingsHeader
             title={t('networks')}
             onClose={handleRootBack}
             isSearchOpen={isSearchOpen}

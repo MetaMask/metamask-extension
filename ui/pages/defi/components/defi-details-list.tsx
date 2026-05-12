@@ -10,9 +10,9 @@ import {
 import { Box, Text } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TokenCell from '../../../components/app/assets/token-cell';
-import { getPreferences } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { TokenWithFiatAmount } from '../../../components/app/assets/types';
-import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
+import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { getTokenAvatarUrl } from '../../../components/app/assets/util/getTokenAvatarUrl';
 
 export const PositionTypeLabels = {

@@ -24,13 +24,15 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  getCurrentKeyring,
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
+  getIsPasskeyFeatureAvailable,
   getIsSocialLoginFlow,
 } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ENVIRONMENT } from '../../../../development/build/constants';
@@ -97,6 +99,7 @@ export default function OnboardingWelcome() {
   const isParticipateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
   );
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const [newAccountCreationInProgress, setNewAccountCreationInProgress] =
     useState(false);
 
@@ -148,6 +151,8 @@ export default function OnboardingWelcome() {
         );
       } else if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
+      } else if (isPasskeyFeatureAvailable) {
+        navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
       } else {
         navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
       }
@@ -178,6 +183,7 @@ export default function OnboardingWelcome() {
     isFireFox,
     isWalletResetInProgress,
     isSocialLoginFLow,
+    isPasskeyFeatureAvailable,
   ]);
 
   const {
@@ -495,7 +501,7 @@ export default function OnboardingWelcome() {
 
           {loginError !== null && (
             <LoginErrorModal
-              onDone={() => setLoginError(null)}
+              onClose={() => setLoginError(null)}
               loginError={loginError}
             />
           )}
