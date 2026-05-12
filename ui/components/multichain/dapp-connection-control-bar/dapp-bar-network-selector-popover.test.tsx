@@ -64,9 +64,13 @@ jest.mock('../../../selectors', () => ({
   getOriginOfCurrentTab: (state: unknown) => mockGetOriginOfCurrentTab(state),
   getPermittedEVMChainsForSelectedTab: (state: unknown, activeTab: unknown) =>
     mockGetPermittedEVMChainsForSelectedTab(state, activeTab),
-  getPreferences: (state: unknown) => mockGetPreferences(state),
   getShowTestNetworks: (state: unknown) => mockGetShowTestNetworks(state),
   getAllChainsToPoll: (state: unknown) => mockGetAllChainsToPoll(state),
+}));
+
+jest.mock('../../../../shared/lib/selectors/preferences', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/preferences'),
+  getPreferences: (state: unknown) => mockGetPreferences(state),
 }));
 
 const mockGetDappActiveNetwork = jest.fn();
