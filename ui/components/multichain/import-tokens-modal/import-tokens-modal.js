@@ -500,7 +500,7 @@ export const ImportTokensModal = ({ onClose }) => {
 
   useEffect(() => {
     setSelectedTokens({});
-  }, [networkFilter]);
+  }, [selectedNetwork]);
 
   const handleCustomSymbolChange = useCallback(
     (value) => {
