@@ -295,6 +295,24 @@
     },
     "approvalFlows": [],
     "assetExchangeRates": {},
+    "assetPreferences": {},
+    "assetsBalance": {
+      "*": {
+        "*": {
+          "amount": "string"
+        }
+      }
+    },
+    "assetsInfo": {
+      "*": {
+        "type": "string",
+        "name": "string",
+        "symbol": "string",
+        "decimals": "number",
+        "aggregators": [],
+        "image": "string"
+      }
+    },
     "assetsMetadata": {
       "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
         "name": "string",
@@ -453,6 +471,19 @@
         ]
       }
     },
+    "assetsPrice": {
+      "*": {
+        "id": "string",
+        "price": "number",
+        "assetPriceType": "string",
+        "usdPrice": "number",
+        "marketCap": "number",
+        "totalVolume": "number",
+        "dilutedMarketCap": "number",
+        "pricePercentChange1d": "number",
+        "lastUpdated": "number"
+      }
+    },
     "balances": {
       "<solana-account-1>": {
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
@@ -605,7 +636,31 @@
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
     "connectivityStatus": "string",
-    "conversionRates": {},
+    "conversionRates": {
+      "*": {
+        "currency": "string",
+        "rate": "string",
+        "conversionTime": "number",
+        "expirationTime": "number",
+        "marketData": {
+          "fungible": "boolean",
+          "allTimeHigh": "string",
+          "allTimeLow": "string",
+          "circulatingSupply": "string",
+          "marketCap": "string",
+          "totalVolume": "string",
+          "pricePercentChange": {
+            "PT1H": "number",
+            "P1D": "number",
+            "P7D": "number",
+            "P14D": "number",
+            "P30D": "number",
+            "P200D": "number",
+            "P1Y": "number"
+          }
+        }
+      }
+    },
     "coverageResults": {},
     "cryptocurrencies": ["string"],
     "currencyRates": {
@@ -615,9 +670,9 @@
         "usdConversionRate": "null"
       },
       "ETH": {
-        "conversionDate": "number",
+        "conversionDate": "null",
         "conversionRate": "number",
-        "usdConversionRate": "number"
+        "usdConversionRate": "null"
       },
       "POL": {
         "conversionDate": "null",
@@ -631,6 +686,7 @@
     "dappSwapComparisonData": {},
     "currentLocale": "string",
     "currentMigrationVersion": "number",
+    "customAssets": {},
     "database": {
       "blockedSnaps": [
         {
@@ -880,9 +936,7 @@
               "type": "string"
             },
             "snap": {
-              "id": "string",
-              "name": "string",
-              "enabled": "boolean"
+              "id": "string"
             },
             "lastSelected": "number"
           }
@@ -910,9 +964,7 @@
               "type": "string"
             },
             "snap": {
-              "id": "string",
-              "name": "string",
-              "enabled": "boolean"
+              "id": "string"
             },
             "lastSelected": "number"
           }
@@ -944,9 +996,7 @@
               "type": "string"
             },
             "snap": {
-              "id": "string",
-              "name": "string",
-              "enabled": "boolean"
+              "id": "string"
             },
             "lastSelected": "number"
           }
@@ -1010,6 +1060,7 @@
     "lastUpdated": "number",
     "lastUpdatedAt": "null",
     "lastUpdatedFromVersion": "null",
+    "lastVisitedRoute": "null",
     "lastViewedUserSurvey": "null",
     "latestNonAnonymousEventTimestamp": "number",
     "ledgerTransportType": "string",
@@ -1267,6 +1318,7 @@
     "passkeyRecord": "null",
     "segmentApiCalls": {},
     "selectedAccountGroup": "string",
+    "selectedCurrency": "string",
     "selectedMultichainNetworkChainId": "string",
     "selectedPaymentToken": "null",
     "selectedNetworkClientId": "string",
@@ -1420,14 +1472,9 @@
     "theme": "string",
     "throttledOrigins": {},
     "timeoutMinutes": "number",
-    "tokenBalances": {
-      "0x5cfe73b6021e818b776b421b1c4db2474086a7e1": {
-        "0x539": {
-          "0x0000000000000000000000000000000000000000": "string"
-        }
-      }
-    },
+    "tokenBalances": {},
     "tokenScanCache": {},
+    "tokenSecurityTypeDestination": "null",
     "tokensChainsCache": {
       "0x539": {
         "data": {
