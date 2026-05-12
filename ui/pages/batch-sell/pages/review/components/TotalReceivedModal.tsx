@@ -33,7 +33,7 @@ type TotalReceiveModalProps = {
   minimumReceivedAmount: number;
 };
 
-export const TotalReceiveModal = ({
+export const TotalReceivedModal = ({
   open,
   onClose,
   sendAssets,

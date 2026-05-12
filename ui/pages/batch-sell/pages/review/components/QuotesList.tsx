@@ -1,5 +1,6 @@
 import { CaipAssetType } from '@metamask/utils';
 import React from 'react';
+import { Box } from '@metamask/design-system-react';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { QuotesListItem } from './QuotesListItem';
 
@@ -11,29 +12,35 @@ type QuotesListProps = {
       slippagePercent: number;
     };
   };
-  onSlippageChange: (asset: BatchSellAsset, newSlippage: number) => void;
-  onSendAmountChange: (asset: BatchSellAsset, newAmount: number) => void;
+  canDeleteAssets: boolean;
+  onAssetDeleteClick: (asset: BatchSellAsset) => void;
+  onSlippagePercentChangeClick: (asset: BatchSellAsset) => void;
+  onSendAmountPercentChange: (
+    asset: BatchSellAsset,
+    newSendAmountPercent: number,
+  ) => void;
 };
 
 export const QuotesList = ({
   config,
-  onSendAmountChange,
-  onSlippageChange,
+  onSlippagePercentChangeClick,
+  onSendAmountPercentChange,
+  onAssetDeleteClick,
+  canDeleteAssets,
 }: QuotesListProps) => {
   return (
-    <>
-      {Object.values(config).map(
-        ({ asset, sendAmountPercent, slippagePercent }) => (
-          <QuotesListItem
-            key={asset.assetId}
-            asset={asset}
-            sendAmountPercent={sendAmountPercent}
-            slippagePercent={slippagePercent}
-            onSlippageChange={onSlippageChange}
-            onSendAmountChange={onSendAmountChange}
-          />
-        ),
-      )}
-    </>
+    <Box className="flex-1">
+      {Object.values(config).map(({ asset, sendAmountPercent }) => (
+        <QuotesListItem
+          key={asset.assetId}
+          asset={asset}
+          canDeleteAssets={canDeleteAssets}
+          sendAmountPercent={sendAmountPercent}
+          onSlippagePercentChangeClick={onSlippagePercentChangeClick}
+          onSendAmountPercentChange={onSendAmountPercentChange}
+          onAssetDeleteClick={onAssetDeleteClick}
+        />
+      ))}
+    </Box>
   );
 };

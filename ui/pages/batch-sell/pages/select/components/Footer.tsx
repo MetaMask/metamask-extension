@@ -39,7 +39,7 @@ export const Footer = ({ onSubmit, selectedAssetsId }: FooterProps) => {
   }, [selectedAssetsId]);
 
   return (
-    <Box padding={6} data-testid="batch-sell-select-footer">
+    <Box padding={4} data-testid="batch-sell-select-footer">
       <Button
         size={ButtonSize.Lg}
         variant={ButtonVariant.Primary}

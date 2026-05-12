@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
@@ -17,7 +17,8 @@ import { Header } from './components/Header';
 import { QuotesList } from './components/QuotesList';
 import { Footer } from './components/Footer';
 import { SelectReceivedAssetModal } from './components/SelectReceivedAssetModal';
-import { TotalReceiveModal } from './components/TotalReceiveModal';
+import { TotalReceivedModal } from './components/TotalReceivedModal';
+import { BatchSellAsset } from 'ui/ducks/batch-sell/types';
 
 export const BatchSellReviewPage = () => {
   const { state } = useLocation();
@@ -64,6 +65,11 @@ export const BatchSellReviewPage = () => {
     ),
   );
 
+  const canDeleteAssets = useMemo(
+    () => Object.values(quoteConfigs).length > 2,
+    [quoteConfigs],
+  );
+
   const onSelectReceivedAsset = useCallback(
     (assetId: CaipAssetType) => {
       const newAsset = receivedAssets.find((asset) => asset.id === assetId);
@@ -75,10 +81,32 @@ export const BatchSellReviewPage = () => {
     [receivedAssets],
   );
 
+  const onQuoteSendAmountPercentChange = useCallback(
+    (asset: BatchSellAsset, newSendAmountPercent: number) => {
+      setQuoteConfigs((config) => ({
+        ...config,
+        [asset.assetId]: {
+          ...config[asset.assetId],
+          sendAmountPercent: newSendAmountPercent,
+        },
+      }));
+    },
+    [],
+  );
+
+  const onAssetDeleteClick = useCallback((asset: BatchSellAsset) => {
+    setQuoteConfigs((config) => {
+      const update = { ...config };
+      delete update[asset.assetId];
+      return update;
+    });
+  }, []);
+
   console.log(
     'availableBatchSellAssetsForNetworkList',
     availableBatchSellAssetsForNetworkList,
   );
+
   // TODO: if availableBatchSellAssetsForNetworkList or selectedAssetsId is empty render error
 
   return (
@@ -102,8 +130,10 @@ export const BatchSellReviewPage = () => {
       />
       <QuotesList
         config={quoteConfigs}
-        onSendAmountChange={console.log}
-        onSlippageChange={console.log}
+        onSendAmountPercentChange={onQuoteSendAmountPercentChange}
+        onSlippagePercentChangeClick={console.log}
+        onAssetDeleteClick={onAssetDeleteClick}
+        canDeleteAssets={canDeleteAssets}
       />
       <Footer />
       <SelectReceivedAssetModal
@@ -113,7 +143,7 @@ export const BatchSellReviewPage = () => {
         open={selectReceivedAssetModalIsOpen}
         onSelectAsset={onSelectReceivedAsset}
       />
-      <TotalReceiveModal
+      <TotalReceivedModal
         sendAssets={[
           {
             id: '1',
