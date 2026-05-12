@@ -19,6 +19,8 @@ export class PerpsActivityPage {
       "//*[@data-testid='perps-activity-page']//*[starts-with(@data-testid,'transaction-card-')]",
   };
 
+  private readonly filterButton = { testId: 'perps-activity-filter-button' };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -54,5 +56,47 @@ export class PerpsActivityPage {
     await this.driver.waitForSelector({
       xpath: `//*[@data-testid='perps-activity-page']//*[contains(normalize-space(.), "${fragment}")]`,
     });
+  }
+
+  /**
+   * Opens the activity filter dropdown by clicking the filter button.
+   */
+  async clickFilterButton(): Promise<void> {
+    await this.driver.clickElement(this.filterButton);
+  }
+
+  /**
+   * Selects a filter option from the open dropdown.
+   * Call `clickFilterButton()` first to open the dropdown.
+   *
+   * @param type - Filter type: 'trade' | 'order' | 'funding' | 'deposit'.
+   */
+  async selectFilter(
+    type: 'trade' | 'order' | 'funding' | 'deposit',
+  ): Promise<void> {
+    await this.driver.clickElement({
+      testId: `perps-activity-filter-option-${type}`,
+    });
+  }
+
+  /**
+   * Waits for a specific filter option to be visible inside the open dropdown.
+   *
+   * @param type - Filter type: 'trade' | 'order' | 'funding' | 'deposit'.
+   */
+  async waitForFilterOption(
+    type: 'trade' | 'order' | 'funding' | 'deposit',
+  ): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: `perps-activity-filter-option-${type}`,
+    });
+  }
+
+  /**
+   * Clicks the first visible transaction card on the activity page.
+   * Use after ensuring at least one transaction card is visible.
+   */
+  async clickFirstTransactionCard(): Promise<void> {
+    await this.driver.clickElement(this.anyTransactionCard);
   }
 }

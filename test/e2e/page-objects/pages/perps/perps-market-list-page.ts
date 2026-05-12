@@ -107,6 +107,27 @@ export class PerpsMarketListPage {
   }
 
   /**
+   * Waits for at least one market row to be visible in the list.
+   * Market rows have data-testid="market-row-{SYMBOL}" (e.g. market-row-BTC).
+   */
+  async waitForAnyMarketRow(): Promise<void> {
+    await this.driver.waitForSelector({
+      xpath: "//*[starts-with(@data-testid,'market-row-')]",
+    });
+  }
+
+  /**
+   * Waits for the filter dropdown button to show the given label (e.g. "All", "Crypto", "Stocks").
+   *
+   * @param label - Expected visible label on the filter button.
+   */
+  async waitForFilterLabel(label: string): Promise<void> {
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid='filter-select-button'][contains(normalize-space(.), '${label}')]`,
+    });
+  }
+
+  /**
    * Waits for the filter/sort row to be visible (hidden when search has text).
    */
   async waitForFilterSortRow(): Promise<void> {

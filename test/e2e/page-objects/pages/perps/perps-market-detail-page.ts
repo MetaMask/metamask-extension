@@ -23,6 +23,10 @@ export class PerpsMarketDetailPage {
 
   private readonly addFundsCtaButton = { testId: 'perps-add-funds-cta-button' };
 
+  private readonly favoriteButton = {
+    testId: 'perps-market-detail-favorite-button',
+  };
+
   private readonly addMarginModal = { testId: 'perps-add-margin-modal' };
 
   private readonly amountInputField = { testId: 'amount-input-field' };
@@ -287,6 +291,32 @@ export class PerpsMarketDetailPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.marketDetailBackButton,
     );
+  }
+
+  /**
+   * Clicks the favourite (star) button to toggle watchlist for this market.
+   * The button is always visible in the market detail header.
+   */
+  async clickFavoriteButton(): Promise<void> {
+    await this.driver.clickElement(this.favoriteButton);
+  }
+
+  /**
+   * Waits for the favourite button to be visible in the market detail header.
+   */
+  async waitForFavoriteButton(): Promise<void> {
+    await this.driver.waitForSelector(this.favoriteButton);
+  }
+
+  /**
+   * Waits until the favourite button reflects an "unfavorited" state
+   * (aria-label = "Add to favorites"). Use after clicking to remove a market
+   * from the watchlist to confirm the state change before navigating away.
+   */
+  async waitForFavoriteUnfavorited(): Promise<void> {
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid='perps-market-detail-favorite-button'][@aria-label='Add to favorites']`,
+    });
   }
 
   /**

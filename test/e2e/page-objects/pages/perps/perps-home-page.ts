@@ -61,7 +61,16 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-recent-activity-empty',
   };
 
+  private readonly perpsWatchlist = { testId: 'perps-watchlist' };
+
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
+
+  /**
+   * Waits for the "Explore markets" row to be visible on the Perps home.
+   */
+  async waitForExploreMarketsRow(): Promise<void> {
+    await this.driver.waitForSelector(this.perpsExploreMarketsRow);
+  }
 
   /**
    * Waits for the Perps Home view to be loaded and visible.
@@ -203,5 +212,35 @@ export class PerpsHomePage extends PerpsPositionsBase {
    */
   async waitForEmptyActivitySection(): Promise<void> {
     await this.driver.waitForSelector(this.perpsRecentActivityEmpty);
+  }
+
+  /**
+   * Waits for a specific market to appear in the watchlist section.
+   *
+   * @param symbol - Market symbol, e.g. 'ETH'.
+   */
+  async waitForWatchlistMarket(symbol: string): Promise<void> {
+    await this.driver.waitForSelector({
+      testId: `perps-watchlist-${symbol}`,
+    });
+  }
+
+  /**
+   * Asserts that a market is NOT present in the watchlist section.
+   *
+   * @param symbol - Market symbol, e.g. 'ETH'.
+   */
+  async checkMarketNotInWatchlist(symbol: string): Promise<void> {
+    await this.driver.assertElementNotPresent({
+      testId: `perps-watchlist-${symbol}`,
+    });
+  }
+
+  /**
+   * Asserts that the watchlist section is completely absent from the DOM.
+   * The section renders null when there are no watched markets.
+   */
+  async checkWatchlistSectionGone(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.perpsWatchlist);
   }
 }

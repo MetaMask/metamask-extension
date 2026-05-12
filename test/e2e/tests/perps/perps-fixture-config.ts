@@ -134,3 +134,137 @@ export function getPerpsConfigEligible(title?: string) {
     },
   };
 }
+
+/**
+ * withFixtures config for Perps Activity E2E tests.
+ *
+ * Extends the eligible config by adding HTTP mock overrides for all four
+ * activity transaction types. Uses `withJsonBodyIncluding` so only the
+ * specific request types are intercepted; everything else (clearinghouseState,
+ * meta, allMids, etc.) falls through to the global mock-e2e.js handlers.
+ *
+ * Activity data injected:
+ * - Trades:   one ETH "Open Long" fill  (`userFills`)
+ * - Orders:   one ETH Limit buy order   (`openOrders`)
+ * - Funding:  one ETH funding payment   (`userFunding`)
+ * - Deposits: one USDC deposit entry    (`userNonFundingLedgerUpdates`)
+ *
+ * @param title - The test title for debugging.
+ * @returns Partial withFixtures config to spread into withFixtures().
+ */
+export function getPerpsConfigEligibleWithActivity(title?: string) {
+  const now = Date.now();
+
+  const mockFill = {
+    coin: 'ETH',
+    px: '3000.00',
+    sz: '2.5',
+    side: 'B',
+    time: now - 3600000,
+    startPosition: '0.0',
+    dir: 'Open Long',
+    closedPnl: '0.0',
+    hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+    oid: 88810,
+    crossed: true,
+    fee: '7.50',
+    tid: 88811,
+    feeToken: 'USDC',
+    liquidation: false,
+    builderFee: '0',
+    twapId: null,
+  };
+
+  const mockOrder = {
+    coin: 'ETH',
+    side: 'B',
+    limitPx: '3100.00',
+    sz: '1.0',
+    oid: 99901,
+    timestamp: now - 1800000,
+    origSz: '1.0',
+    orderType: 'Limit',
+    triggerCondition: 'N/A',
+    isTrigger: false,
+    triggerPx: '0',
+    children: [],
+    isPositionTpsl: false,
+    reduceOnly: false,
+    limitPxHex: null,
+    cloid: null,
+  };
+
+  const mockFunding = {
+    time: now - 7200000,
+    coin: 'ETH',
+    usdc: '-2.50',
+    szi: '2.5',
+    fundingRate: '0.0001',
+    nSamples: 1,
+    hash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+  };
+
+  const mockDeposit = {
+    time: now - 86400000,
+    hash: '0xdeadbeef1234567890abcdef1234567890abcdef1234567890abcdef12345678',
+    delta: {
+      type: 'deposit',
+      amount: '1000.0',
+      nonce: 1,
+      usdc: '1000.0',
+    },
+  };
+
+  return {
+    fixtures: new FixtureBuilderV2()
+      .withPerpsController({
+        isEligible: true,
+        isFirstTimeUser: { mainnet: false, testnet: false },
+      })
+      .build(),
+    title,
+    manifestFlags: PERPS_ELIGIBLE_FLAG,
+    testSpecificMock: async (server: Mockttp) => {
+      // Eligible feature flags (same as getPerpsConfigEligible)
+      const eligibleFlags = [
+        ...getProductionRemoteFlagApiResponse().filter(
+          (entry) =>
+            !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
+        ),
+        { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
+      ];
+      await server
+        .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+        .withQuery({ client: 'extension', distribution: 'main' })
+        .thenCallback(() => ({
+          ok: true,
+          statusCode: 200,
+          json: eligibleFlags,
+        }));
+
+      // Override userFills — returns an ETH open-long fill for the Trades filter
+      await server
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'userFills' })
+        .thenCallback(() => ({ statusCode: 200, json: [mockFill] }));
+
+      // Override openOrders — returns an ETH limit buy for the Orders filter
+      await server
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'openOrders' })
+        .thenCallback(() => ({ statusCode: 200, json: [mockOrder] }));
+
+      // Override userFunding — returns an ETH funding payment for the Funding filter
+      await server
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'userFunding' })
+        .thenCallback(() => ({ statusCode: 200, json: [mockFunding] }));
+
+      // Override userNonFundingLedgerUpdates — returns a USDC deposit for the Deposits filter
+      await server
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'userNonFundingLedgerUpdates' })
+        .thenCallback(() => ({ statusCode: 200, json: [mockDeposit] }));
+    },
+  };
+}
