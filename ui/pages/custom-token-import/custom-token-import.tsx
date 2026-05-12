@@ -164,7 +164,8 @@ export const CustomTokenImportPage = () => {
       setDecimals('');
 
       // Invalidate any in-flight lookup so its eventual result is ignored.
-      const lookupId = ++addressLookupRef.current;
+      addressLookupRef.current += 1;
+      const lookupId = addressLookupRef.current;
       const isLatestLookup = () => addressLookupRef.current === lookupId;
 
       const addressIsEmpty = trimmed.length === 0 || trimmed === EMPTY_ADDRESS;
