@@ -7207,8 +7207,11 @@
   "rewardsLinkAccountError": {
     "message": "Failed to add account"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Earn points for your activity. \nAdvance through levels to unlock rewards."
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Checking region..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Win prizes, claim perks, and discover more ways to earn—just by using MetaMask."
   },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "We cannot determine if your country allows opting into the rewards program. Please check your connection and try again."
@@ -7222,84 +7225,51 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Retry"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "Claim 250 points"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Checking eligiblity..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Checking region.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Not now"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Rewards are here"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Rewards are not supported in your region yet. We are working on expanding access, so check back later."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Region not supported"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Every swap and perps trade you make in MetaMask gets you closer to rewards. Add your accounts and watch your points add up."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Earn points on every trade"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Hit points milestones to get perks like 50% off perps fees, exclusive tokens, and a free MetaMask Metal Card."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Level up for bigger perks"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "You can earn points in the extension, but you’ll need the mobile app to trade perps, track your progress, and redeem rewards."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Unlock rewards on mobile"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "By clicking \"Claim points\", you're agreeing to our $1. We'll track your on-chain activity to reward you automatically. $2",
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "By joining, you agree to our $1. We'll opt in all accounts on this device and track on-chain activity to reward you automatically. $2",
     "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
   },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Learn more"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Terms and Privacy Notice"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Opt-in failed"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Invalid referral code"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Use a referral code to earn 250 points"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Referral code (optional)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Referral code couldn’t be validated."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Check your connection and try again."
   },
-  "rewardsOnboardingStep4Title": {
-    "message": "You'll earn 250 points when you sign up!"
+  "rewardsOnboardingReferralHide": {
+    "message": "Hide code"
   },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "You'll earn 500 points when you sign up with a code!"
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Have a referral code?"
   },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Next"
+  "rewardsOnboardingSignUp": {
+    "message": "Join Rewards"
   },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Claim points"
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Joining..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Start earning rewards"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Verifying referral code...",
@@ -7318,10 +7288,10 @@
     "description": "Alt text for the rewards points icon"
   },
   "rewardsQRCodeDescription": {
-    "message": "You'll need the app to track your progress and redeem rewards. Scan this QR code and we'll help you import your accounts."
+    "message": "To access MetaMask Rewards, scan the QR code with your mobile device."
   },
   "rewardsQRCodeTitle": {
-    "message": "Get the mobile app"
+    "message": "Continue on mobile"
   },
   "rewardsSignInFailed": {
     "message": "Failed to sign in",
