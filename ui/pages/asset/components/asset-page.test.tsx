@@ -402,7 +402,7 @@ describe('AssetPage', () => {
     expect(buyButton).toBeEnabled();
   });
 
-  it('should disable the buy button on unsupported chains', () => {
+  it('should keep the buy button enabled on unsupported chains', () => {
     const { queryByTestId } = renderWithProvider(
       <AssetPage asset={token} optionsButton={null} />,
       configureMockStore([thunk])({
@@ -415,7 +415,7 @@ describe('AssetPage', () => {
     );
     const buyButton = queryByTestId('token-overview-buy');
     expect(buyButton).toBeInTheDocument();
-    expect(buyButton).toBeDisabled();
+    expect(buyButton).not.toBeDisabled();
   });
 
   it('should open the buy crypto URL for a buyable chain ID', async () => {
