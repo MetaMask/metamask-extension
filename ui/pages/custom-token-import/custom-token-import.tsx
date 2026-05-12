@@ -14,7 +14,8 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { ERC721, ERC1155 } from '@metamask/controller-utils';
-import { type Hex } from '@metamask/utils';
+import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -67,25 +68,38 @@ export const CustomTokenImportPage = () => {
     Record<string, { address: string }[]>
   >;
 
-  const [selectedNetwork, setSelectedNetwork] = useState<Hex>(currentChainId);
+  const [selectedNetwork, setSelectedNetwork] =
+    useState<string>(currentChainId);
 
-  const evmNetworks = useMemo<CustomTokenImportNetworkOption[]>(
+  const availableNetworks = useMemo<CustomTokenImportNetworkOption[]>(
     () =>
-      Object.values(allNetworkConfigurations)
-        .filter((network) => isEvmChainId(network.chainId as Hex))
-        .map(({ chainId, name }) => ({
-          chainId,
-          name,
+      Object.entries(allNetworkConfigurations)
+        .filter(
+          ([caipChainId]) =>
+            !NON_EVM_TESTNET_IDS.includes(caipChainId as CaipChainId),
+        )
+        .map(([, network]) => ({
+          chainId: network.chainId,
+          name: network.name,
         })),
     [allNetworkConfigurations],
   );
 
-  const networkName =
-    networkConfigurations?.[selectedNetwork]?.name ?? t('currentNetwork');
-  const networkClientId =
-    networkConfigurations?.[selectedNetwork]?.rpcEndpoints?.[
-      networkConfigurations?.[selectedNetwork]?.defaultRpcEndpointIndex ?? 0
-    ]?.networkClientId;
+  const selectedNetworkConfig = useMemo(
+    () =>
+      Object.values(allNetworkConfigurations).find(
+        (network) => network.chainId === selectedNetwork,
+      ),
+    [allNetworkConfigurations, selectedNetwork],
+  );
+
+  const networkName = selectedNetworkConfig?.name ?? t('currentNetwork');
+  const networkClientId = isEvmChainId(selectedNetwork as CaipChainId | Hex)
+    ? networkConfigurations?.[selectedNetwork as Hex]?.rpcEndpoints?.[
+        networkConfigurations?.[selectedNetwork as Hex]
+          ?.defaultRpcEndpointIndex ?? 0
+      ]?.networkClientId
+    : undefined;
 
   const existingTokens = useMemo(
     () => allTokens?.[selectedNetwork]?.[selectedAccount?.address ?? ''] ?? [],
@@ -239,7 +253,10 @@ export const CustomTokenImportPage = () => {
 
   const handleSelectNetwork = useCallback(
     (network: CustomTokenImportNetworkOption) => {
-      const networkChainId = formatChainIdToHex(network.chainId) as Hex;
+      const chainIdRef = network.chainId as CaipChainId | Hex;
+      const networkChainId = isEvmChainId(chainIdRef)
+        ? (formatChainIdToHex(chainIdRef) as string)
+        : network.chainId;
       setSelectedNetwork(networkChainId);
       clearFormData();
     },
@@ -328,7 +345,7 @@ export const CustomTokenImportPage = () => {
       <CustomTokenImportForm
         networkName={networkName}
         selectedNetwork={selectedNetwork}
-        networks={evmNetworks}
+        networks={availableNetworks}
         address={address}
         addressError={addressError}
         symbol={symbol}

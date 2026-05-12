@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import React from 'react';
 import { formatChainIdToHex } from '@metamask/bridge-controller';
 import {
   AvatarNetwork,
@@ -8,21 +7,21 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
-  BoxJustifyContent,
-  ButtonIcon,
-  ButtonIconSize,
   FontWeight,
-  IconName,
-  ModalBody,
-  ModalFocus,
-  ModalOverlay,
   Text,
-  TextAlign,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { type Hex } from '@metamask/utils';
+import { type CaipChainId } from '@metamask/utils';
 
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+} from '../../components/component-library';
+import { isEvmChainId } from '../../../shared/lib/asset-utils';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getImageForChainId } from '../../selectors/multichain';
 
@@ -34,60 +33,56 @@ export type CustomTokenImportNetworkOption = {
 export type CustomTokenImportNetworkSelectorProps = {
   isOpen: boolean;
   networks: CustomTokenImportNetworkOption[];
-  selectedNetwork: Hex;
+  selectedNetwork: string;
   onBack: () => void;
   onClose: () => void;
   onSelectNetwork: (network: CustomTokenImportNetworkOption) => void;
 };
 
-const NetworkSelectorRow = ({
+const NetworkRow = ({
   network,
-  selectedNetwork,
-  onSelectNetwork,
+  isSelected,
+  onSelect,
 }: {
   network: CustomTokenImportNetworkOption;
-  selectedNetwork: Hex;
-  onSelectNetwork: (network: CustomTokenImportNetworkOption) => void;
-}) => {
-  const isSelected = formatChainIdToHex(network.chainId) === selectedNetwork;
-
-  return (
-    <Box
-      asChild
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={4}
-      paddingHorizontal={4}
-      paddingVertical={3}
-      backgroundColor={
-        isSelected ? BoxBackgroundColor.BackgroundMuted : undefined
-      }
-      className="w-full text-left transition-colors hover:bg-hover active:bg-pressed"
+  isSelected: boolean;
+  onSelect: () => void;
+}) => (
+  <Box
+    asChild
+    flexDirection={BoxFlexDirection.Row}
+    alignItems={BoxAlignItems.Center}
+    gap={4}
+    paddingHorizontal={4}
+    paddingVertical={3}
+    backgroundColor={
+      isSelected ? BoxBackgroundColor.BackgroundMuted : undefined
+    }
+    className="w-full text-left transition-colors hover:bg-muted-hover active:bg-muted-pressed"
+  >
+    <button
+      type="button"
+      data-testid={`select-network-item-${network.chainId}`}
+      aria-current={isSelected ? 'true' : undefined}
+      onClick={onSelect}
     >
-      <button
-        type="button"
-        data-testid={`select-network-item-${network.chainId}`}
-        aria-current={isSelected ? 'true' : undefined}
-        onClick={() => onSelectNetwork(network)}
+      <AvatarNetwork
+        name={network.name}
+        src={getImageForChainId(network.chainId)}
+        size={AvatarNetworkSize.Sm}
+      />
+      <Text
+        asChild
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextDefault}
+        fontWeight={isSelected ? FontWeight.Medium : FontWeight.Regular}
+        ellipsis
       >
-        <AvatarNetwork
-          name={network.name}
-          src={getImageForChainId(network.chainId)}
-          size={AvatarNetworkSize.Sm}
-        />
-        <Text
-          asChild
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextDefault}
-          fontWeight={isSelected ? FontWeight.Medium : FontWeight.Regular}
-          ellipsis
-        >
-          <span className="min-w-0 flex-1">{network.name}</span>
-        </Text>
-      </button>
-    </Box>
-  );
-};
+        <span className="min-w-0 flex-1">{network.name}</span>
+      </Text>
+    </button>
+  </Box>
+);
 
 export const CustomTokenImportNetworkSelector = ({
   isOpen,
@@ -99,98 +94,37 @@ export const CustomTokenImportNetworkSelector = ({
 }: CustomTokenImportNetworkSelectorProps) => {
   const t = useI18nContext();
 
-  useEffect(() => {
-    if (!isOpen) {
-      return undefined;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) {
-    return null;
-  }
-
-  return createPortal(
-    <>
-      <ModalOverlay onClick={onClose} />
-      <Box
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Center}
-        padding={4}
-        className="pointer-events-none fixed inset-0 z-[1051] flex motion-safe:animate-fade-in"
-      >
-        <ModalFocus autoFocus restoreFocus>
-          <Box
-            asChild
-            flexDirection={BoxFlexDirection.Column}
-            backgroundColor={BoxBackgroundColor.BackgroundDefault}
-            paddingVertical={4}
-            className="pointer-events-auto flex max-h-full w-full max-w-[360px] overflow-hidden rounded-lg shadow-lg"
-          >
-            <section
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="custom-token-import-network-selector-title"
-            >
-              <Box
-                flexDirection={BoxFlexDirection.Row}
-                alignItems={BoxAlignItems.Center}
-                justifyContent={BoxJustifyContent.Between}
-                gap={2}
-                paddingHorizontal={4}
-                paddingBottom={4}
-              >
-                <ButtonIcon
-                  ariaLabel={t('back')}
-                  iconName={IconName.ArrowLeft}
-                  size={ButtonIconSize.Md}
-                  onClick={onBack}
-                />
-                <Text
-                  asChild
-                  variant={TextVariant.HeadingSm}
-                  textAlign={TextAlign.Center}
-                  ellipsis
-                  className="min-w-0 flex-1"
-                >
-                  <h2 id="custom-token-import-network-selector-title">
-                    {t('networkMenuHeading')}
-                  </h2>
-                </Text>
-                <ButtonIcon
-                  ariaLabel={t('close')}
-                  iconName={IconName.Close}
-                  size={ButtonIconSize.Md}
-                  onClick={onClose}
-                />
-              </Box>
-              <ModalBody className="px-0">
-                {networks.map((network) => (
-                  <NetworkSelectorRow
-                    key={network.chainId}
-                    network={network}
-                    selectedNetwork={selectedNetwork}
-                    onSelectNetwork={onSelectNetwork}
-                  />
-                ))}
-              </ModalBody>
-            </section>
-          </Box>
-        </ModalFocus>
-      </Box>
-    </>,
-    document.body,
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      isClosedOnEscapeKey
+      isClosedOnOutsideClick
+      data-testid="custom-token-import-network-selector"
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader onBack={onBack} onClose={onClose}>
+          {t('networkMenuHeading')}
+        </ModalHeader>
+        <ModalBody paddingLeft={0} paddingRight={0}>
+          {networks.map((network) => {
+            const chainIdRef = network.chainId as CaipChainId;
+            const isSelected = isEvmChainId(chainIdRef)
+              ? formatChainIdToHex(chainIdRef) === selectedNetwork
+              : network.chainId === selectedNetwork;
+            return (
+              <NetworkRow
+                key={network.chainId}
+                network={network}
+                isSelected={isSelected}
+                onSelect={() => onSelectNetwork(network)}
+              />
+            );
+          })}
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 };
 

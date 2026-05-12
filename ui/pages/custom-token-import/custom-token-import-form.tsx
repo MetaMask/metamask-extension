@@ -12,8 +12,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { type Hex } from '@metamask/utils';
-
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -46,7 +44,7 @@ const CUSTOM_TOKEN_TEXT_FIELD_PROPS = {
 
 export type CustomTokenImportFormProps = {
   networkName: string;
-  selectedNetwork: Hex;
+  selectedNetwork: string;
   networks: CustomTokenImportNetworkOption[];
   address: string;
   addressError: string | null;
