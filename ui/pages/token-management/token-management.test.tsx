@@ -405,6 +405,49 @@ describe('TokenManagementPage', () => {
     );
   });
 
+  it('shows a search result as ON when TokensController already holds the imported address (no balance yet)', () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: usdcAssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const selectedAddress =
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts.selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
+      ]?.address;
+
+    const stateWithImportedToken = createState();
+    stateWithImportedToken.metamask = {
+      ...stateWithImportedToken.metamask,
+      allTokens: {
+        '0x1': {
+          [selectedAddress as string]: [
+            { address: usdcAddress, symbol: 'USDC', decimals: 6 },
+          ],
+        },
+      },
+    };
+
+    renderPage(stateWithImportedToken);
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(toggle.value).toBe('true');
+  });
+
   it('shows the empty-state copy when the API returns no matches', () => {
     setTokenSearchState({ results: [] });
     renderPage();

@@ -56,6 +56,8 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
+import { getSelectedAddress } from '../../selectors';
+import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import {
   getAssetImageUrl,
   isEvmChainId,
@@ -114,6 +116,18 @@ export const TokenManagementPage = () => {
     }
   });
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  // Raw TokensController state. `accountGroupIdAssets` (via
+  // `selectAssetsBySelectedAccountGroup`) filters out tokens that don't yet
+  // have a balance entry, which is exactly the case right after the user
+  // imports a token from a search result. Reading `allTokens` directly lets
+  // the toggle (and the home list) reflect the import immediately.
+  const allTokensByChain = useSelector(getTokensControllerAllTokens) as Record<
+    string,
+    Record<string, { address: string }[]>
+  >;
+  const selectedAddress = useSelector(getSelectedAddress) as
+    | string
+    | undefined;
 
   // Looks up the internal account in the selected account group that maps to
   // a given CAIP chain id. Used when importing a search result so the unified
@@ -222,15 +236,75 @@ export const TokenManagementPage = () => {
   // Quick lookup of which search results are already in the user's manage
   // list, so the toggle on each row reflects current state instead of always
   // starting OFF.
+  //
+  // We index two ways because the unified asset selector and the Token API
+  // do not always emit the exact same `assetId` string:
+  //   - lowercased `assetId` for non-EVM
+  //   - synthesized `<chainHex>:<address>` key for EVM, which is stable
+  //     across checksum vs lowercase addresses and CAIP-2 vs hex chain ids.
+  const chainToHex = useCallback((chainId: string): string => {
+    if (chainId.startsWith('eip155:')) {
+      const dec = Number(chainId.split(':')[1]);
+      return Number.isFinite(dec)
+        ? `0x${dec.toString(16)}`.toLowerCase()
+        : chainId.toLowerCase();
+    }
+    return chainId.toLowerCase();
+  }, []);
+
+  // Pull every imported EVM token address for the current account out of
+  // TokensController directly. This bypasses the balance-gated filter inside
+  // `selectAssetsBySelectedAccountGroup`, which would otherwise hide a token
+  // for the few seconds between import and the first balance fetch.
+  const importedEvmTokensByChain = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    if (!selectedAddress) {
+      return map;
+    }
+    const lowercasedSelected = selectedAddress.toLowerCase();
+    Object.entries(allTokensByChain ?? {}).forEach(
+      ([chainId, tokensByAddress]) => {
+        const hexChainId = chainToHex(chainId);
+        Object.entries(tokensByAddress ?? {}).forEach(
+          ([accountAddress, tokens]) => {
+            if (accountAddress.toLowerCase() !== lowercasedSelected) {
+              return;
+            }
+            const set = map.get(hexChainId) ?? new Set<string>();
+            tokens.forEach((token) => {
+              if (token?.address) {
+                set.add(token.address.toLowerCase());
+              }
+            });
+            map.set(hexChainId, set);
+          },
+        );
+      },
+    );
+    return map;
+  }, [allTokensByChain, chainToHex, selectedAddress]);
+
   const importedAssetIds = useMemo(() => {
     const set = new Set<string>();
     visibleTokens.forEach((token) => {
       if (token.assetId) {
         set.add(String(token.assetId).toLowerCase());
       }
+      if ('address' in token && token.address && token.chainId) {
+        set.add(
+          `${chainToHex(String(token.chainId))}:${String(
+            token.address,
+          ).toLowerCase()}`,
+        );
+      }
+    });
+    importedEvmTokensByChain.forEach((addresses, chainHex) => {
+      addresses.forEach((address) => {
+        set.add(`${chainHex}:${address}`);
+      });
     });
     return set;
-  }, [visibleTokens]);
+  }, [chainToHex, importedEvmTokensByChain, visibleTokens]);
 
   const handleOpenNetworkFilter = useCallback(() => {
     dispatch(showModal({ name: 'NETWORK_MANAGER' }));
@@ -309,27 +383,14 @@ export const TokenManagementPage = () => {
    */
   const handleSearchResultToggle = useCallback(
     async (result: TokenSearchResult, nextValue: boolean) => {
-      // eslint-disable-next-line no-console
-      console.log('[TokenManagement] toggle clicked', {
-        assetId: result.assetId,
-        nextValue,
-      });
       let parsed;
       try {
         parsed = parseCaipAssetType(result.assetId as CaipAssetType);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          '[TokenManagement] failed to parse assetId',
-          result.assetId,
-          err,
-        );
+      } catch {
         return;
       }
       const { chainId: caipChainId, assetReference } = parsed;
       if (!caipChainId || !assetReference) {
-        // eslint-disable-next-line no-console
-        console.warn('[TokenManagement] missing chainId or reference', parsed);
         return;
       }
 
@@ -343,31 +404,15 @@ export const TokenManagementPage = () => {
           const [, reference] = caipChainId.split(':');
           const decimalChainId = Number(reference);
           if (!Number.isFinite(decimalChainId)) {
-            // eslint-disable-next-line no-console
-            console.warn(
-              '[TokenManagement] non-numeric chain reference',
-              caipChainId,
-            );
             return;
           }
           const hexChainId = `0x${decimalChainId.toString(16)}` as Hex;
           const { networkClientId } = getNetworkMeta(hexChainId);
           if (!networkClientId) {
-            // eslint-disable-next-line no-console
-            console.warn(
-              '[TokenManagement] no network client for chain',
-              hexChainId,
-            );
             return;
           }
 
           if (nextValue) {
-            // eslint-disable-next-line no-console
-            console.log('[TokenManagement] dispatching addImportedTokens', {
-              address: assetReference,
-              symbol: result.symbol,
-              networkClientId,
-            });
             await dispatch(
               addImportedTokens(
                 [
@@ -399,11 +444,6 @@ export const TokenManagementPage = () => {
         // `MultichainAssetsController.addAssets([assetId], accountId)`.
         const account = getAccountForChain(caipChainId);
         if (!account?.id) {
-          // eslint-disable-next-line no-console
-          console.warn(
-            '[TokenManagement] no account for non-EVM chain',
-            caipChainId,
-          );
           return;
         }
         if (nextValue) {
@@ -481,7 +521,6 @@ export const TokenManagementPage = () => {
       const lowerAssetId = result.assetId.toLowerCase();
       const parsed = parseCaipAssetType(result.assetId as CaipAssetType);
       const isEvm = isEvmChainId(parsed.chainId);
-      const isImported = importedAssetIds.has(lowerAssetId);
 
       let hexChainId: Hex | undefined;
       if (isEvm) {
@@ -491,6 +530,13 @@ export const TokenManagementPage = () => {
           hexChainId = `0x${decimalChainId.toString(16)}` as Hex;
         }
       }
+
+      const evmImportedKey = hexChainId
+        ? `${hexChainId}:${parsed.assetReference.toLowerCase()}`
+        : undefined;
+      const isImported =
+        importedAssetIds.has(lowerAssetId) ||
+        (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
 
       return (
         <TokenManagementCell
