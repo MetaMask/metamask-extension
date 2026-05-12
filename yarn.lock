@@ -6827,17 +6827,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-snap@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@metamask/gator-permissions-snap@npm:2.0.0"
+"@metamask/gator-permissions-snap@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@metamask/gator-permissions-snap@npm:2.1.0"
   dependencies:
     "@metamask/abi-utils": "npm:3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/profile-sync-controller": "npm:21.0.0"
-    "@metamask/snaps-sdk": "npm:11.0.0"
-    "@metamask/utils": "npm:11.4.2"
+    "@metamask/snaps-sdk": "npm:11.1.0"
+    "@metamask/utils": "npm:11.11.0"
     zod: "npm:3.25.76"
-  checksum: 10/a50efcbcdfc194cbcb02cb85c4ff042c35f88a27cdf52dd3819994cc40a403f518fa3e396d580cc69ab28b4b176b82f1969c38111ecee40a15b162ea6a612940
+  checksum: 10/db04632d555929e8c409de3de0791424a4849bc783cd03d440bcf18ec2f2bf87f4527373b2848b4b080a6b2efffde35e5bef1357d130603bf3a42e01cad17477
   languageName: node
   linkType: hard
 
@@ -7552,13 +7552,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permissions-kernel-snap@npm:^1.2.0":
-  version: 1.2.0
-  resolution: "@metamask/permissions-kernel-snap@npm:1.2.0"
+"@metamask/permissions-kernel-snap@npm:^1.3.0":
+  version: 1.3.0
+  resolution: "@metamask/permissions-kernel-snap@npm:1.3.0"
   dependencies:
-    "@metamask/snaps-sdk": "npm:10.2.0"
+    "@metamask/snaps-sdk": "npm:11.1.0"
     zod: "npm:3.25.76"
-  checksum: 10/9e3113a8f90220545948ae1e388ee69e121ba93a234c2d4c156125ad353ad0cac74d90f668fc3787ff65ba4bed307bcc677b09a5e484fa3b78893dcbd96d9307
+  checksum: 10/cf28bed5db0db5925d92753b8c8ac8775179f66b76adbf5b71e5eeb5e37ff2be6e8a81d6dc33db438937872a634647496f45b3e7ed0cc0283789e1e804f5d1e3
   languageName: node
   linkType: hard
 
@@ -8566,25 +8566,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:11.4.2":
-  version: 11.4.2
-  resolution: "@metamask/utils@npm:11.4.2"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@noble/hashes": "npm:^1.3.1"
-    "@scure/base": "npm:^1.1.3"
-    "@types/debug": "npm:^4.1.7"
-    debug: "npm:^4.3.4"
-    lodash.memoize: "npm:^4.1.2"
-    pony-cause: "npm:^2.1.10"
-    semver: "npm:^7.5.4"
-    uuid: "npm:^9.0.1"
-  checksum: 10/63415da3479f7022bc98e63d0f68a53ef31b2ef3d459eb3f81d62140f510ebba937c7034dd63cde6b2d5faf74250081903cc8009a174a9984d2fec1d0be04b8d
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^11.0.0, @metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.10.0, @metamask/utils@npm:^11.11.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.8.1, @metamask/utils@npm:^11.9.0":
+"@metamask/utils@npm:11.11.0, @metamask/utils@npm:^11.0.0, @metamask/utils@npm:^11.0.1, @metamask/utils@npm:^11.1.0, @metamask/utils@npm:^11.10.0, @metamask/utils@npm:^11.11.0, @metamask/utils@npm:^11.4.0, @metamask/utils@npm:^11.4.2, @metamask/utils@npm:^11.8.1, @metamask/utils@npm:^11.9.0":
   version: 11.11.0
   resolution: "@metamask/utils@npm:11.11.0"
   dependencies:
@@ -32852,13 +32834,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.memoize@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "lodash.memoize@npm:4.1.2"
-  checksum: 10/192b2168f310c86f303580b53acf81ab029761b9bd9caa9506a019ffea5f3363ea98d7e39e7e11e6b9917066c9d36a09a11f6fe16f812326390d8f3a54a1a6da
-  languageName: node
-  linkType: hard
-
 "lodash.memoize@npm:~3.0.3":
   version: 3.0.4
   resolution: "lodash.memoize@npm:3.0.4"
@@ -33603,7 +33578,7 @@ __metadata:
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^26.1.0"
     "@metamask/gator-permissions-controller": "npm:^4.1.0"
-    "@metamask/gator-permissions-snap": "npm:^2.0.0"
+    "@metamask/gator-permissions-snap": "npm:^2.1.0"
     "@metamask/geolocation-controller": "npm:^0.1.1"
     "@metamask/hw-wallet-sdk": "npm:^0.8.0"
     "@metamask/institutional-wallet-snap": "npm:1.5.0"
@@ -33637,7 +33612,7 @@ __metadata:
     "@metamask/passkey-controller": "npm:^2.0.1"
     "@metamask/permission-controller": "npm:^13.0.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
-    "@metamask/permissions-kernel-snap": "npm:^1.2.0"
+    "@metamask/permissions-kernel-snap": "npm:^1.3.0"
     "@metamask/perps-controller": "npm:^6.0.0"
     "@metamask/phishing-controller": "npm:^17.1.1"
     "@metamask/phishing-warning": "npm:^5.1.0"
