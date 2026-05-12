@@ -77,11 +77,8 @@ describe('CustomTokenImportPage', () => {
     renderPage();
 
     expect(screen.getByTestId('custom-token-import-page')).toBeInTheDocument();
-    expect(screen.getByTestId('custom-token-import-warning')).toHaveTextContent(
-      messages.importTokenWarning.message,
-    );
     expect(
-      screen.getByTestId('custom-token-import-network-picker'),
+      screen.getByTestId('network-selector'),
     ).toHaveTextContent('Ethereum Mainnet');
     expect(
       screen.getByTestId('custom-token-import-address-input'),
@@ -119,16 +116,16 @@ describe('CustomTokenImportPage', () => {
     ).toBeDisabled();
   });
 
-  it('opens the network manager modal when the network picker is clicked', () => {
-    const { store } = renderPage();
+  it('opens the custom import network selector when the network picker is clicked', () => {
+    renderPage();
 
-    fireEvent.click(screen.getByTestId('custom-token-import-network-picker'));
+    fireEvent.click(screen.getByTestId('network-selector'));
 
-    // The network picker reuses the existing global modal; the manage tokens
-    // page uses the same one so both flows stay in sync.
-    expect(store.getState().appState.modal.open).toBe(true);
-    expect(store.getState().appState.modal.modalState.name).toBe(
-      'NETWORK_MANAGER',
-    );
+    expect(
+      screen.getByText(messages.networkMenuHeading.message),
+    ).toBeInTheDocument();
+
+    const networkItems = screen.getAllByTestId(/select-network-item-/u);
+    expect(networkItems.length).toBeGreaterThan(0);
   });
 });
