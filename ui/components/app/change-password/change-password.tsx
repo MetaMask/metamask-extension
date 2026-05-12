@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -56,13 +55,11 @@ import {
   removePasskeyWithPasswordVerification,
   verifyPassword,
 } from '../../../store/actions';
-import { getAccountType } from '../../../../shared/lib/selectors/keyring';
 import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
-  getPasskeyDerivationMethod,
 } from '../../../selectors';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
@@ -105,24 +102,11 @@ const ChangePassword = ({
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-  const accountType = useSelector(getAccountType);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyActive = isPasskeyRegistered && isPasskeyFeatureAvailable;
   const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
     getIsEnrolledPasskeyIncompatibleWithSidepanel,
-  );
-  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
-  const baseProperties = useMemo(
-    () => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      account_type: accountType,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      derivation_method: passkeyDerivationMethod,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      is_social_login: isSocialLoginFlow,
-    }),
-    [accountType, isSocialLoginFlow, passkeyDerivationMethod],
   );
   const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const mustDeferPasskeyToBrowserTab =
@@ -196,7 +180,6 @@ const ChangePassword = ({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.PasswordChangeWithPasskeyStarted,
       properties: {
-        ...baseProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         passkey_renewal_enabled: isPasskeyRenewalEnabled,
       },
@@ -217,7 +200,6 @@ const ChangePassword = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasswordChangeWithPasskeyCompleted,
         properties: {
-          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -229,7 +211,6 @@ const ChangePassword = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasswordChangeWithPasskeyFailed,
         properties: {
-          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           passkey_renewal_enabled: isPasskeyRenewalEnabled,
           // eslint-disable-next-line @typescript-eslint/naming-convention

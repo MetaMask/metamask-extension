@@ -30,17 +30,18 @@ import {
   ONBOARDING_METAMETRICS,
 } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAccountType } from '../../../../shared/lib/selectors/keyring';
 import {
   getFirstTimeFlowType,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyRegistered,
   getIsSocialLoginFlow,
   getPasskeyDerivationMethod,
+  getSocialLoginType,
 } from '../../../selectors';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
@@ -96,8 +97,20 @@ export default function SetupPasskey() {
     getIsParticipateInMetaMetricsSet,
   );
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
-  const accountType = useSelector(getAccountType);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const socialLoginType = useSelector(getSocialLoginType);
+
+  const accountTypeForMetrics = useMemo(() => {
+    const baseType =
+      firstTimeFlowType === FirstTimeFlowType.import
+        ? MetaMetricsEventAccountType.Imported
+        : MetaMetricsEventAccountType.Default;
+    if (isSocialLoginFlow && socialLoginType) {
+      const socialProvider = String(socialLoginType).toLowerCase();
+      return `${baseType}_${socialProvider}`;
+    }
+    return baseType;
+  }, [firstTimeFlowType, isSocialLoginFlow, socialLoginType]);
   const [isEnrollmentInProgress, setIsEnrollmentInProgress] = useState(false);
   const [registerStepPhase, setRegisterStepPhase] =
     useState<PasskeyEnrollmentStepStatus>(
@@ -114,11 +127,9 @@ export default function SetupPasskey() {
   const baseProperties = useMemo(
     () => ({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      account_type: accountType,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      is_social_login: isSocialLoginFlow,
+      account_type: accountTypeForMetrics,
     }),
-    [accountType, isSocialLoginFlow],
+    [accountTypeForMetrics],
   );
 
   useEffect(() => {

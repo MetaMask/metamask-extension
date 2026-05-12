@@ -24,7 +24,6 @@ import {
   translatePasskeyError,
   getPasskeyErrorCode,
 } from '../../../../shared/lib/passkey';
-import { getAccountType } from '../../../../shared/lib/selectors/keyring';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -37,8 +36,6 @@ import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
   getIsEnrolledPasskeyIncompatibleWithSidepanel,
-  getIsSocialLoginFlow,
-  getPasskeyDerivationMethod,
 } from '../../../selectors';
 import {
   forceUpdateMetamaskState,
@@ -63,28 +60,13 @@ const PasskeyItem = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
   const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
     getIsEnrolledPasskeyIncompatibleWithSidepanel,
   );
-  const accountType = useSelector(getAccountType);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
   const environmentType = getEnvironmentType();
-
-  const baseProperties = useMemo(
-    () => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      account_type: accountType,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      is_social_login: isSocialLoginFlow,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      derivation_method: passkeyDerivationMethod,
-    }),
-    [accountType, isSocialLoginFlow, passkeyDerivationMethod],
-  );
 
   const [isPasskeyOperationPending, setIsPasskeyOperationPending] =
     useState(false);
@@ -128,7 +110,6 @@ const PasskeyItem = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeyTurnOffStarted,
         properties: {
-          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: 'passkey',
         },
@@ -146,7 +127,6 @@ const PasskeyItem = () => {
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.PasskeyTurnOffStarted,
       properties: {
-        ...baseProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         verification_method: verificationMethod,
       },
@@ -162,7 +142,6 @@ const PasskeyItem = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeyTurnOffCompleted,
         properties: {
-          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -196,7 +175,6 @@ const PasskeyItem = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeyTurnOffFailed,
         properties: {
-          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -229,7 +207,6 @@ const PasskeyItem = () => {
       setIsPasskeyOperationPending(false);
     }
   }, [
-    baseProperties,
     dispatch,
     environmentType,
     isEnrolledPasskeyIncompatibleWithSidepanel,

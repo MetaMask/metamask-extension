@@ -36,11 +36,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getAccountType } from '../../../../shared/lib/selectors/keyring';
-import {
-  getIsPasskeyRegistered,
-  getPasskeyDerivationMethod,
-} from '../../../selectors';
+import { getIsPasskeyRegistered } from '../../../selectors';
 
 const PASSKEY_SETTINGS_TOAST_DURATION_MS = 5 * SECOND;
 
@@ -51,8 +47,6 @@ export default function PasskeyTurnOffSubPage() {
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
-  const accountType = useSelector(getAccountType);
-  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const [walletPassword, setWalletPassword] = useState('');
   const [isIncorrectPasswordError, setIsIncorrectPasswordError] =
@@ -90,11 +84,8 @@ export default function PasskeyTurnOffSubPage() {
 
       const startedAt = Date.now();
       const baseProperties = {
-        /* eslint-disable @typescript-eslint/naming-convention */
-        account_type: accountType,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         verification_method: 'password',
-        derivation_method: passkeyDerivationMethod,
-        /* eslint-enable @typescript-eslint/naming-convention */
       };
       trackEvent({
         category: MetaMetricsEventCategory.Settings,

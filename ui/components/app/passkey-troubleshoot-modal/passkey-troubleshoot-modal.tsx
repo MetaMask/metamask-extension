@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Box,
   Button,
@@ -26,8 +25,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getAccountType } from '../../../../shared/lib/selectors/keyring';
-import { getPasskeyDerivationMethod } from '../../../selectors';
 
 export type PasskeyTroubleshootModalMode = 'unlock' | 'verify';
 
@@ -46,18 +43,12 @@ export default function PasskeyTroubleshootModal({
 }: PasskeyTroubleshootModalProps) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
-  const accountType = useSelector(getAccountType);
-  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
 
   const baseProperties = useMemo(
     () => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      account_type: accountType,
       location: troubleshootLocation,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      derivation_method: passkeyDerivationMethod,
     }),
-    [accountType, passkeyDerivationMethod, troubleshootLocation],
+    [troubleshootLocation],
   );
 
   const hasTrackedView = useRef(false);

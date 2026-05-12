@@ -2,7 +2,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 import log from 'loglevel';
@@ -51,10 +50,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getAccountType } from '../../../../shared/lib/selectors/keyring';
 import {
   getIsPasskeyRegistered,
-  getIsSocialLoginFlow,
   getPasskeyDerivationMethod,
 } from '../../../selectors';
 import {
@@ -93,18 +90,6 @@ export default function PasskeyRegisterSubPage() {
   );
   const { trackEvent } = useContext(MetaMetricsContext);
   const isPasskeyRegistered = useSelector(getIsPasskeyRegistered);
-  const accountType = useSelector(getAccountType);
-  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
-
-  const baseProperties = useMemo(
-    () => ({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      account_type: accountType,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      is_social_login: isSocialLoginFlow,
-    }),
-    [accountType, isSocialLoginFlow],
-  );
 
   const fromSidepanel =
     new URLSearchParams(location.search).get('from') === 'sidepanel';
@@ -171,9 +156,6 @@ export default function PasskeyRegisterSubPage() {
     trackEvent({
       category: MetaMetricsEventCategory.Settings,
       event: MetaMetricsEventName.PasskeySetupStarted,
-      properties: {
-        ...baseProperties,
-      },
     });
 
     let registrationSucceeded = false;
@@ -210,7 +192,6 @@ export default function PasskeyRegisterSubPage() {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeySetupCompleted,
         properties: {
-          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           derivation_method: derivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -246,7 +227,6 @@ export default function PasskeyRegisterSubPage() {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.PasskeySetupCancelled,
           properties: {
-            ...baseProperties,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             current_step: currentStep,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -267,7 +247,6 @@ export default function PasskeyRegisterSubPage() {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeySetupFailed,
         properties: {
-          ...baseProperties,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_step: currentStep,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -290,7 +269,6 @@ export default function PasskeyRegisterSubPage() {
       setVerifyStepStatus((prev) => (prev === 'loading' ? 'idle' : prev));
     }
   }, [
-    baseProperties,
     dispatch,
     goToSettings,
     isPasskeyRegistered,
@@ -312,9 +290,6 @@ export default function PasskeyRegisterSubPage() {
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeySetupPasswordEntered,
-        properties: {
-          ...baseProperties,
-        },
       });
       setStep(PasskeyRegisterSteps.RegisterPasskey);
       await beginPasskeyCeremonyFlow();
