@@ -19,10 +19,10 @@ const GENERIC_HARDWARE_WALLET_RIVE_URL =
   './images/riv_animations/generic_hardware_wallet.riv';
 const GENERIC_HARDWARE_WALLET_STATE_MACHINE = 'wallet_states';
 const GenericHardwareWalletStateInputs = {
-  RESET: 'reset',
-  WALLET_LOCKED: 'wallet_locked',
-  ERROR: 'error',
-  FOUND: 'found',
+  Reset: 'reset',
+  WalletLocked: 'wallet_locked',
+  Error: 'error',
+  Found: 'found',
 } as const;
 
 type GenericHardwareWalletAnimationInput =
@@ -33,17 +33,17 @@ const GENERIC_HARDWARE_WALLET_INPUT_BY_STATUS: Record<
   GenericHardwareWalletAnimationInput
 > = {
   [HardwareWalletSignatureStatus.AwaitingFirstSignature]:
-    GenericHardwareWalletStateInputs.RESET,
+    GenericHardwareWalletStateInputs.Reset,
   [HardwareWalletSignatureStatus.AwaitingFinalSignature]:
-    GenericHardwareWalletStateInputs.RESET,
+    GenericHardwareWalletStateInputs.Reset,
   [HardwareWalletSignatureStatus.Submitted]:
-    GenericHardwareWalletStateInputs.FOUND,
+    GenericHardwareWalletStateInputs.Found,
   [HardwareWalletSignatureStatus.Rejected]:
-    GenericHardwareWalletStateInputs.WALLET_LOCKED,
+    GenericHardwareWalletStateInputs.WalletLocked,
   [HardwareWalletSignatureStatus.Failed]:
-    GenericHardwareWalletStateInputs.ERROR,
+    GenericHardwareWalletStateInputs.Error,
   [HardwareWalletSignatureStatus.Disconnected]:
-    GenericHardwareWalletStateInputs.WALLET_LOCKED,
+    GenericHardwareWalletStateInputs.WalletLocked,
 };
 
 const GENERIC_HARDWARE_WALLET_LAYOUT = new Layout({

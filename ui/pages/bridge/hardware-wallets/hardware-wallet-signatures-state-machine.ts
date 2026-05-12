@@ -32,6 +32,11 @@ type InterruptedSignatureEvent =
   | typeof HardwareWalletSignatureEvent.TransactionFailed
   | typeof HardwareWalletSignatureEvent.DeviceDisconnected;
 
+type HardwareWalletSignatureEventWithoutPayload = Exclude<
+  HardwareWalletSignatureEvent,
+  typeof HardwareWalletSignatureEvent.Reset
+>;
+
 export type HardwareWalletSignaturesState =
   | {
       status: SigningStatus | typeof HardwareWalletSignatureStatus.Submitted;
@@ -51,22 +56,7 @@ export type HardwareWalletSignaturesState =
 
 type HardwareWalletSignaturesAction =
   | {
-      type: typeof HardwareWalletSignatureEvent.FirstSignatureSubmitted;
-    }
-  | {
-      type: typeof HardwareWalletSignatureEvent.TransactionSubmitted;
-    }
-  | {
-      type: typeof HardwareWalletSignatureEvent.TransactionRejected;
-    }
-  | {
-      type: typeof HardwareWalletSignatureEvent.TransactionFailed;
-    }
-  | {
-      type: typeof HardwareWalletSignatureEvent.DeviceDisconnected;
-    }
-  | {
-      type: typeof HardwareWalletSignatureEvent.Retry;
+      type: HardwareWalletSignatureEventWithoutPayload;
     }
   | {
       type: typeof HardwareWalletSignatureEvent.Reset;
