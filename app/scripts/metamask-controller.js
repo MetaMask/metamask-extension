@@ -1808,13 +1808,13 @@ export default class MetamaskController extends EventEmitter {
   async getSnapKeyring() {
     // TODO: Use `withKeyring` instead
     let [snapKeyring] = this.keyringController.getKeyringsByType(
-      KeyringType.Snap,
+      KeyringTypes.snap,
     );
     if (!snapKeyring) {
-      await this.keyringController.addNewKeyring(KeyringType.Snap);
+      await this.keyringController.addNewKeyring(KeyringTypes.snap);
       // TODO: Use `withKeyring` instead
       [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.Snap,
+        KeyringTypes.snap,
       );
     }
     return snapKeyring;
@@ -1830,7 +1830,7 @@ export default class MetamaskController extends EventEmitter {
     if (this.keyringController.isUnlocked()) {
       // TODO: Use `withKeyring` instead
       const [snapKeyring] = this.keyringController.getKeyringsByType(
-        KeyringType.Snap,
+        KeyringTypes.snap,
       );
 
       return snapKeyring;
@@ -6395,15 +6395,21 @@ export default class MetamaskController extends EventEmitter {
       await this.keyringController.importAccountWithStrategy(strategy, args);
 
     if (this.onboardingController.getIsSocialLoginFlow()) {
-      // Use withKeyring to get keyring metadata for an address
-      const accountId = this.accountsController.getAccountByAddress(
+      const importedAccount = this.accountsController.getAccountByAddress(
         importedAccountAddress,
-      )?.id;
+      );
+      if (!importedAccount) {
+        throw new Error(
+          `No account found for address: ${importedAccountAddress}`,
+        );
+      }
       const { id: keyringId, privateKey: privateKeyFromKeyring } =
         await this.keyringController.withKeyringV2(
           { address: importedAccountAddress },
           async ({ keyring, metadata }) => {
-            const privateKeyObj = await keyring.exportAccount(accountId);
+            const privateKeyObj = await keyring.exportAccount(
+              importedAccount.id,
+            );
             return { id: metadata.id, privateKey: privateKeyObj.privateKey };
           },
         );
@@ -6881,7 +6887,7 @@ export default class MetamaskController extends EventEmitter {
   getHDEntropyIndex() {
     const selectedAccount = this.accountsController.getSelectedAccount();
     const hdKeyrings = this.keyringController.state.keyrings.filter(
-      (keyring) => keyring.type === KeyringType.Hd,
+      (keyring) => keyring.type === KeyringTypes.hdKeyTree,
     );
     const index = hdKeyrings.findIndex((keyring) =>
       keyring.accounts.includes(selectedAccount.address),
@@ -8089,7 +8095,7 @@ export default class MetamaskController extends EventEmitter {
 
           return state.keyrings
             .map((keyring, index) => {
-              if (keyring.type === KeyringType.Hd) {
+              if (keyring.type === KeyringTypes.hdKeyTree) {
                 return {
                   id: keyring.metadata.id,
                   name: keyring.metadata.name,
