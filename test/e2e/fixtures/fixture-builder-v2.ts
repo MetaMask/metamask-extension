@@ -2,6 +2,7 @@ import { merge, cloneDeep } from 'lodash';
 import { toHex } from '@metamask/controller-utils';
 import type { Hex, Json } from '@metamask/utils';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
+import type { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import type { AddressBookControllerState } from '@metamask/address-book-controller';
 import type { AnnouncementControllerState } from '@metamask/announcement-controller';
 import type {
@@ -24,6 +25,7 @@ import type {
   PermissionConstraint,
   PermissionControllerState,
 } from '@metamask/permission-controller';
+import type { UserStorageControllerState } from '@metamask/profile-sync-controller/user-storage';
 import {
   type NetworkMetadata,
   type NetworkState,
@@ -37,13 +39,12 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import type { AssetsControllerState } from '@metamask/assets-controller';
+import type { PerpsControllerState } from '@metamask/perps-controller';
 import type { AppStateControllerState } from '../../../app/scripts/controllers/app-state-controller';
 import type { MetaMetricsControllerState } from '../../../app/scripts/controllers/metametrics-controller';
 import type { OnboardingControllerState } from '../../../app/scripts/controllers/onboarding';
-import type {
-  Preferences,
-  PreferencesControllerState,
-} from '../../../app/scripts/controllers/preferences-controller';
+import type { Preferences } from '../../../shared/types/preferences';
+import type { PreferencesControllerState } from '../../../app/scripts/controllers/preferences-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   ACCOUNT_2,
@@ -181,6 +182,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withAccountTreeController(data: Partial<AccountTreeControllerState>): this {
+    merge(this.fixture.data.AccountTreeController, data);
+    return this;
+  }
+
   withAddressBookController(data: Partial<AddressBookControllerState>): this {
     if (!this.fixture.data.AddressBookController) {
       (this.fixture.data as Record<string, unknown>).AddressBookController = {
@@ -307,6 +313,17 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPerpsController(data: Partial<PerpsControllerState>): this {
+    if (!(this.fixture.data as Record<string, unknown>).PerpsController) {
+      (this.fixture.data as Record<string, unknown>).PerpsController = {};
+    }
+    merge(
+      (this.fixture.data as Record<string, unknown>).PerpsController,
+      data as Record<string, unknown>,
+    );
+    return this;
+  }
+
   withPreferencesController(
     data: Omit<Partial<PreferencesControllerState>, 'preferences'> & {
       preferences?: Partial<Preferences>;
@@ -371,11 +388,85 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withUserStorageController(data: Partial<UserStorageControllerState>): this {
+    merge(this.fixture.data.UserStorageController, data);
+    return this;
+  }
+
   /* ==================================================================
                               CUSTOM METHODS
      ==================================================================
   */
   withAccountsControllerAdditionalAccountVault(): this {
+    // Account sorting for permitted accounts (e.g. `eth_accounts`) now reads
+    // `lastSelected` from the matching `AccountGroup` in `AccountTreeController`
+    // rather than from `InternalAccount.metadata.lastSelected`.
+    //
+    // Two things are needed for this to work end-to-end in fixtures:
+    //   1. `accountGroupsMetadata[groupId].lastSelected` — hydrated into
+    //      `group.metadata.lastSelected` when `AccountTreeController.init()`
+    //      runs (post-unlock).
+    //   2. `accountTree.wallets` — the controller's constructor builds its
+    //      reverse `accountId -> { walletId, groupId }` map from the persisted
+    //      tree, so locked-wallet lookups (e.g. `eth_accounts` while locked)
+    //      also have the correct groups/metadata available.
+    //
+    // Without (2), `getAccountContext` returns undefined pre-unlock and
+    // `sortAddressesByLastSelected` degrades to caveat order.
+    const entropyWalletId = 'entropy:01KGHBJCECE5PTNHY84ZAE2V9Y';
+    const account1GroupId = `${entropyWalletId}/0` as const;
+    const account2GroupId = `${entropyWalletId}/1` as const;
+    const account1Id = 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4';
+    const account2Id = 'e9976a84-110e-46c3-9811-e2da7b5528d3';
+    const account1LastSelected = 1665507600000;
+    const account2LastSelected = 1665507800000;
+
+    this.withAccountTreeController({
+      accountGroupsMetadata: {
+        [account1GroupId]: { lastSelected: account1LastSelected },
+        [account2GroupId]: { lastSelected: account2LastSelected },
+      },
+      accountTree: {
+        wallets: {
+          [entropyWalletId]: {
+            id: entropyWalletId,
+            type: 'entropy',
+            status: 'ready',
+            groups: {
+              [account1GroupId]: {
+                id: account1GroupId,
+                type: 'multichain-account',
+                accounts: [account1Id],
+                metadata: {
+                  name: 'Account 1',
+                  entropy: { groupIndex: 0 },
+                  hidden: false,
+                  pinned: false,
+                  lastSelected: account1LastSelected,
+                },
+              },
+              [account2GroupId]: {
+                id: account2GroupId,
+                type: 'multichain-account',
+                accounts: [account2Id],
+                metadata: {
+                  name: 'Account 2',
+                  entropy: { groupIndex: 1 },
+                  hidden: false,
+                  pinned: false,
+                  lastSelected: account2LastSelected,
+                },
+              },
+            },
+            metadata: {
+              name: 'Wallet 1',
+              entropy: { id: '01KGHBJCECE5PTNHY84ZAE2V9Y' },
+            },
+          },
+        },
+      },
+    } as Partial<AccountTreeControllerState>);
+
     return this.withAccountsController({
       internalAccounts: {
         selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
@@ -724,7 +815,7 @@ class FixtureBuilderV2 {
       selectedNetworkClientId: seiClientId,
       networkConfigurationsByChainId: {
         [seiChainId]: {
-          blockExplorerUrls: ['https://seitrace.com'],
+          blockExplorerUrls: ['https://seiscan.io'],
           chainId: seiChainId,
           defaultBlockExplorerUrlIndex: 0,
           defaultRpcEndpointIndex: 0,
@@ -1138,6 +1229,14 @@ class FixtureBuilderV2 {
       preferences: {
         smartTransactionsOptInStatus: false,
       },
+    });
+  }
+
+  withSyncDisabled(): this {
+    return this.withUserStorageController({
+      isAccountSyncingEnabled: false,
+      isBackupAndSyncEnabled: false,
+      isContactSyncingEnabled: false,
     });
   }
 

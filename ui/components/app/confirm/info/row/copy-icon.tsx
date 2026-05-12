@@ -14,13 +14,20 @@ export const CopyIcon: React.FC<{
   copyText: string;
   color?: IconColor;
   style?: CSSProperties;
-}> = ({ copyText, color, style = {} }) => {
+  isStopPropagationEnabled?: boolean;
+}> = ({ copyText, color, style = {}, isStopPropagationEnabled = false }) => {
   // useCopyToClipboard analysis: As of writing this, this is only used for public addresses,
   // but it could always be used for something else in the future, and we need to be careful
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
-  const handleClick = useCallback(async () => {
-    (handleCopy as CopyCallback)(copyText);
-  }, [copyText, handleCopy]);
+  const handleClick = useCallback(
+    async (event: React.MouseEvent) => {
+      if (isStopPropagationEnabled) {
+        event.stopPropagation();
+      }
+      (handleCopy as CopyCallback)(copyText);
+    },
+    [copyText, handleCopy, isStopPropagationEnabled],
+  );
 
   return (
     <ButtonIcon

@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
+import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 
 import {
   Box,
@@ -48,6 +49,7 @@ type PayWithRowContentProps = {
   canEdit: boolean;
   from: string | undefined;
   onOpenModal: () => void;
+  isPerpsWithdraw: boolean;
 };
 
 type PayWithRowPillProps = PayWithRowContentProps & {
@@ -98,6 +100,8 @@ export function PayWithRow({
 
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
 
+  const isPerpsWithdraw = isPerpsWithdrawTransaction(currentConfirmation);
+
   const handleOpenModal = useCallback(() => {
     if (canEdit) {
       setIsModalOpen(true);
@@ -109,7 +113,8 @@ export function PayWithRow({
   }, []);
 
   const firstRequiredToken = requiredTokens?.[0];
-  const displayToken = payToken ?? firstRequiredToken;
+  const displayToken =
+    payToken ?? (isPerpsWithdraw ? undefined : firstRequiredToken);
 
   const balanceUsdFormatted = useMemo(
     () =>
@@ -118,6 +123,9 @@ export function PayWithRow({
   );
 
   if (!displayToken?.chainId) {
+    if (isPerpsWithdraw) {
+      return <PayWithRowSkeleton />;
+    }
     return null;
   }
 
@@ -131,6 +139,7 @@ export function PayWithRow({
     canEdit,
     from,
     onOpenModal: handleOpenModal,
+    isPerpsWithdraw,
   };
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
@@ -161,6 +170,7 @@ function PayWithRowInline({
   from,
   onOpenModal,
   ownerId,
+  isPerpsWithdraw,
 }: PayWithRowContentProps & { ownerId: string }) {
   const t = useI18nContext();
 
@@ -169,7 +179,7 @@ function PayWithRowInline({
       alertKey={RowAlertKey.PayWith}
       ownerId={ownerId}
       data-testid="pay-with-row"
-      label={t('payWith')}
+      label={isPerpsWithdraw ? t('withdrawTo') : t('payWith')}
       rowVariant={ConfirmInfoRowSize.Default}
     >
       <Box
@@ -219,6 +229,7 @@ function PayWithRowPill({
   canEdit,
   from,
   onOpenModal,
+  isPerpsWithdraw,
 }: PayWithRowPillProps) {
   const t = useI18nContext();
 
@@ -250,7 +261,7 @@ function PayWithRowPill({
         color={TextColor.textDefault}
         data-testid="pay-with-symbol"
       >
-        {`${t('payWith')} ${displayToken.symbol}`}
+        {`${isPerpsWithdraw ? t('withdrawTo') : t('payWith')} ${displayToken.symbol}`}
       </Text>
       <Text
         variant={TextVariant.bodyMdMedium}

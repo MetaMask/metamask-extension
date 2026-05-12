@@ -2,6 +2,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionPayRequiredToken } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
@@ -11,12 +12,16 @@ import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import type { SetPayTokenRequest } from './types';
+import { usePostQuoteWithdrawTokenFilter } from './useWithdrawTokenFilter';
 
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
 jest.mock('./useTransactionPayAvailableTokens');
-jest.mock('../../../../selectors', () => ({
-  getHardwareWalletType: jest.fn(() => null),
+jest.mock('./useWithdrawTokenFilter');
+jest.mock('../../../../selectors', () => ({}));
+jest.mock('../../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../../shared/lib/selectors/keyring'),
+  getHardwareWalletType: jest.fn(),
 }));
 
 const TOKEN_ADDRESS_1_MOCK = '0x1234567890abcdef1234567890abcdef12345678';
@@ -42,22 +47,27 @@ const STATE_MOCK = {
 function renderHookWithProvider({
   disable = false,
   preferredToken,
+  transactionType,
+  transactionId = TRANSACTION_ID_MOCK,
 }: {
   disable?: boolean;
   preferredToken?: SetPayTokenRequest;
+  transactionType?: TransactionType;
+  transactionId?: string;
 } = {}) {
   const store = mockStore(STATE_MOCK);
 
   const confirmContextValue = {
     currentConfirmation: {
-      id: TRANSACTION_ID_MOCK,
+      id: transactionId,
+      type: transactionType,
       txParams: { from: '0x123' },
     },
     isScrollToBottomCompleted: true,
     setIsScrollToBottomCompleted: jest.fn(),
   };
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
+  const wrapper = ({ children }: React.PropsWithChildren<unknown>) => (
     <Provider store={store}>
       <ConfirmContext.Provider value={confirmContextValue as never}>
         {children}
@@ -66,10 +76,16 @@ function renderHookWithProvider({
   );
 
   return renderHook(
-    () =>
+    ({
+      currentDisable = disable,
+      currentPreferredToken = preferredToken,
+    }: {
+      currentDisable?: boolean;
+      currentPreferredToken?: SetPayTokenRequest;
+    } = {}) =>
       useAutomaticTransactionPayToken({
-        disable,
-        preferredToken,
+        disable: currentDisable,
+        preferredToken: currentPreferredToken,
       }),
     { wrapper },
   );
@@ -82,6 +98,9 @@ describe('useAutomaticTransactionPayToken', () => {
   );
   const useTransactionPayRequiredTokensMock = jest.mocked(
     useTransactionPayRequiredTokens,
+  );
+  const usePostQuoteWithdrawTokenFilterMock = jest.mocked(
+    usePostQuoteWithdrawTokenFilter,
   );
 
   const setPayTokenMock = jest.fn();
@@ -102,6 +121,11 @@ describe('useAutomaticTransactionPayToken', () => {
     ]);
 
     useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: (tokens) => tokens,
+      isFilterApplied: false,
+      isTokenAllowed: () => false,
+    });
   });
 
   it('selects first token', () => {
@@ -229,5 +253,129 @@ describe('useAutomaticTransactionPayToken', () => {
       address: TOKEN_ADDRESS_1_MOCK,
       chainId: CHAIN_ID_1_MOCK,
     });
+  });
+
+  it('selects preferred token without availability check for perpsWithdraw', () => {
+    // The user is RECEIVING this token via Relay; they typically have $0
+    // wallet balance of it, so the regular `availableTokens` membership check
+    // would otherwise fall through to the first balance token.
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      },
+    ] as Asset[]);
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: PREFERRED_TOKEN_ADDRESS_MOCK,
+      chainId: PREFERRED_CHAIN_ID_MOCK,
+    });
+  });
+
+  it('selects the first allowlisted withdraw token when the preferred token is not allowlisted', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      },
+    ] as Asset[]);
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: () =>
+        [
+          {
+            address: TOKEN_ADDRESS_2_MOCK,
+            chainId: CHAIN_ID_2_MOCK,
+          },
+        ] as Asset[],
+      isFilterApplied: true,
+      isTokenAllowed: () => false,
+    });
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: TOKEN_ADDRESS_2_MOCK,
+      chainId: CHAIN_ID_2_MOCK,
+    });
+  });
+
+  it('selects an allowlisted preferred withdraw token before enrichment adds it to the token list', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      {
+        address: TOKEN_ADDRESS_1_MOCK,
+        chainId: CHAIN_ID_1_MOCK,
+      },
+    ] as Asset[]);
+    usePostQuoteWithdrawTokenFilterMock.mockReturnValue({
+      filterTokens: () =>
+        [
+          {
+            address: TOKEN_ADDRESS_2_MOCK,
+            chainId: CHAIN_ID_2_MOCK,
+          },
+        ] as Asset[],
+      isFilterApplied: true,
+      isTokenAllowed: (chainId, address) =>
+        chainId.toLowerCase() === PREFERRED_CHAIN_ID_MOCK &&
+        address.toLowerCase() === PREFERRED_TOKEN_ADDRESS_MOCK,
+    });
+
+    renderHookWithProvider({
+      transactionType: TransactionType.perpsWithdraw,
+      preferredToken: {
+        address: PREFERRED_TOKEN_ADDRESS_MOCK as Hex,
+        chainId: PREFERRED_CHAIN_ID_MOCK as Hex,
+      },
+    });
+
+    expect(setPayTokenMock).toHaveBeenCalledWith({
+      address: PREFERRED_TOKEN_ADDRESS_MOCK,
+      chainId: PREFERRED_CHAIN_ID_MOCK,
+    });
+  });
+
+  it('does nothing when payToken is already set', () => {
+    useTransactionPayTokenMock.mockReturnValue({
+      payToken: {
+        address: TOKEN_ADDRESS_2_MOCK as Hex,
+        chainId: CHAIN_ID_2_MOCK as Hex,
+      } as never,
+      setPayToken: setPayTokenMock,
+    });
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_1_MOCK, chainId: CHAIN_ID_1_MOCK },
+    ] as Asset[]);
+
+    renderHookWithProvider();
+
+    expect(setPayTokenMock).not.toHaveBeenCalled();
+  });
+
+  it('does not re-dispatch on re-render for the same transactionId', () => {
+    useTransactionPayAvailableTokensMock.mockReturnValue([
+      { address: TOKEN_ADDRESS_2_MOCK, chainId: CHAIN_ID_2_MOCK },
+    ] as Asset[]);
+
+    const { rerender } = renderHookWithProvider();
+
+    expect(setPayTokenMock).toHaveBeenCalledTimes(1);
+
+    rerender();
+
+    expect(setPayTokenMock).toHaveBeenCalledTimes(1);
   });
 });

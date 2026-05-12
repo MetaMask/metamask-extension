@@ -33,13 +33,16 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
-import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
+import { generateTokenCacheKey } from '../helpers/utils/token-scan';
 import {
   getCurrentChainId,
   getProviderConfig,
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
+  selectNetworkConfigurationByChainId,
+  selectDefaultRpcEndpointByChainId,
 } from '../../shared/lib/selectors/networks';
+import { getPreferences } from '../../shared/lib/selectors/preferences';
 import {
   getAccountTrackerControllerAccountsByChainId,
   getTokensControllerAllTokens,
@@ -49,11 +52,13 @@ import {
 } from '../../shared/lib/selectors/assets-migration';
 import { getEnabledNetworks } from '../../shared/lib/selectors/multichain';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
-// TODO: Fix circular dependency
-// To avoid import evaluating as `undefined` due to circular dependency,
-// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
-// eslint-disable-next-line import-x/order
-import { getRemoteFeatureFlags } from './remote-feature-flags';
+import {
+  isWebAuthnSupported,
+  isPasskeyAaguidIncompatibleWithSidepanel,
+} from '../../shared/lib/passkey';
+import { getIsPasskeyFeatureEnabled } from '../../shared/lib/environment';
+import { isFirefoxBrowser } from '../../shared/lib/browser-runtime.utils';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 // TODO: Fix circular dependency
 // To avoid import evaluating as `undefined` due to circular dependency,
 // this needs to be imported before `'../pages/confirmations/confirmation/templates'`
@@ -128,7 +133,7 @@ import {
   sortSelectedInternalAccounts,
 } from '../helpers/utils/util';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmations/confirmation/templates/approval-types';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
@@ -169,13 +174,10 @@ import {
   FeatureFlagNames,
   DEFAULT_FEATURE_FLAG_VALUES,
 } from '../../shared/lib/feature-flags';
-// eslint-disable-next-line import-x/order
-import {
-  getSelectedInternalAccount,
-  getInternalAccounts,
-  getInternalAccountByAddress,
-} from './accounts';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../contexts/hardware-wallets/constants';
+import { getInternalAccounts, getInternalAccountByAddress } from './accounts';
+import { getIsSocialLoginFlow } from './first-time-flow';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 import { getApprovalRequestsByType } from './approvals';
 import {
@@ -384,16 +386,6 @@ export function getIsSigningQRHardwareTransaction(state) {
   );
 }
 
-export function getCurrentKeyring(state) {
-  const internalAccount = getSelectedInternalAccount(state);
-
-  if (!internalAccount) {
-    return null;
-  }
-
-  return internalAccount.metadata?.keyring;
-}
-
 /**
  * The function returns true if network and account details are fetched and
  * both of them support EIP-1559.
@@ -415,67 +407,6 @@ export function checkNetworkAndAccountSupports1559(state, networkClientId) {
 export function checkNetworkOrAccountNotSupports1559(state) {
   const networkNotSupports1559 = isNotEIP1559Network(state);
   return networkNotSupports1559;
-}
-
-/**
- * Checks if the current wallet is a hardware wallet.
- *
- * @param {object} state
- * @returns {boolean}
- */
-export function isHardwareWallet(state) {
-  const keyring = getCurrentKeyring(state);
-  return Boolean(keyring?.type?.includes('Hardware'));
-}
-
-/**
- * Checks if the account supports smart transactions.
- *
- * @param {object} state - The state object.
- * @returns {boolean}
- */
-export function accountSupportsSmartTx(state) {
-  const accountType = getAccountType(state);
-  return Boolean(accountType !== 'snap');
-}
-
-/**
- * Get a HW wallet type, e.g. "Ledger Hardware"
- *
- * @param {object} state
- * @returns {string | undefined}
- */
-export function getHardwareWalletType(state) {
-  const keyring = getCurrentKeyring(state);
-  return isHardwareWallet(state) ? keyring.type : undefined;
-}
-
-export function getAccountType(state) {
-  const currentKeyring = getCurrentKeyring(state);
-  return getAccountTypeForKeyring(currentKeyring);
-}
-
-export function getAccountTypeForKeyring(keyring) {
-  if (!keyring) {
-    return '';
-  }
-
-  const { type } = keyring;
-
-  switch (type) {
-    case KeyringType.trezor:
-    case KeyringType.oneKey:
-    case KeyringType.ledger:
-    case KeyringType.lattice:
-    case KeyringType.qr:
-      return 'hardware';
-    case KeyringType.imported:
-      return 'imported';
-    case KeyringType.snap:
-      return 'snap';
-    default:
-      return 'default';
-  }
 }
 
 /**
@@ -1301,28 +1232,6 @@ export const getNetworkConfigurationIdByChainId = createSelector(
 );
 
 /**
- * @type (state: any, chainId: string) => import('@metamask/network-controller').NetworkConfiguration
- */
-export const selectNetworkConfigurationByChainId = createSelector(
-  getNetworkConfigurationsByChainId,
-  (_state, chainId) => chainId,
-  (networkConfigurationsByChainId, chainId) =>
-    networkConfigurationsByChainId[chainId],
-);
-
-export const selectDefaultRpcEndpointByChainId = createSelector(
-  selectNetworkConfigurationByChainId,
-  (networkConfiguration) => {
-    if (!networkConfiguration) {
-      return undefined;
-    }
-
-    const { defaultRpcEndpointIndex, rpcEndpoints } = networkConfiguration;
-    return rpcEndpoints[defaultRpcEndpointIndex];
-  },
-);
-
-/**
  * @type (state: RemoteFeatureFlagsState) => boolean
  */
 export const getIsRpcFailoverEnabled = createSelector(
@@ -1398,6 +1307,7 @@ export function getUnapprovedTxCount(state) {
   return Object.keys(unapprovedTxs).length;
 }
 
+// Deep-equal memo: pendingApprovals map identity can change while approvals list is unchanged.
 export const getUnapprovedConfirmations = createDeepEqualSelector(
   (state) => state.metamask.pendingApprovals || {},
   (pendingApprovals) => Object.values(pendingApprovals),
@@ -1446,9 +1356,6 @@ export function getIsLineaMainnet(state) {
 export function getIsTestnet(state) {
   const chainId = getCurrentChainId(state);
   return TEST_CHAINS.includes(chainId);
-}
-export function getPreferences({ metamask }) {
-  return metamask.preferences ?? {};
 }
 
 export function getShowTestNetworks(state) {
@@ -1525,6 +1432,8 @@ export function getTokenSortConfig(state) {
 /**
  * Returns an object indicating which networks
  * tokens should be shown on in the portfolio view.
+ *
+ * Deep-equal memo: merged tokenNetworkFilter object is often a new reference for the same filter.
  */
 // @deprecated('Use `getEnabledNetworks` instead')
 export const getTokenNetworkFilter = createDeepEqualSelector(
@@ -1798,6 +1707,8 @@ export const getAnySnapUpdateAvailable = createSelector(
 
 /**
  * Return if the snap branding should show in the UI.
+ *
+ * Deep-equal memo: snap install map / inputs can change reference without changing branding flag.
  */
 export const getHideSnapBranding = createDeepEqualSelector(
   [selectInstalledSnaps, selectSnapId],
@@ -1854,6 +1765,8 @@ const selectOrigins = (_state, origins) => origins;
  * @param state - Redux state object.
  * @param origins - Object containing keys that represent subject's identification.
  * @returns Key:value object containing metadata attached to each subject key.
+ *
+ * Deep-equal memo: builds a new origins→metadata map each run; inputs can be referentially unstable.
  */
 export const getMultipleTargetsSubjectMetadata = createDeepEqualSelector(
   [rawStateSelector, selectOrigins],
@@ -2046,6 +1959,8 @@ export function getIsBridgeChain(state, overrideChainId) {
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
+// Deep-equal memo: getRemoteFeatureFlags returns a new merged object when any flag changes;
+// only bridgeConfig should invalidate consumers of bridge feature flags.
 const getBridgeFeatureFlags = createDeepEqualSelector(
   [(state) => getRemoteFeatureFlags(state).bridgeConfig],
   (bridgeConfig) => {
@@ -2072,13 +1987,13 @@ export function getNativeCurrencyForChain(chainId) {
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId] ?? undefined;
 }
 
-export function selectERC20TokensByChain(state) {
-  return state.metamask.tokensChainsCache;
-}
+export const selectERC20TokensByChain = (state) =>
+  state.metamask.tokensChainsCache;
 
+// Deep-equal memo: `|| {}` yields a new empty object when no cached token list for the chain.
 const selectERC20Tokens = createDeepEqualSelector(
   getCurrentChainId,
-  (state) => state.metamask.tokensChainsCache,
+  selectERC20TokensByChain,
   (chainId, erc20Tokens) => erc20Tokens?.[chainId]?.data || {},
 );
 
@@ -2114,6 +2029,7 @@ export const getMetadataContractName = createSelector(
 
 export const getTxData = (state) => state.confirmTransaction.txData;
 
+// Deep-equal memo: tx map lookups; controller-backed maps can get new references with same txs.
 export const getUnapprovedTransaction = createDeepEqualSelector(
   (state) => getUnapprovedTransactions(state),
   (_, transactionId) => transactionId,
@@ -2121,6 +2037,7 @@ export const getUnapprovedTransaction = createDeepEqualSelector(
     Object.values(unapprovedTxs).find(({ id }) => id === transactionId),
 );
 
+// Deep-equal memo: find + EMPTY_OBJECT fallback makes output reference unstable without deep memo.
 export const getTransaction = createDeepEqualSelector(
   getCurrentNetworkTransactions,
   (_, transactionId) => transactionId,
@@ -2129,6 +2046,7 @@ export const getTransaction = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: merges txData and tx meta; nested objects often re-created for the same tx.
 export const getFullTxData = createDeepEqualSelector(
   getTxData,
   (state, transactionId, status) => {
@@ -2182,6 +2100,8 @@ export const getFullTxData = createDeepEqualSelector(
  * Retrieves the connected subjects for all addresses.
  *
  * @returns {AccountConnections}  The connected subjects for all addresses.
+ *
+ * Deep-equal memo: aggregates subjects + metadata into nested structures with unstable intermediate refs.
  */
 export const getConnectedSubjectsForAllAddresses = createDeepEqualSelector(
   getPermissionSubjects,
@@ -2254,6 +2174,7 @@ export function getLocale(state) {
   return state.metamask.currentLocale;
 }
 
+// Deep-equal memo: keyed snap lookup; parent snaps object identity can churn without snap change.
 export const getSnap = createDeepEqualSelector(
   getSnaps,
   (_, snapId) => snapId,
@@ -2267,6 +2188,8 @@ export const getSnap = createDeepEqualSelector(
  *
  * @param {object} state - The Redux state object.
  * @returns {object} An object mapping all installed snaps to their metadata, which contains the snap name and description.
+ *
+ * Deep-equal memo: reduce builds a fresh metadata map; locale/snaps inputs can be new refs.
  */
 export const getSnapsMetadata = createDeepEqualSelector(
   getLocale,
@@ -2299,6 +2222,8 @@ export const getSnapsMetadata = createDeepEqualSelector(
  * @param {object} state - The Redux state object.
  * @param {string} snapId - The snap ID to get the metadata for.
  * @returns {object} An object containing the snap name and description.
+ *
+ * Deep-equal memo: metadata lookup + default object; parent metadata map can churn references.
  */
 export const getSnapMetadata = createDeepEqualSelector(
   getSnapsMetadata,
@@ -2312,6 +2237,7 @@ export const getSnapMetadata = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: reduce into enabled map; new object when snap list identity shifts.
 const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
   return Object.values(snaps).reduce((acc, cur) => {
     if (cur.enabled) {
@@ -2321,6 +2247,7 @@ const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
   }, {});
 });
 
+// Deep-equal memo: reduce into preinstalled map; same rationale as getEnabledSnaps.
 export const getPreinstalledSnaps = createDeepEqualSelector(
   getSnaps,
   (snaps) => {
@@ -2333,6 +2260,7 @@ export const getPreinstalledSnaps = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: filter + permissions join yields new array refs for unchanged snap set.
 const getSettingsPageSnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
@@ -2346,6 +2274,7 @@ const getSettingsPageSnaps = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: filtered id list is a new array when underlying snaps/permissions churn.
 export const getNameLookupSnapsIds = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
@@ -2356,6 +2285,7 @@ export const getNameLookupSnapsIds = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: mapped {id, permission} rows are new objects each evaluation.
 export const getNameLookupSnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
@@ -2369,11 +2299,13 @@ export const getNameLookupSnaps = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: map over filtered snaps always allocates a new ids array.
 export const getSettingsPageSnapsIds = createDeepEqualSelector(
   getSettingsPageSnaps,
   (snaps) => snaps.map((snap) => snap.id),
 );
 
+// Deep-equal memo: filter notify-capable snaps; new array when permissions map identity shifts.
 export const getNotifySnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
@@ -2388,6 +2320,8 @@ export const getNotifySnaps = createDeepEqualSelector(
  *
  * @param {object} state - The Redux state object.
  * @returns {object[]} An array of notify snaps that are not preinstalled.
+ *
+ * Deep-equal memo: second filter layer; notify snap array identity can flicker.
  */
 export const getThirdPartyNotifySnaps = createDeepEqualSelector(
   getNotifySnaps,
@@ -2398,6 +2332,7 @@ function getAllSnapInsights(state) {
   return state.metamask.insights;
 }
 
+// Deep-equal memo: indexed read on insights map; insights object can be replaced with equal contents.
 export const getSnapInsights = createDeepEqualSelector(
   getAllSnapInsights,
   (_, id) => id,
@@ -2460,6 +2395,7 @@ export const getNumberOfAllUnapprovedTransactionsAndMessages = createSelector(
     Object.keys(unapprovedTypedMessages ?? {}).length,
 );
 
+// Deep-equal memo: builds a new current-network view object from configs + chain id.
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getCurrentChainId,
@@ -2508,6 +2444,7 @@ export const getCurrentNetwork = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: wraps selected network + client id in a new object each run.
 export const getSelectedNetwork = createDeepEqualSelector(
   getSelectedNetworkClientId,
   getNetworkConfigurationsByChainId,
@@ -2685,6 +2622,7 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   );
 }
 
+// Deep-equal memo: reduce filters configs into a new enabled-networks map each evaluation.
 export const getAllEnabledNetworks = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
   getShowTestNetworks,
@@ -2721,6 +2659,8 @@ export const getAllEnabledNetworks = createDeepEqualSelector(
  *   - If `PORTFOLIO_VIEW` is not enabled, the selector returns only the `currentChainId`.
  *   - Otherwise, it includes all chains from `networkConfigurations`, excluding
  *     `TEST_CHAINS`, while ensuring the `currentChainId` is included.
+ *
+ * Deep-equal memo: returns a filtered chain-id array; keys/filter allocate new refs.
  */
 // @deprecated('Use `getEnabledChainIds` instead')
 export const getAllChainsToPoll = createDeepEqualSelector(
@@ -2739,6 +2679,7 @@ export const getAllChainsToPoll = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: same chain-id polling derivation; unstable array identity from filters.
 // @deprecated('Use `getEnabledChainIds` instead')
 export const getChainIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
@@ -2764,6 +2705,7 @@ export const getChainIdsToPoll = createDeepEqualSelector(
   },
 );
 
+// Deep-equal memo: reduce returns new client-id array when configs are logically unchanged.
 // @deprecated('Use `getEnabledNetworkClientIds` instead')
 export const getNetworkClientIdsToPoll = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
@@ -2917,6 +2859,44 @@ export function getUsePhishDetect(state) {
 }
 
 /**
+ * Checks if a passkey is registered for unlock
+ *
+ * @param {*} state
+ * @returns {boolean}
+ */
+export function getIsPasskeyRegistered(state) {
+  return Boolean(state.metamask.passkeyRecord);
+}
+
+/**
+ * True when the enrolled passkey's AAGUID is in the sidepanel-incompatible set
+ * (defer passkey flows to a normal browser tab when also in sidepanel).
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsEnrolledPasskeyIncompatibleWithSidepanel(state) {
+  return isPasskeyAaguidIncompatibleWithSidepanel(
+    state.metamask.passkeyRecord?.credential?.aaguid,
+  );
+}
+
+/**
+ * Checks if the passkey feature is available
+ *
+ * @param {object} state - Redux state
+ * @returns {boolean}
+ */
+export function getIsPasskeyFeatureAvailable(state) {
+  return (
+    getIsPasskeyFeatureEnabled() &&
+    isWebAuthnSupported() &&
+    !getIsSocialLoginFlow(state) &&
+    !isFirefoxBrowser()
+  );
+}
+
+/**
  * Gets the cached address security alert response for a given address
  *
  * @param {*} state
@@ -2952,7 +2932,7 @@ export function getUrlScanCacheResult(state, hostname) {
  * @param {*} state
  * @returns The token scan cache object
  */
-function getTokenScanCache(state) {
+export function getTokenScanCache(state) {
   return state.metamask.tokenScanCache;
 }
 
@@ -2963,6 +2943,8 @@ function getTokenScanCache(state) {
  * @param {string} chainId
  * @param {string[]} tokenAddresses
  * @returns {Record<string, TokenScanCacheResult>}
+ *
+ * Deep-equal memo: builds a fresh results object from cache + address list args.
  */
 export const getTokenScanResultsForAddresses = createDeepEqualSelector(
   getTokenScanCache,
@@ -3022,9 +3004,7 @@ export const getIsDefiPositionsEnabled = createSelector(
   (remoteFeatureFlags) =>
     Boolean(
       remoteFeatureFlags[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
-        DEFAULT_FEATURE_FLAG_VALUES[
-          FeatureFlagNames.AssetsDefiPositionsEnabled
-        ],
+      DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
     ),
 );
 
@@ -3229,8 +3209,8 @@ export const getUpdatedAndSortedAccounts = createSelector(
       .filter((account) =>
         Boolean(
           account &&
-            pinnedAddresses.includes(account.address) &&
-            !hiddenAddresses?.includes(account.address),
+          pinnedAddresses.includes(account.address) &&
+          !hiddenAddresses?.includes(account.address),
         ),
       );
 
@@ -3609,6 +3589,8 @@ export function getSubjectsWithSnapPermission(state, snapId) {
  * @param {object} state - The current state.
  * @returns {object} A mapping of addresses to a mapping of origins to
  * connected subject info.
+ *
+ * Deep-equal memo: permitted accounts array can be a new ref with the same addresses.
  */
 export const isAccountConnectedToCurrentTab = createDeepEqualSelector(
   getPermittedEVMAccountsForCurrentTab,
@@ -3936,6 +3918,22 @@ export function getIsDeviceOffline(state) {
  */
 export function getPendingRedirectRoute(state) {
   return state.metamask?.pendingRedirectRoute ?? null;
+}
+
+/**
+ * Get the last visited Perps route and the timestamp it was recorded.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state
+ * @returns {{ path: string, timestamp: number } | null} The last visited Perps route, or null if none.
+ */
+export function getLastVisitedPerpsRoute(state) {
+  const lastVisitedRoute = state.metamask?.lastVisitedRoute;
+  return lastVisitedRoute?.name === 'perps'
+    ? {
+        path: lastVisitedRoute.path,
+        timestamp: lastVisitedRoute.timestamp,
+      }
+    : null;
 }
 
 /**

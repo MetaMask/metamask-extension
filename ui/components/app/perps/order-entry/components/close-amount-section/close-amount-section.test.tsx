@@ -44,9 +44,9 @@ describe('CloseAmountSection', () => {
       );
 
       expect(screen.getByText(/2\.5.*BTC/u)).toBeInTheDocument();
-      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(
-        /\$56,250/u,
-      );
+      const container = screen.getByTestId('close-amount-value');
+      const input = container.querySelector('input') as HTMLInputElement;
+      expect(input.value).toMatch(/56,?250/u);
     });
 
     it('displays close amount USD based on percentage', () => {
@@ -55,9 +55,9 @@ describe('CloseAmountSection', () => {
         mockStore,
       );
 
-      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(
-        /\$84,375/u,
-      );
+      const container = screen.getByTestId('close-amount-value');
+      const input = container.querySelector('input') as HTMLInputElement;
+      expect(input.value).toMatch(/84,?375/u);
     });
 
     it('displays close percentage in chip', () => {
@@ -72,7 +72,9 @@ describe('CloseAmountSection', () => {
     it('renders the slider', () => {
       renderWithProvider(<CloseAmountSection {...defaultProps} />, mockStore);
 
-      expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).toBeInTheDocument();
     });
 
     it('does not render preset percentage buttons', () => {
@@ -94,9 +96,9 @@ describe('CloseAmountSection', () => {
         mockStore,
       );
 
-      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(
-        /\$56,250/u,
-      );
+      const container = screen.getByTestId('close-amount-value');
+      const input = container.querySelector('input') as HTMLInputElement;
+      expect(input.value).toMatch(/56,?250/u);
       expect(screen.getByText(/50.*%/u)).toBeInTheDocument();
     });
 
@@ -106,9 +108,9 @@ describe('CloseAmountSection', () => {
         mockStore,
       );
 
-      expect(screen.getByTestId('close-amount-value')).toHaveTextContent(
-        /\$28,125/u,
-      );
+      const container = screen.getByTestId('close-amount-value');
+      const input = container.querySelector('input') as HTMLInputElement;
+      expect(input.value).toMatch(/28,?125/u);
     });
 
     it('handles negative position size (short)', () => {

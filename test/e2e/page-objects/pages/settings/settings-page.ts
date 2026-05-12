@@ -5,52 +5,52 @@ class SettingsPage {
   private readonly driver: Driver;
 
   private readonly aboutViewButton =
-    '[data-testid="settings-v2-tab-item-about-us"]';
+    '[data-testid="settings-tab-item-about-us"]';
 
   private readonly autoLockSettingsButton = '[data-testid="auto-lock-button"]';
 
   private readonly assetsSettingsButton =
-    '[data-testid="settings-v2-tab-item-assets"]';
+    '[data-testid="settings-tab-item-assets"]';
 
   private readonly developerToolsSettingsButton =
-    '[data-testid="settings-v2-tab-item-developer-tools"]';
+    '[data-testid="settings-tab-item-developer-tools"]';
 
   /** Full internal developer options (crash, remote flags, etc.); see `debug-tab.tsx`. */
   private readonly debugSettingsButton =
-    '[data-testid="settings-v2-tab-item-debug"]';
+    '[data-testid="settings-tab-item-debug"]';
 
   private readonly experimentalSettingsButton =
-    '[data-testid="settings-v2-tab-item-experimental"]';
+    '[data-testid="settings-tab-item-experimental"]';
 
   private readonly noMatchingResultsFoundMessage = {
     text: 'No matching results found.',
   };
 
   private readonly privacySettingsButton =
-    '[data-testid="settings-v2-tab-item-privacy"]';
+    '[data-testid="settings-tab-item-privacy"]';
 
   private readonly securityAndPasswordSettingsButton =
-    '[data-testid="settings-v2-tab-item-security-and-password"]';
+    '[data-testid="settings-tab-item-security-and-password"]';
 
   private readonly searchResultItem =
-    '[data-testid="settings-v2-search-result-item"]';
+    '[data-testid="settings-search-result-item"]';
 
   private readonly searchSettingsInput =
-    '[data-testid="settings-v2-header-search-input"]';
+    '[data-testid="settings-header-search-input"]';
 
   private readonly searchButton =
-    '[data-testid="settings-v2-header-search-button"]';
+    '[data-testid="settings-header-search-button"]';
 
-  private readonly settingsPageRoot = '[data-testid="settings-v2-root"]';
+  private readonly settingsPageRoot = '[data-testid="settings-root"]';
 
   private readonly settingsPageFullscreenRoot =
-    '[data-testid="settings-v2-tab-bar-grouped"]';
+    '[data-testid="settings-tab-bar-grouped"]';
 
   private readonly notificationsSettingsButton =
-    '[data-testid="settings-v2-tab-item-notifications"]';
+    '[data-testid="settings-tab-item-notifications"]';
 
   private readonly backupAndSyncSettingsButton =
-    '[data-testid="settings-v2-tab-item-backup-and-sync"]';
+    '[data-testid="settings-tab-item-backup-and-sync"]';
 
   private readonly showNativeTokenAsMainBalanceToggleLabel = {
     xpath:
@@ -63,10 +63,10 @@ class SettingsPage {
   };
 
   private readonly transactionsSettingsButton =
-    '[data-testid="settings-v2-tab-item-transactions"]';
+    '[data-testid="settings-tab-item-transactions"]';
 
   private readonly transactionShieldButton =
-    '[data-testid="settings-v2-tab-item-transaction-shield"]';
+    '[data-testid="settings-tab-item-transaction-shield"]';
 
   private readonly preinstalledExampleSnapSidebarItem = {
     text: 'Preinstalled Example Snap',

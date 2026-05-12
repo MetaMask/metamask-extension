@@ -51,11 +51,11 @@ export function useIsGaslessLoading() {
 
   const isGaslessLoading = Boolean(
     isSimulationEnabled &&
-      hasNoNativeTokenAvailable &&
-      (isGaslessSupportedPending || isGaslessSupportedFinished) &&
-      (!gasFeeTokens ||
-        (excludeNativeTokenForFee &&
-          hasWrongSelectedGasFeeToken({ gasFeeTokens, selectedGasFeeToken }))),
+    hasNoNativeTokenAvailable &&
+    (isGaslessSupportedPending || isGaslessSupportedFinished) &&
+    (!gasFeeTokens ||
+      (excludeNativeTokenForFee &&
+        hasWrongSelectedGasFeeToken({ gasFeeTokens, selectedGasFeeToken }))),
   );
 
   return { isGaslessLoading };

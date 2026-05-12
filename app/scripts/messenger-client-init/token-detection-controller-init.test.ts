@@ -48,6 +48,7 @@ describe('TokenDetectionControllerInit', () => {
       trackMetaMetricsEvent: expect.any(Function),
       useExternalServices: expect.any(Function),
       useTokenDetection: expect.any(Function),
+      tokenListService: expect.any(Object),
     });
   });
 });

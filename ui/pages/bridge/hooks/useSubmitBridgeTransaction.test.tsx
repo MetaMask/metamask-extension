@@ -17,7 +17,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as sharedSelectors from '../../../../shared/lib/selectors';
+import * as keyringSelectors from '../../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../../ducks/bridge/actions';
@@ -65,6 +65,39 @@ jest.mock('../../../store/actions', () => {
   };
 });
 
+const MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID = {
+  '0x1': {
+    blockExplorerUrls: ['https://etherscan.io'],
+    chainId: '0x1',
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    name: 'Ethereum',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        networkClientId: 'mainnet',
+        type: 'infura',
+        url: 'https://mainnet.infura.io/v3/infuraProjectId',
+      },
+    ],
+  },
+  '0xa4b1': {
+    blockExplorerUrls: ['https://explorer.arbitrum.io'],
+    chainId: '0xa4b1',
+    defaultBlockExplorerUrlIndex: 0,
+    defaultRpcEndpointIndex: 0,
+    name: 'Arbitrum',
+    nativeCurrency: 'ETH',
+    rpcEndpoints: [
+      {
+        networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
+        type: 'custom',
+        url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
+      },
+    ],
+  },
+};
+
 jest.mock('../../../../shared/lib/selectors/networks', () => {
   const original = jest.requireActual(
     '../../../../shared/lib/selectors/networks',
@@ -72,49 +105,30 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
   return {
     ...original,
     getSelectedNetworkClientId: () => 'mainnet',
-    getNetworkConfigurationsByChainId: jest.fn(() => ({
-      '0x1': {
-        blockExplorerUrls: ['https://etherscan.io'],
-        chainId: '0x1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
-        name: 'Ethereum',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: 'mainnet',
-            type: 'infura',
-            url: 'https://mainnet.infura.io/v3/infuraProjectId',
-          },
-        ],
+    getNetworkConfigurationsByChainId: jest.fn(
+      () => MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
+    ),
+    // Override these too since they live in the same module — their
+    // closure-captured reference to `getNetworkConfigurationsByChainId`
+    // bypasses the mock above.
+    selectNetworkConfigurationByChainId: jest.fn(
+      (
+        _state: unknown,
+        chainId: keyof typeof MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
+      ) => MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID[chainId],
+    ),
+    selectDefaultRpcEndpointByChainId: jest.fn(
+      (
+        _state: unknown,
+        chainId: keyof typeof MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
+      ) => {
+        const config = MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID[chainId];
+        if (!config) {
+          return undefined;
+        }
+        return config.rpcEndpoints[config.defaultRpcEndpointIndex];
       },
-      '0xa4b1': {
-        blockExplorerUrls: ['https://explorer.arbitrum.io'],
-        chainId: '0xa4b1',
-        defaultBlockExplorerUrlIndex: 0,
-        defaultRpcEndpointIndex: 0,
-        name: 'Arbitrum',
-        nativeCurrency: 'ETH',
-        rpcEndpoints: [
-          {
-            networkClientId: '3725601d-f497-43aa-9afa-97c26e9033a3',
-            type: 'custom',
-            url: 'https://arbitrum-mainnet.infura.io/v3/infuraProjectId',
-          },
-        ],
-      },
-    })),
-  };
-});
-
-jest.mock('../../../../shared/lib/selectors', () => {
-  const smartTransactions = jest.requireActual(
-    '../../../../shared/lib/selectors/smart-transactions',
-  );
-  return {
-    ...smartTransactions,
-    getHardwareWalletType: jest.fn(() => undefined),
-    isHardwareWallet: jest.fn(() => false),
+    ),
   };
 });
 
@@ -127,6 +141,11 @@ jest.mock('../../../selectors', () => {
     checkNetworkAndAccountSupports1559: () => true,
   };
 });
+jest.mock('../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
+  getHardwareWalletType: jest.fn(() => undefined),
+  isHardwareWallet: jest.fn(() => false),
+}));
 
 const middleware = [thunk];
 
@@ -168,7 +187,7 @@ const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
-const isHardwareWalletSpy = sharedSelectors.isHardwareWallet as jest.Mock;
+const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
 const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');
@@ -387,6 +406,7 @@ describe('ui/pages/bridge/hooks/useSubmitBridgeTransaction', () => {
       expect(submitIntentSpy).toHaveBeenCalledWith({
         quoteResponse: quoteWithIntent,
         accountAddress: expect.any(String),
+        tokenSecurityTypeDestination: null,
       });
       expect(submitTxSpy).not.toHaveBeenCalled();
       expect(mockUseNavigate).toHaveBeenCalledWith(

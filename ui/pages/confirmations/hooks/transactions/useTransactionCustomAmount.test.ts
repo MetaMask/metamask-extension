@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import { act } from '@testing-library/react';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../test/data/confirmations/contract-interaction';
 import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
 import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { upsertTransactionUIMetricsFragment } from '../../../../store/actions';
 import * as TransactionPayControllerActions from '../../../../store/controller-actions/transaction-pay-controller';
 import * as useTokenFiatRatesModule from '../tokens/useTokenFiatRates';
 import * as useTransactionPayDataModule from '../pay/useTransactionPayData';
@@ -18,6 +20,9 @@ jest.mock('../tokens/useTokenFiatRates');
 jest.mock('../pay/useTransactionPayData');
 jest.mock('../pay/useTransactionPayToken');
 jest.mock('./useUpdateTokenAmount');
+jest.mock('../../../../store/actions', () => ({
+  upsertTransactionUIMetricsFragment: jest.fn(),
+}));
 
 const MOCK_TRANSACTION_META =
   genUnapprovedContractInteractionConfirmation() as TransactionMeta;
@@ -406,6 +411,109 @@ describe('useTransactionCustomAmount', () => {
       });
 
       expect(result.current.amountFiat).toBe('50');
+    });
+  });
+
+  describe('mm_pay_amount_input_type tracking', () => {
+    it('dispatches mm_pay_amount_input_type as manual without mm_pay_quote_requested when updatePendingAmount is called', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: {
+            mm_pay_amount_input_type: 'manual',
+          },
+        },
+      );
+    });
+
+    it('dispatches mm_pay_quote_requested as true after debounce when manual input triggers a quote refresh', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      jest.mocked(upsertTransactionUIMetricsFragment).mockClear();
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: {
+            mm_pay_quote_requested: true,
+          },
+        },
+      );
+    });
+
+    it('does not dispatch mm_pay_quote_requested after debounce when disableUpdate is true', () => {
+      const { result } = runHook({ disableUpdate: true });
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      jest.mocked(upsertTransactionUIMetricsFragment).mockClear();
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).not.toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            mm_pay_quote_requested: expect.anything(),
+          }),
+        }),
+      );
+    });
+
+    it('dispatches mm_pay_amount_input_type as percentage when updatePendingAmountPercentage is called', () => {
+      const { result } = runHook({
+        payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(50);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_amount_input_type: '50%',
+          }),
+        },
+      );
+    });
+
+    it('dispatches mm_pay_quote_requested when updatePendingAmountPercentage is called', () => {
+      const { result } = runHook({
+        payTokenBalanceUsd: 100,
+      });
+
+      act(() => {
+        result.current.updatePendingAmountPercentage(25);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: expect.objectContaining({
+            mm_pay_quote_requested: true,
+          }),
+        },
+      );
     });
   });
 

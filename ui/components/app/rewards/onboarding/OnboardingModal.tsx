@@ -17,7 +17,7 @@ import {
   selectOnboardingActiveStep,
   selectCandidateSubscriptionId,
 } from '../../../../ducks/rewards/selectors';
-import { getHardwareWalletType } from '../../../../selectors';
+import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import {
   setOnboardingActiveStep,
   setOnboardingModalOpen,

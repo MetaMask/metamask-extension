@@ -31,8 +31,8 @@ import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
   getSnapsMetadata,
-  getPreferences,
 } from '../../selectors';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { MergedInternalAccount } from '../../selectors/selectors.types';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { AccountNetworkIndicator } from '../../components/multichain/account-network-indicator';
