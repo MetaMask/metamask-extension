@@ -5,7 +5,11 @@ import {
   BoxJustifyContent,
   BoxAlignItems,
   Text,
+  TextVariant,
+  TextColor,
   FontWeight,
+  ButtonBase,
+  ButtonBaseSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PositionCard } from '../position-card';
@@ -59,8 +63,7 @@ export const PerpsPositionsOrders: React.FC<PerpsPositionsOrdersProps> = ({
             marginBottom={2}
           >
             <Text fontWeight={FontWeight.Medium}>{t('perpsPositions')}</Text>
-            {/* TODO: TAT-2852 - Unhide when batch close/cancel is implemented */}
-            {/* <ButtonBase
+            <ButtonBase
               size={ButtonBaseSize.Sm}
               disabled={isCloseAllPending || !onCloseAllPositions}
               onClick={onCloseAllPositions}
@@ -72,7 +75,7 @@ export const PerpsPositionsOrders: React.FC<PerpsPositionsOrdersProps> = ({
               }}
             >
               {t('perpsCloseAll')}
-            </ButtonBase> */}
+            </ButtonBase>
           </Box>
           <Box flexDirection={BoxFlexDirection.Column}>
             {positions.map((position) => (

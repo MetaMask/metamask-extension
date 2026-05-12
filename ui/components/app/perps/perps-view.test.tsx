@@ -36,6 +36,14 @@ jest.mock('./perps-toast', () => ({
   PerpsToastProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="perps-toast-provider-mock">{children}</div>
   ),
+  usePerpsToast: () => ({
+    replacePerpsToastByKey: jest.fn(),
+  }),
+  PERPS_TOAST_KEYS: {
+    CLOSE_ALL_IN_PROGRESS: 'perpsToastCloseAllInProgress',
+    CLOSE_ALL_SUCCESS: 'perpsToastCloseAllSuccess',
+    CLOSE_ALL_FAILED: 'perpsToastCloseAllFailed',
+  },
 }));
 
 jest.mock('../../../providers/perps', () => ({
@@ -86,6 +94,51 @@ jest.mock('../../../hooks/perps/usePerpsEligibility', () => ({
 
 jest.mock('./perps-tutorial-modal', () => ({
   PerpsTutorialModal: () => null,
+}));
+
+jest.mock('./close-position', () => ({
+  CloseAllPositionsModal: ({
+    isOpen,
+    onClose,
+    onConfirm,
+    positions,
+    isSubmitting,
+  }: {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    positions: unknown[];
+    isSubmitting: boolean;
+  }) =>
+    isOpen ? (
+      <div data-testid="perps-close-all-positions-modal">
+        <span data-testid="close-all-position-count">{positions.length}</span>
+        <button
+          data-testid="perps-close-all-positions-modal-submit"
+          onClick={onConfirm}
+          disabled={isSubmitting}
+          type="button"
+        >
+          Close all
+        </button>
+        <button
+          data-testid="perps-close-all-positions-modal-cancel"
+          onClick={onClose}
+          type="button"
+        >
+          Keep positions
+        </button>
+      </div>
+    ) : null,
+}));
+
+jest.mock('../../../../shared/lib/perps-formatters', () => ({
+  PRICE_RANGES_UNIVERSAL: [],
+  formatPerpsFiat: (value: number | string) => `$${Number(value).toFixed(2)}`,
+  formatPnl: (value: number | string) => {
+    const amount = Number(value);
+    return amount >= 0 ? `+$${Math.abs(amount).toFixed(2)}` : `-$${Math.abs(amount).toFixed(2)}`;
+  },
 }));
 
 const mockStore = configureStore({
@@ -208,13 +261,12 @@ describe('PerpsView', () => {
       expect(screen.getByText(/open orders/iu)).toBeInTheDocument();
     });
 
-    // TODO: TAT-2852 - Restore when batch close/cancel is implemented
-    it('does not display close all option in positions section while hidden', () => {
+    it('displays close all button in positions section', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
       expect(
-        screen.queryByTestId('perps-close-all-positions'),
-      ).not.toBeInTheDocument();
+        screen.getByTestId('perps-close-all-positions'),
+      ).toBeInTheDocument();
     });
 
     it('shows Support & Learn section with Learn basics', () => {
@@ -312,9 +364,18 @@ describe('PerpsView', () => {
     });
   });
 
-  // TODO: TAT-2852 - Restore/unskip when batch close/cancel is implemented
   describe('close all and cancel all', () => {
-    it.skip('calls batch close and applies a single positions snapshot', async () => {
+    it('opens confirmation modal when close all button is clicked', () => {
+      renderWithProvider(<PerpsView />, mockStore);
+
+      fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+
+      expect(
+        screen.getByTestId('perps-close-all-positions-modal'),
+      ).toBeInTheDocument();
+    });
+
+    it('calls batch close after confirmation and applies a single positions snapshot', async () => {
       const clearAll = jest.fn();
       const pushPositions = jest.fn();
       mockGetPerpsStreamManager.mockReturnValue({
@@ -338,6 +399,9 @@ describe('PerpsView', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
       fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+      fireEvent.click(
+        screen.getByTestId('perps-close-all-positions-modal-submit'),
+      );
 
       await waitFor(() => {
         expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
@@ -356,44 +420,20 @@ describe('PerpsView', () => {
       expect(pushPositions).toHaveBeenCalledWith([]);
     });
 
-    it.skip('calls batch cancel and applies a single orders snapshot', async () => {
-      const ordersPush = jest.fn();
-      mockGetPerpsStreamManager.mockReturnValue({
-        init: jest.fn().mockResolvedValue(undefined),
-        prewarm: jest.fn(),
-        cleanupPrewarm: jest.fn(),
-        clearAllOptimisticTPSL: jest.fn(),
-        pushPositionsWithOverrides: jest.fn(),
-        orders: { pushData: ordersPush },
-      });
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsCancelOrders') {
-          return Promise.resolve({ success: true });
-        }
-        if (method === 'perpsGetOpenOrders') {
-          return Promise.resolve([]);
-        }
-        return Promise.resolve(undefined);
-      });
-
+    it('does not execute close all when confirmation is cancelled', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
-      fireEvent.click(screen.getByTestId('perps-cancel-all-orders'));
+      fireEvent.click(screen.getByTestId('perps-close-all-positions'));
+      expect(
+        screen.getByTestId('perps-close-all-positions-modal'),
+      ).toBeInTheDocument();
 
-      await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsCancelOrders',
-          [{ cancelAll: true }],
-        );
-      });
-      await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsGetOpenOrders',
-          [],
-        );
-      });
-      expect(ordersPush).toHaveBeenCalledTimes(1);
-      expect(ordersPush).toHaveBeenCalledWith([]);
+      fireEvent.click(screen.getByTestId('perps-close-all-positions-modal-cancel'));
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsClosePositions',
+        expect.anything(),
+      );
     });
 
     it('does not show cancel all when only TP/SL trigger orders are open', () => {
@@ -427,73 +467,6 @@ describe('PerpsView', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsCancelOrders',
         [{ cancelAll: true }],
-      );
-    });
-
-    it.skip('refreshes open orders when cancel all returns success false with no failures', async () => {
-      const ordersPush = jest.fn();
-      mockGetPerpsStreamManager.mockReturnValue({
-        init: jest.fn().mockResolvedValue(undefined),
-        prewarm: jest.fn(),
-        cleanupPrewarm: jest.fn(),
-        clearAllOptimisticTPSL: jest.fn(),
-        pushPositionsWithOverrides: jest.fn(),
-        orders: { pushData: ordersPush },
-      });
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsCancelOrders') {
-          return Promise.resolve({
-            success: false,
-            successCount: 0,
-            failureCount: 0,
-          });
-        }
-        if (method === 'perpsGetOpenOrders') {
-          return Promise.resolve([]);
-        }
-        return Promise.resolve(undefined);
-      });
-
-      renderWithProvider(<PerpsView />, mockStore);
-
-      fireEvent.click(screen.getByTestId('perps-cancel-all-orders'));
-
-      await waitFor(() => {
-        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-          'perpsGetOpenOrders',
-          [],
-        );
-      });
-      expect(ordersPush).toHaveBeenCalledWith([]);
-      expect(
-        screen.queryByText(/couldn't load this page/iu),
-      ).not.toBeInTheDocument();
-    });
-
-    it.skip('shows batch error when cancel all reports failures', async () => {
-      mockSubmitRequestToBackground.mockImplementation((method: string) => {
-        if (method === 'perpsCancelOrders') {
-          return Promise.resolve({
-            success: false,
-            successCount: 0,
-            failureCount: 1,
-          });
-        }
-        return Promise.resolve(undefined);
-      });
-
-      renderWithProvider(<PerpsView />, mockStore);
-
-      fireEvent.click(screen.getByTestId('perps-cancel-all-orders'));
-
-      await waitFor(() => {
-        expect(
-          screen.getByText(/couldn't load this page/iu),
-        ).toBeInTheDocument();
-      });
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'perpsGetOpenOrders',
-        [],
       );
     });
   });

@@ -5912,6 +5912,15 @@
   "perpsCloseAll": {
     "message": "Close all"
   },
+  "perpsCloseAllPositions": {
+    "message": "Close all positions"
+  },
+  "perpsCloseAllDescription": {
+    "message": "We'll close all your open positions at current market price."
+  },
+  "perpsKeepPositions": {
+    "message": "Keep positions"
+  },
   "perpsCloseAmount": {
     "message": "Close amount"
   },
@@ -6338,6 +6347,18 @@
   "perpsToastCancelOrderSuccess": {
     "message": "Order cancelled",
     "description": "Success toast text shown when a perps limit order is successfully cancelled"
+  },
+  "perpsToastCloseAllFailed": {
+    "message": "Failed to close all positions",
+    "description": "Error toast text shown when batch closing all perps positions fails"
+  },
+  "perpsToastCloseAllInProgress": {
+    "message": "Closing all positions",
+    "description": "In-progress toast text shown while batch closing all perps positions"
+  },
+  "perpsToastCloseAllSuccess": {
+    "message": "All positions closed",
+    "description": "Success toast text shown when all perps positions are successfully closed"
   },
   "perpsToastCloseFailed": {
     "message": "Failed to close position",
