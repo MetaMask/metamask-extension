@@ -754,10 +754,6 @@
   "autoDetectTokens": {
     "message": "Tự động phát hiện token"
   },
-  "autoDetectTokensDescription": {
-    "message": "Chúng tôi sử dụng API của bên thứ ba để phát hiện và hiển thị các token mới được gửi đến ví của bạn. Hãy tắt nếu bạn không muốn ứng dụng tự động lấy dữ liệu từ các dịch vụ đó. $1",
-    "description": "$1 is a link to a support article"
-  },
   "autoDetectTokensDescriptionV2": {
     "message": "Hiển thị các token mới được gửi đến ví của bạn."
   },
@@ -784,9 +780,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Hẹn giờ tự động khóa (phút)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Đặt khoảng thời gian không hoạt động tính bằng phút trước khi MetaMask khóa."
   },
   "available": {
     "message": "khả dụng"
@@ -1018,9 +1011,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "Nếu bạn chấp thuận yêu cầu này, một bên thứ ba nổi tiếng là lừa đảo sẽ lấy hết tài sản của bạn."
-  },
-  "blockaidMessage": {
-    "message": "Bảo vệ quyền riêng tư - không có dữ liệu nào được chia sẻ với các bên thứ ba. Có sẵn trên Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base và Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "Đây là một yêu cầu lừa đảo"
@@ -1481,9 +1471,6 @@
   "browserNotSupported": {
     "message": "Trình duyệt của bạn không được hỗ trợ..."
   },
-  "builtAroundTheWorld": {
-    "message": "MetaMask được thiết kế và xây dựng trên khắp thế giới."
-  },
   "busy": {
     "message": "Đang bận"
   },
@@ -1572,13 +1559,6 @@
   "checkNetworkConnectivityOr": {
     "message": "Kiểm tra kết nối mạng hoặc $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "Chọn mạng của bạn"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "Khi bạn sử dụng các chế độ cài đặt và cấu hình mặc định của chúng tôi, chúng tôi sử dụng Infura làm nhà cung cấp gọi hàm từ xa (RPC) mặc định để cung cấp quyền truy cập dữ liệu Ethereum đáng tin cậy và riêng tư nhất có thể. Trong một số trường hợp giới hạn, chúng tôi có thể sử dụng các nhà cung cấp RPC khác nhằm mang đến trải nghiệm tốt nhất cho người dùng. Bạn có thể chọn RPC của riêng mình, nhưng hãy nhớ rằng bất kỳ RPC nào cũng sẽ nhận được địa chỉ IP và ví Ethereum của bạn để thực hiện giao dịch. Để tìm hiểu thêm về cách Infura xử lý dữ liệu đối với các tài khoản EVM, hãy đọc $1, và đối với các tài khoản Solana, hãy đọc $2.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Bạn cần sử dụng MetaMask trên Google Chrome để kết nối với Ví cứng của bạn."
@@ -2129,9 +2109,6 @@
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
-  "currencyConversion": {
-    "message": "Tiền tệ"
-  },
   "currencyRateCheckToggle": {
     "message": "Hiển thị trình kiểm tra giá token và số dư"
   },
@@ -2165,9 +2142,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 giờ: $1 - $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "Ngôn ngữ hiện tại"
   },
   "currentNetwork": {
     "message": "Mạng hiện tại",
@@ -2586,17 +2560,8 @@
   "dismiss": {
     "message": "Đóng"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Bật tùy chọn này để tắt thông báo nhắc sao lưu Cụm từ khôi phục bí mật. Bạn nên sao lưu Cụm từ khôi phục bí mật của mình để tránh mất tiền"
-  },
-  "dismissReminderField": {
-    "message": "Tắt lời nhắc sao lưu Cụm từ khôi phục bí mật"
-  },
   "displayNftMedia": {
     "message": "Hiển thị phương tiện NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Thao tác hiển thị dữ liệu và phương tiện NFT sẽ hiển thị địa chỉ IP của bạn với OpenSea hoặc các bên thứ ba khác. Điều này có thể cho phép kẻ tấn công liên kết địa chỉ IP với địa chỉ Ethereum của bạn. Tính năng tự động phát hiện NFT dựa trên chế độ cài đặt này và sẽ không khả dụng khi chế độ cài đặt này bị tắt."
   },
   "displayNftMediaDescriptionV2": {
     "message": "Tính năng tự động phát hiện NFT phụ thuộc vào tính năng này."
@@ -3757,9 +3722,6 @@
   "ipfsGateway": {
     "message": "Cổng IPFS"
   },
-  "ipfsGatewayDescription": {
-    "message": "MetaMask sử dụng các dịch vụ của bên thứ ba để hiển thị hình ảnh các NFT của bạn được lưu trữ trên IPFS, hiển thị thông tin liên quan đến địa chỉ ENS được nhập trong thanh địa chỉ của trình duyệt và tìm nạp biểu tượng cho các token khác nhau. Địa chỉ IP của bạn có thể được hiển thị với các dịch vụ này khi bạn đang sử dụng chúng."
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "Sử dụng các dịch vụ bên thứ ba để hiển thị hình ảnh NFT được lưu trữ trên IPFS, hiển thị thông tin liên quan đến các địa chỉ ENS được nhập vào thanh địa chỉ của trình duyệt và tìm nạp biểu tượng cho các token khác nhau. Chọn cổng IPFS ưu tiên của bạn bên dưới."
   },
@@ -3940,9 +3902,6 @@
   "likeToImportTokens": {
     "message": "Bạn có muốn nhập những token này không?"
   },
-  "lineaGoerli": {
-    "message": "Mạng thử nghiệm Linea Goerli"
-  },
   "lineaMainnet": {
     "message": "Linea"
   },
@@ -3954,9 +3913,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Liên kết tài khoản Coinbase hoặc Binance của bạn để chuyển tiền mã hóa đến MetaMask miễn phí."
-  },
-  "links": {
-    "message": "Liên kết"
   },
   "loading": {
     "message": "Đang tải..."
@@ -4700,9 +4656,6 @@
   "networkPermissionToast": {
     "message": "Đã cập nhật quyền truy cập mạng"
   },
-  "networkProvider": {
-    "message": "Nhà cung cấp mạng"
-  },
   "networkStatus": {
     "message": "Trạng thái mạng"
   },
@@ -5310,9 +5263,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Ghi đè tiêu đề Nội dung-Bảo mật-Riêng tư"
-  },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "Tùy chọn này là giải pháp cho một vấn đề đã biết trên Firefox, nơi tiêu đề Nội dung-Bảo mật-Riêng tư của một dapp có thể ngăn tiện ích mở rộng tải đúng cách. Không nên tắt tùy chọn này trừ khi cần thiết để tương thích với trang web cụ thể."
   },
   "padlock": {
     "message": "Ổ khóa"
@@ -7100,9 +7050,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "Hiển thị Cụm từ khôi phục bí mật"
   },
-  "revealSeedWords": {
-    "message": "Hiện Cụm từ khôi phục bí mật"
-  },
   "revealSeedWordsDescription1": {
     "message": "$1 của bạn cho phép toàn quyền truy cập vào ví, tiền và tài khoản của bạn.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -7300,10 +7247,6 @@
   "securityAlerts": {
     "message": "Cảnh báo bảo mật"
   },
-  "securityAlertsDescription": {
-    "message": "Tính năng này sẽ cảnh báo bạn về hoạt động độc hại hoặc bất thường bằng cách chủ động xem xét các yêu cầu giao dịch và chữ ký. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "Tính năng này sẽ cảnh báo bạn khi có hoạt động độc hại bằng cách chủ động xem xét các yêu cầu giao dịch và chữ ký. $1"
   },
@@ -7312,9 +7255,6 @@
   },
   "securityAndPrivacy": {
     "message": "Bảo mật và quyền riêng tư"
-  },
-  "securityChangePassword": {
-    "message": "Thay đổi mật khẩu"
   },
   "securityChangePasswordToastError": {
     "message": "Không thể thay đổi mật khẩu. Vui lòng thử lại."
@@ -8128,9 +8068,6 @@
   "showFiatConversionInTestnets": {
     "message": "Hiển thị tỷ lệ quy đổi trên các mạng thử nghiệm"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Chọn tùy chọn này để hiển thị tỷ lệ quy đổi tiền pháp định trên mạng thử nghiệm"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "Hiển thị token mạng theo tiền tệ địa phương trên các mạng thử nghiệm. Nếu bạn được yêu cầu bật tính năng này, bạn có thể đang bị lừa đảo. Chỉ dành cho mục đích thử nghiệm. $1",
     "description": "$1 is the 'Learn more' link"
@@ -8164,9 +8101,6 @@
   },
   "showTestnetNetworks": {
     "message": "Hiển thị các mạng thử nghiệm"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Chọn tùy chọn này để hiển thị các mạng thử nghiệm trong danh sách mạng"
   },
   "sidePanelMigrationToast": {
     "message": "MetaMask hiện mở trong bảng bên theo mặc định. $1 bất kỳ lúc nào từ menu.",
@@ -8295,9 +8229,6 @@
   },
   "skipDeepLinkInterstitial": {
     "message": "Không hiển thị màn hình xen giữa khi mở liên kết sâu"
-  },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Khi bạn bật tùy chọn này, màn hình xen giữa khi mở liên kết sâu trong MetaMask sẽ bị bỏ qua. \"Liên kết sâu\" là một liên kết như https://link.metamask.io/home sẽ khiến MetaMask mở và khởi chạy; những liên kết này có thể bị che giấu bởi những liên kết khác. Màn hình xen giữa được thiết kế để bảo vệ bạn khỏi việc vô tình mở các trang trong MetaMask có thể hiển thị tài khoản, token, lịch sử, số dư, chế độ cài đặt hoặc các thông tin nhạy cảm khác. Chế độ cài đặt này chỉ áp dụng cho các liên kết được MetaMask ký."
   },
   "skipLinkConfirmationScreens": {
     "message": "Bỏ qua màn hình xác nhận liên kết"
@@ -8811,9 +8742,6 @@
   "stateLogs": {
     "message": "Nhật ký trạng thái"
   },
-  "stateLogsDescription": {
-    "message": "Nhật ký trạng thái có chứa các địa chỉ tài khoản công khai của bạn và các giao dịch đã gửi."
-  },
   "stateLogsModalDescription": {
     "message": "Nhật ký trạng thái có thể giúp chúng tôi gỡ lỗi các vấn đề bạn gặp phải. Chỉ gửi cho MetaMask để được hỗ trợ, vì nhật ký trạng thái chứa địa chỉ tài khoản công khai và các giao dịch của bạn."
   },
@@ -8888,9 +8816,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "Bật Giao dịch thông minh để có giao dịch đáng tin cậy và an toàn hơn. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Bật Giao dịch thông minh để có các giao dịch đáng tin cậy và an toàn hơn trên các mạng được hỗ trợ. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Đang bí mật gửi yêu cầu Hoán đổi của bạn..."
@@ -9320,9 +9245,6 @@
   },
   "theme": {
     "message": "Chủ đề"
-  },
-  "themeDescription": {
-    "message": "Chọn chủ đề MetaMask yêu thích của bạn."
   },
   "thirdPartyApis": {
     "message": "API bên thứ ba"
@@ -9789,9 +9711,6 @@
   "useNftDetectionDescription": {
     "message": "Hiển thị tất cả NFT, bao gồm cả những NFT giả được tặng bởi kẻ lừa đảo."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Cho phép MetaMask thêm các NFT mà bạn sở hữu bằng cách sử dụng dịch vụ của bên thứ ba. Tính năng Tự động phát hiện NFT sẽ làm lộ địa chỉ IP và tài khoản của bạn với các dịch vụ này. Việc bật tính năng này có thể liên kết địa chỉ IP của bạn với địa chỉ Ethereum của bạn và hiển thị các NFT giả do những kẻ lừa đảo phát tán. Bạn có thể thêm token theo cách thủ công để tránh rủi ro này."
-  },
   "usePassword": {
     "message": "Sử dụng mật khẩu"
   },
@@ -9803,9 +9722,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Kiểm tra thông tin mạng"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask sử dụng dịch vụ của bên thứ ba có tên $1 để hiển thị thông tin mạng chính xác và được tiêu chuẩn hóa. Điều này giúp hạn chế khả năng bạn kết nối với mạng độc hại hoặc mạng không chính xác. Khi sử dụng tính năng này, địa chỉ IP của bạn sẽ được hiển thị với chainid.network."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "Giảm khả năng bạn kết nối với mạng độc hại hoặc không chính xác. MetaMask sử dụng $1 để hiển thị thông tin mạng chính xác và được chuẩn hóa."

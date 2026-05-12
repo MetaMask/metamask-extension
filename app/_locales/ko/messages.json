@@ -754,10 +754,6 @@
   "autoDetectTokens": {
     "message": "토큰 자동 감지"
   },
-  "autoDetectTokensDescription": {
-    "message": "지갑에서 받은 새로운 토큰을 감지해 표시하기 위해 타사 API를 사용합니다. 이 서비스를 이용하여 데이터를 자동으로 가져오기 원치 않으시면 해당 기능을 끄세요. $1",
-    "description": "$1 is a link to a support article"
-  },
   "autoDetectTokensDescriptionV2": {
     "message": "지갑으로 전송된 새 토큰 표시"
   },
@@ -784,9 +780,6 @@
   },
   "autoLockTimeLimit": {
     "message": "자동 잠금 타이머(분)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "MetaMask가 잠길 때까지 걸리는 시간을 분 단위로 설정합니다."
   },
   "available": {
     "message": "사용 가능"
@@ -1018,9 +1011,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "이 요청을 승인하면 스캠을 목적으로 하는 타사가 회원님의 자산을 모두 가져가게 됩니다."
-  },
-  "blockaidMessage": {
-    "message": "개인정보 보호 - 제3자와 데이터를 공유하지 않습니다. Arbitrum, Avalanche, BNB Chain, 이더리움 메인넷, Linea, Optimism, Polygon, Base, Sepolia에서 사용할 수 있습니다."
   },
   "blockaidTitleDeceptive": {
     "message": "사기성 요청입니다"
@@ -1481,9 +1471,6 @@
   "browserNotSupported": {
     "message": "지원되지 않는 브라우저입니다..."
   },
-  "builtAroundTheWorld": {
-    "message": "MetaMask는 전 세계적으로 설계 및 구축되어 있습니다."
-  },
   "busy": {
     "message": "바쁨"
   },
@@ -1572,13 +1559,6 @@
   "checkNetworkConnectivityOr": {
     "message": "네트워크 연결을 확인하거나 $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "네트워크 선택"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "기본 설정과 구성을 사용할 경우, MetaMask는 Infura를 기본 원격 프로시저 호출(RPC) 제공업체로 사용하여 가능한 가장 안정적이고 공개성이 낮은 방식으로 이더리움 데이터에 접근할 수 있도록 합니다. 일부 제한된 경우에는 사용자에게 최상의 사용 경험을 제공하기 위해 다른 RPC 제공업체를 사용할 수 있습니다. 직접 RPC를 선택할 수도 있지만, 어떤 RPC를 사용하든 트랜잭션을 수행하려면 본인의 IP 주소와 이더리움 지갑 주소가 해당 RPC로 전송된다는 점을 유의하세요. Infura가 EVM 계정 데이터를 처리하는 방식에 대해 더 알고 싶다면 $1 내용을 확인하시고, Solana 계정에 대한 정보는 $2의 내용을 참고하세요.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "하드웨어 지갑에 연결하려면 Google Chrome에서 MetaMask를 사용해야 합니다."
@@ -2129,9 +2109,6 @@
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
-  "currencyConversion": {
-    "message": "통화"
-  },
   "currencyRateCheckToggle": {
     "message": "잔액 및 토큰 가격을 비교할 수 있습니다"
   },
@@ -2165,9 +2142,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12시간: $1 - $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "현재 언어"
   },
   "currentNetwork": {
     "message": "현재 네트워크",
@@ -2586,17 +2560,8 @@
   "dismiss": {
     "message": "닫기"
   },
-  "dismissReminderDescriptionField": {
-    "message": "이 기능을 켜면 비밀복구구문 백업 알림 메시지를 해지할 수 있습니다. 단, 자금 손실을 방지하려면 비밀복구구문을 백업하는 것이 좋습니다."
-  },
-  "dismissReminderField": {
-    "message": "비밀복구구문 백업 알림 해지"
-  },
   "displayNftMedia": {
     "message": "NFT 미디어 표시"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFT 미디어와 데이터를 표시하면 IP 주소가 OpenSea나 다른 타사에 노출될 수 있습니다. 그러면 이더리움 주소와 연관된 IP 주소가 공격 세력에 의해 이용될 수 있습니다. NFT 자동 감지 기능에는 이 설정이 필요합니다. 이 설정을 비활성화하면 해당 기능도 사용할 수 없습니다."
   },
   "displayNftMediaDescriptionV2": {
     "message": "NFT 자동 감지에 필요한 기능입니다."
@@ -3757,9 +3722,6 @@
   "ipfsGateway": {
     "message": "설정 내 IPFS"
   },
-  "ipfsGatewayDescription": {
-    "message": "MetaMask는 타사 서비스를 이용하여 IPFS에 저장된 NFT 이미지를 표시하고, 브라우저 주소창에 입력한 ENS 주소 관련 정보를 표시하며 다양한 토큰의 아이콘도 가져옵니다. 이러한 서비스를 이용하면 회원님의 IP 주소가 해당 서비스에 노출될 수 있습니다."
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "타사 서비스를 이용하여 IPFS에 저장된 NFT 이미지를 표시하고, 브라우저 주소창에 입력한 ENS 주소 관련 정보를 표시하며 다양한 토큰의 아이콘도 가져옵니다. 이러한 서비스를 이용하면 회원님의 IP 주소가 해당 서비스에 노출될 수 있습니다. 아래에서 원하는 IPFS 게이트웨이를 선택하세요."
   },
@@ -3940,9 +3902,6 @@
   "likeToImportTokens": {
     "message": "이 토큰을 추가하시겠습니까?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli 테스트 네트워크"
-  },
   "lineaMainnet": {
     "message": "Linea 메인넷"
   },
@@ -3954,9 +3913,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Coinbase나 Binance 계정을 연결하여 무료로 암호화폐를 MetaMask로 전송하세요."
-  },
-  "links": {
-    "message": "링크"
   },
   "loading": {
     "message": "로딩 중..."
@@ -4700,9 +4656,6 @@
   "networkPermissionToast": {
     "message": "네트워크 권한 업데이트됨"
   },
-  "networkProvider": {
-    "message": "네트워크 공급업체"
-  },
   "networkStatus": {
     "message": "네트워크 상태"
   },
@@ -5310,9 +5263,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policy 헤더 무시"
-  },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "이 옵션은 디앱의 Content-Security-Policy 헤더로 인해 확장 프로그램이 제대로 로드되지 않는 Firefox의 알려진 문제를 해결하기 위한 것입니다. 특정 웹 페이지와의 호환성을 위해 필요한 경우가 아니라면 이 옵션을 비활성화하지 않는 것이 좋습니다."
   },
   "padlock": {
     "message": "패드락"
@@ -7100,9 +7050,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "비밀복구구문 공개"
   },
-  "revealSeedWords": {
-    "message": "비밀복구구문 공개"
-  },
   "revealSeedWordsDescription1": {
     "message": "$1은(는) 지갑, 자금, 계정에 대한 완전한 접근 권한을 제공합니다.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -7300,10 +7247,6 @@
   "securityAlerts": {
     "message": "보안 경고"
   },
-  "securityAlertsDescription": {
-    "message": "이 기능은 트랜잭션 및 서명 요청을 적극적으로 검토하여 비정상적이거나 악의적인 활동을 경고합니다. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "이 기능은 거래 및 서명 요청을 적극적으로 검토하여 악의적인 활동을 경고합니다. $1"
   },
@@ -7312,9 +7255,6 @@
   },
   "securityAndPrivacy": {
     "message": "보안 및 개인정보 보호"
-  },
-  "securityChangePassword": {
-    "message": "비밀번호 변경"
   },
   "securityChangePasswordToastError": {
     "message": "비밀번호를 변경할 수 없습니다. 다시 시도하세요."
@@ -8128,9 +8068,6 @@
   "showFiatConversionInTestnets": {
     "message": "테스트 네트워크에 전환 표시"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "이 항목을 선택하면 테스트 네트워크에 법정 화폐 전환이 표시됩니다"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "테스트 네트워크에서 네트워크 토큰을 현지 통화로 표시합니다. 이 기능을 켜라는 요청을 받았다면 사기일 수 있습니다. 테스트 용도로만 사용합니다. $1",
     "description": "$1 is the 'Learn more' link"
@@ -8164,9 +8101,6 @@
   },
   "showTestnetNetworks": {
     "message": "테스트 네트워크 표시"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "네트워크 목록에서 표시하려는 테스트 네트워크를 선택하세요."
   },
   "sidePanelMigrationToast": {
     "message": "이제 MetaMask가 기본적으로 사이드 패널에서 열립니다. 메뉴에서 언제든지 $1할 수 있습니다.",
@@ -8295,9 +8229,6 @@
   },
   "skipDeepLinkInterstitial": {
     "message": "딥링크를 열 때 중간 화면을 표시하지 않기"
-  },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "이 옵션을 활성화하면 MetaMask에서 딥링크를 열 때 표시되는 중간 화면을 건너뜁니다. '딥링크'는 https://link.metamask.io/home과 같은 링크로 MetaMask가 열리도록 하는 링크입니다. 이러한 링크는 다른 사람들에 의해 숨겨질 수 있습니다. 중간 화면은 계정, 토큰, 기록, 잔액, 설정, 기타 잠재적으로 민감한 정보를 표시할 수 있는 MetaMask 내 페이지를 실수로 여는 것을 방지하기 위해 설계되었습니다. 이 설정은 MetaMask에서 서명된 링크에만 적용됩니다."
   },
   "skipLinkConfirmationScreens": {
     "message": "링크 확인 화면 건너뛰기"
@@ -8811,9 +8742,6 @@
   "stateLogs": {
     "message": "상태 로그"
   },
-  "stateLogsDescription": {
-    "message": "상태 로그에 공개 계정 주소와 전송된 트랜잭션이 있습니다."
-  },
   "stateLogsModalDescription": {
     "message": "상태 기록은 발생할 수 있는 문제를 디버그하는 데 도움이 될 수 있습니다. 상태 기록에는 공개 계정 주소와 트랜잭션이 포함되어 있으므로 지원이 필요한 경우에만 MetaMask로 보내세요."
   },
@@ -8888,9 +8816,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "더욱 안정적이고 안전하게 트랜잭션을 진행하려면 스마트 트랜잭션을 활성화하세요. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "스마트 트랜잭션을 활성화하면 지원되는 네트워크에서 더 안전하고 신뢰할 수 있는 트랜잭션을 할 수 있습니다. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "스왑을 비공개로 제출하는 중..."
@@ -9320,9 +9245,6 @@
   },
   "theme": {
     "message": "테마"
-  },
-  "themeDescription": {
-    "message": "원하는 MetaMask 테마를 선택하세요."
   },
   "thirdPartyApis": {
     "message": "제삼자 API"
@@ -9789,9 +9711,6 @@
   "useNftDetectionDescription": {
     "message": "사기성 에어드롭으로 배포된 가짜 NFT를 포함하여 모든 NFT가 표시됩니다."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "MetaMask가 제삼자 서비스를 이용하여 회원님의 NFT를 추가할 수 있도록 합니다. NFT를 자동 감지하면 이러한 서비스에 IP와 계정 주소가 노출됩니다. 이 기능을 켜면 IP 주소가 이더리움 주소와 연결되고 사기꾼이 에어드랍한 가짜 NFT가 표시될 수 있습니다. 이러한 위험을 피하기 위해 수동으로 토큰을 추가할 수 있습니다."
-  },
   "usePassword": {
     "message": "비밀번호 사용"
   },
@@ -9803,9 +9722,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "네트워크 세부 정보 확인"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask는 $1(이)라는 제삼자 서비스를 사용하여 정확하고 표준화된 네트워크 세부 정보를 표시합니다. 이를 통해 악성 또는 잘못된 네트워크에 연결할 가능성이 줄어듭니다. 이 기능을 사용하면 사용자의 IP 주소가 chainid.network에 노출됩니다."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "악의적이거나 잘못된 네트워크에 연결될 가능성을 줄여 줍니다. MetaMask는 정확하고 표준화된 네트워크 세부 정보를 표시하기 위해 $1을(를) 사용합니다."

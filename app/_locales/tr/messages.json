@@ -754,10 +754,6 @@
   "autoDetectTokens": {
     "message": "Tokenları otomatik algıla"
   },
-  "autoDetectTokensDescription": {
-    "message": "Cüzdanınıza gönderilen yeni tokenları algılamak ve göstermek için üçüncü taraf API'leri kullanırız. Uygulamanın bu hizmetlerden otomatik olarak veri çekmesini istemiyorsanız kapatın. $1",
-    "description": "$1 is a link to a support article"
-  },
   "autoDetectTokensDescriptionV2": {
     "message": "Cüzdanınıza gönderilen yeni tokenları gösterir."
   },
@@ -784,9 +780,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Otomatik Kilitleme Sayacı (dakika)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "MetaMask kilitlenmeden önce dakika olarak boşta kalma süresini belirleyin."
   },
   "available": {
     "message": "kullanılabilir"
@@ -1018,9 +1011,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "Bu talebi onaylarsanız dolandırıcılıkla bilinen üçüncü bir taraf tüm varlıklarınızı çalar."
-  },
-  "blockaidMessage": {
-    "message": "Gizlilik koruması - hiçbir veri üçüncü taraflarla paylaşılmaz. Arbitrum, Avalanche, BNB chain, Ethereum Ana Ağı, Linea, Optimism, Polygon, Base ve Sepolia için sunulur."
   },
   "blockaidTitleDeceptive": {
     "message": "Bu, aldatıcı bir taleptir"
@@ -1481,9 +1471,6 @@
   "browserNotSupported": {
     "message": "Tarayıcınız desteklenmiyor..."
   },
-  "builtAroundTheWorld": {
-    "message": "MetaMask dünya çapında geliştirilmiş ve yapılmıştır."
-  },
   "busy": {
     "message": "Meşgul"
   },
@@ -1572,13 +1559,6 @@
   "checkNetworkConnectivityOr": {
     "message": "Ağ bağlantısını kontrol edin veya $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "Ağınızı seçin"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "Varsayılan ayarlarınızı ve yapılandırmalarınızı kullandığımızda, Ethereum verilerine mümkün olan en güvenilir ve gizli erişimi sunmak amacıyla varsayılan uzak yordam çağrısı (RPC) sağlayıcısı olarak Infura'yı kullanırız. Sınırlı durumlarda, kullanıcılarımıza en iyi deneyimi sağlamak amacıyla başka RPC sağlayıcıları kullanabiliriz. Kendi RPC'nizi seçebilirsiniz ancak her RPC'nin işlem yapmak için IP adresinize ve Ethereum cüzdanınıza ulaşacağını unutmayın. Infura'nın, EVM hesapları için verileri nasıl kullandığı hakkında bilgi edinmek için $1 bölümümüzü, Solana hesapları için $2 bölümümüzü okuyun.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Donanım Cüzdanınıza bağlamak için MetaMask'ı Google Chrome'da kullanmanız gerekir."
@@ -2129,9 +2109,6 @@
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
-  "currencyConversion": {
-    "message": "Para Birimi"
-  },
   "currencyRateCheckToggle": {
     "message": "Bakiyeyi ve token fiyat denetleyicisini göster"
   },
@@ -2165,9 +2142,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 sa: $1 - $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "Mevcut Dil"
   },
   "currentNetwork": {
     "message": "Mevcut ağ",
@@ -2586,17 +2560,8 @@
   "dismiss": {
     "message": "Yok say"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Gizli Kurtarma İfadesi yedekleme hatırlatma mesajını yoksaymak için bunu açın. Paranızın kaybolmasını önlemek için Gizli Kurtarma İfadenizi yedeklemenizi kesinlikle tavsiye ederiz"
-  },
-  "dismissReminderField": {
-    "message": "Gizli Kurtarma İfadesi yedekleme hatırlatma uyarısını yoksay"
-  },
   "displayNftMedia": {
     "message": "NFT medyasını göster"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFT medyasının ve verilerin gösterilmesi IP adresinizin OpenSea veya diğer üçüncü taraflarla paylaşılmasına neden olur. Bu durum, saldırganların IP adresinizi Ethereum adresinizle ilişkilendirmesini sağlayabilir. NFT otomatik algılama bu ayara dayalıdır ve bu ayar kapatıldığında kullanılamaz olur."
   },
   "displayNftMediaDescriptionV2": {
     "message": "NFT otomatik algılama bu özelliğe dayanır."
@@ -3757,9 +3722,6 @@
   "ipfsGateway": {
     "message": "IPFS ağ geçidi"
   },
-  "ipfsGatewayDescription": {
-    "message": "MetaMask, IPFS'de depolanan NFT'lerinizin görüntülerini göstermek, tarayıcınızın adres çubuğuna girilen ENS adresleri ile ilgili bilgileri göstermek ve farklı tokenların simgelerini almak için üçüncü taraf hizmetleri kullanır. Siz bunları kullanırken IP adresiniz bu hizmetlerle paylaşılabilir."
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "IPFS'de depolanan NFT'lerinizin görüntülerini göstermek, tarayıcınızın adres çubuğuna girilen ENS adresleri ile ilgili bilgileri göstermek ve farklı tokenların simgelerini almak için üçüncü taraf hizmetlerini kullanır. Tercih ettiğiniz IPFS ağ geçidini aşağıda seçin."
   },
@@ -3940,9 +3902,6 @@
   "likeToImportTokens": {
     "message": "Bu tokenları içe aktarmak ister misiniz?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli test ağı"
-  },
   "lineaMainnet": {
     "message": "Linea"
   },
@@ -3954,9 +3913,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "MetaMask'e ücretsiz kripto transferi yapmak için Coinbase veya Binance hesaplarınızı bağlayın."
-  },
-  "links": {
-    "message": "Bağlantılar"
   },
   "loading": {
     "message": "Yükleniyor..."
@@ -4700,9 +4656,6 @@
   "networkPermissionToast": {
     "message": "Ağ izinleri güncellendi"
   },
-  "networkProvider": {
-    "message": "Ağ sağlayıcısı"
-  },
   "networkStatus": {
     "message": "Ağ durumu"
   },
@@ -5310,9 +5263,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "İçerik-Güvenlik-Politika başlığını geçersiz kıl"
-  },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "Bu seçenek, Firefox'ta merkeziyetsiz bir uygulamanın İçerik-Güvenlik-Politika başlığının uzantının düzgün bir şekilde yüklenmesini önleyebildiği bilinen bir sorunun anlık çözümüdür. Belirli web sayfası uyumluluğu için gerekli olmadığı sürece bu seçeneğin devre dışı bırakılması önerilmez."
   },
   "padlock": {
     "message": "Asma Kilit"
@@ -7100,9 +7050,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "Gizli Kurtarma İfadesini Açığa Çıkar"
   },
-  "revealSeedWords": {
-    "message": "Gizli Kurtarma İfadesini Açığa Çıkar"
-  },
   "revealSeedWordsDescription1": {
     "message": "$1, cüzdanınıza, fonlarınıza ve hesaplarınıza tam erişim verir.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -7300,10 +7247,6 @@
   "securityAlerts": {
     "message": "Güvenlik uyarıları"
   },
-  "securityAlertsDescription": {
-    "message": "Bu özellik işlem ve imza taleplerini aktif bir şekilde inceleyerek kötü amaçlı veya olağan dışı aktivite konusunda sizi uyarır. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "Bu özellik işlem ve imza taleplerini aktif bir şekilde inceleyerek kötü amaçlı aktivite konusunda sizi uyarır. $1"
   },
@@ -7312,9 +7255,6 @@
   },
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
-  },
-  "securityChangePassword": {
-    "message": "Şifreyi değiştir"
   },
   "securityChangePasswordToastError": {
     "message": "Şifre değiştirilemedi. Lütfen tekrar deneyin."
@@ -8128,9 +8068,6 @@
   "showFiatConversionInTestnets": {
     "message": "Test ağlarında dönüşümü göster"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Test ağlarındaki fiat para dönüşümünü göstermek için bunu seçin"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "Ağ tokenlarını test ağlarında yerel para birimi olarak gösterir. Bu özelliği açmanız istendiyse dolandırılıyor olabilirsiniz. Yalnızca test amaçlıdır. $1",
     "description": "$1 is the 'Learn more' link"
@@ -8164,9 +8101,6 @@
   },
   "showTestnetNetworks": {
     "message": "Test ağlarını göster"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Ağ listesinde test ağlarını göstermek için bunu seçin"
   },
   "sidePanelMigrationToast": {
     "message": "MetaMask artık varsayılan olarak yan panelde açılıyor. Dilediğinizden zaman menüden $1.",
@@ -8295,9 +8229,6 @@
   },
   "skipDeepLinkInterstitial": {
     "message": "Derin bağlantıları açarken geçiş ekranını gösterme"
-  },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Bu seçenek etkinleştirildiğinde MetaMask'te derin bağlantıları açarken gösterilen geçiş ekranı atlanacaktır. \"Derin bağlantı\", MetaMask'in açılmasına sebep olan https://link.metamask.io/home gibi bir bağlantıdır; bu bağlantılar başkaları tarafından gizlenebilir. Geçiş ekranı, sizi MetaMask dahilinde hesaplarınızı, token'larınızı, geçmişinizi, bakiyelerinizi, ayarlarınızı ve hassas olma potansiyeli olan diğer bilgilerinizi gösterebilecek kazara açılan sayfalardan korumak amacıyla tasarlanmıştır. Bu ayar yalnızca MetaMask tarafından imzalanan bağlantılar için geçerlidir."
   },
   "skipLinkConfirmationScreens": {
     "message": "Bağlantı onay ekranlarını atla"
@@ -8811,9 +8742,6 @@
   "stateLogs": {
     "message": "Durum günlükleri"
   },
-  "stateLogsDescription": {
-    "message": "Durum günlükleri genel hesap adreslerinizi ve gönderilen işlemleri içerir."
-  },
   "stateLogsModalDescription": {
     "message": "Durum günlükleri, karşılaşabileceğiniz sorunları gidermemize yardımcı olabilir. Durum günlükleri genel hesap adreslerinizi ve işlemlerinizi içerdiği için bunları yalnızca destek almak için MetaMask'e gönderin."
   },
@@ -8888,9 +8816,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "Daha güvenilir ve güvenli işlemler için Akıllı İşlemleri açın. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Desteklenen ağlarda daha güvenilir ve güvenli işlemler için Akıllı İşlemleri açın. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Swap işlemin özel olarak gönderiliyor..."
@@ -9320,9 +9245,6 @@
   },
   "theme": {
     "message": "Tema"
-  },
-  "themeDescription": {
-    "message": "Tercih ettiğin MetaMask temasını seç."
   },
   "thirdPartyApis": {
     "message": "Üçüncü taraf API'leri"
@@ -9789,9 +9711,6 @@
   "useNftDetectionDescription": {
     "message": "Dolandırıcılar tarafından airdrop edilen sahte NFT’ler de dahil olmak üzere tüm NFT'leri gösterir."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "MetaMask'in üçüncü taraf hizmetlerini kullanarak size ait olan NFT'leri eklemesine izin verin. NFT'leri otomatik algılama, IP adresinizi ve hesap adresinizi bu hizmetlerle paylaşır. Bu özelliğin etkinleştirilmesi IP adresinizi Ethereum adresinizle ilişkilendirebilir ve dolandırıcılar tarafından airdrop'u gerçekleştirilen sahte NFT'leri gösterebilir. Bu riski önlemek için tokenları elle ekleyebilirsiniz."
-  },
   "usePassword": {
     "message": "Şifre kullan"
   },
@@ -9803,9 +9722,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Ağ bilgileri kontrolü"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask, doğru ve standartlaştırılmış ağ bilgilerini göstermek için $1 adlı üçüncü taraf bir hizmet kullanır. Bu, kötü amaçlı veya yanlış ağa bağlanma şansınızı düşürür. Bu özelliği kullanırken IP adresiniz chainid.network ile paylaşılır."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "Kötü amaçlı veya yanlış bir ağa bağlanma ihtimalinizi azaltır. MetaMask, doğru ve standartlaştırılmış ağ bilgileri göstermek için $1 kullanır."
