@@ -125,9 +125,7 @@ describe('Token List via StorageService', function () {
           await mockTokensV2SupportedNetworks(mockServer),
           // Tokens API – /v3/assets (ETH mainnet + MSCL + mUSD)
           await mockServer
-            .forGet(
-              /https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u,
-            )
+            .forGet(/https:\/\/tokens\.api\.cx\.metamask\.io\/v3\/assets/u)
             .always()
             .thenCallback((request) => {
               const url = new URL(request.url);

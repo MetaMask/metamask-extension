@@ -292,7 +292,10 @@ async function mockAssetsV3(mockServer: Mockttp) {
     .always()
     .thenCallback((request) => {
       const url = new URL(request.url);
-      const assetIds = url.searchParams.getAll('assetIds').join(',').toLowerCase();
+      const assetIds = url.searchParams
+        .getAll('assetIds')
+        .join(',')
+        .toLowerCase();
 
       const assetMap: Record<
         string,

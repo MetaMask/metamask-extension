@@ -82,7 +82,12 @@ async function mockChain1337(mockServer: Mockttp) {
       .thenCallback(() => ({
         statusCode: 200,
         json: {
-          usd: { name: 'US Dollar', ticker: 'usd', value: 1, currencyType: 'fiat' },
+          usd: {
+            name: 'US Dollar',
+            ticker: 'usd',
+            value: 1,
+            currencyType: 'fiat',
+          },
           eth: {
             name: 'Ether',
             ticker: 'eth',

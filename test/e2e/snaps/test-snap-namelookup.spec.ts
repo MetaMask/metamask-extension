@@ -67,7 +67,9 @@ describe('Name lookup', function () {
         },
         fixtures: new FixtureBuilderV2()
           .withSelectedNetwork()
-          .withNetworkEnablementController({ enabledNetworkMap: { eip155: { '0x1': true } } })
+          .withNetworkEnablementController({
+            enabledNetworkMap: { eip155: { '0x1': true } },
+          })
           .withSnapsPrivacyWarningAlreadyShown()
           .build(),
         testSpecificMock: async (mockServer: Mockttp) => [

@@ -52,7 +52,12 @@ async function mockLineaAndMusd(mockServer: Mockttp) {
       .thenCallback(() => ({
         statusCode: 200,
         json: {
-          usd: { name: 'US Dollar', ticker: 'usd', value: 1, currencyType: 'fiat' },
+          usd: {
+            name: 'US Dollar',
+            ticker: 'usd',
+            value: 1,
+            currencyType: 'fiat',
+          },
           eth: {
             name: 'Ether',
             ticker: 'eth',
@@ -76,7 +81,10 @@ async function mockLineaAndMusd(mockServer: Mockttp) {
         const assetIds = url.searchParams.getAll('assetIds').join(',');
         const results = [];
 
-        if (assetIds.includes('eip155:1/slip44:60') || assetIds.includes('eip155:1/')) {
+        if (
+          assetIds.includes('eip155:1/slip44:60') ||
+          assetIds.includes('eip155:1/')
+        ) {
           results.push({
             assetId: 'eip155:1/slip44:60',
             name: 'Ethereum',
@@ -95,9 +103,9 @@ async function mockLineaAndMusd(mockServer: Mockttp) {
         }
 
         if (
-          assetIds.toLowerCase().includes(
-            `eip155:1/erc20:${MUSD_ADDRESS.toLowerCase()}`,
-          )
+          assetIds
+            .toLowerCase()
+            .includes(`eip155:1/erc20:${MUSD_ADDRESS.toLowerCase()}`)
         ) {
           results.push({
             assetId: `eip155:1/erc20:${MUSD_ADDRESS}`,
@@ -108,9 +116,9 @@ async function mockLineaAndMusd(mockServer: Mockttp) {
         }
 
         if (
-          assetIds.toLowerCase().includes(
-            `eip155:59144/erc20:${MUSD_ADDRESS.toLowerCase()}`,
-          )
+          assetIds
+            .toLowerCase()
+            .includes(`eip155:59144/erc20:${MUSD_ADDRESS.toLowerCase()}`)
         ) {
           results.push({
             assetId: `eip155:59144/erc20:${MUSD_ADDRESS}`,

@@ -58,8 +58,18 @@ async function erc20Mocks(server: Mockttp) {
       .thenCallback(() => ({
         statusCode: 200,
         json: {
-          usd: { name: 'US Dollar', ticker: 'usd', value: 1, currencyType: 'fiat' },
-          eth: { name: 'Ether', ticker: 'eth', value: 1 / 3401, currencyType: 'crypto' },
+          usd: {
+            name: 'US Dollar',
+            ticker: 'usd',
+            value: 1,
+            currencyType: 'fiat',
+          },
+          eth: {
+            name: 'Ether',
+            ticker: 'eth',
+            value: 1 / 3401,
+            currencyType: 'crypto',
+          },
         },
       })),
   ];

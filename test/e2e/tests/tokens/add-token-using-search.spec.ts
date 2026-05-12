@@ -53,8 +53,18 @@ describe('Add existing token using search', function () {
         .thenCallback(() => ({
           statusCode: 200,
           json: {
-            usd: { name: 'US Dollar', ticker: 'usd', value: 1, currencyType: 'fiat' },
-            bnb: { name: 'BNB', ticker: 'bnb', value: 1 / 600, currencyType: 'crypto' },
+            usd: {
+              name: 'US Dollar',
+              ticker: 'usd',
+              value: 1,
+              currencyType: 'fiat',
+            },
+            bnb: {
+              name: 'BNB',
+              ticker: 'bnb',
+              value: 1 / 600,
+              currencyType: 'crypto',
+            },
           },
         })),
     ];
@@ -101,22 +111,24 @@ describe('Add existing token using search', function () {
     ];
   }
 
-  async function mockSupportedNetworks(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+  async function mockSupportedNetworks(
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> {
     return [
       await mockServer
         .forGet('https://tokens.api.cx.metamask.io/v2/supportedNetworks')
         .thenCallback(() => ({
           statusCode: 200,
           json: {
-            fullSupport: [
-              'eip155:56',
-            ],
+            fullSupport: ['eip155:56'],
           },
         })),
     ];
   }
 
-  async function mockTokensAssets(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+  async function mockTokensAssets(
+    mockServer: Mockttp,
+  ): Promise<MockedEndpoint[]> {
     return [
       await mockServer
         .forGet('https://tokens.api.cx.metamask.io/v3/assets')
@@ -130,7 +142,8 @@ describe('Add existing token using search', function () {
               decimals: 18,
             },
             {
-              assetId: 'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+              assetId:
+                'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
               name: 'Basic Attention Token',
               symbol: 'BAT',
               decimals: 18,
