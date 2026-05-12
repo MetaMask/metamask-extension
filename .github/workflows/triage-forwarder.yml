@@ -35,17 +35,17 @@ jobs:
           echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
 
       - name: Dispatch to triage-agent
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{ steps.exchange.outputs.token }}
-          repository: MetaMask/triage-agent
-          event-type: triage-issue
-          client-payload: |-
-            {
-              "repo_owner": "${{ github.repository_owner }}",
-              "repo_name": "${{ github.event.repository.name }}",
-              "issue_number": "${{ github.event.issue.number }}",
-              "event_action": "${{ github.event.action }}",
-              "event_label_name": "${{ github.event.label.name }}",
-              "trigger_mode": "label"
-            }
+        env:
+          TOKEN: ${{ steps.exchange.outputs.token }}
+        run: |
+          curl -sSf -X POST \
+            -H "Authorization: token $TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/MetaMask/triage-agent/dispatches" \
+            -d "$(jq -cn \
+              --arg owner "${{ github.repository_owner }}" \
+              --arg name "${{ github.event.repository.name }}" \
+              --arg number "${{ github.event.issue.number }}" \
+              --arg action "${{ github.event.action }}" \
+              --arg label "${{ github.event.label.name }}" \
+              '{event_type: "triage-issue", client_payload: {repo_owner: $owner, repo_name: $name, issue_number: $number, event_action: $action, event_label_name: $label, trigger_mode: "label"}}')"
