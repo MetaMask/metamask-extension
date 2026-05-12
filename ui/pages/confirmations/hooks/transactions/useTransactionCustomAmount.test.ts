@@ -415,7 +415,7 @@ describe('useTransactionCustomAmount', () => {
   });
 
   describe('mm_pay_amount_input_type tracking', () => {
-    it('dispatches mm_pay_amount_input_type as manual and mm_pay_quote_requested as false when updatePendingAmount is called', () => {
+    it('dispatches mm_pay_amount_input_type as manual without mm_pay_quote_requested when updatePendingAmount is called', () => {
       const { result } = runHook();
 
       act(() => {
@@ -425,11 +425,56 @@ describe('useTransactionCustomAmount', () => {
       expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
         MOCK_TRANSACTION_META.id,
         {
-          properties: expect.objectContaining({
+          properties: {
             mm_pay_amount_input_type: 'manual',
-            mm_pay_quote_requested: false,
-          }),
+          },
         },
+      );
+    });
+
+    it('dispatches mm_pay_quote_requested as true after debounce when manual input triggers a quote refresh', () => {
+      const { result } = runHook();
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      jest.mocked(upsertTransactionUIMetricsFragment).mockClear();
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        {
+          properties: {
+            mm_pay_quote_requested: true,
+          },
+        },
+      );
+    });
+
+    it('does not dispatch mm_pay_quote_requested after debounce when disableUpdate is true', () => {
+      const { result } = runHook({ disableUpdate: true });
+
+      act(() => {
+        result.current.updatePendingAmount('50');
+      });
+
+      jest.mocked(upsertTransactionUIMetricsFragment).mockClear();
+
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(upsertTransactionUIMetricsFragment).not.toHaveBeenCalledWith(
+        MOCK_TRANSACTION_META.id,
+        expect.objectContaining({
+          properties: expect.objectContaining({
+            mm_pay_quote_requested: expect.anything(),
+          }),
+        }),
       );
     });
 

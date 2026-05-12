@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
@@ -13,6 +13,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_POPUP,
 } from '../../../../shared/constants/app';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import type { BaseReaderProps } from './base-reader.types';
 import BaseReader from './base-reader';
@@ -107,17 +108,16 @@ describe('BaseReader', () => {
   it('renders progress bar when scan produces partial data', async () => {
     setupWebcamUtilsSuccess();
     mockEnhancedReader.mockImplementation((({
-      handleScan,
+      onFrame,
     }: {
-      handleScan: (data: string) => void;
+      onFrame: (data: string) => void;
     }) => {
-      // Call handleScan in useEffect to avoid state updates during render
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
-        handleScan(
+        onFrame(
           'UR:CRYPTO-HDKEY/24-2/LPCSCSAOCSNYCYNLAMSKJPHDGTEHOEADCSFNAOAEAMTAADDYOTADLNCSDWYKCSFNYKAEYKAOCYJKSKTNBKAXAXATTAADDYOEADLRAEWKLAWKAXAEAYCYTEDMFEAYASISGRIHKKJKJYJLJTIHBKJOHSIAIAJLKPJTJYDMJKJYHSJTIEHSJPIEHTSTGSAO',
         );
-      }, [handleScan]);
+      }, [onFrame]);
       return null;
     }) as unknown as typeof EnhancedReader);
     renderWithProvider(<BaseReader {...defaultProps} />);
@@ -703,14 +703,14 @@ describe('BaseReader', () => {
   it('renders unknown QR code error when scan throws during wallet read', async () => {
     setupWebcamUtilsSuccess();
     mockEnhancedReader.mockImplementation((({
-      handleScan,
+      onFrame,
     }: {
-      handleScan: (data: string) => void;
+      onFrame: (data: string) => void;
     }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
-        handleScan('not-a-valid-ur-payload');
-      }, [handleScan]);
+        onFrame('not-a-valid-ur-payload');
+      }, [onFrame]);
       return null;
     }) as unknown as typeof EnhancedReader);
 
@@ -727,14 +727,14 @@ describe('BaseReader', () => {
   it('renders unknown QR code error for signing flow when scan throws', async () => {
     setupWebcamUtilsSuccess();
     mockEnhancedReader.mockImplementation((({
-      handleScan,
+      onFrame,
     }: {
-      handleScan: (data: string) => void;
+      onFrame: (data: string) => void;
     }) => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       useEffect(() => {
-        handleScan('not-a-valid-ur-payload');
-      }, [handleScan]);
+        onFrame('not-a-valid-ur-payload');
+      }, [onFrame]);
       return null;
     }) as unknown as typeof EnhancedReader);
 
@@ -796,5 +796,273 @@ describe('BaseReader', () => {
     });
     // checkStatus called twice: initial failure + retry
     expect(mockCheckStatus).toHaveBeenCalledTimes(2);
+  });
+
+  // ---- MetaMetrics tracking -----------------------------------------------
+
+  describe('MetaMetrics tracking', () => {
+    const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+
+    function renderWithMetrics(ui: React.ReactElement) {
+      return renderWithProvider(
+        ui,
+        undefined,
+        '/',
+        render,
+        () => mockTrackEvent,
+      );
+    }
+
+    beforeEach(() => {
+      mockTrackEvent.mockClear();
+    });
+
+    it('fires ModalViewed when entering blocked state', async () => {
+      mockEnhancedReader.mockImplementation(
+        () => null as unknown as React.ReactElement,
+      );
+      mockCheckStatus.mockResolvedValue({
+        permissions: false,
+        environmentReady: true,
+      });
+      mockQueryCameraPermission.mockResolvedValue({
+        state: 'denied',
+        permissionStatus: {
+          state: 'denied',
+          addEventListener: jest.fn(),
+        } as unknown as PermissionStatus,
+      });
+
+      await act(async () => {
+        renderWithMetrics(<BaseReader {...defaultProps} />);
+      });
+
+      const modalViewed = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+      );
+      expect(modalViewed).toHaveLength(1);
+      expect(modalViewed[0][0].properties.error_type_view_count).toBe(1);
+    });
+
+    it('fires ModalViewed when entering needed state', async () => {
+      mockEnhancedReader.mockImplementation(
+        () => null as unknown as React.ReactElement,
+      );
+      mockCheckStatus.mockResolvedValue({
+        permissions: true,
+        environmentReady: true,
+      });
+      mockQueryCameraPermission.mockResolvedValue({
+        state: 'prompt',
+        permissionStatus: {
+          state: 'prompt',
+          addEventListener: jest.fn(),
+        } as unknown as PermissionStatus,
+      });
+      const notAllowed = new Error('denied');
+      notAllowed.name = 'NotAllowedError';
+      mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
+
+      await act(async () => {
+        renderWithMetrics(<BaseReader {...defaultProps} />);
+      });
+
+      const modalViewed = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+      );
+      expect(modalViewed).toHaveLength(1);
+      expect(modalViewed[0][0].properties.error_type_view_count).toBe(1);
+    });
+
+    it('fires CtaClicked when Continue is clicked on blocked UI', async () => {
+      mockEnhancedReader.mockImplementation(
+        () => null as unknown as React.ReactElement,
+      );
+      mockCheckStatus.mockResolvedValue({
+        permissions: false,
+        environmentReady: true,
+      });
+      mockQueryCameraPermission.mockResolvedValue({
+        state: 'denied',
+        permissionStatus: {
+          state: 'denied',
+          addEventListener: jest.fn(),
+        } as unknown as PermissionStatus,
+      });
+
+      await act(async () => {
+        renderWithMetrics(<BaseReader {...defaultProps} />);
+      });
+
+      await act(async () => {
+        await userEvent.click(screen.getByTestId('qr-camera-blocked-continue'));
+      });
+
+      const ctaClicked = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+      );
+      expect(ctaClicked).toHaveLength(1);
+    });
+
+    it('fires CtaClicked when Continue is clicked on needed UI', async () => {
+      mockEnhancedReader.mockImplementation(
+        () => null as unknown as React.ReactElement,
+      );
+      mockCheckStatus.mockResolvedValue({
+        permissions: true,
+        environmentReady: true,
+      });
+      mockQueryCameraPermission.mockResolvedValue({
+        state: 'prompt',
+        permissionStatus: {
+          state: 'prompt',
+          addEventListener: jest.fn(),
+        } as unknown as PermissionStatus,
+      });
+      const notAllowed = new Error('denied');
+      notAllowed.name = 'NotAllowedError';
+      mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
+
+      await act(async () => {
+        renderWithMetrics(<BaseReader {...defaultProps} />);
+      });
+
+      mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
+      await act(async () => {
+        await userEvent.click(
+          screen.getByTestId('qr-camera-access-needed-continue'),
+        );
+      });
+
+      const ctaClicked = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+      );
+      expect(ctaClicked).toHaveLength(1);
+    });
+
+    it('fires SuccessModalViewed when camera recovers from an error state', async () => {
+      mockEnhancedReader.mockImplementation(
+        () => null as unknown as React.ReactElement,
+      );
+      mockCheckStatus.mockResolvedValue({
+        permissions: false,
+        environmentReady: true,
+      });
+      mockQueryCameraPermission.mockResolvedValue({
+        state: 'denied',
+        permissionStatus: {
+          state: 'denied',
+          addEventListener: jest.fn(),
+        } as unknown as PermissionStatus,
+      });
+
+      await act(async () => {
+        renderWithMetrics(<BaseReader {...defaultProps} />);
+      });
+
+      mockQueryCameraPermission.mockResolvedValueOnce({
+        state: 'granted',
+        permissionStatus: null,
+      });
+      mockRequestVideoStream.mockResolvedValueOnce(
+        mockStream as unknown as MediaStream,
+      );
+      await act(async () => {
+        await userEvent.click(screen.getByTestId('qr-camera-blocked-continue'));
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(messages.QRHardwareScanInstructions.message),
+        ).toBeInTheDocument();
+      });
+
+      const successViewed = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
+      );
+      expect(successViewed).toHaveLength(1);
+    });
+
+    it('increments error_type_view_count when error state transitions', async () => {
+      mockEnhancedReader.mockImplementation(
+        () => null as unknown as React.ReactElement,
+      );
+      mockCheckStatus.mockResolvedValue({
+        permissions: true,
+        environmentReady: true,
+      });
+      mockQueryCameraPermission.mockResolvedValue({
+        state: 'prompt',
+        permissionStatus: {
+          state: 'prompt',
+          addEventListener: jest.fn(),
+        } as unknown as PermissionStatus,
+      });
+      const notAllowed = new Error('denied');
+      notAllowed.name = 'NotAllowedError';
+      mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
+
+      await act(async () => {
+        renderWithMetrics(<BaseReader {...defaultProps} />);
+      });
+
+      mockRequestVideoStream.mockRejectedValueOnce(notAllowed);
+      mockQueryCameraPermission.mockResolvedValueOnce({
+        state: 'denied',
+        permissionStatus: {
+          state: 'denied',
+          addEventListener: jest.fn(),
+        } as unknown as PermissionStatus,
+      });
+      await act(async () => {
+        await userEvent.click(
+          screen.getByTestId('qr-camera-access-needed-continue'),
+        );
+      });
+
+      await screen.findByTestId('qr-camera-access-blocked');
+
+      const modalViewed = mockTrackEvent.mock.calls.filter(
+        (call: unknown[]) =>
+          (call[0] as { event: string }).event ===
+          MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+      );
+      expect(modalViewed).toHaveLength(2);
+      expect(modalViewed[0][0].properties.error_type_view_count).toBe(1);
+      expect(modalViewed[1][0].properties.error_type_view_count).toBe(2);
+    });
+
+    it('does not fire tracking events when permission is already granted', async () => {
+      mockEnhancedReader.mockImplementation(
+        () => null as unknown as React.ReactElement,
+      );
+      mockCheckStatus.mockResolvedValue({
+        permissions: true,
+        environmentReady: true,
+      });
+      mockQueryCameraPermission.mockResolvedValue({
+        state: 'granted',
+        permissionStatus: null,
+      });
+
+      await act(async () => {
+        renderWithMetrics(<BaseReader {...defaultProps} />);
+      });
+
+      expect(
+        screen.getByText(messages.QRHardwareScanInstructions.message),
+      ).toBeInTheDocument();
+      expect(mockTrackEvent).not.toHaveBeenCalled();
+    });
   });
 });
