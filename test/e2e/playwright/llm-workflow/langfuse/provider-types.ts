@@ -41,7 +41,8 @@ export type RunConfig = {
   prompt: string;
   model: string;
   maxTurns: number;
-  systemPrompt: string;
+  systemPrompt?: string;
+  skills?: string[];
   cwd: string;
   env: Record<string, string | undefined>;
   verbose: boolean;

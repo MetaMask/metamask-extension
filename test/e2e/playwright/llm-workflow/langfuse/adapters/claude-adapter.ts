@@ -20,7 +20,8 @@ export function createClaudeAdapter(): ProviderAdapter {
           cwd: config.cwd,
           permissionMode: 'bypassPermissions',
           allowDangerouslySkipPermissions: true,
-          systemPrompt: config.systemPrompt,
+          ...(config.systemPrompt ? { systemPrompt: config.systemPrompt } : {}),
+          ...(config.skills ? { skills: config.skills } : {}),
           env: config.env,
           ...(config.verbose
             ? { stderr: (data: string) => process.stderr.write(data) }

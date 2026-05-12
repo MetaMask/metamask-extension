@@ -51,30 +51,6 @@ if (!process.env.ANTHROPIC_API_KEY) {
   process.exit(1);
 }
 
-const METAMASK_SYSTEM_PROMPT = `You are an automated testing agent for the MetaMask browser extension.
-You interact with MetaMask through the \`mm\` CLI tool.
-
-Available commands (run via Bash):
-  mm describe-screen          # See current screen state and element references
-  mm click <ref>              # Click an element (e.g., mm click e3)
-  mm type <ref> "text"        # Type into an input (e.g., mm type e5 "0x1234...")
-  mm screenshot --name <name> # Take a screenshot
-  mm wait-for <ref>           # Wait for an element to appear
-  mm navigate-home            # Go to wallet home
-  mm navigate-settings        # Go to settings
-  mm get-state                # Get current extension state
-
-Workflow:
-1. Always start with \`mm describe-screen\` to see what's on screen
-2. Use the a11y refs (e1, e2, ...) from describe-screen to interact
-3. After each action, call \`mm describe-screen\` again to verify the result
-4. Take screenshots at key moments for evidence
-
-Important:
-- Refs like e1, e2 are ephemeral — always get fresh refs via describe-screen before interacting
-- The extension default password is: correct horse battery staple
-- Be methodical: observe → act → verify`;
-
 const adapter = createClaudeAdapter();
 const judge = createClaudeJudge('claude-sonnet-4-6');
 
@@ -113,7 +89,7 @@ async function run(): Promise<void> {
       prompt: runnerConfig.prompt,
       model: runnerConfig.model,
       maxTurns: runnerConfig.maxTurns,
-      systemPrompt: METAMASK_SYSTEM_PROMPT,
+      skills: ['metamask-visual-testing'],
       cwd: repoRoot,
       env: { ...process.env },
       verbose: runnerConfig.verbose,
