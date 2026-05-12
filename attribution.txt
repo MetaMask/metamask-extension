@@ -720,7 +720,7 @@ SOFTWARE.
 ******************************
 
 axios
-1.13.5 <https://github.com/axios/axios>
+1.16.0 <https://github.com/axios/axios>
 # Copyright (c) 2014-present Matt Zabriskie & Collaborators
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -6102,9 +6102,9 @@ SOFTWARE.
 ******************************
 
 dompurify
-3.2.5 <https://github.com/cure53/DOMPurify>
+3.4.2 <https://github.com/cure53/DOMPurify>
 DOMPurify
-Copyright 2025 Dr.-Ing. Mario Heiderich, Cure53
+Copyright 2025-2026 Dr.-Ing. Mario Heiderich, Cure53
 
 DOMPurify is free software; you can redistribute it and/or modify it under the
 terms of either:
@@ -6302,7 +6302,7 @@ b) the Mozilla Public License Version 2.0
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [yyyy] [name of copyright owner]
+Copyright 2025-2026 Dr.-Ing. Mario Heiderich, Cure53
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13353,7 +13353,7 @@ SOFTWARE.
 ******************************
 
 fast-xml-builder
-1.1.5 <https://github.com/NaturalIntelligence/fast-xml-builder>
+1.2.0 <https://github.com/NaturalIntelligence/fast-xml-builder>
 MIT License
 
 Copyright (c) 2026 Natural Intelligence
@@ -13380,7 +13380,7 @@ SOFTWARE.
 ******************************
 
 fast-xml-parser
-5.7.1 <https://github.com/NaturalIntelligence/fast-xml-parser>
+5.7.3 <https://github.com/NaturalIntelligence/fast-xml-parser>
 MIT License
 
 Copyright (c) 2017 Amit Kumar Gupta
@@ -29792,7 +29792,7 @@ SOFTWARE.
 ******************************
 
 protobufjs
-7.5.5 <https://github.com/protobufjs/protobuf.js>
+7.5.8 <https://github.com/protobufjs/protobuf.js>
 This license applies to all parts of protobuf.js except those files
 either explicitly including or referencing a different license or
 located in a directory containing a different LICENSE file.
@@ -29901,7 +29901,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 @protobufjs/codegen
-2.0.4 <https://github.com/dcodeIO/protobuf.js>
+2.0.5 <https://github.com/dcodeIO/protobuf.js>
 Copyright (c) 2016, Daniel Wirtz  All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30029,7 +30029,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 @protobufjs/inquire
-1.1.0 <https://github.com/dcodeIO/protobuf.js>
+1.1.1 <https://github.com/dcodeIO/protobuf.js>
 Copyright (c) 2016, Daniel Wirtz  All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30125,7 +30125,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 @protobufjs/utf8
-1.1.0 <https://github.com/dcodeIO/protobuf.js>
+1.1.1 <https://github.com/dcodeIO/protobuf.js>
 Copyright (c) 2016, Daniel Wirtz  All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -30157,7 +30157,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ******************************
 
 proxy-from-env
-1.1.0 <https://github.com/Rob--W/proxy-from-env>
+2.1.0 <https://github.com/Rob--W/proxy-from-env>
 The MIT License
 
 Copyright (C) 2016-2018 Rob Wu <rob@robwu.nl>
@@ -43425,6 +43425,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
+
+******************************
+
+xml-naming
+0.1.0 <https://github.com/NaturalIntelligence/xml-naming>
+license: MIT
+authors: Amit Gupta (https://solothought.com)
 
 ******************************
 
