@@ -37,7 +37,6 @@ import {
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   protectVaultKeyWithPasskey,
   generatePasskeyRegistrationOptions,
@@ -101,8 +100,6 @@ export default function PasskeyRegisterSubPage() {
     () => ({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: accountType,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      environment_type: getEnvironmentType(),
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_social_login: isSocialLoginFlow,
     }),

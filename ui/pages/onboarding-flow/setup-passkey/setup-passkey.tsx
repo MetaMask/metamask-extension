@@ -45,7 +45,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { getBrowserName } from '../../../../shared/lib/browser-runtime.utils';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   getPasskeyAuthMethodKey,
@@ -116,8 +115,6 @@ export default function SetupPasskey() {
     () => ({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: accountType,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      environment_type: getEnvironmentType(),
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_social_login: isSocialLoginFlow,
     }),

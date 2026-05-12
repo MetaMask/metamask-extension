@@ -9,7 +9,6 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -41,8 +40,6 @@ export const UnlockPasskeyIconButton = ({
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: accountType,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        environment_type: getEnvironmentType(),
         // eslint-disable-next-line @typescript-eslint/naming-convention
         derivation_method: passkeyDerivationMethod,
       },

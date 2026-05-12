@@ -118,8 +118,6 @@ const ChangePassword = ({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: accountType,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      environment_type: getEnvironmentType(),
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       derivation_method: passkeyDerivationMethod,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_social_login: isSocialLoginFlow,

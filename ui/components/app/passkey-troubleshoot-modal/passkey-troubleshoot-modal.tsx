@@ -26,7 +26,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import { getAccountType } from '../../../../shared/lib/selectors/keyring';
 import { getPasskeyDerivationMethod } from '../../../selectors';
 
@@ -55,8 +54,6 @@ export default function PasskeyTroubleshootModal({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: accountType,
       location: troubleshootLocation,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      environment_type: getEnvironmentType(),
       // eslint-disable-next-line @typescript-eslint/naming-convention
       derivation_method: passkeyDerivationMethod,
     }),

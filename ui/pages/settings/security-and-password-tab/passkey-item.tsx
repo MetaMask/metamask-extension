@@ -77,15 +77,13 @@ const PasskeyItem = () => {
   const baseProperties = useMemo(
     () => ({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      environment_type: environmentType,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       account_type: accountType,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       is_social_login: isSocialLoginFlow,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       derivation_method: passkeyDerivationMethod,
     }),
-    [accountType, environmentType, isSocialLoginFlow, passkeyDerivationMethod],
+    [accountType, isSocialLoginFlow, passkeyDerivationMethod],
   );
 
   const [isPasskeyOperationPending, setIsPasskeyOperationPending] =

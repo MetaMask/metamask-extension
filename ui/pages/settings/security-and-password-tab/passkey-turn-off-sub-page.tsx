@@ -24,7 +24,6 @@ import {
   isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
-import { getEnvironmentType } from '../../../../shared/lib/environment-type';
 import {
   forceUpdateMetamaskState,
   removePasskeyWithPasswordVerification,
@@ -93,7 +92,6 @@ export default function PasskeyTurnOffSubPage() {
       const baseProperties = {
         /* eslint-disable @typescript-eslint/naming-convention */
         account_type: accountType,
-        environment_type: getEnvironmentType(),
         verification_method: 'password',
         derivation_method: passkeyDerivationMethod,
         /* eslint-enable @typescript-eslint/naming-convention */

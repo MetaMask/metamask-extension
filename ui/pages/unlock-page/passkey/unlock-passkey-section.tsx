@@ -111,7 +111,6 @@ export const UnlockPasskeySection = ({
       const baseProperties = {
         /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
         account_type: accountType,
-        environment_type: getEnvironmentType(),
         is_auto_prompt: isAutoPrompt,
         derivation_method: passkeyDerivationMethod,
         /* eslint-enable @typescript-eslint/naming-convention */
@@ -235,7 +234,6 @@ export const UnlockPasskeySection = ({
       properties: {
         /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
         account_type: accountType,
-        environment_type: getEnvironmentType(),
         derivation_method: passkeyDerivationMethod,
         /* eslint-enable @typescript-eslint/naming-convention */
       },
