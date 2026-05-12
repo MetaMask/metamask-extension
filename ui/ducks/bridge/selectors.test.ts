@@ -82,6 +82,60 @@ describe('Bridge selectors', () => {
     setGlobalDevModeChecks({ inputStabilityCheck: 'once' });
   });
 
+  const createBtcZeroNetworkFeeQuoteState = () => {
+    const btcAsset = getNativeAssetForChainId(ChainId.BTC);
+    const ethAsset = getNativeAssetForChainId(ChainId.ETH);
+    const btcQuote = {
+      quote: {
+        requestId: 'btc-quote-without-fee',
+        bridgeId: 'rango',
+        aggregator: 'rango',
+        srcChainId: ChainId.BTC,
+        srcTokenAmount: '100000000',
+        srcAsset: btcAsset,
+        destChainId: ChainId.ETH,
+        destTokenAmount: '1000000000000000000',
+        destAsset: ethAsset,
+        minDestTokenAmount: '990000000000000000',
+        feeData: {
+          metabridge: {
+            amount: '0',
+            asset: btcAsset,
+          },
+        },
+        bridges: ['rango'],
+        protocols: ['rango'],
+        steps: [],
+      },
+      trade: {
+        unsignedPsbtBase64: 'psbt',
+        inputsToSign: null,
+      },
+      estimatedProcessingTimeInSeconds: 600,
+      nonEvmFeesInNative: '0',
+    };
+
+    return createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '1',
+        fromToken: toBridgeToken(btcAsset),
+        toToken: toBridgeToken(ethAsset),
+      },
+      bridgeStateOverrides: {
+        quotesLastFetched: Date.now(),
+        quoteRequest: {
+          srcChainId: ChainId.BTC,
+        },
+        quotes: [btcQuote] as unknown as QuoteResponse[],
+      },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: MOCK_BITCOIN_ACCOUNT.id,
+        },
+      },
+    });
+  };
+
   describe('getFromChain', () => {
     it('returns the fromChain from the multichain network controller', () => {
       const state = createBridgeMockStore({
@@ -2067,56 +2121,7 @@ describe('Bridge selectors', () => {
     });
 
     it('should return isNetworkFeeUnavailable=true for a BTC quote with zero network fee', () => {
-      const btcAsset = getNativeAssetForChainId(ChainId.BTC);
-      const ethAsset = getNativeAssetForChainId(ChainId.ETH);
-      const btcQuote = {
-        quote: {
-          requestId: 'btc-quote-without-fee',
-          bridgeId: 'rango',
-          aggregator: 'rango',
-          srcChainId: ChainId.BTC,
-          srcTokenAmount: '100000000',
-          srcAsset: btcAsset,
-          destChainId: ChainId.ETH,
-          destTokenAmount: '1000000000000000000',
-          destAsset: ethAsset,
-          minDestTokenAmount: '990000000000000000',
-          feeData: {
-            metabridge: {
-              amount: '0',
-              asset: btcAsset,
-            },
-          },
-          bridges: ['rango'],
-          protocols: ['rango'],
-          steps: [],
-        },
-        trade: {
-          unsignedPsbtBase64: 'psbt',
-          inputsToSign: null,
-        },
-        estimatedProcessingTimeInSeconds: 600,
-        nonEvmFeesInNative: '0',
-      };
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromTokenInputValue: '1',
-          fromToken: toBridgeToken(btcAsset),
-          toToken: toBridgeToken(ethAsset),
-        },
-        bridgeStateOverrides: {
-          quotesLastFetched: Date.now(),
-          quoteRequest: {
-            srcChainId: ChainId.BTC,
-          },
-          quotes: [btcQuote] as unknown as QuoteResponse[],
-        },
-        metamaskStateOverrides: {
-          internalAccounts: {
-            selectedAccount: MOCK_BITCOIN_ACCOUNT.id,
-          },
-        },
-      });
+      const state = createBtcZeroNetworkFeeQuoteState();
       const result = getValidationErrors(state as never);
 
       expect(
@@ -4180,6 +4185,13 @@ describe('Bridge selectors', () => {
       });
       const result = getWarningLabels(state as never);
       expect(result).toContain('tx_alert');
+    });
+
+    it('returns network_fee_unavailable when BTC network fee is unavailable', () => {
+      const state = createBtcZeroNetworkFeeQuoteState();
+      const result = getWarningLabels(state as never);
+
+      expect(result).toContain('network_fee_unavailable');
     });
 
     it('returns price_impact when price impact exceeds warning threshold', () => {

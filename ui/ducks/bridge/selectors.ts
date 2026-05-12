@@ -1021,6 +1021,7 @@ export const getWarningLabels = (
     isInsufficientGasForQuote,
     isInsufficientBalance,
     isInsufficientNativeReserve,
+    isNetworkFeeUnavailable,
     isPriceImpactWarning,
     isPriceImpactError,
     isTxAlertPresent,
@@ -1042,6 +1043,8 @@ export const getWarningLabels = (
   isInsufficientNativeReserve &&
     // @ts-expect-error: market_closed is not a valid QuoteWarning yet
     warnings.push('insufficient_native_reserve');
+  isNetworkFeeUnavailable &&
+    warnings.push('network_fee_unavailable' as QuoteWarning);
   return warnings;
 };
 
