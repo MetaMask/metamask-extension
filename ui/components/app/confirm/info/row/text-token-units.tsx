@@ -14,9 +14,7 @@ type ConfirmInfoRowTextTokenUnitsProps = {
   decimals?: number;
 };
 
-export const ConfirmInfoRowTextTokenUnits: React.FC<
-  ConfirmInfoRowTextTokenUnitsProps
-> = ({ value, decimals }) => {
+export const ConfirmInfoRowTextTokenUnits: React.FC<React.PropsWithChildren<ConfirmInfoRowTextTokenUnitsProps>> = ({ value, decimals }) => {
   const tokenValue = calcTokenAmount(value, decimals);
 
   const tokenText = formatAmount('en-US', tokenValue);

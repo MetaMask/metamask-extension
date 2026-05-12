@@ -63,9 +63,9 @@ export const SendContext = createContext<SendContextType>({
   value: undefined,
 });
 
-export const SendContextProvider: React.FC<{
+export const SendContextProvider: React.FC<React.PropsWithChildren<{
   children: ReactElement[] | ReactElement;
-}> = ({ children }) => {
+}>> = ({ children }) => {
   const [asset, setAsset] = useState<Asset>();
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupWithInternalAccounts = useSelector(

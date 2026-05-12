@@ -21,7 +21,7 @@ export type PerpsPositionsOrdersProps = {
   isCancelAllPending?: boolean;
 };
 
-export const PerpsPositionsOrders: React.FC<PerpsPositionsOrdersProps> = ({
+export const PerpsPositionsOrders: React.FC<React.PropsWithChildren<PerpsPositionsOrdersProps>> = ({
   positions,
   orders,
   onCloseAllPositions,

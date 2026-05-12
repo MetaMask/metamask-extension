@@ -44,7 +44,7 @@ export type ToggleItemConfig = {
  */
 export const createToggleItem = (
   config: ToggleItemConfig,
-): React.FC<SettingItemProps> => {
+): React.FC<React.PropsWithChildren<SettingItemProps>> => {
   const ToggleItem = () => {
     const t = useI18nContext();
     const dispatch = useDispatch();

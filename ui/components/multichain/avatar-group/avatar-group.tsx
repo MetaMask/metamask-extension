@@ -30,7 +30,7 @@ import {
 } from '../../component-library/avatar-base';
 import { AvatarGroupProps, AvatarType } from './avatar-group.types';
 
-export const AvatarGroup: React.FC<AvatarGroupProps> = ({
+export const AvatarGroup: React.FC<React.PropsWithChildren<AvatarGroupProps>> = ({
   className = '',
   limit = 4,
   members = [],

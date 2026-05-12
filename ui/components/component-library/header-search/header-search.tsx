@@ -35,7 +35,7 @@ function adaptTextFieldSearchProps(
   };
 }
 
-export const HeaderSearch: React.FC<HeaderSearchProps> = (props) => {
+export const HeaderSearch: React.FC<React.PropsWithChildren<HeaderSearchProps>> = (props) => {
   const t = useI18nContext();
   const { variant, className = '', textFieldSearchProps } = props;
   const searchProps = adaptTextFieldSearchProps(textFieldSearchProps);

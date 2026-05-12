@@ -38,7 +38,7 @@ type SiteCellProps = {
   hideAllToasts?: () => void;
 };
 
-export const SiteCell: React.FC<SiteCellProps> = ({
+export const SiteCell: React.FC<React.PropsWithChildren<SiteCellProps>> = ({
   nonTestNetworks,
   testNetworks,
   accounts,

@@ -68,7 +68,7 @@ export type MusdConvertLinkProps = {
  * @param options0.ctaText
  * @param options0.entryPoint
  */
-export const MusdConvertLink: React.FC<MusdConvertLinkProps> = ({
+export const MusdConvertLink: React.FC<React.PropsWithChildren<MusdConvertLinkProps>> = ({
   tokenAddress,
   chainId,
   tokenSymbol,

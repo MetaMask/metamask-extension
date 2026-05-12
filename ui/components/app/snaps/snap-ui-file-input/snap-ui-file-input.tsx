@@ -69,7 +69,7 @@ export type SnapUIFileInputProps = {
  * @param props.disabled - Whether the file input is disabled.
  * @returns A file input element.
  */
-export const SnapUIFileInput: FunctionComponent<SnapUIFileInputProps> = ({
+export const SnapUIFileInput: FunctionComponent<React.PropsWithChildren<SnapUIFileInputProps>> = ({
   name,
   label,
   form,

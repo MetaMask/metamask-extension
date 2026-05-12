@@ -21,11 +21,11 @@ import { DAY } from '../../../../../../../../shared/constants/time';
  * @param props.label - The label to display
  * @param props.tooltip - The tooltip to display
  */
-export const DateAndTimeRow: React.FC<{
+export const DateAndTimeRow: React.FC<React.PropsWithChildren<{
   timestamp: number;
   label: string;
   tooltip?: string;
-}> = ({ timestamp, label, tooltip }) => {
+}>> = ({ timestamp, label, tooltip }) => {
   const timestampUTC = DateTime.fromSeconds(timestamp).toUTC();
 
   const datePart = timestampUTC.toFormat('dd LLLL yyyy');

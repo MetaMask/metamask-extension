@@ -66,11 +66,11 @@ const MetaMaskWordMarkAnimation = lazy(
   () =>
     // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./metamask-wordmark-animation') as unknown as Promise<{
-      default: ComponentType<{
+      default: ComponentType<React.PropsWithChildren<{
         setIsAnimationComplete: (isAnimationComplete: boolean) => void;
         isAnimationComplete?: boolean;
         skipTransition?: boolean;
-      }>;
+      }>>;
     }>,
 );
 
@@ -78,10 +78,10 @@ const FoxAppearAnimation = lazy(
   () =>
     // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./fox-appear-animation') as unknown as Promise<{
-      default: ComponentType<{
+      default: ComponentType<React.PropsWithChildren<{
         isLoader?: boolean;
         skipTransition?: boolean;
-      }>;
+      }>>;
     }>,
 );
 

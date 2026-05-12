@@ -13,7 +13,7 @@ import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { IconName } from '../icon';
 import type { PopoverHeaderProps } from './popover-header.types';
 
-export const PopoverHeader: React.FC<PopoverHeaderProps> = ({
+export const PopoverHeader: React.FC<React.PropsWithChildren<PopoverHeaderProps>> = ({
   children,
   className = '',
   startAccessory,

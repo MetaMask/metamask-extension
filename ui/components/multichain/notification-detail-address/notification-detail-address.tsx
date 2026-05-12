@@ -16,7 +16,7 @@ export type NotificationDetailAddressProps = {
   address: string;
 };
 
-const SideText: FC<{ side: string }> = ({ side }) => (
+const SideText: FC<React.PropsWithChildren<{ side: string }>> = ({ side }) => (
   <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Medium}>
     {side}
   </Text>
@@ -30,7 +30,7 @@ const SideText: FC<{ side: string }> = ({ side }) => (
  * @param props.address - The address to display.
  * @returns The rendered component.
  */
-export const NotificationDetailAddress: FC<NotificationDetailAddressProps> = ({
+export const NotificationDetailAddress: FC<React.PropsWithChildren<NotificationDetailAddressProps>> = ({
   side,
   address,
 }): JSX.Element => {

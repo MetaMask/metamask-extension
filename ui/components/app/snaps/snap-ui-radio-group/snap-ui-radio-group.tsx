@@ -29,7 +29,7 @@ export type SnapUIRadioGroupProps = {
   disabled?: boolean;
 };
 
-export const SnapUIRadioGroup: FunctionComponent<SnapUIRadioGroupProps> = ({
+export const SnapUIRadioGroup: FunctionComponent<React.PropsWithChildren<SnapUIRadioGroupProps>> = ({
   name,
   label,
   error,

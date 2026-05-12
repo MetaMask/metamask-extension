@@ -37,7 +37,7 @@ const CLOSE_PERCENT_CHIP_WIDTH_REM = 4.75;
  * @param props.currentPrice - Current asset price for USD calculation
  * @param props.sizeDecimals - Market size decimals for controller-based size formatting
  */
-export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
+export const CloseAmountSection: React.FC<React.PropsWithChildren<CloseAmountSectionProps>> = ({
   positionSize,
   closePercent,
   onClosePercentChange,

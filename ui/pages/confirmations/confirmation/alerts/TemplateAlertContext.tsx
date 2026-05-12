@@ -28,11 +28,11 @@ export const TemplateAlertContext = createContext<
   TemplateAlertContextType | undefined
 >(undefined);
 
-export const TemplateAlertContextProvider: React.FC<{
+export const TemplateAlertContextProvider: React.FC<React.PropsWithChildren<{
   children: ReactElement;
   confirmationId: string;
   onSubmit: () => void;
-}> = ({ children, confirmationId, onSubmit }) => {
+}>> = ({ children, confirmationId, onSubmit }) => {
   const pendingConfirmations = useSelector(getUnapprovedConfirmations);
 
   const pendingConfirmation =

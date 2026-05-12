@@ -11,7 +11,7 @@ export type SnapUIFormProps = {
   name: string;
 };
 
-export const SnapUIForm: FunctionComponent<SnapUIFormProps> = ({
+export const SnapUIForm: FunctionComponent<React.PropsWithChildren<SnapUIFormProps>> = ({
   children,
   name,
 }) => {

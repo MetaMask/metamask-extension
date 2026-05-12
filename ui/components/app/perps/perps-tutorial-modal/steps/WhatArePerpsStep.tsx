@@ -5,7 +5,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getEnvironmentType } from '../../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../../../shared/constants/app';
 
-const WhatArePerpsStep: React.FC = () => {
+const WhatArePerpsStep: React.FC<React.PropsWithChildren<unknown>> = () => {
   const t = useI18nContext();
   const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 

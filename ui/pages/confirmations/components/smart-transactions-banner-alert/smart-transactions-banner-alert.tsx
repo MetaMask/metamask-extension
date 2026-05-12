@@ -30,7 +30,7 @@ type SmartTransactionsBannerAlertProps = {
   marginType?: MarginType;
 };
 
-export const SmartTransactionsBannerAlert: React.FC<SmartTransactionsBannerAlertProps> =
+export const SmartTransactionsBannerAlert: React.FC<React.PropsWithChildren<SmartTransactionsBannerAlertProps>> =
   React.memo(({ marginType = 'default' }) => {
     const t = useI18nContext();
 

@@ -7,7 +7,7 @@ describe('NFTGridItemErrorBoundary tests', () => {
   it('should fallback if grid item crashes', () => {
     const mockError = jest.spyOn(log, 'error').mockImplementation(jest.fn());
 
-    const MockGridItem: FC = () => {
+    const MockGridItem: FC<React.PropsWithChildren<unknown>> = () => {
       throw new Error('Mock Error');
     };
 

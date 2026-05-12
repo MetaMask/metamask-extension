@@ -14,7 +14,7 @@ import { ModalBody } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ProgressIndicator from './ProgressIndicator';
 
-const OnboardingStep2: React.FC = () => {
+const OnboardingStep2: React.FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
 
   const t = useI18nContext();

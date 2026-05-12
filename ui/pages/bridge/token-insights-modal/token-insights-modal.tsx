@@ -52,7 +52,7 @@ type MarketDataRowProps = {
   'data-testid'?: string;
 };
 
-const MarketDataRow: React.FC<MarketDataRowProps> = ({
+const MarketDataRow: React.FC<React.PropsWithChildren<MarketDataRowProps>> = ({
   label,
   value,
   'data-testid': dataTestId,
@@ -71,7 +71,7 @@ const MarketDataRow: React.FC<MarketDataRowProps> = ({
   </Box>
 );
 
-export const TokenInsightsModal: React.FC<TokenInsightsModalProps> = ({
+export const TokenInsightsModal: React.FC<React.PropsWithChildren<TokenInsightsModalProps>> = ({
   isOpen,
   onClose,
   token,

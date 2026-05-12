@@ -38,7 +38,7 @@ import { useAppSelector } from '../../../../store/store';
  * Main introduction screen for the rewards onboarding flow.
  * Handles geo validation, account type checking, and navigation to next steps.
  */
-const OnboardingIntroStep: React.FC = () => {
+const OnboardingIntroStep: React.FC<React.PropsWithChildren<unknown>> = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const theme = useTheme();

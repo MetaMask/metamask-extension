@@ -43,7 +43,7 @@ type PermitSimulationValueDisplayParams = {
   debit?: boolean;
 };
 
-const NativeValueDisplay: React.FC<PermitSimulationValueDisplayParams> = ({
+const NativeValueDisplay: React.FC<React.PropsWithChildren<PermitSimulationValueDisplayParams>> = ({
   chainId,
   value,
   credit,

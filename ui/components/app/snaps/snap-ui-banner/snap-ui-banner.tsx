@@ -6,7 +6,7 @@ export type SnapUIBannerProps = {
   title: string;
 };
 
-export const SnapUIBanner: FunctionComponent<SnapUIBannerProps> = ({
+export const SnapUIBanner: FunctionComponent<React.PropsWithChildren<SnapUIBannerProps>> = ({
   children,
   severity,
   title,

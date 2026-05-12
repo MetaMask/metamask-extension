@@ -21,7 +21,7 @@ import MusdEducationScreen from './screens/education';
  * Routes:
  * - /musd/education - Education/onboarding screen
  */
-const MusdConversionPage: React.FC = () => {
+const MusdConversionPage: React.FC<React.PropsWithChildren<unknown>> = () => {
   const isFeatureEnabled = useSelector(selectIsMusdConversionFlowEnabled);
   const [searchParams] = useSearchParams();
   const isDeeplink = searchParams.get(MUSD_DEEPLINK_PARAM) === 'true';

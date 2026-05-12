@@ -32,9 +32,7 @@ type SnapUIFooterButtonProps = {
   onCancel?: () => void;
 };
 
-export const SnapUIFooterButton: FunctionComponent<
-  SnapUIFooterButtonProps & ButtonProps<'button'>
-> = ({
+export const SnapUIFooterButton: FunctionComponent<React.PropsWithChildren<SnapUIFooterButtonProps & ButtonProps<'button'>>> = ({
   onCancel,
   name,
   children,

@@ -37,7 +37,7 @@ type OnboardingStep4Props = {
   shieldSubscriptionId?: string;
 };
 
-const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
+const OnboardingStep4: React.FC<React.PropsWithChildren<OnboardingStep4Props>> = ({
   rewardPoints,
   shieldSubscriptionId,
 }) => {

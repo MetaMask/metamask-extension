@@ -61,7 +61,7 @@ type DestinationAccountListItemProps = {
   isExternal?: boolean;
 };
 
-const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
+const DestinationAccountListItem: React.FC<React.PropsWithChildren<DestinationAccountListItemProps>> = ({
   account,
   selected = false,
   onClick,

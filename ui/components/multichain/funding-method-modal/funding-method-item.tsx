@@ -15,7 +15,7 @@ type FundingMethodItemProps = {
   onClick: () => void;
 };
 
-const FundingMethodItem: React.FC<FundingMethodItemProps> = ({
+const FundingMethodItem: React.FC<React.PropsWithChildren<FundingMethodItemProps>> = ({
   icon,
   title,
   description,

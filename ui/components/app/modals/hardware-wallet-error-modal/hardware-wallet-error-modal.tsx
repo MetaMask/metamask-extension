@@ -182,7 +182,7 @@ const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
  *
  * @param props - The component props
  */
-export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
+export const HardwareWalletErrorModal: React.FC<React.PropsWithChildren<HardwareWalletErrorModalProps>> =
   React.memo((props) => {
     const t = useI18nContext();
     const { trackEvent } = useContext(MetaMetricsContext);

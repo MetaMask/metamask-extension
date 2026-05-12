@@ -37,9 +37,7 @@ type VisitSupportDataConsentModalProps = {
   isOpen: boolean;
 };
 
-const VisitSupportDataConsentModal: React.FC<
-  VisitSupportDataConsentModalProps
-> = ({ isOpen, onClose }) => {
+const VisitSupportDataConsentModal: React.FC<React.PropsWithChildren<VisitSupportDataConsentModalProps>> = ({ isOpen, onClose }) => {
   const version = process.env.METAMASK_VERSION as string;
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);

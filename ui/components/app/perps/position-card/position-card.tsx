@@ -34,7 +34,7 @@ export type PositionCardProps = {
  * @param options0.position - The position data to display
  * @param options0.onClick
  */
-export const PositionCard: React.FC<PositionCardProps> = ({
+export const PositionCard: React.FC<React.PropsWithChildren<PositionCardProps>> = ({
   position,
   onClick,
 }) => {

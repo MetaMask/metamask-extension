@@ -247,7 +247,7 @@ export type ClosePositionModalProps = {
   sizeDecimals?: number;
 };
 
-export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
+export const ClosePositionModal: React.FC<React.PropsWithChildren<ClosePositionModalProps>> = ({
   isOpen,
   onClose,
   position,

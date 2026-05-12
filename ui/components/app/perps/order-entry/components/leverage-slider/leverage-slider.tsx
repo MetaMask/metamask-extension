@@ -32,7 +32,7 @@ import { isDigitsOnlyInput } from '../../utils';
  * @param props.maxLeverage - Maximum allowed leverage
  * @param props.minLeverage - Minimum allowed leverage (default: 1)
  */
-export const LeverageSlider: React.FC<LeverageSliderProps> = ({
+export const LeverageSlider: React.FC<React.PropsWithChildren<LeverageSliderProps>> = ({
   leverage,
   onLeverageChange,
   maxLeverage,

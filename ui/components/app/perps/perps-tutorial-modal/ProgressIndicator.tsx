@@ -12,7 +12,7 @@ type ProgressIndicatorProps = {
   currentStep: number;
 };
 
-const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
+const ProgressIndicator: React.FC<React.PropsWithChildren<ProgressIndicatorProps>> = ({
   totalSteps,
   currentStep,
 }) => {

@@ -88,7 +88,7 @@ export type MusdAssetCtaProps = {
  * @param options0.onDismiss
  * @param options0.variant
  */
-export const MusdAssetCta: React.FC<MusdAssetCtaProps> = ({
+export const MusdAssetCta: React.FC<React.PropsWithChildren<MusdAssetCtaProps>> = ({
   token,
   onDismiss,
   variant = 'card',

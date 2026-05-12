@@ -43,7 +43,7 @@ function extractTokenDetailsByPrimaryType(
   return isNonArrayObject ? [tokenDetails] : tokenDetails;
 }
 
-const PermitSimulation: React.FC<object> = () => {
+const PermitSimulation: React.FC<React.PropsWithChildren<object>> = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const msgData = currentConfirmation.msgParams?.data;

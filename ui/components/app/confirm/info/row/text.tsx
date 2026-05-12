@@ -32,7 +32,7 @@ export type ConfirmInfoRowTextProps = {
   editIconDataTestId?: string;
 };
 
-export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
+export const ConfirmInfoRowText: React.FC<React.PropsWithChildren<ConfirmInfoRowTextProps>> = ({
   text,
   onEditClick,
   editIconClassName,

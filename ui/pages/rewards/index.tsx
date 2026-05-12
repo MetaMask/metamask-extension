@@ -13,7 +13,7 @@ import {
   setOnboardingReferralCode,
 } from '../../ducks/rewards';
 
-const RewardsPage: React.FC = () => {
+const RewardsPage: React.FC<React.PropsWithChildren<unknown>> = () => {
   const rewardsEnabled = useSelector(selectRewardsEnabled);
   const location = useLocation();
   const navigate = useNavigate();

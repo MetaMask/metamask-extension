@@ -16,7 +16,7 @@ import { SHIELD_CAROUSEL_ID } from '../../../../../shared/lib/shield/constants';
 import { getShieldInAppNavigationFromExternalLink } from '../../../../../shared/lib/shield';
 import type { StackCardProps } from './stack-card.types';
 
-export const StackCard: React.FC<StackCardProps> = ({
+export const StackCard: React.FC<React.PropsWithChildren<StackCardProps>> = ({
   slide,
   isCurrentCard,
   isLastSlide = false,

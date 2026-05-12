@@ -58,7 +58,7 @@ const createTextComponent = (
  * @param props.value - The value to display.
  * @returns The rendered component.
  */
-export const NotificationDetailAsset: FC<NotificationDetailAssetProps> = ({
+export const NotificationDetailAsset: FC<React.PropsWithChildren<NotificationDetailAssetProps>> = ({
   icon,
   label,
   detail,

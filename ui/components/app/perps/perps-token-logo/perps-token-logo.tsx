@@ -22,7 +22,7 @@ const AVATAR_SIZE_CLASS: Record<AvatarTokenSize, string> = {
   [AvatarTokenSize.Xl]: 'h-12 w-12',
 };
 
-export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
+export const PerpsTokenLogo: React.FC<React.PropsWithChildren<PerpsTokenLogoProps>> = ({
   symbol,
   size = AvatarTokenSize.Md,
   className,

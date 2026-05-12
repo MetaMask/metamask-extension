@@ -65,9 +65,7 @@ type PermitSimulationValueDisplayParams = {
   canDisplayValueAsUnlimited?: boolean;
 };
 
-const PermitSimulationValueDisplay: React.FC<
-  PermitSimulationValueDisplayParams
-> = ({
+const PermitSimulationValueDisplay: React.FC<React.PropsWithChildren<PermitSimulationValueDisplayParams>> = ({
   chainId,
   primaryType,
   tokenContract,

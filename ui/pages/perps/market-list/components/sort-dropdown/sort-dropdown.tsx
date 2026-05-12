@@ -59,7 +59,7 @@ export type SortDropdownProps = {
  * @param options0.direction
  * @param options0.onChange
  */
-export const SortDropdown: React.FC<SortDropdownProps> = ({
+export const SortDropdown: React.FC<React.PropsWithChildren<SortDropdownProps>> = ({
   selectedField,
   direction,
   onChange,

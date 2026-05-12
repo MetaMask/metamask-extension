@@ -52,7 +52,7 @@ export type TabEmptyStateProps = Omit<BoxProps, 'ref'> & {
   children?: React.ReactNode;
 };
 
-export const TabEmptyState: React.FC<TabEmptyStateProps> = ({
+export const TabEmptyState: React.FC<React.PropsWithChildren<TabEmptyStateProps>> = ({
   icon,
   description,
   descriptionProps,

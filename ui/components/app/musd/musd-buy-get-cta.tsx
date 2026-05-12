@@ -84,7 +84,7 @@ export type MusdBuyGetCtaProps = {
  * @param options0.variant
  * @param options0.selectedChainId
  */
-export const MusdBuyGetCta: React.FC<MusdBuyGetCtaProps> = ({
+export const MusdBuyGetCta: React.FC<React.PropsWithChildren<MusdBuyGetCtaProps>> = ({
   variant,
   selectedChainId,
 }) => {

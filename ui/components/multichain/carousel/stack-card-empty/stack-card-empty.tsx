@@ -12,7 +12,7 @@ import type {
 } from './stack-card-empty.types';
 
 // Background empty card for stacking behind last card
-export const StackCardEmpty: React.FC<StackCardEmptyProps> = ({
+export const StackCardEmpty: React.FC<React.PropsWithChildren<StackCardEmptyProps>> = ({
   isBackground = true,
   className = '',
 }) => {
@@ -40,7 +40,7 @@ export const StackCardEmpty: React.FC<StackCardEmptyProps> = ({
 };
 
 // Main empty state component with fold animation
-export const EmptyStateComponent: React.FC<EmptyStateComponentProps> = ({
+export const EmptyStateComponent: React.FC<React.PropsWithChildren<EmptyStateComponentProps>> = ({
   onComplete,
   isBackground = false,
 }) => {

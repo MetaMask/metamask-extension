@@ -17,7 +17,7 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
  * PerpsDetailPageSkeleton component displays a loading skeleton for the market detail page
  * Matches the layout of PerpsMarketDetailPage
  */
-export const PerpsDetailPageSkeleton: React.FC = () => {
+export const PerpsDetailPageSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Box
       className="main-container asset__container"

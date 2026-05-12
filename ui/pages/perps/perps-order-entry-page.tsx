@@ -227,7 +227,7 @@ function buildClosePositionParams(
  * PerpsOrderEntryPage - Full-page order entry for perps trading
  * Accessible via /perps/trade/:symbol?direction=long|short&mode=new|modify|close&orderType=market|limit
  */
-const PerpsOrderEntryPage: React.FC = () => {
+const PerpsOrderEntryPage: React.FC<React.PropsWithChildren<unknown>> = () => {
   const t = useI18nContext();
   const { formatNumber } = useFormatters();
   const navigate = useNavigate();

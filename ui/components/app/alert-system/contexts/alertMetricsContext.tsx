@@ -17,7 +17,7 @@ type AlertMetricsProps = {
   };
 };
 
-export const AlertMetricsProvider: React.FC<AlertMetricsProps> = ({
+export const AlertMetricsProvider: React.FC<React.PropsWithChildren<AlertMetricsProps>> = ({
   children,
   metrics,
 }) => {

@@ -24,7 +24,7 @@ type NftDetailInformationRowProps = {
   fullValue?: string;
 };
 
-const NftDetailInformationRow: React.FC<NftDetailInformationRowProps> = ({
+const NftDetailInformationRow: React.FC<React.PropsWithChildren<NftDetailInformationRowProps>> = ({
   title,
   valueColor,
   value,

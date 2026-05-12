@@ -9,7 +9,7 @@ import { DefiReferralConsentControl } from './defi-referral-consent-control';
 import { DefiReferralConsentTreatment } from './defi-referral-consent-treatment';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
 
-export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = (
+export const DefiReferralConsent: React.FC<React.PropsWithChildren<DefiReferralConsentProps>> = (
   props,
 ) => {
   const { variant } = useABTest(

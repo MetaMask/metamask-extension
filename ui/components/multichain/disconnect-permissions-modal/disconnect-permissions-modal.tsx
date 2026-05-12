@@ -19,9 +19,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PermissionItem } from './permission-item';
 import { DisconnectPermissionsModalProps } from './types';
 
-export const DisconnectPermissionsModal: React.FC<
-  DisconnectPermissionsModalProps
-> = ({ isOpen, onClose, onSkip, onRemoveAll, permissions = [] }) => {
+export const DisconnectPermissionsModal: React.FC<React.PropsWithChildren<DisconnectPermissionsModalProps>> = ({ isOpen, onClose, onSkip, onRemoveAll, permissions = [] }) => {
   const t = useI18nContext();
 
   return (

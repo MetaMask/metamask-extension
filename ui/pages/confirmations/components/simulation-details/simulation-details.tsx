@@ -66,7 +66,7 @@ export type SimulationDetailsProps = {
  * @param props
  * @param props.error
  */
-const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
+const ErrorContent: React.FC<React.PropsWithChildren<{ error: SimulationError }>> = ({ error }) => {
   const t = useI18nContext();
 
   function getMessage() {
@@ -97,7 +97,7 @@ const ErrorContent: React.FC<{ error: SimulationError }> = ({ error }) => {
 /**
  * Content when there are no balance changes.
  */
-const EmptyContent: React.FC = () => {
+const EmptyContent: React.FC<React.PropsWithChildren<unknown>> = () => {
   const t = useI18nContext();
   return (
     <Text
@@ -207,12 +207,12 @@ const LegacyHeader = () => {
  * @param props.title
  * @param props.titleTooltip
  */
-const HeaderLayout: React.FC<{
+const HeaderLayout: React.FC<React.PropsWithChildren<{
   isTransactionsRedesign: boolean;
   transactionId: string;
   title?: string;
   titleTooltip?: string;
-}> = ({
+}>> = ({
   children,
   isTransactionsRedesign,
   transactionId,
@@ -251,13 +251,13 @@ const HeaderLayout: React.FC<{
  * @param props.children
  * @param props.transactionId
  */
-export const SimulationDetailsLayout: React.FC<{
+export const SimulationDetailsLayout: React.FC<React.PropsWithChildren<{
   title?: string;
   titleTooltip?: string;
   inHeader?: React.ReactNode;
   isTransactionsRedesign: boolean;
   transactionId: string;
-}> = ({
+}>> = ({
   title,
   titleTooltip,
   inHeader,
@@ -413,7 +413,7 @@ function SimulationDetailsSkeleton({
  * @param props.staticRows - Optional static rows to display.
  * @param props.smartTransactionStatus - Optional Smart Transaction status to override transaction status for immediate UI updates.
  */
-export const SimulationDetails: React.FC<SimulationDetailsProps> = ({
+export const SimulationDetails: React.FC<React.PropsWithChildren<SimulationDetailsProps>> = ({
   transaction,
   enableMetrics = false,
   isTransactionsRedesign = false,

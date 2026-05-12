@@ -36,7 +36,7 @@ type ConnectedSitePopoverProps = {
   onClick: () => void;
 };
 
-export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
+export const ConnectedSitePopover: React.FC<React.PropsWithChildren<ConnectedSitePopoverProps>> = ({
   referenceElement,
   isOpen,
   onClose,

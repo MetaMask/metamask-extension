@@ -320,7 +320,7 @@ function renderSection(
 // Main renderer component
 // ---------------------------------------------------------------------------
 
-export const PermissionDetailRenderer: React.FC<{
+export const PermissionDetailRenderer: React.FC<React.PropsWithChildren<{
   permission: {
     type: string;
     data: Record<string, unknown>;
@@ -332,7 +332,7 @@ export const PermissionDetailRenderer: React.FC<{
   to?: string;
   ownerId: string;
   rules?: Rule[];
-}> = ({ permission, expiry, chainId, origin, to, ownerId, rules }) => {
+}>> = ({ permission, expiry, chainId, origin, to, ownerId, rules }) => {
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permission.type];

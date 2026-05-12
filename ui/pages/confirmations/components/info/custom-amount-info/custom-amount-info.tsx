@@ -78,7 +78,7 @@ export type CustomAmountInfoProps = {
   overrideCenterContent?: (amountHuman: string) => ReactNode;
 };
 
-export const CustomAmountInfo: React.FC<CustomAmountInfoProps> = React.memo(
+export const CustomAmountInfo: React.FC<React.PropsWithChildren<CustomAmountInfoProps>> = React.memo(
   ({
     balanceUsdOverride,
     children,

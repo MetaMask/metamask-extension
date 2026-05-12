@@ -20,7 +20,7 @@ export type SnapInsightProps = {
   isExpanded?: boolean | undefined;
 };
 
-export const SnapInsight: React.FunctionComponent<SnapInsightProps> = ({
+export const SnapInsight: React.FunctionComponent<React.PropsWithChildren<SnapInsightProps>> = ({
   snapId,
   interfaceId,
   loading,

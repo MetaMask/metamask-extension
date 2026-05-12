@@ -146,7 +146,7 @@ const StateChangeRow = ({
   );
 };
 
-const DecodedSimulation: React.FC<object> = () => {
+const DecodedSimulation: React.FC<React.PropsWithChildren<object>> = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   const chainId = currentConfirmation.chainId as Hex;

@@ -44,7 +44,7 @@ export type SettingsRouteMeta = {
   /** Parent path for back navigation; undefined = settings root */
   parentPath?: string;
   /** Lazy-loaded component to render for this route */
-  component?: ComponentType;
+  component?: ComponentType<React.PropsWithChildren<unknown>>;
   /** If true, this route appears as a tab in the TabBar */
   isTab?: boolean;
   /** Icon for TabBar (required if isTab is true) */

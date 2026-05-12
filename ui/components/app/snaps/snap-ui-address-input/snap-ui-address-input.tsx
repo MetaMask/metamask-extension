@@ -52,7 +52,7 @@ type MatchedAccountInfoProps = {
   error?: string;
 };
 
-const MatchedAccountInfo: FunctionComponent<MatchedAccountInfoProps> = ({
+const MatchedAccountInfo: FunctionComponent<React.PropsWithChildren<MatchedAccountInfoProps>> = ({
   label,
   displayAvatar,
   chainId,
@@ -141,9 +141,7 @@ export type SnapUIAddressInputProps = {
   disabled?: boolean;
 };
 
-export const SnapUIAddressInput: FunctionComponent<
-  SnapUIAddressInputProps & FormTextFieldProps<'div'>
-> = ({
+export const SnapUIAddressInput: FunctionComponent<React.PropsWithChildren<SnapUIAddressInputProps & FormTextFieldProps<'div'>>> = ({
   name,
   form,
   label,

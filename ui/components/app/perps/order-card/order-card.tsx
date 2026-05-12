@@ -39,7 +39,7 @@ export type OrderCardProps = {
  * @param options0.onClick - Optional click handler override. If not provided, navigates to market detail page.
  * @param options0.variant - Visual variant - 'default' for perps tab, 'muted' for detail page
  */
-export const OrderCard: React.FC<OrderCardProps> = ({
+export const OrderCard: React.FC<React.PropsWithChildren<OrderCardProps>> = ({
   order,
   onClick,
   variant = 'default',
@@ -112,7 +112,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         size={AvatarTokenSize.Md}
         className="shrink-0"
       />
-
       {/* Left side: Symbol info and size */}
       <Box
         className="min-w-0 flex-1"
@@ -123,7 +122,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         {isTriggerBasedOrder ? (
           // TP/SL: render label directly in the column so it wraps freely.
           // The symbol is redundant here — it appears after the size below.
-          <Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>
+          (<Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>)
         ) : (
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -143,7 +142,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           {order.size} {displayName}
         </Text>
       </Box>
-
       {/* Right side: USD value */}
       <Box
         className="shrink-0"

@@ -410,5 +410,5 @@ export interface BoxProps extends React.HTMLAttributes<HTMLElement> {
  * Help to replace the JS `Box` with the TS `Box` by submitting a PR against
  * {@link https://github.com/MetaMask/metamask-extension/issues/19526}
  */
-declare const Box: React.FC<BoxProps>;
+declare const Box: React.FC<React.PropsWithChildren<BoxProps>>;
 export default Box;

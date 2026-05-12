@@ -136,7 +136,7 @@ const Container = ({
   );
 };
 
-export const Delineator: React.FC<DelineatorProps> = ({
+export const Delineator: React.FC<React.PropsWithChildren<DelineatorProps>> = ({
   children,
   headerComponent,
   iconName,

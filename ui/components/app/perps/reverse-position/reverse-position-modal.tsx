@@ -66,7 +66,7 @@ function toFlipPositionPayload(pos: Position): Position {
   };
 }
 
-export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
+export const ReversePositionModal: React.FC<React.PropsWithChildren<ReversePositionModalProps>> = ({
   isOpen,
   onClose,
   position,

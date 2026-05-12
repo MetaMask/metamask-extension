@@ -3,7 +3,7 @@ import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import PerpsTutorialAnimation from '../PerpsTutorialAnimation';
 
-const ChooseLeverageStep: React.FC = () => {
+const ChooseLeverageStep: React.FC<React.PropsWithChildren<unknown>> = () => {
   const t = useI18nContext();
 
   return (

@@ -22,7 +22,7 @@ export type SnapUIDropdownProps = {
   disabled?: boolean;
 };
 
-export const SnapUIDropdown: FunctionComponent<SnapUIDropdownProps> = ({
+export const SnapUIDropdown: FunctionComponent<React.PropsWithChildren<SnapUIDropdownProps>> = ({
   name,
   label,
   error,

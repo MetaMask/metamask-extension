@@ -70,7 +70,7 @@ const getMetricValue = (
  * @param options0.onPress - Callback when row is pressed
  * @param options0.displayMetric - Which metric to display below the symbol
  */
-export const MarketRow: React.FC<MarketRowProps> = ({
+export const MarketRow: React.FC<React.PropsWithChildren<MarketRowProps>> = ({
   market,
   onPress,
   displayMetric = 'volume',
@@ -115,7 +115,6 @@ export const MarketRow: React.FC<MarketRowProps> = ({
         size={AvatarTokenSize.Md}
         className="shrink-0"
       />
-
       {/* Left side: Symbol, leverage, and metric */}
       <Box
         className="min-w-0 flex-1"
@@ -142,7 +141,6 @@ export const MarketRow: React.FC<MarketRowProps> = ({
           {metricValue}
         </Text>
       </Box>
-
       {/* Right side: Price and 24h change */}
       <Box
         className="shrink-0"

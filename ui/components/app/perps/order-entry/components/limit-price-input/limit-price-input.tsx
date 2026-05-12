@@ -60,7 +60,7 @@ export type LimitPriceInputProps = {
  * @param options0.liquidationPrice
  * @param options0.autoFocus
  */
-export const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
+export const LimitPriceInput: React.FC<React.PropsWithChildren<LimitPriceInputProps>> = ({
   limitPrice,
   onLimitPriceChange,
   currentPrice,

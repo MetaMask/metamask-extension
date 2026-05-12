@@ -120,7 +120,7 @@ export type ConnectPageProps = {
   };
 };
 
-export const ConnectPage: React.FC<ConnectPageProps> = ({
+export const ConnectPage: React.FC<React.PropsWithChildren<ConnectPageProps>> = ({
   request,
   permissionsRequestId,
   rejectPermissionsRequest,

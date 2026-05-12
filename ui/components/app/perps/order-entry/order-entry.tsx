@@ -65,7 +65,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
  */
-export const OrderEntry: React.FC<OrderEntryProps> = ({
+export const OrderEntry: React.FC<React.PropsWithChildren<OrderEntryProps>> = ({
   asset,
   currentPrice,
   maxLeverage,

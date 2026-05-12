@@ -59,7 +59,7 @@ type SelectorItemProps = {
   style?: CSSProperties;
 };
 
-const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
+const SelectorItem: React.FunctionComponent<React.PropsWithChildren<SelectorItemProps>> = ({
   className,
   value,
   children,
@@ -124,7 +124,7 @@ const SelectorItem: React.FunctionComponent<SelectorItemProps> = ({
   );
 };
 
-export const SnapUISelector: React.FunctionComponent<SnapUISelectorProps> = ({
+export const SnapUISelector: React.FunctionComponent<React.PropsWithChildren<SnapUISelectorProps>> = ({
   className,
   name,
   title,

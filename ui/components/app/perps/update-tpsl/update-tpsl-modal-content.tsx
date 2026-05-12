@@ -98,7 +98,7 @@ export type UpdateTPSLModalContentProps = {
  * @param options0.onClose
  * @param options0.onSubmitStateChange
  */
-export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
+export const UpdateTPSLModalContent: React.FC<React.PropsWithChildren<UpdateTPSLModalContentProps>> = ({
   position,
   currentPrice,
   onClose,
@@ -731,7 +731,6 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
           </Text>
         )}
       </Box>
-
       {/* Stop Loss */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text

@@ -5,7 +5,7 @@ export type SnapUITooltipProps = {
   content: ReactNode;
 };
 
-export const SnapUITooltip: FunctionComponent<SnapUITooltipProps> = ({
+export const SnapUITooltip: FunctionComponent<React.PropsWithChildren<SnapUITooltipProps>> = ({
   content,
   children,
 }) => {

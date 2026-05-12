@@ -24,7 +24,7 @@ export type RewardsErrorBannerProps = {
   onConfirmLoading?: boolean;
 };
 
-const RewardsErrorBanner: React.FC<RewardsErrorBannerProps> = ({
+const RewardsErrorBanner: React.FC<React.PropsWithChildren<RewardsErrorBannerProps>> = ({
   title,
   description,
   onDismiss,

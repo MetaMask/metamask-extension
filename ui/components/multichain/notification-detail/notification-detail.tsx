@@ -31,7 +31,7 @@ export type NotificationDetailProps = {
  * @param props.secondaryTextRight - The secondary text for the right side of the notification.
  * @returns Returns a notification list item component.
  */
-export const NotificationDetail: FC<NotificationDetailProps> = ({
+export const NotificationDetail: FC<React.PropsWithChildren<NotificationDetailProps>> = ({
   icon,
   primaryTextLeft,
   primaryTextRight,

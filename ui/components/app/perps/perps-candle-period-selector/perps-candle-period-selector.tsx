@@ -33,7 +33,7 @@ export type PerpsCandlePeriodSelectorProps = {
   onPeriodChange?: (period: CandlePeriod) => void;
 };
 
-const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
+const PerpsCandlePeriodSelector: React.FC<React.PropsWithChildren<PerpsCandlePeriodSelectorProps>> = ({
   selectedPeriod,
   onPeriodChange,
 }) => {

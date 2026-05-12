@@ -12,7 +12,7 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
  * PerpsStartTradeCtaSkeleton displays a loading skeleton for the Start a new trade CTA
  * Matches the layout of StartTradeCta: 62px height, 8px v-padding, 16px h-padding, 16px gap, 32px icon
  */
-export const PerpsStartTradeCtaSkeleton: React.FC = () => {
+export const PerpsStartTradeCtaSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Box
       className="h-[62px] pt-2 pb-2 px-4 bg-transparent"

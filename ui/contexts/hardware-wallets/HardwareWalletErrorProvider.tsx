@@ -82,7 +82,7 @@ type HardwareWalletErrorProviderProps = {
  * @param options0 - The component props
  * @param options0.children - Child components to render
  */
-const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
+const HardwareWalletErrorMonitor: React.FC<React.PropsWithChildren<{ children: ReactNode }>> = ({
   children,
 }) => {
   const dispatch = useDispatch();
@@ -369,9 +369,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
  * @param options0 - The component props
  * @param options0.children - Child components to render
  */
-export const HardwareWalletErrorProvider: React.FC<
-  HardwareWalletErrorProviderProps
-> = ({ children }) => {
+export const HardwareWalletErrorProvider: React.FC<React.PropsWithChildren<HardwareWalletErrorProviderProps>> = ({ children }) => {
   return (
     <HardwareWalletProvider>
       <HardwareWalletErrorMonitor>{children}</HardwareWalletErrorMonitor>

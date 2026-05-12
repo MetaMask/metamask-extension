@@ -18,7 +18,7 @@ import { ConfirmInfoSection } from '../../../../../../components/app/confirm/inf
 import { NetworkRow } from '../shared/network-row/network-row';
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 
-const TypedSignV1Info: React.FC = () => {
+const TypedSignV1Info: React.FC<React.PropsWithChildren<unknown>> = () => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   if (!(currentConfirmation as SignatureRequestType)?.msgParams) {

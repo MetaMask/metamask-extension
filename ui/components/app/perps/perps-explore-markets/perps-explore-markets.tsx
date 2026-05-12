@@ -24,7 +24,7 @@ export type PerpsExploreMarketsProps = {
   markets: PerpsMarketData[];
 };
 
-export const PerpsExploreMarkets: React.FC<PerpsExploreMarketsProps> = ({
+export const PerpsExploreMarkets: React.FC<React.PropsWithChildren<PerpsExploreMarketsProps>> = ({
   markets,
 }) => {
   const t = useI18nContext();

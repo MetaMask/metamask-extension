@@ -17,7 +17,7 @@ type SnapAuthorshipPillProps = {
   onClick: () => void;
 };
 
-const SnapAuthorshipPill: React.FC<SnapAuthorshipPillProps> = ({
+const SnapAuthorshipPill: React.FC<React.PropsWithChildren<SnapAuthorshipPillProps>> = ({
   snapId,
   onClick,
 }) => {

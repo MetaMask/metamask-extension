@@ -87,7 +87,7 @@ function getHeroAmountTextColor(
   return TextColor.TextDefault;
 }
 
-export const PerpsFiatHeroAmountSkeleton: React.FC = () => (
+export const PerpsFiatHeroAmountSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => (
   <Box
     flexDirection={BoxFlexDirection.Row}
     justifyContent={BoxJustifyContent.Center}
@@ -100,7 +100,7 @@ export const PerpsFiatHeroAmountSkeleton: React.FC = () => (
   </Box>
 );
 
-export const PerpsFiatHeroAmountInput: React.FC<PerpsFiatHeroAmountInputProps> =
+export const PerpsFiatHeroAmountInput: React.FC<React.PropsWithChildren<PerpsFiatHeroAmountInputProps>> =
   React.memo(
     ({
       value,

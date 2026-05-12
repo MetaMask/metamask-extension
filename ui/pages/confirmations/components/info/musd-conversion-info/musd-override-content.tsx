@@ -39,7 +39,7 @@ export type MusdOverrideContentProps = {
  * @param options0
  * @param options0.amountHuman
  */
-export const MusdOverrideContent: React.FC<MusdOverrideContentProps> = ({
+export const MusdOverrideContent: React.FC<React.PropsWithChildren<MusdOverrideContentProps>> = ({
   amountHuman,
 }) => {
   const { shouldShowOutputAmountTag, outputAmount, outputSymbol } =

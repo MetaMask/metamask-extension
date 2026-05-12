@@ -30,7 +30,7 @@ type SnapIconProps = {
   badgeBackgroundColor?: BackgroundColor;
 } & Omit<AvatarFaviconProps<'span'>, 'name'>;
 
-export const SnapIcon: FunctionComponent<SnapIconProps> = ({
+export const SnapIcon: FunctionComponent<React.PropsWithChildren<SnapIconProps>> = ({
   snapId,
   avatarSize = IconSize.Lg,
   ...props

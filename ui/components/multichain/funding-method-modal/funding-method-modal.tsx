@@ -44,7 +44,7 @@ type FundingMethodModalProps = Omit<ModalProps, 'children'> & {
   onClickReceive: () => void;
 };
 
-export const FundingMethodModal: React.FC<FundingMethodModalProps> = ({
+export const FundingMethodModal: React.FC<React.PropsWithChildren<FundingMethodModalProps>> = ({
   isOpen,
   onClose,
   title,

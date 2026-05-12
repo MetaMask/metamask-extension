@@ -33,7 +33,7 @@ export type NotificationDetailInfoProps = {
  * @param [props.action] - The action to display.
  * @returns The rendered component.
  */
-export const NotificationDetailInfo: FC<NotificationDetailInfoProps> = ({
+export const NotificationDetailInfo: FC<React.PropsWithChildren<NotificationDetailInfoProps>> = ({
   icon,
   label,
   detail,

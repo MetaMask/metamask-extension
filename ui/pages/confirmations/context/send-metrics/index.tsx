@@ -65,9 +65,9 @@ export const SendMetricsContext = createContext<SendMetricsContextType>({
   setRecipientInputMethod: () => undefined,
 });
 
-export const SendMetricsContextProvider: React.FC<{
+export const SendMetricsContextProvider: React.FC<React.PropsWithChildren<{
   children: ReactElement[] | ReactElement;
-}> = ({ children }) => {
+}>> = ({ children }) => {
   const { from } = useSendContext();
   const internalAccounts = useSelector(getInternalAccounts);
   const [assetFilterMethod, setAssetFilterMethod] = useState([

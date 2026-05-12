@@ -58,7 +58,7 @@ enum EditAccountModalStage {
   EditAccounts = 'edit-accounts',
 }
 
-export const EditAccountsModal: React.FC<EditAccountsModalProps> = ({
+export const EditAccountsModal: React.FC<React.PropsWithChildren<EditAccountsModalProps>> = ({
   accounts,
   defaultSelectedAccountAddresses,
   onClose,

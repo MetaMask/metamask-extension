@@ -10,7 +10,7 @@ type AddNetworkProps = {
   isEdit?: boolean;
 };
 
-export const AddNetwork: React.FC<AddNetworkProps> = ({
+export const AddNetwork: React.FC<React.PropsWithChildren<AddNetworkProps>> = ({
   networkFormState,
   network,
   isEdit = false,

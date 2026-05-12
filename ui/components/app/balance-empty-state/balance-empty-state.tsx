@@ -45,7 +45,7 @@ export type BalanceEmptyStateProps = {
   onClickReceive?: () => void;
 };
 
-export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
+export const BalanceEmptyState: React.FC<React.PropsWithChildren<BalanceEmptyStateProps>> = ({
   onClickReceive,
   ...props
 }) => {

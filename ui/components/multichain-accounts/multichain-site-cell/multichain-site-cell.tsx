@@ -37,7 +37,7 @@ type MultichainSiteCellProps = {
   hideAllToasts?: () => void;
 };
 
-export const MultichainSiteCell: React.FC<MultichainSiteCellProps> = ({
+export const MultichainSiteCell: React.FC<React.PropsWithChildren<MultichainSiteCellProps>> = ({
   nonTestNetworks,
   testNetworks,
   supportedAccountGroups,

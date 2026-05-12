@@ -66,7 +66,7 @@ export type AddressQRCodeModalProps = Omit<
   networkImageSrc?: string | undefined;
 };
 
-export const AddressQRCodeModal: React.FC<AddressQRCodeModalProps> = ({
+export const AddressQRCodeModal: React.FC<React.PropsWithChildren<AddressQRCodeModalProps>> = ({
   isOpen,
   onClose,
   address,

@@ -13,7 +13,7 @@ import { BorderRadius } from '../../../../../helpers/constants/design-system';
  * MarketRowSkeleton component displays a loading skeleton for market rows
  * Matches the layout of MarketRow for smooth loading transitions
  */
-export const MarketRowSkeleton: React.FC = () => {
+export const MarketRowSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => {
   return (
     <Box
       className="px-4 py-3"

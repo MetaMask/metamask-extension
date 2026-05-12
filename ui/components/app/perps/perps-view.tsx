@@ -65,7 +65,7 @@ type BatchCloseResult = {
   failureCount?: number;
 };
 
-export const PerpsView: React.FC = () => {
+export const PerpsView: React.FC<React.PropsWithChildren<unknown>> = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const isFirstTimeUser = useSelector(selectPerpsIsFirstTimeUser);

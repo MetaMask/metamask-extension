@@ -19,7 +19,7 @@ const textStyle = {
   textAlign: 'right' as TextAlign,
 } as const;
 
-const FiatNotAvailableDisplay: React.FC = () => {
+const FiatNotAvailableDisplay: React.FC<React.PropsWithChildren<unknown>> = () => {
   const t = useI18nContext();
   return <Text {...textStyle}>{t('simulationDetailsFiatNotAvailable')}</Text>;
 };
@@ -37,10 +37,10 @@ export function calculateTotalFiat(fiatAmounts: FiatAmount[]): number {
  * @param props.fiatAmount - The fiat amount to display.
  * @param props.shorten - Whether to shorten the fiat amount.
  */
-export const IndividualFiatDisplay: React.FC<{
+export const IndividualFiatDisplay: React.FC<React.PropsWithChildren<{
   fiatAmount: FiatAmount;
   shorten?: boolean;
-}> = ({ fiatAmount, shorten = false }) => {
+}>> = ({ fiatAmount, shorten = false }) => {
   const shouldShowFiat = useSelector(getShouldShowFiat);
   const fiatFormatter = useFiatFormatter();
 
@@ -79,9 +79,9 @@ export const IndividualFiatDisplay: React.FC<{
  * @param props
  * @param props.fiatAmounts
  */
-export const TotalFiatDisplay: React.FC<{
+export const TotalFiatDisplay: React.FC<React.PropsWithChildren<{
   fiatAmounts: FiatAmount[];
-}> = ({ fiatAmounts }) => {
+}>> = ({ fiatAmounts }) => {
   const shouldShowFiat = useSelector(getShouldShowFiat);
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();

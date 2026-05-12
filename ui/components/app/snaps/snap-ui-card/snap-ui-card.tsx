@@ -19,7 +19,7 @@ export type SnapUICardProps = {
   extra?: string | undefined;
 };
 
-export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
+export const SnapUICard: FunctionComponent<React.PropsWithChildren<SnapUICardProps>> = ({
   image,
   title,
   description,

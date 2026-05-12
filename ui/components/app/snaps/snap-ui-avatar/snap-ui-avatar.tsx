@@ -13,7 +13,7 @@ type SnapUIAvatarProps = {
   size?: AvatarAccountSize;
 };
 
-export const SnapUIAvatar: React.FunctionComponent<SnapUIAvatarProps> = ({
+export const SnapUIAvatar: React.FunctionComponent<React.PropsWithChildren<SnapUIAvatarProps>> = ({
   address: caipAddress,
   size,
 }) => {

@@ -17,7 +17,7 @@ import { useBoolean } from '../../../hooks/useBoolean';
 import { PartnerLink } from './partner-link';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
 
-const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
+const PartnerImage: React.FC<React.PropsWithChildren<{ partnerId: string; partnerName: string }>> = ({
   partnerId,
   partnerName,
 }) => {
@@ -29,7 +29,7 @@ const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
   );
 };
 
-export const DefiReferralConsentControl: React.FC<DefiReferralConsentProps> = ({
+export const DefiReferralConsentControl: React.FC<React.PropsWithChildren<DefiReferralConsentProps>> = ({
   onActionComplete,
   selectedAddress,
   partnerId,

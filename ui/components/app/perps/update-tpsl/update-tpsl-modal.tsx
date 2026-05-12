@@ -37,7 +37,7 @@ export type UpdateTPSLModalProps = {
  * @param options0.position
  * @param options0.currentPrice
  */
-export const UpdateTPSLModal: React.FC<UpdateTPSLModalProps> = ({
+export const UpdateTPSLModal: React.FC<React.PropsWithChildren<UpdateTPSLModalProps>> = ({
   isOpen,
   onClose,
   position,

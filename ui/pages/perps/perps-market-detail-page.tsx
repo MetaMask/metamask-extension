@@ -178,7 +178,7 @@ type PopoverMenuItemProps = {
   'data-testid'?: string;
 };
 
-const PopoverMenuItem: React.FC<PopoverMenuItemProps> = ({
+const PopoverMenuItem: React.FC<React.PropsWithChildren<PopoverMenuItemProps>> = ({
   icon,
   label,
   description,
@@ -260,7 +260,7 @@ const parsePerpsToastRouteState = (
  * Displays detailed market information for a specific perps market
  * Accessible via /perps/market/:symbol route
  */
-const PerpsMarketDetailPage: React.FC = () => {
+const PerpsMarketDetailPage: React.FC<React.PropsWithChildren<unknown>> = () => {
   const t = useI18nContext();
   const theme = useTheme();
   const isDark = theme === 'dark';

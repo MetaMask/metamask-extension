@@ -31,7 +31,7 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useLedgerConnection from '../../../hooks/useLedgerConnection';
 
-const LedgerInfo: React.FC = () => {
+const LedgerInfo: React.FC<React.PropsWithChildren<unknown>> = () => {
   const { isLedgerWallet } = useLedgerConnection();
   const t = useI18nContext();
   const dispatch = useDispatch();

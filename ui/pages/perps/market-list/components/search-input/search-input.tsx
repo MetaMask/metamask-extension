@@ -30,7 +30,7 @@ export type SearchInputProps = {
  * @param options0.onInputClick - Called when the user clicks the search input
  * @param options0.autoFocus - Auto-focus the input when mounted
  */
-export const SearchInput: React.FC<SearchInputProps> = ({
+export const SearchInput: React.FC<React.PropsWithChildren<SearchInputProps>> = ({
   value,
   onChange,
   onClear,

@@ -19,14 +19,14 @@ const CollapsedSectionStyles = {
   justifyContent: JustifyContent.spaceBetween,
 };
 
-const StaticSimulation: React.FC<{
+const StaticSimulation: React.FC<React.PropsWithChildren<{
   title: string;
   titleTooltip: string;
   description?: string;
   simulationElements: React.ReactNode;
   isLoading?: boolean;
   isCollapsed?: boolean;
-}> = ({
+}>> = ({
   title,
   titleTooltip,
   description,

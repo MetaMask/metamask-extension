@@ -35,9 +35,7 @@ export type NotificationDetailCollectionProps = {
   collection: string;
 };
 
-export const NotificationDetailCollection: FC<
-  NotificationDetailCollectionProps
-> = ({ icon, label, collection }) => {
+export const NotificationDetailCollection: FC<React.PropsWithChildren<NotificationDetailCollectionProps>> = ({ icon, label, collection }) => {
   const { badgeSrc, src } = icon;
 
   const isIpfsEnabled = useSelector(getIpfsGateway);

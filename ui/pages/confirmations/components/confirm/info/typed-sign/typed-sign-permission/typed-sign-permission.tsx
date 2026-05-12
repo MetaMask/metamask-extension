@@ -12,7 +12,7 @@ import { PermissionDetailRenderer } from './permission-detail-renderer';
  *
  * @returns JSX element containing the permission information UI
  */
-const TypedSignPermissionInfo: React.FC = () => {
+const TypedSignPermissionInfo: React.FC<React.PropsWithChildren<unknown>> = () => {
   const {
     currentConfirmation: { decodedPermission, id },
   } = useConfirmContext<SignatureRequestType>();

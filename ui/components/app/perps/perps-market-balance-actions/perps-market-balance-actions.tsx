@@ -45,7 +45,7 @@ type PerpsMarketBalanceActionsProps = {
   onLearnMore?: () => void;
 };
 
-const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
+const PerpsMarketBalanceActions: React.FC<React.PropsWithChildren<PerpsMarketBalanceActionsProps>> = ({
   showActionButtons = true,
   isAddFundsLoading = false,
   onAddFunds,

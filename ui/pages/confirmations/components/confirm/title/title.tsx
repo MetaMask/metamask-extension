@@ -269,7 +269,7 @@ export function TitleSkeleton() {
   );
 }
 
-const ConfirmTitle: React.FC = memo(() => {
+const ConfirmTitle: React.FC<React.PropsWithChildren<unknown>> = memo(() => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
   const { isUpgradeOnly } = useIsUpgradeTransaction();
