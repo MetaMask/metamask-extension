@@ -32,10 +32,10 @@ import {
   getOrderedNetworksList,
   getOriginOfCurrentTab,
   getPermittedEVMChainsForSelectedTab,
-  getPreferences,
   getShowTestNetworks,
   getAllChainsToPoll,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import {
   addPermittedChain,
   detectNfts,
