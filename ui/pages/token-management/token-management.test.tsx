@@ -18,6 +18,15 @@ jest.mock('../../selectors/assets', () => ({
   }) => state.metamask?.accountGroupAssets ?? {},
 }));
 
+jest.mock('../../store/actions', () => {
+  const actual = jest.requireActual('../../store/actions');
+  return {
+    ...actual,
+    addImportedTokens: jest.fn(() => () => Promise.resolve()),
+    multichainAddAssets: jest.fn(() => () => Promise.resolve()),
+  };
+});
+
 type MockSearchState = {
   results: Array<{
     assetId: string;
@@ -352,6 +361,48 @@ describe('TokenManagementPage', () => {
     // Home-page tokens are hidden once the search drives the list.
     expect(screen.queryByText('Alpha Token')).not.toBeInTheDocument();
     expect(screen.getByText('USD Coin')).toBeInTheDocument();
+  });
+
+  it('toggling ON a not-yet-imported search result imports the token', async () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: usdcAssetId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const actions = jest.requireMock('../../store/actions') as {
+      addImportedTokens: jest.Mock;
+    };
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
+    );
+    fireEvent.click(toggle);
+
+    expect(actions.addImportedTokens).toHaveBeenCalledWith(
+      [
+        expect.objectContaining({
+          address: usdcAddress,
+          symbol: 'USDC',
+          decimals: 6,
+          isERC721: false,
+        }),
+      ],
+      'mainnet',
+    );
   });
 
   it('shows the empty-state copy when the API returns no matches', () => {

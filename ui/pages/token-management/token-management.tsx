@@ -47,10 +47,12 @@ import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors
 import {
   addImportedTokens,
   ignoreTokens as ignoreTokensAction,
+  multichainAddAssets,
   multichainIgnoreAssets,
   showImportTokensModal,
   showModal,
 } from '../../store/actions';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
@@ -112,6 +114,20 @@ export const TokenManagementPage = () => {
     }
   });
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+
+  // Looks up the internal account in the selected account group that maps to
+  // a given CAIP chain id. Used when importing a search result so the unified
+  // AssetsController has an account to associate the asset with.
+  const getAccountForChain = useSelector(
+    (state: unknown) =>
+      (caipChainId: CaipChainId) =>
+        getInternalAccountBySelectedAccountGroupAndCaip(
+          state as Parameters<
+            typeof getInternalAccountBySelectedAccountGroupAndCaip
+          >[0],
+          caipChainId,
+        ),
+  );
 
   const enabledChainIds = useMemo(
     () =>
@@ -283,72 +299,87 @@ export const TokenManagementPage = () => {
   );
 
   /**
-   * Search-result-specific toggle. A result is rendered in one of three
-   * states:
+   * Search-result-specific toggle. Mirrors the mobile import flow
+   * (`metamask-mobile#26108`):
    *
-   *  - Already-imported manageable EVM token → toggle delegates to
-   *    {@link handleToggle} so OFF goes through the standard ignore path.
-   *  - Not-yet-imported EVM token → toggling ON imports it via
-   *    `addImportedTokens`.
-   *  - Native / non-EVM → no toggle is rendered.
+   *  - EVM result, toggle ON  → `addImportedTokens([token], networkClientId)`.
+   *  - EVM result, toggle OFF → `ignoreTokens([address], networkClientId)`.
+   *  - Non-EVM result, toggle ON  → `multichainAddAssets([assetId], accountId)`.
+   *  - Non-EVM result, toggle OFF → `multichainIgnoreAssets([assetId], accountId)`.
    */
   const handleSearchResultToggle = useCallback(
     async (result: TokenSearchResult, nextValue: boolean) => {
       const parsed = parseCaipAssetType(result.assetId as CaipAssetType);
-      const { chainId } = parsed;
-      const { assetReference } = parsed;
-      if (!chainId || !assetReference) {
-        return;
-      }
-      const isEvm = isEvmChainId(chainId);
-      if (!isEvm) {
-        return;
-      }
-      // Map CAIP-2 `eip155:<decimal>` → hex chain id for the existing
-      // store actions, which all expect hex chain ids.
-      const [, reference] = chainId.split(':');
-      const decimalChainId = Number(reference);
-      if (!Number.isFinite(decimalChainId)) {
-        return;
-      }
-      const hexChainId = `0x${decimalChainId.toString(16)}` as Hex;
-      const { networkClientId } = getNetworkMeta(hexChainId);
-      if (!networkClientId) {
+      const { chainId: caipChainId, assetReference } = parsed;
+      if (!caipChainId || !assetReference) {
         return;
       }
 
       const importedKey = result.assetId.toLowerCase();
+      const isEvm = isEvmChainId(caipChainId);
       setPendingKey(importedKey);
       try {
-        if (nextValue) {
+        if (isEvm) {
+          // Map CAIP-2 `eip155:<decimal>` → hex chain id for the EVM store
+          // actions, which all expect hex chain ids.
+          const [, reference] = caipChainId.split(':');
+          const decimalChainId = Number(reference);
+          if (!Number.isFinite(decimalChainId)) {
+            return;
+          }
+          const hexChainId = `0x${decimalChainId.toString(16)}` as Hex;
+          const { networkClientId } = getNetworkMeta(hexChainId);
+          if (!networkClientId) {
+            return;
+          }
+
+          if (nextValue) {
+            await dispatch(
+              addImportedTokens(
+                [
+                  {
+                    address: assetReference,
+                    symbol: result.symbol,
+                    decimals: result.decimals,
+                    isERC721: false,
+                    name: result.name,
+                    image:
+                      result.iconUrl ||
+                      getAssetImageUrl(result.assetId, caipChainId) ||
+                      undefined,
+                  },
+                ],
+                networkClientId,
+              ),
+            );
+            return;
+          }
           await dispatch(
-            addImportedTokens(
-              [
-                {
-                  address: assetReference,
-                  symbol: result.symbol,
-                  decimals: result.decimals,
-                  isERC721: false,
-                  name: result.name,
-                },
-              ],
+            ignoreTokensAction({
+              tokensToIgnore: [assetReference],
+              dontShowLoadingIndicator: true,
               networkClientId,
-            ),
+            }),
           );
           return;
         }
-        await dispatch(
-          ignoreTokensAction({
-            tokensToIgnore: [assetReference],
-            dontShowLoadingIndicator: true,
-            networkClientId,
-          }),
-        );
+
+        // Non-EVM path (e.g. Solana, Tron). Mirrors mobile's
+        // `MultichainAssetsController.addAssets([assetId], accountId)`.
+        const account = getAccountForChain(caipChainId);
+        if (!account?.id) {
+          return;
+        }
+        if (nextValue) {
+          await dispatch(multichainAddAssets([result.assetId], account.id));
+          return;
+        }
+        await dispatch(multichainIgnoreAssets([result.assetId], account.id));
       } finally {
         setPendingKey(undefined);
       }
     },
-    [dispatch, getNetworkMeta],
+    [dispatch, getAccountForChain, getNetworkMeta],
   );
 
   const getTokenImage = useCallback((token: ManagedAsset) => {
@@ -414,9 +445,6 @@ export const TokenManagementPage = () => {
       const lowerAssetId = result.assetId.toLowerCase();
       const parsed = parseCaipAssetType(result.assetId as CaipAssetType);
       const isEvm = isEvmChainId(parsed.chainId);
-      // The Token API only ever returns ERC-20 / fungible asset references;
-      // however non-EVM scopes (e.g. solana, tron) are rendered read-only
-      // because the manage flow can only import EVM tokens today.
       const isImported = importedAssetIds.has(lowerAssetId);
 
       let hexChainId: Hex | undefined;
@@ -443,9 +471,9 @@ export const TokenManagementPage = () => {
             networkConfigurations?.[hexChainId as Hex]?.name ?? parsed.chainId
           }
           isOn={isImported}
-          disabled={!isEvm || pendingKey === lowerAssetId}
+          disabled={pendingKey === lowerAssetId}
           onToggle={(nextValue) => handleSearchResultToggle(result, nextValue)}
-          showToggle={isEvm}
+          showToggle
           testIdSuffix={`search-${lowerAssetId}`}
         />
       );
