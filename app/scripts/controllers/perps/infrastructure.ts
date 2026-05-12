@@ -67,6 +67,30 @@ function createLogger(deps: InfrastructureDeps): PerpsLogger {
       // Suppress benign WS-close errors only while our own disconnect() is
       // active (account switch in progress). Outside that window the same
       // error shapes indicate real connectivity problems and must reach Sentry.
+      //
+      // KNOWN TRADEOFF: this guard intentionally suppresses every benign-shaped
+      // error during the disconnect window, including write-context errors
+      // (placeOrder, editOrder, cancelOrder, closePosition, updateMargin,
+      // flipPosition, withdraw, ...). We accept this for two reasons:
+      //
+      //   1. Account switches generate a high volume of in-flight read/stream
+      //      cancellations whose error shape is indistinguishable from a true
+      //      write race at this layer. Reporting them clutters both the dev
+      //      console (captureException -> console.error) and the Sentry inbox
+      //      enough to drown out real signal. We verified empirically that
+      //      gating on `options.context.data.method` to let write-path errors
+      //      through produced many false positives during normal account
+      //      switches without surfacing actionable failures.
+      //   2. Writes that genuinely race with `disconnect()` are observable to
+      //      the user via the UI (orders surface success/failure inline and
+      //      withdrawals via transaction state) and to the team via product
+      //      reports, so we are not relying on Sentry as the primary signal
+      //      for "did the order go through?" during account switches.
+      //
+      // If that invariant changes (e.g. writes start being issued from
+      // non-user-initiated paths during disconnect, or UI surfacing weakens),
+      // tighten this guard by gating on `options.context.data.method` against
+      // the upstream write-method names so write contexts bypass suppression.
       if (
         isBenignDisconnectError(error) &&
         (deps.isDisconnecting?.() ?? false)
