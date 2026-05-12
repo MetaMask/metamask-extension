@@ -20,7 +20,6 @@ import {
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
-  getSelectedInternalAccount,
   getEditedNetwork,
   getShowUpdateModal,
   getIsSocialLoginFlow,
@@ -30,6 +29,7 @@ import {
   getLastVisitedPerpsRoute,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,

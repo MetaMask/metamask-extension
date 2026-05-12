@@ -21,12 +21,14 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-balance-dropdown-withdraw',
   };
 
-  private readonly perpsBalanceDropdown = {
-    testId: 'perps-balance-dropdown',
+  private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
+
+  private readonly geoBlockModalDismiss = {
+    testId: 'perps-geo-block-modal-dismiss',
   };
 
-  private readonly perpsView = {
-    testId: 'perps-view',
+  private readonly perpsBalanceDropdown = {
+    testId: 'perps-balance-dropdown',
   };
 
   private readonly perpsExploreMarketsRow = {
@@ -51,6 +53,14 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly perpsTutorialModal = { testId: 'perps-tutorial-modal' };
 
+  private readonly perpsView = {
+    testId: 'perps-view',
+  };
+
+  private readonly perpsRecentActivityEmpty = {
+    testId: 'perps-recent-activity-empty',
+  };
+
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
   /**
@@ -58,10 +68,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * The main Perps tab shows PerpsView (balance dropdown, positions, explore).
    */
   async checkPageIsLoaded(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.perpsView,
-      this.perpsBalanceDropdown,
-    ]);
+    await this.driver.waitForMultipleSelectors(
+      [this.perpsView, this.perpsBalanceDropdown],
+      { timeout: 20000 },
+    );
   }
 
   /**
@@ -89,7 +99,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   /**
    * Clicks the "See All" link in the Recent Activity section (navigates to Perps Activity).
-   * Requires at least one perps transaction so the non-empty list and See All are shown.
+   * Shown for both the populated list header and the empty-state header.
    */
   async clickRecentActivitySeeAll(): Promise<void> {
     await this.driver.clickElement(this.perpsRecentActivitySeeAll);
@@ -163,5 +173,35 @@ export class PerpsHomePage extends PerpsPositionsBase {
    */
   async waitForRecentActivitySection(): Promise<void> {
     await this.driver.waitForSelector(this.perpsRecentActivity);
+  }
+
+  /**
+   * Dismisses the geo-block modal by clicking the "Got it" button.
+   */
+  async dismissGeoBlockModal(): Promise<void> {
+    await this.driver.clickElementAndWaitToDisappear(this.geoBlockModalDismiss);
+  }
+
+  /**
+   * Waits for the geo-block modal to be visible.
+   * The modal appears when an ineligible (geo-blocked) user attempts a restricted action.
+   */
+  async waitForGeoBlockModal(): Promise<void> {
+    await this.driver.waitForSelector(this.geoBlockModal);
+  }
+
+  /**
+   * Waits for the geo-block modal to be absent (dismissed or not yet triggered).
+   */
+  async waitForGeoBlockModalDismissed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.geoBlockModal);
+  }
+
+  /**
+   * Waits for the empty activity state to be visible.
+   * Shown when the user has no perps transaction history.
+   */
+  async waitForEmptyActivitySection(): Promise<void> {
+    await this.driver.waitForSelector(this.perpsRecentActivityEmpty);
   }
 }

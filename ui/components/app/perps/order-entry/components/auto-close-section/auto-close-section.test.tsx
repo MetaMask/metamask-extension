@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../../../store/store';
@@ -727,6 +728,47 @@ describe('AutoCloseSection', () => {
       // Should have called price change with the correct RoE-derived price
       // 15% RoE at 10x: 45000 * (1 + 15/1000) = 45000 * 1.015 = 45675
       expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith('45675');
+    });
+
+    it('formats percentage-derived TP prices with market precision', async () => {
+      const cases = [
+        { asset: 'BTC', currentPrice: 45000, expectedPrice: '45315' },
+        { asset: 'PUMP', currentPrice: 0.001958, expectedPrice: '0.001972' },
+        {
+          asset: 'PUMP',
+          currentPrice: 0.0019860973187686197,
+          expectedPrice: '0.002000',
+        },
+        { asset: 'PUMP', currentPrice: 0.0000009, expectedPrice: '' },
+        { asset: 'xyz:XYZ100', currentPrice: 28426, expectedPrice: '28625' },
+        { asset: 'ETH', currentPrice: 2359.6, expectedPrice: '2376.1' },
+      ];
+
+      for (const { asset, currentPrice, expectedPrice } of cases) {
+        const onTakeProfitPriceChange = jest.fn();
+        const { unmount } = renderWithProvider(
+          <AutoCloseSection
+            {...defaultProps}
+            enabled={true}
+            asset={asset}
+            currentPrice={currentPrice}
+            leverage={10}
+            onTakeProfitPriceChange={onTakeProfitPriceChange}
+          />,
+          mockStore,
+        );
+
+        const container = screen.getByTestId('tp-percent-input');
+        const input = container.querySelector('input') as HTMLInputElement;
+        const user = userEvent.setup();
+
+        await user.click(input);
+        await user.type(input, '7');
+
+        expect(onTakeProfitPriceChange).toHaveBeenLastCalledWith(expectedPrice);
+
+        unmount();
+      }
     });
 
     it('reverts to derived formatted value when percent field is blurred', () => {

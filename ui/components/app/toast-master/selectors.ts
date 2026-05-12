@@ -1,17 +1,11 @@
 import { PRIVACY_POLICY_DATE } from '../../../helpers/constants/privacy-policy';
 import { MetaMaskReduxState } from '../../../store/store';
-import {
-  ClaimSubmitToastType,
-  StorageWriteErrorType,
-} from '../../../../shared/constants/app-state';
+import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { getIsPrivacyToastRecent } from './utils';
 
 type State = {
   appState: Partial<
-    Pick<
-      MetaMaskReduxState['appState'],
-      'showClaimSubmitToast' | 'showInfuraSwitchToast'
-    >
+    Pick<MetaMaskReduxState['appState'], 'showInfuraSwitchToast'>
   >;
   metamask: Partial<
     Pick<
@@ -59,18 +53,6 @@ export function selectShowPrivacyPolicyToast(state: Pick<State, 'metamask'>): {
     (!onboardingDate || onboardingDate < newPrivacyPolicyDate.valueOf());
 
   return { showPrivacyPolicyToast, newPrivacyPolicyToastShownDate };
-}
-
-/**
- * Retrieves the state for the "Claim Submit" toast
- *
- * @param state - Redux state object.
- * @returns ClaimSubmitToastType or null
- */
-export function selectClaimSubmitToast(
-  state: Pick<State, 'appState'>,
-): ClaimSubmitToastType | null {
-  return state.appState.showClaimSubmitToast || null;
 }
 
 /**

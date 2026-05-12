@@ -8,7 +8,7 @@ import {
 } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { TokenStandAndDetails } from '../../../../../store/actions';
-import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import * as Utils from '../../../../../helpers/utils/util';
 import * as TokenUtils from '../../../utils/token';
 import { Confirmation } from '../../../types/confirm';
@@ -30,7 +30,7 @@ jest.mock('../../../../../store/controller-actions/bridge-controller', () => ({
   fetchQuotes: jest.fn(),
 }));
 
-jest.mock('../../../../../selectors/remote-feature-flags');
+jest.mock('../../../../../../shared/lib/selectors/remote-feature-flags');
 
 const mockUseDappSwapComparisonLatencyMetricsResponse = {
   requestDetectionLatency: '1200',

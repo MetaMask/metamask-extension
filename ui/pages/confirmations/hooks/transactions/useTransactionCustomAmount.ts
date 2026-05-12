@@ -65,6 +65,16 @@ export function useTransactionCustomAmount({
       setAmountHumanDebounced(value);
       if (!disableUpdate) {
         updateTokenAmountCallback(value);
+        // Emitted only after the debounce actually triggers a quote refresh
+        // via updateEditableParams -> TransactionPayController:stateChange.
+        if (transactionId) {
+          upsertTransactionUIMetricsFragment(transactionId, {
+            properties: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              mm_pay_quote_requested: true,
+            },
+          });
+        }
       }
     }, DEBOUNCE_DELAY);
 
@@ -75,7 +85,7 @@ export function useTransactionCustomAmount({
     return () => {
       debouncedFn.cancel();
     };
-  }, [disableUpdate, updateTokenAmountCallback]);
+  }, [disableUpdate, transactionId, updateTokenAmountCallback]);
 
   const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
@@ -160,8 +170,6 @@ export function useTransactionCustomAmount({
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             mm_pay_amount_input_type: 'manual',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            mm_pay_quote_requested: false,
           },
         });
       }

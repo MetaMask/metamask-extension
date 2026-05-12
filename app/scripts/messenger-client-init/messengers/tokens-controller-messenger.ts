@@ -1,4 +1,3 @@
-import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import { Messenger } from '@metamask/messenger';
 import type {
   NetworkControllerGetNetworkClientByIdAction,
@@ -14,16 +13,9 @@ import {
   AccountsControllerListAccountsAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
-import { TokenListController } from '@metamask/assets-controllers';
 import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
 import { PreferencesControllerStateChangeEvent } from '../../controllers/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-// Not exported from `@metamask/assets-controllers`.
-type TokenListControllerStateChangeEvent = ControllerStateChangeEvent<
-  'TokenListController',
-  TokenListController['state']
->;
 
 type AllowedActions =
   | AccountsControllerGetAccountAction
@@ -37,8 +29,7 @@ type AllowedEvents =
   | KeyringControllerAccountRemovedEvent
   | NetworkControllerNetworkDidChangeEvent
   | NetworkControllerStateChangeEvent
-  | PreferencesControllerStateChangeEvent
-  | TokenListControllerStateChangeEvent;
+  | PreferencesControllerStateChangeEvent;
 
 export type TokensControllerMessenger = ReturnType<
   typeof getTokensControllerMessenger
@@ -78,7 +69,6 @@ export function getTokensControllerMessenger(
       'NetworkController:networkDidChange',
       'NetworkController:stateChange',
       'PreferencesController:stateChange',
-      'TokenListController:stateChange',
     ],
   });
   return controllerMessenger;
