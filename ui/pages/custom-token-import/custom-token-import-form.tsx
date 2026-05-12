@@ -101,10 +101,7 @@ const NetworkPickerField = ({
   networkName,
   selectedNetwork,
   onClick,
-}: Pick<
-  CustomTokenImportFormProps,
-  'networkName' | 'selectedNetwork'
-> & {
+}: Pick<CustomTokenImportFormProps, 'networkName' | 'selectedNetwork'> & {
   onClick: () => void;
 }) => {
   const t = useI18nContext();
@@ -238,11 +235,7 @@ const TokenFormFields = ({
   );
 };
 
-const SubmitBar = ({
-  isDisabled,
-  isLoading,
-  onSubmit,
-}: SubmitBarProps) => {
+const SubmitBar = ({ isDisabled, isLoading, onSubmit }: SubmitBarProps) => {
   const t = useI18nContext();
 
   return (

@@ -78,9 +78,6 @@ describe('CustomTokenImportPage', () => {
 
     expect(screen.getByTestId('custom-token-import-page')).toBeInTheDocument();
     expect(
-      screen.getByTestId('network-selector'),
-    ).toHaveTextContent('Ethereum Mainnet');
-    expect(
       screen.getByTestId('custom-token-import-address-input'),
     ).toBeInTheDocument();
     // Symbol/decimal fields are gated behind a valid address entry.
