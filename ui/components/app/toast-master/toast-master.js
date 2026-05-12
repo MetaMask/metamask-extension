@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -38,10 +38,7 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
-import {
-  ClaimSubmitToastType,
-  StorageWriteErrorType,
-} from '../../../../shared/constants/app-state';
+import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { MerklClaimToast, MusdConversionToast } from '../musd';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -58,7 +55,7 @@ import {
 import {
   isCardPaymentMethod,
   isCryptoPaymentMethod,
-} from '../../../pages/settings/transaction-shield-tab/types';
+} from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -72,7 +69,6 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   selectShowPrivacyPolicyToast,
-  selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
@@ -83,7 +79,6 @@ import {
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
-  setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
@@ -136,12 +131,7 @@ export function ToastMaster() {
   }
 
   if (onSettingsScreen) {
-    return (
-      <ToastContainer>
-        {storageErrorToast}
-        <ClaimSubmitToast />
-      </ToastContainer>
-    );
+    return <ToastContainer>{storageErrorToast}</ToastContainer>;
   }
 
   // On other screens, only render ToastContainer if storage error toast should show
@@ -266,138 +256,6 @@ function InfuraSwitchToast() {
     )
   );
 }
-
-const ClaimSubmitToast = () => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
-  const autoHideToastDelay = 5 * SECOND;
-
-  const isSuccess = showClaimSubmitToast === ClaimSubmitToastType.Success;
-  const isDraftSaved = showClaimSubmitToast === ClaimSubmitToastType.DraftSaved;
-  const isDraftSaveFailed =
-    showClaimSubmitToast === ClaimSubmitToastType.DraftSaveFailed;
-  const isErrored = showClaimSubmitToast === ClaimSubmitToastType.Errored;
-  const isDraftDeleted =
-    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleted;
-  const isDraftDeleteFailed =
-    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleteFailed;
-
-  const description = useMemo(() => {
-    if (isSuccess) {
-      return t('shieldClaimSubmitSuccessDescription');
-    }
-    if (isDraftSaved) {
-      return t('shieldClaimDraftSavedDescription');
-    }
-    if (isDraftSaveFailed) {
-      return t('shieldClaimDraftSaveFailedDescription');
-    }
-    if (isDraftDeleted) {
-      return t('shieldClaimDeleteDraftDescription');
-    }
-    if (isDraftDeleteFailed) {
-      return t('shieldClaimDraftDeleteFailedDescription');
-    }
-    if (isErrored) {
-      return '';
-    }
-    return showClaimSubmitToast;
-  }, [
-    isSuccess,
-    isDraftSaved,
-    isDraftSaveFailed,
-    isErrored,
-    isDraftDeleted,
-    isDraftDeleteFailed,
-    showClaimSubmitToast,
-    t,
-  ]);
-
-  const toastText = useMemo(() => {
-    if (isSuccess) {
-      return t('shieldClaimSubmitSuccess');
-    }
-    if (isDraftSaved) {
-      return t('shieldClaimDraftSaved');
-    }
-    if (isDraftSaveFailed) {
-      return t('shieldClaimDraftSaveFailed');
-    }
-    if (isDraftDeleted) {
-      return t('shieldClaimDeletedDraft');
-    }
-    if (isDraftDeleteFailed) {
-      return t('shieldClaimDraftDeleteFailed');
-    }
-    return t('shieldClaimSubmitError');
-  }, [
-    isSuccess,
-    isDraftSaved,
-    isDraftSaveFailed,
-    isDraftDeleted,
-    isDraftDeleteFailed,
-    t,
-  ]);
-
-  const dataTestId = useMemo(() => {
-    if (isSuccess) {
-      return 'claim-submit-toast-success';
-    }
-    if (isDraftSaved) {
-      return 'claim-draft-saved-toast';
-    }
-    if (isDraftSaveFailed) {
-      return 'claim-draft-save-failed-toast';
-    }
-    if (isDraftDeleted) {
-      return 'claim-draft-deleted-toast';
-    }
-    if (isDraftDeleteFailed) {
-      return 'claim-draft-delete-failed-toast';
-    }
-    return 'claim-submit-toast-error';
-  }, [
-    isSuccess,
-    isDraftSaved,
-    isDraftSaveFailed,
-    isDraftDeleted,
-    isDraftDeleteFailed,
-  ]);
-
-  return (
-    showClaimSubmitToast !== null && (
-      <Toast
-        dataTestId={dataTestId}
-        key="claim-submit-toast"
-        text={toastText}
-        description={description}
-        startAdornment={
-          <Icon
-            name={
-              isSuccess || isDraftSaved || isDraftDeleted
-                ? IconName.CheckBold
-                : IconName.CircleX
-            }
-            color={
-              isSuccess || isDraftSaved || isDraftDeleted
-                ? IconColor.successDefault
-                : IconColor.errorDefault
-            }
-          />
-        }
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => {
-          dispatch(setShowClaimSubmitToast(null));
-        }}
-        onClose={() => {
-          dispatch(setShowClaimSubmitToast(null));
-        }}
-      />
-    )
-  );
-};
 
 function ShieldPausedToast() {
   const t = useI18nContext();

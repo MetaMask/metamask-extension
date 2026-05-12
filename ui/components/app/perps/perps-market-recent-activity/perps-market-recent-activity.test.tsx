@@ -213,6 +213,22 @@ describe('PerpsMarketRecentActivity', () => {
       );
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
+
+    it('navigates to PERPS_ACTIVITY_ROUTE when a transaction row is tapped', () => {
+      mockUsePerpsMarketFills.mockReturnValue({
+        fills: [],
+        isInitialLoading: false,
+      });
+      mockTransformFills.mockReturnValue([createTransaction('tx-1')]);
+
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
+
+      const card = screen.getByTestId('transaction-card-tx-1');
+      expect(card).toHaveClass('cursor-pointer');
+
+      fireEvent.click(card);
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+    });
   });
 
   describe('Hook integration', () => {

@@ -14,7 +14,6 @@ import {
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
-  getCurrentKeyring,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
@@ -22,6 +21,7 @@ import {
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
 } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventAccountType,

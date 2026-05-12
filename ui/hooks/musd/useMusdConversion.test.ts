@@ -23,7 +23,7 @@ jest.mock('../../selectors/musd', () => ({
   selectMusdConversionEducationSeen: jest.fn(),
 }));
 
-jest.mock('../../selectors', () => ({
+jest.mock('../../../shared/lib/selectors/accounts', () => ({
   getSelectedInternalAccount: jest.fn(),
 }));
 
@@ -90,7 +90,9 @@ jest.mock('./useMusdGeoBlocking', () => ({
 
 const { useSelector } = jest.requireMock('react-redux');
 const { useMusdGeoBlocking } = jest.requireMock('./useMusdGeoBlocking');
-const { getSelectedInternalAccount } = jest.requireMock('../../selectors');
+const { getSelectedInternalAccount } = jest.requireMock(
+  '../../../shared/lib/selectors/accounts',
+);
 const { getUnapprovedTransactions } = jest.requireMock(
   '../../selectors/transactions',
 );

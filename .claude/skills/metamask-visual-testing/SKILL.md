@@ -77,7 +77,7 @@ The `mm` CLI is the primary interface.
 
 | Command                 | Description                            |
 | ----------------------- | -------------------------------------- |
-| `mm launch`             | Launch MetaMask in headed Chrome       |
+| `mm launch`             | Launch MetaMask in headless Chrome     |
 | `mm cleanup`            | Stop browser and services              |
 | `mm cleanup --shutdown` | Stop browser, services, and the daemon |
 | `mm status`             | Show current daemon and session status |

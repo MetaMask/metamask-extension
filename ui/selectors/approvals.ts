@@ -8,7 +8,7 @@ import { Json } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../shared/constants/app';
 import { getBooleanFeatureFlag } from '../../shared/lib/remote-feature-flag-utils';
-import { getRemoteFeatureFlags } from './remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../shared/lib/selectors/remote-feature-flags';
 import { EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {

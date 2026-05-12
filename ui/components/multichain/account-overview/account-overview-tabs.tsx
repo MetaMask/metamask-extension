@@ -138,7 +138,9 @@ export const AccountOverviewTabs = ({
   );
   const onClickDeFi = useCallback(
     (chainId: string, protocolId: string) =>
-      navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+      transitionForward(() =>
+        navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+      ),
     [navigate],
   );
 

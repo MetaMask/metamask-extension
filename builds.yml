@@ -99,7 +99,6 @@ buildTypes:
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
-      - PASSKEY_ENABLED: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
@@ -382,7 +381,7 @@ env:
   - PERPS_ENABLED: false
   # Build-time gate: when false AssetsController is instantiated but state remains empty.
   # When true, the controller populates state (subject to remote feature flag).
-  - ASSETS_UNIFIED_STATE_ENABLED: false
+  - ASSETS_UNIFIED_STATE_ENABLED: true
   # Build-time gate: when true, hardware wallet onboarding uses the new flow.
   - NEW_HARDWARE_WALLET_ONBOARDING: false
 
@@ -456,4 +455,4 @@ env:
   - FORCE_AUTH_MATCH_BUILD: false
 
   # Passkey / Biometrics unlock
-  - PASSKEY_ENABLED: 'false'
+  - PASSKEY_ENABLED: true

@@ -7,8 +7,8 @@ import {
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import { useNavigate } from 'react-router-dom';
-import { isHardwareWallet } from '../../../../shared/lib/selectors';
 import { getExtensionSkipTransactionStatusPage } from '../../../../shared/lib/selectors/smart-transactions';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { captureException } from '../../../../shared/lib/sentry';
 import {
   submitBridgeIntent,
