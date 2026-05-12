@@ -13,7 +13,7 @@ import {
   DEVELOPER_OPTIONS_ROUTE,
   BACKUPANDSYNC_ROUTE,
   NOTIFICATIONS_SETTINGS_ROUTE,
-  SECURITY_PASSWORD_CHANGE_ROUTE,
+  SECURITY_PASSWORD_CHANGE_V2_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from './routes';
@@ -221,7 +221,7 @@ const SETTINGS_CONSTANTS = [
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('securityChangePassword'),
     descriptionMessage: (t) => t('securityChangePassword'),
-    route: SECURITY_PASSWORD_CHANGE_ROUTE,
+    route: SECURITY_PASSWORD_CHANGE_V2_ROUTE,
     icon: 'fa fa-lock',
   },
   // securityAndPrivacy settingsRefs[3]

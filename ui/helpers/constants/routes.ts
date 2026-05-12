@@ -81,8 +81,6 @@ export const CONTACTS_ADD_ROUTE = '/contacts/add';
 export const CONTACTS_VIEW_ROUTE = '/contacts/view';
 export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
-export const SECURITY_PASSWORD_CHANGE_ROUTE =
-  '/settings/security-and-privacy/password-change';
 export const BACKUPANDSYNC_ROUTE = '/settings/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
 export const IMPORT_SRP_ROUTE = '/import-srp';
@@ -379,11 +377,6 @@ export const ROUTES = [
   {
     path: SNAP_SETTINGS_ROUTE,
     label: 'Snap Settings Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: SECURITY_PASSWORD_CHANGE_ROUTE,
-    label: 'Change Password',
     trackInAnalytics: true,
   },
   {
