@@ -3,10 +3,6 @@ import {
   type CameraReadyStateValue,
 } from './base-reader.types';
 
-// ---------------------------------------------------------------------------
-// Actions
-// ---------------------------------------------------------------------------
-
 export const ActionType = {
   SetReady: 'SET_READY',
   SetBlocked: 'SET_BLOCKED',
@@ -30,10 +26,6 @@ type Action =
   | { type: typeof ActionType.SetPermissionActionLoading; payload: boolean }
   | { type: typeof ActionType.Reset };
 
-// ---------------------------------------------------------------------------
-// State
-// ---------------------------------------------------------------------------
-
 export type BaseReaderState = {
   readyState: CameraReadyStateValue;
   error: (Error & { type?: string }) | null;
@@ -55,10 +47,6 @@ export function getInitialState(): BaseReaderState {
     permissionActionLoading: false,
   };
 }
-
-// ---------------------------------------------------------------------------
-// Reducer
-// ---------------------------------------------------------------------------
 
 /**
  * Pure reducer for the BaseReader component state machine.
