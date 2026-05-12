@@ -1,6 +1,7 @@
 import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
+  RestrictedMethodMessenger,
 } from '@metamask/snaps-rpc-methods';
 import { ControllerGetStateAction } from '@metamask/base-controller';
 import { CurrencyRateController } from '@metamask/assets-controllers';
@@ -186,7 +187,7 @@ export function getSnapPermissionSpecifications(
           return snapKeyring;
         },
       },
-      messenger,
+      messenger as RestrictedMethodMessenger,
     ),
   };
 }
