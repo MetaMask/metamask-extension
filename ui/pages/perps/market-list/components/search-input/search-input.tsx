@@ -30,13 +30,9 @@ export type SearchInputProps = {
  * @param options0.onInputClick - Called when the user clicks the search input
  * @param options0.autoFocus - Auto-focus the input when mounted
  */
-export const SearchInput: React.FC<React.PropsWithChildren<SearchInputProps>> = ({
-  value,
-  onChange,
-  onClear,
-  onInputClick,
-  autoFocus = false,
-}) => {
+export const SearchInput: React.FC<
+  React.PropsWithChildren<SearchInputProps>
+> = ({ value, onChange, onClear, onInputClick, autoFocus = false }) => {
   const t = useI18nContext();
 
   const handleKeyDown = useCallback(

@@ -5,7 +5,9 @@ type PartnerLinkProps = {
   url: string;
 };
 
-export const PartnerLink: React.FC<React.PropsWithChildren<PartnerLinkProps>> = ({ text, url }) => {
+export const PartnerLink: React.FC<
+  React.PropsWithChildren<PartnerLinkProps>
+> = ({ text, url }) => {
   return (
     <a
       href={url}

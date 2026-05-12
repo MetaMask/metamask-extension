@@ -9,7 +9,9 @@ import { PerpsCardSkeleton } from './perps-card-skeleton';
  * PerpsActivityPageSkeleton displays a loading skeleton for the activity page
  * Matches the layout: filter dropdown + date groups with transaction cards
  */
-export const PerpsActivityPageSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => {
+export const PerpsActivityPageSkeleton: React.FC<
+  React.PropsWithChildren<unknown>
+> = () => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}

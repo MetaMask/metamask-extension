@@ -38,15 +38,9 @@ import { SnapUIAsset, useSnapAssetSelectorData } from './useSnapAssetDisplay';
  * @param props.networkIcon - The network icon.
  * @returns The Asset Selector option.
  */
-const SnapUIAssetSelectorOption: FunctionComponent<React.PropsWithChildren<SnapUIAsset>> = ({
-  icon,
-  symbol,
-  name,
-  balance,
-  fiat,
-  networkName,
-  networkIcon,
-}) => (
+const SnapUIAssetSelectorOption: FunctionComponent<
+  React.PropsWithChildren<SnapUIAsset>
+> = ({ icon, symbol, name, balance, fiat, networkName, networkIcon }) => (
   <Box
     className="snap-ui-renderer__asset-selector-option"
     display={Display.Flex}
@@ -122,7 +116,9 @@ type SnapUIAssetSelectorProps = {
  * @param props.disabled - Whether the selector is disabled.
  * @returns The AssetSelector component.
  */
-export const SnapUIAssetSelector: FunctionComponent<React.PropsWithChildren<SnapUIAssetSelectorProps>> = ({ addresses, chainIds, disabled, ...props }) => {
+export const SnapUIAssetSelector: FunctionComponent<
+  React.PropsWithChildren<SnapUIAssetSelectorProps>
+> = ({ addresses, chainIds, disabled, ...props }) => {
   const t = useI18nContext();
   const assets = useSnapAssetSelectorData({ addresses, chainIds });
 

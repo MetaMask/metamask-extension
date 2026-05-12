@@ -85,9 +85,9 @@ const FeeDetail = ({ label, value }: { label: string; value: string }) => (
  * @returns The NotificationDetailNetworkFee component.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/naming-convention
-const NotificationDetailNetworkFee_: FC<React.PropsWithChildren<NotificationDetailNetworkFeeProps>> = ({
-  notification,
-}) => {
+const NotificationDetailNetworkFee_: FC<
+  React.PropsWithChildren<NotificationDetailNetworkFeeProps>
+> = ({ notification }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { value: isOpen, toggle } = useBoolean();

@@ -247,13 +247,9 @@ export type ClosePositionModalProps = {
   sizeDecimals?: number;
 };
 
-export const ClosePositionModal: React.FC<React.PropsWithChildren<ClosePositionModalProps>> = ({
-  isOpen,
-  onClose,
-  position,
-  currentPrice,
-  sizeDecimals,
-}) => {
+export const ClosePositionModal: React.FC<
+  React.PropsWithChildren<ClosePositionModalProps>
+> = ({ isOpen, onClose, position, currentPrice, sizeDecimals }) => {
   const t = useI18nContext() as CloseToastTranslation;
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();

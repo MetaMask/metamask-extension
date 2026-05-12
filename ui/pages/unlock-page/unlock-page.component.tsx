@@ -119,10 +119,12 @@ const FoxAppearAnimation = lazy(
   () =>
     // @ts-expect-error - Build system resolves without extension, but TS wants .js
     import('../onboarding-flow/welcome/fox-appear-animation') as Promise<{
-      default: ComponentType<React.PropsWithChildren<{
-        isLoader?: boolean;
-        skipTransition?: boolean;
-      }>>;
+      default: ComponentType<
+        React.PropsWithChildren<{
+          isLoader?: boolean;
+          skipTransition?: boolean;
+        }>
+      >;
     }>,
 );
 
@@ -821,5 +823,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 }
 
 export default withMetaMetrics(
-  UnlockPage as unknown as React.ComponentType<React.PropsWithChildren<Record<string, unknown>>>,
+  UnlockPage as unknown as React.ComponentType<
+    React.PropsWithChildren<Record<string, unknown>>
+  >,
 );

@@ -53,7 +53,9 @@ export type MultichainAccountNetworkGroupProps = {
  * @param props.className - Optional CSS class name for additional styling
  * @returns A React component displaying network avatars in a group
  */
-export const MultichainAccountNetworkGroup: React.FC<React.PropsWithChildren<MultichainAccountNetworkGroupProps>> = ({
+export const MultichainAccountNetworkGroup: React.FC<
+  React.PropsWithChildren<MultichainAccountNetworkGroupProps>
+> = ({
   groupId,
   chainIds,
   excludeTestNetworks = true,

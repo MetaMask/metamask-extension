@@ -369,7 +369,9 @@ export type WithMetaMetricsProps = MetaMetricsContextValue;
  */
 export function withMetaMetrics<Props extends Record<string, unknown>>(
   WrappedComponent: ComponentType<React.PropsWithChildren<Props>>,
-): ComponentType<React.PropsWithChildren<Omit<Props, keyof WithMetaMetricsProps>>> {
+): ComponentType<
+  React.PropsWithChildren<Omit<Props, keyof WithMetaMetricsProps>>
+> {
   const WithMetaMetrics = (props: Omit<Props, keyof WithMetaMetricsProps>) => {
     const {
       trackEvent,

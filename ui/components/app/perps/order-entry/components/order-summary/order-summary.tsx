@@ -19,11 +19,9 @@ import type { OrderSummaryProps } from '../../order-entry.types';
  * @param props.estimatedFees - Estimated trading fees
  * @param props.liquidationPrice - Estimated liquidation price
  */
-export const OrderSummary: React.FC<React.PropsWithChildren<OrderSummaryProps>> = ({
-  marginRequired,
-  estimatedFees,
-  liquidationPrice,
-}) => {
+export const OrderSummary: React.FC<
+  React.PropsWithChildren<OrderSummaryProps>
+> = ({ marginRequired, estimatedFees, liquidationPrice }) => {
   const t = useI18nContext();
 
   return (

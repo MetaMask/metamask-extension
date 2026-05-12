@@ -67,7 +67,9 @@ function getTextColor(
   return TextColor.textDefault;
 }
 
-export const CustomAmountSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => (
+export const CustomAmountSkeleton: React.FC<
+  React.PropsWithChildren<unknown>
+> = () => (
   <Box
     display={Display.Flex}
     flexDirection={FlexDirection.Row}
@@ -80,7 +82,9 @@ export const CustomAmountSkeleton: React.FC<React.PropsWithChildren<unknown>> = 
   </Box>
 );
 
-export const CustomAmount: React.FC<React.PropsWithChildren<CustomAmountProps>> = React.memo(
+export const CustomAmount: React.FC<
+  React.PropsWithChildren<CustomAmountProps>
+> = React.memo(
   ({
     amountFiat,
     autoFocus = false,

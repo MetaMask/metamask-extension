@@ -27,11 +27,9 @@ export type PerpsSectionSkeletonProps = {
  * @param options0.showHeader
  * @param options0.showStartTradeCta
  */
-export const PerpsSectionSkeleton: React.FC<React.PropsWithChildren<PerpsSectionSkeletonProps>> = ({
-  cardCount = 3,
-  showHeader = true,
-  showStartTradeCta = false,
-}) => {
+export const PerpsSectionSkeleton: React.FC<
+  React.PropsWithChildren<PerpsSectionSkeletonProps>
+> = ({ cardCount = 3, showHeader = true, showStartTradeCta = false }) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}

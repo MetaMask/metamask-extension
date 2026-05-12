@@ -29,7 +29,9 @@ export type AddressConnectedSubjectMap = {
   [address: string]: any;
 };
 
-export const ConnectedStatus: React.FC<React.PropsWithChildren<ConnectedStatusProps>> = ({
+export const ConnectedStatus: React.FC<
+  React.PropsWithChildren<ConnectedStatusProps>
+> = ({
   address = '',
   isActive,
   showConnectedStatus = true,

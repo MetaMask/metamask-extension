@@ -27,7 +27,9 @@ export type SnapUIAddressProps = {
   avatar?: boolean;
 };
 
-export const SnapUIAddress: React.FunctionComponent<React.PropsWithChildren<SnapUIAddressProps>> = ({
+export const SnapUIAddress: React.FunctionComponent<
+  React.PropsWithChildren<SnapUIAddressProps>
+> = ({
   address,
   avatarSize,
   truncate = true,

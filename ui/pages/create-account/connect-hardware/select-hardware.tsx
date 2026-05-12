@@ -61,7 +61,9 @@ type DeviceButtonConfig = {
   device: HardwareDeviceNames;
   testId: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  logo: React.ComponentType<React.PropsWithChildren<{ className: string; ariaLabel: string }>>;
+  logo: React.ComponentType<
+    React.PropsWithChildren<{ className: string; ariaLabel: string }>
+  >;
   ariaLabel: string;
 };
 

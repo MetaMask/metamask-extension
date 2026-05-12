@@ -25,7 +25,9 @@ const COLORS = {
   disabled: TextColor.textMuted,
 };
 
-export const SnapUIButton: FunctionComponent<React.PropsWithChildren<SnapUIButtonProps & ButtonLinkProps<'button'>>> = ({
+export const SnapUIButton: FunctionComponent<
+  React.PropsWithChildren<SnapUIButtonProps & ButtonLinkProps<'button'>>
+> = ({
   name,
   children,
   type = ButtonType.Button,

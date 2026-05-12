@@ -118,7 +118,9 @@ export enum MultichainAccountsConnectPageMode {
   EditAccounts = 'edit-accounts',
 }
 
-export const MultichainAccountsConnectPage: React.FC<React.PropsWithChildren<MultichainConnectPageProps>> = ({
+export const MultichainAccountsConnectPage: React.FC<
+  React.PropsWithChildren<MultichainConnectPageProps>
+> = ({
   request,
   permissionsRequestId,
   rejectPermissionsRequest,

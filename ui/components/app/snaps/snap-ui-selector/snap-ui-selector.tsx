@@ -59,15 +59,9 @@ type SelectorItemProps = {
   style?: CSSProperties;
 };
 
-const SelectorItem: React.FunctionComponent<React.PropsWithChildren<SelectorItemProps>> = ({
-  className,
-  value,
-  children,
-  selected,
-  onSelect,
-  disabled,
-  style,
-}) => {
+const SelectorItem: React.FunctionComponent<
+  React.PropsWithChildren<SelectorItemProps>
+> = ({ className, value, children, selected, onSelect, disabled, style }) => {
   const handleClick = () => {
     onSelect(value);
   };
@@ -124,7 +118,9 @@ const SelectorItem: React.FunctionComponent<React.PropsWithChildren<SelectorItem
   );
 };
 
-export const SnapUISelector: React.FunctionComponent<React.PropsWithChildren<SnapUISelectorProps>> = ({
+export const SnapUISelector: React.FunctionComponent<
+  React.PropsWithChildren<SnapUISelectorProps>
+> = ({
   className,
   name,
   title,

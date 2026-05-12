@@ -97,7 +97,9 @@ import SetupPasskey from './setup-passkey/setup-passkey';
 const ExperimentalArea = mmLazy(
   // eslint-disable-next-line import-x/extensions, import-x/no-useless-path-segments -- these are needed for mmLazy
   () => import('../../components/app/flask/experimental-area/index.js'),
-) as React.LazyExoticComponent<React.ComponentType<React.PropsWithChildren<{ redirectTo: string }>>>;
+) as React.LazyExoticComponent<
+  React.ComponentType<React.PropsWithChildren<{ redirectTo: string }>>
+>;
 
 // Helper to convert onboarding paths to relative paths for nested route matching
 const toRelativePath = (path: string) =>

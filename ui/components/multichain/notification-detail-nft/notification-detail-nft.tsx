@@ -24,12 +24,9 @@ export type NotificationDetailNftProps = {
  * @param props.networkName - The name of the network.
  * @returns The NotificationDetailNft component.
  */
-export const NotificationDetailNft: FC<React.PropsWithChildren<NotificationDetailNftProps>> = ({
-  networkSrc,
-  tokenName,
-  tokenSrc,
-  networkName,
-}) => (
+export const NotificationDetailNft: FC<
+  React.PropsWithChildren<NotificationDetailNftProps>
+> = ({ networkSrc, tokenName, tokenSrc, networkName }) => (
   <Box
     paddingTop={1}
     paddingBottom={4}

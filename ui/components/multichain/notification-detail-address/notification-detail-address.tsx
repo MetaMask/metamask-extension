@@ -30,10 +30,9 @@ const SideText: FC<React.PropsWithChildren<{ side: string }>> = ({ side }) => (
  * @param props.address - The address to display.
  * @returns The rendered component.
  */
-export const NotificationDetailAddress: FC<React.PropsWithChildren<NotificationDetailAddressProps>> = ({
-  side,
-  address,
-}): JSX.Element => {
+export const NotificationDetailAddress: FC<
+  React.PropsWithChildren<NotificationDetailAddressProps>
+> = ({ side, address }): JSX.Element => {
   const checksummedAddress = toChecksumHexAddress(address);
   const displayAddress = shortenAddress(checksummedAddress);
 

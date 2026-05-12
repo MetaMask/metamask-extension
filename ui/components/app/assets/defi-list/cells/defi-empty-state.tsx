@@ -16,7 +16,9 @@ import {
   getParticipateInMetaMetrics,
 } from '../../../../../selectors';
 
-export const DeFiEmptyStateMessage: FC<React.PropsWithChildren<unknown>> = () => {
+export const DeFiEmptyStateMessage: FC<
+  React.PropsWithChildren<unknown>
+> = () => {
   const t = useI18nContext();
   const theme = useTheme();
   const { trackEvent } = useContext(MetaMetricsContext);

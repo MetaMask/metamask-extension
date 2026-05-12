@@ -73,7 +73,9 @@ const getContainerStyle = (
   };
 };
 
-const PerpsTutorialAnimation: React.FC<React.PropsWithChildren<PerpsTutorialAnimationProps>> = ({
+const PerpsTutorialAnimation: React.FC<
+  React.PropsWithChildren<PerpsTutorialAnimationProps>
+> = ({
   artboardName,
   className,
   fit: fitProp,

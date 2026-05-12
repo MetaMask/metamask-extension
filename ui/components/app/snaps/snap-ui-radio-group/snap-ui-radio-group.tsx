@@ -29,14 +29,9 @@ export type SnapUIRadioGroupProps = {
   disabled?: boolean;
 };
 
-export const SnapUIRadioGroup: FunctionComponent<React.PropsWithChildren<SnapUIRadioGroupProps>> = ({
-  name,
-  label,
-  error,
-  form,
-  disabled,
-  ...props
-}) => {
+export const SnapUIRadioGroup: FunctionComponent<
+  React.PropsWithChildren<SnapUIRadioGroupProps>
+> = ({ name, label, error, form, disabled, ...props }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as string;

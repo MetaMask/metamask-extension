@@ -28,12 +28,9 @@ jest.mock('react-router-dom', () => ({
 
 type TestComponentProps = RouterHooksProps;
 
-const TestComponent: React.FC<React.PropsWithChildren<TestComponentProps & { testProp?: string }>> = ({
-  navigate,
-  location,
-  params,
-  testProp,
-}) => (
+const TestComponent: React.FC<
+  React.PropsWithChildren<TestComponentProps & { testProp?: string }>
+> = ({ navigate, location, params, testProp }) => (
   <div>
     <div data-testid="test-prop">{testProp}</div>
     <div data-testid="pathname">{location?.pathname}</div>
@@ -77,9 +74,9 @@ describe('withRouterHooks HOC', () => {
   });
 
   it('sets correct displayName for debugging', () => {
-    const testComponentWithDisplayName: React.FC<React.PropsWithChildren<TestComponentProps>> = (
-      props,
-    ) => <div>{props.navigate?.toString()}</div>;
+    const testComponentWithDisplayName: React.FC<
+      React.PropsWithChildren<TestComponentProps>
+    > = (props) => <div>{props.navigate?.toString()}</div>;
     testComponentWithDisplayName.displayName = 'TestComponentWithDisplayName';
     const WrappedComponent = withRouterHooks(testComponentWithDisplayName);
     expect(WrappedComponent.displayName).toBe(
@@ -88,9 +85,9 @@ describe('withRouterHooks HOC', () => {
   });
 
   it('handles component without displayName or name', () => {
-    const anonymousComponent: React.FC<React.PropsWithChildren<TestComponentProps>> = () => (
-      <div>Anonymous</div>
-    );
+    const anonymousComponent: React.FC<
+      React.PropsWithChildren<TestComponentProps>
+    > = () => <div>Anonymous</div>;
     // Explicitly set the name property to empty string to simulate anonymous function
     Object.defineProperty(anonymousComponent, 'name', { value: '' });
     const WrappedComponent = withRouterHooks(anonymousComponent);
@@ -98,7 +95,9 @@ describe('withRouterHooks HOC', () => {
   });
 
   it('uses component name when displayName is not available', () => {
-    const namedComponent: React.FC<React.PropsWithChildren<TestComponentProps>> = () => <div>Test</div>;
+    const namedComponent: React.FC<
+      React.PropsWithChildren<TestComponentProps>
+    > = () => <div>Test</div>;
     const WrappedComponent = withRouterHooks(namedComponent);
     expect(WrappedComponent.displayName).toBe(
       'withRouterHooks(namedComponent)',
@@ -106,11 +105,9 @@ describe('withRouterHooks HOC', () => {
   });
 
   it('provides all router hooks (navigate, location, params)', () => {
-    const TestComponentForHooks: React.FC<React.PropsWithChildren<RouterHooksProps>> = ({
-      navigate,
-      location,
-      params,
-    }) => {
+    const TestComponentForHooks: React.FC<
+      React.PropsWithChildren<RouterHooksProps>
+    > = ({ navigate, location, params }) => {
       expect(typeof navigate).toBe('function');
       expect(typeof location).toBe('object');
       expect(typeof params).toBe('object');
@@ -126,9 +123,9 @@ describe('withRouterHooks HOC', () => {
       // verifies that useShallowEqualityCheck stabilizes references when values match
       const paramsReferences: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo: React.FC<React.PropsWithChildren<TestComponentProps>> = ({
-        params,
-      }) => {
+      const TestComponentForMemo: React.FC<
+        React.PropsWithChildren<TestComponentProps>
+      > = ({ params }) => {
         paramsReferences.push(params);
         return <div>Memoization test</div>;
       };
@@ -148,9 +145,9 @@ describe('withRouterHooks HOC', () => {
       // Complementary test: verify memoization correctly detects value changes
       const paramsReferences: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo: React.FC<React.PropsWithChildren<TestComponentProps>> = ({
-        params,
-      }) => {
+      const TestComponentForMemo: React.FC<
+        React.PropsWithChildren<TestComponentProps>
+      > = ({ params }) => {
         paramsReferences.push(params);
         return <div>Memoization test</div>;
       };
@@ -173,9 +170,9 @@ describe('withRouterHooks HOC', () => {
     it('maintains stable location reference when values are unchanged', () => {
       const locationReferences: ReturnType<typeof useLocation>[] = [];
 
-      const TestComponentForMemo: React.FC<React.PropsWithChildren<TestComponentProps>> = ({
-        location,
-      }) => {
+      const TestComponentForMemo: React.FC<
+        React.PropsWithChildren<TestComponentProps>
+      > = ({ location }) => {
         locationReferences.push(location);
         return <div>Memoization test</div>;
       };
@@ -195,9 +192,9 @@ describe('withRouterHooks HOC', () => {
       const customParams = { customId: 'custom-value' };
       const paramsReceived: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo: React.FC<React.PropsWithChildren<TestComponentProps>> = ({
-        params,
-      }) => {
+      const TestComponentForMemo: React.FC<
+        React.PropsWithChildren<TestComponentProps>
+      > = ({ params }) => {
         paramsReceived.push(params);
         return <div>Custom params test</div>;
       };
@@ -218,9 +215,9 @@ describe('withRouterHooks HOC', () => {
       };
       const locationsReceived: ReturnType<typeof useLocation>[] = [];
 
-      const TestComponentForMemo: React.FC<React.PropsWithChildren<TestComponentProps>> = ({
-        location,
-      }) => {
+      const TestComponentForMemo: React.FC<
+        React.PropsWithChildren<TestComponentProps>
+      > = ({ location }) => {
         locationsReceived.push(location);
         return <div>Custom location test</div>;
       };
@@ -238,9 +235,9 @@ describe('withRouterHooks HOC', () => {
       // We change the mock values (not props) to exercise useShallowEqualityCheck.
       const paramsReceived: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo: React.FC<React.PropsWithChildren<TestComponentProps>> = ({
-        params,
-      }) => {
+      const TestComponentForMemo: React.FC<
+        React.PropsWithChildren<TestComponentProps>
+      > = ({ params }) => {
         paramsReceived.push(params);
         return <div>Comma collision test</div>;
       };
@@ -268,9 +265,9 @@ describe('withRouterHooks HOC', () => {
       // React Router changes key on every navigation, even to the same path.
       const locationsReceived: ReturnType<typeof useLocation>[] = [];
 
-      const TestComponentForMemo: React.FC<React.PropsWithChildren<TestComponentProps>> = ({
-        location,
-      }) => {
+      const TestComponentForMemo: React.FC<
+        React.PropsWithChildren<TestComponentProps>
+      > = ({ location }) => {
         locationsReceived.push(location);
         return <div>Location key test</div>;
       };

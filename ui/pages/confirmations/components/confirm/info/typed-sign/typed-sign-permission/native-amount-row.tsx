@@ -25,14 +25,16 @@ import { ConfirmInfoRow } from '../../../../../../../components/app/confirm/info
  * @param props.tooltip - (Optional) Tooltip text for additional information.
  * @returns JSX element showing the native token amount and metadata.
  */
-export const NativeAmountRow: React.FC<React.PropsWithChildren<{
-  label: string;
-  value: BigNumber;
-  symbol: string;
-  decimals: number;
-  imageUrl?: string;
-  tooltip?: string;
-}>> = ({ label, value, symbol, decimals, tooltip, imageUrl }) => {
+export const NativeAmountRow: React.FC<
+  React.PropsWithChildren<{
+    label: string;
+    value: BigNumber;
+    symbol: string;
+    decimals: number;
+    imageUrl?: string;
+    tooltip?: string;
+  }>
+> = ({ label, value, symbol, decimals, tooltip, imageUrl }) => {
   const avatar = imageUrl ? (
     <AvatarToken size={AvatarTokenSize.Xs} src={imageUrl} name={symbol} />
   ) : null;

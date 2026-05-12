@@ -85,7 +85,9 @@ export type EditMarginModalContentProps = {
  * @param options0.onSaveEnabledChange
  * @param options0.onSavingChange
  */
-export const EditMarginModalContent: React.FC<React.PropsWithChildren<EditMarginModalContentProps>> = ({
+export const EditMarginModalContent: React.FC<
+  React.PropsWithChildren<EditMarginModalContentProps>
+> = ({
   position,
   account,
   currentPrice,

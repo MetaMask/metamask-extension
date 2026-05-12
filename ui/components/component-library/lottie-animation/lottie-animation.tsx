@@ -18,7 +18,9 @@ export type LottieAnimationProps = {
   onComplete?: () => void;
 };
 
-export const LottieAnimation: React.FC<React.PropsWithChildren<LottieAnimationProps>> = ({
+export const LottieAnimation: React.FC<
+  React.PropsWithChildren<LottieAnimationProps>
+> = ({
   data,
   path,
   loop = true,

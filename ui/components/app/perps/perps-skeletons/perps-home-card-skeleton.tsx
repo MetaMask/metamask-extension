@@ -12,7 +12,9 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
  * PerpsHomeCardSkeleton component displays a loading skeleton for home page list items
  * Matches the layout of position/order/market cards on the home page (bg-background-muted)
  */
-export const PerpsHomeCardSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => {
+export const PerpsHomeCardSkeleton: React.FC<
+  React.PropsWithChildren<unknown>
+> = () => {
   return (
     <Box
       className="pt-2 pb-2 px-4 h-[62px] bg-background-muted"

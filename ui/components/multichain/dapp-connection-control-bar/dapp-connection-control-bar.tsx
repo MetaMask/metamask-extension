@@ -64,7 +64,9 @@ import { DisconnectAllModal } from '../disconnect-all-modal/disconnect-all-modal
  * Not-connected layout (active account is not among permitted accounts):
  * [Favicon+grey dot] [Origin / Account · Not connected] ... [Connect]
  */
-export const DappConnectionControlBar: React.FC<React.PropsWithChildren<unknown>> = () => {
+export const DappConnectionControlBar: React.FC<
+  React.PropsWithChildren<unknown>
+> = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();

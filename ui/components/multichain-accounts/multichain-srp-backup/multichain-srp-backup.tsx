@@ -28,11 +28,9 @@ export type MultichainSrpBackupProps = {
   keyringId?: string;
 };
 
-export const MultichainSrpBackup: React.FC<React.PropsWithChildren<MultichainSrpBackupProps>> = ({
-  shouldShowBackupReminder = false,
-  className = '',
-  keyringId,
-}) => {
+export const MultichainSrpBackup: React.FC<
+  React.PropsWithChildren<MultichainSrpBackupProps>
+> = ({ shouldShowBackupReminder = false, className = '', keyringId }) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 

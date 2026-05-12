@@ -61,7 +61,9 @@ const handleNumericFocusSelectAll = (
  * @param options0.usdPlaceholder
  * @param options0.usdInputRef
  */
-export const AmountInput: React.FC<React.PropsWithChildren<AmountInputProps>> = ({
+export const AmountInput: React.FC<
+  React.PropsWithChildren<AmountInputProps>
+> = ({
   amount,
   onAmountChange,
   balancePercent,

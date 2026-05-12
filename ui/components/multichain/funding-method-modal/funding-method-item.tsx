@@ -15,12 +15,9 @@ type FundingMethodItemProps = {
   onClick: () => void;
 };
 
-const FundingMethodItem: React.FC<React.PropsWithChildren<FundingMethodItemProps>> = ({
-  icon,
-  title,
-  description,
-  onClick,
-}) => (
+const FundingMethodItem: React.FC<
+  React.PropsWithChildren<FundingMethodItemProps>
+> = ({ icon, title, description, onClick }) => (
   <Box
     display={[Display.Flex]}
     gap={2}

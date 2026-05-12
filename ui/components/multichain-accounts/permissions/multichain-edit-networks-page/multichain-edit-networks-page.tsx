@@ -43,7 +43,9 @@ type MultichainEditNetworksPageProps = {
   onSubmit: (chainIds: CaipChainId[]) => void;
 };
 
-export const MultichainEditNetworksPage: React.FC<React.PropsWithChildren<MultichainEditNetworksPageProps>> = ({
+export const MultichainEditNetworksPage: React.FC<
+  React.PropsWithChildren<MultichainEditNetworksPageProps>
+> = ({
   nonTestNetworks,
   testNetworks,
   defaultSelectedChainIds,

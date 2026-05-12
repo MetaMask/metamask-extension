@@ -16,7 +16,9 @@ import { BadgeStatusProps } from './badge-status.types';
 
 const TooltipStyle = { display: 'flex' };
 
-export const BadgeStatus: React.FC<React.PropsWithChildren<BadgeStatusProps>> = ({
+export const BadgeStatus: React.FC<
+  React.PropsWithChildren<BadgeStatusProps>
+> = ({
   className = '',
   hideTooltip = false,
   badgeBackgroundColor = BackgroundColor.backgroundAlternative,

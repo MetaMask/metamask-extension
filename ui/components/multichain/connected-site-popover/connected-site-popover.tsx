@@ -36,13 +36,9 @@ type ConnectedSitePopoverProps = {
   onClick: () => void;
 };
 
-export const ConnectedSitePopover: React.FC<React.PropsWithChildren<ConnectedSitePopoverProps>> = ({
-  referenceElement,
-  isOpen,
-  onClose,
-  isConnected,
-  onClick,
-}) => {
+export const ConnectedSitePopover: React.FC<
+  React.PropsWithChildren<ConnectedSitePopoverProps>
+> = ({ referenceElement, isOpen, onClose, isConnected, onClick }) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
 

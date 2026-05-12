@@ -69,16 +69,9 @@ export type SnapUIFileInputProps = {
  * @param props.disabled - Whether the file input is disabled.
  * @returns A file input element.
  */
-export const SnapUIFileInput: FunctionComponent<React.PropsWithChildren<SnapUIFileInputProps>> = ({
-  name,
-  label,
-  form,
-  accept,
-  compact,
-  error,
-  helpText,
-  disabled,
-}) => {
+export const SnapUIFileInput: FunctionComponent<
+  React.PropsWithChildren<SnapUIFileInputProps>
+> = ({ name, label, form, accept, compact, error, helpText, disabled }) => {
   const t = useI18nContext();
   const { handleFileChange } = useSnapInterfaceContext();
   const ref = useRef<HTMLInputElement>(null);

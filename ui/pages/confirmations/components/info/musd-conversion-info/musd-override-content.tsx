@@ -39,9 +39,9 @@ export type MusdOverrideContentProps = {
  * @param options0
  * @param options0.amountHuman
  */
-export const MusdOverrideContent: React.FC<React.PropsWithChildren<MusdOverrideContentProps>> = ({
-  amountHuman,
-}) => {
+export const MusdOverrideContent: React.FC<
+  React.PropsWithChildren<MusdOverrideContentProps>
+> = ({ amountHuman }) => {
   const { shouldShowOutputAmountTag, outputAmount, outputSymbol } =
     useCustomAmount({ amountHuman });
   const { payToken } = useTransactionPayToken();

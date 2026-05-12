@@ -17,10 +17,9 @@ import type { PerpsFiatSummaryRowsProps } from './perps-fiat-summary-rows.types'
  * @param options0.rows
  * @param options0.rowVariant
  */
-export const PerpsFiatSummaryRows: React.FC<React.PropsWithChildren<PerpsFiatSummaryRowsProps>> = ({
-  rows,
-  rowVariant = ConfirmInfoRowSize.Small,
-}) => {
+export const PerpsFiatSummaryRows: React.FC<
+  React.PropsWithChildren<PerpsFiatSummaryRowsProps>
+> = ({ rows, rowVariant = ConfirmInfoRowSize.Small }) => {
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
   const textVariant = TextVariant.BodyMd;
 

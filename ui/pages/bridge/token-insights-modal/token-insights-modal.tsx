@@ -71,11 +71,9 @@ const MarketDataRow: React.FC<React.PropsWithChildren<MarketDataRowProps>> = ({
   </Box>
 );
 
-export const TokenInsightsModal: React.FC<React.PropsWithChildren<TokenInsightsModalProps>> = ({
-  isOpen,
-  onClose,
-  token,
-}) => {
+export const TokenInsightsModal: React.FC<
+  React.PropsWithChildren<TokenInsightsModalProps>
+> = ({ isOpen, onClose, token }) => {
   const t = useI18nContext();
   const { trackEvent } = React.useContext(MetaMetricsContext);
   const dialogRef = React.useRef<HTMLElement | null>(null);

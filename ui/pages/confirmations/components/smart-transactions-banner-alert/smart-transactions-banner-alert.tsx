@@ -30,111 +30,110 @@ type SmartTransactionsBannerAlertProps = {
   marginType?: MarginType;
 };
 
-export const SmartTransactionsBannerAlert: React.FC<React.PropsWithChildren<SmartTransactionsBannerAlertProps>> =
-  React.memo(({ marginType = 'default' }) => {
-    const t = useI18nContext();
+export const SmartTransactionsBannerAlert: React.FC<
+  React.PropsWithChildren<SmartTransactionsBannerAlertProps>
+> = React.memo(({ marginType = 'default' }) => {
+  const t = useI18nContext();
 
-    let currentConfirmation;
-    try {
-      const context = useConfirmContext();
-      currentConfirmation = context?.currentConfirmation;
-    } catch {
-      currentConfirmation = null;
+  let currentConfirmation;
+  try {
+    const context = useConfirmContext();
+    currentConfirmation = context?.currentConfirmation;
+  } catch {
+    currentConfirmation = null;
+  }
+
+  const alertEnabled = useSelector(
+    (state: { metamask: { alertEnabledness?: { [key: string]: boolean } } }) =>
+      state.metamask.alertEnabledness?.[
+        AlertTypes.smartTransactionsMigration
+      ] !== false,
+  );
+
+  const smartTransactionsOptIn = useSelector(
+    getSmartTransactionsOptInStatusInternal,
+  );
+
+  const smartTransactionsMigrationApplied = useSelector(
+    getSmartTransactionsMigrationAppliedInternal,
+  );
+
+  const chainSupportsSmartTransactions = useSelector(
+    getChainSupportsSmartTransactions,
+  );
+
+  const smartTransactionsPreferenceEnabled = useSelector(
+    getSmartTransactionsPreferenceEnabled,
+  );
+
+  const dismissAlert = useCallback(() => {
+    setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
+  }, []);
+
+  React.useEffect(() => {
+    if (alertEnabled && !smartTransactionsOptIn) {
+      dismissAlert();
     }
+  }, [alertEnabled, smartTransactionsOptIn, dismissAlert]);
 
-    const alertEnabled = useSelector(
-      (state: {
-        metamask: { alertEnabledness?: { [key: string]: boolean } };
-      }) =>
-        state.metamask.alertEnabledness?.[
-          AlertTypes.smartTransactionsMigration
-        ] !== false,
-    );
+  const alertConditions =
+    alertEnabled &&
+    smartTransactionsOptIn &&
+    smartTransactionsMigrationApplied &&
+    chainSupportsSmartTransactions &&
+    smartTransactionsPreferenceEnabled;
 
-    const smartTransactionsOptIn = useSelector(
-      getSmartTransactionsOptInStatusInternal,
-    );
+  const shouldRender =
+    currentConfirmation === null
+      ? alertConditions
+      : alertConditions &&
+        isCorrectDeveloperTransactionType(
+          currentConfirmation?.type as TransactionType,
+        );
 
-    const smartTransactionsMigrationApplied = useSelector(
-      getSmartTransactionsMigrationAppliedInternal,
-    );
+  if (!shouldRender) {
+    return null;
+  }
 
-    const chainSupportsSmartTransactions = useSelector(
-      getChainSupportsSmartTransactions,
-    );
-
-    const smartTransactionsPreferenceEnabled = useSelector(
-      getSmartTransactionsPreferenceEnabled,
-    );
-
-    const dismissAlert = useCallback(() => {
-      setAlertEnabledness(AlertTypes.smartTransactionsMigration, false);
-    }, []);
-
-    React.useEffect(() => {
-      if (alertEnabled && !smartTransactionsOptIn) {
-        dismissAlert();
-      }
-    }, [alertEnabled, smartTransactionsOptIn, dismissAlert]);
-
-    const alertConditions =
-      alertEnabled &&
-      smartTransactionsOptIn &&
-      smartTransactionsMigrationApplied &&
-      chainSupportsSmartTransactions &&
-      smartTransactionsPreferenceEnabled;
-
-    const shouldRender =
-      currentConfirmation === null
-        ? alertConditions
-        : alertConditions &&
-          isCorrectDeveloperTransactionType(
-            currentConfirmation?.type as TransactionType,
-          );
-
-    if (!shouldRender) {
-      return null;
+  const getMarginStyle = () => {
+    switch (marginType) {
+      case 'none':
+        return { margin: 0 };
+      case 'noTop':
+        return { marginTop: 0 };
+      case 'onlyTop':
+        return { margin: 0, marginTop: 16 };
+      default:
+        return undefined;
     }
+  };
 
-    const getMarginStyle = () => {
-      switch (marginType) {
-        case 'none':
-          return { margin: 0 };
-        case 'noTop':
-          return { marginTop: 0 };
-        case 'onlyTop':
-          return { margin: 0, marginTop: 16 };
-        default:
-          return undefined;
-      }
-    };
-
-    return (
-      <Box className="transaction-alerts">
-        <BannerAlert
-          severity={BannerAlertSeverity.Info}
-          onClose={dismissAlert}
-          data-testid="smart-transactions-banner-alert"
-          style={getMarginStyle()}
-        >
-          <Text fontWeight={FontWeight.Bold}>
-            {t('smartTransactionsEnabledTitle')}
-          </Text>
-          <Text as="p">
-            <ButtonLink
-              href={SMART_TRANSACTIONS_LEARN_MORE_URL}
-              onClick={dismissAlert}
-              externalLink
-              style={{ height: 'unset', verticalAlign: 'unset' }}
-            >
-              {t('smartTransactionsEnabledLink')}
-            </ButtonLink>
-            {t('smartTransactionsEnabledDescription')}
-          </Text>
-        </BannerAlert>
-      </Box>
-    );
-  });
+  return (
+    <Box className="transaction-alerts">
+      <BannerAlert
+        severity={BannerAlertSeverity.Info}
+        onClose={dismissAlert}
+        data-testid="smart-transactions-banner-alert"
+        style={getMarginStyle()}
+      >
+        <Text fontWeight={FontWeight.Bold}>
+          {t('smartTransactionsEnabledTitle')}
+        </Text>
+        <Text as="p">
+          <ButtonLink
+            href={SMART_TRANSACTIONS_LEARN_MORE_URL}
+            onClick={dismissAlert}
+            externalLink
+            style={{ height: 'unset', verticalAlign: 'unset' }}
+          >
+            {t('smartTransactionsEnabledLink')}
+          </ButtonLink>
+          {t('smartTransactionsEnabledDescription')}
+        </Text>
+      </BannerAlert>
+    </Box>
+  );
+});
 
 SmartTransactionsBannerAlert.displayName = 'SmartTransactionsBannerAlert';
 

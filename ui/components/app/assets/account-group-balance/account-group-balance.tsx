@@ -41,7 +41,9 @@ export type AccountGroupBalanceProps = {
   chainId: CaipChainId | Hex;
 };
 
-export const AccountGroupBalance: React.FC<React.PropsWithChildren<AccountGroupBalanceProps>> = ({
+export const AccountGroupBalance: React.FC<
+  React.PropsWithChildren<AccountGroupBalanceProps>
+> = ({
   classPrefix,
   balanceIsCached,
   handleSensitiveToggle,

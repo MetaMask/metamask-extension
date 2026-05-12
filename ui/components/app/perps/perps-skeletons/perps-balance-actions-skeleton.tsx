@@ -8,7 +8,9 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
  * PerpsBalanceActionsSkeleton component displays a loading skeleton for the balance actions
  * Matches the layout of PerpsMarketBalanceActions
  */
-export const PerpsBalanceActionsSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => {
+export const PerpsBalanceActionsSkeleton: React.FC<
+  React.PropsWithChildren<unknown>
+> = () => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}

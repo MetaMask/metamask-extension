@@ -13,10 +13,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PartnerLink } from './partner-link';
 import { DefiReferralConsentProps } from './defi-referral-consent.types';
 
-const PartnerImage: React.FC<React.PropsWithChildren<{ partnerId: string; partnerName: string }>> = ({
-  partnerId,
-  partnerName,
-}) => {
+const PartnerImage: React.FC<
+  React.PropsWithChildren<{ partnerId: string; partnerName: string }>
+> = ({ partnerId, partnerName }) => {
   return (
     <img
       className="h-[190px]"
@@ -26,7 +25,9 @@ const PartnerImage: React.FC<React.PropsWithChildren<{ partnerId: string; partne
   );
 };
 
-export const DefiReferralConsentTreatment: React.FC<React.PropsWithChildren<DefiReferralConsentProps>> = ({
+export const DefiReferralConsentTreatment: React.FC<
+  React.PropsWithChildren<DefiReferralConsentProps>
+> = ({
   onActionComplete,
   selectedAddress,
   partnerId,

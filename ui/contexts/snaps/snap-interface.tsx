@@ -72,7 +72,9 @@ export type SnapInterfaceContextProviderProps = {
  * @param params.initialState - The initial state of the interface.
  * @returns The context provider.
  */
-export const SnapInterfaceContextProvider: FunctionComponent<React.PropsWithChildren<SnapInterfaceContextProviderProps>> = ({ children, interfaceId, snapId, initialState }) => {
+export const SnapInterfaceContextProvider: FunctionComponent<
+  React.PropsWithChildren<SnapInterfaceContextProviderProps>
+> = ({ children, interfaceId, snapId, initialState }) => {
   const dispatch = useDispatch();
 
   // We keep an internal copy of the state to speed up the state update in the

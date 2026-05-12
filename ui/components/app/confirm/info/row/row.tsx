@@ -102,7 +102,9 @@ export const ConfirmInfoRowContext = createContext({
   variant: ConfirmInfoRowVariant.Default,
 });
 
-export const ConfirmInfoRow: React.FC<React.PropsWithChildren<ConfirmInfoRowProps>> = ({
+export const ConfirmInfoRow: React.FC<
+  React.PropsWithChildren<ConfirmInfoRowProps>
+> = ({
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
@@ -255,7 +257,9 @@ export type ConfirmInfoRowSkeletonProps = {
   rowVariant?: ConfirmInfoRowSize;
 };
 
-export const ConfirmInfoRowSkeleton: React.FC<React.PropsWithChildren<ConfirmInfoRowSkeletonProps>> = ({
+export const ConfirmInfoRowSkeleton: React.FC<
+  React.PropsWithChildren<ConfirmInfoRowSkeletonProps>
+> = ({
   'data-testid': dataTestId,
   label,
   rowVariant = ConfirmInfoRowSize.Default,

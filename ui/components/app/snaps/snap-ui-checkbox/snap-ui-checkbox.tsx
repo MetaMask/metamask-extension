@@ -25,16 +25,9 @@ export type SnapUICheckboxProps = {
   disabled?: boolean;
 };
 
-export const SnapUICheckbox: FunctionComponent<React.PropsWithChildren<SnapUICheckboxProps>> = ({
-  name,
-  variant,
-  fieldLabel,
-  label,
-  error,
-  form,
-  disabled,
-  ...props
-}) => {
+export const SnapUICheckbox: FunctionComponent<
+  React.PropsWithChildren<SnapUICheckboxProps>
+> = ({ name, variant, fieldLabel, label, error, form, disabled, ...props }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as boolean;

@@ -12,7 +12,9 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
  * PerpsCardSkeleton component displays a loading skeleton for position/order/market cards
  * Matches the layout of PositionCard, OrderCard, and market list items
  */
-export const PerpsCardSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => {
+export const PerpsCardSkeleton: React.FC<
+  React.PropsWithChildren<unknown>
+> = () => {
   return (
     <Box
       className="pt-2 pb-2 px-4 h-[62px] bg-default"

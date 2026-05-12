@@ -94,11 +94,13 @@ function schemaElementDomKey(
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
 
-const ReviewAddressDisplay: React.FC<React.PropsWithChildren<{
-  address: string;
-  testId: string;
-  style?: React.CSSProperties;
-}>> = ({ address, testId, style }) => {
+const ReviewAddressDisplay: React.FC<
+  React.PropsWithChildren<{
+    address: string;
+    testId: string;
+    style?: React.CSSProperties;
+  }>
+> = ({ address, testId, style }) => {
   const { displayName, hexAddress } = useFallbackDisplayName(address);
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
@@ -137,7 +139,9 @@ const ReviewAddressDisplay: React.FC<React.PropsWithChildren<{
   );
 };
 
-const ReviewAccountRow: React.FC<React.PropsWithChildren<{ address: string }>> = ({ address }) => {
+const ReviewAccountRow: React.FC<
+  React.PropsWithChildren<{ address: string }>
+> = ({ address }) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -164,10 +168,12 @@ const ReviewAccountRow: React.FC<React.PropsWithChildren<{ address: string }>> =
   );
 };
 
-const ReviewNetworkRow: React.FC<React.PropsWithChildren<{
-  chainId: Hex;
-  networkName: string;
-}>> = ({ chainId, networkName }) => {
+const ReviewNetworkRow: React.FC<
+  React.PropsWithChildren<{
+    chainId: Hex;
+    networkName: string;
+  }>
+> = ({ chainId, networkName }) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -210,10 +216,12 @@ const ReviewNetworkRow: React.FC<React.PropsWithChildren<{
   );
 };
 
-const ReviewRuleAddressRow: React.FC<React.PropsWithChildren<{
-  addresses: string[];
-  label: string;
-}>> = ({ addresses, label }) => {
+const ReviewRuleAddressRow: React.FC<
+  React.PropsWithChildren<{
+    addresses: string[];
+    label: string;
+  }>
+> = ({ addresses, label }) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -512,7 +520,9 @@ export type ReviewPermissionRendererProps = {
  * @param options0.permissionAccount
  * @param options0.networkName
  */
-export const ReviewPermissionRenderer: React.FC<React.PropsWithChildren<ReviewPermissionRendererProps>> = ({
+export const ReviewPermissionRenderer: React.FC<
+  React.PropsWithChildren<ReviewPermissionRendererProps>
+> = ({
   permissionType,
   permissionData,
   chainId,

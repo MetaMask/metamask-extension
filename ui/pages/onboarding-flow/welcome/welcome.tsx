@@ -66,11 +66,13 @@ const MetaMaskWordMarkAnimation = lazy(
   () =>
     // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./metamask-wordmark-animation') as unknown as Promise<{
-      default: ComponentType<React.PropsWithChildren<{
-        setIsAnimationComplete: (isAnimationComplete: boolean) => void;
-        isAnimationComplete?: boolean;
-        skipTransition?: boolean;
-      }>>;
+      default: ComponentType<
+        React.PropsWithChildren<{
+          setIsAnimationComplete: (isAnimationComplete: boolean) => void;
+          isAnimationComplete?: boolean;
+          skipTransition?: boolean;
+        }>
+      >;
     }>,
 );
 
@@ -78,10 +80,12 @@ const FoxAppearAnimation = lazy(
   () =>
     // @ts-expect-error - TypeScript expects .js extension for ESM, but Jest needs the actual .tsx file
     import('./fox-appear-animation') as unknown as Promise<{
-      default: ComponentType<React.PropsWithChildren<{
-        isLoader?: boolean;
-        skipTransition?: boolean;
-      }>>;
+      default: ComponentType<
+        React.PropsWithChildren<{
+          isLoader?: boolean;
+          skipTransition?: boolean;
+        }>
+      >;
     }>,
 );
 
@@ -109,7 +113,7 @@ export default function OnboardingWelcome() {
   const { animationCompleted } = useRiveWasmContext();
   const shouldSkipAnimation = Boolean(
     animationCompleted?.MetamaskWordMarkAnimation ||
-    process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
+      process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.TESTING,
   );
 
   // In test environments or when returning from another page, skip animations

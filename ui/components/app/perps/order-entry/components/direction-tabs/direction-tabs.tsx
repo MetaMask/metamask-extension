@@ -22,10 +22,9 @@ import type {
  * @param props.direction - Currently selected direction
  * @param props.onDirectionChange - Callback when direction changes
  */
-export const DirectionTabs: React.FC<React.PropsWithChildren<DirectionTabsProps>> = ({
-  direction,
-  onDirectionChange,
-}) => {
+export const DirectionTabs: React.FC<
+  React.PropsWithChildren<DirectionTabsProps>
+> = ({ direction, onDirectionChange }) => {
   const t = useI18nContext();
 
   const handleDirectionClick = (newDirection: OrderDirection) => {

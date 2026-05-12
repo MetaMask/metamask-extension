@@ -41,12 +41,9 @@ type SupportListItemProps = {
   'data-testid'?: string;
 };
 
-const SupportListItem: React.FC<React.PropsWithChildren<SupportListItemProps>> = ({
-  label,
-  onClick,
-  className,
-  'data-testid': testId,
-}) => (
+const SupportListItem: React.FC<
+  React.PropsWithChildren<SupportListItemProps>
+> = ({ label, onClick, className, 'data-testid': testId }) => (
   <Box
     className={`${LIST_ITEM_BASE} ${className ?? ''}`}
     role="button"
@@ -74,7 +71,9 @@ const SupportListItem: React.FC<React.PropsWithChildren<SupportListItemProps>> =
   </Box>
 );
 
-export const PerpsSupportLearn: React.FC<React.PropsWithChildren<unknown>> = () => {
+export const PerpsSupportLearn: React.FC<
+  React.PropsWithChildren<unknown>
+> = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);

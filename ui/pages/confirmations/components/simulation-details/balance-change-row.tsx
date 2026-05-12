@@ -35,15 +35,17 @@ import { IndividualFiatDisplay } from './fiat-display';
  * @param props.hasIncomingTokens
  * @param props.confirmationId
  */
-export const BalanceChangeRow: React.FC<React.PropsWithChildren<{
-  label?: string;
-  showFiat?: boolean;
-  balanceChange: BalanceChange;
-  labelColor?: TextColor;
-  isFirstRow?: boolean;
-  hasIncomingTokens?: boolean;
-  confirmationId?: string;
-}>> = ({
+export const BalanceChangeRow: React.FC<
+  React.PropsWithChildren<{
+    label?: string;
+    showFiat?: boolean;
+    balanceChange: BalanceChange;
+    labelColor?: TextColor;
+    isFirstRow?: boolean;
+    hasIncomingTokens?: boolean;
+    confirmationId?: string;
+  }>
+> = ({
   label,
   showFiat,
   balanceChange,

@@ -49,7 +49,9 @@ type MultichainEditAccountsPageProps = {
   snapsPermissionsRequestType?: SnapsPermissionsRequestType;
 };
 
-export const MultichainEditAccountsPage: React.FC<React.PropsWithChildren<MultichainEditAccountsPageProps>> = ({
+export const MultichainEditAccountsPage: React.FC<
+  React.PropsWithChildren<MultichainEditAccountsPageProps>
+> = ({
   title,
   confirmButtonText,
   defaultSelectedAccountGroups,

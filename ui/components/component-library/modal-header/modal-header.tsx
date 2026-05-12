@@ -12,7 +12,9 @@ import { IconName } from '../icon';
 import { HeaderBase } from '../header-base';
 import { ModalHeaderProps } from './modal-header.types';
 
-export const ModalHeader: React.FC<React.PropsWithChildren<ModalHeaderProps>> = ({
+export const ModalHeader: React.FC<
+  React.PropsWithChildren<ModalHeaderProps>
+> = ({
   children,
   className = '',
   startAccessory,

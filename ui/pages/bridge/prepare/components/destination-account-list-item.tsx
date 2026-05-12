@@ -61,12 +61,9 @@ type DestinationAccountListItemProps = {
   isExternal?: boolean;
 };
 
-const DestinationAccountListItem: React.FC<React.PropsWithChildren<DestinationAccountListItemProps>> = ({
-  account,
-  selected = false,
-  onClick,
-  isExternal = false,
-}) => {
+const DestinationAccountListItem: React.FC<
+  React.PropsWithChildren<DestinationAccountListItemProps>
+> = ({ account, selected = false, onClick, isExternal = false }) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );

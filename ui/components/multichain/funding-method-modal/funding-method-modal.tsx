@@ -44,13 +44,9 @@ type FundingMethodModalProps = Omit<ModalProps, 'children'> & {
   onClickReceive: () => void;
 };
 
-export const FundingMethodModal: React.FC<React.PropsWithChildren<FundingMethodModalProps>> = ({
-  isOpen,
-  onClose,
-  title,
-  onClickReceive,
-  ...props
-}) => {
+export const FundingMethodModal: React.FC<
+  React.PropsWithChildren<FundingMethodModalProps>
+> = ({ isOpen, onClose, title, onClickReceive, ...props }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { openBuyCryptoInPdapp } = useRamps();

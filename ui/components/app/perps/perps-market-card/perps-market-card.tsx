@@ -31,7 +31,9 @@ export type PerpsMarketCardProps = {
   'data-testid'?: string;
 };
 
-export const PerpsMarketCard: React.FC<React.PropsWithChildren<PerpsMarketCardProps>> = ({
+export const PerpsMarketCard: React.FC<
+  React.PropsWithChildren<PerpsMarketCardProps>
+> = ({
   symbol,
   name,
   price,

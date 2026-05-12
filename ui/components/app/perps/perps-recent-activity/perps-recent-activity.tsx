@@ -44,7 +44,9 @@ export type PerpsRecentActivityProps = {
  * @param options0.isLoading - Loading state for initial fetch (skeleton when no rows yet)
  * @param options0.error - Error message when fetch failed and there are no rows
  */
-export const PerpsRecentActivity: React.FC<React.PropsWithChildren<PerpsRecentActivityProps>> = ({
+export const PerpsRecentActivity: React.FC<
+  React.PropsWithChildren<PerpsRecentActivityProps>
+> = ({
   transactions = [],
   maxTransactions = PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS,
   onTransactionClick,

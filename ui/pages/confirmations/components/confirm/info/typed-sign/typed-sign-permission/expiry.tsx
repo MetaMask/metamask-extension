@@ -13,9 +13,11 @@ import { DateAndTimeRow } from './date-and-time-row';
  * @param props.expiry - The expiration timestamp in seconds (null if no expiry)
  * @returns JSX element containing the expiration information
  */
-export const Expiry: React.FC<React.PropsWithChildren<{
-  expiry: number | null;
-}>> = ({ expiry }) => {
+export const Expiry: React.FC<
+  React.PropsWithChildren<{
+    expiry: number | null;
+  }>
+> = ({ expiry }) => {
   const t = useI18nContext();
 
   if (expiry) {

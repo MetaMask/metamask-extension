@@ -44,7 +44,9 @@ export type NotificationDetailCopyButtonProps = {
  * @param [props.color] - The color of the text.
  * @returns The rendered component.
  */
-export const NotificationDetailCopyButton: FC<React.PropsWithChildren<NotificationDetailCopyButtonProps>> = ({
+export const NotificationDetailCopyButton: FC<
+  React.PropsWithChildren<NotificationDetailCopyButtonProps>
+> = ({
   notification,
   text,
   displayText,

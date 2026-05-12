@@ -69,7 +69,9 @@ const LOW_VALUE_TRIGGER_PRICE_DECIMALS = 6;
  * @param props.leverage - Leverage multiplier for RoE% calculation
  * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
-export const AutoCloseSection: React.FC<React.PropsWithChildren<AutoCloseSectionProps>> = ({
+export const AutoCloseSection: React.FC<
+  React.PropsWithChildren<AutoCloseSectionProps>
+> = ({
   enabled,
   onEnabledChange,
   takeProfitPrice,
@@ -371,11 +373,11 @@ export const AutoCloseSection: React.FC<React.PropsWithChildren<AutoCloseSection
     () =>
       Boolean(
         takeProfitPrice.trim() &&
-        validationReferencePrice > 0 &&
-        !isValidTakeProfitPrice(takeProfitPrice, {
-          currentPrice: validationReferencePrice,
-          direction,
-        }),
+          validationReferencePrice > 0 &&
+          !isValidTakeProfitPrice(takeProfitPrice, {
+            currentPrice: validationReferencePrice,
+            direction,
+          }),
       ),
     [takeProfitPrice, validationReferencePrice, direction],
   );
@@ -384,11 +386,11 @@ export const AutoCloseSection: React.FC<React.PropsWithChildren<AutoCloseSection
     () =>
       Boolean(
         stopLossPrice.trim() &&
-        validationReferencePrice > 0 &&
-        !isValidStopLossPrice(stopLossPrice, {
-          currentPrice: validationReferencePrice,
-          direction,
-        }),
+          validationReferencePrice > 0 &&
+          !isValidStopLossPrice(stopLossPrice, {
+            currentPrice: validationReferencePrice,
+            direction,
+          }),
       ),
     [stopLossPrice, validationReferencePrice, direction],
   );
@@ -397,10 +399,10 @@ export const AutoCloseSection: React.FC<React.PropsWithChildren<AutoCloseSection
     () =>
       Boolean(
         stopLossPrice.trim() &&
-        !isStopLossSafeFromLiquidation(stopLossPrice, {
-          liquidationPrice,
-          direction,
-        }),
+          !isStopLossSafeFromLiquidation(stopLossPrice, {
+            liquidationPrice,
+            direction,
+          }),
       ),
     [stopLossPrice, liquidationPrice, direction],
   );

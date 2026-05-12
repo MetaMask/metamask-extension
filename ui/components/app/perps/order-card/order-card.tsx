@@ -122,7 +122,7 @@ export const OrderCard: React.FC<React.PropsWithChildren<OrderCardProps>> = ({
         {isTriggerBasedOrder ? (
           // TP/SL: render label directly in the column so it wraps freely.
           // The symbol is redundant here — it appears after the size below.
-          (<Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>)
+          <Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>
         ) : (
           <Box
             flexDirection={BoxFlexDirection.Row}

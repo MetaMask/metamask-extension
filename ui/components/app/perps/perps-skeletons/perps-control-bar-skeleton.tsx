@@ -13,7 +13,9 @@ import { BorderRadius } from '../../../../helpers/constants/design-system';
  * PerpsControlBarSkeleton component displays a loading skeleton for the control bar
  * Matches the layout of PerpsBalanceDropdown
  */
-export const PerpsControlBarSkeleton: React.FC<React.PropsWithChildren<unknown>> = () => {
+export const PerpsControlBarSkeleton: React.FC<
+  React.PropsWithChildren<unknown>
+> = () => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}

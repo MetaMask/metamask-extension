@@ -62,10 +62,12 @@ export default {
   component: NotificationsListItem,
 } as Meta;
 
-const NotificationItemWrapper: React.FC<React.PropsWithChildren<{
-  notification: INotification;
-  onRead: (id: string) => void;
-}>> = ({ notification, onRead }) => {
+const NotificationItemWrapper: React.FC<
+  React.PropsWithChildren<{
+    notification: INotification;
+    onRead: (id: string) => void;
+  }>
+> = ({ notification, onRead }) => {
   const handleCustomNotificationClick = () => {
     onRead(notification.id);
   };

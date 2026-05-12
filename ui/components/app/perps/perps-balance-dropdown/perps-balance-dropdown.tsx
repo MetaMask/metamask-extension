@@ -62,11 +62,9 @@ export type PerpsBalanceDropdownProps = {
  * @param options0.onAddFunds - Callback when Add funds button is pressed
  * @param options0.onWithdraw - Callback when Withdraw button is pressed
  */
-export const PerpsBalanceDropdown: React.FC<React.PropsWithChildren<PerpsBalanceDropdownProps>> = ({
-  hasPositions = false,
-  onAddFunds,
-  onWithdraw,
-}) => {
+export const PerpsBalanceDropdown: React.FC<
+  React.PropsWithChildren<PerpsBalanceDropdownProps>
+> = ({ hasPositions = false, onAddFunds, onWithdraw }) => {
   const t = useI18nContext();
   const { account, isInitialLoading } = usePerpsLiveAccount();
   const { formatPercentWithMinThreshold } = useFormatters();

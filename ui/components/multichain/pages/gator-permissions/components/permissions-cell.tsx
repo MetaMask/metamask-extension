@@ -20,7 +20,9 @@ type PermissionsCellProps = {
   origin?: string;
 };
 
-export const PermissionsCell: React.FC<React.PropsWithChildren<PermissionsCellProps>> = ({
+export const PermissionsCell: React.FC<
+  React.PropsWithChildren<PermissionsCellProps>
+> = ({
   nonTestNetworks,
   testNetworks,
   totalCount,

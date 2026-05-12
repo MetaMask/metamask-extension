@@ -37,10 +37,9 @@ type OnboardingStep4Props = {
   shieldSubscriptionId?: string;
 };
 
-const OnboardingStep4: React.FC<React.PropsWithChildren<OnboardingStep4Props>> = ({
-  rewardPoints,
-  shieldSubscriptionId,
-}) => {
+const OnboardingStep4: React.FC<
+  React.PropsWithChildren<OnboardingStep4Props>
+> = ({ rewardPoints, shieldSubscriptionId }) => {
   const t = useI18nContext();
 
   const { optinLoading, optinError, optin } = useOptIn({

@@ -320,19 +320,21 @@ function renderSection(
 // Main renderer component
 // ---------------------------------------------------------------------------
 
-export const PermissionDetailRenderer: React.FC<React.PropsWithChildren<{
-  permission: {
-    type: string;
-    data: Record<string, unknown>;
-    justification?: string;
-  };
-  expiry: number | null;
-  chainId: Hex;
-  origin: string;
-  to?: string;
-  ownerId: string;
-  rules?: Rule[];
-}>> = ({ permission, expiry, chainId, origin, to, ownerId, rules }) => {
+export const PermissionDetailRenderer: React.FC<
+  React.PropsWithChildren<{
+    permission: {
+      type: string;
+      data: Record<string, unknown>;
+      justification?: string;
+    };
+    expiry: number | null;
+    chainId: Hex;
+    origin: string;
+    to?: string;
+    ownerId: string;
+    rules?: Rule[];
+  }>
+> = ({ permission, expiry, chainId, origin, to, ownerId, rules }) => {
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permission.type];

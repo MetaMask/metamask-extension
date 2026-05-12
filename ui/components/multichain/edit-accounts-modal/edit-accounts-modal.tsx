@@ -58,12 +58,9 @@ enum EditAccountModalStage {
   EditAccounts = 'edit-accounts',
 }
 
-export const EditAccountsModal: React.FC<React.PropsWithChildren<EditAccountsModalProps>> = ({
-  accounts,
-  defaultSelectedAccountAddresses,
-  onClose,
-  onSubmit,
-}) => {
+export const EditAccountsModal: React.FC<
+  React.PropsWithChildren<EditAccountsModalProps>
+> = ({ accounts, defaultSelectedAccountAddresses, onClose, onSubmit }) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [modalStage, setModalStage] = useState<EditAccountModalStage>(

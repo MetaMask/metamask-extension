@@ -152,7 +152,9 @@ export type PerpsSliderProps = {
   markInterval?: number;
 };
 
-export const PerpsSlider: React.FC<React.PropsWithChildren<PerpsSliderProps>> = ({
+export const PerpsSlider: React.FC<
+  React.PropsWithChildren<PerpsSliderProps>
+> = ({
   min,
   max,
   step,

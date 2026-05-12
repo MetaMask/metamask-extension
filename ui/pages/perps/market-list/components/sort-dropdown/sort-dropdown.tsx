@@ -59,11 +59,9 @@ export type SortDropdownProps = {
  * @param options0.direction
  * @param options0.onChange
  */
-export const SortDropdown: React.FC<React.PropsWithChildren<SortDropdownProps>> = ({
-  selectedField,
-  direction,
-  onChange,
-}) => {
+export const SortDropdown: React.FC<
+  React.PropsWithChildren<SortDropdownProps>
+> = ({ selectedField, direction, onChange }) => {
   const t = useI18nContext();
   const [isOpen, setIsOpen] = useState(false);
   const [pendingField, setPendingField] = useState<SortField>(selectedField);
