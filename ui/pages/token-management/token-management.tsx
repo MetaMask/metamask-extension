@@ -12,9 +12,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
-  Icon,
-  IconSize,
-  Input,
   IconName,
   Text,
   TextAlign,
@@ -75,6 +72,10 @@ import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
+import {
+  TextFieldSearch,
+  TextFieldSearchSize,
+} from '../../components/component-library';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -702,31 +703,18 @@ export const TokenManagementPage = () => {
         paddingTop={2}
         paddingBottom={2}
       >
-        <Box className="relative w-full">
-          <Icon
-            name={IconName.Search}
-            size={IconSize.Sm}
-            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-icon-alternative"
-          />
-          <Input
-            type="search"
-            value={searchQuery}
-            placeholder={t('enterTokenNameOrAddressManageTokens')}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            data-testid="token-management-search-input"
-            className="h-14 rounded-full border border-muted bg-muted py-0 pl-12 pr-12 text-default focus:border-muted"
-          />
-          {searchQuery ? (
-            <ButtonIcon
-              type="button"
-              ariaLabel={t('clear')}
-              iconName={IconName.CircleX}
-              size={ButtonIconSize.Sm}
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2"
-            />
-          ) : null}
-        </Box>
+        <TextFieldSearch
+          value={searchQuery}
+          placeholder={t('enterTokenNameOrAddressManageTokens')}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          clearButtonOnClick={() => setSearchQuery('')}
+          size={TextFieldSearchSize.Lg}
+          className="w-full"
+          inputProps={{
+            'data-testid': 'token-management-search-input',
+            spellCheck: false,
+          }}
+        />
       </Box>
 
       <Box
