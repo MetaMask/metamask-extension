@@ -40,9 +40,9 @@ import { toRelativeRoutePath } from '../routes/utils';
 import {
   getCompletedOnboarding,
   getIsPrimarySeedPhraseBackedUp,
-  getIsUnlocked,
   getOpenedWithSidepanel,
 } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
