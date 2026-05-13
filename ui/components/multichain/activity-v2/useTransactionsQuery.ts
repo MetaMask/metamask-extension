@@ -19,8 +19,9 @@ const knownApiMessages = ['networks param contains no supported chains'];
 type TransactionsQueryOptions = ReturnType<
   typeof apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions
 >;
-type TransactionsQueryFunction = NonNullable<
-  TransactionsQueryOptions['queryFn']
+type TransactionsQueryFunction = Extract<
+  NonNullable<TransactionsQueryOptions['queryFn']>,
+  (...args: never[]) => unknown
 >;
 
 function isKnownApiResponseError(error: unknown) {
@@ -36,12 +37,12 @@ function isKnownApiResponseError(error: unknown) {
   );
 }
 
-function withKnownApiResponse(queryFn: TransactionsQueryFunction | undefined) {
-  if (!queryFn) {
-    return undefined;
+function withKnownApiResponse(queryFn: TransactionsQueryOptions['queryFn']) {
+  if (typeof queryFn !== 'function') {
+    return queryFn;
   }
 
-  return async (context) => {
+  return async (context: Parameters<TransactionsQueryFunction>[0]) => {
     try {
       return await queryFn(context);
     } catch (error) {
@@ -115,9 +116,9 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
       lang,
     });
 
-  // @ts-expect-error apiClient returns v5 types, repo still in v4
   return useInfiniteQuery({
     ...queryOptions,
+    // @ts-expect-error apiClient returns v5 types, repo still in v4
     queryFn: withKnownApiResponse(queryOptions.queryFn),
     select: selectFn,
     enabled:
@@ -164,9 +165,9 @@ export function usePrefetchTransactions() {
     }
 
     queryClient
-      // @ts-expect-error apiClient returns v5 types, repo still in v4
       .prefetchInfiniteQuery({
         ...queryOptions,
+        // @ts-expect-error apiClient returns v5 types, repo still in v4
         queryFn: withKnownApiResponse(queryOptions.queryFn),
         retry: false,
         staleTime: 5 * MINUTE,
