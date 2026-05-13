@@ -22,10 +22,6 @@ import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 
 // ── Shared fixture options ─────────────────────────────────────────────────
 
-const MM_CONNECT_DAPP_OPTIONS = {
-  customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
-};
-
 const EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE = {
   isMultichainOrigin: true,
   requiredScopes: {},
@@ -86,7 +82,9 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: MM_CONNECT_DAPP_OPTIONS,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
+          },
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver);
@@ -113,7 +111,9 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: MM_CONNECT_DAPP_OPTIONS,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
+          },
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver);
@@ -140,7 +140,9 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: MM_CONNECT_DAPP_OPTIONS,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
+          },
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver);
@@ -197,7 +199,9 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: MM_CONNECT_DAPP_OPTIONS,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
+          },
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver);
