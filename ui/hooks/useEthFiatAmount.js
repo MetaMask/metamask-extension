@@ -3,10 +3,8 @@ import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { getShouldShowFiat } from '../selectors';
 import { formatCurrency } from '../helpers/utils/confirm-tx.util';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../ducks/metamask/metamask';
+import { getConversionRate } from '../ducks/metamask/base-selectors';
 import { decEthToConvertedCurrency } from '../../shared/lib/conversion.utils';
 
 /**
