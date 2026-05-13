@@ -228,7 +228,7 @@ const BaseReader = ({
         {title ? (
           <Box paddingTop={4} paddingBottom={4}>
             <Text
-              variant={TextVariant.HeadingMd}
+              variant={TextVariant.HeadingLg}
               fontWeight={FontWeight.Medium}
               textAlign={TextAlign.Center}
             >
