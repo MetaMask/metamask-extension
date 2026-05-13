@@ -116,6 +116,7 @@ const MultichainBridgeTransactionListItem: React.FC<
     <ActivityListItem
       className="multichain-bridge-transaction-list-item"
       data-testid="multichain-bridge-activity-item"
+      titlePendingSpinner={!isTerminalState}
       onClick={() => toggleShowDetails(transaction)}
       icon={
         <BadgeWrapper

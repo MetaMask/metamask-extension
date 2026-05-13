@@ -304,6 +304,7 @@ function TransactionListItemInner({
         }
         className={className}
         title={title}
+        titlePendingSpinner={isPending}
         icon={
           <ChainBadge chainId={badgeChainId}>
             <TransactionIcon category={category} status={displayedStatusKey} />

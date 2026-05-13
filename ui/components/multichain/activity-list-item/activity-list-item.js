@@ -15,11 +15,13 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
+import { StatusIcon } from '../../ui/icon/status-icon';
 
 export const ActivityListItem = ({
   topContent,
   icon,
   title,
+  titlePendingSpinner,
   subtitle,
   midContent,
   children,
@@ -85,6 +87,7 @@ export const ActivityListItem = ({
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
               alignItems={AlignItems.center}
+              gap={2}
             >
               <Text
                 ellipsis
@@ -95,6 +98,7 @@ export const ActivityListItem = ({
               >
                 {title}
               </Text>
+              {titlePendingSpinner && <StatusIcon state="loading" className="w-5 h-5" />}
             </Box>
             {subtitle && (
               <Text
@@ -149,6 +153,10 @@ ActivityListItem.propTypes = {
    * Title text
    */
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
+  /**
+   * When true, shows the Rive loading spinner on the title row
+   */
+  titlePendingSpinner: PropTypes.bool,
   /**
    * Additional text detail
    */

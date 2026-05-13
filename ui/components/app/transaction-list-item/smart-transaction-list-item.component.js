@@ -59,6 +59,7 @@ export default function SmartTransactionListItem({
       <ActivityListItem
         className={className}
         title={title}
+        titlePendingSpinner={isPending}
         onClick={toggleShowDetails}
         icon={
           <BadgeWrapper
