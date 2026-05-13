@@ -4473,6 +4473,35 @@ describe('getDeferredDeepLink', () => {
   });
 });
 
+describe('getDeferredDeepLinkParameters', () => {
+  it('returns only UTM parameters from the deferred deep link', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: {
+          createdAt: 1765465337256,
+          referringLink:
+            'https://link.metamask.io/swap?utm_source=newsletter&utm_medium=email&utm_campaign=&foo=bar',
+        },
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual({
+      utm_source: 'newsletter',
+      utm_medium: 'email',
+    });
+  });
+
+  it('returns an empty object when deferredDeepLink is not set', () => {
+    const state = {
+      metamask: {
+        deferredDeepLink: undefined,
+      },
+    };
+
+    expect(selectors.getDeferredDeepLinkParameters(state)).toStrictEqual({});
+  });
+});
+
 describe('getLastVisitedPerpsRoute', () => {
   it('returns the perps lastVisitedRoute value when set', () => {
     const entry = { path: '/perps/market/BTC', timestamp: 1700000000000 };

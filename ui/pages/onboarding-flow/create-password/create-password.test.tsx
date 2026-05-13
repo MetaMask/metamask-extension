@@ -12,6 +12,7 @@ import {
   ONBOARDING_SETUP_PASSKEY_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
 } from '../../../helpers/constants/routes';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { getIsPasskeyFeatureEnabled } from '../../../../shared/lib/environment';
 import * as Actions from '../../../store/actions';
@@ -34,6 +35,12 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
+
+const getWalletSetupCompletedEvent = (mockTrackEvent: jest.Mock) => {
+  return mockTrackEvent.mock.calls.find(
+    (args) => args[0]?.event === MetaMetricsEventName.WalletSetupCompleted,
+  )?.[0];
+};
 
 describe('Onboarding Create Password', () => {
   const mockState = {
@@ -504,6 +511,68 @@ describe('Onboarding Create Password', () => {
         );
       });
     });
+
+    it('includes deferred deep link UTM params in the wallet setup completed event for new wallets', async () => {
+      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+      const mockStore = configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          firstTimeFlowType: FirstTimeFlowType.create,
+          deferredDeepLink: {
+            createdAt: 1765465337256,
+            referringLink:
+              'https://link.metamask.io/swap?utm_source=newsletter&utm_campaign=spring-sale&utm_medium=email&foo=bar',
+          },
+        },
+      });
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword
+          createNewAccount={mockCreateNewAccount}
+          importWithRecoveryPhrase={mockImportWithRecoveryPhrase}
+          secretRecoveryPhrase="SRP"
+        />,
+        mockStore,
+        '/',
+        undefined,
+        () => mockTrackEvent,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(getWalletSetupCompletedEvent(mockTrackEvent)).toBeDefined();
+      });
+
+      const walletSetupCompletedEvent =
+        getWalletSetupCompletedEvent(mockTrackEvent);
+
+      expect(walletSetupCompletedEvent).toMatchObject({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          utm_source: 'newsletter',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          utm_campaign: 'spring-sale',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          utm_medium: 'email',
+        },
+      });
+      expect(walletSetupCompletedEvent.properties).not.toHaveProperty('foo');
+    });
   });
 
   describe('Import Wallet', () => {
@@ -610,6 +679,70 @@ describe('Onboarding Create Password', () => {
           replace: true,
         });
       });
+    });
+
+    it('includes deferred deep link UTM params in the wallet setup completed event for imported wallets', async () => {
+      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+      const mockStore = configureMockStore([thunk])({
+        ...importMockState,
+        metamask: {
+          ...importMockState.metamask,
+          deferredDeepLink: {
+            createdAt: 1765465337256,
+            referringLink:
+              'https://link.metamask.io/swap?utm_source=partner&utm_content=hero-banner&utm_term=wallet&foo=bar',
+          },
+        },
+      });
+
+      const props = {
+        importWithRecoveryPhrase: jest.fn().mockResolvedValue(undefined),
+        secretRecoveryPhrase: 'SRP',
+        createNewAccount: jest.fn().mockResolvedValue(''),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <CreatePassword {...props} />,
+        mockStore,
+        '/',
+        undefined,
+        () => mockTrackEvent,
+      );
+
+      const password = '12345678';
+      fireEvent.change(
+        queryByTestId('create-password-new-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.change(
+        queryByTestId('create-password-confirm-input') as HTMLElement,
+        {
+          target: { value: password },
+        },
+      );
+      fireEvent.click(queryByTestId('create-password-terms') as HTMLElement);
+      fireEvent.click(queryByTestId('create-password-submit') as HTMLElement);
+
+      await waitFor(() => {
+        expect(getWalletSetupCompletedEvent(mockTrackEvent)).toBeDefined();
+      });
+
+      const walletSetupCompletedEvent =
+        getWalletSetupCompletedEvent(mockTrackEvent);
+
+      expect(walletSetupCompletedEvent).toMatchObject({
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          utm_source: 'partner',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          utm_content: 'hero-banner',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          utm_term: 'wallet',
+        },
+      });
+      expect(walletSetupCompletedEvent.properties).not.toHaveProperty('foo');
     });
   });
 
