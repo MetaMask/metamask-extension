@@ -25,10 +25,6 @@ export const QrErrorFlowContext = {
 export type QrErrorFlowContext =
   (typeof QrErrorFlowContext)[keyof typeof QrErrorFlowContext];
 
-/** Learn-more destination URL for QR / air-gapped hardware wallets. */
-export const QR_ERROR_LEARN_MORE_URL =
-  'https://support.metamask.io/more-web3/wallets/hardware-wallet-hub/#qr-codeair-gapped-wallets';
-
 export type QrErrorContentProps = {
   /** Which error state to display. */
   errorType: QrErrorType;

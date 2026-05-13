@@ -3,12 +3,9 @@ import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { renderWithLocalization } from '../../../../../test/lib/render-helpers';
 import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 import { QrErrorContent } from './qr-error-content';
-import {
-  QrErrorType,
-  QrErrorFlowContext,
-  QR_ERROR_LEARN_MORE_URL,
-} from './qr-error-content.types';
+import { QrErrorType, QrErrorFlowContext } from './qr-error-content.types';
 
 describe('QrErrorContent', () => {
   const openTabMock = jest.fn();
@@ -95,7 +92,7 @@ describe('QrErrorContent', () => {
 
     expect(openTabMock).toHaveBeenCalledTimes(1);
     expect(openTabMock).toHaveBeenCalledWith({
-      url: QR_ERROR_LEARN_MORE_URL,
+      url: ZENDESK_URLS.HARDWARE_QR_WALLETS,
     });
   });
 

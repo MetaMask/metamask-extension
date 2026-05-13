@@ -17,10 +17,8 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import {
-  QR_ERROR_LEARN_MORE_URL,
-  type QrErrorContentProps,
-} from './qr-error-content.types';
+import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import type { QrErrorContentProps } from './qr-error-content.types';
 import { resolveErrorCopy, rootTestId } from './qr-error-content.utils';
 
 /**
@@ -43,7 +41,7 @@ export const QrErrorContent = ({
   const { title, body } = resolveErrorCopy(errorType, flowContext, t);
 
   const handleLearnMore = () => {
-    globalThis.platform.openTab({ url: QR_ERROR_LEARN_MORE_URL });
+    globalThis.platform.openTab({ url: ZENDESK_URLS.HARDWARE_QR_WALLETS });
   };
 
   return (
