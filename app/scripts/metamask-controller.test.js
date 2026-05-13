@@ -358,6 +358,10 @@ jest.mock('@metamask/core-backend', () => ({
   }),
 }));
 
+jest.mock('../../shared/lib/environment', () => ({
+  ...jest.requireActual('../../shared/lib/environment'),
+}));
+
 jest.mock('../../shared/lib/gator-permissions/feature-flags', () => ({
   ...jest.requireActual('../../shared/lib/gator-permissions/feature-flags'),
   getEnabledAdvancedPermissions: jest.fn(() => []),
