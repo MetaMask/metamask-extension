@@ -128,10 +128,6 @@ export class Delegation7702PublishHook {
     const includeTransfer =
       !isGaslessSwap && !transactionMeta.isGasFeeSponsored;
 
-    if (includeTransfer && (!gasFeeToken || gasFeeToken === undefined)) {
-      throw new Error('Gas fee token not found');
-    }
-
     const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
     const finalTransactionMeta: TransactionMeta = {
       ...transactionMeta,
