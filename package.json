@@ -404,7 +404,7 @@
     "@metamask/permission-controller": "^13.0.0",
     "@metamask/permission-log-controller": "^5.0.0",
     "@metamask/permissions-kernel-snap": "^1.3.0",
-    "@metamask/perps-controller": "patch:@metamask/perps-controller@npm%3A6.0.0#~/.yarn/patches/@metamask-perps-controller-npm-6.0.0-5657adf635.patch",
+    "@metamask/perps-controller": "^6.0.0",
     "@metamask/phishing-controller": "^17.1.1",
     "@metamask/polling-controller": "^16.0.2",
     "@metamask/post-message-stream": "^10.0.0",
