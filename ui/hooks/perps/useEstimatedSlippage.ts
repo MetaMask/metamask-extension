@@ -126,6 +126,16 @@ export function useEstimatedSlippage({
   const [orderBook, setOrderBook] = useState<OrderBookData | null>(null);
   const lastSampleAtRef = useRef(0);
 
+  // Force the throttle gate to release on the next book tick whenever the
+  // user changes direction or amount. Without this, the 500ms sampler may
+  // hold a snapshot taken under a different direction/size for up to half a
+  // second after the input flips. We do NOT add these to the subscribe
+  // effect's deps — that would tear the stream subscription down on every
+  // amount keystroke.
+  useEffect(() => {
+    lastSampleAtRef.current = 0;
+  }, [direction, notionalUsd]);
+
   useEffect(() => {
     if (!enabled || !symbol) {
       setOrderBook(null);
