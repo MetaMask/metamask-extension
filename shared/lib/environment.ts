@@ -1,4 +1,5 @@
-import { SupportedPermissionType } from '@metamask/gator-permissions-controller';
+import type { SupportedPermissionType } from '@metamask/gator-permissions-controller';
+import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { ENVIRONMENT } from '../../development/build/constants';
 
 export const isProduction = (): boolean => {
@@ -39,19 +40,81 @@ export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };
 
-/**
- * Returns the list of enabled Gator permission types from the environment configuration.
- * These permission types control which advanced permissions (e.g., token streams,
- * periodic transfers) are available in the current build.
- *
- * @returns An array of enabled permission type strings (e.g., 'native-token-stream',
- * 'erc20-token-periodic'), or an empty array if none are configured.
- */
-export const getEnabledAdvancedPermissions = (): SupportedPermissionType[] => {
+export const ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG =
+  'enabled-advanced-permissions';
+
+type AdvancedPermissionsFeatureFlag = {
+  permissions?: unknown;
+};
+
+type AdvancedPermissionsFeatureFlagSource = Pick<
+  RemoteFeatureFlagControllerState,
+  'remoteFeatureFlags'
+>;
+
+const IMPLEMENTED_ADVANCED_PERMISSION_TYPES: SupportedPermissionType[] = [
+  'native-token-stream',
+  'native-token-periodic',
+  'erc20-token-stream',
+  'erc20-token-periodic',
+  'erc20-token-revocation',
+];
+
+const isImplementedAdvancedPermissionType = (
+  permissionType: unknown,
+): permissionType is SupportedPermissionType =>
+  typeof permissionType === 'string' &&
+  IMPLEMENTED_ADVANCED_PERMISSION_TYPES.includes(
+    permissionType as SupportedPermissionType,
+  );
+
+const getBuildEnabledAdvancedPermissions = (): SupportedPermissionType[] => {
   const enabled =
     process.env.GATOR_ENABLED_PERMISSION_TYPES?.toString().trim() || '';
 
-  return enabled.split(',').filter(Boolean) as SupportedPermissionType[];
+  return enabled
+    .split(',')
+    .map((permissionType) => permissionType.trim())
+    .filter(isImplementedAdvancedPermissionType);
+};
+
+const getRemoteEnabledAdvancedPermissions = (
+  source?: AdvancedPermissionsFeatureFlagSource,
+): SupportedPermissionType[] | undefined => {
+  const flag = source?.remoteFeatureFlags?.[
+    ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG
+  ] as AdvancedPermissionsFeatureFlag | undefined;
+
+  if (!flag || !Array.isArray(flag.permissions)) {
+    return undefined;
+  }
+
+  return flag.permissions.filter(isImplementedAdvancedPermissionType);
+};
+
+/**
+ * Returns the enabled Gator permission types for the current runtime.
+ *
+ * When present, the `enabled-advanced-permissions` remote flag is the runtime
+ * source of truth so permission types can be changed after distribution. Values
+ * for permission types not implemented in the extension are ignored.
+ * `GATOR_ENABLED_PERMISSION_TYPES` remains the fallback for builds without the
+ * remote flag loaded.
+ *
+ * @param source - Optional remote feature flag state.
+ * @returns Enabled permission type strings, or an empty array if none are configured.
+ */
+export const getEnabledAdvancedPermissions = (
+  source?: AdvancedPermissionsFeatureFlagSource,
+): SupportedPermissionType[] => {
+  const buildEnabledPermissions = getBuildEnabledAdvancedPermissions();
+  const remoteEnabledPermissions = getRemoteEnabledAdvancedPermissions(source);
+
+  if (remoteEnabledPermissions === undefined) {
+    return buildEnabledPermissions;
+  }
+
+  return remoteEnabledPermissions;
 };
 
 export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {

@@ -1,7 +1,9 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
+import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
@@ -107,6 +109,7 @@ export const InfoSkeleton = ({
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
   const { loader } = useConfirmationNavigationOptions();
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
 
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
@@ -134,7 +137,9 @@ const Info = () => {
           const requestedPermissionType =
             signatureRequest.decodedPermission.permission.type;
 
-          const enabledPermissions = getEnabledAdvancedPermissions();
+          const enabledPermissions = getEnabledAdvancedPermissions({
+            remoteFeatureFlags,
+          });
 
           if (!enabledPermissions.includes(requestedPermissionType)) {
             // This should never happen, as `wallet_requestExecutionPermissions`
@@ -165,7 +170,7 @@ const Info = () => {
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
       [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,
     }),
-    [currentConfirmation],
+    [currentConfirmation, remoteFeatureFlags],
   );
 
   if (!currentConfirmation?.type) {

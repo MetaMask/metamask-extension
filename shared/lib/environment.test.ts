@@ -1,5 +1,6 @@
 import { ENVIRONMENT } from '../../development/build/constants';
 import {
+  ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
   getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
   getIsPasskeyFeatureEnabled,
@@ -83,6 +84,94 @@ describe('getEnabledAdvancedPermissions', () => {
     expect(getEnabledAdvancedPermissions()).toStrictEqual([
       'native-token-stream',
     ]);
+  });
+
+  it('should use the remote flag when it is set', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES = 'native-token-stream';
+
+    expect(
+      getEnabledAdvancedPermissions({
+        remoteFeatureFlags: {
+          [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
+            permissions: [
+              'native-token-stream',
+              'native-token-periodic',
+              'erc20-token-periodic',
+              'erc20-token-stream',
+              'erc20-token-revocation',
+              'native-token-allowance',
+              'erc20-token-allowance',
+            ],
+          },
+        },
+      }),
+    ).toStrictEqual([
+      'native-token-stream',
+      'native-token-periodic',
+      'erc20-token-periodic',
+      'erc20-token-stream',
+      'erc20-token-revocation',
+    ]);
+  });
+
+  it('should ignore permission types that are not implemented in the extension', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES =
+      'native-token-stream,native-token-allowance';
+
+    expect(getEnabledAdvancedPermissions()).toStrictEqual([
+      'native-token-stream',
+    ]);
+
+    expect(
+      getEnabledAdvancedPermissions({
+        remoteFeatureFlags: {
+          [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
+            permissions: [
+              'native-token-stream',
+              'native-token-allowance',
+              'erc20-token-allowance',
+            ],
+          },
+        },
+      }),
+    ).toStrictEqual(['native-token-stream']);
+  });
+
+  it('should allow the remote flag to disable all permission types', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES =
+      'native-token-stream,erc20-token-stream';
+
+    expect(
+      getEnabledAdvancedPermissions({
+        remoteFeatureFlags: {
+          [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
+            permissions: [],
+          },
+        },
+      }),
+    ).toStrictEqual([]);
+  });
+
+  it('should fall back to the environment when the remote flag is missing', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES =
+      'native-token-stream,erc20-token-stream';
+
+    expect(
+      getEnabledAdvancedPermissions({ remoteFeatureFlags: {} }),
+    ).toStrictEqual(['native-token-stream', 'erc20-token-stream']);
+  });
+
+  it('should fall back to the environment when the remote flag shape is invalid', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES =
+      'native-token-stream,erc20-token-stream';
+
+    expect(
+      getEnabledAdvancedPermissions({
+        remoteFeatureFlags: {
+          [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: true,
+        },
+      }),
+    ).toStrictEqual(['native-token-stream', 'erc20-token-stream']);
   });
 });
 
