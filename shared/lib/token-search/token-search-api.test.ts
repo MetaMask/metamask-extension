@@ -81,7 +81,7 @@ describe('searchTokens', () => {
       networks: ['eip155:1'],
     });
 
-    expect(response).toEqual(payload);
+    expect(response).toStrictEqual(payload);
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url] = fetchMock.mock.calls[0];
     expect(url).toBe(
@@ -96,7 +96,7 @@ describe('searchTokens', () => {
     const response = await searchTokens({ query: '   ' });
 
     expect(fetchMock).not.toHaveBeenCalled();
-    expect(response).toEqual({
+    expect(response).toStrictEqual({
       data: [],
       count: 0,
       totalCount: 0,

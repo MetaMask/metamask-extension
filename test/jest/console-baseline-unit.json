@@ -634,10 +634,6 @@
     "ui/hooks/useDisplayName.test.ts": {
       "error: Unexpected key \"DNS\" found in": 1
     },
-    "ui/hooks/useTokenSearch.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 1,
-      "error: Error: boom": 1
-    },
     "ui/hooks/useHardwareWalletRecoveryLocation.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
@@ -665,6 +661,10 @@
       "Test errors: Uncaught TypeErrors": 3,
       "error: Error handled by React Router": 4,
       "error: React Router caught the following": 4
+    },
+    "ui/hooks/useTokenSearch.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 1,
+      "error: Error: boom": 1
     },
     "ui/hooks/useTransactionDisplayData.test.js": {
       "MetaMask: XChain Swaps warnings": 4
