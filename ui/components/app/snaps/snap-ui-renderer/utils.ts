@@ -246,6 +246,16 @@ export const muiPickerTheme = createTheme({
         },
       },
     },
+    MuiPickersToolbarText: {
+      styleOverrides: {
+        root: {
+          color: 'var(--color-text-alternative)',
+          '&.Mui-selected': {
+            color: 'var(--color-text-default)',
+          },
+        },
+      },
+    },
     MuiPickersArrowSwitcher: {
       styleOverrides: {
         button: {
