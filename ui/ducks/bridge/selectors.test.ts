@@ -2154,6 +2154,7 @@ describe('Bridge selectors', () => {
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
       ).toStrictEqual('0');
       expect(result.isNetworkFeeUnavailable).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
     });
 
     it('should return isEstimatedReturnLow=true return value is less than 65% of sent funds', () => {

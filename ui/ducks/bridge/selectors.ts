@@ -984,6 +984,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
       isNetworkFeeUnavailable,
       // Shown after fetching quotes
       isInsufficientGasForQuote: Boolean(
+        !isNetworkFeeUnavailable &&
         nativeBalance &&
         activeQuote &&
         fromToken &&

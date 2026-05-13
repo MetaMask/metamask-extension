@@ -558,6 +558,12 @@ describe('BridgeCTAButton', () => {
     ],
     [
       'enable',
+      'network fee is unavailable with insufficient gas for quote',
+      { isNetworkFeeUnavailable: true, isInsufficientGasForQuote: true },
+      messages.bridgeGetNewQuote.message,
+    ],
+    [
+      'enable',
       'market is closed',
       { isStockMarketClosed: true },
       'Market closed',

@@ -135,6 +135,14 @@ export const BridgeCTAButton = ({
       return undefined;
     }
 
+    if (isNetworkFeeUnavailable) {
+      return {
+        disabled: false,
+        onClick: onFetchNewQuotes,
+        children: t('bridgeGetNewQuote'),
+      };
+    }
+
     if (
       isInsufficientBalance ||
       isInsufficientGasForQuote ||
@@ -144,14 +152,6 @@ export const BridgeCTAButton = ({
       return {
         disabled: true,
         children: t('alertReasonInsufficientBalance'),
-      };
-    }
-
-    if (isNetworkFeeUnavailable) {
-      return {
-        disabled: false,
-        onClick: onFetchNewQuotes,
-        children: t('bridgeGetNewQuote'),
       };
     }
 
