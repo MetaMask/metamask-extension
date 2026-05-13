@@ -5,20 +5,25 @@
  * - `WrongUrType` — valid UR, but the UR type is not expected for this flow (State 4).
  * - `UrDecodeError` — `urDecoder.isError()` returned `true` (State 5).
  */
-export enum QrErrorType {
-  NonUrQrCode = 'nonUrQrCode',
-  WrongUrType = 'wrongUrType',
-  UrDecodeError = 'urDecodeError',
-}
+export const QrErrorType = {
+  NonUrQrCode: 'nonUrQrCode',
+  WrongUrType: 'wrongUrType',
+  UrDecodeError: 'urDecodeError',
+} as const;
+
+export type QrErrorType = (typeof QrErrorType)[keyof typeof QrErrorType];
 
 /**
  * The flow context controls whether pairing- or signing-specific copy is used.
  * State 5 (`UrDecodeError`) ignores this — its copy is universal.
  */
-export enum QrErrorFlowContext {
-  Pairing = 'pairing',
-  Signing = 'signing',
-}
+export const QrErrorFlowContext = {
+  Pairing: 'pairing',
+  Signing: 'signing',
+} as const;
+
+export type QrErrorFlowContext =
+  (typeof QrErrorFlowContext)[keyof typeof QrErrorFlowContext];
 
 /** Learn-more destination URL for QR / air-gapped hardware wallets. */
 export const QR_ERROR_LEARN_MORE_URL =
