@@ -655,7 +655,7 @@
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
   "annual": {
-    "message": "年度"
+    "message": "每年"
   },
   "appDescription": {
     "message": "浏览器中的以太坊钱包",
@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "自动检测钱包中的代币，显示 NFT，并获取批量账户余额更新"
   },
+  "asterdexReferralConfirmText": {
+    "message": "是，获得 4% 返现",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "使用 MetaMask 推荐码，交易可获得 4% 的返现。",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "使用 MetaMask 推荐码进行交易，可获得 4% 返现。根据 AsterDEX 的 $1 条款，此折扣适用于之后的所有交易。MetaMask 会赚取费用。",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "在 AsterDEX 上可获得 4% 返现",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "尝试免费取消兑换"
@@ -1144,6 +1156,9 @@
     "message": "请知悉，这一数值为估算值，将在交易完成后最终确定。积分最多可能需要 1 小时才能确认并存入您的奖励余额。",
     "description": "Second part of tooltip content explaining how points are calculated"
   },
+  "bridgePriceDataUnavailableError": {
+    "message": "我们无法获取该代币的价格信息。请在继续前确认收到的金额符合预期。"
+  },
   "bridgePriceImpact": {
     "message": "价格影响"
   },
@@ -1372,6 +1387,18 @@
   "bridgeTo": {
     "message": "桥接至"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 是恶意代币。"
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 已被标记为恶意。任何与之交互的人都可能被窃取资金。"
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 是可疑代币。"
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 已被标记为可疑。请在继续前仔细查看相关风险。"
+  },
   "bridgeTokenNotFound": {
     "message": "没有代币与“$1”匹配"
   },
@@ -1425,11 +1452,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "您发送了"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "使用最大允许值"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "您没有足够的 $1 用于支付此次桥接的燃料费。请输入更小的金额或者购买更多 $1。"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "需要更多的 $1 用于燃料"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "此特定网络要求您的账户中保留 $1 $3 的储备金。根据您当前的余额，您最多可使用 $2 $3",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "需要最低 $1 储备金余额",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "已桥接"
@@ -1838,6 +1876,9 @@
   "connectAHardwareWallet": {
     "message": "连接硬件钱包"
   },
+  "connectAHardwareWalletDescription": {
+    "message": "使用 USB 或二维码"
+  },
   "connectAccounts": {
     "message": "连接账户"
   },
@@ -2071,6 +2112,19 @@
   },
   "creatorAddress": {
     "message": "创建者地址"
+  },
+  "criticalErrorAttemptRecovery": {
+    "message": "尝试恢复"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "如果以上方法均无效，$1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "重新安装 MetaMask"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "仍有问题吗？"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2370,6 +2424,14 @@
   "defiReferralCheckboxLabel": {
     "message": "允许 MetaMask 添加推荐码。此设置为永久有效。相关网站将根据其条款提供折扣。MetaMask 将从中收取费用。",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "不，谢谢",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "条款",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3053,7 +3115,7 @@
     "message": "表格"
   },
   "freeTrialDays": {
-    "message": "免费 $1 天试用",
+    "message": "$1 天免费试用",
     "description": "The $1 is the number of days"
   },
   "from": {
@@ -3185,6 +3247,10 @@
     "message": "已过期",
     "description": "Tag label for a gator permission that has expired"
   },
+  "gatorPermissionsStatusRevoked": {
+    "message": "已撤销",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "资金流速率",
     "description": "Label for the stream rate of a permission"
@@ -3218,9 +3284,21 @@
     "message": "准备好钱包以便使用 Web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "是，节省 5%",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "使用 MetaMask 推荐码交易费用最高可节省 5%。",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "使用 MetaMask 推荐码进行交易，可节省 5% 的费用。根据 GMX 的 $1 条款，此折扣适用于之后的所有交易。MetaMask 会赚取费用。",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "在 GMX 上可节省 5%",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "转到网站"
@@ -3444,9 +3522,21 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "是，节省 4%",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "使用 MetaMask 推荐码交易费用最高可节省 4%。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "使用 MetaMask 推荐码进行交易，可节省 4% 的费用。根据 Hyperliquid 的 $1 条款，此折扣适用于之后的所有交易。MetaMask 会赚取费用。",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "在 Hyperliquid 上可节省 4%",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "我理解"
@@ -4007,6 +4097,9 @@
   "maxFeeTooltip": {
     "message": "为支付交易而提供的最高费用。"
   },
+  "maybeLater": {
+    "message": "以后再说"
+  },
   "medium": {
     "message": "市场"
   },
@@ -4084,10 +4177,10 @@
     "message": "指标"
   },
   "minimumReceivedExplanation": {
-    "message": "若交易处理期间价格发生波动，根据您设置的滑点容差范围，此为您将获得的最低金额。该估算值由流动性提供商提供，因此实际到账金额可能有所差异。"
+    "message": "若交易处理期间价格发生波动，根据您设置的滑点容差范围，此为您至少可获得的代币数量。该估算值由流动性提供商提供，因此实际兑换数量可能有所差异。"
   },
   "minimumReceivedExplanationTitle": {
-    "message": "最低收款金额"
+    "message": "最少可获得的代币数量"
   },
   "minimumReceivedLabel": {
     "message": "最低收款金额"
@@ -5236,6 +5329,126 @@
   "participateInMetaMetricsDescription": {
     "message": "加入 MetaMetrics ，帮助我们改进 MetaMask"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "生物识别",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "使用 $1 即可解锁 MetaMask，无需输入密码。此操作仅会在此设备上创建一个通行密钥。",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "此钱包已设置 $1。",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "我们无法验证您的 $1。请重试。",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "您的 $1 响应不完整。请重试。",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "$1 登录会话已过期。请重试。",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "$1 设置会话已过期。请从头重试。",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "此钱包未设置 $1。请在设置中开启 $1。",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "$1 设置失败。请重试",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "我们无法验证您的 $1 设置。请重试。",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "我们无法使用 $1 解锁。请重试，或在设置中重新设置 $1。",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1 与您当前的钱包锁定状态不匹配。请在设置中重新设置 $1。",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "您的密码已更新，但 $1 解锁功能无法开启。",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "我们无法验证您的 $1。请重试或使用您的密码。",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "注册 $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "验证 $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "请尝试在全屏窗口中打开扩展程序，然后重试。",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "打开全屏窗口",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "仍有问题吗？",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "解锁遇到问题？",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "解锁遇到问题",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "验证遇到问题？",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "验证遇到问题？",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "$1 已关闭",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "$1 已开启",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "$1 解锁失败。请尝试使用您的密码。",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "使用 $1 进行验证，无需输入密码。",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "使用 $1 确认",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "password": {
     "message": "密码"
   },
@@ -5648,6 +5861,9 @@
     "message": "可用于交易",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "在基本功能关闭时，此功能不可用。"
+  },
   "perpsBatchCancelFailed": {
     "message": "取消一个或多个订单失败。请重试。"
   },
@@ -5660,6 +5876,9 @@
   "perpsCancelOrder": {
     "message": "取消订单"
   },
+  "perpsCandleIntervals": {
+    "message": "设置 K 线间隔"
+  },
   "perpsCandlePeriodDays": {
     "message": "天"
   },
@@ -5671,6 +5890,9 @@
   },
   "perpsCloseAll": {
     "message": "全部平仓"
+  },
+  "perpsCloseAmount": {
+    "message": "平仓金额"
   },
   "perpsCloseLong": {
     "message": "平仓多头仓位"
@@ -5873,6 +6095,10 @@
   "perpsMid": {
     "message": "中间价"
   },
+  "perpsMinOrderSize": {
+    "message": "订单规模必须至少达到 $1",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "修改"
   },
@@ -5983,6 +6209,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "将您的空头仓位转为多头仓位"
   },
+  "perpsSaveChanges": {
+    "message": "保存更改",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "搜索市场"
   },
@@ -6059,6 +6289,10 @@
   "perpsStopLoss": {
     "message": "止损",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "止损必须为 $1 清算价格",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "止损价必须为 $1 $2",
@@ -6960,27 +7194,6 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "不支持此地区"
   },
-  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
-    "message": "了解详情"
-  },
-  "rewardsOnboardingLegalDisclaimerTermsLink": {
-    "message": "服务条款与隐私说明"
-  },
-  "rewardsOnboardingOptInError": {
-    "message": "参与失败"
-  },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "推荐码无效"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "推荐码（可选）"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "推荐码验证失败."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "请检查连接后重试。"
-  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "正在验证推荐码…",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -6996,12 +7209,6 @@
   "rewardsPointsIcon": {
     "message": "奖励积分",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "您需要通过该应用程序来追踪进度并兑换奖励。请扫描此二维码，我们将协助您导入账户。"
-  },
-  "rewardsQRCodeTitle": {
-    "message": "获取移动应用程序"
   },
   "rewardsSignInFailed": {
     "message": "登录失败",
@@ -7107,6 +7314,10 @@
   },
   "securityChangePasswordToastError": {
     "message": "密码无法更改。请重试。"
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "新密码已保存，但无法开启 $1 解锁功能。",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "新密码已保存"
@@ -7256,8 +7467,16 @@
     "message": "设置",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "设置 $1",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "添加账户 Snap"
+  },
+  "settingUpPasskey": {
+    "message": "正在设置 $1",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "设置"
@@ -7554,7 +7773,7 @@
     "message": "受保障"
   },
   "shieldEntryModalGetStarted": {
-    "message": "开始14天免费试用"
+    "message": "开始 14 天免费试用"
   },
   "shieldEntryModalSubtitleA": {
     "message": "交易防护功能提供最高 $1 的保障及全天候优先支持服务。",
@@ -7688,7 +7907,7 @@
     "message": "选择一种代币"
   },
   "shieldPlanTitle": {
-    "message": "选择您的计划"
+    "message": "选择套餐"
   },
   "shieldPlanYearly": {
     "message": "每年"
@@ -8102,6 +8321,9 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "来自 dapp 的智能账户请求"
+  },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "允许 dapp 为标准账户请求智能账户功能。MetaMask 只会将账户升级至经过我们审计的智能账户。"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "地址相同。功能更加智能化。"
@@ -9366,6 +9588,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "禁用通知时出错了。请稍后再试。"
   },
+  "turnOffPasskey": {
+    "message": "关闭 $1",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "我们无法关闭 $1。请重试。",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "开启"
   },
@@ -9468,6 +9698,10 @@
     "message": "解锁后方可显示",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "使用 $1 解锁",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "取消置顶"
   },
@@ -9553,6 +9787,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "让 MetaMask 使用第三方服务来添加您所拥有的 NFT。打开自动检测 NFT 功能后，这些服务就可以看到您的 IP 地址和账户地址。启用此功能可能会将您的 IP 地址与以太坊地址关联起来，并显示骗子空投的虚假 NFT。您可以手动添加代币以避免此风险。"
+  },
+  "usePassword": {
+    "message": "使用密码"
   },
   "usePhishingDetection": {
     "message": "使用网络钓鱼检测"
