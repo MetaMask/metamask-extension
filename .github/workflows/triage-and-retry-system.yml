@@ -133,17 +133,27 @@ jobs:
         run: npm install --no-save @sentry/node@^10.45.0
 
       - name: Get version from package.json
+        id: pkg
+        # The version is pushed through a step output rather than $GITHUB_ENV
+        # so that a malicious package.json from the PR's head SHA can't inject
+        # additional environment variables into later steps.
         run: |
           TMPFILE=$(mktemp)
+          VERSION=unknown
           if curl -sSf -o "$TMPFILE" "https://raw.githubusercontent.com/${REPO}/${HEAD_SHA}/package.json"; then
-            echo "VERSION=$(node -p "JSON.parse(require('fs').readFileSync('$TMPFILE','utf8')).version")" >> "$GITHUB_ENV"
+            VERSION=$(node -p "JSON.parse(require('fs').readFileSync('$TMPFILE','utf8')).version" 2>/dev/null || echo unknown)
           else
             echo "::warning::Could not download package.json — VERSION will be 'unknown'"
           fi
           rm -f "$TMPFILE"
+          # Strip newlines/CR to keep the single-line output well-formed.
+          VERSION=${VERSION//[$'\n\r']/}
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Classify failures
         id: classify
+        env:
+          VERSION: ${{ steps.pkg.outputs.version }}
         run: node .github/scripts/classify-failures.mts
 
       # -- Label-gated retry: requires `retry-ci` label on the originating PR --
