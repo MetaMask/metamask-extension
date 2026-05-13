@@ -1,5 +1,5 @@
 import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
-import migrate, { version } from './210';
+import { migrate, version } from './210';
 
 const oldVersion = version - 1;
 
