@@ -60,7 +60,9 @@ import {
   getAccountGroupNameByInternalAccount,
   getToAccounts,
   getHardwareWalletName,
+  getActiveQuoteInsufficientNativeReserveError,
   getInsufficientNativeReserveError,
+  getQuoteRequestInsufficientBal,
   getFromTokenBalanceInUsd,
   getFromAmountInCurrency,
   getValidatedFromValue,
@@ -2647,6 +2649,34 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientNativeReserve).toBe(false);
     });
 
+    it('should keep the BTC quote request reserve error independent of quote fee data', () => {
+      const stateWithSmallQuoteFee = createBtcBridgeState({
+        fromTokenInputValue: '0.99997',
+        fromNativeBalance: '1',
+        nonEvmFeesInNative: '0.00000001',
+        srcTokenAmount: '99997000',
+      });
+      const stateWithLargeQuoteFee = createBtcBridgeState({
+        fromTokenInputValue: '0.99997',
+        fromNativeBalance: '1',
+        nonEvmFeesInNative: '0.00002',
+        srcTokenAmount: '99997000',
+      });
+
+      expect(
+        getInsufficientNativeReserveError(stateWithSmallQuoteFee as never),
+      ).toBeUndefined();
+      expect(
+        getInsufficientNativeReserveError(stateWithLargeQuoteFee as never),
+      ).toBeUndefined();
+      expect(
+        getQuoteRequestInsufficientBal(stateWithSmallQuoteFee as never),
+      ).toBe(false);
+      expect(
+        getQuoteRequestInsufficientBal(stateWithLargeQuoteFee as never),
+      ).toBe(false);
+    });
+
     it('should return isInsufficientNativeReserve=true and isInsufficientGasForQuote=false on Bitcoin when the quote fee is payable but the reserve would be depleted', () => {
       const state = createBtcBridgeState({
         fromTokenInputValue: '0.99997',
@@ -2655,7 +2685,7 @@ describe('Bridge selectors', () => {
         srcTokenAmount: '99997000',
       });
       const result = getValidationErrors(state as never);
-      const nativeReserveError = getInsufficientNativeReserveError(
+      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
         state as never,
       );
 

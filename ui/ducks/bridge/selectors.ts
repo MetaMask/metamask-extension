@@ -114,7 +114,7 @@ import {
   getMaybeHexChainId,
   isSupportedBridgeChain,
 } from './utils';
-import type { BridgeNetwork, BridgeState } from './types';
+import type { BridgeNetwork, BridgeState, BridgeToken } from './types';
 
 const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
@@ -198,6 +198,43 @@ const getMinimumReserveBalanceForCaipAssetId = (
   }
   const { chainId } = parseCaipAssetType(caipAssetId);
   return MINIMUM_NATIVE_RESERVE_BALANCE_PER_CHAIN[chainId] ?? '0';
+};
+
+type InsufficientNativeReserveError = {
+  minimumNativeBalanceToBeKeptInAccount: string;
+  maxSwappableNativeBalance: string;
+};
+
+const buildInsufficientNativeReserveError = ({
+  fromToken,
+  nativeBalance,
+  validatedSrcAmount,
+  minimumNativeBalanceToBeKeptInAccount,
+  maxSwappableNativeBalance,
+}: {
+  fromToken: BridgeToken | null;
+  nativeBalance: string | null;
+  validatedSrcAmount?: string;
+  minimumNativeBalanceToBeKeptInAccount: string;
+  maxSwappableNativeBalance: BigNumber;
+}): InsufficientNativeReserveError | undefined => {
+  const normalizedMaxSwappableNativeBalance = BigNumber.max(
+    maxSwappableNativeBalance,
+    0,
+  );
+
+  return minimumNativeBalanceToBeKeptInAccount !== '0' &&
+    nativeBalance &&
+    validatedSrcAmount &&
+    fromToken &&
+    isNativeAddress(fromToken.assetId) &&
+    normalizedMaxSwappableNativeBalance.lt(validatedSrcAmount)
+    ? {
+        minimumNativeBalanceToBeKeptInAccount,
+        maxSwappableNativeBalance:
+          normalizedMaxSwappableNativeBalance.toString(),
+      }
+    : undefined;
 };
 
 export const getPriceImpactThresholds = createDeepEqualSelector(
@@ -801,7 +838,6 @@ export const getInsufficientNativeReserveError = createSelector(
     _getValidatedSrcAmount,
     getGasFeesSponsoredNetworkEnabled,
     (state: BridgeAppState) => isHardwareWallet(state as never),
-    getBridgeQuotes,
   ],
   (
     fromToken,
@@ -809,7 +845,6 @@ export const getInsufficientNativeReserveError = createSelector(
     validatedSrcAmount,
     gasFeesSponsoredNetworkEnabledMap,
     isHardwareWalletAccount,
-    { activeQuote },
   ) => {
     const isNetworkGasSponsored =
       !fromToken?.chainId || isNonEvmChainId(fromToken.chainId)
@@ -837,8 +872,37 @@ export const getInsufficientNativeReserveError = createSelector(
       ? minimumNativeReserveBalance
       : '0';
 
-    let maxSwappableNativeBalance = new BigNumber(nativeBalance ?? 0).sub(
+    const maxSwappableNativeBalance = new BigNumber(nativeBalance ?? 0).sub(
       minimumNativeBalanceToBeKeptInAccount,
+    );
+
+    return buildInsufficientNativeReserveError({
+      fromToken,
+      nativeBalance,
+      validatedSrcAmount,
+      minimumNativeBalanceToBeKeptInAccount,
+      maxSwappableNativeBalance,
+    });
+  },
+);
+
+export const getActiveQuoteInsufficientNativeReserveError = createSelector(
+  [
+    getInsufficientNativeReserveError,
+    getFromToken,
+    _getFromNativeBalance,
+    _getValidatedSrcAmount,
+    getBridgeQuotes,
+  ],
+  (
+    insufficientNativeReserveError,
+    fromToken,
+    nativeBalance,
+    validatedSrcAmount,
+    { activeQuote },
+  ) => {
+    const isBitcoinNativeReserveChain = Boolean(
+      fromToken?.chainId && isBitcoinChainId(fromToken.chainId),
     );
 
     if (
@@ -864,26 +928,40 @@ export const getInsufficientNativeReserveError = createSelector(
         0,
       );
 
-      maxSwappableNativeBalance = nativeBalanceInNativeUnits
+      const minimumNativeBalanceToBeKeptInAccount =
+        getMinimumReserveBalanceForCaipAssetId(fromToken?.assetId);
+      const maxSwappableNativeBalance = nativeBalanceInNativeUnits
         .sub(totalNetworkFee)
         .sub(minimumNativeBalanceToBeKeptInAccount)
         .sub(quoteSourceOverhead);
+
+      return buildInsufficientNativeReserveError({
+        fromToken,
+        nativeBalance,
+        validatedSrcAmount,
+        minimumNativeBalanceToBeKeptInAccount,
+        maxSwappableNativeBalance,
+      });
     }
 
-    maxSwappableNativeBalance = BigNumber.max(maxSwappableNativeBalance, 0);
-
-    return minimumNativeBalanceToBeKeptInAccount !== '0' &&
-      nativeBalance &&
-      validatedSrcAmount &&
-      fromToken &&
-      isNativeAddress(fromToken.assetId) &&
-      maxSwappableNativeBalance.lt(validatedSrcAmount)
-      ? {
-          minimumNativeBalanceToBeKeptInAccount,
-          maxSwappableNativeBalance: maxSwappableNativeBalance.toString(),
-        }
-      : undefined;
+    return insufficientNativeReserveError;
   },
+);
+
+export const getQuoteRequestInsufficientBal = createSelector(
+  [
+    getFromTokenBalance,
+    _getValidatedSrcAmount,
+    getInsufficientNativeReserveError,
+  ],
+  (fromTokenBalance, validatedSrcAmount, insufficientNativeReserveError) =>
+    Boolean(
+      insufficientNativeReserveError ||
+      (validatedSrcAmount &&
+        fromTokenBalance &&
+        !isNaN(Number(fromTokenBalance)) &&
+        new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
+    ),
 );
 
 const getQuoteStreamComplete = (state: BridgeAppState) =>
@@ -906,7 +984,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     getPriceImpactThresholds,
     (state: BridgeAppState) => isHardwareWallet(state as never),
     getQuoteStreamComplete,
-    getInsufficientNativeReserveError,
+    getActiveQuoteInsufficientNativeReserveError,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
