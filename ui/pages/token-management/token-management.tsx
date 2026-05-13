@@ -36,7 +36,7 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
-} from '../../selectors';
+ getSelectedAddress } from '../../selectors';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getAllMultichainNetworkConfigurations,
@@ -61,7 +61,6 @@ import {
 } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
-import { getSelectedAddress } from '../../selectors';
 import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import {
   getAssetImageUrl,

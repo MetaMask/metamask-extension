@@ -31,12 +31,12 @@ jest.mock('../../store/actions', () => {
 });
 
 type MockSearchState = {
-  results: Array<{
+  results: {
     assetId: string;
     symbol: string;
     decimals: number;
     name: string;
-  }>;
+  }[];
   isLoading: boolean;
   error: Error | null;
   hasNextPage: boolean;
@@ -337,7 +337,7 @@ describe('TokenManagementPage', () => {
     // The hook is called with the current query and the enabled networks
     // converted from hex chain ids to CAIP-2 ids. We assert on the *last*
     // call because the hook also runs on the initial empty-query render.
-    const calls = mockTokenSearch.spy.mock.calls;
+    const {calls} = mockTokenSearch.spy.mock;
     expect(calls[calls.length - 1][0]).toEqual(
       expect.objectContaining({
         query: 'Beta',

@@ -61,6 +61,11 @@ export type UseTokenSearchState = {
  *  - Empty queries short-circuit the request entirely via `enabled: false`.
  *
  * @param options - Hook configuration.
+ * @param options.query
+ * @param options.networks
+ * @param options.first
+ * @param options.debounceMs
+ * @param options.enabled
  * @returns The current search state. {@see UseTokenSearchState}.
  */
 export const useTokenSearch = ({

@@ -2,8 +2,8 @@ import React, { type ReactNode } from 'react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useTokenSearch } from './useTokenSearch';
 import * as tokenSearchApi from '../../shared/lib/token-search/token-search-api';
+import { useTokenSearch } from './useTokenSearch';
 
 const emptyPage = {
   data: [],
