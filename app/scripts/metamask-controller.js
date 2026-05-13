@@ -4849,7 +4849,7 @@ export default class MetamaskController extends EventEmitter {
 
       // Initialize the legacy Snap keyring so the accounts-controller will be able to
       // fetch Snap accounts.
-      await this.snapAccountService.getLegacySnapKeyring();
+      await this.getSnapKeyring();
 
       // Once we have our first HD keyring available, we re-create the internal list of
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
@@ -5192,7 +5192,7 @@ export default class MetamaskController extends EventEmitter {
 
       // Initialize the legacy Snap keyring so the accounts-controller will be able to
       // fetch Snap accounts.
-      await this.snapAccountService.getLegacySnapKeyring();
+      await this.getSnapKeyring();
 
       // We re-created the vault, meaning we only have 1 new HD keyring
       // now. We re-create the internal list of accounts (which is
@@ -5421,7 +5421,7 @@ export default class MetamaskController extends EventEmitter {
 
     // Initialize the legacy Snap keyring so the accounts-controller will be able to
     // fetch Snap accounts.
-    await this.snapAccountService.getLegacySnapKeyring();
+    await this.getSnapKeyring();
 
     // Re-create accounts in the accounts-controller, after the keyring-controller gets
     // unlocked.
