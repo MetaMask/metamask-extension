@@ -2410,7 +2410,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-          new Date(notification.readDate) < expirationTime,
+            new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);
@@ -6399,18 +6399,17 @@ export function updateBalancesFoAccounts(
  * @param params - The parameters for the polling.
  * @param params.chainIds - The chain ids to poll.
  * @param params.selectedAccountAddress - The selected account address to poll.
+ * @param params.selectedAccountId - The selected account id to poll.
  * @returns The polling token that can be used to stop polling.
  */
-export async function staticAssetsStartPolling({
-  chainIds,
-  selectedAccountAddress,
-}: {
+export async function staticAssetsStartPolling(params: {
   chainIds: string[];
   selectedAccountAddress: string;
+  selectedAccountId: string;
 }): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'staticAssetsStartPolling',
-    [{ chainIds, selectedAccountAddress }],
+    [params],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;

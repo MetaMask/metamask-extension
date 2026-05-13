@@ -158,6 +158,7 @@ function buildImageUrl(assetId: CaipAssetType, extension: string): string {
 export class StaticAssetsController extends StaticIntervalPollingController<{
   chainIds: string[];
   selectedAccountAddress: string;
+  selectedAccountId: string;
 }>()<
   typeof CONTROLLER,
   StaticAssetsControllerState,
