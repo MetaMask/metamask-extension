@@ -42,7 +42,6 @@ import {
   type AssetsUnifyStateFeatureFlag,
 } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
-import { getMnemonic, getMnemonicSeed } from './utils';
 
 export type SnapPermissionSpecificationsActions =
   | AppStateControllerGetUnlockPromiseAction
