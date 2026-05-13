@@ -940,11 +940,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    const minimumBalanceToKeepBeforeQuote =
-      srcChainId && isSolanaChainId(srcChainId)
-        ? minimumBalanceForRentExemptionInSOL
-        : '0';
-    const minimumBalanceToKeepForQuote =
+    const minimumBalanceToKeep =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
         : '0';
@@ -980,7 +976,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         !isGasless &&
         (isNativeAddress(fromToken.assetId)
           ? new BigNumber(nativeBalance)
-              .sub(minimumBalanceToKeepBeforeQuote)
+              .sub(minimumBalanceToKeep)
               .lte(validatedSrcAmount)
           : new BigNumber(nativeBalance).lte(0)),
       ),
@@ -997,7 +993,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           ? new BigNumber(nativeBalance)
               .sub(activeQuote.totalNetworkFee.amount)
               .sub(activeQuote.sentAmount.amount)
-              .sub(minimumBalanceToKeepForQuote)
+              .sub(minimumBalanceToKeep)
               .lte(0)
           : new BigNumber(nativeBalance).lte(
               activeQuote.totalNetworkFee.amount,
