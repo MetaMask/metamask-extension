@@ -275,6 +275,7 @@ export const CustomTokenImportFeatureRoute = () => {
   const isTokenManagementFilterEnabled = useAppSelector(
     getIsTokenManagementFilterEnabled,
   );
+
   if (!isTokenManagementFilterEnabled) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
