@@ -5603,8 +5603,11 @@ export default class MetamaskController extends EventEmitter {
    * @returns [] accounts
    */
   async connectHardware(deviceName, page, hdPath) {
+    // This is the first-time setup path for a hardware wallet; the keyring
+    // may not exist yet, so allow creation here. Every other caller of
+    // `#withKeyringForDevice` operates on an already-paired device.
     return this.#withKeyringForDevice(
-      { name: deviceName, hdPath },
+      { name: deviceName, hdPath, create: true },
       async (keyring) => {
         let accounts = [];
         switch (page) {
@@ -8856,9 +8859,10 @@ export default class MetamaskController extends EventEmitter {
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f;
 
-    // Go through the bridge so this works on both the legacy keyring (which
-    // also exposes a top-level `updateTransportMethod`) and the V2 wrapper
-    // (which exposes `bridge` but not the method directly).
+    // TODO: Expose `updateTransportMethod` directly on the V2 `LedgerKeyring`
+    // wrapper in `@metamask/eth-ledger-bridge-keyring/v2` so callers don't
+    // need to reach through `bridge`. The V2 wrapper currently exposes the
+    // bridge instance but not this top-level method.
     if (keyring?.bridge?.updateTransportMethod) {
       return keyring.bridge.updateTransportMethod(transportType).catch((e) => {
         throw e;
@@ -9726,13 +9730,17 @@ export default class MetamaskController extends EventEmitter {
         );
     }
 
-    // `withKeyringV2` has no `createIfMissing` option, so guarantee the
-    // keyring exists in state before selecting it.
-    const hasKeyring = this.keyringController.state.keyrings.some(
-      ({ type }) => type === keyringType,
-    );
-    if (!hasKeyring) {
-      await this.keyringController.addNewKeyring(keyringType);
+    // `withKeyringV2` has no `createIfMissing` option. Only the
+    // connect-device flow legitimately creates a hardware keyring; every
+    // other caller operates on a keyring that should already exist, and
+    // should let the controller throw `KeyringNotFound` if it doesn't.
+    if (options.create) {
+      const hasKeyring = this.keyringController.state.keyrings.some(
+        ({ type }) => type === keyringType,
+      );
+      if (!hasKeyring) {
+        await this.keyringController.addNewKeyring(keyringType);
+      }
     }
 
     return this.keyringController.withKeyringV2(
