@@ -33,7 +33,6 @@ export function getSnapAccountServiceMessenger(
   messenger.delegate({
     messenger: serviceMessenger,
     actions: [
-      // 'KeyringController:withKeyringV2Unsafe',
       'KeyringController:withController',
       'KeyringController:getState',
       'SnapController:getState',
