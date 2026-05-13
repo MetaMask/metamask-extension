@@ -243,16 +243,20 @@ export const muiPickerTheme = createTheme({
         },
       },
     },
-    MuiPickersCalendarHeader: {
+    MuiPickersArrowSwitcher: {
       styleOverrides: {
-        switchViewIcon: {
+        button: {
+          color: 'var(--color-icon-alternative)',
+          backgroundColor: 'var(--color-background-alternative)',
           '&:hover': {
             backgroundColor: 'var(--color-background-alternative-hover)',
           },
-          color: 'var(--color-icon-alternative)',
-          backgroundColor: 'var(--color-background-alternative)',
         },
-        labelContainer: {
+      },
+    },
+    MuiDayCalendar: {
+      styleOverrides: {
+        weekDayLabel: {
           color: 'var(--color-text-alternative)',
         },
       },
