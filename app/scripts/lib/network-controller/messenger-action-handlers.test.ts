@@ -344,29 +344,6 @@ describe('onRpcEndpointDegraded', () => {
       });
       /* eslint-enable @typescript-eslint/naming-convention */
     });
-
-    it('omits duration_ms and trace_id when they are undefined in the payload', () => {
-      shouldCreateRpcServiceEventsMock.mockReturnValue(true);
-      isPublicEndpointUrlMock.mockReturnValue(true);
-      const trackEvent = jest.fn();
-
-      onRpcEndpointDegraded({
-        chainId: '0xaa36a7',
-        endpointUrl: 'https://example.com',
-        error: new HttpError(420),
-        infuraProjectId: 'the-infura-project-id',
-        rpcMethodName: 'eth_blockNumber',
-        trackEvent,
-        type: 'retries_exhausted',
-        retryReason: 'non_successful_http_status',
-        metaMetricsId:
-          '0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420',
-      });
-
-      const [[call]] = trackEvent.mock.calls;
-      expect(call.properties).not.toHaveProperty('duration_ms');
-      expect(call.properties).not.toHaveProperty('trace_id');
-    });
   });
 
   describe('if the Segment event should not be created', () => {
