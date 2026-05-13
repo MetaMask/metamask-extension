@@ -137,7 +137,9 @@ jest.mock('../../../../shared/lib/perps-formatters', () => ({
   formatPerpsFiat: (value: number | string) => `$${Number(value).toFixed(2)}`,
   formatPnl: (value: number | string) => {
     const amount = Number(value);
-    return amount >= 0 ? `+$${Math.abs(amount).toFixed(2)}` : `-$${Math.abs(amount).toFixed(2)}`;
+    return amount >= 0
+      ? `+$${Math.abs(amount).toFixed(2)}`
+      : `-$${Math.abs(amount).toFixed(2)}`;
   },
 }));
 
@@ -428,7 +430,9 @@ describe('PerpsView', () => {
         screen.getByTestId('perps-close-all-positions-modal'),
       ).toBeInTheDocument();
 
-      fireEvent.click(screen.getByTestId('perps-close-all-positions-modal-cancel'));
+      fireEvent.click(
+        screen.getByTestId('perps-close-all-positions-modal-cancel'),
+      );
 
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
         'perpsClosePositions',

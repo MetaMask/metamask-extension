@@ -50,10 +50,7 @@ describe('CloseAllPositionsModal', () => {
   });
 
   it('renders when open', () => {
-    renderWithProvider(
-      <CloseAllPositionsModal {...defaultProps} />,
-      mockStore,
-    );
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
 
     expect(
       screen.getByTestId('perps-close-all-positions-modal'),
@@ -61,10 +58,7 @@ describe('CloseAllPositionsModal', () => {
   });
 
   it('displays the description text', () => {
-    renderWithProvider(
-      <CloseAllPositionsModal {...defaultProps} />,
-      mockStore,
-    );
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
 
     expect(
       screen.getByText(/close all your open positions/iu),
@@ -72,10 +66,7 @@ describe('CloseAllPositionsModal', () => {
   });
 
   it('displays margin value', () => {
-    renderWithProvider(
-      <CloseAllPositionsModal {...defaultProps} />,
-      mockStore,
-    );
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
 
     expect(
       screen.getByTestId('perps-close-all-total-margin-value'),
@@ -83,10 +74,7 @@ describe('CloseAllPositionsModal', () => {
   });
 
   it('displays fees value', () => {
-    renderWithProvider(
-      <CloseAllPositionsModal {...defaultProps} />,
-      mockStore,
-    );
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
 
     expect(
       screen.getByTestId('perps-close-all-fees-value'),
@@ -94,10 +82,7 @@ describe('CloseAllPositionsModal', () => {
   });
 
   it('displays you will receive value', () => {
-    renderWithProvider(
-      <CloseAllPositionsModal {...defaultProps} />,
-      mockStore,
-    );
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
 
     expect(
       screen.getByTestId('perps-close-all-receive-value'),
@@ -105,10 +90,7 @@ describe('CloseAllPositionsModal', () => {
   });
 
   it('calls onConfirm when Close all button is clicked', () => {
-    renderWithProvider(
-      <CloseAllPositionsModal {...defaultProps} />,
-      mockStore,
-    );
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
 
     fireEvent.click(
       screen.getByTestId('perps-close-all-positions-modal-submit'),
@@ -118,10 +100,7 @@ describe('CloseAllPositionsModal', () => {
   });
 
   it('calls onClose when Keep positions button is clicked', () => {
-    renderWithProvider(
-      <CloseAllPositionsModal {...defaultProps} />,
-      mockStore,
-    );
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
 
     fireEvent.click(
       screen.getByTestId('perps-close-all-positions-modal-cancel'),

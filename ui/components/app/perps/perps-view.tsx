@@ -44,10 +44,7 @@ import { CloseAllPositionsModal } from './close-position';
 import { PerpsExploreMarkets } from './perps-explore-markets';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
-import {
-  PERPS_TOAST_KEYS,
-  usePerpsToast,
-} from './perps-toast';
+import { PERPS_TOAST_KEYS, usePerpsToast } from './perps-toast';
 import {
   PerpsControlBarSkeleton,
   PerpsSectionSkeleton,
@@ -229,7 +226,13 @@ export const PerpsView: React.FC = () => {
     } finally {
       setIsCloseAllPending(false);
     }
-  }, [applyPositionsSnapshot, positions.length, t, track, replacePerpsToastByKey]);
+  }, [
+    applyPositionsSnapshot,
+    positions.length,
+    t,
+    track,
+    replacePerpsToastByKey,
+  ]);
 
   const handleCancelAllOrders = useCallback(async () => {
     if (!isEligible) {

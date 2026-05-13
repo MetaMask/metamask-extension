@@ -101,10 +101,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
         </ModalHeader>
         <ModalBody>
           <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextDefault}
-            >
+            <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
               {t('perpsCloseAllDescription')}
             </Text>
 
