@@ -34,7 +34,6 @@ const expectedEvmAddress = selectedAddress;
 const expectedNetworks = ['eip155:1'];
 const emptyResponse = {
   data: [],
-  unprocessedNetworks: [],
   pageInfo: {
     count: 0,
     hasNextPage: false,

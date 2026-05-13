@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
 import { HttpError } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
 import { getErrorBodyMessage } from '../../../../shared/lib/error';
@@ -33,9 +32,7 @@ function isKnownApiResponseError(error: unknown) {
 
   return Boolean(
     errorBodyMessage &&
-    knownApiMessages.some((knownMessage) =>
-      errorBodyMessage.includes(knownMessage),
-    ),
+    knownApiMessages.some((message) => errorBodyMessage.includes(message)),
   );
 }
 
@@ -51,12 +48,11 @@ function withKnownApiResponse(queryFn: TransactionsQueryFunction | undefined) {
       if (isKnownApiResponseError(error)) {
         return {
           data: [],
-          unprocessedNetworks: [],
           pageInfo: {
             count: 0,
             hasNextPage: false,
           },
-        } satisfies V4MultiAccountTransactionsResponse;
+        };
       }
       throw error;
     }
