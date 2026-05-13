@@ -713,7 +713,7 @@
     "@metamask/chain-agnostic-permission": {
       "packages": {
         "@metamask/chain-agnostic-permission>@metamask/api-specs": true,
-        "@metamask/controller-utils": true,
+        "@metamask/chain-agnostic-permission>@metamask/controller-utils": true,
         "@metamask/permission-controller": true,
         "@metamask/utils": true,
         "lodash": true
@@ -739,6 +739,40 @@
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
+    "@metamask/chain-agnostic-permission>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
@@ -1230,7 +1264,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
@@ -2285,7 +2319,7 @@
       "globals": {
         "AbortController": true,
         "Blob": true,
-        "Buffer.from": true,
+        "Buffer": true,
         "FormData": true,
         "ReadableStream": true,
         "URL": true,
@@ -4487,7 +4521,7 @@
     },
     "remote-redux-devtools>socketcluster-client>sc-channel": {
       "packages": {
-        "remote-redux-devtools>socketcluster-client>sc-channel>component-emitter": true
+        "remote-redux-devtools>socketcluster-client>component-emitter": true
       }
     },
     "remote-redux-devtools>socketcluster-client>sc-formatter": {
