@@ -63,6 +63,9 @@ jobs:
     name: Filter files changed and decide which jobs to run
     runs-on: ubuntu-latest
     timeout-minutes: 2
+    permissions:
+      contents: read
+      statuses: write # required to post build-source-hash commit status
     outputs:
       builds-from-run: ${{ steps.find-reusable-builds.outputs.builds-from-run || env.RUN_ID }}
       builds-from-sha: ${{ steps.find-reusable-builds.outputs.builds-from-sha || env.HEAD_COMMIT_HASH }}
