@@ -2501,9 +2501,6 @@
   "details": {
     "message": "Подробности"
   },
-  "developerOptions": {
-    "message": "Параметры разработчика"
-  },
   "developerTools": {
     "message": "Инструменты разработчика"
   },

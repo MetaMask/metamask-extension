@@ -1787,9 +1787,6 @@
   "details": {
     "message": "Sonraí"
   },
-  "developerOptions": {
-    "message": "Roghanna Forbróra"
-  },
   "disabledGasOptionToolTipMessage": {
     "message": "Tá “$1” díchumasaithe mar ní chomhlíonann sé an t-íosmhéid méadaithe 10% ón táille gáis bhunaidh.",
     "description": "$1 is gas estimate type which can be market or aggressive"

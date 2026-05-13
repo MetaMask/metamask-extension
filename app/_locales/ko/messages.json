@@ -2501,9 +2501,6 @@
   "details": {
     "message": "세부 정보"
   },
-  "developerOptions": {
-    "message": "개발자 옵션"
-  },
   "developerTools": {
     "message": "개발자 도구"
   },
