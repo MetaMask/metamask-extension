@@ -44,7 +44,7 @@ const arrangeSelectorMocks = () => {
       return mockGetCompletedOnboarding();
     }
     if (selector === getIsUnlocked) {
-      return mockGetIsUnlocked();
+      return mockGetIsUnlocked({} as MockVar);
     }
     if (selector === getUseCurrencyRateCheck) {
       return mockGetUseCurrencyRateCheck({});
