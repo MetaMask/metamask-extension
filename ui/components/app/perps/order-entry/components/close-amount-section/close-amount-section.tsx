@@ -93,7 +93,7 @@ export const CloseAmountSection: React.FC<CloseAmountSectionProps> = ({
   }, []);
 
   const handleSliderChange = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event, value: number | number[]) => {
       const percent = Array.isArray(value) ? value[0] : value;
       onClosePercentChange(percent);
     },

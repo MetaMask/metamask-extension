@@ -1146,8 +1146,7 @@ describe('PerpsOrderEntryPage', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
@@ -1685,8 +1684,7 @@ describe('PerpsOrderEntryPage', () => {
       const slider = within(
         screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
-      slider.focus();
-      fireEvent.keyDown(slider, { key: 'ArrowLeft' });
+      fireEvent.change(slider, { target: { value: '99' } });
 
       await act(async () => {
         fireEvent.click(screen.getByTestId('submit-order-button'));
