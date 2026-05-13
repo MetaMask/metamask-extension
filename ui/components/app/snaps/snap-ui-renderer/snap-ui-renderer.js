@@ -7,7 +7,7 @@ import { isEqual } from 'lodash';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import { ThemeProvider } from '@material-ui/core/styles';
-import MetaMaskTemplateRenderer from '../../metamask-template-renderer';
+import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { getInterface } from '../../../../selectors';
 import { Box } from '../../../component-library';
 

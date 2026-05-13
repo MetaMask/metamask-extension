@@ -131,3 +131,10 @@ export const safeComponentList = {
   SnapAuthorshipHeader,
   Delineator,
 };
+
+export function registerSafeComponent(name, component) {
+  if (safeComponentList[name] && safeComponentList[name] !== component) {
+    throw new Error(`safeComponentList: "${name}" already registered`);
+  }
+  safeComponentList[name] = component;
+}
