@@ -1,6 +1,7 @@
 import {
   keyringBuilderFactory,
   KeyringController,
+  type KeyringV2Builder,
 } from '@metamask/keyring-controller';
 import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { KeyringClass } from '@metamask/keyring-utils';
@@ -21,6 +22,7 @@ import { encryptorFactory } from '../lib/encryptor-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
+import { LatticeKeyringV2 } from '../lib/offscreen-bridge/lattice-keyring-v2';
 import { MessengerClientInitFunction } from './types';
 import {
   KeyringControllerMessenger,
@@ -107,10 +109,22 @@ export const KeyringControllerInit: MessengerClientInitFunction<
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   additionalKeyrings.push(snapKeyringBuilder);
 
+  const latticeKeyringV2Builder: KeyringV2Builder = Object.assign(
+    (keyring: unknown, metadata: { id: string }) =>
+      new LatticeKeyringV2({
+        legacyKeyring: keyring as ConstructorParameters<
+          typeof LatticeKeyringV2
+        >[0]['legacyKeyring'],
+        entropySource: metadata.id,
+      }),
+    { type: LatticeKeyring.type },
+  );
+
   const messengerClient = new KeyringController({
     state: persistedState.KeyringController,
     messenger: controllerMessenger,
     keyringBuilders: additionalKeyrings,
+    keyringV2Builders: [latticeKeyringV2Builder],
     encryptor: encryptor || encryptorFactory(600_000),
   });
 
