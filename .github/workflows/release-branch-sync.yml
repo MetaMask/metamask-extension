@@ -1,8 +1,9 @@
 name: Release Branch Sync
 
+# The sync uses a separate PAT (STABLE_SYNC_TOKEN) — the workflow
+# GITHUB_TOKEN itself only needs read access for checkout/lookups.
 permissions:
-  pull-requests: write
-  contents: write
+  contents: read
 
 on:
   pull_request:
