@@ -78,6 +78,7 @@ export const SlippageConfigModal: React.FC<SlippageConfigModalProps> = ({
   }, [isOpen, currentValuePct]);
 
   const parsedDraft = Number.parseFloat(draftValue);
+  const draftIsEmpty = draftValue.trim() === '';
   const draftIsValid =
     Number.isFinite(parsedDraft) &&
     parsedDraft >= PERPS_SLIPPAGE_MIN_PCT &&
@@ -210,7 +211,7 @@ export const SlippageConfigModal: React.FC<SlippageConfigModalProps> = ({
             })}
           </div>
 
-          {!draftIsValid && (
+          {!draftIsValid && !draftIsEmpty && (
             <Text
               variant={TextVariant.BodySm}
               color={TextColor.ErrorDefault}

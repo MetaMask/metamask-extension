@@ -86,7 +86,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         </Text>
       </Box>
 
-      {/* Slippage (TAT-1043) */}
       {slippage && (
         <Box
           flexDirection={BoxFlexDirection.Row}

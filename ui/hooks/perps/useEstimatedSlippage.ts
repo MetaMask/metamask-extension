@@ -108,9 +108,6 @@ export function computeSlippagePct(
  * page already uses (no extra network calls), and returns null until enough
  * data has arrived to compute a value.
  *
- * TODO(TAT-1043): mobile does not yet expose this estimate; this hook is
- * the extension-first implementation. Port to mobile in the follow-up story.
- *
  * @param params - See `EstimatedSlippageParams`.
  * @param params.symbol - Market symbol (e.g. 'ETH', 'BTC'). Empty disables the hook.
  * @param params.notionalUsd - Prospective order notional in USD. Non-positive disables the hook.

@@ -371,6 +371,18 @@ const PerpsOrderEntryPage: React.FC = () => {
     orderMode,
   ]);
 
+  // Mirror the rendered slippage state into refs so the submit handler can
+  // read the freshest values at decision time. The handler is async — between
+  // the user clicking submit and the controller awaiting, the rendered value
+  // is the value the user saw, so logging the ref keeps telemetry honest and
+  // lets us re-check the cap if a fresher estimate landed in the same tick.
+  const latestEstimatedSlippagePctRef = useRef(estimatedSlippagePct);
+  const latestExceedsMaxSlippageRef = useRef(exceedsMaxSlippage);
+  useEffect(() => {
+    latestEstimatedSlippagePctRef.current = estimatedSlippagePct;
+    latestExceedsMaxSlippageRef.current = exceedsMaxSlippage;
+  }, [estimatedSlippagePct, exceedsMaxSlippage]);
+
   const handleOpenSlippageConfig = useCallback(() => {
     setIsSlippageConfigOpen(true);
     track(MetaMetricsEventName.PerpsUiInteraction, {
@@ -965,6 +977,13 @@ const PerpsOrderEntryPage: React.FC = () => {
     if (!orderFormState || !selectedAddress || currentPrice <= 0) {
       return;
     }
+    // Re-check the slippage cap against the freshest estimate at click time.
+    // The disabled-submit guard runs at render time; this guards the race
+    // where a new book tick raises the estimate above the cap between the
+    // last render and the click.
+    if (latestExceedsMaxSlippageRef.current) {
+      return;
+    }
 
     setIsSubmitting(true);
     setSubmitError(null);
@@ -1043,7 +1062,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: maxSlippagePct,
           [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]: maxSlippageSource,
           [PERPS_EVENT_PROPERTY.ESTIMATED_SLIPPAGE_PCT]:
-            estimatedSlippagePct ?? null,
+            latestEstimatedSlippagePctRef.current ?? null,
         }),
         ...(event === MetaMetricsEventName.PerpsRiskManagement && {
           [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
@@ -1151,7 +1170,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: maxSlippagePct,
             [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]: maxSlippageSource,
             [PERPS_EVENT_PROPERTY.ESTIMATED_SLIPPAGE_PCT]:
-              estimatedSlippagePct ?? null,
+              latestEstimatedSlippagePctRef.current ?? null,
           });
 
           submitRequestToBackground('perpsSaveTradeConfiguration', [
@@ -1261,7 +1280,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: maxSlippagePct,
         [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]: maxSlippageSource,
         [PERPS_EVENT_PROPERTY.ESTIMATED_SLIPPAGE_PCT]:
-          estimatedSlippagePct ?? null,
+          latestEstimatedSlippagePctRef.current ?? null,
       });
 
       submitRequestToBackground('perpsSaveTradeConfiguration', [
@@ -1344,7 +1363,6 @@ const PerpsOrderEntryPage: React.FC = () => {
     marketInfo?.szDecimals,
     maxSlippagePct,
     maxSlippageSource,
-    estimatedSlippagePct,
   ]);
 
   const handlePrimaryAction = useCallback(async () => {

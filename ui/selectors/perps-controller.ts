@@ -271,7 +271,7 @@ export const selectPerpsTradeConfigurations = (state: PerpsState) =>
 /**
  * Persisted max-slippage percent. Lives in PreferencesController so it
  * survives across sessions and applies to every future trade until the user
- * explicitly changes it (TAT-1043).
+ * explicitly changes it.
  *
  * Returns the raw stored value (may be undefined when the user has never
  * configured a value). Callers should fall back to PERPS_SLIPPAGE_DEFAULT_PCT
