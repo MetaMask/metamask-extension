@@ -89,9 +89,10 @@ describe('toast selectors', () => {
               time: 7,
               type: TransactionType.shieldSubscriptionApprove,
             },
-            { id: '7', time: 8, type: TransactionType.perpsDeposit },
-            { id: '8', time: 9, type: TransactionType.perpsDepositAndOrder },
-            { id: '9', time: 10, type: TransactionType.perpsRelayDeposit },
+            { id: '7', time: 8, type: TransactionType.musdRelayDeposit },
+            { id: '8', time: 9, type: TransactionType.perpsDeposit },
+            { id: '9', time: 10, type: TransactionType.perpsDepositAndOrder },
+            { id: '10', time: 11, type: TransactionType.perpsRelayDeposit },
           ],
         },
       } as unknown as SelectorState;
@@ -451,6 +452,32 @@ describe('toast selectors', () => {
                 { type: TransactionType.tokenMethodApprove },
                 { type: TransactionType.musdRelayDeposit },
               ],
+            },
+          ],
+        },
+      } as unknown as SelectorState;
+
+      expect(selectSmartTransactions(state)).toStrictEqual([]);
+    });
+
+    it('excludes smart transaction toasts for top-level mUSD relay deposits', () => {
+      const state = {
+        metamask: {
+          pendingApprovals: {
+            'approval-1': {
+              id: 'approval-1',
+              type: 'smartTransaction:showSmartTransactionStatusPage',
+              requestState: {
+                txId: 'tx-1',
+                smartTransaction: { status: 'pending' },
+              },
+            },
+          },
+          transactions: [
+            {
+              id: 'tx-1',
+              status: 'submitted',
+              type: TransactionType.musdRelayDeposit,
             },
           ],
         },

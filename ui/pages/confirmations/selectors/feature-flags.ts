@@ -4,7 +4,7 @@ import {
   getEnforcedSimulationsSlippage,
   getIsEnforcedSimulationsEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
-import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../../shared/lib/selectors/remote-feature-flags';
 
 type ConfirmationsPayDappsFlag = {
   enabled?: boolean;

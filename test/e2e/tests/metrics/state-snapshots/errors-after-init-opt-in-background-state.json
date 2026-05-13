@@ -96,9 +96,7 @@
     "assetExchangeRates": "object",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
-    "quoteRequest": {
-      "srcTokenAddress": "0x0000000000000000000000000000000000000000"
-    },
+    "quoteRequest": "object",
     "quoteStreamComplete": null,
     "quotes": "object",
     "quotesInitialLoadTime": null,

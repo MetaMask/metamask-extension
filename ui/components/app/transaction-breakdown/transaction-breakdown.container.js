@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { isHardwareWallet } from '../../../selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import TransactionBreakdown from './transaction-breakdown.component';
 import { getTransactionBreakdownData } from './transaction-breakdown-utils';
 

@@ -40,7 +40,7 @@ import * as utilModule from '../../app/scripts/lib/util';
 import { mockNetworkState } from '../../test/stub/networks';
 import { getProviderConfig } from '../../shared/lib/selectors/networks';
 import type { MetaMaskReduxState } from '../store/store';
-import { AccountsState } from './accounts';
+import { AccountsState } from '../../shared/lib/selectors/accounts';
 import {
   MultichainState,
   getMultichainCurrentChainId,
