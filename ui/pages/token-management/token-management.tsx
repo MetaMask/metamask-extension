@@ -473,10 +473,10 @@ export const TokenManagementPage = () => {
    * Search-result-specific toggle. Mirrors the mobile import flow
    * (`metamask-mobile#26108`):
    *
-   *  - EVM result, toggle ON  → `addImportedTokens([token], networkClientId)`.
-   *  - EVM result, toggle OFF → `ignoreTokens([address], networkClientId)`.
-   *  - Non-EVM result, toggle ON  → `multichainAddAssets([assetId], accountId)`.
-   *  - Non-EVM result, toggle OFF → `multichainIgnoreAssets([assetId], accountId)`.
+   * - EVM result, toggle ON  → `addImportedTokens([token], networkClientId)`.
+   * - EVM result, toggle OFF → `ignoreTokens([address], networkClientId)`.
+   * - Non-EVM result, toggle ON  → `multichainAddAssets([assetId], accountId)`.
+   * - Non-EVM result, toggle OFF → `multichainIgnoreAssets([assetId], accountId)`.
    */
   const handleSearchResultToggle = useCallback(
     async (result: TokenSearchResult, nextValue: boolean) => {
@@ -501,10 +501,10 @@ export const TokenManagementPage = () => {
       }
 
       const importedKey = result.assetId.toLowerCase();
-      const isEvm = isEvmChainId(caipChainId);
+      const isEvmResult = isEvmChainId(caipChainId);
       setPendingKey(importedKey);
       try {
-        if (isEvm) {
+        if (isEvmResult) {
           // Map CAIP-2 `eip155:<decimal>` → hex chain id for the EVM store
           // actions, which all expect hex chain ids.
           const [, reference] = caipChainId.split(':');
@@ -693,10 +693,10 @@ export const TokenManagementPage = () => {
       const result = info.item;
       const lowerAssetId = result.assetId.toLowerCase();
       const parsed = parseCaipAssetType(result.assetId as CaipAssetType);
-      const isEvm = isEvmChainId(parsed.chainId);
+      const isEvmResult = isEvmChainId(parsed.chainId);
 
       let hexChainId: Hex | undefined;
-      if (isEvm) {
+      if (isEvmResult) {
         const [, reference] = parsed.chainId.split(':');
         const decimalChainId = Number(reference);
         if (Number.isFinite(decimalChainId)) {
@@ -710,21 +710,6 @@ export const TokenManagementPage = () => {
       const isImported =
         importedAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
-
-      if (
-        // eslint-disable-next-line no-restricted-globals
-        typeof window !== 'undefined' &&
-        (window as unknown as { __TOKEN_MGMT_DEBUG?: boolean })
-          .__TOKEN_MGMT_DEBUG
-      ) {
-        // eslint-disable-next-line no-console
-        console.log('[TokenManagement] row state', {
-          lowerAssetId,
-          evmImportedKey,
-          isImported,
-          importedSize: importedAssetIds.size,
-        });
-      }
 
       return (
         <TokenManagementCell
