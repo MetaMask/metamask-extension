@@ -18,6 +18,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   OPTIMISM_DISPLAY_NAME,
+  MONAD_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -355,7 +356,7 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             ARBITRUM_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
-            'Monad Mainnet',
+            MONAD_DISPLAY_NAME,
             'Solana',
           ],
           [EVM_ACCOUNT_LABEL_ONE],
@@ -432,7 +433,7 @@ describe('Multiple Standard Dapp Connections', function () {
             BSC_DISPLAY_NAME,
             POLYGON_DISPLAY_NAME,
             OPTIMISM_DISPLAY_NAME,
-            'Monad Mainnet',
+            MONAD_DISPLAY_NAME,
             'Solana',
           ],
           [EVM_ACCOUNT_LABEL_TWO],
