@@ -20,6 +20,8 @@ import {
   getSocialLoginType,
   getIsParticipateInMetaMetricsSet,
   getIsPasskeyFeatureAvailable,
+  getDeferredDeepLink,
+  getDeferredDeepLinkParameters,
 } from '../../../selectors';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -77,6 +79,7 @@ export default function CreatePassword({
   const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const socialLoginType = useSelector(getSocialLoginType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
+  const utmProperties = useSelector(getDeferredDeepLinkParameters);
 
   const participateInMetaMetrics = useSelector(getParticipateInMetaMetrics);
   const isParticipateInMetaMetricsSet = useSelector(
@@ -216,6 +219,7 @@ export default function CreatePassword({
           MetaMetricsEventAccountType.Imported,
           isSocialLoginFlow,
         ),
+        ...utmProperties,
       },
     });
 
@@ -279,6 +283,7 @@ export default function CreatePassword({
           MetaMetricsEventAccountType.Default,
           isSocialLoginFlow,
         ),
+        ...utmProperties,
       },
     });
     if (isSocialLoginFlow) {
