@@ -1,7 +1,10 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import type { V4MultiAccountTransactionsResponse } from '@metamask/core-backend';
+import { HttpError } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
+import { getErrorBodyMessage } from '../../../../shared/lib/error';
 import { selectTransactions } from '../../../../shared/lib/multichain/transformations';
 import { MINUTE } from '../../../../shared/constants/time';
 import { getUseExternalServices } from '../../../selectors';
@@ -11,6 +14,57 @@ import { apiClient } from '../../../helpers/api-client';
 import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multichain/networks';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import type { ActivityListFilter } from './helpers';
+
+const knownEmptyActivityApiMessages = [
+  'networks param contains no supported chains',
+];
+
+type TransactionsQueryOptions = ReturnType<
+  typeof apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions
+>;
+type TransactionsQueryFunction = NonNullable<
+  TransactionsQueryOptions['queryFn']
+>;
+
+function isKnownEmptyActivityResponseError(error: unknown) {
+  if (!(error instanceof HttpError) || error.status !== 400) {
+    return false;
+  }
+
+  const errorBodyMessage = getErrorBodyMessage(error.body);
+  return Boolean(
+    errorBodyMessage &&
+      knownEmptyActivityApiMessages.some((knownMessage) =>
+        errorBodyMessage.includes(knownMessage),
+      ),
+  );
+}
+
+function withKnownApiResponse(
+  queryFn: TransactionsQueryFunction | undefined,
+) {
+  if (!queryFn) {
+    return undefined;
+  }
+
+  return async (context) => {
+    try {
+      return await queryFn(context);
+    } catch (error) {
+      if (isKnownEmptyActivityResponseError(error)) {
+        return {
+          data: [],
+          unprocessedNetworks: [],
+          pageInfo: {
+            count: 0,
+            hasNextPage: false,
+          },
+        } satisfies V4MultiAccountTransactionsResponse;
+      }
+      throw error;
+    }
+  };
+}
 
 function getTransactionApiLanguage(locale: string) {
   return locale.split('-')[0];
@@ -71,6 +125,7 @@ export function useTransactionsQuery(filter?: ActivityListFilter) {
   // @ts-expect-error apiClient returns v5 types, repo still in v4
   return useInfiniteQuery({
     ...queryOptions,
+    queryFn: withKnownApiResponse(queryOptions.queryFn),
     select: selectFn,
     enabled:
       Boolean(useExternalServices) &&
@@ -119,6 +174,7 @@ export function usePrefetchTransactions() {
       // @ts-expect-error apiClient returns v5 types, repo still in v4
       .prefetchInfiniteQuery({
         ...queryOptions,
+        queryFn: withKnownApiResponse(queryOptions.queryFn),
         retry: false,
         staleTime: 5 * MINUTE,
       })
