@@ -156,7 +156,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
           }}
           slotProps={{
             textField: {
-              placeholder,
+              placeholder: placeholder ?? '',
               variant: 'standard',
               InputProps: { disableUnderline: true },
               sx: pickerInputSx,
@@ -179,7 +179,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
           format={'D'}
           slotProps={{
             textField: {
-              placeholder,
+              placeholder: placeholder ?? '',
               variant: 'standard',
               InputProps: { disableUnderline: true },
               sx: pickerInputSx,
@@ -205,7 +205,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
           }}
           slotProps={{
             textField: {
-              placeholder,
+              placeholder: placeholder ?? '',
               variant: 'standard',
               InputProps: { disableUnderline: true },
               sx: pickerInputSx,
