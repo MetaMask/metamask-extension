@@ -16,17 +16,9 @@ const selectors = {
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
   exampleDatePickerContainer: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
-  exampleDateTimePickerOpenButton:
-    '.snap-ui-renderer__date-time-picker--datetime .MuiIconButton-root',
-  exampleDatePickerOpenButton:
-    '.snap-ui-renderer__date-time-picker--date .MuiIconButton-root',
-  exampleTimePickerOpenButton:
-    '.snap-ui-renderer__date-time-picker--time .MuiIconButton-root',
-  datePickerCalendarContainer: '.MuiDayCalendar-slideTransition',
-  datePickerPreviousMonthButton: '.MuiPickersArrowSwitcher-previousIconButton',
-  datePickerDayButton: '.MuiPickersDay-root',
-  timePickerHourButton: '.MuiClockNumber-root',
-  dateTimePickerOkButton: '.MuiDialogActions-root button:last-child',
+  dateTimePickerInput: '.snap-ui-renderer__date-time-picker--datetime input',
+  datePickerInput: '.snap-ui-renderer__date-time-picker--date input',
+  timePickerInput: '.snap-ui-renderer__date-time-picker--time input',
 } satisfies Record<string, string | Record<string, string>>;
 
 class SnapInteractiveDialog {
@@ -79,153 +71,65 @@ class SnapInteractiveDialog {
   }
 
   /**
-   * Open, select a date and time and submit the values in the date-time picker of the Snap Interactive Dialog.
+   * Fills the DateTimePicker by typing a digit sequence into its plain
+   * `<input>` element (MUI v7 defaults to `enableAccessibleFieldDOMStructure=false`,
+   * so no spinbutton sections are rendered). MUI's legacy field handler
+   * auto-advances through sections (month → day → year → hour → minute) as
+   * each one reaches its max length.
    *
-   * @param day - The day of the month to select.
-   * @param hour - The hour to select.
-   * @param minute - The minute to select.
-   * @returns The ISO string representation of the selected date and time.
+   * A previous-month date is used so the value stays within the
+   * `disableFuture` constraint.
    */
   async selectInDateTimePicker(day: number, hour: number, minute: number) {
     const dateTimePicker = await this.driver.findElement(
       selectors.exampleDateTimePicker,
     );
     await this.driver.scrollToElement(dateTimePicker);
-    await this.driver.clickElement(selectors.exampleDateTimePickerOpenButton);
 
-    await this.#selectDateInPicker(day);
-    await this.#selectTimeInPicker(hour, minute);
-    await this.driver.clickElement(selectors.dateTimePickerOkButton);
+    const prevMonthDate = DateTime.now().minus({ months: 1 });
+    const digits =
+      String(prevMonthDate.month) +
+      String(day) +
+      String(prevMonthDate.year) +
+      String(hour) +
+      String(minute).padStart(2, '0');
+    await this.driver.fill(selectors.dateTimePickerInput, digits);
 
-    return (
-      DateTime.now()
-        // We select the previous month in the picker to ensure consistent tests.
-        // Since we use `disableFuture` in the picker, if we select a day that is
-        // greater than today when running the test at the beginning of the month,
-        // the date won't be selectable.
-        .minus({ months: 1 })
-        .set({
-          day,
-          hour,
-          minute,
-          second: 0,
-          millisecond: 0,
-        })
-        .toISO()
-    );
+    return prevMonthDate
+      .set({ day, hour, minute, second: 0, millisecond: 0 })
+      .toISO();
   }
 
-  /**
-   * Open, select a time and submit the values in the time picker of the Snap Interactive Dialog.
-   *
-   * @param hour - The hour to select.
-   * @param minute - The minute to select.
-   * @returns The ISO string representation of the selected time.
-   */
   async selectInTimePicker(hour: number, minute: number) {
     const timePicker = await this.driver.findElement(
       selectors.exampleTimePicker,
     );
     await this.driver.scrollToElement(timePicker);
-    await this.driver.clickElement(selectors.exampleTimePickerOpenButton);
 
-    await this.#selectTimeInPicker(hour, minute);
-
-    await this.driver.clickElement(selectors.dateTimePickerOkButton);
+    const digits = String(hour) + String(minute).padStart(2, '0');
+    await this.driver.fill(selectors.timePickerInput, digits);
 
     return DateTime.now()
-      .set({
-        hour,
-        minute,
-        second: 0,
-        millisecond: 0,
-      })
+      .set({ hour, minute, second: 0, millisecond: 0 })
       .toISO();
   }
 
-  /**
-   * Open, select a date and submit the value in the date picker of the Snap Interactive Dialog.
-   *
-   * @param day - The day of the month to select.
-   * @returns The ISO string representation of the selected date.
-   */
   async selectInDatePicker(day: number) {
     const datePicker = await this.driver.findElement(
       selectors.exampleDatePickerContainer,
     );
     await this.driver.scrollToElement(datePicker);
-    await this.driver.clickElement(selectors.exampleDatePickerOpenButton);
 
-    await this.#selectDateInPicker(day);
+    const prevMonthDate = DateTime.now().minus({ months: 1 });
+    const digits =
+      String(prevMonthDate.month) +
+      String(day) +
+      String(prevMonthDate.year);
+    await this.driver.fill(selectors.datePickerInput, digits);
 
-    await this.driver.clickElement(selectors.dateTimePickerOkButton);
-
-    return (
-      DateTime.now()
-        // We select the previous month in the picker to ensure consistent tests.
-        // Since we use `disableFuture` in the picker, if we select a day that is
-        // greater than today when running the test at the beginning of the month,
-        // the date won't be selectable.
-        .minus({ months: 1 })
-        .set({
-          day,
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
-        })
-        .toISO()
-    );
-  }
-
-  /**
-   * Select a date in the calendar of a `DateTimePicker` component.
-   *
-   * @param day - The day of the month to select.
-   */
-  async #selectDateInPicker(day: number) {
-    await this.driver.clickElement(selectors.datePickerPreviousMonthButton);
-    await this.driver.waitForElementToStopMoving(
-      selectors.datePickerCalendarContainer,
-    );
-
-    await this.driver.clickElement({
-      xpath: `//button[contains(@class, "MuiPickersDay-root") and normalize-space(.)="${day}"]`,
-    });
-  }
-
-  /**
-   * Select a time in the clock of a `DateTimePicker` component.
-   *
-   * @param hours - The hour to select.
-   * @param minutes - The minute to select.
-   */
-  async #selectTimeInPicker(hours: number, minutes: number) {
-    console.log(`Selecting time in picker: ${hours}:${minutes}`);
-
-    // We need to use actions here because the hour and minute selection is made
-    // by dragging the clock hand, or clicking the mask behind the numbers.
-    await this.driver.clickPoint(
-      {
-        text: `${hours}`,
-        tag: 'span',
-        css: selectors.timePickerHourButton,
-      },
-      1,
-      1,
-    );
-
-    // We need to use actions here because the hour and minute selection is made
-    // by dragging the clock hand, or clicking the mask behind the numbers.
-    await this.driver.clickPoint(
-      {
-        text: `${minutes}`,
-        tag: 'span',
-        css: selectors.timePickerHourButton,
-      },
-      1,
-      1,
-    );
+    return prevMonthDate
+      .set({ day, hour: 0, minute: 0, second: 0, millisecond: 0 })
+      .toISO();
   }
 
   async selectDropDownOption(exampleDropName: string, option: string) {
