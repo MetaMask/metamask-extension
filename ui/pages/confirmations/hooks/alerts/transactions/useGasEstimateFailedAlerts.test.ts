@@ -35,7 +35,6 @@ const GAS_ALERT = {
   ],
   field: RowAlertKey.EstimatedFee,
   key: 'gasEstimateFailed',
-  // content: <GasEstimateFailedAlertMessage />,
   reason: 'Inaccurate fee',
   severity: Severity.Warning,
 };
