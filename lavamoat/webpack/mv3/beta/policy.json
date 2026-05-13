@@ -657,7 +657,7 @@
         "performance.now": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
+        "@metamask/assets-controller>@metamask/controller-utils": true,
         "@metamask/utils": true,
         "@metamask/assets-controller>bignumber.js": true
       }
@@ -744,6 +744,23 @@
         "lodash": true
       }
     },
+    "@metamask/assets-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
     "@metamask/chain-agnostic-permission>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
@@ -761,7 +778,41 @@
         "lodash": true
       }
     },
+    "@metamask/gas-fee-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
     "@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "Buffer.from": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "ethereumjs-util>bn.js": true,
+        "buffer": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
         "console.error": true,
@@ -1044,7 +1095,7 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/controller-utils": true,
+        "@metamask/gas-fee-controller>@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "ethereumjs-util>bn.js": true,
@@ -1317,7 +1368,7 @@
     "@metamask/react-data-query": {
       "packages": {
         "@metamask/utils": true,
-        "@tanstack/react-query>@tanstack/query-core": true
+        "@metamask/react-data-query>@tanstack/query-core": true
       }
     },
     "@metamask/rpc-errors": {
@@ -1427,7 +1478,7 @@
         "@ethersproject/providers": true,
         "ethers>@ethersproject/wallet": true,
         "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/transaction-controller>@metamask/controller-utils": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/network-controller": true,
@@ -2020,13 +2071,24 @@
         "setTimeout": true
       }
     },
+    "@metamask/react-data-query>@tanstack/query-core": {
+      "globals": {
+        "AbortController": true,
+        "addEventListener": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "navigator": true,
+        "removeEventListener": true,
+        "setTimeout": true
+      }
+    },
     "@tanstack/react-query>@tanstack/query-core": {
       "globals": {
         "AbortController": true,
         "addEventListener": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console": true,
         "document": true,
         "navigator": true,
         "removeEventListener": true,
