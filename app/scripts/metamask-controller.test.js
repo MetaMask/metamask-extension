@@ -137,9 +137,8 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
                 );
                 let snapKeyring = found?.keyring;
                 if (!snapKeyring) {
-                  const { keyring } = await controller.addNewKeyring(
-                    'Snap Keyring',
-                  );
+                  const { keyring } =
+                    await controller.addNewKeyring('Snap Keyring');
                   snapKeyring = keyring;
                 }
                 return { snapKeyring };
