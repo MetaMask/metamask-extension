@@ -110,9 +110,6 @@
       },
       "currentCurrency": "usd"
     },
-    "DelegationController": {
-      "delegations": {}
-    },
     "EnsController": {
       "ensEntries": {
         "0x1": {
@@ -2251,6 +2248,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 210
+    "version": 211
   }
 }
