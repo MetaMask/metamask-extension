@@ -7,8 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   check-feature-flag-registry:
@@ -16,6 +15,8 @@ jobs:
     environment: default-branch
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    permissions:
+      contents: read
     outputs:
       has-drift: ${{ steps.check.outputs.HAS_DRIFT }}
     steps:
@@ -63,6 +64,9 @@ jobs:
     name: Create PR for feature flag registry drift
     needs: check-feature-flag-registry
     if: needs.check-feature-flag-registry.outputs.has-drift == 'true'
+    permissions:
+      contents: write
+      pull-requests: write
     uses: MetaMask/github-tools/.github/workflows/create-pr-feature-flag-registry-drift.yml@main
     with:
       repository: metamask-extension

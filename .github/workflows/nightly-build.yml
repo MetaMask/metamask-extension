@@ -8,7 +8,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write # required for s3 uploads
 
 jobs:
   build-dist-browserify:
