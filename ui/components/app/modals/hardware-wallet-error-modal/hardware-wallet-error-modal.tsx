@@ -181,9 +181,15 @@ type HardwareWalletErrorModalProps = {
 const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
 
 /**
- * Modal component to display hardware wallet errors with recovery instructions
+ * Fires a hardware wallet recovery MetaMetrics event when both `error` and
+ * `trackableMetricDeviceType` are present; otherwise no-ops.
  *
- * @param props - The component props
+ * @param error - The current hardware wallet error.
+ * @param trackableMetricDeviceType - MetaMetrics device type derived from the wallet type.
+ * @param eventName - The MetaMetrics event name to fire.
+ * @param recoveryLocation - Where in the UI the recovery was triggered.
+ * @param errorTypeViewCount - How many times this error type has been viewed.
+ * @param trackEvent - The MetaMetrics `trackEvent` function.
  */
 function trackHwRecoveryEvent(
   error: HardwareWalletError | undefined,
@@ -362,7 +368,7 @@ export const HardwareWalletErrorModal = React.memo(
         if (result) {
           setConnectionReady();
           setRecovered(true);
-        } else {
+        } else if (error && trackableMetricDeviceType) {
           errorTypeViewCountRef.current += 1;
           trackHwRecoveryEvent(
             error,

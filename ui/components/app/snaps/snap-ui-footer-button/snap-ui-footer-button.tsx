@@ -5,13 +5,13 @@ import { useSelector } from 'react-redux';
 import classnames from 'clsx';
 import {
   Button,
-  ButtonProps,
   ButtonSize,
   ButtonVariant,
   Icon,
   IconName,
-  IconSize,
-} from '../../../component-library';
+} from '@metamask/design-system-react';
+import type { ButtonProps } from '@metamask/design-system-react';
+import { IconSize } from '../../../component-library';
 import {
   AlignItems,
   Display,
@@ -23,6 +23,7 @@ import { getHideSnapBranding } from '../../../../selectors';
 
 type SnapUIFooterButtonProps = {
   name?: string;
+  loading?: boolean;
   variant?: ButtonVariant;
   snapVariant?: SnapButtonProps['variant'];
   isSnapAction?: boolean;
@@ -41,9 +42,7 @@ export const SnapUIFooterButton = ({
   snapVariant,
   form,
   ...props
-}: React.PropsWithChildren<
-  SnapUIFooterButtonProps & ButtonProps<'button'>
->) => {
+}: React.PropsWithChildren<SnapUIFooterButtonProps & ButtonProps>) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
   const hideSnapBranding = useSelector((state) =>
     getHideSnapBranding(state, snapId),
@@ -78,7 +77,7 @@ export const SnapUIFooterButton = ({
       form={form}
       {...props}
       size={ButtonSize.Lg}
-      block
+      isFullWidth
       disabled={disabled}
       variant={buttonVariant}
       onClick={handleClick}
@@ -89,7 +88,7 @@ export const SnapUIFooterButton = ({
       }}
       data-testid={`${name}-snap-footer-button`}
       data-theme={null}
-      danger={snapVariant === 'destructive'}
+      isDanger={snapVariant === 'destructive'}
     >
       {isSnapAction && !hideSnapBranding && !loading && (
         <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />

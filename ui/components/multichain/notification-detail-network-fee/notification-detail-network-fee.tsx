@@ -100,9 +100,7 @@ const NotificationDetailNetworkFee_ = ({
   useEffect(() => {
     const fetchNetworkFees = async () => {
       try {
-        const networkFeesData = await getNetworkFees(
-          notification as Parameters<typeof getNetworkFees>[0],
-        );
+        const networkFeesData = await getNetworkFees(notification);
         if (networkFeesData) {
           setNetworkFees({
             transactionFee: {

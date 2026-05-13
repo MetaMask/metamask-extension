@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import classnames from 'clsx';
-import { Icon, IconName, IconSize, Text } from '../../component-library';
 import {
+  Icon,
   IconColor,
+  IconName,
+  IconSize,
+  Text,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { DisclosureVariant } from './disclosure.constants';
 
 type DisclosureProps = {
@@ -24,19 +27,19 @@ const renderSummaryByType = (
   switch (variant) {
     case DisclosureVariant.Arrow: {
       const textVariant =
-        size === 'small' ? TextVariant.bodySm : TextVariant.bodyMd;
+        size === 'small' ? TextVariant.BodySm : TextVariant.BodyMd;
 
       return (
         <summary className="disclosure__summary is-arrow">
-          <Text color={TextColor.primaryDefault} variant={textVariant}>
+          <Text color={TextColor.PrimaryDefault} variant={textVariant}>
             {title}
           </Text>
           <Icon
             className="disclosure__summary--icon"
-            color={IconColor.primaryDefault}
+            color={IconColor.PrimaryDefault}
             name={IconName.ArrowUp}
             size={IconSize.Sm}
-            marginInlineStart={2}
+            style={{ marginInlineStart: '8px' }}
           />
         </summary>
       );
@@ -48,7 +51,7 @@ const renderSummaryByType = (
             className="disclosure__summary--icon"
             name={IconName.Add}
             size={IconSize.Sm}
-            marginInlineEnd={2}
+            style={{ marginInlineEnd: '8px' }}
           />
           {title}
         </summary>
