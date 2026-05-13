@@ -1,7 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { waitFor } from '@testing-library/react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
@@ -200,7 +199,7 @@ describe('useGatorPermissions', () => {
   });
 
   it('should fetch when no cache exists', async () => {
-    const { result, waitForNextUpdate } = renderHook(
+    const { result } = renderHook(
       () => useGatorPermissions(),
       {
         wrapper: ({ children }) => (
@@ -211,10 +210,10 @@ describe('useGatorPermissions', () => {
 
     expect(result.current.loading).toBe(true);
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(mockFetchAndUpdateGatorPermissions).toHaveBeenCalledTimes(1);
     expect(result.current.loading).toBe(false);
+    });
   });
 
   it('should retry fetch when previous fetch failed', async () => {

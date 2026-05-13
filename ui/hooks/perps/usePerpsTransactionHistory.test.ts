@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import type { Order, OrderFill, Funding } from '@metamask/perps-controller';
 import { usePerpsTransactionHistory } from './usePerpsTransactionHistory';
 import { resetCoalesceCacheForTests } from './coalesceBackgroundRequest';

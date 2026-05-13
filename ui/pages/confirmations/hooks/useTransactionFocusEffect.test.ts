@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useDispatch } from 'react-redux';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';

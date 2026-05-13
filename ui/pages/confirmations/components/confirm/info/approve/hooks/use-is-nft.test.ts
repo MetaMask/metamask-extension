@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { TokenStandard } from '../../../../../../../../shared/constants/transaction';
 import {
@@ -33,13 +34,12 @@ describe('useIsNFT', () => {
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
     }) as TransactionMeta;
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useIsNFT(transactionMeta),
       mockState,
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current.isNFT).toMatchInlineSnapshot(`true`);
     expect(mockGetTokenStandardAndDetailsByChain).toHaveBeenCalledWith(
       transactionMeta.txParams.to,
@@ -47,6 +47,7 @@ describe('useIsNFT', () => {
       undefined,
       transactionMeta.chainId,
     );
+    });
   });
 
   it('identifies fungible in token with greater than 0 decimals', async () => {
@@ -60,13 +61,13 @@ describe('useIsNFT', () => {
       address: CONTRACT_INTERACTION_SENDER_ADDRESS,
     }) as TransactionMeta;
 
-    const { result, waitForNextUpdate } = renderHookWithProvider(
+    const { result } = renderHookWithProvider(
       () => useIsNFT(transactionMeta),
       mockState,
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current.isNFT).toMatchInlineSnapshot(`false`);
+    });
   });
 });

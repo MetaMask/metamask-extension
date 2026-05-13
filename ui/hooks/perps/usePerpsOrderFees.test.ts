@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { FeeCalculationResult } from '@metamask/perps-controller';
 import { usePerpsOrderFees } from './usePerpsOrderFees';
 
@@ -42,24 +42,24 @@ describe('usePerpsOrderFees', () => {
     const feeResult = makeFeeResult({ feeRate: 0.001 });
     mockSubmitRequestToBackground.mockResolvedValue(feeResult);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       usePerpsOrderFees({ symbol: 'BTC', orderType: 'market' }),
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current.feeRate).toBe(0.001);
     expect(result.current.protocolFeeRate).toBe(0.00025);
     expect(result.current.metamaskFeeRate).toBe(0.001);
     expect(result.current.isLoading).toBe(false);
     expect(result.current.hasError).toBe(false);
     expect(result.current.feeResult).toEqual(feeResult);
+    });
   });
 
   it('calls perpsCalculateFees with the correct params', async () => {
     mockSubmitRequestToBackground.mockResolvedValue(makeFeeResult());
 
-    const { waitForNextUpdate } = renderHook(() =>
+    renderHook(() =>
       usePerpsOrderFees({
         symbol: 'HYPE',
         orderType: 'limit',
@@ -68,12 +68,12 @@ describe('usePerpsOrderFees', () => {
       }),
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsCalculateFees',
       [{ orderType: 'limit', isMaker: true, amount: '100', symbol: 'HYPE' }],
     );
+    });
   });
 
   it('falls back to base rates when the RPC call fails', async () => {
@@ -157,22 +157,24 @@ describe('usePerpsOrderFees', () => {
       .mockResolvedValueOnce(btcResult)
       .mockResolvedValueOnce(ethResult);
 
-    const { result, waitForNextUpdate, rerender } = renderHook(
+    const { result, rerender } = renderHook(
       ({ symbol }: { symbol: string }) =>
         usePerpsOrderFees({ symbol, orderType: 'market' }),
       { initialProps: { symbol: 'BTC' } },
     );
 
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current.feeRate).toBe(0.001);
+    });
 
     rerender({ symbol: 'ETH' });
     // Previous result is cleared immediately on refetch
     expect(result.current.feeRate).toBeUndefined();
     expect(result.current.isLoading).toBe(true);
 
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current.feeRate).toBe(0.0008);
+    });
   });
 
   it('clears error state on successful refetch', async () => {
@@ -180,7 +182,7 @@ describe('usePerpsOrderFees', () => {
       new Error('network error'),
     );
 
-    const { result, waitForNextUpdate, rerender } = renderHook(
+    const { result, rerender } = renderHook(
       ({ symbol }: { symbol: string }) =>
         usePerpsOrderFees({ symbol, orderType: 'market' }),
       { initialProps: { symbol: 'BTC' } },
@@ -197,9 +199,9 @@ describe('usePerpsOrderFees', () => {
       makeFeeResult({ feeRate: 0.001 }),
     );
     rerender({ symbol: 'ETH' });
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current.hasError).toBe(false);
     expect(result.current.feeRate).toBe(0.001);
+    });
   });
 });

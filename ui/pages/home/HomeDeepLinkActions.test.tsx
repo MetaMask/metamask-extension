@@ -1,6 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { render, renderHook } from '@testing-library/react';
 import mockState from '../../../test/data/mock-state.json';
 import configureStore from '../../store/store';
 import { createMemoryRouterWrapper } from '../../../test/lib/render-helpers-navigate';

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import * as reactRedux from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getTxAlerts } from '../../../ducks/bridge/selectors';

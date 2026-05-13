@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import {
   useAsyncResult,
   useAsyncResultOrThrow,
@@ -44,7 +44,7 @@ describe('useAsyncCallback', () => {
 
   it('updates when asyncFn changes', async () => {
     let counter = 0;
-    const { result, rerender, waitForNextUpdate } = renderHook(
+    const { result, rerender } = renderHook(
       ({ fn }) => useAsyncCallback(fn),
       { initialProps: { fn: async () => `count: ${counter}` } },
     );
@@ -53,8 +53,9 @@ describe('useAsyncCallback', () => {
     act(() => {
       result.current[0]();
     });
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current[1]).toEqual(successState('count: 0'));
+    });
 
     // Change counter and function, execute again
     counter = 1;
@@ -62,12 +63,13 @@ describe('useAsyncCallback', () => {
     act(() => {
       result.current[0]();
     });
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current[1]).toEqual(successState('count: 1'));
+    });
   });
 
   it('transitions through states correctly for success', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAsyncCallback(async () => 'test'),
     );
 
@@ -78,26 +80,28 @@ describe('useAsyncCallback', () => {
     expect(result.current[1]).toEqual(RESULT_PENDING);
 
     // Wait for completion and check success state
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current[1]).toEqual(successState('test'));
+    });
   });
 
   it('handles errors correctly', async () => {
     const error = new Error('Custom test error');
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAsyncCallback(() => Promise.reject(error)),
     );
 
     act(() => {
       result.current[0]();
     });
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current[1]).toEqual(errorState(error));
+    });
   });
 
   it('handles rapid consecutive executions', async () => {
     const executionLog: string[] = [];
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAsyncCallback(async () => {
         executionLog.push('executed');
         await new Promise((resolve) => setTimeout(resolve, 10));
@@ -113,9 +117,10 @@ describe('useAsyncCallback', () => {
     });
 
     expect(result.current[1]).toEqual(RESULT_PENDING);
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current[1]).toEqual(successState('test'));
     expect(executionLog.length).toBe(3);
+    });
   });
 
   it('handles race conditions with dependency changes', async () => {
@@ -161,23 +166,23 @@ describe('useAsyncCallback', () => {
     ];
 
     for (const error of errors) {
-      const { result, waitForNextUpdate } = renderHook(() =>
+      const { result } = renderHook(() =>
         useAsyncCallback(() => Promise.reject(error)),
       );
 
       act(() => {
         result.current[0]();
       });
-      await waitForNextUpdate();
-      const state = result.current[1];
-
-      expect(state.error).toBe(error);
+      await waitFor(() => {
+        const state = result.current[1];
+        expect(state.error).toBe(error);
+      });
     }
   });
 
   it('recovers from errors on re-execution', async () => {
     let shouldFail = true;
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAsyncCallback(async () => {
         if (shouldFail) {
           shouldFail = false;
@@ -191,15 +196,17 @@ describe('useAsyncCallback', () => {
     act(() => {
       result.current[0]();
     });
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current[1].status).toBe('error');
+    });
 
     // Second execution succeeds
     act(() => {
       result.current[0]();
     });
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current[1]).toEqual(successState('success'));
+    });
   });
 
   it('preserves state during execution phases', async () => {
@@ -228,7 +235,7 @@ describe('useAsyncCallback', () => {
 describe('useAsyncResult', () => {
   it('handles immediate execution with correct state transitions', async () => {
     const { promise, resolve } = createControlledPromise<string>();
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAsyncResult(async () => await promise),
     );
 
@@ -239,15 +246,16 @@ describe('useAsyncResult', () => {
     act(() => {
       resolve('test');
     });
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(result.current).toEqual(successState('test'));
+    });
   });
 
   it('handles async errors with stack trace preservation', async () => {
     const error = new Error('Async error');
     const { promise, reject } = createControlledPromise<string>();
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAsyncResult(async () => {
         await promise;
         throw error;
@@ -257,26 +265,28 @@ describe('useAsyncResult', () => {
     act(() => {
       reject(error);
     });
-    await waitForNextUpdate();
 
-    if (result.current.status === 'error') {
-      expect(result.current.error).toBe(error);
-      expect(result.current.error.stack).toBeDefined();
-    } else {
-      fail('Expected error state');
-    }
+    await waitFor(() => {
+      const current = result.current;
+      expect(current.status).toBe('error');
+      if (current.status === 'error') {
+        expect(current.error).toBe(error);
+        expect(current.error.stack).toBeDefined();
+      }
+    });
   });
 });
 
 describe('useAsyncResultOrThrow', () => {
   it('throws errors for error boundaries to catch', async () => {
     const error = new Error('Boundary error');
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAsyncResultOrThrow(() => Promise.reject(error)),
     );
 
-    await waitForNextUpdate();
+    await waitFor(() => {
     expect(() => result.current).toThrow(error);
+    });
   });
 
   it('preserves error properties when throwing', async () => {
@@ -284,18 +294,19 @@ describe('useAsyncResultOrThrow', () => {
     const error = new Error('Context error') as CustomError;
     error.code = 'CUSTOM_CODE';
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useAsyncResultOrThrow(() => Promise.reject(error)),
     );
 
-    await waitForNextUpdate();
-    try {
-      Object.prototype.toString.call(result.current);
-      fail('Should have thrown');
-    } catch (e) {
-      const thrownError = e as CustomError;
-      expect(thrownError).toBe(error);
-      expect(thrownError.code).toBe('CUSTOM_CODE');
-    }
+    await waitFor(() => {
+      let caughtError: CustomError | null = null;
+      try {
+        Object.prototype.toString.call(result.current);
+      } catch (e) {
+        caughtError = e as CustomError;
+      }
+      expect(caughtError).toBe(error);
+      expect(caughtError?.code).toBe('CUSTOM_CODE');
+    });
   });
 });

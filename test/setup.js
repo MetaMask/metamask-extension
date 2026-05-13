@@ -2,6 +2,8 @@
 globalThis.setImmediate =
   globalThis.setImmediate || ((fn, ...args) => setTimeout(fn, 0, ...args));
 
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
 require('@babel/register');
 require('tsx/cjs');
 

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { SmartTransactionStatuses } from '@metamask/smart-transactions-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { useSmartTransactionToasts } from './useSmartTransactionToasts';

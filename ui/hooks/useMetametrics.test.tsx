@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import type { Store } from 'redux';
@@ -43,7 +43,7 @@ describe('useMetametrics', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHook(
+    const { result } = renderHook(
       () => useEnableMetametrics(),
       {
         wrapper: ({ children }) => (
@@ -56,11 +56,11 @@ describe('useMetametrics', () => {
       result.current.enableMetametrics();
     });
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(actions.setParticipateInMetaMetrics).toHaveBeenCalledWith(true);
     expect(store.dispatch).toHaveBeenCalled();
     expect(result.current.loading).toBe(false);
+    });
   });
 
   it('should disable MetaMetrics', async () => {
@@ -70,7 +70,7 @@ describe('useMetametrics', () => {
       },
     });
 
-    const { result, waitForNextUpdate } = renderHook(
+    const { result } = renderHook(
       () => useDisableMetametrics(),
       {
         wrapper: ({ children }) => (
@@ -83,9 +83,9 @@ describe('useMetametrics', () => {
       result.current.disableMetametrics();
     });
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(actions.setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
     expect(result.current.loading).toBe(false);
+    });
   });
 });

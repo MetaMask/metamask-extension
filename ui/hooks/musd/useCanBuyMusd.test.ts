@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import {
   useCanBuyMusd,
   clearRegionTokenCache,
@@ -86,51 +86,51 @@ describe('useCanBuyMusd', () => {
     mockGeoResult();
     mockTokenApi([makeMusdToken(MAINNET_MUSD_ASSET_ID)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.canBuyMusdInRegion).toBe(true);
     expect(result.current.isLoading).toBe(false);
+    });
   });
 
   it('returns canBuyMusdInRegion false when geo-blocked', async () => {
     mockGeoResult({ isBlocked: true, userCountry: 'GB' });
     mockTokenApi([makeMusdToken(MAINNET_MUSD_ASSET_ID)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.canBuyMusdInRegion).toBe(false);
+    });
   });
 
   it('returns canBuyMusdInRegion false when mUSD is not in the token list', async () => {
     mockGeoResult();
     mockTokenApi([{ assetId: 'eip155:1/erc20:0xOTHER', tokenSupported: true }]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.canBuyMusdInRegion).toBe(false);
+    });
   });
 
   it('returns canBuyMusdInRegion false when token list is empty', async () => {
     mockGeoResult();
     mockTokenApi([]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.canBuyMusdInRegion).toBe(false);
+    });
   });
 
   it('returns canBuyMusdInRegion false when API errors (fail closed)', async () => {
     mockGeoResult();
     mockTokenApiError();
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.canBuyMusdInRegion).toBe(false);
+    });
   });
 
   it('returns canBuyMusdInRegion false when userCountry is null', () => {
@@ -150,11 +150,11 @@ describe('useCanBuyMusd', () => {
     mockGeoResult();
     mockTokenApi([makeMusdToken(MAINNET_MUSD_ASSET_ID)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyableOnChain['0x1']).toBe(true);
     expect(result.current.isMusdBuyableOnChain['0xe708']).toBe(false);
+    });
   });
 
   it('marks both chains buyable when both tokens are present', async () => {
@@ -164,23 +164,23 @@ describe('useCanBuyMusd', () => {
       makeMusdToken(LINEA_MUSD_ASSET_ID),
     ]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyableOnChain['0x1']).toBe(true);
     expect(result.current.isMusdBuyableOnChain['0xe708']).toBe(true);
+    });
   });
 
   it('returns false for a chain when tokenSupported is false', async () => {
     mockGeoResult();
     mockTokenApi([makeMusdToken(MAINNET_MUSD_ASSET_ID, false)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyableOnChain['0x1']).toBe(false);
     expect(result.current.isMusdBuyableOnAnyChain).toBe(false);
     expect(result.current.canBuyMusdInRegion).toBe(false);
+    });
   });
 
   it('matches asset IDs case-insensitively', async () => {
@@ -189,10 +189,10 @@ describe('useCanBuyMusd', () => {
       { assetId: MAINNET_MUSD_ASSET_ID.toLowerCase(), tokenSupported: true },
     ]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyableOnChain['0x1']).toBe(true);
+    });
   });
 
   // -------------------------------------------------------------------
@@ -203,20 +203,20 @@ describe('useCanBuyMusd', () => {
     mockGeoResult();
     mockTokenApi([makeMusdToken(LINEA_MUSD_ASSET_ID)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyableOnAnyChain).toBe(true);
+    });
   });
 
   it('sets isMusdBuyableOnAnyChain false when no chain has mUSD', async () => {
     mockGeoResult();
     mockTokenApi([]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyableOnAnyChain).toBe(false);
+    });
   });
 
   // -------------------------------------------------------------------
@@ -232,11 +232,11 @@ describe('useCanBuyMusd', () => {
     });
     mockTokenApi([makeMusdToken(MAINNET_MUSD_ASSET_ID)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyable).toBe(true);
     expect(result.current.canBuyMusdInRegion).toBe(true);
+    });
   });
 
   it('isMusdBuyable checks specific chain when single chain selected', async () => {
@@ -244,11 +244,11 @@ describe('useCanBuyMusd', () => {
     mockNetworkResult({ selectedChainId: '0xe708' });
     mockTokenApi([makeMusdToken(MAINNET_MUSD_ASSET_ID)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyable).toBe(false);
     expect(result.current.canBuyMusdInRegion).toBe(false);
+    });
   });
 
   it('isMusdBuyable is true when selected chain has mUSD', async () => {
@@ -256,10 +256,10 @@ describe('useCanBuyMusd', () => {
     mockNetworkResult({ selectedChainId: '0x1' });
     mockTokenApi([makeMusdToken(MAINNET_MUSD_ASSET_ID)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyable).toBe(true);
+    });
   });
 
   it('isMusdBuyable is false for an unknown chain', async () => {
@@ -267,10 +267,10 @@ describe('useCanBuyMusd', () => {
     mockNetworkResult({ selectedChainId: '0x38' });
     mockTokenApi([makeMusdToken(MAINNET_MUSD_ASSET_ID)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyable).toBe(false);
+    });
   });
 
   it('isMusdBuyable is false when no chain selected and not popular networks', async () => {
@@ -281,10 +281,10 @@ describe('useCanBuyMusd', () => {
     });
     mockTokenApi([makeMusdToken(MAINNET_MUSD_ASSET_ID)]);
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.isMusdBuyable).toBe(false);
+    });
   });
 
   // -------------------------------------------------------------------
@@ -320,27 +320,27 @@ describe('useCanBuyMusd', () => {
     mockGeoResult({ userCountry: 'US' });
     mockTokenApi([]);
 
-    const { waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining('/regions/us/tokens'),
     );
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining('action=buy'),
     );
+    });
   });
 
   it('returns empty per-chain map when API returns non-ok response', async () => {
     mockGeoResult();
     mockFetch.mockResolvedValue({ ok: false, status: 500 });
 
-    const { result, waitForNextUpdate } = renderHook(() => useCanBuyMusd());
-    await waitForNextUpdate();
-
+    const { result } = renderHook(() => useCanBuyMusd());
+    await waitFor(() => {
     expect(result.current.canBuyMusdInRegion).toBe(false);
     expect(result.current.isMusdBuyableOnChain['0x1']).toBe(false);
     expect(result.current.isMusdBuyableOnChain['0xe708']).toBe(false);
+    });
   });
 
   // -------------------------------------------------------------------

@@ -1,6 +1,5 @@
 import React, { ReactElement } from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
-import { render, fireEvent } from '@testing-library/react';
+import { act, fireEvent, render, renderHook } from '@testing-library/react';
 import { GasModalType } from '../../constants/gas';
 import {
   GasFeeModalContextProvider,

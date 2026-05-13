@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import * as ControllerActionsModule from '../store/controller-actions/multichain-asset-rates-controller';
 import {

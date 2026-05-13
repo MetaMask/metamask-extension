@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import copyToClipboard from 'copy-to-clipboard';
 import { COPY_OPTIONS } from '../../shared/constants/copy';
 import { DEFAULT_UI_DELAY, useCopyToClipboard } from './useCopyToClipboard';

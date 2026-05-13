@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import {
   TransactionMeta,
   TransactionStatus,
@@ -88,13 +88,13 @@ describe('useMerklClaimAmount', () => {
   it('computes full claim amount when nothing claimed on-chain', async () => {
     mockGetClaimedAmount.mockResolvedValue(null);
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useMerklClaimAmount(buildMockTransaction()),
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current.pending).toBe(false);
+    });
     // 10.5 MUSD
     expect(result.current.displayClaimAmount).toBe('10.5');
     expect(result.current.fiatDisplayValue).toBe('$10.50');
@@ -104,13 +104,13 @@ describe('useMerklClaimAmount', () => {
     // 5.5 MUSD already claimed
     mockGetClaimedAmount.mockResolvedValue('5500000');
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useMerklClaimAmount(buildMockTransaction()),
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current.pending).toBe(false);
+    });
     // 10.5 - 5.5 = 5.0
     expect(result.current.displayClaimAmount).toBe('5');
     expect(result.current.fiatDisplayValue).toBe('$5.00');
@@ -119,14 +119,14 @@ describe('useMerklClaimAmount', () => {
   it('returns zero when all claimed', async () => {
     mockGetClaimedAmount.mockResolvedValue('10500000');
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useMerklClaimAmount(buildMockTransaction()),
     );
 
-    await waitForNextUpdate();
-
+    await waitFor(() => {
     expect(result.current.pending).toBe(false);
     expect(result.current.displayClaimAmount).toBe('0');
+    });
   });
 
   it('returns undefined for non-musdClaim transactions', () => {
@@ -143,11 +143,10 @@ describe('useMerklClaimAmount', () => {
   it('handles contract call errors gracefully', async () => {
     mockGetClaimedAmount.mockRejectedValue(new Error('RPC error'));
 
-    const { result, waitForNextUpdate } = renderHook(() =>
+    const { result } = renderHook(() =>
       useMerklClaimAmount(buildMockTransaction()),
     );
 
-    await waitForNextUpdate();
 
     // Falls back to 0 claimed, so full amount is claimable
     expect(result.current.pending).toBe(false);

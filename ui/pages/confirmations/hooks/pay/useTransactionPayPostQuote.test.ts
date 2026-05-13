@@ -2,7 +2,7 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useConfirmContext } from '../../context/confirm';
 import { setPostQuote } from '../../../../store/controller-actions/transaction-pay-controller';
 import { useTransactionPayPostQuote } from './useTransactionPayPostQuote';

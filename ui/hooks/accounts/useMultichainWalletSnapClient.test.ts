@@ -7,7 +7,7 @@ import {
   SolMethod,
   SolScope,
 } from '@metamask/keyring-api';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import {
   BITCOIN_WALLET_SNAP_ID,

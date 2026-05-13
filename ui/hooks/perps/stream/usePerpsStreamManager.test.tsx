@@ -1,5 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks';
-import { waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {

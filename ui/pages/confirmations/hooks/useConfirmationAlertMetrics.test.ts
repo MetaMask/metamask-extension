@@ -1,7 +1,7 @@
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 /* eslint-disable @typescript-eslint/naming-convention */
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { act } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 
 import { getMockConfirmStateForTransaction } from '../../../../test/data/confirmations/helper';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../test/data/confirmations/contract-interaction';

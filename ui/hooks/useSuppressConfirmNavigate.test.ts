@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { getExtensionSkipTransactionStatusPage } from '../../shared/lib/selectors/smart-transactions';
 import { useSuppressNavigation } from './useSuppressConfirmNavigate';
 

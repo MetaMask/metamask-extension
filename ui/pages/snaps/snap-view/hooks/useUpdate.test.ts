@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react-hooks';
+import { act, waitFor } from '@testing-library/react';
 import { renderHookWithProviderTyped } from '../../../../../test/lib/render-helpers-navigate';
 import { createMockUIMessenger } from '../../../../../test/lib/mock-ui-messenger';
 import type { UIMessenger } from '../../../../messengers/ui-messenger';
@@ -52,7 +52,7 @@ describe('useUpdate', () => {
       'SnapController:installSnaps': callMock,
     });
 
-    const { result, waitForNextUpdate } = renderHook({
+    const { result } = renderHook({
       state: {
         metamask: {
           ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -78,9 +78,9 @@ describe('useUpdate', () => {
     act(() => update({}));
     expect(callMock).toHaveBeenCalledWith('MetaMask', {});
 
-    await waitForNextUpdate();
-
-    const [, approvalId] = result.current;
-    expect(approvalId).toBe('approval-id-123');
+    await waitFor(() => {
+      const [, approvalId] = result.current;
+      expect(approvalId).toBe('approval-id-123');
+    });
   });
 });

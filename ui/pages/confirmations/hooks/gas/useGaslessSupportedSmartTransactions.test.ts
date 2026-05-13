@@ -107,7 +107,7 @@ describe('useGaslessSupportedSmartTransactions', () => {
       pendingPromise as Promise<boolean>,
     );
 
-    const { result, waitForNextUpdate } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithConfirmContextProvider(
       useGaslessSupportedSmartTransactions,
       getMockConfirmStateForTransaction(
         genUnapprovedContractInteractionConfirmation({
@@ -122,7 +122,6 @@ describe('useGaslessSupportedSmartTransactions', () => {
     // Resolve and wait for next update
     await act(async () => {
       resolvePromise(true);
-      await waitForNextUpdate();
     });
 
     expect(result.current).toStrictEqual({
