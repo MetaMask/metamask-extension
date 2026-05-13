@@ -297,7 +297,7 @@ describe('SnapUIDateTimePicker', () => {
       ).toBe('Pick a time');
     });
 
-    it('passes undefined as the default placeholder', () => {
+    it('passes empty string as the default placeholder to suppress the MUI format hint', () => {
       let capturedSlotProps: Record<string, unknown> = {};
       mockDateTimePicker.mockImplementation(({ slotProps }) => {
         capturedSlotProps = slotProps ?? {};
@@ -308,7 +308,7 @@ describe('SnapUIDateTimePicker', () => {
 
       expect(
         (capturedSlotProps.textField as Record<string, unknown>)?.placeholder,
-      ).toBeUndefined();
+      ).toBe('');
     });
   });
 
