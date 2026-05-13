@@ -18,8 +18,6 @@ import {
 import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerWithKeyringV2UnsafeAction,
-  KeyringTypes,
-  KeyringMetadata,
   KeyringControllerWithKeyringAction,
   KeyringControllerAddNewKeyringAction,
 } from '@metamask/keyring-controller';
