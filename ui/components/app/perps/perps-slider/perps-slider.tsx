@@ -37,6 +37,7 @@ const StyledMaterialSlider = styled(MaterialSlider)({
     background: 'var(--color-text-default)',
     height: 4,
     border: 'none',
+    minHeight: 4,
   },
   '& .MuiSlider-thumb': {
     height: 16,
@@ -49,6 +50,9 @@ const StyledMaterialSlider = styled(MaterialSlider)({
     '[data-theme="dark"] &': {
       // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       backgroundColor: '#CCCCCC',
+    },
+    '&::before': {
+      display: 'none',
     },
     '&:focus, &.Mui-active': {
       height: 16,
@@ -89,7 +93,9 @@ const StyledMaterialSlider = styled(MaterialSlider)({
     height: 2,
     borderRadius: '50%',
     backgroundColor: 'var(--color-icon-alternative)',
-    marginTop: 1,
+    // MUI v5 default is translate(-1px, -50%) which shifts marks 1px left.
+    // Override to translate(1px, -50%) to correct horizontal alignment.
+    transform: 'translate(1px, -50%)',
   },
   '& .MuiSlider-markActive': {
     backgroundColor: 'var(--color-icon-alternative)',
