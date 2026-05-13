@@ -190,7 +190,7 @@ describe('useGasSponsorshipWarningAlerts', () => {
         isOpenModalOnClick: true,
         key: 'gasSponsorshipAlert',
         message:
-          'This specific network requires to maintain a reserve of 10 MON in your account.',
+          'This specific network requires maintaining a reserve of 10 MON in your account.',
         reason: 'Reserve balance is required',
         severity: Severity.Danger,
         showArrow: false,
