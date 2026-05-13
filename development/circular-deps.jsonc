@@ -14,6 +14,5 @@
     "ui/components/app/metamask-translation/index.js",
     "ui/components/app/metamask-translation/metamask-translation.js"
   ],
-  ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"],
   ["ui/ducks/metamask/metamask.js", "ui/store/actions.ts"]
 ]

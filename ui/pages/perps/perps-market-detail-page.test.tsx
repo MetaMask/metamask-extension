@@ -13,6 +13,7 @@ import {
   mockHip3Markets,
   mockTransactions,
 } from '../../components/app/perps/mocks';
+import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
 
 jest.mock('@metamask/perps-controller', () => ({
@@ -726,6 +727,20 @@ describe('PerpsMarketDetailPage', () => {
       ) as { label: string }[];
 
       expect(priceLines.find((l) => l.label === 'Liq')).toBeUndefined();
+    });
+
+    it('displays a fallback when the position liquidationPrice is not positive', async () => {
+      mockLivePositions.mockReturnValue({
+        positions: [{ ...mockPositions[0], liquidationPrice: '-1' }],
+        isInitialLoading: false,
+      });
+      const store = mockStore(createMockState(true));
+
+      const { getByTestId } = await renderPage(store);
+
+      expect(getByTestId('perps-position-liquidation-value')).toHaveTextContent(
+        PERPS_LIQUIDATION_PRICE_FALLBACK,
+      );
     });
 
     it('displays favorite button', async () => {
