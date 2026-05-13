@@ -634,7 +634,7 @@ describe('StaticAssetsController', () => {
         const hiddenTokenAssetId = toAssetId(
           hiddenTokenAddress,
           CHAIN_IDS.MAINNET,
-        );
+        ) as string;
         const {
           controller,
           spies: {
