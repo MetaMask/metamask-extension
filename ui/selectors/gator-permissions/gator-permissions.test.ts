@@ -164,10 +164,10 @@ describe('Gator Permissions Selectors', () => {
       expect(Object.keys(map)).toEqual([
         'native-token-stream',
         'erc20-token-stream',
-        "native-token-periodic",
-        "erc20-token-periodic",
-        "native-token-allowance",
-        "erc20-token-allowance",
+        'native-token-periodic',
+        'erc20-token-periodic',
+        'native-token-allowance',
+        'erc20-token-allowance',
         'erc20-token-revocation',
         'other',
       ]);

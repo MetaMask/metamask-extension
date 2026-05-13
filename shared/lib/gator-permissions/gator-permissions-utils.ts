@@ -42,6 +42,7 @@ export type GatorPermissionData = {
   amountPerSecond?: string;
   periodDuration?: string;
   periodAmount?: string;
+  tokenAllowance?: string;
   [key: string]: unknown;
 };
 
