@@ -105,7 +105,7 @@
     "message": "Cüzdan zaten mevcut"
   },
   "accountDetails": {
-    "message": "Hesap bilgileri"
+    "message": "Hesap detayları"
   },
   "accountDetailsSrpBackUpMessage": {
     "message": "Yedekle",
@@ -173,7 +173,7 @@
     "message": "Aktif"
   },
   "activity": {
-    "message": "Aktivite"
+    "message": "İşlem Geçmişi"
   },
   "activityEmptyDescription": {
     "message": "Gösterilecek bir şey yok. İlk token takası işleminizi bugün yapın."
@@ -256,7 +256,7 @@
     "message": "Güvendiğiniz arkadaşlarınızı ve adresleri ekleyin"
   },
   "addFunds": {
-    "message": "Fon ekle"
+    "message": "Bakiye ekleyin"
   },
   "addFundsModalBuyCrypto": {
     "message": "Kripto al"
@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "Cüzdanınızdaki tokenlar otomatik algılansın, NFT'ler gösterilsin ve toplu hesap bakiye güncellemeleri alınsın"
   },
+  "asterdexReferralConfirmText": {
+    "message": "Evet, %4 iade al",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask referans kodu ile işlemlerde %4'e varan iade alın.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "MetaMask referans kodu ile işlemlerde %4 iade alın. Bu indirim AsterDEX'in $1 bölümü uyarınca gelecekteki tüm işlemler için geçerlidir. MetaMask bir ücret kazanır.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "AsterDEX'te %4 iade al",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Swap işlemini ücretsiz iptal etme girişimi"
@@ -1144,6 +1156,9 @@
     "message": "Bu değerin bir tahmin olduğunu ve işlem tamamlandığında kesinleşeceğini unutmayın. Puanların Ödüller bakiyenizde onaylanması 1 saate kadar sürebilir.",
     "description": "Second part of tooltip content explaining how points are calculated"
   },
+  "bridgePriceDataUnavailableError": {
+    "message": "Bu token için fiyat bilgisi alamadık. Devam etmeden önce aldığınız tutarın beklediğiniz tutar olduğundan emin olun."
+  },
   "bridgePriceImpact": {
     "message": "Fiyat etkisi"
   },
@@ -1372,6 +1387,18 @@
   "bridgeTo": {
     "message": "Köprü yapılan:"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 kötü amaçlı bir token."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 kötü amaçlı olarak işaretlenmiş. Onunla etkileşime giren herkesin fonlarını çalması muhtemeldir."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 şüpheli bir token."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 şüpheli olarak işaretlendi. Devam etmeden önce risklere bakın."
+  },
   "bridgeTokenNotFound": {
     "message": "\"$1\" ile eşleşen token yok"
   },
@@ -1425,11 +1452,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "Gönderdiğiniz:"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "İzin verilen maksimumu kullanın"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "Bu köprü için gaz ücretini ödemeye yetecek $1 yok. Daha küçük bir tutar girin veya daha fazla $1 satın alın."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Gaz için daha fazla $1 gerekli"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "Bu ağ için hesabınızda minimum $1 $3 rezerv bulundurulması gerekiyor. Güncel bakiyenizle maksimum $2 $3 kullanabilirsiniz",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "Minimum $1 reserv bakiyesi gerekli",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "Köprüleme yapılan"
@@ -1450,7 +1488,7 @@
     "message": "Meşgul"
   },
   "buy": {
-    "message": "Al"
+    "message": "Satın Al"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -1838,6 +1876,9 @@
   "connectAHardwareWallet": {
     "message": "Bir donanım cüzdanı bağlayın"
   },
+  "connectAHardwareWalletDescription": {
+    "message": "USB veya QR Kodu kullanımı"
+  },
   "connectAccounts": {
     "message": "Hesapları bağla"
   },
@@ -2071,6 +2112,19 @@
   },
   "creatorAddress": {
     "message": "Oluşturucu adresi"
+  },
+  "criticalErrorAttemptRecovery": {
+    "message": "Kurtarmayı dene"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "Yukarıdakilerin hiçbiri işe yaramazsa $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "MetaMask'i geri yükleyin"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "Hala sorun mu yaşıyorsunuz?"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2370,6 +2424,14 @@
   "defiReferralCheckboxLabel": {
     "message": "MetaMask'in bir yönlendirme kodu eklemesine izin verin. Bu işlem kalıcıdır. Site, kendi koşullarına göre indirimler sunar. MetaMask bu işlemden bir ücret kazanır.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "Hayır, istemiyorum",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "şartlar",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -2936,7 +2998,7 @@
     "message": "Önerilen takma adlar"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "Etherscan, Infura ve Lens Protocol gibi üçüncü taraf kaynaklardan etkileşimde bulunduğunuz adeesler için önerilen takma adları alırız. Bu kaynaklar o adresleri ve sizin IP adresinizi görebilir. Hesap adresiniz üçüncü taraflarla paylaşılmaz."
+    "message": "Etherscan, Infura ve Lens Protocol gibi üçüncü taraf kaynaklardan etkileşimde bulunduğunuz adresler için önerilen takma adları alırız. Bu kaynaklar o adresleri ve sizin IP adresinizi görebilir. Hesap adresiniz üçüncü taraflarla paylaşılmaz."
   },
   "externalNameSourcesSettingDescriptionV2": {
     "message": "Etkileşimde bulunduğunuz adresler için Etherscan, Infura ve Lens protokolü gibi üçüncü taraf kaynaklardan önerilen takma adları getirir."
@@ -3063,7 +3125,7 @@
     "message": "İşlev: $1"
   },
   "fundYourWallet": {
-    "message": "Cüzdanınıza para ekleyin",
+    "message": "Bakiye ekleyin",
     "description": "Title for the balance empty state component encouraging users to add funds"
   },
   "gas": {
@@ -3222,9 +3284,21 @@
     "message": "Cüzdanınızı web3 kullanmaya hazır hale getirin",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "Evet, %5 tasarruf et",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "MetaMask yönlendirme kodu ile işlemlerde %5'e varan tasarruf edin.",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "MetaMask referans kodu ile işlemlerde %5 tasarruf edin. Bu indirim GMX'in $1 bölümü uyarınca gelecekteki tüm işlemler için geçerlidir. MetaMask bir ücret kazanır.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "GMX'te %5 tasarruf et",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Siteye git"
@@ -3448,9 +3522,21 @@
   "honeypotTitle": {
     "message": "Bal tuzağı"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "Evet, %4 tasarruf et",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMask yönlendirme kodu ile işlemlerde %4'e varan tasarruf edin.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "MetaMask referans kodu ile işlemlerde %4 tasarruf edin. HyperLiquid'in $1 bölümü uyarınca gelecekteki tüm işlemler için geçerlidir. MetaMask bir ücret kazanır.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "HyperLiquid'de %4 tasarruf et",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Anlıyorum"
@@ -3967,7 +4053,7 @@
     "message": "Varsayılan ayarları yönet"
   },
   "manageInstitutionalWallets": {
-    "message": "Institutional cüzdanlarını yönet"
+    "message": "Kurumsal cüzdanları yönet"
   },
   "manageInstitutionalWalletsDescription": {
     "message": "Institutional cüzdanlarını etkinleştirmek için bunu açın."
@@ -4010,6 +4096,9 @@
   },
   "maxFeeTooltip": {
     "message": "İşlemi ödemek için sunulan maksimum ücret."
+  },
+  "maybeLater": {
+    "message": "Belki daha sonra"
   },
   "medium": {
     "message": "Piyasa"
@@ -4382,7 +4471,7 @@
     "description": "$1 is the bonus percentage (e.g., 3). Subtitle on the home token list mUSD Buy/Get CTA."
   },
   "musdEducationGetStarted": {
-    "message": "Başlarken"
+    "message": "Başla"
   },
   "musdEducationHeadline": {
     "message": "STABİL KRİPTO PARALARDA\n%$1 ALIN",
@@ -4978,7 +5067,7 @@
     "description": "Content of the browser notification that appears when a nonce-less transaction is confirmed"
   },
   "notifications": {
-    "message": "Cüzdanınızın kullanımı"
+    "message": "Bildirimler"
   },
   "notificationsFeatureToggle": {
     "message": "Cüzdan bildirimlerini etkinleştir",
@@ -5068,7 +5157,7 @@
     "message": "Lütfen geçerli bir URL adresi girin"
   },
   "onboardingAdvancedPrivacyIPFSTitle": {
-    "message": "Özel IPFD Ağ Geçidi ekle"
+    "message": "Özel IPFS Ağ Geçidi Ekle"
   },
   "onboardingAdvancedPrivacyIPFSValid": {
     "message": "IPFS ağ geçidi URL adresi geçerli"
@@ -5239,6 +5328,126 @@
   },
   "participateInMetaMetricsDescription": {
     "message": "MetaMask'ı daha iyi hale getirebilmemize yardımcı olmak için MetaMetrics'e katılın"
+  },
+  "passkeyAuthMethodBiometrics": {
+    "message": "Biyometri",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "MetaMask'in kilidini açmak için şifrenizi girmek yerine $1 kullanın. Bu işlem, yalnızca bu cihazda bir geçiş anahtarı oluşturur.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "Bu cüzdan için $1 kurulumu zaten yapılmış.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "$1 doğrulanamadı. Tekrar deneyin.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "$1 yanıtınız eksikti. Tekrar deneyin.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "$1 ile giriş oturumunun süresi doldu. Tekrar deneyin.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "$1 kurulum oturumunun süresi doldu. Tekrar baştan deneyin.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "Bu cüzdan için $1 kurulumu yapılmamış. Ayarlarda $1 seçeneğini açın.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "$1 kurulumu başarısız oldu. Tekrar deneyin",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "$1 kurulumunuzu doğrulayamadık. Tekrar deneyin.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "$1 ile kilidi açamadık. Tekrar deneyin veya Ayarlar bölümünde $1 kurulumunu tekrar yapın.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1 mevcut cüzdan kilidinizle uyumlu değil. Ayarlar bölümünde $1 kurulumunu tekrar yapın.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Şifreniz güncellendi ancak $1 ile kilit açma özelliği açılamadı.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "$1 doğrulanamadı. Tekrar deneyin veya şifrenizi kullanın.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "$1 Kaydet",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "$1 Doğrula",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Tam ekran pencerede uzantıyı açmayı deneyin ve tekrar deneyin.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Tam ekran pencereyi aç",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Hala problem mi yaşıyorsunuz?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "Kilidi açma konusunda sorun mu yaşıyorsunuz?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "Kilidi açma konusunda sorun yaşıyorum",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Doğrulama konusunda sorun mu yaşıyorsunuz?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Doğrulama konusunda sorun mu yaşıyorsunuz?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "$1 kapatıldı",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "$1 açıldı",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "$1 ile kilit açma başarısız oldu. Şifrenizle deneyin.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "Doğrulamak için şifrenizi girmek yerine $1 kullanın.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "$1 ile onayla",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "Şifre"
@@ -5567,7 +5776,7 @@
     "message": "İzinler"
   },
   "permissionsPageEmptyDescription": {
-    "message": "İzin algılanmadı. Bir siteye izin verdiğinizde veya bir Snap yüklediğinizde bilgiler burada gösterilir."
+    "message": "Bağlantı bulunamadı. Bir siteye izin verdiğinizde veya bir Snap yüklediğinizde bilgiler burada gösterilir."
   },
   "permitSimulationChange_approve": {
     "message": "Harcama üst limiti"
@@ -5652,6 +5861,9 @@
     "message": "İşlem yapılabilir",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "Temel işlevsellik kapalıyken bu özellik kullanılamaz."
+  },
   "perpsBatchCancelFailed": {
     "message": "Bir veya daha fazla emir iptal edilemedi. Tekrar deneyin."
   },
@@ -5663,6 +5875,9 @@
   },
   "perpsCancelOrder": {
     "message": "Emri iptal et"
+  },
+  "perpsCandleIntervals": {
+    "message": "Mum aralığını ayarla"
   },
   "perpsCandlePeriodDays": {
     "message": "Gün"
@@ -5676,11 +5891,14 @@
   "perpsCloseAll": {
     "message": "Tümünü kapat"
   },
+  "perpsCloseAmount": {
+    "message": "Kapanış tutarı"
+  },
   "perpsCloseLong": {
     "message": "Long pozisyonu kapat"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Kısmi kapatma işlemleri en az $1 USD değerinde olmalıdır. Kapatma tutarını artırın veya kaydırıcıyı %100'e ayarlayın."
+    "message": "Kısmi kapatma işlemleri en az $1 USD değerinde olmalıdır. Kapatma tutarını artırın veya pozisyonun tamamını kapatın."
   },
   "perpsClosePosition": {
     "message": "Pozisyonu kapat"
@@ -5877,6 +6095,10 @@
   "perpsMid": {
     "message": "Orta"
   },
+  "perpsMinOrderSize": {
+    "message": "Emir büyüklüğü en az $1 olmalıdır",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "Değiştir"
   },
@@ -5987,6 +6209,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Short pozisyonunuzu long yönüne çevirin"
   },
+  "perpsSaveChanges": {
+    "message": "Değişiklikleri kaydet",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "Piyasa ara"
   },
@@ -6063,6 +6289,10 @@
   "perpsStopLoss": {
     "message": "Zararda durdur",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "Zararda durdur emri $1 likidasyon fiyatında olmalıdır",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "Zararda durdur fiyatı $1 $2 olmalıdır",
@@ -6950,9 +7180,6 @@
   "rewardsLinkAccountError": {
     "message": "Hesap eklenemedi"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Aktivitelerinizden puan kazanın. \nSeviyelerde ilerleyerek ödüllerin kilidini açın."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Ülkenizin ödüller programına katılıma izin verip vermediğini belirleyemiyoruz. Lütfen bağlantınızı kontrol edin ve tekrar deneyin."
   },
@@ -6965,84 +7192,11 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Tekrar Dene"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "250 puan alın"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Uygunluk kontrol ediliyor..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Bölge kontrol ediliyor.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Şimdi değil"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Ödüller burada"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Ödüller henüz bölgenizde desteklenmiyor. Erişimi genişletmek için çalışıyoruz, bu yüzden daha sonra tekrar kontrol edin."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Bölge desteklenmiyor"
-  },
-  "rewardsOnboardingStep1Description": {
-    "message": "MetaMask'te yaptığınız her takas ve sürekli vadeli işlem sizi ödüllere yaklaştırır. Hesaplarınızı ekleyin ve puanlarınızı takip edin."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Her işlemde puan kazanın"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Belirli puanlara ulaştığınızda, sürekli vadeli işlem ücretlerinde %50 indirim, özel token’lar ve ücretsiz MetaMask Metal Kart gibi avantajlar kazanabilirsiniz."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Daha büyük avantajlar için seviye yükseltin"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Uzantıda puan kazanabilirsiniz ancak sürekli vadeli işlem sözleşmeleri ile işlem yapmak, ilerlemenizi takip etmek ve ödülleri kullanmak için mobil uygulamaya ihtiyacınız olacak."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Mobilde ödüllerin kilidini aç"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "'Puanları al' düğmesine tıklayarak $1 bölümümüzü kabul edersiniz. Zincir içi aktivitelerinizi takip ederek sizi otomatik olarak ödüllendireceğiz. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
-    "message": "Daha fazla bilgi edin"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
-    "message": "Şartlar ve Gizlilik Bildirimi"
-  },
-  "rewardsOnboardingStep4OptInError": {
-    "message": "Katılım başarısız oldu"
-  },
-  "rewardsOnboardingStep4ReferralCodeError": {
-    "message": "Geçersiz referans kodu"
-  },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Bir referans kodu kullanarak 250 puan kazanın"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
-    "message": "Referans kodu (isteğe bağlı)"
-  },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
-    "message": "Referans kodu doğrulanamadı."
-  },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
-    "message": "Bağlantınızı kontrol edin ve tekrar deneyin."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Kaydolduğunuzda 250 puan kazanırsınız!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Bir kodla kaydolduğunuzda 500 puan kazanırsınız!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Sonraki"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Puanları al"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Referans kodu doğrulanıyor...",
@@ -7059,12 +7213,6 @@
   "rewardsPointsIcon": {
     "message": "Ödül puanları",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "İlerlemenizi takip etmek ve ödülleri kullanmak için uygulamaya ihtiyacınız olacak. Bu QR kodunu tarayın ve hesaplarınızı içe aktarmanıza yardımcı olalım."
-  },
-  "rewardsQRCodeTitle": {
-    "message": "Mobil uygulamayı al"
   },
   "rewardsSignInFailed": {
     "message": "Giriş yapılamadı",
@@ -7160,7 +7308,7 @@
     "message": "Bu özellik işlem ve imza taleplerini aktif bir şekilde inceleyerek kötü amaçlı aktivite konusunda sizi uyarır. $1"
   },
   "securityAndPassword": {
-    "message": "Güvenlik ve şifre"
+    "message": "Güvenlik ve Şifre"
   },
   "securityAndPrivacy": {
     "message": "Güvenlik ve gizlilik"
@@ -7170,6 +7318,10 @@
   },
   "securityChangePasswordToastError": {
     "message": "Şifre değiştirilemedi. Lütfen tekrar deneyin."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "Yeni şifre kaydedildi ancak $1 ile kilit açma özelliği açılamadı.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "Yeni şifre kaydedildi"
@@ -7319,8 +7471,16 @@
     "message": "Kur",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "$1 kurulumunu yap",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "Snap hesabı ekle"
+  },
+  "settingUpPasskey": {
+    "message": "$1 kurulumu yapılıyor",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "Ayarlar"
@@ -7763,7 +7923,7 @@
     "message": "Ücretsiz denemeyi başlat"
   },
   "shieldTx": {
-    "message": "İşlem Kalkanı"
+    "message": "İşlem Koruması"
   },
   "shieldTxBillingAccount": {
     "message": "Faturalandırılacak hesap"
@@ -8166,6 +8326,9 @@
   "smartAccountRequestsFromDapps": {
     "message": "Dapp'lerden akıllı hesap talepleri"
   },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Dapp'lerin standart hesaplar için akıllı hesap özelliklerini talep etmesine izin verin. MetaMask yalnızca denetlenmiş akıllı hesabımıza yükseltecektir."
+  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Aynı adres. Daha akıllı özellikler."
   },
@@ -8532,7 +8695,7 @@
     "message": "Bir yere yazın, bir metalin üzerine kazıyın veya asla kaybetmemeniz için birden fazla noktada saklayın. Kaybederseniz sonsuza dek kaybolur."
   },
   "srpSecurityQuizQuestionOneRightAnswerTitle": {
-    "message": "Doğru! Hiç kimse Gizli Kurtarma İfadenizi geri almanıza yardımcı olamaz"
+    "message": "Doğru! Gizli Kurtarma İfadenizi kaybetmeniz durumunda hiç kimse size yardımcı olamaz"
   },
   "srpSecurityQuizQuestionOneWrongAnswer": {
     "message": "Size onu tekrar verebilir"
@@ -8797,7 +8960,7 @@
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
   },
   "swap": {
-    "message": "Takas Yap"
+    "message": "Takas"
   },
   "swapAdjustSlippage": {
     "message": "Kaymayı ayarla"
@@ -9429,6 +9592,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "Bildirimler devre dışı bırakılırken bir hata oluştu. Lütfen daha sonra tekrar deneyin."
   },
+  "turnOffPasskey": {
+    "message": "$1 özelliğini kapat",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "$1 kapatılamadı. Tekrar deneyin.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "Aç"
   },
@@ -9531,6 +9702,10 @@
     "message": "Görmek için kilidini açın",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "$1 ile kilidini aç",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "Sabitlemeyi kaldır"
   },
@@ -9594,13 +9769,13 @@
     "message": "Bilinmeyen URL"
   },
   "use4ByteResolution": {
-    "message": "Akıllı sözleşmelerin şifresini çöz"
+    "message": "Akıllı sözleşmeleri çözümle"
   },
   "useDifferentLoginMethod": {
     "message": "Farklı bir oturum açma yöntemi kullanın"
   },
   "useMultiAccountBalanceChecker": {
-    "message": "Toplu hesap bakiyesi talepleri"
+    "message": "Hesap bakiyesi taleplerini gruplandırın"
   },
   "useMultiAccountBalanceCheckerSettingDescription": {
     "message": "Hesap bakiyesi taleplerini toplu ödeme olarak gerçekleştirerek daha hızlı bakiye güncellemeleri alın. Bu, hesap bakiyelerinizi bir arada almanızı sağlar, böylece gelişmiş bir deneyim için daha hızlı güncellemeler alacaksınız. Bu özellik kapalı olduğunda üçüncü tarafların sizin hesaplarınızı birbirleriyle ilişkilendirme olasılığı daha düşük olur."
@@ -9616,6 +9791,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "MetaMask'in üçüncü taraf hizmetlerini kullanarak size ait olan NFT'leri eklemesine izin verin. NFT'leri otomatik algılama, IP adresinizi ve hesap adresinizi bu hizmetlerle paylaşır. Bu özelliğin etkinleştirilmesi IP adresinizi Ethereum adresinizle ilişkilendirebilir ve dolandırıcılar tarafından airdrop'u gerçekleştirilen sahte NFT'leri gösterebilir. Bu riski önlemek için tokenları elle ekleyebilirsiniz."
+  },
+  "usePassword": {
+    "message": "Şifre kullan"
   },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"

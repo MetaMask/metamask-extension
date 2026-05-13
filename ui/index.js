@@ -45,10 +45,10 @@ import {
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
 import {
-  getIsUnlocked,
   getUnconnectedAccountAlertEnabledness,
   getUnconnectedAccountAlertShown,
 } from './ducks/metamask/metamask';
+import { getIsUnlocked } from './ducks/metamask/base-selectors';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
 import {
