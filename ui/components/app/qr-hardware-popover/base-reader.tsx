@@ -156,7 +156,7 @@ const BaseReader = ({
   const { handleScan, resetDecoder } = useDecoderLifecycle(
     { handleSuccess, isReadingWallet, setErrorTitle },
     { setScanProgress, setError },
-    t as (...args: string[]) => string,
+    t,
   );
 
   // ---- Camera permission lifecycle ----------------------------------------

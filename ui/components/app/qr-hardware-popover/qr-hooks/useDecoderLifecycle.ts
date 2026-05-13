@@ -1,5 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { URDecoder } from '@ngraveio/bc-ur';
+import type { useI18nContext } from '../../../../hooks/useI18nContext';
 import type { BaseReaderProps, WebcamError } from '../base-reader.types';
 import type { DecoderCallbacks } from './qr-hooks.types';
 
@@ -24,7 +25,7 @@ export function useDecoderLifecycle(
     'handleSuccess' | 'isReadingWallet' | 'setErrorTitle'
   >,
   callbacks: DecoderCallbacks,
-  t: (...args: string[]) => string,
+  t: ReturnType<typeof useI18nContext>,
 ) {
   const { handleSuccess, isReadingWallet, setErrorTitle } = props;
   const { setScanProgress, setError } = callbacks;
