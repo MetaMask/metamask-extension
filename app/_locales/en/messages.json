@@ -6253,8 +6253,36 @@
   "perpsSize": {
     "message": "Size"
   },
+  "perpsSlippageBlockedError": {
+    "message": "Estimated slippage exceeds your max slippage of $1. Adjust the order size or raise the cap.",
+    "description": "Inline error shown on the perps order entry when the live estimated slippage exceeds the configured max-slippage cap. $1 is the configured max-slippage percent."
+  },
+  "perpsSlippageConfigDescription": {
+    "message": "Orders are blocked when the estimated slippage exceeds this cap. Applies to all future trades until changed.",
+    "description": "Description text inside the slippage configuration sheet."
+  },
+  "perpsSlippageConfigInputLabel": {
+    "message": "Max slippage percent",
+    "description": "Accessibility label for the slippage percent input in the configuration sheet."
+  },
+  "perpsSlippageConfigOutOfRange": {
+    "message": "Enter a value between $1% and $2%.",
+    "description": "Validation error when the user enters a value outside the allowed slippage range. $1 is min percent, $2 is max percent."
+  },
+  "perpsSlippageConfigTitle": {
+    "message": "Max slippage",
+    "description": "Title of the slippage configuration sheet."
+  },
+  "perpsSlippageEstimated": {
+    "message": "Estimated slippage",
+    "description": "Label for the estimated slippage row in the order summary."
+  },
   "perpsSlippageExceeded": {
     "message": "Slippage exceeded. Adjust your slippage tolerance and try again."
+  },
+  "perpsSlippageMaxLabel": {
+    "message": "Max $1",
+    "description": "Compact label shown on the max-slippage button next to the estimated slippage. $1 is the configured max-slippage percent (e.g. '3.0%')."
   },
   "perpsSortByFundingRate": {
     "message": "Funding rate"

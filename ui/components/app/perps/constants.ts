@@ -60,6 +60,17 @@ export const PERPS_CONSTANTS = {
  */
 export const PERPS_MIN_MARKET_ORDER_USD = 10;
 
+// Slippage configuration bounds for the perps order entry surface.
+// Default 3% matches HyperLiquid's `DefaultMarketSlippageBps = 300`, so a
+// user who never opens the config sheet gets the same protection the
+// controller already enforces. Range 0.1%–10% in 0.1% steps covers tight
+// (deep-book major) and loose (illiquid HIP-3) trading without inviting
+// unsafe values.
+export const PERPS_SLIPPAGE_DEFAULT_PCT = 3;
+export const PERPS_SLIPPAGE_MIN_PCT = 0.1;
+export const PERPS_SLIPPAGE_MAX_PCT = 10;
+export const PERPS_SLIPPAGE_STEP_PCT = 0.1;
+
 /**
  * Market sorting configuration
  * Controls sorting behavior for the markets view

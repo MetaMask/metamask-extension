@@ -41,6 +41,9 @@ export const PERPS_EVENT_PROPERTY = {
   MARKET_CATEGORY_FILTER: 'market_category_filter',
   OPEN_POSITION: 'open_position',
   OPEN_ORDER: 'open_order',
+  MAX_SLIPPAGE_PCT: 'max_slippage_pct',
+  MAX_SLIPPAGE_SOURCE: 'max_slippage_source',
+  ESTIMATED_SLIPPAGE_PCT: 'estimated_slippage_pct',
 } as const;
 
 export const PERPS_EVENT_VALUE = {
@@ -70,6 +73,13 @@ export const PERPS_EVENT_VALUE = {
     TUTORIAL_STARTED: 'tutorial_started',
     TUTORIAL_COMPLETED: 'tutorial_completed',
     TUTORIAL_NAVIGATION: 'tutorial_navigation',
+    SLIPPAGE_CONFIG_OPENED: 'slippage_config_opened',
+    SLIPPAGE_CONFIG_CHANGED: 'slippage_config_changed',
+    SLIPPAGE_LIMIT_BLOCKED_ORDER: 'slippage_limit_blocked_order',
+  },
+  MAX_SLIPPAGE_SOURCE: {
+    DEFAULT: 'default',
+    USER_CONFIGURED: 'user_configured',
   },
   BUTTON_CLICKED: {
     DEPOSIT: 'deposit',

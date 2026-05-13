@@ -63,7 +63,14 @@ import {
   selectPerpsDepositPending,
   selectPerpsTradeConfigurations,
   selectPerpsIsTestnet,
+  selectPerpsMaxSlippagePct,
 } from '../../selectors/perps-controller';
+import { useEstimatedSlippage } from '../../hooks/perps/useEstimatedSlippage';
+import { SlippageConfigModal } from '../../components/app/perps/slippage-config-modal';
+import {
+  PERPS_SLIPPAGE_DEFAULT_PCT,
+  PERPS_SLIPPAGE_MAX_PCT,
+ PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import {
   CandlePeriod,
   TimeDuration,
@@ -103,7 +110,6 @@ import {
   isStopLossSafeFromLiquidation,
 } from '../../components/app/perps/utils/tpslValidation';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
-import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import {
   OrderEntry,
   DirectionTabs,
@@ -154,12 +160,14 @@ export function shouldShowPerpsOrderSubmissionToasts(
  * @param currentPrice - Current asset price in USD
  * @param mode - Order mode (new, modify, close)
  * @param existingPositionSize - Size of existing position when closing
+ * @param maxSlippagePct
  */
 function formStateToOrderParams(
   formState: OrderFormState,
   currentPrice: number,
   mode: OrderMode,
-  existingPositionSize?: string,
+  existingPositionSize: string | undefined,
+  maxSlippagePct: number,
 ): OrderParams {
   const isBuy = formState.direction === 'long';
   const marginAmount = Number.parseFloat(formState.amount) || 0;
@@ -179,6 +187,8 @@ function formStateToOrderParams(
     leverage: formState.leverage,
     currentPrice,
     usdAmount: cleanAmount,
+    // Convert percent → basis points (1% = 100bps) for the controller.
+    maxSlippageBps: Math.round(maxSlippagePct * 100),
   };
 
   if (formState.type === 'limit' && formState.limitPrice) {
@@ -244,6 +254,11 @@ const PerpsOrderEntryPage: React.FC = () => {
   trackRef.current = track;
   const tradeConfigurations = useSelector(selectPerpsTradeConfigurations);
   const isTestnet = useSelector(selectPerpsIsTestnet);
+  const persistedMaxSlippagePct = useSelector(selectPerpsMaxSlippagePct);
+  const maxSlippagePct = persistedMaxSlippagePct ?? PERPS_SLIPPAGE_DEFAULT_PCT;
+  const maxSlippageSource: 'default' | 'user_configured' =
+    persistedMaxSlippagePct === undefined ? 'default' : 'user_configured';
+  const [isSlippageConfigOpen, setIsSlippageConfigOpen] = useState(false);
   const hasPendingPerpsDeposit = useSelector(selectPerpsDepositPending);
   const { trigger: triggerDeposit, isLoading: isDepositLoading } =
     usePerpsDepositConfirmation();
@@ -311,6 +326,71 @@ const PerpsOrderEntryPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   const isOrderPending = isSubmitting;
+
+  // Notional USD = margin × leverage. Drives the order-book walk that
+  // produces an estimated slippage percent for AC1 / AC5.
+  const slippageNotional = useMemo(() => {
+    if (!orderFormState) {
+      return 0;
+    }
+    const amount =
+      Number.parseFloat(orderFormState.amount.replace(/,/gu, '')) || 0;
+    return amount * (orderFormState.leverage || 1);
+  }, [orderFormState]);
+
+  const { estimatedSlippagePct, insufficientLiquidity } = useEstimatedSlippage({
+    symbol: decodedSymbol ?? '',
+    notionalUsd: slippageNotional,
+    direction: orderDirection,
+    enabled: orderType === 'market' && orderMode !== 'close',
+  });
+
+  const exceedsMaxSlippage = useMemo(() => {
+    if (orderType !== 'market' || orderMode === 'close') {
+      return false;
+    }
+    if (insufficientLiquidity) {
+      return true;
+    }
+    if (estimatedSlippagePct === null) {
+      return false;
+    }
+    return estimatedSlippagePct > maxSlippagePct;
+  }, [
+    estimatedSlippagePct,
+    insufficientLiquidity,
+    maxSlippagePct,
+    orderType,
+    orderMode,
+  ]);
+
+  const handleOpenSlippageConfig = useCallback(() => {
+    setIsSlippageConfigOpen(true);
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_OPENED,
+      [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: maxSlippagePct,
+      [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]: maxSlippageSource,
+    });
+  }, [track, maxSlippagePct, maxSlippageSource]);
+
+  const handleSaveSlippageConfig = useCallback(
+    (valuePct: number) => {
+      submitRequestToBackground('setPreference', [
+        'perpsMaxSlippagePct',
+        valuePct,
+      ]).catch(() => {
+        // Preference save is best-effort; UI state already reflects the
+        // change via the next Redux flush from the background.
+      });
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_CONFIG_CHANGED,
+        [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: valuePct,
+      });
+    },
+    [track],
+  );
 
   // Dynamic fee rate for close-mode order submission tracking
   const { feeRate: closeFeeRate } = usePerpsOrderFees({
@@ -532,24 +612,24 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     const tpInvalid = Boolean(
       tp?.trim() &&
-      !isValidTakeProfitPrice(tp, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidTakeProfitPrice(tp, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-      !isValidStopLossPrice(sl, {
-        currentPrice: referencePrice,
-        direction: dir,
-      }),
+        !isValidStopLossPrice(sl, {
+          currentPrice: referencePrice,
+          direction: dir,
+        }),
     );
     const slLiquidationInvalid = Boolean(
       sl?.trim() &&
-      !isStopLossSafeFromLiquidation(sl, {
-        liquidationPrice,
-        direction: dir,
-      }),
+        !isStopLossSafeFromLiquidation(sl, {
+          liquidationPrice,
+          direction: dir,
+        }),
     );
 
     return tpInvalid || slInvalid || slLiquidationInvalid;
@@ -607,6 +687,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         hasInvalidTPSL ||
         isInsufficientFunds ||
         isBelowMinOrderSize ||
+        exceedsMaxSlippage ||
         currentPrice <= 0 ||
         (orderMode === 'close' &&
           (orderFormState?.closePercent ?? FULL_CLOSE_PERCENT) <= 0)));
@@ -817,6 +898,32 @@ const PerpsOrderEntryPage: React.FC = () => {
     setOrderFormState(formState);
   }, []);
 
+  // Fire `slippage_limit_blocked_order` once per block transition. Tracking
+  // every render would balloon the event volume — and the AC reads as a
+  // single user-visible state change, not continuous noise.
+  const slippageBlockTrackedRef = useRef(false);
+  useEffect(() => {
+    if (exceedsMaxSlippage && !slippageBlockTrackedRef.current) {
+      slippageBlockTrackedRef.current = true;
+      track(MetaMetricsEventName.PerpsUiInteraction, {
+        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+          PERPS_EVENT_VALUE.INTERACTION_TYPE.SLIPPAGE_LIMIT_BLOCKED_ORDER,
+        [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: maxSlippagePct,
+        [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]: maxSlippageSource,
+        [PERPS_EVENT_PROPERTY.ESTIMATED_SLIPPAGE_PCT]:
+          estimatedSlippagePct ?? PERPS_SLIPPAGE_MAX_PCT,
+      });
+    } else if (!exceedsMaxSlippage) {
+      slippageBlockTrackedRef.current = false;
+    }
+  }, [
+    exceedsMaxSlippage,
+    track,
+    maxSlippagePct,
+    maxSlippageSource,
+    estimatedSlippagePct,
+  ]);
+
   const handleCalculationsChange = useCallback(
     (calculations: OrderCalculations) => {
       setOrderCalculations(calculations);
@@ -922,6 +1029,10 @@ const PerpsOrderEntryPage: React.FC = () => {
           [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
           [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
             orderCalculations?.estimatedFees ?? null,
+          [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: maxSlippagePct,
+          [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]: maxSlippageSource,
+          [PERPS_EVENT_PROPERTY.ESTIMATED_SLIPPAGE_PCT]:
+            estimatedSlippagePct ?? null,
         }),
         ...(event === MetaMetricsEventName.PerpsRiskManagement && {
           [PERPS_EVENT_PROPERTY.ACTION]: deriveTradeAction(),
@@ -993,6 +1104,7 @@ const PerpsOrderEntryPage: React.FC = () => {
             currentPrice,
             orderMode,
             position?.size,
+            maxSlippagePct,
           );
           // Emit the submit-in-progress toast here (not via route state).
           replacePerpsToastByKey({
@@ -1025,6 +1137,10 @@ const PerpsOrderEntryPage: React.FC = () => {
             [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
             [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
               orderCalculations?.estimatedFees ?? null,
+            [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: maxSlippagePct,
+            [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]: maxSlippageSource,
+            [PERPS_EVENT_PROPERTY.ESTIMATED_SLIPPAGE_PCT]:
+              estimatedSlippagePct ?? null,
           });
 
           submitRequestToBackground('perpsSaveTradeConfiguration', [
@@ -1092,6 +1208,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         currentPrice,
         orderMode,
         position?.size,
+        maxSlippagePct,
       );
       // Do not re-emit SUBMIT_IN_PROGRESS via route state — it was already
       // emitted above by replacePerpsToastByKey. Re-emitting from the
@@ -1130,6 +1247,10 @@ const PerpsOrderEntryPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.SIZE]: orderFormState.amount,
         [PERPS_EVENT_PROPERTY.METAMASK_FEE]:
           orderCalculations?.estimatedFees ?? null,
+        [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: maxSlippagePct,
+        [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]: maxSlippageSource,
+        [PERPS_EVENT_PROPERTY.ESTIMATED_SLIPPAGE_PCT]:
+          estimatedSlippagePct ?? null,
       });
 
       submitRequestToBackground('perpsSaveTradeConfiguration', [
@@ -1210,6 +1331,9 @@ const PerpsOrderEntryPage: React.FC = () => {
     closeFeeRate,
     hasPendingPerpsDeposit,
     marketInfo?.szDecimals,
+    maxSlippagePct,
+    maxSlippageSource,
+    estimatedSlippagePct,
   ]);
 
   const handlePrimaryAction = useCallback(async () => {
@@ -1443,7 +1567,26 @@ const PerpsOrderEntryPage: React.FC = () => {
             marginRequired={orderCalculations.marginRequired}
             estimatedFees={orderCalculations.estimatedFees}
             liquidationPrice={orderCalculations.liquidationPrice}
+            slippage={
+              orderType === 'market' && orderMode !== 'close'
+                ? {
+                    estimatedPct: estimatedSlippagePct,
+                    insufficientLiquidity,
+                    maxSlippagePct,
+                    onMaxSlippageClick: handleOpenSlippageConfig,
+                  }
+                : undefined
+            }
           />
+        )}
+        {exceedsMaxSlippage && (
+          <Text
+            variant={TextVariant.BodySm}
+            color={TextColor.ErrorDefault}
+            data-testid="perps-slippage-blocked-error"
+          >
+            {t('perpsSlippageBlockedError', [`${maxSlippagePct.toFixed(1)}%`])}
+          </Text>
         )}
         {submitError && (
           <Text
@@ -1468,6 +1611,12 @@ const PerpsOrderEntryPage: React.FC = () => {
           {isOrderPending ? t('perpsSubmitting') : resolvedButtonText}
         </Button>
       </Box>
+      <SlippageConfigModal
+        isOpen={isSlippageConfigOpen}
+        currentValuePct={maxSlippagePct}
+        onClose={() => setIsSlippageConfigOpen(false)}
+        onSave={handleSaveSlippageConfig}
+      />
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}

@@ -1,28 +1,32 @@
 import React from 'react';
 import {
   Box,
-  Text,
-  TextVariant,
-  TextColor,
+  BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
-  BoxAlignItems,
+  ButtonBase,
+  Text,
+  TextColor,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import type { OrderSummaryProps } from '../../order-entry.types';
+import { formatSlippagePct } from '../../../utils/slippageFormat';
 
 /**
- * OrderSummary - Displays calculated order values (margin, fees, liquidation price)
+ * OrderSummary - Displays calculated order values (margin, fees, liquidation price, slippage)
  *
  * @param props - Component props
  * @param props.marginRequired - Margin required for the position
  * @param props.estimatedFees - Estimated trading fees
  * @param props.liquidationPrice - Estimated liquidation price
+ * @param props.slippage - Optional slippage row config (estimated + max with click handler)
  */
 export const OrderSummary: React.FC<OrderSummaryProps> = ({
   marginRequired,
   estimatedFees,
   liquidationPrice,
+  slippage,
 }) => {
   const t = useI18nContext();
 
@@ -81,6 +85,51 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           {estimatedFees ?? '-'}
         </Text>
       </Box>
+
+      {/* Slippage (TAT-1043) */}
+      {slippage && (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          data-testid="perps-order-summary-slippage-row"
+        >
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={1}
+          >
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
+            >
+              {t('perpsSlippageEstimated')}
+            </Text>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.TextDefault}
+              data-testid="perps-order-summary-estimated-slippage"
+            >
+              {formatSlippagePct(
+                slippage.estimatedPct,
+                slippage.insufficientLiquidity,
+              )}
+            </Text>
+          </Box>
+          <ButtonBase
+            type="button"
+            onClick={slippage.onMaxSlippageClick}
+            data-testid="perps-order-summary-max-slippage-button"
+            className="h-7 rounded-md bg-muted px-2 py-0"
+          >
+            <Text variant={TextVariant.BodySm} color={TextColor.TextDefault}>
+              {t('perpsSlippageMaxLabel', [
+                `${slippage.maxSlippagePct.toFixed(1)}%`,
+              ])}
+            </Text>
+          </ButtonBase>
+        </Box>
+      )}
     </Box>
   );
 };

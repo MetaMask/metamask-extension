@@ -216,6 +216,16 @@ export type OrderSummaryProps = {
   estimatedFees: string | null;
   /** Estimated liquidation price */
   liquidationPrice: string | null;
+  /**
+   * Slippage row props. When omitted the row is hidden — keeps the summary
+   * usable from screens that don't currently surface order-book depth.
+   */
+  slippage?: {
+    estimatedPct: number | null;
+    insufficientLiquidity: boolean;
+    maxSlippagePct: number;
+    onMaxSlippageClick: () => void;
+  };
 };
 
 /**
