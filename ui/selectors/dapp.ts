@@ -1,4 +1,5 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
+import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { getCaip25CaveatValueFromPermissions } from '../pages/permissions-connect/connect-page/utils';
@@ -104,6 +105,10 @@ export const getIsEip1193CompatibleConnection = createDeepEqualSelector(
     }
 
     const caveatValue = getCaip25CaveatValueFromPermissions(permissions);
-    return caveatValue.sessionProperties?.['eip1193-compatible'] === true;
+    return (
+      caveatValue.sessionProperties?.[
+        KnownSessionProperties.Eip1193Compatible
+      ] === true
+    );
   },
 );
