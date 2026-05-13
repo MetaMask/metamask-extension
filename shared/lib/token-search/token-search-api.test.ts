@@ -1,7 +1,4 @@
-import {
-  buildTokenSearchQueryString,
-  searchTokens,
-} from './token-search-api';
+import { buildTokenSearchQueryString, searchTokens } from './token-search-api';
 
 describe('buildTokenSearchQueryString', () => {
   it('includes the trimmed query and the comma-joined CAIP-2 networks list', () => {
@@ -18,9 +15,9 @@ describe('buildTokenSearchQueryString', () => {
   });
 
   it('omits the networks param when an empty array is provided', () => {
-    expect(
-      buildTokenSearchQueryString({ query: 'usdc', networks: [] }),
-    ).toBe('query=usdc');
+    expect(buildTokenSearchQueryString({ query: 'usdc', networks: [] })).toBe(
+      'query=usdc',
+    );
   });
 
   it('serialises first and after pagination params when supplied', () => {

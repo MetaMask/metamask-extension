@@ -427,7 +427,8 @@ describe('TokenManagementPage', () => {
 
     const selectedAddress =
       mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts.selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
+        mockState.metamask.internalAccounts
+          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
       ]?.address;
 
     const stateWithImportedToken = createState();

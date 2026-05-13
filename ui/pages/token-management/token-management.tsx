@@ -138,22 +138,19 @@ export const TokenManagementPage = () => {
     string,
     Record<string, { address: string }[]>
   >;
-  const selectedAddress = useSelector(getSelectedAddress) as
-    | string
-    | undefined;
+  const selectedAddress = useSelector(getSelectedAddress) as string | undefined;
 
   // Looks up the internal account in the selected account group that maps to
   // a given CAIP chain id. Used when importing a search result so the unified
   // AssetsController has an account to associate the asset with.
   const getAccountForChain = useSelector(
-    (state: unknown) =>
-      (caipChainId: CaipChainId) =>
-        getInternalAccountBySelectedAccountGroupAndCaip(
-          state as Parameters<
-            typeof getInternalAccountBySelectedAccountGroupAndCaip
-          >[0],
-          caipChainId,
-        ),
+    (state: unknown) => (caipChainId: CaipChainId) =>
+      getInternalAccountBySelectedAccountGroupAndCaip(
+        state as Parameters<
+          typeof getInternalAccountBySelectedAccountGroupAndCaip
+        >[0],
+        caipChainId,
+      ),
   );
 
   const enabledChainIds = useMemo(
@@ -359,7 +356,9 @@ export const TokenManagementPage = () => {
       const evmName = networkConfigurations?.[onlyChain]?.name;
       const multichainName =
         allMultichainNetworkConfigurations?.[onlyChain as CaipChainId]?.name;
-      return evmName ?? multichainName ?? currentNetwork?.name ?? t('currentNetwork');
+      return (
+        evmName ?? multichainName ?? currentNetwork?.name ?? t('currentNetwork')
+      );
     }
     return t('allDefaultNetworks');
   }, [
@@ -518,10 +517,7 @@ export const TokenManagementPage = () => {
           const { networkClientId } = getNetworkMeta(hexChainId);
           if (!networkClientId) {
             // eslint-disable-next-line no-console
-            console.warn(
-              '[TokenManagement] no network client for',
-              hexChainId,
-            );
+            console.warn('[TokenManagement] no network client for', hexChainId);
             return;
           }
 
@@ -563,13 +559,10 @@ export const TokenManagementPage = () => {
             try {
               if (evmAccount?.id) {
                 // eslint-disable-next-line no-console
-                console.log(
-                  '[TokenManagement] dispatching addCustomAsset',
-                  {
-                    accountId: evmAccount.id,
-                    assetId: result.assetId,
-                  },
-                );
+                console.log('[TokenManagement] dispatching addCustomAsset', {
+                  accountId: evmAccount.id,
+                  assetId: result.assetId,
+                });
                 await dispatch(
                   addCustomAsset(
                     evmAccount.id,

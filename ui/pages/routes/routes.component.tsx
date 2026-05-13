@@ -260,9 +260,7 @@ const SettingsV2LegacyRedirect = () => {
 };
 
 export const TokenManagementFeatureRoute = () => {
-  const isTokenManagementFilterEnabled = useAppSelector(
-    getIsTokenManagementFilterEnabled,
-  );
+  const isTokenManagementFilterEnabled = true;
 
   if (!isTokenManagementFilterEnabled) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -272,9 +270,7 @@ export const TokenManagementFeatureRoute = () => {
 };
 
 export const CustomTokenImportFeatureRoute = () => {
-  const isTokenManagementFilterEnabled = useAppSelector(
-    getIsTokenManagementFilterEnabled,
-  );
+  const isTokenManagementFilterEnabled = true;
 
   if (!isTokenManagementFilterEnabled) {
     return <Navigate to={DEFAULT_ROUTE} replace />;

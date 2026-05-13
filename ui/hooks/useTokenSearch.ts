@@ -129,7 +129,7 @@ export const useTokenSearch = ({
   // value, so clearing the input wipes the visible results immediately even
   // though `keepPreviousData` still has the prior page cached.
   const showResults = enabled && trimmedQuery.length > 0;
-  const results = showResults ? response?.data ?? [] : [];
+  const results = showResults ? (response?.data ?? []) : [];
   const hasNextPage = showResults
     ? Boolean(response?.pageInfo?.hasNextPage)
     : false;

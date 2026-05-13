@@ -17,11 +17,7 @@ const createWrapper = () => {
     defaultOptions: { queries: { retry: false } },
   });
   const Wrapper = ({ children }: { children?: ReactNode }) =>
-    React.createElement(
-      QueryClientProvider,
-      { client: queryClient },
-      children,
-    );
+    React.createElement(QueryClientProvider, { client: queryClient }, children);
   return Wrapper;
 };
 

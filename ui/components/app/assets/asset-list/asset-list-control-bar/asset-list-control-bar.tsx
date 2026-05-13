@@ -122,9 +122,7 @@ const AssetListControlBar = ({
     selectAccountSupportsEnabledNetworks,
   );
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  const isTokenManagementFilterEnabled = useSelector(
-    getIsTokenManagementFilterEnabled,
-  );
+  const isTokenManagementFilterEnabled = true;
   const selectedInternalAccount = useSelector(getSelectedInternalAccount);
 
   const { collections } = useNftsCollections();
