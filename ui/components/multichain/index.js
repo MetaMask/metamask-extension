@@ -13,7 +13,6 @@ export { NetworkListMenu } from './network-list-menu';
 export { ProductTour } from './product-tour-popover';
 export { AccountDetails } from './account-details';
 export { CreateAccount } from './create-account';
-export { CreateEthAccount } from './create-eth-account';
 export { ImportAccount } from './import-account';
 export { ImportNftsModal } from './import-nfts-modal';
 export { AccountDetailsMenuItem, ViewExplorerMenuItem } from './menu-items';
@@ -44,7 +43,6 @@ export { Toast, ToastContainer } from './toast';
 export { DisconnectPermissionsModal } from './disconnect-permissions-modal';
 export { ReceiveModal } from './receive-modal';
 export { EditNetworksModal } from './edit-networks-modal';
-export { EditAccountsModal } from './edit-accounts-modal';
 export {
   Carousel,
   CarouselWithEmptyState,
