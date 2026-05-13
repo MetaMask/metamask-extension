@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 209,
+      "currentMigrationVersion": 211,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -109,9 +109,6 @@
         }
       },
       "currentCurrency": "usd"
-    },
-    "DelegationController": {
-      "delegations": {}
     },
     "EnsController": {
       "ensEntries": {
@@ -2239,6 +2236,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 209
+    "version": 211
   }
 }

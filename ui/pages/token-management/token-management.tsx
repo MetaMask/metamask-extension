@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -45,10 +45,12 @@ import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors
 import {
   ignoreTokens as ignoreTokensAction,
   multichainIgnoreAssets,
-  showImportTokensModal,
   showModal,
 } from '../../store/actions';
-import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
+import {
+  CUSTOM_TOKEN_IMPORT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
 import {
@@ -78,6 +80,7 @@ type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 export const TokenManagementPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [pendingKey, setPendingKey] = useState<string | undefined>();
@@ -198,8 +201,8 @@ export const TokenManagementPage = () => {
   }, [dispatch]);
 
   const handleAddCustomToken = useCallback(() => {
-    dispatch(showImportTokensModal());
-  }, [dispatch]);
+    navigate(CUSTOM_TOKEN_IMPORT_ROUTE);
+  }, [navigate]);
 
   const networkFilterLabel = useMemo(() => {
     const enabledCount = enabledChainIds.length;
