@@ -4,65 +4,6 @@ import { KeyringType } from '@metamask/keyring-api/v2';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
- * Get the mnemonic for a given entropy source. If no source is
- * provided, the primary HD keyring's mnemonic will be returned.
- *
- * @param messenger - The messenger.
- * @param source - The ID of the entropy source keyring.
- * @returns The mnemonic.
- */
-export async function getMnemonic(
-  messenger: RootMessenger<KeyringControllerWithKeyringV2UnsafeAction, never>,
-  source?: string | undefined,
-): Promise<Uint8Array> {
-  if (!source) {
-    const mnemonic = (await messenger.call(
-      'KeyringController:withKeyringV2Unsafe',
-      {
-        type: KeyringType.Hd,
-        index: 0,
-      },
-      async ({ keyring }) => (keyring as HdKeyring).mnemonic,
-    )) as Uint8Array | null;
-
-    if (!mnemonic) {
-      throw new Error('Primary keyring mnemonic unavailable.');
-    }
-
-    return mnemonic;
-  }
-
-  try {
-    const keyringData = await messenger.call(
-      'KeyringController:withKeyringV2Unsafe',
-      {
-        id: source,
-      },
-      async ({ keyring }) => ({
-        type: keyring.type,
-        mnemonic: (keyring as HdKeyring).mnemonic,
-      }),
-    );
-
-    const { type, mnemonic } = keyringData as {
-      type: string;
-      mnemonic?: Uint8Array;
-    };
-
-    if (type !== KeyringType.Hd || !mnemonic) {
-      // The keyring isn't guaranteed to have a mnemonic (e.g.,
-      // hardware wallets, which can't be used as entropy sources),
-      // so we throw an error if it doesn't.
-      throw new Error(`Entropy source with ID "${source}" not found.`);
-    }
-
-    return mnemonic;
-  } catch {
-    throw new Error(`Entropy source with ID "${source}" not found.`);
-  }
-}
-
-/**
  * Get the mnemonic seed for a given entropy source. If no source is
  * provided, the primary HD keyring's mnemonic seed will be returned.
  *
