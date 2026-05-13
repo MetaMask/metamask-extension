@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "अपने वॉलेट में टोकन ऑटोडिटेक्ट करें, NFT प्रदर्शित करें, और बैच अकाउंट बैलेंस संबंधी अपडेट प्राप्त करें"
   },
+  "asterdexReferralConfirmText": {
+    "message": "हाँ, 4% वापस पाएं",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 4% वापस पाएं।",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड्स पर 4% वापस पाएं। यह छूट AsterDEX की $1 के अनुसार भविष्य के सभी ट्रेड्स पर लागू होती है। MetaMask एक शुल्क अर्जित करता है।",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "AsterDEX पर 4% वापस पाएं",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "स्वैप को मुफ्त में कैंसिल करने की कोशिश करें"
@@ -1144,6 +1156,9 @@
     "message": "ध्यान रखें कि यह मूल्य केवल एक अनुमान है और ट्रांसेक्शन पूरा होने के बाद अंतिम रूप दिया जाएगा। आपके रिवॉर्ड्स बैलेंस में पॉइंट्स कन्फर्म होने में 1 घंटे तक का समय लग सकता है।",
     "description": "Second part of tooltip content explaining how points are calculated"
   },
+  "bridgePriceDataUnavailableError": {
+    "message": "हमें इस टोकन की कीमत की जानकारी नहीं मिल पाई। आगे बढ़ने से पहले पक्का कर लें कि आपको जो राशि मिली है, वह आपकी उम्मीद के मुताबिक है।"
+  },
   "bridgePriceImpact": {
     "message": "कीमत का प्रभाव"
   },
@@ -1372,6 +1387,18 @@
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 एक बुरी नीयत वाला टोकन है।"
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 को गलत इरादे वाला बताया गया है। इससे इंटरैक्ट करने वाले किसी भी व्यक्ति के पैसे चोरी होने की संभावना है।"
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 एक संदिग्ध टोकन है।"
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 को गलत इरादे वाला बताया गया है। आगे बढ़ने से पहले जोखिमों पर एक नज़र डालें।"
+  },
   "bridgeTokenNotFound": {
     "message": "कोई टोकन \"$1\" से मेल नहीं खाता"
   },
@@ -1425,11 +1452,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "आपने भेजा"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "अधिकतम अनुमत सीमा का उपयोग करें"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "इस ब्रिज के लिए गैस फीस का भुगतान करने के लिए आपके पास पर्याप्त $1 नहीं है। कम राशि दर्ज करें या अधिक $1 खरीदें।"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "गैस के लिए अधिक $1 की आवश्यकता है"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "इस विशेष नेटवर्क के लिए आपके अकाउंट में $1 $3 का रिज़र्व बनाए रखना आवश्यक है। आपके वर्तमान बैलेंस के साथ, आप अधिकतम $2 $3 तक उपयोग कर सकते हैं",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "न्यूनतम $1 रिज़र्व बैलेंस आवश्यक है",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "ब्रिज किया गया"
@@ -1838,6 +1876,9 @@
   "connectAHardwareWallet": {
     "message": "किसी hardware wallet को कनेक्ट करें"
   },
+  "connectAHardwareWalletDescription": {
+    "message": "USB या QR कोड का उपयोग करना"
+  },
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
   },
@@ -2071,6 +2112,19 @@
   },
   "creatorAddress": {
     "message": "निर्माता का एड्रेस"
+  },
+  "criticalErrorAttemptRecovery": {
+    "message": "पुनर्प्राप्ति का प्रयास करें"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "यदि ऊपर दिए गए विकल्पों में से कोई भी काम नहीं करता है, तो $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "MetaMask को दोबारा इंस्टॉल करें"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "अभी भी समस्या आ रही है?"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2370,6 +2424,14 @@
   "defiReferralCheckboxLabel": {
     "message": "MetaMask को रेफ़रल कोड जोड़ने की अनुमति दें। यह स्थायी है। साइट अपने नियमों के अनुसार डिस्काउंट देती है। MetaMask को एक फीस मिलता है।",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "जी नहीं, धन्यवाद",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "शर्तें",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3185,6 +3247,10 @@
     "message": "एक्सपायर हो गया",
     "description": "Tag label for a gator permission that has expired"
   },
+  "gatorPermissionsStatusRevoked": {
+    "message": "रद्द किया गया",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "स्ट्रीम रेट",
     "description": "Label for the stream rate of a permission"
@@ -3218,9 +3284,21 @@
     "message": "web3 का उपयोग करने के लिए अपना वॉलेट तैयार करें",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "हाँ, 5% सेव करें",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 5% तक की बचत करें।",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड्स में 5% सेव करें। यह छूट GMX की $1 के अनुसार भविष्य के सभी ट्रेड्स पर लागू होती है। MetaMask एक शुल्क अर्जित करता है।",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "GMX पर 5% सेव करें",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "साइट पर जाएं"
@@ -3444,9 +3522,21 @@
   "honeypotTitle": {
     "message": "हनी पॉट"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "हाँ, 4% सेव करें",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMask रेफ़रल कोड के साथ ट्रेड पर 4% तक की बचत करें।",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "MetaMask रेफ़रल कोड के साथ ट्रेड्स पर 4% सेव करें। यह छूट हाइपरलिक्विड की $1 के अनुसार भविष्य के सभी ट्रेड्स पर लागू होती है। MetaMask एक शुल्क अर्जित करता है।",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "हाइपरलिक्विड पर 4% सेव करें",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "मैं समझता हूं"
@@ -4006,6 +4096,9 @@
   },
   "maxFeeTooltip": {
     "message": "ट्रांसेक्शन के भुगतान के लिए अधिकतम शुल्क प्रदान किया गया।"
+  },
+  "maybeLater": {
+    "message": "शायद बाद में"
   },
   "medium": {
     "message": "मार्केट"
@@ -5236,6 +5329,126 @@
   "participateInMetaMetricsDescription": {
     "message": "MetaMetrics में भाग लें, जिससे हमें MetaMask को बेहतर बनाने में मदद मिल सके"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "बायोमेट्रिक्स",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "टच ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "विंडोज़ हैलो",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "पासवर्ड डालने के बजाय MetaMask को अनलॉक करने के लिए $1 का उपयोग करें। यह इस डिवाइस पर केवल एक पासकी बनाता है।",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "इस वॉलेट के लिए $1 पहले से ही सेटअप किया जा चुका है।",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "हम आपके $1 को सत्यापित नहीं कर सके। फिर से प्रयास करें।",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "आपका $1 उत्तर अधूरा था। फिर से प्रयास करें।",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "$1 साइन-इन सत्र समाप्त हो गया है। फिर से प्रयास करें।",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "$1 सेटअप सत्र समाप्त हो गया है। शुरुआत से फिर से प्रयास करें।",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "इस वॉलेट के लिए $1 सेटअप नहीं है। सेटिंग्स में जाकर $1 को चालू करें।",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "$1 सेटअप नहीं हो पाया। फिर से प्रयास करें",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "हम आपके $1 सेटअप को सत्यापित नहीं कर सके। फिर से प्रयास करें।",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "हम $1 के साथ अनलॉक नहीं कर सके। फिर से प्रयास करें, या सेटिंग्स में जाकर $1 को दोबारा सेटअप करें।",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1 आपके वर्तमान वॉलेट लॉक से मेल नहीं खाता। सेटिंग्स में जाकर $1 को फिर से सेटअप करें।",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "आपका पासवर्ड अपडेट हो गया है, लेकिन $1 अनलॉक को चालू नहीं किया जा सका।",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "हम आपके $1 को सत्यापित नहीं कर सके। फिर से प्रयास करें या अपने पासवर्ड का उपयोग करें।",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "$1 रजिस्टर करें",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "$1 को सत्यापित करें",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "एक्सटेंशन को फुल-स्क्रीन विंडो में खोलें और फिर से प्रयास करें।",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "फुल स्क्रीन विंडो खोलें",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "अभी भी समस्या आ रही है?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "अनलॉक करने में समस्या आ रही है?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "अनलॉक करने में समस्या आ रही है",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "सत्यापन में समस्या आ रही है?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "सत्यापन में समस्या आ रही है?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "$1 बंद किया गया",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "$1 चालू किया गया",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "$1 से अनलॉक नहीं हो पाया। कृपया अपने पासवर्ड से आज़माएं।",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "पासवर्ड डालने के बजाय सत्यापन के लिए $1 का उपयोग करें।",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "$1 के साथ कन्फर्म करें",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "password": {
     "message": "पासवर्ड"
   },
@@ -5648,6 +5861,9 @@
     "message": "ट्रेड करने के लिए उपलब्ध है",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "जब बेसिक फ़ंक्शनैलिटी बंद होती है, तो यह सुविधा उपलब्ध नहीं होती।"
+  },
   "perpsBatchCancelFailed": {
     "message": "एक या एक से अधिक ऑर्डर कैंसिल नहीं हो पाए। कृपया फिर से कोशिश करें।"
   },
@@ -5660,6 +5876,9 @@
   "perpsCancelOrder": {
     "message": "ऑर्डर कैंसिल करें"
   },
+  "perpsCandleIntervals": {
+    "message": "कैंडल इंटर्वल सेट करें"
+  },
   "perpsCandlePeriodDays": {
     "message": "दिन"
   },
@@ -5671,6 +5890,9 @@
   },
   "perpsCloseAll": {
     "message": "सब बंद करें"
+  },
+  "perpsCloseAmount": {
+    "message": "अमाउंट क्लोज़ करें"
   },
   "perpsCloseLong": {
     "message": "लॉन्ग को क्लोज़ करें"
@@ -5873,6 +6095,10 @@
   "perpsMid": {
     "message": "मिड"
   },
+  "perpsMinOrderSize": {
+    "message": "ऑर्डर का आकार कम से कम $1 होना चाहिए",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "बदलाव करें"
   },
@@ -5983,6 +6209,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "अपनी शॉर्ट पोज़िशन को लॉन्ग में बदलें"
   },
+  "perpsSaveChanges": {
+    "message": "बदलावों को सेव करें",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "मार्केट्स खोजें"
   },
@@ -6059,6 +6289,10 @@
   "perpsStopLoss": {
     "message": "स्टॉप लॉस",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "स्टॉप लॉस $1 लिक्विडेशन प्राइस का होना चाहिए",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "स्टॉप लॉस $1 $2 प्राइस का होना चाहिए",
@@ -6978,64 +7212,6 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "क्षेत्र सपोर्टेड नहीं है"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "MetaMask में किया गया हर स्वैप और पर्प्स ट्रेड आपको रिवॉर्ड्स के करीब ले जाता है। अपने एकाउंट्स जोड़ें और अपने पॉइंट्स को बढ़ते हुए देखें।"
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "हर ट्रेड पर पॉइंट्स कमाएं"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "पॉइंट्स माइलस्टोन हिट करें और ऐसे लाभ पाएं जैसे पर्प्स फीस में 50% की छूट, एक्सक्लूसिव टोकन और एक मुफ्त MetaMask मेटल कार्ड।"
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "बड़े पर्क्स के लिए स्तर बढ़ाएं"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "आप एक्सटेंशन में पॉइंट्स कमा सकते हैं, लेकिन पर्प्स ट्रेड करने, अपनी प्रोग्रेस ट्रैक करने और रिवॉर्ड्स रिडीम करने के लिए आपको मोबाइल ऐप की ज़रूरत होगी।"
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "मोबाइल पर रिवॉर्ड अनलॉक करें"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "\"पॉइंट्स क्लेम करें\" पर क्लिक करके, आप हमारे $1 के लिए सहमत हो रहे हैं। हम आपको ऑटोमैटिकली रिवॉर्ड देने के लिए आपकी ऑन-चेन एक्टिविटी को ट्रैक करेंगे। $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
-    "message": "ज़्यादा जानें"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
-    "message": "नियम और गोपनीयता सूचना"
-  },
-  "rewardsOnboardingStep4OptInError": {
-    "message": "ऑप्ट-इन नहीं हो पाया"
-  },
-  "rewardsOnboardingStep4ReferralCodeError": {
-    "message": "रेफरल कोड ग़लत है"
-  },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "250 पॉइंट्स कमाने के लिए रेफरल कोड का उपयोग करें"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
-    "message": "रेफरल कोड (वैकल्पिक)"
-  },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
-    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
-  },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
-    "message": "अपना कनेक्शन जांचें और फिर से प्रयास करें।"
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "साइन अप करने पर आप 250 पॉइंट्स कमाएँगे!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "कोड के साथ साइन अप करने पर आप 500 पॉइंट्स कमाएँगे!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "आगे"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "पॉइंट्स क्लेम करें"
-  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "रेफरल कोड वेरीफाई किया जा रहा है…",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7051,12 +7227,6 @@
   "rewardsPointsIcon": {
     "message": "रिवॉर्ड पॉइंट्स",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "आपको अपनी प्रोग्रेस ट्रैक करने और रिवॉर्ड रिडीम करने के लिए ऐप की ज़रूरत होगी। इस QR कोड को स्कैन करें और हम आपके अकाउंट इंपोर्ट करने में आपकी मदद करेंगे।"
-  },
-  "rewardsQRCodeTitle": {
-    "message": "मोबाइल ऐप डाउनलोड करें"
   },
   "rewardsSignInFailed": {
     "message": "साइन इन नहीं हो पाया",
@@ -7162,6 +7332,10 @@
   },
   "securityChangePasswordToastError": {
     "message": "पासवर्ड बदला नहीं जा सका। कृपया फिर से प्रयास करें।"
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "नया पासवर्ड सेव हो गया है, लेकिन $1 अनलॉक को चालू नहीं किया जा सका।",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "नया पासवर्ड सेव किया गया"
@@ -7311,8 +7485,16 @@
     "message": "सेट अप करें",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "$1 सेट अप करें",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "अकाउंट Snap जोड़ें"
+  },
+  "settingUpPasskey": {
+    "message": "$1 सेट किया जा रहा है",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "सेटिंग्स"
@@ -8157,6 +8339,9 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "dapps से स्मार्ट अकाउंट रिक्वेस्ट"
+  },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "डैप्स को स्टैंडर्ड एकाउंट्स के लिए स्मार्ट अकाउंट फीचर्स का अनुरोध करने दें। MetaMask केवल हमारे ऑडिट किए गए स्मार्ट अकाउंट में ही अपग्रेड करेगा।"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "वही एड्रेस। और स्मार्ट फीचर्स।"
@@ -9421,6 +9606,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "नोटिफिकेशंस अक्षम करने में गड़बड़ी हुई। कृपया बाद में फिर से प्रयास करें।"
   },
+  "turnOffPasskey": {
+    "message": "$1 बंद करें",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "हम $1 को बंद नहीं कर सके। फिर से प्रयास करें।",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "चालू करें"
   },
@@ -9523,6 +9716,10 @@
     "message": "प्रकट करने के लिए अनलॉक करें",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "$1 के साथ अनलॉक करें",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "अनपिन करें"
   },
@@ -9608,6 +9805,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "MetaMask को थर्ड पार्टी सर्विसेज़ का उपयोग करके आपके NFTs जोड़ने दें। NFTs को ऑटोडिटेक्ट करने से आपका आईपी और अकाउंट एड्रेस इन सेवाओं के सामने आ जाता है। इस फ़ीचर को चालू करने से आपका आईपी ​​एड्रेस आपके Ethereum एड्रेस के साथ जुड़ सकता है और धोखाधड़ी करने वाले लोगों द्वारा एयरड्रॉप किए गए नकली NFTs दिख सकते हैं। आप मैन्युअल तरीके से टोकन जोड़कर इस ख़तरे से बच सकते हैं।"
+  },
+  "usePassword": {
+    "message": "पासवर्ड का उपयोग करें"
   },
   "usePhishingDetection": {
     "message": "फिशिंग डिटेक्शन का इस्तेमाल करें"

@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "Tự động phát hiện token trong ví của bạn, hiển thị NFT và nhận hàng loạt thông tin cập nhật về số dư tài khoản"
   },
+  "asterdexReferralConfirmText": {
+    "message": "Có, hoàn tiền 4%",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "Được hoàn 4% khi giao dịch với mã giới thiệu MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "Hoàn tiền 4% cho các giao dịch bằng mã giới thiệu MetaMask. Khoản chiết khấu này áp dụng cho tất cả các giao dịch trong tương lai, theo $1 của AsterDEX. MetaMask sẽ nhận được một khoản phí.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "Hoàn tiền 4% trên AsterDEX",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Cố gắng hủy hoán đổi miễn phí"
@@ -1144,6 +1156,9 @@
     "message": "Lưu ý rằng giá trị này chỉ là ước tính và sẽ được xác nhận sau khi giao dịch hoàn tất. Điểm có thể mất đến 1 giờ để được xác nhận trong số dư Phần thưởng.",
     "description": "Second part of tooltip content explaining how points are calculated"
   },
+  "bridgePriceDataUnavailableError": {
+    "message": "Chúng tôi không thể lấy thông tin giá cho token này. Hãy đảm bảo số lượng nhận được đúng như bạn mong đợi trước khi tiếp tục."
+  },
   "bridgePriceImpact": {
     "message": "Tác động giá"
   },
@@ -1372,6 +1387,18 @@
   "bridgeTo": {
     "message": "Cầu nối đến"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 là token độc hại."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 bị đánh dấu là độc hại. Có khả năng sẽ đánh cắp tài sản từ bất kỳ ai tương tác với nó."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 là một token đáng ngờ."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 bị đánh dấu là đáng ngờ. Hãy xem xét các rủi ro trước khi tiếp tục."
+  },
   "bridgeTokenNotFound": {
     "message": "Không có token nào khớp với \"$1\""
   },
@@ -1425,11 +1452,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "Bạn đã gửi"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "Sử dụng mức tối đa được cho phép"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "Bạn không có đủ $1 để thanh toán phí gas cho cầu nối này. Nhập số tiền nhỏ hơn hoặc mua thêm $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Cần thêm $1 để trả phí gas"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "Mạng cụ thể này yêu cầu duy trì khoản dự trữ $1 $3 trong tài khoản của bạn. Với số dư hiện tại, bạn có thể sử dụng tối đa $2 $3",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "Yêu cầu số dư dự trữ tối thiểu $1",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "Đã tạo cầu nối"
@@ -1838,6 +1876,9 @@
   "connectAHardwareWallet": {
     "message": "Kết nối ví cứng"
   },
+  "connectAHardwareWalletDescription": {
+    "message": "Sử dụng USB hoặc mã QR"
+  },
   "connectAccounts": {
     "message": "Kết nối tài khoản"
   },
@@ -2071,6 +2112,19 @@
   },
   "creatorAddress": {
     "message": "Địa chỉ của người tạo"
+  },
+  "criticalErrorAttemptRecovery": {
+    "message": "Thử khôi phục"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "Nếu không cách nào ở trên hiệu quả, $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "Cài đặt lại MetaMask"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "Vẫn gặp sự cố?"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2370,6 +2424,14 @@
   "defiReferralCheckboxLabel": {
     "message": "Cho phép MetaMask thêm mã giới thiệu. Hành động này là vĩnh viễn. Trang web cung cấp chiết khấu theo điều khoản của họ. MetaMask nhận được một khoản phí.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "Không, cảm ơn",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "điều khoản",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3222,9 +3284,21 @@
     "message": "Chuẩn bị ví của bạn để sử dụng web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "Có, tiết kiệm 5%",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "Tiết kiệm đến 5% khi giao dịch với mã giới thiệu MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "Tiết kiệm 5% cho các giao dịch bằng mã giới thiệu MetaMask. Khoản chiết khấu này áp dụng cho tất cả các giao dịch trong tương lai, theo $1 của GMX. MetaMask sẽ nhận được một khoản phí.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "Tiết kiệm 5% trên GMX",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Đến trang web"
@@ -3448,9 +3522,21 @@
   "honeypotTitle": {
     "message": "Bẫy trong bẫy"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "Có, tiết kiệm 4%",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "Tiết kiệm đến 4% khi giao dịch với mã giới thiệu MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "Tiết kiệm 4% cho các giao dịch bằng mã giới thiệu MetaMask. Áp dụng cho tất cả các giao dịch trong tương lai theo $1 của Hyperliquid. MetaMask sẽ nhận được một khoản phí.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Tiết kiệm 4% trên Hyperliquid",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Tôi hiểu"
@@ -4010,6 +4096,9 @@
   },
   "maxFeeTooltip": {
     "message": "Một khoản phí tối đa được cung cấp để thanh toán cho giao dịch."
+  },
+  "maybeLater": {
+    "message": "Để sau"
   },
   "medium": {
     "message": "Thị trường"
@@ -5240,6 +5329,126 @@
   "participateInMetaMetricsDescription": {
     "message": "Tham gia vào MetaMetrics để giúp chúng tôi cải thiện MetaMask"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "Sinh trắc học",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "Sử dụng $1 để mở khóa MetaMask thay vì nhập mật khẩu. Thao tác này sẽ tạo một mã khóa chỉ có trên thiết bị này.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "$1 đã được thiết lập cho ví này.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "Chúng tôi không thể xác minh $1 của bạn. Hãy thử lại.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Phản hồi $1 của bạn chưa hoàn tất. Hãy thử lại.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "Phiên đăng nhập $1 đã hết hạn. Hãy thử lại.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "Phiên thiết lập $1 đã hết hạn. Hãy thử lại từ đầu.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "$1 chưa được thiết lập cho ví này. Bật $1 trong phần Cài đặt.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "Thiết lập $1 không thành công. Hãy thử lại",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "Chúng tôi không thể xác minh thiết lập $1 của bạn. Hãy thử lại.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "Chúng tôi không thể mở khóa bằng $1. Hãy thử lại hoặc thiết lập lại $1 trong phần Cài đặt.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1 không trùng khớp với khóa ví hiện tại của bạn. Hãy thiết lập lại $1 trong phần Cài đặt.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Mật khẩu của bạn đã được cập nhật nhưng không thể bật mở khóa bằng $1.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "Chúng tôi không thể xác minh $1 của bạn. Hãy thử lại hoặc sử dụng mật khẩu.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Đăng ký $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "Xác thực $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Hãy thử mở tiện ích mở rộng ở chế độ cửa sổ toàn màn hình và thử lại.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Mở cửa sổ toàn màn hình",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Vẫn gặp sự cố?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "Gặp sự cố khi mở khóa?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "Sự cố khi mở khóa",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Gặp sự cố khi xác thực?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Gặp sự cố khi xác thực?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "Đã tắt $1",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "Đã bật $1",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "Mở khóa bằng $1 không thành công. Hãy thử dùng mật khẩu của bạn.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "Sử dụng $1 để xác thực thay vì nhập mật khẩu.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "Xác nhận bằng $1",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "password": {
     "message": "Mật khẩu"
   },
@@ -5652,6 +5861,9 @@
     "message": "Có sẵn để giao dịch",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "Tính năng này không khả dụng khi chức năng cơ bản bị tắt."
+  },
   "perpsBatchCancelFailed": {
     "message": "Không thể hủy một hoặc nhiều lệnh. Hãy thử lại."
   },
@@ -5664,6 +5876,9 @@
   "perpsCancelOrder": {
     "message": "Hủy lệnh"
   },
+  "perpsCandleIntervals": {
+    "message": "Đặt khoảng nến"
+  },
   "perpsCandlePeriodDays": {
     "message": "Ngày"
   },
@@ -5675,6 +5890,9 @@
   },
   "perpsCloseAll": {
     "message": "Đóng tất cả"
+  },
+  "perpsCloseAmount": {
+    "message": "Số lượng đóng"
   },
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
@@ -5877,6 +6095,10 @@
   "perpsMid": {
     "message": "Giá trung bình"
   },
+  "perpsMinOrderSize": {
+    "message": "Kích thước lệnh tối thiểu phải là $1",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "Chỉnh sửa"
   },
@@ -5987,6 +6209,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Đảo vị thế bán khống của bạn thành mua khống"
   },
+  "perpsSaveChanges": {
+    "message": "Lưu thay đổi",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "Tìm kiếm thị trường"
   },
@@ -6063,6 +6289,10 @@
   "perpsStopLoss": {
     "message": "Cắt lỗ",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "Giá cắt lỗ phải $1 giá thanh lý",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "Cắt lỗ phải là giá $1 $2",
@@ -6986,64 +7216,6 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Khu vực không được hỗ trợ"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Mỗi lần hoán đổi và giao dịch hợp đồng vĩnh cửu mà bạn thực hiện trong MetaMask sẽ giúp bạn tiến gần hơn đến phần thưởng. Hãy thêm tài khoản và xem điểm của bạn tăng lên."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Kiếm điểm với mỗi giao dịch"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Đạt các mốc điểm để nhận những đặc quyền như giảm 50% phí hợp đồng vĩnh cửu, token độc quyền và Thẻ MetaMask Metal miễn phí."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Thăng cấp để nhận đặc quyền lớn hơn"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Bạn có thể kiếm điểm trong tiện ích mở rộng, nhưng bạn sẽ cần ứng dụng di động để giao dịch hợp đồng vĩnh cửu, theo dõi tiến độ và đổi phần thưởng."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Mở khóa phần thưởng trên di động"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "Bằng cách nhấn vào \"Nhận điểm\", bạn đồng ý với $1. Chúng tôi sẽ theo dõi hoạt động trên chuỗi của bạn để tự động tặng thưởng cho bạn. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
-    "message": "Tìm hiểu thêm"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
-    "message": "Điều khoản và Thông báo quyền riêng tư"
-  },
-  "rewardsOnboardingStep4OptInError": {
-    "message": "Đăng ký tham gia thất bại"
-  },
-  "rewardsOnboardingStep4ReferralCodeError": {
-    "message": "Mã giới thiệu không hợp lệ"
-  },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Sử dụng mã giới thiệu để nhận 250 điểm"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
-    "message": "Mã giới thiệu (không bắt buộc)"
-  },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
-    "message": "Không thể xác minh mã giới thiệu."
-  },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
-    "message": "Kiểm tra kết nối của bạn và thử lại."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Bạn sẽ nhận được 250 điểm khi đăng ký!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Bạn sẽ nhận được 500 điểm khi đăng ký bằng mã giới thiệu!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Tiếp theo"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Nhận điểm"
-  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Đang xác minh mã giới thiệu...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7059,12 +7231,6 @@
   "rewardsPointsIcon": {
     "message": "Điểm phần thưởng",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "Bạn sẽ cần ứng dụng để theo dõi tiến độ và đổi phần thưởng. Quét mã QR này và chúng tôi sẽ giúp bạn nhập tài khoản."
-  },
-  "rewardsQRCodeTitle": {
-    "message": "Tải ứng dụng di động"
   },
   "rewardsSignInFailed": {
     "message": "Đăng nhập thất bại",
@@ -7170,6 +7336,10 @@
   },
   "securityChangePasswordToastError": {
     "message": "Không thể thay đổi mật khẩu. Vui lòng thử lại."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "Mật khẩu mới đã được lưu nhưng không thể bật mở khóa bằng $1.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "Mật khẩu mới đã được lưu"
@@ -7319,8 +7489,16 @@
     "message": "Thiết lập",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "Thiết lập $1",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "Thêm tài khoản Snap"
+  },
+  "settingUpPasskey": {
+    "message": "Đang thiết lập $1",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "Cài đặt"
@@ -8165,6 +8343,9 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Yêu cầu tài khoản thông minh từ dapp"
+  },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Cho phép dapp yêu cầu các tính năng tài khoản thông minh cho tài khoản tiêu chuẩn. MetaMask sẽ chỉ nâng cấp lên tài khoản thông minh đã được kiểm tra của chúng tôi."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Cùng địa chỉ. Tính năng thông minh hơn."
@@ -9429,6 +9610,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "Đã xảy ra lỗi khi tắt thông báo. Vui lòng thử lại sau."
   },
+  "turnOffPasskey": {
+    "message": "Tắt $1",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "Chúng tôi không thể tắt $1. Hãy thử lại.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "Bật"
   },
@@ -9531,6 +9720,10 @@
     "message": "Mở khóa để hiển thị",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Mở khóa bằng $1",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "Bỏ ghim"
   },
@@ -9616,6 +9809,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "Cho phép MetaMask thêm các NFT mà bạn sở hữu bằng cách sử dụng dịch vụ của bên thứ ba. Tính năng Tự động phát hiện NFT sẽ làm lộ địa chỉ IP và tài khoản của bạn với các dịch vụ này. Việc bật tính năng này có thể liên kết địa chỉ IP của bạn với địa chỉ Ethereum của bạn và hiển thị các NFT giả do những kẻ lừa đảo phát tán. Bạn có thể thêm token theo cách thủ công để tránh rủi ro này."
+  },
+  "usePassword": {
+    "message": "Sử dụng mật khẩu"
   },
   "usePhishingDetection": {
     "message": "Sử dụng tính năng phát hiện lừa đảo"
