@@ -1,5 +1,8 @@
 // This file is for Jest-specific setup only and runs before our Jest tests.
 import '../helpers/setup-after-helper';
+// Mirror the explicit bootstrap performed by `ui/index.js` so any test that
+// renders a template referencing `MetaMaskTranslation` has it registered.
+import '../../ui/components/app/metamask-template-renderer/register-extras';
 
 jest.mock('webextension-polyfill', () => {
   return {
