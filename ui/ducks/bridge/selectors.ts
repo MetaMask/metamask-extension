@@ -850,9 +850,7 @@ export const getInsufficientNativeReserveError = createSelector(
       new BigNumber(activeQuote.totalNetworkFee.amount).gt(0)
     ) {
       const nativeBalanceInNativeUnits = new BigNumber(nativeBalance);
-      const totalNetworkFee = new BigNumber(
-        activeQuote.totalNetworkFee.amount,
-      );
+      const totalNetworkFee = new BigNumber(activeQuote.totalNetworkFee.amount);
       const sentAmount = new BigNumber(activeQuote.sentAmount.amount);
 
       if (
