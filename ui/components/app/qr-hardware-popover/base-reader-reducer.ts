@@ -1,6 +1,7 @@
 import {
   CameraReadyState,
   type CameraReadyStateValue,
+  type WebcamError,
 } from './base-reader.types';
 
 export const ActionType = {
@@ -20,7 +21,7 @@ type Action =
   | { type: typeof ActionType.SetBlocked }
   | { type: typeof ActionType.SetNeeded }
   | { type: typeof ActionType.SetAccessingCamera }
-  | { type: typeof ActionType.SetError; payload: Error & { type?: string } }
+  | { type: typeof ActionType.SetError; payload: WebcamError }
   | { type: typeof ActionType.ClearError }
   | { type: typeof ActionType.SetScanProgress; payload: number }
   | { type: typeof ActionType.SetPermissionActionLoading; payload: boolean }
@@ -28,7 +29,7 @@ type Action =
 
 export type BaseReaderState = {
   readyState: CameraReadyStateValue;
-  error: (Error & { type?: string }) | null;
+  error: WebcamError | null;
   scanProgress: number;
   permissionActionLoading: boolean;
 };
