@@ -6280,11 +6280,14 @@
   "perpsSortByPriceChange": {
     "message": "Price change"
   },
+  "perpsSortByRank": {
+    "message": "Rank"
+  },
   "perpsSortBySection": {
     "message": "Sort by"
   },
   "perpsSortByTitle": {
-    "message": "Sort"
+    "message": "Filter"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -9451,6 +9454,9 @@
   },
   "tokenAddress": {
     "message": "Token address"
+  },
+  "tokenAllowance": {
+    "message": "Token allowance"
   },
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
