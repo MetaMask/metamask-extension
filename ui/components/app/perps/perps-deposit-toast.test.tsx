@@ -99,7 +99,7 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('does not render pending toast for token-funded deposits', () => {
+  it('renders pending toast for token-funded deposits', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -119,7 +119,18 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(mockToastLoading).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastPendingTitle.message,
+          description: messages.perpsDepositToastPendingDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: Infinity,
+      },
+    );
   });
 
   it('renders pending toast for native-token-funded deposits', () => {
@@ -458,7 +469,7 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('does not show completion toast for token-funded deposits', () => {
+  it('shows completion toast for token-funded deposits', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -487,7 +498,18 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastSuccess).not.toHaveBeenCalled();
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastSuccessTitle.message,
+          description: messages.perpsDepositToastSuccessDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
   });
 
   it('shows pending for the active deposit only when a stale perps tx remains submitted', () => {
