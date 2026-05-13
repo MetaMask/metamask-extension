@@ -285,19 +285,23 @@ export const NetworkControllerInit: MessengerClientInitFunction<
     'NetworkController:rpcEndpointDegraded',
     async ({
       chainId,
+      duration,
       endpointUrl,
       error,
       rpcMethodName,
+      traceId,
       type,
       retryReason,
     }) => {
       onRpcEndpointDegraded({
         chainId,
+        duration,
         endpointUrl,
         error,
         infuraProjectId,
         retryReason,
         rpcMethodName,
+        traceId,
         trackEvent: initMessenger.call.bind(
           initMessenger,
           'MetaMetricsController:trackEvent',
