@@ -220,10 +220,10 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
-  getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
   getIsAssetsUnifiedStateIncludedInBuild,
 } from '../../shared/lib/environment';
+import { getEnabledAdvancedPermissions } from '../../shared/lib/gator-permissions/feature-flags';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {

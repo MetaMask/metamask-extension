@@ -2,7 +2,7 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
+import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/gator-permissions/feature-flags';
 import { getRemoteFeatureFlags } from '../../../../../../shared/lib/selectors/remote-feature-flags';
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';

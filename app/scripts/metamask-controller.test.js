@@ -75,6 +75,7 @@ import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
+import * as gatorPermissionFeatureFlags from '../../shared/lib/gator-permissions/feature-flags';
 import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
@@ -357,8 +358,8 @@ jest.mock('@metamask/core-backend', () => ({
   }),
 }));
 
-jest.mock('../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../shared/lib/environment'),
+jest.mock('../../shared/lib/gator-permissions/feature-flags', () => ({
+  ...jest.requireActual('../../shared/lib/gator-permissions/feature-flags'),
   getEnabledAdvancedPermissions: jest.fn(() => []),
 }));
 
@@ -1799,7 +1800,7 @@ describe('MetaMaskController', () => {
     describe('wallet_requestExecutionPermissions (processRequestExecutionPermissions)', () => {
       beforeEach(() => {
         jest
-          .mocked(environment.getEnabledAdvancedPermissions)
+          .mocked(gatorPermissionFeatureFlags.getEnabledAdvancedPermissions)
           .mockReturnValue(['erc20-token-revocation']);
         jest.mocked(forwardRequestToSnap).mockResolvedValue({});
       });
@@ -1946,7 +1947,7 @@ describe('MetaMaskController', () => {
             cacheTimestamp: 0,
           });
         jest
-          .mocked(environment.getEnabledAdvancedPermissions)
+          .mocked(gatorPermissionFeatureFlags.getEnabledAdvancedPermissions)
           .mockReturnValue(['erc20-token-revocation']);
       });
 

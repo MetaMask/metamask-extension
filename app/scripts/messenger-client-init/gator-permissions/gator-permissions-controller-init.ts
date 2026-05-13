@@ -4,7 +4,7 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
 import { MessengerClientInitFunction } from '../types';
-import { getEnabledAdvancedPermissions } from '../../../../shared/lib/environment';
+import { getEnabledAdvancedPermissions } from '../../../../shared/lib/gator-permissions/feature-flags';
 import { GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
 
 const createGatorPermissionsConfig = (): GatorPermissionsControllerConfig => {

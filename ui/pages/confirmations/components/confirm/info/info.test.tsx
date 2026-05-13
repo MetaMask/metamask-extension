@@ -16,7 +16,7 @@ import {
   renderWithConfirmContext,
 } from '../../../../../../test/lib/confirmations/render-helpers';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
+import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/gator-permissions/feature-flags';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -58,8 +58,10 @@ jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
   useTransactionFocusEffect: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../../../shared/lib/environment'),
+jest.mock('../../../../../../shared/lib/gator-permissions/feature-flags', () => ({
+  ...jest.requireActual(
+    '../../../../../../shared/lib/gator-permissions/feature-flags',
+  ),
   getEnabledAdvancedPermissions: jest
     .fn()
     .mockReturnValue(['native-token-stream']),
