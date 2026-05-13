@@ -3,7 +3,8 @@ import React, {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   DragEvent,
   useRef,
-  useState } from 'react';
+  useState,
+} from 'react';
 import classnames from 'clsx';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
@@ -16,7 +17,8 @@ import {
   IconName,
   IconSize,
   Label,
-  Text } from '../../../component-library';
+  Text,
+} from '../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -27,7 +29,8 @@ import {
   FlexDirection,
   IconColor,
   JustifyContent,
-  TextAlign } from '../../../../helpers/constants/design-system';
+  TextAlign,
+} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type SnapUIFileInputProps = {
@@ -73,7 +76,8 @@ export const SnapUIFileInput = ({
   compact,
   error,
   helpText,
-  disabled }: SnapUIFileInputProps) => {
+  disabled,
+}: SnapUIFileInputProps) => {
   const t = useI18nContext();
   const { handleFileChange } = useSnapInterfaceContext();
   const ref = useRef<HTMLInputElement>(null);
@@ -147,7 +151,8 @@ export const SnapUIFileInput = ({
     return (
       <Box
         className={classnames('snap-ui-renderer__file-input', {
-          'snap-ui-renderer__field': label !== undefined })}
+          'snap-ui-renderer__field': label !== undefined,
+        })}
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
       >
@@ -175,7 +180,8 @@ export const SnapUIFileInput = ({
   return (
     <Box
       className={classnames('snap-ui-renderer__file-input', {
-        'snap-ui-renderer__field': label !== undefined })}
+        'snap-ui-renderer__field': label !== undefined,
+      })}
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
     >
@@ -183,7 +189,8 @@ export const SnapUIFileInput = ({
       <Box
         className={classnames('snap-ui-renderer__file-input__drop-zone', {
           'snap-ui-snap-ui-renderer__file-input__drop-zone--disabled':
-            disabled === true })}
+            disabled === true,
+        })}
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.center}
@@ -199,7 +206,8 @@ export const SnapUIFileInput = ({
         style={{
           backgroundColor: active
             ? 'var(--color-background-default-hover)'
-            : 'var(--color-background-default)' }}
+            : 'var(--color-background-default)',
+        }}
         onClick={handleClick}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}

@@ -3,7 +3,8 @@ import React, {
   useCallback,
   useContext,
   useMemo,
-  useState } from 'react';
+  useState,
+} from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { GasModalType } from '../../constants/gas';
 import { GasFeeModal } from '../../components/modals/gas-fee-modal/gas-fee-modal';
@@ -27,7 +28,8 @@ export const GasFeeModalContext = createContext<
 export const GasFeeModalContextProvider = ({
   children,
   transactionMeta,
-  editGasMode }: React.PropsWithChildren<{
+  editGasMode,
+}: React.PropsWithChildren<{
   children: React.ReactNode;
   /** Optional transaction for gas editing when outside confirm flow (e.g. cancel/speedup). */
   transactionMeta?: TransactionMeta;
@@ -54,7 +56,8 @@ export const GasFeeModalContextProvider = ({
       openGasFeeModal,
       closeGasFeeModal,
       transactionMeta,
-      editGasMode }),
+      editGasMode,
+    }),
     [
       isGasFeeModalVisible,
       initialModalType,
@@ -87,7 +90,8 @@ export const GasFeeModalWrapper = () => {
     isGasFeeModalVisible,
     initialModalType,
     closeGasFeeModal,
-    transactionMeta } = useGasFeeModalContext();
+    transactionMeta,
+  } = useGasFeeModalContext();
 
   if (!isGasFeeModalVisible) {
     return null;
