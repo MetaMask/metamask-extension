@@ -80,9 +80,7 @@ describe('SeedlessOnboardingControllerInit', () => {
           keyFromPassword: expect.any(Function),
         }),
         passwordOutdatedCacheTTL: 15_000,
-        profilePairingEndpoint: expect.stringContaining(
-          '/api/v2/profile/pair',
-        ),
+        profilePairingEndpoint: expect.stringContaining('/api/v2/profile/pair'),
         fetchFunction: expect.any(Function),
         refreshJWTToken: expect.any(Function),
         revokeRefreshToken: expect.any(Function),
