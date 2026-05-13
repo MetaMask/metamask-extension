@@ -30,7 +30,7 @@ export const SnapUIButton = ({
   name,
   children,
   type = ButtonType.Button,
-  variant = 'primary',
+  variant: variantProp,
   disabled = false,
   loading = false,
   className = '',
@@ -39,6 +39,8 @@ export const SnapUIButton = ({
 }: React.PropsWithChildren<
   SnapUIButtonProps & Omit<ButtonLinkProps<'button'>, 'variant'>
 >) => {
+  const variant: 'primary' | 'destructive' = variantProp ?? 'primary';
+
   const { handleEvent } = useSnapInterfaceContext();
 
   const handleClick = (event: ReactMouseEvent<HTMLElement>) => {
