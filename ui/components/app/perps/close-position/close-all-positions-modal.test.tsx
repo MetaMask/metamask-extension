@@ -28,6 +28,10 @@ jest.mock('../../../../../shared/lib/perps-formatters', () => ({
   },
 }));
 
+jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
+  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,

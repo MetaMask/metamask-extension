@@ -25,6 +25,7 @@ import {
   ModalFooter,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
 
 export type CloseAllPositionsModalProps = {
@@ -68,16 +69,41 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     [positions],
   );
 
+  const totalNotional = useMemo(
+    () =>
+      positions.reduce(
+        (sum, pos) =>
+          sum + Math.abs(Number.parseFloat(pos.positionValue) || 0),
+        0,
+      ),
+    [positions],
+  );
+
+  const { feeRate } = usePerpsOrderFees({
+    symbol: positions[0]?.symbol ?? 'BTC',
+    orderType: 'market',
+  });
+
+  const estimatedFees = useMemo(
+    () => totalNotional * (feeRate ?? 0),
+    [totalNotional, feeRate],
+  );
+
   const roundedMargin = useMemo(
     () => Math.round(totalMargin * 100) / 100,
     [totalMargin],
   );
 
+  const roundedFees = useMemo(
+    () => Math.round(estimatedFees * 100) / 100,
+    [estimatedFees],
+  );
+
   // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
   // add unrealizedPnl separately (that would double-count).
   const youWillReceive = useMemo(
-    () => Math.max(roundedMargin, 0),
-    [roundedMargin],
+    () => roundedMargin - roundedFees,
+    [roundedMargin, roundedFees],
   );
 
   const isSubmitDisabled = isSubmitting || positions.length === 0;
@@ -174,7 +200,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-fees-value"
                 >
-                  {formatFiat(0)}
+                  -{formatFiat(roundedFees)}
                 </Text>
               </Box>
 
