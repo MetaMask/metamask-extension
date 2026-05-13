@@ -1,6 +1,6 @@
 import React from 'react';
-import MaterialSlider from '@material-ui/core/Slider';
-import { withStyles } from '@material-ui/core/styles';
+import { Slider as MaterialSlider } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import {
   Box,
   Text,
@@ -18,55 +18,46 @@ import {
 import Tooltip from '../../../ui/tooltip';
 
 /**
- * Material UI styles for the slider - uses CSS variables for theming.
- * MUI v4's default Slider shrinks the thumb to 8×8 when disabled; we keep the
- * same size as enabled so $0 available / disabled sliders still look correct.
+ * MUI v5 styled Slider - uses CSS variables for theming.
+ * v5 auto-centers the thumb via transform: translate(-50%, -50%), so manual
+ * marginTop/marginLeft offsets from v4 are no longer needed.
  */
-const sliderStyles = {
-  root: {
-    height: 4,
-    padding: 0,
-    overflow: 'visible',
-  },
-  /** Required for JSS `$disabled` references on root/thumb */
-  disabled: {},
-  rail: {
+const StyledMaterialSlider = styled(MaterialSlider)({
+  height: 4,
+  padding: 0,
+  overflow: 'visible',
+  '& .MuiSlider-rail': {
     borderRadius: 50,
     background: 'var(--color-border-muted)',
     height: 4,
     opacity: 1,
   },
-  track: {
+  '& .MuiSlider-track': {
     borderRadius: 50,
     background: 'var(--color-text-default)',
     height: 4,
+    border: 'none',
   },
-  thumb: {
+  '& .MuiSlider-thumb': {
     height: 16,
     width: 16,
-    marginTop: -6,
-    marginLeft: -5,
     // eslint-disable-next-line @metamask/design-tokens/color-no-hex
     backgroundColor: '#414243',
     border: '2px solid var(--color-text-default)',
-    boxSizing: 'border-box' as const,
+    boxSizing: 'border-box',
     boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     '[data-theme="dark"] &': {
       // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       backgroundColor: '#CCCCCC',
     },
-    '&:focus, &$active': {
+    '&:focus, &.Mui-active': {
       height: 16,
       width: 16,
-      marginTop: -6,
-      marginLeft: -5,
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
     },
     '&:hover': {
       height: 18,
       width: 18,
-      marginTop: -7,
-      marginLeft: -6,
       // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
@@ -76,15 +67,13 @@ const sliderStyles = {
         backgroundColor: '#CCCCCC',
       },
     },
-    '&$disabled': {
+    '&.Mui-disabled': {
       height: 16,
       width: 16,
-      marginTop: -6,
-      marginLeft: -5,
       // eslint-disable-next-line @metamask/design-tokens/color-no-hex
       backgroundColor: '#414243',
       border: '2px solid var(--color-text-default)',
-      boxSizing: 'border-box' as const,
+      boxSizing: 'border-box',
       boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
       '[data-theme="dark"] &': {
         // eslint-disable-next-line @metamask/design-tokens/color-no-hex
@@ -95,21 +84,18 @@ const sliderStyles = {
       },
     },
   },
-  active: {},
-  mark: {
+  '& .MuiSlider-mark': {
     width: 2,
     height: 2,
     borderRadius: '50%',
     backgroundColor: 'var(--color-icon-alternative)',
     marginTop: 1,
   },
-  markActive: {
+  '& .MuiSlider-markActive': {
     backgroundColor: 'var(--color-icon-alternative)',
     opacity: 1,
   },
-};
-
-const StyledMaterialSlider = withStyles(sliderStyles)(MaterialSlider);
+});
 
 export type PerpsSliderProps = {
   /** Minimum value */
@@ -122,12 +108,13 @@ export type PerpsSliderProps = {
   value: number;
   /** Change handler - fires continuously during drag */
   onChange: (
-    event: React.ChangeEvent<unknown>,
+    event: Event,
     value: number | number[],
+    activeThumb: number,
   ) => void;
   /** Committed change handler - fires only when drag ends or a discrete click occurs */
   onChangeCommitted?: (
-    event: React.ChangeEvent<unknown>,
+    event: React.SyntheticEvent | Event,
     value: number | number[],
   ) => void;
   /** Show edit text */
