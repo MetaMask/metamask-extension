@@ -1035,6 +1035,69 @@ describe('MetaMaskController', () => {
           '0xe18035bf8712672935fdb4e5e431b1a0183d2dfc',
         );
       });
+
+      describe('when in social login flow', () => {
+        const socialImportPrivkey =
+          '7e5374ec2ef0d91761a6e72fdf8f6ac665519bfdf6da0a2329cf0d804514b816';
+        const socialImportAddress =
+          '0xd8b979dc215e552db269553c98f1876823b52d08';
+
+        beforeEach(() => {
+          jest
+            .spyOn(
+              metamaskController.onboardingController,
+              'getIsSocialLoginFlow',
+            )
+            .mockReturnValue(true);
+        });
+
+        it('forwards the unwrapped private key and keyring id to addNewPrivateKeyBackup', async () => {
+          const addNewPrivateKeyBackupSpy = jest
+            .spyOn(metamaskController, 'addNewPrivateKeyBackup')
+            .mockResolvedValue();
+
+          await metamaskController.importAccountWithStrategy(
+            'privateKey',
+            [socialImportPrivkey],
+            { shouldCreateSocialBackup: false, shouldSelectAccount: false },
+          );
+
+          expect(addNewPrivateKeyBackupSpy).toHaveBeenCalledTimes(1);
+          const [privateKeyArg, keyringIdArg, syncWithSocialArg] =
+            addNewPrivateKeyBackupSpy.mock.calls[0];
+
+          expect(privateKeyArg).toStrictEqual(`0x${socialImportPrivkey}`);
+          expect(syncWithSocialArg).toBe(false);
+
+          const importedKeyring =
+            metamaskController.keyringController.state.keyrings.find(
+              (kr) =>
+                kr.type === KeyringType.imported &&
+                kr.accounts.includes(socialImportAddress),
+            );
+          expect(keyringIdArg).toStrictEqual(importedKeyring.metadata.id);
+        });
+
+        it('removes the imported account if addNewPrivateKeyBackup throws', async () => {
+          jest
+            .spyOn(metamaskController, 'addNewPrivateKeyBackup')
+            .mockRejectedValue(new Error('seedless backup failed'));
+          const removeAccountSpy = jest.spyOn(
+            metamaskController.keyringController,
+            'removeAccount',
+          );
+
+          await expect(
+            metamaskController.importAccountWithStrategy(
+              'privateKey',
+              [socialImportPrivkey],
+              { shouldCreateSocialBackup: true, shouldSelectAccount: false },
+            ),
+          ).rejects.toThrow('seedless backup failed');
+
+          expect(removeAccountSpy).toHaveBeenCalledWith(socialImportAddress);
+        });
+      });
     });
 
     describe('#getAddTransactionRequest', () => {
