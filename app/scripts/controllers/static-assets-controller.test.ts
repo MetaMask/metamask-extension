@@ -140,7 +140,7 @@ describe('StaticAssetsController', () => {
       networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
         'mainnet',
       );
-      tokensControllerGetStateSpy.mockResolvedValue({
+      tokensControllerGetStateSpy.mockReturnValue({
         allIgnoredTokens: {},
       });
       tokensControllerAddTokensSpy.mockReturnThis();
@@ -307,7 +307,7 @@ describe('StaticAssetsController', () => {
         networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
           'mainnet',
         );
-        tokensControllerGetStateSpy.mockResolvedValue({
+        tokensControllerGetStateSpy.mockReturnValue({
           allIgnoredTokens: {},
         });
         tokensControllerAddTokensSpy.mockReturnThis();
@@ -389,7 +389,7 @@ describe('StaticAssetsController', () => {
           networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
             'mainnet',
           );
-          tokensControllerGetStateSpy.mockResolvedValue({
+          tokensControllerGetStateSpy.mockReturnValue({
             allIgnoredTokens: {},
           });
           tokensControllerAddTokensSpy.mockReturnThis();
@@ -536,7 +536,7 @@ describe('StaticAssetsController', () => {
           networkControllerFindNetworkClientIdByChainIdSpy.mockResolvedValue(
             'mainnet',
           );
-          tokensControllerGetStateSpy.mockResolvedValue({
+          tokensControllerGetStateSpy.mockReturnValue({
             allIgnoredTokens,
           });
           tokensControllerAddTokensSpy.mockReturnThis();
