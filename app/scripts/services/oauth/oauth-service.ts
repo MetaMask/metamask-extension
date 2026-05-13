@@ -288,8 +288,8 @@ export class OAuthService {
       if (!isUserCancelled) {
         this.#messenger.captureException?.(
           createSentryError(
-            TraceName.OnboardingOAuthProviderLoginError,
-            error as Error,
+            `${TraceName.OnboardingOAuthProviderLoginError} (${authConnection})`,
+            error,
           ),
         );
       }
@@ -427,8 +427,7 @@ export class OAuthService {
     return url.searchParams.get('code');
   }
 
-  #getUserCancelledLoginError(): Error | undefined {
-    const error = checkForLastError();
+  #getUserCancelledLoginError(error = checkForLastError()): Error | undefined {
     return isUserCancelledLoginError(error) ? error : undefined;
   }
 

@@ -26,7 +26,7 @@ import {
   getProviderConfig,
   getSelectedNetworkClientId,
 } from '../../../shared/lib/selectors/networks';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -642,14 +642,6 @@ export { getCurrencyRateControllerCurrentCurrency as getCurrentCurrency };
  */
 export function getOpenedWithSidepanel(state) {
   return state.metamask.openedWithSidepanel;
-}
-
-/**
- * @param {object} state - Redux root state
- * @returns {boolean} True when `PasskeyController` has a persisted passkey (`passkeyRecord`).
- */
-export function getIsPasskeyRegistered(state) {
-  return Boolean(state.metamask.passkeyRecord);
 }
 
 /**

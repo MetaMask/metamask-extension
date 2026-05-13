@@ -1,4 +1,6 @@
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';
+import { isManifestV3 } from '../../../../shared/lib/mv3.utils';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
 import { toHardwareWalletError } from '../rpcErrorUtils';
 import {
@@ -15,7 +17,11 @@ import { getMissingCapabilities, isTrezorModelOne } from './trezorUtils';
 
 /**
  * Trezor adapter implementation.
- * Verifies WebUSB device presence for Trezor hardware wallets.
+ *
+ * On MV3 (Chrome), verifies WebUSB device presence.
+ * On MV2 (Firefox), WebUSB is unavailable so Trezor uses the Trezor Bridge
+ * desktop software. The adapter trusts the bridge availability check to the
+ * TrezorConnectBridge during actual signing operations.
  * Actual signing operations happen through MetaMask's normal flow via KeyringController.
  */
 export class TrezorAdapter implements HardwareWalletAdapter {
@@ -28,7 +34,7 @@ export class TrezorAdapter implements HardwareWalletAdapter {
   }
 
   /**
-   * Check if device is currently connected via WebUSB
+   * Check if device is currently connected via WebUSB (MV3)
    */
   private async checkDeviceConnected(): Promise<boolean> {
     const devices = await getConnectedTrezorDevices();
@@ -37,9 +43,18 @@ export class TrezorAdapter implements HardwareWalletAdapter {
 
   /**
    * Connect to Trezor device.
-   * Verifies WebUSB availability and confirms a physical device is present.
+   *
+   * On MV3 (Chrome), verifies WebUSB availability and confirms a physical device is present.
+   * On MV2 (Firefox), WebUSB is not supported so Trezor uses the Trezor Bridge desktop
+   * software instead. Device presence is verified by the TrezorConnectBridge during
+   * actual signing operations.
    */
   async connect(): Promise<void> {
+    if (!isManifestV3 || isFirefoxBrowser()) {
+      this.connected = true;
+      return;
+    }
+
     if (!isWebUsbAvailable()) {
       this.#handleConnectionError(
         createHardwareWalletError(

@@ -1,6 +1,6 @@
 import { DecodedPermission } from '@metamask/gator-permissions-controller';
 import React from 'react';
-import { waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
 import { getMockTypedSignPermissionConfirmState } from '../../../../../../../../test/data/confirmations/helper';
@@ -25,12 +25,59 @@ jest.mock('../../../../../utils/token', () => ({
   fetchErc20DecimalsOrThrow: jest.fn().mockResolvedValue(18),
 }));
 
+function fetchErc20DecimalsMock() {
+  const { fetchErc20DecimalsOrThrow } = jest.requireMock(
+    '../../../../../utils/token',
+  ) as { fetchErc20DecimalsOrThrow: jest.Mock };
+  return fetchErc20DecimalsOrThrow;
+}
+
 const getMockStore = (permission?: DecodedPermission) => {
   const state = getMockTypedSignPermissionConfirmState(permission);
   return configureMockStore([])(state);
 };
 
+const STREAM_PERMISSION = {
+  type: 'native-token-stream',
+  data: {
+    initialAmount: '0x1234',
+    maxAmount: '0x1234',
+    amountPerSecond: '0x1234',
+    startTime: 123456789,
+  },
+};
+const ERC20_STREAM_PERMISSION = {
+  ...STREAM_PERMISSION,
+  type: 'erc20-token-stream',
+  data: {
+    tokenAddress: '0xa0b86a33e6441b8c4c8c0e4a8e4a8e4a8e4a8e4a',
+    ...STREAM_PERMISSION.data,
+  },
+};
+const RULE_ADDRESS = '0xb552685e3d2790efd64a175b00d51f02cdafee5d';
+
+function renderPermissionDetail(
+  props: Partial<React.ComponentProps<typeof PermissionDetailRenderer>> = {},
+) {
+  return renderWithConfirmContextProvider(
+    <PermissionDetailRenderer
+      permission={STREAM_PERMISSION}
+      expiry={123456789}
+      chainId="0x1"
+      origin="https://example.com"
+      ownerId="test-owner"
+      {...props}
+    />,
+    getMockStore(),
+  );
+}
+
 describe('PermissionDetailRenderer', () => {
+  beforeEach(() => {
+    fetchErc20DecimalsMock().mockReset();
+    fetchErc20DecimalsMock().mockResolvedValue(18);
+  });
+
   describe('native-token-periodic', () => {
     const permission = {
       type: 'native-token-periodic',
@@ -311,6 +358,55 @@ describe('PermissionDetailRenderer', () => {
           getMockStore(),
         ),
       ).toThrow('Start time is required');
+    });
+  });
+
+  describe('recipient redeemer and Snap origin presentation', () => {
+    it('shows the recipient row when `to` is supplied', async () => {
+      renderPermissionDetail({
+        to: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(messages.recipient.message),
+        ).toBeInTheDocument();
+      });
+    });
+
+    for (const [ruleType, label] of [
+      ['redeemer', messages.redeemer.message],
+      ['payee', messages.payee.message],
+    ] as const) {
+      it(`lists ${ruleType} addresses from rules`, async () => {
+        renderPermissionDetail({
+          permission: ERC20_STREAM_PERMISSION,
+          rules: [{ type: ruleType, data: { addresses: [RULE_ADDRESS] } }],
+        });
+
+        await waitFor(() => {
+          expect(screen.getByText(label)).toBeInTheDocument();
+        });
+      });
+    }
+
+    it('uses the Snap-specific request-from tooltip when origin is a Snap id', async () => {
+      renderPermissionDetail({
+        origin: 'npm:@metamask/test-snap',
+        ownerId: 'test-owner-snap-origin',
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByText(messages.requestFrom.message),
+        ).toBeInTheDocument();
+      });
+      expect(
+        document.querySelector(
+          `[data-original-title="${messages.requestFromInfoSnap.message}"]`,
+        ),
+      ).toBeTruthy();
+      expect(screen.getByText('@metamask/test-snap')).toBeInTheDocument();
     });
   });
 });

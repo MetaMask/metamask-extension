@@ -1,142 +1,260 @@
 import React from 'react';
+import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
+import { SUPPORT_LINK } from '../../../helpers/constants/common';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { isPopupOrSidePanelEnvironment } from '../../../../shared/lib/environment-type';
+import { getSocialLoginType } from '../../../selectors';
 import LoginErrorModal from './login-error-modal';
-import { LOGIN_ERROR, LoginErrorType } from './types';
+import { LOGIN_ERROR } from './types';
 
-const TELEGRAM_DESKTOP_UPDATE_URL = 'https://desktop.telegram.org/';
+const mockNavigate = jest.fn();
 
-const buildState = (authConnection?: string) => ({
-  metamask: {
-    internalAccounts: { accounts: {}, selectedAccount: '' },
-    metaMetricsId: '0x00000000',
-    authConnection,
-  },
-});
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
-describe('LoginErrorModal', () => {
-  const mockOnDone = jest.fn();
-  const mockTrackEvent = jest.fn();
+const mockResetWallet = jest.fn(() => Promise.resolve());
+
+jest.mock('../../../store/actions', () => ({
+  ...jest.requireActual('../../../store/actions'),
+  resetWallet: () => mockResetWallet,
+}));
+
+jest.mock('../../../../shared/lib/environment-type', () => ({
+  ...jest.requireActual('../../../../shared/lib/environment-type'),
+  isPopupOrSidePanelEnvironment: jest.fn(),
+}));
+
+jest.mock('../../../selectors', () => ({
+  ...jest.requireActual('../../../selectors'),
+  getSocialLoginType: jest.fn(),
+}));
+
+const mockIsPopupOrSidePanelEnvironment = jest.mocked(
+  isPopupOrSidePanelEnvironment,
+);
+const mockGetSocialLoginType = jest.mocked(getSocialLoginType);
+
+const buildStore = () => configureMockStore([thunk])({ metamask: {} });
+
+function renderModal(
+  props: Partial<React.ComponentProps<typeof LoginErrorModal>> = {},
+  trackEvent = jest.fn(),
+) {
   const mockMetaMetricsContext = {
-    trackEvent: mockTrackEvent,
+    trackEvent,
     bufferedTrace: jest.fn(),
     bufferedEndTrace: jest.fn(),
     onboardingParentContext: { current: null },
   };
 
-  const renderModal = (
-    loginError: LoginErrorType,
-    { authConnection }: { authConnection?: string } = {},
-  ) => {
-    const store = configureMockStore([thunk])(buildState(authConnection));
+  return renderWithProvider(
+    <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+      <LoginErrorModal
+        onClose={jest.fn()}
+        loginError={LOGIN_ERROR.GENERIC}
+        {...props}
+      />
+    </MetaMetricsContext.Provider>,
+    buildStore(),
+  );
+}
 
-    return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <LoginErrorModal onDone={mockOnDone} loginError={loginError} />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-  };
+function expectErrorContent({
+  loginError,
+  title,
+  description,
+  buttonText,
+}: {
+  loginError: React.ComponentProps<typeof LoginErrorModal>['loginError'];
+  title: string;
+  description: string;
+  buttonText: string;
+}) {
+  renderModal({ loginError });
 
+  expect(screen.getByText(title)).toBeInTheDocument();
+  expect(screen.getByText(description)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: buttonText })).toBeInTheDocument();
+}
+
+describe('LoginErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    // @ts-expect-error mocking platform
-    global.platform = { openTab: jest.fn() };
+    mockIsPopupOrSidePanelEnvironment.mockReturnValue(false);
+    mockGetSocialLoginType.mockReturnValue(undefined);
+
+    // @ts-expect-error test platform
+    globalThis.platform = {
+      openExtensionInBrowser: jest.fn(),
+    };
   });
 
-  it('renders the unable-to-connect title and CTA', () => {
-    const { getByText } = renderModal(LOGIN_ERROR.UNABLE_TO_CONNECT);
-
-    expect(
-      getByText(messages.loginErrorConnectTitle.message),
-    ).toBeInTheDocument();
-    expect(
-      getByText(messages.loginErrorConnectButton.message),
-    ).toBeInTheDocument();
-  });
-
-  it('renders the session-expired title and CTA', () => {
-    const { getByText } = renderModal(LOGIN_ERROR.SESSION_EXPIRED);
-
-    expect(
-      getByText(messages.loginErrorSessionExpiredTitle.message),
-    ).toBeInTheDocument();
-    expect(
-      getByText(messages.loginErrorSessionExpiredButton.message),
-    ).toBeInTheDocument();
-  });
-
-  it('renders the generic title and CTA', () => {
-    const { getByText } = renderModal(LOGIN_ERROR.GENERIC);
-
-    expect(
-      getByText(messages.loginErrorGenericTitle.message),
-    ).toBeInTheDocument();
-    expect(
-      getByText(messages.loginErrorGenericButton.message),
-    ).toBeInTheDocument();
-  });
-
-  it('calls onDone when the default CTA is clicked', () => {
-    const { getByTestId } = renderModal(LOGIN_ERROR.UNABLE_TO_CONNECT);
-
-    fireEvent.click(getByTestId('login-error-modal-button'));
-
-    expect(mockOnDone).toHaveBeenCalledTimes(1);
-  });
-
-  it('renders a RESET_WALLET description that includes the social login type', () => {
-    const { getByText } = renderModal(LOGIN_ERROR.RESET_WALLET, {
-      authConnection: 'google',
+  describe('render', () => {
+    it('renders the unable to connect content', () => {
+      expectErrorContent({
+        loginError: LOGIN_ERROR.UNABLE_TO_CONNECT,
+        title: messages.loginErrorConnectTitle.message,
+        description: messages.loginErrorConnectDescription.message,
+        buttonText: messages.loginErrorConnectButton.message,
+      });
     });
 
-    expect(getByText(/Re-login with google/iu)).toBeInTheDocument();
+    it('renders the session expired content', () => {
+      expectErrorContent({
+        loginError: LOGIN_ERROR.SESSION_EXPIRED,
+        title: messages.loginErrorSessionExpiredTitle.message,
+        description: messages.loginErrorSessionExpiredDescription.message,
+        buttonText: messages.loginErrorSessionExpiredButton.message,
+      });
+    });
+
+    it('renders the reset wallet description with the social login type', () => {
+      mockGetSocialLoginType.mockReturnValue(AuthConnection.Google);
+
+      renderModal({ loginError: LOGIN_ERROR.RESET_WALLET });
+
+      expect(
+        screen.getByText(
+          tEn('loginErrorResetWalletDescription', [AuthConnection.Google]),
+        ),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', {
+          name: messages.loginErrorGenericButton.message,
+        }),
+      ).toBeInTheDocument();
+    });
+
+    it('renders the generic support link', () => {
+      renderModal({ loginError: LOGIN_ERROR.GENERIC });
+
+      expect(
+        screen.getByText(messages.loginErrorGenericTitle.message),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', {
+          name: messages.loginErrorGenericButton.message,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('link', {
+          name: messages.loginErrorGenericSupport.message,
+        }),
+      ).toHaveAttribute('href', SUPPORT_LINK);
+    });
   });
 
-  describe('when loginError is TELEGRAM_OUTDATED', () => {
-    it('renders the Telegram-specific title, description and Update Telegram CTA', () => {
-      const { getByText, getByTestId, queryByTestId } = renderModal(
-        LOGIN_ERROR.TELEGRAM_OUTDATED,
+  describe('support link', () => {
+    it('tracks the support link click for the generic error', () => {
+      const mockTrackEvent = jest.fn();
+
+      renderModal({ loginError: LOGIN_ERROR.GENERIC }, mockTrackEvent);
+
+      fireEvent.click(
+        screen.getByRole('link', {
+          name: messages.loginErrorGenericSupport.message,
+        }),
       );
 
-      expect(
-        getByText(messages.loginErrorTelegramOutdatedTitle.message),
-      ).toBeInTheDocument();
-      expect(
-        getByText(messages.loginErrorTelegramOutdatedDescription.message),
-      ).toBeInTheDocument();
-      expect(
-        getByTestId('login-error-modal-update-telegram-button'),
-      ).toBeInTheDocument();
-      // The default CTA must be replaced, not added alongside.
-      expect(queryByTestId('login-error-modal-button')).not.toBeInTheDocument();
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        {
+          category: MetaMetricsEventCategory.Onboarding,
+          event: MetaMetricsEventName.SupportLinkClicked,
+          properties: {
+            url: SUPPORT_LINK,
+            location: 'Welcome page',
+          },
+        },
+        {
+          contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+        },
+      );
+    });
+  });
+
+  describe('confirm action', () => {
+    it('closes the modal without resetting the wallet for recoverable errors', () => {
+      const onClose = jest.fn();
+
+      renderModal({
+        onClose,
+        loginError: LOGIN_ERROR.UNABLE_TO_CONNECT,
+      });
+
+      fireEvent.click(screen.getByTestId('login-error-modal-button'));
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(mockResetWallet).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
     });
 
-    it('opens the Telegram desktop URL, tracks the event, and dismisses the modal when the CTA is clicked', () => {
-      const { getByTestId } = renderModal(LOGIN_ERROR.TELEGRAM_OUTDATED);
+    it('closes the modal, resets the wallet, and navigates in fullscreen for reset wallet errors', async () => {
+      const onClose = jest.fn();
 
-      fireEvent.click(getByTestId('login-error-modal-update-telegram-button'));
+      renderModal({
+        onClose,
+        loginError: LOGIN_ERROR.RESET_WALLET,
+      });
 
-      expect(global.platform.openTab).toHaveBeenCalledWith({
-        url: TELEGRAM_DESKTOP_UPDATE_URL,
+      fireEvent.click(screen.getByTestId('login-error-modal-button'));
+
+      await waitFor(() => {
+        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE, {
+          replace: true,
+        });
       });
-      expect(mockTrackEvent).toHaveBeenCalledWith({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.SupportLinkClicked,
-        properties: {
-          url: TELEGRAM_DESKTOP_UPDATE_URL,
-          location: 'Telegram outdated modal',
-        },
+
+      expect(globalThis.platform.openExtensionInBrowser).not.toHaveBeenCalled();
+    });
+
+    it('opens the extension in browser after reset from popup for reset wallet errors', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+
+      renderModal({ loginError: LOGIN_ERROR.RESET_WALLET });
+
+      fireEvent.click(screen.getByTestId('login-error-modal-button'));
+
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+        );
       });
-      expect(mockOnDone).toHaveBeenCalledTimes(1);
+
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('opens the extension in browser after reset from side panel for reset wallet errors', async () => {
+      mockIsPopupOrSidePanelEnvironment.mockReturnValue(true);
+
+      renderModal({ loginError: LOGIN_ERROR.RESET_WALLET });
+
+      fireEvent.click(screen.getByTestId('login-error-modal-button'));
+
+      await waitFor(() => {
+        expect(mockResetWallet).toHaveBeenCalledTimes(1);
+        expect(globalThis.platform.openExtensionInBrowser).toHaveBeenCalledWith(
+          DEFAULT_ROUTE,
+        );
+      });
+
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
   });
 });

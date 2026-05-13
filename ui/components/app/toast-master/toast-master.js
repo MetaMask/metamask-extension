@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -12,10 +12,7 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  PRIVACY_POLICY_LINK,
-  SURVEY_LINK,
-} from '../../../../shared/lib/ui-utils';
+import { PRIVACY_POLICY_LINK } from '../../../../shared/lib/ui-utils';
 import {
   BorderRadius,
   IconColor,
@@ -31,11 +28,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getURLHost } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  getCurrentNetwork,
-  getOriginOfCurrentTab,
-  getUseNftDetection,
-} from '../../../selectors';
+import { getCurrentNetwork, getOriginOfCurrentTab } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   hidePermittedNetworkToast,
@@ -45,10 +38,7 @@ import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
 import { PerpsDepositToast } from '../perps/perps-deposit-toast';
-import {
-  ClaimSubmitToastType,
-  StorageWriteErrorType,
-} from '../../../../shared/constants/app-state';
+import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { MerklClaimToast, MusdConversionToast } from '../musd';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
 import { getDappActiveNetwork } from '../../../selectors/dapp';
@@ -65,7 +55,7 @@ import {
 import {
   isCardPaymentMethod,
   isCryptoPaymentMethod,
-} from '../../../pages/settings/transaction-shield-tab/types';
+} from '../../../pages/shield/transaction-shield/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -78,12 +68,7 @@ import {
   ShieldErrorStateViewEnum,
 } from '../../../../shared/constants/subscriptions';
 import {
-  selectNftDetectionEnablementToast,
   selectShowPrivacyPolicyToast,
-  selectShowSurveyToast,
-  selectNewSrpAdded,
-  selectShowCopyAddressToast,
-  selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
@@ -94,11 +79,6 @@ import {
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
   setNewPrivacyPolicyToastShownDate,
-  setShowNftDetectionEnablementToast,
-  setSurveyLinkLastClickedOrClosed,
-  setShowNewSrpAddedToast,
-  setShowCopyAddressToast,
-  setShowClaimSubmitToast,
   setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
@@ -126,13 +106,9 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <SurveyToast />
-        <SurveyToastMayDelete />
         <PrivacyPolicyToast />
-        <NftEnablementToast />
         <PermittedNetworkToast />
-        <NewSrpAddedToast />
         <InfuraSwitchToast />
-        <CopyAddressToast />
         <PerpsDepositToast />
         <MerklClaimToast />
         <MusdConversionToast />
@@ -155,12 +131,7 @@ export function ToastMaster() {
   }
 
   if (onSettingsScreen) {
-    return (
-      <ToastContainer>
-        {storageErrorToast}
-        <ClaimSubmitToast />
-      </ToastContainer>
-    );
+    return <ToastContainer>{storageErrorToast}</ToastContainer>;
   }
 
   // On other screens, only render ToastContainer if storage error toast should show
@@ -170,34 +141,6 @@ export function ToastMaster() {
   }
 
   return null;
-}
-
-function SurveyToastMayDelete() {
-  const t = useI18nContext();
-
-  const showSurveyToast = useSelector(selectShowSurveyToast);
-
-  return (
-    showSurveyToast && (
-      <Toast
-        key="survey-toast"
-        startAdornment={
-          <Icon name={IconName.Heart} color={IconColor.errorDefault} />
-        }
-        text={t('surveyTitle')}
-        actionText={t('surveyConversion')}
-        onActionClick={() => {
-          global.platform.openTab({
-            url: SURVEY_LINK,
-          });
-          setSurveyLinkLastClickedOrClosed(Date.now());
-        }}
-        onClose={() => {
-          setSurveyLinkLastClickedOrClosed(Date.now());
-        }}
-      />
-    )
-  );
 }
 
 function PrivacyPolicyToast() {
@@ -227,35 +170,6 @@ function PrivacyPolicyToast() {
           setNewPrivacyPolicyToastClickedOrClosed();
         }}
         onClose={setNewPrivacyPolicyToastClickedOrClosed}
-      />
-    )
-  );
-}
-
-function NftEnablementToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showNftEnablementToast = useSelector(selectNftDetectionEnablementToast);
-  const useNftDetection = useSelector(getUseNftDetection);
-
-  const autoHideToastDelay = 5 * SECOND;
-
-  return (
-    showNftEnablementToast &&
-    useNftDetection && (
-      <Toast
-        key="enabled-nft-auto-detection"
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        text={t('nftAutoDetectionEnabled')}
-        borderRadius={BorderRadius.LG}
-        textVariant={TextVariant.bodyMd}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() =>
-          dispatch(setShowNftDetectionEnablementToast(false))
-        }
       />
     )
   );
@@ -319,46 +233,6 @@ function PermittedNetworkToast() {
   );
 }
 
-function NewSrpAddedToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const walletNumber = useSelector(selectNewSrpAdded);
-  const autoHideDelay = 5 * SECOND;
-
-  // This will close the toast if the user clicks the account menu.
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const dismissElement = document.querySelector(
-        '[data-testid="account-menu-icon"]',
-      );
-      if (dismissElement && dismissElement.contains(event.target)) {
-        dispatch(setShowNewSrpAddedToast(false));
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [dispatch]);
-
-  return (
-    walletNumber && (
-      <Toast
-        key="new-srp-added-toast"
-        text={t('importWalletSuccess', [walletNumber])}
-        startAdornment={
-          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
-        }
-        onClose={() => dispatch(setShowNewSrpAddedToast(false))}
-        autoHideTime={autoHideDelay}
-        onAutoHideToast={() => dispatch(setShowNewSrpAddedToast(false))}
-      />
-    )
-  );
-}
-
 function InfuraSwitchToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -382,162 +256,6 @@ function InfuraSwitchToast() {
     )
   );
 }
-
-function CopyAddressToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showCopyAddressToast = useSelector(selectShowCopyAddressToast);
-  const autoHideToastDelay = 2 * SECOND;
-
-  return (
-    showCopyAddressToast && (
-      <Toast
-        key="copy-address-toast"
-        text={t('addressCopied')}
-        startAdornment={
-          <Icon name={IconName.CopySuccess} color={IconColor.iconDefault} />
-        }
-        onClose={() => dispatch(setShowCopyAddressToast(false))}
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => dispatch(setShowCopyAddressToast(false))}
-        dataTestId="copy-address-toast"
-      />
-    )
-  );
-}
-
-const ClaimSubmitToast = () => {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
-  const autoHideToastDelay = 5 * SECOND;
-
-  const isSuccess = showClaimSubmitToast === ClaimSubmitToastType.Success;
-  const isDraftSaved = showClaimSubmitToast === ClaimSubmitToastType.DraftSaved;
-  const isDraftSaveFailed =
-    showClaimSubmitToast === ClaimSubmitToastType.DraftSaveFailed;
-  const isErrored = showClaimSubmitToast === ClaimSubmitToastType.Errored;
-  const isDraftDeleted =
-    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleted;
-  const isDraftDeleteFailed =
-    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleteFailed;
-
-  const description = useMemo(() => {
-    if (isSuccess) {
-      return t('shieldClaimSubmitSuccessDescription');
-    }
-    if (isDraftSaved) {
-      return t('shieldClaimDraftSavedDescription');
-    }
-    if (isDraftSaveFailed) {
-      return t('shieldClaimDraftSaveFailedDescription');
-    }
-    if (isDraftDeleted) {
-      return t('shieldClaimDeleteDraftDescription');
-    }
-    if (isDraftDeleteFailed) {
-      return t('shieldClaimDraftDeleteFailedDescription');
-    }
-    if (isErrored) {
-      return '';
-    }
-    return showClaimSubmitToast;
-  }, [
-    isSuccess,
-    isDraftSaved,
-    isDraftSaveFailed,
-    isErrored,
-    isDraftDeleted,
-    isDraftDeleteFailed,
-    showClaimSubmitToast,
-    t,
-  ]);
-
-  const toastText = useMemo(() => {
-    if (isSuccess) {
-      return t('shieldClaimSubmitSuccess');
-    }
-    if (isDraftSaved) {
-      return t('shieldClaimDraftSaved');
-    }
-    if (isDraftSaveFailed) {
-      return t('shieldClaimDraftSaveFailed');
-    }
-    if (isDraftDeleted) {
-      return t('shieldClaimDeletedDraft');
-    }
-    if (isDraftDeleteFailed) {
-      return t('shieldClaimDraftDeleteFailed');
-    }
-    return t('shieldClaimSubmitError');
-  }, [
-    isSuccess,
-    isDraftSaved,
-    isDraftSaveFailed,
-    isDraftDeleted,
-    isDraftDeleteFailed,
-    t,
-  ]);
-
-  const dataTestId = useMemo(() => {
-    if (isSuccess) {
-      return 'claim-submit-toast-success';
-    }
-    if (isDraftSaved) {
-      return 'claim-draft-saved-toast';
-    }
-    if (isDraftSaveFailed) {
-      return 'claim-draft-save-failed-toast';
-    }
-    if (isDraftDeleted) {
-      return 'claim-draft-deleted-toast';
-    }
-    if (isDraftDeleteFailed) {
-      return 'claim-draft-delete-failed-toast';
-    }
-    return 'claim-submit-toast-error';
-  }, [
-    isSuccess,
-    isDraftSaved,
-    isDraftSaveFailed,
-    isDraftDeleted,
-    isDraftDeleteFailed,
-  ]);
-
-  return (
-    showClaimSubmitToast !== null && (
-      <Toast
-        dataTestId={dataTestId}
-        key="claim-submit-toast"
-        text={toastText}
-        description={description}
-        startAdornment={
-          <Icon
-            name={
-              isSuccess || isDraftSaved || isDraftDeleted
-                ? IconName.CheckBold
-                : IconName.CircleX
-            }
-            color={
-              isSuccess || isDraftSaved || isDraftDeleted
-                ? IconColor.successDefault
-                : IconColor.errorDefault
-            }
-          />
-        }
-        autoHideTime={autoHideToastDelay}
-        onAutoHideToast={() => {
-          dispatch(setShowClaimSubmitToast(null));
-        }}
-        onClose={() => {
-          dispatch(setShowClaimSubmitToast(null));
-        }}
-      />
-    )
-  );
-};
 
 function ShieldPausedToast() {
   const t = useI18nContext();

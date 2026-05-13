@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import type { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
 import { Interface } from '@ethersproject/abi';
-import { getSelectedInternalAccount } from '../../../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { useMusdGeoBlocking } from '../../../../hooks/musd/useMusdGeoBlocking';
 import {
   addTransaction,

@@ -270,9 +270,6 @@
   "addHardwareWalletLabel": {
     "message": "ハードウェアウォレット"
   },
-  "addIPFSGateway": {
-    "message": "優先IPFSゲートウェイを追加"
-  },
   "addMemo": {
     "message": "メモを追加"
   },
@@ -1545,9 +1542,6 @@
     "message": "デフォルトの設定と構成を使用する場合、当社はInfuraをデフォルトの遠隔手続き呼び出し (RPC) プロバイダーとして使用し、イーサリアムデータへの可能な限り最も信頼性が高くプライベートなアクセスを提供します。まれに、ユーザーに最も優れたエクスペリエンスを提供するために、他のRPCプロバイダーが使用される場合もあります。ユーザーが自らRPCを選択することもできますが、トランザクションを実行するために、どのRPCでもユーザーのIPアドレスとイーサリアムウォレットが取得される点にご注意ください。InfuraによるEVMアカウントのデータの取り扱いに関する詳細は、$1をご覧ください。Solanaアカウントの場合は、$2。",
     "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
-  "chooseYourNetworkDescriptionCallToAction": {
-    "message": "こちらをクリックしてください"
-  },
   "chromeRequiredForHardwareWallets": {
     "message": "ハードウェアウォレットに接続するには、MetaMaskをGoogle Chromeで使用する必要があります。"
   },
@@ -2217,12 +2211,6 @@
   "dataCollectionForMarketingDescriptionSocialLogin": {
     "message": "製品の最新情報やヒント、ニュースをメールでお届けします。最適な情報をお届けするため、お客様のやり取りに関するデータを利用する場合があります。"
   },
-  "dataCollectionWarningPopoverButton": {
-    "message": "OK"
-  },
-  "dataCollectionWarningPopoverDescription": {
-    "message": "マーケティング目的のデータ収集をオフにしました。これはこのデバイスにのみ適用されます。MetaMaskを他のデバイスで使用する場合は、そのデバイスでもオプトアウトしてください。"
-  },
   "dataUnavailable": {
     "message": "データが利用できません"
   },
@@ -2811,10 +2799,6 @@
   "errorCode": {
     "message": "コード: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
-  },
-  "errorDetails": {
-    "message": "エラーの詳細",
-    "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "安全なチェーンリストの取得中にエラーが発生しました。慎重に続けてください。"
@@ -5672,9 +5656,6 @@
   "perpsCancelOrder": {
     "message": "注文取消"
   },
-  "perpsCandleIntervals": {
-    "message": "ローソク足の間隔"
-  },
   "perpsCandlePeriodDays": {
     "message": "日"
   },
@@ -5687,14 +5668,11 @@
   "perpsCloseAll": {
     "message": "すべてクローズ"
   },
-  "perpsCloseAmount": {
-    "message": "クローズ金額"
-  },
   "perpsCloseLong": {
     "message": "ロングをクローズ"
   },
   "perpsClosePartialMinNotional": {
-    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、スライダーを100%に設定してください。"
+    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、ポジション全体をクローズしてください。"
   },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
@@ -6270,6 +6248,10 @@
   "perpsWithdraw": {
     "message": "出金"
   },
+  "perpsWithdrawActivityTitle": {
+    "message": "パーペチュアルの引き出し",
+    "description": "Title shown in the Activity list for a Perps withdraw transaction"
+  },
   "perpsWithdrawEstimatedTime": {
     "message": "推定所要時間"
   },
@@ -6317,6 +6299,10 @@
   },
   "perpsWithdrawToastSuccessTitle": {
     "message": "出金が送信されました"
+  },
+  "perpsWithdrawTooltip": {
+    "message": "MetaMaskがユーザーに代わって希望のトークンをスワップします。mUSDへのスワップ時にMetaMaskの手数料は発生しません。",
+    "description": "Tooltip shown on the Transaction fee row of the Perps Withdraw confirmation"
   },
   "perpsYouReceive": {
     "message": "受け取る"
@@ -6442,6 +6428,10 @@
   },
   "provide": {
     "message": "提供"
+  },
+  "providerFee": {
+    "message": "プロバイダーの手数料",
+    "description": "Label used in the Transaction fee tooltip for the provider (bridge/relay) fee, e.g. in Perps Withdraw"
   },
   "publicAddress": {
     "message": "パブリックアドレス"
@@ -6649,8 +6639,16 @@
   "receiveCrypto": {
     "message": "仮想通貨を受け取ります"
   },
+  "receiveToken": {
+    "message": "トークンの受取",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing which token the user receives"
+  },
   "received": {
     "message": "受け取りました"
+  },
+  "receivedTotal": {
+    "message": "受取額合計",
+    "description": "Row label on the Transaction Details page for withdrawal flows (e.g. Perps Withdraw), showing the net amount received after fees"
   },
   "receivingAddress": {
     "message": "受取人のアドレス",
@@ -6940,9 +6938,6 @@
   "rewardsLinkAccountError": {
     "message": "アカウントの追加に失敗しました"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "アクティビティに対してポイントを獲得できます。\nレベルを上げてリワードのロックを解除しましょう。"
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "お住いの国でリワードプログラムへのオプトインが許可されているかを確認できません。接続を確認して、もう一度お試しください。"
   },
@@ -6955,84 +6950,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "再試行"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "250ポイントを請求する"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "資格の有無を確認中..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "地域を確認中…"
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "後で"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "リワードのご紹介"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "現在、お住まいの地域ではリワードをご利用いただけません。対象地域を拡大中ですので、後日再度ご確認ください。"
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "未対応の地域です"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "MetaMaskでスワップやパーペチュアル取引を行うたびに、リワード獲得のチャンスが近づきます。アカウントを追加して、ポイントが貯まる様子をご覧ください。"
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "すべての取引でポイントを獲得"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "ポイント数のマイルストーンに達すると、パーペチュアル手数料50%オフ、限定トークン、無料のMetaMaskメタルカードといった特典を獲得できます。"
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "レベルアップして特典を増やそう"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "拡張機能でポイントを獲得できますが、パーペチュアルの取引、進捗状況の追跡、リワードの引き換えにはモバイルアプリが必要です。"
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "モバイルでリワードをアンロック"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "「ポイントを請求」をクリックすることで、当社の$1に同意したものとみなされます。当社は報酬を自動的に付与できるよう、お客様のオンチェーンアクティビティを追跡します。$2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "詳細"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "規約およびプライバシー通知"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "オプトインに失敗しました"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "無効な紹介コード"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "紹介コードを使って250ポイントを獲得"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "紹介コード（オプション）"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "紹介コードを検証できませんでした."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "接続を確認して、もう一度お試しください。"
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "サインアップすると250ポイントを獲得できます！"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "コードを使ってサインアップすると500ポイントを獲得できます！"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "次へ"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "ポイントを請求する"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "紹介コードを検証中...",
@@ -7158,12 +7101,6 @@
   "securityChangePassword": {
     "message": "パスワードの変更"
   },
-  "securityChangePasswordDescription": {
-    "message": "お使いのデバイスでMetaMaskアプリのロックを解除するには、強力なパスワードを選択してください。このパスワードを紛失した場合、ウォレットを再インポートするにはシークレットリカバリーフレーズが必要になります。"
-  },
-  "securityChangePasswordTitle": {
-    "message": "パスワード"
-  },
   "securityChangePasswordToastError": {
     "message": "パスワードを変更できませんでした。もう一度お試しください。"
   },
@@ -7175,16 +7112,6 @@
   },
   "securityDescription": {
     "message": "安全ではないネットワークに参加してしまう可能性を減らし、アカウントを守ります"
-  },
-  "securityLoginWithSocial": {
-    "message": "$1でログイン",
-    "description": "The $1 is the text 'Google' or 'Apple'"
-  },
-  "securityLoginWithSrpBackedUp": {
-    "message": "シークレットリカバリーフレーズがバックアップされました"
-  },
-  "securityLoginWithSrpNotBackedUp": {
-    "message": "シークレットリカバリーフレーズをバックアップしてください"
   },
   "securityMessageLinkForNetworks": {
     "message": "ネットワーク詐欺とセキュリティのリスク"
@@ -7207,14 +7134,8 @@
     "message": "$1の復元",
     "description": "The $1 is the text 'Google' or 'Apple' or 'Telegram'"
   },
-  "securitySrpDescription": {
-    "message": "ウォレットへのアクセスを失わないよう、シークレットリカバリーフレーズをバックアップしましょう。自分だけがアクセスできて、絶対に忘れないような安全な場所に保管するようにしてください。"
-  },
   "securitySrpLabel": {
     "message": "シークレットリカバリーフレーズ"
-  },
-  "securitySrpWalletRecovery": {
-    "message": "復元方法の管理"
   },
   "seeAllPermissions": {
     "message": "すべてのアクセス許可を表示",
@@ -8178,9 +8099,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "DAppからのスマートアカウントリクエスト"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "DAppによる、スタンダードアカウントに対するスマートアカウント機能のリクエストを許可します。これにより、すでにスマートアカウントのアカウントに影響はありません。"
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "同じアドレスでよりスマートな機能。"
   },
@@ -8192,9 +8110,6 @@
   },
   "smartContractAddressWarning": {
     "message": "この受取人のアドレスはトークンの直接送金に対応していない可能性があり、資金を失うおそれがあります。これが送金を受け取れるコントラクトであることを確信している場合のみ、続行してください。"
-  },
-  "smartContracts": {
-    "message": "スマートコントラクト"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "スマートスワップに必要な資金が不足しています。"
@@ -8710,9 +8625,6 @@
     "message": "$1に引き続き接続中です...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "まだこのメッセージが表示されますか？"
-  },
   "storageErrorAction": {
     "message": "シークレットリカバリーフレーズをバックアップしてください"
   },
@@ -8816,12 +8728,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "サポートされている言語",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "アンケートに回答する"
-  },
-  "surveyTitle": {
-    "message": "MetaMaskの未来を形作りましょう"
   },
   "swap": {
     "message": "スワップ"
@@ -9218,9 +9124,6 @@
   },
   "tokenAlreadyAdded": {
     "message": "トークンの追加がすでに完了しています。"
-  },
-  "tokenAutoDetection": {
-    "message": "トークンの自動検出"
   },
   "tokenContractAddress": {
     "message": "トークンコントラクトアドレス"
@@ -9815,6 +9718,10 @@
   "willApproveAmountForSwapping": {
     "message": "トークンのスワップを承認"
   },
+  "withdrawTo": {
+    "message": "受取",
+    "description": "Label for pay with row in withdrawal flows showing the destination token"
+  },
   "withdrawing": {
     "message": "引き出し中"
   },
@@ -9847,6 +9754,10 @@
   "youSent": {
     "message": "送金額:",
     "description": "Label indicating the amount and asset the user sent."
+  },
+  "youllReceive": {
+    "message": "受取額",
+    "description": "Row label on the Perps Withdraw confirmation showing the net receive amount after fees"
   },
   "yourActivity": {
     "message": "アクティビティ"

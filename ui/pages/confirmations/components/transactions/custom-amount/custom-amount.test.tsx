@@ -146,6 +146,33 @@ describe('CustomAmount', () => {
     const amountElement = screen.getByTestId('custom-amount-input');
     expect(amountElement).toHaveStyle({ width: '3.5ch' });
   });
+
+  it('auto-focuses the input when autoFocus is true', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="0" autoFocus />, store);
+
+    expect(screen.getByTestId('custom-amount-input')).toHaveFocus();
+  });
+
+  it('does not focus the input when autoFocus is omitted', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(<CustomAmount amountFiat="0" />, store);
+
+    expect(screen.getByTestId('custom-amount-input')).not.toHaveFocus();
+  });
+
+  it('does not focus the input when autoFocus is true but disabled', () => {
+    const store = mockStore(getMockState());
+
+    renderWithProvider(
+      <CustomAmount amountFiat="0" autoFocus disabled />,
+      store,
+    );
+
+    expect(screen.getByTestId('custom-amount-input')).not.toHaveFocus();
+  });
 });
 
 describe('CustomAmountSkeleton', () => {

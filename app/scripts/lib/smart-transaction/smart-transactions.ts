@@ -34,9 +34,9 @@ import { decimalToHex } from '../../../../shared/lib/conversion.utils';
 import {
   getExtensionSkipTransactionStatusPage,
   getIsSmartTransaction,
-  isHardwareWallet,
   getSmartTransactionsFeatureFlagsForChain,
 } from '../../../../shared/lib/selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { getCurrentChainId } from '../../../../shared/lib/selectors/networks';
 import { isLegacyTransaction } from '../../../../shared/lib/transaction.utils';
 import { MessengerClientFlatState } from '../../messenger-client-init/controller-list';

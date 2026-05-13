@@ -15,7 +15,6 @@ import reduceMetamask, {
   getGasEstimateTypeByChainId,
   getGasFeeEstimates,
   getGasFeeEstimatesByChainId,
-  getIsPasskeyRegistered,
   getIsNetworkBusyByChainId,
   getPasskeyAutoUnlockSuppressed,
   getNativeCurrency,
@@ -776,28 +775,6 @@ describe('MetaMask Reducers', () => {
   });
 
   describe('passkey selectors', () => {
-    describe('getIsPasskeyRegistered', () => {
-      it('returns true when a passkey record exists', () => {
-        const state = {
-          metamask: {
-            passkeyRecord: { credentialId: 'credential-id' },
-          },
-        };
-
-        expect(getIsPasskeyRegistered(state)).toBe(true);
-      });
-
-      it('returns false when no passkey record exists', () => {
-        const state = {
-          metamask: {
-            passkeyRecord: null,
-          },
-        };
-
-        expect(getIsPasskeyRegistered(state)).toBe(false);
-      });
-    });
-
     describe('getPasskeyAutoUnlockSuppressed', () => {
       it('returns true when passkey auto unlock is suppressed', () => {
         const state = {

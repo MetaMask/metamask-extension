@@ -252,16 +252,13 @@ class AccountListPage {
     this.driver = driver;
   }
 
-  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
+  async checkPageIsLoaded(
+    timeout: number = 10000,
+    { waitForSync = true }: { waitForSync?: boolean } = {},
+  ): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors(
-        [
-          {
-            css: this.addMultichainAccountButton,
-            text: 'Add account',
-          },
-          this.addMultichainWalletButton,
-        ],
+        [this.addMultichainAccountButton, this.addMultichainWalletButton],
         { timeout },
       );
     } catch (e) {
@@ -269,7 +266,9 @@ class AccountListPage {
       throw e;
     }
 
-    await this.waitUntilSyncingIsCompleted();
+    if (waitForSync) {
+      await this.waitUntilSyncingIsCompleted();
+    }
     console.log('Account list is loaded');
   }
 
@@ -418,10 +417,8 @@ class AccountListPage {
    */
   async waitUntilSyncingIsCompleted(): Promise<void> {
     console.log(`Check that account syncing not displayed in account list`);
-    await this.driver.assertElementNotPresent({
-      css: this.addMultichainAccountButton,
-      text: 'Syncing',
-    });
+    await this.checkAddWalletButtonIsDisplayed();
+    await this.driver.assertElementNotPresent(this.syncingMessage);
   }
 
   /**
@@ -923,7 +920,7 @@ class AccountListPage {
     await this.driver.waitForSelector(this.walletDetailsButton);
   }
 
-  async checkAddWalletButttonIsDisplayed(): Promise<void> {
+  async checkAddWalletButtonIsDisplayed(): Promise<void> {
     console.log('Check add wallet button is displayed');
     await this.driver.waitForSelector(this.addMultichainWalletButton);
   }

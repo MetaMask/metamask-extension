@@ -877,12 +877,7 @@
   "selectedCurrency": "usd",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
-  "showAccountBanner": false,
-  "showBetaHeader": false,
-  "showNetworkBanner": true,
-  "showPermissionsTour": true,
   "showProductTour": false,
-  "showTestnetMessageInDropdown": true,
   "signatureSecurityAlertResponses": {},
   "slides": [],
   "smartTransactionsState": {
@@ -2150,6 +2145,5 @@
   "userOperations": {},
   "versionFileETag": "W/\"598946a37f16c5b882a0bebbadf4509f\"",
   "versionInfo": [],
-  "web3ShimUsageOrigins": {},
-  "welcomeScreenSeen": false
+  "web3ShimUsageOrigins": {}
 }
