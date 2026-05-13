@@ -241,7 +241,7 @@ describe('NetworkControllerInit', () => {
             "chainId": "0x8f",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "Monad Mainnet",
+            "name": "Monad",
             "nativeCurrency": "MON",
             "rpcEndpoints": [
               {
