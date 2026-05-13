@@ -19,9 +19,13 @@ export type SnapUICardProps = {
   extra?: string | undefined;
 };
 
-export const SnapUICard: FunctionComponent<
-  React.PropsWithChildren<SnapUICardProps>
-> = ({ image, title, description, value, extra }) => {
+export const SnapUICard = ({
+  image,
+  title,
+  description,
+  value,
+  extra
+}: React.PropsWithChildren<SnapUICardProps>) => {
   return (
     <Box
       className="snap-ui-renderer__card"

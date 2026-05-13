@@ -20,9 +20,9 @@ export type PercentageButtonsProps = {
   onPercentageClick: (percentage: number) => void;
 };
 
-export const PercentageButtons: React.FC<
-  React.PropsWithChildren<PercentageButtonsProps>
-> = ({ onPercentageClick }) => {
+export const PercentageButtons = ({
+  onPercentageClick
+}: React.PropsWithChildren<PercentageButtonsProps>) => {
   const t = useI18nContext();
 
   const handleClick = useCallback(
@@ -56,9 +56,7 @@ export const PercentageButtons: React.FC<
   );
 };
 
-export const PercentageButtonsSkeleton: React.FC<
-  React.PropsWithChildren<unknown>
-> = () => {
+export const PercentageButtonsSkeleton = () => {
   return (
     <Box
       display={Display.Flex}

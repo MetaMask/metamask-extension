@@ -20,9 +20,12 @@ export type SnapInsightProps = {
   isExpanded?: boolean | undefined;
 };
 
-export const SnapInsight: React.FunctionComponent<
-  React.PropsWithChildren<SnapInsightProps>
-> = ({ snapId, interfaceId, loading, isExpanded }) => {
+export const SnapInsight = ({
+  snapId,
+  interfaceId,
+  loading,
+  isExpanded
+}: React.PropsWithChildren<SnapInsightProps>) => {
   const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),

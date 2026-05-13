@@ -84,9 +84,10 @@ export type MusdBuyGetCtaProps = {
  * @param options0.variant
  * @param options0.selectedChainId
  */
-export const MusdBuyGetCta: React.FC<
-  React.PropsWithChildren<MusdBuyGetCtaProps>
-> = ({ variant, selectedChainId }) => {
+export const MusdBuyGetCta = ({
+  variant,
+  selectedChainId
+}: React.PropsWithChildren<MusdBuyGetCtaProps>) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow, educationSeen } = useMusdConversion();

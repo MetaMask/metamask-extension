@@ -32,9 +32,12 @@ import { isDigitsOnlyInput } from '../../utils';
  * @param props.maxLeverage - Maximum allowed leverage
  * @param props.minLeverage - Minimum allowed leverage (default: 1)
  */
-export const LeverageSlider: React.FC<
-  React.PropsWithChildren<LeverageSliderProps>
-> = ({ leverage, onLeverageChange, maxLeverage, minLeverage = 1 }) => {
+export const LeverageSlider = ({
+  leverage,
+  onLeverageChange,
+  maxLeverage,
+  minLeverage = 1
+}: React.PropsWithChildren<LeverageSliderProps>) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const [inputValue, setInputValue] = useState<string>(String(leverage));

@@ -142,9 +142,11 @@ const iconComponents = {
  * @param props.badge - The badge of the notification item icon.
  * @returns A JSX element.
  */
-export const NotificationListItemIcon: FC<
-  React.PropsWithChildren<NotificationListItemIconProps>
-> = ({ type, value, badge }): JSX.Element => {
+export const NotificationListItemIcon = ({
+  type,
+  value,
+  badge
+}: React.PropsWithChildren<NotificationListItemIconProps>): JSX.Element => {
   const IconComponent = iconComponents[type] || iconComponents.default;
   const NotificationIcon = <IconComponent src={value} />;
 

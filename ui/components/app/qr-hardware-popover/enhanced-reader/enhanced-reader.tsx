@@ -23,9 +23,9 @@ const SCAN_INTERVAL_MS = MILLISECOND * 100;
  * @param props - Component props.
  * @param props.onFrame - Callback receiving the decoded QR text per frame.
  */
-const EnhancedReader: React.FC<
-  React.PropsWithChildren<EnhancedReaderProps>
-> = ({ onFrame }) => {
+const EnhancedReader = ({
+  onFrame
+}: React.PropsWithChildren<EnhancedReaderProps>) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [canPlay, setCanPlay] = useState(false);
 

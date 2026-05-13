@@ -58,9 +58,13 @@ const createTextComponent = (
  * @param props.value - The value to display.
  * @returns The rendered component.
  */
-export const NotificationDetailAsset: FC<
-  React.PropsWithChildren<NotificationDetailAssetProps>
-> = ({ icon, label, detail, fiatValue, value }): JSX.Element => {
+export const NotificationDetailAsset = ({
+  icon,
+  label,
+  detail,
+  fiatValue,
+  value
+}: React.PropsWithChildren<NotificationDetailAssetProps>): JSX.Element => {
   const badgeIcon = (
     <AvatarToken
       src={icon.badge?.src}

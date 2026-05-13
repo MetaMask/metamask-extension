@@ -30,15 +30,19 @@ import { formatAmount, formatAmountMaxPrecision } from './formatAmount';
  * @param props.isAllApproval
  * @param props.isUnlimitedApproval
  */
-export const AmountPill: React.FC<
-  React.PropsWithChildren<{
-    asset: AssetIdentifier;
-    amount: BigNumber;
-    isApproval?: boolean;
-    isAllApproval?: boolean;
-    isUnlimitedApproval?: boolean;
-  }>
-> = ({ asset, amount, isApproval, isAllApproval, isUnlimitedApproval }) => {
+export const AmountPill = ({
+  asset,
+  amount,
+  isApproval,
+  isAllApproval,
+  isUnlimitedApproval
+}: React.PropsWithChildren<{
+  asset: AssetIdentifier;
+  amount: BigNumber;
+  isApproval?: boolean;
+  isAllApproval?: boolean;
+  isUnlimitedApproval?: boolean;
+}>) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
   const color = getColor({ amount, isApproval });

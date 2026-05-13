@@ -34,9 +34,9 @@ const PENDING_CLAIM_STATUSES = [
   ClaimStatusEnum.WAITING_FOR_CUSTOMER,
 ] as ClaimStatusEnum[];
 
-export const ClaimsProvider: React.FC<
-  React.PropsWithChildren<ClaimsProviderProps>
-> = ({ children }) => {
+export const ClaimsProvider = ({
+  children
+}: React.PropsWithChildren<ClaimsProviderProps>) => {
   const [claims, setClaims] = useState<Claim[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);

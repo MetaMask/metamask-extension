@@ -28,13 +28,11 @@ export type NotificationListItemTextProps = {
  * @param props.color - The text color of the component
  * @returns A JSX element
  */
-export const NotificationListItemText: FC<
-  React.PropsWithChildren<NotificationListItemTextProps>
-> = ({
+export const NotificationListItemText = ({
   items,
   variant = TextVariant.bodySm,
-  color = TextColor.textDefault,
-}) => {
+  color = TextColor.textDefault
+}: React.PropsWithChildren<NotificationListItemTextProps>) => {
   const renderItems = items.map(({ text, highlighted }, index) => {
     const key = getRandomKey(text, index);
     const textColor = highlighted ? TextColor.infoDefault : color;

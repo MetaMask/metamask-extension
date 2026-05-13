@@ -26,7 +26,7 @@ export type CurrencyDisplayProps = OverridingUnion<
   }
 >;
 
-declare const CurrencyDisplay: React.FC<
+declare const CurrencyDisplay: React.ComponentType<
   React.PropsWithChildren<CurrencyDisplayProps>
 >;
 export default CurrencyDisplay;

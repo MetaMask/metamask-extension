@@ -65,7 +65,7 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.autoFocusLimitPrice
  * @param props.usdPlaceholder
  */
-export const OrderEntry: React.FC<React.PropsWithChildren<OrderEntryProps>> = ({
+export const OrderEntry = ({
   asset,
   currentPrice,
   maxLeverage,
@@ -87,8 +87,8 @@ export const OrderEntry: React.FC<React.PropsWithChildren<OrderEntryProps>> = ({
   markPrice,
   autoFocusUsd = false,
   autoFocusLimitPrice = false,
-  usdPlaceholder,
-}) => {
+  usdPlaceholder
+}: React.PropsWithChildren<OrderEntryProps>) => {
   const t = useI18nContext();
 
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)

@@ -49,17 +49,15 @@ type MultichainEditAccountsPageProps = {
   snapsPermissionsRequestType?: SnapsPermissionsRequestType;
 };
 
-export const MultichainEditAccountsPage: React.FC<
-  React.PropsWithChildren<MultichainEditAccountsPageProps>
-> = ({
+export const MultichainEditAccountsPage = ({
   title,
   confirmButtonText,
   defaultSelectedAccountGroups,
   supportedAccountGroups,
   onSubmit,
   onClose,
-  snapsPermissionsRequestType = SnapsPermissionsRequestType.None,
-}) => {
+  snapsPermissionsRequestType = SnapsPermissionsRequestType.None
+}: React.PropsWithChildren<MultichainEditAccountsPageProps>) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [selectedAccountGroups, setSelectedAccountGroups] = useState(

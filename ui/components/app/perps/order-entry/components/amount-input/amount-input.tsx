@@ -61,9 +61,7 @@ const handleNumericFocusSelectAll = (
  * @param options0.usdPlaceholder
  * @param options0.usdInputRef
  */
-export const AmountInput: React.FC<
-  React.PropsWithChildren<AmountInputProps>
-> = ({
+export const AmountInput = ({
   amount,
   onAmountChange,
   balancePercent,
@@ -76,8 +74,8 @@ export const AmountInput: React.FC<
   onAddFunds,
   autoFocus = false,
   usdPlaceholder = '0.00',
-  usdInputRef,
-}) => {
+  usdInputRef
+}: React.PropsWithChildren<AmountInputProps>) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
   const [percentInputValue, setPercentInputValue] = useState<string>(

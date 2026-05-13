@@ -1,9 +1,5 @@
 import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
-import {
-  ButtonType,
-  ButtonVariant,
-  UserInputEventType,
-} from '@metamask/snaps-sdk';
+import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
 import type { ButtonProps as SnapButtonProps } from '@metamask/snaps-sdk/jsx';
 import { useSelector } from 'react-redux';
 import classnames from 'clsx';
@@ -11,6 +7,7 @@ import {
   Button,
   ButtonProps,
   ButtonSize,
+  ButtonVariant,
   Icon,
   IconName,
   IconSize,
@@ -32,9 +29,7 @@ type SnapUIFooterButtonProps = {
   onCancel?: () => void;
 };
 
-export const SnapUIFooterButton: FunctionComponent<
-  React.PropsWithChildren<SnapUIFooterButtonProps & ButtonProps<'button'>>
-> = ({
+export const SnapUIFooterButton = ({
   onCancel,
   name,
   children,
@@ -46,7 +41,7 @@ export const SnapUIFooterButton: FunctionComponent<
   snapVariant,
   form,
   ...props
-}) => {
+}: React.PropsWithChildren<SnapUIFooterButtonProps & ButtonProps<'button'>>) => {
   const { handleEvent, snapId } = useSnapInterfaceContext();
   const hideSnapBranding = useSelector((state) =>
     getHideSnapBranding(state, snapId),

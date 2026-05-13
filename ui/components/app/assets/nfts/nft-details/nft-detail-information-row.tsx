@@ -19,22 +19,20 @@ type NftDetailInformationRowProps = {
   valueColor?: TextColor;
   value?: string | null;
   icon?: React.ReactNode;
-  buttonAddressValue?: React.ButtonHTMLAttributes<HTMLButtonElement> | null;
+  buttonAddressValue?: React.ReactNode | null;
   withPopover?: boolean;
   fullValue?: string;
 };
 
-const NftDetailInformationRow: React.FC<
-  React.PropsWithChildren<NftDetailInformationRowProps>
-> = ({
+const NftDetailInformationRow = ({
   title,
   valueColor,
   value,
   icon,
   buttonAddressValue,
   withPopover,
-  fullValue,
-}) => {
+  fullValue
+}: React.PropsWithChildren<NftDetailInformationRowProps>) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleMouseEnter = () => {
@@ -70,9 +68,7 @@ const NftDetailInformationRow: React.FC<
       </Text>
       {icon ? (
         <Box display={Display.Flex}>
-          {buttonAddressValue ? (
-            ({ ...buttonAddressValue } as unknown as React.ReactNode)
-          ) : (
+          {buttonAddressValue || (
             <Text
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

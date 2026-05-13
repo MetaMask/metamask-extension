@@ -16,14 +16,14 @@ import { SHIELD_CAROUSEL_ID } from '../../../../../shared/lib/shield/constants';
 import { getShieldInAppNavigationFromExternalLink } from '../../../../../shared/lib/shield';
 import type { StackCardProps } from './stack-card.types';
 
-export const StackCard: React.FC<React.PropsWithChildren<StackCardProps>> = ({
+export const StackCard = ({
   slide,
   isCurrentCard,
   isLastSlide = false,
   onSlideClick,
   onTransitionToNextCard,
-  className = '',
-}) => {
+  className = ''
+}: React.PropsWithChildren<StackCardProps>) => {
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 

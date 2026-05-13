@@ -68,15 +68,13 @@ export type MusdConvertLinkProps = {
  * @param options0.ctaText
  * @param options0.entryPoint
  */
-export const MusdConvertLink: React.FC<
-  React.PropsWithChildren<MusdConvertLinkProps>
-> = ({
+export const MusdConvertLink = ({
   tokenAddress,
   chainId,
   tokenSymbol,
   ctaText,
-  entryPoint = 'token_list',
-}) => {
+  entryPoint = 'token_list'
+}: React.PropsWithChildren<MusdConvertLinkProps>) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow, educationSeen } = useMusdConversion();

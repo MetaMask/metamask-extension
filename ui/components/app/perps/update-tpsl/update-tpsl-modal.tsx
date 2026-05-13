@@ -37,9 +37,12 @@ export type UpdateTPSLModalProps = {
  * @param options0.position
  * @param options0.currentPrice
  */
-export const UpdateTPSLModal: React.FC<
-  React.PropsWithChildren<UpdateTPSLModalProps>
-> = ({ isOpen, onClose, position, currentPrice }) => {
+export const UpdateTPSLModal = ({
+  isOpen,
+  onClose,
+  position,
+  currentPrice
+}: React.PropsWithChildren<UpdateTPSLModalProps>) => {
   const t = useI18nContext();
   const [submitState, setSubmitState] = useState<UpdateTPSLSubmitState | null>(
     null,

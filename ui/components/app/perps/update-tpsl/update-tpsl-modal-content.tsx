@@ -98,9 +98,12 @@ export type UpdateTPSLModalContentProps = {
  * @param options0.onClose
  * @param options0.onSubmitStateChange
  */
-export const UpdateTPSLModalContent: React.FC<
-  React.PropsWithChildren<UpdateTPSLModalContentProps>
-> = ({ position, currentPrice, onClose, onSubmitStateChange }) => {
+export const UpdateTPSLModalContent = ({
+  position,
+  currentPrice,
+  onClose,
+  onSubmitStateChange
+}: React.PropsWithChildren<UpdateTPSLModalContentProps>) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const { isEligible } = usePerpsEligibility();
@@ -590,7 +593,7 @@ export const UpdateTPSLModalContent: React.FC<
   );
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+    (<Box flexDirection={BoxFlexDirection.Column} gap={4}>
       {/* Take Profit */}
       <Box flexDirection={BoxFlexDirection.Column} gap={2}>
         <Text
@@ -872,6 +875,6 @@ export const UpdateTPSLModalContent: React.FC<
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}
       />
-    </Box>
+    </Box>)
   );
 };

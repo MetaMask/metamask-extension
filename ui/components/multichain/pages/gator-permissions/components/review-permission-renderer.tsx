@@ -94,13 +94,15 @@ function schemaElementDomKey(
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
 
-const ReviewAddressDisplay: React.FC<
-  React.PropsWithChildren<{
-    address: string;
-    testId: string;
-    style?: React.CSSProperties;
-  }>
-> = ({ address, testId, style }) => {
+const ReviewAddressDisplay = ({
+  address,
+  testId,
+  style
+}: React.PropsWithChildren<{
+  address: string;
+  testId: string;
+  style?: React.CSSProperties;
+}>) => {
   const { displayName, hexAddress } = useFallbackDisplayName(address);
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
@@ -139,9 +141,9 @@ const ReviewAddressDisplay: React.FC<
   );
 };
 
-const ReviewAccountRow: React.FC<
-  React.PropsWithChildren<{ address: string }>
-> = ({ address }) => {
+const ReviewAccountRow = ({
+  address
+}: React.PropsWithChildren<{ address: string }>) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -168,12 +170,13 @@ const ReviewAccountRow: React.FC<
   );
 };
 
-const ReviewNetworkRow: React.FC<
-  React.PropsWithChildren<{
-    chainId: Hex;
-    networkName: string;
-  }>
-> = ({ chainId, networkName }) => {
+const ReviewNetworkRow = ({
+  chainId,
+  networkName
+}: React.PropsWithChildren<{
+  chainId: Hex;
+  networkName: string;
+}>) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -216,12 +219,13 @@ const ReviewNetworkRow: React.FC<
   );
 };
 
-const ReviewRuleAddressRow: React.FC<
-  React.PropsWithChildren<{
-    addresses: string[];
-    label: string;
-  }>
-> = ({ addresses, label }) => {
+const ReviewRuleAddressRow = ({
+  addresses,
+  label
+}: React.PropsWithChildren<{
+  addresses: string[];
+  label: string;
+}>) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -520,9 +524,7 @@ export type ReviewPermissionRendererProps = {
  * @param options0.permissionAccount
  * @param options0.networkName
  */
-export const ReviewPermissionRenderer: React.FC<
-  React.PropsWithChildren<ReviewPermissionRendererProps>
-> = ({
+export const ReviewPermissionRenderer = ({
   permissionType,
   permissionData,
   chainId,
@@ -532,8 +534,8 @@ export const ReviewPermissionRenderer: React.FC<
   viewMode = 'reviewDetail',
   origin,
   permissionAccount,
-  networkName,
-}) => {
+  networkName
+}: React.PropsWithChildren<ReviewPermissionRendererProps>) => {
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permissionType];

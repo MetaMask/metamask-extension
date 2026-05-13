@@ -66,17 +66,15 @@ export type AddressQRCodeModalProps = Omit<
   networkImageSrc?: string | undefined;
 };
 
-export const AddressQRCodeModal: React.FC<
-  React.PropsWithChildren<AddressQRCodeModalProps>
-> = ({
+export const AddressQRCodeModal = ({
   isOpen,
   onClose,
   address,
   accountName,
   networkName,
   chainId,
-  networkImageSrc,
-}) => {
+  networkImageSrc
+}: React.PropsWithChildren<AddressQRCodeModalProps>) => {
   const t = useI18nContext();
 
   // useCopyToClipboard analysis: Copies one of your public addresses

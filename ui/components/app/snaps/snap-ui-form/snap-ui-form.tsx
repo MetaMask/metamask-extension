@@ -11,9 +11,10 @@ export type SnapUIFormProps = {
   name: string;
 };
 
-export const SnapUIForm: FunctionComponent<
-  React.PropsWithChildren<SnapUIFormProps>
-> = ({ children, name }) => {
+export const SnapUIForm = ({
+  children,
+  name
+}: React.PropsWithChildren<SnapUIFormProps>) => {
   const { handleEvent } = useSnapInterfaceContext();
 
   const handleSubmit = (event: FormEvent<HTMLElement>) => {

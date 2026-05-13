@@ -42,9 +42,12 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
  * @param options0.variant - Visual variant - 'default' for normal, 'muted' for subdued
  * @param options0.showTopBorder
  */
-export const TransactionCard: React.FC<
-  React.PropsWithChildren<TransactionCardProps>
-> = ({ transaction, onClick, variant = 'default', showTopBorder = false }) => {
+export const TransactionCard = ({
+  transaction,
+  onClick,
+  variant = 'default',
+  showTopBorder = false
+}: React.PropsWithChildren<TransactionCardProps>) => {
   const t = useI18nContext();
   const displayName = getDisplayName(transaction.symbol);
 

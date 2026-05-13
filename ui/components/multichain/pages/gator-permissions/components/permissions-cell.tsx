@@ -20,16 +20,14 @@ type PermissionsCellProps = {
   origin?: string;
 };
 
-export const PermissionsCell: React.FC<
-  React.PropsWithChildren<PermissionsCellProps>
-> = ({
+export const PermissionsCell = ({
   nonTestNetworks,
   testNetworks,
   totalCount,
   chainIds,
   paddingTop,
-  origin,
-}) => {
+  origin
+}: React.PropsWithChildren<PermissionsCellProps>) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const allNetworks = [...nonTestNetworks, ...testNetworks];

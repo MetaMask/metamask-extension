@@ -39,11 +39,11 @@ export type OrderCardProps = {
  * @param options0.onClick - Optional click handler override. If not provided, navigates to market detail page.
  * @param options0.variant - Visual variant - 'default' for perps tab, 'muted' for detail page
  */
-export const OrderCard: React.FC<React.PropsWithChildren<OrderCardProps>> = ({
+export const OrderCard = ({
   order,
   onClick,
-  variant = 'default',
-}) => {
+  variant = 'default'
+}: React.PropsWithChildren<OrderCardProps>) => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const displayName = getDisplayName(order.symbol);
@@ -91,7 +91,7 @@ export const OrderCard: React.FC<React.PropsWithChildren<OrderCardProps>> = ({
       : 'bg-default hover:bg-hover active:bg-pressed';
 
   return (
-    <ButtonBase
+    (<ButtonBase
       className={twMerge(
         // Reset ButtonBase defaults for card layout
         'justify-start rounded-none min-w-0',
@@ -122,7 +122,7 @@ export const OrderCard: React.FC<React.PropsWithChildren<OrderCardProps>> = ({
         {isTriggerBasedOrder ? (
           // TP/SL: render label directly in the column so it wraps freely.
           // The symbol is redundant here — it appears after the size below.
-          <Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>
+          (<Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>)
         ) : (
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -158,7 +158,7 @@ export const OrderCard: React.FC<React.PropsWithChildren<OrderCardProps>> = ({
           </Text>
         )}
       </Box>
-    </ButtonBase>
+    </ButtonBase>)
   );
 };
 

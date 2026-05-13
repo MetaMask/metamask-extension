@@ -61,9 +61,7 @@ const defaultProps = {
  * Mirrors UpdateTPSLModal footer so unit tests can reach the primary action
  * @param props
  */
-const TpslContentWithTestFooter: React.FC<
-  React.PropsWithChildren<React.ComponentProps<typeof UpdateTPSLModalContent>>
-> = (props) => {
+const TpslContentWithTestFooter = (props: React.PropsWithChildren<React.ComponentProps<typeof UpdateTPSLModalContent>>) => {
   const [submitState, setSubmitState] =
     React.useState<UpdateTPSLSubmitState | null>(null);
   return (

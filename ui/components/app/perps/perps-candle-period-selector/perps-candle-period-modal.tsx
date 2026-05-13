@@ -84,9 +84,12 @@ export type PerpsCandlePeriodModalProps = {
   onPeriodChange?: (period: CandlePeriod) => void;
 };
 
-export const PerpsCandlePeriodModal: React.FC<
-  React.PropsWithChildren<PerpsCandlePeriodModalProps>
-> = ({ isOpen, selectedPeriod, onClose, onPeriodChange }) => {
+export const PerpsCandlePeriodModal = ({
+  isOpen,
+  selectedPeriod,
+  onClose,
+  onPeriodChange
+}: React.PropsWithChildren<PerpsCandlePeriodModalProps>) => {
   const t = useI18nContext();
 
   const handlePeriodSelect = (period: CandlePeriod) => {

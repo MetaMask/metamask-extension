@@ -43,15 +43,13 @@ type MultichainEditNetworksPageProps = {
   onSubmit: (chainIds: CaipChainId[]) => void;
 };
 
-export const MultichainEditNetworksPage: React.FC<
-  React.PropsWithChildren<MultichainEditNetworksPageProps>
-> = ({
+export const MultichainEditNetworksPage = ({
   nonTestNetworks,
   testNetworks,
   defaultSelectedChainIds,
   onSubmit,
-  onClose,
-}) => {
+  onClose
+}: React.PropsWithChildren<MultichainEditNetworksPageProps>) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];

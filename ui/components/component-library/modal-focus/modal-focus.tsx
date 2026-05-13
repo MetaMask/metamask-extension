@@ -12,14 +12,14 @@ const FocusTrap: typeof ReactFocusLock =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (ReactFocusLock as any).default ?? ReactFocusLock;
 
-export const ModalFocus: React.FC<React.PropsWithChildren<ModalFocusProps>> = ({
+export const ModalFocus = ({
   initialFocusRef,
   finalFocusRef,
   restoreFocus,
   children,
   autoFocus,
   ...props
-}) => {
+}: React.PropsWithChildren<ModalFocusProps>) => {
   const onActivation = useCallback(() => {
     if (initialFocusRef?.current) {
       initialFocusRef.current.focus();

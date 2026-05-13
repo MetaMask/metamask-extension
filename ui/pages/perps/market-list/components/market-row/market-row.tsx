@@ -70,11 +70,11 @@ const getMetricValue = (
  * @param options0.onPress - Callback when row is pressed
  * @param options0.displayMetric - Which metric to display below the symbol
  */
-export const MarketRow: React.FC<React.PropsWithChildren<MarketRowProps>> = ({
+export const MarketRow = ({
   market,
   onPress,
-  displayMetric = 'volume',
-}) => {
+  displayMetric = 'volume'
+}: React.PropsWithChildren<MarketRowProps>) => {
   const { formatNumber } = useFormatters();
   const displaySymbol = useMemo(
     () => getDisplaySymbol(market.symbol),
@@ -101,7 +101,7 @@ export const MarketRow: React.FC<React.PropsWithChildren<MarketRowProps>> = ({
   }, [onPress, market]);
 
   return (
-    <Box
+    (<Box
       className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
@@ -155,7 +155,7 @@ export const MarketRow: React.FC<React.PropsWithChildren<MarketRowProps>> = ({
           {formatSignedChangePercent(market.change24hPercent)}
         </Text>
       </Box>
-    </Box>
+    </Box>)
   );
 };
 

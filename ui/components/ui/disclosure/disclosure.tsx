@@ -1,17 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
-import { Color, TextVariant } from '../../../helpers/constants/design-system';
+import {
+  IconColor,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { DisclosureVariant } from './disclosure.constants';
 
-/**
- * @param {string} variant
- * @param {string} title
- * @param {string} size
- * @returns {JSX.Element}
- */
-const renderSummaryByType = (variant, title, size) => {
+type DisclosureProps = {
+  children: React.ReactNode;
+  isScrollToBottomOnOpen?: boolean;
+  size?: string;
+  title?: string;
+  variant?: DisclosureVariant;
+};
+
+const renderSummaryByType = (
+  variant: DisclosureVariant | undefined,
+  title: string | undefined,
+  size: string | undefined,
+) => {
   switch (variant) {
     case DisclosureVariant.Arrow: {
       const textVariant =
@@ -19,12 +28,12 @@ const renderSummaryByType = (variant, title, size) => {
 
       return (
         <summary className="disclosure__summary is-arrow">
-          <Text color={Color.primaryDefault} variant={textVariant}>
+          <Text color={TextColor.primaryDefault} variant={textVariant}>
             {title}
           </Text>
           <Icon
             className="disclosure__summary--icon"
-            color={Color.primaryDefault}
+            color={IconColor.primaryDefault}
             name={IconName.ArrowUp}
             size={IconSize.Sm}
             marginInlineStart={2}
@@ -49,12 +58,12 @@ const renderSummaryByType = (variant, title, size) => {
 
 const Disclosure = ({
   children,
-  isScrollToBottomOnOpen,
+  isScrollToBottomOnOpen = false,
   title,
-  size,
-  variant,
-}) => {
-  const disclosureFooterEl = useRef(null);
+  size = 'normal',
+  variant = DisclosureVariant.Default,
+}: DisclosureProps) => {
+  const disclosureFooterEl = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
 
   const scrollToBottom = () => {
@@ -75,7 +84,7 @@ const Disclosure = ({
     >
       {title ? (
         <details>
-          {renderSummaryByType(variant, title)}
+          {renderSummaryByType(variant, title, size)}
 
           <div className={classnames('disclosure__content', size)}>
             {children}
@@ -87,21 +96,6 @@ const Disclosure = ({
       )}
     </div>
   );
-};
-
-Disclosure.propTypes = {
-  children: PropTypes.node.isRequired,
-  isScrollToBottomOnOpen: PropTypes.bool,
-  size: PropTypes.string,
-  title: PropTypes.string,
-  variant: PropTypes.string,
-};
-
-Disclosure.defaultProps = {
-  isScrollToBottomOnOpen: false,
-  size: 'normal',
-  title: null,
-  variant: DisclosureVariant.Default,
 };
 
 export default Disclosure;

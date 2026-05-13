@@ -28,9 +28,7 @@ import { getURLHost } from '../../../helpers/utils/util';
 import { addPermittedAccounts } from '../../../store/actions';
 import { ConnectAccountsListProps } from './connect-account-modal.types';
 
-export const ConnectAccountsModalList: React.FC<
-  React.PropsWithChildren<ConnectAccountsListProps>
-> = ({
+export const ConnectAccountsModalList = ({
   onClose,
   allAreSelected,
   deselectAll,
@@ -41,8 +39,8 @@ export const ConnectAccountsModalList: React.FC<
   checked,
   isIndeterminate,
   onAccountsUpdate,
-  activeTabOrigin,
-}) => {
+  activeTabOrigin
+}: React.PropsWithChildren<ConnectAccountsListProps>) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   return (

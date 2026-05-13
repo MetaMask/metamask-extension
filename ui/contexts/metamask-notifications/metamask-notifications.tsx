@@ -158,9 +158,9 @@ export function useEnableNotificationsByDefaultEffect() {
   ]);
 }
 
-export const MetamaskNotificationsProvider: React.FC<
-  React.PropsWithChildren<unknown>
-> = ({ children }) => {
+export const MetamaskNotificationsProvider = ({
+  children
+}: React.PropsWithChildren<unknown>) => {
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();
 

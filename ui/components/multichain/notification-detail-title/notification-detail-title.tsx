@@ -27,9 +27,10 @@ export type NotificationDetailTitleProps = {
  * @param props.date - The date of the notification.
  * @returns The NotificationDetailTitle component.
  */
-export const NotificationDetailTitle: FC<
-  React.PropsWithChildren<NotificationDetailTitleProps>
-> = ({ title, date }): JSX.Element => {
+export const NotificationDetailTitle = ({
+  title,
+  date
+}: React.PropsWithChildren<NotificationDetailTitleProps>): JSX.Element => {
   return (
     <Box
       display={Display.Flex}

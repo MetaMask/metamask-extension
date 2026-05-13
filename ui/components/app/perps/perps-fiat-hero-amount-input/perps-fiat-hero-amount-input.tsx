@@ -87,9 +87,7 @@ function getHeroAmountTextColor(
   return TextColor.TextDefault;
 }
 
-export const PerpsFiatHeroAmountSkeleton: React.FC<
-  React.PropsWithChildren<unknown>
-> = () => (
+export const PerpsFiatHeroAmountSkeleton = () => (
   <Box
     flexDirection={BoxFlexDirection.Row}
     justifyContent={BoxJustifyContent.Center}
@@ -102,17 +100,15 @@ export const PerpsFiatHeroAmountSkeleton: React.FC<
   </Box>
 );
 
-export const PerpsFiatHeroAmountInput: React.FC<
-  React.PropsWithChildren<PerpsFiatHeroAmountInputProps>
-> = React.memo(
+export const PerpsFiatHeroAmountInput = React.memo(
   ({
     value,
     onChange,
     autoFocus = false,
     disabled = false,
     hasAlert = false,
-    isLoading = false,
-  }) => {
+    isLoading = false
+  }: React.PropsWithChildren<PerpsFiatHeroAmountInputProps>) => {
     const fiatSymbol = getCurrencySymbol('USD');
     const amountLength = value.length;
 

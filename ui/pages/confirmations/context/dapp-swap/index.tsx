@@ -22,11 +22,11 @@ export const DappSwapContext = createContext<DappSwapContextType | undefined>(
   undefined,
 );
 
-export const DappSwapContextProvider: React.FC<
-  React.PropsWithChildren<{
-    children: ReactElement;
-  }>
-> = ({ children }) => {
+export const DappSwapContextProvider = ({
+  children
+}: React.PropsWithChildren<{
+  children: ReactElement;
+}>) => {
   const { currentConfirmation } = useCurrentConfirmation();
   const [selectedQuote, setSelectedQuote] = useState<QuoteResponse | undefined>(
     undefined,

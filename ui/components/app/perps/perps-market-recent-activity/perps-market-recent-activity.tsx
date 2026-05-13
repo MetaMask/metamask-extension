@@ -26,9 +26,7 @@ import type { PerpsTransaction } from '../types';
 
 const SKELETON_ITEMS = [1, 2, 3];
 
-const RecentActivitySkeleton: React.FC<
-  React.PropsWithChildren<unknown>
-> = () => (
+const RecentActivitySkeleton = () => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
@@ -39,7 +37,7 @@ const RecentActivitySkeleton: React.FC<
   </Box>
 );
 
-const RecentActivityEmpty: React.FC<React.PropsWithChildren<unknown>> = () => {
+const RecentActivityEmpty = () => {
   const t = useI18nContext();
   return (
     <Box paddingBottom={4}>
@@ -50,12 +48,13 @@ const RecentActivityEmpty: React.FC<React.PropsWithChildren<unknown>> = () => {
   );
 };
 
-const RecentActivityList: React.FC<
-  React.PropsWithChildren<{
-    transactions: PerpsTransaction[];
-    onTransactionClick: () => void;
-  }>
-> = ({ transactions, onTransactionClick }) => (
+const RecentActivityList = ({
+  transactions,
+  onTransactionClick
+}: React.PropsWithChildren<{
+  transactions: PerpsTransaction[];
+  onTransactionClick: () => void;
+}>) => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
@@ -76,9 +75,9 @@ export type PerpsMarketRecentActivityProps = {
   symbol: string;
 };
 
-export const PerpsMarketRecentActivity: React.FC<
-  React.PropsWithChildren<PerpsMarketRecentActivityProps>
-> = ({ symbol }) => {
+export const PerpsMarketRecentActivity = ({
+  symbol
+}: React.PropsWithChildren<PerpsMarketRecentActivityProps>) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 

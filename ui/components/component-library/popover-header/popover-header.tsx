@@ -13,9 +13,7 @@ import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { IconName } from '../icon';
 import type { PopoverHeaderProps } from './popover-header.types';
 
-export const PopoverHeader: React.FC<
-  React.PropsWithChildren<PopoverHeaderProps>
-> = ({
+export const PopoverHeader = ({
   children,
   className = '',
   startAccessory,
@@ -25,7 +23,7 @@ export const PopoverHeader: React.FC<
   onBack,
   backButtonProps,
   ...props
-}) => {
+}: React.PropsWithChildren<PopoverHeaderProps>) => {
   const t = useI18nContext();
   return (
     <HeaderBase

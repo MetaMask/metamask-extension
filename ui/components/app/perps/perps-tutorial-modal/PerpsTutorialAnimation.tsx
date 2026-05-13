@@ -73,14 +73,12 @@ const getContainerStyle = (
   };
 };
 
-const PerpsTutorialAnimation: React.FC<
-  React.PropsWithChildren<PerpsTutorialAnimationProps>
-> = ({
+const PerpsTutorialAnimation = ({
   artboardName,
   className,
   fit: fitProp,
-  alignment = Alignment.Center,
-}) => {
+  alignment = Alignment.Center
+}: React.PropsWithChildren<PerpsTutorialAnimationProps>) => {
   const theme = useTheme();
   const isDarkTheme = theme === ThemeType.dark;
   const environmentType = getEnvironmentType();

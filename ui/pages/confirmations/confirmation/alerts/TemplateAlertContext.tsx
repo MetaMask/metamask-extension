@@ -28,13 +28,15 @@ export const TemplateAlertContext = createContext<
   TemplateAlertContextType | undefined
 >(undefined);
 
-export const TemplateAlertContextProvider: React.FC<
-  React.PropsWithChildren<{
-    children: ReactElement;
-    confirmationId: string;
-    onSubmit: () => void;
-  }>
-> = ({ children, confirmationId, onSubmit }) => {
+export const TemplateAlertContextProvider = ({
+  children,
+  confirmationId,
+  onSubmit
+}: React.PropsWithChildren<{
+  children: ReactElement;
+  confirmationId: string;
+  onSubmit: () => void;
+}>) => {
   const pendingConfirmations = useSelector(getUnapprovedConfirmations);
 
   const pendingConfirmation =
@@ -65,7 +67,7 @@ export const TemplateAlertContextProvider: React.FC<
   return (
     // AlertMetricsProvider is added as it is required for alert modals to work
     // metrics event capturing can be added if needed.
-    <AlertMetricsProvider
+    (<AlertMetricsProvider
       metrics={{
         trackAlertActionClicked: NopeFunction,
         trackAlertRender: NopeFunction,
@@ -93,7 +95,7 @@ export const TemplateAlertContextProvider: React.FC<
           </>
         </TemplateAlertContext.Provider>
       </AlertActionHandlerProvider>
-    </AlertMetricsProvider>
+    </AlertMetricsProvider>)
   );
 };
 

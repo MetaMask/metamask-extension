@@ -26,14 +26,16 @@ export const GasFeeModalContext = createContext<
   GasFeeModalContextType | undefined
 >(undefined);
 
-export const GasFeeModalContextProvider: React.FC<
-  React.PropsWithChildren<{
-    children: React.ReactNode;
-    /** Optional transaction for gas editing when outside confirm flow (e.g. cancel/speedup). */
-    transactionMeta?: TransactionMeta;
-    editGasMode?: EditGasModes;
-  }>
-> = ({ children, transactionMeta, editGasMode }) => {
+export const GasFeeModalContextProvider = ({
+  children,
+  transactionMeta,
+  editGasMode
+}: React.PropsWithChildren<{
+  children: React.ReactNode;
+  /** Optional transaction for gas editing when outside confirm flow (e.g. cancel/speedup). */
+  transactionMeta?: TransactionMeta;
+  editGasMode?: EditGasModes;
+}>) => {
   const [isGasFeeModalVisible, setIsGasFeeModalVisible] = useState(false);
   const [initialModalType, setInitialModalType] = useState<GasModalType>(
     GasModalType.EstimatesModal,

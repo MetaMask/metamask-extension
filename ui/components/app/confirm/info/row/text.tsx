@@ -32,16 +32,14 @@ export type ConfirmInfoRowTextProps = {
   editIconDataTestId?: string;
 };
 
-export const ConfirmInfoRowText: React.FC<
-  React.PropsWithChildren<ConfirmInfoRowTextProps>
-> = ({
+export const ConfirmInfoRowText = ({
   text,
   onEditClick,
   editIconClassName,
   tooltip,
   'data-testid': dataTestId,
-  editIconDataTestId,
-}) => {
+  editIconDataTestId
+}: React.PropsWithChildren<ConfirmInfoRowTextProps>) => {
   const t = useContext(I18nContext);
 
   const isEditable = Boolean(onEditClick);

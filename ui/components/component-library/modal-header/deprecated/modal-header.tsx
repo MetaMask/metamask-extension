@@ -24,9 +24,7 @@ import { IconName } from '../../icon';
  * @param options0.onBack
  * @param options0.backButtonProps
  */
-export const ModalHeader: React.FC<
-  React.PropsWithChildren<ModalHeaderProps>
-> = ({
+export const ModalHeader = ({
   children,
   className = '',
   startAccessory,
@@ -36,7 +34,7 @@ export const ModalHeader: React.FC<
   onBack,
   backButtonProps,
   ...props
-}) => {
+}: React.PropsWithChildren<ModalHeaderProps>) => {
   const t = useI18nContext();
   return (
     <HeaderBase

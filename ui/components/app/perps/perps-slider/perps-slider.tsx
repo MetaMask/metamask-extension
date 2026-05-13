@@ -152,9 +152,7 @@ export type PerpsSliderProps = {
   markInterval?: number;
 };
 
-export const PerpsSlider: React.FC<
-  React.PropsWithChildren<PerpsSliderProps>
-> = ({
+export const PerpsSlider = ({
   min,
   max,
   step,
@@ -170,8 +168,8 @@ export const PerpsSlider: React.FC<
   valueText,
   'data-testid': dataTestId,
   disabled = false,
-  markInterval,
-}) => {
+  markInterval
+}: React.PropsWithChildren<PerpsSliderProps>) => {
   const hasHeader = titleText || tooltipText || valueText || titleDetail;
   const hasFooter = infoText || onEdit;
 

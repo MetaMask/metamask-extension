@@ -41,15 +41,13 @@ export type AccountGroupBalanceProps = {
   chainId: CaipChainId | Hex;
 };
 
-export const AccountGroupBalance: React.FC<
-  React.PropsWithChildren<AccountGroupBalanceProps>
-> = ({
+export const AccountGroupBalance = ({
   classPrefix,
   balanceIsCached,
   handleSensitiveToggle,
   balance,
-  chainId,
-}) => {
+  chainId
+}: React.PropsWithChildren<AccountGroupBalanceProps>) => {
   const { privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);

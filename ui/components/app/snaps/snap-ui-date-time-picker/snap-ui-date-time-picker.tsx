@@ -88,9 +88,7 @@ function normalizeDate(
  * @param props.placeholder - The placeholder text for the picker.
  * @returns The DateTimePicker component.
  */
-export const SnapUIDateTimePicker: FunctionComponent<
-  React.PropsWithChildren<SnapUIDateTimePickerProps>
-> = ({
+export const SnapUIDateTimePicker = ({
   type = 'datetime',
   label,
   placeholder,
@@ -99,8 +97,8 @@ export const SnapUIDateTimePicker: FunctionComponent<
   disabled,
   error,
   disablePast = false,
-  disableFuture = false,
-}) => {
+  disableFuture = false
+}: React.PropsWithChildren<SnapUIDateTimePickerProps>) => {
   const t = useI18nContext();
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 

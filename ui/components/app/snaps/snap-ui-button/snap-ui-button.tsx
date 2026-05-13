@@ -15,6 +15,7 @@ import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 
 export type SnapUIButtonProps = {
   name?: string;
+  variant?: 'primary' | 'destructive';
   textVariant: ButtonLinkProps<'button'>['variant'];
   loading?: boolean;
 };
@@ -25,9 +26,7 @@ const COLORS = {
   disabled: TextColor.textMuted,
 };
 
-export const SnapUIButton: FunctionComponent<
-  React.PropsWithChildren<SnapUIButtonProps & ButtonLinkProps<'button'>>
-> = ({
+export const SnapUIButton = ({
   name,
   children,
   type = ButtonType.Button,
@@ -37,7 +36,7 @@ export const SnapUIButton: FunctionComponent<
   className = '',
   textVariant,
   ...props
-}) => {
+}: React.PropsWithChildren<SnapUIButtonProps & Omit<ButtonLinkProps<'button'>, 'variant'>>) => {
   const { handleEvent } = useSnapInterfaceContext();
 
   const handleClick = (event: ReactMouseEvent<HTMLElement>) => {

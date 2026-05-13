@@ -24,9 +24,10 @@ export type PerpsWithdrawPercentageButtonsProps = {
  * @param options0.onPercentageClick
  * @param options0.disabled
  */
-export const PerpsWithdrawPercentageButtons: React.FC<
-  React.PropsWithChildren<PerpsWithdrawPercentageButtonsProps>
-> = ({ onPercentageClick, disabled = false }) => {
+export const PerpsWithdrawPercentageButtons = ({
+  onPercentageClick,
+  disabled = false
+}: React.PropsWithChildren<PerpsWithdrawPercentageButtonsProps>) => {
   const t = useI18nContext();
 
   const handleClick = useCallback(

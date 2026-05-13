@@ -22,9 +22,14 @@ export type SnapUIDropdownProps = {
   disabled?: boolean;
 };
 
-export const SnapUIDropdown: FunctionComponent<
-  React.PropsWithChildren<SnapUIDropdownProps>
-> = ({ name, label, error, form, disabled, ...props }) => {
+export const SnapUIDropdown = ({
+  name,
+  label,
+  error,
+  form,
+  disabled,
+  ...props
+}: React.PropsWithChildren<SnapUIDropdownProps>) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as string;

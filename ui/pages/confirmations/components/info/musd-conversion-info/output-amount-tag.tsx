@@ -53,9 +53,12 @@ export type OutputAmountTagProps = {
  * @param options0.showBackground
  * @param options0.testID
  */
-export const OutputAmountTag: React.FC<
-  React.PropsWithChildren<OutputAmountTagProps>
-> = ({ amount, symbol, showBackground = true, testID }) => {
+export const OutputAmountTag = ({
+  amount,
+  symbol,
+  showBackground = true,
+  testID
+}: React.PropsWithChildren<OutputAmountTagProps>) => {
   const displayText = symbol ? `${amount} ${symbol}` : amount;
 
   return (

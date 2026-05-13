@@ -41,15 +41,13 @@ export type SnapUIAccountSelectorProps = {
  * @param props.disabled - Whether the selector is disabled.
  * @returns The AccountSelector component.
  */
-export const SnapUIAccountSelector: FunctionComponent<
-  React.PropsWithChildren<SnapUIAccountSelectorProps>
-> = ({
+export const SnapUIAccountSelector = ({
   chainIds,
   switchGlobalAccount,
   hideExternalAccounts,
   disabled,
   ...props
-}) => {
+}: React.PropsWithChildren<SnapUIAccountSelectorProps>) => {
   const t = useI18nContext();
   const { snapId } = useSnapInterfaceContext();
   const dispatch = useDispatch();

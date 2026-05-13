@@ -69,9 +69,7 @@ const LOW_VALUE_TRIGGER_PRICE_DECIMALS = 6;
  * @param props.leverage - Leverage multiplier for RoE% calculation
  * @param props.asset - Asset symbol for fetching dynamic closing fee rates
  */
-export const AutoCloseSection: React.FC<
-  React.PropsWithChildren<AutoCloseSectionProps>
-> = ({
+export const AutoCloseSection = ({
   enabled,
   onEnabledChange,
   takeProfitPrice,
@@ -86,8 +84,8 @@ export const AutoCloseSection: React.FC<
   limitPrice,
   liquidationPrice,
   leverage,
-  asset,
-}) => {
+  asset
+}: React.PropsWithChildren<AutoCloseSectionProps>) => {
   const t = useI18nContext();
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: asset,

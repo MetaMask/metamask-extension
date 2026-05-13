@@ -65,9 +65,7 @@ type PermitSimulationValueDisplayParams = {
   canDisplayValueAsUnlimited?: boolean;
 };
 
-const PermitSimulationValueDisplay: React.FC<
-  React.PropsWithChildren<PermitSimulationValueDisplayParams>
-> = ({
+const PermitSimulationValueDisplay = ({
   chainId,
   primaryType,
   tokenContract,
@@ -76,8 +74,8 @@ const PermitSimulationValueDisplay: React.FC<
   message,
   credit,
   debit,
-  canDisplayValueAsUnlimited,
-}) => {
+  canDisplayValueAsUnlimited
+}: React.PropsWithChildren<PermitSimulationValueDisplayParams>) => {
   const t = useI18nContext();
 
   const exchangeRate = useTokenExchangeRate(tokenContract, chainId);

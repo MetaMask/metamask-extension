@@ -22,7 +22,7 @@ const meta: Meta<typeof GasTiming> = {
     }>
   >,
   decorators: [
-    (StoryComponent: React.FC<React.PropsWithChildren<unknown>>) => (
+    (StoryComponent: React.ComponentType) => (
       <Provider store={storeMock}>
         <StoryComponent />
       </Provider>

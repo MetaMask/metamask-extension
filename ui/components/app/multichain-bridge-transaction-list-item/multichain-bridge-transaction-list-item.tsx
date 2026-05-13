@@ -59,9 +59,11 @@ type MultichainBridgeTransactionListItemProps = {
  * @param options0.bridgeHistoryItem - The bridge history item data to display
  * @param options0.toggleShowDetails - Function to call when the item is clicked
  */
-const MultichainBridgeTransactionListItem: React.FC<
-  React.PropsWithChildren<MultichainBridgeTransactionListItemProps>
-> = ({ transaction, bridgeHistoryItem, toggleShowDetails }) => {
+const MultichainBridgeTransactionListItem = ({
+  transaction,
+  bridgeHistoryItem,
+  toggleShowDetails
+}: React.PropsWithChildren<MultichainBridgeTransactionListItemProps>) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 

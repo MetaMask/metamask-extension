@@ -168,7 +168,6 @@ function renderQrCameraFlowContent({
 }
 
 type HardwareWalletErrorModalProps = {
-  isOpen?: boolean;
   error?: HardwareWalletError;
   onCancel?: () => void;
   onClose?: () => void;
@@ -182,9 +181,12 @@ const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
  *
  * @param props - The component props
  */
-export const HardwareWalletErrorModal: React.FC<
-  React.PropsWithChildren<HardwareWalletErrorModalProps>
-> = React.memo((props) => {
+export const HardwareWalletErrorModal = React.memo(({
+  error: errorProp,
+  onClose: onCloseProp,
+  onCancel: onCancelProp,
+  onRetry: onRetryProp,
+}: HardwareWalletErrorModalProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const recoveryLocation = useHardwareWalletRecoveryLocation();
@@ -198,7 +200,13 @@ export const HardwareWalletErrorModal: React.FC<
   const lastTrackedErrorKeyRef = useRef<string | null>(null);
   const prevNonNullErrorIdentityKeyRef = useRef<string | null>(null);
   const successModalMetricSentRef = useRef(false);
-  const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
+  const { error, onClose, onCancel, onRetry } = {
+    ...modalProps,
+    error: errorProp,
+    onClose: onCloseProp,
+    onCancel: onCancelProp,
+    onRetry: onRetryProp,
+  };
 
   const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
   const { ensureDeviceReady, clearError, setConnectionReady } =

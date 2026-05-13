@@ -18,17 +18,15 @@ export type LottieAnimationProps = {
   onComplete?: () => void;
 };
 
-export const LottieAnimation: React.FC<
-  React.PropsWithChildren<LottieAnimationProps>
-> = ({
+export const LottieAnimation = ({
   data,
   path,
   loop = true,
   autoplay = true,
   style = {},
   className = '',
-  onComplete = () => null,
-}) => {
+  onComplete = () => null
+}: React.PropsWithChildren<LottieAnimationProps>) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const animationInstance = useRef<AnimationItem | null>(null);
 

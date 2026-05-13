@@ -52,9 +52,7 @@ export type TabEmptyStateProps = Omit<BoxProps, 'ref'> & {
   children?: React.ReactNode;
 };
 
-export const TabEmptyState: React.FC<
-  React.PropsWithChildren<TabEmptyStateProps>
-> = ({
+export const TabEmptyState = ({
   icon,
   description,
   descriptionProps,
@@ -64,7 +62,7 @@ export const TabEmptyState: React.FC<
   className,
   children,
   ...props
-}) => {
+}: React.PropsWithChildren<TabEmptyStateProps>) => {
   return (
     <Box
       className={twMerge('max-w-56', className)}

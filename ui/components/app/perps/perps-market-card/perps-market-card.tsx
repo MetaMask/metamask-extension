@@ -31,17 +31,15 @@ export type PerpsMarketCardProps = {
   'data-testid'?: string;
 };
 
-export const PerpsMarketCard: React.FC<
-  React.PropsWithChildren<PerpsMarketCardProps>
-> = ({
+export const PerpsMarketCard = ({
   symbol,
   name,
   price,
   change24hPercent,
   volume,
   onClick,
-  'data-testid': testId,
-}) => {
+  'data-testid': testId
+}: React.PropsWithChildren<PerpsMarketCardProps>) => {
   const displaySymbol = getDisplayName(symbol);
   const displayName = name ? getDisplayName(name) : displaySymbol;
   const displayChange24hPercent = formatSignedChangePercent(change24hPercent);
