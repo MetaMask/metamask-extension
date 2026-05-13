@@ -24,13 +24,28 @@ const FAILED_STATUSES = new Set<TransactionStatus>([
   TransactionStatus.dropped,
 ]);
 
+type TransactionStatusesById = Record<string, TransactionStatus | null>;
+type I18nTranslator = ReturnType<typeof useI18nContext>;
+
 function generateToastId(transactionId: string): string {
   return `perps-withdraw-${transactionId}`;
 }
 
+function getTransactionStatusesById(
+  transactions: PerpsWithdrawToastTransaction[],
+): TransactionStatusesById {
+  const statuses: TransactionStatusesById = {};
+
+  for (const transaction of transactions) {
+    statuses[transaction.id] = transaction.status ?? null;
+  }
+
+  return statuses;
+}
+
 function getSuccessDescription(
   transaction: PerpsWithdrawToastTransaction,
-  t: ReturnType<typeof useI18nContext>,
+  t: I18nTranslator,
 ): string {
   if (!transaction.isPostQuote || transaction.targetFiat === undefined) {
     return t('perpsWithdrawPostQuoteToastSuccessGenericDescription');
@@ -40,6 +55,92 @@ function getSuccessDescription(
     `$${transaction.targetFiat.toFixed(2)}`,
     transaction.tokenSymbol,
   ]);
+}
+
+function showPendingWithdrawToast(toastId: string, t: I18nTranslator): void {
+  showPendingToast(toastId, {
+    title: t('perpsWithdrawPostQuoteToastPendingTitle'),
+    description: t('perpsWithdrawPostQuoteToastPendingDescription'),
+    dataTestId: 'perps-withdraw-pending-toast',
+  });
+}
+
+function showSuccessWithdrawToast(
+  toastId: string,
+  transaction: PerpsWithdrawToastTransaction,
+  t: I18nTranslator,
+): void {
+  showSuccessToast(toastId, {
+    title: t('perpsWithdrawPostQuoteToastSuccessTitle'),
+    description: getSuccessDescription(transaction, t),
+    dataTestId: 'perps-withdraw-success-toast',
+  });
+}
+
+function showFailedWithdrawToast(toastId: string, t: I18nTranslator): void {
+  showFailedToast(toastId, {
+    title: t('perpsWithdrawPostQuoteToastErrorTitle'),
+    description: t('perpsWithdrawPostQuoteToastErrorDescription'),
+    dataTestId: 'perps-withdraw-failed-toast',
+  });
+}
+
+function handleChangedWithdrawTransaction({
+  transaction,
+  previousStatus,
+  pendingToastShownIds,
+  t,
+}: {
+  transaction: PerpsWithdrawToastTransaction;
+  previousStatus: TransactionStatus | null | undefined;
+  pendingToastShownIds: Set<string>;
+  t: I18nTranslator;
+}): void {
+  const { id, status } = transaction;
+
+  if (!status || previousStatus === status) {
+    return;
+  }
+
+  const toastId = generateToastId(id);
+
+  if (PENDING_STATUSES.has(status) && !pendingToastShownIds.has(id)) {
+    pendingToastShownIds.add(id);
+    showPendingWithdrawToast(toastId, t);
+    return;
+  }
+
+  if (status === TransactionStatus.confirmed) {
+    showSuccessWithdrawToast(toastId, transaction, t);
+    return;
+  }
+
+  if (FAILED_STATUSES.has(status)) {
+    showFailedWithdrawToast(toastId, t);
+  }
+}
+
+function dismissRemovedPendingToasts({
+  previousStatuses,
+  nextStatuses,
+  pendingToastShownIds,
+}: {
+  previousStatuses: TransactionStatusesById;
+  nextStatuses: TransactionStatusesById;
+  pendingToastShownIds: Set<string>;
+}): void {
+  for (const [id, previousStatus] of Object.entries(previousStatuses)) {
+    if (!previousStatus || !PENDING_STATUSES.has(previousStatus)) {
+      continue;
+    }
+
+    if (id in nextStatuses) {
+      continue;
+    }
+
+    dismissToast(generateToastId(id));
+    pendingToastShownIds.delete(id);
+  }
 }
 
 export function usePerpsWithdrawTransactionToasts() {
@@ -52,11 +153,7 @@ export function usePerpsWithdrawTransactionToasts() {
   const pendingToastShownIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
-    const nextStatuses: Record<string, TransactionStatus | null> = {};
-
-    for (const transaction of transactions) {
-      nextStatuses[transaction.id] = transaction.status ?? null;
-    }
+    const nextStatuses = getTransactionStatusesById(transactions);
 
     if (!hasInitializedRef.current) {
       previousStatusesRef.current = nextStatuses;
@@ -65,58 +162,19 @@ export function usePerpsWithdrawTransactionToasts() {
     }
 
     for (const transaction of transactions) {
-      const { id, status } = transaction;
-      const previousStatus = previousStatusesRef.current[id];
-
-      if (!status || previousStatus === status) {
-        continue;
-      }
-
-      const toastId = generateToastId(id);
-
-      if (
-        PENDING_STATUSES.has(status) &&
-        !pendingToastShownIdsRef.current.has(id)
-      ) {
-        pendingToastShownIdsRef.current.add(id);
-        showPendingToast(toastId, {
-          title: t('perpsWithdrawPostQuoteToastPendingTitle'),
-          description: t('perpsWithdrawPostQuoteToastPendingDescription'),
-          dataTestId: 'perps-withdraw-pending-toast',
-        });
-        continue;
-      }
-
-      if (status === TransactionStatus.confirmed) {
-        showSuccessToast(toastId, {
-          title: t('perpsWithdrawPostQuoteToastSuccessTitle'),
-          description: getSuccessDescription(transaction, t),
-          dataTestId: 'perps-withdraw-success-toast',
-        });
-        continue;
-      }
-
-      if (FAILED_STATUSES.has(status)) {
-        showFailedToast(toastId, {
-          title: t('perpsWithdrawPostQuoteToastErrorTitle'),
-          description: t('perpsWithdrawPostQuoteToastErrorDescription'),
-          dataTestId: 'perps-withdraw-failed-toast',
-        });
-      }
+      handleChangedWithdrawTransaction({
+        transaction,
+        previousStatus: previousStatusesRef.current[transaction.id],
+        pendingToastShownIds: pendingToastShownIdsRef.current,
+        t,
+      });
     }
 
-    for (const [id, previousStatus] of Object.entries(
-      previousStatusesRef.current,
-    )) {
-      if (previousStatus && PENDING_STATUSES.has(previousStatus)) {
-        const toastId = generateToastId(id);
-
-        if (!(id in nextStatuses)) {
-          dismissToast(toastId);
-          pendingToastShownIdsRef.current.delete(id);
-        }
-      }
-    }
+    dismissRemovedPendingToasts({
+      previousStatuses: previousStatusesRef.current,
+      nextStatuses,
+      pendingToastShownIds: pendingToastShownIdsRef.current,
+    });
 
     previousStatusesRef.current = nextStatuses;
   }, [t, transactions]);
