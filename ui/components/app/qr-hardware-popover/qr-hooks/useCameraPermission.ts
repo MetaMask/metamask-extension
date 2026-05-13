@@ -97,8 +97,22 @@ export function useCameraPermission(
   } = usePermissionChangeListener();
 
   /**
-   * Proves the camera works by briefly acquiring and releasing a stream,
-   * then transitions to READY. Errors are logged silently.
+   * Probes the camera after an external permission grant, then transitions
+   * to READY on success.
+   *
+   * Wired as the `PermissionStatus.onchange` callback, so the scanner can
+   * auto-recover when the user grants camera access outside our UI
+   * (e.g. browser settings, address-bar permission icon). Without this,
+   * the user would be stuck on the blocked/needed screen even after
+   * granting permission and would have to close and reopen the QR flow.
+   *
+   * A `granted` state alone does not guarantee the hardware is available
+   * (exclusive lock, a device disconnected), so we do a short
+   * `getUserMedia` / `stop` round-trip to confirm the camera can actually
+   * be opened. The stream is released immediately because `EnhancedReader`
+   * opens its own once READY renders.
+   *
+   * On failure the UI stays on the recovery screen and the user can retry.
    */
   const acquireCameraAndTransitionToReady = useCallback(async () => {
     try {
