@@ -3,6 +3,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { renderTimeViewClock } from '@mui/x-date-pickers/timeViewRenderers';
+import type { PickersActionBarAction } from '@mui/x-date-pickers/PickersActionBar';
 import { Box } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { DateTime } from 'luxon';
@@ -28,7 +29,11 @@ export type SnapUIDateTimePickerProps = {
 /**
  * Buttons rendered in the picker action bar (order: clear → cancel → accept).
  */
-const PICKER_ACTION_BAR_ACTIONS = ['clear', 'cancel', 'accept'] as const;
+const PICKER_ACTION_BAR_ACTIONS: PickersActionBarAction[] = [
+  'clear',
+  'cancel',
+  'accept',
+];
 
 /**
  * Shared sx styles for the date/time picker input field.
