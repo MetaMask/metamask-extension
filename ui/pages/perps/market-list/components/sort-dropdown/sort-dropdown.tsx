@@ -117,30 +117,39 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
           <ModalHeader onClose={handleClose}>
-            <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Bold}>
-              {t('perpsSortByTitle')}
-            </Text>
+            {t('perpsSortByTitle')}
           </ModalHeader>
 
-          <ModalBody>
+          <ModalBody className="!p-0">
+            {/* "SORT BY" section header */}
+            <Box className="w-full px-4 pb-3">
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
+                className="uppercase tracking-wide"
+              >
+                {t('perpsSortBySection')}
+              </Text>
+            </Box>
+
             {/* Sort field options */}
-            <Box flexDirection={BoxFlexDirection.Column}>
-              {SORT_FIELD_OPTIONS.map((option) => {
+            <Box flexDirection={BoxFlexDirection.Column} className="w-full">
+              {SORT_FIELD_OPTIONS.map((option, index) => {
                 const isSelected = pendingField === option.id;
+                const isLast = index === SORT_FIELD_OPTIONS.length - 1;
                 return (
                   <ButtonBase
                     key={option.id}
                     onClick={() => setPendingField(option.id)}
-                    className="w-full justify-between text-left rounded-none px-0 py-3 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed border-b border-border-muted last:border-b-0"
+                    className={`w-full justify-between text-left rounded-none px-4 min-w-0 h-[46px] active:bg-pressed ${
+                      isSelected ? 'bg-hover' : 'bg-transparent hover:bg-hover'
+                    } ${isLast ? 'border-b border-border-muted' : ''}`}
                     data-testid={`sort-field-option-${option.id}`}
                   >
                     <Text
                       variant={TextVariant.BodyMd}
-                      color={
-                        isSelected
-                          ? TextColor.TextDefault
-                          : TextColor.TextAlternative
-                      }
+                      color={TextColor.TextDefault}
+                      fontWeight={FontWeight.Medium}
                     >
                       {t(option.labelKey)}
                     </Text>
@@ -156,16 +165,19 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
               })}
             </Box>
 
-            {/* Sort direction section */}
-            <Box className="mt-4" flexDirection={BoxFlexDirection.Column}>
+            {/* "RANK" section header */}
+            <Box className="w-full px-4 pb-3 pt-5">
               <Text
-                variant={TextVariant.BodySm}
+                variant={TextVariant.BodyXs}
                 color={TextColor.TextAlternative}
-                className="mb-2 uppercase tracking-wide"
+                className="uppercase tracking-wide"
               >
-                {t('perpsSortBySection')}
+                {t('perpsSortByRank')}
               </Text>
+            </Box>
 
+            {/* Sort direction options */}
+            <Box flexDirection={BoxFlexDirection.Column} className="w-full">
               {(
                 [
                   { value: 'desc' as const, labelKey: 'perpsSortByHighToLow' },
@@ -177,16 +189,15 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
                   <ButtonBase
                     key={value}
                     onClick={() => setPendingDirection(value)}
-                    className="w-full justify-between text-left rounded-none px-0 py-3 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed border-b border-border-muted last:border-b-0"
+                    className={`w-full justify-between text-left rounded-none px-4 min-w-0 h-[46px] active:bg-pressed ${
+                      isSelected ? 'bg-hover' : 'bg-transparent hover:bg-hover'
+                    }`}
                     data-testid={`sort-direction-${value}`}
                   >
                     <Text
                       variant={TextVariant.BodyMd}
-                      color={
-                        isSelected
-                          ? TextColor.TextDefault
-                          : TextColor.TextAlternative
-                      }
+                      color={TextColor.TextDefault}
+                      fontWeight={FontWeight.Medium}
                     >
                       {t(labelKey)}
                     </Text>

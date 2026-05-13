@@ -49,6 +49,33 @@ const store = configureStore({
       ...mockState.metamask.accountIdByAddress,
       [mockAccountAddress]: 'test-account-id',
     },
+    accountTree: {
+      ...mockState.metamask.accountTree,
+      wallets: {
+        ...mockState.metamask.accountTree.wallets,
+        'keyring:HD Key Tree:test': {
+          id: 'keyring:HD Key Tree:test',
+          type: 'keyring',
+          groups: {
+            [`keyring:HD Key Tree:test/${mockAccountAddress}`]: {
+              id: `keyring:HD Key Tree:test/${mockAccountAddress}`,
+              type: 'single-account',
+              accounts: ['test-account-id'],
+              metadata: {
+                name: mockAccountName,
+                hidden: false,
+                pinned: false,
+                lastSelected: 0,
+              },
+            },
+          },
+          metadata: {
+            name: 'HD Key Tree',
+            keyring: { type: 'HD Key Tree' },
+          },
+        },
+      },
+    },
   },
 });
 

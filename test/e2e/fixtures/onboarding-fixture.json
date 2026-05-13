@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 208,
+      "currentMigrationVersion": 210,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -109,9 +109,6 @@
         }
       },
       "currentCurrency": "usd"
-    },
-    "DelegationController": {
-      "delegations": {}
     },
     "EnsController": {
       "ensEntries": {
@@ -587,12 +584,12 @@
       "firstTimeFlowType": null,
       "seedPhraseBackedUp": null
     },
-    "PasskeyController": {
-      "passkeyRecord": null
-    },
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []
+    },
+    "PasskeyController": {
+      "passkeyRecord": null
     },
     "PermissionController": {
       "subjects": {
@@ -2251,6 +2248,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 208
+    "version": 210
   }
 }

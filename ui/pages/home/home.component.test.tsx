@@ -26,7 +26,7 @@ jest.mock('../../components/app/update-modal/update-modal', () => () => null);
 jest.mock('../../components/app/password-outdated-modal', () => () => null);
 jest.mock('../../components/app/shield-entry-modal', () => () => null);
 jest.mock(
-  '../../components/app/rewards/onboarding/OnboardingModal',
+  '../../components/app/rewards/onboarding/RewardsModal',
   () => () => null,
 );
 jest.mock('../../components/app/modals/pna25-modal', () => ({

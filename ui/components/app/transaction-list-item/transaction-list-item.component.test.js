@@ -29,13 +29,13 @@ import {
   getConversionRate,
   getCurrentNetwork,
   getNames,
-  getPreferences,
   getSelectedAccount,
   getShouldShowFiat,
   getTokenExchangeRates,
-  getSelectedInternalAccount,
   getMarketData,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
