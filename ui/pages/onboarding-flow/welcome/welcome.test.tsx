@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, fireEvent, act } from '@testing-library/react';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
 import * as Environment from '../../../../shared/lib/environment';
@@ -63,6 +64,13 @@ mockIntersectionObserver.mockReturnValue({
 });
 window.IntersectionObserver = mockIntersectionObserver;
 
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
+
 describe('Welcome Page', () => {
   const mockState = {
     metamask: {
@@ -86,6 +94,7 @@ describe('Welcome Page', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    setBackgroundConnection(backgroundConnectionMock as never);
     startOAuthLoginSpy = jest
       .spyOn(Actions, 'startOAuthLogin')
       .mockReturnValueOnce(jest.fn().mockResolvedValueOnce(true));
