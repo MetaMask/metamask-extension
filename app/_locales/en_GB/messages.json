@@ -219,6 +219,46 @@
     "message": "Bought $1",
     "description": "$1 is the token symbol"
   },
+  "activity_claim_failed_description": {
+    "message": "Claim failed"
+  },
+  "activity_claim_failed_title": {
+    "message": "Claim failed"
+  },
+  "activity_claim_pending_description": {
+    "message": "Claiming $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_pending_title": {
+    "message": "Claiming $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_description": {
+    "message": "Claimed $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claim_success_title": {
+    "message": "Claimed $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_claimMusdBonus_failed_description": {
+    "message": "Claim failed"
+  },
+  "activity_claimMusdBonus_failed_title": {
+    "message": "Claim failed"
+  },
+  "activity_claimMusdBonus_pending_description": {
+    "message": "Claiming mUSD bonus"
+  },
+  "activity_claimMusdBonus_pending_title": {
+    "message": "Claiming mUSD bonus"
+  },
+  "activity_claimMusdBonus_success_description": {
+    "message": "Claimed mUSD bonus"
+  },
+  "activity_claimMusdBonus_success_title": {
+    "message": "Claimed mUSD bonus"
+  },
   "activity_contractInteraction_failed_description": {
     "message": "Contract interaction failed"
   },
