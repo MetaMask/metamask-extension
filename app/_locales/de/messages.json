@@ -6946,9 +6946,6 @@
   "rewardsLinkAccountError": {
     "message": "Hinzufügen des Kontos fehlgeschlagen"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Sammeln Sie Punkte für Ihre Aktivität. \nErklimmen Sie Level, um Belohnungen freizuschalten."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Wir können nicht ermitteln, ob Ihr Land die Teilnahme am Belohnungsprogramm zulässt. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
   },
@@ -6961,84 +6958,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Erneut versuchen"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "250 Punkte einfordern"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Berechtigung wird überprüft ..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Region wird überprüft ..."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Nicht jetzt"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Belohnungen sind hier"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Belohnungen werden in Ihrer Region noch nicht unterstützt. Wir bemühen uns, den Zugang auszuweiten, also schauen Sie später wieder vorbei."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Region wird nicht unterstützt"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Jeder Swap und jeder Trade mit Perps, den Sie in MetaMask tätigen, bringt Sie den Belohnungen näher. Fügen Sie Ihre Konten hinzu und erleben Sie, wie sich Ihre Punkte summieren."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Verdienen Sie bei jedem Trade Punkte"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Erreichen Sie Punkte-Meilensteine, um Vorteile wie 50 % Ermäßigung auf die Perps-Gebühren, exklusive Tokens und eine kostenlose MetaMask-Metallkarte zu erhalten."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Leveln Sie für größere Vorteile hoch"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Sie können in der Erweiterung Punkte verdienen, aber Sie benötigen die mobile App, um Perps zu handeln, Ihren Fortschritt zu verfolgen und Belohnungen einzulösen."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Schalten Sie Belohnungen auf dem Handy frei"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "Durch Klicken auf „Punkte einlösen“ stimmen Sie unseren bzw. unserem $1 zu. Wir verfolgen Ihre Aktivitäten in der Blockchain, um Sie automatisch zu belohnen. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Mehr erfahren"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Nutzungsbedingungen und Datenschutzerklärung"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Anmeldung fehlgeschlagen"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Ungültiger Empfehlungscode"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Verwenden Sie einen Empfehlungscode, um 250 Punkte zu verdienen."
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Empfehlungscode (optional)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Empfehlungscode konnte nicht validiert werden."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Bei Ihrer Anmeldung erhalten Sie 250 Punkte!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Bei Anmeldung mit einem Code erhalten Sie 500 Punkte!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Weiter"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Punkte einfordern"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Verifizierung des Empfehlungscodes läuft ...",

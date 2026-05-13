@@ -6950,9 +6950,6 @@
   "rewardsLinkAccountError": {
     "message": "Thêm tài khoản không thành công"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Nhận điểm cho các hoạt động của bạn. \nThăng cấp để mở khóa phần thưởng."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Chúng tôi không thể xác định liệu quốc gia của bạn có cho phép tham gia chương trình phần thưởng hay không. Vui lòng kiểm tra kết nối và thử lại."
   },
@@ -6965,84 +6962,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Thử lại"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "Nhận 250 điểm"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Đang kiểm tra đủ điều kiện..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Đang kiểm tra khu vực.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Không phải bây giờ"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Phần thưởng đã sẵn sàng"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Phần thưởng hiện chưa được hỗ trợ tại khu vực của bạn. Chúng tôi đang mở rộng phạm vi truy cập, vui lòng kiểm tra lại sau."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Khu vực không được hỗ trợ"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Mỗi lần hoán đổi và giao dịch hợp đồng vĩnh cửu mà bạn thực hiện trong MetaMask sẽ giúp bạn tiến gần hơn đến phần thưởng. Hãy thêm tài khoản và xem điểm của bạn tăng lên."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Kiếm điểm với mỗi giao dịch"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Đạt các mốc điểm để nhận những đặc quyền như giảm 50% phí hợp đồng vĩnh cửu, token độc quyền và Thẻ MetaMask Metal miễn phí."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Thăng cấp để nhận đặc quyền lớn hơn"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Bạn có thể kiếm điểm trong tiện ích mở rộng, nhưng bạn sẽ cần ứng dụng di động để giao dịch hợp đồng vĩnh cửu, theo dõi tiến độ và đổi phần thưởng."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Mở khóa phần thưởng trên di động"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "Bằng cách nhấn vào \"Nhận điểm\", bạn đồng ý với $1. Chúng tôi sẽ theo dõi hoạt động trên chuỗi của bạn để tự động tặng thưởng cho bạn. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Tìm hiểu thêm"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Điều khoản và Thông báo quyền riêng tư"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Đăng ký tham gia thất bại"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Mã giới thiệu không hợp lệ"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Sử dụng mã giới thiệu để nhận 250 điểm"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Mã giới thiệu (không bắt buộc)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Không thể xác minh mã giới thiệu."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Kiểm tra kết nối của bạn và thử lại."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Bạn sẽ nhận được 250 điểm khi đăng ký!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Bạn sẽ nhận được 500 điểm khi đăng ký bằng mã giới thiệu!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Tiếp theo"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Nhận điểm"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Đang xác minh mã giới thiệu...",

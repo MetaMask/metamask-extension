@@ -6942,9 +6942,6 @@
   "rewardsLinkAccountError": {
     "message": "अकाउंट जोड़ना नहीं हो पाया"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "अपनी गतिविधि के लिए पॉइंट्स कमाएं। \nलेवल बढ़ाएं और रिवॉर्ड्स अनलॉक करें।"
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "हम यह निर्धारित नहीं कर सकते कि आपका देश रिवॉर्ड्स प्रोग्राम में ऑप्ट-इन की अनुमति देता है या नहीं। कृपया अपना कनेक्शन जांचें और फिर से कोशिश करें।"
   },
@@ -6957,84 +6954,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "फिर से प्रयास करें"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "250 पॉइंट्स क्लेम करें"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "योग्यता जाँच की जा रही है..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "क्षेत्र की जाँच की जा रही है.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "अभी नहीं"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "रिवॉर्ड्स उपलब्ध हैं"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "आपके क्षेत्र में रिवॉर्ड्स अभी सपोर्टेड नहीं हैं। हम पहुंच बढ़ाने पर काम कर रहे हैं, इसलिए बाद में फिर से जाँच करें।"
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "क्षेत्र सपोर्टेड नहीं है"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "MetaMask में किया गया हर स्वैप और पर्प्स ट्रेड आपको रिवॉर्ड्स के करीब ले जाता है। अपने एकाउंट्स जोड़ें और अपने पॉइंट्स को बढ़ते हुए देखें।"
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "हर ट्रेड पर पॉइंट्स कमाएं"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "पॉइंट्स माइलस्टोन हिट करें और ऐसे लाभ पाएं जैसे पर्प्स फीस में 50% की छूट, एक्सक्लूसिव टोकन और एक मुफ्त MetaMask मेटल कार्ड।"
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "बड़े पर्क्स के लिए स्तर बढ़ाएं"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "आप एक्सटेंशन में पॉइंट्स कमा सकते हैं, लेकिन पर्प्स ट्रेड करने, अपनी प्रोग्रेस ट्रैक करने और रिवॉर्ड्स रिडीम करने के लिए आपको मोबाइल ऐप की ज़रूरत होगी।"
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "मोबाइल पर रिवॉर्ड अनलॉक करें"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "\"पॉइंट्स क्लेम करें\" पर क्लिक करके, आप हमारे $1 के लिए सहमत हो रहे हैं। हम आपको ऑटोमैटिकली रिवॉर्ड देने के लिए आपकी ऑन-चेन एक्टिविटी को ट्रैक करेंगे। $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "ज़्यादा जानें"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "नियम और गोपनीयता सूचना"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "ऑप्ट-इन नहीं हो पाया"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "रेफरल कोड ग़लत है"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "250 पॉइंट्स कमाने के लिए रेफरल कोड का उपयोग करें"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "रेफरल कोड (वैकल्पिक)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "अपना कनेक्शन जांचें और फिर से प्रयास करें।"
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "साइन अप करने पर आप 250 पॉइंट्स कमाएँगे!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "कोड के साथ साइन अप करने पर आप 500 पॉइंट्स कमाएँगे!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "आगे"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "पॉइंट्स क्लेम करें"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "रेफरल कोड वेरीफाई किया जा रहा है…",
