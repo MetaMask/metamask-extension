@@ -59,7 +59,14 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
       },
       [BTC_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
       [TRX_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
-      [XLM_ACCOUNT_PROVIDER_NAME]: snapAccountProviderConfig,
+      [XLM_ACCOUNT_PROVIDER_NAME]: {
+        ...snapAccountProviderConfig,
+        createAccounts: {
+          ...snapAccountProviderConfig.createAccounts,
+          batched: true,
+          timeoutMs: 10000,
+        },
+      },
     },
     config: {
       // @ts-expect-error Controller uses string for names rather than enum

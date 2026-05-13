@@ -65,6 +65,7 @@ import {
   getCurrencyRateControllerCurrentCurrency,
   getMultiChainAssetsControllerAccountsAssets,
   getMultiChainAssetsControllerAllIgnoredAssets,
+  getMultiChainAssetsControllerStellarClassicTrustlineInactiveAssetIds,
   getMultiChainAssetsControllerAssetsMetadata,
   getMultichainAssetsRatesControllerConversionRates,
   getMultiChainBalancesControllerBalances,
@@ -1439,6 +1440,10 @@ const getStateForAssetSelector = ({ metamask }: any) => {
     allIgnoredAssets: getMultiChainAssetsControllerAllIgnoredAssets({
       metamask,
     }),
+    stellarClassicTrustlineInactiveAssetIds:
+      getMultiChainAssetsControllerStellarClassicTrustlineInactiveAssetIds({
+        metamask,
+      }),
     balances: getMultiChainBalancesControllerBalances({ metamask }),
     conversionRates: getMultichainAssetsRatesControllerConversionRates({
       metamask,

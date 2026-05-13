@@ -1,4 +1,6 @@
-import React, { useCallback, useContext, useEffect } from 'react';
+import { errorCodes } from '@metamask/rpc-errors';
+import type { CaipAssetType, CaipChainId } from '@metamask/utils';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { I18nContext } from '../../../contexts/i18n';
@@ -7,7 +9,11 @@ import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { showModal } from '../../../store/actions';
+import {
+  forceUpdateMetamaskState,
+  showAlert,
+  showModal,
+} from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
@@ -32,17 +38,28 @@ import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { requestStellarChangeTrustOptDelete } from '../utils/stellar-snap-client-requests';
+
+export type StellarClassicTrustlineRemoveConfig = {
+  hasTrustline: boolean;
+  accountId: string;
+  assetId: CaipAssetType;
+  scope: CaipChainId;
+};
 
 const TokenButtons = ({
   token,
   disableSendForNonEvm = false,
   isMarketClosed = false,
+  stellarClassicTrustlineRemove,
 }: {
   token: Asset & { type: AssetType.token };
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
   /** When true, disables the swap button because the stock market is closed */
   isMarketClosed?: boolean;
+  /** When set, shows a fourth action to remove the Stellar classic trustline (asset page). */
+  stellarClassicTrustlineRemove?: StellarClassicTrustlineRemoveConfig;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -124,6 +141,34 @@ const TokenButtons = ({
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
   }, [token, openBridgeExperience]);
 
+  const [isRemovingStellarTrustline, setIsRemovingStellarTrustline] =
+    useState(false);
+
+  const handleRemoveStellarTrustline = useCallback(async () => {
+    if (!stellarClassicTrustlineRemove?.hasTrustline) {
+      return;
+    }
+    const { accountId, assetId, scope } = stellarClassicTrustlineRemove;
+    setIsRemovingStellarTrustline(true);
+    try {
+      await requestStellarChangeTrustOptDelete({
+        accountId,
+        assetId,
+        scope,
+      });
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error: unknown) {
+      const errorCode = (error as { code?: number })?.code;
+      const isUserRejection =
+        errorCode === errorCodes.provider.userRejectedRequest;
+      if (!isUserRejection) {
+        dispatch(showAlert(t('stellarClassicTrustlineRemoveError') as string));
+      }
+    } finally {
+      setIsRemovingStellarTrustline(false);
+    }
+  }, [dispatch, stellarClassicTrustlineRemove, t]);
+
   return (
     <Box
       display={Display.Flex}
@@ -179,6 +224,26 @@ const TokenButtons = ({
         label={t('swap')}
         disabled={!isExternalServicesEnabled || isMarketClosed}
       />
+
+      {stellarClassicTrustlineRemove ? (
+        <IconButton
+          className="token-overview__button"
+          Icon={
+            <Icon
+              name={IconName.Trash}
+              color={IconColor.iconAlternative}
+              size={IconSize.Md}
+            />
+          }
+          onClick={handleRemoveStellarTrustline}
+          data-testid="token-overview-stellar-remove-trustline"
+          label={t('stellarClassicRemoveTrustline')}
+          disabled={
+            !stellarClassicTrustlineRemove.hasTrustline ||
+            isRemovingStellarTrustline
+          }
+        />
+      ) : null}
     </Box>
   );
 };

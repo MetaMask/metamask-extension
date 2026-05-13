@@ -63,6 +63,7 @@ import { createDeepEqualSelector } from './selector-creators';
 // accountsAssets: DONE
 // assetsMetadata: DONE
 // allIgnoredAssets: DONE
+// stellarClassicTrustlineInactiveAssetIds: DONE (unify returns empty; no second source)
 //
 // MultichainBalancesController
 // balances: DONE
@@ -594,6 +595,29 @@ export const getMultiChainAssetsControllerAllIgnoredAssets =
   ) as unknown as ControllerStateSelector<
     MultichainAssetsControllerState,
     'allIgnoredAssets'
+  >;
+
+// AccountId -> Stellar classic CAIP-19 asset ids (imported / no trustline in UI)
+export const getMultiChainAssetsControllerStellarClassicTrustlineInactiveAssetIds =
+  createDeepEqualSelector(
+    [
+      getIsAssetsUnifyStateEnabled,
+      (state: {
+        metamask: Pick<
+          MultichainAssetsControllerState,
+          'stellarClassicTrustlineInactiveAssetIds'
+        >;
+      }) => state.metamask?.stellarClassicTrustlineInactiveAssetIds ?? {},
+    ],
+    (isAssetsUnifyStateEnabled, inactiveByAccount) => {
+      if (!isAssetsUnifyStateEnabled) {
+        return inactiveByAccount;
+      }
+      return {};
+    },
+  ) as unknown as ControllerStateSelector<
+    MultichainAssetsControllerState,
+    'stellarClassicTrustlineInactiveAssetIds'
   >;
 
 // AccountId -> AssetId -> Balance (amount + unit)
