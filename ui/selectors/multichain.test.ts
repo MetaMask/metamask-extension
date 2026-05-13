@@ -1021,7 +1021,9 @@ describe('Multichain Selectors', () => {
     });
 
     it('returns numeric conversion rate for EVM when getConversionRate returns a number', () => {
-      jest.spyOn(metamaskBaseSelectors, 'getConversionRate').mockReturnValue(3100.75);
+      jest
+        .spyOn(metamaskBaseSelectors, 'getConversionRate')
+        .mockReturnValue(3100.75);
       expect(getMultichainConversionRate(getEvmState())).toBe(3100.75);
     });
 
@@ -1033,7 +1035,9 @@ describe('Multichain Selectors', () => {
     });
 
     it('returns undefined when EVM conversion rate is undefined', () => {
-      jest.spyOn(metamaskBaseSelectors, 'getConversionRate').mockReturnValue(undefined);
+      jest
+        .spyOn(metamaskBaseSelectors, 'getConversionRate')
+        .mockReturnValue(undefined);
       expect(getMultichainConversionRate(getEvmState())).toBeUndefined();
     });
 
