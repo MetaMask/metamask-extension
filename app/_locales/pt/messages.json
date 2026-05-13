@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "Detecte automaticamente tokens em sua carteira, exiba NFTs e receba atualizações de saldo de contas em lote"
   },
+  "asterdexReferralConfirmText": {
+    "message": "Sim, receba 4% de cashback",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "Receba 4% de reembolso em negociações com um código de indicação da MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "Receba 4% de cashback em negociações com um código de indicação da MetaMask. Este desconto é válido para todas as negociações futuras, conforme o $1 da AsterDEX. A MetaMask recebe uma comissão.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "Receba 4% de cashback em compras no AsterDEX",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Tentar cancelar a troca sem custo"
@@ -1144,6 +1156,9 @@
     "message": "Lembre-se de que este valor é uma estimativa e será finalizado após a conclusão da transação. Os pontos podem levar até 1 hora para serem confirmados no seu saldo de recompensas.",
     "description": "Second part of tooltip content explaining how points are calculated"
   },
+  "bridgePriceDataUnavailableError": {
+    "message": "Não foi possível obter informações sobre o preço deste token. Certifique-se de que o valor recebido corresponde ao esperado antes de prosseguir."
+  },
   "bridgePriceImpact": {
     "message": "Impacto no preço"
   },
@@ -1372,6 +1387,18 @@
   "bridgeTo": {
     "message": "Fazer ponte para"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 é um token malicioso."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 foi sinalizado como malicioso. É provável que roube fundos de qualquer pessoa que interaja com ele."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 é um token suspeito."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 foi sinalizado como suspeito. Analise os riscos antes de prosseguir."
+  },
   "bridgeTokenNotFound": {
     "message": "Nenhum token corresponde a \"$1\""
   },
@@ -1425,11 +1452,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "Você enviou"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "Use o máximo permitido"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "Você não tem $1 suficiente para pagar a taxa de gás para esta ponte. Insira um valor menor ou compre mais $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Necessário mais $1 para gás"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "Esta rede específica exige que você mantenha uma reserva de $1 a $3 em sua conta. Com seu saldo atual, você pode usar no máximo $2 a $3",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "É necessário um saldo mínimo de reserva de $1",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "Ponte realizada"
@@ -1838,6 +1876,9 @@
   "connectAHardwareWallet": {
     "message": "Conectar uma carteira de hardware"
   },
+  "connectAHardwareWalletDescription": {
+    "message": "Utilização de USB ou de um código QR"
+  },
   "connectAccounts": {
     "message": "Conectar contas"
   },
@@ -2071,6 +2112,19 @@
   },
   "creatorAddress": {
     "message": "Endereço do criador"
+  },
+  "criticalErrorAttemptRecovery": {
+    "message": "Tentativa de recuperação"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "Se nenhuma das opções acima funcionar, $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "Reinstalar MetaMask"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "Ainda está com problemas?"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2370,6 +2424,14 @@
   "defiReferralCheckboxLabel": {
     "message": "Permita que a MetaMask adicione um código de indicação. Isso é permanente. O site oferece descontos conforme seus próprios termos. A MetaMask ganha uma taxa.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "Não, obrigado",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "termos",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3222,9 +3284,21 @@
     "message": "Prepare sua carteira para usar a web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "Sim, economize 5%",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "Economize até 5% em negociações com um código de indicação da MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "Economize 5% em suas negociações com um código de indicação da MetaMask. Este desconto é válido para todas as negociações futuras, conforme o $1 da GMX. A MetaMask recebe uma comissão.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "Economize 5% no GMX",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Ir ao site"
@@ -3448,9 +3522,21 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "Sim, economize 4%",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "Economize até 4% em negociações com um código de indicação da MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "Economize 4% em suas negociações com um código de indicação da MetaMask. Válido para todas as negociações futuras conforme o $1 da Hyperliquid. A MetaMask recebe uma comissão.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Economize 4% na Hyperliquid",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Eu compreendo"
@@ -4010,6 +4096,9 @@
   },
   "maxFeeTooltip": {
     "message": "Uma taxa máxima fornecida para pagar pela transação."
+  },
+  "maybeLater": {
+    "message": "Talvez mais tarde"
   },
   "medium": {
     "message": "Mercado"
@@ -5240,6 +5329,126 @@
   "participateInMetaMetricsDescription": {
     "message": "Participe do MetaMetrics para nos ajudar a deixar a MetaMask ainda melhor"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "Biometria",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "ID de toque",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "Use $1 para desbloquear o MetaMask em vez de inserir sua senha. Isso cria uma chave de acesso apenas para este dispositivo.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "$1 já está configurado para esta carteira.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "Não foi possível verificar seu pagamento de $1. Tente novamente.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Sua resposta de $1 estava incompleta. Tente novamente.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "A sessão de login de $1 expirou. Tente novamente.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "A sessão de configuração de $1 expirou. Tente novamente desde o início.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "$1 não está configurada para esta carteira. Ative $1 nas Configurações.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "A configuração de $1 falhou. Tente novamente",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "Não foi possível verificar sua configuração de $1. Tente novamente.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "Não foi possível desbloquear com $1. Tente novamente ou configure $1 novamente em Configurações.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1 não corresponde à sua senha de carteira atual. Configure $1 novamente em Configurações.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Sua senha foi atualizada, mas não foi possível ativar o desbloqueio $1.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "Não foi possível verificar sua $1. Tente novamente ou use sua senha.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Cadastrar $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "Validar $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Tente abrir a extensão em uma janela em tela cheia e tente novamente.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Abrir janela em tela cheia",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Ainda está tendo problemas?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "Problemas para desbloquear?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "Problemas ao desbloquear",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Problemas com a verificação?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Problemas com a verificação?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "$1 desativado",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "$1 ativado",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "O desbloqueio da $1 falhou. Tente sua senha.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "Use $1 para verificar em vez de digitar sua senha.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "Confirmar com $1",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "password": {
     "message": "Senha"
   },
@@ -5652,6 +5861,9 @@
     "message": "Disponível para negociação",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "Esse recurso não está disponível enquanto a funcionalidade básica estiver desativada."
+  },
   "perpsBatchCancelFailed": {
     "message": "Falha ao cancelar um ou mais pedidos. Tente novamente."
   },
@@ -5664,6 +5876,9 @@
   "perpsCancelOrder": {
     "message": "Cancelar ordem"
   },
+  "perpsCandleIntervals": {
+    "message": "Definir intervalo entre velas"
+  },
   "perpsCandlePeriodDays": {
     "message": "Dias"
   },
@@ -5675,6 +5890,9 @@
   },
   "perpsCloseAll": {
     "message": "Encerrar tudo"
+  },
+  "perpsCloseAmount": {
+    "message": "Valor de encerramento"
   },
   "perpsCloseLong": {
     "message": "Encerrar posição long"
@@ -5877,6 +6095,10 @@
   "perpsMid": {
     "message": "Médio"
   },
+  "perpsMinOrderSize": {
+    "message": "O valor mínimo da ordem é de $1",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "Modificar"
   },
@@ -5987,6 +6209,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Inverta sua posição short para uma posição long"
   },
+  "perpsSaveChanges": {
+    "message": "Salvar alterações",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "Pesquisar mercados"
   },
@@ -6063,6 +6289,10 @@
   "perpsStopLoss": {
     "message": "Stop loss",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "O stop loss deve ser $1 do preço de liquidação",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "Preço de stop loss deve ser de $1 ou $2",
@@ -6964,27 +7194,6 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Não há suporte a essa região"
   },
-  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
-    "message": "Saiba mais"
-  },
-  "rewardsOnboardingLegalDisclaimerTermsLink": {
-    "message": "Termos e Aviso de privacidade"
-  },
-  "rewardsOnboardingOptInError": {
-    "message": "A participação falhou"
-  },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Código de indicação inválido"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Código de indicação (opcional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Não foi possível validar o código de indicação."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Verifique sua conexão e tente novamente."
-  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Verificando código de indicação...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7000,12 +7209,6 @@
   "rewardsPointsIcon": {
     "message": "Pontos de recompensa",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "Você precisará do aplicativo para acompanhar seu progresso e resgatar recompensas. Escaneie este código QR e nós ajudaremos a importar suas contas."
-  },
-  "rewardsQRCodeTitle": {
-    "message": "Obtenha o aplicativo móvel"
   },
   "rewardsSignInFailed": {
     "message": "Falha ao fazer login",
@@ -7111,6 +7314,10 @@
   },
   "securityChangePasswordToastError": {
     "message": "Não foi possível alterar a senha. Tente novamente."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "Nova senha salva, mas não foi possível ativar o desbloqueio $1.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "Nova senha salva"
@@ -7260,8 +7467,16 @@
     "message": "Configurar",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "Configurar $1",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "Adicionar Snap da conta"
+  },
+  "settingUpPasskey": {
+    "message": "Configurando $1",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "Configurações"
@@ -8106,6 +8321,9 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Solicitações de conta inteligente vindas de dapps"
+  },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Permita que aplicativos descentralizados (dApps) solicitem recursos de conta inteligente para contas padrão. A MetaMask fará upgrade apenas para nossa conta inteligente auditada."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Mesmo endereço. Recursos mais inteligentes."
@@ -9370,6 +9588,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "Ocorreu um erro ao desativar as notificações. Tente novamente mais tarde."
   },
+  "turnOffPasskey": {
+    "message": "Desativar $1",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "Não foi possível desativar $1. Tente novamente.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "Ativar"
   },
@@ -9472,6 +9698,10 @@
     "message": "Desbloqueie para revelar",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Desbloquear com $1",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "Desafixar"
   },
@@ -9557,6 +9787,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "Permita que a MetaMask use serviços de terceiros para adicionar os NFTs que você possui. A detecção automática de NFTs expõe seu endereço IP e o endereço da sua conta a esses serviços. Ativar esse recurso pode associar seu endereço IP ao seu endereço Ethereum e exibir NFTs falsos enviados por golpistas. Você pode adicionar tokens manualmente para evitar esse risco."
+  },
+  "usePassword": {
+    "message": "Usar senha"
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"
