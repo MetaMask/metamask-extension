@@ -162,7 +162,7 @@ export function shouldShowPerpsOrderSubmissionToasts(
  * @param currentPrice - Current asset price in USD
  * @param mode - Order mode (new, modify, close)
  * @param existingPositionSize - Size of existing position when closing
- * @param maxSlippagePct
+ * @param maxSlippagePct - User-configured max slippage in percent; converted to bps for market orders, ignored for limit orders (they use the controller's fixed limit-order slippage).
  */
 function formStateToOrderParams(
   formState: OrderFormState,
@@ -383,13 +383,15 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const handleSaveSlippageConfig = useCallback(
     (valuePct: number) => {
+      // The user already saw the modal close — log the persistence failure
+      // so a stale cap on the next session doesn't look silent to the user
+      // or to support. Acceptable swallow per antipatterns "Error handling"
+      // exemption: the modal flow has no inline error surface and a
+      // controller-down toast would be more noise than signal.
       submitRequestToBackground('setPreference', [
         'perpsMaxSlippagePct',
         valuePct,
       ]).catch((error) => {
-        // The user already saw the modal close — surface the persistence
-        // failure in the log so a stale cap on the next session doesn't
-        // look silent to the user or to support.
         log.error('[Perps] Save max-slippage preference failed:', error);
       });
       track(MetaMetricsEventName.PerpsUiInteraction, {

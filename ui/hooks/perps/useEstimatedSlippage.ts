@@ -110,11 +110,12 @@ export function computeSlippagePct(
  *
  * TODO(TAT-1043): mobile does not yet expose this estimate; this hook is
  * the extension-first implementation. Port to mobile in the follow-up story.
- * @param options0
- * @param options0.symbol
- * @param options0.notionalUsd
- * @param options0.direction
- * @param options0.enabled
+ *
+ * @param params - See `EstimatedSlippageParams`.
+ * @param params.symbol - Market symbol (e.g. 'ETH', 'BTC'). Empty disables the hook.
+ * @param params.notionalUsd - Prospective order notional in USD. Non-positive disables the hook.
+ * @param params.direction - Order direction; 'long' walks asks, 'short' walks bids.
+ * @param params.enabled - Optional kill switch — pass false on limit orders to keep the hook mounted without computing.
  */
 export function useEstimatedSlippage({
   symbol,
