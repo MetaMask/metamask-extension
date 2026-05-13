@@ -91,40 +91,45 @@ async function mockApis(
       json: [],
     }));
 
-  return [
-    await mockServer.forGet(METAMASK_STALELIST_URL).thenCallback(() => {
+  const stalelistMock = await mockServer
+    .forGet(METAMASK_STALELIST_URL)
+    .thenCallback(() => {
       return {
         statusCode: 200,
         json: [{ fakedata: true }],
       };
-    }),
-    await mockSpotPrices(mockServer, {
-      'eip155:1/slip44:60': {
-        price: 1700,
-        marketCap: 382623505141,
-        pricePercentChange1d: 0,
-      },
-    }),
-    await mockServer
-      .forGet(
-        'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
-      )
-      .withQuery({
-        limit: 50,
-        includeTopBid: 'true',
-        chainIds: ['1', '59144'],
-        continuation: '',
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            tokens: [],
-          },
-        };
-      }),
-    await mockEmptyPrices(mockServer),
-  ];
+    });
+
+  const spotPricesMock = await mockSpotPrices(mockServer, {
+    'eip155:1/slip44:60': {
+      price: 1700,
+      marketCap: 382623505141,
+      pricePercentChange1d: 0,
+    },
+  });
+
+  const nftMock = await mockServer
+    .forGet(
+      'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
+    )
+    .withQuery({
+      limit: 50,
+      includeTopBid: 'true',
+      chainIds: ['1', '59144'],
+      continuation: '',
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: {
+          tokens: [],
+        },
+      };
+    });
+
+  await mockEmptyPrices(mockServer);
+
+  return [stalelistMock, spotPricesMock, nftMock];
 }
 
 describe('MetaMask onboarding', function () {
@@ -229,7 +234,7 @@ describe('MetaMask onboarding', function () {
         const hasSidepanel = await isSidePanelEnabled();
 
         // intended delay to allow for network requests to complete
-        await driver.delay(1000);
+        await driver.delay(10000);
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
 
