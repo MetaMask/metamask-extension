@@ -1110,7 +1110,9 @@ const PerpsOrderEntryPage: React.FC = () => {
       const shouldHandleTpslSeparately =
         (orderParams.takeProfitPrice || orderParams.stopLossPrice) &&
         orderFormState.type === 'market' &&
-        (!position || willFlipPosition(position, orderParams));
+        (!position ||
+          parseFloat(position.size) === 0 ||
+          willFlipPosition(position, orderParams));
       const placeOrderParams = shouldHandleTpslSeparately
         ? (() => {
             const stripped = { ...orderParams };
