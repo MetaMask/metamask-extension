@@ -2797,10 +2797,6 @@
     "message": "코드: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "오류 세부 정보",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "안전 체인 목록을 가져오는 동안 오류가 발생했습니다. 주의하여 계속 진행하세요."
   },
@@ -5681,7 +5677,7 @@
     "message": "롱 청산"
   },
   "perpsClosePartialMinNotional": {
-    "message": "부분 종료는 USD 기준 최소 $1 이상이어야 합니다. 종료 금액을 늘리거나 슬라이더를 100%로 설정하세요."
+    "message": "부분 종료는 USD 기준 최소 $1 이상이어야 합니다. 종료 금액을 늘리거나 전체 포지션을 종료하세요."
   },
   "perpsClosePosition": {
     "message": "포지션 종료"
@@ -6951,9 +6947,6 @@
   "rewardsLinkAccountError": {
     "message": "계정 추가 실패"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "활동에 대한 포인트를 획득하세요. \n레벨을 올려 리워드를 잠금 해제하세요."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "현재 사용자의 국가에서 보상 프로그램에 참여할 수 있는지 확인할 수 없습니다. 인터넷 연결 상태를 확인하고 다시 시도해 주세요."
   },
@@ -6966,84 +6959,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "다시 시도"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "250포인트 수령"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "자격 확인 중..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "지역 확인 중.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "나중에"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "리워드를 받으세요"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "회원님의 지역에서는 보상 프로그램이 아직 지원되지 않습니다. 현재 대상 지역을 확대 중이니, 나중에 다시 확인해 주세요."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "지원되지 않는 지역입니다"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "MetaMask에서 스왑과 무기한 선물 거래를 할 때마다 보상 포인트가 적립됩니다. 계정을 추가하고 포인트가 쌓이는 것을 확인하세요."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "거래할 때마다 포인트를 획득하세요"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "포인트 마일스톤을 달성하면 무기한 선물 수수료 50% 할인, 독점 토큰, 무료 MetaMask 메탈 카드와 같은 특전을 받을 수 있습니다."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "레벨을 높여 더 많은 특전을 받으세요"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "확장 기능을 통해 포인트를 적립할 수 있지만, 무기한 선물 거래, 진행 상황 추적, 보상 수령을 위해서는 모바일 앱이 필요합니다."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "모바일에서 보상 잠금해제"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "'포인트 청구'를 클릭하면 $1에 동의하는 것이 됩니다. 자동으로 보상을 제공하기 위해 온체인 활동을 추적합니다. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "더 보기"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "약관 및 개인정보 보호 고지"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "참여 실패"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "잘못된 추천 코드"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "추천 코드를 사용하여 250포인트를 받으세요"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "추천 코드(선택 사항)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "추천 코드를 확인할 수 없습니다."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "연결 상태를 확인하고 다시 시도하세요."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "가입하면 250포인트를 획득할 수 있습니다!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "코드를 통해 가입하면 500포인트를 획득할 수 있습니다!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "다음"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "포인트 수령"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "추천인 코드 확인 중...",
@@ -8167,9 +8108,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "디앱의 스마트 계정 요청"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "디앱이 일반 계정에 스마트 계정 기능을 요청하도록 허용합니다. 이미 스마트 계정인 계정에는 영향을 미치지 않습니다."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "같은 주소. 더욱 스마트한 기능."
   },
@@ -8696,9 +8634,6 @@
     "message": "$1에 연결 중...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "아직 이 메시지가 표시되시나요?"
-  },
   "storageErrorAction": {
     "message": "비밀복구구문 백업"
   },
@@ -8802,12 +8737,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "지원 언어",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "설문조사에 참여하세요"
-  },
-  "surveyTitle": {
-    "message": "MetaMask의 미래를 그리세요"
   },
   "swap": {
     "message": "스왑"

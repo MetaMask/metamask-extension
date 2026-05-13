@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { captureException } from '../../../shared/lib/sentry';
 import { ONBOARDING_WELCOME_ROUTE } from '../../helpers/constants/routes';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
@@ -55,6 +56,11 @@ jest.mock('../../../shared/lib/environment', () => ({
   getIsPasskeyFeatureEnabled: jest.fn().mockReturnValue(true),
 }));
 
+jest.mock('../../../shared/lib/sentry', () => ({
+  ...jest.requireActual('../../../shared/lib/sentry'),
+  captureException: jest.fn(),
+}));
+
 const mockTryUnlockMetamask = jest.fn(() => {
   return async () => {
     return Promise.resolve();
@@ -66,16 +72,15 @@ const mockTryUnlockMetamaskWithPasskey = jest.fn(() => {
   };
 });
 const mockMarkPasswordForgotten = jest.fn();
-const mockResetWallet = jest.fn(() => {
-  return Promise.resolve();
-});
+const mockCaptureException = captureException as jest.MockedFunction<
+  typeof captureException
+>;
 
 jest.mock('../../store/actions.ts', () => ({
   ...jest.requireActual('../../store/actions.ts'),
   tryUnlockMetamask: jest.fn(() => mockTryUnlockMetamask),
   tryUnlockMetamaskWithPasskey: jest.fn(() => mockTryUnlockMetamaskWithPasskey),
   markPasswordForgotten: () => mockMarkPasswordForgotten,
-  resetWallet: () => mockResetWallet,
   generatePasskeyAuthenticationOptions: jest.fn().mockResolvedValue({
     challenge: 'AQ',
     allowCredentials: [{ id: 'AQ', type: 'public-key' }],
@@ -294,6 +299,12 @@ describe('Unlock Page', () => {
     await waitFor(() => {
       expect(queryByTestId('login-error-modal')).toBeInTheDocument();
     });
+
+    expect(mockCaptureException).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: SeedlessOnboardingControllerErrorMessage.AuthenticationError,
+      }),
+    );
   });
 
   it('shows password unlock when no passkey is registered', async () => {

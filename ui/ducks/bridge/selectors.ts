@@ -11,6 +11,7 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
+  selectBatchSellQuotes,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteWarning,
@@ -50,8 +51,8 @@ import {
   type AccountGroupObject,
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
-import { getHardwareWalletType } from '../../selectors/selectors';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
@@ -77,15 +78,14 @@ import {
 } from '../../../shared/lib/selectors';
 import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { safeAmountForCalc } from '../../pages/bridge/utils/quote';
+import { getInternalAccountsByScope } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getGasFeesSponsoredNetworkEnabled } from '../../selectors';
 import {
-  getInternalAccountsByScope,
-  getSelectedInternalAccount,
-} from '../../selectors/accounts';
-import {
-  getGasFeesSponsoredNetworkEnabled,
+  getHardwareWalletType,
   isHardwareWallet,
-} from '../../selectors';
-import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+} from '../../../shared/lib/selectors/keyring';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   getAllAccountGroups,
   getInternalAccountBySelectedAccountGroupAndCaip,
@@ -104,7 +104,6 @@ import {
   formatPriceImpactPercentage,
 } from '../../pages/bridge/utils/price-impact';
 import { getCurrentCurrency } from '../metamask/metamask';
-import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import {
   exchangeRateFromMarketData,
   tokenPriceInNativeAsset,
@@ -146,8 +145,8 @@ export type BridgeAppState = {
   bridge: BridgeState;
 };
 
-// Only includes networks user has added
-const getAllBridgeableNetworks = createDeepEqualSelector(
+// getMultichainNetworkConfigurationsByChainId is memoized in ui/selectors/multichain.ts.
+const getAllBridgeableNetworks = createSelector(
   [getMultichainNetworkConfigurationsByChainId],
   (
     multichainNetworkConfigurationsByChainId,
@@ -548,7 +547,7 @@ export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
 
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;
-  return quoteRequest;
+  return quoteRequest[0];
 };
 
 export const getQuoteRefreshRate = createSelector(
@@ -683,6 +682,22 @@ export const getBridgeQuotes = createSelector(
           (q) => q.quote.requestId === selectedQuote?.quote.requestId,
         ) ?? quotes.recommendedQuote,
     };
+  },
+);
+
+export const getBatchSellQuotes = createSelector(
+  [
+    ({ metamask }: BridgeAppState) => metamask,
+    ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
+    ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
+    (_, { requestCount }: { requestCount: number }) => requestCount,
+  ],
+  (controllerStates, sortOrder, selectedQuote, requestCount) => {
+    return selectBatchSellQuotes(controllerStates, {
+      sortOrder,
+      requestCount,
+      selectedQuote,
+    });
   },
 );
 
@@ -882,7 +897,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
 
     const srcChainId =
       quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-
     const minimumBalanceToKeep =
       srcChainId && isSolanaChainId(srcChainId)
         ? minimumBalanceForRentExemptionInSOL
@@ -902,7 +916,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           !isLoading &&
           quotesRefreshCount > 0,
         ),
-      // Shown prior to fetching quotes
+      // Shown prior to fetching quotes (native reserve error takes precedence)
       isInsufficientGasBalance: Boolean(
         nativeBalance &&
         !activeQuote &&
@@ -1138,8 +1152,16 @@ export const getIsStxEnabled = createSelector(
 );
 
 export const getIsGasIncluded = createSelector(
-  [getIsStxEnabled, getIsGasIncludedSwapSupported],
-  (isStxEnabled, isGasIncludedSwapSupported) => {
+  [
+    (state: BridgeAppState) => getFromChain(state)?.chainId,
+    getIsStxEnabled,
+    getIsGasIncludedSwapSupported,
+  ],
+  // Enable gas-included swaps for solana
+  (fromChainId, isStxEnabled, isGasIncludedSwapSupported) => {
+    if (isSolanaChainId(fromChainId)) {
+      return true;
+    }
     return isStxEnabled && isGasIncludedSwapSupported;
   },
 );

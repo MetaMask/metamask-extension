@@ -26,9 +26,9 @@ import {
   getCurrentChainId,
   getNetworkConfigurationsByChainId,
 } from '../../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import {
   getInternalAccounts,
-  getSelectedInternalAccount,
   getTokenDetectionSupportNetworkByChainId,
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,

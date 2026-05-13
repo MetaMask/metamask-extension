@@ -4,9 +4,10 @@ import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { useAddToken } from '../../../../hooks/tokens/useAddToken';
+import { usePerpsWithdrawDefaultToken } from '../../../../hooks/pay/usePerpsWithdrawDefaultToken';
+import { usePerpsLiveAccount } from '../../../../../../hooks/perps/stream';
 import { CustomAmountInfo } from '../../../info/custom-amount-info';
 import { ARBITRUM_USDC, PERPS_CURRENCY } from '../../../../constants/perps';
-import { usePerpsLiveAccount } from '../../../../../../hooks/perps/stream';
 import { PerpsWithdrawInfo } from './perps-withdraw-info';
 
 jest.mock('../../../../hooks/tokens/useAddToken', () => ({
@@ -19,6 +20,10 @@ jest.mock('../../../../hooks/tokens/useAddToken', () => ({
 // `PerpsWithdrawInfo` can render under the lighter `renderWithProvider`.
 jest.mock('../../../../hooks/pay/useTransactionPayPostQuote', () => ({
   useTransactionPayPostQuote: jest.fn(),
+}));
+
+jest.mock('../../../../hooks/pay/usePerpsWithdrawDefaultToken', () => ({
+  usePerpsWithdrawDefaultToken: jest.fn(),
 }));
 
 // `usePerpsLiveAccount` boots the perps stream manager which fires an
@@ -42,12 +47,21 @@ jest.mock('../../../perps-confirmations/perps-withdraw-balance', () => ({
 
 const useAddTokenMock = jest.mocked(useAddToken);
 const customAmountInfoMock = jest.mocked(CustomAmountInfo);
+const usePerpsWithdrawDefaultTokenMock = jest.mocked(
+  usePerpsWithdrawDefaultToken,
+);
 const usePerpsLiveAccountMock = jest.mocked(usePerpsLiveAccount);
+
+const DEFAULT_PREFERRED_TOKEN = {
+  address: ARBITRUM_USDC.address,
+  chainId: ARBITRUM_USDC.chainId,
+};
 
 describe('PerpsWithdrawInfo', () => {
   beforeEach(() => {
     useAddTokenMock.mockReset();
     customAmountInfoMock.mockClear();
+    usePerpsWithdrawDefaultTokenMock.mockReturnValue(DEFAULT_PREFERRED_TOKEN);
     usePerpsLiveAccountMock.mockReturnValue({
       account: null,
       isInitialLoading: false,
@@ -80,8 +94,8 @@ describe('PerpsWithdrawInfo', () => {
   it('passes available-to-trade balance as the custom amount max source', () => {
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
-        availableBalance: '0',
-        availableToTradeBalance: '321.09',
+        spendableBalance: '0',
+        withdrawableBalance: '321.09',
       } as never,
       isInitialLoading: false,
     });
@@ -109,6 +123,41 @@ describe('PerpsWithdrawInfo', () => {
 
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.not.objectContaining({ hasMax: true }),
+      expect.anything(),
+    );
+  });
+
+  it('passes the default destination token from `usePerpsWithdrawDefaultToken` as `preferredToken`', () => {
+    const lastUsed = {
+      address: '0x9999999999999999999999999999999999999999' as const,
+      chainId: '0x38' as const,
+    };
+    usePerpsWithdrawDefaultTokenMock.mockReturnValue(lastUsed);
+
+    renderWithProvider(<PerpsWithdrawInfo />, configureStore(mockState));
+
+    expect(customAmountInfoMock).toHaveBeenCalledWith(
+      expect.objectContaining({ preferredToken: lastUsed }),
+      expect.anything(),
+    );
+  });
+
+  it('uses `withdrawableBalance` for the percentage-button balance override', () => {
+    // HyperLiquid Unified Account mode: `spendableBalance` is $0 because USDC
+    // sits in the spot clearinghouse. `withdrawableBalance` is the unified
+    // value — must take precedence. Mirrors metamask-mobile#29492.
+    usePerpsLiveAccountMock.mockReturnValue({
+      account: {
+        spendableBalance: '0',
+        withdrawableBalance: '41.13',
+      } as never,
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(<PerpsWithdrawInfo />, configureStore(mockState));
+
+    expect(customAmountInfoMock).toHaveBeenCalledWith(
+      expect.objectContaining({ balanceUsdOverride: 41.13 }),
       expect.anything(),
     );
   });

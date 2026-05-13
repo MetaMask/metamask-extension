@@ -50,6 +50,7 @@ describe('UnlockPage component (passkey UI)', () => {
     isPopup: false,
     isWalletResetInProgress: false,
     passkeyAutoUnlockSuppressed: true,
+    mustDeferPasskeyToBrowserTab: false,
     ...overrides,
   });
 

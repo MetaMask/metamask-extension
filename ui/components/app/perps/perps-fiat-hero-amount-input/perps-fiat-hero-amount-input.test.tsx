@@ -62,4 +62,35 @@ describe('PerpsFiatHeroAmountInput', () => {
       screen.queryByTestId('perps-fiat-hero-amount-input'),
     ).not.toBeInTheDocument();
   });
+
+  it('auto-focuses the input when autoFocus is true', () => {
+    render(
+      <PerpsFiatHeroAmountInput value="0" onChange={jest.fn()} autoFocus />,
+    );
+
+    expect(screen.getByTestId('perps-fiat-hero-amount-input')).toHaveFocus();
+  });
+
+  it('does not focus when autoFocus is omitted', () => {
+    render(<PerpsFiatHeroAmountInput value="0" onChange={jest.fn()} />);
+
+    expect(
+      screen.getByTestId('perps-fiat-hero-amount-input'),
+    ).not.toHaveFocus();
+  });
+
+  it('does not focus when autoFocus is true but disabled', () => {
+    render(
+      <PerpsFiatHeroAmountInput
+        value="0"
+        onChange={jest.fn()}
+        autoFocus
+        disabled
+      />,
+    );
+
+    expect(
+      screen.getByTestId('perps-fiat-hero-amount-input'),
+    ).not.toHaveFocus();
+  });
 });

@@ -519,7 +519,6 @@
   "ui/components/app/permissions-connect-permission-list/permissions-connect-permission-list.stories.js",
   "ui/components/app/qr-hardware-popover/base-reader.js",
   "ui/components/app/qr-hardware-popover/base-reader.test.js",
-  "ui/components/app/qr-hardware-popover/enhanced-reader.js",
   "ui/components/app/qr-hardware-popover/index.js",
   "ui/components/app/qr-hardware-popover/qr-hardware-popover.js",
   "ui/components/app/qr-hardware-popover/qr-hardware-sign-request/index.js",

@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, waitFor, screen } from '@testing-library/react';
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../../test/lib/i18n-helpers';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
 import * as BrowserRuntimeUtils from '../../../../shared/lib/browser-runtime.utils';
@@ -125,6 +125,8 @@ const buildMockStore = (
     },
   });
 
+const PASSKEY_LABEL_BIOMETRICS = tEn('passkeyAuthMethodBiometrics');
+
 describe('SetupPasskey', () => {
   beforeEach(() => {
     mockUseNavigate.mockClear();
@@ -169,21 +171,27 @@ describe('SetupPasskey', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
     const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
-    expect(getByText(messages.unlockWithPasskey.message)).toBeInTheDocument();
+    expect(
+      getByText(tEn('unlockWithPasskey', [PASSKEY_LABEL_BIOMETRICS])),
+    ).toBeInTheDocument();
   });
 
   it('renders the description text', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
     const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
-    expect(getByText(messages.passkeyDescription.message)).toBeInTheDocument();
+    expect(
+      getByText(tEn('passkeyDescription', [PASSKEY_LABEL_BIOMETRICS])),
+    ).toBeInTheDocument();
   });
 
   it('renders the set up biometrics button', () => {
     const mockStore = buildMockStore(FirstTimeFlowType.create);
     const { getByText } = renderWithProvider(<SetupPasskey />, mockStore);
 
-    expect(getByText(messages.setUpPasskey.message)).toBeInTheDocument();
+    expect(
+      getByText(tEn('setUpPasskey', [PASSKEY_LABEL_BIOMETRICS])),
+    ).toBeInTheDocument();
   });
 
   it('renders the maybe later button', () => {
@@ -409,7 +417,9 @@ describe('SetupPasskey', () => {
         expect(
           screen.getByTestId('passkey-enrollment-error'),
         ).toHaveTextContent(
-          messages.passkeyErrorRegistrationVerificationFailed.message,
+          tEn('passkeyErrorRegistrationVerificationFailed', [
+            PASSKEY_LABEL_BIOMETRICS,
+          ]),
         );
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();
@@ -429,7 +439,9 @@ describe('SetupPasskey', () => {
         expect(
           screen.getByTestId('passkey-enrollment-error'),
         ).toHaveTextContent(
-          messages.passkeyErrorAuthenticationVerificationFailed.message,
+          tEn('passkeyErrorAuthenticationVerificationFailed', [
+            PASSKEY_LABEL_BIOMETRICS,
+          ]),
         );
       });
       expect(mockUseNavigate).not.toHaveBeenCalled();

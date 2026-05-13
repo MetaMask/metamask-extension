@@ -2797,10 +2797,6 @@
     "message": "Κωδικός: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
-  "errorDetails": {
-    "message": "Λεπτομέρειες σφάλματος",
-    "description": "Label for the error details field in the error screen."
-  },
   "errorGettingSafeChainList": {
     "message": "Σφάλμα κατά τη λήψη της λίστας ασφαλών αλυσίδων, συνεχίστε με προσοχή."
   },
@@ -5681,7 +5677,7 @@
     "message": "Κλείσιμο θέσης αγοράς"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Τα μερικά κλεισίματα πρέπει να είναι τουλάχιστον $1 σε αξία USD. Αυξήστε το ποσό κλεισίματος ή ορίστε τον ρυθμιστή τιμής στο 100%."
+    "message": "Τα μερικά κλεισίματα πρέπει να είναι τουλάχιστον $1 σε αξία USD. Αυξήστε το ποσό κλεισίματος ή κλείστε ολόκληρη τη θέση."
   },
   "perpsClosePosition": {
     "message": "Κλείσιμο θέσης"
@@ -6947,9 +6943,6 @@
   "rewardsLinkAccountError": {
     "message": "Αποτυχία προσθήκης λογαριασμού"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Κερδίστε πόντους με τη δραστηριότητά σας. \nΑνεβείτε επίπεδα για να ξεκλειδώσετε ανταμοιβές."
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Δεν είναι δυνατόν να προσδιορίσουμε το αν η χώρα σας επιτρέπει τη συμμετοχή στο πρόγραμμα ανταμοιβών. Παρακαλούμε ελέγξτε τη σύνδεσή σας και προσπαθήστε ξανά."
   },
@@ -6962,84 +6955,32 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Επανάληψη"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "Διεκδικήστε 250 πόντους"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Έλεγχος επιλεξιμότητας..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Έλεγχος περιοχής.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Όχι τώρα"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Οι ανταμοιβές είναι εδώ"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Οι ανταμοιβές δεν υποστηρίζονται ακόμη στην περιοχή σας. Προσπαθούμε να επεκτείνουμε την πρόσβαση, οπότε ελέγξτε ξανά αργότερα."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Η περιοχή δεν υποστηρίζεται"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Κάθε ανταλλαγή και συναλλαγή σε perps που κάνετε στο MetaMask σας φέρνει πιο κοντά σε ανταμοιβές.\nΠροσθέστε τους λογαριασμούς σας και δείτε τους πόντους σας να αυξάνονται."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Κερδίστε πόντους σε κάθε συναλλαγή"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Επιτύχετε ορόσημα πόντων για να αποκτήσετε προνόμια όπως 50% έκπτωση σε χρεώσεις συμβολαίων αορίστου διάρκειας (perps), αποκλειστικά tokens και δωρεάν μια MetaMask Metal Card."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Ανεβείτε επίπεδο για περισσότερα προνόμια"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "Μπορείτε να κερδίζετε πόντους στην επέκταση, αλλά θα χρειαστείτε την εφαρμογή για κινητά για να κάνετε συναλλαγές σε perps, να παρακολουθείτε την πρόοδό σας και να εξαργυρώνετε ανταμοιβές."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Ξεκλειδώστε ανταμοιβές στο κινητό"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "Κάνοντας κλικ στο “Εξαργύρωση πόντων”, συμφωνείτε με τους $1. Θα παρακολουθούμε τη δραστηριότητά σας εντός αλυσίδας για να σας ανταμείβουμε αυτόματα. $2",
-    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
-  },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Μάθετε περισσότερα"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Όροι και Ειδοποίηση Απορρήτου"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Αποτυχία συμμετοχής"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Μη έγκυρος κωδικός παραπομπής"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Χρησιμοποιήστε κωδικό παραπομπής για να κερδίσετε 250 πόντους"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Κωδικός παραπομπής (προαιρετικά)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Ο κωδικός παραπομπής δεν ήταν δυνατό να επαληθευτεί."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Ελέγξτε τη σύνδεσή σας και προσπαθήστε ξανά."
-  },
-  "rewardsOnboardingStep4Title": {
-    "message": "Θα κερδίσετε 250 πόντους με την εγγραφή σας!"
-  },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "Θα κερδίσετε 500 πόντους με την εγγραφή σας με κωδικό!"
-  },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Επόμενο"
-  },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Διεκδίκηση πόντων"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Επαλήθευση κωδικού παραπομπής...",
@@ -8163,9 +8104,6 @@
   "smartAccountRequestsFromDapps": {
     "message": "Αιτήματα έξυπνου λογαριασμού από αποκεντρωμένες εφαρμογές (dapps)"
   },
-  "smartAccountRequestsFromDappsDescription": {
-    "message": "Επιτρέψτε στις αποκεντρωμένες εφαρμογές (dapps) να ζητούν λειτουργίες έξυπνου λογαριασμού για τυπικούς λογαριασμούς. Δεν θα επηρεαστούν οι λογαριασμοί που είναι ήδη έξυπνοι λογαριασμοί."
-  },
   "smartAccountUpgradeBannerDescription": {
     "message": "Ίδια διεύθυνση. Πιο έξυπνες λειτουργίες."
   },
@@ -8692,9 +8630,6 @@
     "message": "Ακόμα συνδέεται με το $1...",
     "description": "Message shown when network connection is slow. $1 is the network name."
   },
-  "stillGettingMessage": {
-    "message": "Ακόμα λαμβάνετε αυτό το μήνυμα;"
-  },
   "storageErrorAction": {
     "message": "Δημιουργήστε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης"
   },
@@ -8798,12 +8733,6 @@
   "supportedLanguagesSectionTitle": {
     "message": "Υποστηριζόμενες γλώσσες",
     "description": "Section heading on the language settings screen for locales actively maintained by MetaMask."
-  },
-  "surveyConversion": {
-    "message": "Πάρτε μέρος στην έρευνά μας"
-  },
-  "surveyTitle": {
-    "message": "Διαμορφώστε το μέλλον του MetaMask"
   },
   "swap": {
     "message": "Ανταλλαγή"

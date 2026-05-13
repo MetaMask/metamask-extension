@@ -7,7 +7,7 @@ import {
 import { trace, TraceName } from '../../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getMultichainIsEvm } from '../../../../selectors/multichain';
-import { type SafeChain } from '../../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { type SafeChain } from '../../../multichain/networks-form/use-safe-chains';
 import { usePrimaryCurrencyProperties } from '../hooks';
 import TokenList from '../token-list';
 import { MusdBuyGetCta } from '../../musd';

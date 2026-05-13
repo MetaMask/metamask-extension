@@ -2,6 +2,8 @@ import {
   TransactionMeta,
   UserFeeLevel,
 } from '@metamask/transaction-controller';
+import { screen } from '@testing-library/react';
+import configureStore from 'redux-mock-store';
 
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { genUnapprovedContractInteractionConfirmation } from '../../../../../../test/data/confirmations/contract-interaction';
@@ -15,6 +17,7 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
 
 jest.mock('../../gas/useIsGaslessSupported');
@@ -23,22 +26,19 @@ const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
   chainId: '0x5',
 }) as TransactionMeta;
 
-const GAS_ALERT = [
-  {
-    actions: [
-      {
-        key: AlertActionKey.ShowAdvancedGasFeeModal,
-        label: 'Update gas limit',
-      },
-    ],
-    field: RowAlertKey.EstimatedFee,
-    key: 'gasEstimateFailed',
-    message:
-      'We’re unable to provide an accurate fee and this estimate might be high. We suggest you to input a custom gas limit, but there’s a risk the transaction will still fail.',
-    reason: 'Inaccurate fee',
-    severity: Severity.Warning,
-  },
-];
+const GAS_ALERT = {
+  actions: [
+    {
+      key: AlertActionKey.ShowAdvancedGasFeeModal,
+      label: 'Update gas limit',
+    },
+  ],
+  field: RowAlertKey.EstimatedFee,
+  key: 'gasEstimateFailed',
+  // content: <GasEstimateFailedAlertMessage />,
+  reason: 'Inaccurate fee',
+  severity: Severity.Warning,
+};
 
 function runHook(state: Record<string, unknown>) {
   const response = renderHookWithConfirmContextProvider(
@@ -85,7 +85,31 @@ describe('useGasEstimateFailedAlerts', () => {
       }),
     );
 
-    expect(alerts).toEqual(GAS_ALERT);
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toMatchObject(GAS_ALERT);
+    expect(alerts[0].content).toBeDefined();
+  });
+
+  it('renders the gas revert reason in the alert message', () => {
+    const state = getMockConfirmStateForTransaction({
+      ...CONFIRMATION_MOCK,
+      simulationFails: { debug: {} },
+      revert: {
+        gas: {
+          message: 'execution reverted: insufficient funds for gas',
+        },
+      },
+    });
+    const alerts = runHook(state);
+
+    renderWithProvider(alerts[0].content, configureStore()(state));
+
+    expect(screen.getByTestId('alert-modal__selected-alert')).toHaveTextContent(
+      'unable to provide an accurate fee',
+    );
+    expect(
+      screen.getByTestId('gas-estimate-failed-revert-reason-message'),
+    ).toHaveTextContent('execution reverted: insufficient funds for gas');
   });
 
   it('returns no alerts if simulation fails but userFeeLevel is CUSTOM', () => {
@@ -140,14 +164,15 @@ describe('useGasEstimateFailedAlerts', () => {
       isSupported: false,
       pending: false,
     });
-    expect(
-      runHook(
-        getMockConfirmStateForTransaction({
-          ...CONFIRMATION_MOCK,
-          isGasFeeSponsored: true,
-          simulationFails: { debug: {} },
-        }),
-      ),
-    ).toEqual(GAS_ALERT);
+    const alerts = runHook(
+      getMockConfirmStateForTransaction({
+        ...CONFIRMATION_MOCK,
+        isGasFeeSponsored: true,
+        simulationFails: { debug: {} },
+      }),
+    );
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toMatchObject(GAS_ALERT);
+    expect(alerts[0].content).toBeDefined();
   });
 });

@@ -1,6 +1,7 @@
 import {
   getIsPasskeyFeatureAvailable,
   getIsPasskeyRegistered,
+  getIsEnrolledPasskeyIncompatibleWithSidepanel,
 } from './selectors';
 
 jest.mock('../../shared/lib/environment', () => ({
@@ -8,7 +9,12 @@ jest.mock('../../shared/lib/environment', () => ({
 }));
 
 jest.mock('../../shared/lib/passkey', () => ({
+  ...jest.requireActual('../../shared/lib/passkey'),
   isWebAuthnSupported: jest.fn(),
+}));
+
+jest.mock('../../shared/lib/browser-runtime.utils', () => ({
+  isFirefoxBrowser: jest.fn(),
 }));
 
 jest.mock('./first-time-flow', () => ({
@@ -27,9 +33,19 @@ const { isWebAuthnSupported } = jest.requireMock(
   isWebAuthnSupported: jest.Mock;
 };
 
+const { isFirefoxBrowser } = jest.requireMock(
+  '../../shared/lib/browser-runtime.utils',
+) as {
+  isFirefoxBrowser: jest.Mock;
+};
+
 const { getIsSocialLoginFlow } = jest.requireMock('./first-time-flow') as {
   getIsSocialLoginFlow: jest.Mock;
 };
+
+/** Must match private Google Password Manager AAGUID in shared/lib/passkey/passkey-sidepanel-aaguid.ts */
+const GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID =
+  'ea9b8d66-4d01-1d21-3ce4-b6b48cb575d4';
 
 describe('getIsPasskeyFeatureAvailable', () => {
   const mockState = {} as Parameters<typeof getIsPasskeyFeatureAvailable>[0];
@@ -38,10 +54,11 @@ describe('getIsPasskeyFeatureAvailable', () => {
     jest.resetAllMocks();
   });
 
-  it('returns true when build flag is enabled, WebAuthn is supported, and not social login', () => {
+  it('returns true when build flag is enabled, WebAuthn is supported, not social login, and not Firefox', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(true);
     isWebAuthnSupported.mockReturnValue(true);
     getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(false);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(true);
   });
@@ -50,6 +67,7 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(false);
     isWebAuthnSupported.mockReturnValue(true);
     getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(false);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
   });
@@ -58,6 +76,7 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(true);
     isWebAuthnSupported.mockReturnValue(false);
     getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(false);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
   });
@@ -66,6 +85,16 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(true);
     isWebAuthnSupported.mockReturnValue(true);
     getIsSocialLoginFlow.mockReturnValue(true);
+    isFirefoxBrowser.mockReturnValue(false);
+
+    expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
+  });
+
+  it('returns false when browser is Firefox', () => {
+    getIsPasskeyFeatureEnabled.mockReturnValue(true);
+    isWebAuthnSupported.mockReturnValue(true);
+    getIsSocialLoginFlow.mockReturnValue(false);
+    isFirefoxBrowser.mockReturnValue(true);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
   });
@@ -74,6 +103,7 @@ describe('getIsPasskeyFeatureAvailable', () => {
     getIsPasskeyFeatureEnabled.mockReturnValue(false);
     isWebAuthnSupported.mockReturnValue(false);
     getIsSocialLoginFlow.mockReturnValue(true);
+    isFirefoxBrowser.mockReturnValue(true);
 
     expect(getIsPasskeyFeatureAvailable(mockState)).toBe(false);
   });
@@ -98,5 +128,36 @@ describe('getIsPasskeyRegistered', () => {
     };
 
     expect(getIsPasskeyRegistered(state)).toBe(false);
+  });
+});
+
+describe('getIsEnrolledPasskeyIncompatibleWithSidepanel', () => {
+  it('returns true when passkey credential AAGUID is in the incompatible set', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          credential: { aaguid: GOOGLE_PASSWORD_MANAGER_PASSKEY_AAGUID },
+        },
+      },
+    };
+    expect(getIsEnrolledPasskeyIncompatibleWithSidepanel(state)).toBe(true);
+  });
+
+  it('returns false when no passkey record', () => {
+    const state = { metamask: { passkeyRecord: null } };
+    expect(getIsEnrolledPasskeyIncompatibleWithSidepanel(state)).toBe(false);
+  });
+
+  it('returns false when AAGUID is unknown', () => {
+    const state = {
+      metamask: {
+        passkeyRecord: {
+          credential: {
+            aaguid: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
+          },
+        },
+      },
+    };
+    expect(getIsEnrolledPasskeyIncompatibleWithSidepanel(state)).toBe(false);
   });
 });

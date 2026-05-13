@@ -281,7 +281,6 @@ env:
   - QUICKNODE_OPTIMISM_URL: null
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
-  - QUICKNODE_BSC_URL: null
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
   - QUICKNODE_HYPEREVM_URL: null
@@ -382,7 +381,7 @@ env:
   - PERPS_ENABLED: false
   # Build-time gate: when false AssetsController is instantiated but state remains empty.
   # When true, the controller populates state (subject to remote feature flag).
-  - ASSETS_UNIFIED_STATE_ENABLED: false
+  - ASSETS_UNIFIED_STATE_ENABLED: true
   # Build-time gate: when true, hardware wallet onboarding uses the new flow.
   - NEW_HARDWARE_WALLET_ONBOARDING: false
 
@@ -426,9 +425,6 @@ env:
   ###
   - DEEP_LINK_PUBLIC_KEY: BD8cWMMR2J33ax8hvSz8LNt99H3wGBPWuAgw+lsfWcBrw4ZtTHFnWyNkbgXglqJOoc+1OA5ZC4kW4GYU/QIeBNA=
 
-  # Enforce simulation balance changes by converting external transactions to delegations.
-  - ENABLE_ENFORCED_SIMULATIONS: false
-
   # Force enforced simulations to apply whenever a transaction has balance
   # changes, bypassing the trust signal check. Intended for local
   # development and QA only; must remain false for production builds.
@@ -459,4 +455,4 @@ env:
   - FORCE_AUTH_MATCH_BUILD: false
 
   # Passkey / Biometrics unlock
-  - PASSKEY_ENABLED: 'false'
+  - PASSKEY_ENABLED: true
