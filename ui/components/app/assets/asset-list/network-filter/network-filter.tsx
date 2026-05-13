@@ -17,15 +17,13 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';
+import { TextColor, TextVariant } from '../../../../../helpers/constants/design-system';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import { Box } from '../../../../component-library/box/box';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -127,10 +125,10 @@ const NetworkFilter = ({
         testId="network-filter-all"
       >
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
-          width={BlockSize.Full}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.SpaceBetween}
           gap={3}
+          className="w-full"
         >
           <Box>
             <Text
@@ -156,7 +154,10 @@ const NetworkFilter = ({
               </Text>
             )}
           </Box>
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+          >
             <InfoTooltip
               position="bottom"
               contentText={allAddedPopularNetworks.join(', ')}
@@ -191,11 +192,11 @@ const NetworkFilter = ({
         testId="network-filter-current"
       >
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.spaceBetween}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.SpaceBetween}
           gap={3}
-          alignItems={AlignItems.center}
-          width={BlockSize.Full}
+          alignItems={BoxAlignItems.Center}
+          className="w-full"
         >
           <Box>
             <Text

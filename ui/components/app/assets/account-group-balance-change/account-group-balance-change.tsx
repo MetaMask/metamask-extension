@@ -2,14 +2,13 @@ import { type BalanceChangePeriod } from '@metamask/assets-controllers';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Skeleton } from '@metamask/design-system-react';
-import {
-  Display,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
+
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { selectAnyEnabledNetworksAreAvailable } from '../../../../selectors';
-import { Box, SensitiveText } from '../../../component-library';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
+import { SensitiveText } from '../../../component-library';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useAccountGroupBalanceDisplay } from './useAccountGroupBalanceDisplay';
 
@@ -37,7 +36,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
         !anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)
       }
     >
-      <Box display={Display.Flex} gap={1}>
+      <Box flexDirection={BoxFlexDirection.Row} gap={1}>
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}

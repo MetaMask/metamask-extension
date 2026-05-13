@@ -9,13 +9,14 @@ import {
   selectBalanceBySelectedAccountGroup,
 } from '../../../../selectors/assets';
 
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import {
-  AlignItems,
-  Display,
-  FlexWrap,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import { Box, SensitiveText } from '../../../component-library';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxFlexWrap,
+} from '@metamask/design-system-react';
+import { SensitiveText } from '../../../component-library';
 import {
   getEnabledNetworksByNamespace,
   getMultichainNetwork,
@@ -164,9 +165,9 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
           [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
         })}
         data-testid={`${classPrefix}-overview__primary-currency`}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        flexWrap={FlexWrap.Wrap}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        flexWrap={BoxFlexWrap.Wrap}
       >
         <SensitiveText
           ellipsis
