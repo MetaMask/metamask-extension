@@ -61,27 +61,33 @@ describe('SeedlessOnboardingControllerInit', () => {
 
     const network = Web3AuthNetwork.Devnet;
 
-    expect(SeedlessOnboardingControllerClassMock).toHaveBeenCalledWith({
-      messenger: requestMock.controllerMessenger,
-      state: requestMock.persistedState.SeedlessOnboardingController,
-      network,
-      encryptor: {
-        decrypt: expect.any(Function),
-        decryptWithDetail: expect.any(Function),
-        decryptWithKey: expect.any(Function),
-        encrypt: expect.any(Function),
-        encryptWithDetail: expect.any(Function),
-        encryptWithKey: expect.any(Function),
-        isVaultUpdated: expect.any(Function),
-        importKey: expect.any(Function),
-        exportKey: expect.any(Function),
-        generateSalt: expect.any(Function),
-        keyFromPassword: expect.any(Function),
-      },
-      passwordOutdatedCacheTTL: expect.any(Number),
-      refreshJWTToken: expect.any(Function),
-      revokeRefreshToken: expect.any(Function),
-      renewRefreshToken: expect.any(Function),
-    });
+    expect(SeedlessOnboardingControllerClassMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messenger: requestMock.controllerMessenger,
+        state: requestMock.persistedState.SeedlessOnboardingController,
+        network,
+        encryptor: expect.objectContaining({
+          decrypt: expect.any(Function),
+          decryptWithDetail: expect.any(Function),
+          decryptWithKey: expect.any(Function),
+          encrypt: expect.any(Function),
+          encryptWithDetail: expect.any(Function),
+          encryptWithKey: expect.any(Function),
+          isVaultUpdated: expect.any(Function),
+          importKey: expect.any(Function),
+          exportKey: expect.any(Function),
+          generateSalt: expect.any(Function),
+          keyFromPassword: expect.any(Function),
+        }),
+        passwordOutdatedCacheTTL: 15_000,
+        profilePairingEndpoint: expect.stringContaining(
+          '/api/v2/profile/pair',
+        ),
+        fetchFunction: expect.any(Function),
+        refreshJWTToken: expect.any(Function),
+        revokeRefreshToken: expect.any(Function),
+        renewRefreshToken: expect.any(Function),
+      }),
+    );
   });
 });
