@@ -1282,7 +1282,7 @@ export async function buildPerformanceBenchmarksSection(
 
   const commitHash = baselineCommit?.slice(0, 7) ?? 'unknown';
   const commitDate = baselineTimestamp
-    ? new Date(baselineTimestamp * 1000).toLocaleDateString('en-US', {
+    ? new Date(baselineTimestamp).toLocaleDateString('en-US', {
         month: 'numeric',
         day: 'numeric',
         year: 'numeric',

@@ -1,14 +1,5 @@
 {
   "resources": {
-    "@babel/core>@ampproject/remapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
-        "terser-webpack-plugin>@jridgewell/trace-mapping": true
-      }
-    },
     "@babel/code-frame": {
       "globals": {
         "console.warn": true,
@@ -36,10 +27,11 @@
         "console.error": true,
         "console.log": true,
         "process.env": true,
-        "process.versions": true
+        "process.features.typescript": true,
+        "process.versions": true,
+        "structuredClone": true
       },
       "packages": {
-        "@babel/core>@ampproject/remapping": true,
         "@babel/code-frame": true,
         "@babel/core>@babel/generator": true,
         "@babel/core>@babel/helper-compilation-targets": true,
@@ -51,6 +43,7 @@
         "@babel/core>@babel/template": true,
         "depcheck>@babel/traverse": true,
         "@babel/core>@babel/types": true,
+        "@babel/core>@jridgewell/remapping": true,
         "@babel/core>convert-source-map": true,
         "nock>debug": true,
         "@babel/core>gensync": true,
@@ -127,7 +120,6 @@
       "packages": {
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "@babel/code-frame>@babel/helper-validator-identifier": true,
         "depcheck>@babel/traverse": true
       }
@@ -145,7 +137,7 @@
         "depcheck>@babel/traverse": true
       }
     },
-    "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
+    "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": {
       "packages": {
         "@babel/core>@babel/types": true
       }
@@ -176,7 +168,7 @@
         "@babel/core": true,
         "@babel/core>@babel/helper-module-transforms": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true
+        "@babel/preset-env>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true
       }
     },
     "@babel/preset-typescript>@babel/plugin-transform-typescript": {
@@ -257,6 +249,15 @@
       },
       "packages": {
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping": true
+      }
+    },
+    "@babel/core>@jridgewell/remapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "terser>@jridgewell/source-map>@jridgewell/gen-mapping": true,
         "terser-webpack-plugin>@jridgewell/trace-mapping": true
       }
     },

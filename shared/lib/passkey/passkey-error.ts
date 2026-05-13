@@ -1,13 +1,18 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 
-type PasskeyCode =
-  (typeof PasskeyControllerErrorCode)[keyof typeof PasskeyControllerErrorCode];
+/**
+ * Stable programmatic codes for passkey-related errors thrown by the extension.
+ */
+export const ExtensionPasskeyErrorCode = {
+  VaultKeyRenewalFailed: 'extension_vault_key_renewal_failed',
+} as const;
 
 /**
- * Maps {@link PasskeyControllerErrorCode} values to extension `messages.json` keys.
+ * Maps passkey error `code` strings (controller + extension) to extension `messages.json` keys.
  */
-const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<PasskeyCode, string> = {
+const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<string, string> = {
   [PasskeyControllerErrorCode.NotEnrolled]: 'passkeyErrorNotEnrolled',
+  [PasskeyControllerErrorCode.AlreadyEnrolled]: 'passkeyErrorAlreadyEnrolled',
   [PasskeyControllerErrorCode.NoRegistrationCeremony]:
     'passkeyErrorNoRegistrationCeremony',
   [PasskeyControllerErrorCode.RegistrationVerificationFailed]:
@@ -21,16 +26,39 @@ const PASSKEY_ERROR_CODE_TO_I18N_KEY: Record<PasskeyCode, string> = {
   [PasskeyControllerErrorCode.VaultKeyDecryptionFailed]:
     'passkeyErrorVaultKeyDecryptionFailed',
   [PasskeyControllerErrorCode.VaultKeyMismatch]: 'passkeyErrorVaultKeyMismatch',
+  [ExtensionPasskeyErrorCode.VaultKeyRenewalFailed]:
+    'passkeyErrorVaultKeyRenewalFailed',
 };
+
+/**
+ * Reads a stable passkey-related string `code` from a thrown value (direct or MetaRPC-wrapped).
+ *
+ * @param error - Thrown value from background or in-page passkey flows.
+ * @returns The string code, or `null` if none is present.
+ */
+export function getPasskeyControllerErrorCode(error: unknown): string | null {
+  if (error === null || typeof error !== 'object') {
+    return null;
+  }
+  const err = error as { code?: unknown; data?: unknown };
+  const causeCode = getCauseCode(err.data);
+
+  if (typeof err.code === 'string') {
+    return err.code;
+  }
+  if (typeof causeCode === 'string') {
+    return causeCode;
+  }
+  return null;
+}
 
 function translatePasskeyCode(
   code: string,
-  t: (key: string) => string,
+  t: (key: string, substitutions?: string[]) => string,
+  authMethodLabel: string,
 ): string | null {
-  if (code in PASSKEY_ERROR_CODE_TO_I18N_KEY) {
-    return t(PASSKEY_ERROR_CODE_TO_I18N_KEY[code as PasskeyCode]);
-  }
-  return null;
+  const i18nKey = PASSKEY_ERROR_CODE_TO_I18N_KEY[code];
+  return i18nKey === undefined ? null : t(i18nKey, [authMethodLabel]);
 }
 
 function getCauseCode(data: unknown): unknown {
@@ -52,37 +80,30 @@ function getCauseCode(data: unknown): unknown {
  * **Controller:** `PasskeyController` throws `PasskeyControllerError` with a stable
  * string `code` (see `@metamask/passkey-controller`).
  *
+ * **Extension:** the background may attach `ExtensionPasskeyErrorCode` on the same shape.
+ *
  * **Extension UI:** MetaRPC + `serializeError` (`createMetaRPCHandler`) wraps failures;
  * the string `code` is on `data.cause`, not the numeric `JsonRpcError.code`.
  *
  * Resolution order:
- * 1. String `code` on the rejection when it is a known {@link PasskeyControllerErrorCode}.
+ * 1. String `code` on the rejection when it matches a known entry in the map above.
  * 2. `data.cause.code` for MetaRPC-wrapped rejections.
- * 3. Otherwise `null` — callers typically use `?? t('passkeyUnlockFailed')`.
+ * 3. Otherwise `null` — callers typically use `?? t('passkeyUnlockFailed', [authMethodLabel])`.
  *
  * @param error - Thrown value from background or in-page passkey flows.
  * @param t - The extension i18n translation function from `useI18nContext()`.
+ * @param authMethodLabel - OS-specific passkey auth-method noun ("Biometrics" /
+ * "Touch ID" / "Windows Hello"); UI typically passes
+ * `t(getPasskeyAuthMethodKey())` (same noun as buttons / toasts, not the `{ specific: true }` variant).
  */
 export function translatePasskeyError(
   error: unknown,
-  t: (key: string) => string,
+  t: (key: string, substitutions?: string[]) => string,
+  authMethodLabel: string,
 ): string | null {
-  if (error === null || typeof error !== 'object') {
-    return null;
-  }
-  const err = error as { code?: unknown; data?: unknown };
-  const causeCode = getCauseCode(err.data);
-  let code: string | null = null;
-
-  if (typeof err.code === 'string') {
-    code = err.code;
-  } else if (typeof causeCode === 'string') {
-    code = causeCode;
-  }
-
+  const code = getPasskeyControllerErrorCode(error);
   if (code === null) {
     return null;
   }
-
-  return translatePasskeyCode(code, t);
+  return translatePasskeyCode(code, t, authMethodLabel);
 }

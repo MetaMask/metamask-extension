@@ -22,7 +22,7 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import { getPreferences } from '../../../../../../../selectors';
+import { getPreferences } from '../../../../../../../../shared/lib/selectors/preferences';
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { useEstimationFailed } from '../../../../../hooks/gas/useEstimationFailed';
@@ -215,5 +215,5 @@ function useShowFiat(chainId: Hex): boolean {
   const isTestnet = TEST_CHAINS.includes(chainId as TestNetChainId);
   const { showFiatInTestnets } = useSelector(getPreferences);
 
-  return !isTestnet || showFiatInTestnets;
+  return !isTestnet || Boolean(showFiatInTestnets);
 }

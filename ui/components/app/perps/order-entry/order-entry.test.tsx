@@ -394,7 +394,9 @@ describe('OrderEntry', () => {
       expect(
         screen.getByText(messages.perpsAvailableToClose.message),
       ).toBeInTheDocument();
-      expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).toBeInTheDocument();
     });
 
     it('hides amount input in close mode', () => {
@@ -511,6 +513,32 @@ describe('OrderEntry', () => {
       );
 
       expect(screen.queryByTestId('limit-price-input')).not.toBeInTheDocument();
+    });
+
+    it('passes the USD placeholder override to market order amount input', () => {
+      renderWithProvider(
+        <OrderEntry
+          {...defaultProps}
+          orderType="market"
+          usdPlaceholder="min $10"
+        />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveAttribute('placeholder', 'min $10');
+    });
+
+    it('keeps the default USD placeholder for limit orders when no override is provided', () => {
+      renderWithProvider(
+        <OrderEntry {...defaultProps} orderType="limit" />,
+        mockStore,
+      );
+
+      const container = screen.getByTestId('amount-input-field');
+      const input = container.querySelector('input');
+      expect(input).toHaveAttribute('placeholder', '0.00');
     });
 
     it('hides limit price input in close mode even when orderType is limit', () => {

@@ -42,6 +42,7 @@ export type GatorPermissionData = {
   amountPerSecond?: string;
   periodDuration?: string;
   periodAmount?: string;
+  tokenAllowance?: string;
   [key: string]: unknown;
 };
 
@@ -453,6 +454,17 @@ export function getGatorPermissionDisplayMetadata(
       displayNameKey: 'tokenSubscription',
       amount: permissionDataParam.periodAmount as string,
       frequencyKey: getPeriodFrequencyValueTranslationKey(periodDuration),
+    };
+  }
+
+  if (
+    permissionType === 'erc20-token-allowance' ||
+    permissionType === 'native-token-allowance'
+  ) {
+    return {
+      displayNameKey: 'tokenAllowance',
+      amount: permissionDataParam.allowanceAmount as string,
+      frequencyKey: '',
     };
   }
 

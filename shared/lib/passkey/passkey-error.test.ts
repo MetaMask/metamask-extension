@@ -1,10 +1,18 @@
 import { PasskeyControllerErrorCode } from '@metamask/passkey-controller';
 import { JsonRpcError } from '@metamask/rpc-errors';
 
-import { translatePasskeyError } from './passkey-error';
+import {
+  ExtensionPasskeyErrorCode,
+  getPasskeyControllerErrorCode,
+  translatePasskeyError,
+} from './passkey-error';
 
 describe('translatePasskeyError', () => {
-  const t = (key: string) => `t:${key}`;
+  const t = (key: string, substitutions?: string[]) =>
+    substitutions === undefined
+      ? `t:${key}`
+      : `t:${key}(${substitutions.join(',')})`;
+  const label = 'Biometrics';
 
   it('maps MetaRPC-style data.cause.code to a translated string', () => {
     const err = new JsonRpcError(-32603, 'internal error', {
@@ -13,8 +21,8 @@ describe('translatePasskeyError', () => {
         code: PasskeyControllerErrorCode.AuthenticationVerificationFailed,
       },
     });
-    expect(translatePasskeyError(err, t)).toBe(
-      't:passkeyErrorAuthenticationVerificationFailed',
+    expect(translatePasskeyError(err, t, label)).toBe(
+      't:passkeyErrorAuthenticationVerificationFailed(Biometrics)',
     );
   });
 
@@ -22,8 +30,8 @@ describe('translatePasskeyError', () => {
     const err = {
       code: PasskeyControllerErrorCode.NoAuthenticationCeremony,
     };
-    expect(translatePasskeyError(err, t)).toBe(
-      't:passkeyErrorNoAuthenticationCeremony',
+    expect(translatePasskeyError(err, t, label)).toBe(
+      't:passkeyErrorNoAuthenticationCeremony(Biometrics)',
     );
   });
 
@@ -32,8 +40,9 @@ describe('translatePasskeyError', () => {
       translatePasskeyError(
         { code: PasskeyControllerErrorCode.VaultKeyDecryptionFailed },
         t,
+        label,
       ),
-    ).toBe('t:passkeyErrorVaultKeyDecryptionFailed');
+    ).toBe('t:passkeyErrorVaultKeyDecryptionFailed(Biometrics)');
   });
 
   it('maps a plain object with only `code` (registration verification failed)', () => {
@@ -41,12 +50,25 @@ describe('translatePasskeyError', () => {
       translatePasskeyError(
         { code: PasskeyControllerErrorCode.RegistrationVerificationFailed },
         t,
+        label,
       ),
-    ).toBe('t:passkeyErrorRegistrationVerificationFailed');
+    ).toBe('t:passkeyErrorRegistrationVerificationFailed(Biometrics)');
+  });
+
+  it('maps already enrolled code', () => {
+    expect(
+      translatePasskeyError(
+        {
+          code: PasskeyControllerErrorCode.AlreadyEnrolled,
+        },
+        t,
+        label,
+      ),
+    ).toBe('t:passkeyErrorAlreadyEnrolled(Biometrics)');
   });
 
   it('returns null when no passkey-specific translation exists', () => {
-    expect(translatePasskeyError(new Error('x'), t)).toBeNull();
+    expect(translatePasskeyError(new Error('x'), t, label)).toBeNull();
   });
 
   it('returns null when code is not a string', () => {
@@ -61,12 +83,15 @@ describe('translatePasskeyError', () => {
           },
         },
         t,
+        label,
       ),
     ).toBeNull();
   });
 
   it('returns null when string code is unknown', () => {
-    expect(translatePasskeyError({ code: 'UnknownPasskeyCode' }, t)).toBeNull();
+    expect(
+      translatePasskeyError({ code: 'UnknownPasskeyCode' }, t, label),
+    ).toBeNull();
   });
 
   it('prefers root string code over data.cause.code', () => {
@@ -81,8 +106,9 @@ describe('translatePasskeyError', () => {
           },
         },
         t,
+        label,
       ),
-    ).toBe('t:passkeyErrorNoAuthenticationCeremony');
+    ).toBe('t:passkeyErrorNoAuthenticationCeremony(Biometrics)');
   });
 
   it('supports the usual UI fallback with nullish coalescing', () => {
@@ -90,10 +116,72 @@ describe('translatePasskeyError', () => {
       translatePasskeyError(
         { code: PasskeyControllerErrorCode.NoAuthenticationCeremony },
         t,
-      ) ?? t('passkeyUnlockFailed'),
-    ).toBe('t:passkeyErrorNoAuthenticationCeremony');
+        label,
+      ) ?? t('passkeyUnlockFailed', [label]),
+    ).toBe('t:passkeyErrorNoAuthenticationCeremony(Biometrics)');
     expect(
-      translatePasskeyError(new Error('x'), t) ?? t('passkeyUnlockFailed'),
-    ).toBe('t:passkeyUnlockFailed');
+      translatePasskeyError(new Error('x'), t, label) ??
+        t('passkeyUnlockFailed', [label]),
+    ).toBe('t:passkeyUnlockFailed(Biometrics)');
+  });
+
+  it('maps extension vault key renewal failed code', () => {
+    expect(
+      translatePasskeyError(
+        { code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed },
+        t,
+        label,
+      ),
+    ).toBe('t:passkeyErrorVaultKeyRenewalFailed(Biometrics)');
+  });
+
+  it('forwards a Windows Hello label as substitution', () => {
+    expect(
+      translatePasskeyError(
+        { code: PasskeyControllerErrorCode.AlreadyEnrolled },
+        t,
+        'Windows Hello',
+      ),
+    ).toBe('t:passkeyErrorAlreadyEnrolled(Windows Hello)');
+  });
+});
+
+describe('getPasskeyControllerErrorCode', () => {
+  it('reads root string code for extension vault key renewal', () => {
+    expect(
+      getPasskeyControllerErrorCode({
+        code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+      }),
+    ).toBe(ExtensionPasskeyErrorCode.VaultKeyRenewalFailed);
+  });
+
+  it('reads MetaRPC-style data.cause.code for extension vault key renewal', () => {
+    const err = new JsonRpcError(-32603, 'internal error', {
+      cause: {
+        name: 'PasskeyControllerError',
+        code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+      },
+    });
+    expect(getPasskeyControllerErrorCode(err)).toBe(
+      ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+    );
+  });
+
+  it('prefers root string code over data.cause.code', () => {
+    expect(
+      getPasskeyControllerErrorCode({
+        code: PasskeyControllerErrorCode.NotEnrolled,
+        data: {
+          cause: {
+            code: ExtensionPasskeyErrorCode.VaultKeyRenewalFailed,
+          },
+        },
+      }),
+    ).toBe(PasskeyControllerErrorCode.NotEnrolled);
+  });
+
+  it('returns null for non-objects', () => {
+    expect(getPasskeyControllerErrorCode(null)).toBeNull();
+    expect(getPasskeyControllerErrorCode('x')).toBeNull();
   });
 });

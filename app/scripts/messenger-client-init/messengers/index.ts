@@ -356,10 +356,7 @@ export {
   getTokenBalancesControllerMessenger,
   getTokenBalancesControllerInitMessenger,
 } from './token-balances-controller-messenger';
-export type {
-  StaticAssetsControllerMessenger,
-  StaticAssetsControllerInitMessenger,
-} from './static-assets-controller-messenger';
+export type { StaticAssetsControllerInitMessenger } from './static-assets-controller-messenger';
 export {
   getStaticAssetsControllerMessenger,
   getStaticAssetsControllerInitMessenger,

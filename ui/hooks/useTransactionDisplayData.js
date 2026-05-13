@@ -116,7 +116,6 @@ export function useTransactionDisplayData(transactionGroup) {
   );
   const marketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
-  const fiatFormatter = useFiatFormatter();
   // For post-quote pay flows (e.g. Perps Withdraw) the values surfaced
   // through `metamaskPay` (`targetFiat`, fee `*.usd`) are explicitly USD,
   // so use a USD-pinned formatter when rendering them — even if the user
@@ -518,7 +517,7 @@ export function useTransactionDisplayData(transactionGroup) {
       }
       if (metamaskPay?.targetFiat) {
         primaryDisplayValue = metamaskPay.targetFiat;
-        secondaryDisplayValue = fiatFormatter(Number(metamaskPay.targetFiat));
+        secondaryDisplayValue = usdFormatter(Number(metamaskPay.targetFiat));
       }
     }
   } else {

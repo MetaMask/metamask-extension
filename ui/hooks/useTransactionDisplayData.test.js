@@ -1,5 +1,6 @@
 import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
+import { TransactionType } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import transactions from '../../test/data/transaction-data.json';
 import { enLocale as messages } from '../../test/lib/i18n-helpers';
@@ -247,6 +248,67 @@ describe('useTransactionDisplayData', () => {
       DEFAULT_ROUTE,
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
+  });
+
+  it('formats metamaskPay targetFiat secondary in USD when user prefers BRL', () => {
+    const usdcArbitrum = '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
+    const perpsDepositGroup = {
+      nonce: '0x1',
+      initialTransaction: {
+        id: 'perps-deposit-fiat-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: CHAIN_IDS.ARBITRUM,
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: usdcArbitrum,
+          value: '0x0',
+          data: '0x',
+        },
+        type: TransactionType.perpsDeposit,
+        metamaskPay: {
+          chainId: CHAIN_IDS.BASE,
+          tokenAddress: '0x0000000000000000000000000000000000000000',
+          targetFiat: '1.00',
+        },
+      },
+      primaryTransaction: {
+        id: 'perps-deposit-fiat-test',
+        time: 1700000000000,
+        status: 'confirmed',
+        chainId: CHAIN_IDS.ARBITRUM,
+        txParams: {
+          from: '0x9eca64466f257793eaa52fcfff5066894b76a149',
+          to: usdcArbitrum,
+          value: '0x0',
+          data: '0x',
+        },
+        type: TransactionType.perpsDeposit,
+        metamaskPay: {
+          chainId: CHAIN_IDS.BASE,
+          tokenAddress: '0x0000000000000000000000000000000000000000',
+          targetFiat: '1.00',
+        },
+      },
+      transactions: [],
+      hasRetried: false,
+      hasCancelled: false,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(perpsDepositGroup),
+      {
+        ...getMockState(),
+        metamask: {
+          ...getMockState().metamask,
+          currentCurrency: 'brl',
+        },
+      },
+      DEFAULT_ROUTE,
+    );
+
+    expect(result.current.secondaryCurrency).toMatch(/\$1[.,]00/u);
+    expect(result.current.secondaryCurrency).not.toMatch(/R\$/u);
   });
 
   it('should return "Perps withdraw" title for a perpsWithdraw transaction', () => {

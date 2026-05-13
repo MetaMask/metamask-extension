@@ -6,7 +6,7 @@ import {
   SolAccountType,
   TrxAccountType,
 } from '@metamask/keyring-api';
-import { getSelectedInternalAccount } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { AccountOverviewEth } from './account-overview-eth';
 import { AccountOverviewUnknown } from './account-overview-unknown';
 import { AccountOverviewCommonProps } from './common';
