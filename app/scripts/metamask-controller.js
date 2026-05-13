@@ -991,6 +991,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.notificationServicesController.init();
     this.snapController.init();
+    this.snapAccountService.init();
     this.cronjobController.init();
 
     this.controllerMessenger.subscribe(
@@ -4846,9 +4847,8 @@ export default class MetamaskController extends EventEmitter {
 
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
-      // Initialize the snap account service so the accounts-controller will be able to
-      // fetch Snap accounts from Snap keyring v2.
-      await this.snapAccountService.init();
+      // Initialize the legacy Snap keyring so the accounts-controller will be able to
+      // fetch Snap accounts.
       await this.snapAccountService.getLegacySnapKeyring();
 
       // Once we have our first HD keyring available, we re-create the internal list of
@@ -5190,9 +5190,8 @@ export default class MetamaskController extends EventEmitter {
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
 
-      // Initialize the snap account service so the accounts-controller will be able to
-      // fetch Snap accounts from Snap keyring v2.
-      await this.snapAccountService.init();
+      // Initialize the legacy Snap keyring so the accounts-controller will be able to
+      // fetch Snap accounts.
       await this.snapAccountService.getLegacySnapKeyring();
 
       // We re-created the vault, meaning we only have 1 new HD keyring
@@ -5420,9 +5419,8 @@ export default class MetamaskController extends EventEmitter {
       log.error('Error while unlocking extension.', error);
     }
 
-    // Initialize the snap account service so the accounts-controller will be able to
-    // fetch Snap accounts from Snap keyring v2.
-    await this.snapAccountService.init();
+    // Initialize the legacy Snap keyring so the accounts-controller will be able to
+    // fetch Snap accounts.
     await this.snapAccountService.getLegacySnapKeyring();
 
     // Re-create accounts in the accounts-controller, after the keyring-controller gets
