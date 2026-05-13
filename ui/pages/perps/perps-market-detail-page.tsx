@@ -1851,7 +1851,6 @@ const PerpsMarketDetailPage: React.FC<
                     onClick={handleReduceExposure}
                     data-testid="perps-modify-menu-reduce-exposure"
                   />
-                  {/* Reverse Position temporarily disabled — see TAT-XXXX
                   <PopoverMenuItem
                     icon={IconName.SwapHorizontal}
                     label={t('perpsReversePosition')}
@@ -1864,7 +1863,6 @@ const PerpsMarketDetailPage: React.FC<
                     className="rounded-b-lg"
                     data-testid="perps-modify-menu-reverse-position"
                   />
-                  */}
                 </Box>
               </Popover>
             </Box>
@@ -1932,7 +1930,6 @@ const PerpsMarketDetailPage: React.FC<
         />
       )}
 
-      {/* Reverse position modal temporarily disabled — see TAT-XXXX
       {position && isReverseModalOpen && (
         <ReversePositionModal
           isOpen={isReverseModalOpen}
@@ -1942,7 +1939,6 @@ const PerpsMarketDetailPage: React.FC<
           sizeDecimals={marketInfo?.szDecimals}
         />
       )}
-      */}
 
       {/* TP/SL update modal (from Auto Close row) */}
       {position && isTPSLModalOpen && (
