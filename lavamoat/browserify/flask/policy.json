@@ -2280,6 +2280,7 @@
     },
     "@metamask/snaps-rpc-methods": {
       "packages": {
+        "@metamask/json-rpc-engine": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
