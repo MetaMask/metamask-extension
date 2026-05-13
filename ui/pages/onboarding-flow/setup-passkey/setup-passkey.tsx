@@ -149,8 +149,11 @@ export default function SetupPasskey() {
     hasTrackedView.current = true;
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.PasskeyOnboardingSetupViewed,
-      properties: baseProperties,
+      event: MetaMetricsEventName.PasskeyOnboardingSetup,
+      properties: {
+        ...baseProperties,
+        status: 'viewed',
+      },
     });
   }, [baseProperties, isPasskeyRegistered, trackEvent]);
 
@@ -189,8 +192,11 @@ export default function SetupPasskey() {
   const handleMaybeLater = () => {
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.PasskeyOnboardingSetupSkipped,
-      properties: baseProperties,
+      event: MetaMetricsEventName.PasskeyOnboardingSetup,
+      properties: {
+        ...baseProperties,
+        status: 'skipped',
+      },
     });
     goToNextStep();
   };
@@ -206,8 +212,11 @@ export default function SetupPasskey() {
 
     trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
-      event: MetaMetricsEventName.PasskeySetupStarted,
-      properties: baseProperties,
+      event: MetaMetricsEventName.PasskeySetup,
+      properties: {
+        ...baseProperties,
+        status: 'started',
+      },
     });
 
     try {
@@ -240,9 +249,10 @@ export default function SetupPasskey() {
       const derivationMethod = getPasskeyDerivationMethod(store.getState());
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.PasskeySetupCompleted,
+        event: MetaMetricsEventName.PasskeySetup,
         properties: {
           ...baseProperties,
+          status: 'completed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           derivation_method: derivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -266,9 +276,10 @@ export default function SetupPasskey() {
         );
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.PasskeySetupCancelled,
+          event: MetaMetricsEventName.PasskeySetup,
           properties: {
             ...baseProperties,
+            status: 'cancelled',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             current_step: currentStep,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -285,9 +296,10 @@ export default function SetupPasskey() {
       log.error('Onboarding passkey registration failed', error);
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.PasskeySetupFailed,
+        event: MetaMetricsEventName.PasskeySetup,
         properties: {
           ...baseProperties,
+          status: 'failed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_step: currentStep,
           // eslint-disable-next-line @typescript-eslint/naming-convention

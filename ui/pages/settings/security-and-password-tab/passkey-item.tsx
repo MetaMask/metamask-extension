@@ -108,10 +108,11 @@ const PasskeyItem = () => {
       cancelPasskeyCeremony();
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeyTurnOffStarted,
+        event: MetaMetricsEventName.PasskeyTurnOff,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: 'passkey',
+          status: 'full_screen_opened',
         },
       });
       globalThis.platform?.openExtensionInBrowser?.(
@@ -125,10 +126,11 @@ const PasskeyItem = () => {
     const verificationMethod = 'passkey';
     trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.PasskeyTurnOffStarted,
+      event: MetaMetricsEventName.PasskeyTurnOff,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         verification_method: verificationMethod,
+        status: 'started',
       },
     });
     try {
@@ -140,10 +142,11 @@ const PasskeyItem = () => {
 
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeyTurnOffCompleted,
+        event: MetaMetricsEventName.PasskeyTurnOff,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
+          status: 'completed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
         },
@@ -173,10 +176,11 @@ const PasskeyItem = () => {
     } catch (error: unknown) {
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeyTurnOffFailed,
+        event: MetaMetricsEventName.PasskeyTurnOff,
         properties: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           verification_method: verificationMethod,
+          status: 'failed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
           reason: getPasskeyErrorCode(error),

@@ -178,8 +178,10 @@ const ChangePassword = ({
     const startedAt = Date.now();
     trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.PasswordChangeWithPasskeyStarted,
+      event: MetaMetricsEventName.PasswordChangeWithPasskey,
       properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        status: 'started',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         passkey_renewal_enabled: isPasskeyRenewalEnabled,
       },
@@ -198,8 +200,10 @@ const ChangePassword = ({
 
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasswordChangeWithPasskeyCompleted,
+        event: MetaMetricsEventName.PasswordChangeWithPasskey,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: 'completed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           duration_ms: Date.now() - startedAt,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -209,8 +213,10 @@ const ChangePassword = ({
     } catch (error) {
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasswordChangeWithPasskeyFailed,
+        event: MetaMetricsEventName.PasswordChangeWithPasskey,
         properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          status: 'failed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           passkey_renewal_enabled: isPasskeyRenewalEnabled,
           // eslint-disable-next-line @typescript-eslint/naming-convention

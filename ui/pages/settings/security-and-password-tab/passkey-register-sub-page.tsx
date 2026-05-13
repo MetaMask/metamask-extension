@@ -150,7 +150,10 @@ export default function PasskeyRegisterSubPage() {
     let currentStep = 'register';
     trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: MetaMetricsEventName.PasskeySetupStarted,
+      event: MetaMetricsEventName.PasskeySetup,
+      properties: {
+        status: 'started',
+      },
     });
 
     let registrationSucceeded = false;
@@ -185,8 +188,9 @@ export default function PasskeyRegisterSubPage() {
       const derivationMethod = getPasskeyDerivationMethod(store.getState());
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeySetupCompleted,
+        event: MetaMetricsEventName.PasskeySetup,
         properties: {
+          status: 'completed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           derivation_method: derivationMethod,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -220,8 +224,9 @@ export default function PasskeyRegisterSubPage() {
       if (isPasskeyCeremonySilentError(error)) {
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.PasskeySetupCancelled,
+          event: MetaMetricsEventName.PasskeySetup,
           properties: {
+            status: 'cancelled',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             current_step: currentStep,
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -240,8 +245,9 @@ export default function PasskeyRegisterSubPage() {
       log.error('Settings passkey enrollment failed', error);
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeySetupFailed,
+        event: MetaMetricsEventName.PasskeySetup,
         properties: {
+          status: 'failed',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_step: currentStep,
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -282,10 +288,6 @@ export default function PasskeyRegisterSubPage() {
     setIsIncorrectPasswordError(false);
     try {
       await verifyPassword(walletPassword);
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeySetupPasswordEntered,
-      });
       setStep(PasskeyRegisterSteps.RegisterPasskey);
       await beginPasskeyCeremonyFlow();
     } catch {

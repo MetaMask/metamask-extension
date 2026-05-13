@@ -89,9 +89,10 @@ export default function PasskeyTurnOffSubPage() {
       };
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeyTurnOffStarted,
+        event: MetaMetricsEventName.PasskeyTurnOff,
         properties: {
           ...baseProperties,
+          status: 'started',
         },
       });
       try {
@@ -99,9 +100,10 @@ export default function PasskeyTurnOffSubPage() {
         await forceUpdateMetamaskState(dispatch);
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.PasskeyTurnOffCompleted,
+          event: MetaMetricsEventName.PasskeyTurnOff,
           properties: {
             ...baseProperties,
+            status: 'completed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
           },
@@ -128,9 +130,10 @@ export default function PasskeyTurnOffSubPage() {
       } catch (error: unknown) {
         trackEvent({
           category: MetaMetricsEventCategory.Settings,
-          event: MetaMetricsEventName.PasskeyTurnOffFailed,
+          event: MetaMetricsEventName.PasskeyTurnOff,
           properties: {
             ...baseProperties,
+            status: 'failed',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             duration_ms: Date.now() - startedAt,
             reason: getPasskeyErrorCode(error),

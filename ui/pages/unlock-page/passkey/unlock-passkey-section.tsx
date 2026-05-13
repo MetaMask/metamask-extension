@@ -115,9 +115,10 @@ export const UnlockPasskeySection = ({
       try {
         trackEvent?.({
           category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.PasskeyUnlockStarted,
+          event: MetaMetricsEventName.PasskeyUnlockInteracted,
           properties: {
             ...baseProperties,
+            status: 'started',
           },
         });
 
@@ -129,23 +130,17 @@ export const UnlockPasskeySection = ({
 
         trackEvent?.({
           category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.PasskeyUnlockCompleted,
-          properties: {
-            ...baseProperties,
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            duration_ms: Date.now() - startedAt,
-          },
-        });
-        trackEvent?.({
-          category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.AppUnlocked,
           properties: {
+            ...baseProperties,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: passkeyFailedAttemptCount.current,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             unlock_type: 'passkey',
             // eslint-disable-next-line @typescript-eslint/naming-convention
             passkey_enabled: isPasskeyActive,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
           },
         });
         passkeyFailedAttemptCount.current = 0;
@@ -161,9 +156,10 @@ export const UnlockPasskeySection = ({
         if (isPasskeyCeremonySilentError(err)) {
           trackEvent?.({
             category: MetaMetricsEventCategory.Navigation,
-            event: MetaMetricsEventName.PasskeyUnlockCancelled,
+            event: MetaMetricsEventName.PasskeyUnlockInteracted,
             properties: {
               ...baseProperties,
+              status: 'cancelled',
               // eslint-disable-next-line @typescript-eslint/naming-convention
               duration_ms: durationMs,
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -172,18 +168,6 @@ export const UnlockPasskeySection = ({
           });
           setPasskeyError(null);
         } else {
-          trackEvent?.({
-            category: MetaMetricsEventCategory.Navigation,
-            event: MetaMetricsEventName.PasskeyUnlockFailed,
-            properties: {
-              ...baseProperties,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              duration_ms: durationMs,
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              failed_attempts: passkeyFailedAttemptCount.current,
-              reason: errorCode,
-            },
-          });
           trackEvent?.({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppUnlockedFailed,
@@ -195,6 +179,9 @@ export const UnlockPasskeySection = ({
               reason: errorCode,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               passkey_enabled: isPasskeyActive,
+              ...baseProperties,
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              duration_ms: durationMs,
             },
           });
           setPasskeyError(
@@ -230,8 +217,9 @@ export const UnlockPasskeySection = ({
   const handleUsePassword = useCallback(() => {
     trackEvent?.({
       category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PasskeyUnlockUsePasswordClicked,
+      event: MetaMetricsEventName.PasskeyUnlockInteracted,
       properties: {
+        status: 'use_password_selected',
         /* eslint-disable @typescript-eslint/naming-convention -- MetaMetrics snake_case contract */
         derivation_method: passkeyDerivationMethod,
         /* eslint-enable @typescript-eslint/naming-convention */

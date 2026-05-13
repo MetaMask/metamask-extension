@@ -34,8 +34,9 @@ export const UnlockPasskeyIconButton = ({
   const handleClick = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PasskeyUnlockIconClicked,
+      event: MetaMetricsEventName.PasskeyUnlockInteracted,
       properties: {
+        status: 'passkey_icon_clicked',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         derivation_method: passkeyDerivationMethod,
       },

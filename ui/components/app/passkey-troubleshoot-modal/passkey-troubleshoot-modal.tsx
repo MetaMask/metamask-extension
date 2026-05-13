@@ -47,8 +47,9 @@ export default function PasskeyTroubleshootModal({
   const baseProperties = useMemo(
     () => ({
       location: troubleshootLocation,
+      mode,
     }),
-    [troubleshootLocation],
+    [troubleshootLocation, mode],
   );
 
   const hasTrackedView = useRef(false);
@@ -60,8 +61,12 @@ export default function PasskeyTroubleshootModal({
     hasTrackedView.current = true;
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PasskeyTroubleshootClicked,
-      properties: baseProperties,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        cta: 'modal',
+      },
     });
   }, [baseProperties, trackEvent]);
 
@@ -83,7 +88,7 @@ export default function PasskeyTroubleshootModal({
   const handleOpenFullScreen = () => {
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PasskeyTroubleshootCtaClicked,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
       properties: {
         ...baseProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -97,7 +102,7 @@ export default function PasskeyTroubleshootModal({
   const handleStillHavingTrouble = () => {
     trackEvent({
       category: MetaMetricsEventCategory.Navigation,
-      event: MetaMetricsEventName.PasskeyTroubleshootCtaClicked,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
       properties: {
         ...baseProperties,
         // eslint-disable-next-line @typescript-eslint/naming-convention
