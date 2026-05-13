@@ -6881,6 +6881,46 @@
     "message": "Camera access needed",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Go back to your hardware wallet and find the option to share or export your accounts, choose MetaMask, then scan the QR code.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Scan wallet sync QR code",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Go back to your hardware wallet and approve the transaction, then scan the QR code it shows.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Scan signature QR code",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Make sure the QR code is fully visible and well-lit, and try again. If the issue continues, you may need to update your hardware wallet's firmware.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Couldn't read QR code",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Go back to your hardware wallet, choose MetaMask as the wallet type, then generate and scan a new QR code.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Wrong QR code",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Go back to your hardware wallet and approve the transaction, then scan the QR code it shows.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Wrong QR code",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Queued"
   },
