@@ -1,18 +1,15 @@
 import React, {
   ChangeEvent,
-  FunctionComponent,
   useEffect,
   useRef,
-  useState,
-} from 'react';
+  useState } from 'react';
 import classnames from 'clsx';
 import {
   CaipAccountId,
   CaipChainId,
   isCaipAccountId,
   parseCaipAccountId,
-  parseCaipChainId,
-} from '@metamask/utils';
+  parseCaipChainId } from '@metamask/utils';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
   Box,
@@ -24,8 +21,7 @@ import {
   Icon,
   IconName,
   Label,
-  Text,
-} from '../../../component-library';
+  Text } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import {
   AlignItems,
@@ -36,8 +32,7 @@ import {
   FlexDirection,
   FontWeight,
   IconColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
+  TextVariant } from '../../../../helpers/constants/design-system';
 import { SnapUIAvatar } from '../snap-ui-avatar';
 import { useDisplayName } from '../../../../hooks/snaps/useDisplayName';
 
@@ -60,8 +55,7 @@ const MatchedAccountInfo = ({
   displayName,
   handleClear,
   disabled,
-  error,
-}: MatchedAccountInfoProps) => (
+  error }: MatchedAccountInfoProps) => (
   <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
     {label && (
       <Label className={classnames('mm-form-text-field__label')}>{label}</Label>
@@ -80,8 +74,7 @@ const MatchedAccountInfo = ({
       style={{
         height: '48px',
         opacity: disabled ? 0.5 : 1,
-        cursor: disabled ? 'not-allowed' : 'auto',
-      }}
+        cursor: disabled ? 'not-allowed' : 'auto' }}
     >
       {displayAvatar && (
         <SnapUIAvatar
@@ -95,16 +88,14 @@ const MatchedAccountInfo = ({
         gap={2}
         style={{
           flex: 1,
-          minWidth: 0,
-        }}
+          minWidth: 0 }}
       >
         <Box
           flexDirection={FlexDirection.Column}
           gap={2}
           style={{
             minWidth: 0,
-            flex: 1,
-          }}
+            flex: 1 }}
         >
           <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
           <Text variant={TextVariant.bodyXs} ellipsis>
@@ -119,8 +110,7 @@ const MatchedAccountInfo = ({
         color={IconColor.infoDefault}
         style={{
           cursor: disabled ? 'not-allowed' : 'pointer',
-          flexShrink: 0,
-        }}
+          flexShrink: 0 }}
       />
     </Box>
     {error && (
@@ -189,10 +179,8 @@ export const SnapUIAddressInput = ({
     address: value,
     chain: {
       namespace,
-      reference,
-    },
-    chainId,
-  });
+      reference },
+    chainId });
 
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
@@ -251,8 +239,7 @@ export const SnapUIAddressInput = ({
       onFocus={handleFocus}
       onBlur={handleBlur}
       className={classnames('snap-ui-renderer__address-input', {
-        'snap-ui-renderer__field': label !== undefined,
-      })}
+        'snap-ui-renderer__field': label !== undefined })}
       id={name}
       value={value}
       onChange={handleChange}
@@ -263,8 +250,7 @@ export const SnapUIAddressInput = ({
       size={FormTextFieldSize.Lg}
       helpText={error}
       textFieldProps={{
-        borderRadius: BorderRadius.LG,
-      }}
+        borderRadius: BorderRadius.LG }}
       startAccessory={
         displayAvatar && value && isCaipAccountId(`${chainId}:${value}`) ? (
           <SnapUIAvatar

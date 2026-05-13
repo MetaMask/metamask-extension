@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react';
-import type {} from 'react';
 import type { OnChainRawNotificationsWithNetworkFields } from '@metamask/notification-services-controller/notification-services';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';

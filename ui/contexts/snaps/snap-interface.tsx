@@ -3,22 +3,18 @@ import {
   FormState,
   InterfaceState,
   State,
-  UserInputEventType,
-} from '@metamask/snaps-sdk';
+  UserInputEventType } from '@metamask/snaps-sdk';
 import { encodeBase64 } from '@metamask/snaps-utils';
 import React, {
-  FunctionComponent,
   createContext,
   useContext,
   useEffect,
-  useRef,
-} from 'react';
+  useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   handleSnapRequest as handleSnapRequestFunction,
   updateInterfaceState,
-  forceUpdateMetamaskState,
-} from '../../store/actions';
+  forceUpdateMetamaskState } from '../../store/actions';
 import { mergeValue } from './utils';
 
 export type HandleEvent = <Type extends State>(args: {
@@ -76,8 +72,7 @@ export const SnapInterfaceContextProvider = ({
   children,
   interfaceId,
   snapId,
-  initialState,
-}: React.PropsWithChildren<SnapInterfaceContextProviderProps>) => {
+  initialState }: React.PropsWithChildren<SnapInterfaceContextProviderProps>) => {
   const dispatch = useDispatch();
 
   // We keep an internal copy of the state to speed up the state update in the
@@ -112,12 +107,8 @@ export const SnapInterfaceContextProvider = ({
             ...(event === UserInputEventType.ButtonClickEvent ||
             value === undefined
               ? {}
-              : { value }),
-          },
-          id: interfaceId,
-        },
-      },
-    })
+              : { value }) },
+          id: interfaceId } } })
       .then(() => forceUpdateMetamaskState(dispatch))
       .catch((error) => {
         console.error(
@@ -141,15 +132,13 @@ export const SnapInterfaceContextProvider = ({
   const handleEvent: HandleEvent = ({
     event,
     name,
-    value = name ? internalState.current[name] : null,
-  }) => handleSnapRequest(event, name, value);
+    value = name ? internalState.current[name] : null }) => handleSnapRequest(event, name, value);
 
   const submitInputChange = (name: string, value: State | null) =>
     handleEvent({
       event: UserInputEventType.InputChangeEvent,
       name,
-      value,
-    });
+      value });
 
   /**
    * Handle the value change of an input.
@@ -179,12 +168,8 @@ export const SnapInterfaceContextProvider = ({
           event: {
             type: UserInputEventType.FileUploadEvent,
             ...(name === undefined ? {} : { name }),
-            ...(file === undefined ? {} : { file }),
-          },
-          id: interfaceId,
-        },
-      },
-    }).then(() => forceUpdateMetamaskState(dispatch));
+            ...(file === undefined ? {} : { file }) },
+          id: interfaceId } } }).then(() => forceUpdateMetamaskState(dispatch));
   };
 
   /**
@@ -205,8 +190,7 @@ export const SnapInterfaceContextProvider = ({
             name: file.name,
             size: file.size,
             contentType: file.type,
-            contents: base64 as string,
-          };
+            contents: base64 as string };
 
           const state = mergeValue(
             internalState.current,
@@ -262,8 +246,7 @@ export const SnapInterfaceContextProvider = ({
         handleFileChange,
         setCurrentFocusedInput,
         focusedInput: focusedInput.current,
-        snapId,
-      }}
+        snapId }}
     >
       {children}
     </SnapInterfaceContext.Provider>

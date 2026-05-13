@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import type {} from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {

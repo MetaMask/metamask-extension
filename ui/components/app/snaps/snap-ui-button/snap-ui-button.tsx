@@ -56,7 +56,7 @@ export const SnapUIButton = ({
 
   const overriddenVariant = disabled ? 'disabled' : variant;
 
-  const color = COLORS[overriddenVariant as keyof typeof COLORS];
+  const color = COLORS[overriddenVariant];
 
   return (
     <Text
