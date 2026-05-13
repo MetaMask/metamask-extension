@@ -16,7 +16,7 @@ import {
 import {
   getLedgerTransportType,
   isAddressLedger,
-} from '../../../ducks/metamask/metamask';
+} from '../../../ducks/metamask/base-selectors';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
 import { SignatureRequestType } from '../types/confirm';
 import { useConfirmContext } from '../context/confirm';

@@ -98,10 +98,8 @@ import {
   hideKeyringRemovalResultModal,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';

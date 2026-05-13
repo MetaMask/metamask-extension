@@ -311,8 +311,6 @@ export function getNativeCurrency(state) {
   return getProviderConfig(state).ticker;
 }
 
-export { getConversionRate } from './base-selectors';
-
 export function getConversionRateByTicker(state, ticker) {
   return getCurrencyRateControllerCurrencyRates(state)[ticker]?.conversionRate;
 }
@@ -328,8 +326,6 @@ export function getSendToAccounts(state) {
   const addressBookAccounts = getAddressBook(state);
   return [...fromAccounts, ...addressBookAccounts];
 }
-
-export { isNotEIP1559Network, isEIP1559Network } from './base-selectors';
 
 function getGasFeeControllerEstimateType(state) {
   return state.metamask.gasEstimateType;
@@ -503,8 +499,6 @@ export function getIsWalletResetInProgress(state) {
   return state.metamask.isWalletResetInProgress;
 }
 
-export { getIsUnlocked } from './base-selectors';
-
 export function getSeedPhraseBackedUp(state) {
   return state.metamask.seedPhraseBackedUp;
 }
@@ -535,12 +529,6 @@ export function getIsPrimarySeedPhraseBackedUp(state) {
 export function getIsSeedlessPasswordOutdated(state) {
   return Boolean(state.metamask.passwordOutdatedCache?.isExpiredPwd);
 }
-
-export {
-  findKeyringForAddress,
-  getLedgerTransportType,
-  isAddressLedger,
-} from './base-selectors';
 
 /**
  * Given the redux state object, returns a boolean indicating whether the user has any Ledger accounts added to MetaMask (i.e. Ledger keyrings
