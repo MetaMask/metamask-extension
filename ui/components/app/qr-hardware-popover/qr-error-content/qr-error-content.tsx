@@ -29,6 +29,10 @@ import { resolveErrorCopy, rootTestId } from './qr-error-content.utils';
  * Renders one of five copy variations depending on `errorType` and
  * `flowContext`, plus "Learn more" (opens support article) and
  * "Try again" (calls `onTryAgain`).
+ * @param options0
+ * @param options0.errorType
+ * @param options0.flowContext
+ * @param options0.onTryAgain
  */
 export const QrErrorContent = ({
   errorType,
