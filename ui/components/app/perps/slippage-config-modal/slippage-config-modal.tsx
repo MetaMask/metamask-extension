@@ -56,8 +56,13 @@ function clampToBounds(value: number): number {
 }
 
 // Round to the nearest 0.1 to honor the step contract (AC2).
+// The trailing toFixed/Number round trip strips IEEE 754 drift
+// (`1.2000000000000002` -> `1.2`) so the persisted value and the
+// re-rendered input string both stay clean.
 function snapToStep(value: number): number {
-  return Math.round(value / PERPS_SLIPPAGE_STEP_PCT) * PERPS_SLIPPAGE_STEP_PCT;
+  const snapped =
+    Math.round(value / PERPS_SLIPPAGE_STEP_PCT) * PERPS_SLIPPAGE_STEP_PCT;
+  return Number(snapped.toFixed(1));
 }
 
 export const SlippageConfigModal: React.FC<SlippageConfigModalProps> = ({
