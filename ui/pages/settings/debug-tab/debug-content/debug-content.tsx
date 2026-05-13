@@ -40,19 +40,15 @@ import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
 import MigrateToSplitStateTest from './migrate-to-split-state-test';
 
-/**
- * Content for Debug Tab (internal-only)
- *
- * This page does not need i18n translation support because it's an internal settings page.
- * We only support the t('developerOptions') translation because the general settings architecture
- * utilizes the translation key to render.
- *
- * @returns
- */
 const DebugContent = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // This translation call is only required for the "Generate Page Crash" test button.
+  // The crash mechanism works by setting 'debug' to undefined in the locale,
+  // which causes this t() call to throw an error that triggers the error boundary.
+  t('debug');
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
