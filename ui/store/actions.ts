@@ -165,7 +165,7 @@ import {
   loadRelativeTimeFormatLocaleData,
 } from '../../shared/lib/i18n';
 import { decimalToHex } from '../../shared/lib/conversion.utils';
-import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
+import { PriorityLevels } from '../../shared/constants/gas';
 import {
   getErrorMessage,
   isErrorWithMessage,
