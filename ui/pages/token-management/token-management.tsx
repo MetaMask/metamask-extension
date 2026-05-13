@@ -36,7 +36,8 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
- getSelectedAddress } from '../../selectors';
+  getSelectedAddress,
+} from '../../selectors';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getAllMultichainNetworkConfigurations,

@@ -19,4 +19,5 @@ export const isAssetsUnifyStateFeatureEnabled = (
   featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
   featureVersion: string,
 ): boolean =>
-  Boolean(featureFlag?.enabled && featureFlag.featureVersion === featureVersion);
+  Boolean(featureFlag?.enabled) &&
+  featureFlag?.featureVersion === featureVersion;
