@@ -15,9 +15,7 @@ import { selectEnabledNetworksAsCaipChainIds } from '../../../selectors/multicha
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import type { ActivityListFilter } from './helpers';
 
-const knownEmptyActivityApiMessages = [
-  'networks param contains no supported chains',
-];
+const knownApiMessages = ['networks param contains no supported chains'];
 
 type TransactionsQueryOptions = ReturnType<
   typeof apiClient.accounts.getV4MultiAccountTransactionsInfiniteQueryOptions
@@ -26,23 +24,22 @@ type TransactionsQueryFunction = NonNullable<
   TransactionsQueryOptions['queryFn']
 >;
 
-function isKnownEmptyActivityResponseError(error: unknown) {
+function isKnownApiResponseError(error: unknown) {
   if (!(error instanceof HttpError) || error.status !== 400) {
     return false;
   }
 
   const errorBodyMessage = getErrorBodyMessage(error.body);
+
   return Boolean(
     errorBodyMessage &&
-      knownEmptyActivityApiMessages.some((knownMessage) =>
-        errorBodyMessage.includes(knownMessage),
-      ),
+    knownApiMessages.some((knownMessage) =>
+      errorBodyMessage.includes(knownMessage),
+    ),
   );
 }
 
-function withKnownApiResponse(
-  queryFn: TransactionsQueryFunction | undefined,
-) {
+function withKnownApiResponse(queryFn: TransactionsQueryFunction | undefined) {
   if (!queryFn) {
     return undefined;
   }
@@ -51,7 +48,7 @@ function withKnownApiResponse(
     try {
       return await queryFn(context);
     } catch (error) {
-      if (isKnownEmptyActivityResponseError(error)) {
+      if (isKnownApiResponseError(error)) {
         return {
           data: [],
           unprocessedNetworks: [],

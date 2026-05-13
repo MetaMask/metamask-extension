@@ -32,7 +32,7 @@ jest.mock('../../../helpers/api-client', () => ({
 const selectedAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
 const expectedEvmAddress = selectedAddress;
 const expectedNetworks = ['eip155:1'];
-const emptyTransactionsResponse = {
+const emptyResponse = {
   data: [],
   unprocessedNetworks: [],
   pageInfo: {
@@ -114,7 +114,7 @@ describe('useTransactionsQuery', () => {
 
     const queryOptions = mockUseInfiniteQuery.mock.calls[0][0];
     await expect(queryOptions.queryFn({})).resolves.toStrictEqual(
-      emptyTransactionsResponse,
+      emptyResponse,
     );
   });
 
@@ -275,6 +275,6 @@ describe('usePrefetchTransactions', () => {
 
     await expect(
       mockQueryClient.prefetchInfiniteQuery.mock.results[0].value,
-    ).resolves.toStrictEqual(emptyTransactionsResponse);
+    ).resolves.toStrictEqual(emptyResponse);
   });
 });

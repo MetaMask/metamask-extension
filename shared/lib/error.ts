@@ -32,12 +32,6 @@ export function logErrorWithMessage(error: unknown) {
   log.error(isErrorWithMessage(error) ? getErrorMessage(error) : error);
 }
 
-/**
- * Gets the message string from an http error response body.
- *
- * @param body - The parsed error response body.
- * @returns The message string if present.
- */
 export function getErrorBodyMessage(body: unknown) {
   if (!body || typeof body !== 'object' || !('message' in body)) {
     return undefined;
