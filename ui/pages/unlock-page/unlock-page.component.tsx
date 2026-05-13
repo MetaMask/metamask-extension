@@ -129,7 +129,9 @@ const FoxAppearAnimation = lazy(
 );
 
 class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
-  declare context: UnlockPageContext;
+  private get ctx(): UnlockPageContext {
+    return this.context as UnlockPageContext;
+  }
 
   static contextTypes = {
     trackEvent: PropTypes.func,
@@ -306,7 +308,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
     // Track wallet rehydration attempted for social import users (only during rehydration)
     if (isRehydrationFlow) {
-      this.context.trackEvent({
+      this.ctx.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.RehydrationPasswordAttempted,
         properties: {
@@ -317,7 +319,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         },
       });
     } else if (!isOnboardingCompleted) {
-      this.context.bufferedTrace({
+      this.ctx.bufferedTrace({
         name: TraceName.OnboardingPasswordLoginAttempt,
         op: TraceOperation.OnboardingUserJourney,
         parentContext: this.props.onboardingParentContext?.current,
@@ -329,7 +331,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
       // Track wallet rehydration completed for social import users (only during rehydration)
       if (isRehydrationFlow) {
-        this.context.trackEvent({
+        this.ctx.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationCompleted,
           properties: {
@@ -344,21 +346,21 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
             failed_attempts: this.failed_attempts,
           },
         });
-        this.context.bufferedEndTrace({
+        this.ctx.bufferedEndTrace({
           name: TraceName.OnboardingExistingSocialLogin,
         });
       }
 
       if (!isOnboardingCompleted) {
-        this.context.bufferedEndTrace({
+        this.ctx.bufferedEndTrace({
           name: TraceName.OnboardingPasswordLoginAttempt,
         });
-        this.context.bufferedEndTrace({
+        this.ctx.bufferedEndTrace({
           name: TraceName.OnboardingJourneyOverall,
         });
       }
 
-      this.context.trackEvent(
+      this.ctx.trackEvent(
         {
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.AppUnlocked,
@@ -380,7 +382,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   handleLoginError = async (error: LoginError, isRehydrationFlow = false) => {
-    const { t } = this.context as UnlockPageContext;
+    const { t } = this.ctx;
     const { message, data } = error;
     const { isOnboardingCompleted } = this.props;
 
@@ -437,7 +439,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
       // Track wallet rehydration failed for social import users (only during rehydration)
       if (isRehydrationFlow) {
-        this.context.trackEvent({
+        this.ctx.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationPasswordFailed,
           properties: {
@@ -453,7 +455,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           },
         });
       }
-      this.context.trackEvent({
+      this.ctx.trackEvent({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.AppUnlockedFailed,
         properties: {
@@ -563,7 +565,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     // we can redirect to `onboarding_welcome` route to select a different login method
     if (!isOnboardingCompleted && isSocialLoginFlow) {
       // Track when user clicks "Use a different login method" during rehydration
-      this.context.trackEvent({
+      this.ctx.trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.UseDifferentLoginMethodClicked,
         properties: {
@@ -579,7 +581,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       return;
     }
 
-    this.context.trackEvent({
+    this.ctx.trackEvent({
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.ForgotPasswordClicked,
       properties: {
@@ -593,7 +595,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   };
 
   renderLogoSection = (isRehydrationFlow: boolean) => {
-    const { t } = this.context as UnlockPageContext;
+    const { t } = this.ctx;
     return (
       <Box
         className="unlock-page__mascot-container"
@@ -630,7 +632,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       isPasswordUnlockMode,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
-    const { t } = this.context as UnlockPageContext;
+    const { t } = this.ctx;
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
@@ -738,7 +740,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                   data-testid="unlock-submit"
                   disabled={!password || isLocked}
                 >
-                  {this.context.t('unlock')}
+                  {this.ctx.t('unlock')}
                 </Button>
 
                 <TextButton
@@ -767,7 +769,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
                       <TextButton
                         key="need-help-link"
                         onClick={() => {
-                          this.context.trackEvent(
+                          this.ctx.trackEvent(
                             {
                               category: MetaMetricsEventCategory.Navigation,
                               event: MetaMetricsEventName.SupportLinkClicked,
