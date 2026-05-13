@@ -80,9 +80,12 @@ describe('orderUtils', () => {
       expect(isOrderAssociatedWithFullPosition(order, position)).toBe(false);
     });
 
-    it('returns true for a TP/SL trigger with isPositionTpsl=false when size matches the position (HL market-order child)', () => {
-      // Hyperliquid tags TP/SL children of a market order with isPositionTpsl=false
-      // even though they cover the full resulting position. Size match wins.
+    it('returns false for a TP/SL trigger with isPositionTpsl=false even when size matches the position (limit-order child)', () => {
+      // A limit-order's TP/SL children also carry isPositionTpsl=false with
+      // isTrigger=true. If the limit size coincidentally equals the active
+      // position size, size-matching would misclassify them as full-position
+      // and hide them from the Orders section. The explicit `false` flag is
+      // authoritative — trust the provider over size coincidence.
       const order = makeOrder({
         reduceOnly: true,
         isPositionTpsl: false,
@@ -95,7 +98,7 @@ describe('orderUtils', () => {
         detailedOrderType: 'Take Profit Limit',
       });
       const position = makePosition({ symbol: 'ETH', size: '1.0' });
-      expect(isOrderAssociatedWithFullPosition(order, position)).toBe(true);
+      expect(isOrderAssociatedWithFullPosition(order, position)).toBe(false);
     });
 
     it('returns true when reduce-only order matches full position size (sell closing long)', () => {

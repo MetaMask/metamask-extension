@@ -153,13 +153,12 @@ export const isOrderAssociatedWithFullPosition = (
     return false;
   }
 
-  // Hyperliquid tags TP/SL children of a market order with
-  // `isPositionTpsl: false` (normalTpsl grouping) even after the parent
-  // fills — the resulting trigger orders cover the entire open position.
-  // Trust `isPositionTpsl: false` only when the order is NOT a TP/SL
-  // trigger; otherwise fall through to size matching, which is the
-  // authoritative signal that this is a full-position close.
-  if (order.isPositionTpsl === false && order.isTrigger !== true) {
+  // Only fall back to size matching when the provider did not send the flag.
+  // An explicit `isPositionTpsl: false` (e.g. normalTpsl grouping from a
+  // limit-order's TP/SL children) is authoritative — do not size-match,
+  // otherwise a limit-order TP/SL whose size coincidentally equals the
+  // current position would be misclassified as full-position.
+  if (order.isPositionTpsl === false) {
     return false;
   }
 
