@@ -35,7 +35,7 @@ export function createLoginHandler(
       return new TelegramLoginHandler({
         ...commonHandlerOptions,
         oAuthClientId: '',
-        authenticationServerUrl: config.telegramAuthenticationServerUrl,
+        profileSyncEnv: config.profileSyncEnv,
       });
     default:
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893

@@ -1,4 +1,5 @@
 import { Web3AuthNetwork } from '@metamask/seedless-onboarding-controller';
+import { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { OAuthConfig } from './types';
 
@@ -148,6 +149,15 @@ export function isProductionBuild() {
  */
 export function isReleaseCandidateBuild() {
   return process.env.METAMASK_ENVIRONMENT === ENVIRONMENT.RELEASE_CANDIDATE;
+}
+
+export function getProfilePairingEnv(): ProfileSyncEnv {
+  if (isProductionBuild() || isReleaseCandidateBuild()) {
+    return ProfileSyncEnv.PRD;
+  } else if (isDevOrTestBuild()) {
+    return ProfileSyncEnv.DEV;
+  }
+  return ProfileSyncEnv.UAT;
 }
 
 /**

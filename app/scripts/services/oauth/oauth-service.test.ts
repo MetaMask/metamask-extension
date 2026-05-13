@@ -1,3 +1,7 @@
+import {
+  Env as ProfileSyncEnv,
+  getEnvUrls,
+} from '@metamask/profile-sync-controller/sdk';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   MOCK_ANY_NAMESPACE,
@@ -33,8 +37,9 @@ const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
 const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
 const MOCK_USER_ID = 'user-id';
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
-const MOCK_TELEGRAM_AUTHENTICATION_SERVER_URL =
-  'https://mocked-telegram-authentication-server';
+const MOCK_PROFILE_SYNC_ENV = ProfileSyncEnv.DEV;
+const MOCK_TELEGRAM_AUTH_API_URL =
+  getEnvUrls(MOCK_PROFILE_SYNC_ENV).authApiUrl;
 const MOCK_JWT_TOKEN =
   'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN3bmFtOTA5QGdtYWlsLmNvbSIsInN1YiI6InN3bmFtOTA5QGdtYWlsLmNvbSIsImlzcyI6Im1ldGFtYXNrIiwiYXVkIjoibWV0YW1hc2siLCJpYXQiOjE3NDUyMDc1NjYsImVhdCI6MTc0NTIwNzg2NiwiZXhwIjoxNzQ1MjA3ODY2fQ.nXRRLB7fglRll7tMzFFCU0u7Pu6EddqEYf_DMyRgOENQ6tJ8OLtVknNf83_5a67kl_YKHFO-0PEjvJviPID6xg';
 const MOCK_NONCE = 'mocked-nonce';
@@ -50,12 +55,12 @@ jest.mock('../../platforms/extension');
 function getOAuthLoginEnvs(): {
   googleClientId: string;
   appleClientId: string;
-  telegramAuthenticationServerUrl: string;
+  profileSyncEnv: ProfileSyncEnv;
 } {
   return {
     googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
     appleClientId: DEFAULT_APPLE_CLIENT_ID,
-    telegramAuthenticationServerUrl: MOCK_TELEGRAM_AUTHENTICATION_SERVER_URL,
+    profileSyncEnv: MOCK_PROFILE_SYNC_ENV,
   };
 }
 
@@ -287,10 +292,48 @@ describe('OAuthService - startOAuthLogin', () => {
     expect(mockPlatform.openTab).toHaveBeenCalledWith({
       active: true,
       url: expect.stringContaining(
-        `${MOCK_TELEGRAM_AUTHENTICATION_SERVER_URL}/api/v2/telegram/login/initiate`,
+        `${MOCK_TELEGRAM_AUTH_API_URL}/api/v2/telegram/login/initiate`,
       ),
     });
     expect(mockPlatform.closeTab).toHaveBeenCalledWith(1);
+  });
+
+  it('treats a closed Telegram login tab as a user-cancelled login', async () => {
+    const captureException = jest.fn();
+    const messenger = getMessenger({ captureException });
+    const oauthEnv = getOAuthLoginEnvs();
+
+    // @ts-expect-error - mock platform
+    jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({ id: 1 });
+    jest.spyOn(mockPlatform, 'closeTab').mockResolvedValue(undefined);
+    jest
+      .spyOn(mockPlatform, 'addTabUpdatedListener')
+      .mockImplementation(jest.fn());
+    jest
+      .spyOn(mockPlatform, 'addTabRemovedListener')
+      .mockImplementation(async (fn) => {
+        await Promise.resolve();
+        await fn(1);
+      });
+
+    const oauthService = new OAuthService({
+      messenger,
+      env: oauthEnv,
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Telegram),
+    ).rejects.toThrow(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR);
+
+    expect(captureException).not.toHaveBeenCalled();
+    expect(mockPlatform.closeTab).not.toHaveBeenCalled();
   });
 
   it('should throw an error if the state validation fails - google', async () => {
@@ -357,6 +400,7 @@ describe('OAuthService - startOAuthLogin', () => {
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      platform: mockPlatform,
     });
 
     await expect(
@@ -398,6 +442,7 @@ describe('OAuthService - startOAuthLogin', () => {
       trackEvent: mockTrackEvent,
       addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
       getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      platform: mockPlatform,
     });
 
     await expect(

@@ -126,7 +126,6 @@ import {
   getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
-  getSocialLoginType,
 } from '../selectors';
 import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
@@ -285,8 +284,6 @@ export function startOAuthLogin(
         ]),
         submitRequestToBackground('preloadToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
       ]);
-
-      console.log('oauth2LoginResult', oauth2LoginResult);
 
       let seedlessAuthSuccess = false;
       let isNewUser = false;
@@ -7388,19 +7385,9 @@ export function performSignIn(): ThunkAction<
 > {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (
-    _dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
-  ) => {
+  return async () => {
     try {
       await submitRequestToBackground('performSignIn');
-
-      // If the user is on a social login flow, we need to pair the profile with the social login provider
-      const isSocialLoginFlow = getIsSocialLoginFlow(getState());
-      const socialLoginType = getSocialLoginType(getState());
-      if (isSocialLoginFlow && socialLoginType === AuthConnection.Telegram) {
-        await submitRequestToBackground('performSeedlessOnboardingProfilePair');
-      }
     } catch (error) {
       const errorMessage =
         error instanceof Error

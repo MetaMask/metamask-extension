@@ -4,6 +4,7 @@ import {
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerGetAccessTokenAction,
 } from '@metamask/seedless-onboarding-controller';
+import type { Env as ProfileSyncEnv } from '@metamask/profile-sync-controller/sdk';
 import { Messenger } from '@metamask/messenger';
 import type {
   MetaMetricsEventPayload,
@@ -120,9 +121,10 @@ export type OAuthLoginEnv = {
   appleClientId: string;
 
   /**
-   * The Authentication API base URL used by the Telegram login flow.
+   * The profile-sync environment used by the Telegram login flow to derive its
+   * auth and OIDC endpoints.
    */
-  telegramAuthenticationServerUrl: string;
+  profileSyncEnv: ProfileSyncEnv;
 };
 
 export type OAuthConfig = {

@@ -1,11 +1,16 @@
+import {
+  Env as ProfileSyncEnv,
+  Platform,
+  getEnvUrls,
+  getOidcClientId,
+} from '@metamask/profile-sync-controller/sdk';
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { BaseLoginHandler } from './base-login-handler';
 import { AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
-import { exchangeJwtBearerForOidcAccessToken } from './oidc';
 import { decodeIdToken } from './utils';
 
 export type TelegramLoginHandlerOptions = LoginHandlerOptions & {
-  authenticationServerUrl: string;
+  profileSyncEnv: ProfileSyncEnv;
 };
 
 /**
@@ -35,6 +40,49 @@ export class TelegramLoginHandler extends BaseLoginHandler {
     this.#options = options;
   }
 
+  #getProfileSyncUrls() {
+    return getEnvUrls(this.#options.profileSyncEnv);
+  }
+
+  #getProfileSyncAuthApiUrl(): string {
+    return this.#getProfileSyncUrls().authApiUrl;
+  }
+
+  #getProfileAliasesClaimKey(): string {
+    return `${this.#getProfileSyncAuthApiUrl()}/profile/aliases`;
+  }
+
+  async #exchangeJwtBearerForOidcAccessToken(
+    jwtToken: string,
+  ): Promise<string> {
+    const { profileSyncEnv } = this.#options;
+    const { oidcApiUrl } = this.#getProfileSyncUrls();
+    const oidcTokenUrl = `${oidcApiUrl}/oauth2/token`;
+
+    const body = new URLSearchParams();
+    body.set('grant_type', 'urn:ietf:params:oauth:grant-type:jwt-bearer');
+    body.set(
+      'client_id',
+      getOidcClientId(profileSyncEnv, Platform.EXTENSION),
+    );
+    body.set('assertion', jwtToken);
+
+    const response = await fetch(oidcTokenUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString(),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `OIDC exchange failed: ${response.status} ${response.statusText}`,
+      );
+    }
+
+    const responseData = await response.json();
+    return responseData.access_token;
+  }
+
   get authConnection() {
     return AuthConnection.Telegram;
   }
@@ -54,7 +102,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
     const appRedirectUri = this.options.webAuthenticator.getRedirectURL();
 
     const initiateUrl = new URL(
-      `${this.#options.authenticationServerUrl}${this.OAUTH_SERVER_INITIATE_PATH}`,
+      `${this.#getProfileSyncAuthApiUrl()}${this.OAUTH_SERVER_INITIATE_PATH}`,
     );
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -93,7 +141,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
    */
   async getAuthIdToken(code: string): Promise<AuthTokenResponse> {
     const verifyRes = await fetch(
-      `${this.#options.authenticationServerUrl}${this.OAUTH_SERVER_VERIFY_PATH}`,
+      `${this.#getProfileSyncAuthApiUrl()}${this.OAUTH_SERVER_VERIFY_PATH}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -112,7 +160,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
     }
     const verifyData = await verifyRes.json();
 
-    const hydraIdToken = await exchangeJwtBearerForOidcAccessToken(
+    const hydraIdToken = await this.#exchangeJwtBearerForOidcAccessToken(
       verifyData?.token,
     );
 
@@ -141,10 +189,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
       // eslint-disable-next-line @typescript-eslint/naming-convention
       alias_profile_id?: string;
-    }[] =
-      authPayload?.ext?.[
-        `${this.#options.authenticationServerUrl}/profile/aliases`
-      ] || [];
+    }[] = authPayload?.ext?.[this.#getProfileAliasesClaimKey()] || [];
     for (const alias of aliases) {
       if (alias.alias_profile_id === authPayload.sub) {
         profileSynced = true;

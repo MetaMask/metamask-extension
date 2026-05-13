@@ -248,41 +248,58 @@ export class OAuthService {
   async #handleOAuthLogin(
     loginHandler: BaseLoginHandler,
     authConnection: AuthConnection,
-  ) {
+  ): Promise<OAuthLoginResult> {
     const authUrl = await loginHandler.getAuthUrl();
-
     const isRehydration = this.#isRehydrationFlow();
+    const redirectUrlFromOAuth = await this.#performOAuthProviderLogin({
+      authConnection,
+      authUrl,
+      isRehydration,
+      loginHandler,
+    });
 
+    return await this.#exchangeOAuthTokens({
+      authConnection,
+      isRehydration,
+      loginHandler,
+      redirectUrlFromOAuth,
+    });
+  }
+
+  async #performOAuthProviderLogin({
+    authConnection,
+    authUrl,
+    isRehydration,
+    loginHandler,
+  }: {
+    authConnection: AuthConnection;
+    authUrl: string;
+    isRehydration: boolean | null;
+    loginHandler: BaseLoginHandler;
+  }): Promise<string> {
     let providerLoginSuccess = false;
-    let redirectUrlFromOAuth = null;
+
     try {
       this.#bufferedTrace?.({
         name: TraceName.OnboardingOAuthProviderLogin,
         op: TraceOperation.OnboardingSecurityOp,
       });
-      redirectUrlFromOAuth = await this.#launchAuthFlow(
+      const redirectUrlFromOAuth = await this.#launchAuthFlow(
         authConnection,
         authUrl,
         loginHandler,
       );
       providerLoginSuccess = true;
+      return redirectUrlFromOAuth;
     } catch (error: unknown) {
-      // Track provider login failure
-      const isUserCancelled = isUserCancelledLoginError(error as Error);
-      this.#trackEventWithBuffering({
-        event: MetaMetricsEventName.SocialLoginFailed,
-        category: MetaMetricsEventCategory.Onboarding,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_rehydration:
-            isRehydration === null ? 'unknown' : String(isRehydration),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          failure_type: isUserCancelled ? 'user_cancelled' : 'error',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_category: 'provider_login',
-        },
+      const loginError = error instanceof Error ? error : undefined;
+      const isUserCancelled = isUserCancelledLoginError(loginError);
+
+      this.#trackOAuthLoginFailure({
+        authConnection,
+        isRehydration,
+        errorCategory: 'provider_login',
+        failureType: isUserCancelled ? 'user_cancelled' : 'error',
       });
 
       if (!isUserCancelled) {
@@ -301,14 +318,26 @@ export class OAuthService {
         data: { success: providerLoginSuccess },
       });
     }
+  }
 
+  async #exchangeOAuthTokens({
+    authConnection,
+    isRehydration,
+    loginHandler,
+    redirectUrlFromOAuth,
+  }: {
+    authConnection: AuthConnection;
+    isRehydration: boolean | null;
+    loginHandler: BaseLoginHandler;
+    redirectUrlFromOAuth: string;
+  }): Promise<OAuthLoginResult> {
     let getAuthTokensSuccess = false;
+
     try {
       this.#bufferedTrace?.({
         name: TraceName.OnboardingOAuthBYOAServerGetAuthTokens,
         op: TraceOperation.OnboardingSecurityOp,
       });
-      // handle the OAuth response from the social login provider and get the Jwt Token in exchange
       const loginResult = await this.#handleOAuthResponse(
         loginHandler,
         redirectUrlFromOAuth,
@@ -316,27 +345,17 @@ export class OAuthService {
       getAuthTokensSuccess = true;
       return loginResult;
     } catch (error: unknown) {
-      // Track token exchange failure
-      this.#trackEventWithBuffering({
-        event: MetaMetricsEventName.SocialLoginFailed,
-        category: MetaMetricsEventCategory.Onboarding,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          is_rehydration:
-            isRehydration === null ? 'unknown' : String(isRehydration),
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          failure_type: 'error',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_category: 'get_auth_tokens',
-        },
+      this.#trackOAuthLoginFailure({
+        authConnection,
+        isRehydration,
+        errorCategory: 'get_auth_tokens',
+        failureType: 'error',
       });
 
       this.#messenger.captureException?.(
         createSentryError(
           `OAuth2 token exchange failed for ${authConnection}`,
-          error as Error,
+          error,
         ),
       );
 
@@ -347,6 +366,34 @@ export class OAuthService {
         data: { success: getAuthTokensSuccess },
       });
     }
+  }
+
+  #trackOAuthLoginFailure({
+    authConnection,
+    isRehydration,
+    errorCategory,
+    failureType,
+  }: {
+    authConnection: AuthConnection;
+    isRehydration: boolean | null;
+    errorCategory: 'provider_login' | 'get_auth_tokens';
+    failureType: 'error' | 'user_cancelled';
+  }): void {
+    this.#trackEventWithBuffering({
+      event: MetaMetricsEventName.SocialLoginFailed,
+      category: MetaMetricsEventCategory.Onboarding,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        is_rehydration:
+          isRehydration === null ? 'unknown' : String(isRehydration),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        failure_type: failureType,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_category: errorCategory,
+      },
+    });
   }
 
   /**
@@ -427,8 +474,16 @@ export class OAuthService {
     return url.searchParams.get('code');
   }
 
-  #getUserCancelledLoginError(error = checkForLastError()): Error | undefined {
-    return isUserCancelledLoginError(error) ? error : undefined;
+  #getAuthFlowError(error = checkForLastError()): Error {
+    if (error) {
+      const authFlowError = new Error(error.message) as Error & {
+        cause: Error;
+      };
+      authFlowError.cause = error;
+      return authFlowError;
+    }
+
+    return new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR);
   }
 
   async #launchAuthFlow(
@@ -449,10 +504,7 @@ export class OAuthService {
         { interactive: true, url: authUrl },
         (responseUrl) => {
           if (!responseUrl) {
-            reject(
-              this.#getUserCancelledLoginError() ??
-                new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
-            );
+            reject(this.#getAuthFlowError());
             return;
           }
 
@@ -480,62 +532,68 @@ export class OAuthService {
     loginHandler: BaseLoginHandler,
   ): Promise<string> {
     try {
-      const redirectUrl = await this.#platform
-        .openTab({ url: authUrl, active: true })
-        .then(
-          (openedTab) =>
-            new Promise((resolve, reject) => {
-              const platform = this.#platform;
+      const openedTab = await this.#platform.openTab({ url: authUrl, active: true });
+      const openedTabId = openedTab.id;
 
-              function cleanup(): void {
-                platform.removeTabUpdatedListener(onUpdated);
-                platform.removeTabRemovedListener(onRemoved);
-              }
-
-              function finish(callback: () => void): void {
-                cleanup();
-                if (openedTab.id !== undefined) {
-                  platform.closeTab(openedTab.id).catch(() => undefined);
-                }
-                callback();
-              }
-
-              function onUpdated(
-                tabId: number,
-                changeInfo: { url?: string; pendingUrl?: string },
-                tab?: { url?: string },
-              ): void {
-                if (tabId !== openedTab.id) {
-                  return;
-                }
-                const candidateUrl =
-                  changeInfo?.url || changeInfo?.pendingUrl || tab?.url;
-                if (!candidateUrl?.startsWith(extensionRedirectURL)) {
-                  return;
-                }
-                try {
-                  loginHandler.validateState(candidateUrl);
-                  finish(() => resolve(candidateUrl));
-                } catch (error) {
-                  finish(() => reject(error));
-                }
-              }
-
-              function onRemoved(tabId: number): void {
-                if (tabId !== openedTab.id) {
-                  return;
-                }
-                cleanup();
-              }
-
-              platform.addTabUpdatedListener(onUpdated);
-              platform.addTabRemovedListener(onRemoved);
-            }),
-        );
-
-      if (!redirectUrl || typeof redirectUrl !== 'string') {
-        throw new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR);
+      if (openedTabId === undefined) {
+        throw this.#getAuthFlowError();
       }
+
+      const redirectUrl = await new Promise<string>((resolve, reject) => {
+        const platform = this.#platform;
+
+        function cleanup(): void {
+          platform.removeTabUpdatedListener(onUpdated);
+          platform.removeTabRemovedListener(onRemoved);
+        }
+
+        function finish(callback: () => void): void {
+          cleanup();
+          platform.closeTab(openedTabId).catch(() => undefined);
+          callback();
+        }
+
+        function onUpdated(
+          tabId: number,
+          changeInfo: { url?: string; pendingUrl?: string },
+          tab?: { url?: string },
+        ): void {
+          if (tabId !== openedTabId) {
+            return;
+          }
+
+          const candidateUrl =
+            changeInfo?.url || changeInfo?.pendingUrl || tab?.url;
+
+          if (!candidateUrl?.startsWith(extensionRedirectURL)) {
+            return;
+          }
+
+          try {
+            loginHandler.validateState(candidateUrl);
+            finish(() => resolve(candidateUrl));
+          } catch (error) {
+            finish(() => reject(error));
+          }
+        }
+
+        function onRemoved(tabId: number): void {
+          if (tabId !== openedTabId) {
+            return;
+          }
+
+          cleanup();
+          reject(new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR));
+        }
+
+        platform.addTabUpdatedListener(onUpdated);
+        platform.addTabRemovedListener(onRemoved);
+      });
+
+      if (!redirectUrl) {
+        throw this.#getAuthFlowError();
+      }
+
       return redirectUrl;
     } catch (error) {
       log.error(
