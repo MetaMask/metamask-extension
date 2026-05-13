@@ -9638,6 +9638,10 @@ export default class MetamaskController extends EventEmitter {
    * @returns {*} The result of the callback
    */
   async #withKeyringForDevice(options, callback) {
+    if (options.name === HardwareDeviceNames.lattice) {
+      return this.#withLatticeKeyringV2(options, callback);
+    }
+
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringType = null;
     switch (options.name) {
@@ -9653,9 +9657,6 @@ export default class MetamaskController extends EventEmitter {
       case HardwareDeviceNames.qr:
         keyringType = QrKeyring.type;
         break;
-      case HardwareDeviceNames.lattice:
-        keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
-        break;
       default:
         throw new Error(
           'MetamaskController:#withKeyringForDevice - Unknown device',
@@ -9667,10 +9668,6 @@ export default class MetamaskController extends EventEmitter {
       async ({ keyring }) => {
         if (options.hdPath && keyring.setHdPath) {
           keyring.setHdPath(options.hdPath);
-        }
-
-        if (options.name === HardwareDeviceNames.lattice) {
-          keyring.appName = 'MetaMask';
         }
 
         if (options.name === HardwareDeviceNames.ledger) {
@@ -9693,6 +9690,43 @@ export default class MetamaskController extends EventEmitter {
       },
       {
         createIfMissing: true,
+      },
+    );
+  }
+
+  /**
+   * Acquire the Lattice keyring via `withKeyringV2`. The V2 method has no
+   * `createIfMissing` option, so we ensure the keyring exists first via
+   * `addNewKeyring` if it isn't already in state.
+   *
+   * @param {object} options - Same options as `#withKeyringForDevice`.
+   * @param {*} callback - Callback invoked with the V2 wrapper instance.
+   * @returns {*} The callback's return value.
+   */
+  async #withLatticeKeyringV2(options, callback) {
+    const keyringOverrides = this.opts.overrides?.keyrings;
+    const latticeType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
+
+    const hasLatticeKeyring = this.keyringController.state.keyrings.some(
+      ({ type }) => type === latticeType,
+    );
+    if (!hasLatticeKeyring) {
+      await this.keyringController.addNewKeyring(latticeType);
+    }
+
+    return this.keyringController.withKeyringV2(
+      { type: latticeType },
+      async ({ keyring }) => {
+        if (options.hdPath) {
+          keyring.setHdPath(options.hdPath);
+        }
+
+        keyring.appName = 'MetaMask';
+        keyring.network = getProviderConfig({
+          metamask: this.networkController.state,
+        }).type;
+
+        return await callback(keyring);
       },
     );
   }
