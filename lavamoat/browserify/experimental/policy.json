@@ -17,7 +17,9 @@
     },
     "@emotion/react>@emotion/cache": {
       "globals": {
-        "document": false
+        "document": false,
+        "document.head": true,
+        "document.querySelectorAll": true
       },
       "packages": {
         "@emotion/react>@emotion/cache>@emotion/memoize": true,
@@ -2746,22 +2748,26 @@
     },
     "@mui/material": {
       "globals": {
+        "CSS": true,
         "DocumentFragment": true,
+        "Image": true,
+        "IntersectionObserver": true,
+        "MutationObserver": true,
         "ResizeObserver": true,
         "addEventListener": true,
         "cancelAnimationFrame": true,
         "clearInterval": true,
+        "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
-        "document.addEventListener": true,
-        "document.body": true,
-        "document.removeEventListener": true,
+        "document": true,
         "getSelection": true,
         "navigator": true,
         "performance.now": true,
         "removeEventListener": true,
         "requestAnimationFrame": true,
-        "setInterval": true
+        "setInterval": true,
+        "setTimeout": true
       },
       "packages": {
         "@babel/runtime": true,
