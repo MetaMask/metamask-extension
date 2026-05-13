@@ -8,6 +8,7 @@ import classnames from 'clsx';
 import { DateTime } from 'luxon';
 import { HelpText, HelpTextSeverity, Label } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 /**
  * The props for the SnapUIDateTimePicker component.
@@ -92,7 +93,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
 > = ({
   type = 'datetime',
   label,
-  placeholder = '',
+  placeholder,
   name,
   form,
   disabled,
@@ -101,6 +102,13 @@ export const SnapUIDateTimePicker: FunctionComponent<
   disableFuture = false,
 }) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
+  const t = useI18nContext();
+
+  const pickerLocaleText = {
+    clearButtonLabel: t('clear'),
+    cancelButtonLabel: t('cancel'),
+    okButtonLabel: t('ok').toUpperCase(),
+  };
 
   const initialValue = getValue(name, form) as string;
 
@@ -138,6 +146,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
           disabled={disabled}
           disablePast={disablePast}
           disableFuture={disableFuture}
+          localeText={pickerLocaleText}
           format={'D T'}
           ampm={false}
           viewRenderers={{
@@ -166,6 +175,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
           disabled={disabled}
           disablePast={disablePast}
           disableFuture={disableFuture}
+          localeText={pickerLocaleText}
           format={'D'}
           slotProps={{
             textField: {
@@ -187,6 +197,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
           onChange={handleChange}
           disabled={disabled}
           ampm={false}
+          localeText={pickerLocaleText}
           viewRenderers={{
             hours: renderTimeViewClock,
             minutes: renderTimeViewClock,
