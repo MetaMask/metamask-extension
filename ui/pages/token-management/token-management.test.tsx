@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import {
   en as messages,
   renderWithProvider,
@@ -25,10 +25,26 @@ jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
     ...actual,
+    addCustomAsset: jest.fn(() => () => Promise.resolve()),
     addImportedTokens: jest.fn(() => () => Promise.resolve()),
+    hideAsset: jest.fn(() => () => Promise.resolve()),
+    ignoreTokens: jest.fn(() => () => Promise.resolve()),
     multichainAddAssets: jest.fn(() => () => Promise.resolve()),
+    multichainIgnoreAssets: jest.fn(() => () => Promise.resolve()),
   };
 });
+
+type MockedTokenManagementActions = {
+  addCustomAsset: jest.Mock;
+  addImportedTokens: jest.Mock;
+  hideAsset: jest.Mock;
+  ignoreTokens: jest.Mock;
+  multichainAddAssets: jest.Mock;
+  multichainIgnoreAssets: jest.Mock;
+};
+
+const getMockedActions = () =>
+  jest.requireMock('../../store/actions') as MockedTokenManagementActions;
 
 type MockSearchState = {
   results: {
@@ -163,6 +179,13 @@ describe('TokenManagementPage', () => {
 
   beforeEach(() => {
     resetTokenSearchState();
+    const actions = getMockedActions();
+    actions.addCustomAsset.mockClear();
+    actions.addImportedTokens.mockClear();
+    actions.hideAsset.mockClear();
+    actions.ignoreTokens.mockClear();
+    actions.multichainAddAssets.mockClear();
+    actions.multichainIgnoreAssets.mockClear();
     const originalWarn = console.warn;
     consoleWarnSpy = jest
       .spyOn(console, 'warn')
@@ -369,7 +392,7 @@ describe('TokenManagementPage', () => {
     expect(screen.getByText('USD Coin')).toBeInTheDocument();
   });
 
-  it('toggling ON a not-yet-imported search result imports the token', async () => {
+  it('toggling ON a not-yet-imported search result imports the token and adds it to AssetsController', async () => {
     const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
     const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
     setTokenSearchState({
@@ -383,9 +406,7 @@ describe('TokenManagementPage', () => {
       ],
     });
 
-    const actions = jest.requireMock('../../store/actions') as {
-      addImportedTokens: jest.Mock;
-    };
+    const actions = getMockedActions();
 
     renderPage();
 
@@ -398,16 +419,48 @@ describe('TokenManagementPage', () => {
     );
     fireEvent.click(toggle);
 
-    expect(actions.addImportedTokens).toHaveBeenCalledWith(
-      [
-        expect.objectContaining({
-          address: usdcAddress,
-          symbol: 'USDC',
-          decimals: 6,
-          isERC721: false,
-        }),
-      ],
-      'mainnet',
+    await waitFor(() =>
+      expect(actions.addImportedTokens).toHaveBeenCalledWith(
+        [
+          expect.objectContaining({
+            address: usdcAddress,
+            symbol: 'USDC',
+            decimals: 6,
+            isERC721: false,
+          }),
+        ],
+        'mainnet',
+      ),
+    );
+    await waitFor(() =>
+      expect(actions.addCustomAsset).toHaveBeenCalledWith(
+        mainnetToken.accountId,
+        usdcAssetId,
+      ),
+    );
+  });
+
+  it('toggling OFF an EVM token ignores it and hides it in AssetsController', async () => {
+    const actions = getMockedActions();
+
+    renderPage();
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    );
+    fireEvent.click(toggle);
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+    await waitFor(() =>
+      expect(actions.hideAsset).toHaveBeenCalledWith(
+        `eip155:1/erc20:${mainnetToken.address}`,
+      ),
     );
   });
 
