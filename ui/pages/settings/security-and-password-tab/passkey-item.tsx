@@ -174,19 +174,9 @@ const PasskeyItem = () => {
 
       navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
     } catch (error: unknown) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.PasskeyTurnOff,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          verification_method: verificationMethod,
-          status: 'failed',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          duration_ms: Date.now() - startedAt,
-          reason: getPasskeyErrorCode(error),
-        },
-      });
+      let errorStatus = 'failed';
       if (isPasskeyCeremonySilentError(error)) {
+        errorStatus = 'cancelled';
         log.debug(
           'Passkey verification for disable cancelled or timed out',
           error,
@@ -206,6 +196,19 @@ const PasskeyItem = () => {
           { duration: PASSKEY_SETTINGS_TOAST_DURATION_MS },
         );
       }
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOff,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: verificationMethod,
+          status: errorStatus,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - startedAt,
+          reason: getPasskeyErrorCode(error),
+        },
+      });
       navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true });
     } finally {
       setIsPasskeyOperationPending(false);

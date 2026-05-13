@@ -150,7 +150,6 @@ export const UnlockPasskeySection = ({
         }
 
         const errorCode = getPasskeyErrorCode(err);
-        passkeyFailedAttemptCount.current += 1;
         const durationMs = Date.now() - startedAt;
 
         if (isPasskeyCeremonySilentError(err)) {
@@ -168,10 +167,12 @@ export const UnlockPasskeySection = ({
           });
           setPasskeyError(null);
         } else {
+          passkeyFailedAttemptCount.current += 1;
           trackEvent?.({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppUnlockedFailed,
             properties: {
+              ...baseProperties,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               failed_attempts: passkeyFailedAttemptCount.current,
               // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -179,7 +180,6 @@ export const UnlockPasskeySection = ({
               reason: errorCode,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               passkey_enabled: isPasskeyActive,
-              ...baseProperties,
               // eslint-disable-next-line @typescript-eslint/naming-convention
               duration_ms: durationMs,
             },

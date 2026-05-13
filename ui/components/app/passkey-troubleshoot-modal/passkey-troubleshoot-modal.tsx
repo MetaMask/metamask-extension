@@ -64,7 +64,6 @@ export default function PasskeyTroubleshootModal({
       event: MetaMetricsEventName.PasskeyTroubleshoot,
       properties: {
         ...baseProperties,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         cta: 'modal',
       },
     });
@@ -91,7 +90,6 @@ export default function PasskeyTroubleshootModal({
       event: MetaMetricsEventName.PasskeyTroubleshoot,
       properties: {
         ...baseProperties,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         cta: 'full_screen',
       },
     });
@@ -105,7 +103,6 @@ export default function PasskeyTroubleshootModal({
       event: MetaMetricsEventName.PasskeyTroubleshoot,
       properties: {
         ...baseProperties,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         cta: 'support',
       },
     });
