@@ -53,6 +53,9 @@ export function getSnapAccountServiceMessenger(
       'SnapController:snapUnblocked',
       'SnapController:snapUninstalled',
       'AccountTreeController:selectedAccountGroupChange',
+      'AccountTreeController:accountGroupCreated',
+      'AccountTreeController:accountGroupUpdated',
+      'AccountTreeController:accountGroupRemoved',
     ],
   });
   return serviceMessenger;
