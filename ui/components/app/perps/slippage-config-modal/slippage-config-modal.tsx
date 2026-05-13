@@ -160,6 +160,7 @@ export const SlippageConfigModal: React.FC<SlippageConfigModalProps> = ({
               ariaLabel={t('close')}
               size={ButtonIconSize.Md}
               onClick={onClose}
+              data-testid="perps-slippage-config-close"
               className="absolute right-0 top-1/2 -translate-y-1/2"
             />
           </div>
