@@ -6043,10 +6043,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-playground@npm:0.6.2":
-  version: 0.6.2
-  resolution: "@metamask/browser-playground@npm:0.6.2"
-  checksum: 10/7e8a725ac0ffb3c3cc0bb436619b8e4fcd0376920b1b2504cf9032aa593e1cd25b475b15fab6e8f72585d665b87c673a28a2ea3386d292e766247b5bcee94616
+"@metamask/browser-playground@npm:0.7.2":
+  version: 0.7.2
+  resolution: "@metamask/browser-playground@npm:0.7.2"
+  checksum: 10/670bc6a041a15089770372267455f9b6442b293357962ba229336d0eed9831f1bbce63dc37e98c7bbea91c590cbb00c8b45ef392b63eda17f517c0e3cf792c9a
   languageName: node
   linkType: hard
 
@@ -6060,17 +6060,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/chain-agnostic-permission@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@metamask/chain-agnostic-permission@npm:1.5.0"
+"@metamask/chain-agnostic-permission@npm:^1.6.0, @metamask/chain-agnostic-permission@npm:^1.6.1":
+  version: 1.6.1
+  resolution: "@metamask/chain-agnostic-permission@npm:1.6.1"
   dependencies:
     "@metamask/api-specs": "npm:^0.14.0"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/permission-controller": "npm:^12.2.1"
+    "@metamask/controller-utils": "npm:^12.0.0"
+    "@metamask/permission-controller": "npm:^13.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.9.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/d9d7f912d911623bbbec7952ef8f5d882d7d79bca75915dfa7366a6abc22a2b7bd22c267f84a6c5c628a6fd484d69aecfa1a95d6840ca2ccfd5ff5f247f0bb8b
+  checksum: 10/4eb961cfedc5f56ad9f9e160aa699afc1af056623b88f1035a6284d68ba50304c01c7bf4c9ac758b8df26dcc61fe7906fa93e355529201082343b94e2ee93d5d
   languageName: node
   linkType: hard
 
@@ -6160,7 +6160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^12.0.0":
+"@metamask/controller-utils@npm:^12.0.0, @metamask/controller-utils@npm:^12.1.0":
   version: 12.1.0
   resolution: "@metamask/controller-utils@npm:12.1.0"
   dependencies:
@@ -7344,24 +7344,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-api-middleware@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/multichain-api-middleware@npm:3.0.0"
+"@metamask/multichain-api-middleware@npm:^3.1.0":
+  version: 3.1.2
+  resolution: "@metamask/multichain-api-middleware@npm:3.1.2"
   dependencies:
-    "@metamask/accounts-controller": "npm:^37.2.0"
+    "@metamask/accounts-controller": "npm:^38.1.1"
     "@metamask/api-specs": "npm:^0.14.0"
-    "@metamask/chain-agnostic-permission": "npm:^1.5.0"
-    "@metamask/controller-utils": "npm:^11.20.0"
-    "@metamask/json-rpc-engine": "npm:^10.3.0"
-    "@metamask/network-controller": "npm:^30.1.0"
-    "@metamask/permission-controller": "npm:^13.0.0"
+    "@metamask/chain-agnostic-permission": "npm:^1.6.1"
+    "@metamask/controller-utils": "npm:^12.1.0"
+    "@metamask/json-rpc-engine": "npm:^10.5.0"
+    "@metamask/network-controller": "npm:^32.0.0"
+    "@metamask/permission-controller": "npm:^13.1.1"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/utils": "npm:^11.9.0"
     "@open-rpc/meta-schema": "npm:^1.14.6"
     "@open-rpc/schema-utils-js": "npm:^2.0.5"
     jsonschema: "npm:^1.4.1"
-  checksum: 10/53fad0a9a4f16d24461b654570b6081c406cbac91bcdf988ad408c3d803d276ad483408a501a88774331ec8a23ef7f65ba76d2d8a8cec5dca147a953fcfc1659
+  checksum: 10/6596c03652278f9fb62ca182e567dd2e8c91ab835550020d1787e078ba441586a23f17f5a9fe2ca210342105c94d8d1ad1716dde43e3233fa33cf19599bc2eac
   languageName: node
   linkType: hard
 
@@ -7543,14 +7543,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permission-controller@npm:^13.0.0, @metamask/permission-controller@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "@metamask/permission-controller@npm:13.1.0"
+"@metamask/permission-controller@npm:^13.0.0, @metamask/permission-controller@npm:^13.1.0, @metamask/permission-controller@npm:^13.1.1":
+  version: 13.1.1
+  resolution: "@metamask/permission-controller@npm:13.1.1"
   dependencies:
     "@metamask/approval-controller": "npm:^9.0.1"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^11.20.0"
-    "@metamask/json-rpc-engine": "npm:^10.3.0"
+    "@metamask/controller-utils": "npm:^12.0.0"
+    "@metamask/json-rpc-engine": "npm:^10.5.0"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/rpc-errors": "npm:^7.0.2"
     "@metamask/utils": "npm:^11.9.0"
@@ -7558,7 +7558,7 @@ __metadata:
     deep-freeze-strict: "npm:^1.1.1"
     immer: "npm:^9.0.6"
     nanoid: "npm:^3.3.8"
-  checksum: 10/838b6df0dedb8ff359522a6e2a0bb0cafdf00a01583ebf25de4ce1cceee1ecd93436ad924a005ba051563ff2c70bdc20deeb0951a86f1b08deb3be5337506991
+  checksum: 10/12c6a675217ff510b837543c6e71ea851a3a7bd4592195f9579e76e2779177d2d4f03fcdd4d5c12585598df73250f32d0d49cb114274fc8187cbc7081bbc913b
   languageName: node
   linkType: hard
 
@@ -33575,9 +33575,9 @@ __metadata:
     "@metamask/bridge-controller": "npm:^72.0.0"
     "@metamask/bridge-status-controller": "npm:^71.1.1"
     "@metamask/browser-passworder": "npm:^6.0.0"
-    "@metamask/browser-playground": "npm:0.6.2"
+    "@metamask/browser-playground": "npm:0.7.2"
     "@metamask/build-utils": "npm:^3.0.0"
-    "@metamask/chain-agnostic-permission": "npm:^1.5.0"
+    "@metamask/chain-agnostic-permission": "npm:^1.6.0"
     "@metamask/claims-controller": "npm:^0.4.2"
     "@metamask/client-controller": "npm:^1.0.0"
     "@metamask/client-mcp-core": "npm:0.3.0"
@@ -33640,7 +33640,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:^3.1.1"
     "@metamask/multichain-account-service": "npm:^10.0.0"
     "@metamask/multichain-api-client": "npm:^0.10.1"
-    "@metamask/multichain-api-middleware": "npm:^3.0.0"
+    "@metamask/multichain-api-middleware": "npm:^3.1.0"
     "@metamask/multichain-network-controller": "npm:^3.1.0"
     "@metamask/multichain-transactions-controller": "npm:^7.1.0"
     "@metamask/name-controller": "npm:^9.1.0"
