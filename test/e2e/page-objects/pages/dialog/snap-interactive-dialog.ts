@@ -71,16 +71,27 @@ class SnapInteractiveDialog {
   }
 
   /**
-   * Fills the DateTimePicker by typing a zero-padded digit sequence into its
-   * plain `<input>` element (MUI v7 defaults to
-   * `enableAccessibleFieldDOMStructure=false`, so no spinbutton sections are
-   * rendered). Zero-padding each section (e.g. "04" not "4") is required:
-   * without it, a single-digit month like "1" keeps the field waiting for a
-   * second digit (10/11/12 are all valid), causing the next character to be
-   * consumed by the wrong section. MUI's legacy field handler auto-advances
-   * through sections (month → day → year → hour → minute) once each section
-   * is complete.
+   * Types digits into a MUI v6 picker input. The input is readonly so
+   * driver.fill() cannot be used — click to focus, then sendKeys() directly.
    *
+   * @param containerSelector - Selector for the picker container (for scrolling).
+   * @param inputSelector - Selector for the readonly `<input>` element.
+   * @param digits - Zero-padded digit string (e.g. "0415" not "415").
+   */
+  async #typeIntoPickerInput(
+    containerSelector: string,
+    inputSelector: string,
+    digits: string,
+  ) {
+    const container = await this.driver.findElement(containerSelector);
+    await this.driver.scrollToElement(container);
+    await this.driver.clickElement(inputSelector);
+    const inputEl = await this.driver.findElement(inputSelector);
+    await inputEl.sendKeys(digits);
+  }
+
+  /**
+   * Fills the DateTimePicker with a date/time in the previous month.
    * A previous-month date is used so the value stays within the
    * `disableFuture` constraint.
    *
@@ -90,11 +101,6 @@ class SnapInteractiveDialog {
    * @returns ISO string of the selected date-time.
    */
   async selectInDateTimePicker(day: number, hour: number, minute: number) {
-    const dateTimePicker = await this.driver.findElement(
-      selectors.exampleDateTimePicker,
-    );
-    await this.driver.scrollToElement(dateTimePicker);
-
     const prevMonthDate = DateTime.now().minus({ months: 1 });
     const digits =
       String(prevMonthDate.month).padStart(2, '0') +
@@ -102,7 +108,12 @@ class SnapInteractiveDialog {
       String(prevMonthDate.year) +
       String(hour).padStart(2, '0') +
       String(minute).padStart(2, '0');
-    await this.driver.fill(selectors.dateTimePickerInput, digits);
+
+    await this.#typeIntoPickerInput(
+      selectors.exampleDateTimePicker,
+      selectors.dateTimePickerInput,
+      digits,
+    );
 
     return prevMonthDate
       .set({ day, hour, minute, second: 0, millisecond: 0 })
@@ -110,14 +121,14 @@ class SnapInteractiveDialog {
   }
 
   async selectInTimePicker(hour: number, minute: number) {
-    const timePicker = await this.driver.findElement(
-      selectors.exampleTimePicker,
-    );
-    await this.driver.scrollToElement(timePicker);
-
     const digits =
       String(hour).padStart(2, '0') + String(minute).padStart(2, '0');
-    await this.driver.fill(selectors.timePickerInput, digits);
+
+    await this.#typeIntoPickerInput(
+      selectors.exampleTimePicker,
+      selectors.timePickerInput,
+      digits,
+    );
 
     return DateTime.now()
       .set({ hour, minute, second: 0, millisecond: 0 })
@@ -125,17 +136,17 @@ class SnapInteractiveDialog {
   }
 
   async selectInDatePicker(day: number) {
-    const datePicker = await this.driver.findElement(
-      selectors.exampleDatePickerContainer,
-    );
-    await this.driver.scrollToElement(datePicker);
-
     const prevMonthDate = DateTime.now().minus({ months: 1 });
     const digits =
       String(prevMonthDate.month).padStart(2, '0') +
       String(day).padStart(2, '0') +
       String(prevMonthDate.year);
-    await this.driver.fill(selectors.datePickerInput, digits);
+
+    await this.#typeIntoPickerInput(
+      selectors.exampleDatePickerContainer,
+      selectors.datePickerInput,
+      digits,
+    );
 
     return prevMonthDate
       .set({ day, hour: 0, minute: 0, second: 0, millisecond: 0 })
