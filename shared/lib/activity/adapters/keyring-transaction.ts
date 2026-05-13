@@ -6,7 +6,10 @@ import {
 import type { ActivityListItem, Status } from '../types';
 
 type Movement = Transaction['from'][number];
-type FungibleAsset = Extract<NonNullable<Movement['asset']>, { fungible: true }>;
+type FungibleAsset = Extract<
+  NonNullable<Movement['asset']>,
+  { fungible: true }
+>;
 
 function mapStatus(status: Transaction['status']): Status {
   switch (status) {

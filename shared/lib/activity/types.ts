@@ -54,6 +54,7 @@ export type ActivityListItem =
       timestamp: number;
       data: {
         from: string;
+        hash?: string;
         to: string;
         tokenSymbol?: string;
       };
@@ -65,6 +66,7 @@ export type ActivityListItem =
       timestamp: number;
       data: {
         from: string;
+        hash?: string;
         to: string;
         tokenSymbol?: string;
       };
@@ -76,7 +78,37 @@ export type ActivityListItem =
       timestamp: number;
       data: {
         destinationTokenSymbol?: string;
+        hash?: string;
         sourceTokenSymbol?: string;
+      };
+    }
+  | {
+      type: 'lendingDeposit';
+      chainId: CaipChainId;
+      status: Status;
+      timestamp: number;
+      data: {
+        hash?: string;
+        tokenSymbol?: string;
+      };
+    }
+  | {
+      type: 'claim';
+      chainId: CaipChainId;
+      status: Status;
+      timestamp: number;
+      data: {
+        hash?: string;
+        tokenSymbol?: string;
+      };
+    }
+  | {
+      type: 'claimMusdBonus';
+      chainId: CaipChainId;
+      status: Status;
+      timestamp: number;
+      data: {
+        hash?: string;
       };
     }
   | {
@@ -85,6 +117,27 @@ export type ActivityListItem =
       status: Status;
       timestamp: number;
       data: {
+        hash?: string;
+        tokenSymbol?: string;
+      };
+    }
+  | {
+      type: 'revokeSpendingCap';
+      chainId: CaipChainId;
+      status: Status;
+      timestamp: number;
+      data: {
+        hash?: string;
+        tokenSymbol?: string;
+      };
+    }
+  | {
+      type: 'increaseSpendingCap';
+      chainId: CaipChainId;
+      status: Status;
+      timestamp: number;
+      data: {
+        hash?: string;
         tokenSymbol?: string;
       };
     }
@@ -95,6 +148,7 @@ export type ActivityListItem =
       timestamp: number;
       data: {
         from: string;
+        hash?: string;
         methodId?: string;
         to: string;
         transactionCategory?: string;

@@ -4,10 +4,13 @@ import { mapMultiAccountTransaction } from './multiaccount-transaction';
 
 const subjectAddress = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
 const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
+const baseAaveUsdc = '0x4e65fe4dba92790696d040ac24aa414708f5c0ab';
+const baseAavePool = '0xa238dd80c259a72e81d7e4664a9801593f98d1c5';
 const baseRecipientAddress = '0x6fdb1e9d93c1279177b00baaf44524055455e92e';
 const lineaMusd = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
 const lineaSenderAddress = '0xf70da97812cb96acdf810712aa562db8dfa3dbef';
 const exchangeRecipient = '0x3913a8aca88c946284abbe7ab2ed671c6603de20';
+const metamaskBonusContract = '0x3ef3d8ba38ebe18db133cec108f4d14ce00dd9ae';
 const bscContractCallerAddress = '0xf70da97812cb96acdf810712aa562db8dfa3dbef';
 const bscUniversalRouter = '0xca11bde05977b3631167028862be2a173976ca11';
 const bscRecipientAddress = '0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f';
@@ -27,7 +30,7 @@ describe('mapMultiAccountTransaction', () => {
           symbol: 'USDC',
         },
       ],
-    } as V1TransactionByHashResponse;
+    } as unknown as V1TransactionByHashResponse;
 
     expect(
       mapMultiAccountTransaction({
@@ -41,6 +44,7 @@ describe('mapMultiAccountTransaction', () => {
       timestamp: 1778593067000,
       data: {
         from: subjectAddress,
+        hash: undefined,
         to: baseRecipientAddress,
         tokenSymbol: 'USDC',
       },
@@ -75,6 +79,7 @@ describe('mapMultiAccountTransaction', () => {
       timestamp: 1777983327000,
       data: {
         from: lineaSenderAddress,
+        hash: undefined,
         to: subjectAddress,
         tokenSymbol: 'mUSD',
       },
@@ -109,7 +114,87 @@ describe('mapMultiAccountTransaction', () => {
       timestamp: 1778003873000,
       data: {
         destinationTokenSymbol: undefined,
+        hash: undefined,
         sourceTokenSymbol: 'mUSD',
+      },
+    });
+  });
+
+  it('maps an Aave supply contract call to a Lending deposit activity', () => {
+    const transaction = {
+      hash: '0x08d14578168f22001e95503469c63613bd9f3d3f60e81dbbf204fbd21f484bd9',
+      timestamp: '2026-05-13T03:31:29.000Z',
+      chainId: Number(CHAIN_IDS.BASE),
+      from: subjectAddress,
+      to: baseAavePool,
+      methodId: '0x617ba037',
+      transactionCategory: 'CONTRACT_CALL',
+      transactionType: 'GENERIC_CONTRACT_CALL',
+      valueTransfers: [
+        {
+          from: '0x0000000000000000000000000000000000000000',
+          to: subjectAddress,
+          contractAddress: baseAaveUsdc,
+          symbol: 'aBasUSDC',
+        },
+        {
+          from: subjectAddress,
+          to: baseAaveUsdc,
+          contractAddress: baseUsdc,
+          symbol: 'USDC',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    expect(
+      mapMultiAccountTransaction({
+        subjectAddress,
+        transaction,
+      }),
+    ).toStrictEqual({
+      type: 'lendingDeposit',
+      chainId: 'eip155:8453',
+      status: 'success',
+      timestamp: 1778643089000,
+      data: {
+        tokenSymbol: 'USDC',
+        hash: '0x08d14578168f22001e95503469c63613bd9f3d3f60e81dbbf204fbd21f484bd9',
+      },
+    });
+  });
+
+  it('maps a MetaMask mUSD bonus claim to a Claim mUSD bonus activity', () => {
+    const transaction = {
+      hash: '0x875ded271a40278391fca5d71892231afd0cb9592f31bdf3b7c949906cb982c4',
+      timestamp: '2026-05-13T00:48:45.000Z',
+      chainId: Number(CHAIN_IDS.LINEA_MAINNET),
+      from: subjectAddress,
+      to: metamaskBonusContract,
+      transactionCategory: 'CLAIM_BONUS',
+      transactionType: 'METAMASK_CLAIM_BONUS',
+      transactionProtocol: 'METAMASK',
+      valueTransfers: [
+        {
+          from: metamaskBonusContract,
+          to: subjectAddress,
+          contractAddress: lineaMusd,
+          symbol: 'mUSD',
+        },
+      ],
+    } as V1TransactionByHashResponse;
+
+    expect(
+      mapMultiAccountTransaction({
+        subjectAddress,
+        transaction,
+      }),
+    ).toStrictEqual({
+      type: 'claimMusdBonus',
+      chainId: 'eip155:59144',
+      status: 'success',
+      timestamp: 1778633325000,
+      data: {
+        hash: '0x875ded271a40278391fca5d71892231afd0cb9592f31bdf3b7c949906cb982c4',
       },
     });
   });
@@ -144,6 +229,7 @@ describe('mapMultiAccountTransaction', () => {
       timestamp: 1778601880000,
       data: {
         from: bscContractCallerAddress,
+        hash: undefined,
         methodId: '0x174dea71',
         to: bscUniversalRouter,
         transactionCategory: 'CONTRACT_CALL',

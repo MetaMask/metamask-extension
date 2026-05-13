@@ -1,0 +1,66 @@
+import { getLabels } from '../../../shared/lib/activity/labels';
+import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import type { I18NSubstitution } from '../../../shared/lib/i18n';
+import { shortenAddress } from '../../helpers/utils/util';
+import { useI18nContext } from '../../hooks/useI18nContext';
+
+type LabelSubstitutions = {
+  description?: I18NSubstitution[];
+  title?: I18NSubstitution[];
+};
+
+function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
+  switch (activity.type) {
+    // Token in title, sender in description.
+    case 'receive':
+      return {
+        title: [activity.data.tokenSymbol ?? ''],
+        description: [shortenAddress(activity.data.from)],
+      };
+    // Token in title, recipient in description.
+    case 'send':
+      return {
+        title: [activity.data.tokenSymbol ?? ''],
+        description: [shortenAddress(activity.data.to)],
+      };
+    // Source and destination in title.
+    case 'swap':
+      return {
+        title: [
+          activity.data.sourceTokenSymbol ?? '',
+          activity.data.destinationTokenSymbol ?? '',
+        ],
+      };
+    // Token in title, token in description.
+    case 'claim':
+    case 'lendingDeposit':
+      return {
+        title: [activity.data.tokenSymbol ?? ''],
+        description: [activity.data.tokenSymbol ?? ''],
+      };
+    // Token in description.
+    case 'approveSpendingCap':
+    case 'increaseSpendingCap':
+    case 'revokeSpendingCap':
+      return {
+        description: [activity.data.tokenSymbol ?? ''],
+      };
+    // No substitutions.
+    default:
+      return {};
+  }
+}
+
+export function useGetLabel(activity: ActivityListItem) {
+  const t = useI18nContext();
+  const labels = getLabels({
+    type: activity.type,
+    status: activity.status,
+  });
+  const substitutions = getSubstitutions(activity);
+
+  return {
+    title: t(labels.title.key, substitutions.title),
+    description: t(labels.description.key, substitutions.description),
+  };
+}
