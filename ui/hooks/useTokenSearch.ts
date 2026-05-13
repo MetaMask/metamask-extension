@@ -50,16 +50,6 @@ export type UseTokenSearchState = {
 /**
  * Drives the API-backed token search field on the Manage Tokens page.
  *
- * Implementation notes:
- *
- *  - Built on top of TanStack Query (`useQuery`) so identical searches are
- *    deduped/cached automatically, in-flight requests get a `signal`, and
- *    stale results can't overwrite a fresher one when the query key changes.
- *  - The user's keystrokes are debounced into a "committed" query before that
- *    is folded into the react-query key, so we don't burn an API call on
- *    every character.
- *  - Empty queries short-circuit the request entirely via `enabled: false`.
- *
  * @param options - Hook configuration.
  * @param options.query
  * @param options.networks
