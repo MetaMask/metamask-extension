@@ -521,4 +521,81 @@ describe('TransactionCard', () => {
       expect(screen.getByText('10 TSLA')).toBeInTheDocument();
     });
   });
+
+  describe('Fill tag badges', () => {
+    it('shows Take Profit badge for take profit fills', () => {
+      const transaction = createMockTransaction({
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '+$125.00',
+          amountNumber: 125,
+          isPositive: true,
+          size: '0.5',
+          entryPrice: '2500.00',
+          points: '0',
+          pnl: '+125.00',
+          fee: '2.50',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.TakeProfit,
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-fill-tag-take-profit'),
+      ).toBeInTheDocument();
+    });
+
+    it('shows Stop Loss badge for stop loss fills', () => {
+      const transaction = createMockTransaction({
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '-$50.00',
+          amountNumber: -50,
+          isPositive: false,
+          size: '0.5',
+          entryPrice: '2500.00',
+          points: '0',
+          pnl: '-50.00',
+          fee: '2.50',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.StopLoss,
+        },
+      });
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.getByTestId('perps-fill-tag-stop-loss'),
+      ).toBeInTheDocument();
+    });
+
+    it('does not show badge for standard fills', () => {
+      const transaction = createMockTransaction();
+      renderWithProvider(
+        <TransactionCard transaction={transaction} />,
+        mockStore,
+      );
+
+      expect(
+        screen.queryByTestId('perps-fill-tag-take-profit'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-fill-tag-stop-loss'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-fill-tag-liquidated'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('perps-fill-tag-adl'),
+      ).not.toBeInTheDocument();
+    });
+  });
 });

@@ -13,6 +13,7 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
+import { PerpsFillTag } from '../perps-fill-tag';
 import { getDisplayName } from '../utils';
 import type { PerpsTransaction } from '../types';
 
@@ -147,7 +148,14 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         alignItems={BoxAlignItems.Start}
         gap={1}
       >
-        <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
+          <PerpsFillTag transaction={transaction} />
+        </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {getSubtitleDisplay()}
         </Text>
