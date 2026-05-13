@@ -69,7 +69,8 @@ type AllowedInitializationActions =
   | MultichainRoutingServiceGetSupportedAccountsAction
   | MultichainRoutingServiceIsSupportedScopeAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
-  | SnapPermissionSpecificationsActions;
+  | SnapPermissionSpecificationsActions
+  | ApprovalControllerAddRequestAction;
 
 export type PermissionControllerInitMessenger = ReturnType<
   typeof getPermissionControllerInitMessenger
@@ -102,6 +103,7 @@ export function getPermissionControllerInitMessenger(
       'CurrencyRateController:getState',
       'KeyringController:getKeyringsByType',
       'KeyringController:withKeyring',
+      'KeyringController:addNewKeyring',
       'MultichainRoutingService:isSupportedScope',
       'MultichainRoutingService:getSupportedAccounts',
       'NetworkController:findNetworkClientIdByChainId',
@@ -117,6 +119,7 @@ export function getPermissionControllerInitMessenger(
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
       'SnapInterfaceController:setInterfaceDisplayed',
+      'ApprovalController:addRequest',
     ],
   });
   return controllerInitMessenger;
