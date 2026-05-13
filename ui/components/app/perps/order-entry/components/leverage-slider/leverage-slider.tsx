@@ -47,7 +47,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   }, [leverage]);
 
   const handleSliderChange = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event | React.SyntheticEvent, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
       onLeverageChange(newValue);
       setInputValue(String(newValue));
@@ -56,7 +56,7 @@ export const LeverageSlider: React.FC<LeverageSliderProps> = ({
   );
 
   const handleSliderChangeCommitted = useCallback(
-    (_event: React.ChangeEvent<unknown>, value: number | number[]) => {
+    (_event: Event | React.SyntheticEvent, value: number | number[]) => {
       const newValue = Array.isArray(value) ? value[0] : value;
       if (newValue !== leverage) {
         track(MetaMetricsEventName.PerpsUiInteraction, {

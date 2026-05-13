@@ -38,11 +38,8 @@ export class PerpsMarketDetailPage {
    */
   private readonly closeAmountSliderInCloseModal = `[data-testid="${PerpsMarketDetailPage.perpsClosePositionModalTestId}"] [data-testid^="${PerpsMarketDetailPage.closeAmountSliderPctTestIdPrefix}"]`;
 
-  /**
-   * MUI `Slider` thumb / track (`role="slider"`) inside the close modal.
-   * Keyboard handling matches @material-ui/core/Slider (End = max, ArrowLeft = step down in LTR).
-   */
-  private readonly closeAmountSliderRoleInCloseModal = `${this.closeAmountSliderInCloseModal} [role="slider"]`;
+  /** MUI v5 Slider keyboard target inside the close modal (visually-hidden `input[type="range"]`). */
+  private readonly closeAmountSliderRoleInCloseModal = `${this.closeAmountSliderInCloseModal} input[type="range"]`;
 
   private readonly closeCtaButton = { testId: 'perps-close-cta-button' };
 
@@ -501,9 +498,10 @@ export class PerpsMarketDetailPage {
   /**
    * Sets the close-position slider to the given percentage (0–100) in the close modal.
    *
-   * Uses the MUI Slider keyboard model: `End` jumps to `max` (100), then `ArrowLeft`
-   * steps by 1 (see `handleKeyDown` in @material-ui/core/Slider/Slider.js). This
-   * avoids hit-testing / coordinate issues with WebDriver in the extension.
+   * Uses the MUI v5 Slider keyboard model: `End` jumps to `max` (100), then
+   * `ArrowLeft` steps by 1 (handled by `createHandleHiddenInputKeyDown` in
+   * MUI v5's `useSlider`). Targets the hidden `input[type="range"]` directly,
+   * which avoids hit-testing / coordinate issues with WebDriver in the extension.
    *
    * @param percent - Target 0–100; must match `close-amount-slider-pct-{n}` on the wrapper.
    */
