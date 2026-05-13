@@ -551,16 +551,16 @@ describe('BridgeCTAButton', () => {
     ['enable', 'the estimated return is low', { isEstimatedReturnLow: true }],
     ['enable', 'there are no validation errors', {}, messages.swap.message],
     [
-      'enable',
+      'disable',
       'network fee is unavailable',
       { isNetworkFeeUnavailable: true },
-      messages.bridgeGetNewQuote.message,
+      messages.insufficientFundsSend.message,
     ],
     [
-      'enable',
+      'disable',
       'network fee is unavailable with insufficient gas for quote',
       { isNetworkFeeUnavailable: true, isInsufficientGasForQuote: true },
-      messages.bridgeGetNewQuote.message,
+      messages.insufficientFundsSend.message,
     ],
     [
       'enable',
