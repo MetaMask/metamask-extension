@@ -1111,7 +1111,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         (orderParams.takeProfitPrice || orderParams.stopLossPrice) &&
         orderFormState.type === 'market' &&
         (!position ||
-          parseFloat(position.size) === 0 ||
+          parseFloat(position.size.replaceAll(',', '')) === 0 ||
           willFlipPosition(position, orderParams));
       const placeOrderParams = shouldHandleTpslSeparately
         ? (() => {
