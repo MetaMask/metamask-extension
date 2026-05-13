@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
+import log from 'loglevel';
 import type { Json } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
@@ -68,9 +69,9 @@ import {
 import { useEstimatedSlippage } from '../../hooks/perps/useEstimatedSlippage';
 import { SlippageConfigModal } from '../../components/app/perps/slippage-config-modal';
 import {
+  PERPS_LIMIT_ORDER_SLIPPAGE_BPS,
   PERPS_MIN_MARKET_ORDER_USD,
   PERPS_SLIPPAGE_DEFAULT_PCT,
-  PERPS_SLIPPAGE_MAX_PCT,
 } from '../../components/app/perps/constants';
 import {
   CandlePeriod,
@@ -188,8 +189,13 @@ function formStateToOrderParams(
     leverage: formState.leverage,
     currentPrice,
     usdAmount: cleanAmount,
-    // Convert percent → basis points (1% = 100bps) for the controller.
-    maxSlippageBps: Math.round(maxSlippagePct * 100),
+    // Limit orders use the controller's fixed limit slippage; market orders
+    // honor the user-configured cap. Mirrors mobile PerpsOrderView so the
+    // user's max-slippage value never widens the slippage on a limit order.
+    maxSlippageBps:
+      formState.type === 'limit'
+        ? PERPS_LIMIT_ORDER_SLIPPAGE_BPS
+        : Math.round(maxSlippagePct * 100),
   };
 
   if (formState.type === 'limit' && formState.limitPrice) {
@@ -380,9 +386,11 @@ const PerpsOrderEntryPage: React.FC = () => {
       submitRequestToBackground('setPreference', [
         'perpsMaxSlippagePct',
         valuePct,
-      ]).catch(() => {
-        // Preference save is best-effort; UI state already reflects the
-        // change via the next Redux flush from the background.
+      ]).catch((error) => {
+        // The user already saw the modal close — surface the persistence
+        // failure in the log so a stale cap on the next session doesn't
+        // look silent to the user or to support.
+        log.error('[Perps] Save max-slippage preference failed:', error);
       });
       track(MetaMetricsEventName.PerpsUiInteraction, {
         [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
@@ -912,7 +920,7 @@ const PerpsOrderEntryPage: React.FC = () => {
         [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_PCT]: maxSlippagePct,
         [PERPS_EVENT_PROPERTY.MAX_SLIPPAGE_SOURCE]: maxSlippageSource,
         [PERPS_EVENT_PROPERTY.ESTIMATED_SLIPPAGE_PCT]:
-          estimatedSlippagePct ?? PERPS_SLIPPAGE_MAX_PCT,
+          estimatedSlippagePct ?? null,
       });
     } else if (!exceedsMaxSlippage) {
       slippageBlockTrackedRef.current = false;

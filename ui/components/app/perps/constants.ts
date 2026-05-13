@@ -71,6 +71,12 @@ export const PERPS_SLIPPAGE_MIN_PCT = 0.1;
 export const PERPS_SLIPPAGE_MAX_PCT = 10;
 export const PERPS_SLIPPAGE_STEP_PCT = 0.1;
 
+// Limit-order slippage in basis points. Mirrors mobile's
+// `ORDER_SLIPPAGE_CONFIG.DefaultLimitSlippageBps = 100` and keeps the
+// user-configured max-slippage cap scoped to market orders, where it
+// actually affects fill price.
+export const PERPS_LIMIT_ORDER_SLIPPAGE_BPS = 100;
+
 /**
  * Market sorting configuration
  * Controls sorting behavior for the markets view
