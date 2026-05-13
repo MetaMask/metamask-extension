@@ -11,6 +11,7 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
+  selectBatchSellQuotes,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteWarning,
@@ -546,7 +547,7 @@ export const getSlippage = (state: BridgeAppState) => state.bridge.slippage;
 
 export const getQuoteRequest = (state: BridgeAppState) => {
   const { quoteRequest } = state.metamask;
-  return quoteRequest;
+  return quoteRequest[0];
 };
 
 export const getQuoteRefreshRate = createSelector(
@@ -681,6 +682,22 @@ export const getBridgeQuotes = createSelector(
           (q) => q.quote.requestId === selectedQuote?.quote.requestId,
         ) ?? quotes.recommendedQuote,
     };
+  },
+);
+
+export const getBatchSellQuotes = createSelector(
+  [
+    ({ metamask }: BridgeAppState) => metamask,
+    ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
+    ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
+    (_, { requestCount }: { requestCount: number }) => requestCount,
+  ],
+  (controllerStates, sortOrder, selectedQuote, requestCount) => {
+    return selectBatchSellQuotes(controllerStates, {
+      sortOrder,
+      requestCount,
+      selectedQuote,
+    });
   },
 );
 

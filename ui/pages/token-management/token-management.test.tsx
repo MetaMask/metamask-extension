@@ -6,7 +6,10 @@ import {
 } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import { TOKEN_MANAGEMENT_ROUTE } from '../../helpers/constants/routes';
+import {
+  CUSTOM_TOKEN_IMPORT_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
+} from '../../helpers/constants/routes';
 import { TokenManagementPage } from './token-management';
 
 jest.mock('../../selectors/assets', () => ({
@@ -204,7 +207,7 @@ describe('TokenManagementPage', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('opens the import tokens modal from the sticky add custom token button', () => {
+  it('navigates to the custom token import page from the sticky add custom token button', () => {
     const { store } = renderPage();
 
     const addCustomTokenButton = screen.getByTestId(
@@ -219,7 +222,10 @@ describe('TokenManagementPage', () => {
 
     fireEvent.click(addCustomTokenButton);
 
-    expect(store.getState().appState.importTokensModalOpen).toBe(true);
+    // The legacy import-tokens modal must not open anymore — the new flow
+    // routes the user to the dedicated CUSTOM_TOKEN_IMPORT_ROUTE page instead.
+    expect(store.getState().appState.importTokensModalOpen).toBeFalsy();
+    expect(CUSTOM_TOKEN_IMPORT_ROUTE).toBe('/custom-token-import');
   });
 
   it('shows tokens from the enabled home-page network filter', () => {

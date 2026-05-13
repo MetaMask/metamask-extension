@@ -57,7 +57,7 @@ const SNAP_APPROVAL_TYPES = [
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
 ];
 
-export const ConfirmationHandler = () => {
+export const ConfirmationRouter = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
