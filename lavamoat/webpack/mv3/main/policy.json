@@ -1492,6 +1492,7 @@
     },
     "@mui/material": {
       "globals": {
+        "CSS": true,
         "DocumentFragment": true,
         "ResizeObserver": true,
         "addEventListener": true,
@@ -1499,6 +1500,7 @@
         "clearInterval": true,
         "console.error": true,
         "console.warn": true,
+        "document.activeElement": true,
         "document.addEventListener": true,
         "document.body": true,
         "document.removeEventListener": true,
