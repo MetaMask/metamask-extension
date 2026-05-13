@@ -15,8 +15,12 @@ import {
   renderWithConfirmContextProvider,
   renderWithConfirmContext,
 } from '../../../../../../test/lib/confirmations/render-helpers';
+import { unapprovedTypedSignMsgV4WithPermission } from '../../../../../../test/data/confirmations/typed_sign';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/gator-permissions/feature-flags';
+import {
+  ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
+  getEnabledAdvancedPermissions,
+} from '../../../../../../shared/lib/gator-permissions/feature-flags';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -129,9 +133,29 @@ describe('Info', () => {
   });
 
   it('renders info section for typed sign request with permission', () => {
-    const state = getMockTypedSignPermissionConfirmState();
+    const enabledAdvancedPermissionsFeatureFlag = {
+      permissions: ['native-token-stream'],
+    };
+    const state = getMockTypedSignPermissionConfirmState(
+      unapprovedTypedSignMsgV4WithPermission.decodedPermission,
+      {
+        metamask: {
+          remoteFeatureFlags: {
+            [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]:
+              enabledAdvancedPermissionsFeatureFlag,
+            unrelatedRemoteFeatureFlag: true,
+          },
+        },
+      },
+    );
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
+    expect(getEnabledAdvancedPermissions).toHaveBeenLastCalledWith({
+      remoteFeatureFlags: {
+        [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]:
+          enabledAdvancedPermissionsFeatureFlag,
+      },
+    });
     expect(container).toMatchSnapshot();
   });
 

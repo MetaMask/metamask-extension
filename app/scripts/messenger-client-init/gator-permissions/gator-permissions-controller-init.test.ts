@@ -4,7 +4,10 @@ import {
 } from '@metamask/gator-permissions-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { MessengerClientInitRequest } from '../types';
-import { getEnabledAdvancedPermissions } from '../../../../shared/lib/gator-permissions/feature-flags';
+import {
+  ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
+  getEnabledAdvancedPermissions,
+} from '../../../../shared/lib/gator-permissions/feature-flags';
 import {
   getGatorPermissionsControllerMessenger,
   GatorPermissionsControllerMessenger,
@@ -13,7 +16,12 @@ import { getRootMessenger } from '../../lib/messenger';
 import { GatorPermissionsControllerInit } from './gator-permissions-controller-init';
 
 jest.mock('@metamask/gator-permissions-controller');
-jest.mock('../../../../shared/lib/gator-permissions/feature-flags');
+jest.mock('../../../../shared/lib/gator-permissions/feature-flags', () => ({
+  ...jest.requireActual(
+    '../../../../shared/lib/gator-permissions/feature-flags',
+  ),
+  getEnabledAdvancedPermissions: jest.fn(),
+}));
 
 function buildInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<GatorPermissionsControllerMessenger>
@@ -22,7 +30,7 @@ function buildInitRequestMock(): jest.Mocked<
   const remoteFeatureFlagController = {
     state: {
       remoteFeatureFlags: {
-        'enabled-advanced-permissions': {
+        [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
           permissions: ['native-token-stream'],
         },
       },
