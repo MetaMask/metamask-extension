@@ -15,7 +15,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import mockState from '../../../test/data/mock-state.json';
-import { enLocale as messages } from '../../../test/lib/i18n-helpers';
+import { enLocale as messages, tEn } from '../../../test/lib/i18n-helpers';
+import { PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -409,6 +410,44 @@ describe('PerpsOrderEntryPage', () => {
       renderWithProvider(<PerpsOrderEntryPage />, store);
 
       expect(screen.queryByTestId('auto-close-toggle')).not.toBeInTheDocument();
+    });
+
+    it('renders the order-size input with the default 0.00 placeholder (no "min $10")', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+      expect(amountInput?.placeholder).toBe('0.00');
+      expect(amountInput?.placeholder).not.toMatch(/min\s*\$/iu);
+    });
+
+    it('disables submit and shows the minimum-order message when no order size has been entered', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      const amountContainer = screen.getByTestId('amount-input-field');
+      const amountInput = amountContainer.querySelector('input');
+
+      expect(amountInput?.value).toBe('');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
+    });
+
+    it('disables submit when the user enters an amount below the $10 minimum', () => {
+      const store = mockStore(createMockState());
+      renderWithProvider(<PerpsOrderEntryPage />, store);
+
+      enterAmount('5');
+
+      const submitButton = screen.getByTestId('submit-order-button');
+      expect(submitButton).toBeDisabled();
+      expect(submitButton).toHaveTextContent(
+        tEn('perpsMinOrderSize', [`$${PERPS_MIN_MARKET_ORDER_USD}`]),
+      );
     });
   });
 
