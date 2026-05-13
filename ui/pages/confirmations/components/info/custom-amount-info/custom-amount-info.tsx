@@ -90,7 +90,7 @@ export const CustomAmountInfo = React.memo(
     hidePayTokenAmount,
     overrideBottomContent,
     overrideCenterContent,
-    preferredToken
+    preferredToken,
   }: React.PropsWithChildren<CustomAmountInfoProps>) => {
     useAutomaticTransactionPayToken({
       disable: Boolean(disablePay) || Boolean(disableAutomaticToken),

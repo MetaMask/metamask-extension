@@ -66,7 +66,7 @@ export const SendMetricsContext = createContext<SendMetricsContextType>({
 });
 
 export const SendMetricsContextProvider = ({
-  children
+  children,
 }: React.PropsWithChildren<{
   children: ReactElement[] | ReactElement;
 }>) => {

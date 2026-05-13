@@ -62,8 +62,8 @@ export const EditAccountsModal = ({
   accounts,
   defaultSelectedAccountAddresses,
   onClose,
-  onSubmit
-}: React.PropsWithChildren<EditAccountsModalProps>) => {
+  onSubmit,
+}: EditAccountsModalProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [modalStage, setModalStage] = useState<EditAccountModalStage>(

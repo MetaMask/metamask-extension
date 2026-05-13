@@ -26,13 +26,13 @@ export const BalanceChangeList = ({
   heading,
   balanceChanges,
   testId,
-  labelColor
-}: React.PropsWithChildren<{
+  labelColor,
+}: {
   heading: string;
   balanceChanges: BalanceChange[];
   testId?: string;
   labelColor?: TextColor;
-}>) => {
+}) => {
   const { currentConfirmation } = useConfirmContext();
   const sortedBalanceChanges = useMemo(() => {
     return sortBalanceChanges(balanceChanges);

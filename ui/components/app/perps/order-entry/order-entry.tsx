@@ -87,8 +87,8 @@ export const OrderEntry = ({
   markPrice,
   autoFocusUsd = false,
   autoFocusLimitPrice = false,
-  usdPlaceholder
-}: React.PropsWithChildren<OrderEntryProps>) => {
+  usdPlaceholder,
+}: OrderEntryProps) => {
   const t = useI18nContext();
 
   // Fetch full MarketInfo for szDecimals (used to round position size before margin calc)

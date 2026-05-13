@@ -24,8 +24,8 @@ export const SnapInsight = ({
   snapId,
   interfaceId,
   loading,
-  isExpanded
-}: React.PropsWithChildren<SnapInsightProps>) => {
+  isExpanded,
+}: SnapInsightProps) => {
   const t = useI18nContext();
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),

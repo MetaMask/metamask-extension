@@ -77,8 +77,8 @@ const PerpsTutorialAnimation = ({
   artboardName,
   className,
   fit: fitProp,
-  alignment = Alignment.Center
-}: React.PropsWithChildren<PerpsTutorialAnimationProps>) => {
+  alignment = Alignment.Center,
+}: PerpsTutorialAnimationProps) => {
   const theme = useTheme();
   const isDarkTheme = theme === ThemeType.dark;
   const environmentType = getEnvironmentType();

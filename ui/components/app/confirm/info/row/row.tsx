@@ -118,7 +118,7 @@ export const ConfirmInfoRow = ({
   tooltipIcon,
   tooltipIconColor,
   onClick,
-  labelChildrenStyleOverride
+  labelChildrenStyleOverride,
 }: React.PropsWithChildren<ConfirmInfoRowProps>) => {
   const { value: expanded, toggle } = useBoolean(!collapsed);
 
@@ -258,8 +258,8 @@ export type ConfirmInfoRowSkeletonProps = {
 export const ConfirmInfoRowSkeleton = ({
   'data-testid': dataTestId,
   label,
-  rowVariant = ConfirmInfoRowSize.Default
-}: React.PropsWithChildren<ConfirmInfoRowSkeletonProps>) => {
+  rowVariant = ConfirmInfoRowSize.Default,
+}: ConfirmInfoRowSkeletonProps) => {
   const isSmall = rowVariant === ConfirmInfoRowSize.Small;
 
   if (isSmall || !label) {

@@ -31,8 +31,8 @@ export type NotificationListItemTextProps = {
 export const NotificationListItemText = ({
   items,
   variant = TextVariant.bodySm,
-  color = TextColor.textDefault
-}: React.PropsWithChildren<NotificationListItemTextProps>) => {
+  color = TextColor.textDefault,
+}: NotificationListItemTextProps) => {
   const renderItems = items.map(({ text, highlighted }, index) => {
     const key = getRandomKey(text, index);
     const textColor = highlighted ? TextColor.infoDefault : color;

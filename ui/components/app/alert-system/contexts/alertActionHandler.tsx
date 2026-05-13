@@ -15,7 +15,7 @@ export const AlertActionHandlerContext = createContext<
 
 export const AlertActionHandlerProvider = ({
   children,
-  onProcessAction
+  onProcessAction,
 }: React.PropsWithChildren<{
   children: ReactElement;
   onProcessAction: (actionKey: string) => void;

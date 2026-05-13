@@ -7,7 +7,7 @@ export type SnapUITooltipProps = {
 
 export const SnapUITooltip = ({
   content,
-  children
+  children,
 }: React.PropsWithChildren<SnapUITooltipProps>) => {
   return (
     <Tooltip

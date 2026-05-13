@@ -64,7 +64,7 @@ export const SendContext = createContext<SendContextType>({
 });
 
 export const SendContextProvider = ({
-  children
+  children,
 }: React.PropsWithChildren<{
   children: ReactElement[] | ReactElement;
 }>) => {

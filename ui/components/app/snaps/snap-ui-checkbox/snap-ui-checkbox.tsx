@@ -34,7 +34,7 @@ export const SnapUICheckbox = ({
   form,
   disabled,
   ...props
-}: React.PropsWithChildren<SnapUICheckboxProps>) => {
+}: SnapUICheckboxProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as boolean;

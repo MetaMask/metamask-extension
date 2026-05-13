@@ -35,8 +35,8 @@ export const SearchInput = ({
   onChange,
   onClear,
   onInputClick,
-  autoFocus = false
-}: React.PropsWithChildren<SearchInputProps>) => {
+  autoFocus = false,
+}: SearchInputProps) => {
   const t = useI18nContext();
 
   const handleKeyDown = useCallback(

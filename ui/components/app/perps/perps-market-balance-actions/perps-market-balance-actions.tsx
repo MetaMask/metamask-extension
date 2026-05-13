@@ -50,8 +50,8 @@ const PerpsMarketBalanceActions = ({
   isAddFundsLoading = false,
   onAddFunds,
   onWithdraw,
-  onLearnMore
-}: React.PropsWithChildren<PerpsMarketBalanceActionsProps>) => {
+  onLearnMore,
+}: PerpsMarketBalanceActionsProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const { formatCurrency } = useFormatters();

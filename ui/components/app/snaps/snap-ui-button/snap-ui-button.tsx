@@ -36,7 +36,9 @@ export const SnapUIButton = ({
   className = '',
   textVariant,
   ...props
-}: React.PropsWithChildren<SnapUIButtonProps & Omit<ButtonLinkProps<'button'>, 'variant'>>) => {
+}: React.PropsWithChildren<
+  SnapUIButtonProps & Omit<ButtonLinkProps<'button'>, 'variant'>
+>) => {
   const { handleEvent } = useSnapInterfaceContext();
 
   const handleClick = (event: ReactMouseEvent<HTMLElement>) => {

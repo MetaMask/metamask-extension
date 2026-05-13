@@ -76,7 +76,7 @@ export const SnapInterfaceContextProvider = ({
   children,
   interfaceId,
   snapId,
-  initialState
+  initialState,
 }: React.PropsWithChildren<SnapInterfaceContextProviderProps>) => {
   const dispatch = useDispatch();
 

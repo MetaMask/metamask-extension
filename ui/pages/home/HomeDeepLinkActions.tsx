@@ -72,9 +72,7 @@ export const useHomeDeepLinkEffects = () => {
  * Ghost component that manages the useHomeDeepLinkEffects
  * Can be used in non-functional components (that cannot use hooks)
  */
-export const HomeDeepLinkActions = memo(
-  () => {
-    useHomeDeepLinkEffects();
-    return null;
-  },
-);
+export const HomeDeepLinkActions = memo(() => {
+  useHomeDeepLinkEffects();
+  return null;
+});

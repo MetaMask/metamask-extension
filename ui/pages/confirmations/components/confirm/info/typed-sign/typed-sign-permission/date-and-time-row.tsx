@@ -24,12 +24,12 @@ import { DAY } from '../../../../../../../../shared/constants/time';
 export const DateAndTimeRow = ({
   timestamp,
   label,
-  tooltip
-}: React.PropsWithChildren<{
+  tooltip,
+}: {
   timestamp: number;
   label: string;
   tooltip?: string;
-}>) => {
+}) => {
   const timestampUTC = DateTime.fromSeconds(timestamp).toUTC();
 
   const datePart = timestampUTC.toFormat('dd LLLL yyyy');

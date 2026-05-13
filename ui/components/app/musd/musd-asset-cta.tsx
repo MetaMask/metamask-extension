@@ -91,8 +91,8 @@ export type MusdAssetCtaProps = {
 export const MusdAssetCta = ({
   token,
   onDismiss,
-  variant = 'card'
-}: React.PropsWithChildren<MusdAssetCtaProps>) => {
+  variant = 'card',
+}: MusdAssetCtaProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);

@@ -28,8 +28,8 @@ export const NotificationDetailNft = ({
   networkSrc,
   tokenName,
   tokenSrc,
-  networkName
-}: React.PropsWithChildren<NotificationDetailNftProps>) => (
+  networkName,
+}: NotificationDetailNftProps) => (
   <Box
     paddingTop={1}
     paddingBottom={4}

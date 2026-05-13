@@ -41,8 +41,8 @@ export const ConnectedSitePopover = ({
   isOpen,
   onClose,
   isConnected,
-  onClick
-}: React.PropsWithChildren<ConnectedSitePopoverProps>) => {
+  onClick,
+}: ConnectedSitePopoverProps) => {
   const t = useContext(I18nContext);
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
 

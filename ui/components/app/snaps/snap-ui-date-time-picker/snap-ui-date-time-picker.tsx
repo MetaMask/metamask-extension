@@ -97,8 +97,8 @@ export const SnapUIDateTimePicker = ({
   disabled,
   error,
   disablePast = false,
-  disableFuture = false
-}: React.PropsWithChildren<SnapUIDateTimePickerProps>) => {
+  disableFuture = false,
+}: SnapUIDateTimePickerProps) => {
   const t = useI18nContext();
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 

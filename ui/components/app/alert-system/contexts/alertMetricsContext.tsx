@@ -19,7 +19,7 @@ type AlertMetricsProps = {
 
 export const AlertMetricsProvider = ({
   children,
-  metrics
+  metrics,
 }: React.PropsWithChildren<AlertMetricsProps>) => {
   const { trackAlertActionClicked, trackAlertRender, trackInlineAlertClicked } =
     metrics;

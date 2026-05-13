@@ -46,8 +46,8 @@ export const MultichainSiteCell = ({
   selectedAccountGroupIds,
   selectedChainIds,
   isConnectFlow,
-  hideAllToasts = () => undefined
-}: React.PropsWithChildren<MultichainSiteCellProps>) => {
+  hideAllToasts = () => undefined,
+}: MultichainSiteCellProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];

@@ -35,8 +35,8 @@ export const EditAccountAddAccountForm = ({
   accountType,
   onActionComplete,
   onBack,
-  onClose
-}: React.PropsWithChildren<EditAccountAddAccountFormProps>) => {
+  onClose,
+}: EditAccountAddAccountFormProps) => {
   const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const [showSrpSelection, setShowSrpSelection] = useState(false);

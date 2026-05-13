@@ -46,8 +46,8 @@ export const TransactionCard = ({
   transaction,
   onClick,
   variant = 'default',
-  showTopBorder = false
-}: React.PropsWithChildren<TransactionCardProps>) => {
+  showTopBorder = false,
+}: TransactionCardProps) => {
   const t = useI18nContext();
   const displayName = getDisplayName(transaction.symbol);
 

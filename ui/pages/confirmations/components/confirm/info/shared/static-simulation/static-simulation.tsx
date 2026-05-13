@@ -25,15 +25,15 @@ const StaticSimulation = ({
   description,
   simulationElements,
   isLoading,
-  isCollapsed = false
-}: React.PropsWithChildren<{
+  isCollapsed = false,
+}: {
   title: string;
   titleTooltip: string;
   description?: string;
   simulationElements: React.ReactNode;
   isLoading?: boolean;
   isCollapsed?: boolean;
-}>) => {
+}) => {
   return (
     <ConfirmInfoSection
       data-testid="confirmation__simulation_section"

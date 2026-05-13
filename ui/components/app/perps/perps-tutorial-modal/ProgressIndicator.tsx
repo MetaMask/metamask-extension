@@ -14,8 +14,8 @@ type ProgressIndicatorProps = {
 
 const ProgressIndicator = ({
   totalSteps,
-  currentStep
-}: React.PropsWithChildren<ProgressIndicatorProps>) => {
+  currentStep,
+}: ProgressIndicatorProps) => {
   const theme = useTheme();
   const activeColor = theme === 'light' ? 'bg-black' : 'bg-white';
 

@@ -31,7 +31,7 @@ export const TemplateAlertContext = createContext<
 export const TemplateAlertContextProvider = ({
   children,
   confirmationId,
-  onSubmit
+  onSubmit,
 }: React.PropsWithChildren<{
   children: ReactElement;
   confirmationId: string;
@@ -67,7 +67,7 @@ export const TemplateAlertContextProvider = ({
   return (
     // AlertMetricsProvider is added as it is required for alert modals to work
     // metrics event capturing can be added if needed.
-    (<AlertMetricsProvider
+    <AlertMetricsProvider
       metrics={{
         trackAlertActionClicked: NopeFunction,
         trackAlertRender: NopeFunction,
@@ -95,7 +95,7 @@ export const TemplateAlertContextProvider = ({
           </>
         </TemplateAlertContext.Provider>
       </AlertActionHandlerProvider>
-    </AlertMetricsProvider>)
+    </AlertMetricsProvider>
   );
 };
 

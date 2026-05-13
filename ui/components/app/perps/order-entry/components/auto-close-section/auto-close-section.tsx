@@ -90,8 +90,8 @@ export const AutoCloseSection = ({
   limitPrice,
   liquidationPrice,
   leverage,
-  asset
-}: React.PropsWithChildren<AutoCloseSectionProps>) => {
+  asset,
+}: AutoCloseSectionProps) => {
   const t = useI18nContext();
   const { feeRate: closingFeeRate } = usePerpsOrderFees({
     symbol: asset,

@@ -73,8 +73,8 @@ export const AddressQRCodeModal = ({
   accountName,
   networkName,
   chainId,
-  networkImageSrc
-}: React.PropsWithChildren<AddressQRCodeModalProps>) => {
+  networkImageSrc,
+}: AddressQRCodeModalProps) => {
   const t = useI18nContext();
 
   // useCopyToClipboard analysis: Copies one of your public addresses

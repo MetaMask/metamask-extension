@@ -18,9 +18,9 @@ interface WrapperProps {
 }
 
 // Wrapper component to provide necessary providers
-const Wrapper = ({
-  children
-}: React.PropsWithChildren<WrapperProps>) => <Provider store={store}>{children}</Provider>;
+const Wrapper = ({ children }: React.PropsWithChildren<WrapperProps>) => (
+  <Provider store={store}>{children}</Provider>
+);
 
 const meta: Meta<typeof Home> = {
   title: 'Pages/Home/Home',

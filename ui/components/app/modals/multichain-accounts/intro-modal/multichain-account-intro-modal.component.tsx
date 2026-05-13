@@ -40,8 +40,8 @@ export const MultichainAccountIntroModal = React.memo(
     onViewAccounts,
     onLearnMore,
     onClose,
-    isLoading = false
-  }: React.PropsWithChildren<MultichainAccountIntroModalProps>) => {
+    isLoading = false,
+  }: MultichainAccountIntroModalProps) => {
     const t = useI18nContext();
 
     return (

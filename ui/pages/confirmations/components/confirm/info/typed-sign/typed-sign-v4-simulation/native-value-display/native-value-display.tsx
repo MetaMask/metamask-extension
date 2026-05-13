@@ -47,8 +47,8 @@ const NativeValueDisplay = ({
   chainId,
   value,
   credit,
-  debit
-}: React.PropsWithChildren<PermitSimulationValueDisplayParams>) => {
+  debit,
+}: PermitSimulationValueDisplayParams) => {
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
   );

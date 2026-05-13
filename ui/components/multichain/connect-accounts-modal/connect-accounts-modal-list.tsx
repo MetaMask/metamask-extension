@@ -39,8 +39,8 @@ export const ConnectAccountsModalList = ({
   checked,
   isIndeterminate,
   onAccountsUpdate,
-  activeTabOrigin
-}: React.PropsWithChildren<ConnectAccountsListProps>) => {
+  activeTabOrigin,
+}: ConnectAccountsListProps) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   return (

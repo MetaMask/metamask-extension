@@ -48,8 +48,8 @@ export const NotificationDetailCopyButton = ({
   notification,
   text,
   displayText,
-  color = TextColor.textAlternative
-}: React.PropsWithChildren<NotificationDetailCopyButtonProps>): JSX.Element => {
+  color = TextColor.textAlternative,
+}: NotificationDetailCopyButtonProps): JSX.Element => {
   // useCopyToClipboard analysis: Copies the text of the notification detail, which is never a private key
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });
   const t = useI18nContext();

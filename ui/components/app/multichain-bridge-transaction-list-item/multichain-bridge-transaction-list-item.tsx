@@ -62,8 +62,8 @@ type MultichainBridgeTransactionListItemProps = {
 const MultichainBridgeTransactionListItem = ({
   transaction,
   bridgeHistoryItem,
-  toggleShowDetails
-}: React.PropsWithChildren<MultichainBridgeTransactionListItemProps>) => {
+  toggleShowDetails,
+}: MultichainBridgeTransactionListItemProps) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
 

@@ -36,7 +36,7 @@ export const SnapUIRadioGroup = ({
   form,
   disabled,
   ...props
-}: React.PropsWithChildren<SnapUIRadioGroupProps>) => {
+}: SnapUIRadioGroupProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as string;

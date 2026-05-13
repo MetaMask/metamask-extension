@@ -47,8 +47,8 @@ export const SiteCell = ({
   selectedAccountAddresses,
   selectedChainIds,
   isConnectFlow,
-  hideAllToasts = () => undefined
-}: React.PropsWithChildren<SiteCellProps>) => {
+  hideAllToasts = () => undefined,
+}: SiteCellProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];

@@ -63,8 +63,8 @@ export const NotificationDetailAsset = ({
   label,
   detail,
   fiatValue,
-  value
-}: React.PropsWithChildren<NotificationDetailAssetProps>): JSX.Element => {
+  value,
+}: NotificationDetailAssetProps): JSX.Element => {
   const badgeIcon = (
     <AvatarToken
       src={icon.badge?.src}

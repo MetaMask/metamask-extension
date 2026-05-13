@@ -58,8 +58,8 @@ export const MultichainAccountNetworkGroup = ({
   chainIds,
   excludeTestNetworks = true,
   limit = 4,
-  className
-}: React.PropsWithChildren<MultichainAccountNetworkGroupProps>) => {
+  className,
+}: MultichainAccountNetworkGroupProps) => {
   // Fetch chain IDs from account group if groupId is provided
   const accountGroupScopes = useSelector((state) =>
     groupId

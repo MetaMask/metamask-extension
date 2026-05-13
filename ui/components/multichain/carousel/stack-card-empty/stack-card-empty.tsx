@@ -14,8 +14,8 @@ import type {
 // Background empty card for stacking behind last card
 export const StackCardEmpty = ({
   isBackground = true,
-  className = ''
-}: React.PropsWithChildren<StackCardEmptyProps>) => {
+  className = '',
+}: StackCardEmptyProps) => {
   const t = useI18nContext();
 
   return (
@@ -42,8 +42,8 @@ export const StackCardEmpty = ({
 // Main empty state component with fold animation
 export const EmptyStateComponent = ({
   onComplete,
-  isBackground = false
-}: React.PropsWithChildren<EmptyStateComponentProps>) => {
+  isBackground = false,
+}: EmptyStateComponentProps) => {
   const t = useI18nContext();
   const { startEmptyStateSequence, isEmptyStateFolding } = useTransitionToEmpty(
     { onEmptyStateComplete: onComplete },

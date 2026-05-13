@@ -55,8 +55,8 @@ type MarketDataRowProps = {
 const MarketDataRow = ({
   label,
   value,
-  'data-testid': dataTestId
-}: React.PropsWithChildren<MarketDataRowProps>) => (
+  'data-testid': dataTestId,
+}: MarketDataRowProps) => (
   <Box
     marginBottom={3}
     data-testid={dataTestId}
@@ -74,8 +74,8 @@ const MarketDataRow = ({
 export const TokenInsightsModal = ({
   isOpen,
   onClose,
-  token
-}: React.PropsWithChildren<TokenInsightsModalProps>) => {
+  token,
+}: TokenInsightsModalProps) => {
   const t = useI18nContext();
   const { trackEvent } = React.useContext(MetaMetricsContext);
   const dialogRef = React.useRef<HTMLElement | null>(null);

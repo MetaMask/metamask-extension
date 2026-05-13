@@ -36,8 +36,8 @@ export const EditMarginExpandable = ({
   account,
   currentPrice,
   isExpanded,
-  onToggle
-}: React.PropsWithChildren<EditMarginExpandableProps>) => {
+  onToggle,
+}: EditMarginExpandableProps) => {
   const t = useI18nContext();
   const [marginMode, setMarginMode] = useState<'add' | 'remove'>('add');
   const [isSaving, setIsSaving] = useState(false);

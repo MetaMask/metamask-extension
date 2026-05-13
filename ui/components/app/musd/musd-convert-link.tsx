@@ -73,8 +73,8 @@ export const MusdConvertLink = ({
   chainId,
   tokenSymbol,
   ctaText,
-  entryPoint = 'token_list'
-}: React.PropsWithChildren<MusdConvertLinkProps>) => {
+  entryPoint = 'token_list',
+}: MusdConvertLinkProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { startConversionFlow, educationSeen } = useMusdConversion();

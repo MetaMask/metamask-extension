@@ -50,7 +50,7 @@ export const FundingMethodModal = ({
   title,
   onClickReceive,
   ...props
-}: React.PropsWithChildren<FundingMethodModalProps>) => {
+}: FundingMethodModalProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { openBuyCryptoInPdapp } = useRamps();

@@ -185,8 +185,8 @@ const PopoverMenuItem = ({
   description,
   onClick,
   className = '',
-  'data-testid': testId
-}: React.PropsWithChildren<PopoverMenuItemProps>) => (
+  'data-testid': testId,
+}: PopoverMenuItemProps) => (
   <Box
     className={`w-full text-left px-4 py-4 bg-transparent hover:bg-hover active:bg-pressed flex items-start gap-3 cursor-pointer ${className}`}
     onClick={onClick}

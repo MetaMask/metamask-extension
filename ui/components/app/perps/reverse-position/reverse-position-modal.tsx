@@ -71,8 +71,8 @@ export const ReversePositionModal = ({
   onClose,
   position,
   currentPrice,
-  sizeDecimals
-}: React.PropsWithChildren<ReversePositionModalProps>) => {
+  sizeDecimals,
+}: ReversePositionModalProps) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { track } = usePerpsEventTracking();

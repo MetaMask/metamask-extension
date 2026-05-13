@@ -88,8 +88,8 @@ export const PerpsCandlePeriodModal = ({
   isOpen,
   selectedPeriod,
   onClose,
-  onPeriodChange
-}: React.PropsWithChildren<PerpsCandlePeriodModalProps>) => {
+  onPeriodChange,
+}: PerpsCandlePeriodModalProps) => {
   const t = useI18nContext();
 
   const handlePeriodSelect = (period: CandlePeriod) => {

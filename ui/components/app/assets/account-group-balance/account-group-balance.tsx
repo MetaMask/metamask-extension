@@ -46,8 +46,8 @@ export const AccountGroupBalance = ({
   balanceIsCached,
   handleSensitiveToggle,
   balance,
-  chainId
-}: React.PropsWithChildren<AccountGroupBalanceProps>) => {
+  chainId,
+}: AccountGroupBalanceProps) => {
   const { privacyMode, showNativeTokenAsMainBalance } =
     useSelector(getPreferences);
   const enabledNetworks = useSelector(getEnabledNetworksByNamespace);

@@ -60,8 +60,8 @@ const MatchedAccountInfo = ({
   displayName,
   handleClear,
   disabled,
-  error
-}: React.PropsWithChildren<MatchedAccountInfoProps>) => (
+  error,
+}: MatchedAccountInfoProps) => (
   <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
     {label && (
       <Label className={classnames('mm-form-text-field__label')}>{label}</Label>
@@ -150,7 +150,7 @@ export const SnapUIAddressInput = ({
   error,
   disabled,
   ...props
-}: React.PropsWithChildren<SnapUIAddressInputProps & FormTextFieldProps<'div'>>) => {
+}: SnapUIAddressInputProps & FormTextFieldProps<'div'>) => {
   const { handleInputChange, getValue, focusedInput, setCurrentFocusedInput } =
     useSnapInterfaceContext();
 

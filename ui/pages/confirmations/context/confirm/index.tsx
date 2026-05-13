@@ -34,7 +34,7 @@ export const ConfirmContext = createContext<ConfirmContextType | undefined>(
 export const ConfirmContextProvider = ({
   children,
   confirmationId,
-  currentConfirmationOverride
+  currentConfirmationOverride,
 }: React.PropsWithChildren<{
   children: ReactElement;
   confirmationId?: string;

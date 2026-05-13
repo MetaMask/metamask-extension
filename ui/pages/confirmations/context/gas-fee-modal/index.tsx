@@ -29,7 +29,7 @@ export const GasFeeModalContext = createContext<
 export const GasFeeModalContextProvider = ({
   children,
   transactionMeta,
-  editGasMode
+  editGasMode,
 }: React.PropsWithChildren<{
   children: React.ReactNode;
   /** Optional transaction for gas editing when outside confirm flow (e.g. cancel/speedup). */

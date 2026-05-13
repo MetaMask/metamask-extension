@@ -13,7 +13,7 @@ export type SnapUIFormProps = {
 
 export const SnapUIForm = ({
   children,
-  name
+  name,
 }: React.PropsWithChildren<SnapUIFormProps>) => {
   const { handleEvent } = useSnapInterfaceContext();
 

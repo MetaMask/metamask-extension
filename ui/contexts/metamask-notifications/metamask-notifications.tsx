@@ -159,7 +159,7 @@ export function useEnableNotificationsByDefaultEffect() {
 }
 
 export const MetamaskNotificationsProvider = ({
-  children
+  children,
 }: React.PropsWithChildren<unknown>) => {
   const { listNotifications, notificationsData, isLoading, error } =
     useListNotifications();

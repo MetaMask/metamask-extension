@@ -48,7 +48,7 @@ export type BalanceEmptyStateProps = {
 export const BalanceEmptyState = ({
   onClickReceive,
   ...props
-}: React.PropsWithChildren<BalanceEmptyStateProps>) => {
+}: BalanceEmptyStateProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);

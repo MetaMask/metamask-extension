@@ -47,9 +47,7 @@ type ErrorPageProps = {
   };
 };
 
-const ErrorPage = ({
-  error
-}: React.PropsWithChildren<ErrorPageProps>) => {
+const ErrorPage = ({ error }: ErrorPageProps) => {
   const t = useI18nContext();
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 

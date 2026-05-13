@@ -31,8 +31,8 @@ const NftDetailInformationRow = ({
   icon,
   buttonAddressValue,
   withPopover,
-  fullValue
-}: React.PropsWithChildren<NftDetailInformationRowProps>) => {
+  fullValue,
+}: NftDetailInformationRowProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleMouseEnter = () => {

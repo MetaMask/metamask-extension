@@ -38,8 +38,8 @@ export const AvatarGroup = ({
   avatarType = AvatarType.TOKEN,
   borderColor,
   isTagOverlay = false,
-  variant = AvatarAccountVariant.Maskicon
-}: React.PropsWithChildren<AvatarGroupProps>): JSX.Element => {
+  variant = AvatarAccountVariant.Maskicon,
+}: AvatarGroupProps): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
   const showTag = membersCount > limit;

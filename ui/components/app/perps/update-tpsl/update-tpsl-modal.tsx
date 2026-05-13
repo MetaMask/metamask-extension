@@ -41,8 +41,8 @@ export const UpdateTPSLModal = ({
   isOpen,
   onClose,
   position,
-  currentPrice
-}: React.PropsWithChildren<UpdateTPSLModalProps>) => {
+  currentPrice,
+}: UpdateTPSLModalProps) => {
   const t = useI18nContext();
   const [submitState, setSubmitState] = useState<UpdateTPSLSubmitState | null>(
     null,

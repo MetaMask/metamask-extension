@@ -22,8 +22,8 @@ const balanceAmountSpanStyle = { whiteSpace: 'pre' } as const;
 
 const AccountGroupBalanceChangeComponent = ({
   period,
-  trailingChild
-}: React.PropsWithChildren<AccountGroupBalanceChangeProps>) => {
+  trailingChild,
+}: AccountGroupBalanceChangeProps) => {
   const { privacyMode, color, amountChange, percentChange } =
     useAccountGroupBalanceDisplay(period);
   const { formatCurrency, formatPercentWithMinThreshold } = useFormatters();
@@ -64,4 +64,6 @@ const AccountGroupBalanceChangeComponent = ({
   );
 };
 
-export const AccountGroupBalanceChange = (props: React.PropsWithChildren<AccountGroupBalanceChangeProps>) => <AccountGroupBalanceChangeComponent {...props} />;
+export const AccountGroupBalanceChange = (
+  props: AccountGroupBalanceChangeProps,
+) => <AccountGroupBalanceChangeComponent {...props} />;

@@ -74,8 +74,8 @@ const PermitSimulationValueDisplay = ({
   message,
   credit,
   debit,
-  canDisplayValueAsUnlimited
-}: React.PropsWithChildren<PermitSimulationValueDisplayParams>) => {
+  canDisplayValueAsUnlimited,
+}: PermitSimulationValueDisplayParams) => {
   const t = useI18nContext();
 
   const exchangeRate = useTokenExchangeRate(tokenContract, chainId);

@@ -73,8 +73,8 @@ const getMetricValue = (
 export const MarketRow = ({
   market,
   onPress,
-  displayMetric = 'volume'
-}: React.PropsWithChildren<MarketRowProps>) => {
+  displayMetric = 'volume',
+}: MarketRowProps) => {
   const { formatNumber } = useFormatters();
   const displaySymbol = useMemo(
     () => getDisplaySymbol(market.symbol),
@@ -101,7 +101,7 @@ export const MarketRow = ({
   }, [onPress, market]);
 
   return (
-    (<Box
+    <Box
       className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
@@ -155,7 +155,7 @@ export const MarketRow = ({
           {formatSignedChangePercent(market.change24hPercent)}
         </Text>
       </Box>
-    </Box>)
+    </Box>
   );
 };
 

@@ -153,7 +153,7 @@ export const useHardwareWalletActions =
  * @param options0.children
  */
 export const HardwareWalletProvider = ({
-  children
+  children,
 }: React.PropsWithChildren<{ children: ReactNode }>) => {
   const { state, refs, setters } = useHardwareWalletStateManager();
 

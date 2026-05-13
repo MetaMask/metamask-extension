@@ -168,8 +168,8 @@ export const PerpsSlider = ({
   valueText,
   'data-testid': dataTestId,
   disabled = false,
-  markInterval
-}: React.PropsWithChildren<PerpsSliderProps>) => {
+  markInterval,
+}: PerpsSliderProps) => {
   const hasHeader = titleText || tooltipText || valueText || titleDetail;
   const hasFooter = infoText || onEdit;
 

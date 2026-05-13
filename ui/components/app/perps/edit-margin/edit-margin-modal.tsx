@@ -56,8 +56,8 @@ export const EditMarginModal = ({
   position,
   account,
   currentPrice,
-  mode
-}: React.PropsWithChildren<EditMarginModalProps>) => {
+  mode,
+}: EditMarginModalProps) => {
   const t = useI18nContext();
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,

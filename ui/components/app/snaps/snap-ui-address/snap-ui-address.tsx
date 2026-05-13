@@ -32,8 +32,8 @@ export const SnapUIAddress = ({
   avatarSize,
   truncate = true,
   displayName = false,
-  avatar = true
-}: React.PropsWithChildren<SnapUIAddressProps>) => {
+  avatar = true,
+}: SnapUIAddressProps) => {
   const caipIdentifier = useMemo(() => {
     if (isHexString(address)) {
       // For legacy address inputs we assume them to be Ethereum addresses.

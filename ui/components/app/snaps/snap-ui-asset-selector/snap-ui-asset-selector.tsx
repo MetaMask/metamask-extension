@@ -45,8 +45,8 @@ const SnapUIAssetSelectorOption = ({
   balance,
   fiat,
   networkName,
-  networkIcon
-}: React.PropsWithChildren<SnapUIAsset>) => (
+  networkIcon,
+}: SnapUIAsset) => (
   <Box
     className="snap-ui-renderer__asset-selector-option"
     display={Display.Flex}
@@ -127,7 +127,7 @@ export const SnapUIAssetSelector = ({
   chainIds,
   disabled,
   ...props
-}: React.PropsWithChildren<SnapUIAssetSelectorProps>) => {
+}: SnapUIAssetSelectorProps) => {
   const t = useI18nContext();
   const assets = useSnapAssetSelectorData({ addresses, chainIds });
 

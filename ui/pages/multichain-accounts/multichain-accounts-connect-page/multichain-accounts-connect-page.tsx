@@ -123,8 +123,8 @@ export const MultichainAccountsConnectPage = ({
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
-  targetSubjectMetadata
-}: React.PropsWithChildren<MultichainConnectPageProps>) => {
+  targetSubjectMetadata,
+}: MultichainConnectPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(

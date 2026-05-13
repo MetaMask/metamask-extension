@@ -88,8 +88,8 @@ export const CustomAmount = React.memo(
     disabled = false,
     hasAlert = false,
     isLoading,
-    onChange
-  }: React.PropsWithChildren<CustomAmountProps>) => {
+    onChange,
+  }: CustomAmountProps) => {
     const isMaxAmount = useTransactionPayIsMaxAmount();
     const isQuotesLoading = useIsTransactionPayLoading();
     const selectedCurrency = useSelector(getCurrentCurrency);

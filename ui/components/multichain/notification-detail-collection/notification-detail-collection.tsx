@@ -38,8 +38,8 @@ export type NotificationDetailCollectionProps = {
 export const NotificationDetailCollection = ({
   icon,
   label,
-  collection
-}: React.PropsWithChildren<NotificationDetailCollectionProps>) => {
+  collection,
+}: NotificationDetailCollectionProps) => {
   const { badgeSrc, src } = icon;
 
   const isIpfsEnabled = useSelector(getIpfsGateway);

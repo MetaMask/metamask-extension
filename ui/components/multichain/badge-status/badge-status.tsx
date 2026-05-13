@@ -26,7 +26,7 @@ export const BadgeStatus = ({
   showConnectedStatus = true,
   text,
   ...props
-}: React.PropsWithChildren<BadgeStatusProps>): JSX.Element => {
+}: BadgeStatusProps): JSX.Element => {
   const tooltipContents = useMemo(() => {
     let positionObj;
     if (showConnectedStatus) {

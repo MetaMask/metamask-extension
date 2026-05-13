@@ -15,8 +15,8 @@ type SnapUIAvatarProps = {
 
 export const SnapUIAvatar = ({
   address: caipAddress,
-  size
-}: React.PropsWithChildren<SnapUIAvatarProps>) => {
+  size,
+}: SnapUIAvatarProps) => {
   const { address } = useMemo(() => {
     return parseCaipAccountId(caipAddress as CaipAccountId);
   }, [caipAddress]);

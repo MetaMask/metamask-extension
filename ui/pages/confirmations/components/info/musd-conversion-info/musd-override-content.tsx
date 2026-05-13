@@ -40,8 +40,8 @@ export type MusdOverrideContentProps = {
  * @param options0.amountHuman
  */
 export const MusdOverrideContent = ({
-  amountHuman
-}: React.PropsWithChildren<MusdOverrideContentProps>) => {
+  amountHuman,
+}: MusdOverrideContentProps) => {
   const { shouldShowOutputAmountTag, outputAmount, outputSymbol } =
     useCustomAmount({ amountHuman });
   const { payToken } = useTransactionPayToken();

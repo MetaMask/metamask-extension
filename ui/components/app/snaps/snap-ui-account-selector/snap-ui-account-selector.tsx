@@ -47,7 +47,7 @@ export const SnapUIAccountSelector = ({
   hideExternalAccounts,
   disabled,
   ...props
-}: React.PropsWithChildren<SnapUIAccountSelectorProps>) => {
+}: SnapUIAccountSelectorProps) => {
   const t = useI18nContext();
   const { snapId } = useSnapInterfaceContext();
   const dispatch = useDispatch();

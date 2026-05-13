@@ -27,8 +27,8 @@ export type PerpsEmptyStateProps = {
  */
 export const PerpsEmptyState = ({
   className,
-  onStartTrade
-}: React.PropsWithChildren<PerpsEmptyStateProps>) => {
+  onStartTrade,
+}: PerpsEmptyStateProps) => {
   const t = useI18nContext();
 
   // TODO: Replace with themed perps image when available

@@ -21,9 +21,7 @@ export type PerpsWatchlistProps = {
   markets: PerpsMarketData[];
 };
 
-export const PerpsWatchlist = ({
-  markets
-}: React.PropsWithChildren<PerpsWatchlistProps>) => {
+export const PerpsWatchlist = ({ markets }: PerpsWatchlistProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 

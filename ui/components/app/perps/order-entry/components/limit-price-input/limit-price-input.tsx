@@ -67,8 +67,8 @@ export const LimitPriceInput = ({
   midPrice: midPriceProp,
   direction,
   liquidationPrice,
-  autoFocus = false
-}: React.PropsWithChildren<LimitPriceInputProps>) => {
+  autoFocus = false,
+}: LimitPriceInputProps) => {
   const t = useI18nContext();
   const midPrice = midPriceProp ?? currentPrice;
 

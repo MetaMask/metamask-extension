@@ -66,8 +66,8 @@ export type CancelOrderModalProps = {
 export const CancelOrderModal = ({
   isOpen,
   onClose,
-  order
-}: React.PropsWithChildren<CancelOrderModalProps>) => {
+  order,
+}: CancelOrderModalProps) => {
   const t = useI18nContext();
   const currentLocale = useSelector(getCurrentLocale);
   const { replacePerpsToastByKey } = usePerpsToast();

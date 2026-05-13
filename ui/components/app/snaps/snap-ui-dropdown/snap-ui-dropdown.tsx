@@ -29,7 +29,7 @@ export const SnapUIDropdown = ({
   form,
   disabled,
   ...props
-}: React.PropsWithChildren<SnapUIDropdownProps>) => {
+}: SnapUIDropdownProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form) as string;

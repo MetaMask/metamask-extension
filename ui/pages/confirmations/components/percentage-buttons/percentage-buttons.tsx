@@ -21,8 +21,8 @@ export type PercentageButtonsProps = {
 };
 
 export const PercentageButtons = ({
-  onPercentageClick
-}: React.PropsWithChildren<PercentageButtonsProps>) => {
+  onPercentageClick,
+}: PercentageButtonsProps) => {
   const t = useI18nContext();
 
   const handleClick = useCallback(

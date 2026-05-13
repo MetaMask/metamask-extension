@@ -23,7 +23,7 @@ export const DappSwapContext = createContext<DappSwapContextType | undefined>(
 );
 
 export const DappSwapContextProvider = ({
-  children
+  children,
 }: React.PropsWithChildren<{
   children: ReactElement;
 }>) => {

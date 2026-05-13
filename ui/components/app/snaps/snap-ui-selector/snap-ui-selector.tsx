@@ -66,7 +66,7 @@ const SelectorItem = ({
   selected,
   onSelect,
   disabled,
-  style
+  style,
 }: React.PropsWithChildren<SelectorItemProps>) => {
   const handleClick = () => {
     onSelect(value);
@@ -136,8 +136,8 @@ export const SnapUISelector = ({
   disabled,
   onSelect,
   style,
-  itemStyle
-}: React.PropsWithChildren<SnapUISelectorProps>) => {
+  itemStyle,
+}: SnapUISelectorProps) => {
   const { handleInputChange, getValue } = useSnapInterfaceContext();
 
   const initialValue = getValue(name, form);

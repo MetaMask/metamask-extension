@@ -43,8 +43,8 @@ export const CloseAmountSection = ({
   onClosePercentChange,
   asset,
   currentPrice,
-  sizeDecimals
-}: React.PropsWithChildren<CloseAmountSectionProps>) => {
+  sizeDecimals,
+}: CloseAmountSectionProps) => {
   const t = useI18nContext();
 
   const totalPositionSize = Math.abs(Number.parseFloat(positionSize)) || 0;

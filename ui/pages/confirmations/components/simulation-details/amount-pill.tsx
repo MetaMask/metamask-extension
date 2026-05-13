@@ -35,14 +35,14 @@ export const AmountPill = ({
   amount,
   isApproval,
   isAllApproval,
-  isUnlimitedApproval
-}: React.PropsWithChildren<{
+  isUnlimitedApproval,
+}: {
   asset: AssetIdentifier;
   amount: BigNumber;
   isApproval?: boolean;
   isAllApproval?: boolean;
   isUnlimitedApproval?: boolean;
-}>) => {
+}) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
   const color = getColor({ amount, isApproval });

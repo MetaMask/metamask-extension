@@ -24,8 +24,8 @@ import type {
  */
 export const DirectionTabs = ({
   direction,
-  onDirectionChange
-}: React.PropsWithChildren<DirectionTabsProps>) => {
+  onDirectionChange,
+}: DirectionTabsProps) => {
   const t = useI18nContext();
 
   const handleDirectionClick = (newDirection: OrderDirection) => {

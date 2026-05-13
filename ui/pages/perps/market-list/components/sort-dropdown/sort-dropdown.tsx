@@ -62,8 +62,8 @@ export type SortDropdownProps = {
 export const SortDropdown = ({
   selectedField,
   direction,
-  onChange
-}: React.PropsWithChildren<SortDropdownProps>) => {
+  onChange,
+}: SortDropdownProps) => {
   const t = useI18nContext();
   const [isOpen, setIsOpen] = useState(false);
   const [pendingField, setPendingField] = useState<SortField>(selectedField);

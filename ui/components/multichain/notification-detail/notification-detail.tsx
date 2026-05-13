@@ -36,8 +36,8 @@ export const NotificationDetail = ({
   primaryTextLeft,
   primaryTextRight,
   secondaryTextLeft,
-  secondaryTextRight
-}: React.PropsWithChildren<NotificationDetailProps>): JSX.Element => {
+  secondaryTextRight,
+}: NotificationDetailProps): JSX.Element => {
   return (
     <Box
       display={Display.Flex}

@@ -36,8 +36,8 @@ export type PerpsGeoBlockModalProps = {
  */
 export const PerpsGeoBlockModal = ({
   isOpen,
-  onClose
-}: React.PropsWithChildren<PerpsGeoBlockModalProps>) => {
+  onClose,
+}: PerpsGeoBlockModalProps) => {
   const t = useI18nContext();
 
   return (

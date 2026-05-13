@@ -49,8 +49,8 @@ export const PerpsRecentActivity = ({
   maxTransactions = PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS,
   onTransactionClick,
   isLoading = false,
-  error = null
-}: React.PropsWithChildren<PerpsRecentActivityProps>) => {
+  error = null,
+}: PerpsRecentActivityProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 

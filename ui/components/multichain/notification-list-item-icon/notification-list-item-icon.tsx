@@ -145,8 +145,8 @@ const iconComponents = {
 export const NotificationListItemIcon = ({
   type,
   value,
-  badge
-}: React.PropsWithChildren<NotificationListItemIconProps>): JSX.Element => {
+  badge,
+}: NotificationListItemIconProps): JSX.Element => {
   const IconComponent = iconComponents[type] || iconComponents.default;
   const NotificationIcon = <IconComponent src={value} />;
 

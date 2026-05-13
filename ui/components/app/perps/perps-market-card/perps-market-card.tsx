@@ -38,8 +38,8 @@ export const PerpsMarketCard = ({
   change24hPercent,
   volume,
   onClick,
-  'data-testid': testId
-}: React.PropsWithChildren<PerpsMarketCardProps>) => {
+  'data-testid': testId,
+}: PerpsMarketCardProps) => {
   const displaySymbol = getDisplayName(symbol);
   const displayName = name ? getDisplayName(name) : displaySymbol;
   const displayChange24hPercent = formatSignedChangePercent(change24hPercent);

@@ -42,8 +42,8 @@ export const BalanceChangeRow = ({
   labelColor,
   isFirstRow,
   hasIncomingTokens,
-  confirmationId
-}: React.PropsWithChildren<{
+  confirmationId,
+}: {
   label?: string;
   showFiat?: boolean;
   balanceChange: BalanceChange;
@@ -51,7 +51,7 @@ export const BalanceChangeRow = ({
   isFirstRow?: boolean;
   hasIncomingTokens?: boolean;
   confirmationId?: string;
-}>) => {
+}) => {
   const t = useI18nContext();
 
   const {

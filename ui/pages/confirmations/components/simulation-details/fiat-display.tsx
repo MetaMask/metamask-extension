@@ -39,11 +39,11 @@ export function calculateTotalFiat(fiatAmounts: FiatAmount[]): number {
  */
 export const IndividualFiatDisplay = ({
   fiatAmount,
-  shorten = false
-}: React.PropsWithChildren<{
+  shorten = false,
+}: {
   fiatAmount: FiatAmount;
   shorten?: boolean;
-}>) => {
+}) => {
   const shouldShowFiat = useSelector(getShouldShowFiat);
   const fiatFormatter = useFiatFormatter();
 
@@ -83,10 +83,10 @@ export const IndividualFiatDisplay = ({
  * @param props.fiatAmounts
  */
 export const TotalFiatDisplay = ({
-  fiatAmounts
-}: React.PropsWithChildren<{
+  fiatAmounts,
+}: {
   fiatAmounts: FiatAmount[];
-}>) => {
+}) => {
   const shouldShowFiat = useSelector(getShouldShowFiat);
   const t = useI18nContext();
   const fiatFormatter = useFiatFormatter();

@@ -7,7 +7,7 @@ import {
 } from '../../hooks/identity/useAuthentication';
 
 export const MetamaskIdentityProvider = ({
-  children
+  children,
 }: React.PropsWithChildren<unknown>) => {
   const { dispatchAccountSyncing, shouldDispatchAccountSyncing } =
     useAccountSyncing();

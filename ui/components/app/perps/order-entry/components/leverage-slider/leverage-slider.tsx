@@ -36,8 +36,8 @@ export const LeverageSlider = ({
   leverage,
   onLeverageChange,
   maxLeverage,
-  minLeverage = 1
-}: React.PropsWithChildren<LeverageSliderProps>) => {
+  minLeverage = 1,
+}: LeverageSliderProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const [inputValue, setInputValue] = useState<string>(String(leverage));

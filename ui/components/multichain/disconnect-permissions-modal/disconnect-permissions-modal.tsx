@@ -24,8 +24,8 @@ export const DisconnectPermissionsModal = ({
   onClose,
   onSkip,
   onRemoveAll,
-  permissions = []
-}: React.PropsWithChildren<DisconnectPermissionsModalProps>) => {
+  permissions = [],
+}: DisconnectPermissionsModalProps) => {
   const t = useI18nContext();
 
   return (

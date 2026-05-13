@@ -68,9 +68,7 @@ export type SimulationDetailsProps = {
  * @param props
  * @param props.error
  */
-const ErrorContent = ({
-  error
-}: React.PropsWithChildren<{ error: SimulationError }>) => {
+const ErrorContent = ({ error }: { error: SimulationError }) => {
   const t = useI18nContext();
 
   function getMessage() {
@@ -216,7 +214,7 @@ const HeaderLayout = ({
   isTransactionsRedesign,
   transactionId,
   title,
-  titleTooltip
+  titleTooltip,
 }: React.PropsWithChildren<{
   isTransactionsRedesign: boolean;
   transactionId: string;
@@ -261,7 +259,7 @@ export const SimulationDetailsLayout = ({
   inHeader,
   isTransactionsRedesign,
   transactionId,
-  children
+  children,
 }: React.PropsWithChildren<{
   title?: string;
   titleTooltip?: string;

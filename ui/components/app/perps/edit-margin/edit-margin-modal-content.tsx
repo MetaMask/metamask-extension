@@ -99,8 +99,8 @@ export const EditMarginModalContent = ({
   externalSave = false,
   onSaveRef,
   onSaveEnabledChange,
-  onSavingChange
-}: React.PropsWithChildren<EditMarginModalContentProps>) => {
+  onSavingChange,
+}: EditMarginModalContentProps) => {
   const t = useI18nContext();
   const { isEligible } = usePerpsEligibility();
   const { replacePerpsToastByKey } = usePerpsToast();

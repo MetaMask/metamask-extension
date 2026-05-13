@@ -38,8 +38,8 @@ export const ConfirmInfoRowText = ({
   editIconClassName,
   tooltip,
   'data-testid': dataTestId,
-  editIconDataTestId
-}: React.PropsWithChildren<ConfirmInfoRowTextProps>) => {
+  editIconDataTestId,
+}: ConfirmInfoRowTextProps) => {
   const t = useContext(I18nContext);
 
   const isEditable = Boolean(onEditClick);

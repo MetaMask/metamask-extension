@@ -45,9 +45,7 @@ type PerpsTutorialModalProps = {
   onClose?: () => void;
 };
 
-const PerpsTutorialModal = ({
-  onClose
-}: React.PropsWithChildren<PerpsTutorialModalProps>) => {
+const PerpsTutorialModal = ({ onClose }: PerpsTutorialModalProps) => {
   const isOpen = useSelector(selectTutorialModalOpen);
   const activeStep = useSelector(selectTutorialActiveStep);
   const dispatch = useDispatch();

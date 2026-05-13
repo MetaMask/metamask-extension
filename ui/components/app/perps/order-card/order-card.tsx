@@ -42,8 +42,8 @@ export type OrderCardProps = {
 export const OrderCard = ({
   order,
   onClick,
-  variant = 'default'
-}: React.PropsWithChildren<OrderCardProps>) => {
+  variant = 'default',
+}: OrderCardProps) => {
   const navigate = useNavigate();
   const t = useI18nContext();
   const displayName = getDisplayName(order.symbol);
@@ -91,7 +91,7 @@ export const OrderCard = ({
       : 'bg-default hover:bg-hover active:bg-pressed';
 
   return (
-    (<ButtonBase
+    <ButtonBase
       className={twMerge(
         // Reset ButtonBase defaults for card layout
         'justify-start rounded-none min-w-0',
@@ -122,7 +122,7 @@ export const OrderCard = ({
         {isTriggerBasedOrder ? (
           // TP/SL: render label directly in the column so it wraps freely.
           // The symbol is redundant here — it appears after the size below.
-          (<Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>)
+          <Text fontWeight={FontWeight.Medium}>{formatOrderLabel(order)}</Text>
         ) : (
           <Box
             flexDirection={BoxFlexDirection.Row}
@@ -158,7 +158,7 @@ export const OrderCard = ({
           </Text>
         )}
       </Box>
-    </ButtonBase>)
+    </ButtonBase>
   );
 };
 

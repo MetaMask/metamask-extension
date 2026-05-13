@@ -327,8 +327,8 @@ export const PermissionDetailRenderer = ({
   origin,
   to,
   ownerId,
-  rules
-}: React.PropsWithChildren<{
+  rules,
+}: {
   permission: {
     type: string;
     data: Record<string, unknown>;
@@ -340,7 +340,7 @@ export const PermissionDetailRenderer = ({
   to?: string;
   ownerId: string;
   rules?: Rule[];
-}>) => {
+}) => {
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permission.type];

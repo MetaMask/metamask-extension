@@ -32,8 +32,8 @@ type EditAccountModalAddNewAccountOptionProps = {
 };
 
 export const EditAccountModalAddNewAccountOption = ({
-  setAccountTypeToAdd
-}: React.PropsWithChildren<EditAccountModalAddNewAccountOptionProps>) => {
+  setAccountTypeToAdd,
+}: EditAccountModalAddNewAccountOptionProps) => {
   const t = useI18nContext();
 
   return (

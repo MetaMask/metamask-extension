@@ -125,8 +125,8 @@ export const ConnectPage = ({
   permissionsRequestId,
   rejectPermissionsRequest,
   approveConnection,
-  targetSubjectMetadata
-}: React.PropsWithChildren<ConnectPageProps>) => {
+  targetSubjectMetadata,
+}: ConnectPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const [activeTab, setActiveTab] = useState('accounts');

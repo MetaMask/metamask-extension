@@ -33,8 +33,8 @@ export const ConnectedStatus = ({
   address = '',
   isActive,
   showConnectedStatus = true,
-  hideTooltip = false
-}: React.PropsWithChildren<ConnectedStatusProps>): JSX.Element => {
+  hideTooltip = false,
+}: ConnectedStatusProps): JSX.Element => {
   const t = useI18nContext();
 
   const addressArray = useMemo(() => [address], [address]);

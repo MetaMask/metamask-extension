@@ -27,8 +27,8 @@ export const PerpsPositionsOrders = ({
   onCloseAllPositions,
   onCancelAllOrders,
   isCloseAllPending = false,
-  isCancelAllPending = false
-}: React.PropsWithChildren<PerpsPositionsOrdersProps>) => {
+  isCancelAllPending = false,
+}: PerpsPositionsOrdersProps) => {
   const t = useI18nContext();
   const hasPositions = positions.length > 0;
   const hasOrders = orders.length > 0;

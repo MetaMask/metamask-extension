@@ -31,15 +31,15 @@ export const TokenAmountRow = ({
   tokenAddress,
   chainId,
   decimals,
-  tooltip
-}: React.PropsWithChildren<{
+  tooltip,
+}: {
   label: string;
   value: BigNumber;
   tokenAddress: string;
   chainId: Hex;
   decimals: number | undefined;
   tooltip?: string;
-}>) => {
+}) => {
   return (
     <ConfirmInfoRow label={label} tooltip={tooltip}>
       <Box

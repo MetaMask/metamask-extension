@@ -35,8 +35,8 @@ export type PerpsCandlePeriodSelectorProps = {
 
 const PerpsCandlePeriodSelector = ({
   selectedPeriod,
-  onPeriodChange
-}: React.PropsWithChildren<PerpsCandlePeriodSelectorProps>) => {
+  onPeriodChange,
+}: PerpsCandlePeriodSelectorProps) => {
   const t = useI18nContext();
   const { track } = usePerpsEventTracking();
   const [isMoreModalOpen, setIsMoreModalOpen] = useState(false);

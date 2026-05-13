@@ -34,10 +34,7 @@ export type PositionCardProps = {
  * @param options0.position - The position data to display
  * @param options0.onClick
  */
-export const PositionCard = ({
-  position,
-  onClick
-}: React.PropsWithChildren<PositionCardProps>) => {
+export const PositionCard = ({ position, onClick }: PositionCardProps) => {
   const navigate = useNavigate();
   const { formatPercentWithMinThreshold } = useFormatters();
   const direction = getPositionDirection(position.size);

@@ -57,8 +57,8 @@ export const OutputAmountTag = ({
   amount,
   symbol,
   showBackground = true,
-  testID
-}: React.PropsWithChildren<OutputAmountTagProps>) => {
+  testID,
+}: OutputAmountTagProps) => {
   const displayText = symbol ? `${amount} ${symbol}` : amount;
 
   return (

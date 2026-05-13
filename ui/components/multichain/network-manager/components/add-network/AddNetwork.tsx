@@ -13,8 +13,8 @@ type AddNetworkProps = {
 export const AddNetwork = ({
   networkFormState,
   network,
-  isEdit = false
-}: React.PropsWithChildren<AddNetworkProps>) => {
+  isEdit = false,
+}: AddNetworkProps) => {
   const [, setSearchParams] = useSearchParams();
   return (
     <NetworksForm

@@ -22,8 +22,8 @@ export const StackCard = ({
   isLastSlide = false,
   onSlideClick,
   onTransitionToNextCard,
-  className = ''
-}: React.PropsWithChildren<StackCardProps>) => {
+  className = '',
+}: StackCardProps) => {
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 

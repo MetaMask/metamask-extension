@@ -31,15 +31,15 @@ export const NativeAmountRow = ({
   symbol,
   decimals,
   tooltip,
-  imageUrl
-}: React.PropsWithChildren<{
+  imageUrl,
+}: {
   label: string;
   value: BigNumber;
   symbol: string;
   decimals: number;
   imageUrl?: string;
   tooltip?: string;
-}>) => {
+}) => {
   const avatar = imageUrl ? (
     <AvatarToken size={AvatarTokenSize.Xs} src={imageUrl} name={symbol} />
   ) : null;

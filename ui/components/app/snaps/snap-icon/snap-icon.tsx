@@ -34,7 +34,7 @@ export const SnapIcon = ({
   snapId,
   avatarSize = IconSize.Lg,
   ...props
-}: React.PropsWithChildren<SnapIconProps>) => {
+}: SnapIconProps) => {
   const subjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
   );

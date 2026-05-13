@@ -19,8 +19,8 @@ const FundingMethodItem = ({
   icon,
   title,
   description,
-  onClick
-}: React.PropsWithChildren<FundingMethodItemProps>) => (
+  onClick,
+}: FundingMethodItemProps) => (
   <Box
     display={[Display.Flex]}
     gap={2}

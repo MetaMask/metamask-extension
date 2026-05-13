@@ -30,8 +30,8 @@ const RewardsErrorBanner = ({
   onDismiss,
   onConfirm,
   confirmButtonLabel,
-  onConfirmLoading
-}: React.PropsWithChildren<RewardsErrorBannerProps>) => {
+  onConfirmLoading,
+}: RewardsErrorBannerProps) => {
   const t = useI18nContext();
 
   return (

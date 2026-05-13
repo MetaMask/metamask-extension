@@ -37,8 +37,8 @@ export const NotificationDetailInfo = ({
   icon,
   label,
   detail,
-  action
-}: React.PropsWithChildren<NotificationDetailInfoProps>): JSX.Element => {
+  action,
+}: NotificationDetailInfoProps): JSX.Element => {
   return (
     <NotificationDetail
       icon={<AvatarIcon {...icon} />}

@@ -97,12 +97,12 @@ function schemaElementDomKey(
 const ReviewAddressDisplay = ({
   address,
   testId,
-  style
-}: React.PropsWithChildren<{
+  style,
+}: {
   address: string;
   testId: string;
   style?: React.CSSProperties;
-}>) => {
+}) => {
   const { displayName, hexAddress } = useFallbackDisplayName(address);
   const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
   const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
@@ -141,9 +141,7 @@ const ReviewAddressDisplay = ({
   );
 };
 
-const ReviewAccountRow = ({
-  address
-}: React.PropsWithChildren<{ address: string }>) => {
+const ReviewAccountRow = ({ address }: { address: string }) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -172,11 +170,11 @@ const ReviewAccountRow = ({
 
 const ReviewNetworkRow = ({
   chainId,
-  networkName
-}: React.PropsWithChildren<{
+  networkName,
+}: {
   chainId: Hex;
   networkName: string;
-}>) => {
+}) => {
   const t = useI18nContext() as I18nFunction;
 
   return (
@@ -221,11 +219,11 @@ const ReviewNetworkRow = ({
 
 const ReviewRuleAddressRow = ({
   addresses,
-  label
-}: React.PropsWithChildren<{
+  label,
+}: {
   addresses: string[];
   label: string;
-}>) => {
+}) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Row}
@@ -534,8 +532,8 @@ export const ReviewPermissionRenderer = ({
   viewMode = 'reviewDetail',
   origin,
   permissionAccount,
-  networkName
-}: React.PropsWithChildren<ReviewPermissionRendererProps>) => {
+  networkName,
+}: ReviewPermissionRendererProps) => {
   const t = useI18nContext() as I18nFunction;
 
   const schemaEntry = PERMISSION_SCHEMAS[permissionType];

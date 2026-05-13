@@ -83,7 +83,7 @@ type HardwareWalletErrorProviderProps = {
  * @param options0.children - Child components to render
  */
 const HardwareWalletErrorMonitor = ({
-  children
+  children,
 }: React.PropsWithChildren<{ children: ReactNode }>) => {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -370,7 +370,7 @@ const HardwareWalletErrorMonitor = ({
  * @param options0.children - Child components to render
  */
 export const HardwareWalletErrorProvider = ({
-  children
+  children,
 }: React.PropsWithChildren<HardwareWalletErrorProviderProps>) => {
   return (
     <HardwareWalletProvider>

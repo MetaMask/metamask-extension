@@ -77,8 +77,8 @@ export const SnapUIFileInput = ({
   compact,
   error,
   helpText,
-  disabled
-}: React.PropsWithChildren<SnapUIFileInputProps>) => {
+  disabled,
+}: SnapUIFileInputProps) => {
   const t = useI18nContext();
   const { handleFileChange } = useSnapInterfaceContext();
   const ref = useRef<HTMLInputElement>(null);

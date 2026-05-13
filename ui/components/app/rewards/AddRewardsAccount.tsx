@@ -15,9 +15,7 @@ type AddRewardsAccountProps = {
   account: InternalAccount;
 };
 
-const AddRewardsAccount = ({
-  account
-}: React.PropsWithChildren<AddRewardsAccountProps>) => {
+const AddRewardsAccount = ({ account }: AddRewardsAccountProps) => {
   const t = useI18nContext();
   const { linkAccountAddress, isLoading, isError } = useLinkAccountAddress();
 

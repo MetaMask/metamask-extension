@@ -45,8 +45,8 @@ const SupportListItem = ({
   label,
   onClick,
   className,
-  'data-testid': testId
-}: React.PropsWithChildren<SupportListItemProps>) => (
+  'data-testid': testId,
+}: SupportListItemProps) => (
   <Box
     className={`${LIST_ITEM_BASE} ${className ?? ''}`}
     role="button"

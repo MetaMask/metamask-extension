@@ -50,11 +50,11 @@ const RecentActivityEmpty = () => {
 
 const RecentActivityList = ({
   transactions,
-  onTransactionClick
-}: React.PropsWithChildren<{
+  onTransactionClick,
+}: {
   transactions: PerpsTransaction[];
   onTransactionClick: () => void;
-}>) => (
+}) => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
@@ -76,8 +76,8 @@ export type PerpsMarketRecentActivityProps = {
 };
 
 export const PerpsMarketRecentActivity = ({
-  symbol
-}: React.PropsWithChildren<PerpsMarketRecentActivityProps>) => {
+  symbol,
+}: PerpsMarketRecentActivityProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
 

@@ -25,8 +25,8 @@ export const LottieAnimation = ({
   autoplay = true,
   style = {},
   className = '',
-  onComplete = () => null
-}: React.PropsWithChildren<LottieAnimationProps>) => {
+  onComplete = () => null,
+}: LottieAnimationProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const animationInstance = useRef<AnimationItem | null>(null);
 

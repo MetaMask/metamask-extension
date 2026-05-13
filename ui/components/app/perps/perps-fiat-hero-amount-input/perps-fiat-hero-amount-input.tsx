@@ -107,8 +107,8 @@ export const PerpsFiatHeroAmountInput = React.memo(
     autoFocus = false,
     disabled = false,
     hasAlert = false,
-    isLoading = false
-  }: React.PropsWithChildren<PerpsFiatHeroAmountInputProps>) => {
+    isLoading = false,
+  }: PerpsFiatHeroAmountInputProps) => {
     const fiatSymbol = getCurrencySymbol('USD');
     const amountLength = value.length;
 

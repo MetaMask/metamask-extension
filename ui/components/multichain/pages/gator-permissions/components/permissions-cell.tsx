@@ -26,8 +26,8 @@ export const PermissionsCell = ({
   totalCount,
   chainIds,
   paddingTop,
-  origin
-}: React.PropsWithChildren<PermissionsCellProps>) => {
+  origin,
+}: PermissionsCellProps) => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const allNetworks = [...nonTestNetworks, ...testNetworks];

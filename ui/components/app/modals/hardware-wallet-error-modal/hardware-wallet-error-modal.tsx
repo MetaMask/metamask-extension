@@ -181,142 +181,120 @@ const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
  *
  * @param props - The component props
  */
-export const HardwareWalletErrorModal = React.memo(({
-  error: errorProp,
-  onClose: onCloseProp,
-  onCancel: onCancelProp,
-  onRetry: onRetryProp,
-}: HardwareWalletErrorModalProps) => {
-  const t = useI18nContext();
-  const { trackEvent } = useContext(MetaMetricsContext);
-  const recoveryLocation = useHardwareWalletRecoveryLocation();
-  const { hideModal, props: modalProps } = useModalProps();
-  const [isLoading, setIsLoading] = useState(false);
-  const [recovered, setRecovered] = useState(false);
-  const recoveredDismissTimeoutRef = useRef<ReturnType<
-    typeof setTimeout
-  > | null>(null);
-  const errorTypeViewCountRef = useRef(0);
-  const lastTrackedErrorKeyRef = useRef<string | null>(null);
-  const prevNonNullErrorIdentityKeyRef = useRef<string | null>(null);
-  const successModalMetricSentRef = useRef(false);
-  const { error, onClose, onCancel, onRetry } = {
-    ...modalProps,
+export const HardwareWalletErrorModal = React.memo(
+  ({
     error: errorProp,
     onClose: onCloseProp,
     onCancel: onCancelProp,
     onRetry: onRetryProp,
-  };
+  }: HardwareWalletErrorModalProps) => {
+    const t = useI18nContext();
+    const { trackEvent } = useContext(MetaMetricsContext);
+    const recoveryLocation = useHardwareWalletRecoveryLocation();
+    const { hideModal, props: modalProps } = useModalProps();
+    const [isLoading, setIsLoading] = useState(false);
+    const [recovered, setRecovered] = useState(false);
+    const recoveredDismissTimeoutRef = useRef<ReturnType<
+      typeof setTimeout
+    > | null>(null);
+    const errorTypeViewCountRef = useRef(0);
+    const lastTrackedErrorKeyRef = useRef<string | null>(null);
+    const prevNonNullErrorIdentityKeyRef = useRef<string | null>(null);
+    const successModalMetricSentRef = useRef(false);
+    const { error, onClose, onCancel, onRetry } = {
+      ...modalProps,
+      ...(errorProp !== undefined && { error: errorProp }),
+      ...(onCloseProp !== undefined && { onClose: onCloseProp }),
+      ...(onCancelProp !== undefined && { onCancel: onCancelProp }),
+      ...(onRetryProp !== undefined && { onRetry: onRetryProp }),
+    };
 
-  const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
-  const { ensureDeviceReady, clearError, setConnectionReady } =
-    useHardwareWalletActions();
-  const getRedirectQueryString = useBridgeRedirectQueryString();
+    const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
+    const { ensureDeviceReady, clearError, setConnectionReady } =
+      useHardwareWalletActions();
+    const getRedirectQueryString = useBridgeRedirectQueryString();
 
-  // Prefer `walletType` from error metadata first (e.g. signature flows where the signing
-  // account may differ from the selected account). Read both top-level `metadata` and RPC-style
-  // `data.metadata`. Then selected account, then Ledger so copy/icons still resolve if metadata is missing.
-  const errorMetadata =
-    error === undefined
-      ? undefined
-      : ((error as { metadata?: { walletType?: HardwareWalletType } })
-          .metadata ??
-        (
-          error as {
-            data?: { metadata?: { walletType?: HardwareWalletType } };
-          }
-        ).data?.metadata);
-  const errorWalletType = errorMetadata?.walletType;
-  const displayWalletType = useMemo(
-    () =>
-      errorWalletType ?? selectedAccountWalletType ?? HardwareWalletType.Ledger,
-    [errorWalletType, selectedAccountWalletType],
-  );
-  const trackableMetricDeviceType = useMemo(
-    () =>
-      mapHardwareWalletTypeToMetricDeviceType(
-        errorWalletType ?? selectedAccountWalletType,
-      ),
-    [errorWalletType, selectedAccountWalletType],
-  );
+    // Prefer `walletType` from error metadata first (e.g. signature flows where the signing
+    // account may differ from the selected account). Read both top-level `metadata` and RPC-style
+    // `data.metadata`. Then selected account, then Ledger so copy/icons still resolve if metadata is missing.
+    const errorMetadata =
+      error === undefined
+        ? undefined
+        : ((error as { metadata?: { walletType?: HardwareWalletType } })
+            .metadata ??
+          (
+            error as {
+              data?: { metadata?: { walletType?: HardwareWalletType } };
+            }
+          ).data?.metadata);
+    const errorWalletType = errorMetadata?.walletType;
+    const displayWalletType = useMemo(
+      () =>
+        errorWalletType ??
+        selectedAccountWalletType ??
+        HardwareWalletType.Ledger,
+      [errorWalletType, selectedAccountWalletType],
+    );
+    const trackableMetricDeviceType = useMemo(
+      () =>
+        mapHardwareWalletTypeToMetricDeviceType(
+          errorWalletType ?? selectedAccountWalletType,
+        ),
+      [errorWalletType, selectedAccountWalletType],
+    );
 
-  const isUserRejectedError =
-    error !== undefined && isUserRejectedHardwareWalletError(error);
+    const isUserRejectedError =
+      error !== undefined && isUserRejectedHardwareWalletError(error);
 
-  const errorIdentityKey = useMemo(() => {
-    if (!error) {
-      return null;
-    }
-    const code = getHardwareWalletErrorCode(error);
-    return `${recoveryLocation}:${String(code)}:${mapHardwareWalletRecoveryErrorType(error)}`;
-  }, [error, recoveryLocation]);
+    const errorIdentityKey = useMemo(() => {
+      if (!error) {
+        return null;
+      }
+      const code = getHardwareWalletErrorCode(error);
+      return `${recoveryLocation}:${String(code)}:${mapHardwareWalletRecoveryErrorType(error)}`;
+    }, [error, recoveryLocation]);
 
-  useEffect(() => {
-    setRecovered(false);
-    successModalMetricSentRef.current = false;
+    useEffect(() => {
+      setRecovered(false);
+      successModalMetricSentRef.current = false;
 
-    if (errorIdentityKey === null) {
-      prevNonNullErrorIdentityKeyRef.current = null;
-      return;
-    }
+      if (errorIdentityKey === null) {
+        prevNonNullErrorIdentityKeyRef.current = null;
+        return;
+      }
 
-    if (
-      prevNonNullErrorIdentityKeyRef.current !== null &&
-      prevNonNullErrorIdentityKeyRef.current !== errorIdentityKey
-    ) {
-      errorTypeViewCountRef.current = 0;
-    }
-    prevNonNullErrorIdentityKeyRef.current = errorIdentityKey;
-  }, [errorIdentityKey]);
+      if (
+        prevNonNullErrorIdentityKeyRef.current !== null &&
+        prevNonNullErrorIdentityKeyRef.current !== errorIdentityKey
+      ) {
+        errorTypeViewCountRef.current = 0;
+      }
+      prevNonNullErrorIdentityKeyRef.current = errorIdentityKey;
+    }, [errorIdentityKey]);
 
-  useEffect(() => {
-    if (error) {
-      return;
-    }
-    lastTrackedErrorKeyRef.current = null;
-  }, [error]);
+    useEffect(() => {
+      if (error) {
+        return;
+      }
+      lastTrackedErrorKeyRef.current = null;
+    }, [error]);
 
-  useEffect(() => {
-    if (!error || isUserRejectedError || !errorIdentityKey) {
-      return;
-    }
-    if (!trackableMetricDeviceType) {
-      return;
-    }
-    if (lastTrackedErrorKeyRef.current === errorIdentityKey) {
-      return;
-    }
-    lastTrackedErrorKeyRef.current = errorIdentityKey;
-    errorTypeViewCountRef.current += 1;
-    const deviceModel = getHardwareWalletMetricDeviceModel(error);
-    trackEvent({
-      category: MetaMetricsEventCategory.Accounts,
-      event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
-      properties: buildHardwareWalletRecoverySegmentProperties({
-        location: recoveryLocation,
-        deviceType: trackableMetricDeviceType,
-        deviceModel,
-        errorType: mapHardwareWalletRecoveryErrorType(error),
-        errorTypeViewCount: errorTypeViewCountRef.current,
-        error,
-      }),
-    });
-  }, [
-    error,
-    errorIdentityKey,
-    isUserRejectedError,
-    recoveryLocation,
-    trackableMetricDeviceType,
-    trackEvent,
-  ]);
-
-  const handleRetry = async () => {
-    onRetry?.();
-    if (error && trackableMetricDeviceType) {
+    useEffect(() => {
+      if (!error || isUserRejectedError || !errorIdentityKey) {
+        return;
+      }
+      if (!trackableMetricDeviceType) {
+        return;
+      }
+      if (lastTrackedErrorKeyRef.current === errorIdentityKey) {
+        return;
+      }
+      lastTrackedErrorKeyRef.current = errorIdentityKey;
+      errorTypeViewCountRef.current += 1;
       const deviceModel = getHardwareWalletMetricDeviceModel(error);
       trackEvent({
         category: MetaMetricsEventCategory.Accounts,
-        event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+        event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
         properties: buildHardwareWalletRecoverySegmentProperties({
           location: recoveryLocation,
           deviceType: trackableMetricDeviceType,
@@ -326,20 +304,22 @@ export const HardwareWalletErrorModal = React.memo(({
           error,
         }),
       });
-    }
+    }, [
+      error,
+      errorIdentityKey,
+      isUserRejectedError,
+      recoveryLocation,
+      trackableMetricDeviceType,
+      trackEvent,
+    ]);
 
-    setIsLoading(true);
-    try {
-      const result = await ensureDeviceReady();
-      if (result) {
-        setConnectionReady();
-        setRecovered(true);
-      } else if (error && trackableMetricDeviceType) {
-        errorTypeViewCountRef.current += 1;
+    const handleRetry = async () => {
+      onRetry?.();
+      if (error && trackableMetricDeviceType) {
         const deviceModel = getHardwareWalletMetricDeviceModel(error);
         trackEvent({
           category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+          event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
           properties: buildHardwareWalletRecoverySegmentProperties({
             location: recoveryLocation,
             deviceType: trackableMetricDeviceType,
@@ -350,163 +330,228 @@ export const HardwareWalletErrorModal = React.memo(({
           }),
         });
       }
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  const handleClose = useCallback(() => {
-    onCancel?.();
-    clearError();
-    hideModal();
-  }, [clearError, hideModal, onCancel]);
-
-  const handleRecoveredClose = useCallback(() => {
-    clearError();
-    setConnectionReady();
-    hideModal();
-  }, [clearError, hideModal, setConnectionReady]);
-
-  useEffect(() => {
-    if (!recovered) {
-      return;
-    }
-
-    recoveredDismissTimeoutRef.current = setTimeout(() => {
-      handleRecoveredClose();
-    }, RECOVERY_SUCCESS_AUTO_DISMISS_MS);
-
-    return () => {
-      if (recoveredDismissTimeoutRef.current) {
-        clearTimeout(recoveredDismissTimeoutRef.current);
-        recoveredDismissTimeoutRef.current = null;
+      setIsLoading(true);
+      try {
+        const result = await ensureDeviceReady();
+        if (result) {
+          setConnectionReady();
+          setRecovered(true);
+        } else if (error && trackableMetricDeviceType) {
+          errorTypeViewCountRef.current += 1;
+          const deviceModel = getHardwareWalletMetricDeviceModel(error);
+          trackEvent({
+            category: MetaMetricsEventCategory.Accounts,
+            event: MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+            properties: buildHardwareWalletRecoverySegmentProperties({
+              location: recoveryLocation,
+              deviceType: trackableMetricDeviceType,
+              deviceModel,
+              errorType: mapHardwareWalletRecoveryErrorType(error),
+              errorTypeViewCount: errorTypeViewCountRef.current,
+              error,
+            }),
+          });
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
-  }, [handleRecoveredClose, recovered]);
 
-  useEffect(() => {
-    if (!recovered || !error || successModalMetricSentRef.current) {
-      return;
+    const handleClose = useCallback(() => {
+      onCancel?.();
+      clearError();
+      hideModal();
+    }, [clearError, hideModal, onCancel]);
+
+    const handleRecoveredClose = useCallback(() => {
+      clearError();
+      setConnectionReady();
+      hideModal();
+    }, [clearError, hideModal, setConnectionReady]);
+
+    useEffect(() => {
+      if (!recovered) {
+        return;
+      }
+
+      recoveredDismissTimeoutRef.current = setTimeout(() => {
+        handleRecoveredClose();
+      }, RECOVERY_SUCCESS_AUTO_DISMISS_MS);
+
+      return () => {
+        if (recoveredDismissTimeoutRef.current) {
+          clearTimeout(recoveredDismissTimeoutRef.current);
+          recoveredDismissTimeoutRef.current = null;
+        }
+      };
+    }, [handleRecoveredClose, recovered]);
+
+    useEffect(() => {
+      if (!recovered || !error || successModalMetricSentRef.current) {
+        return;
+      }
+      if (!trackableMetricDeviceType) {
+        return;
+      }
+      successModalMetricSentRef.current = true;
+      const deviceModel = getHardwareWalletMetricDeviceModel(error);
+      trackEvent({
+        category: MetaMetricsEventCategory.Accounts,
+        event: MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
+        properties: buildHardwareWalletRecoverySegmentProperties({
+          location: recoveryLocation,
+          deviceType: trackableMetricDeviceType,
+          deviceModel,
+          errorType: mapHardwareWalletRecoveryErrorType(error),
+          errorTypeViewCount: errorTypeViewCountRef.current,
+          error,
+        }),
+      });
+      lastTrackedErrorKeyRef.current = null;
+      errorTypeViewCountRef.current = 0;
+      prevNonNullErrorIdentityKeyRef.current = null;
+    }, [
+      error,
+      recovered,
+      recoveryLocation,
+      trackEvent,
+      trackableMetricDeviceType,
+    ]);
+
+    useEffect(() => {
+      if (!isUserRejectedError) {
+        return;
+      }
+
+      handleClose();
+    }, [handleClose, isUserRejectedError]);
+
+    useEffect(() => {
+      if (error) {
+        return;
+      }
+
+      onClose?.();
+    }, [error, onClose]);
+
+    // If no error, don't render anything
+    if (!error) {
+      return null;
     }
-    if (!trackableMetricDeviceType) {
-      return;
-    }
-    successModalMetricSentRef.current = true;
-    const deviceModel = getHardwareWalletMetricDeviceModel(error);
-    trackEvent({
-      category: MetaMetricsEventCategory.Accounts,
-      event: MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
-      properties: buildHardwareWalletRecoverySegmentProperties({
-        location: recoveryLocation,
-        deviceType: trackableMetricDeviceType,
-        deviceModel,
-        errorType: mapHardwareWalletRecoveryErrorType(error),
-        errorTypeViewCount: errorTypeViewCountRef.current,
-        error,
-      }),
-    });
-    lastTrackedErrorKeyRef.current = null;
-    errorTypeViewCountRef.current = 0;
-    prevNonNullErrorIdentityKeyRef.current = null;
-  }, [
-    error,
-    recovered,
-    recoveryLocation,
-    trackEvent,
-    trackableMetricDeviceType,
-  ]);
 
-  useEffect(() => {
-    if (!isUserRejectedError) {
-      return;
+    // User intentionally rejected on device; this is a cancel path, not an error state.
+    if (isUserRejectedError) {
+      return null;
     }
 
-    handleClose();
-  }, [handleClose, isUserRejectedError]);
+    const isQrCameraFlow = isQrCameraFlowErrorCode(error.code);
 
-  useEffect(() => {
-    if (error) {
-      return;
-    }
+    const standardErrorContent = isQrCameraFlow
+      ? null
+      : buildErrorContent(
+          error,
+          displayWalletType,
+          t as (key: string, ...args: unknown[]) => string,
+        );
 
-    onClose?.();
-  }, [error, onClose]);
+    const headerContent =
+      standardErrorContent &&
+      (standardErrorContent.icon ? (
+        <Icon
+          name={standardErrorContent.icon}
+          color={standardErrorContent.iconColor}
+          size={IconSize.Xl}
+        />
+      ) : (
+        <Text
+          variant={TextVariant.headingMd}
+          textAlign={TextAlign.Center}
+          color={TextColor.textDefault}
+        >
+          {standardErrorContent.title}
+        </Text>
+      ));
 
-  // If no error, don't render anything
-  if (!error) {
-    return null;
-  }
+    const retryButtonText =
+      error.code === ErrorCode.DeviceDisconnected
+        ? t('hardwareWalletErrorContinueButton')
+        : t('hardwareWalletErrorReconnectButton');
 
-  // User intentionally rejected on device; this is a cancel path, not an error state.
-  if (isUserRejectedError) {
-    return null;
-  }
-
-  const isQrCameraFlow = isQrCameraFlowErrorCode(error.code);
-
-  const standardErrorContent = isQrCameraFlow
-    ? null
-    : buildErrorContent(
-        error,
-        displayWalletType,
-        t as (key: string, ...args: unknown[]) => string,
-      );
-
-  const headerContent =
-    standardErrorContent &&
-    (standardErrorContent.icon ? (
+    const retryButtonContent = isLoading ? (
       <Icon
-        name={standardErrorContent.icon}
-        color={standardErrorContent.iconColor}
-        size={IconSize.Xl}
+        name={IconName.Loading}
+        style={{ animation: 'spin 1.2s linear infinite' }}
       />
     ) : (
-      <Text
-        variant={TextVariant.headingMd}
-        textAlign={TextAlign.Center}
-        color={TextColor.textDefault}
-      >
-        {standardErrorContent.title}
-      </Text>
-    ));
+      retryButtonText
+    );
 
-  const retryButtonText =
-    error.code === ErrorCode.DeviceDisconnected
-      ? t('hardwareWalletErrorContinueButton')
-      : t('hardwareWalletErrorReconnectButton');
+    if (recovered) {
+      return (
+        <Modal
+          isOpen={true}
+          onClose={handleRecoveredClose}
+          isClosedOnOutsideClick={false}
+          isClosedOnEscapeKey
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={handleRecoveredClose}>
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+              >
+                <Icon
+                  name={IconName.Confirmation}
+                  color={IconColor.SuccessDefault}
+                  size={IconSize.Xl}
+                />
+              </Box>
+            </ModalHeader>
+            <ModalBody>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                gap={4}
+              >
+                <Text
+                  variant={TextVariant.headingSm}
+                  textAlign={TextAlign.Center}
+                  color={TextColor.textAlternative}
+                >
+                  {t('hardwareWalletTypeConnected', [t(displayWalletType)])}
+                </Text>
+              </Box>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      );
+    }
 
-  const retryButtonContent = isLoading ? (
-    <Icon
-      name={IconName.Loading}
-      style={{ animation: 'spin 1.2s linear infinite' }}
-    />
-  ) : (
-    retryButtonText
-  );
-
-  if (recovered) {
     return (
       <Modal
         isOpen={true}
-        onClose={handleRecoveredClose}
+        onClose={handleClose}
         isClosedOnOutsideClick={false}
         isClosedOnEscapeKey
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader onClose={handleRecoveredClose}>
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-            >
-              <Icon
-                name={IconName.Confirmation}
-                color={IconColor.SuccessDefault}
-                size={IconSize.Xl}
-              />
-            </Box>
+          <ModalHeader onClose={handleClose}>
+            {headerContent && (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+              >
+                {headerContent}
+              </Box>
+            )}
           </ModalHeader>
+
           <ModalBody>
             <Box
               display={Display.Flex}
@@ -514,151 +559,110 @@ export const HardwareWalletErrorModal = React.memo(({
               alignItems={AlignItems.center}
               gap={4}
             >
-              <Text
-                variant={TextVariant.headingSm}
-                textAlign={TextAlign.Center}
-                color={TextColor.textAlternative}
-              >
-                {t('hardwareWalletTypeConnected', [t(displayWalletType)])}
-              </Text>
+              {isQrCameraFlow &&
+                renderQrCameraFlowContent({
+                  errorCode: error.code,
+                  onRetry: handleRetry,
+                  isLoading,
+                  redirectQueryString: getRedirectQueryString(),
+                })}
+              {!isQrCameraFlow && standardErrorContent ? (
+                <>
+                  {standardErrorContent.icon && (
+                    <Text
+                      variant={TextVariant.headingMd}
+                      textAlign={TextAlign.Center}
+                      color={TextColor.textDefault}
+                    >
+                      {standardErrorContent.title}
+                    </Text>
+                  )}
+                  {standardErrorContent.variant ===
+                    HardwareWalletErrorContentVariant.Description && (
+                    <Text
+                      variant={TextVariant.bodyMd}
+                      textAlign={TextAlign.Center}
+                      color={TextColor.textDefault}
+                    >
+                      {standardErrorContent.description}
+                    </Text>
+                  )}
+
+                  {standardErrorContent.variant ===
+                    HardwareWalletErrorContentVariant.Recovery && (
+                    <Box
+                      width={BlockSize.Full}
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Column}
+                      gap={2}
+                    >
+                      <Text
+                        variant={TextVariant.bodyMdMedium}
+                        color={TextColor.textDefault}
+                      >
+                        {t('hardwareWalletErrorRecoveryTitle')}
+                      </Text>
+                      {standardErrorContent.recoveryInstructions.map(
+                        (instruction, index) => (
+                          <Box
+                            key={index}
+                            display={Display.Flex}
+                            flexDirection={FlexDirection.Row}
+                            gap={2}
+                            paddingLeft={4}
+                            paddingRight={4}
+                            alignItems={AlignItems.flexStart}
+                          >
+                            <Box as="li" key={index}>
+                              <Text
+                                variant={TextVariant.bodyMd}
+                                color={TextColor.textDefault}
+                              >
+                                {instruction}
+                              </Text>
+                            </Box>
+                          </Box>
+                        ),
+                      )}
+                    </Box>
+                  )}
+                </>
+              ) : null}
             </Box>
           </ModalBody>
+
+          {!isQrCameraFlow && (
+            <ModalFooter>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                gap={2}
+                width={BlockSize.Full}
+              >
+                {isRetryableHardwareWalletError(error) ? (
+                  <Button
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Lg}
+                    block
+                    onClick={handleRetry}
+                  >
+                    {retryButtonContent}
+                  </Button>
+                ) : (
+                  <Button
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Lg}
+                    block
+                    onClick={handleClose}
+                  >
+                    {t('confirm')}
+                  </Button>
+                )}
+              </Box>
+            </ModalFooter>
+          )}
         </ModalContent>
       </Modal>
     );
-  }
-
-  return (
-    <Modal
-      isOpen={true}
-      onClose={handleClose}
-      isClosedOnOutsideClick={false}
-      isClosedOnEscapeKey
-    >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader onClose={handleClose}>
-          {headerContent && (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              justifyContent={JustifyContent.center}
-            >
-              {headerContent}
-            </Box>
-          )}
-        </ModalHeader>
-
-        <ModalBody>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            gap={4}
-          >
-            {isQrCameraFlow &&
-              renderQrCameraFlowContent({
-                errorCode: error.code,
-                onRetry: handleRetry,
-                isLoading,
-                redirectQueryString: getRedirectQueryString(),
-              })}
-            {!isQrCameraFlow && standardErrorContent ? (
-              <>
-                {standardErrorContent.icon && (
-                  <Text
-                    variant={TextVariant.headingMd}
-                    textAlign={TextAlign.Center}
-                    color={TextColor.textDefault}
-                  >
-                    {standardErrorContent.title}
-                  </Text>
-                )}
-                {standardErrorContent.variant ===
-                  HardwareWalletErrorContentVariant.Description && (
-                  <Text
-                    variant={TextVariant.bodyMd}
-                    textAlign={TextAlign.Center}
-                    color={TextColor.textDefault}
-                  >
-                    {standardErrorContent.description}
-                  </Text>
-                )}
-
-                {standardErrorContent.variant ===
-                  HardwareWalletErrorContentVariant.Recovery && (
-                  <Box
-                    width={BlockSize.Full}
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Column}
-                    gap={2}
-                  >
-                    <Text
-                      variant={TextVariant.bodyMdMedium}
-                      color={TextColor.textDefault}
-                    >
-                      {t('hardwareWalletErrorRecoveryTitle')}
-                    </Text>
-                    {standardErrorContent.recoveryInstructions.map(
-                      (instruction, index) => (
-                        <Box
-                          key={index}
-                          display={Display.Flex}
-                          flexDirection={FlexDirection.Row}
-                          gap={2}
-                          paddingLeft={4}
-                          paddingRight={4}
-                          alignItems={AlignItems.flexStart}
-                        >
-                          <Box as="li" key={index}>
-                            <Text
-                              variant={TextVariant.bodyMd}
-                              color={TextColor.textDefault}
-                            >
-                              {instruction}
-                            </Text>
-                          </Box>
-                        </Box>
-                      ),
-                    )}
-                  </Box>
-                )}
-              </>
-            ) : null}
-          </Box>
-        </ModalBody>
-
-        {!isQrCameraFlow && (
-          <ModalFooter>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              gap={2}
-              width={BlockSize.Full}
-            >
-              {isRetryableHardwareWalletError(error) ? (
-                <Button
-                  variant={ButtonVariant.Primary}
-                  size={ButtonSize.Lg}
-                  block
-                  onClick={handleRetry}
-                >
-                  {retryButtonContent}
-                </Button>
-              ) : (
-                <Button
-                  variant={ButtonVariant.Primary}
-                  size={ButtonSize.Lg}
-                  block
-                  onClick={handleClose}
-                >
-                  {t('confirm')}
-                </Button>
-              )}
-            </Box>
-          </ModalFooter>
-        )}
-      </ModalContent>
-    </Modal>
-  );
-});
+  },
+);

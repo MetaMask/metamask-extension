@@ -14,13 +14,13 @@ export const CopyIcon = ({
   copyText,
   color,
   style = {},
-  isStopPropagationEnabled = false
-}: React.PropsWithChildren<{
+  isStopPropagationEnabled = false,
+}: {
   copyText: string;
   color?: IconColor;
   style?: CSSProperties;
   isStopPropagationEnabled?: boolean;
-}>) => {
+}) => {
   // useCopyToClipboard analysis: As of writing this, this is only used for public addresses,
   // but it could always be used for something else in the future, and we need to be careful
   const [copied, handleCopy] = useCopyToClipboard({ clearDelayMs: null });

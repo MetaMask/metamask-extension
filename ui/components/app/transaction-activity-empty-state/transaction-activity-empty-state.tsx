@@ -23,8 +23,8 @@ export type TransactionActivityEmptyStateProps = {
 };
 
 export const TransactionActivityEmptyState = ({
-  className
-}: React.PropsWithChildren<TransactionActivityEmptyStateProps>) => {
+  className,
+}: TransactionActivityEmptyStateProps) => {
   const account = useSelector(getSelectedInternalAccount);
   const t = useI18nContext();
   const theme = useTheme();

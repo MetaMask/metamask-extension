@@ -16,9 +16,7 @@ export type NotificationDetailAddressProps = {
   address: string;
 };
 
-const SideText = ({
-  side
-}: React.PropsWithChildren<{ side: string }>) => (
+const SideText = ({ side }: { side: string }) => (
   <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Medium}>
     {side}
   </Text>
@@ -34,8 +32,8 @@ const SideText = ({
  */
 export const NotificationDetailAddress = ({
   side,
-  address
-}: React.PropsWithChildren<NotificationDetailAddressProps>): JSX.Element => {
+  address,
+}: NotificationDetailAddressProps): JSX.Element => {
   const checksummedAddress = toChecksumHexAddress(address);
   const displayAddress = shortenAddress(checksummedAddress);
 

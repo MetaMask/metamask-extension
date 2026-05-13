@@ -15,8 +15,11 @@ import { DefiReferralConsentProps } from './defi-referral-consent.types';
 
 const PartnerImage = ({
   partnerId,
-  partnerName
-}: React.PropsWithChildren<{ partnerId: string; partnerName: string }>) => {
+  partnerName,
+}: {
+  partnerId: string;
+  partnerName: string;
+}) => {
   return (
     <img
       className="h-[190px]"
@@ -31,8 +34,8 @@ export const DefiReferralConsentTreatment = ({
   selectedAddress,
   partnerId,
   partnerName,
-  learnMoreUrl
-}: React.PropsWithChildren<DefiReferralConsentProps>) => {
+  learnMoreUrl,
+}: DefiReferralConsentProps) => {
   const t = useI18nContext();
 
   const handleSubmit = (value: boolean) => {

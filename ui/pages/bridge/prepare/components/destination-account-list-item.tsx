@@ -65,8 +65,8 @@ const DestinationAccountListItem = ({
   account,
   selected = false,
   onClick,
-  isExternal = false
-}: React.PropsWithChildren<DestinationAccountListItemProps>) => {
+  isExternal = false,
+}: DestinationAccountListItemProps) => {
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );

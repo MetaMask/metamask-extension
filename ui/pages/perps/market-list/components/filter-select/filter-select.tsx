@@ -23,8 +23,8 @@ export type FilterSelectProps = {
 export const FilterSelect = ({
   value,
   onChange,
-  showNewFilter = false
-}: React.PropsWithChildren<FilterSelectProps>) => {
+  showNewFilter = false,
+}: FilterSelectProps) => {
   const t = useI18nContext();
 
   const options: DropdownOption<MarketFilter>[] = useMemo(() => {

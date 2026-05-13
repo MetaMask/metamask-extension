@@ -22,8 +22,8 @@ import type { OrderSummaryProps } from '../../order-entry.types';
 export const OrderSummary = ({
   marginRequired,
   estimatedFees,
-  liquidationPrice
-}: React.PropsWithChildren<OrderSummaryProps>) => {
+  liquidationPrice,
+}: OrderSummaryProps) => {
   const t = useI18nContext();
 
   return (

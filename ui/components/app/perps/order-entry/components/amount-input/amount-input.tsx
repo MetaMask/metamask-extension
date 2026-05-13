@@ -74,8 +74,8 @@ export const AmountInput = ({
   onAddFunds,
   autoFocus = false,
   usdPlaceholder = '0.00',
-  usdInputRef
-}: React.PropsWithChildren<AmountInputProps>) => {
+  usdInputRef,
+}: AmountInputProps) => {
   const t = useI18nContext();
   const { formatCurrencyWithMinThreshold, formatNumber } = useFormatters();
   const [percentInputValue, setPercentInputValue] = useState<string>(

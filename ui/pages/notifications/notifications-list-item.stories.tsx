@@ -64,11 +64,11 @@ export default {
 
 const NotificationItemWrapper = ({
   notification,
-  onRead
-}: React.PropsWithChildren<{
+  onRead,
+}: {
   notification: INotification;
   onRead: (id: string) => void;
-}>) => {
+}) => {
   const handleCustomNotificationClick = () => {
     onRead(notification.id);
   };

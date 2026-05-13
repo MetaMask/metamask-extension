@@ -48,8 +48,8 @@ export const MultichainEditNetworksPage = ({
   testNetworks,
   defaultSelectedChainIds,
   onSubmit,
-  onClose
-}: React.PropsWithChildren<MultichainEditNetworksPageProps>) => {
+  onClose,
+}: MultichainEditNetworksPageProps) => {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
   const allNetworks = [...nonTestNetworks, ...testNetworks];

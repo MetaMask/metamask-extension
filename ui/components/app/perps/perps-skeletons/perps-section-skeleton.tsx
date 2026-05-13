@@ -30,8 +30,8 @@ export type PerpsSectionSkeletonProps = {
 export const PerpsSectionSkeleton = ({
   cardCount = 3,
   showHeader = true,
-  showStartTradeCta = false
-}: React.PropsWithChildren<PerpsSectionSkeletonProps>) => {
+  showStartTradeCta = false,
+}: PerpsSectionSkeletonProps) => {
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}

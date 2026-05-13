@@ -32,8 +32,8 @@ const TestComponent = ({
   navigate,
   location,
   params,
-  testProp
-}: React.PropsWithChildren<TestComponentProps & { testProp?: string }>) => (
+  testProp,
+}: TestComponentProps & { testProp?: string }) => (
   <div>
     <div data-testid="test-prop">{testProp}</div>
     <div data-testid="pathname">{location?.pathname}</div>
@@ -77,7 +77,9 @@ describe('withRouterHooks HOC', () => {
   });
 
   it('sets correct displayName for debugging', () => {
-    const testComponentWithDisplayName = (props: React.PropsWithChildren<TestComponentProps>) => <div>{props.navigate?.toString()}</div>;
+    const testComponentWithDisplayName = (props: TestComponentProps) => (
+      <div>{props.navigate?.toString()}</div>
+    );
     testComponentWithDisplayName.displayName = 'TestComponentWithDisplayName';
     const WrappedComponent = withRouterHooks(testComponentWithDisplayName);
     expect(WrappedComponent.displayName).toBe(
@@ -105,8 +107,8 @@ describe('withRouterHooks HOC', () => {
     const TestComponentForHooks = ({
       navigate,
       location,
-      params
-    }: React.PropsWithChildren<RouterHooksProps>) => {
+      params,
+    }: RouterHooksProps) => {
       expect(typeof navigate).toBe('function');
       expect(typeof location).toBe('object');
       expect(typeof params).toBe('object');
@@ -122,9 +124,7 @@ describe('withRouterHooks HOC', () => {
       // verifies that useShallowEqualityCheck stabilizes references when values match
       const paramsReferences: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo = ({
-        params
-      }: React.PropsWithChildren<TestComponentProps>) => {
+      const TestComponentForMemo = ({ params }: TestComponentProps) => {
         paramsReferences.push(params);
         return <div>Memoization test</div>;
       };
@@ -144,9 +144,7 @@ describe('withRouterHooks HOC', () => {
       // Complementary test: verify memoization correctly detects value changes
       const paramsReferences: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo = ({
-        params
-      }: React.PropsWithChildren<TestComponentProps>) => {
+      const TestComponentForMemo = ({ params }: TestComponentProps) => {
         paramsReferences.push(params);
         return <div>Memoization test</div>;
       };
@@ -169,9 +167,7 @@ describe('withRouterHooks HOC', () => {
     it('maintains stable location reference when values are unchanged', () => {
       const locationReferences: ReturnType<typeof useLocation>[] = [];
 
-      const TestComponentForMemo = ({
-        location
-      }: React.PropsWithChildren<TestComponentProps>) => {
+      const TestComponentForMemo = ({ location }: TestComponentProps) => {
         locationReferences.push(location);
         return <div>Memoization test</div>;
       };
@@ -191,9 +187,7 @@ describe('withRouterHooks HOC', () => {
       const customParams = { customId: 'custom-value' };
       const paramsReceived: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo = ({
-        params
-      }: React.PropsWithChildren<TestComponentProps>) => {
+      const TestComponentForMemo = ({ params }: TestComponentProps) => {
         paramsReceived.push(params);
         return <div>Custom params test</div>;
       };
@@ -214,9 +208,7 @@ describe('withRouterHooks HOC', () => {
       };
       const locationsReceived: ReturnType<typeof useLocation>[] = [];
 
-      const TestComponentForMemo = ({
-        location
-      }: React.PropsWithChildren<TestComponentProps>) => {
+      const TestComponentForMemo = ({ location }: TestComponentProps) => {
         locationsReceived.push(location);
         return <div>Custom location test</div>;
       };
@@ -234,9 +226,7 @@ describe('withRouterHooks HOC', () => {
       // We change the mock values (not props) to exercise useShallowEqualityCheck.
       const paramsReceived: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo = ({
-        params
-      }: React.PropsWithChildren<TestComponentProps>) => {
+      const TestComponentForMemo = ({ params }: TestComponentProps) => {
         paramsReceived.push(params);
         return <div>Comma collision test</div>;
       };
@@ -264,9 +254,7 @@ describe('withRouterHooks HOC', () => {
       // React Router changes key on every navigation, even to the same path.
       const locationsReceived: ReturnType<typeof useLocation>[] = [];
 
-      const TestComponentForMemo = ({
-        location
-      }: React.PropsWithChildren<TestComponentProps>) => {
+      const TestComponentForMemo = ({ location }: TestComponentProps) => {
         locationsReceived.push(location);
         return <div>Location key test</div>;
       };
