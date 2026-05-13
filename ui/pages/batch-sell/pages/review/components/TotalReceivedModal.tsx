@@ -13,7 +13,6 @@ import {
   ModalBody,
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { useBatchSellInfoModal } from '../../../hooks/useBatchSellInfoModal';
 import { AssetsReceivedSummaryList } from './AssetsReceivedSummaryList';
 import { AssetsReceivedTotalAmountsSummary } from './AssetsReceivedTotalAmountsSummary';
 
@@ -42,11 +41,10 @@ export const TotalReceivedModal = ({
   minimumReceivedAmount,
 }: TotalReceiveModalProps) => {
   const t = useI18nContext();
-  const { isInfoModalOpen } = useBatchSellInfoModal();
 
   return (
     <Modal
-      isOpen={open && !isInfoModalOpen}
+      isOpen={open}
       isClosedOnEscapeKey
       isClosedOnOutsideClick
       onClose={onClose}

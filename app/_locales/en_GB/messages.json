@@ -973,6 +973,9 @@
   "batchSellSelectHeaderTitle": {
     "message": "Select up to 5 tokens"
   },
+  "batchSellSlippageDescription": {
+    "message": "Your transaction won't go through if the price changes more than the slippage percent."
+  },
   "bestQuote": {
     "message": "Best quote"
   },

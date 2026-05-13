@@ -12,7 +12,12 @@ import {
 import React from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
-export const Footer = () => {
+type FooterProps = {
+  reviewIsDisabled: boolean;
+  onReviewClick: () => void;
+};
+
+export const Footer = ({ reviewIsDisabled, onReviewClick }: FooterProps) => {
   const t = useI18nContext();
 
   return (
@@ -21,8 +26,8 @@ export const Footer = () => {
         size={ButtonSize.Lg}
         variant={ButtonVariant.Primary}
         isFullWidth
-        onClick={console.log}
-        disabled={false}
+        onClick={onReviewClick}
+        disabled={reviewIsDisabled}
       >
         <Text
           variant={TextVariant.ButtonLabelMd}

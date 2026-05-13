@@ -4,11 +4,7 @@ import {
   BoxAlignItems,
   BoxBorderColor,
   BoxFlexDirection,
-  ButtonIcon,
-  ButtonIconSize,
   FontWeight,
-  IconColor,
-  IconName,
   Text,
   TextColor,
   TextVariant,
@@ -18,7 +14,8 @@ import BigNumber from 'bignumber.js';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { formatTokenAmount } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
-import { useBatchSellInfoModal } from '../../../hooks/useBatchSellInfoModal';
+import { Tooltip } from '../../../../bridge/layout';
+import { PopoverPosition } from '../../../../../components/component-library';
 
 type AssetsReceivedTotalAmountsSummaryProps = {
   receivedAsset: {
@@ -33,19 +30,8 @@ export const AssetsReceivedTotalAmountsSummary = ({
   totalReceivedAmount,
   minimumReceivedAmount,
 }: AssetsReceivedTotalAmountsSummaryProps) => {
-  const { openModal } = useBatchSellInfoModal();
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-
-  const onMinimumReceivedIconClick = () =>
-    openModal({
-      titleProps: {
-        children: t('minimumReceivedLabel'),
-      },
-      descriptionProps: {
-        children: t('batchSellMinimumReceiveExplanation'),
-      },
-    });
 
   return (
     <Box>
@@ -109,15 +95,9 @@ export const AssetsReceivedTotalAmountsSummary = ({
           >
             {t('minimumReceivedLabel')}
           </Text>
-          <ButtonIcon
-            size={ButtonIconSize.Sm}
-            iconName={IconName.Info}
-            iconProps={{
-              className: 'text-text-alternative',
-            }}
-            onClick={onMinimumReceivedIconClick}
-            ariaLabel={t('minimumReceivedLabel')}
-          />
+          <Tooltip position={PopoverPosition.Bottom} style={{ zIndex: 1051 }}>
+            {t('batchSellMinimumReceiveExplanation')}
+          </Tooltip>
         </Box>
         <Box>
           <Text

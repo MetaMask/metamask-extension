@@ -1,17 +1,11 @@
-import { CaipAssetType } from '@metamask/utils';
 import React from 'react';
 import { Box } from '@metamask/design-system-react';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
+import { BatchSellQuotesConfig } from '../types';
 import { QuotesListItem } from './QuotesListItem';
 
 type QuotesListProps = {
-  config: {
-    [assetId: CaipAssetType]: {
-      asset: BatchSellAsset;
-      sendAmountPercent: number;
-      slippagePercent: number;
-    };
-  };
+  sendAssets: BatchSellQuotesConfig['sendAssets'];
   canDeleteAssets: boolean;
   onAssetDeleteClick: (asset: BatchSellAsset) => void;
   onSlippagePercentChangeClick: (asset: BatchSellAsset) => void;
@@ -22,7 +16,7 @@ type QuotesListProps = {
 };
 
 export const QuotesList = ({
-  config,
+  sendAssets,
   onSlippagePercentChangeClick,
   onSendAmountPercentChange,
   onAssetDeleteClick,
@@ -30,7 +24,7 @@ export const QuotesList = ({
 }: QuotesListProps) => {
   return (
     <Box className="flex-1">
-      {Object.values(config).map(({ asset, sendAmountPercent }) => (
+      {Object.values(sendAssets).map(({ asset, sendAmountPercent }) => (
         <QuotesListItem
           key={asset.assetId}
           asset={asset}

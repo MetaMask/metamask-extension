@@ -1,111 +1,51 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { useSelector } from 'react-redux';
 import { CaipAssetType } from '@metamask/utils';
-import { BatchSellNavigationState } from '../../../../hooks/batch-sell/useBatchSellNavigation';
-import { BridgeAppState } from '../../../../ducks/bridge/selectors';
 import {
-  getAvailableBatchSellReceiveAssetsForNetwork as getAvailableBatchSellReceivedAssetsForNetwork,
-  getAvailableBatchSellSwapAssetsForNetwork,
-} from '../../../../ducks/batch-sell/selectors';
-import {
-  DEFAULT_SEND_AMOUNT_PERCENT,
-  DEFAULT_SLIPPAGE_PERCENT,
+  LOW_SLIPPAGE_PERCENT_THRESHOLD,
+  SLIPPAGE_PERCENT_OPTIONS,
 } from '../../../../constants/batch-sell';
+import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';
 import { Header } from './components/Header';
 import { QuotesList } from './components/QuotesList';
 import { Footer } from './components/Footer';
 import { SelectReceivedAssetModal } from './components/SelectReceivedAssetModal';
 import { TotalReceivedModal } from './components/TotalReceivedModal';
-import { BatchSellAsset } from 'ui/ducks/batch-sell/types';
+import { SlippageModal } from './components/SlippageModal';
+import { ReviewAndConfirmModal } from './components/ReviewAndConfirmModal';
+
+// TODO: reduce slippage optuions to the same of swaps
+// TODO: make modal heading variants consistent with other modals
+// TODO: loading states
+// TODO: wire up useBatchSellQuotesFetching
+// TODO: No quotes available badge
+// TODO: high price impact badge
+// TODO: receive modal
+// CASE: no quotes available for any asset should disable the info button and review
+// CASE: no quotes available for some assets should not render row in review
+// TODO: add test ids
+// TODO: write tests
 
 export const BatchSellReviewPage = () => {
-  const { state } = useLocation();
-  const { selectedNetworkChainId, selectedAssetsId } = (state ??
-    {}) as BatchSellNavigationState;
   const [selectReceivedAssetModalIsOpen, setSelectReceivedAssetModalIsOpen] =
+    useState(false);
+  const [reviewAndConfirmModalIsOpen, setReviewAndConfirmModalIsOpen] =
     useState(false);
   const [totalReceivedModalIsOpen, setTotalReceivedAssetModalIsOpen] =
     useState(false);
 
-  const receivedAssets = useSelector((_state: BridgeAppState) =>
-    getAvailableBatchSellReceivedAssetsForNetwork(
-      _state,
-      selectedNetworkChainId ?? undefined,
-    ).map((asset) => ({
-      id: asset.assetId,
-      symbol: asset.symbol,
-      fiatBalance: asset.tokenFiatAmount,
-      image: asset.iconUrl,
-    })),
-  );
-
-  const availableBatchSellAssetsForNetworkList = useSelector((_state) =>
-    getAvailableBatchSellSwapAssetsForNetwork(
-      _state,
-      selectedNetworkChainId ?? null,
-    ).filter((asset) => selectedAssetsId?.includes(asset.assetId)),
-  );
-
-  const [selectedReceiveAsset, setSelectedReceiveAsset] = useState(
-    receivedAssets[0],
-  );
-
-  const [quoteConfigs, setQuoteConfigs] = useState(() =>
-    Object.fromEntries(
-      availableBatchSellAssetsForNetworkList.map((asset) => [
-        asset.assetId,
-        {
-          asset,
-          sendAmountPercent: DEFAULT_SEND_AMOUNT_PERCENT,
-          slippagePercent: DEFAULT_SLIPPAGE_PERCENT,
-        },
-      ]),
-    ),
-  );
-
-  const canDeleteAssets = useMemo(
-    () => Object.values(quoteConfigs).length > 2,
-    [quoteConfigs],
-  );
-
-  const onSelectReceivedAsset = useCallback(
-    (assetId: CaipAssetType) => {
-      const newAsset = receivedAssets.find((asset) => asset.id === assetId);
-      if (newAsset) {
-        setSelectedReceiveAsset(newAsset);
-        setSelectReceivedAssetModalIsOpen(false);
-      }
-    },
-    [receivedAssets],
-  );
-
-  const onQuoteSendAmountPercentChange = useCallback(
-    (asset: BatchSellAsset, newSendAmountPercent: number) => {
-      setQuoteConfigs((config) => ({
-        ...config,
-        [asset.assetId]: {
-          ...config[asset.assetId],
-          sendAmountPercent: newSendAmountPercent,
-        },
-      }));
-    },
-    [],
-  );
-
-  const onAssetDeleteClick = useCallback((asset: BatchSellAsset) => {
-    setQuoteConfigs((config) => {
-      const update = { ...config };
-      delete update[asset.assetId];
-      return update;
-    });
-  }, []);
-
-  console.log(
-    'availableBatchSellAssetsForNetworkList',
-    availableBatchSellAssetsForNetworkList,
-  );
+  const {
+    quoteConfigs,
+    selectedReceiveAsset,
+    editingSlippageAssetId,
+    canDeleteAssets,
+    receivedAssets,
+    setSendAmountPercent,
+    setSlippagePercent,
+    setEditingSlippageAssetId,
+    selectReceivedAsset,
+    deleteAsset,
+  } = useBatchSellQuotesConfig();
 
   // TODO: if availableBatchSellAssetsForNetworkList or selectedAssetsId is empty render error
 
@@ -129,19 +69,27 @@ export const BatchSellReviewPage = () => {
         }
       />
       <QuotesList
-        config={quoteConfigs}
-        onSendAmountPercentChange={onQuoteSendAmountPercentChange}
-        onSlippagePercentChangeClick={console.log}
-        onAssetDeleteClick={onAssetDeleteClick}
+        sendAssets={quoteConfigs}
+        onSendAmountPercentChange={setSendAmountPercent}
+        onSlippagePercentChangeClick={(asset) =>
+          setEditingSlippageAssetId(asset.assetId as CaipAssetType)
+        }
+        onAssetDeleteClick={deleteAsset}
         canDeleteAssets={canDeleteAssets}
       />
-      <Footer />
+      <Footer
+        onReviewClick={() => setReviewAndConfirmModalIsOpen(true)}
+        reviewIsDisabled={false}
+      />
       <SelectReceivedAssetModal
         assets={receivedAssets}
         selectedAssetId={selectedReceiveAsset.id}
         onClose={() => setSelectReceivedAssetModalIsOpen(false)}
         open={selectReceivedAssetModalIsOpen}
-        onSelectAsset={onSelectReceivedAsset}
+        onSelectAsset={(assetId) => {
+          selectReceivedAsset(assetId);
+          setSelectReceivedAssetModalIsOpen(false);
+        }}
       />
       <TotalReceivedModal
         sendAssets={[
@@ -165,6 +113,20 @@ export const BatchSellReviewPage = () => {
         minimumReceivedAmount={7485.47}
         onClose={() => setTotalReceivedAssetModalIsOpen(false)}
         open={totalReceivedModalIsOpen}
+      />
+      {editingSlippageAssetId !== null && (
+        <SlippageModal
+          open
+          onClose={() => setEditingSlippageAssetId(null)}
+          value={quoteConfigs[editingSlippageAssetId]?.slippagePercent}
+          onChange={setSlippagePercent}
+          slippageOptions={SLIPPAGE_PERCENT_OPTIONS}
+          warningSlippageTheshold={LOW_SLIPPAGE_PERCENT_THRESHOLD}
+        />
+      )}
+      <ReviewAndConfirmModal
+        open={reviewAndConfirmModalIsOpen}
+        onClose={() => setReviewAndConfirmModalIsOpen(false)}
       />
     </Box>
   );

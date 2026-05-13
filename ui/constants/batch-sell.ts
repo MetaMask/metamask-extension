@@ -1,6 +1,8 @@
 export const MAX_SELECTED_ALLOWED_TOKENS = 5;
 export const MIN_SELECTED_ALLOWED_TOKENS = 2;
 export const DEFAULT_SLIPPAGE_PERCENT = 0.5;
+export const SLIPPAGE_PERCENT_OPTIONS = [0.5, 1, 2];
+export const LOW_SLIPPAGE_PERCENT_THRESHOLD = 0.5;
 export const DEFAULT_SEND_AMOUNT_PERCENT = 100;
 export const MIN_SEND_PERCENT = 100;
 export const MAX_SEND_PERCENT = 0;
