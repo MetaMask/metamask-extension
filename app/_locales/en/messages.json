@@ -5912,14 +5912,11 @@
   "perpsCloseAll": {
     "message": "Close all"
   },
-  "perpsCloseAllPositions": {
-    "message": "Close all positions"
-  },
   "perpsCloseAllDescription": {
     "message": "We'll close all your open positions at current market price."
   },
-  "perpsKeepPositions": {
-    "message": "Keep positions"
+  "perpsCloseAllPositions": {
+    "message": "Close all positions"
   },
   "perpsCloseAmount": {
     "message": "Close amount"
@@ -6069,6 +6066,9 @@
   },
   "perpsInsufficientMargin": {
     "message": "Insufficient margin to place this order."
+  },
+  "perpsKeepPositions": {
+    "message": "Keep positions"
   },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
