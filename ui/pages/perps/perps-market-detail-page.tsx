@@ -53,7 +53,6 @@ import { useTheme } from '../../hooks/useTheme';
 import {
   DEFAULT_ROUTE,
   PERPS_ORDER_ENTRY_ROUTE,
-  PERPS_ACTIVITY_ROUTE,
   PERPS_MARKET_EXPANDED_ROUTE,
 } from '../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
