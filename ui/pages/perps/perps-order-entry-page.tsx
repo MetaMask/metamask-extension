@@ -1424,11 +1424,6 @@ const PerpsOrderEntryPage = () => {
           initialLeverage={initialLeverage}
           autoFocusUsd={orderMode !== 'close'}
           autoFocusLimitPrice={orderMode !== 'close'}
-          usdPlaceholder={
-            orderType === 'market'
-              ? `min $${PERPS_MIN_MARKET_ORDER_USD}`
-              : undefined
-          }
           sizeDecimals={marketInfo?.szDecimals}
         />
       </Box>

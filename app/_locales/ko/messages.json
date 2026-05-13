@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "지갑에서 토큰을 자동으로 감지하고, NFT를 표시하며, 계정 잔액을 일괄 업데이트하세요."
   },
+  "asterdexReferralConfirmText": {
+    "message": "네, 4% 환급받기",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "MetaMask 추천인 코드를 사용하여 거래하면 4%를 돌려받을 수 있습니다.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "MetaMask 추천 코드로 거래하고 4%를 환급받으세요. 이 할인은 AsterDEX의 $1에 따라 향후 모든 거래에 적용됩니다. MetaMask는 수수료를 받습니다.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "AsterDEX에서 4% 환급받기",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "무료 스왑 취소 시도"
@@ -1144,6 +1156,9 @@
     "message": "이 값은 추정치이며, 거래가 완료되면 최종적으로 확정됩니다. 포인트는 보상 잔액에 반영되기까지 최대 1시간이 걸릴 수 있습니다.",
     "description": "Second part of tooltip content explaining how points are calculated"
   },
+  "bridgePriceDataUnavailableError": {
+    "message": "이 토큰의 가격 정보를 가져올 수 없습니다. 계속하기 전에 수령할 금액이 예상과 일치하는지 확인하세요."
+  },
   "bridgePriceImpact": {
     "message": "가격 영향"
   },
@@ -1372,6 +1387,18 @@
   "bridgeTo": {
     "message": "브릿지 대상:"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1은(는) 악성 토큰입니다."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1은(는) 악성 토큰으로 신고되었습니다. 이 토큰과 상호작용하면 자금을 탈취당할 위험이 높습니다."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1은(는) 의심스러운 토큰입니다."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1은(는) 의심스러운 토큰으로 신고되었습니다. 계속하기 전에 위험 요소를 확인하세요."
+  },
   "bridgeTokenNotFound": {
     "message": "\"$1\"(와)과 일치하는 토큰 없음"
   },
@@ -1425,11 +1452,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "보냄:"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "최대 허용량 사용"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "이 브릿지의 가스비를 지불할 $1(이)가 부족합니다. 더 적은 금액을 입력하거나 더 많은 $1(을)를 매수하세요."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "가스비를 위해 더 많은 $1 필요"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "이 특정 네트워크는 계정에 최소 $1 $3의 예치금을 유지해야 합니다. 현재 잔액으로는 최대 $2 $3까지 사용할 수 있습니다",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "최소 $1의 예치금이 필요합니다",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "브릿지 완료"
@@ -1838,6 +1876,9 @@
   "connectAHardwareWallet": {
     "message": "하드웨어 지갑 연결"
   },
+  "connectAHardwareWalletDescription": {
+    "message": "USB 또는 QR 코드 사용"
+  },
   "connectAccounts": {
     "message": "계정 연결"
   },
@@ -2071,6 +2112,19 @@
   },
   "creatorAddress": {
     "message": "크리에이터 주소"
+  },
+  "criticalErrorAttemptRecovery": {
+    "message": "복구 시도"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "위 방법으로 해결되지 않는다면, $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "MetaMask 재설치"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "여전히 문제가 발생하나요?"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2370,6 +2424,14 @@
   "defiReferralCheckboxLabel": {
     "message": "MetaMask가 추천인 코드를 추가하도록 허용하세요. 추가하면 변경할 수 없습니다. 사이트는 약관에 따라 할인을 제공합니다. MetaMask는 수수료를 받습니다.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "아니요, 괜찮습니다",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "간주됩니다",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3222,9 +3284,21 @@
     "message": "Web3를 사용할 수 있도록 지갑을 준비해 주세요",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": " 네, 5% 절약하기",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "MetaMask 추천인 코드로 거래 시 최대 5% 절약하세요.",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "MetaMask 추천 코드로 거래하고 5%를 절약하세요. 이 할인은 GMX의 $1에 따라 향후 모든 거래에 적용됩니다. MetaMask는 수수료를 받습니다.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "GMX에서 5% 절약하기",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "사이트로 이동"
@@ -3448,9 +3522,21 @@
   "honeypotTitle": {
     "message": "허니팟"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "네, 4% 절약하기",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMask 추천인 코드로 거래 시 최대 4% 절약하세요.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "MetaMask 추천 코드로 거래하고 4%를 절약하세요. Hyperliquid의 $1에 따라 향후 모든 거래에 적용됩니다. MetaMask는 수수료를 받습니다.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Hyperliquid에서 4% 절약하기",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "견적은 다음 기간 전에 만료됨을"
@@ -4010,6 +4096,9 @@
   },
   "maxFeeTooltip": {
     "message": "트랜잭션에 지불하기 위해 제공되는 최대 수수료입니다."
+  },
+  "maybeLater": {
+    "message": "나중에"
   },
   "medium": {
     "message": "시장"
@@ -5240,6 +5329,126 @@
   "participateInMetaMetricsDescription": {
     "message": "MetaMetrics에 참여하시면 MetaMask 개선에 도움이 됩니다"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "바이오메트릭",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "터치 ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "비밀번호를 입력하는 대신 $1을(를) 사용하여 MetaMask의 잠금을 해제하세요. 이 기기에만 패스키가 생성됩니다.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "이 지갑에 이미 $1이(가) 설정되어 있습니다.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "$1을(를) 인증할 수 없습니다. 다시 시도해 주세요.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "$1 응답이 불완전합니다. 다시 시도해 주세요.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "$1 로그인 세션이 만료되었습니다. 다시 시도해 주세요.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "$1 설정 세션이 만료되었습니다. 처음부터 다시 시도해 주세요.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "이 지갑에 $1이(가) 설정되지 않았습니다. 설정에서 $1을(를) 켜주세요.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "$1 설정에 실패했습니다. 다시 시도해 주세요",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "$1 설정을 인증할 수 없습니다. 다시 시도해 주세요.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "$1(으)로 잠금을 해제할 수 없습니다. 다시 시도하거나 설정에서 $1을(를) 다시 설정해 주세요.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1이(가) 현재 지갑 잠금과 일치하지 않습니다. 설정에서 $1을(를) 다시 설정해 주세요.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "비밀번호가 업데이트되었지만, $1 잠금 해제를 켤 수 없습니다.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "$1을(를) 인증할 수 없습니다. 다시 시도하거나 비밀번호를 사용하세요.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "$1 등록",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "$1 인증",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "전체 화면 창에서 확장 프로그램을 열고 다시 시도해 보세요.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "전체 화면 창 열기",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "여전히 문제가 발생하나요?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "잠금 해제에 문제가 있나요?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "잠금 해제 문제",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "인증에 문제가 있나요?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "인증에 문제가 있나요?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "$1 꺼짐",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "$1 켜짐",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "$1 잠금 해제에 실패했습니다. 비밀번호로 시도해 보세요.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "비밀번호를 입력하는 대신 $1을(를) 사용하여 인증하세요.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "$1(으)로 컨펌",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "password": {
     "message": "비밀번호"
   },
@@ -5652,6 +5861,9 @@
     "message": "거래 가능",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "기본 기능이 꺼져 있는 동안에는 이 기능을 사용할 수 없습니다."
+  },
   "perpsBatchCancelFailed": {
     "message": "하나 이상의 주문을 취소하지 못했습니다. 다시 시도해 주세요."
   },
@@ -5663,6 +5875,9 @@
   },
   "perpsCancelOrder": {
     "message": "주문 취소"
+  },
+  "perpsCandleIntervals": {
+    "message": "캔들 간격 설정"
   },
   "perpsCandlePeriodDays": {
     "message": "일"
@@ -5676,11 +5891,14 @@
   "perpsCloseAll": {
     "message": "모두 종료"
   },
+  "perpsCloseAmount": {
+    "message": "종료 금액"
+  },
   "perpsCloseLong": {
     "message": "롱 청산"
   },
   "perpsClosePartialMinNotional": {
-    "message": "부분 종료는 USD 기준 최소 $1 이상이어야 합니다. 종료 금액을 늘리거나 슬라이더를 100%로 설정하세요."
+    "message": "부분 종료는 USD 기준 최소 $1 이상이어야 합니다. 종료 금액을 늘리거나 전체 포지션을 종료하세요."
   },
   "perpsClosePosition": {
     "message": "포지션 종료"
@@ -5877,6 +6095,10 @@
   "perpsMid": {
     "message": "중간값"
   },
+  "perpsMinOrderSize": {
+    "message": "주문 규모는 최소 $1이어야 합니다",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "수정"
   },
@@ -5987,6 +6209,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "숏 포지션을 롱 포지션으로 전환합니다"
   },
+  "perpsSaveChanges": {
+    "message": "변경 사항 저장",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "시장 검색"
   },
@@ -6063,6 +6289,10 @@
   "perpsStopLoss": {
     "message": "손절",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "손절가는 청산 가격 $1여야 합니다",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "손절가는 $2 가격보다 $1 합니다",
@@ -6968,27 +7198,6 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "지원되지 않는 지역입니다"
   },
-  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
-    "message": "더 보기"
-  },
-  "rewardsOnboardingLegalDisclaimerTermsLink": {
-    "message": "약관 및 개인정보 보호 고지"
-  },
-  "rewardsOnboardingOptInError": {
-    "message": "참여 실패"
-  },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "잘못된 추천 코드"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "추천 코드(선택 사항)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "추천 코드를 확인할 수 없습니다."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "연결 상태를 확인하고 다시 시도하세요."
-  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "추천인 코드 확인 중...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7004,12 +7213,6 @@
   "rewardsPointsIcon": {
     "message": "보상 포인트",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "진행 상황을 확인하고 보상을 받으려면 앱이 필요합니다.\n이 QR 코드를 스캔해 주시면 저희가 계정 가져오기를 도와드리겠습니다."
-  },
-  "rewardsQRCodeTitle": {
-    "message": "모바일 앱 받기"
   },
   "rewardsSignInFailed": {
     "message": "로그인 실패",
@@ -7115,6 +7318,10 @@
   },
   "securityChangePasswordToastError": {
     "message": "비밀번호를 변경할 수 없습니다. 다시 시도하세요."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "새 비밀번호가 저장되었지만, $1 잠금 해제를 켤 수 없습니다.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "새 비밀번호 저장 완료"
@@ -7264,8 +7471,16 @@
     "message": "설정",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "$1 설정",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "스냅 계정 추가"
+  },
+  "settingUpPasskey": {
+    "message": "$1 설정 중",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "설정"
@@ -8110,6 +8325,9 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "디앱의 스마트 계정 요청"
+  },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Dapp이 일반 계정에 대한 스마트 계정 기능을 요청할 수 있도록 허용합니다. MetaMask는 자체 감사를 거친 스마트 계정으로만 업그레이드합니다."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "같은 주소. 더욱 스마트한 기능."
@@ -9374,6 +9592,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "알림을 비활성화하는 동안 오류가 발생했습니다. 나중에 다시 시도해 주세요."
   },
+  "turnOffPasskey": {
+    "message": "$1 끄기",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "$1을(를) 끌 수 없습니다. 다시 시도해 주세요.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "켜기"
   },
@@ -9476,6 +9702,10 @@
     "message": "잠금 해제하여 공개",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "$1(으)로 잠금 해제",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "고정 해제"
   },
@@ -9561,6 +9791,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "MetaMask가 제삼자 서비스를 이용하여 회원님의 NFT를 추가할 수 있도록 합니다. NFT를 자동 감지하면 이러한 서비스에 IP와 계정 주소가 노출됩니다. 이 기능을 켜면 IP 주소가 이더리움 주소와 연결되고 사기꾼이 에어드랍한 가짜 NFT가 표시될 수 있습니다. 이러한 위험을 피하기 위해 수동으로 토큰을 추가할 수 있습니다."
+  },
+  "usePassword": {
+    "message": "비밀번호 사용"
   },
   "usePhishingDetection": {
     "message": "피싱 감지 사용"

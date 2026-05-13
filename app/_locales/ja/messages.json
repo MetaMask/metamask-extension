@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "ウォレットのトークンを自動検出し、NFTを表示して、アカウント残高の最新情報を一括で取得します"
   },
+  "asterdexReferralConfirmText": {
+    "message": "はい、4%の還元を受けます",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引額の4%が返ってきます。",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "MetaMask紹介コードを使って取引すると、4%還元されます。この割引はAsterDEXの$1に従い、すべての先物取引に適用されます。MetaMaskは手数料をいただきます。",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "AsterDEXで4%還元",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "無料でスワップのキャンセルを試行"
@@ -1144,6 +1156,9 @@
     "message": "この金額は見積もりであり、トランザクション完了後に確定されることをご留意ください。ポイントがリワード残高で確定されるまでに最長1時間かかる場合があります。",
     "description": "Second part of tooltip content explaining how points are calculated"
   },
+  "bridgePriceDataUnavailableError": {
+    "message": "このトークンの価格情報を取得できませんでした。続ける前に、受け取った金額が想定通りであることを確認してください。"
+  },
   "bridgePriceImpact": {
     "message": "プライスインパクト"
   },
@@ -1372,6 +1387,18 @@
   "bridgeTo": {
     "message": "ブリッジ先:"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1は悪意のあるトークンです。"
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1は悪意があるとフラグされています。やり取りした相手から資金を盗む可能性が高いです。"
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1は不審なトークンです。"
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1は不審であるとフラグされています。続ける前にリスクを確認してください。"
+  },
   "bridgeTokenNotFound": {
     "message": "「$1」に一致するトークンがありません"
   },
@@ -1425,11 +1452,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "送金"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "最大許容額を使用"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "このブリッジのガス代を支払うのに十分な$1がありません。金額を下げるか、$1を買い足してください。"
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "ガス代により多くの$1が必要です"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "このネットワークは、アカウントに$1 $3の準備金を必要とします。現在の残高では$2 $3までしか使えません",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "$1以上の準備金が必要です",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "ブリッジ完了"
@@ -1838,6 +1876,9 @@
   "connectAHardwareWallet": {
     "message": "ハードウェアウォレットの接続"
   },
+  "connectAHardwareWalletDescription": {
+    "message": "USBまたはQRコードを使用"
+  },
   "connectAccounts": {
     "message": "アカウントの接続"
   },
@@ -2071,6 +2112,19 @@
   },
   "creatorAddress": {
     "message": "クリエイターのアドレス"
+  },
+  "criticalErrorAttemptRecovery": {
+    "message": "復元を試みる"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "上記のいずれでもうまくいかない場合は、$1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "MetaMaskを再インストール"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "問題が解決されませんか？"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -2370,6 +2424,14 @@
   "defiReferralCheckboxLabel": {
     "message": "MetaMaskに紹介コードを追加することを許可してください。これは後で変更できません。このサイトは利用規約に基づいて割引を提供し、MetaMaskは手数料を受け取ります。",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "いいえ、結構です",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "規約に同意したものとみなされます",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -3185,6 +3247,10 @@
     "message": "期限切れ",
     "description": "Tag label for a gator permission that has expired"
   },
+  "gatorPermissionsStatusRevoked": {
+    "message": "取り消されました",
+    "description": "Tag label for a gator permission that has been revoked"
+  },
   "gatorPermissionsStreamRate": {
     "message": "流入量",
     "description": "Label for the stream rate of a permission"
@@ -3218,9 +3284,21 @@
     "message": "Web3を使用できるようにウォレットを準備しましょう",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "はい、5%節約します",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引手数料が最大5%割引されます。",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "MetaMask紹介コードを使って取引すると、5%節約できます。この割引はGMXの$1に従い、すべての先物取引に適用されます。MetaMaskは手数料をいただきます。",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "GMXで5%節約",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "サイトに移動"
@@ -3444,9 +3522,21 @@
   "honeypotTitle": {
     "message": "ハニーポット"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "はい、4%節約します",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "MetaMaskの紹介コードを使うと、取引手数料が最大4%割引されます。",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "MetaMask紹介コードを使って取引すると、4%節約できます。この割引はHyperliquidの$1に従い、すべての先物取引に適用されます。MetaMaskは手数料をいただきます。",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Hyperliquidで4%節約",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "理解しています"
@@ -4006,6 +4096,9 @@
   },
   "maxFeeTooltip": {
     "message": "トランザクションの支払いに提供される最大手数料"
+  },
+  "maybeLater": {
+    "message": "後で"
   },
   "medium": {
     "message": "マーケット"
@@ -5236,6 +5329,126 @@
   "participateInMetaMetricsDescription": {
     "message": "MetaMetricsに参加して、MetaMaskの改善にご協力ください"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "生体認証",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "パスワードを入力する代わりに、$1を使ってMetaMaskのロックを解除できます。これにより、このデバイスのみにパスキーが作成されます。",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "$1はすでにこのウォレットで使えるように設定されています。",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "$1を確認できませんでした。もう一度お試しください。",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "$1の応答が不完全でした。もう一度お試しください。",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "$1のサインインセッションが期限切れになりました。もう一度お試しください。",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "$1のセットアップセッションが期限切れになりました。もう一度最初からお試しください。",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "$1がこのウォレットで使えるように設定されていません。設定で$1をオンにしてください。",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "$1の設定に失敗しました。もう一度お試しください",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "$1の設定を確認できませんでした。もう一度お試しください。",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "$1でロックを解除できませんでした。もう一度試すか、設定で$1を設定しなおしてください。",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1が現在のウォレットのロックと一致しません。設定で$1を設定しなおしてください。",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "パスワードは更新されましたが、$1によるロック解除はオンにできませんでした。",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "$1を確認できませんでした。もう一度試すか、パスワードを使用してください。",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "$1の登録",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "$1の検証",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "拡張機能を全画面のウィンドウで開いてもう一度お試しください。",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "全画面のウィンドウで開く",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "問題が解決されない場合",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "ロックを解除できない場合",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "ロックを解除できない",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "確認できない場合",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "確認できない",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "$1がオフになりました",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "$1がオンになりました",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "$1のロック解除に失敗しました。パスワードをお試しください。",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "パスワードを入力する代わりに、$1で確認します。",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "$1での確定",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "password": {
     "message": "パスワード"
   },
@@ -5648,6 +5861,9 @@
     "message": "取引に利用可能",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "この機能は、基本機能がオフの間利用できません。"
+  },
   "perpsBatchCancelFailed": {
     "message": "1つまたは複数の注文のキャンセルに失敗しました。もう一度お試しください。"
   },
@@ -5659,6 +5875,9 @@
   },
   "perpsCancelOrder": {
     "message": "注文取消"
+  },
+  "perpsCandleIntervals": {
+    "message": "ローソクの間隔を設定"
   },
   "perpsCandlePeriodDays": {
     "message": "日"
@@ -5672,11 +5891,14 @@
   "perpsCloseAll": {
     "message": "すべてクローズ"
   },
+  "perpsCloseAmount": {
+    "message": "クローズ金額"
+  },
   "perpsCloseLong": {
     "message": "ロングをクローズ"
   },
   "perpsClosePartialMinNotional": {
-    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、スライダーを100%に設定してください。"
+    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、ポジション全体をクローズしてください。"
   },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
@@ -5873,6 +6095,10 @@
   "perpsMid": {
     "message": "中間値"
   },
+  "perpsMinOrderSize": {
+    "message": "注文サイズは$1以上に設定する必要があります",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "変更"
   },
@@ -5983,6 +6209,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "ショートポジションを反転してロングにします"
   },
+  "perpsSaveChanges": {
+    "message": "変更を保存",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "市場を検索"
   },
@@ -6059,6 +6289,10 @@
   "perpsStopLoss": {
     "message": "ストップロス",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "ストップロスは清算価格$1に設定する必要があります",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "ストップロスは$2価格よりも$1に設定する必要があります",
@@ -6960,27 +7194,6 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "未対応の地域です"
   },
-  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
-    "message": "詳細"
-  },
-  "rewardsOnboardingLegalDisclaimerTermsLink": {
-    "message": "規約およびプライバシー通知"
-  },
-  "rewardsOnboardingOptInError": {
-    "message": "オプトインに失敗しました"
-  },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "無効な紹介コード"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "紹介コード（オプション）"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "紹介コードを検証できませんでした."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "接続を確認して、もう一度お試しください。"
-  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "紹介コードを検証中...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -6996,12 +7209,6 @@
   "rewardsPointsIcon": {
     "message": "リワードポイント",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "進捗状況の追跡とリワードの引き換えにはアプリが必要です。このQRコードをスキャンしてください。アカウントのインポートをお手伝いします。"
-  },
-  "rewardsQRCodeTitle": {
-    "message": "モバイルアプリを入手"
   },
   "rewardsSignInFailed": {
     "message": "サインインできませんでした",
@@ -7107,6 +7314,10 @@
   },
   "securityChangePasswordToastError": {
     "message": "パスワードを変更できませんでした。もう一度お試しください。"
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "新しいパスワードは保存されましたが、$1によるロック解除はオンにできませんでした。",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "新しいパスワードを保存しました"
@@ -7256,8 +7467,16 @@
     "message": "設定",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "$1を設定",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "snapアカウントを追加"
+  },
+  "settingUpPasskey": {
+    "message": "$1の設定",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "設定"
@@ -8102,6 +8321,9 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "DAppからのスマートアカウントリクエスト"
+  },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "DAppによる標準アカウント用のスマートアカウント機能のリクエストを許可します。MetaMaskは監査対象となるスマートアカウントにしかアップグレードしません。"
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "同じアドレスでよりスマートな機能。"
@@ -9366,6 +9588,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "通知を無効化する際にエラーが発生しました。後でもう一度お試しください。"
   },
+  "turnOffPasskey": {
+    "message": "$1をオフにする",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "$1をオフにできませんでした。もう一度お試しください。",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "オンにする"
   },
@@ -9468,6 +9698,10 @@
     "message": "ロックを解除して確認",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "$1でロックを解除",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "ピン留めを解除"
   },
@@ -9553,6 +9787,9 @@
   },
   "useNftDetectionDescriptionText": {
     "message": "MetaMaskが、サードパーティサービス を使って、ユーザーが所有するNFTを追加することを許可します。NFTの自動検出機能を利用すると、ユーザーのIPとアカウントアドレスがこれらのサービスに公開されます。この機能を有効にした場合、ユーザーのIPアドレスとイーサリアムアドレスが紐付けられ、詐欺師によりエアドロップされた偽のNFTが表示される可能性があります。このリスクを回避するため、手動でトークンを追加することもできます。"
+  },
+  "usePassword": {
+    "message": "パスワードを使用"
   },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"
