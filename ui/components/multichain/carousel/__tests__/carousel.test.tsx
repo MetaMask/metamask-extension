@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Carousel } from '../carousel';
 import { fetchCarouselSlidesFromContentful } from '../../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful';
 
@@ -234,12 +234,16 @@ describe('Carousel', () => {
       fireEvent.click(screen.getByTestId('carousel-slide-contentful-banner-1'));
 
       if ('navigate' in expected) {
-        expect(mockUseNavigate).toHaveBeenCalledWith(expected.navigate);
+        await waitFor(() =>
+          expect(mockUseNavigate).toHaveBeenCalledWith(expected.navigate),
+        );
         expect(global.platform.openTab).not.toHaveBeenCalled();
       } else {
-        expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: expected.openTab,
-        });
+        await waitFor(() =>
+          expect(global.platform.openTab).toHaveBeenCalledWith({
+            url: expected.openTab,
+          }),
+        );
         expect(mockUseNavigate).not.toHaveBeenCalled();
       }
     },

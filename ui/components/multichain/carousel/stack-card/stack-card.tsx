@@ -12,6 +12,10 @@ import {
   TextVariant,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import {
+  isInternalRouteHref,
+  resolveCarouselHref,
+} from '../resolve-carousel-href';
 import type { StackCardProps } from './stack-card.types';
 
 export const StackCard: React.FC<StackCardProps> = ({
@@ -36,16 +40,18 @@ export const StackCard: React.FC<StackCardProps> = ({
 
   const navigate = useNavigate();
 
-  const handleCardClick = () => {
+  const handleCardClick = async () => {
     if (!isCurrentCard) {
       return;
     }
 
     if (slide.href) {
-      if (slide.href.startsWith('/') && !slide.href.startsWith('//')) {
-        navigate(slide.href);
+      const href = await resolveCarouselHref(slide.href);
+
+      if (isInternalRouteHref(href)) {
+        navigate(href);
       } else {
-        global.platform.openTab({ url: slide.href });
+        global.platform.openTab({ url: href });
       }
     }
 
