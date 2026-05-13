@@ -38,7 +38,20 @@ describe('getEnabledAdvancedPermissions', () => {
   it('parses comma-separated build values', () => {
     process.env.GATOR_ENABLED_PERMISSION_TYPES =
       'native-token-stream,native-token-periodic,erc20-token-stream';
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([
+
+    expect(
+      getEnabledAdvancedPermissions({
+        remoteFeatureFlags: {
+          [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
+            permissions: [
+              'native-token-stream',
+              'native-token-periodic',
+              'erc20-token-stream',
+            ],
+          },
+        },
+      }),
+    ).toStrictEqual([
       'native-token-stream',
       'native-token-periodic',
       'erc20-token-stream',
@@ -48,17 +61,30 @@ describe('getEnabledAdvancedPermissions', () => {
   it('filters out empty strings from the build values', () => {
     process.env.GATOR_ENABLED_PERMISSION_TYPES =
       'native-token-stream,,erc20-token-stream';
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([
-      'native-token-stream',
-      'erc20-token-stream',
-    ]);
+
+    expect(
+      getEnabledAdvancedPermissions({
+        remoteFeatureFlags: {
+          [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
+            permissions: ['native-token-stream', 'erc20-token-stream'],
+          },
+        },
+      }),
+    ).toStrictEqual(['native-token-stream', 'erc20-token-stream']);
   });
 
   it('handles a single permission type', () => {
     process.env.GATOR_ENABLED_PERMISSION_TYPES = 'native-token-stream';
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([
-      'native-token-stream',
-    ]);
+
+    expect(
+      getEnabledAdvancedPermissions({
+        remoteFeatureFlags: {
+          [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
+            permissions: ['native-token-stream'],
+          },
+        },
+      }),
+    ).toStrictEqual(['native-token-stream']);
   });
 
   it('returns the intersection of build and remote permission types', () => {
@@ -111,16 +137,23 @@ describe('getEnabledAdvancedPermissions', () => {
     ).toStrictEqual([]);
   });
 
-  it('falls back to the build values when the remote flag is missing', () => {
+  it('returns an empty array when the remote flag source is missing', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES =
+      'native-token-stream,erc20-token-stream';
+
+    expect(getEnabledAdvancedPermissions()).toStrictEqual([]);
+  });
+
+  it('returns an empty array when the remote flag is missing', () => {
     process.env.GATOR_ENABLED_PERMISSION_TYPES =
       'native-token-stream,erc20-token-stream';
 
     expect(
       getEnabledAdvancedPermissions({ remoteFeatureFlags: {} }),
-    ).toStrictEqual(['native-token-stream', 'erc20-token-stream']);
+    ).toStrictEqual([]);
   });
 
-  it('falls back to the build values when the remote flag shape is invalid', () => {
+  it('returns an empty array when the remote flag shape is invalid', () => {
     process.env.GATOR_ENABLED_PERMISSION_TYPES =
       'native-token-stream,erc20-token-stream';
 
@@ -130,6 +163,6 @@ describe('getEnabledAdvancedPermissions', () => {
           [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: true,
         },
       }),
-    ).toStrictEqual(['native-token-stream', 'erc20-token-stream']);
+    ).toStrictEqual([]);
   });
 });

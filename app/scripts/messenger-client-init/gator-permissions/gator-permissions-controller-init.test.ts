@@ -19,12 +19,23 @@ function buildInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<GatorPermissionsControllerMessenger>
 > {
   const baseControllerMessenger = getRootMessenger();
+  const remoteFeatureFlagController = {
+    state: {
+      remoteFeatureFlags: {
+        'enabled-advanced-permissions': {
+          permissions: ['native-token-stream'],
+        },
+      },
+      cacheTimestamp: 0,
+    },
+  };
 
   return {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getGatorPermissionsControllerMessenger(
       baseControllerMessenger,
     ),
+    getMessengerClient: jest.fn().mockReturnValue(remoteFeatureFlagController),
     initMessenger: undefined,
   };
 }
@@ -95,6 +106,9 @@ describe('GatorPermissionsControllerInit', () => {
 
   it('passes supportedPermissionTypes from getEnabledAdvancedPermissions to config', () => {
     const requestMock = buildInitRequestMock();
+    const remoteFeatureFlagController = requestMock.getMessengerClient(
+      'RemoteFeatureFlagController',
+    );
     const supportedTypes: SupportedPermissionType[] = [
       'native-token-stream',
       'erc20-token-stream',
@@ -104,6 +118,9 @@ describe('GatorPermissionsControllerInit', () => {
     GatorPermissionsControllerInit(requestMock);
 
     const { config } = GatorPermissionsControllerClassMock.mock.calls[0][0];
+    expect(getEnabledAdvancedPermissions).toHaveBeenCalledWith(
+      remoteFeatureFlagController.state,
+    );
     expect(config.supportedPermissionTypes).toEqual(supportedTypes);
   });
 

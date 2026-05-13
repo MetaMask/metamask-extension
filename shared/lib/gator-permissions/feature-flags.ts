@@ -2,7 +2,7 @@ import type { SupportedPermissionType } from '@metamask/gator-permissions-contro
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 
 export const ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG =
-  'enabled-advanced-permissions';
+  'enabledAdvancedPermissions';
 
 type AdvancedPermissionsFeatureFlag = {
   permissions?: unknown;
@@ -46,7 +46,7 @@ const getRemoteEnabledAdvancedPermissions = (
  * `GATOR_ENABLED_PERMISSION_TYPES` is the build-time implementation gate. When
  * the `enabled-advanced-permissions` remote flag is available, only permission
  * types present in both sources are enabled. If the remote flag is missing or
- * malformed, the build-time configuration is used as a fallback.
+ * malformed, no permission types are enabled.
  *
  * @param source - Optional remote feature flag state.
  * @returns Enabled permission type strings, or an empty array if none are configured.
@@ -58,7 +58,7 @@ export const getEnabledAdvancedPermissions = (
   const remoteEnabledPermissions = getRemoteEnabledAdvancedPermissions(source);
 
   if (remoteEnabledPermissions === undefined) {
-    return buildEnabledPermissions;
+    return [];
   }
 
   const remoteEnabledPermissionSet = new Set(remoteEnabledPermissions);
