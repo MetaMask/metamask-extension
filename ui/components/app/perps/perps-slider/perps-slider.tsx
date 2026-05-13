@@ -17,11 +17,6 @@ import {
 } from '@metamask/design-system-react';
 import Tooltip from '../../../ui/tooltip';
 
-/**
- * MUI v5 styled Slider - uses CSS variables for theming.
- * v5 auto-centers the thumb via transform: translate(-50%, -50%), so manual
- * marginTop/marginLeft offsets from v4 are no longer needed.
- */
 const StyledMaterialSlider = styled(MaterialSlider)({
   height: 4,
   padding: 0,

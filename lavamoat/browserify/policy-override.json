@@ -148,7 +148,9 @@
     },
     "@emotion/react>@emotion/cache": {
       "globals": {
-        "document": false
+        "document": false,
+        "document.head": true,
+        "document.querySelectorAll": true
       }
     }
   }
