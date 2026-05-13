@@ -26,6 +26,11 @@ export type SnapUIDateTimePickerProps = {
 };
 
 /**
+ * Buttons rendered in the picker action bar (order: clear → cancel → accept).
+ */
+const PICKER_ACTION_BAR_ACTIONS = ['clear', 'cancel', 'accept'] as const;
+
+/**
  * Shared sx styles for the date/time picker input field.
  */
 const pickerInputSx = {
@@ -162,7 +167,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
               sx: pickerInputSx,
             },
             actionBar: {
-              actions: ['clear', 'cancel', 'accept'],
+              actions: PICKER_ACTION_BAR_ACTIONS,
             },
           }}
         />
@@ -185,7 +190,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
               sx: pickerInputSx,
             },
             actionBar: {
-              actions: ['clear', 'cancel', 'accept'],
+              actions: PICKER_ACTION_BAR_ACTIONS,
             },
           }}
         />
@@ -211,7 +216,7 @@ export const SnapUIDateTimePicker: FunctionComponent<
               sx: pickerInputSx,
             },
             actionBar: {
-              actions: ['clear', 'cancel', 'accept'],
+              actions: PICKER_ACTION_BAR_ACTIONS,
             },
           }}
         />
