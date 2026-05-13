@@ -17,7 +17,7 @@ import { Ganache } from '../../seeder/ganache';
  * @param options.password - The password used to unlock the wallet.
  * @param options.validateBalance - Whether to verify the balance is displayed. Defaults to true.
  * @param options.waitForNonEvmAccounts - Whether to wait for non-EVM accounts to load on the homepage. Defaults to true; set to false to skip.
- * @param options.ignorePasskeyUnlock - Whether to ignore the passkey unlock and use password instead. Defaults to undefined.
+ * @param options.ignorePasskeyUnlock - Whether to ignore the passkey unlock and use password instead. Defaults to false.
  */
 export const login = async (
   driver: Driver,
@@ -36,13 +36,8 @@ export const login = async (
   if (options?.ignorePasskeyUnlock === true) {
     await loginPage.checkPasskeyUnlockPageIsLoaded();
     await loginPage.clickUsePassword();
-  } else if (options?.ignorePasskeyUnlock === false) {
-    await loginPage.checkPasskeyUnlockPageIsLoaded();
-    await loginPage.clickPasskeyUnlock();
-  } else {
-    // normal login, no passkey interaction needed
-    await loginPage.checkPageIsLoaded();
   }
+  await loginPage.checkPageIsLoaded();
   await loginPage.loginToHomepage(options?.password);
 
   const homePage = new HomePage(driver);
