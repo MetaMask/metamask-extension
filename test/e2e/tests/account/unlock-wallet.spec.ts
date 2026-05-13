@@ -9,11 +9,13 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import {
   lockAndWaitForLoginPage,
+  lockAndWaitForPasskeyUnlockPage,
   login,
 } from '../../page-objects/flows/login.flow';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import {
+  completeOnboardingWithPasskey,
   importWalletWithSocialLoginOnboardingFlow,
   onboardingMetricsFlow,
 } from '../../page-objects/flows/onboarding.flow';
@@ -22,6 +24,10 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
+import {
+  addVirtualAuthenticator,
+  removeVirtualAuthenticator,
+} from '../../webdriver/virtual-authenticator';
 
 describe('Unlock wallet - ', function () {
   it('handle incorrect password during unlock and login successfully', async function () {
@@ -115,6 +121,53 @@ describe('Unlock wallet - ', function () {
         // check onboarding welcome page is loaded after resetting the wallet
         const startOnboardingPage = new StartOnboardingPage(driver);
         await startOnboardingPage.checkLoginPageIsLoaded();
+      },
+    );
+  });
+
+  it('Unlocks wallet with passkey after onboarding', async function () {
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      this.skip();
+    }
+
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
+        title: this.test?.fullTitle(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+      },
+      async ({ driver }: { driver: Driver }) => {
+        await addVirtualAuthenticator(driver);
+
+        await completeOnboardingWithPasskey({ driver });
+
+        // Check unlock with passkey at first visit
+        await lockAndWaitForPasskeyUnlockPage(driver);
+
+        const loginPage = new LoginPage(driver);
+        await loginPage.clickPasskeyUnlock();
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        // Check unlock with passkey by passkey icon at password textbox
+        await lockAndWaitForPasskeyUnlockPage(driver);
+        await loginPage.clickUsePassword();
+        await loginPage.checkPageIsLoaded();
+
+        await driver.delay(2_000);
+        await loginPage.clickUnlockWithPasskey();
+        await homePage.checkPageIsLoaded();
+
+        // Check unlock with password by password textbox
+        await lockAndWaitForPasskeyUnlockPage(driver);
+        await loginPage.clickUsePassword();
+        await loginPage.checkPageIsLoaded();
+
+        await loginPage.loginToHomepage(WALLET_PASSWORD);
+        await homePage.checkPageIsLoaded();
+
+        await removeVirtualAuthenticator(driver);
       },
     );
   });

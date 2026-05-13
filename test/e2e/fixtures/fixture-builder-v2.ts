@@ -306,6 +306,11 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withPasskeyController(data: Record<string, unknown>): this {
+    merge(this.fixture.data.PasskeyController, data);
+    return this;
+  }
+
   withPermissionController(
     data: Partial<PermissionControllerState<PermissionConstraint>>,
   ): this {

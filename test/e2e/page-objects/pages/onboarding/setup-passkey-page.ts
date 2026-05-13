@@ -3,10 +3,15 @@ import { Driver } from '../../../webdriver/driver';
 class SetupPasskeyPage {
   private driver: Driver;
 
+  private readonly enrollmentSteps = '[data-testid="passkey-setup-steps"]';
+
   private readonly maybeLaterButton =
     '[data-testid="passkey-maybe-later-button"]';
 
   private readonly setUpPasskeyButton = '[data-testid="passkey-set-up-button"]';
+
+  private readonly stepIndicatorSuccess =
+    '[data-testid="passkey-step-indicator-success"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -31,6 +36,23 @@ class SetupPasskeyPage {
   async skipPasskeySetup(): Promise<void> {
     console.log('Skip passkey setup during onboarding');
     await this.driver.clickElementAndWaitToDisappear(this.maybeLaterButton);
+  }
+
+  async clickSetUpPasskey(): Promise<void> {
+    console.log('Click Set up biometrics during onboarding');
+    await this.driver.clickElement(this.setUpPasskeyButton);
+  }
+
+  async waitForEnrollmentSteps(): Promise<void> {
+    console.log('Waiting for passkey enrollment steps to appear');
+    await this.driver.waitForSelector(this.enrollmentSteps, { timeout: 10000 });
+  }
+
+  async waitForEnrollmentSuccess(): Promise<void> {
+    console.log('Waiting for passkey enrollment to complete successfully');
+    await this.driver.waitForSelector(this.stepIndicatorSuccess, {
+      timeout: 30000,
+    });
   }
 }
 

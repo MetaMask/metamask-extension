@@ -26,6 +26,9 @@ export default class ChangePasswordPage {
   private readonly confirmWarningButton =
     '[data-testid="change-password-warning-confirm"]';
 
+  private readonly passkeyRenewalToggle =
+    '[data-testid="change-password-enable-passkey"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -33,6 +36,21 @@ export default class ChangePasswordPage {
   async checkPageIsLoaded(): Promise<void> {
     console.log('Check change password page is loaded');
     await this.driver.waitForSelector(this.currentPasswordInput);
+  }
+
+  async waitForPasskeyVerificationToComplete(): Promise<void> {
+    console.log(
+      'Waiting for passkey verification to complete and new password form to appear',
+    );
+    await this.driver.waitForSelector(this.newPasswordInput, {
+      timeout: 30000,
+    });
+  }
+
+  async togglePasskeyRenewal(): Promise<void> {
+    console.log('Toggle passkey renewal on change password form');
+    await this.driver.waitForSelector(this.passkeyRenewalToggle);
+    await this.driver.clickElement(this.passkeyRenewalToggle);
   }
 
   async confirmCurrentPassword(password: string): Promise<void> {
