@@ -17,6 +17,7 @@ import {
 import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerWithKeyringAction,
+  KeyringControllerWithKeyringV2Action,
   KeyringTypes,
   KeyringMetadata,
 } from '@metamask/keyring-controller';
@@ -49,6 +50,7 @@ export type SnapPermissionSpecificationsActions =
   | SnapControllerHandleRequestAction
   | KeyringControllerGetKeyringsByTypeAction
   | KeyringControllerWithKeyringAction
+  | KeyringControllerWithKeyringV2Action
   | MaybeUpdateState
   | PreferencesControllerGetStateAction
   | RateLimitControllerCallApiAction<RateLimitedApiMap>
