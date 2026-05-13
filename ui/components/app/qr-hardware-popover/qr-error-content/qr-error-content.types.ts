@@ -29,6 +29,6 @@ export type QrErrorContentProps = {
   errorType: QrErrorType;
   /** Whether the QR scan originated from a pairing or signing flow. */
   flowContext: QrErrorFlowContext;
-  /** Invoked when the user taps "Try again". */
+  /** Invoked when the user taps "Continue" to retry the scan. */
   onTryAgain: () => void;
 };

@@ -2,10 +2,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { renderWithLocalization } from '../../../../../test/lib/render-helpers';
-import {
-  enLocale as messages,
-  tEn,
-} from '../../../../../test/lib/i18n-helpers';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { QrErrorContent } from './qr-error-content';
 import {
   QrErrorType,
@@ -22,7 +19,7 @@ describe('QrErrorContent', () => {
     globalThis.platform = { openTab: openTabMock };
   });
 
-  it('renders the correct root test-id, title, and body for a given variant', () => {
+  it('renders the root element with the correct test-id', () => {
     renderWithLocalization(
       <QrErrorContent
         errorType={QrErrorType.NonUrQrCode}
@@ -34,6 +31,17 @@ describe('QrErrorContent', () => {
     expect(
       screen.getByTestId('qr-error-nonUrQrCode-pairing'),
     ).toBeInTheDocument();
+  });
+
+  it('renders the resolved title and body text', () => {
+    renderWithLocalization(
+      <QrErrorContent
+        errorType={QrErrorType.NonUrQrCode}
+        flowContext={QrErrorFlowContext.Pairing}
+        onTryAgain={jest.fn()}
+      />,
+    );
+
     expect(
       screen.getByText(messages.qrErrorNonUrPairingTitle.message),
     ).toBeInTheDocument();
@@ -42,7 +50,7 @@ describe('QrErrorContent', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders "Learn more" and "Continue" buttons', () => {
+  it('renders "Learn more" and "Continue" button labels', () => {
     renderWithLocalization(
       <QrErrorContent
         errorType={QrErrorType.WrongUrType}
@@ -51,11 +59,13 @@ describe('QrErrorContent', () => {
       />,
     );
 
-    expect(screen.getByText(tEn('learnMoreUpperCase'))).toBeInTheDocument();
-    expect(screen.getByText(tEn('continue'))).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.learnMoreUpperCase.message),
+    ).toBeInTheDocument();
+    expect(screen.getByText(messages.continue.message)).toBeInTheDocument();
   });
 
-  it('calls onTryAgain when "Try again" is clicked', async () => {
+  it('calls onTryAgain exactly once when "Continue" is clicked', async () => {
     const user = userEvent.setup();
     const onTryAgain = jest.fn();
     renderWithLocalization(
@@ -67,10 +77,11 @@ describe('QrErrorContent', () => {
     );
 
     await user.click(screen.getByTestId('qr-error-try-again'));
+
     expect(onTryAgain).toHaveBeenCalledTimes(1);
   });
 
-  it('opens learn-more URL when "Learn more" is clicked', async () => {
+  it('opens the learn-more support URL when "Learn more" is clicked', async () => {
     const user = userEvent.setup();
     renderWithLocalization(
       <QrErrorContent
@@ -81,22 +92,26 @@ describe('QrErrorContent', () => {
     );
 
     await user.click(screen.getByTestId('qr-error-learn-more'));
+
+    expect(openTabMock).toHaveBeenCalledTimes(1);
     expect(openTabMock).toHaveBeenCalledWith({
       url: QR_ERROR_LEARN_MORE_URL,
     });
   });
 
-  it('renders the warning icon', () => {
+  it('does not call onTryAgain when "Learn more" is clicked', async () => {
+    const user = userEvent.setup();
+    const onTryAgain = jest.fn();
     renderWithLocalization(
       <QrErrorContent
         errorType={QrErrorType.UrDecodeError}
         flowContext={QrErrorFlowContext.Pairing}
-        onTryAgain={jest.fn()}
+        onTryAgain={onTryAgain}
       />,
     );
 
-    expect(
-      screen.getByTestId('qr-error-urDecodeError-pairing'),
-    ).toBeInTheDocument();
+    await user.click(screen.getByTestId('qr-error-learn-more'));
+
+    expect(onTryAgain).not.toHaveBeenCalled();
   });
 });
