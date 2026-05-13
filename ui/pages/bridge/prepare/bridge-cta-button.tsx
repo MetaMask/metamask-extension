@@ -136,7 +136,7 @@ export const BridgeCTAButton = ({
     }
 
     if (
-      isNetworkFeeUnavailable||
+      isNetworkFeeUnavailable ||
       isInsufficientBalance ||
       isInsufficientGasForQuote ||
       isInsufficientGasBalance ||
