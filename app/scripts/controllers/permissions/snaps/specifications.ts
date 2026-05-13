@@ -4,6 +4,8 @@ import {
 } from '@metamask/snaps-rpc-methods';
 import { ControllerGetStateAction } from '@metamask/base-controller';
 import { CurrencyRateController } from '@metamask/assets-controllers';
+import type { AssetsControllerGetStateAction } from '@metamask/assets-controller';
+import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   SnapControllerClearSnapStateAction,
   SnapControllerGetSnapAction,
@@ -33,6 +35,12 @@ import { PreferencesControllerGetStateAction } from '../../preferences-controlle
 import { KeyringType } from '../../../../../shared/constants/keyring';
 import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
+import {
+  isAssetsUnifyStateFeatureEnabled,
+  ASSETS_UNIFY_STATE_VERSION_1,
+  type AssetsUnifyStateFeatureFlag,
+} from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
 import { getMnemonic, getMnemonicSeed } from './utils';
 
 export type SnapPermissionSpecificationsActions =
@@ -42,6 +50,8 @@ export type SnapPermissionSpecificationsActions =
       'CurrencyRateController',
       CurrencyRateController['state']
     >
+  | AssetsControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction
   | SnapInterfaceControllerCreateInterfaceAction
   | SnapInterfaceControllerGetInterfaceAction
   | SnapControllerGetSnapAction
@@ -88,9 +98,20 @@ export function getSnapPermissionSpecifications(
          * is a subset of the full preferences state.
          */
         getPreferences: () => {
-          const currency = messenger.call(
-            'CurrencyRateController:getState',
-          ).currentCurrency;
+          const isAssetsUnifyStateEnabled =
+            getIsAssetsUnifiedStateIncludedInBuild() &&
+            isAssetsUnifyStateFeatureEnabled(
+              messenger.call('RemoteFeatureFlagController:getState')
+                ?.remoteFeatureFlags
+                ?.assetsUnifyState as AssetsUnifyStateFeatureFlag | null | undefined,
+              ASSETS_UNIFY_STATE_VERSION_1,
+            );
+
+          const currency = isAssetsUnifyStateEnabled
+            ? messenger.call('AssetsController:getState').selectedCurrency
+            : messenger.call(
+                'CurrencyRateController:getState',
+              ).currentCurrency;
 
           const {
             currentLocale: locale,
