@@ -58,14 +58,17 @@ jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
   useTransactionFocusEffect: jest.fn(),
 }));
 
-jest.mock('../../../../../../shared/lib/gator-permissions/feature-flags', () => ({
-  ...jest.requireActual(
-    '../../../../../../shared/lib/gator-permissions/feature-flags',
-  ),
-  getEnabledAdvancedPermissions: jest
-    .fn()
-    .mockReturnValue(['native-token-stream']),
-}));
+jest.mock(
+  '../../../../../../shared/lib/gator-permissions/feature-flags',
+  () => ({
+    ...jest.requireActual(
+      '../../../../../../shared/lib/gator-permissions/feature-flags',
+    ),
+    getEnabledAdvancedPermissions: jest
+      .fn()
+      .mockReturnValue(['native-token-stream']),
+  }),
+);
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
