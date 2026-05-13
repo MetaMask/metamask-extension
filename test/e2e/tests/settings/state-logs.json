@@ -1253,9 +1253,11 @@
     "previousMigrationVersion": "number",
     "productTour": "string",
     "quoteFetchError": "null",
-    "quoteRequest": {
-      "srcTokenAddress": "string"
-    },
+    "quoteRequest": [
+      {
+        "srcTokenAddress": "string"
+      }
+    ],
     "quoteStreamComplete": "null",
     "quotes": [],
     "quotesInitialLoadTime": "null",
@@ -1591,7 +1593,7 @@
     "optinAllowedForGeo": "null",
     "optinAllowedForGeoLoading": "boolean",
     "optinAllowedForGeoError": "boolean",
-    "candidateSubscriptionId": "string",
+    "candidateSubscriptionId": "null",
     "seasonStatus": "null",
     "seasonStatusError": "null",
     "seasonStatusLoading": "boolean",

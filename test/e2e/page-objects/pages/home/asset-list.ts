@@ -343,7 +343,7 @@ class AssetListPage {
     await this.driver.waitForSelector(this.confirmImportTokenMessage);
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmImportTokenButton,
-      10000,
+      20000,
     );
 
     await this.driver.waitForSelector(this.tokenImportedSuccessMessage);

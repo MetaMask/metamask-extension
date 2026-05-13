@@ -88,7 +88,6 @@
       },
       "currentCurrency": "usd"
     },
-    "DelegationController": "object",
     "EnsController": {
       "ensEntries": "object",
       "ensResolutionsByAddress": "object"
