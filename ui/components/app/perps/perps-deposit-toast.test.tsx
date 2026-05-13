@@ -1,6 +1,5 @@
 import React from 'react';
-import { act, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { act } from '@testing-library/react';
 import {
   TransactionStatus,
   TransactionType,
@@ -12,8 +11,23 @@ import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { PerpsDepositToast } from './perps-deposit-toast';
 
+const mockToastDismiss = jest.fn();
+const mockToastError = jest.fn();
+const mockToastLoading = jest.fn();
+const mockToastSuccess = jest.fn();
+
 jest.mock('../../../store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
+}));
+
+jest.mock('../../ui/toast/toast', () => ({
+  toast: {
+    dismiss: (...args: unknown[]) => mockToastDismiss(...args),
+    error: (...args: unknown[]) => mockToastError(...args),
+    loading: (...args: unknown[]) => mockToastLoading(...args),
+    success: (...args: unknown[]) => mockToastSuccess(...args),
+  },
+  ToastContent: () => null,
 }));
 
 function buildPendingDepositTransaction(
@@ -37,15 +51,12 @@ describe('PerpsDepositToast', () => {
   const submitRequestToBackgroundMock = jest.mocked(submitRequestToBackground);
 
   beforeEach(() => {
-    submitRequestToBackgroundMock.mockReset();
     submitRequestToBackgroundMock.mockResolvedValue(undefined);
-  });
-
-  afterEach(() => {
+    jest.clearAllMocks();
     jest.useRealTimers();
   });
 
-  it('renders nothing when there is no deposit state', () => {
+  it('dismisses and does not show a toast when there is no deposit state', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -56,7 +67,10 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+    expect(mockToastDismiss).toHaveBeenCalledWith('perps-deposit-toast');
+    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(mockToastSuccess).not.toHaveBeenCalled();
+    expect(mockToastError).not.toHaveBeenCalled();
   });
 
   it('renders pending toast when mounting with deposit already in progress', () => {
@@ -71,10 +85,18 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.perpsDepositToastPendingTitle.message),
-    ).toBeInTheDocument();
+    expect(mockToastLoading).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastPendingTitle.message,
+          description: messages.perpsDepositToastPendingDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: Infinity,
+      },
+    );
   });
 
   it('does not render pending toast for token-funded deposits', () => {
@@ -97,7 +119,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+    expect(mockToastLoading).not.toHaveBeenCalled();
   });
 
   it('renders pending toast for native-token-funded deposits', () => {
@@ -120,9 +142,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(
-      screen.getByText(messages.perpsDepositToastPendingTitle.message),
-    ).toBeInTheDocument();
+    expect(mockToastLoading).toHaveBeenCalled();
   });
 
   it('renders pending toast when mounting with deposit already in progress for perpsDepositAndOrder', () => {
@@ -141,9 +161,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(
-      screen.getByText(messages.perpsDepositToastPendingTitle.message),
-    ).toBeInTheDocument();
+    expect(mockToastLoading).toHaveBeenCalled();
   });
 
   it('does not render the pending toast when the transaction is still unapproved', () => {
@@ -162,7 +180,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+    expect(mockToastLoading).not.toHaveBeenCalled();
   });
 
   it('renders success toast when lastDepositResult is successful', () => {
@@ -186,10 +204,92 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.perpsDepositToastSuccessTitle.message),
-    ).toBeInTheDocument();
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastSuccessTitle.message,
+          description: messages.perpsDepositToastSuccessDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
+  });
+
+  it('clears deposit result when completion toast duration elapses', () => {
+    jest.useFakeTimers();
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'perpsClearDepositResult',
+      [],
+    );
+  });
+
+  it('clears deposit result when unmounted during completion toast', () => {
+    jest.useFakeTimers();
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    const { unmount } = renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
+
+    unmount();
+
+    expect(mockToastDismiss).toHaveBeenCalledWith('perps-deposit-toast');
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'perpsClearDepositResult',
+      [],
+    );
+
+    act(() => {
+      jest.advanceTimersByTime(5000);
+    });
+
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
   });
 
   it('renders error toast when lastDepositResult is unsuccessful', () => {
@@ -206,167 +306,23 @@ describe('PerpsDepositToast', () => {
         lastDepositResult: {
           success: false,
           error: 'Bridge failed',
-          timestamp: 1_700_000_000_000,
         },
       },
     });
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(
-      screen.getByText(messages.perpsDepositToastErrorTitle.message),
-    ).toBeInTheDocument();
-    expect(screen.getByText('Bridge failed')).toBeInTheDocument();
-  });
-
-  it('hides completion toast after auto-hide', () => {
-    jest.useFakeTimers();
-
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        transactions: [
-          buildPendingDepositTransaction({
-            id: 'result-tx-1',
-            status: TransactionStatus.confirmed,
-          }),
-        ],
-        lastDepositTransactionId: 'result-tx-1',
-        lastDepositResult: {
-          success: true,
-          error: '',
-          timestamp: 1_700_000_000_000,
-        },
+    expect(mockToastError).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastErrorTitle.message,
+          description: 'Bridge failed',
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
       },
-    });
-
-    renderWithProvider(<PerpsDepositToast />, store);
-
-    act(() => {
-      jest.advanceTimersByTime(5_000);
-    });
-
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'perpsClearDepositResult',
-      [],
-    );
-  });
-
-  it('shows a new completion toast after dismissing an older one', async () => {
-    const user = userEvent.setup();
-    const initialStore = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        transactions: [
-          buildPendingDepositTransaction({
-            id: 'result-tx-1',
-            status: TransactionStatus.confirmed,
-          }),
-        ],
-        lastDepositTransactionId: 'result-tx-1',
-        lastDepositResult: {
-          success: true,
-          error: '',
-          timestamp: 1_700_000_000_000,
-        },
-      },
-    });
-
-    const { unmount } = renderWithProvider(<PerpsDepositToast />, initialStore);
-
-    await user.click(
-      screen.getByRole('button', { name: messages.close.message }),
-    );
-
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
-
-    unmount();
-
-    const nextStore = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        transactions: [
-          buildPendingDepositTransaction({
-            id: 'result-tx-1',
-            status: TransactionStatus.confirmed,
-          }),
-        ],
-        lastDepositTransactionId: 'result-tx-1',
-        lastDepositResult: {
-          success: true,
-          error: '',
-          timestamp: 1_700_000_000_001,
-        },
-      },
-    });
-
-    renderWithProvider(<PerpsDepositToast />, nextStore);
-
-    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
-  });
-
-  it('clears the deposit result when the completion toast is dismissed', async () => {
-    const user = userEvent.setup();
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        transactions: [
-          buildPendingDepositTransaction({
-            id: 'result-tx-1',
-            status: TransactionStatus.confirmed,
-          }),
-        ],
-        lastDepositTransactionId: 'result-tx-1',
-        lastDepositResult: {
-          success: true,
-          error: '',
-          timestamp: 1_700_000_000_000,
-        },
-      },
-    });
-
-    renderWithProvider(<PerpsDepositToast />, store);
-
-    await user.click(
-      screen.getByRole('button', { name: messages.close.message }),
-    );
-
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'perpsClearDepositResult',
-      [],
-    );
-  });
-
-  it('dismisses a completion toast without a numeric timestamp', async () => {
-    const user = userEvent.setup();
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        transactions: [
-          buildPendingDepositTransaction({
-            id: 'result-tx-1',
-            status: TransactionStatus.confirmed,
-          }),
-        ],
-        lastDepositTransactionId: 'result-tx-1',
-        lastDepositResult: {
-          success: false,
-          error: 'Bridge failed',
-        },
-      },
-    });
-
-    renderWithProvider(<PerpsDepositToast />, store);
-
-    await user.click(
-      screen.getByRole('button', { name: messages.close.message }),
-    );
-
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'perpsClearDepositResult',
-      [],
     );
   });
 
@@ -386,12 +342,8 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(
-      screen.getByText(messages.perpsDepositToastSuccessTitle.message),
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByText(messages.perpsDepositToastPendingTitle.message),
-    ).not.toBeInTheDocument();
+    expect(mockToastSuccess).toHaveBeenCalled();
+    expect(mockToastLoading).not.toHaveBeenCalled();
   });
 
   it('renders pending toast when a new deposit transaction ID appears', () => {
@@ -406,7 +358,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+    expect(mockToastLoading).not.toHaveBeenCalled();
 
     act(() => {
       store.dispatch({
@@ -421,10 +373,7 @@ describe('PerpsDepositToast', () => {
       });
     });
 
-    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.perpsDepositToastPendingTitle.message),
-    ).toBeInTheDocument();
+    expect(mockToastLoading).toHaveBeenCalled();
   });
 
   it('keeps showing the pending toast after a transaction ID appears', () => {
@@ -439,7 +388,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+    expect(mockToastLoading).not.toHaveBeenCalled();
 
     act(() => {
       store.dispatch({
@@ -457,38 +406,24 @@ describe('PerpsDepositToast', () => {
       });
     });
 
-    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
-    expect(
-      screen.getByText(messages.perpsDepositToastPendingTitle.message),
-    ).toBeInTheDocument();
+    expect(mockToastLoading).toHaveBeenCalled();
   });
 
   it('shows completion toast when deposit result arrives', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
-        transactions: [],
-        lastDepositTransactionId: null,
-        lastDepositResult: null,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'submitted-tx-1',
+            status: TransactionStatus.submitted,
+          }),
+        ],
+        lastDepositTransactionId: 'submitted-tx-1',
       },
     });
 
     renderWithProvider(<PerpsDepositToast />, store);
-
-    act(() => {
-      store.dispatch({
-        type: 'UPDATE_METAMASK_STATE',
-        value: {
-          transactions: [
-            buildPendingDepositTransaction({ id: 'submitted-tx-1' }),
-          ],
-          lastDepositTransactionId: 'submitted-tx-1',
-          lastDepositResult: null,
-        },
-      });
-    });
-
-    expect(screen.getByTestId('perps-deposit-toast')).toBeInTheDocument();
 
     act(() => {
       store.dispatch({
@@ -510,9 +445,17 @@ describe('PerpsDepositToast', () => {
       });
     });
 
-    expect(
-      screen.getByText(messages.perpsDepositToastSuccessTitle.message),
-    ).toBeInTheDocument();
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastSuccessTitle.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
   });
 
   it('does not show completion toast for token-funded deposits', () => {
@@ -522,6 +465,7 @@ describe('PerpsDepositToast', () => {
         transactions: [
           buildPendingDepositTransaction({
             id: 'submitted-tx-1',
+            status: TransactionStatus.confirmed,
           }),
         ],
         lastDepositTransactionId: 'submitted-tx-1',
@@ -543,7 +487,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+    expect(mockToastSuccess).not.toHaveBeenCalled();
   });
 
   it('shows pending for the active deposit only when a stale perps tx remains submitted', () => {
@@ -567,9 +511,7 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(
-      screen.getByText(messages.perpsDepositToastPendingTitle.message),
-    ).toBeInTheDocument();
+    expect(mockToastLoading).toHaveBeenCalled();
   });
 
   it('does not show pending when active id is confirmed even if another perps deposit stays submitted', () => {
@@ -593,6 +535,6 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(screen.queryByTestId('perps-deposit-toast')).not.toBeInTheDocument();
+    expect(mockToastLoading).not.toHaveBeenCalled();
   });
 });

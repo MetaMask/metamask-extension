@@ -6271,11 +6271,14 @@
   "perpsSortByPriceChange": {
     "message": "Price change"
   },
+  "perpsSortByRank": {
+    "message": "Rank"
+  },
   "perpsSortBySection": {
     "message": "Sort by"
   },
   "perpsSortByTitle": {
-    "message": "Sort"
+    "message": "Filter"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -6549,6 +6552,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "No account selected. Select an account and try again."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Failed to proceed with withdrawal"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Something went wrong"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Available in about 1 minute"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Withdrawal in progress"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2 moved to your wallet",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Funds moved to your wallet"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Withdrawal complete"
   },
   "perpsWithdrawReceive": {
     "message": "Receive"
@@ -9430,6 +9455,9 @@
   },
   "tokenAddress": {
     "message": "Token address"
+  },
+  "tokenAllowance": {
+    "message": "Token allowance"
   },
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
