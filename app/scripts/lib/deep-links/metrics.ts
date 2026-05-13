@@ -4,8 +4,10 @@ import {
   type MetaMetricsEventPayload,
 } from '../../../../shared/constants/metametrics';
 import type { SignatureStatus } from '../../../../shared/lib/deep-links/verify';
-import { type UTMParameter, UTM_PARAMETERS } from '../../../../shared/types/metametrics';
-
+import {
+  type UTMParameter,
+  UTM_PARAMETERS,
+} from '../../../../shared/types/metametrics';
 
 export type Properties = {
   route: string;
