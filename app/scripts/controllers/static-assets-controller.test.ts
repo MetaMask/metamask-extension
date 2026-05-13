@@ -610,7 +610,10 @@ describe('StaticAssetsController', () => {
         );
         expect(assetsControllerAddCustomAssetSpy).toHaveBeenCalledWith(
           'mock-account-id',
-          toAssetId('0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', CHAIN_IDS.MAINNET),
+          toAssetId(
+            '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+            CHAIN_IDS.MAINNET,
+          ),
           expect.objectContaining({
             address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
             symbol: 'WETH',
@@ -628,7 +631,10 @@ describe('StaticAssetsController', () => {
           name: 'Amp',
         };
         // toAssetId checksums the address, so the key must use the checksummed form.
-        const hiddenTokenAssetId = toAssetId(hiddenTokenAddress, CHAIN_IDS.MAINNET);
+        const hiddenTokenAssetId = toAssetId(
+          hiddenTokenAddress,
+          CHAIN_IDS.MAINNET,
+        );
         const {
           controller,
           spies: {
