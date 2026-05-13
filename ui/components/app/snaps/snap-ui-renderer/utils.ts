@@ -240,6 +240,9 @@ export const muiPickerTheme = createTheme({
       styleOverrides: {
         root: {
           color: 'var(--color-text-alternative)',
+          '&.Mui-selected': {
+            color: 'var(--color-text-default)',
+          },
         },
       },
     },
