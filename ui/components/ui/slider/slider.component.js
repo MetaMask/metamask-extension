@@ -80,7 +80,7 @@ const Slider = ({
         </div>
       )}
     </div>
-    <MaterialSlider sx={sliderSx} {...rest} />
+    <MaterialSlider {...rest} sx={[sliderSx, rest.sx]} />
     <div className="slider__footer">
       <div className="slider__footer-info">
         {infoText && (
