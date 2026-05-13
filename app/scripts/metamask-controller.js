@@ -157,6 +157,7 @@ import {
   HardwareDeviceNames,
   LedgerTransportTypes,
   KEYRING_DEVICE_PROPERTY_MAP,
+  LEDGER_LIVE_PATH,
 } from '../../shared/constants/hardware-wallets';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { PASSKEY_AUTO_UNLOCK_SUPPRESSION_DURATION_MS } from '../../shared/constants/passkey';
@@ -5693,11 +5694,14 @@ export default class MetamaskController extends EventEmitter {
    */
   async forgetDevice(deviceName) {
     return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      for (const address of await keyring.getAccounts()) {
-        this._onAccountRemoved(address);
+      // V2 wrappers return `KeyringAccount[]` from `getAccounts()`; the
+      // remove-handler downstream expects raw addresses.
+      const accounts = await keyring.getAccounts();
+      for (const account of accounts) {
+        this._onAccountRemoved(account.address);
       }
 
-      keyring.forgetDevice();
+      await keyring.forgetDevice();
 
       return true;
     });
@@ -5792,10 +5796,67 @@ export default class MetamaskController extends EventEmitter {
     const { address: unlockedAccount } = await this.#withKeyringForDevice(
       { name: deviceName, hdPath },
       async (keyring) => {
-        keyring.setAccountToUnlock(index);
-        const [address] = await keyring.addAccounts(1);
+        const { entropySource } = keyring;
+        let createdAccount;
+
+        switch (deviceName) {
+          case HardwareDeviceNames.ledger: {
+            // Ledger Live mode uses a per-account hardened third segment;
+            // Legacy and BIP-44 modes are `${hdPath}/${index}`.
+            const derivationPath =
+              hdPath === LEDGER_LIVE_PATH
+                ? `m/44'/60'/${index}'/0/0`
+                : `${hdPath}/${index}`;
+            [createdAccount] = await keyring.createAccounts({
+              type: 'bip44:derive-path',
+              entropySource,
+              derivationPath,
+            });
+            break;
+          }
+          case HardwareDeviceNames.trezor:
+          case HardwareDeviceNames.oneKey: {
+            [createdAccount] = await keyring.createAccounts({
+              type: 'bip44:derive-path',
+              entropySource,
+              derivationPath: `${hdPath}/${index}`,
+            });
+            break;
+          }
+          case HardwareDeviceNames.qr: {
+            // QR devices are HD or Account-mode; legacy `setAccountToUnlock +
+            // addAccounts` worked for both because the inner keyring routed
+            // by mode internally. The V2 wrapper splits the two paths.
+            const isAccountMode = keyring.getMode() === 'account';
+            [createdAccount] = isAccountMode
+              ? await keyring.createAccounts({
+                  type: 'custom',
+                  entropySource,
+                  addressIndex: index,
+                })
+              : await keyring.createAccounts({
+                  type: 'bip44:derive-index',
+                  entropySource,
+                  groupIndex: index,
+                });
+            break;
+          }
+          case HardwareDeviceNames.lattice: {
+            [createdAccount] = await keyring.createAccounts({
+              type: 'custom',
+              entropySource,
+              addressIndex: index,
+            });
+            break;
+          }
+          default:
+            throw new Error(
+              `MetamaskController:unlockHardwareWalletAccount - Unknown device: ${deviceName}`,
+            );
+        }
+
         return {
-          address: normalize(address),
+          address: normalize(createdAccount.address),
           label: this.getAccountLabel(
             deviceName === HardwareDeviceNames.qr
               ? keyring.getName()
@@ -8795,8 +8856,11 @@ export default class MetamaskController extends EventEmitter {
       ? LedgerTransportTypes.webhid
       : LedgerTransportTypes.u2f;
 
-    if (keyring?.updateTransportMethod) {
-      return keyring.updateTransportMethod(transportType).catch((e) => {
+    // Go through the bridge so this works on both the legacy keyring (which
+    // also exposes a top-level `updateTransportMethod`) and the V2 wrapper
+    // (which exposes `bridge` but not the method directly).
+    if (keyring?.bridge?.updateTransportMethod) {
+      return keyring.bridge.updateTransportMethod(transportType).catch((e) => {
         throw e;
       });
     }
@@ -9638,10 +9702,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {*} The result of the callback
    */
   async #withKeyringForDevice(options, callback) {
-    if (options.name === HardwareDeviceNames.lattice) {
-      return this.#withLatticeKeyringV2(options, callback);
-    }
-
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringType = null;
     switch (options.name) {
@@ -9657,13 +9717,25 @@ export default class MetamaskController extends EventEmitter {
       case HardwareDeviceNames.qr:
         keyringType = QrKeyring.type;
         break;
+      case HardwareDeviceNames.lattice:
+        keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
+        break;
       default:
         throw new Error(
           'MetamaskController:#withKeyringForDevice - Unknown device',
         );
     }
 
-    return this.keyringController.withKeyring(
+    // `withKeyringV2` has no `createIfMissing` option, so guarantee the
+    // keyring exists in state before selecting it.
+    const hasKeyring = this.keyringController.state.keyrings.some(
+      ({ type }) => type === keyringType,
+    );
+    if (!hasKeyring) {
+      await this.keyringController.addNewKeyring(keyringType);
+    }
+
+    return this.keyringController.withKeyringV2(
       { type: keyringType },
       async ({ keyring }) => {
         if (options.hdPath && keyring.setHdPath) {
@@ -9682,49 +9754,11 @@ export default class MetamaskController extends EventEmitter {
           this.appStateController.setTrezorModel(model);
         }
 
-        keyring.network = getProviderConfig({
-          metamask: this.networkController.state,
-        }).type;
-
-        return await callback(keyring);
-      },
-      {
-        createIfMissing: true,
-      },
-    );
-  }
-
-  /**
-   * Acquire the Lattice keyring via `withKeyringV2`. The V2 method has no
-   * `createIfMissing` option, so we ensure the keyring exists first via
-   * `addNewKeyring` if it isn't already in state.
-   *
-   * @param {object} options - Same options as `#withKeyringForDevice`.
-   * @param {*} callback - Callback invoked with the V2 wrapper instance.
-   * @returns {*} The callback's return value.
-   */
-  async #withLatticeKeyringV2(options, callback) {
-    const keyringOverrides = this.opts.overrides?.keyrings;
-    const latticeType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
-
-    const hasLatticeKeyring = this.keyringController.state.keyrings.some(
-      ({ type }) => type === latticeType,
-    );
-    if (!hasLatticeKeyring) {
-      await this.keyringController.addNewKeyring(latticeType);
-    }
-
-    return this.keyringController.withKeyringV2(
-      { type: latticeType },
-      async ({ keyring }) => {
-        if (options.hdPath) {
-          keyring.setHdPath(options.hdPath);
+        if (options.name === HardwareDeviceNames.lattice) {
+          // The legacy keyring clears `appName` in `forgetDevice` and
+          // `_resetDefaults`, so re-apply it on every entry.
+          keyring.appName = 'MetaMask';
         }
-
-        keyring.appName = 'MetaMask';
-        keyring.network = getProviderConfig({
-          metamask: this.networkController.state,
-        }).type;
 
         return await callback(keyring);
       },
