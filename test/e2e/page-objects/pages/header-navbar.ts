@@ -284,7 +284,9 @@ class HeaderNavbar {
       'Verify the dapp connection control bar network picker is NOT visible',
     );
     await this.driver.waitForSelector(this.dappConnectionControlBar);
-    await this.driver.assertElementNotPresent(this.dappNetworkButton);
+    await this.driver.assertElementNotPresent(this.dappNetworkButton, {
+      waitAtLeastGuard: 500,
+    });
   }
 
   /**

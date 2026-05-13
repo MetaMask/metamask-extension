@@ -26,10 +26,6 @@ const MM_CONNECT_DAPP_OPTIONS = {
   customDappPaths: [DAPP_PATH.TEST_DAPP_MM_CONNECT],
 };
 
-const SOLANA_DAPP_OPTIONS = {
-  customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
-};
-
 const EVM_AND_SOLANA_FIXTURE_SCOPES_WITH_EIP1193_COMPATIBLE = {
   isMultichainOrigin: true,
   requiredScopes: {},
@@ -67,11 +63,6 @@ async function approveConnectFromDialog(driver: Driver): Promise<void> {
   await confirmation.confirmConnect();
 }
 
-/** Build the full popup URL for the test dapp origin. */
-function popupUrl(driver: Driver): string {
-  return `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${DAPP_URL}`;
-}
-
 /**
  * Open the MetaMask popup with the test dapp as `activeTabOrigin`. The
  * `DappConnectionControlBar` is only rendered when the wallet popup has a
@@ -82,7 +73,9 @@ function popupUrl(driver: Driver): string {
  * @returns A `HeaderNavbar` page object scoped to the popup window.
  */
 async function openPopupForDapp(driver: Driver): Promise<HeaderNavbar> {
-  await driver.openNewPage(popupUrl(driver));
+  await driver.openNewPage(
+    `${driver.extensionUrl}/${PAGES.POPUP}.html?activeTabOrigin=${DAPP_URL}`,
+  );
   return new HeaderNavbar(driver);
 }
 
@@ -178,7 +171,9 @@ describe('DappConnectionControlBar - network picker visibility', function (this:
         {
           fixtures: new FixtureBuilderV2().build(),
           title: this.test?.fullTitle(),
-          dappOptions: SOLANA_DAPP_OPTIONS,
+          dappOptions: {
+            customDappPaths: [DAPP_PATH.TEST_DAPP_SOLANA],
+          },
         },
         async ({ driver }: { driver: Driver }) => {
           await login(driver);
