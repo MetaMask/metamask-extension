@@ -1,9 +1,10 @@
-import { NamespacedName } from '@metamask/messenger';
-import { Json, JsonRpcNotification } from '@metamask/utils';
+import type { NamespacedName } from '@metamask/messenger';
+import type { Json, JsonRpcNotification } from '@metamask/utils';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
-import { getSerializedTraceContext } from '../../shared/lib/trace';
+import { withTraceContextDispatch } from '../../shared/lib/with-trace-context';
+import type { SerializedTraceContext } from '../../shared/lib/trace';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,13 +43,21 @@ export function submitRequestToBackground<R>(
     }
   }
 
-  const traceContext = getSerializedTraceContext();
-  const rpcArgs = traceContext
-    ? // eslint-disable-next-line @typescript-eslint/naming-convention
-      [...(args ?? []), { _traceContext: traceContext }]
-    : (args ?? []);
+  const send = withTraceContextDispatch({
+    dispatch: (...rpcArgs: unknown[]) =>
+      background[method](...rpcArgs) as unknown as Promise<R>,
+    inject: (
+      injectArgs: Parameters<(typeof background)[typeof method]>,
+      context: SerializedTraceContext,
+    ) =>
+      [
+        ...injectArgs,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { _traceContext: context },
+      ] as unknown as Parameters<(typeof background)[typeof method]>,
+  });
 
-  return background[method](...rpcArgs) as unknown as Promise<R>;
+  return send(...(args ?? [])) as unknown as Promise<R>;
 }
 
 /**

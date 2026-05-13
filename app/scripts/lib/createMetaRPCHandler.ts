@@ -5,12 +5,8 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import type { TaggedApiMethod } from '../messenger-client-init/utils';
-import {
-  continueTraceContext,
-  extractTraceContext,
-  trace,
-} from '../../../shared/lib/trace';
-import { shouldSampleWrappers } from '../../../shared/lib/wrapper-sampling';
+import { extractTraceContext } from '../../../shared/lib/trace';
+import { withTraceContextHandler } from '../../../shared/lib/with-trace-context';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
 type MetaRpcApi = Record<string, TaggedApiMethod>;
@@ -35,7 +31,6 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
       return;
     }
 
-    const { cleanParams, traceContext } = extractTraceContext(data.params);
     const handler = api[data.method];
     const controller = handler._controllerName;
     const spanName: `Background RPC: ${string}` = controller
@@ -45,33 +40,9 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     let result: unknown;
     let error: unknown;
     try {
-      if (!traceContext) {
-        if (Array.isArray(cleanParams)) {
-          result = await handler.call(api, ...cleanParams);
-        } else {
-          result = await handler.call(api, cleanParams);
-        }
-      } else if (shouldSampleWrappers(traceContext._traceId)) {
-        // Wrapper sub-sample passes: emit the `rpc.handler` span and
-        // propagate trace context for nested spans.
-        result = await trace(
-          {
-            name: spanName,
-            parentContext: traceContext,
-            op: 'rpc.handler',
-            data: { method: data.method, ...(controller && { controller }) },
-          },
-          () => handler.call(api, ...cleanParams),
-        );
-      } else {
-        // Wrapper sub-sample rejects: skip the `rpc.handler` span but still
-        // propagate trace context so nested auto-instrumented and core-package
-        // spans (e.g. `http.client`, `assets-controller` `trace()` callers)
-        // attach to the originating UI trace instead of becoming orphans.
-        result = await continueTraceContext(traceContext, () =>
-          handler.call(api, ...cleanParams),
-        );
-      }
+      result = await tracedHandler({ handler, api, data, spanName })(
+        data.params,
+      );
     } catch (err) {
       error = err;
     }
@@ -98,5 +69,40 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     }
   };
 };
+
+function tracedHandler({
+  handler,
+  api,
+  data,
+  spanName,
+}: {
+  handler: TaggedApiMethod;
+  api: MetaRpcApi;
+  data: JsonRpcRequest;
+  spanName: `Background RPC: ${string}`;
+}) {
+  return withTraceContextHandler<
+    [JsonRpcRequest['params']],
+    unknown[],
+    unknown
+  >({
+    handler: (...cleanArgs) => handler.call(api, ...cleanArgs),
+    extract: ([rawParams]) => {
+      const { cleanParams, traceContext } = extractTraceContext(rawParams);
+      const cleanArgs = Array.isArray(cleanParams)
+        ? cleanParams
+        : [cleanParams];
+      return { cleanArgs, context: traceContext };
+    },
+    getSpanRequest: () => ({
+      name: spanName,
+      op: 'rpc.handler',
+      data: {
+        method: data.method,
+        ...(handler._controllerName && { controller: handler._controllerName }),
+      },
+    }),
+  });
+}
 
 export default createMetaRPCHandler;
