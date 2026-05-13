@@ -6257,6 +6257,10 @@
     "message": "Estimated slippage exceeds your max slippage of $1. Adjust the order size or raise the cap.",
     "description": "Inline error shown on the perps order entry when the live estimated slippage exceeds the configured max-slippage cap. $1 is the configured max-slippage percent."
   },
+  "perpsSlippageBlockedInsufficientLiquidity": {
+    "message": "Order size exceeds available liquidity in the order book. Reduce the size to continue.",
+    "description": "Inline error shown on the perps order entry when the order book is too shallow to fill the requested notional, so slippage cannot be estimated and submission is blocked regardless of the configured max-slippage cap."
+  },
   "perpsSlippageConfigDescription": {
     "message": "Orders are blocked when the estimated slippage exceeds this cap. Applies to all future trades until changed.",
     "description": "Description text inside the slippage configuration sheet."

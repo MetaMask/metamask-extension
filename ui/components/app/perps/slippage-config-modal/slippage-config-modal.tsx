@@ -194,7 +194,8 @@ export const SlippageConfigModal: React.FC<SlippageConfigModalProps> = ({
           <div className="grid grid-cols-4 gap-2">
             {QUICK_PICK_PCTS.map((pct) => {
               const isSelected =
-                draftIsValid && snapToStep(parsedDraft) === pct;
+                draftIsValid &&
+                Math.abs(parsedDraft - pct) < PERPS_SLIPPAGE_STEP_PCT / 2;
               return (
                 <Button
                   key={pct}

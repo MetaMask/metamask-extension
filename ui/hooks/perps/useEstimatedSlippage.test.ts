@@ -1,5 +1,44 @@
 import type { OrderBookData } from '@metamask/perps-controller';
-import { computeSlippagePct } from './useEstimatedSlippage';
+import { act, renderHook } from '@testing-library/react-hooks';
+import {
+  computeSlippagePct,
+  useEstimatedSlippage,
+} from './useEstimatedSlippage';
+
+jest.mock('../../providers/perps', () => {
+  const internal = {
+    subscribers: new Set(),
+    unsubscribeSpy: jest.fn(),
+  };
+  return {
+    mockInternals: internal,
+    getPerpsStreamManager: () => ({
+      orderBook: {
+        subscribe: (cb: (...args: unknown[]) => unknown) => {
+          internal.subscribers.add(cb);
+          return () => {
+            internal.subscribers.delete(cb);
+            internal.unsubscribeSpy();
+          };
+        },
+      },
+    }),
+  };
+});
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { mockInternals: streamInternal } = require('../../providers/perps') as {
+  mockInternals: {
+    subscribers: Set<(book: OrderBookData | null) => void>;
+    unsubscribeSpy: jest.Mock;
+  };
+};
+
+function emit(snapshot: OrderBookData | null) {
+  for (const cb of Array.from(streamInternal.subscribers)) {
+    cb(snapshot);
+  }
+}
 
 function level(price: string, size: string): OrderBookData['asks'][number] {
   const total = size;
@@ -19,6 +58,140 @@ function book(overrides: Partial<OrderBookData> = {}): OrderBookData {
     ...overrides,
   };
 }
+
+describe('useEstimatedSlippage', () => {
+  beforeEach(() => {
+    streamInternal.subscribers.clear();
+    streamInternal.unsubscribeSpy.mockClear();
+    jest.useFakeTimers().setSystemTime(new Date('2026-05-13T00:00:00Z'));
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it('returns the empty result while the stream has not pushed a book yet', () => {
+    const { result } = renderHook(() =>
+      useEstimatedSlippage({
+        symbol: 'BTC',
+        notionalUsd: 100,
+        direction: 'long',
+      }),
+    );
+    expect(result.current).toStrictEqual({
+      estimatedSlippagePct: null,
+      insufficientLiquidity: false,
+    });
+  });
+
+  it('computes slippage when the stream pushes a book', () => {
+    const { result } = renderHook(() =>
+      useEstimatedSlippage({
+        symbol: 'BTC',
+        notionalUsd: 210,
+        direction: 'long',
+      }),
+    );
+    act(() => {
+      emit(
+        book({
+          asks: [level('100', '1'), level('110', '1')],
+          midPrice: '100',
+        }),
+      );
+    });
+    expect(result.current.estimatedSlippagePct).toBeCloseTo(5, 5);
+    expect(result.current.insufficientLiquidity).toBe(false);
+  });
+
+  it('throttles successive book updates to one per ORDER_BOOK_SAMPLE_MS window', () => {
+    const { result } = renderHook(() =>
+      useEstimatedSlippage({
+        symbol: 'BTC',
+        notionalUsd: 210,
+        direction: 'long',
+      }),
+    );
+    // First push lands.
+    act(() => {
+      emit(
+        book({
+          asks: [level('100', '1'), level('110', '1')],
+          midPrice: '100',
+        }),
+      );
+    });
+    const firstPct = result.current.estimatedSlippagePct;
+    expect(firstPct).toBeCloseTo(5, 5);
+
+    // Second push within 500ms must be dropped (state stays equal).
+    act(() => {
+      jest.advanceTimersByTime(100);
+      emit(
+        book({
+          asks: [level('100', '1'), level('120', '1')],
+          midPrice: '100',
+        }),
+      );
+    });
+    expect(result.current.estimatedSlippagePct).toBeCloseTo(firstPct ?? 0, 5);
+
+    // After the sample window closes, the next push is accepted.
+    act(() => {
+      jest.advanceTimersByTime(500);
+      emit(
+        book({
+          asks: [level('100', '1'), level('120', '1')],
+          midPrice: '100',
+        }),
+      );
+    });
+    expect(result.current.estimatedSlippagePct).toBeGreaterThan(firstPct ?? 0);
+  });
+
+  it('short-circuits when enabled=false and unsubscribes if it was previously subscribed', () => {
+    const { result, rerender } = renderHook(
+      ({ enabled }) =>
+        useEstimatedSlippage({
+          symbol: 'BTC',
+          notionalUsd: 210,
+          direction: 'long',
+          enabled,
+        }),
+      { initialProps: { enabled: true } },
+    );
+    act(() => {
+      emit(
+        book({
+          asks: [level('100', '1'), level('110', '1')],
+          midPrice: '100',
+        }),
+      );
+    });
+    expect(result.current.estimatedSlippagePct).toBeCloseTo(5, 5);
+
+    rerender({ enabled: false });
+    expect(streamInternal.unsubscribeSpy).toHaveBeenCalledTimes(1);
+    expect(result.current).toStrictEqual({
+      estimatedSlippagePct: null,
+      insufficientLiquidity: false,
+    });
+  });
+
+  it('unsubscribes on unmount so the stream listener does not leak', () => {
+    const { unmount } = renderHook(() =>
+      useEstimatedSlippage({
+        symbol: 'BTC',
+        notionalUsd: 100,
+        direction: 'long',
+      }),
+    );
+    expect(streamInternal.subscribers.size).toBe(1);
+    unmount();
+    expect(streamInternal.unsubscribeSpy).toHaveBeenCalledTimes(1);
+    expect(streamInternal.subscribers.size).toBe(0);
+  });
+});
 
 describe('computeSlippagePct', () => {
   it('returns null + insufficientLiquidity=false when the book has no asks for a long', () => {

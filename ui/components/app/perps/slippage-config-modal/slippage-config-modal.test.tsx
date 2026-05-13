@@ -1,5 +1,6 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -24,7 +25,18 @@ function render(
     />,
     mockStore,
   );
-  return { onSave, onClose };
+  return { onSave, onClose, user: userEvent.setup() };
+}
+
+async function setInputValue(
+  user: ReturnType<typeof userEvent.setup>,
+  value: string,
+) {
+  const input = screen.getByTestId(
+    'perps-slippage-config-input',
+  ) as HTMLInputElement;
+  await user.clear(input);
+  await user.type(input, value);
 }
 
 describe('SlippageConfigModal', () => {
@@ -36,44 +48,35 @@ describe('SlippageConfigModal', () => {
     expect(input.value).toBe('3');
   });
 
-  it('saves the chosen value, snapping it to the 0.1% step, and closes', () => {
-    const { onSave, onClose } = render({ currentValuePct: 3 });
-    const input = screen.getByTestId(
-      'perps-slippage-config-input',
-    ) as HTMLInputElement;
-    fireEvent.change(input, { target: { value: '1.23' } });
-    fireEvent.click(screen.getByTestId('perps-slippage-config-save'));
+  it('saves the chosen value, snapping it to the 0.1% step, and closes', async () => {
+    const { onSave, onClose, user } = render({ currentValuePct: 3 });
+    await setInputValue(user, '1.23');
+    await user.click(screen.getByTestId('perps-slippage-config-save'));
     expect(onSave).toHaveBeenCalledTimes(1);
     expect(onSave.mock.calls[0][0]).toBeCloseTo(1.2, 5);
     expect(onClose).toHaveBeenCalled();
   });
 
-  it('disables save and shows an error when the value is out of the allowed range', () => {
-    render();
-    const input = screen.getByTestId(
-      'perps-slippage-config-input',
-    ) as HTMLInputElement;
-    fireEvent.change(input, { target: { value: '50' } });
+  it('disables save and shows an error when the value is out of the allowed range', async () => {
+    const { user } = render();
+    await setInputValue(user, '50');
     expect(screen.getByTestId('perps-slippage-config-save')).toBeDisabled();
     expect(
       screen.getByTestId('perps-slippage-config-error'),
     ).toBeInTheDocument();
   });
 
-  it('applies a preset and triggers save with the preset value', () => {
-    const { onSave } = render({ currentValuePct: 3 });
-    fireEvent.click(screen.getByTestId('perps-slippage-config-preset-5'));
-    fireEvent.click(screen.getByTestId('perps-slippage-config-save'));
+  it('applies a preset and triggers save with the preset value', async () => {
+    const { onSave, user } = render({ currentValuePct: 3 });
+    await user.click(screen.getByTestId('perps-slippage-config-preset-5'));
+    await user.click(screen.getByTestId('perps-slippage-config-save'));
     expect(onSave).toHaveBeenCalledWith(5);
   });
 
-  it('does nothing when save is clicked with an invalid value', () => {
-    const { onSave, onClose } = render();
-    const input = screen.getByTestId(
-      'perps-slippage-config-input',
-    ) as HTMLInputElement;
-    fireEvent.change(input, { target: { value: '0.05' } });
-    fireEvent.click(screen.getByTestId('perps-slippage-config-save'));
+  it('does nothing when save is clicked with an invalid value', async () => {
+    const { onSave, onClose, user } = render();
+    await setInputValue(user, '0.05');
+    await user.click(screen.getByTestId('perps-slippage-config-save'));
     expect(onSave).not.toHaveBeenCalled();
     expect(onClose).not.toHaveBeenCalled();
   });

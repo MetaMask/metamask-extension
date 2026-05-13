@@ -68,9 +68,10 @@ import {
 import { useEstimatedSlippage } from '../../hooks/perps/useEstimatedSlippage';
 import { SlippageConfigModal } from '../../components/app/perps/slippage-config-modal';
 import {
+  PERPS_MIN_MARKET_ORDER_USD,
   PERPS_SLIPPAGE_DEFAULT_PCT,
   PERPS_SLIPPAGE_MAX_PCT,
- PERPS_MIN_MARKET_ORDER_USD } from '../../components/app/perps/constants';
+} from '../../components/app/perps/constants';
 import {
   CandlePeriod,
   TimeDuration,
@@ -612,24 +613,24 @@ const PerpsOrderEntryPage: React.FC = () => {
 
     const tpInvalid = Boolean(
       tp?.trim() &&
-        !isValidTakeProfitPrice(tp, {
-          currentPrice: referencePrice,
-          direction: dir,
-        }),
+      !isValidTakeProfitPrice(tp, {
+        currentPrice: referencePrice,
+        direction: dir,
+      }),
     );
     const slInvalid = Boolean(
       sl?.trim() &&
-        !isValidStopLossPrice(sl, {
-          currentPrice: referencePrice,
-          direction: dir,
-        }),
+      !isValidStopLossPrice(sl, {
+        currentPrice: referencePrice,
+        direction: dir,
+      }),
     );
     const slLiquidationInvalid = Boolean(
       sl?.trim() &&
-        !isStopLossSafeFromLiquidation(sl, {
-          liquidationPrice,
-          direction: dir,
-        }),
+      !isStopLossSafeFromLiquidation(sl, {
+        liquidationPrice,
+        direction: dir,
+      }),
     );
 
     return tpInvalid || slInvalid || slLiquidationInvalid;
@@ -1585,7 +1586,11 @@ const PerpsOrderEntryPage: React.FC = () => {
             color={TextColor.ErrorDefault}
             data-testid="perps-slippage-blocked-error"
           >
-            {t('perpsSlippageBlockedError', [`${maxSlippagePct.toFixed(1)}%`])}
+            {insufficientLiquidity
+              ? t('perpsSlippageBlockedInsufficientLiquidity')
+              : t('perpsSlippageBlockedError', [
+                  `${maxSlippagePct.toFixed(1)}%`,
+                ])}
           </Text>
         )}
         {submitError && (

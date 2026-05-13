@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { OrderBookData } from '@metamask/perps-controller';
 import { getPerpsStreamManager } from '../../providers/perps';
-import { submitRequestToBackground } from '../../store/background-connection';
 
 // HyperLiquid pushes order-book diffs every ~50ms. Re-rendering the order
 // entry page on every tick would (a) drown the form in layout shifts and (b)
@@ -62,7 +61,12 @@ export function computeSlippagePct(
     }
     const price = Number.parseFloat(level.price);
     const size = Number.parseFloat(level.size);
-    if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(size) || size <= 0) {
+    if (
+      !Number.isFinite(price) ||
+      price <= 0 ||
+      !Number.isFinite(size) ||
+      size <= 0
+    ) {
       continue;
     }
     const levelNotional = price * size;
@@ -104,8 +108,8 @@ export function computeSlippagePct(
  * page already uses (no extra network calls), and returns null until enough
  * data has arrived to compute a value.
  *
- * Mobile parity TODO: mobile does not yet expose this estimate; this hook is
- * the extension-first implementation for TAT-1043.
+ * TODO(TAT-1043): mobile does not yet expose this estimate; this hook is
+ * the extension-first implementation. Port to mobile in the follow-up story.
  * @param options0
  * @param options0.symbol
  * @param options0.notionalUsd
@@ -126,12 +130,12 @@ export function useEstimatedSlippage({
       setOrderBook(null);
       return undefined;
     }
+    // Callers are responsible for keeping the order-book stream active for
+    // `symbol`. The order entry page already does it for topOfBook on the
+    // same symbol; activating again here (and deactivating on unmount with
+    // no symbol arg) would race the page's lifecycle and tear the stream
+    // down mid-render.
     lastSampleAtRef.current = 0;
-    submitRequestToBackground('perpsActivateOrderBookStream', [
-      { symbol },
-    ]).catch(() => {
-      // Controller not ready; we'll get an update once it is.
-    });
     const stream = getPerpsStreamManager();
     const unsubscribe = stream.orderBook.subscribe((book) => {
       if (!book) {
@@ -145,13 +149,17 @@ export function useEstimatedSlippage({
       setOrderBook(book);
     });
     return () => {
-      submitRequestToBackground('perpsDeactivateOrderBookStream', []);
       unsubscribe();
     };
   }, [enabled, symbol]);
 
   return useMemo(() => {
-    if (!enabled || !orderBook || !Number.isFinite(notionalUsd) || notionalUsd <= 0) {
+    if (
+      !enabled ||
+      !orderBook ||
+      !Number.isFinite(notionalUsd) ||
+      notionalUsd <= 0
+    ) {
       return EMPTY_RESULT;
     }
     return computeSlippagePct(orderBook, notionalUsd, direction);
