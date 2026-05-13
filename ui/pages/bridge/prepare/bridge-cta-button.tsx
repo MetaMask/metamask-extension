@@ -135,15 +135,8 @@ export const BridgeCTAButton = ({
       return undefined;
     }
 
-    if (isNetworkFeeUnavailable) {
-      return {
-        disabled: false,
-        onClick: onFetchNewQuotes,
-        children: t('bridgeGetNewQuote'),
-      };
-    }
-
     if (
+      isNetworkFeeUnavailable||
       isInsufficientBalance ||
       isInsufficientGasForQuote ||
       isInsufficientGasBalance ||
