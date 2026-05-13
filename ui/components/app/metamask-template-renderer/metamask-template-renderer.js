@@ -81,10 +81,7 @@ const MetaMaskTemplateRendererBody = ({ sections }) => {
             // If this child has its own children, check if children is an
             // object, and in that case use recursion to render.
             allChildren.push(
-              <MetaMaskTemplateRendererBody
-                sections={child}
-                key={child.key}
-              />,
+              <MetaMaskTemplateRendererBody sections={child} key={child.key} />,
             );
           } else {
             // Otherwise render the element.
