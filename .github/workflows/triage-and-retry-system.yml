@@ -61,6 +61,11 @@
 name: Triage and Retry System
 
 on:
+  # zizmor: ignore[dangerous-triggers]
+  # workflow_run is required to classify failures and retry-trigger after
+  # Main completes. The job is gated to `head_repository == repository`
+  # (no fork events) and is restricted to specific event sources via the
+  # `if:` filter below.
   workflow_run:
     workflows: ['Main']
     types: [completed]

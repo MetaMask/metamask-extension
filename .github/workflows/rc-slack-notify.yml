@@ -12,6 +12,11 @@
 name: RC Slack notify
 
 on:
+  # zizmor: ignore[dangerous-triggers]
+  # workflow_run is required to post the Slack RC notification only after
+  # a successful Main run on a release/* branch. The job is gated on
+  # conclusion == 'success', branch matches the release semver, and the
+  # event source is push — so it cannot be tricked into running by fork PRs.
   workflow_run:
     workflows:
       - Main
