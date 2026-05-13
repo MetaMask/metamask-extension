@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -70,11 +70,9 @@ export const SlippageConfigModal: React.FC<SlippageConfigModalProps> = ({
   const [draftValue, setDraftValue] = useState<string>(
     currentValuePct.toString(),
   );
-  const savedValueRef = useRef(currentValuePct);
 
   useEffect(() => {
     if (isOpen) {
-      savedValueRef.current = currentValuePct;
       setDraftValue(currentValuePct.toString());
     }
   }, [isOpen, currentValuePct]);
