@@ -233,7 +233,10 @@ export const derivePositionTpslPricesFromOrders = (
 
   const result: { takeProfitPrice?: string; stopLossPrice?: string } = {};
   for (const order of orders) {
-    if (!order.isTrigger || !isOrderAssociatedWithFullPosition(order, position)) {
+    if (
+      !order.isTrigger ||
+      !isOrderAssociatedWithFullPosition(order, position)
+    ) {
       continue;
     }
 
