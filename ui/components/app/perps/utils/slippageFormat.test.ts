@@ -15,6 +15,10 @@ describe('formatSlippagePct', () => {
     expect(formatSlippagePct(0.0099, false)).toBe('<0.01%');
   });
 
+  it('returns "0.00%" for an exact-zero estimate', () => {
+    expect(formatSlippagePct(0, false)).toBe('0.00%');
+  });
+
   it('returns two-decimal percent for in-range estimates', () => {
     expect(formatSlippagePct(0.01, false)).toBe('0.01%');
     expect(formatSlippagePct(3, false)).toBe('3.00%');

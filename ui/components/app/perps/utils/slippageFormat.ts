@@ -24,7 +24,7 @@ export function formatSlippagePct(
   if (estimatedPct === null) {
     return '—';
   }
-  if (estimatedPct < SLIPPAGE_DISPLAY_FLOOR_PCT) {
+  if (estimatedPct > 0 && estimatedPct < SLIPPAGE_DISPLAY_FLOOR_PCT) {
     return `<${SLIPPAGE_DISPLAY_FLOOR_PCT}%`;
   }
   return `${estimatedPct.toFixed(2)}%`;
