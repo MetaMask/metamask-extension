@@ -1,9 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../ducks/metamask/base-selectors';
 import {
   getMetaMaskKeyrings,
   getUseExternalServices,
