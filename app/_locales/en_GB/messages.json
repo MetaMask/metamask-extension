@@ -9431,6 +9431,9 @@
   "tokenAddress": {
     "message": "Token address"
   },
+  "tokenAllowance": {
+    "message": "Token allowance"
+  },
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
   },
