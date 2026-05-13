@@ -130,5 +130,4 @@ describe('fetchCarouselSlidesFromContentful', () => {
     expect(fetchSpy).toHaveBeenCalledTimes(1);
     expect(mockCaptureException).not.toHaveBeenCalled();
   });
-
 });
