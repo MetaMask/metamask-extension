@@ -43,7 +43,7 @@ const NftDetailInformationFrame = ({
           alignItems={AlignItems.center}
         >
           {' '}
-          {buttonAddressValue || (
+          {buttonAddressValue ?? (
             <Text style={frameTextValueStyle} {...frameTextValueProps}>
               {value}
             </Text>

@@ -1,4 +1,4 @@
-import React, { FormEvent, FunctionComponent } from 'react';
+import React, { FormEvent } from 'react';
 import { UserInputEventType } from '@metamask/snaps-sdk';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { Box } from '../../../component-library';

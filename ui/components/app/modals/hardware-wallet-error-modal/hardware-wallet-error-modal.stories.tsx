@@ -43,34 +43,29 @@ const createTestError = (
 export const DeviceLocked: Story = {
   args: {
     error: createTestError(ErrorCode.AuthenticationDeviceLocked),
-    isOpen: true,
   },
 };
 
 export const EthAppNotOpen: Story = {
   args: {
     error: createTestError(ErrorCode.DeviceStateEthAppClosed),
-    isOpen: true,
   },
 };
 
 export const BlindSignNotSupported: Story = {
   args: {
     error: createTestError(ErrorCode.DeviceStateBlindSignNotSupported),
-    isOpen: true,
   },
 };
 
 export const DeviceDisconnected: Story = {
   args: {
     error: createTestError(ErrorCode.DeviceDisconnected),
-    isOpen: true,
   },
 };
 
 export const UnknownError: Story = {
   args: {
     error: createTestError(ErrorCode.Unknown),
-    isOpen: true,
   },
 };

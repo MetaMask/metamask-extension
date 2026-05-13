@@ -119,7 +119,7 @@ export const ConfirmInfoRow = ({
   tooltipIconColor,
   onClick,
   labelChildrenStyleOverride,
-}: React.PropsWithChildren<ConfirmInfoRowProps>) => {
+}: ConfirmInfoRowProps) => {
   const { value: expanded, toggle } = useBoolean(!collapsed);
 
   const isCollapsible = collapsed !== undefined;

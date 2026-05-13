@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { CaipAccountId, CaipChainId } from '@metamask/utils';
 
 import { SnapUISelector } from '../snap-ui-selector';

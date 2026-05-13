@@ -67,7 +67,7 @@ const SelectorItem = ({
   onSelect,
   disabled,
   style,
-}: React.PropsWithChildren<SelectorItemProps>) => {
+}: SelectorItemProps) => {
   const handleClick = () => {
     onSelect(value);
   };

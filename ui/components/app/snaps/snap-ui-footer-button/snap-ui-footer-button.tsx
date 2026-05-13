@@ -1,4 +1,4 @@
-import React, { FunctionComponent, MouseEvent as ReactMouseEvent } from 'react';
+import React, { MouseEvent as ReactMouseEvent } from 'react';
 import { ButtonType, UserInputEventType } from '@metamask/snaps-sdk';
 import type { ButtonProps as SnapButtonProps } from '@metamask/snaps-sdk/jsx';
 import { useSelector } from 'react-redux';

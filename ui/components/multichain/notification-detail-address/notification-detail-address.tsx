@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FC } from 'react';
+import type {} from 'react';
 import { NotificationDetail } from '../notification-detail';
 import { NotificationDetailCopyButton } from '../notification-detail-copy-button';
 import { Text } from '../../component-library';

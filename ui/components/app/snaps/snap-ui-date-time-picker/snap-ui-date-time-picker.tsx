@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { DatePicker, DateTimePicker, TimePicker } from '@material-ui/pickers';
 import { Box } from '@metamask/design-system-react';
 import classnames from 'clsx';

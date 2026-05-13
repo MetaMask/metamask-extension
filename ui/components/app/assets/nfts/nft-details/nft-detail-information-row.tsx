@@ -68,7 +68,7 @@ const NftDetailInformationRow = ({
       </Text>
       {icon ? (
         <Box display={Display.Flex}>
-          {buttonAddressValue || (
+          {buttonAddressValue ?? (
             <Text
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing

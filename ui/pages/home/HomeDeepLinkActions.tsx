@@ -1,4 +1,4 @@
-import { FC, memo, useCallback, useEffect, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';

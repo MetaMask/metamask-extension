@@ -18,7 +18,7 @@ interface WrapperProps {
 }
 
 // Wrapper component to provide necessary providers
-const Wrapper = ({ children }: React.PropsWithChildren<WrapperProps>) => (
+const Wrapper = ({ children }: WrapperProps) => (
   <Provider store={store}>{children}</Provider>
 );
 

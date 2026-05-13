@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import Tooltip from '../../../ui/tooltip';
 
 export type SnapUITooltipProps = {

@@ -62,7 +62,7 @@ export const TabEmptyState = ({
   className,
   children,
   ...props
-}: React.PropsWithChildren<TabEmptyStateProps>) => {
+}: TabEmptyStateProps) => {
   return (
     <Box
       className={twMerge('max-w-56', className)}
