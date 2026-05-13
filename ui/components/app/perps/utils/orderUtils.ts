@@ -201,13 +201,25 @@ export const willFlipPosition = (
   if (orderParams.orderType !== 'market') {
     return false;
   }
-  const currentPositionSize = parseFloat(currentPosition.size);
+  // Hyperliquid position/order size strings can carry thousand separators
+  // (e.g. `'1,234.5'`); strip commas before parseFloat so the magnitude
+  // comparison stays correct for large positions.
+  const currentPositionSize = parseFloat(
+    currentPosition.size.replaceAll(',', ''),
+  );
+  // A zero-size position is not a position — short-circuit so a sell market
+  // does not match the phantom `'short'` direction below and falsely report
+  // "no flip". The caller also guards on size === 0, but keep this safe in
+  // isolation.
+  if (currentPositionSize === 0 || !Number.isFinite(currentPositionSize)) {
+    return false;
+  }
   const positionDirection = currentPositionSize > 0 ? 'long' : 'short';
   const orderDirection = orderParams.isBuy ? 'long' : 'short';
   if (positionDirection === orderDirection) {
     return false;
   }
-  const orderSize = parseFloat(orderParams.size);
+  const orderSize = parseFloat(orderParams.size.replaceAll(',', ''));
   return orderSize > Math.abs(currentPositionSize);
 };
 

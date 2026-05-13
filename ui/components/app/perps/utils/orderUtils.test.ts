@@ -292,6 +292,36 @@ describe('orderUtils', () => {
         ),
       ).toBe(false);
     });
+
+    it('strips thousand separators from position and order sizes before comparing', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1,234.5' }),
+          makeParams({ isBuy: false, size: '2,000' }),
+        ),
+      ).toBe(true);
+      expect(
+        willFlipPosition(
+          makePosition({ size: '1,234.5' }),
+          makeParams({ isBuy: false, size: '500' }),
+        ),
+      ).toBe(false);
+    });
+
+    it('returns false when the current position size is zero (no phantom direction)', () => {
+      expect(
+        willFlipPosition(
+          makePosition({ size: '0' }),
+          makeParams({ isBuy: false, size: '1.0' }),
+        ),
+      ).toBe(false);
+      expect(
+        willFlipPosition(
+          makePosition({ size: '0' }),
+          makeParams({ isBuy: true, size: '1.0' }),
+        ),
+      ).toBe(false);
+    });
   });
 
   describe('derivePositionTpslPricesFromOrders', () => {
