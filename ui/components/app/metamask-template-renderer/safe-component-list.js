@@ -60,6 +60,7 @@ import {
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
+import MetaMaskTranslation from '../metamask-translation/metamask-translation';
 import { Skeleton } from '../../component-library/skeleton';
 import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
 import { Delineator } from '../../ui/delineator';
@@ -129,12 +130,6 @@ export const safeComponentList = {
   SnapAccountRedirect,
   SnapAccountSuccessMessage,
   SnapAuthorshipHeader,
+  MetaMaskTranslation,
   Delineator,
 };
-
-export function registerSafeComponent(name, component) {
-  if (safeComponentList[name] && safeComponentList[name] !== component) {
-    throw new Error(`safeComponentList: "${name}" already registered`);
-  }
-  safeComponentList[name] = component;
-}
