@@ -122,9 +122,7 @@ class SnapInteractiveDialog {
 
     const prevMonthDate = DateTime.now().minus({ months: 1 });
     const digits =
-      String(prevMonthDate.month) +
-      String(day) +
-      String(prevMonthDate.year);
+      String(prevMonthDate.month) + String(day) + String(prevMonthDate.year);
     await this.driver.fill(selectors.datePickerInput, digits);
 
     return prevMonthDate
