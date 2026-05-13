@@ -47,7 +47,7 @@ import EnhancedReader from './enhanced-reader';
  * (popup / side panel) cannot prompt for camera access.
  * 2. **Permission flow** — queries the Permissions API, calls `getUserMedia`,
  * and classifies the result into one of four {@link CameraReadyState} values.
- * 3. **QR decoding** — once the camera is ready, renders `EnhancedReader,`
+ * 3. **QR decoding** — once the camera is ready, renders `EnhancedReader`,
  * which continuously feeds scanned payloads into a `URDecoder` until a full
  * UR is assembled and forwarded to `handleSuccess`.
  * 4. **Error UI** — displays recoverable camera / scan errors with retry.
