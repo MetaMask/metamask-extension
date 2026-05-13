@@ -60,6 +60,7 @@ import {
   getAccountGroupNameByInternalAccount,
   getToAccounts,
   getHardwareWalletName,
+  getInsufficientNativeReserveError,
   getFromTokenBalanceInUsd,
   getFromAmountInCurrency,
   getValidatedFromValue,
@@ -2645,7 +2646,7 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientNativeReserve).toBe(false);
     });
 
-    it('should include the Bitcoin native reserve in quote gas validation', () => {
+    it('should return isInsufficientNativeReserve=true and isInsufficientGasForQuote=false on Bitcoin when the quote fee is payable but the reserve would be depleted', () => {
       const state = createBtcBridgeState({
         fromTokenInputValue: '0.99997',
         fromNativeBalance: '1',
@@ -2653,10 +2654,29 @@ describe('Bridge selectors', () => {
         srcTokenAmount: '99997000',
       });
       const result = getValidationErrors(state as never);
+      const nativeReserveError = getInsufficientNativeReserveError(
+        state as never,
+      );
 
       expect(
         getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
       ).toStrictEqual('1e-8');
+      expect(nativeReserveError?.maxSwappableNativeBalance).toStrictEqual(
+        '0.99996999',
+      );
+      expect(result.isInsufficientNativeReserve).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('should return isInsufficientGasForQuote=true and isInsufficientNativeReserve=false on Bitcoin when the quote fee cannot be paid', () => {
+      const state = createBtcBridgeState({
+        fromTokenInputValue: '0.99997',
+        fromNativeBalance: '1',
+        nonEvmFeesInNative: '0.000031',
+        srcTokenAmount: '99997000',
+      });
+      const result = getValidationErrors(state as never);
+
       expect(result.isInsufficientNativeReserve).toBe(false);
       expect(result.isInsufficientGasForQuote).toBe(true);
     });
