@@ -7,8 +7,9 @@ import {
   getSelectedNetworkClientId,
 } from '../../../shared/lib/selectors/networks';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import type { MetaMaskSlice } from './types';
 
-export function getConversionRate(state) {
+export function getConversionRate(state: MetaMaskSlice) {
   return (
     getCurrencyRateControllerCurrencyRates(state)[
       getProviderConfig(state).ticker
@@ -21,7 +22,7 @@ export function getConversionRate(state) {
  *
  * @param state
  */
-export function isNotEIP1559Network(state) {
+export function isNotEIP1559Network(state: MetaMaskSlice) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
   return (
     state.metamask.networksMetadata[selectedNetworkClientId].EIPS[1559] ===
@@ -35,7 +36,10 @@ export function isNotEIP1559Network(state) {
  * @param state
  * @param networkClientId - The optional network client ID to check for EIP-1559 support. Defaults to the currently selected network.
  */
-export function isEIP1559Network(state, networkClientId) {
+export function isEIP1559Network(
+  state: MetaMaskSlice,
+  networkClientId?: string,
+) {
   const selectedNetworkClientId = getSelectedNetworkClientId(state);
 
   return (
@@ -48,11 +52,11 @@ export function isEIP1559Network(state, networkClientId) {
 /**
  * Given the redux state object and an address, finds a keyring that contains that address, if one exists
  *
- * @param {object} state - the redux state object
- * @param {string} address - the address to search for among the keyring addresses
- * @returns {object | undefined} The keyring which contains the passed address, or undefined
+ * @param state - the redux state object
+ * @param address - the address to search for among the keyring addresses
+ * @returns The keyring which contains the passed address, or undefined
  */
-export function findKeyringForAddress(state, address) {
+export function findKeyringForAddress(state: MetaMaskSlice, address: string) {
   const keyring = state.metamask.keyrings.find((kr) => {
     return kr.accounts.some((account) => {
       return (
@@ -68,26 +72,26 @@ export function findKeyringForAddress(state, address) {
 /**
  * Given the redux state object, returns the users preferred ledger transport type
  *
- * @param {object} state - the redux state object
- * @returns {string} The users preferred ledger transport type. One of 'webhid' on chrome or 'u2f' on firefox
+ * @param state - the redux state object
+ * @returns The users preferred ledger transport type. One of 'webhid' on chrome or 'u2f' on firefox
  */
-export function getLedgerTransportType(state) {
+export function getLedgerTransportType(state: MetaMaskSlice) {
   return state.metamask.ledgerTransportType;
 }
 
 /**
  * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a Ledger keyring
  *
- * @param {object} state - the redux state object
- * @param {string} address - the address to search for among all keyring addresses
- * @returns {boolean} true if the passed address is part of a ledger keyring, and false otherwise
+ * @param state - the redux state object
+ * @param address - the address to search for among all keyring addresses
+ * @returns true if the passed address is part of a ledger keyring, and false otherwise
  */
-export function isAddressLedger(state, address) {
+export function isAddressLedger(state: MetaMaskSlice, address: string) {
   const keyring = findKeyringForAddress(state, address);
 
   return keyring?.type === KeyringType.ledger;
 }
 
-export function getIsUnlocked(state) {
+export function getIsUnlocked(state: MetaMaskSlice) {
   return state.metamask.isUnlocked;
 }
