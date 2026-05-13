@@ -21,7 +21,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getPasskeyAuthMethodKey,
   cancelPasskeyCeremony,
-  isPasskeyCeremonySilentError,
 } from '../../../../shared/lib/passkey';
 import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
@@ -139,25 +138,18 @@ export default function PasskeyTurnOffSubPage() {
             reason: getPasskeyErrorCode(error),
           },
         });
-        if (isPasskeyCeremonySilentError(error)) {
-          log.debug(
-            'Passkey turn off with password verification cancelled or timed out after password was verified',
-            error,
-          );
-        } else {
-          log.error(
-            'Passkey turn off with password verification failed after password was verified',
-            error,
-          );
-          toast.error(
-            <ToastContent
-              title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}
-            />,
-            {
-              duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
-            },
-          );
-        }
+        log.error(
+          'Passkey turn off with password verification failed after password was verified',
+          error,
+        );
+        toast.error(
+          <ToastContent
+            title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}
+          />,
+          {
+            duration: PASSKEY_SETTINGS_TOAST_DURATION_MS,
+          },
+        );
         goToSettings();
       }
     } finally {
