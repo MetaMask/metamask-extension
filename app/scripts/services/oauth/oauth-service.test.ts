@@ -38,8 +38,7 @@ const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
 const MOCK_USER_ID = 'user-id';
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
 const MOCK_PROFILE_SYNC_ENV = ProfileSyncEnv.DEV;
-const MOCK_TELEGRAM_AUTH_API_URL =
-  getEnvUrls(MOCK_PROFILE_SYNC_ENV).authApiUrl;
+const MOCK_TELEGRAM_AUTH_API_URL = getEnvUrls(MOCK_PROFILE_SYNC_ENV).authApiUrl;
 const MOCK_JWT_TOKEN =
   'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN3bmFtOTA5QGdtYWlsLmNvbSIsInN1YiI6InN3bmFtOTA5QGdtYWlsLmNvbSIsImlzcyI6Im1ldGFtYXNrIiwiYXVkIjoibWV0YW1hc2siLCJpYXQiOjE3NDUyMDc1NjYsImVhdCI6MTc0NTIwNzg2NiwiZXhwIjoxNzQ1MjA3ODY2fQ.nXRRLB7fglRll7tMzFFCU0u7Pu6EddqEYf_DMyRgOENQ6tJ8OLtVknNf83_5a67kl_YKHFO-0PEjvJviPID6xg';
 const MOCK_NONCE = 'mocked-nonce';

@@ -1,8 +1,6 @@
 import { MessengerClientInitFunction } from '../types';
 import { OAuthService } from '../../services/oauth/oauth-service';
-import {
-  getProfilePairingEnv,
-} from '../../services/oauth/config';
+import { getProfilePairingEnv } from '../../services/oauth/config';
 import { webAuthenticatorFactory } from '../../services/oauth/web-authenticator-factory';
 import { OAuthServiceMessenger } from '../../services/oauth/types';
 import { MetaMetricsController } from '../../controllers/metametrics-controller';

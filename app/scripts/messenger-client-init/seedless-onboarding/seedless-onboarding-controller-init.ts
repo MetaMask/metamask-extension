@@ -7,7 +7,10 @@ import { EncryptionKey } from '@metamask/browser-passworder';
 import { getEnvUrls } from '@metamask/profile-sync-controller/sdk';
 import { MessengerClientInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
-import { getProfilePairingEnv, isDevOrTestBuild } from '../../services/oauth/config';
+import {
+  getProfilePairingEnv,
+  isDevOrTestBuild,
+} from '../../services/oauth/config';
 import { SeedlessOnboardingControllerInitMessenger } from '../messengers/seedless-onboarding';
 
 const AUTH_SERVER_PROFILE_PAIR_PATH = '/api/v2/profile/pair';

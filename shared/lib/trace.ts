@@ -82,8 +82,6 @@ export enum TraceName {
   OnboardingOAuthProviderLoginError = 'Onboarding - OAuth Provider Login Error',
   OnboardingOAuthBYOAServerGetAuthTokensError = 'Onboarding - OAuth BYOA Server Get Auth Tokens Error',
   OnboardingOAuthSeedlessAuthenticateError = 'Onboarding - OAuth Seedless Authenticate Error',
-  // Profile Pairing
-  OnboardingProfilePairingError = 'Onboarding - Profile Pairing Error',
   // Accounts
   ShowAccountList = 'Show Account List',
   ShowAccountAddressList = 'Show Account Address List',

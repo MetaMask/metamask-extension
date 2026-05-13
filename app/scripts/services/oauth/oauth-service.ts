@@ -532,7 +532,10 @@ export class OAuthService {
     loginHandler: BaseLoginHandler,
   ): Promise<string> {
     try {
-      const openedTab = await this.#platform.openTab({ url: authUrl, active: true });
+      const openedTab = await this.#platform.openTab({
+        url: authUrl,
+        active: true,
+      });
       const openedTabId = openedTab.id;
 
       if (openedTabId === undefined) {
