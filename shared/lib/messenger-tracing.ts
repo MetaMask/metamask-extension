@@ -54,10 +54,17 @@ export function wrapMessengerWithTracing<
 
   messenger.call = ((actionType: string, ...args: unknown[]) => {
     const activeSpan = sentryGetActiveSpan();
+    let traceId: string | undefined;
+    try {
+      traceId = activeSpan?.spanContext().traceId;
+    } catch {
+      // Span may have ended or be invalid — fall through to original call so
+      // tracing failure cannot escape into controller logic.
+    }
     if (
-      !activeSpan ||
+      !traceId ||
       isReadOnlyAction(actionType) ||
-      !shouldSampleWrappers(activeSpan.spanContext()?.traceId)
+      !shouldSampleWrappers(traceId)
     ) {
       return originalCall(actionType, ...args);
     }
