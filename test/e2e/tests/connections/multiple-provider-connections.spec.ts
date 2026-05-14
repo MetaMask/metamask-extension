@@ -18,6 +18,7 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   OPTIMISM_DISPLAY_NAME,
+  MONAD_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -342,7 +343,7 @@ describe('Multiple Standard Dapp Connections', function () {
         // EIP-1193 connects with no specific chains now default to EVM
         // popular networks only (no Bitcoin/Tron). The previously-permitted
         // Solana scope is preserved.
-        await sitePermissionPage.checkConnectedNetworksNumber(8);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -355,6 +356,7 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             ARBITRUM_DISPLAY_NAME,
             LINEA_MAINNET_DISPLAY_NAME,
+            MONAD_DISPLAY_NAME,
             'Solana',
           ],
           [EVM_ACCOUNT_LABEL_ONE],
@@ -418,7 +420,7 @@ describe('Multiple Standard Dapp Connections', function () {
         // defaults to EVM popular networks only; Bitcoin/Tron are no longer
         // silently granted. The previously-permitted Solana scope is
         // preserved.
-        await sitePermissionPage.checkConnectedNetworksNumber(8);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -431,6 +433,7 @@ describe('Multiple Standard Dapp Connections', function () {
             BSC_DISPLAY_NAME,
             POLYGON_DISPLAY_NAME,
             OPTIMISM_DISPLAY_NAME,
+            MONAD_DISPLAY_NAME,
             'Solana',
           ],
           [EVM_ACCOUNT_LABEL_TWO],

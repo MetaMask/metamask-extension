@@ -121,13 +121,13 @@ import {
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
   getInternalAccountByAddress,
-  getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
   getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
 } from '../selectors';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
 import {
   getSelectedNetworkClientId,
   getProviderConfig,
@@ -4991,23 +4991,6 @@ export function setUseCurrencyRateCheck(
   };
 }
 
-// MultichainAssetsRatesController
-export function fetchHistoricalPricesForAsset(
-  address: CaipAssetType,
-  internalAccount: InternalAccount,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.fetchHistoricalPricesForAsset`);
-    await submitRequestToBackground('fetchHistoricalPricesForAsset', [
-      address,
-      internalAccount,
-    ]);
-    await forceUpdateMetamaskState(dispatch);
-  };
-}
-
 // TokenDetectionController
 export function detectTokens(
   chainIds?: string[],
@@ -6416,18 +6399,17 @@ export function updateBalancesFoAccounts(
  * @param params - The parameters for the polling.
  * @param params.chainIds - The chain ids to poll.
  * @param params.selectedAccountAddress - The selected account address to poll.
+ * @param params.selectedAccountId - The selected account id to poll.
  * @returns The polling token that can be used to stop polling.
  */
-export async function staticAssetsStartPolling({
-  chainIds,
-  selectedAccountAddress,
-}: {
+export async function staticAssetsStartPolling(params: {
   chainIds: string[];
   selectedAccountAddress: string;
+  selectedAccountId: string;
 }): Promise<string> {
   const pollingToken = await submitRequestToBackground(
     'staticAssetsStartPolling',
-    [{ chainIds, selectedAccountAddress }],
+    [params],
   );
   await addPollingTokenToAppState(pollingToken);
   return pollingToken;
