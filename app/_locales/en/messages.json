@@ -5860,6 +5860,9 @@
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Bridge failed"
+  },
   "perpsDepositFailed": {
     "message": "Deposit could not be completed. Try again."
   },
@@ -5882,10 +5885,10 @@
     "message": "Adding funds to Perps"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Your funds are ready to trade."
+    "message": "Funds are ready to trade"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Funds added to Perps"
+    "message": "Your Perps account was funded"
   },
   "perpsDeposits": {
     "message": "Deposits"
@@ -6356,6 +6359,9 @@
   },
   "perpsTrades": {
     "message": "Trades"
+  },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Opened long"
   },
   "perpsTriggerPrice": {
     "message": "Trigger price"
