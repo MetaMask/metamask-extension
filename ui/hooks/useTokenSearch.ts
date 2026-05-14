@@ -20,7 +20,7 @@ const TOKEN_SEARCH_QUERY_KEY_ROOT = [
 export type UseTokenSearchOptions = {
   /**
    * The (already debounced) query string to send to the API. Callers are
-  */
+   */
   query: string;
   /**
    * CAIP-2 chain IDs to scope the search to. Pass `undefined` (or an empty
