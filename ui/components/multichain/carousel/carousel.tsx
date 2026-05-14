@@ -137,11 +137,7 @@ export const Carousel = React.forwardRef(
     // Loading state
     if (isLoading) {
       return (
-        <Box
-          className={`carousel-container ${className}`}
-          ref={ref}
-          {...props}
-        >
+        <Box className={`carousel-container ${className}`} ref={ref} {...props}>
           <div className="carousel-cards-wrapper">
             {[...Array(3)].map((_, index) => (
               <div

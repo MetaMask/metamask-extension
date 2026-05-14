@@ -1,9 +1,6 @@
 import React from 'react';
 import classnames from 'clsx';
-import {
-  Box,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import type { BoxProps } from '@metamask/design-system-react';
 
 type ContentProps = Omit<BoxProps, 'children'> & {

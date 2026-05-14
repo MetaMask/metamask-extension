@@ -86,18 +86,18 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
         )}
         {...props}
       >
-      {showConnectedStatus && !hideTooltip ? (
-        <Tooltip
-          style={TooltipStyle}
-          title={text}
-          data-testid="multichain-badge-status__tooltip"
-          position="bottom"
-        >
-          {tooltipContents}
-        </Tooltip>
-      ) : (
-        tooltipContents
-      )}
+        {showConnectedStatus && !hideTooltip ? (
+          <Tooltip
+            style={TooltipStyle}
+            title={text}
+            data-testid="multichain-badge-status__tooltip"
+            position="bottom"
+          >
+            {tooltipContents}
+          </Tooltip>
+        ) : (
+          tooltipContents
+        )}
       </button>
     </Box>
   );

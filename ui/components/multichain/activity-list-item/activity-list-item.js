@@ -64,11 +64,7 @@ export const ActivityListItem = ({
           {topContent}
         </Text>
       )}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        gap={4}
-        className="w-full"
-      >
+      <Box flexDirection={BoxFlexDirection.Row} gap={4} className="w-full">
         {icon && <Box className="inline-flex">{icon}</Box>}
         <Box
           justifyContent={BoxJustifyContent.Between}
