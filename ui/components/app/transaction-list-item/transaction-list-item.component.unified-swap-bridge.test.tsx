@@ -11,6 +11,18 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TransactionListItem from '.';
 
+jest.mock('@rive-app/react-canvas', () => ({
+  useRive: () => ({
+    rive: null,
+    RiveComponent: () => <div data-testid="rive-component" />,
+  }),
+  useStateMachineInput: () => null,
+}));
+
+jest.mock('../../../hooks/useRiveFileLavamoat', () => ({
+  useRiveFileLavamoat: () => ({ riveFile: {}, status: 'success' }),
+}));
+
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 
