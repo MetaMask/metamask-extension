@@ -229,6 +229,36 @@ describe('PerpsDepositToast', () => {
     );
   });
 
+  it('renders success toast when the deposit transaction is no longer active', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [],
+        lastDepositTransactionId: null,
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastSuccessTitle.message,
+          description: messages.perpsDepositToastSuccessDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
+  });
+
   it('clears deposit result when completion toast duration elapses', () => {
     jest.useFakeTimers();
     const store = configureStore({
