@@ -19,7 +19,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import {
-  parseCaipAssetType,
   type CaipAssetType,
   type CaipChainId,
   type Hex,
@@ -73,6 +72,11 @@ import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
 import {
+  convertSearchResultToImportPayload,
+  type SearchResultImportPayload,
+} from '../../../shared/lib/token-search/convert-search-result';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
+import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../components/component-library';
@@ -94,7 +98,33 @@ export const TokenManagementPage = () => {
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [pendingKey, setPendingKey] = useState<string | undefined>();
+  const [pendingKeys, setPendingKeys] = useState<ReadonlySet<string>>(
+    () => new Set<string>(),
+  );
+
+  const addPendingKey = useCallback((key: string) => {
+    setPendingKeys((prev) => {
+      const next = new Set(prev);
+      next.add(key);
+      return next;
+    });
+  }, []);
+
+  const removePendingKey = useCallback((key: string) => {
+    setPendingKeys((prev) => {
+      if (!prev.has(key)) {
+        return prev;
+      }
+      const next = new Set(prev);
+      next.delete(key);
+      return next;
+    });
+  }, []);
+
+  const isAssetsUnifiedStateInBuild = useMemo(
+    () => getIsAssetsUnifiedStateIncludedInBuild(),
+    [],
+  );
 
   const accountGroupIdAssets = useSelector(
     getAssetsBySelectedAccountGroup,
@@ -370,7 +400,7 @@ export const TokenManagementPage = () => {
       }
 
       const key = getTokenKey(token);
-      setPendingKey(key);
+      addPendingKey(key);
       try {
         if (canIgnoreEvmToken) {
           const { networkClientId } = getNetworkMeta(token.chainId as Hex);
@@ -384,15 +414,14 @@ export const TokenManagementPage = () => {
               networkClientId,
             }),
           );
-          // Also drive the unified AssetsController hide so the home list
-          // reflects the change when `ASSETS_UNIFIED_STATE_ENABLED` is on.
-          // Mirrors `hide-token-confirmation-modal.js`.
-          const caipAssetId = toAssetId(
-            token.address as Hex,
-            token.chainId as Hex,
-          );
-          if (caipAssetId) {
-            await dispatch(hideAsset(caipAssetId));
+          if (isAssetsUnifiedStateInBuild) {
+            const caipAssetId = toAssetId(
+              token.address as Hex,
+              token.chainId as Hex,
+            );
+            if (caipAssetId) {
+              await dispatch(hideAsset(caipAssetId));
+            }
           }
           return;
         }
@@ -400,57 +429,57 @@ export const TokenManagementPage = () => {
         await dispatch(
           multichainIgnoreAssets([token.assetId], token.accountId),
         );
-        await dispatch(hideAsset(token.assetId as CaipAssetType));
+        if (isAssetsUnifiedStateInBuild) {
+          await dispatch(hideAsset(token.assetId as CaipAssetType));
+        }
       } finally {
-        setPendingKey(undefined);
+        removePendingKey(key);
       }
     },
-    [dispatch, getNetworkMeta, getTokenKey],
+    [
+      addPendingKey,
+      dispatch,
+      getNetworkMeta,
+      getTokenKey,
+      isAssetsUnifiedStateInBuild,
+      removePendingKey,
+    ],
   );
 
   /**
    * Search-result-specific toggle. Mirrors the mobile import flow
    * (`metamask-mobile#26108`):
    *
-   * - EVM result, toggle ON  → `addImportedTokens([token], networkClientId)`.
-   * - EVM result, toggle OFF → `ignoreTokens([address], networkClientId)`.
-   * - Non-EVM result, toggle ON  → `multichainAddAssets([assetId], accountId)`.
-   * - Non-EVM result, toggle OFF → `multichainIgnoreAssets([assetId], accountId)`.
+   * - EVM result, toggle ON  → `addImportedTokens([token], networkClientId)` +
+   *   `addCustomAsset` (when the unified controller is in the build).
+   * - EVM result, toggle OFF → `ignoreTokens([address], networkClientId)` +
+   *   `hideAsset`.
+   * - Non-EVM result, toggle ON  → `multichainAddAssets([assetId], accountId)`
+   *   + `addCustomAsset`.
+   * - Non-EVM result, toggle OFF → `multichainIgnoreAssets(...)` + `hideAsset`.
+   *
+   * Native assets (slip44 namespace or EVM zero-address) are not importable —
+   * the toggle never reaches this handler for them, but we guard here too so
+   * a buggy API response can't dispatch a malformed payload.
    */
   const handleSearchResultToggle = useCallback(
-    async (result: TokenSearchResult, nextValue: boolean) => {
-      let parsed;
-      try {
-        parsed = parseCaipAssetType(result.assetId as CaipAssetType);
-      } catch {
-        return;
-      }
-      const { chainId: caipChainId, assetReference } = parsed;
-      if (!caipChainId || !assetReference) {
+    async (payload: SearchResultImportPayload, nextValue: boolean) => {
+      if (payload.isNative) {
         return;
       }
 
-      const importedKey = result.assetId.toLowerCase();
-      const isEvmResult = isEvmChainId(caipChainId);
-      setPendingKey(importedKey);
+      const importedKey = payload.assetId.toLowerCase();
+      addPendingKey(importedKey);
       try {
-        if (isEvmResult) {
-          // Map CAIP-2 `eip155:<decimal>` → hex chain id for the EVM store
-          // actions, which all expect hex chain ids.
-          const [, reference] = caipChainId.split(':');
-          const decimalChainId = Number(reference);
-          if (!Number.isFinite(decimalChainId)) {
+        if (payload.isEvm) {
+          if (!payload.hexChainId) {
             return;
           }
-          const hexChainId = `0x${decimalChainId.toString(16)}` as Hex;
-          const { networkClientId } = getNetworkMeta(hexChainId);
+          const { networkClientId } = getNetworkMeta(payload.hexChainId);
           if (!networkClientId) {
             return;
           }
-
-          // Look up the EVM account in the current group so we can also feed
-          // the unified AssetsController via addCustomAsset/hideAsset.
-          const evmAccount = getAccountForChain(caipChainId);
+          const evmAccount = getAccountForChain(payload.caipChainId);
 
           if (nextValue) {
             if (!evmAccount?.id) {
@@ -460,55 +489,62 @@ export const TokenManagementPage = () => {
               addImportedTokens(
                 [
                   {
-                    address: assetReference,
-                    symbol: result.symbol,
-                    decimals: result.decimals,
+                    address: payload.assetReference,
+                    symbol: payload.symbol,
+                    decimals: payload.decimals,
                     isERC721: false,
-                    name: result.name,
-                    ...(result.iconUrl ? { image: result.iconUrl } : {}),
+                    name: payload.name,
+                    ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
                   },
                 ],
                 networkClientId,
               ),
             );
-            // Also feed the unified AssetsController so the home list
-            // recognizes the imported asset when the feature flag is on.
-            await dispatch(
-              addCustomAsset(evmAccount.id, result.assetId as CaipAssetType),
-            );
+            if (isAssetsUnifiedStateInBuild) {
+              await dispatch(addCustomAsset(evmAccount.id, payload.assetId));
+            }
             return;
           }
           await dispatch(
             ignoreTokensAction({
-              tokensToIgnore: [assetReference],
+              tokensToIgnore: [payload.assetReference],
               dontShowLoadingIndicator: true,
               networkClientId,
             }),
           );
-          await dispatch(hideAsset(result.assetId as CaipAssetType));
+          if (isAssetsUnifiedStateInBuild) {
+            await dispatch(hideAsset(payload.assetId));
+          }
           return;
         }
 
-        // Non-EVM path. Mirrors mobile's
-        // `MultichainAssetsController.addAssets([assetId], accountId)`.
-        const account = getAccountForChain(caipChainId);
+        const account = getAccountForChain(payload.caipChainId);
         if (!account?.id) {
           return;
         }
         if (nextValue) {
-          await dispatch(multichainAddAssets([result.assetId], account.id));
-          await dispatch(
-            addCustomAsset(account.id, result.assetId as CaipAssetType),
-          );
+          await dispatch(multichainAddAssets([payload.assetId], account.id));
+          if (isAssetsUnifiedStateInBuild) {
+            await dispatch(addCustomAsset(account.id, payload.assetId));
+          }
           return;
         }
-        await dispatch(multichainIgnoreAssets([result.assetId], account.id));
-        await dispatch(hideAsset(result.assetId as CaipAssetType));
+        await dispatch(multichainIgnoreAssets([payload.assetId], account.id));
+        if (isAssetsUnifiedStateInBuild) {
+          await dispatch(hideAsset(payload.assetId));
+        }
       } finally {
-        setPendingKey(undefined);
+        removePendingKey(importedKey);
       }
     },
-    [dispatch, getAccountForChain, getNetworkMeta],
+    [
+      addPendingKey,
+      dispatch,
+      getAccountForChain,
+      getNetworkMeta,
+      isAssetsUnifiedStateInBuild,
+      removePendingKey,
+    ],
   );
 
   const getTokenImage = useCallback((token: ManagedAsset) => {
@@ -543,14 +579,14 @@ export const TokenManagementPage = () => {
           primaryLabel={token.name ?? token.symbol}
           secondaryLabel={`${token.balance} ${token.symbol}`}
           isOn
-          disabled={isNativeToken || pendingKey === key}
+          disabled={isNativeToken || pendingKeys.has(key)}
           onToggle={(nextValue) => handleToggle(token, nextValue)}
           showToggle={isManageableToken || isNativeToken}
           testIdSuffix={key}
         />
       );
     },
-    [getTokenImage, getTokenKey, handleToggle, pendingKey],
+    [getTokenImage, getTokenKey, handleToggle, pendingKeys],
   );
 
   /**
@@ -572,20 +608,14 @@ export const TokenManagementPage = () => {
     (info: { item: TokenSearchResult }) => {
       const result = info.item;
       const lowerAssetId = result.assetId.toLowerCase();
-      const parsed = parseCaipAssetType(result.assetId as CaipAssetType);
-      const isEvmResult = isEvmChainId(parsed.chainId);
+      const payload = convertSearchResultToImportPayload(result);
 
-      let hexChainId: Hex | undefined;
-      if (isEvmResult) {
-        const [, reference] = parsed.chainId.split(':');
-        const decimalChainId = Number(reference);
-        if (Number.isFinite(decimalChainId)) {
-          hexChainId = `0x${decimalChainId.toString(16)}` as Hex;
-        }
+      if (!payload) {
+        return null;
       }
 
-      const evmImportedKey = hexChainId
-        ? `${hexChainId}:${parsed.assetReference.toLowerCase()}`
+      const evmImportedKey = payload.hexChainId
+        ? `${payload.hexChainId}:${payload.assetReference.toLowerCase()}`
         : undefined;
       const isImported =
         importedAssetIds.has(lowerAssetId) ||
@@ -593,22 +623,22 @@ export const TokenManagementPage = () => {
 
       return (
         <TokenManagementCell
-          symbol={result.symbol}
-          image={
-            result.iconUrl ||
-            getAssetImageUrl(result.assetId, parsed.chainId) ||
-            undefined
+          symbol={payload.symbol}
+          image={payload.iconUrl || undefined}
+          chainId={
+            (payload.hexChainId ?? payload.caipChainId) as Hex | CaipChainId
           }
-          chainId={(hexChainId ?? parsed.chainId) as Hex | CaipChainId}
-          assetId={result.assetId as CaipAssetType}
-          primaryLabel={result.name || result.symbol}
+          isNative={payload.isNative}
+          assetId={payload.assetId}
+          primaryLabel={payload.name || payload.symbol}
           secondaryLabel={
-            networkConfigurations?.[hexChainId as Hex]?.name ?? parsed.chainId
+            networkConfigurations?.[payload.hexChainId as Hex]?.name ??
+            payload.caipChainId
           }
-          isOn={isImported}
-          disabled={pendingKey === lowerAssetId}
-          onToggle={(nextValue) => handleSearchResultToggle(result, nextValue)}
-          showToggle
+          isOn={isImported || payload.isNative}
+          disabled={payload.isNative || pendingKeys.has(lowerAssetId)}
+          onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
+          showToggle={!payload.isNative}
           testIdSuffix={`search-${lowerAssetId}`}
         />
       );
@@ -617,7 +647,7 @@ export const TokenManagementPage = () => {
       handleSearchResultToggle,
       importedAssetIds,
       networkConfigurations,
-      pendingKey,
+      pendingKeys,
     ],
   );
 

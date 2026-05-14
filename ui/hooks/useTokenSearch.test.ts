@@ -112,6 +112,30 @@ describe('useTokenSearch', () => {
     expect(result.current.results).toEqual([]);
   });
 
+  it('reports isLoading=true during the debounce window before the request fires', () => {
+    const { result } = renderHook(
+      () => useTokenSearch({ query: 'usdc', debounceMs: 200 }),
+      { wrapper: createWrapper() },
+    );
+
+    expect(result.current.isLoading).toBe(true);
+    expect(searchSpy).not.toHaveBeenCalled();
+  });
+
+  it('settles isLoading to false once the API resolves', async () => {
+    const { result } = renderHook(
+      () => useTokenSearch({ query: 'usdc', debounceMs: 100 }),
+      { wrapper: createWrapper() },
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(100);
+      await Promise.resolve();
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+  });
+
   it('clears results immediately when the query becomes empty', async () => {
     searchSpy.mockResolvedValueOnce({
       ...emptyPage,

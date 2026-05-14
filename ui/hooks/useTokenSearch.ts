@@ -129,9 +129,12 @@ export const useTokenSearch = ({
     ? Boolean(response?.pageInfo?.hasNextPage)
     : false;
 
+  const isWaitingForDebounce =
+    enabled && trimmedQuery.length > 0 && trimmedQuery !== debouncedQuery;
+
   return {
     results,
-    isLoading: isEnabled && isFetching,
+    isLoading: isWaitingForDebounce || (isEnabled && isFetching),
     error: (queryError as Error | null) ?? null,
     hasResults: results.length > 0,
     hasQuery: trimmedQuery.length > 0,
