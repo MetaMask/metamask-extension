@@ -415,11 +415,6 @@
       "React: Act warnings (component updates not wrapped)": 2,
       "React: PropTypes validation failures": 2
     },
-    "ui/components/multichain/account-menu/account-menu.test.tsx": {
-      "MetaMask: Background connection not initialized": 2,
-      "React: Act warnings (component updates not wrapped)": 3,
-      "React: State updates on unmounted components": 1
-    },
     "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
       "React: State updates on unmounted components": 1,
@@ -468,13 +463,6 @@
       "React: Act warnings (component updates not wrapped)": 1,
       "React: componentWill* lifecycle deprecations": 1
     },
-    "ui/components/multichain/edit-accounts-modal/edit-accounts-modal.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: PropTypes validation failures": 1,
-      "React: State updates on unmounted components": 1,
-      "Reselect: Identity function warnings": 1
-    },
     "ui/components/multichain/edit-networks-modal/edit-networks-modal.test.js": {
       "React: Missing key props in lists": 1,
       "React: PropTypes validation failures": 2
@@ -518,12 +506,6 @@
     },
     "ui/components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.test.tsx": {
       "React: DOM nesting violations": 1
-    },
-    "ui/components/multichain/pages/review-permissions-page/site-cell/site-cell-tooltip.test.js": {
-      "React: Act warnings (component updates not wrapped)": 9
-    },
-    "ui/components/multichain/pages/review-permissions-page/site-cell/site-cell.test.tsx": {
-      "error: Error: MetaMetrics context trackEvent was": 4
     },
     "ui/components/multichain/product-tour-popover/product-tour-popover.test.js": {
       "React: Act warnings (component updates not wrapped)": 3,
@@ -1453,9 +1435,6 @@
     "ui/pages/onboarding-flow/welcome/welcome.test.tsx": {
       "MetaMask: Background connection not initialized": 16,
       "React: State updates on unmounted components": 1
-    },
-    "ui/pages/permissions-connect/connect-page/connect-page.test.tsx": {
-      "React: DOM nesting violations": 3
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6
