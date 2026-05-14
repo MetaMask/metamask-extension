@@ -8,33 +8,34 @@ import React, {
 } from 'react';
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
-  Icon,
-  IconName,
-  IconColor,
-  IconSize,
-} from '@metamask/design-system-react';
-import {
-  Text,
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Button,
-  ButtonVariant,
   ButtonSize,
-  Modal,
+  ButtonVariant,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   ModalBody,
-  ModalContent,
   ModalFooter,
-  ModalHeader,
   ModalOverlay,
-} from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-  JustifyContent,
+  Text,
   TextAlign,
   TextColor,
   TextVariant,
+} from '@metamask/design-system-react';
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+} from '../../../component-library';
+import {
   BlockSize,
+  Display,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
@@ -355,6 +356,31 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       hideModal();
     }, [clearError, hideModal, onCancel]);
 
+    const handleRepairDevice = useCallback(() => {
+      if (error && trackableMetricDeviceType) {
+        const deviceModel = getHardwareWalletMetricDeviceModel(error);
+        trackEvent({
+          category: MetaMetricsEventCategory.Accounts,
+          event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+          properties: buildHardwareWalletRecoverySegmentProperties({
+            location: recoveryLocation,
+            deviceType: trackableMetricDeviceType,
+            deviceModel,
+            errorType: mapHardwareWalletRecoveryErrorType(error),
+            errorTypeViewCount: errorTypeViewCountRef.current,
+            error,
+          }),
+        });
+      }
+      onRepairDevice?.();
+    }, [
+      error,
+      onRepairDevice,
+      recoveryLocation,
+      trackableMetricDeviceType,
+      trackEvent,
+    ]);
+
     const handleRecoveredClose = useCallback(() => {
       clearError();
       setConnectionReady();
@@ -456,9 +482,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         />
       ) : (
         <Text
-          variant={TextVariant.headingMd}
+          variant={TextVariant.HeadingMd}
           textAlign={TextAlign.Center}
-          color={TextColor.textDefault}
+          color={TextColor.TextDefault}
         >
           {standardErrorContent.title}
         </Text>
@@ -491,8 +517,8 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
             <ModalHeader onClose={handleRecoveredClose}>
               <Box
                 display={Display.Flex}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
+                alignItems={BoxAlignItems.Center}
+                justifyContent={BoxJustifyContent.Center}
               >
                 <Icon
                   name={IconName.Confirmation}
@@ -504,14 +530,14 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
             <ModalBody>
               <Box
                 display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.center}
+                flexDirection={BoxFlexDirection.Column}
+                alignItems={BoxAlignItems.Center}
                 gap={4}
               >
                 <Text
-                  variant={TextVariant.headingSm}
+                  variant={TextVariant.HeadingSm}
                   textAlign={TextAlign.Center}
-                  color={TextColor.textAlternative}
+                  color={TextColor.TextAlternative}
                 >
                   {t('hardwareWalletTypeConnected', [t(displayWalletType)])}
                 </Text>
@@ -535,8 +561,8 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
             {headerContent && (
               <Box
                 display={Display.Flex}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.center}
+                alignItems={BoxAlignItems.Center}
+                justifyContent={BoxJustifyContent.Center}
               >
                 {headerContent}
               </Box>
@@ -546,8 +572,8 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
           <ModalBody>
             <Box
               display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.center}
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
               gap={4}
             >
               {isQrCameraFlow &&
@@ -561,9 +587,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                 <>
                   {standardErrorContent.icon && (
                     <Text
-                      variant={TextVariant.headingMd}
+                      variant={TextVariant.HeadingMd}
                       textAlign={TextAlign.Center}
-                      color={TextColor.textDefault}
+                      color={TextColor.TextDefault}
                     >
                       {standardErrorContent.title}
                     </Text>
@@ -571,9 +597,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   {standardErrorContent.variant ===
                     HardwareWalletErrorContentVariant.Description && (
                     <Text
-                      variant={TextVariant.bodyMd}
+                      variant={TextVariant.BodyMd}
                       textAlign={TextAlign.Center}
-                      color={TextColor.textDefault}
+                      color={TextColor.TextDefault}
                     >
                       {standardErrorContent.description}
                     </Text>
@@ -584,12 +610,13 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                     <Box
                       width={BlockSize.Full}
                       display={Display.Flex}
-                      flexDirection={FlexDirection.Column}
+                      flexDirection={BoxFlexDirection.Column}
                       gap={2}
                     >
                       <Text
-                        variant={TextVariant.bodyMdMedium}
-                        color={TextColor.textDefault}
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Medium}
+                        color={TextColor.TextDefault}
                       >
                         {t('hardwareWalletErrorRecoveryTitle')}
                       </Text>
@@ -598,22 +625,43 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                           <Box
                             key={index}
                             display={Display.Flex}
-                            flexDirection={FlexDirection.Row}
+                            flexDirection={BoxFlexDirection.Row}
                             gap={2}
                             paddingLeft={4}
                             paddingRight={4}
-                            alignItems={AlignItems.flexStart}
+                            alignItems={BoxAlignItems.Start}
                           >
                             <Box as="li" key={index}>
                               <Text
-                                variant={TextVariant.bodyMd}
-                                color={TextColor.textDefault}
+                                variant={TextVariant.BodyMd}
+                                color={TextColor.TextDefault}
                               >
                                 {instruction}
                               </Text>
                             </Box>
                           </Box>
                         ),
+                      )}
+                      {standardErrorContent.showRepairLink && onRepairDevice && (
+                        <Box
+                          display={Display.Flex}
+                          flexDirection={BoxFlexDirection.Row}
+                          gap={2}
+                          paddingLeft={4}
+                          paddingRight={4}
+                          alignItems={BoxAlignItems.Start}
+                        >
+                          <Box as="li">
+                            <Text
+                              variant={TextVariant.BodyMd}
+                              color={TextColor.PrimaryDefault}
+                              onClick={handleRepairDevice}
+                              style={{ cursor: 'pointer' }}
+                            >
+                              {t('hardwareWalletRepairLink')}
+                            </Text>
+                          </Box>
+                        </Box>
                       )}
                     </Box>
                   )}
@@ -626,7 +674,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
             <ModalFooter>
               <Box
                 display={Display.Flex}
-                flexDirection={FlexDirection.Row}
+                flexDirection={BoxFlexDirection.Row}
                 gap={2}
                 width={BlockSize.Full}
               >
@@ -634,7 +682,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   <Button
                     variant={ButtonVariant.Primary}
                     size={ButtonSize.Lg}
-                    block
+                    isFullWidth
                     onClick={handleRetry}
                   >
                     {retryButtonContent}
@@ -643,29 +691,14 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   <Button
                     variant={ButtonVariant.Primary}
                     size={ButtonSize.Lg}
-                    block
+                    isFullWidth
                     onClick={handleClose}
                   >
                     {t('confirm')}
                   </Button>
                 )}
               </Box>
-              {standardErrorContent?.showRepairLink && onRepairDevice && (
-                <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.center}
-                  paddingTop={4}
-                  width={BlockSize.Full}
-                >
-                  <Button
-                    variant={ButtonVariant.Link}
-                    size={ButtonSize.Lg}
-                    onClick={onRepairDevice}
-                  >
-                    {t('hardwareWalletRepairLink')}
-                  </Button>
-                </Box>
-              )}
+
             </ModalFooter>
           )}
         </ModalContent>

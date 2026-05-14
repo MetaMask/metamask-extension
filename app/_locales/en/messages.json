@@ -3438,7 +3438,7 @@
     "message": "Device not detected. Please check the previous steps and try again."
   },
   "hardwareWalletRepairLink": {
-    "message": "Repair Device"
+    "message": "Reconnect from the beginning"
   },
   "hardwareWalletRepairNextButton": {
     "message": "Next"
