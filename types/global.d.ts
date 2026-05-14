@@ -323,15 +323,21 @@ type StateHooks = {
    */
   resetWebVitalsMetrics?: () => void;
 
-  // Agentic dev hooks (METAMASK_DEBUG only) — expose internals for CDP automation.
-  // Typed as `unknown` because these are untyped debug-only entry points consumed
-  // by CDP automation scripts that perform their own runtime checks.
-  store?: unknown;
+  // Agentic dev hooks — curated surface for CDP automation.
+  // Present only when both METAMASK_DEBUG and METAMASK_AGENTIC_HOOKS are true
+  // at build time. Typed loosely because these are debug-only entry points
+  // consumed by CDP automation scripts that perform their own runtime checks.
+  store?: {
+    getState: () => unknown;
+    subscribe: (listener: () => void) => () => void;
+  };
   submitRequestToBackground?: (
     method: string,
     args?: unknown[],
   ) => Promise<unknown>;
-  getPerpsStreamManager?: () => unknown;
+  services?: {
+    perps: unknown;
+  };
 };
 
 export declare global {

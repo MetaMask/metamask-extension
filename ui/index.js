@@ -467,11 +467,38 @@ function setupStateHooks(store) {
     exposeLongTaskMetricsForTesting();
   }
 
-  // Agentic dev hooks — expose internals for CDP automation
-  if (process.env.METAMASK_DEBUG) {
-    globalThis.stateHooks.store = store;
-    globalThis.stateHooks.submitRequestToBackground = submitRequestToBackground;
-    globalThis.stateHooks.getPerpsStreamManager = getPerpsStreamManager;
+  // Agentic dev hooks — curated surface for CDP automation.
+  // Requires METAMASK_DEBUG AND METAMASK_AGENTIC_HOOKS. Both are compile-time
+  // constants; DefinePlugin dead-code-eliminates this block in release builds.
+  if (process.env.METAMASK_DEBUG && process.env.METAMASK_AGENTIC_HOOKS) {
+    // Background RPC methods allowlisted for agentic automation.
+    // Additions require PR review — each entry should document its use case.
+    const AGENTIC_BACKGROUND_METHODS = new Set([
+      // seed empty — harness team opens a follow-up PR to populate
+    ]);
+
+    // Read-only store facade: getState + subscribe, no dispatch.
+    globalThis.stateHooks.store = {
+      getState: () => store.getState(),
+      subscribe: (listener) => store.subscribe(listener),
+    };
+
+    // Allowlisted background RPC — same signature as the real submitRequestToBackground.
+    globalThis.stateHooks.submitRequestToBackground = (method, args) => {
+      if (!AGENTIC_BACKGROUND_METHODS.has(method)) {
+        throw new Error(
+          `stateHooks.submitRequestToBackground: "${method}" is not in the ` +
+            `agentic allowlist. Add it to AGENTIC_BACKGROUND_METHODS in ` +
+            `ui/index.js via PR review.`,
+        );
+      }
+      return submitRequestToBackground(method, args);
+    };
+
+    // UI-side service singletons for agentic automation.
+    globalThis.stateHooks.services = {
+      perps: getPerpsStreamManager(),
+    };
   }
 }
 
