@@ -266,3 +266,8 @@ development/generate-lavamoat-policies.js             @MetaMask/extension-platfo
 # Background Process
 app/scripts/lib/createMetaRPCHandler.js              @MetaMask/extension-platform
 app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platform
+
+# Delegation Team
+ui/hooks/gator-permissions                           @MetaMask/delegation
+app/scripts/messenger-client-init/gator-permissions  @MetaMask/delegation
+shared/lib/gator-permissions                         @MetaMask/delegation
