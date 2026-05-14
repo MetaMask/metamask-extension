@@ -12,7 +12,7 @@ import {
 } from '../store/actions';
 import {
   getSelectedNetworkClientId,
-  getNetworkConfigurationsByChainId,
+  getChainIdByNetworkClientId,
 } from '../../shared/lib/selectors/networks';
 import usePolling from './usePolling';
 
@@ -41,17 +41,9 @@ export function useGasFeeEstimates(_networkClientId, enabled = true) {
   const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
   const networkClientId = _networkClientId ?? selectedNetworkClientId;
 
-  const chainId = useSelector((state) => {
-    const networkConfigs = getNetworkConfigurationsByChainId(state);
-    for (const [id, network] of Object.entries(networkConfigs ?? {})) {
-      for (const rpcEndpoint of network.rpcEndpoints ?? []) {
-        if (rpcEndpoint.networkClientId === networkClientId) {
-          return id;
-        }
-      }
-    }
-    return '';
-  });
+  const chainId = useSelector((state) =>
+    getChainIdByNetworkClientId(state, networkClientId),
+  );
 
   const gasEstimateType = useSelector((state) =>
     getGasEstimateTypeByChainId(state, chainId),

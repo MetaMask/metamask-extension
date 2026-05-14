@@ -35,14 +35,9 @@ jest.mock('../../shared/lib/selectors/networks', () => ({
   getSelectedNetworkClientId: jest
     .fn()
     .mockReturnValue('getSelectedNetworkClientId'),
-  getNetworkConfigurationsByChainId: jest.fn().mockReturnValue({
-    '0xa': {
-      rpcEndpoints: [
-        { networkClientId: 'networkClientId1' },
-        { networkClientId: 'selectedNetworkClientId' },
-      ],
-    },
-  }),
+  getChainIdByNetworkClientId: jest
+    .fn()
+    .mockReturnValue('getChainIdByNetworkClientId'),
 }));
 
 jest.mock('../selectors', () => ({
@@ -86,6 +81,9 @@ const generateUseSelectorRouter =
     if (selectorId === 'getSelectedNetworkClientId') {
       return 'selectedNetworkClientId';
     }
+    if (selectorId === 'getChainIdByNetworkClientId') {
+      return '0xa';
+    }
     if (selectorId === 'getGasEstimateTypeByChainId') {
       return opts.gasEstimateType ?? DEFAULT_OPTS.gasEstimateType;
     }
@@ -94,10 +92,6 @@ const generateUseSelectorRouter =
     }
     if (selectorId === 'getIsGasEstimatesLoadingByChainId') {
       return opts.isGasEstimatesLoading ?? DEFAULT_OPTS.isGasEstimatesLoading;
-    }
-    // Inline selectors (e.g. chainId lookup) return the resolved value directly
-    if (typeof selectorId === 'string' && selectorId.startsWith('0x')) {
-      return selectorId;
     }
     return undefined;
   };
