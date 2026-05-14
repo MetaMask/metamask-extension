@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
@@ -214,7 +215,8 @@ describe('PerpsMarketRecentActivity', () => {
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
 
-    it('navigates to PERPS_ACTIVITY_ROUTE when the Recent Activity header text is clicked', () => {
+    it('navigates to PERPS_ACTIVITY_ROUTE when the Recent Activity header text is clicked', async () => {
+      const user = userEvent.setup();
       mockUsePerpsMarketFills.mockReturnValue({
         fills: [],
         isInitialLoading: false,
@@ -223,7 +225,7 @@ describe('PerpsMarketRecentActivity', () => {
 
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
-      fireEvent.click(screen.getByText(messages.perpsRecentActivity.message));
+      await user.click(screen.getByText(messages.perpsRecentActivity.message));
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
 
