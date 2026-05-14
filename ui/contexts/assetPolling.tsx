@@ -32,14 +32,19 @@ const AssetsControllerPolling = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
-export const AssetPollingContext = createContext({});
+// Intentionally empty — extended in the future as polling state is exposed.
+export type AssetPollingContextValue = Record<string, never>;
+
+export const AssetPollingContext = createContext<AssetPollingContextValue>({});
 
 // This provider is a step towards making controller polling fully UI based.
 // Eventually, individual UI components will call the use*Polling hooks to
 // poll and return particular data. This polls globally in the meantime.
 export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
-  const contextValue = useMemo(() => ({}), []);
+  // Memoize to keep a stable reference and prevent unnecessary re-renders in
+  // any component that consumes AssetPollingContext.
+  const contextValue = useMemo<AssetPollingContextValue>(() => ({}), []);
 
   return (
     <AssetPollingContext.Provider value={contextValue}>
