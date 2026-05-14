@@ -1,15 +1,7 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import {
-  ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
-  getEnabledAdvancedPermissions,
-} from '../../../../../../shared/lib/gator-permissions/feature-flags';
-import {
-  getRemoteFeatureFlags,
-  type RemoteFeatureFlagsState,
-} from '../../../../../../shared/lib/selectors/remote-feature-flags';
+import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
@@ -37,10 +29,6 @@ import TokenTransferInfo from './token-transfer/token-transfer';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
 import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
-
-const getEnabledAdvancedPermissionsFeatureFlag = (
-  state: RemoteFeatureFlagsState,
-) => getRemoteFeatureFlags(state)[ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG];
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -119,9 +107,7 @@ export const InfoSkeleton = ({
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
   const { loader } = useConfirmationNavigationOptions();
-  const enabledAdvancedPermissionsFeatureFlag = useSelector(
-    getEnabledAdvancedPermissionsFeatureFlag,
-  );
+  const enabledPermissions = useEnabledAdvancedPermissions();
 
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
@@ -148,13 +134,6 @@ const Info = () => {
         if (signatureRequest?.decodedPermission) {
           const requestedPermissionType =
             signatureRequest.decodedPermission.permission.type;
-
-          const enabledPermissions = getEnabledAdvancedPermissions({
-            remoteFeatureFlags: {
-              [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]:
-                enabledAdvancedPermissionsFeatureFlag,
-            },
-          });
 
           if (!enabledPermissions.includes(requestedPermissionType)) {
             // This should never happen, as `wallet_requestExecutionPermissions`
@@ -185,7 +164,7 @@ const Info = () => {
       [TransactionType.perpsDeposit]: () => PerpsDepositInfo,
       [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,
     }),
-    [currentConfirmation, enabledAdvancedPermissionsFeatureFlag],
+    [currentConfirmation, enabledPermissions],
   );
 
   if (!currentConfirmation?.type) {

@@ -17,10 +17,7 @@ import {
 } from '../../../../../../test/lib/confirmations/render-helpers';
 import { unapprovedTypedSignMsgV4WithPermission } from '../../../../../../test/data/confirmations/typed_sign';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import {
-  ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
-  getEnabledAdvancedPermissions,
-} from '../../../../../../shared/lib/gator-permissions/feature-flags';
+import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -63,12 +60,9 @@ jest.mock('../../../hooks/useTransactionFocusEffect', () => ({
 }));
 
 jest.mock(
-  '../../../../../../shared/lib/gator-permissions/feature-flags',
+  '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions',
   () => ({
-    ...jest.requireActual(
-      '../../../../../../shared/lib/gator-permissions/feature-flags',
-    ),
-    getEnabledAdvancedPermissions: jest
+    useEnabledAdvancedPermissions: jest
       .fn()
       .mockReturnValue(['native-token-stream']),
   }),
@@ -106,6 +100,9 @@ jest.mock('../../../context/confirm', () => {
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
   const mockedUseParams = jest.mocked(useParams);
+  const mockedUseEnabledAdvancedPermissions = jest.mocked(
+    useEnabledAdvancedPermissions,
+  );
   const MOCK_CONFIRMATION_ID = '1';
 
   beforeEach(() => {
@@ -115,6 +112,9 @@ describe('Info', () => {
       decimals: '4' as any,
     }));
     mockedUseParams.mockReturnValue({});
+    mockedUseEnabledAdvancedPermissions.mockReturnValue([
+      'native-token-stream',
+    ]);
     mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
   });
 
@@ -133,35 +133,17 @@ describe('Info', () => {
   });
 
   it('renders info section for typed sign request with permission', () => {
-    const enabledAdvancedPermissionsFeatureFlag = {
-      permissions: ['native-token-stream'],
-    };
     const state = getMockTypedSignPermissionConfirmState(
       unapprovedTypedSignMsgV4WithPermission.decodedPermission,
-      {
-        metamask: {
-          remoteFeatureFlags: {
-            [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]:
-              enabledAdvancedPermissionsFeatureFlag,
-            unrelatedRemoteFeatureFlag: true,
-          },
-        },
-      },
     );
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
-    expect(getEnabledAdvancedPermissions).toHaveBeenLastCalledWith({
-      remoteFeatureFlags: {
-        [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]:
-          enabledAdvancedPermissionsFeatureFlag,
-      },
-    });
     expect(container).toMatchSnapshot();
   });
 
   it('throws an error if gator permissions feature is not enabled', () => {
     // the requested permission type is `native-token-stream`
-    jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
+    mockedUseEnabledAdvancedPermissions.mockReturnValue([]);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
@@ -172,9 +154,7 @@ describe('Info', () => {
 
   it('throws an error if the specific permission type is not enabled', () => {
     // the requested permission type is `native-token-stream`
-    jest
-      .mocked(getEnabledAdvancedPermissions)
-      .mockReturnValue(['erc20-token-stream']);
+    mockedUseEnabledAdvancedPermissions.mockReturnValue(['erc20-token-stream']);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
