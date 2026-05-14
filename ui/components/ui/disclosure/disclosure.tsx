@@ -24,39 +24,37 @@ const renderSummaryByType = (
   title: string | undefined,
   size: string | undefined,
 ) => {
-  switch (variant) {
-    case DisclosureVariant.Arrow: {
-      const textVariant =
-        size === 'small' ? TextVariant.BodySm : TextVariant.BodyMd;
+  if (variant === DisclosureVariant.Arrow) {
+    const textVariant =
+      size === 'small' ? TextVariant.BodySm : TextVariant.BodyMd;
 
-      return (
-        <summary className="disclosure__summary is-arrow">
-          <Text color={TextColor.PrimaryDefault} variant={textVariant}>
-            {title}
-          </Text>
-          <Icon
-            className="disclosure__summary--icon"
-            color={IconColor.PrimaryDefault}
-            name={IconName.ArrowUp}
-            size={IconSize.Sm}
-            style={{ marginInlineStart: '8px' }}
-          />
-        </summary>
-      );
-    }
-    default:
-      return (
-        <summary className="disclosure__summary">
-          <Icon
-            className="disclosure__summary--icon"
-            name={IconName.Add}
-            size={IconSize.Sm}
-            style={{ marginInlineEnd: '8px' }}
-          />
+    return (
+      <summary className="disclosure__summary is-arrow">
+        <Text color={TextColor.PrimaryDefault} variant={textVariant}>
           {title}
-        </summary>
-      );
+        </Text>
+        <Icon
+          className="disclosure__summary--icon"
+          color={IconColor.PrimaryDefault}
+          name={IconName.ArrowUp}
+          size={IconSize.Sm}
+          style={{ marginInlineStart: '8px' }}
+        />
+      </summary>
+    );
   }
+
+  return (
+    <summary className="disclosure__summary">
+      <Icon
+        className="disclosure__summary--icon"
+        name={IconName.Add}
+        size={IconSize.Sm}
+        style={{ marginInlineEnd: '8px' }}
+      />
+      {title}
+    </summary>
+  );
 };
 
 const Disclosure = ({

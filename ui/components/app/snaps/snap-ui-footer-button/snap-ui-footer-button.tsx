@@ -9,9 +9,9 @@ import {
   ButtonVariant,
   Icon,
   IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import type { ButtonProps } from '@metamask/design-system-react';
-import { IconSize } from '../../../component-library';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
 import { getHideSnapBranding } from '../../../../selectors';

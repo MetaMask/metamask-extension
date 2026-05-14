@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { useSelector } from 'react-redux';
+import { IconSize } from '@metamask/design-system-react';
 import {
   getSnapMetadata,
   getTargetSubjectMetadata,
@@ -12,7 +13,6 @@ import {
   AvatarFavicon,
   AvatarFaviconProps,
   AvatarFaviconSize,
-  IconSize,
 } from '../../../component-library';
 import {
   AlignItems,
