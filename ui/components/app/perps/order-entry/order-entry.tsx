@@ -349,6 +349,9 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             asset={asset}
             currentPrice={currentPrice}
             szDecimals={marketInfo?.szDecimals}
+            currentPositionSize={
+              mode === 'modify' ? existingPosition?.size : undefined
+            }
             onAddFunds={onAddFunds}
             autoFocus={autoFocusUsd && formState.type === 'market'}
             usdPlaceholder={usdPlaceholder}

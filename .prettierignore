@@ -17,4 +17,5 @@ node_modules/**/*
 /test-artifacts/**/*
 /test/test-results/**/*
 /test/e2e/send-eth-with-private-key-test/**/*
+/.task/**/*
 CHANGELOG*.md
