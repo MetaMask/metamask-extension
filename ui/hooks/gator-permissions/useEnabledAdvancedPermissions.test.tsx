@@ -4,8 +4,13 @@ import { renderHook } from '@testing-library/react-hooks';
 import configureStore from 'redux-mock-store';
 import type { Store } from 'redux';
 import * as manifestFlags from '../../../shared/lib/manifestFlags';
+import { captureMessage } from '../../../shared/lib/sentry';
 import { ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG } from '../../../shared/lib/gator-permissions/feature-flags';
 import { useEnabledAdvancedPermissions } from './useEnabledAdvancedPermissions';
+
+jest.mock('../../../shared/lib/sentry', () => ({
+  captureMessage: jest.fn(),
+}));
 
 const mockStore = configureStore([]);
 
@@ -42,6 +47,7 @@ describe('useEnabledAdvancedPermissions', () => {
   });
 
   beforeEach(() => {
+    jest.mocked(captureMessage).mockClear();
     getManifestFlagsMock = jest
       .spyOn(manifestFlags, 'getManifestFlags')
       .mockReturnValue({});
@@ -105,5 +111,14 @@ describe('useEnabledAdvancedPermissions', () => {
     });
 
     expect(result.current).toStrictEqual([]);
+    expect(captureMessage).toHaveBeenCalledWith(
+      'Invalid enabledAdvancedPermissions remote feature flag',
+      {
+        level: 'warning',
+        extra: {
+          featureFlag: ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
+        },
+      },
+    );
   });
 });
