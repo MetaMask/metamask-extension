@@ -1,3 +1,9 @@
+.snap-ui-renderer__footer-button-text {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
 .snap-ui-renderer__footer-button {
   &:not(.hide-snap-branding) {
     &.mm-button-primary {

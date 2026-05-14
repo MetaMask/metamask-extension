@@ -12,11 +12,6 @@ import {
 } from '@metamask/design-system-react';
 import type { ButtonProps } from '@metamask/design-system-react';
 import { IconSize } from '../../../component-library';
-import {
-  AlignItems,
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapIcon } from '../snap-icon';
 import { getHideSnapBranding } from '../../../../selectors';
@@ -82,9 +77,7 @@ export const SnapUIFooterButton = ({
       variant={buttonVariant}
       onClick={handleClick}
       textProps={{
-        display: Display.Flex,
-        alignItems: AlignItems.center,
-        flexDirection: FlexDirection.Row,
+        className: 'snap-ui-renderer__footer-button-text',
       }}
       data-testid={`${name}-snap-footer-button`}
       data-theme={null}
