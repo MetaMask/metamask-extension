@@ -794,7 +794,9 @@ export const TokenManagementPage = () => {
         {hasQuery ? (
           <>
             {isSearching && !hasResults ? loadingState : null}
-            {searchError && !hasResults ? searchErrorState : null}
+            {!isSearching && searchError && !hasResults
+              ? searchErrorState
+              : null}
             {hasResults || (!isSearching && !searchError) ? (
               <VirtualizedList
                 data={searchResults}
