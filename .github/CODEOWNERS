@@ -9,42 +9,17 @@
 # follows all policies or without full understanding of the impact of
 # those changes on build, release and publishing outcomes.
 
-# LavaMoat policy changes can highlight security risks. Teams are encouraged to
-# audit these changes on their own, and leave their analysis in a comment.
-# These codeowners will review this analysis, and review the policy changes in
-# further detail if warranted.
-lavamoat/                            @MetaMask/policy-reviewers
-
 # The offscreen.ts script file that is included in the offscreen document html
 # file is responsible, at present, for loading the snaps execution environment
 # for MV3. Any changes to this file should require at least one member of the
 # snaps development team to review and approve the changes.
 app/offscreen/offscreen.ts       @MetaMask/core-platform
 
-
-# The privacy-snapshot.json file includes a list of all hosts that the
-# extension communicates with during the E2E test suite runs. It is not a
-# complete list of all hosts that the extension communicates with until the E2E
-# test suite has full coverage. Anytime the privacy-snapshot file changes,
-# extra scrutiny should be applied to the pull request to confirm that it does
-# not broaden the number of hosts the extension communicates with without also
-# providing a path for users to avoid that communication. MetaMask strives to
-# make all such communication opt IN versus opt OUT.
-privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
-
-
 # A machine-generated file that tracks circular dependencies in the codebase.
 # It is updated using yarn circular-deps:update
 development/circular-deps.jsonc      @MetaMask/extension-security-team @HowardBraham
 development/circular-deps.ts         @MetaMask/extension-security-team
 /.madgerc                            @MetaMask/extension-security-team
-
-# The CODEOWNERS file constitutes an agreement amongst organization
-# admins and maintainers to restrict approval capabilities to a subset
-# of contributors. Modifications to this file result in a modification of
-# that agreement and can only be approved by those with the knowledge
-# and responsibility to publish libraries under the MetaMask name.
-.github/CODEOWNERS                   @MetaMask/extension-security-team
 
 # For now, restricting approvals inside the .devcontainer folder to devs
 # who were involved with the Codespaces project.
@@ -222,6 +197,18 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 # config files, dotfiles, and core platform files require approval,
 # as they affect build and release outcomes and developer experience.
 
+# AI: Agent instructions and editor rules that apply repo-wide. These files
+# shape the behavior of automated coding assistants (Claude Code, Cursor,
+# Codex, etc.) across the codebase; per-directory AGENTS.md files remain with
+# the teams that own those directories.
+/AGENTS.md                                            @MetaMask/extension-platform
+/CLAUDE.md                                            @MetaMask/extension-platform
+/.claude/agents/                                      @MetaMask/extension-platform
+/.claude/hooks/                                       @MetaMask/extension-platform
+/.claude/settings.json                                @MetaMask/extension-platform
+/.cursor/BUGBOT.md                                    @MetaMask/extension-platform
+/.cursor/rules/                                       @MetaMask/extension-platform
+
 # Lint
 /.editorconfig                                        @MetaMask/extension-platform
 /.eslintrc.js                                         @MetaMask/extension-platform
@@ -266,3 +253,26 @@ development/generate-lavamoat-policies.js             @MetaMask/extension-platfo
 # Background Process
 app/scripts/lib/createMetaRPCHandler.js              @MetaMask/extension-platform
 app/scripts/lib/metaRPCClientFactory.ts              @MetaMask/extension-platform
+
+# LavaMoat policy changes can highlight security risks. Teams are encouraged to
+# audit these changes on their own, and leave their analysis in a comment.
+# These codeowners will review this analysis, and review the policy changes in
+# further detail if warranted.
+lavamoat/                            @MetaMask/policy-reviewers
+
+# The privacy-snapshot.json file includes a list of all hosts that the
+# extension communicates with during the E2E test suite runs. It is not a
+# complete list of all hosts that the extension communicates with until the E2E
+# test suite has full coverage. Anytime the privacy-snapshot file changes,
+# extra scrutiny should be applied to the pull request to confirm that it does
+# not broaden the number of hosts the extension communicates with without also
+# providing a path for users to avoid that communication. MetaMask strives to
+# make all such communication opt IN versus opt OUT.
+/privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
+
+# The CODEOWNERS file constitutes an agreement amongst organization
+# admins and maintainers to restrict approval capabilities to a subset
+# of contributors. Modifications to this file result in a modification of
+# that agreement and can only be approved by those with the knowledge
+# and responsibility to publish libraries under the MetaMask name.
+/.github/CODEOWNERS                   @MetaMask/extension-security-team
