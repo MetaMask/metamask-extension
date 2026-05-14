@@ -202,14 +202,6 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   // Get position size for close mode
   const positionSize = existingPosition?.size ?? '0';
 
-  useEffect(() => {
-    if (mode === 'modify' && existingPosition) {
-      console.log(
-        '[PR-local] BUG_MARKER: modify order entry renders without current position size row',
-      );
-    }
-  }, [mode, existingPosition]);
-
   const estimatedSize = useMemo(() => {
     if (mode === 'modify' && existingPosition) {
       const parsed = Number.parseFloat(
