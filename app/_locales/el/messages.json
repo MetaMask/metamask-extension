@@ -3932,9 +3932,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Γίνεται κλείδωμα του MetaMask..."
   },
-  "logOut": {
-    "message": "Αποσύνδεση"
-  },
   "loginErrorConnectButton": {
     "message": "Προσπαθήστε ξανά"
   },

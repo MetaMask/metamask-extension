@@ -3932,9 +3932,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Блокировка MetaMask..."
   },
-  "logOut": {
-    "message": "Выйти"
-  },
   "loginErrorConnectButton": {
     "message": "Повторить попытку"
   },

@@ -3932,9 +3932,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMaskをロックしています…"
   },
-  "logOut": {
-    "message": "ログアウト"
-  },
   "loginErrorConnectButton": {
     "message": "再試行"
   },
