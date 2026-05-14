@@ -819,7 +819,7 @@
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/account-tree-controller>@metamask/profile-sync-controller": true,
+        "@metamask/profile-sync-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -835,7 +835,7 @@
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
-        "@metamask/accounts-controller>@metamask/keyring-sdk": true,
+        "@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -864,7 +864,7 @@
     "@metamask/address-book-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/address-book-controller>@metamask/controller-utils": true
+        "@metamask/controller-utils": true
       }
     },
     "@metamask/announcement-controller": {
@@ -1086,25 +1086,6 @@
       }
     },
     "@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "ethereumjs-util>bn.js": true,
-        "browserify>buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
-    "@metamask/address-book-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
         "console.error": true,
@@ -2159,18 +2140,6 @@
         "@metamask/keyring-utils": true
       }
     },
-    "@metamask/accounts-controller>@metamask/keyring-sdk": {
-      "packages": {
-        "@ethereumjs/tx": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-api": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "mockttp>async-mutex": true,
-        "@metamask/accounts-controller>ethereum-cryptography": true,
-        "@metamask/accounts-controller>@metamask/keyring-sdk>uuid": true
-      }
-    },
     "@metamask/eth-hd-keyring>@metamask/keyring-sdk": {
       "globals": {
         "TextEncoder": true
@@ -2560,64 +2529,12 @@
       "packages": {
         "@metamask/profile-metrics-controller>@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
-        "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": true,
+        "@metamask/profile-sync-controller": true,
         "@metamask/utils": true,
         "mockttp>async-mutex": true
       }
     },
     "@metamask/profile-sync-controller": {
-      "globals": {
-        "Event": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "addEventListener": true,
-        "atob": true,
-        "btoa": true,
-        "console.error": true,
-        "console.warn": true,
-        "dispatchEvent": true,
-        "fetch": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-controller": true,
-        "@noble/ciphers": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "@metamask/profile-sync-controller>siwe": true
-      }
-    },
-    "@metamask/account-tree-controller>@metamask/profile-sync-controller": {
-      "globals": {
-        "Event": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "addEventListener": true,
-        "atob": true,
-        "btoa": true,
-        "console.error": true,
-        "console.warn": true,
-        "dispatchEvent": true,
-        "fetch": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-controller": true,
-        "@noble/ciphers": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "@metamask/profile-sync-controller>siwe": true
-      }
-    },
-    "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": {
       "globals": {
         "Event": true,
         "TextDecoder": true,
@@ -7205,11 +7122,6 @@
       }
     },
     "@metamask/multichain-account-service>@metamask/keyring-api>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/keyring-sdk>uuid": {
       "globals": {
         "crypto": true
       }
