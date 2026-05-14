@@ -852,6 +852,18 @@ export async function mockTronAssets(
     }));
 }
 
+export async function mockTronGetReward(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(tronInfuraUrl('/wallet/getReward'))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: { reward: 0 },
+    }));
+}
+
 export async function mockTronGetBlock(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
@@ -1145,6 +1157,97 @@ export async function mockBridgeGetTronQuoteEmpty(
     }));
 }
 
+/**
+ * Mocks the accounts API v2 supportedNetworks to include Tron so the
+ * AccountsApiDataSource handles Tron balances via the v5 API instead of
+ * the Snap polling path.
+ *
+ * @param mockServer
+ */
+export async function mockAccountsApiV2WithTron(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
+    )
+    .always()
+    .thenJson(200, {
+      fullSupport: [
+        1,
+        137,
+        56,
+        59144,
+        8453,
+        10,
+        42161,
+        534352,
+        1337,
+        TRON_CHAIN_ID,
+      ],
+      partialSupport: { balances: [42220, 43114] },
+    });
+}
+
+/**
+ * Mocks the accounts API v5 multiaccount balances with TRX for the Tron
+ * wallet address. The AccountsApiDataSource maps by address (not account
+ * UUID), so this works regardless of which runtime account ID the Snap creates.
+ *
+ * @param mockServer
+ * @param mockZeroBalance
+ */
+export async function mockAccountsApiV5WithTron(
+  mockServer: Mockttp,
+  mockZeroBalance?: boolean,
+): Promise<MockedEndpoint> {
+  const trxAmount = mockZeroBalance ? '0' : String(TRX_BALANCE / SUN_PER_TRX);
+  const balances = mockZeroBalance
+    ? [
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/slip44:195`,
+          balance: '0',
+        },
+      ]
+    : [
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/slip44:195`,
+          balance: trxAmount,
+        },
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6`,
+          balance: '3156454.956836360132407885', // HTX decimals=18
+        },
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t`,
+          balance: '2.804595', // USDT decimals=6
+        },
+        {
+          accountId: `${TRON_CHAIN_ID}:${TRON_ACCOUNT_ADDRESS}`,
+          assetId: `${TRON_CHAIN_ID}/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz`,
+          balance: '0.289757448699320931', // USDD decimals=18
+        },
+      ];
+
+  return mockServer
+    .forGet(
+      /https:\/\/accounts\.api\.cx\.metamask\.io\/v5\/multiaccount\/balances/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        count: balances.length,
+        unprocessedNetworks: [],
+        balances,
+      },
+    }));
+}
+
 export async function mockTronApis(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
@@ -1152,7 +1255,10 @@ export async function mockTronApis(
   return [
     await mockTokensV2SupportedNetworks(mockServer),
     await mockTokensV3Assets(mockServer),
+    await mockAccountsApiV2WithTron(mockServer),
+    await mockAccountsApiV5WithTron(mockServer, mockZeroBalance),
     await mockTronFeatureFlags(mockServer),
+    await mockTronGetReward(mockServer),
     await mockTronGetBlock(mockServer),
     await mockTronGetAccount(mockServer, mockZeroBalance),
     await mockTronGetAccountResource(mockServer),
