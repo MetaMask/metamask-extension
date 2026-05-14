@@ -27,7 +27,9 @@ import {
   matchesLocalTransaction,
   matchesNonEvmTransaction,
   isActivityPendingMergedItem,
+  filterLocalNotInApi,
 } from './helpers';
+import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 
 const ethToken: Token = {
   address: NATIVE_TOKEN_ADDRESS,
@@ -145,6 +147,55 @@ function makeApiTx(
     ...rest,
   } as TransactionViewModel;
 }
+
+describe('filterLocalNotInApi', () => {
+  it('keeps pending local txs that are not yet in the API (by hash)', () => {
+    const local = [
+      makeLocalGroup({
+        time: 1,
+        status: TransactionStatus.submitted,
+        hash: '0xabc',
+      }),
+    ];
+    const api = [makeApiTx({ time: 2, hash: '0xdef' })];
+    expect(filterLocalNotInApi(local, api, PENDING_STATUS_HASH)).toHaveLength(
+      1,
+    );
+  });
+
+  it('drops pending local txs when the same hash exists in API data', () => {
+    const local = [
+      makeLocalGroup({
+        time: 1,
+        status: TransactionStatus.submitted,
+        hash: '0xAbC',
+      }),
+    ];
+    const api = [
+      makeApiTx({
+        time: 2,
+        hash: '0xabc',
+        status: TransactionStatus.confirmed,
+      }),
+    ];
+    expect(filterLocalNotInApi(local, api, PENDING_STATUS_HASH)).toHaveLength(
+      0,
+    );
+  });
+
+  it('still includes pending local txs without a hash', () => {
+    const local = [
+      makeLocalGroup({
+        time: 1,
+        status: TransactionStatus.unapproved,
+      }),
+    ];
+    const api = [makeApiTx({ time: 2, hash: '0xabc' })];
+    expect(filterLocalNotInApi(local, api, PENDING_STATUS_HASH)).toHaveLength(
+      1,
+    );
+  });
+});
 
 describe('isActivityPendingMergedItem', () => {
   it('returns true for a local transaction in IN_PROGRESS_TRANSACTION_STATUSES', () => {

@@ -1,7 +1,10 @@
 @use "design-system";
 
 .activity-list-item {
+  display: flex;
+  align-items: center;
   cursor: pointer;
+  min-height: 70px;
 
   &__content-container {
     overflow: hidden;

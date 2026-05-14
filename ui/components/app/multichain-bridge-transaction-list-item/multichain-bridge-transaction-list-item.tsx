@@ -13,7 +13,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 import TransactionIcon from '../transaction-icon';
-import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
+import TransactionStatusLabel, {
+  STATUS_DISPLAY_MODE,
+} from '../transaction-status-label';
 import { ActivityListItem } from '../../multichain/activity-list-item/activity-list-item';
 import Segment from '../../../pages/bridge/transaction-details/segment';
 import {
@@ -182,6 +184,7 @@ const MultichainBridgeTransactionListItem: React.FC<
               error={{}}
               status={KEYRING_TRANSACTION_STATUS_KEY[transaction.status]}
               statusOnly
+              statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
               className={
                 isBridgeFullyComplete
                   ? 'transaction-status-label--confirmed'

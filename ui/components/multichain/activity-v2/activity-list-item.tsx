@@ -2,7 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
+import TransactionStatusLabel, {
+  STATUS_DISPLAY_MODE,
+} from '../../app/transaction-status-label';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -42,7 +44,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       onClick={onClick}
       data-testid="activity-list-item"
     >
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center w-full">
         <div className="flex-shrink-0">
           <ChainBadge chainId={chainId}>
             <ActivityTxIcon transaction={transaction} />
@@ -58,7 +60,11 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
             {title}
           </Text>
           <div className="text-s-body-sm font-medium">
-            <TransactionStatusLabel status={transactionStatus} statusOnly />
+            <TransactionStatusLabel
+              status={transactionStatus}
+              statusOnly
+              statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+            />
           </div>
         </div>
 

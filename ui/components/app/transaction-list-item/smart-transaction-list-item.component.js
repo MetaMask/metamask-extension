@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { ButtonSize } from '@metamask/design-system-react';
-import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
+import TransactionStatusLabel, {
+  STATUS_DISPLAY_MODE,
+} from '../transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
@@ -85,6 +87,7 @@ export default function SmartTransactionListItem({
             isEarliestNonce={isEarliestNonce}
             date={date}
             status={displayedStatusKey}
+            statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
           />
         }
       >

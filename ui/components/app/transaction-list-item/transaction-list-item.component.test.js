@@ -43,6 +43,18 @@ import { getAccountTree } from '../../../selectors/multichain-accounts/account-t
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionListItem from '.';
 
+jest.mock('@rive-app/react-canvas', () => ({
+  useRive: () => ({
+    rive: null,
+    RiveComponent: () => <div data-testid="rive-component" />,
+  }),
+  useStateMachineInput: () => null,
+}));
+
+jest.mock('../../../hooks/useRiveFileLavamoat', () => ({
+  useRiveFileLavamoat: () => ({ riveFile: {}, status: 'success' }),
+}));
+
 jest.mock('../../../hooks/useShouldShowSpeedUp', () => ({
   useShouldShowSpeedUp: jest.fn(),
 }));
@@ -365,7 +377,7 @@ describe('TransactionListItem', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap USDC to UNIConfirmed-2 USDC',
+      '?Swap USDC to UNI-2 USDC',
     );
   });
 

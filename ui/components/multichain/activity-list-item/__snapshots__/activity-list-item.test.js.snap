@@ -7,16 +7,16 @@ exports[`ActivityListItem should match snapshot with no props 1`] = `
     tabindex="0"
   >
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+      class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full"
     >
       <div
         class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--justify-content-space-between mm-box--width-full"
       >
         <div
-          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
+          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--min-width-0"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"
@@ -45,10 +45,10 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
       </p>
     </p>
     <div
-      class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--width-full"
+      class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--align-items-flex-start mm-box--width-full"
     >
       <div
-        class="mm-box mm-box--display-inline-flex"
+        class="mm-box mm-box--margin-top-1 mm-box--display-inline-flex"
       >
         <span
           class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
@@ -59,10 +59,10 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
         class="mm-box activity-list-item__content-container mm-box--display-inline-flex mm-box--justify-content-space-between mm-box--width-full"
       >
         <div
-          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--min-width-0"
+          class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--min-width-0"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-text--font-weight-medium mm-text--ellipsis mm-text--text-align-left mm-box--color-text-default"

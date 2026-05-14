@@ -30,6 +30,7 @@ export const ActivityListItem = ({
   className,
   'data-testid': dataTestId,
 }) => {
+  const hasFooterActions = Boolean(children);
   const primaryClassName = classnames('activity-list-item', className, {
     'activity-list-item--single-content-row': !(subtitle || children),
   });
@@ -68,9 +69,17 @@ export const ActivityListItem = ({
         display={Display.Flex}
         width={BlockSize.Full}
         flexDirection={FlexDirection.Row}
+        alignItems={hasFooterActions ? AlignItems.flexStart : AlignItems.center}
         gap={4}
       >
-        {icon && <Box display={Display.InlineFlex}>{icon}</Box>}
+        {icon && (
+          <Box
+            display={Display.InlineFlex}
+            marginTop={hasFooterActions ? 1 : 0}
+          >
+            {icon}
+          </Box>
+        )}
         <Box
           display={Display.InlineFlex}
           width={BlockSize.Full}
@@ -80,6 +89,7 @@ export const ActivityListItem = ({
           <Box
             display={Display.InlineFlex}
             flexDirection={FlexDirection.Column}
+            justifyContent={JustifyContent.center}
             className="activity-list-item__detail-container"
             minWidth="0"
           >
@@ -98,7 +108,9 @@ export const ActivityListItem = ({
               >
                 {title}
               </Text>
-              {titlePendingSpinner && <StatusIcon state="loading" className="w-5 h-5" />}
+              {titlePendingSpinner && (
+                <StatusIcon state="loading" className="w-5 h-5" />
+              )}
             </Box>
             {subtitle && (
               <Text

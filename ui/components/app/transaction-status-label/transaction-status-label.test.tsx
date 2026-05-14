@@ -2,17 +2,27 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
-import TransactionStatusLabel from '.';
+import TransactionStatusLabel, { STATUS_DISPLAY_MODE } from '.';
 
 // Mock the useI18nContext hook
 jest.mock('../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key) => key,
+  useI18nContext: () => (key: string) => key,
 }));
 
 // Mock the Tooltip component
 jest.mock('../../ui/tooltip', () => ({
   __esModule: true,
-  default: ({ children }) => <div data-testid="tooltip">{children}</div>,
+  default: ({
+    children,
+    title,
+  }: {
+    children?: React.ReactNode;
+    title?: string;
+  }) => (
+    <div data-testid="tooltip" data-tooltip-title={title ?? ''}>
+      {children}
+    </div>
+  ),
 }));
 
 describe('TransactionStatusLabel Component', () => {
@@ -152,5 +162,108 @@ describe('TransactionStatusLabel Component', () => {
 
     render(<TransactionStatusLabel {...props} />);
     expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
+  });
+
+  describe('when statusDisplayMode is activityMinimal', () => {
+    it('does not display pending status text (submitted, earliest nonce)', () => {
+      render(
+        <TransactionStatusLabel
+          status={TransactionStatus.submitted}
+          isEarliestNonce
+          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+        />,
+      );
+      expect(
+        screen.queryByText(TransactionGroupStatus.pending),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows signing status text when approved', () => {
+      render(
+        <TransactionStatusLabel
+          status={TransactionStatus.approved}
+          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+        />,
+      );
+      expect(screen.getByText('signing')).toBeInTheDocument();
+    });
+
+    it('hides confirmed status text', () => {
+      render(
+        <TransactionStatusLabel
+          status={TransactionStatus.confirmed}
+          date="June 1"
+          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+        />,
+      );
+      expect(
+        screen.queryByText(TransactionStatus.confirmed),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows queued status textwhen submitted and not earliest nonce', () => {
+      render(
+        <TransactionStatusLabel
+          status={TransactionStatus.submitted}
+          isEarliestNonce={false}
+          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+        />,
+      );
+      expect(screen.getByText('queued')).toBeInTheDocument();
+    });
+
+    it('shows failed, rejected, and dropped status texts with tooltip unchanged', () => {
+      const errorMessage = 'RPC blew up';
+      const { rerender } = render(
+        <TransactionStatusLabel
+          status={TransactionStatus.failed}
+          error={{ message: errorMessage }}
+          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+        />,
+      );
+      expect(screen.getByText(TransactionStatus.failed)).toBeInTheDocument();
+      expect(screen.getByTestId('tooltip')).toHaveAttribute(
+        'data-tooltip-title',
+        errorMessage,
+      );
+
+      rerender(
+        <TransactionStatusLabel
+          status={TransactionStatus.rejected}
+          error={{ rpc: { message: errorMessage } }}
+          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+        />,
+      );
+      expect(screen.getByText(TransactionStatus.rejected)).toBeInTheDocument();
+      expect(screen.getByTestId('tooltip')).toHaveAttribute(
+        'data-tooltip-title',
+        errorMessage,
+      );
+
+      rerender(
+        <TransactionStatusLabel
+          status={TransactionStatus.dropped}
+          error={{ message: errorMessage }}
+          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+        />,
+      );
+      expect(screen.getByText(TransactionStatus.dropped)).toBeInTheDocument();
+      expect(screen.getByTestId('tooltip')).toHaveAttribute(
+        'data-tooltip-title',
+        errorMessage,
+      );
+    });
+
+    it('shows cancelled status text', () => {
+      render(
+        <TransactionStatusLabel
+          status={TransactionGroupStatus.cancelled}
+          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+        />,
+      );
+      expect(
+        screen.getByText(TransactionGroupStatus.cancelled),
+      ).toBeInTheDocument();
+    });
   });
 });

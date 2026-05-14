@@ -88,15 +88,19 @@ export function filterLocalNotInApi(
 
   return localGroups.filter((group) => {
     const tx = group.primaryTransaction;
+    const hash = tx.hash?.toLowerCase();
+    const inApi = Boolean(hash && apiHashes.has(hash));
     const isPending = tx.status in pendingStatusHash;
-    // Pending transactions are always included (not in API yet)
+
+    // Pending rows are usually kept until the API lists them. If the tx hash
+    // is already in the API feed, drop the local copy so a lagging controller
+    // status cannot keep a confirmed tx stuck under Pending.
     if (isPending) {
-      return true;
+      return !inApi;
     }
+
     // Completed transactions: only include if NOT already in API
     // Transactions without a hash (e.g. failed relay transactions) are always included
-    const hash = tx.hash?.toLowerCase();
-    const inApi = hash && apiHashes.has(hash);
     return !hash || !inApi;
   });
 }

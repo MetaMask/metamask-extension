@@ -17,7 +17,9 @@ import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
-import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
+import TransactionStatusLabel, {
+  STATUS_DISPLAY_MODE,
+} from '../transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import {
   Color,
@@ -327,6 +329,7 @@ function TransactionListItemInner({
               error={error}
               date={date}
               status={displayedStatusKey}
+              statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
             />
           )
         }

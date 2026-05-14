@@ -10,7 +10,9 @@ import {
 } from '../../../hooks/useMultichainTransactionDisplay';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
-import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
+import TransactionStatusLabel, {
+  STATUS_DISPLAY_MODE,
+} from '../../app/transaction-status-label';
 import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
@@ -67,6 +69,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
             error={{}}
             status={statusKey}
             statusOnly
+            statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
           />
         }
       />
@@ -109,6 +112,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
           error={{}}
           status={statusKey}
           statusOnly
+          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
         />
       }
     />
