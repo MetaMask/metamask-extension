@@ -4,6 +4,7 @@ import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import { expandLowValueAssetsIfPresent } from '../../helpers/low-value-assets';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
   BASE_ACCOUNT_SYNC_TIMEOUT,
@@ -461,34 +462,11 @@ class HomePage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
-    await this.expandLowValueAssetsIfPresent();
+    await expandLowValueAssetsIfPresent(this.driver);
     await this.driver.waitForSelector({
       css: '[data-testid="multichain-token-list-item-value"]',
       text: `${expectedTokenBalance} ${symbol}`,
     });
-  }
-
-  /**
-   * Expands the "low value tokens" group on the homepage when it's collapsed
-   * so subsequent balance/name lookups can find rows that fall under the
-   * sub-$1 / unknown-fiat threshold. No-op when the toggle isn't present.
-   */
-  async expandLowValueAssetsIfPresent(): Promise<void> {
-    const toggleSelector = '[data-testid="low-value-assets-toggle"]';
-    const isPresent = await this.driver.isElementPresent({
-      css: toggleSelector,
-    });
-    if (!isPresent) {
-      return;
-    }
-
-    const toggle = await this.driver.findElement(toggleSelector);
-    const ariaExpanded = await toggle.getAttribute('aria-expanded');
-    if (ariaExpanded === 'true') {
-      return;
-    }
-
-    await this.driver.clickElement(toggleSelector);
   }
 
   /**
