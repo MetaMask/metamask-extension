@@ -3932,9 +3932,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask लॉक हो रहा है..."
   },
-  "logOut": {
-    "message": "लॉग आउट करें"
-  },
   "loginErrorConnectButton": {
     "message": "फिर से कोशिश करें"
   },

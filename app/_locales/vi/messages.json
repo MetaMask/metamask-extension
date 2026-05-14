@@ -3932,9 +3932,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Đang khóa MetaMask..."
   },
-  "logOut": {
-    "message": "Đăng xuất"
-  },
   "loginErrorConnectButton": {
     "message": "Thử lại"
   },

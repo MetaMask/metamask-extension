@@ -3932,9 +3932,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask kilitleniyor..."
   },
-  "logOut": {
-    "message": "Oturumu kapat"
-  },
   "loginErrorConnectButton": {
     "message": "Tekrar deneyin"
   },

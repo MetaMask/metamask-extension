@@ -3932,9 +3932,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Nila-lock ang MetaMask..."
   },
-  "logOut": {
-    "message": "Mag-log out"
-  },
   "loginErrorConnectButton": {
     "message": "Subukang muli"
   },
