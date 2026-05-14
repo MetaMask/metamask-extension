@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -171,14 +171,22 @@ export const TokenManagementPage = () => {
   // Looks up the internal account in the selected account group that maps to
   // a given CAIP chain id. Used when importing a search result so the unified
   // AssetsController has an account to associate the asset with.
-  const getAccountForChain = useSelector(
-    (state: unknown) => (caipChainId: CaipChainId) =>
+  //
+  // Backed by `useStore` (not `useSelector`) because we only need the current
+  // state at the moment the user toggles a row — subscribing here would
+  // produce a fresh function on every dispatch, breaking memoization
+  // downstream and forcing the whole page to re-render on unrelated state
+  // changes.
+  const store = useStore();
+  const getAccountForChain = useCallback(
+    (caipChainId: CaipChainId) =>
       getInternalAccountBySelectedAccountGroupAndCaip(
-        state as Parameters<
+        store.getState() as Parameters<
           typeof getInternalAccountBySelectedAccountGroupAndCaip
         >[0],
         caipChainId,
       ),
+    [store],
   );
 
   const enabledChainIds = useMemo(
@@ -450,13 +458,13 @@ export const TokenManagementPage = () => {
    * Search-result-specific toggle. Mirrors the mobile import flow
    * (`metamask-mobile#26108`):
    *
-   * - EVM result, toggle ON  → `addImportedTokens([token], networkClientId)` +
-   *   `addCustomAsset` (when the unified controller is in the build).
-   * - EVM result, toggle OFF → `ignoreTokens([address], networkClientId)` +
-   *   `hideAsset`.
-   * - Non-EVM result, toggle ON  → `multichainAddAssets([assetId], accountId)`
-   *   + `addCustomAsset`.
-   * - Non-EVM result, toggle OFF → `multichainIgnoreAssets(...)` + `hideAsset`.
+   * - EVM result, toggle ON → `addImportedTokens` + `addCustomAsset`.
+   * - EVM result, toggle OFF → `ignoreTokens` + `hideAsset`.
+   * - Non-EVM result, toggle ON → `multichainAddAssets` + `addCustomAsset`.
+   * - Non-EVM result, toggle OFF → `multichainIgnoreAssets` + `hideAsset`.
+   *
+   * `addCustomAsset` / `hideAsset` only fire when the unified AssetsController
+   * is included in the build (`ASSETS_UNIFIED_STATE_ENABLED`).
    *
    * Native assets (slip44 namespace or EVM zero-address) are not importable —
    * the toggle never reaches this handler for them, but we guard here too so
@@ -784,8 +792,8 @@ export const TokenManagementPage = () => {
         {hasQuery ? (
           <>
             {isSearching && !hasResults ? loadingState : null}
-            {!isSearching && searchError ? searchErrorState : null}
-            {!isSearching && !searchError ? (
+            {searchError && !hasResults ? searchErrorState : null}
+            {hasResults || (!isSearching && !searchError) ? (
               <VirtualizedList
                 data={searchResults}
                 estimatedItemSize={ASSET_CELL_HEIGHT}

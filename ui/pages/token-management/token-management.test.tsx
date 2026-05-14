@@ -508,6 +508,34 @@ describe('TokenManagementPage', () => {
     expect(toggle.value).toBe('true');
   });
 
+  it('keeps stale results visible while the next query is being fetched', () => {
+    const initial = [
+      {
+        assetId: 'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        symbol: 'USDC',
+        decimals: 6,
+        name: 'USD Coin',
+      },
+    ];
+    setTokenSearchState({ results: initial });
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+
+    setTokenSearchState({ results: initial, isLoading: true });
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdcc' },
+    });
+
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('token-management-search-loading'),
+    ).not.toBeInTheDocument();
+  });
+
   it('shows the empty-state copy when the API returns no matches', () => {
     setTokenSearchState({ results: [] });
     renderPage();
