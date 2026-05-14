@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   Button,
@@ -30,17 +30,44 @@ export type PasskeyTroubleshootModalMode = 'unlock' | 'verify';
 
 type PasskeyTroubleshootModalProps = Readonly<{
   mode: PasskeyTroubleshootModalMode;
+  location: string;
   onClose: () => void;
   onOpenFullScreen: () => void;
 }>;
 
 export default function PasskeyTroubleshootModal({
   mode,
+  location: troubleshootLocation,
   onClose,
   onOpenFullScreen,
 }: PasskeyTroubleshootModalProps) {
   const t = useI18nContext();
   const { trackEvent } = useContext(MetaMetricsContext);
+
+  const baseProperties = useMemo(
+    () => ({
+      location: troubleshootLocation,
+      mode,
+    }),
+    [troubleshootLocation, mode],
+  );
+
+  const hasTrackedView = useRef(false);
+
+  useEffect(() => {
+    if (hasTrackedView.current) {
+      return;
+    }
+    hasTrackedView.current = true;
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        cta: 'modal',
+      },
+    });
+  }, [baseProperties, trackEvent]);
 
   const handleContactSupportTrackEvent = () => {
     trackEvent(
@@ -58,11 +85,27 @@ export default function PasskeyTroubleshootModal({
   };
 
   const handleOpenFullScreen = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        cta: 'full_screen',
+      },
+    });
     onOpenFullScreen();
     onClose();
   };
 
   const handleStillHavingTrouble = () => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyTroubleshoot,
+      properties: {
+        ...baseProperties,
+        cta: 'support',
+      },
+    });
     handleContactSupportTrackEvent();
     onClose();
   };
