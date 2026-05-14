@@ -19,11 +19,6 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  BlockSize,
-  BorderRadius,
-  Display,
-} from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   useHardwareWalletActions,
@@ -163,7 +158,6 @@ export const HardwareWalletRepair: React.FC = () => {
         <Content>
           {isSuccess ? (
             <Box
-              display={Display.Flex}
               flexDirection={BoxFlexDirection.Column}
               alignItems={BoxAlignItems.Center}
               gap={4}
@@ -182,7 +176,6 @@ export const HardwareWalletRepair: React.FC = () => {
             </Box>
           ) : (
             <Box
-              display={Display.Flex}
               flexDirection={BoxFlexDirection.Column}
               gap={4}
               paddingTop={4}
@@ -193,30 +186,27 @@ export const HardwareWalletRepair: React.FC = () => {
 
               <Box
                 backgroundColor={BoxBackgroundColor.BackgroundAlternative}
-                borderRadius={BorderRadius.LG}
                 padding={4}
-                display={Display.Flex}
                 flexDirection={BoxFlexDirection.Column}
                 gap={4}
+                className="rounded-lg"
               >
                 {steps.map((step, index) => (
                   <Box
                     key={step.titleKey}
-                    display={Display.Flex}
                     flexDirection={BoxFlexDirection.Row}
                     gap={3}
                     alignItems={BoxAlignItems.Start}
                   >
                     <Box
-                      display={Display.Flex}
                       alignItems={BoxAlignItems.Center}
                       justifyContent={BoxJustifyContent.Center}
+                      className="flex"
                       style={{ flexShrink: 0 }}
                     >
                       <Icon name={step.icon} size={IconSize.Lg} />
                     </Box>
                     <Box
-                      display={Display.Flex}
                       flexDirection={BoxFlexDirection.Column}
                       gap={1}
                     >
@@ -254,7 +244,7 @@ export const HardwareWalletRepair: React.FC = () => {
                 variant={ButtonVariant.Primary}
                 onClick={handleConnect}
                 disabled={isConnecting}
-                width={BlockSize.Full}
+                className="w-full"
                 data-testid="hardware-wallet-repair-reconnect"
               >
                 {t('hardwareWalletRepairConnectButton')}
@@ -267,7 +257,7 @@ export const HardwareWalletRepair: React.FC = () => {
             <Button
               variant={ButtonVariant.Primary}
               onClick={handleClose}
-              width={BlockSize.Full}
+              className="w-full"
               data-testid="hardware-wallet-repair-close"
             >
               {t('hardwareWalletRepairCloseButton')}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, type MemoryRouterProps } from 'react-router-dom';
 import configureStore from '../../store/store';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
@@ -39,6 +39,13 @@ jest.mock(
   }),
 );
 
+const memoryRouterFuture = {
+  ['v7_startTransition' as keyof NonNullable<MemoryRouterProps['future']>]:
+    true,
+  ['v7_relativeSplatPath' as keyof NonNullable<MemoryRouterProps['future']>]:
+    true,
+} as NonNullable<MemoryRouterProps['future']>;
+
 function renderRepairPage(
   walletType: HardwareWalletType = HardwareWalletType.Ledger,
 ) {
@@ -49,7 +56,7 @@ function renderRepairPage(
   const store = configureStore({ metamask: {} });
   return render(
     <Provider store={store}>
-      <MemoryRouter>
+      <MemoryRouter future={memoryRouterFuture}>
         <HardwareWalletRepair />
       </MemoryRouter>
     </Provider>,
