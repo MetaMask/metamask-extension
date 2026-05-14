@@ -221,6 +221,11 @@
         "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
           "balance": "string"
         }
+      },
+      "0x8f": {
+        "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1": {
+          "balance": "string"
+        }
       }
     },
     "accountTree": {
@@ -674,6 +679,11 @@
         "conversionRate": "number",
         "usdConversionRate": "null"
       },
+      "MON": {
+        "conversionDate": "null",
+        "conversionRate": "null",
+        "usdConversionRate": "null"
+      },
       "POL": {
         "conversionDate": "null",
         "conversionRate": "null",
@@ -724,7 +734,8 @@
         "0xa4b1": "boolean",
         "0x38": "boolean",
         "0xa": "boolean",
-        "0x89": "boolean"
+        "0x89": "boolean",
+        "0x8f": "boolean"
       },
       "solana": {
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "boolean",
@@ -749,7 +760,8 @@
       "eip155:56": "string",
       "eip155:10": "string",
       "eip155:137": "string",
-      "eip155:6343": "string"
+      "eip155:6343": "string",
+      "eip155:143": "string"
     },
     "enableMV3TimestampSave": "boolean",
     "ensEntries": {
@@ -845,13 +857,7 @@
         "snapId": "string"
       }
     },
-    "eventsBeforeMetricsOptIn": [
-      {
-        "category": "string",
-        "event": "string",
-        "properties": {}
-      }
-    ],
+    "eventsBeforeMetricsOptIn": [],
     "fcmToken": "string",
     "featureFlags": {},
     "fiatCurrency": "string",
@@ -1072,6 +1078,7 @@
       "0x38": {},
       "0x539": {},
       "0x89": {},
+      "0x8f": {},
       "0xa": {},
       "0xa4b1": {},
       "0xe708": {}

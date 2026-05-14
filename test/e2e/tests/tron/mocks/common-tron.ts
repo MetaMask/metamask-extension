@@ -1168,9 +1168,7 @@ export async function mockAccountsApiV2WithTron(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forGet(
-      /https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u,
-    )
+    .forGet(/https:\/\/accounts\.api\.cx\.metamask\.io\/v2\/supportedNetworks/u)
     .always()
     .thenJson(200, {
       fullSupport: [
