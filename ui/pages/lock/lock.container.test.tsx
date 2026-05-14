@@ -12,7 +12,7 @@ const mockNavigate = jest.fn();
 const mockLockRender = jest.fn();
 
 jest.mock('./lock.component', () => {
-  return function LockComponent(props: Record<string, unknown>) {
+  return (props: Record<string, unknown>) => {
     mockLockRender(props);
     return <div data-testid="mock-lock" />;
   };
