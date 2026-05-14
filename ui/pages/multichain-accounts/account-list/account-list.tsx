@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import {
@@ -42,6 +42,7 @@ import {
   getShowDefaultAddressPreference,
 } from '../../../selectors';
 import {
+  DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
   CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -63,6 +64,7 @@ import { filterWalletsByGroupNameOrAddress } from './utils';
 export const AccountList = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree;
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
@@ -121,9 +123,18 @@ export const AccountList = () => {
     navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE);
   }, [navigate]);
 
+  const isFreshTab =
+    location.key === 'default' ||
+    (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
+      true;
+
   const handleBack = useCallback(() => {
-    transitionBack(() => navigate(PREVIOUS_ROUTE));
-  }, [navigate]);
+    if (isFreshTab) {
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } else {
+      transitionBack(() => navigate(PREVIOUS_ROUTE));
+    }
+  }, [isFreshTab, navigate]);
 
   return (
     <Page className="account-list-page">

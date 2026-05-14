@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "Σάρωση κωδικού QR"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Μπορείτε να επιλέξετε από έναν κατάλογο επίσημων συνεργατών που υποστηρίζουν τον κωδικό QR παρακάτω."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Συνδέστε το πορτοφόλι υλικού μέσω QR"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SrpListHideAccounts": {
     "message": "Απόκρυψη $1 λογαριασμών",
     "description": "$1 is the number of accounts"
@@ -391,9 +382,6 @@
   },
   "airDropPatternTitle": {
     "message": "Μοτόβο διανομών δωρεάν tokens"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "Ειδοποίηση"
@@ -1442,9 +1430,6 @@
     "message": "Αγοράστε περισσότερα $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "Αγοράστε τώρα"
-  },
   "buyTabOpenedToastDescription": {
     "message": "Ανοίξαμε νέα καρτέλα για την αγορά.",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -1965,9 +1950,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Εντοπίσαμε ότι αυτό το περιουσιακό στοιχείο προστέθηκε ως NFT. Θέλετε να το αφαιρέσετε από τη λίστα των token σας;"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Έγινε αντιγραφή."
   },
@@ -2185,9 +2167,6 @@
   },
   "dateCreated": {
     "message": "Ημερομηνία δημιουργίας"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Επιλογές αγοράς με χρεωστική ή πιστωτική κάρτα"
@@ -2513,9 +2492,6 @@
   "downloadAppTitle": {
     "message": "Σαρώστε τον QR κωδικό και κατεβάστε την εφαρμογή"
   },
-  "downloadGoogleChrome": {
-    "message": "Κατεβάστε το Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Η λειτουργία Face ID στην εφαρμογή μας σας επιτρέπει να συνδέεστε ακόμα κι αν ξεχάσετε τον κωδικό πρόσβασής σας. Πάρτε το MetaMask παντού μαζί σας!"
   },
@@ -2524,9 +2500,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Κατεβάστε την εφαρμογή μας για κινητά"
-  },
-  "downloadNow": {
-    "message": "Λήψη τώρα"
   },
   "downloadStateLogs": {
     "message": "Λήψη Αρχείων Καταγραφής Κατάστασης"
@@ -3285,9 +3258,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Πριν κάνετε κλικ στο κουμπί Υποβολή:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "κάντε κλικ εδώ"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Ανοίξτε την εφαρμογή Ethereum"
   },
@@ -3297,12 +3267,6 @@
   },
   "hardwareWallets": {
     "message": "Συνδέστε ένα πορτοφόλι υλικού"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Οι ενσωματώσεις πορτοφολιών υλικού χρησιμοποιούν κλήσεις API σε εξωτερικούς διακομιστές, οι οποίοι μπορούν να δουν τη διεύθυνση IP σας και τις διευθύνσεις έξυπνων συμβολαίων με τις οποίες αλληλεπιδράτε."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Επιλέξτε ένα πορτοφόλι υλικού το οποίο θέλετε να χρησιμοποιήσετε με το MetaMask."
   },
   "helpAndSettings": {
     "message": "Βοήθεια και ρυθμίσεις"
@@ -3668,9 +3632,6 @@
     "message": "Αρχείο JSON",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Όνομα λογαριασμού"
   },
@@ -3723,9 +3684,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Μάθετε περισσότερα για τις βέλτιστες πρακτικές απορρήτου."
-  },
-  "learnMoreKeystone": {
-    "message": "Μάθε περισσότερα"
   },
   "learnMoreUpperCase": {
     "message": "Μάθετε περισσότερα"
@@ -3794,17 +3752,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Το Firefox δεν υποστηρίζεται"
   },
-  "ledgerLiveApp": {
-    "message": "Εφαρμογή Ledger Live"
-  },
   "ledgerLocked": {
     "message": "Δεν είναι δυνατή η σύνδεση με τη συσκευή Ledger. Βεβαιωθείτε ότι η συσκευή σας είναι ξεκλειδωμένη και ότι η εφαρμογή Ethereum είναι ανοιχτή."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Για να συνδέσετε μια νέα συσκευή, αποσυνδέστε την προηγούμενη."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Μπορείτε να συνδέσετε μόνο μια συσκευή Ledger τη φορά"
   },
   "ledgerTimeout": {
     "message": "Το Ledger Live χρειάζεται πολύ χρόνο για να ανταποκριθεί ή η σύνδεση έχει διακοπεί. Βεβαιωθείτε ότι η εφαρμογή Ledger Live είναι ανοιχτή και ότι η συσκευή σας είναι ξεκλειδωμένη."
@@ -8642,34 +8591,6 @@
   },
   "statusNotConnected": {
     "message": "Δεν έχει συνδεθεί"
-  },
-  "step1LatticeWallet": {
-    "message": "Συνδέστε το Lattice1 σας"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Μπορείτε να συνδέσετε το MetaMask στη συσκευή Lattice1 μόλις αυτή ρυθμιστεί και συνδεθεί. Ξεκλειδώστε τη συσκευή σας και έχετε έτοιμο το αναγνωριστικό συσκευής σας.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Λήψη εφαρμογής του Ledger"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Κατεβάστε, εγκαταστήστε και πληκτρολογήστε τον κωδικό πρόσβασής σας για να ξεκλειδώσετε το $1.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Συνδέστε το Trezor σας"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Συνδέστε το Trezor απευθείας στον υπολογιστή σας και ξεκλειδώστε το. Βεβαιωθείτε ότι χρησιμοποιείτε τη σωστή συνθηματική φράση.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Συνδέστε το Ledger σας"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Συνδέστε το Ledger απευθείας στον υπολογιστή σας, στη συνέχεια ξεκλειδώστε το και ανοίξτε την εφαρμογή Ethereum.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Ακόμα συνδέεται με το $1...",

@@ -1,5 +1,4 @@
 import React from 'react';
-import { LedgerTransportTypes } from '../../../../shared/constants/hardware-wallets';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SelectHardware from './select-hardware';
 
@@ -15,7 +14,9 @@ export default {
   decorators: [
     (Story: () => JSX.Element) => (
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
-        <Story />
+        <div style={{ width: '400px', height: '600px' }}>
+          <Story />
+        </div>
       </MetaMetricsContext.Provider>
     ),
   ],
@@ -24,24 +25,13 @@ export default {
 export const DefaultStory = () => {
   return (
     <SelectHardware
-      onCancel={() => null}
       browserSupported
+      isFirefox={false}
       connectToHardwareWallet={() => {
         /* no-op */
       }}
-      ledgerTransportType={LedgerTransportTypes.webhid}
     />
   );
 };
 
 DefaultStory.storyName = 'Default';
-
-export const BrowserNotSupported = () => {
-  return (
-    <SelectHardware
-      onCancel={() => null}
-      browserSupported={false}
-      connectToHardwareWallet={() => undefined}
-    />
-  );
-};

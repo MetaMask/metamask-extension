@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "Ler código QR"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Você pode escolher abaixo em uma lista de parceiros oficiais que aceitam códigos QR."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Conecte sua carteira de hardware QR"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SrpListHideAccounts": {
     "message": "Ocultar $1 contas",
     "description": "$1 is the number of accounts"
@@ -391,9 +382,6 @@
   },
   "airDropPatternTitle": {
     "message": "Padrão de airdrop"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "Alerta"
@@ -1442,9 +1430,6 @@
     "message": "Comprar mais $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "Comprar agora"
-  },
   "buyTabOpenedToastDescription": {
     "message": "Abrimos uma nova guia para compras.",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -1965,9 +1950,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Detectamos que esse ativo foi adicionado como NFT. Deseja removê-lo da sua lista de tokens?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Copiado."
   },
@@ -2185,9 +2167,6 @@
   },
   "dateCreated": {
     "message": "Data de criação"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Opções de compra com cartão de débito ou crédito"
@@ -2513,9 +2492,6 @@
   "downloadAppTitle": {
     "message": "Leia o QR code e baixe o aplicativo"
   },
-  "downloadGoogleChrome": {
-    "message": "Baixar o Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "O Face ID permite que você acesse nossos apps mesmo se esquecer a senha. Leve a MetaMask aonde você for!"
   },
@@ -2524,9 +2500,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Baixe nosso app para celular"
-  },
-  "downloadNow": {
-    "message": "Baixar agora"
   },
   "downloadStateLogs": {
     "message": "Baixar logs de estado"
@@ -3285,9 +3258,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Antes de clicar em enviar:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "clique aqui"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Abra o aplicativo Ethereum"
   },
@@ -3297,12 +3267,6 @@
   },
   "hardwareWallets": {
     "message": "Conecte uma carteira de hardware"
-  },
-  "hardwareWalletsInfo": {
-    "message": "As integrações com carteiras de hardware usam chamadas de API para servidores externos, os quais podem ver seu endereço IP e os endereços de contratos inteligentes com os quais você interage."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Selecione uma carteira de hardware que você gostaria de usar com a MetaMask."
   },
   "helpAndSettings": {
     "message": "Ajuda e configurações"
@@ -3668,9 +3632,6 @@
     "message": "Arquivo JSON",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Nome da conta"
   },
@@ -3723,9 +3684,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Saiba mais sobre as melhores práticas de privacidade."
-  },
-  "learnMoreKeystone": {
-    "message": "Saiba mais"
   },
   "learnMoreUpperCase": {
     "message": "Mais informações"
@@ -3794,17 +3752,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Sem suporte ao Firefox"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live App"
-  },
   "ledgerLocked": {
     "message": "Não é possível conectar ao dispositivo Ledger. Certifique-se de que seu dispositivo esteja desbloqueado e que o aplicativo Ethereum esteja aberto."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Para conectar um novo dispositivo, desconecte o anterior."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Só é possível conectar uma Ledger de cada vez"
   },
   "ledgerTimeout": {
     "message": "O Ledger Live está demorando muito para responder ou a conexão expirou. Certifique-se de que o aplicativo do Ledger Live esteja aberto e que seu dispositivo esteja desbloqueado."
@@ -8642,34 +8591,6 @@
   },
   "statusNotConnected": {
     "message": "Não conectado"
-  },
-  "step1LatticeWallet": {
-    "message": "Conecte seu Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Você pode conectar a MetaMask ao seu dispositivo Lattice1 quando ele estiver configurado e online. Desbloqueie seu dispositivo e tenha o ID do seu dispositivo em mãos.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Baixar o aplicativo do Ledger"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Baixe, configure e insira sua senha para desbloquear $1.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Conecte sua Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Conecte sua Trezor diretamente ao seu computador e a desbloqueie. Certifique-se de usar a frase secreta correta.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Conecte sua Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Conecte sua Ledger diretamente ao seu computador, depois a desbloqueie e abra o app do Ethereum.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Ainda se conectando à $1...",
