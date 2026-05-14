@@ -70,6 +70,8 @@ export const SnapUIFooterButton = ({
           buttonVariant === ButtonVariant.Primary,
         'snap-ui-renderer__footer-button--secondary':
           buttonVariant === ButtonVariant.Secondary,
+        'snap-ui-renderer__footer-button--danger':
+          snapVariant === 'destructive',
         'hide-snap-branding': hideSnapBranding,
       })}
       type={type}
