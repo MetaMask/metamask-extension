@@ -15,6 +15,7 @@ import { formatTimestamp } from '../multichain-transaction-details-modal/helpers
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel, {
   STATUS_DISPLAY_MODE,
+  getTransactionDisplayStatusKey,
 } from '../transaction-status-label';
 import { ActivityListItem } from '../../multichain/activity-list-item/activity-list-item';
 import Segment from '../../../pages/bridge/transaction-details/segment';
@@ -114,10 +115,15 @@ const MultichainBridgeTransactionListItem: React.FC<
     ? `${t('bridgeTo')} ${displayChainName}`
     : capitalize(type);
 
+  const activityListItemStatusKey = getTransactionDisplayStatusKey(
+    KEYRING_TRANSACTION_STATUS_KEY[transaction.status],
+  );
+
   return (
     <ActivityListItem
       className="multichain-bridge-transaction-list-item"
       data-testid="multichain-bridge-activity-item"
+      activityListItemStatusKey={activityListItemStatusKey}
       titlePendingSpinner={!isTerminalState}
       onClick={() => toggleShowDetails(transaction)}
       icon={

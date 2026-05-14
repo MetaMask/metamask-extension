@@ -4,6 +4,7 @@ import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import TransactionStatusLabel, {
   STATUS_DISPLAY_MODE,
+  getTransactionDisplayStatusKey,
 } from '../../app/transaction-status-label';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
@@ -38,6 +39,8 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       ? TransactionStatus.failed
       : TransactionStatus.confirmed;
 
+  const activityListItemStatusKey = getTransactionDisplayStatusKey(transactionStatus);
+
   return (
     <Box
       className="px-4 py-3 bg-background-default cursor-pointer hover:bg-hover activity-list-item"
@@ -52,7 +55,10 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         </div>
 
         {/* Left side - Action and Details */}
-        <div className="flex-1 min-w-0">
+        <div
+          className="flex-1 min-w-0"
+          data-testid={`activity-list-item-status--${activityListItemStatusKey}`}
+        >
           <Text
             className="font-medium truncate"
             data-testid="activity-list-item-action"

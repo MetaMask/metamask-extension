@@ -34,7 +34,7 @@ const statusToClassNameHash: Partial<Record<string, string>> = {
   [TransactionGroupStatus.pending]: 'transaction-status-label--pending',
 };
 
-const getStatusKey = (
+export const getTransactionDisplayStatusKey = (
   status: string | undefined,
   isEarliestNonce?: boolean,
 ): string | undefined => {
@@ -79,7 +79,7 @@ export type TransactionStatusLabelProps = {
 };
 
 // TransactionStatusLabel renders a single line of user-facing status text (i18n from the resolved
-// key produced by `getStatusKey`. Statuses are normalized first, e.g. approved reads as
+// key produced by `getTransactionDisplayStatusKey`. Statuses are normalized first, e.g. approved reads as
 // signing; submitted/signed become pending vs queued based on `isEarliestNonce`).
 // When `error` supplies a message, it is shown as a tooltip over the status text.
 //
@@ -98,15 +98,13 @@ export default function TransactionStatusLabel({
   statusDisplayMode = STATUS_DISPLAY_MODE.default,
 }: Readonly<TransactionStatusLabelProps>) {
   const t = useI18nContext();
-  const statusKey = getStatusKey(status, isEarliestNonce);
+  const statusKey = getTransactionDisplayStatusKey(status, isEarliestNonce);
   if (statusKey === undefined || statusKey === '') {
     return null;
   }
 
   if (!shouldRenderStatusText(statusKey, statusDisplayMode)) {
-    return (
-      <div hidden data-testid={`transaction-status-label--${statusKey}`} />
-    );
+    return null;
   }
 
   const tooltipText = error?.rpc?.message || error?.message;
@@ -121,12 +119,11 @@ export default function TransactionStatusLabel({
     <Tooltip
       position="top"
       title={tooltipText}
-      data-testid={`transaction-status-label--${statusKey}`}
       wrapperClassName={classnames(
         'transaction-status-label',
         `transaction-status-label--${statusKey}`,
         className,
-        statusKey ? statusToClassNameHash[statusKey] : undefined,
+        statusToClassNameHash[statusKey],
       )}
     >
       {statusText}

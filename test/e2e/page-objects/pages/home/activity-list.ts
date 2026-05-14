@@ -15,7 +15,7 @@ class ActivityListPage {
   };
 
   private readonly bridgeTransactionCompleted =
-    '[data-testid="transaction-status-label--confirmed"]';
+    '[data-testid="activity-list-item-status--confirmed"]';
 
   private readonly bridgeTransactionPending =
     '.bridge-transaction-details__segment--pending';
@@ -28,21 +28,15 @@ class ActivityListPage {
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
   private readonly confirmedTransactions =
-    '[data-testid="transaction-status-label--confirmed"]';
-
-  private readonly confirmedTransactionRowAction = {
-    xpath: `//*[@data-testid="activity-list-item"][.//*[@data-testid="transaction-status-label--confirmed"]]//*[@data-testid="activity-list-item-action"]`,
-  };
+    '[data-testid="activity-list-item-status--confirmed"]';
 
   private readonly copyTransactionHashButton = {
     text: 'Copy transaction ID',
     tag: 'button',
   };
 
-  private readonly failedTransactions = {
-    text: 'Failed',
-    css: '.transaction-status-label--failed',
-  };
+  private readonly failedTransactions =
+    '[data-testid="activity-list-item-status--failed"]';
 
   private readonly feeValues = '.currency-display-component__text';
 
@@ -50,7 +44,7 @@ class ActivityListPage {
     '[data-testid="transaction-breakdown__gas-price"]';
 
   private readonly pendingTransactionItems =
-    '[data-testid="transaction-status-label--pending"]';
+    '[data-testid="activity-list-item-status--pending"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
@@ -159,7 +153,7 @@ class ActivityListPage {
 
   async clickConfirmedTransaction(): Promise<void> {
     console.log('Clicking on confirmed transaction');
-    await this.driver.clickElement(this.confirmedTransactionRowAction);
+    await this.driver.clickElement(this.confirmedTransactions);
   }
 
   /**
@@ -554,7 +548,7 @@ class ActivityListPage {
     status: 'confirmed' | 'cancelled' | 'pending',
   ) {
     await this.driver.waitForSelector(
-      `[data-testid="transaction-status-label--${status}"]`,
+      `[data-testid="activity-list-item-status--${status}"]`,
       {
         timeout: 5000,
       },

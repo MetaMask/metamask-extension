@@ -12,6 +12,7 @@ import { TransactionGroupCategory } from '../../../../shared/constants/transacti
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel, {
   STATUS_DISPLAY_MODE,
+  getTransactionDisplayStatusKey,
 } from '../../app/transaction-status-label';
 import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
@@ -33,6 +34,8 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
     useMultichainTransactionDisplay(transaction);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
+  const activityListItemStatusKey = getTransactionDisplayStatusKey(statusKey);
+
   if (
     matchedBridgeHistoryItem &&
     isCrossChain(
@@ -53,6 +56,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
     return (
       <LegacyActivityListItem
         data-testid="activity-list-item"
+        activityListItemStatusKey={activityListItemStatusKey}
         onClick={() => onClick(transaction)}
         icon={
           <ChainBadge chainId={transaction.chain}>
@@ -90,6 +94,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   return (
     <LegacyActivityListItem
       data-testid="activity-list-item"
+      activityListItemStatusKey={activityListItemStatusKey}
       onClick={() => onClick(transaction)}
       icon={
         <ChainBadge chainId={transaction.chain}>

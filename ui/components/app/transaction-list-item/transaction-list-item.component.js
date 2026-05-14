@@ -19,6 +19,7 @@ import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel, {
   STATUS_DISPLAY_MODE,
+  getTransactionDisplayStatusKey,
 } from '../transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import {
@@ -32,7 +33,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 
-import { getStatusKey } from '../../../helpers/utils/transactions.util';
+import { getTransactionDisplayStatusKey } from '../../../helpers/utils/transactions.util';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -183,12 +184,16 @@ function TransactionListItemInner({
   const displayedStatusKey =
     isBridgeTx && isBridgeFailed
       ? TransactionStatus.failed
-      : getStatusKey(transactionGroup.primaryTransaction);
+      : getTransactionDisplayStatusKey(transactionGroup.primaryTransaction);
   const shouldShowPendingBridgeStatus =
     Boolean(isUnifiedSwapTx) &&
     displayedStatusKey === TransactionStatus.submitted &&
     !isBridgeFailed &&
     !isBridgeComplete;
+  const activityListItemStatusKey = getTransactionDisplayStatusKey(
+    displayedStatusKey,
+    isEarliestNonce || shouldShowPendingBridgeStatus,
+  );
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',
@@ -299,6 +304,7 @@ function TransactionListItemInner({
     <>
       <ActivityListItem
         data-testid="activity-list-item"
+        activityListItemStatusKey={activityListItemStatusKey}
         onClick={
           isUnifiedSwapTx && showBridgeTxDetails
             ? showBridgeTxDetails

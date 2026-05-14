@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { ButtonSize } from '@metamask/design-system-react';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import TransactionStatusLabel, {
   STATUS_DISPLAY_MODE,
+  getTransactionDisplayStatusKey,
 } from '../transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
@@ -50,7 +52,15 @@ export default function SmartTransactionListItem({
     displayedStatusKey = TransactionGroupStatus.pending;
   } else if (status?.startsWith(SmartTransactionStatus.cancelled)) {
     displayedStatusKey = TransactionGroupStatus.cancelled;
+  } else if (status === SmartTransactionStatus.success) {
+    displayedStatusKey = TransactionStatus.confirmed;
   }
+
+  const activityListItemStatusKey = getTransactionDisplayStatusKey(
+    displayedStatusKey,
+    isEarliestNonce,
+  );
+
   const showCancelSwapLink =
     smartTransaction.cancellable && !cancelSwapLinkClicked;
   const className = 'transaction-list-item transaction-list-item--unconfirmed';
@@ -60,6 +70,7 @@ export default function SmartTransactionListItem({
     <>
       <ActivityListItem
         className={className}
+        activityListItemStatusKey={activityListItemStatusKey}
         title={title}
         titlePendingSpinner={isPending}
         onClick={toggleShowDetails}

@@ -28,6 +28,7 @@ export const ActivityListItem = ({
   rightContent,
   onClick,
   className,
+  activityListItemStatusKey,
   'data-testid': dataTestId,
 }) => {
   const hasFooterActions = Boolean(children);
@@ -92,6 +93,7 @@ export const ActivityListItem = ({
             justifyContent={JustifyContent.center}
             className="activity-list-item__detail-container"
             minWidth="0"
+            data-testid={`activity-list-item-status--${activityListItemStatusKey}`}
           >
             <Box
               display={Display.Flex}
@@ -193,6 +195,10 @@ ActivityListItem.propTypes = {
    * Additional classname for this component
    */
   className: PropTypes.string,
+  /**
+   * Resolved transaction status key used for tests
+   */
+  activityListItemStatusKey: PropTypes.string,
   /**
    * Test ID for this component
    */

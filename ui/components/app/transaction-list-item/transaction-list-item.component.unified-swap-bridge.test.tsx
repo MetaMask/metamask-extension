@@ -62,7 +62,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       '?Swap to -0 ETH',
     );
     expect(
-      getByTestId('transaction-status-label--confirmed'),
+      getByTestId('activity-list-item-status--confirmed'),
     ).toBeInTheDocument();
   });
 
@@ -146,7 +146,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(
-      getByTestId('transaction-status-label--pending'),
+      getByTestId('activity-list-item-status--pending'),
     ).toBeInTheDocument();
     expect(queryByText(messages.queued.message)).not.toBeInTheDocument();
     expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
@@ -257,7 +257,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       '?Bridged to OP-2 USDC-USD 0.00',
     );
     expect(
-      getByTestId('transaction-status-label--confirmed'),
+      getByTestId('activity-list-item-status--confirmed'),
     ).toBeInTheDocument();
 
     fireEvent.click(getByTestId('activity-list-item'));

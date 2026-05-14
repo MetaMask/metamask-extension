@@ -105,7 +105,7 @@ async function confirmMintTransaction(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
   await driver.clickElement('[data-testid="account-overview__activity-tab"]');
   await driver.waitForSelector(
-    '[data-testid="transaction-status-label--confirmed"]',
+    '[data-testid="activity-list-item-status--confirmed"]',
   );
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 }
@@ -173,6 +173,6 @@ async function confirmApproveTransaction(driver: Driver) {
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });
   await driver.waitForSelector(
-    '[data-testid="transaction-status-label--confirmed"]',
+    '[data-testid="activity-list-item-status--confirmed"]',
   );
 }

@@ -51,12 +51,12 @@ export async function run(): Promise<BenchmarkRunResult> {
         );
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '[data-testid="transaction-status-label--confirmed"]',
+            '[data-testid="activity-list-item-status--confirmed"]',
           );
           return confirmedTxes.length === 1;
         }, 10000);
         await driver.waitForSelector(
-          '[data-testid="transaction-status-label--confirmed"]',
+          '[data-testid="activity-list-item-status--confirmed"]',
         );
         const timestampAfterAction = new Date();
         loadingTimes =
