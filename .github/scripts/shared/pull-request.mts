@@ -88,13 +88,18 @@ export async function retrievePullRequestFiles(
   repoName: string,
   prNumber: number,
 ): Promise<PullRequestFile[]> {
-  const response = await octokit.rest.pulls.listFiles({
+  // `octokit.rest.pulls.listFiles` paginates at 30 files per page by default.
+  // Use `octokit.paginate` so PRs with more than one page of files (e.g.
+  // large refactors) return every changed file, otherwise downstream
+  // codeowner matching silently sees only the first page.
+  const files = await octokit.paginate(octokit.rest.pulls.listFiles, {
     owner: repoOwner,
     repo: repoName,
     pull_number: prNumber,
+    per_page: 100,
   });
 
-  return response.data.map((file) => ({
+  return files.map((file) => ({
     filename: file.filename,
     additions: file.additions || 0,
     deletions: file.deletions || 0,
