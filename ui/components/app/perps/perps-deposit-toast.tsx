@@ -115,14 +115,9 @@ export function PerpsDepositToast() {
       return;
     }
 
-    const timeoutId = setTimeout(
-      () =>
-        clearDepositResultForKey(
-          depositResultKey,
-          clearedDepositResultKeyRef,
-        ),
-      duration,
-    );
+    const timeoutId = setTimeout(() => {
+      clearDepositResultForKey(depositResultKey, clearedDepositResultKeyRef);
+    }, duration);
 
     return () => {
       clearTimeout(timeoutId);
