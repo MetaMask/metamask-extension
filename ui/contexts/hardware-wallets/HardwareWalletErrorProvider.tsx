@@ -17,6 +17,7 @@ import {
   closeCurrentNotificationWindow,
 } from '../../store/actions';
 import { getIsHardwareWalletErrorModalVisible } from '../../selectors';
+import { HARDWARE_WALLET_REPAIR_ROUTE } from '../../helpers/constants/routes';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
@@ -138,6 +139,13 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     dispatch(closeCurrentNotificationWindow());
   }, [clearError, dispatch, resetModalState]);
 
+  const openRepairPage = useCallback(() => {
+    globalThis.platform.openExtensionInBrowser(
+      HARDWARE_WALLET_REPAIR_ROUTE,
+      null,
+    );
+  }, []);
+
   /**
    * Manually dismiss the error modal
    */
@@ -205,11 +213,12 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
         error,
         onRetry: handleRetry,
         onCancel: handleCancel,
+        onRepairDevice: openRepairPage,
         isOpen: true,
       };
       dispatch(showModal(modalPayload));
     },
-    [dispatch, displayedError, handleCancel, handleRetry, isUserRejection],
+    [dispatch, displayedError, handleCancel, handleRetry, isUserRejection, openRepairPage],
   );
 
   /**

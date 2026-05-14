@@ -3425,6 +3425,69 @@
   "hardwareWalletsMsg": {
     "message": "Select a hardware wallet you would like to use with MetaMask."
   },
+  "hardwareWalletRepairBackButton": {
+    "message": "Back"
+  },
+  "hardwareWalletRepairCloseButton": {
+    "message": "Close"
+  },
+  "hardwareWalletRepairDetecting": {
+    "message": "Detecting device..."
+  },
+  "hardwareWalletRepairDeviceNotDetected": {
+    "message": "Device not detected. Please check the previous steps and try again."
+  },
+  "hardwareWalletRepairLink": {
+    "message": "Repair Device"
+  },
+  "hardwareWalletRepairNextButton": {
+    "message": "Next"
+  },
+  "hardwareWalletRepairReconnectButton": {
+    "message": "Try Again"
+  },
+  "hardwareWalletRepairConnectButton": {
+    "message": "Connect"
+  },
+  "hardwareWalletRepairStepFourDescription": {
+    "message": "Attempt to reconnect your device."
+  },
+  "hardwareWalletRepairStepFourTitle": {
+    "message": "Reconnect"
+  },
+  "hardwareWalletRepairStepOneDescription": {
+    "message": "Make sure the USB cable is firmly connected to both your device and computer. Try a different USB port or cable."
+  },
+  "hardwareWalletRepairStepOneTitle": {
+    "message": "Check USB Connection"
+  },
+  "hardwareWalletRepairStepThreeDescription": {
+    "message": "Open the Ethereum (ETH) app on your device."
+  },
+  "hardwareWalletRepairStepThreeTitle": {
+    "message": "Open Ethereum App"
+  },
+  "hardwareWalletRepairStepTwoDescription": {
+    "message": "Enter your PIN to unlock your hardware wallet."
+  },
+  "hardwareWalletRepairStepTwoTitle": {
+    "message": "Unlock Your Device"
+  },
+  "hardwareWalletRepairSuccessDescription": {
+    "message": "Your device has been reconnected successfully. You can close this tab."
+  },
+  "hardwareWalletRepairSuccessTitle": {
+    "message": "Device Connected"
+  },
+  "hardwareWalletRepairTitle": {
+    "message": "Connect Hardware Device"
+  },
+  "hardwareWalletRepairPermissionsTitle": {
+    "message": "Allow MetaMask permissions to:"
+  },
+  "hardwareWalletRepairPermissionsDescription": {
+    "message": "Connect to HID/USB devices to communicate with your hardware wallet."
+  },
   "helpAndSettings": {
     "message": "Help and settings"
   },

@@ -173,6 +173,7 @@ type HardwareWalletErrorModalProps = {
   onCancel?: () => void;
   onClose?: () => void;
   onRetry?: () => void;
+  onRepairDevice?: () => void;
 };
 
 const RECOVERY_SUCCESS_AUTO_DISMISS_MS = 3000;
@@ -197,7 +198,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const lastTrackedErrorKeyRef = useRef<string | null>(null);
     const prevNonNullErrorIdentityKeyRef = useRef<string | null>(null);
     const successModalMetricSentRef = useRef(false);
-    const { error, onClose, onCancel, onRetry } = { ...modalProps, ...props };
+    const { error, onClose, onCancel, onRetry, onRepairDevice } = { ...modalProps, ...props };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError, setConnectionReady } =
@@ -649,6 +650,22 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   </Button>
                 )}
               </Box>
+              {standardErrorContent?.showRepairLink && onRepairDevice && (
+                <Box
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.center}
+                  paddingTop={4}
+                  width={BlockSize.Full}
+                >
+                  <Button
+                    variant={ButtonVariant.Link}
+                    size={ButtonSize.Lg}
+                    onClick={onRepairDevice}
+                  >
+                    {t('hardwareWalletRepairLink')}
+                  </Button>
+                </Box>
+              )}
             </ModalFooter>
           )}
         </ModalContent>
