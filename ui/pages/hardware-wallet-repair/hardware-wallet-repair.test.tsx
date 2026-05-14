@@ -32,9 +32,12 @@ jest.mock('../../contexts/hardware-wallets', () => ({
   useHardwareWalletConfig: jest.fn(),
 }));
 
-jest.mock('../../components/multichain/app-header/multichain-meta-fox-logo', () => ({
-  MultichainMetaFoxLogo: () => <div data-testid="mock-metafox-logo" />,
-}));
+jest.mock(
+  '../../components/multichain/app-header/multichain-meta-fox-logo',
+  () => ({
+    MultichainMetaFoxLogo: () => <div data-testid="mock-metafox-logo" />,
+  }),
+);
 
 function renderRepairPage(
   walletType: HardwareWalletType = HardwareWalletType.Ledger,
@@ -99,9 +102,7 @@ describe('HardwareWalletRepair', () => {
 
   it('renders the connect button', () => {
     const { getByTestId } = renderRepairPage();
-    expect(
-      getByTestId('hardware-wallet-repair-reconnect'),
-    ).toBeInTheDocument();
+    expect(getByTestId('hardware-wallet-repair-reconnect')).toBeInTheDocument();
   });
 
   it('requests device permission then connects on success', async () => {
@@ -147,19 +148,17 @@ describe('HardwareWalletRepair', () => {
     const { getByTestId, findByText } = renderRepairPage();
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
     await findByText('hardwareWalletRepairSuccessTitle');
-    expect(
-      getByTestId('hardware-wallet-repair-close'),
-    ).toBeInTheDocument();
+    expect(getByTestId('hardware-wallet-repair-close')).toBeInTheDocument();
   });
 
   it('shows error when ensureDeviceReady throws', async () => {
     mockRequestHardwareWalletPermission.mockResolvedValue(true);
-    mockEnsureDeviceReady.mockRejectedValue(new Error('test error from device'));
+    mockEnsureDeviceReady.mockRejectedValue(
+      new Error('test error from device'),
+    );
     const { getByTestId, findByText } = renderRepairPage();
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
-    expect(
-      await findByText('test error from device'),
-    ).toBeInTheDocument();
+    expect(await findByText('test error from device')).toBeInTheDocument();
   });
 
   it('shows detecting text while connecting', async () => {

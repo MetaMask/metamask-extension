@@ -218,7 +218,14 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       };
       dispatch(showModal(modalPayload));
     },
-    [dispatch, displayedError, handleCancel, handleRetry, isUserRejection, openRepairPage],
+    [
+      dispatch,
+      displayedError,
+      handleCancel,
+      handleRetry,
+      isUserRejection,
+      openRepairPage,
+    ],
   );
 
   /**

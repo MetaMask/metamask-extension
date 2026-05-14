@@ -123,6 +123,7 @@ export function buildErrorContent(
 
     // Device state - Disconnected/Connection issues
     case ErrorCode.DeviceDisconnected:
+    case ErrorCode.ConnectionTransportMissing:
       return {
         variant: HardwareWalletErrorContentVariant.Recovery,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),

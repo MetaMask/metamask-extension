@@ -60,7 +60,10 @@ describe('buildErrorContent', () => {
         HardwareWalletType.Ledger,
       );
       const content = buildErrorContent(error, HardwareWalletType.Ledger, t);
-      expect(content).toMatchObject({ showRepairLink: true });
+      expect(content).toMatchObject({
+        variant: 'recovery',
+        showRepairLink: true,
+      });
     });
 
     it('returns showRepairLink false for AuthenticationDeviceLocked', () => {

@@ -30,11 +30,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-} from '../../../component-library';
+import { Modal, ModalContent, ModalHeader } from '../../../component-library';
 import {
   BlockSize,
   Display,
@@ -201,7 +197,10 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const lastTrackedErrorKeyRef = useRef<string | null>(null);
     const prevNonNullErrorIdentityKeyRef = useRef<string | null>(null);
     const successModalMetricSentRef = useRef(false);
-    const { error, onClose, onCancel, onRetry, onRepairDevice } = { ...modalProps, ...props };
+    const { error, onClose, onCancel, onRetry, onRepairDevice } = {
+      ...modalProps,
+      ...props,
+    };
 
     const { walletType: selectedAccountWalletType } = useHardwareWalletConfig();
     const { ensureDeviceReady, clearError, setConnectionReady } =
@@ -644,17 +643,18 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                             </li>
                           ),
                         )}
-                        {standardErrorContent.showRepairLink && onRepairDevice && (
-                          <li>
-                            <TextButton
-                              size={TextButtonSize.BodyMd}
-                              onClick={handleRepairDevice}
-                              className="hover:bg-transparent active:bg-transparent w-fit"
-                            >
-                              {t('hardwareWalletRepairLink')}
-                            </TextButton>
-                          </li>
-                        )}
+                        {standardErrorContent.showRepairLink &&
+                          onRepairDevice && (
+                            <li>
+                              <TextButton
+                                size={TextButtonSize.BodyMd}
+                                onClick={handleRepairDevice}
+                                className="hover:bg-transparent active:bg-transparent w-fit"
+                              >
+                                {t('hardwareWalletRepairLink')}
+                              </TextButton>
+                            </li>
+                          )}
                       </ul>
                     </Box>
                   )}
@@ -691,7 +691,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   </Button>
                 )}
               </Box>
-
             </ModalFooter>
           )}
         </ModalContent>
