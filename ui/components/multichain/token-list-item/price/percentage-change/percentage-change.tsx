@@ -1,9 +1,12 @@
 import React from 'react';
 import { CaipAssetType } from '@metamask/utils';
-import { Box, Text } from '../../../../component-library';
 import {
-  AlignItems,
-  Display,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { Text } from '../../../../component-library';
+import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
@@ -35,7 +38,11 @@ export const PercentageChange = ({
   const formattedValue = formatValue(value, false);
 
   return (
-    <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={1}
+    >
       <Text
         variant={TextVariant.bodySmMedium}
         color={color}

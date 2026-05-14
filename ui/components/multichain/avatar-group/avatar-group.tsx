@@ -4,14 +4,15 @@ import {
   AvatarAccount,
   AvatarAccountSize,
   AvatarAccountVariant,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
 } from '@metamask/design-system-react';
 import { Text } from '../../component-library/text';
 import {
-  AlignItems,
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  Display,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -19,7 +20,6 @@ import {
   AvatarTokenSize,
   AvatarToken,
 } from '../../component-library/avatar-token';
-import { Box } from '../../component-library/box';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -55,17 +55,20 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   const tagValue = `+${(membersCount - limit).toLocaleString()}`;
   return (
     <Box
-      alignItems={AlignItems.center}
-      display={Display.Flex}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
       className={classnames('multichain-avatar-group', className)}
       data-testid="avatar-group"
       gap={1}
     >
-      <Box display={Display.Flex} alignItems={AlignItems.center}>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+      >
         {visibleMembers.map((member, i) => {
           return (
             <Box
-              borderRadius={BorderRadius.full}
+              className="rounded-full"
               key={i}
               style={{ marginLeft: i === 0 ? '0' : marginLeftValue }}
             >

@@ -2,21 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useLocation } from 'react-router-dom';
-import { Box } from '../../../component-library';
 import {
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
-
-import type { StyleUtilityProps } from '../../../component-library/box';
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import type { BoxProps } from '@metamask/design-system-react';
 import { hideAppHeader } from '../../../../pages/routes/utils';
 
-// TODO: Convert to a `type` in a future major version.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-interface PageProps extends StyleUtilityProps {
+type PageProps = Omit<BoxProps, 'children'> & {
   /**
    * Elements that go in the page footer
    */
@@ -25,7 +20,7 @@ interface PageProps extends StyleUtilityProps {
    * Additional CSS class provided to the footer
    */
   className?: string;
-}
+};
 
 export const Page = ({ children, className = '', ...props }: PageProps) => {
   const location = useLocation();
@@ -37,22 +32,19 @@ export const Page = ({ children, className = '', ...props }: PageProps) => {
 
   return (
     <Box
-      width={BlockSize.Full}
-      height={BlockSize.Full}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.center}
-      backgroundColor={BackgroundColor.backgroundDefault}
-      className={classNames}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Center}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      className={`${classNames} w-full h-full`}
       data-testid="multichain-page"
     >
       <Box
-        width={BlockSize.Full}
-        height={BlockSize.Full}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        className={classnames('multichain-page__inner-container', className)}
+        flexDirection={BoxFlexDirection.Column}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        className={classnames(
+          'multichain-page__inner-container w-full h-full',
+          className,
+        )}
         {...props}
       >
         {children}

@@ -10,11 +10,7 @@ import {
   AlignItems,
 } from '../../../../../../helpers/constants/design-system';
 
-import type { StyleUtilityProps } from '../../../../../component-library/box';
-
-// TODO: Convert to a `type` in a future major version.
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-interface HeaderProps extends StyleUtilityProps {
+type HeaderProps = {
   /**
    * Elements that go in the page footer
    */
@@ -35,7 +31,7 @@ interface HeaderProps extends StyleUtilityProps {
    * Additional props to pass to the text
    */
   textProps?: React.ComponentProps<typeof Text>;
-}
+};
 
 export const Header = ({
   children,

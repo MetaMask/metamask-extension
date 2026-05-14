@@ -1,9 +1,8 @@
 import type { AvatarAccountVariant } from '@metamask/design-system-react';
 import { BorderColor } from '../../../helpers/constants/design-system';
 import { AvatarTokenSize } from '../../component-library/avatar-token/avatar-token.types';
-import type { StyleUtilityProps } from '../../component-library/box';
 
-export type AvatarGroupProps = StyleUtilityProps & {
+export type AvatarGroupProps = {
   /** * Additional class name for the AvatarGroup component */
   className?: string;
   /** * Limit to show only a certain number of tokens and extras in Text */

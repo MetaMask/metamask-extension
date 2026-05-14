@@ -1,6 +1,10 @@
 import React from 'react';
 
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -9,18 +13,11 @@ import {
   IconColor,
   IconSize,
 } from '@metamask/design-system-react';
-import { Box, Text } from '../../component-library';
+import { Text } from '../../component-library';
 import {
-  AlignItems,
-  BlockSize,
-  BackgroundColor,
-  Display,
-  FlexDirection,
   FontWeight,
-  JustifyContent,
   TextColor,
   TextVariant,
-  TextAlign,
 } from '../../../helpers/constants/design-system';
 import type { NotificationListItemIconProps } from '../notification-list-item-icon/notification-list-item-icon';
 import type { NotificationListItemTextProps } from '../notification-list-item-text/notification-list-item-text';
@@ -98,14 +95,12 @@ export const NotificationListItem = ({
 
   return (
     <Box
-      className={`notification-list-item ${
+      className={`notification-list-item w-full ${
         isRead ? '' : 'notification-list-item--unread'
       }`}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Start}
       paddingBottom={3}
       paddingRight={5}
       paddingLeft={5}
@@ -114,20 +109,18 @@ export const NotificationListItem = ({
       key={id}
     >
       <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.flexStart}
-        as="button"
-        onClick={handleClick}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.transparent}
+        asChild
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Start}
       >
+        <button
+          type="button"
+          onClick={handleClick}
+          className="w-full bg-transparent"
+        >
         {!isRead && (
-          <Box
-            display={Display.Block}
-            className="notification-list-item__unread-dot__wrapper"
-          >
+          <Box className="notification-list-item__unread-dot__wrapper block">
             <Icon
               name={IconName.FullCircle}
               color={IconColor.InfoDefault}
@@ -139,23 +132,17 @@ export const NotificationListItem = ({
         )}
 
         <Box
-          display={Display.Flex}
+          flexDirection={BoxFlexDirection.Row}
           gap={4}
           paddingRight={4}
-          height={BlockSize.Full}
-          alignItems={AlignItems.flexStart}
+          alignItems={BoxAlignItems.Start}
+          className="h-full"
         >
-          <Box height={BlockSize.Full} className="notification-list-item__icon">
+          <Box className="notification-list-item__icon h-full">
             <NotificationListItemIcon {...icon} />
           </Box>
 
-          <Box
-            display={Display.Block}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexStart}
-            textAlign={TextAlign.Left}
-            width={BlockSize.Full}
-          >
+          <Box className="block text-left w-full">
             {/* Notification Title */}
             <NotificationListItemText
               {...title}
@@ -166,11 +153,9 @@ export const NotificationListItem = ({
           </Box>
         </Box>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexEnd}
-          textAlign={TextAlign.Right}
-          className="notification-list-item__right-container"
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.End}
+          className="notification-list-item__right-container text-right"
         >
           {/* Date */}
           <Text
@@ -193,6 +178,7 @@ export const NotificationListItem = ({
             </Text>
           )}
         </Box>
+        </button>
       </Box>
 
       {/* CTA Button */}

@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
-import { Box } from '../../component-library';
-import { NftItem } from '../nft-item';
 import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { NftItem } from '../nft-item';
 
 export type NotificationDetailNftProps = {
   networkName: string;
@@ -33,9 +33,9 @@ export const NotificationDetailNft: FC<NotificationDetailNftProps> = ({
   <Box
     paddingTop={1}
     paddingBottom={4}
-    display={Display.Flex}
-    alignItems={AlignItems.center}
-    justifyContent={JustifyContent.center}
+    flexDirection={BoxFlexDirection.Row}
+    alignItems={BoxAlignItems.Center}
+    justifyContent={BoxJustifyContent.Center}
   >
     <Box className="notification-detail-nft__image">
       <NftItem

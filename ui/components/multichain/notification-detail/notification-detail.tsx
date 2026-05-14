@@ -1,16 +1,12 @@
 import React from 'react';
 import type { FC } from 'react';
 
-import { Box } from '../../component-library';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-} from '../../../helpers/constants/design-system';
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 
 export type NotificationDetailProps = {
   icon: JSX.Element;
@@ -40,32 +36,28 @@ export const NotificationDetail: FC<NotificationDetailProps> = ({
 }): JSX.Element => {
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Start}
       paddingBottom={2}
       paddingRight={4}
       paddingLeft={4}
       paddingTop={2}
-      backgroundColor={BackgroundColor.transparent}
+      className="w-full bg-transparent"
     >
       <Box
-        display={Display.Flex}
+        flexDirection={BoxFlexDirection.Row}
         gap={4}
         paddingRight={4}
-        height={BlockSize.Full}
-        alignItems={AlignItems.flexStart}
+        alignItems={BoxAlignItems.Start}
+        className="h-full"
       >
-        <Box height={BlockSize.Full} className="notification-detail__icon">
-          {icon}
-        </Box>
+        <Box className="notification-detail__icon h-full">{icon}</Box>
 
         <Box
-          display={Display.Block}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.flexStart}
-          textAlign={TextAlign.Left}
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Start}
+          className="text-left"
         >
           {/* The item in the left side of the primary row */}
           {primaryTextLeft}
@@ -74,11 +66,9 @@ export const NotificationDetail: FC<NotificationDetailProps> = ({
         </Box>
       </Box>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
-        textAlign={TextAlign.Right}
-        className="notification-detail__right-container"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.End}
+        className="notification-detail__right-container text-right"
       >
         {/* The item in the right side of the primary row */}
         {primaryTextRight ?? null}

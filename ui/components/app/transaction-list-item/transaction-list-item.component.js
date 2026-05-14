@@ -9,7 +9,13 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Button, ButtonSize } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  Button,
+  ButtonSize,
+} from '@metamask/design-system-react';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
@@ -21,14 +27,11 @@ import TransactionStatusLabel from '../transaction-status-label/transaction-stat
 import TransactionIcon from '../transaction-icon';
 import {
   Color,
-  Display,
   FontWeight,
   TextAlign,
   TextVariant,
-  FlexDirection,
-  AlignItems,
 } from '../../../helpers/constants/design-system';
-import { Box, Text } from '../../component-library';
+import { Text } from '../../component-library';
 
 import { getStatusKey } from '../../../helpers/utils/transactions.util';
 import {
@@ -334,9 +337,8 @@ function TransactionListItemInner({
           !isApproval && (
             <>
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-                alignItems={AlignItems.center}
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
               >
                 <Text
                   variant={TextVariant.bodyMdMedium}

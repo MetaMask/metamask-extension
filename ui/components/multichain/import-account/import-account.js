@@ -8,7 +8,8 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, ButtonLink, Label, Text } from '../../component-library';
+import { Box } from '@metamask/design-system-react';
+import { ButtonLink, Label, Text } from '../../component-library';
 import Dropdown from '../../ui/dropdown';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {

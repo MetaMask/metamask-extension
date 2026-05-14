@@ -1,11 +1,13 @@
 import React from 'react';
-import { Box, Text, Icon, IconName } from '../../component-library';
 import {
-  Display,
-  FlexDirection,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { Text, Icon, IconName } from '../../component-library';
+import {
   TextVariant,
   TextColor,
-  AlignItems,
 } from '../../../helpers/constants/design-system';
 
 type FundingMethodItemProps = {
@@ -22,15 +24,15 @@ const FundingMethodItem: React.FC<FundingMethodItemProps> = ({
   onClick,
 }) => (
   <Box
-    display={[Display.Flex]}
+    flexDirection={BoxFlexDirection.Row}
     gap={2}
-    alignItems={AlignItems.center}
+    alignItems={BoxAlignItems.Center}
     onClick={onClick}
     className="funding-method-item"
     padding={4}
   >
     <Icon name={icon} />
-    <Box display={[Display.Flex]} flexDirection={FlexDirection.Column}>
+    <Box flexDirection={BoxFlexDirection.Column}>
       <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
       <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
         {description}

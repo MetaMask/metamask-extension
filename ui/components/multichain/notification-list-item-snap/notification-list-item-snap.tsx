@@ -1,18 +1,17 @@
 import React from 'react';
 
-import { Box, Icon, IconName, Text, IconSize } from '../../component-library';
 import {
-  AlignItems,
-  BlockSize,
-  BackgroundColor,
-  Display,
-  FlexDirection,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { Icon, IconName, Text, IconSize } from '../../component-library';
+import {
   FontWeight,
-  JustifyContent,
   IconColor,
   TextColor,
   TextVariant,
-  TextAlign,
 } from '../../../helpers/constants/design-system';
 import type { NotificationListItemTextProps } from '../notification-list-item-text/notification-list-item-text';
 import { NotificationListItemText } from '../notification-list-item-text';
@@ -65,14 +64,12 @@ export const NotificationListItemSnap = ({
 
   return (
     <Box
-      className={`notification-list-item ${
+      className={`notification-list-item w-full ${
         isRead ? '' : 'notification-list-item--unread'
       }`}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
-      width={BlockSize.Full}
+      flexDirection={BoxFlexDirection.Column}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Start}
       paddingBottom={3}
       paddingRight={5}
       paddingLeft={5}
@@ -82,21 +79,15 @@ export const NotificationListItemSnap = ({
       style={{ cursor: 'pointer' }}
     >
       <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.flexStart}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.transparent}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        alignItems={BoxAlignItems.Start}
         gap={4}
-        height={BlockSize.Full}
+        className="w-full h-full bg-transparent"
         style={{ paddingLeft: '6px', paddingRight: '6px', paddingTop: '2px' }}
       >
         {!isRead && (
-          <Box
-            display={Display.Block}
-            className="notification-list-item__unread-dot__wrapper--snap"
-          >
+          <Box className="notification-list-item__unread-dot__wrapper--snap block">
             <Icon
               name={IconName.FullCircle}
               color={IconColor.primaryDefault}
@@ -106,29 +97,21 @@ export const NotificationListItemSnap = ({
           </Box>
         )}
 
-        <Box height={BlockSize.Full} className="notification-list-item__icon">
+        <Box className="notification-list-item__icon h-full">
           <SnapIcon snapId={snapId} avatarSize={IconSize.Md} />
         </Box>
 
         <Box
-          display={Display.Flex}
+          flexDirection={BoxFlexDirection.Row}
           gap={4}
-          height={BlockSize.Full}
-          alignItems={AlignItems.flexStart}
-          width={BlockSize.Full}
+          alignItems={BoxAlignItems.Start}
+          className="w-full h-full"
         >
-          <Box
-            display={Display.Block}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexStart}
-            textAlign={TextAlign.Left}
-            width={BlockSize.Full}
-          >
+          <Box className="block text-left w-full">
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.flexStart}
-              justifyContent={JustifyContent.spaceBetween}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Start}
+              justifyContent={BoxJustifyContent.Between}
             >
               {/* Notification Title */}
               <Box onClick={handleButtonClick}>
@@ -150,10 +133,7 @@ export const NotificationListItemSnap = ({
             </Box>
 
             {/* Snap Message */}
-            <Box
-              color={TextColor.textDefault}
-              className="snap-notifications__item__details__message"
-            >
+            <Box className="snap-notifications__item__details__message text-default">
               <SnapUIMarkdown markdown>{snapMessage}</SnapUIMarkdown>
             </Box>
           </Box>
