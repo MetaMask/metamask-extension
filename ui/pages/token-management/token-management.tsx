@@ -641,6 +641,7 @@ export const TokenManagementPage = () => {
           primaryLabel={payload.name || payload.symbol}
           secondaryLabel={
             networkConfigurations?.[payload.hexChainId as Hex]?.name ??
+            allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
             payload.caipChainId
           }
           isOn={isImported || payload.isNative}
@@ -652,6 +653,7 @@ export const TokenManagementPage = () => {
       );
     },
     [
+      allMultichainNetworkConfigurations,
       handleSearchResultToggle,
       importedAssetIds,
       networkConfigurations,

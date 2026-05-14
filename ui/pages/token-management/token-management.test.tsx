@@ -549,6 +549,64 @@ describe('TokenManagementPage', () => {
     ).toHaveTextContent(messages.noTokensMatchSearch.message);
   });
 
+  it('shows the multichain network name for a non-EVM search result', () => {
+    const solanaResultId = `${solanaChainId}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: solanaResultId,
+          symbol: 'USDC',
+          decimals: 6,
+          name: 'USD Coin',
+        },
+      ],
+    });
+
+    const baseState = createState({
+      enabledNetworkMap: {
+        eip155: { '0x1': true },
+        solana: { [solanaChainId]: true },
+      },
+      accountGroupAssets: {
+        [solanaChainId]: [solanaToken],
+      },
+    });
+    const stateWithSolanaAccount = {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        internalAccounts: {
+          ...baseState.metamask.internalAccounts,
+          accounts: {
+            ...baseState.metamask.internalAccounts.accounts,
+            'solana-internal-account': {
+              id: 'solana-internal-account',
+              address: 'SolanaAddress',
+              type: 'solana:data-account',
+              scopes: [solanaChainId],
+              options: {},
+              methods: [],
+              metadata: { name: 'Solana 1', keyring: { type: 'Snap Keyring' } },
+            },
+          },
+        },
+      },
+    };
+    renderPage(
+      stateWithSolanaAccount as unknown as ReturnType<typeof createState>,
+    );
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    const row = screen.getByTestId(
+      `token-management-cell-search-${solanaResultId.toLowerCase()}`,
+    );
+    expect(row.textContent ?? '').not.toContain(solanaChainId);
+    expect(row.textContent ?? '').toContain(messages.networkNameSolana.message);
+  });
+
   it('surfaces a friendly error message when the search request fails', () => {
     setTokenSearchState({ error: new Error('boom') });
     renderPage();
