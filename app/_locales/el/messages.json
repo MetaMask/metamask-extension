@@ -5329,69 +5329,57 @@
   "participateInMetaMetricsDescription": {
     "message": "Πάρτε μέρος στα MetaMetrics για να μας βοηθήσετε να κάνουμε καλύτερο το MetaMask"
   },
-  "passkeyAuthMethodBiometrics": {
-    "message": "Βιομετρικά δεδομένα",
-    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
-  },
-  "passkeyAuthMethodTouchId": {
-    "message": "Touch ID",
-    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
-  },
-  "passkeyAuthMethodWindowsHello": {
-    "message": "Windows Hello",
-    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
-  },
   "passkeyDescription": {
     "message": "Χρησιμοποιήστε το $1 για να ξεκλειδώσετε το MetaMask αντί να εισάγετε τον κωδικό πρόσβασής σας. Αυτό δημιουργεί ένα κλειδί πρόσβασης μόνο σε αυτή τη συσκευή.",
     "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
   },
   "passkeyErrorAlreadyEnrolled": {
     "message": "Το $1 έχει ήδη ρυθμιστεί για αυτό το πορτοφόλι.",
-    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
     "message": "Δεν μπορέσαμε να επαληθεύσουμε το $1. Προσπαθήστε ξανά.",
-    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey authentication response verification fails."
   },
   "passkeyErrorMissingKeyMaterial": {
     "message": "Η απόκριση του $1 ήταν ελλιπής. Προσπαθήστε ξανά.",
-    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when the passkey assertion is missing required key material."
   },
   "passkeyErrorNoAuthenticationCeremony": {
     "message": "Η συνεδρία σύνδεσης με το $1 έληξε. Προσπαθήστε ξανά.",
-    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey authentication runs without an active authentication ceremony."
   },
   "passkeyErrorNoRegistrationCeremony": {
     "message": "Η συνεδρία ρύθμισης του $1 έληξε. Ξεκινήστε ξανά από την αρχή.",
-    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey registration verification runs without an active registration ceremony."
   },
   "passkeyErrorNotEnrolled": {
     "message": "Το $1 δεν έχει ρυθμιστεί για αυτό το πορτοφόλι. Ενεργοποιήστε το $1 στις Ρυθμίσεις.",
-    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "Η ρύθμιση του $1 απέτυχε. Προσπαθήστε ξανά",
-    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
   },
   "passkeyErrorRegistrationVerificationFailed": {
     "message": "Δεν μπορέσαμε να επαληθεύσουμε τη ρύθμιση του $1. Προσπαθήστε ξανά.",
-    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey registration response verification fails."
   },
   "passkeyErrorVaultKeyDecryptionFailed": {
     "message": "Δεν μπορέσαμε να ξεκλειδώσουμε με το $1. Προσπαθήστε ξανά ή ρυθμίστε ξανά το $1 στις Ρυθμίσεις.",
-    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
   },
   "passkeyErrorVaultKeyMismatch": {
     "message": "Το $1 δεν ταιριάζει με το τρέχον κλείδωμα του πορτοφολιού σας. Ρυθμίστε ξανά το $1 στις Ρυθμίσεις.",
-    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
   },
   "passkeyErrorVaultKeyRenewalFailed": {
     "message": "Ο κωδικός πρόσβασής σας ενημερώθηκε, αλλά το ξεκλείδωμα με $1 δεν μπόρεσε να ενεργοποιηθεί.",
-    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
   },
   "passkeyErrorVerificationFailed": {
     "message": "Δεν μπορέσαμε να επαληθεύσουμε το $1. Προσπαθήστε ξανά ή χρησιμοποιήστε τον κωδικό πρόσβασής σας.",
-    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
   },
   "passkeySetupStepRegister": {
     "message": "Εγγραφή με $1",
@@ -5440,14 +5428,6 @@
   "passkeyUnlockFailed": {
     "message": "Το ξεκλείδωμα με $1 απέτυχε. Προσπαθήστε με τον κωδικό πρόσβασής σας.",
     "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
-  },
-  "passkeyVerifyingDescription": {
-    "message": "Χρησιμοποιήστε το $1 για επαλήθευση αντί να εισάγετε τον κωδικό πρόσβασής σας.",
-    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
-  },
-  "passkeyVerifyingTitle": {
-    "message": "Επιβεβαίωση με $1",
-    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "Κωδικός πρόσβασης"
@@ -7335,7 +7315,7 @@
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε, αλλά το ξεκλείδωμα με $1 δεν μπόρεσε να ενεργοποιηθεί.",
-    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
   },
   "securityChangePasswordToastSuccess": {
     "message": "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε"
@@ -7494,7 +7474,7 @@
   },
   "settingUpPasskey": {
     "message": "Ρυθμίζοντας το $1",
-    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
   },
   "settings": {
     "message": "Ρυθμίσεις"

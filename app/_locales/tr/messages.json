@@ -5329,69 +5329,57 @@
   "participateInMetaMetricsDescription": {
     "message": "MetaMask'ı daha iyi hale getirebilmemize yardımcı olmak için MetaMetrics'e katılın"
   },
-  "passkeyAuthMethodBiometrics": {
-    "message": "Biyometri",
-    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
-  },
-  "passkeyAuthMethodTouchId": {
-    "message": "Touch ID",
-    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
-  },
-  "passkeyAuthMethodWindowsHello": {
-    "message": "Windows Hello",
-    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
-  },
   "passkeyDescription": {
     "message": "MetaMask'in kilidini açmak için şifrenizi girmek yerine $1 kullanın. Bu işlem, yalnızca bu cihazda bir geçiş anahtarı oluşturur.",
     "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
   },
   "passkeyErrorAlreadyEnrolled": {
     "message": "Bu cüzdan için $1 kurulumu zaten yapılmış.",
-    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
     "message": "$1 doğrulanamadı. Tekrar deneyin.",
-    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey authentication response verification fails."
   },
   "passkeyErrorMissingKeyMaterial": {
     "message": "$1 yanıtınız eksikti. Tekrar deneyin.",
-    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when the passkey assertion is missing required key material."
   },
   "passkeyErrorNoAuthenticationCeremony": {
     "message": "$1 ile giriş oturumunun süresi doldu. Tekrar deneyin.",
-    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey authentication runs without an active authentication ceremony."
   },
   "passkeyErrorNoRegistrationCeremony": {
     "message": "$1 kurulum oturumunun süresi doldu. Tekrar baştan deneyin.",
-    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey registration verification runs without an active registration ceremony."
   },
   "passkeyErrorNotEnrolled": {
     "message": "Bu cüzdan için $1 kurulumu yapılmamış. Ayarlarda $1 seçeneğini açın.",
-    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "$1 kurulumu başarısız oldu. Tekrar deneyin",
-    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
   },
   "passkeyErrorRegistrationVerificationFailed": {
     "message": "$1 kurulumunuzu doğrulayamadık. Tekrar deneyin.",
-    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey registration response verification fails."
   },
   "passkeyErrorVaultKeyDecryptionFailed": {
     "message": "$1 ile kilidi açamadık. Tekrar deneyin veya Ayarlar bölümünde $1 kurulumunu tekrar yapın.",
-    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
   },
   "passkeyErrorVaultKeyMismatch": {
     "message": "$1 mevcut cüzdan kilidinizle uyumlu değil. Ayarlar bölümünde $1 kurulumunu tekrar yapın.",
-    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
   },
   "passkeyErrorVaultKeyRenewalFailed": {
     "message": "Şifreniz güncellendi ancak $1 ile kilit açma özelliği açılamadı.",
-    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
   },
   "passkeyErrorVerificationFailed": {
     "message": "$1 doğrulanamadı. Tekrar deneyin veya şifrenizi kullanın.",
-    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
   },
   "passkeySetupStepRegister": {
     "message": "$1 Kaydet",
@@ -5440,14 +5428,6 @@
   "passkeyUnlockFailed": {
     "message": "$1 ile kilit açma başarısız oldu. Şifrenizle deneyin.",
     "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
-  },
-  "passkeyVerifyingDescription": {
-    "message": "Doğrulamak için şifrenizi girmek yerine $1 kullanın.",
-    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
-  },
-  "passkeyVerifyingTitle": {
-    "message": "$1 ile onayla",
-    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "Şifre"
@@ -7339,7 +7319,7 @@
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "Yeni şifre kaydedildi ancak $1 ile kilit açma özelliği açılamadı.",
-    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
   },
   "securityChangePasswordToastSuccess": {
     "message": "Yeni şifre kaydedildi"
@@ -7498,7 +7478,7 @@
   },
   "settingUpPasskey": {
     "message": "$1 kurulumu yapılıyor",
-    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
   },
   "settings": {
     "message": "Ayarlar"

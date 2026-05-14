@@ -5329,69 +5329,57 @@
   "participateInMetaMetricsDescription": {
     "message": "MetaMetricsに参加して、MetaMaskの改善にご協力ください"
   },
-  "passkeyAuthMethodBiometrics": {
-    "message": "生体認証",
-    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
-  },
-  "passkeyAuthMethodTouchId": {
-    "message": "Touch ID",
-    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
-  },
-  "passkeyAuthMethodWindowsHello": {
-    "message": "Windows Hello",
-    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
-  },
   "passkeyDescription": {
     "message": "パスワードを入力する代わりに、$1を使ってMetaMaskのロックを解除できます。これにより、このデバイスのみにパスキーが作成されます。",
     "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
   },
   "passkeyErrorAlreadyEnrolled": {
     "message": "$1はすでにこのウォレットで使えるように設定されています。",
-    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
     "message": "$1を確認できませんでした。もう一度お試しください。",
-    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey authentication response verification fails."
   },
   "passkeyErrorMissingKeyMaterial": {
     "message": "$1の応答が不完全でした。もう一度お試しください。",
-    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when the passkey assertion is missing required key material."
   },
   "passkeyErrorNoAuthenticationCeremony": {
     "message": "$1のサインインセッションが期限切れになりました。もう一度お試しください。",
-    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey authentication runs without an active authentication ceremony."
   },
   "passkeyErrorNoRegistrationCeremony": {
     "message": "$1のセットアップセッションが期限切れになりました。もう一度最初からお試しください。",
-    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey registration verification runs without an active registration ceremony."
   },
   "passkeyErrorNotEnrolled": {
     "message": "$1がこのウォレットで使えるように設定されていません。設定で$1をオンにしてください。",
-    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "$1の設定に失敗しました。もう一度お試しください",
-    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
   },
   "passkeyErrorRegistrationVerificationFailed": {
     "message": "$1の設定を確認できませんでした。もう一度お試しください。",
-    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey registration response verification fails."
   },
   "passkeyErrorVaultKeyDecryptionFailed": {
     "message": "$1でロックを解除できませんでした。もう一度試すか、設定で$1を設定しなおしてください。",
-    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
   },
   "passkeyErrorVaultKeyMismatch": {
     "message": "$1が現在のウォレットのロックと一致しません。設定で$1を設定しなおしてください。",
-    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
   },
   "passkeyErrorVaultKeyRenewalFailed": {
     "message": "パスワードは更新されましたが、$1によるロック解除はオンにできませんでした。",
-    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
   },
   "passkeyErrorVerificationFailed": {
     "message": "$1を確認できませんでした。もう一度試すか、パスワードを使用してください。",
-    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
   },
   "passkeySetupStepRegister": {
     "message": "$1の登録",
@@ -5440,14 +5428,6 @@
   "passkeyUnlockFailed": {
     "message": "$1のロック解除に失敗しました。パスワードをお試しください。",
     "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
-  },
-  "passkeyVerifyingDescription": {
-    "message": "パスワードを入力する代わりに、$1で確認します。",
-    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
-  },
-  "passkeyVerifyingTitle": {
-    "message": "$1での確定",
-    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "パスワード"
@@ -7335,7 +7315,7 @@
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "新しいパスワードは保存されましたが、$1によるロック解除はオンにできませんでした。",
-    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
   },
   "securityChangePasswordToastSuccess": {
     "message": "新しいパスワードを保存しました"
@@ -7494,7 +7474,7 @@
   },
   "settingUpPasskey": {
     "message": "$1の設定",
-    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
   },
   "settings": {
     "message": "設定"

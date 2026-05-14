@@ -5329,69 +5329,57 @@
   "participateInMetaMetricsDescription": {
     "message": "Участвуйте в MetaMetrics и помогайте нам улучшить MetaMask"
   },
-  "passkeyAuthMethodBiometrics": {
-    "message": "Биометрия",
-    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
-  },
-  "passkeyAuthMethodTouchId": {
-    "message": "Touch ID",
-    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
-  },
-  "passkeyAuthMethodWindowsHello": {
-    "message": "Windows Hello",
-    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
-  },
   "passkeyDescription": {
     "message": "Используйте $1 для разблокировки MetaMask вместо ввода пароля. Ключ доступа создается только на этом устройстве.",
     "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
   },
   "passkeyErrorAlreadyEnrolled": {
     "message": "$1 уже настроен для этого кошелька.",
-    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
     "message": "Нам не удалось проверить ваш $1. Попробуйте еще раз.",
-    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey authentication response verification fails."
   },
   "passkeyErrorMissingKeyMaterial": {
     "message": "Ваш ответ $1 был неполным. Попробуйте еще раз.",
-    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when the passkey assertion is missing required key material."
   },
   "passkeyErrorNoAuthenticationCeremony": {
     "message": "Срок действия сеанса входа $1 истек. Попробуйте еще раз.",
-    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey authentication runs without an active authentication ceremony."
   },
   "passkeyErrorNoRegistrationCeremony": {
     "message": "Срок действия сеанса настройки $1 истек. Повторите попытку с самого начала.",
-    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey registration verification runs without an active registration ceremony."
   },
   "passkeyErrorNotEnrolled": {
     "message": "$1 не настроен для этого кошелька. Включите $1 в Настройках.",
-    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "Сбой настройки $1. Попробуйте еще раз",
-    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
   },
   "passkeyErrorRegistrationVerificationFailed": {
     "message": "Нам не удалось проверить ваш $1. Попробуйте еще раз или используйте пароль.",
-    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when passkey registration response verification fails."
   },
   "passkeyErrorVaultKeyDecryptionFailed": {
     "message": "Не удалось разблокировать с помощью $1. Попробуйте еще раз или настройте $1 заново в Настройках.",
-    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
   },
   "passkeyErrorVaultKeyMismatch": {
     "message": "$1 не соответствует текущей блокировке вашего кошелька. Настройте $1 заново в Настройках.",
-    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
   },
   "passkeyErrorVaultKeyRenewalFailed": {
     "message": "Ваш пароль обновлен, но разблокировку по $1 включить не удалось.",
-    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
   },
   "passkeyErrorVerificationFailed": {
     "message": "Нам не удалось проверить ваш $1. Попробуйте еще раз или используйте пароль.",
-    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
   },
   "passkeySetupStepRegister": {
     "message": "Зарегистрировать $1",
@@ -5440,14 +5428,6 @@
   "passkeyUnlockFailed": {
     "message": "Сбой разблокировки с помощью $1. Попробуйте ввести пароль.",
     "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
-  },
-  "passkeyVerifyingDescription": {
-    "message": "Используйте $1 для проверки вместо ввода пароля.",
-    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
-  },
-  "passkeyVerifyingTitle": {
-    "message": "Подтвердить с помощью $1",
-    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "Пароль"
@@ -7335,7 +7315,7 @@
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "Новый пароль сохранен, но включить разблокировку по $1 не удалось.",
-    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
   },
   "securityChangePasswordToastSuccess": {
     "message": "Новый пароль сохранен"
@@ -7494,7 +7474,7 @@
   },
   "settingUpPasskey": {
     "message": "Настройка $1",
-    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
   },
   "settings": {
     "message": "Настройки"
