@@ -105,10 +105,7 @@ export default function TransactionStatusLabel({
 
   if (!shouldRenderStatusText(statusKey, statusDisplayMode)) {
     return (
-      <div
-        hidden
-        data-testid={`transaction-status-label--${statusKey}`}
-      />
+      <div hidden data-testid={`transaction-status-label--${statusKey}`} />
     );
   }
 
