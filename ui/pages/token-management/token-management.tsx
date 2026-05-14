@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, useStore } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -12,9 +12,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
-  Icon,
-  IconSize,
-  Input,
   IconName,
   Text,
   TextAlign,
@@ -26,6 +23,7 @@ import {
   type CaipChainId,
   type Hex,
 } from '@metamask/utils';
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -34,36 +32,63 @@ import {
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
+  getSelectedAddress,
 } from '../../selectors';
 import {
   getAllEnabledNetworksForAllNamespaces,
+  getAllMultichainNetworkConfigurations,
   getEnabledNetworksByNamespace,
   getIsEvmMultichainNetworkSelected,
   getSelectedMultichainNetworkConfiguration,
 } from '../../selectors/multichain/networks';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
 import {
+  addCustomAsset,
+  addImportedTokens,
+  hideAsset,
   ignoreTokens as ignoreTokensAction,
+  multichainAddAssets,
   multichainIgnoreAssets,
   showModal,
 } from '../../store/actions';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import {
   CUSTOM_TOKEN_IMPORT_ROUTE,
   DEFAULT_ROUTE,
 } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
+import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
 import {
   getAssetImageUrl,
   isEvmChainId,
   isTronSpecialAsset,
+  toAssetId,
 } from '../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAssetsWithPriority';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
+import { useDebouncedValue } from '../../hooks/useDebouncedValue';
+import { useTokenSearch } from '../../hooks/useTokenSearch';
+import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
+import {
+  convertSearchResultToImportPayload,
+  type SearchResultImportPayload,
+} from '../../../shared/lib/token-search/convert-search-result';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
+import {
+  TextFieldSearch,
+  TextFieldSearchSize,
+} from '../../components/component-library';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
+
+/**
+ * Debounce window applied to the search input before it reaches the Token API.
+ * Keeps the request rate sane while still feeling instant.
+ */
+const SEARCH_DEBOUNCE_MS = 300;
 
 /**
  * Full-screen Token Management page.
@@ -73,9 +98,6 @@ type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
  * mirrors the home-page asset list for the current network filter, and lets
  * users hide manageable EVM tokens from that list.
  *
- * The Figma design (`Token-page-update`, node 1:8292) defines the row cell
- * used for each token row; this page composes those cells under a header
- * with title and a network filter.
  */
 export const TokenManagementPage = () => {
   const t = useI18nContext();
@@ -83,7 +105,33 @@ export const TokenManagementPage = () => {
   const navigate = useNavigate();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [pendingKey, setPendingKey] = useState<string | undefined>();
+  const [pendingKeys, setPendingKeys] = useState<ReadonlySet<string>>(
+    () => new Set<string>(),
+  );
+
+  const addPendingKey = useCallback((key: string) => {
+    setPendingKeys((prev) => {
+      const next = new Set(prev);
+      next.add(key);
+      return next;
+    });
+  }, []);
+
+  const removePendingKey = useCallback((key: string) => {
+    setPendingKeys((prev) => {
+      if (!prev.has(key)) {
+        return prev;
+      }
+      const next = new Set(prev);
+      next.delete(key);
+      return next;
+    });
+  }, []);
+
+  const isAssetsUnifiedStateInBuild = useMemo(
+    () => getIsAssetsUnifiedStateIncludedInBuild(),
+    [],
+  );
 
   const accountGroupIdAssets = useSelector(
     getAssetsBySelectedAccountGroup,
@@ -110,6 +158,43 @@ export const TokenManagementPage = () => {
     }
   });
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
+  // Includes non-EVM (Solana, Bitcoin, ...) networks keyed by CAIP-2 chain id.
+  // Used to resolve a display name when the active enabled network is non-EVM,
+  // which is missing from the EVM-only `networkConfigurations` map above.
+  const allMultichainNetworkConfigurations = useSelector(
+    getAllMultichainNetworkConfigurations,
+  );
+  // Raw TokensController state. `accountGroupIdAssets` (via
+  // `selectAssetsBySelectedAccountGroup`) filters out tokens that don't yet
+  // have a balance entry, which is exactly the case right after the user
+  // imports a token from a search result. Reading `allTokens` directly lets
+  // the toggle (and the home list) reflect the import immediately.
+  const allTokensByChain = useSelector(getTokensControllerAllTokens) as Record<
+    string,
+    Record<string, { address: string }[]>
+  >;
+  const selectedAddress = useSelector(getSelectedAddress) as string | undefined;
+
+  // Looks up the internal account in the selected account group that maps to
+  // a given CAIP chain id. Used when importing a search result so the unified
+  // AssetsController has an account to associate the asset with.
+  //
+  // Backed by `useStore` (not `useSelector`) because we only need the current
+  // state at the moment the user toggles a row — subscribing here would
+  // produce a fresh function on every dispatch, breaking memoization
+  // downstream and forcing the whole page to re-render on unrelated state
+  // changes.
+  const store = useStore();
+  const getAccountForChain = useCallback(
+    (caipChainId: CaipChainId) =>
+      getInternalAccountBySelectedAccountGroupAndCaip(
+        store.getState() as Parameters<
+          typeof getInternalAccountBySelectedAccountGroupAndCaip
+        >[0],
+        caipChainId,
+      ),
+    [store],
+  );
 
   const enabledChainIds = useMemo(
     () =>
@@ -151,8 +236,21 @@ export const TokenManagementPage = () => {
       },
     );
 
+    const seen = new Set<string>();
+    const dedupedAssets: typeof accountAssetsPreSort = [];
+    accountAssetsPreSort.forEach((asset) => {
+      const id =
+        'address' in asset && asset.address ? asset.address : asset.assetId;
+      const key = `${asset.chainId}:${String(id).toLowerCase()}`;
+      if (seen.has(key)) {
+        return;
+      }
+      seen.add(key);
+      dedupedAssets.push(asset);
+    });
+
     const accountAssets = sortAssetsWithPriority(
-      accountAssetsPreSort,
+      dedupedAssets,
       tokenSortConfig,
     ) as ManagedAsset[];
 
@@ -175,26 +273,104 @@ export const TokenManagementPage = () => {
     useExternalServices,
   ]);
 
-  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
-  const filteredVisibleTokens = useMemo(() => {
-    if (!normalizedSearchQuery) {
-      return visibleTokens;
-    }
+  const normalizedSearchQuery = searchQuery.trim();
+  const debouncedSearchQuery = useDebouncedValue(
+    normalizedSearchQuery,
+    SEARCH_DEBOUNCE_MS,
+  );
 
-    return visibleTokens.filter((token) =>
-      [
-        token.name,
-        token.symbol,
-        'address' in token ? token.address : undefined,
-        token.assetId,
-        token.chainId,
-      ].some((value) =>
-        String(value ?? '')
-          .toLowerCase()
-          .includes(normalizedSearchQuery),
-      ),
+  const searchNetworks = useMemo(() => {
+    if (enabledChainIds.length === 0) {
+      return undefined;
+    }
+    return enabledChainIds.map((chainId) =>
+      formatChainIdToCaip(chainId as Hex | CaipChainId),
     );
-  }, [normalizedSearchQuery, visibleTokens]);
+  }, [enabledChainIds]);
+
+  const {
+    data: searchResponse,
+    isFetching: isSearchFetching,
+    error: searchQueryError,
+  } = useTokenSearch({
+    query: debouncedSearchQuery,
+    networks: searchNetworks,
+  });
+
+  const hasQuery = normalizedSearchQuery.length > 0;
+  const isWaitingForDebounce =
+    hasQuery && normalizedSearchQuery !== debouncedSearchQuery;
+
+  const searchResults = hasQuery ? (searchResponse?.data ?? []) : [];
+  const hasResults = searchResults.length > 0;
+  const isSearching =
+    isWaitingForDebounce ||
+    (hasQuery && debouncedSearchQuery.length > 0 && isSearchFetching);
+  const searchError = hasQuery ? searchQueryError : null;
+
+  const chainToHex = useCallback((chainId: string): string => {
+    if (chainId.startsWith('eip155:')) {
+      const dec = Number(chainId.split(':')[1]);
+      return Number.isFinite(dec)
+        ? `0x${dec.toString(16)}`.toLowerCase()
+        : chainId.toLowerCase();
+    }
+    return chainId.toLowerCase();
+  }, []);
+
+  // Pull every imported EVM token address for the current account out of
+  // TokensController directly. This bypasses the balance-gated filter inside
+  // `selectAssetsBySelectedAccountGroup`, which would otherwise hide a token
+  // for the few seconds between import and the first balance fetch.
+  const importedEvmTokensByChain = useMemo(() => {
+    const map = new Map<string, Set<string>>();
+    if (!selectedAddress) {
+      return map;
+    }
+    const lowercasedSelected = selectedAddress.toLowerCase();
+    Object.entries(allTokensByChain ?? {}).forEach(
+      ([chainId, tokensByAddress]) => {
+        const hexChainId = chainToHex(chainId);
+        Object.entries(tokensByAddress ?? {}).forEach(
+          ([accountAddress, tokens]) => {
+            if (accountAddress.toLowerCase() !== lowercasedSelected) {
+              return;
+            }
+            const set = map.get(hexChainId) ?? new Set<string>();
+            tokens.forEach((token) => {
+              if (token?.address) {
+                set.add(token.address.toLowerCase());
+              }
+            });
+            map.set(hexChainId, set);
+          },
+        );
+      },
+    );
+    return map;
+  }, [allTokensByChain, chainToHex, selectedAddress]);
+
+  const importedAssetIds = useMemo(() => {
+    const set = new Set<string>();
+    visibleTokens.forEach((token) => {
+      if (token.assetId) {
+        set.add(String(token.assetId).toLowerCase());
+      }
+      if ('address' in token && token.address && token.chainId) {
+        set.add(
+          `${chainToHex(String(token.chainId))}:${String(
+            token.address,
+          ).toLowerCase()}`,
+        );
+      }
+    });
+    importedEvmTokensByChain.forEach((addresses, chainHex) => {
+      addresses.forEach((address) => {
+        set.add(`${chainHex}:${address}`);
+      });
+    });
+    return set;
+  }, [chainToHex, importedEvmTokensByChain, visibleTokens]);
 
   const handleOpenNetworkFilter = useCallback(() => {
     dispatch(showModal({ name: 'NETWORK_MANAGER' }));
@@ -211,10 +387,21 @@ export const TokenManagementPage = () => {
     }
     if (enabledCount === 1) {
       const onlyChain = enabledChainIds[0];
-      return networkConfigurations?.[onlyChain]?.name ?? t('currentNetwork');
+      const evmName = networkConfigurations?.[onlyChain]?.name;
+      const multichainName =
+        allMultichainNetworkConfigurations?.[onlyChain as CaipChainId]?.name;
+      return (
+        evmName ?? multichainName ?? currentNetwork?.name ?? t('currentNetwork')
+      );
     }
     return t('allDefaultNetworks');
-  }, [enabledChainIds, networkConfigurations, t]);
+  }, [
+    allMultichainNetworkConfigurations,
+    currentNetwork?.name,
+    enabledChainIds,
+    networkConfigurations,
+    t,
+  ]);
 
   const getTokenKey = useCallback((token: ManagedAsset) => {
     const address = 'address' in token ? token.address : token.assetId;
@@ -238,10 +425,13 @@ export const TokenManagementPage = () => {
       }
 
       const key = getTokenKey(token);
-      setPendingKey(key);
+      addPendingKey(key);
       try {
         if (canIgnoreEvmToken) {
           const { networkClientId } = getNetworkMeta(token.chainId as Hex);
+          if (!networkClientId) {
+            return;
+          }
           await dispatch(
             ignoreTokensAction({
               tokensToIgnore: [token.address],
@@ -249,17 +439,137 @@ export const TokenManagementPage = () => {
               networkClientId,
             }),
           );
+          if (isAssetsUnifiedStateInBuild) {
+            const caipAssetId = toAssetId(
+              token.address as Hex,
+              token.chainId as Hex,
+            );
+            if (caipAssetId) {
+              await dispatch(hideAsset(caipAssetId));
+            }
+          }
           return;
         }
 
         await dispatch(
           multichainIgnoreAssets([token.assetId], token.accountId),
         );
+        if (isAssetsUnifiedStateInBuild) {
+          await dispatch(hideAsset(token.assetId as CaipAssetType));
+        }
       } finally {
-        setPendingKey(undefined);
+        removePendingKey(key);
       }
     },
-    [dispatch, getNetworkMeta, getTokenKey],
+    [
+      addPendingKey,
+      dispatch,
+      getNetworkMeta,
+      getTokenKey,
+      isAssetsUnifiedStateInBuild,
+      removePendingKey,
+    ],
+  );
+
+  /**
+   * Search-result-specific toggle. Mirrors the mobile import flow
+   * (`metamask-mobile#26108`):
+   *
+   * - EVM result, toggle ON → `addImportedTokens` + `addCustomAsset`.
+   * - EVM result, toggle OFF → `ignoreTokens` + `hideAsset`.
+   * - Non-EVM result, toggle ON → `multichainAddAssets` + `addCustomAsset`.
+   * - Non-EVM result, toggle OFF → `multichainIgnoreAssets` + `hideAsset`.
+   *
+   * `addCustomAsset` / `hideAsset` only fire when the unified AssetsController
+   * is included in the build (`ASSETS_UNIFIED_STATE_ENABLED`).
+   *
+   * Native assets (slip44 namespace or EVM zero-address) are not importable —
+   * the toggle never reaches this handler for them, but we guard here too so
+   * a buggy API response can't dispatch a malformed payload.
+   */
+  const handleSearchResultToggle = useCallback(
+    async (payload: SearchResultImportPayload, nextValue: boolean) => {
+      if (payload.isNative) {
+        return;
+      }
+
+      const importedKey = payload.assetId.toLowerCase();
+      addPendingKey(importedKey);
+      try {
+        if (payload.isEvm) {
+          if (!payload.hexChainId) {
+            return;
+          }
+          const { networkClientId } = getNetworkMeta(payload.hexChainId);
+          if (!networkClientId) {
+            return;
+          }
+          const evmAccount = getAccountForChain(payload.caipChainId);
+
+          if (nextValue) {
+            if (!evmAccount?.id) {
+              return;
+            }
+            await dispatch(
+              addImportedTokens(
+                [
+                  {
+                    address: payload.assetReference,
+                    symbol: payload.symbol,
+                    decimals: payload.decimals,
+                    isERC721: false,
+                    name: payload.name,
+                    ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
+                  },
+                ],
+                networkClientId,
+              ),
+            );
+            if (isAssetsUnifiedStateInBuild) {
+              await dispatch(addCustomAsset(evmAccount.id, payload.assetId));
+            }
+            return;
+          }
+          await dispatch(
+            ignoreTokensAction({
+              tokensToIgnore: [payload.assetReference],
+              dontShowLoadingIndicator: true,
+              networkClientId,
+            }),
+          );
+          if (isAssetsUnifiedStateInBuild) {
+            await dispatch(hideAsset(payload.assetId));
+          }
+          return;
+        }
+
+        const account = getAccountForChain(payload.caipChainId);
+        if (!account?.id) {
+          return;
+        }
+        if (nextValue) {
+          await dispatch(multichainAddAssets([payload.assetId], account.id));
+          if (isAssetsUnifiedStateInBuild) {
+            await dispatch(addCustomAsset(account.id, payload.assetId));
+          }
+          return;
+        }
+        await dispatch(multichainIgnoreAssets([payload.assetId], account.id));
+        if (isAssetsUnifiedStateInBuild) {
+          await dispatch(hideAsset(payload.assetId));
+        }
+      } finally {
+        removePendingKey(importedKey);
+      }
+    },
+    [
+      addPendingKey,
+      dispatch,
+      getAccountForChain,
+      getNetworkMeta,
+      isAssetsUnifiedStateInBuild,
+      removePendingKey,
+    ],
   );
 
   const getTokenImage = useCallback((token: ManagedAsset) => {
@@ -294,14 +604,83 @@ export const TokenManagementPage = () => {
           primaryLabel={token.name ?? token.symbol}
           secondaryLabel={`${token.balance} ${token.symbol}`}
           isOn
-          disabled={isNativeToken || pendingKey === key}
+          disabled={isNativeToken || pendingKeys.has(key)}
           onToggle={(nextValue) => handleToggle(token, nextValue)}
           showToggle={isManageableToken || isNativeToken}
           testIdSuffix={key}
         />
       );
     },
-    [getTokenImage, getTokenKey, handleToggle, pendingKey],
+    [getTokenImage, getTokenKey, handleToggle, pendingKeys],
+  );
+
+  /**
+   * Custom-token import is only meaningful on EVM networks today. Hide the
+   * sticky CTA when none of the enabled networks (across all namespaces)
+   * support custom tokens. Showing it for a mix that includes an EVM network
+   * preserves the existing "All networks" behavior.
+   */
+  const canImportCustomTokens = useMemo(() => {
+    if (allEnabledNetworksForAllNamespaces.length === 0) {
+      return true;
+    }
+    return allEnabledNetworksForAllNamespaces.some((chainId) =>
+      isEvmChainId(chainId as Hex | CaipChainId),
+    );
+  }, [allEnabledNetworksForAllNamespaces]);
+
+  const renderSearchResult = useCallback(
+    (info: { item: TokenSearchResult }) => {
+      const result = info.item;
+      const lowerAssetId = result.assetId.toLowerCase();
+      const payload = convertSearchResultToImportPayload(result);
+
+      if (!payload) {
+        return null;
+      }
+
+      const evmImportedKey = payload.hexChainId
+        ? `${payload.hexChainId}:${payload.assetReference.toLowerCase()}`
+        : undefined;
+      const isImported =
+        importedAssetIds.has(lowerAssetId) ||
+        (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
+
+      return (
+        <TokenManagementCell
+          symbol={payload.symbol}
+          image={payload.iconUrl || undefined}
+          chainId={
+            (payload.hexChainId ?? payload.caipChainId) as Hex | CaipChainId
+          }
+          isNative={payload.isNative}
+          assetId={payload.assetId}
+          primaryLabel={payload.name || payload.symbol}
+          secondaryLabel={
+            networkConfigurations?.[payload.hexChainId as Hex]?.name ??
+            allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
+            payload.caipChainId
+          }
+          isOn={isImported || payload.isNative}
+          disabled={payload.isNative || pendingKeys.has(lowerAssetId)}
+          onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
+          showToggle={!payload.isNative}
+          testIdSuffix={`search-${lowerAssetId}`}
+        />
+      );
+    },
+    [
+      allMultichainNetworkConfigurations,
+      handleSearchResultToggle,
+      importedAssetIds,
+      networkConfigurations,
+      pendingKeys,
+    ],
+  );
+
+  const getSearchResultKey = useCallback(
+    (result: TokenSearchResult) => `search-${result.assetId.toLowerCase()}`,
+    [],
   );
 
   const emptyState = (
@@ -310,11 +689,46 @@ export const TokenManagementPage = () => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={6}
+      data-testid="token-management-empty-state"
     >
       <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
-        {normalizedSearchQuery
-          ? t('noTokensMatchSearch')
-          : t('noTokensToManage')}
+        {hasQuery ? t('noTokensMatchSearch') : t('noTokensToManage')}
+      </Text>
+    </Box>
+  );
+
+  const searchErrorState = (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
+      padding={6}
+      data-testid="token-management-search-error"
+    >
+      <Text
+        variant={TextVariant.BodyMd}
+        textAlign={TextAlign.Center}
+        color={TextColor.ErrorDefault}
+      >
+        {t('tokenSearchError')}
+      </Text>
+    </Box>
+  );
+
+  const loadingState = (
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
+      padding={6}
+      data-testid="token-management-search-loading"
+    >
+      <Text
+        variant={TextVariant.BodyMd}
+        textAlign={TextAlign.Center}
+        color={TextColor.TextAlternative}
+      >
+        {t('loading')}
       </Text>
     </Box>
   );
@@ -346,31 +760,18 @@ export const TokenManagementPage = () => {
         paddingTop={2}
         paddingBottom={2}
       >
-        <Box className="relative w-full">
-          <Icon
-            name={IconName.Search}
-            size={IconSize.Sm}
-            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-icon-alternative"
-          />
-          <Input
-            type="search"
-            value={searchQuery}
-            placeholder={t('enterTokenNameOrAddressManageTokens')}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            data-testid="token-management-search-input"
-            className="h-14 rounded-full border border-muted bg-muted py-0 pl-12 pr-12 text-default focus:border-muted"
-          />
-          {searchQuery ? (
-            <ButtonIcon
-              type="button"
-              ariaLabel={t('clear')}
-              iconName={IconName.CircleX}
-              size={ButtonIconSize.Sm}
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2"
-            />
-          ) : null}
-        </Box>
+        <TextFieldSearch
+          value={searchQuery}
+          placeholder={t('enterTokenNameOrAddressManageTokens')}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          clearButtonOnClick={() => setSearchQuery('')}
+          size={TextFieldSearchSize.Lg}
+          className="w-full"
+          inputProps={{
+            'data-testid': 'token-management-search-input',
+            spellCheck: false,
+          }}
+        />
       </Box>
 
       <Box
@@ -407,33 +808,54 @@ export const TokenManagementPage = () => {
           width: '100%',
         }}
       >
-        <VirtualizedList
-          data={filteredVisibleTokens}
-          estimatedItemSize={ASSET_CELL_HEIGHT}
-          overscan={10}
-          keyExtractor={getTokenKey}
-          listEmptyComponent={emptyState}
-          renderItem={renderToken}
-        />
+        {hasQuery ? (
+          <>
+            {isSearching && !hasResults ? loadingState : null}
+            {!isSearching && searchError && !hasResults
+              ? searchErrorState
+              : null}
+            {hasResults || (!isSearching && !searchError) ? (
+              <VirtualizedList
+                data={searchResults}
+                estimatedItemSize={ASSET_CELL_HEIGHT}
+                overscan={10}
+                keyExtractor={getSearchResultKey}
+                listEmptyComponent={emptyState}
+                renderItem={renderSearchResult}
+              />
+            ) : null}
+          </>
+        ) : (
+          <VirtualizedList
+            data={visibleTokens}
+            estimatedItemSize={ASSET_CELL_HEIGHT}
+            overscan={10}
+            keyExtractor={getTokenKey}
+            listEmptyComponent={emptyState}
+            renderItem={renderToken}
+          />
+        )}
       </ScrollContainer>
 
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        backgroundColor={BoxBackgroundColor.BackgroundDefault}
-        paddingHorizontal={4}
-        paddingTop={3}
-        paddingBottom={3}
-        className="sticky bottom-0 z-10"
-      >
-        <ButtonBase
-          data-testid="token-management-add-custom-token-button"
-          className="w-full bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed"
-          onClick={handleAddCustomToken}
+      {canImportCustomTokens ? (
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          backgroundColor={BoxBackgroundColor.BackgroundDefault}
+          paddingHorizontal={4}
+          paddingTop={3}
+          paddingBottom={3}
+          className="sticky bottom-0 z-10"
         >
-          {t('addCustomToken')}
-        </ButtonBase>
-      </Box>
+          <ButtonBase
+            data-testid="token-management-add-custom-token-button"
+            className="w-full bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed"
+            onClick={handleAddCustomToken}
+          >
+            {t('addCustomToken')}
+          </ButtonBase>
+        </Box>
+      ) : null}
     </Box>
   );
 };

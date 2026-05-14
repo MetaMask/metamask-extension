@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "धीमी गति"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "गैस स्पॉन्सरशिप उपलब्ध नहीं है"
-  },
   "alertReasonGasTooLow": {
     "message": "कम गैस लिमिट"
   },
@@ -3931,9 +3928,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask लॉक हो रहा है..."
-  },
-  "logOut": {
-    "message": "लॉग आउट करें"
   },
   "loginErrorConnectButton": {
     "message": "फिर से कोशिश करें"

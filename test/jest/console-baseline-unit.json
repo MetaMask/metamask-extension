@@ -667,6 +667,11 @@
       "error: Error handled by React Router": 4,
       "error: React Router caught the following": 4
     },
+    "ui/hooks/useTokenSearch.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 2,
+      "React: State updates on unmounted components": 1,
+      "error: Error: boom": 1
+    },
     "ui/hooks/useTransactionDisplayData.test.js": {
       "MetaMask: XChain Swaps warnings": 4
     },

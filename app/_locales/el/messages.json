@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Αργή ταχύτητα"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Η κάλυψη των τελών δεν είναι διαθέσιμη"
-  },
   "alertReasonGasTooLow": {
     "message": "Χαμηλό όριο τελών συναλλαγών"
   },
@@ -3931,9 +3928,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Γίνεται κλείδωμα του MetaMask..."
-  },
-  "logOut": {
-    "message": "Αποσύνδεση"
   },
   "loginErrorConnectButton": {
     "message": "Προσπαθήστε ξανά"

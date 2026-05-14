@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Hız yavaş"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Gaz sponsorluğu kullanılamıyor"
-  },
   "alertReasonGasTooLow": {
     "message": "Gaz limiti düşük"
   },
@@ -3931,9 +3928,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask kilitleniyor..."
-  },
-  "logOut": {
-    "message": "Oturumu kapat"
   },
   "loginErrorConnectButton": {
     "message": "Tekrar deneyin"

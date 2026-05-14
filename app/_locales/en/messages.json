@@ -528,6 +528,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds."
   },
+  "alertMinimumReserve": {
+    "message": "Reserve balance is required"
+  },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
   },
@@ -560,9 +563,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Slow speed"
-  },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Gas sponsorship unavailable"
   },
   "alertReasonGasTooLow": {
     "message": "Low gas limit"
@@ -1458,7 +1458,7 @@
     "message": "More $1 needed for gas"
   },
   "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "This specific network requires to maintain a reserve of $1 $3 in your account. With your current balance you can use a maximum of $2 $3",
+    "message": "This specific network requires maintaining a reserve of $1 $3 in your account. With your current balance you can use a maximum of $2 $3",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
@@ -3121,7 +3121,7 @@
     "message": "Gas price estimation failed due to network error."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Gas sponsorship isn’t available for this transaction. You’ll need to keep at least $1 $2 in your account.",
+    "message": "This specific network requires maintaining a reserve of $1 $2 in your account.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -3943,9 +3943,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Locking MetaMask..."
-  },
-  "logOut": {
-    "message": "Log out"
   },
   "loginErrorConnectButton": {
     "message": "Try again"
@@ -9425,6 +9422,9 @@
   "tokenPermissionsCount": {
     "message": "$1 token permissions",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "Couldn't load search results. Please try again."
   },
   "tokenStandard": {
     "message": "Token standard"

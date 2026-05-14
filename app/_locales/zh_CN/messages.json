@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "速度慢"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "燃料赞助不可用"
-  },
   "alertReasonGasTooLow": {
     "message": "燃料限制较低"
   },
@@ -3931,9 +3928,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "正在锁定 MetaMask……"
-  },
-  "logOut": {
-    "message": "退出登录"
   },
   "loginErrorConnectButton": {
     "message": "重试"

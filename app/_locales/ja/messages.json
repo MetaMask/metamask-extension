@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "低速"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "ガススポンサーシップが利用できません"
-  },
   "alertReasonGasTooLow": {
     "message": "低ガスリミット"
   },
@@ -3931,9 +3928,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMaskをロックしています…"
-  },
-  "logOut": {
-    "message": "ログアウト"
   },
   "loginErrorConnectButton": {
     "message": "再試行"

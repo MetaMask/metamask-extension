@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Velocidad baja"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Patrocinio de gas no disponible"
-  },
   "alertReasonGasTooLow": {
     "message": "Límite de gas bajo"
   },
@@ -3931,9 +3928,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Bloqueando MetaMask..."
-  },
-  "logOut": {
-    "message": "Cerrar sesión"
   },
   "loginErrorConnectButton": {
     "message": "Inténtalo de nuevo"

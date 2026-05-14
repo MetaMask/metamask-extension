@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Низкая скорость"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Спонсорская оплата газа недоступна"
-  },
   "alertReasonGasTooLow": {
     "message": "Низкий лимит газа"
   },
@@ -3931,9 +3928,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Блокировка MetaMask..."
-  },
-  "logOut": {
-    "message": "Выйти"
   },
   "loginErrorConnectButton": {
     "message": "Повторить попытку"

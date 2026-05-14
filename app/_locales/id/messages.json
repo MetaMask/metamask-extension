@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Kecepatan lambat"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Sponsor gas tidak tersedia"
-  },
   "alertReasonGasTooLow": {
     "message": "Batas gas rendah"
   },
@@ -3931,9 +3928,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Mengunci MetaMask..."
-  },
-  "logOut": {
-    "message": "Keluar"
   },
   "loginErrorConnectButton": {
     "message": "Coba lagi"
