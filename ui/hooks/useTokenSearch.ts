@@ -35,7 +35,7 @@ export type UseTokenSearchOptions = {
 
 /**
  * Thin react-query wrapper around the Token API `/tokens/search` endpoint.
-
+ *
  *
  * @param options - Hook configuration.
  * @param options.query
