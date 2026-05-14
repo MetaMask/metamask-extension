@@ -1023,12 +1023,11 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/config-registry-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "reselect": true
+        "@metamask/utils": true
       }
     },
     "@metamask/connectivity-controller": {
@@ -1156,24 +1155,6 @@
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
-    "@metamask/config-registry-controller>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "cockatiel": true,
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
@@ -1388,11 +1369,6 @@
         "eth-ens-namehash": true,
         "eslint>fast-deep-equal": true,
         "lodash": true
-      }
-    },
-    "@metamask/remote-feature-flag-controller>@metamask/controller-utils": {
-      "packages": {
-        "cockatiel": true
       }
     },
     "@metamask/shield-controller>@metamask/controller-utils": {
@@ -2468,7 +2444,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/remote-feature-flag-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/utils": true,
         "uuid": true
       }

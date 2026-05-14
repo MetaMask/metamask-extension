@@ -724,11 +724,6 @@
         "@metamask/claims-controller>@metamask/controller-utils": true
       }
     },
-    "@metamask/config-registry-controller": {
-      "packages": {
-        "reselect": true
-      }
-    },
     "@metamask/controller-utils": {
       "globals": {
         "Buffer.from": true,
