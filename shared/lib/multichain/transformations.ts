@@ -176,7 +176,7 @@ export function normalizeTransaction(
 
 const INCLUDE_TOKEN_TRANSFERS = false;
 const INCLUDE_NATIVE_TRANSFERS = false;
-const EXCLUDED_TRANSACTIONS = ['SPAM_TOKEN'];
+const EXCLUDED_TRANSACTIONS = new Set(['SPAM_TOKEN']);
 
 // Transform and filter raw API response
 export function selectTransactions({
@@ -208,7 +208,7 @@ export function selectTransactions({
         }
 
         // Filter out excluded transaction types
-        if (EXCLUDED_TRANSACTIONS.includes(raw.transactionProtocol ?? '')) {
+        if (EXCLUDED_TRANSACTIONS.has(raw.transactionProtocol ?? '')) {
           return result;
         }
 
