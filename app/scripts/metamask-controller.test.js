@@ -99,7 +99,9 @@ import MetaMaskController from './metamask-controller';
 // so using jest.requireActual here would make the function always return true,
 // breaking tests that depend on the disabled-flag path).
 jest.mock('../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
-  ...jest.requireActual('../../shared/lib/assets-unify-state/remote-feature-flag'),
+  ...jest.requireActual(
+    '../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
   isAssetsUnifyStateFeatureEnabled: jest.fn(
     (featureFlag, featureVersion) =>
       Boolean(featureFlag?.enabled) &&
