@@ -80,7 +80,7 @@ const Disclosure = ({
   return (
     <div className="disclosure" data-testid="disclosure">
       {title ? (
-        <details onToggle={() => setOpen((state) => !state)}>
+        <details onToggle={(e) => setOpen(e.currentTarget.open)}>
           {renderSummaryByType(variant, title, size)}
 
           <div className={classnames('disclosure__content', size)}>

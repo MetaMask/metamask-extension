@@ -645,11 +645,25 @@ export default function Routes() {
     dispatch(setLastActiveTime());
   }, [dispatch]);
 
-  useIdleTimer({
+  const { reset: resetIdleTimer, pause: pauseIdleTimer } = useIdleTimer({
     onAction: autoLockTimeLimit > 0 ? handleIdleAction : undefined,
     throttle: 1000,
-    startOnMount: autoLockTimeLimit > 0,
+    // Never auto-start on mount; the effect below drives the timer so it
+    // correctly starts or stops whenever autoLockTimeLimit changes at runtime.
+    startOnMount: false,
   });
+
+  // Start the idle timer whenever auto-lock is enabled, and stop it when the
+  // user sets the timeout to "Never" (0). Using reset() instead of relying on
+  // startOnMount means the timer also starts correctly when the user switches
+  // from "Never" to a positive timeout after the component has already mounted.
+  useEffect(() => {
+    if (autoLockTimeLimit > 0) {
+      resetIdleTimer();
+    } else {
+      pauseIdleTimer();
+    }
+  }, [autoLockTimeLimit, resetIdleTimer, pauseIdleTimer]);
 
   const renderRoutes = () => (
     <Suspense fallback={null}>

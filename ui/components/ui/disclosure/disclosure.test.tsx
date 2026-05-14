@@ -52,6 +52,9 @@ describe('Disclosure', () => {
         <Disclosure title="Test Title">Test</Disclosure>,
       );
       const details = container.querySelector('details') as HTMLDetailsElement;
+      // isScrollToBottomOnOpen defaults to false, so scrolling never triggers
+      // regardless of the open state.
+      details.open = true;
       fireEvent(details, new Event('toggle'));
       expect(mockScrollIntoView).not.toHaveBeenCalled();
       window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
@@ -69,7 +72,9 @@ describe('Disclosure', () => {
         </Disclosure>,
       );
       const details = container.querySelector('details') as HTMLDetailsElement;
-
+      // Set open=true before dispatching so the handler reads the correct state
+      // and triggers the scroll-to-bottom effect.
+      details.open = true;
       fireEvent(details, new Event('toggle'));
       expect(mockScrollIntoView).toHaveBeenCalledWith({
         behavior: 'smooth',

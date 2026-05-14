@@ -56,7 +56,7 @@ export const SnapIcon = ({
       src={iconUrl}
       name={snapName}
       {...props}
-      size={avatarSize as unknown as AvatarFaviconSize}
+      size={avatarSize as AvatarFaviconSize}
     />
   ) : (
     <AvatarBase
@@ -69,7 +69,7 @@ export const SnapIcon = ({
         backgroundColor: 'var(--color-background-alternative-hover)',
       }}
       {...props}
-      size={avatarSize as unknown as AvatarBaseSize}
+      size={avatarSize as AvatarBaseSize}
     >
       {fallbackIcon}
     </AvatarBase>

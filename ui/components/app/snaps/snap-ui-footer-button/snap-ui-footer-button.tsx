@@ -66,6 +66,10 @@ export const SnapUIFooterButton = ({
     <Button
       className={classnames('snap-ui-renderer__footer-button', {
         'snap-ui-renderer__footer-button--disabled': disabled,
+        'snap-ui-renderer__footer-button--primary':
+          buttonVariant === ButtonVariant.Primary,
+        'snap-ui-renderer__footer-button--secondary':
+          buttonVariant === ButtonVariant.Secondary,
         'hide-snap-branding': hideSnapBranding,
       })}
       type={type}
