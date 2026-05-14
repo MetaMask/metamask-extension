@@ -696,6 +696,64 @@ describe('Transaction Controller Init', () => {
 
       expect(result).toStrictEqual({ transactionHash: '0xstxHash' });
     });
+
+    it('bypasses Delegation7702PublishHook for revokeDelegation on a sponsored chain', async () => {
+      jest
+        .mocked(sentinelApiModule.isSendBundleSupported)
+        .mockResolvedValue(true);
+
+      jest
+        .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+        .mockReturnValue({
+          isSmartTransaction: true,
+          featureFlags: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+          isHardwareWalletAccount: false,
+        });
+
+      const delegation7702HookFn: jest.MockedFn<PublishHook> = jest.fn();
+      jest.mocked(Delegation7702PublishHook).mockImplementation(
+        () =>
+          ({
+            getHook: () => delegation7702HookFn,
+          }) as unknown as Delegation7702PublishHook,
+      );
+
+      type PHArgs = Parameters<typeof publishHook>[0];
+      const result = await publishHook({
+        flatState: {} as PHArgs['flatState'],
+        getTransactionMetricsRequest: () =>
+          ({
+            upsertTransactionUIMetricsFragment: jest.fn(),
+          }) as unknown as ReturnType<PHArgs['getTransactionMetricsRequest']>,
+        initMessenger: {
+          call: jest.fn(),
+        } as unknown as TransactionControllerInitMessenger,
+        keyringController: {
+          getKeyringForAccount: jest
+            .fn()
+            .mockResolvedValue({ type: 'HD Key Tree' }),
+        },
+        signedTx: '0xsigned',
+        smartTransactionsController:
+          {} as PHArgs['smartTransactionsController'],
+        transactionController: {
+          isAtomicBatchSupported: jest.fn(),
+        } as unknown as PHArgs['transactionController'],
+        transactionMeta: {
+          ...mockTransactionMeta,
+          type: TransactionType.revokeDelegation,
+        } as TransactionMeta,
+      });
+
+      expect(delegation7702HookFn).not.toHaveBeenCalled();
+      expect(result).toBeDefined();
+    });
   });
 
   describe('publishBatch hook', () => {
