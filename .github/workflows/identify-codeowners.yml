@@ -46,4 +46,4 @@ jobs:
       - name: Identify codeowners
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-        run: npx tsx ./.github/scripts/identify-codeowners.mts
+        run: ./node_modules/.bin/tsx ./.github/scripts/identify-codeowners.mts
