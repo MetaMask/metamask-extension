@@ -51,7 +51,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
   });
 
   it('should render confirmed unified swap tx summary', () => {
-    const { queryByTestId } = renderWithProvider(
+    const { queryByTestId, getByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <TransactionListItem transactionGroup={mockUnifiedSwapTxGroup} />
       </MetaMetricsContext.Provider>,
@@ -59,8 +59,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Swap to Confirmed-0 ETH',
+      '?Swap to -0 ETH',
     );
+    expect(
+      getByTestId('transaction-status-label--confirmed'),
+    ).toBeInTheDocument();
   });
 
   it('should render failed unified swap tx summary', () => {
@@ -97,7 +100,7 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
   });
 
   it('should render pending for submitted unified swap tx even when not earliest nonce', () => {
-    const { getByText, queryByText, queryByTestId } = renderWithProvider(
+    const { queryByText, queryByTestId, getByTestId } = renderWithProvider(
       <TransactionListItem
         transactionGroup={{
           ...mockUnifiedSwapTxGroup,
@@ -142,7 +145,9 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
       ),
     );
 
-    expect(getByText(messages.pending.message)).toBeInTheDocument();
+    expect(
+      getByTestId('transaction-status-label--pending'),
+    ).toBeInTheDocument();
     expect(queryByText(messages.queued.message)).not.toBeInTheDocument();
     expect(queryByTestId('cancel-button')).not.toBeInTheDocument();
   });
@@ -249,8 +254,11 @@ describe('TransactionListItem for Unified Swap and Bridge', () => {
     );
 
     expect(queryByTestId('activity-list-item')).toHaveTextContent(
-      '?Bridged to OPConfirmed-2 USDC-USD 0.00',
+      '?Bridged to OP-2 USDC-USD 0.00',
     );
+    expect(
+      getByTestId('transaction-status-label--confirmed'),
+    ).toBeInTheDocument();
 
     fireEvent.click(getByTestId('activity-list-item'));
     expect(mockUseNavigate).toHaveBeenCalledWith(
