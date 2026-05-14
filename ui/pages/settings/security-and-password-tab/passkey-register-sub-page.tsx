@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import log from 'loglevel';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -74,7 +74,6 @@ export default function PasskeyRegisterSubPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const store = useStore();
   const t = useI18nContext() as (
     key: string,
     substitutions?: string[],
@@ -180,12 +179,14 @@ export default function PasskeyRegisterSubPage() {
         postRegAuthenticationResponse,
         walletPassword,
       );
-      await forceUpdateMetamaskState(dispatch);
+      const newMetamaskState = await forceUpdateMetamaskState(dispatch);
       setVerifyStepStatus('success');
       setWalletPassword('');
 
       currentStep = 'complete';
-      const derivationMethod = getPasskeyDerivationMethod(store.getState());
+      const derivationMethod = getPasskeyDerivationMethod({
+        metamask: newMetamaskState,
+      });
       trackEvent({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.PasskeySetup,
@@ -274,7 +275,6 @@ export default function PasskeyRegisterSubPage() {
     goToSettings,
     isPasskeyRegistered,
     passkeyMethodLabel,
-    store,
     t,
     trackEvent,
     walletPassword,

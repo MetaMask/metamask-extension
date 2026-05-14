@@ -113,7 +113,7 @@ export const UnlockPasskeySection = ({
         /* eslint-enable @typescript-eslint/naming-convention */
       };
       try {
-        trackEvent?.({
+        trackEvent({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.PasskeyUnlockInteracted,
           properties: {
@@ -128,7 +128,7 @@ export const UnlockPasskeySection = ({
 
         await onUnlockWithPasskey(authenticationResponse);
 
-        trackEvent?.({
+        trackEvent({
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.AppUnlocked,
           properties: {
@@ -153,7 +153,7 @@ export const UnlockPasskeySection = ({
         const durationMs = Date.now() - startedAt;
 
         if (isPasskeyCeremonySilentError(err)) {
-          trackEvent?.({
+          trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.PasskeyUnlockInteracted,
             properties: {
@@ -168,7 +168,7 @@ export const UnlockPasskeySection = ({
           setPasskeyError(null);
         } else {
           passkeyFailedAttemptCount.current += 1;
-          trackEvent?.({
+          trackEvent({
             category: MetaMetricsEventCategory.Navigation,
             event: MetaMetricsEventName.AppUnlockedFailed,
             properties: {
@@ -215,7 +215,7 @@ export const UnlockPasskeySection = ({
   }, [mountAutoUnlockEligible, runPasskeyUnlock]);
 
   const handleUsePassword = useCallback(() => {
-    trackEvent?.({
+    trackEvent({
       category: MetaMetricsEventCategory.Navigation,
       event: MetaMetricsEventName.PasskeyUnlockInteracted,
       properties: {

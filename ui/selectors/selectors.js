@@ -2875,7 +2875,7 @@ export function getIsPasskeyRegistered(state) {
  * @returns {'prf' | 'userHandle' | undefined}
  */
 export function getPasskeyDerivationMethod(state) {
-  return state.metamask.passkeyRecord?.keyDerivation?.method;
+  return state.metamask?.passkeyRecord?.keyDerivation?.method;
 }
 
 /**

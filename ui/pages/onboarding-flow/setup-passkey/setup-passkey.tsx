@@ -23,7 +23,7 @@ import {
   TextAlign,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector, useStore } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
@@ -82,7 +82,6 @@ const DEFAULT_PASSKEY_ENROLLMENT_STEP_PHASE: PasskeyEnrollmentStepStatus =
 export default function SetupPasskey() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const store = useStore();
   const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext() as (
     key: string,
@@ -242,11 +241,13 @@ export default function SetupPasskey() {
         registrationResponse,
         postRegAuthenticationResponse,
       );
-      await forceUpdateMetamaskState(dispatch);
+      const newMetamaskState = await forceUpdateMetamaskState(dispatch);
       setVerifyStepPhase('success');
 
       currentStep = 'complete';
-      const derivationMethod = getPasskeyDerivationMethod(store.getState());
+      const derivationMethod = getPasskeyDerivationMethod({
+        metamask: newMetamaskState,
+      });
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.PasskeySetup,
@@ -325,7 +326,6 @@ export default function SetupPasskey() {
     baseProperties,
     dispatch,
     goToNextStep,
-    store,
     t,
     passkeyMethodLabel,
     trackEvent,
