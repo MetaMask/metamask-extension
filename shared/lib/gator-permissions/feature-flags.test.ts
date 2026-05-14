@@ -34,16 +34,16 @@ describe('getEnabledAdvancedPermissions', () => {
 
   it('returns an empty array when GATOR_ENABLED_PERMISSION_TYPES is not set', () => {
     delete process.env.GATOR_ENABLED_PERMISSION_TYPES;
-    expect(getEnabledAdvancedPermissions(remoteFeatureFlagSource)).toStrictEqual(
-      [],
-    );
+    expect(
+      getEnabledAdvancedPermissions(remoteFeatureFlagSource),
+    ).toStrictEqual([]);
   });
 
   it('returns an empty array when GATOR_ENABLED_PERMISSION_TYPES is an empty string', () => {
     process.env.GATOR_ENABLED_PERMISSION_TYPES = '';
-    expect(getEnabledAdvancedPermissions(remoteFeatureFlagSource)).toStrictEqual(
-      [],
-    );
+    expect(
+      getEnabledAdvancedPermissions(remoteFeatureFlagSource),
+    ).toStrictEqual([]);
   });
 
   it('parses comma-separated build values', () => {
