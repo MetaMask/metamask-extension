@@ -33,7 +33,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { Box, Text } from '../../component-library';
 
-import { getTransactionDisplayStatusKey } from '../../../helpers/utils/transactions.util';
+import { getStatusKey } from '../../../helpers/utils/transactions.util';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -184,7 +184,7 @@ function TransactionListItemInner({
   const displayedStatusKey =
     isBridgeTx && isBridgeFailed
       ? TransactionStatus.failed
-      : getTransactionDisplayStatusKey(transactionGroup.primaryTransaction);
+      : getStatusKey(transactionGroup.primaryTransaction);
   const shouldShowPendingBridgeStatus =
     Boolean(isUnifiedSwapTx) &&
     displayedStatusKey === TransactionStatus.submitted &&
