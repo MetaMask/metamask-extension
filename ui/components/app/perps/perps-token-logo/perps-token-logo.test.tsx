@@ -49,6 +49,9 @@ describe('PerpsTokenLogo', () => {
       'src',
       `${METAMASK_PERPS_ICONS_BASE_URL}BTC.svg`,
     );
+    expect(screen.getByTestId('perps-token-logo-BTC')).toHaveClass(
+      'bg-white',
+    );
   });
 
   it('falls back to HyperLiquid URL when primary fails', () => {
@@ -149,6 +152,9 @@ describe('PerpsTokenLogo', () => {
 
     expect(screen.getByTestId('perps-token-logo-BTC')).toHaveClass(
       'custom-class',
+    );
+    expect(screen.getByTestId('perps-token-logo-BTC')).toHaveClass(
+      'bg-white',
     );
   });
 

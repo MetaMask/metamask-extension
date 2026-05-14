@@ -1,5 +1,9 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  twMerge,
+} from '@metamask/design-system-react';
 import { getDisplaySymbol, getAssetIconUrls } from '../utils';
 import { Skeleton } from '../../../component-library/skeleton';
 import { BorderRadius } from '../../../../helpers/constants/design-system';
@@ -94,7 +98,7 @@ export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
       name={displaySymbol}
       src={resolvedSrc}
       size={size}
-      className={className}
+      className={twMerge('bg-white', className)}
       data-testid={`perps-token-logo-${sanitizedSymbol}`}
     />
   );
