@@ -21,9 +21,10 @@ import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { formatCurrencyAmount } from '../../../../bridge/utils/quote';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
 
 type HeaderProps = {
-  totalReceivedFiat: number;
+  totalReceivedFiat?: number;
   selectedAsset: {
     symbol: string;
     image?: string | null;
@@ -41,7 +42,10 @@ export const Header = ({
   const t = useI18nContext();
   const currency = useSelector(getCurrentCurrency);
   const formattedTotalReceive = useMemo(
-    () => formatCurrencyAmount(totalReceivedFiat.toString(), currency, 2),
+    () =>
+      totalReceivedFiat === undefined
+        ? '12345678' // Hardocded value to allow skeleton to render
+        : formatCurrencyAmount(totalReceivedFiat.toString(), currency, 2),
     [totalReceivedFiat, currency],
   );
 
@@ -69,17 +73,20 @@ export const Header = ({
         justifyContent={BoxJustifyContent.Between}
         flexWrap={BoxFlexWrap.Wrap}
       >
-        <Text
-          variant={
-            (formattedTotalReceive?.length ?? 0) > 10
-              ? TextVariant.DisplayMd
-              : TextVariant.DisplayLg
-          }
-          color={TextColor.SuccessDefault}
-          className="min-w-0 break-words"
-        >
-          {formattedTotalReceive}
-        </Text>
+        <Skeleton isLoading={totalReceivedFiat === undefined}>
+          <Text
+            variant={
+              (formattedTotalReceive?.length ?? 0) > 10
+                ? TextVariant.DisplayMd
+                : TextVariant.DisplayLg
+            }
+            color={TextColor.SuccessDefault}
+            className="min-w-0 break-words"
+          >
+            {formattedTotalReceive}
+          </Text>
+        </Skeleton>
+
         <Button
           variant={ButtonVariant.Secondary}
           onClick={onSelectAssetClick}

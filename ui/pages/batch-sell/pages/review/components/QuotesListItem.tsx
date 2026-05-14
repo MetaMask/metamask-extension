@@ -10,12 +10,14 @@ import {
   FontWeight,
   IconColor,
   IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
+import { CaipAssetType } from '@metamask/utils';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { PerpsSlider } from '../../../../../components/app/perps/perps-slider';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
@@ -24,9 +26,18 @@ import {
   formatTokenAmount,
 } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
+import { BatchSellQuotesResults } from '../types';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { Tag } from '../../../../../components/component-library';
+import {
+  BackgroundColor,
+  TextColor as TextColorLegacy,
+} from '../../../../../helpers/constants/design-system';
 
 type QuotesListItemProps = {
   asset: BatchSellAsset;
+  quote?: BatchSellQuotesResults['quotes'][CaipAssetType];
   sendAmountPercent: number;
   canDeleteAssets: boolean;
   onSlippagePercentChangeClick: (asset: BatchSellAsset) => void;
@@ -44,14 +55,22 @@ export const QuotesListItem = ({
   onSlippagePercentChangeClick,
   onAssetDeleteClick,
   canDeleteAssets,
+  quote,
 }: QuotesListItemProps) => {
+  const t = useI18nContext();
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
 
-  const selectedFiatAmount = useMemo(() => {
-    const amount = (asset.fiatBalance ?? 0) * (sendAmountPercent / 100);
-    return formatCurrencyAmount(amount.toString(), currency, 2);
-  }, [asset.fiatBalance, sendAmountPercent, currency]);
+  const quoteFiatAmount = useMemo(
+    () =>
+      formatCurrencyAmount(
+        // Default to an arbitary string to enable skeleton
+        (quote?.receivedAmountFiat ?? 1234.34).toString(),
+        currency,
+        2,
+      ),
+    [quote, currency],
+  );
 
   const selectedNativeAmount = useMemo(() => {
     const amount = new BigNumber(asset.balance).mul(sendAmountPercent / 100);
@@ -76,11 +95,39 @@ export const QuotesListItem = ({
           size={AvatarTokenSize.Lg}
         />
         <Box gap={1} className="flex-1">
-          {selectedFiatAmount && (
-            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              {selectedFiatAmount}
-            </Text>
-          )}
+          <Skeleton isLoading={!quote} width="50%">
+            <Box flexDirection={BoxFlexDirection.Row} gap={2}>
+              {quote?.hasQuote ? (
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {quoteFiatAmount}
+                </Text>
+              ) : (
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={TextColor.ErrorDefault}
+                >
+                  {t('noQuoteAvailable')}
+                </Text>
+              )}
+              {quote?.hasHighPriceImpactWarning && (
+                <Tag
+                  iconName={IconName.Danger}
+                  label={t('bridgePriceImpactHigh')}
+                  textVariant={TextVariant.BodyXs}
+                  className="font-medium"
+                  labelProps={{ color: TextColor.WarningDefault } as never}
+                  startIconProps={{ className: 'text-warning-default' }}
+                  backgroundColor={BackgroundColor.warningMuted}
+                  iconSize={IconSize.Xs}
+                />
+              )}
+            </Box>
+          </Skeleton>
+
           <Text
             variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
@@ -90,14 +137,14 @@ export const QuotesListItem = ({
           </Text>
         </Box>
         <ButtonIcon
-          ariaLabel=""
+          ariaLabel={t('swapAdjustSlippage')}
           className="text-icon-alternative"
           iconName={IconName.Customize}
           size={ButtonIconSize.Md}
           onClick={() => onSlippagePercentChangeClick(asset)}
         />
         <ButtonIcon
-          ariaLabel=""
+          ariaLabel={t('delete')}
           className="text-icon-alternative"
           iconName={IconName.RemoveMinus}
           size={ButtonIconSize.Md}

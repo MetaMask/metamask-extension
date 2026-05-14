@@ -237,7 +237,7 @@ export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
       .filter(
         (asset) => hexToBigInt(asset.rawBalance) > 0n && !isStablecoin(asset),
       )
-      .map((asset): BatchSellAsset => {
+      .map((asset): BatchSellAsset | undefined => {
         const tokenAddress = isEvm
           ? resolveEvmTokenAddress(asset, hexChainId)
           : undefined;
@@ -250,8 +250,19 @@ export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
           assetsRates,
         );
 
+        // For EVM, `asset.assetId` is the raw token address (or native
+        // address), not a CAIP asset id. Build one so downstream consumers
+        // can rely on `BatchSellAsset.assetId` always being a CaipAssetType.
+        // For non-EVM, `asset.assetId` is already a CAIP asset type.
+        const caipAssetId: CaipAssetType | undefined = isEvm
+          ? toAssetId(tokenAddress ?? asset.assetId, selectedChainId)
+          : (asset.assetId as CaipAssetType);
+        if (!caipAssetId) {
+          return undefined;
+        }
+
         return {
-          assetId: asset.assetId,
+          assetId: caipAssetId,
           name: asset.name,
           symbol: asset.symbol,
           image: resolveAssetImage(asset, isEvm, selectedChainId),
@@ -264,7 +275,8 @@ export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
           // For non-EVM there is no address concept
           address: isEvm ? tokenAddress : undefined,
         };
-      });
+      })
+      .filter((asset): asset is BatchSellAsset => asset !== undefined);
   },
 );
 

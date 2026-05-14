@@ -16,13 +16,14 @@ import { formatTokenAmount } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { Tooltip } from '../../../../bridge/layout';
 import { PopoverPosition } from '../../../../../components/component-library';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
 
 type AssetsReceivedTotalAmountsSummaryProps = {
   receivedAsset: {
     symbol: string;
   };
-  totalReceivedAmount: number;
-  minimumReceivedAmount: number;
+  totalReceivedAmount?: number;
+  minimumReceivedAmount?: number;
 };
 
 export const AssetsReceivedTotalAmountsSummary = ({
@@ -61,19 +62,21 @@ export const AssetsReceivedTotalAmountsSummary = ({
           </Text>
         </Box>
         <Box>
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.SuccessDefault}
-          >
-            +
-            {formatTokenAmount(
-              locale,
-              totalReceivedAmount.toString(),
-              receivedAsset.symbol,
-              BigNumber.ROUND_DOWN,
-            )}
-          </Text>
+          <Skeleton isLoading={totalReceivedAmount === undefined} width={80}>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.SuccessDefault}
+            >
+              +
+              {formatTokenAmount(
+                locale,
+                (totalReceivedAmount ?? 0).toString(),
+                receivedAsset.symbol,
+                BigNumber.ROUND_DOWN,
+              )}
+            </Text>
+          </Skeleton>
         </Box>
       </Box>
       <Box
@@ -100,19 +103,21 @@ export const AssetsReceivedTotalAmountsSummary = ({
           </Tooltip>
         </Box>
         <Box>
-          <Text
-            variant={TextVariant.BodyMd}
-            fontWeight={FontWeight.Medium}
-            color={TextColor.SuccessDefault}
-          >
-            +
-            {formatTokenAmount(
-              locale,
-              minimumReceivedAmount.toString(),
-              receivedAsset.symbol,
-              BigNumber.ROUND_DOWN,
-            )}
-          </Text>
+          <Skeleton isLoading={minimumReceivedAmount === undefined} width={80}>
+            <Text
+              variant={TextVariant.BodyMd}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.SuccessDefault}
+            >
+              +
+              {formatTokenAmount(
+                locale,
+                (minimumReceivedAmount ?? 0).toString(),
+                receivedAsset.symbol,
+                BigNumber.ROUND_DOWN,
+              )}
+            </Text>
+          </Skeleton>
         </Box>
       </Box>
     </Box>

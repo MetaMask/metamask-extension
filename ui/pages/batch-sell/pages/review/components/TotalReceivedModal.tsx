@@ -13,29 +13,27 @@ import {
   ModalBody,
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 import { AssetsReceivedSummaryList } from './AssetsReceivedSummaryList';
 import { AssetsReceivedTotalAmountsSummary } from './AssetsReceivedTotalAmountsSummary';
 
 type TotalReceiveModalProps = {
   open: boolean;
   onClose: () => void;
-  sendAssets: {
-    id: string;
-    symbol: string;
-    slippagePercent: number;
-    receivedAmount: number;
-  }[];
+  sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
+  quotes?: BatchSellQuotesResults['quotes'];
   receivedAsset: {
     symbol: string;
   };
-  totalReceivedAmount: number;
-  minimumReceivedAmount: number;
+  totalReceivedAmount?: number;
+  minimumReceivedAmount?: number;
 };
 
 export const TotalReceivedModal = ({
   open,
   onClose,
-  sendAssets,
+  sendAssetsConfig,
+  quotes,
   receivedAsset,
   totalReceivedAmount,
   minimumReceivedAmount,
@@ -59,7 +57,8 @@ export const TotalReceivedModal = ({
         <ModalBody>
           <AssetsReceivedSummaryList
             receivedAsset={receivedAsset}
-            sendAssets={sendAssets}
+            sendAssetsConfig={sendAssetsConfig}
+            quotes={quotes}
           />
         </ModalBody>
         <ModalFooter>

@@ -1,8 +1,8 @@
-import { CaipChainId } from '@metamask/utils';
+import { CaipAssetType, CaipChainId } from '@metamask/utils';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
 
 export type BatchSellAsset = {
-  assetId: string;
+  assetId: CaipAssetType;
   name: string;
   symbol: string;
   image: string | undefined;

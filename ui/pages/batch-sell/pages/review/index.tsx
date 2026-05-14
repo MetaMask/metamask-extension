@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { CaipAssetType } from '@metamask/utils';
 import {
   LOW_SLIPPAGE_PERCENT_THRESHOLD,
   SLIPPAGE_PERCENT_OPTIONS,
@@ -13,13 +12,8 @@ import { SelectReceivedAssetModal } from './components/SelectReceivedAssetModal'
 import { TotalReceivedModal } from './components/TotalReceivedModal';
 import { SlippageModal } from './components/SlippageModal';
 import { ReviewAndConfirmModal } from './components/ReviewAndConfirmModal';
+import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
 
-// TODO: reduce slippage optuions to the same of swaps
-// TODO: make modal heading variants consistent with other modals
-// TODO: loading states
-// TODO: wire up useBatchSellQuotesFetching
-// TODO: No quotes available badge
-// TODO: high price impact badge
 // TODO: receive modal
 // CASE: no quotes available for any asset should disable the info button and review
 // CASE: no quotes available for some assets should not render row in review
@@ -35,7 +29,7 @@ export const BatchSellReviewPage = () => {
     useState(false);
 
   const {
-    quoteConfigs,
+    sendAssetsConfig,
     selectedReceiveAsset,
     editingSlippageAssetId,
     canDeleteAssets,
@@ -47,6 +41,11 @@ export const BatchSellReviewPage = () => {
     deleteAsset,
   } = useBatchSellQuotesConfig();
 
+  const { data, isLoading } = useBatchSellQuotesFetching({
+    sendAssetsConfig,
+    receivedAsset: selectedReceiveAsset,
+  });
+
   // TODO: if availableBatchSellAssetsForNetworkList or selectedAssetsId is empty render error
 
   return (
@@ -56,7 +55,7 @@ export const BatchSellReviewPage = () => {
       data-testid="batch-sell-review-page"
     >
       <Header
-        totalReceivedFiat={343454.3}
+        totalReceivedFiat={data?.totalReceivedAmountFiat}
         selectedAsset={{
           symbol: selectedReceiveAsset.symbol,
           image: selectedReceiveAsset.image,
@@ -69,10 +68,11 @@ export const BatchSellReviewPage = () => {
         }
       />
       <QuotesList
-        sendAssets={quoteConfigs}
+        sendAssetsConfig={sendAssetsConfig}
+        quotes={data?.quotes}
         onSendAmountPercentChange={setSendAmountPercent}
         onSlippagePercentChangeClick={(asset) =>
-          setEditingSlippageAssetId(asset.assetId as CaipAssetType)
+          setEditingSlippageAssetId(asset.assetId)
         }
         onAssetDeleteClick={deleteAsset}
         canDeleteAssets={canDeleteAssets}
@@ -92,25 +92,13 @@ export const BatchSellReviewPage = () => {
         }}
       />
       <TotalReceivedModal
-        sendAssets={[
-          {
-            id: '1',
-            symbol: 'ETH',
-            slippagePercent: 5,
-            receivedAmount: 3456.78,
-          },
-          {
-            id: '2',
-            symbol: 'UNI',
-            slippagePercent: 5,
-            receivedAmount: 834.2,
-          },
-        ]}
+        sendAssetsConfig={sendAssetsConfig}
+        quotes={data?.quotes}
         receivedAsset={{
           symbol: selectedReceiveAsset.symbol,
         }}
-        totalReceivedAmount={7638.23}
-        minimumReceivedAmount={7485.47}
+        totalReceivedAmount={data?.totalReceivedAmount}
+        minimumReceivedAmount={data?.minimumReceivedAmount}
         onClose={() => setTotalReceivedAssetModalIsOpen(false)}
         open={totalReceivedModalIsOpen}
       />
@@ -118,7 +106,7 @@ export const BatchSellReviewPage = () => {
         <SlippageModal
           open
           onClose={() => setEditingSlippageAssetId(null)}
-          value={quoteConfigs[editingSlippageAssetId]?.slippagePercent}
+          value={sendAssetsConfig[editingSlippageAssetId]?.slippagePercent}
           onChange={setSlippagePercent}
           slippageOptions={SLIPPAGE_PERCENT_OPTIONS}
           warningSlippageTheshold={LOW_SLIPPAGE_PERCENT_THRESHOLD}

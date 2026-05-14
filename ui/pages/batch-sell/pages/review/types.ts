@@ -2,43 +2,33 @@ import { CaipAssetType } from '@metamask/utils';
 import { BatchSellAsset } from 'ui/ducks/batch-sell/types';
 
 export type BatchSellQuotesConfig = {
-  sendAssets: {
+  sendAssetsConfig: {
     [assetId: CaipAssetType]: {
       asset: BatchSellAsset;
       sendAmountPercent: number;
       slippagePercent: number;
     };
   };
-  receivedAsset: BatchSellAsset;
-}
+  receivedAsset: ReceivedAsset;
+};
 
 export type BatchSellQuotesResults = {
   quotes: {
-    [assetId: CaipAssetType]:
-      | {
-          asset: BatchSellAsset;
-          slippagePercent: number;
-          receivedAmount: number;
-          receivedAmountFiat: number;
-          minimumReceivedAmount: number;
-          hasQuote: true;
-          hasHighPriceImpactWarning: boolean;
-        }
-      | {
-          asset: BatchSellAsset;
-          slippagePercent: undefined;
-          receivedAmount: undefined;
-          receivedAmountFiat: undefined;
-          minimumReceivedAmount: undefined;
-          hasQuote: false;
-          hasHighPriceImpactWarning: boolean;
-        };
+    [assetId: CaipAssetType]: {
+      asset: BatchSellAsset;
+      slippagePercent?: number;
+      receivedAmount?: number;
+      receivedAmountFiat?: number;
+      minimumReceivedAmount?: number;
+      hasQuote: boolean;
+      hasHighPriceImpactWarning?: boolean;
+    };
   };
-  receivedAsset: BatchSellAsset;
+  receivedAsset: ReceivedAsset;
   totalReceivedAmount: number;
   totalReceivedAmountFiat: number;
   minimumReceivedAmount: number;
-}
+};
 
 export enum BatchSellReviewStateActionType {
   SetSendAmountPercent = 'SET_SEND_AMOUNT_PERCENT',
@@ -77,7 +67,7 @@ export type ReceivedAsset = {
 };
 
 export type BatchSellReviewState = {
-  quoteConfigs: BatchSellQuotesConfig['sendAssets'];
+  sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
   selectedReceiveAsset: ReceivedAsset;
   editingSlippageAssetId: CaipAssetType | null;
 };

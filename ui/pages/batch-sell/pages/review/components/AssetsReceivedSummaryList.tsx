@@ -13,32 +13,38 @@ import BigNumber from 'bignumber.js';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { formatTokenAmount } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 
-type AssetsReceivedSummaryList = {
-  sendAssets: {
-    id: string;
-    symbol: string;
-    slippagePercent: number;
-    receivedAmount: number;
-  }[];
+type AssetsReceivedSummaryListProps = {
+  sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
+  quotes?: BatchSellQuotesResults['quotes'];
   receivedAsset: {
     symbol: string;
   };
 };
 
-type AssetsReceivedListItemProps = AssetsReceivedSummaryList['sendAssets'][0] &
-  Pick<AssetsReceivedSummaryList, 'receivedAsset'>;
+type SendAssetConfig =
+  BatchSellQuotesConfig['sendAssetsConfig'][keyof BatchSellQuotesConfig['sendAssetsConfig']];
+
+type Quote =
+  BatchSellQuotesResults['quotes'][keyof BatchSellQuotesResults['quotes']];
+
+type AssetsReceivedListItemProps = {
+  asset: SendAssetConfig['asset'];
+  slippagePercent: SendAssetConfig['slippagePercent'];
+  receivedAsset: AssetsReceivedSummaryListProps['receivedAsset'];
+  quote: Quote | undefined;
+};
 
 const AssetsReceivedListItem = ({
-  symbol,
+  asset,
   slippagePercent,
-  receivedAmount,
   receivedAsset,
+  quote,
 }: AssetsReceivedListItemProps) => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
-
-  const percentage = String(slippagePercent / 100);
 
   return (
     <Box
@@ -53,21 +59,26 @@ const AssetsReceivedListItem = ({
           fontWeight={FontWeight.Medium}
           color={TextColor.TextAlternative}
         >
-          <span className="inline-block whitespace-nowrap">{symbol} •</span>{' '}
           <span className="inline-block whitespace-nowrap">
-            {percentage}% <span className="lowercase">{t('slippage')}</span>
+            {asset.symbol} •
+          </span>{' '}
+          <span className="inline-block whitespace-nowrap">
+            {slippagePercent}%{' '}
+            <span className="lowercase">{t('slippage')}</span>
           </span>
         </Text>
       </Box>
       <Box>
-        <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-          {formatTokenAmount(
-            locale,
-            receivedAmount.toString(),
-            receivedAsset.symbol,
-            BigNumber.ROUND_DOWN,
-          )}
-        </Text>
+        <Skeleton isLoading={!quote} width={80}>
+          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+            {formatTokenAmount(
+              locale,
+              (quote?.receivedAmount ?? 0).toString(),
+              receivedAsset.symbol,
+              BigNumber.ROUND_DOWN,
+            )}
+          </Text>
+        </Skeleton>
       </Box>
     </Box>
   );
@@ -75,14 +86,17 @@ const AssetsReceivedListItem = ({
 
 export const AssetsReceivedSummaryList = ({
   receivedAsset,
-  sendAssets,
-}: AssetsReceivedSummaryList) => {
+  sendAssetsConfig,
+  quotes,
+}: AssetsReceivedSummaryListProps) => {
   return (
     <>
-      {sendAssets.map((asset) => (
+      {Object.values(sendAssetsConfig).map(({ asset, slippagePercent }) => (
         <AssetsReceivedListItem
-          key={asset.id}
-          {...asset}
+          key={asset.assetId}
+          asset={asset}
+          quote={quotes?.[asset.assetId]}
+          slippagePercent={slippagePercent}
           receivedAsset={receivedAsset}
         />
       ))}

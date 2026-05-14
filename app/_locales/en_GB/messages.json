@@ -4939,6 +4939,9 @@
   "noOptionsAvailableMessage": {
     "message": "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
   },
+  "noQuoteAvailable": {
+    "message": "No quote available"
+  },
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },

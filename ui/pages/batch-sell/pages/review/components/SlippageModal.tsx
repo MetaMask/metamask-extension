@@ -4,7 +4,6 @@ import {
   BannerAlertSeverity,
   Box,
   BoxFlexDirection,
-  BoxFlexWrap,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -153,11 +152,7 @@ export const SlippageModal = ({
           >
             {t('batchSellSlippageDescription')}
           </Text>
-          <Box
-            flexDirection={BoxFlexDirection.Row}
-            gap={2}
-            flexWrap={BoxFlexWrap.Wrap}
-          >
+          <Box flexDirection={BoxFlexDirection.Row} gap={2}>
             {slippageOptions.map((option) => {
               const isSelected = draftValue === option;
               return (
@@ -188,6 +183,7 @@ export const SlippageModal = ({
             )}
             {showCustomInput && (
               <TextField
+                className="flex-1"
                 size={TextFieldSize.Md}
                 borderColor={BorderColor.borderMuted}
                 borderRadius={BorderRadius.XL}

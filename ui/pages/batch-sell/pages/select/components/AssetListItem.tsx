@@ -80,8 +80,7 @@ export const AssetListItem = ({
                 asset.tokenFiatPrice.toString(),
                 currency,
                 2,
-              )}{' '}
-              •
+              )}
             </Text>
           )}
           {asset.percentageChange !== undefined &&
@@ -91,6 +90,7 @@ export const AssetListItem = ({
                 fontWeight={FontWeight.Medium}
                 color={percentageChangeTextColor}
               >
+                {' • '}
                 {formatValue(asset.percentageChange, false)}
               </Text>
             )}

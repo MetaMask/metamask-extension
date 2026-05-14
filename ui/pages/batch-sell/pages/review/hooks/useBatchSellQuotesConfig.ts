@@ -44,7 +44,7 @@ export const useBatchSellQuotesConfig = () => {
     batchSellReviewStateReducer,
     undefined,
     () => ({
-      quoteConfigs: Object.fromEntries(
+      sendAssetsConfig: Object.fromEntries(
         availableBatchSellAssetsForNetworkList.map((asset) => [
           asset.assetId,
           {
@@ -59,12 +59,12 @@ export const useBatchSellQuotesConfig = () => {
     }),
   );
 
-  const canDeleteAssets = Object.values(state.quoteConfigs).length > 2;
+  const canDeleteAssets = Object.values(state.sendAssetsConfig).length > 2;
 
   const setSendAmountPercent = (asset: BatchSellAsset, percent: number) =>
     dispatch({
       type: BatchSellReviewStateActionType.SetSendAmountPercent,
-      assetId: asset.assetId as CaipAssetType,
+      assetId: asset.assetId,
       percent,
     });
 
@@ -82,7 +82,7 @@ export const useBatchSellQuotesConfig = () => {
   const deleteAsset = (asset: BatchSellAsset) =>
     dispatch({
       type: BatchSellReviewStateActionType.DeleteAsset,
-      assetId: asset.assetId as CaipAssetType,
+      assetId: asset.assetId,
     });
 
   const setEditingSlippageAssetId = (assetId: CaipAssetType | null) =>
@@ -102,7 +102,7 @@ export const useBatchSellQuotesConfig = () => {
   };
 
   return {
-    quoteConfigs: state.quoteConfigs,
+    sendAssetsConfig: state.sendAssetsConfig,
     selectedReceiveAsset: state.selectedReceiveAsset,
     editingSlippageAssetId: state.editingSlippageAssetId,
     canDeleteAssets,

@@ -12,10 +12,10 @@ export const batchSellReviewStateReducer = (
     case BatchSellReviewStateActionType.SetSendAmountPercent:
       return {
         ...state,
-        quoteConfigs: {
-          ...state.quoteConfigs,
+        sendAssetsConfig: {
+          ...state.sendAssetsConfig,
           [action.assetId]: {
-            ...state.quoteConfigs[action.assetId],
+            ...state.sendAssetsConfig[action.assetId],
             sendAmountPercent: action.percent,
           },
         },
@@ -24,10 +24,10 @@ export const batchSellReviewStateReducer = (
     case BatchSellReviewStateActionType.SetSlippagePercent:
       return {
         ...state,
-        quoteConfigs: {
-          ...state.quoteConfigs,
+        sendAssetsConfig: {
+          ...state.sendAssetsConfig,
           [action.assetId]: {
-            ...state.quoteConfigs[action.assetId],
+            ...state.sendAssetsConfig[action.assetId],
             slippagePercent: action.percent,
           },
         },
@@ -35,8 +35,9 @@ export const batchSellReviewStateReducer = (
       };
 
     case BatchSellReviewStateActionType.DeleteAsset: {
-      const { [action.assetId]: _removed, ...remaining } = state.quoteConfigs;
-      return { ...state, quoteConfigs: remaining };
+      const { [action.assetId]: _removed, ...remaining } =
+        state.sendAssetsConfig;
+      return { ...state, sendAssetsConfig: remaining };
     }
 
     case BatchSellReviewStateActionType.SetEditingSlippageAsset:
