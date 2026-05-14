@@ -511,7 +511,14 @@ export class PerpsMarketDetailPage {
     }
     await this.driver.waitForSelector(this.closeAmountSliderInCloseModal);
     const handleCss = this.closeAmountSliderRoleInCloseModal;
-    await this.driver.clickElement(handleCss);
+    // MUI v5 Slider renders the interactive element as a visually-hidden
+    // `input[type="range"]` behind the visible thumb <span>. Clicking via
+    // WebDriver hits the thumb instead (ElementClickInterceptedError), so we
+    // focus the input directly through JS to allow subsequent sendKeys.
+    await this.driver.executeScript(
+      `document.querySelector(arguments[0]).focus()`,
+      handleCss,
+    );
     await this.driver.press(handleCss, Key.END);
     await this.driver.wait(
       async () => (await this.getCloseAmountSliderPercentInModal()) === 100,
