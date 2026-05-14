@@ -1,6 +1,6 @@
+import React from 'react';
 import { connect } from 'react-redux';
-import { compose } from 'redux';
-import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
+import { useNavigate } from 'react-router-dom';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/lib/selectors/networks';
 import {
   getAccountName,
@@ -49,7 +49,12 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default compose(
-  withRouterHooks,
-  connect(mapStateToProps, mapDispatchToProps),
+const ConnectedTransactionListItemDetails = connect(
+  mapStateToProps,
+  mapDispatchToProps,
 )(TransactionListItemDetails);
+
+export default function TransactionListItemDetailsContainer(props) {
+  const navigate = useNavigate();
+  return <ConnectedTransactionListItemDetails {...props} navigate={navigate} />;
+}
