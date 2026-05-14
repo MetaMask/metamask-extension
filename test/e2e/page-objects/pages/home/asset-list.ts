@@ -123,6 +123,9 @@ class AssetListPage {
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
 
+  private readonly lowValueAssetsToggle =
+    '[data-testid="low-value-assets-toggle"]';
+
   private readonly tokenOptionsButton =
     '[data-testid="asset-list-control-bar-action-button"]';
 
@@ -250,6 +253,28 @@ class AssetListPage {
     console.log(`Returning the total number of asset items in the token list`);
     const assets = await this.driver.findElements(this.tokenListItem);
     return assets.length;
+  }
+
+  /**
+   * Expands the "low value tokens" group when it's collapsed so subsequent
+   * lookups (token name / count / amount) include those rows. No-op when the
+   * toggle isn't present or when it's already expanded.
+   */
+  async expandLowValueAssetsIfPresent(): Promise<void> {
+    const isPresent = await this.driver.isElementPresent({
+      css: this.lowValueAssetsToggle,
+    });
+    if (!isPresent) {
+      return;
+    }
+
+    const toggle = await this.driver.findElement(this.lowValueAssetsToggle);
+    const ariaExpanded = await toggle.getAttribute('aria-expanded');
+    if (ariaExpanded === 'true') {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
   }
 
   async sortTokenList(
@@ -622,6 +647,7 @@ class AssetListPage {
   ): Promise<void> {
     const { timeout, amountTimeout } = options;
     console.log(`Checking if token ${tokenName} exists in token list`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector(
       {
         css: this.tokenName,
@@ -662,6 +688,7 @@ class AssetListPage {
     console.log(
       `Waiting for token at position ${position} to be "${tokenName}"`,
     );
+    await this.expandLowValueAssetsIfPresent();
     const index = position - 1;
     await this.driver.waitUntil(
       async () => {
@@ -684,6 +711,7 @@ class AssetListPage {
    */
   async checkTokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.wait(async () => {
       const tokenItemsNumber = await this.getNumberOfAssets();
       return tokenItemsNumber === expectedNumber;
