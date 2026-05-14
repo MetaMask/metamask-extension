@@ -341,7 +341,7 @@ describe('sentinel-api', () => {
           throw new Error('Invalid JSON');
         },
         ok: true,
-      } as Response);
+      } as unknown as Response);
 
       await expect(isSendBundleSupported(mainnetHex)).resolves.toBe(false);
     });
