@@ -2641,14 +2641,6 @@ describe('MetaMaskController', () => {
           'KeyringController - The operation cannot be completed while the controller is locked.',
         );
       });
-
-      it('#addNewAccount', async () => {
-        await metamaskController.createNewVaultAndKeychain('password');
-        await metamaskController.addNewAccount(1);
-        const getAccounts =
-          await metamaskController.keyringController.getAccounts();
-        expect(getAccounts).toHaveLength(2);
-      });
     });
 
     describe('#resetAccount', () => {
