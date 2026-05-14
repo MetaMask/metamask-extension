@@ -22,10 +22,6 @@ const AVATAR_SIZE_CLASS: Record<AvatarTokenSize, string> = {
   [AvatarTokenSize.Xl]: 'h-12 w-12',
 };
 
-const DevLogger = {
-  log: console.warn,
-};
-
 export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
   symbol,
   size = AvatarTokenSize.Md,
@@ -90,12 +86,6 @@ export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
         borderRadius={BorderRadius.full}
         data-testid={`perps-token-logo-${sanitizedSymbol}`}
       />
-    );
-  }
-
-  if (displaySymbol === 'ETH' && resolvedSrc) {
-    DevLogger.log(
-      '[PR-local] BUG_MARKER: ETH Perps token logo renders without white background',
     );
   }
 
