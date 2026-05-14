@@ -46,6 +46,19 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showDefi?: boolean;
 };
 
+/**
+ * Isolated component that starts/stops EVM token balance polling.
+ * Kept separate so that balance state updates only re-render this
+ * small component instead of the entire AccountOverviewTabs subtree.
+ *
+ * @param options - Component options.
+ * @param options.chainIds - The chain IDs to poll balances for.
+ */
+const TokenBalancesPoller = ({ chainIds }: { chainIds: Hex[] }) => {
+  useTokenBalances({ chainIds });
+  return null;
+};
+
 export const AccountOverviewTabs = ({
   showTokens,
   showTokensLinks,
@@ -83,9 +96,7 @@ export const AccountOverviewTabs = ({
   );
 
   // EVM specific tokenBalance polling, updates state via polling loop per chainId
-  useTokenBalances({
-    chainIds: selectedChainIds as Hex[],
-  });
+  // Rendered as an isolated component so balance updates don't re-render this subtree
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTab) => {
@@ -149,14 +160,16 @@ export const AccountOverviewTabs = ({
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
 
   return (
-    <Tabs<AccountOverviewTab>
-      animated
-      activeTab={activeTabKey}
-      onTabClick={handleTabClick}
-      tabListProps={{
-        className: 'px-4',
-      }}
-    >
+    <>
+      <TokenBalancesPoller chainIds={selectedChainIds as Hex[]} />
+      <Tabs<AccountOverviewTab>
+        animated
+        activeTab={activeTabKey}
+        onTabClick={handleTabClick}
+        tabListProps={{
+          className: 'px-4',
+        }}
+      >
       {showTokens && (
         <Tab
           name={t('tokens')}
@@ -223,6 +236,7 @@ export const AccountOverviewTabs = ({
           </ErrorBoundary>
         </Tab>
       )}
-    </Tabs>
+      </Tabs>
+    </>
   );
 };
