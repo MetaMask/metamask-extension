@@ -4547,7 +4547,10 @@ export default class MetamaskController extends EventEmitter {
       authenticationResponse,
     );
     if (!verified) {
-      throw new Error('Passkey authentication verification failed');
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
+        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
+      );
     }
 
     this.passkeyController.removePasskey();
@@ -4598,7 +4601,10 @@ export default class MetamaskController extends EventEmitter {
       authenticationResponse,
     );
     if (!isVerified) {
-      throw new Error('Passkey authentication verification failed');
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
+        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
+      );
     }
 
     const releaseLock = await this.seedlessOperationMutex.acquire();
