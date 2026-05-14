@@ -3397,39 +3397,14 @@
     "message": "Looking for your $1...",
     "description": "$1 is the hardware wallet type"
   },
-  "hardwareWalletSubmissionWarningStep1": {
-    "message": "Be sure your $1 is plugged in and to select the Ethereum app."
-  },
-  "hardwareWalletSubmissionWarningStep2": {
-    "message": "Enable \"smart contract data\" or \"blind signing\" on your $1 device."
-  },
-  "hardwareWalletSubmissionWarningTitle": {
-    "message": "Prior to clicking Submit:"
-  },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "click here"
-  },
-  "hardwareWalletTitleEthAppNotOpen": {
-    "message": "Open Ethereum app"
-  },
-  "hardwareWalletTypeConnected": {
-    "message": "$1 connected",
-    "description": "$1 is the hardware wallet type"
-  },
-  "hardwareWallets": {
-    "message": "Connect a hardware wallet"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Hardware wallet integrations use API calls to external servers, which can see your IP address and the smart contract addresses you interact with."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Select a hardware wallet you would like to use with MetaMask."
-  },
   "hardwareWalletRepairBackButton": {
     "message": "Back"
   },
   "hardwareWalletRepairCloseButton": {
     "message": "Close"
+  },
+  "hardwareWalletRepairConnectButton": {
+    "message": "Connect"
   },
   "hardwareWalletRepairDetecting": {
     "message": "Detecting device..."
@@ -3443,11 +3418,14 @@
   "hardwareWalletRepairNextButton": {
     "message": "Next"
   },
+  "hardwareWalletRepairPermissionsDescription": {
+    "message": "Connect to HID/USB devices to communicate with your hardware wallet."
+  },
+  "hardwareWalletRepairPermissionsTitle": {
+    "message": "Allow MetaMask permissions to:"
+  },
   "hardwareWalletRepairReconnectButton": {
     "message": "Try Again"
-  },
-  "hardwareWalletRepairConnectButton": {
-    "message": "Connect"
   },
   "hardwareWalletRepairStepFourDescription": {
     "message": "Attempt to reconnect your device."
@@ -3482,11 +3460,33 @@
   "hardwareWalletRepairTitle": {
     "message": "Connect Hardware Device"
   },
-  "hardwareWalletRepairPermissionsTitle": {
-    "message": "Allow MetaMask permissions to:"
+  "hardwareWalletSubmissionWarningStep1": {
+    "message": "Be sure your $1 is plugged in and to select the Ethereum app."
   },
-  "hardwareWalletRepairPermissionsDescription": {
-    "message": "Connect to HID/USB devices to communicate with your hardware wallet."
+  "hardwareWalletSubmissionWarningStep2": {
+    "message": "Enable \"smart contract data\" or \"blind signing\" on your $1 device."
+  },
+  "hardwareWalletSubmissionWarningTitle": {
+    "message": "Prior to clicking Submit:"
+  },
+  "hardwareWalletSupportLinkConversion": {
+    "message": "click here"
+  },
+  "hardwareWalletTitleEthAppNotOpen": {
+    "message": "Open Ethereum app"
+  },
+  "hardwareWalletTypeConnected": {
+    "message": "$1 connected",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWallets": {
+    "message": "Connect a hardware wallet"
+  },
+  "hardwareWalletsInfo": {
+    "message": "Hardware wallet integrations use API calls to external servers, which can see your IP address and the smart contract addresses you interact with."
+  },
+  "hardwareWalletsMsg": {
+    "message": "Select a hardware wallet you would like to use with MetaMask."
   },
   "helpAndSettings": {
     "message": "Help and settings"

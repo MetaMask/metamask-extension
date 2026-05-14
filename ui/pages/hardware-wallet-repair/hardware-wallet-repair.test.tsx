@@ -154,11 +154,11 @@ describe('HardwareWalletRepair', () => {
 
   it('shows error when ensureDeviceReady throws', async () => {
     mockRequestHardwareWalletPermission.mockResolvedValue(true);
-    mockEnsureDeviceReady.mockRejectedValue(new Error('Connection failed'));
+    mockEnsureDeviceReady.mockRejectedValue(new Error('test error from device'));
     const { getByTestId, findByText } = renderRepairPage();
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
     expect(
-      await findByText('Connection failed'),
+      await findByText('test error from device'),
     ).toBeInTheDocument();
   });
 
