@@ -148,7 +148,6 @@
     },
     "@emotion/react>@emotion/cache": {
       "globals": {
-        "document": false,
         "document.createElement": true,
         "document.head": true,
         "document.querySelectorAll": true
