@@ -23,9 +23,6 @@
     }
   },
   "allowedCircularGlob": [
-    "ui/ducks/**",
-    "ui/selectors/**",
-    "ui/store/**",
     "ui/components/app/**"
   ]
 }

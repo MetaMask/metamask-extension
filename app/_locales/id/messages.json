@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "Autodeteksi token di dompet Anda, tampilkan NFT, dan dapatkan pembaruan saldo akun secara batch"
   },
+  "asterdexReferralConfirmText": {
+    "message": "Ya, dapatkan pengembalian 4%",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "Dapatkan cashback 4% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "Dapatkan pengembalian 4% untuk perdagangan dengan kode referensi MetaMask. Diskon ini berlaku untuk semua perdagangan di masa mendatang, sama halnya dengan $1 dari AsterDEX. MetaMask mendapatkan komisi dari biaya.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "Dapatkan cashback 4% di AsterDEX",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Mencoba membatalkan pertukaran secara gratis"
@@ -741,10 +753,6 @@
   },
   "autoDetectTokens": {
     "message": "Autodeteksi token"
-  },
-  "autoDetectTokensDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan token baru yang dikirim ke dompet Anda. Nonaktifkan jika Anda tidak ingin aplikasi memakai data secara otomatis dari layanan tersebut. $1",
-    "description": "$1 is a link to a support article"
   },
   "autoDetectTokensDescriptionV2": {
     "message": "Menampilkan token baru yang dikirim ke dompet Anda."
@@ -772,9 +780,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Timer kunci otomatis (menit)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Atur waktu siaga dalam menit sebelum MetaMask terkunci."
   },
   "available": {
     "message": "tersedia"
@@ -1007,9 +1012,6 @@
   "blockaidDescriptionTransferFarming": {
     "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan akan mengambil semua aset Anda."
   },
-  "blockaidMessage": {
-    "message": "Menjaga privasi - tidak ada data yang dibagikan kepada pihak ketiga. Tersedia di Arbitrum, Avalanche, BNB chain, Mainnet Ethereum, Linea, Optimism, Polygon, Base, dan Sepolia."
-  },
   "blockaidTitleDeceptive": {
     "message": "Ini adalah permintaan tipuan"
   },
@@ -1143,6 +1145,9 @@
   "bridgePoints_tooltip_content_2": {
     "message": "Ingatlah bahwa nilai ini merupakan estimasi dan akan difinalisasi setelah transaksi selesai. Poin dapat membutuhkan waktu hingga 1 jam untuk dikonfirmasi di saldo Reward Anda.",
     "description": "Second part of tooltip content explaining how points are calculated"
+  },
+  "bridgePriceDataUnavailableError": {
+    "message": "Kami tidak dapat memperoleh informasi harga untuk token ini. Pastikan jumlah yang diterima sesuai dengan yang Anda harapkan sebelum melanjutkan."
   },
   "bridgePriceImpact": {
     "message": "Dampak harga"
@@ -1372,6 +1377,18 @@
   "bridgeTo": {
     "message": "Bridge ke"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 adalah token berbahaya."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 ditandai sebagai berbahaya. Kemungkinan besar akan mencuri dana dari siapa pun yang berinteraksi dengannya."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 adalah token yang mencurigakan."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 ditandai sebagai mencurigakan. Perhatikan risikonya sebelum melanjutkan."
+  },
   "bridgeTokenNotFound": {
     "message": "Tidak ada token yang cocok dengan \"$1\""
   },
@@ -1425,11 +1442,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "Anda mengirim"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "Gunakan jumlah maks yang diizinkan"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "Anda tidak memiliki cukup $1 untuk membayar biaya gas untuk bridge ini. Masukkan jumlah yang lebih kecil atau beli lebih banyak $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Diperlukan lebih banyak $1 untuk gas"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "Jaringan khusus ini mengharuskan Anda untuk mempertahankan saldo cadangan sebesar $1 $3 di akun Anda. Dengan saldo saat ini, Anda dapat menggunakan maksimal $2 $3",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "Saldo cadangan minimum $1 diperlukan",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "Di-bridge"
@@ -1442,9 +1470,6 @@
   },
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
-  },
-  "builtAroundTheWorld": {
-    "message": "MetaMask dirancang dan dibangun di seluruh dunia."
   },
   "busy": {
     "message": "Sibuk"
@@ -1534,13 +1559,6 @@
   "checkNetworkConnectivityOr": {
     "message": "Periksa konektivitas jaringan, atau $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "Pilih jaringan Anda"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "Bila Anda menggunakan pengaturan dan konfigurasi default, kami menggunakan Infura sebagai penyedia panggilan prosedur jarak jauh (RPC) default kami untuk menawarkan akses paling andal dan pribadi ke data Ethereum yang kami bisa. Dalam kasus terbatas, kami dapat menggunakan penyedia RPC lain untuk memberikan pengalaman terbaik bagi pengguna kami. Anda dapat memilih RPC sendiri, tetapi ingatlah bahwa setiap RPC akan menerima alamat IP dan dompet Ethereum Anda untuk melakukan transaksi. Untuk mempelajari selengkapnya tentang cara Infura menangani data untuk akun EVM, baca $1, dan untuk akun Solana, $2.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
@@ -1838,6 +1856,9 @@
   "connectAHardwareWallet": {
     "message": "Hubungkan dompet perangkat keras"
   },
+  "connectAHardwareWalletDescription": {
+    "message": "Menggunakan USB atau Kode QR"
+  },
   "connectAccounts": {
     "message": "Hubungkan akun"
   },
@@ -2072,11 +2093,21 @@
   "creatorAddress": {
     "message": "Alamat pembuat"
   },
+  "criticalErrorAttemptRecovery": {
+    "message": "Upaya pemulihan"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "Jika tidak ada satu pun dari cara di atas yang berhasil, $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "Instal ulang MetaMask"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "Masih mengalami masalah?"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
-  },
-  "currencyConversion": {
-    "message": "Mata uang"
   },
   "currencyRateCheckToggle": {
     "message": "Tampilkan saldo dan pemeriksa harga token"
@@ -2111,9 +2142,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 jam: $1 - $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "Bahasa saat ini"
   },
   "currentNetwork": {
     "message": "Jaringan saat ini",
@@ -2371,6 +2399,14 @@
     "message": "Izinkan MetaMask menambahkan kode rujukan. Kode ini bersifat permanen. Situs ini menawarkan diskon sesuai ketentuan mereka. MetaMask mendapatkan komisi.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
+  "defiReferralNoThanks": {
+    "message": "Tidak, terima kasih",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "syarat",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
+  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -2465,9 +2501,6 @@
   "details": {
     "message": "Detail"
   },
-  "developerOptions": {
-    "message": "Opsi pengembang"
-  },
   "developerTools": {
     "message": "Alat pengembang"
   },
@@ -2524,17 +2557,8 @@
   "dismiss": {
     "message": "Lewatkan"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Aktifkan ini untuk melewatkan pesan pengingat pencadangan frasa pemulihan. Kami sangat merekomendasikan agar Anda mencadangkan Frasa Pemulihan Rahasia Anda untuk menghindari hilangnya dana"
-  },
-  "dismissReminderField": {
-    "message": "Lewatkan pengingat pencadangan Frasa Pemulihan Rahasia"
-  },
   "displayNftMedia": {
     "message": "Tampilkan media NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Alamat IP Anda dapat diketahui oleh OpenSea atau pihak ketiga lainnya saat Anda menampilkan media dan data NFT. Ini memungkinkan penyerang menghubungkan alamat IP dengan alamat Ethereum Anda. Deteksi otomatis NFT bergantung pada pengaturan ini, dan tidak akan tersedia saat dinonaktifkan."
   },
   "displayNftMediaDescriptionV2": {
     "message": "Autodeteksi NFT bergantung pada fitur ini."
@@ -3222,9 +3246,21 @@
     "message": "Siapkan dompet Anda untuk menggunakan web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "Ya, hemat 5%",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "Hemat hingga 5% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "Hemat 5% dalam perdagangan dengan kode referensi MetaMask. Diskon ini berlaku untuk semua perdagangan di masa mendatang, sama halnya dengan $1 dari GMX. MetaMask mendapatkan komisi dari biaya.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "Hemat 5% untuk GMX",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Buka situs"
@@ -3448,9 +3484,21 @@
   "honeypotTitle": {
     "message": "Honey pot"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "Ya, hemat 4%",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "Hemat hingga 4% untuk perdagangan dengan kode rujukan MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "Hemat 4% untuk perdagangan dengan kode referensi MetaMask. Berlaku untuk semua perdagangan di masa mendatang sesuai dengan $1 Hyperliquid. MetaMask mendapatkan komisi dari biaya.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Hemat 4% untuk Hyperliquid",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Saya mengerti"
@@ -3671,9 +3719,6 @@
   "ipfsGateway": {
     "message": "gateway IPFS"
   },
-  "ipfsGatewayDescription": {
-    "message": "MetaMask menggunakan layanan pihak ketiga untuk menampilkan gambar NFT Anda yang disimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser Anda, serta mengambil ikon untuk token yang berbeda. Alamat IP Anda mungkin tidak memberikan perlindungan terhadap layanan ini saat Anda menggunakannya."
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "Menggunakan layanan pihak ketiga untuk menampilkan gambar NFT yang tersimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser Anda, serta mengambil ikon untuk berbagai token. Pilih gateway IPFS pilihan Anda di bawah ini."
   },
@@ -3854,9 +3899,6 @@
   "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
   },
-  "lineaGoerli": {
-    "message": "Jaringan uji Linea Goerli"
-  },
   "lineaMainnet": {
     "message": "Linea"
   },
@@ -3868,9 +3910,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Tautkan akun Coinbase atau Binance untuk mentransfer kripto ke MetaMask secara gratis."
-  },
-  "links": {
-    "message": "Tautan"
   },
   "loading": {
     "message": "Memuat..."
@@ -4010,6 +4049,9 @@
   },
   "maxFeeTooltip": {
     "message": "Biaya maksimum yang diberikan untuk membayar transaksi."
+  },
+  "maybeLater": {
+    "message": "Nanti saja"
   },
   "medium": {
     "message": "Pasar"
@@ -4610,9 +4652,6 @@
   },
   "networkPermissionToast": {
     "message": "Izin jaringan diperbarui"
-  },
-  "networkProvider": {
-    "message": "Penyedia jaringan"
   },
   "networkStatus": {
     "message": "Status jaringan"
@@ -5222,9 +5261,6 @@
   "overrideContentSecurityPolicyHeader": {
     "message": "Batalkan header Content-Security-Policy"
   },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "Opsi ini merupakan solusi sementara untuk masalah yang diketahui di Firefox, di mana header Content-Security-Policy dapp dapat mencegah ekstensi dimuat dengan benar. Menonaktifkan opsi ini tidak disarankan kecuali diperlukan untuk kompatibilitas halaman web tertentu."
-  },
   "padlock": {
     "message": "Gembok"
   },
@@ -5239,6 +5275,126 @@
   },
   "participateInMetaMetricsDescription": {
     "message": "Berpartisipasilah dalam MetaMetrics untuk membantu kami menjadikan MetaMask lebih baik"
+  },
+  "passkeyAuthMethodBiometrics": {
+    "message": "Biometrik",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "Gunakan $1 untuk membuka MetaMask tanpa perlu memasukkan kata sandi. Ini akan membuat kode sandi hanya untuk perangkat ini.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "$1 sudah diatur untuk dompet ini.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "Kami tidak dapat memverifikasi $1 Anda. Coba lagi.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Respons $1 Anda belum lengkap. Coba lagi.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "Sesi masuk $1 telah berakhir. Coba lagi.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "Sesi pengaturan $1 telah berakhir. Coba lagi dari awal.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "$1 belum diatur untuk dompet ini. Aktifkan $1 di Pengaturan.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "Pengaturan $1 gagal. Coba lagi",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "Kami tidak dapat memverifikasi pengaturan $1 Anda. Coba lagi.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "Kami tidak dapat membuka dengan $1. Coba lagi, atau atur $1 lagi di Pengaturan.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1 tidak sesuai dengan kunci dompet Anda saat ini. Atur $1 lagi di Pengaturan.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Kata sandi Anda telah diperbarui, tetapi membuka dengan $1 tidak dapat diaktifkan.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "Kami tidak dapat memverifikasi $1 Anda. Coba lagi atau gunakan kata sandi Anda.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Daftar $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "Validasi $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Coba buka ekstensi tersebut dalam jendela layar penuh dan coba lagi.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Buka jendela layar penuh",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Masih mengalami masalah?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "Mengalami masalah saat membuka?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "Mengalami masalah saat membuka",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Mengalami masalah saat memverifikasi?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Mengalami masalah saat memverifikasi?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "$1 dinonaktifkan",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "$1 diaktifkan",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "$1 gagal dibuka. Coba kata sandi Anda.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "Gunakan $1 untuk verifikasi, alih-alih memasukkan kata sandi Anda.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "Konfirmasikan dengan $1",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "Kata sandi"
@@ -5652,6 +5808,9 @@
     "message": "Tersedia untuk diperdagangkan",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "Fitur ini tidak tersedia saat fungsi dasar dinonaktifkan."
+  },
   "perpsBatchCancelFailed": {
     "message": "Gagal membatalkan satu atau beberapa order. Coba lagi."
   },
@@ -5663,6 +5822,9 @@
   },
   "perpsCancelOrder": {
     "message": "Batalkan order"
+  },
+  "perpsCandleIntervals": {
+    "message": "Atur interval lilin"
   },
   "perpsCandlePeriodDays": {
     "message": "Hari"
@@ -5676,11 +5838,14 @@
   "perpsCloseAll": {
     "message": "Tutup semua"
   },
+  "perpsCloseAmount": {
+    "message": "Jumlah penutupan"
+  },
   "perpsCloseLong": {
     "message": "Tutup long"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Penutupan sebagian harus bernilai minimal $1 dalam USD. Tingkatkan jumlah penutupan atau atur slider ke 100%."
+    "message": "Penutupan sebagian harus bernilai minimal $1 dalam USD. Tingkatkan jumlah penutupan atau tutup posisi penuh."
   },
   "perpsClosePosition": {
     "message": "Tutup posisi"
@@ -5877,6 +6042,10 @@
   "perpsMid": {
     "message": "Tengah"
   },
+  "perpsMinOrderSize": {
+    "message": "Ukuran order minimal $1",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "Ubah"
   },
@@ -5987,6 +6156,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Ubah posisi short menjadi long"
   },
+  "perpsSaveChanges": {
+    "message": "Simpan perubahan",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "Cari pasar"
   },
@@ -6063,6 +6236,10 @@
   "perpsStopLoss": {
     "message": "Stop loss",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "Stop loss harus dilakukan pada harga likuidasi $1",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "Stop loss harus dilakukan pada harga $1 $2",
@@ -6870,9 +7047,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
-  "revealSeedWords": {
-    "message": "Tampilkan Frasa Pemulihan Rahasia"
-  },
   "revealSeedWordsDescription1": {
     "message": "$1 memberikan akses penuh ke dompet, dana, dan akun Anda.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -6968,27 +7142,6 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Wilayah tidak didukung"
   },
-  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
-    "message": "Selengkapnya"
-  },
-  "rewardsOnboardingLegalDisclaimerTermsLink": {
-    "message": "Syarat dan Pemberitahuan Privasi"
-  },
-  "rewardsOnboardingOptInError": {
-    "message": "Gagal berpartisipasi"
-  },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Kode referensi tidak valid"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Kode referensi (opsional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Kode referensi tidak dapat divalidasi."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Periksa koneksi Anda dan coba lagi."
-  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Memverifikasi kode referensi...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7004,12 +7157,6 @@
   "rewardsPointsIcon": {
     "message": "Poin reward",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "Anda memerlukan aplikasi ini untuk melacak progres dan menukarkan reward. Pindai kode QR ini dan kami akan membantu Anda mengimpor akun."
-  },
-  "rewardsQRCodeTitle": {
-    "message": "Dapatkan aplikasi selulernya"
   },
   "rewardsSignInFailed": {
     "message": "Gagal masuk",
@@ -7097,10 +7244,6 @@
   "securityAlerts": {
     "message": "Peringatan keamanan"
   },
-  "securityAlertsDescription": {
-    "message": "Fitur ini memperingatkan Anda tentang aktivitas berbahaya atau tidak biasa dengan secara aktif meninjau transaksi dan permintaan tanda tangan. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "Fitur ini memperingatkan Anda tentang aktivitas jahat dengan meninjau permintaan transaksi dan tanda tangan secara aktif. $1"
   },
@@ -7110,11 +7253,12 @@
   "securityAndPrivacy": {
     "message": "Keamanan dan privasi"
   },
-  "securityChangePassword": {
-    "message": "Ubah kata sandi"
-  },
   "securityChangePasswordToastError": {
     "message": "Kata sandi tidak dapat diubah. Coba lagi."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "Kata sandi baru telah disimpan, tetapi membuka dengan $1 tidak dapat diaktifkan.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "Kata sandi baru tersimpan"
@@ -7264,8 +7408,16 @@
     "message": "Atur",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "Atur $1",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "Tambahkan akun Snap"
+  },
+  "settingUpPasskey": {
+    "message": "Mengatur $1",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "Pengaturan"
@@ -7913,9 +8065,6 @@
   "showFiatConversionInTestnets": {
     "message": "Tampilkan konversi di jaringan uji"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Pilih ini untuk menampilkan konversi fiat di jaringan uji"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "Menampilkan token jaringan sebagai mata uang lokal di jaringan uji. Jika Anda diminta untuk mengaktifkan fitur ini, Anda mungkin sedang menjadi korban penipuan. Hanya untuk tujuan pengujian. $1",
     "description": "$1 is the 'Learn more' link"
@@ -7949,9 +8098,6 @@
   },
   "showTestnetNetworks": {
     "message": "Tampilkan jaringan pengujian"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Pilih opsi ini untuk menampilkan jaringan pengujian dalam daftar jaringan"
   },
   "sidePanelMigrationToast": {
     "message": "MetaMask kini terbuka di panel samping secara default. $1 setiap saat dari menu.",
@@ -8081,9 +8227,6 @@
   "skipDeepLinkInterstitial": {
     "message": "Jangan tampilkan layar interstisial saat membuka deep link"
   },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Mengaktifkan opsi ini akan melewati layar interstisial yang ditampilkan saat membuka deep link di MetaMask. \"Deep link\" merupakan tautan seperti https://link.metamask.io/home yang akan menyebabkan MetaMask terbuka; tautan ini dapat dikaburkan oleh orang lain. Layar interstisial dirancang untuk melindungi Anda dari membuka halaman secara tidak sengaja di dalam MetaMask yang mungkin menampilkan akun, token, riwayat, saldo, pengaturan, atau informasi sensitif lainnya. Pengaturan ini hanya berlaku untuk tautan yang ditandatangani oleh MetaMask."
-  },
   "skipLinkConfirmationScreens": {
     "message": "Lewati layar konfirmasi tautan"
   },
@@ -8110,6 +8253,9 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Permintaan akun cerdas dari dapp"
+  },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Izinkan dapp meminta fitur akun cerdas untuk akun standar. MetaMask hanya akan melakukan peningkatan ke akun cerdas kami yang telah diaudit."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Alamat sama. Fitur lebih cerdas."
@@ -8593,9 +8739,6 @@
   "stateLogs": {
     "message": "Log status"
   },
-  "stateLogsDescription": {
-    "message": "Log status berisi alamat akun publik Anda dan transaksi terkirim."
-  },
   "stateLogsModalDescription": {
     "message": "Log state dapat membantu kami mendebug masalah yang mungkin Anda temui. Kirimkan hanya ke MetaMask untuk mendapatkan dukungan, karena log state berisi alamat akun publik dan transaksi Anda."
   },
@@ -8670,9 +8813,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "Aktifkan Transaksi Cerdas untuk transaksi yang lebih andal dan aman. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Aktifkan Transaksi Pintar untuk transaksi yang lebih andal dan aman di jaringan yang didukung. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Kirimkan Swap Anda secara pribadi..."
@@ -9103,9 +9243,6 @@
   "theme": {
     "message": " Saya menyetujui Ketentuan Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
   },
-  "themeDescription": {
-    "message": "Pilih tema MetaMask yang Anda sukai."
-  },
   "thirdPartyApis": {
     "message": "API pihak ketiga"
   },
@@ -9374,6 +9511,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "Terjadi kesalahan saat menonaktifkan notifikasi. Coba lagi nanti."
   },
+  "turnOffPasskey": {
+    "message": "Nonaktifkan $1",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "Kami tidak dapat menonaktifkan $1. Coba lagi.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "Aktifkan"
   },
@@ -9476,6 +9621,10 @@
     "message": "Buka untuk menampilkan",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Buka dengan $1",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "Batal semat"
   },
@@ -9559,8 +9708,8 @@
   "useNftDetectionDescription": {
     "message": "Menampilkan semua NFT, termasuk NFT palsu yang di-airdrop oleh penipu."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Izinkan MetaMask menambahkan NFT yang Anda miliki menggunakan layanan pihak ketiga. Autodeteksi NFT mengekspos alamat IP dan akun Anda ke layanan ini. Mengaktifkan fitur ini dapat mengaitkan alamat IP dengan alamat Ethereum Anda dan menampilkan NFT palsu yang di-airdrop oleh penipu. Anda dapat menambahkan token secara manual untuk menghindari risiko ini."
+  "usePassword": {
+    "message": "Gunakan kata sandi"
   },
   "usePhishingDetection": {
     "message": "Gunakan deteksi phishing"
@@ -9570,9 +9719,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Pemeriksaan detail jaringan"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask menggunakan layanan pihak ketiga yang disebut $1 untuk menampilkan detail jaringan yang akurat dan terstandardisasi. Hal ini dapat mengurangi kemungkinan Anda untuk terhubung ke jaringan berbahaya atau salah. Saat menggunakan fitur ini, alamat IP akan diketahui oleh chainid.network."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "Mengurangi kemungkinan Anda terhubung ke jaringan yang berbahaya atau salah. MetaMask menggunakan $1 untuk menampilkan detail jaringan yang akurat dan terstandardisasi."

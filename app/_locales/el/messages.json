@@ -723,9 +723,21 @@
   "assetsDescription": {
     "message": "Αυτόματος εντοπισμός των tokens στο πορτοφόλι σας, εμφάνιση NFT και ομαδοποιημένες ενημερώσεις υπολοίπων λογαριασμών"
   },
+  "asterdexReferralConfirmText": {
+    "message": "Ναι, θα λάβετε 4% απόδοση",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "Λάβετε 4% επιστροφή στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "Λάβετε 4% απόδοση στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask. Αυτή η έκπτωση ισχύει για όλες τις μελλοντικές συναλλαγές, σύμφωνα με τους $1 της AsterDEX. Το MetaMask λαμβάνει προμήθεια.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "Λάβετε 4% απόδοση στο AsterDEX",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Προσπάθεια ακύρωσης των ανταλλαγών δωρεάν"
@@ -741,10 +753,6 @@
   },
   "autoDetectTokens": {
     "message": "Αυτόματη ανίχνευση tokens"
-  },
-  "autoDetectTokensDescription": {
-    "message": "Χρησιμοποιούμε API τρίτων για τον εντοπισμό και την εμφάνιση νέων tokens που αποστέλλονται στο πορτοφόλι σας. Απενεργοποιήστε το εάν δεν θέλετε η εφαρμογή να αντλεί δεδομένα από αυτές τις υπηρεσίες. $1",
-    "description": "$1 is a link to a support article"
   },
   "autoDetectTokensDescriptionV2": {
     "message": "Εμφανίζει τα νέα tokens που αποστέλλονται στο πορτοφόλι σας."
@@ -772,9 +780,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Χρονόμετρο Αυτόματης Αποσύνδεσης (λεπτά)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Ρυθμίστε τον χρόνο αδράνειας σε λεπτά πριν αποσυνδεθεί αυτόματα το MetaMask."
   },
   "available": {
     "message": "διαθέσιμο"
@@ -1007,9 +1012,6 @@
   "blockaidDescriptionTransferFarming": {
     "message": "Εάν εγκρίνετε αυτό το αίτημα, ένας τρίτος που είναι γνωστός για απάτες θα πάρει όλα τα περιουσιακά σας στοιχεία."
   },
-  "blockaidMessage": {
-    "message": "Διαφύλαξη της ιδιωτικότητας - δεν κοινοποιούνται δεδομένα σε τρίτους. Διατίθεται στα Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base και Sepolia."
-  },
   "blockaidTitleDeceptive": {
     "message": "Αυτό είναι ένα παραπλανητικό αίτημα"
   },
@@ -1143,6 +1145,9 @@
   "bridgePoints_tooltip_content_2": {
     "message": "Λάβετε υπόψη ότι αυτή η τιμή είναι κατ' εκτίμηση και θα οριστικοποιηθεί με την ολοκλήρωση της συναλλαγής. Η επιβεβαίωση των πόντων στο υπόλοιπο ανταμοιβών σας μπορεί να διαρκέσει έως και 1 ώρα.",
     "description": "Second part of tooltip content explaining how points are calculated"
+  },
+  "bridgePriceDataUnavailableError": {
+    "message": "Δεν ήταν δυνατή η λήψη πληροφοριών τιμών για αυτό το token. Βεβαιωθείτε ότι το ποσό που θα λάβετε είναι αυτό που περιμένετε πριν συνεχίσετε."
   },
   "bridgePriceImpact": {
     "message": "Επίδραση στην τιμή"
@@ -1372,6 +1377,18 @@
   "bridgeTo": {
     "message": "Διασύνδεση προς"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "Το $1 είναι κακόβουλο token."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "Το $1 έχει επισημανθεί ως κακόβουλο. Είναι πιθανό να υποκλέψει κεφάλαια από όποιον αλληλεπιδρά μαζί του."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "Το $1 είναι ύποπτο token."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "Το $1 έχει επισημανθεί ως ύποπτο. Εξετάστε τους κινδύνους πριν συνεχίσετε."
+  },
   "bridgeTokenNotFound": {
     "message": "Κανένα token δεν ταιριάζει με το “$1”"
   },
@@ -1425,11 +1442,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "Στείλατε"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "Χρήση μέγιστου επιτρεπόμενου"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "Δεν έχετε αρκετά $1 για να πληρώσετε τα τέλη συναλλαγών για αυτή τη διασύνδεση. Εισάγετε ένα μικρότερο ποσό ή αγοράστε περισσότερα $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Χρειάζονται περισσότερα $1 για τέλη"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "Αυτό το συγκεκριμένο δίκτυο απαιτεί να διατηρείτε ένα υπόλοιπο ασφαλείας $1 $3 στον λογαριασμό σας. Με το τρέχον υπόλοιπό σας μπορείτε να χρησιμοποιήσετε το πολύ $2 $3",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "Απαιτείται ελάχιστο υπόλοιπο ασφαλείας $1",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "Έγινε διασύνδεση"
@@ -1442,9 +1470,6 @@
   },
   "browserNotSupported": {
     "message": "Το Πρόγραμμα Περιήγησής σας δεν υποστηρίζεται..."
-  },
-  "builtAroundTheWorld": {
-    "message": "Το MetaMask έχει σχεδιαστεί και λειτουργεί σε όλο τον κόσμο."
   },
   "busy": {
     "message": "Απασχολημένο"
@@ -1534,13 +1559,6 @@
   "checkNetworkConnectivityOr": {
     "message": "Ελέγξτε τη συνδεσιμότητα δικτύου, ή $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "Επιλέξτε το δίκτυό σας"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "Όταν χρησιμοποιείτε τις προεπιλεγμένες ρυθμίσεις και παραμέτρους μας, χρησιμοποιούμε την Infura ως προεπιλεγμένο πάροχο κλήσεων απομακρυσμένης διαδικασίας (RPC) για να προσφέρουμε την πιο αξιόπιστη και ιδιωτική πρόσβαση στα δεδομένα του Ethereum που μπορούμε. Σε ορισμένες περιπτώσεις, ενδέχεται να χρησιμοποιήσουμε άλλους παρόχους RPC προκειμένου να παρέχουμε την καλύτερη δυνατή εμπειρία στους χρήστες μας. Μπορείτε να επιλέξετε το δικό σας RPC, αλλά να θυμάστε ότι οποιοδήποτε RPC θα λάβει τη διεύθυνση IP και το πορτοφόλι σας στο Ethereum για να πραγματοποιήσει συναλλαγές. Για να μάθετε περισσότερα σχετικά με το πώς η Infura χειρίζεται τα δεδομένα για λογαριασμούς EVM, διαβάστε την $1 μας και για λογαριασμούς Solana, $2.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Θα πρέπει να χρησιμοποιήσετε το MetaMask στο Google Chrome για να συνδεθείτε στο Πορτοφόλι Υλικού."
@@ -1838,6 +1856,9 @@
   "connectAHardwareWallet": {
     "message": "Συνδέστε ένα πορτοφόλι υλικού"
   },
+  "connectAHardwareWalletDescription": {
+    "message": "Χρήση USB ή κωδικού QR"
+  },
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
   },
@@ -2072,11 +2093,21 @@
   "creatorAddress": {
     "message": "Διεύθυνση δημιουργού"
   },
+  "criticalErrorAttemptRecovery": {
+    "message": "Προσπάθεια ανάκτησης"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "Αν τίποτα από τα παραπάνω δεν λειτουργήσει, $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "Εγκαταστήστε ξανά το MetaMask"
+  },
+  "criticalErrorStillHavingIssues": {
+    "message": "Ακόμα αντιμετωπίζετε προβλήματα;"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
-  },
-  "currencyConversion": {
-    "message": "Μετατροπή νομίσματος"
   },
   "currencyRateCheckToggle": {
     "message": "Εμφάνιση υπολοίπου και έλεγχος τιμών για token"
@@ -2111,9 +2142,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 ώρες: $1 – $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "Τρέχουσα γλώσσα"
   },
   "currentNetwork": {
     "message": "Τρέχον δίκτυο",
@@ -2371,6 +2399,14 @@
     "message": "Επιτρέψτε στο MetaMask να προσθέσει έναν κωδικό παραπομπής. Αυτό είναι μόνιμο. Ο ιστότοπος προσφέρει εκπτώσεις σύμφωνα με τους όρους του. Το MetaMask λαμβάνει προμήθεια.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
+  "defiReferralNoThanks": {
+    "message": "Όχι, ευχαριστώ",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "όρους",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
+  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -2465,9 +2501,6 @@
   "details": {
     "message": "Λεπτομέρειες"
   },
-  "developerOptions": {
-    "message": "Επιλογές προγραμματιστή"
-  },
   "developerTools": {
     "message": "Εργαλεία προγραμματιστών"
   },
@@ -2524,17 +2557,8 @@
   "dismiss": {
     "message": "Απόρριψη"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Ενεργοποιήστε το για να απορρίψετε το μήνυμα υπενθύμισης για τη δημιουργία αντιγράφων ασφαλείας της Μυστικής Φράσης Ανάκτησης. Σας συνιστούμε ανεπιφύλακτα να δημιουργήσετε αντίγραφο ασφαλείας της Μυστικής Φράσης Ανάκτησης σας για να αποφύγετε την απώλεια κεφαλαίων"
-  },
-  "dismissReminderField": {
-    "message": "Απορρίψτε την υπενθύμιση δημιουργίας αντιγράφων ασφαλείας της Μυστικής Φράσης Ανάκτησης"
-  },
   "displayNftMedia": {
     "message": "Εμφάνιση των μέσων NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Η εμφάνιση των μέσων και δεδομένων NFT εκθέτει τη διεύθυνση IP σας στο OpenSea ή σε άλλους τρίτους. Αυτό μπορεί να επιτρέψει σε εισβολείς να συσχετίσουν τη διεύθυνση IP σας με τη διεύθυνση σας στο Ethereum. Η αυτόματη ανίχνευση των NFT βασίζεται σε αυτή τη ρύθμιση και δεν θα είναι διαθέσιμη όταν αυτή είναι απενεργοποιημένη."
   },
   "displayNftMediaDescriptionV2": {
     "message": "Η αυτόματη ανίχνευση NFT βασίζεται σε αυτή τη λειτουργία."
@@ -3222,9 +3246,21 @@
     "message": "Ετοιμάστε το πορτοφόλι σας για χρήση στο web3",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "Ναι, θα εξοικονομήσετε 5%",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "Κερδίστε έως και 5% στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask.",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "Εξοικονομήστε 5% στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask. Αυτή η έκπτωση ισχύει για όλες τις μελλοντικές συναλλαγές, σύμφωνα με τους $1 του GMX. Το MetaMask λαμβάνει προμήθεια.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "Εξοικονομήστε 5% στο GMX",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Μετάβαση στον ιστότοπο"
@@ -3448,9 +3484,21 @@
   "honeypotTitle": {
     "message": "Απάτη"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "Ναι, θα εξοικονομήσετε 4%",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "Κερδίστε έως και 4% στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "Εξοικονομήστε 4% στις συναλλαγές με έναν κωδικό παραπομπής στο MetaMask. Αυτή η έκπτωση ισχύει για όλες τις μελλοντικές συναλλαγές, σύμφωνα με τους $1 του Hyperliquid. Το MetaMask λαμβάνει προμήθεια.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "Εξοικονομήστε 4% στο Hyperliquid",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Κατανοώ"
@@ -3671,9 +3719,6 @@
   "ipfsGateway": {
     "message": "Πύλη IPFS"
   },
-  "ipfsGatewayDescription": {
-    "message": "Το MetaMask χρησιμοποιεί υπηρεσίες τρίτων για να προβάλει εικόνες των NFT σας που είναι αποθηκευμένα στο IPFS, εμφάνιζει πληροφορίες σχετικά με τις διευθύνσεις ENS που έχουν εισαχθεί στη γραμμή διευθύνσεων του προγράμματος περιήγησής σας και αντλεί εικονίδια για διαφορετικά tokens. Η διεύθυνση IP σας ενδέχεται να είναι εκτεθειμένη σε αυτές τις υπηρεσίες όταν τις χρησιμοποιείτε."
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "Χρησιμοποιεί υπηρεσίες τρίτων για να εμφανίζει εικόνες των NFT σας που είναι αποθηκευμένα στο IPFS, να προβάλλει πληροφορίες για ENS διευθύνσεις που πληκτρολογήσατε στη γραμμή διευθύνσεων του προγράμματος περιήγησης και να ανακτά εικονίδια για διαφορετικά tokens. Επιλέξτε τον προτιμώμενο κόμβο IPFS παρακάτω."
   },
@@ -3854,9 +3899,6 @@
   "likeToImportTokens": {
     "message": "Θέλετε να εισαγάγετε αυτά τα tokens;"
   },
-  "lineaGoerli": {
-    "message": "Δίκτυο δοκιμών Linea Goerli"
-  },
   "lineaMainnet": {
     "message": "Linea"
   },
@@ -3868,9 +3910,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Συνδέστε τους λογαριασμούς σας στο Coinbase ή Binance για να μεταφέρετε κρυπτονομίσματα στο MetaMask δωρεάν."
-  },
-  "links": {
-    "message": "Σύνδεσμοι"
   },
   "loading": {
     "message": "Φόρτωση..."
@@ -4010,6 +4049,9 @@
   },
   "maxFeeTooltip": {
     "message": "Τα μέγιστα τέλη που προβλέπονται για την πληρωμή της συναλλαγής."
+  },
+  "maybeLater": {
+    "message": "Ίσως αργότερα"
   },
   "medium": {
     "message": "Τιμή αγοράς"
@@ -4610,9 +4652,6 @@
   },
   "networkPermissionToast": {
     "message": "Ενημερωμένες άδειες χρήσης δικτύων"
-  },
-  "networkProvider": {
-    "message": "Πάροχος δικτύου"
   },
   "networkStatus": {
     "message": "Κατάσταση δικτύου"
@@ -5222,9 +5261,6 @@
   "overrideContentSecurityPolicyHeader": {
     "message": "Επικεφαλίδα Παράκαμψης Περιεχομένου-Ασφάλεια-Πολιτική"
   },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "Αυτή η επιλογή είναι μια λύση για ένα γνωστό πρόβλημα στον Firefox, όπου η επικεφαλίδα Παράκαμψης Περιεχομένου-Ασφάλεια-Πολιτική μιας αποκεντρωμένης εφαρμογής μπορεί να εμποδίσει τη σωστή λειτουργία μιας επέκτασης. Η απενεργοποίηση αυτής της επιλογής δεν συνιστάται, εκτός αν απαιτείται για συγκεκριμένη συμβατότητα ιστοσελίδας."
-  },
   "padlock": {
     "message": "Padlock"
   },
@@ -5239,6 +5275,126 @@
   },
   "participateInMetaMetricsDescription": {
     "message": "Πάρτε μέρος στα MetaMetrics για να μας βοηθήσετε να κάνουμε καλύτερο το MetaMask"
+  },
+  "passkeyAuthMethodBiometrics": {
+    "message": "Βιομετρικά δεδομένα",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "Χρησιμοποιήστε το $1 για να ξεκλειδώσετε το MetaMask αντί να εισάγετε τον κωδικό πρόσβασής σας. Αυτό δημιουργεί ένα κλειδί πρόσβασης μόνο σε αυτή τη συσκευή.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "Το $1 έχει ήδη ρυθμιστεί για αυτό το πορτοφόλι.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "Δεν μπορέσαμε να επαληθεύσουμε το $1. Προσπαθήστε ξανά.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Η απόκριση του $1 ήταν ελλιπής. Προσπαθήστε ξανά.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "Η συνεδρία σύνδεσης με το $1 έληξε. Προσπαθήστε ξανά.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "Η συνεδρία ρύθμισης του $1 έληξε. Ξεκινήστε ξανά από την αρχή.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "Το $1 δεν έχει ρυθμιστεί για αυτό το πορτοφόλι. Ενεργοποιήστε το $1 στις Ρυθμίσεις.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "Η ρύθμιση του $1 απέτυχε. Προσπαθήστε ξανά",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "Δεν μπορέσαμε να επαληθεύσουμε τη ρύθμιση του $1. Προσπαθήστε ξανά.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "Δεν μπορέσαμε να ξεκλειδώσουμε με το $1. Προσπαθήστε ξανά ή ρυθμίστε ξανά το $1 στις Ρυθμίσεις.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "Το $1 δεν ταιριάζει με το τρέχον κλείδωμα του πορτοφολιού σας. Ρυθμίστε ξανά το $1 στις Ρυθμίσεις.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Ο κωδικός πρόσβασής σας ενημερώθηκε, αλλά το ξεκλείδωμα με $1 δεν μπόρεσε να ενεργοποιηθεί.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "Δεν μπορέσαμε να επαληθεύσουμε το $1. Προσπαθήστε ξανά ή χρησιμοποιήστε τον κωδικό πρόσβασής σας.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "Εγγραφή με $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "Επαλήθευση με $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Δοκιμάστε να ανοίξετε την επέκταση σε παράθυρο πλήρους οθόνης και προσπαθήστε ξανά.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Άνοιγμα παραθύρου πλήρους οθόνης",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Ακόμα έχετε πρόβλημα;",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "Πρόβλημα με το ξεκλείδωμα;",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "Πρόβλημα με το ξεκλείδωμα;",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Πρόβλημα με την επαλήθευση;",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Πρόβλημα με την επαλήθευση;",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "Το $1 απενεργοποιήθηκε",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "Το $1 ενεργοποιήθηκε",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "Το ξεκλείδωμα με $1 απέτυχε. Προσπαθήστε με τον κωδικό πρόσβασής σας.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "Χρησιμοποιήστε το $1 για επαλήθευση αντί να εισάγετε τον κωδικό πρόσβασής σας.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "Επιβεβαίωση με $1",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "Κωδικός πρόσβασης"
@@ -5652,6 +5808,9 @@
     "message": "Διαθέσιμο ποσό για συναλλαγές",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "Αυτή η λειτουργία δεν είναι διαθέσιμη όσο είναι απενεργοποιημένες οι βασικές λειτουργίες."
+  },
   "perpsBatchCancelFailed": {
     "message": "Δεν ήταν δυνατή η ακύρωση μίας ή περισσότερων εντολών. Προσπαθήστε ξανά."
   },
@@ -5663,6 +5822,9 @@
   },
   "perpsCancelOrder": {
     "message": "Ακύρωση εντολής"
+  },
+  "perpsCandleIntervals": {
+    "message": "Ορισμός διαστήματος κεριών"
   },
   "perpsCandlePeriodDays": {
     "message": "Ημέρες"
@@ -5676,11 +5838,14 @@
   "perpsCloseAll": {
     "message": "Κλείσιμο όλων"
   },
+  "perpsCloseAmount": {
+    "message": "Ποσό κλεισίματος"
+  },
   "perpsCloseLong": {
     "message": "Κλείσιμο θέσης αγοράς"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Τα μερικά κλεισίματα πρέπει να είναι τουλάχιστον $1 σε αξία USD. Αυξήστε το ποσό κλεισίματος ή ορίστε τον ρυθμιστή τιμής στο 100%."
+    "message": "Τα μερικά κλεισίματα πρέπει να είναι τουλάχιστον $1 σε αξία USD. Αυξήστε το ποσό κλεισίματος ή κλείστε ολόκληρη τη θέση."
   },
   "perpsClosePosition": {
     "message": "Κλείσιμο θέσης"
@@ -5877,6 +6042,10 @@
   "perpsMid": {
     "message": "Ενδιάμεσα"
   },
+  "perpsMinOrderSize": {
+    "message": "Το μέγεθος της εντολής πρέπει να είναι τουλάχιστον $1",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "Τροποποίηση"
   },
@@ -5987,6 +6156,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Αντιστρέψτε τη θέση πώλησης σε θέση αγοράς"
   },
+  "perpsSaveChanges": {
+    "message": "Αποθήκευση αλλαγών",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "Αναζήτηση αγορών"
   },
@@ -6063,6 +6236,10 @@
   "perpsStopLoss": {
     "message": "Περιορισμός ζημιών",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "Η εντολή περιορισμού ζημίας πρέπει να είναι $1 ως τιμή ρευστοποίησης",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "Ο Περιορισμός Ζημιών πρέπει να είναι μεταξύ $1 και $2",
@@ -6866,9 +7043,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "Αποκαλύψτε τη Μυστική Φράση Ανάκτησης"
   },
-  "revealSeedWords": {
-    "message": "Αποκάλυψη της Μυστικής Φράσης Ανάκτησης"
-  },
   "revealSeedWordsDescription1": {
     "message": "Το $1 σας δίνει πλήρη πρόσβαση στο πορτοφόλι, τα κεφάλαια και τους λογαριασμούς σας.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -6964,27 +7138,6 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Η περιοχή δεν υποστηρίζεται"
   },
-  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "rewardsOnboardingLegalDisclaimerTermsLink": {
-    "message": "Όροι και Ειδοποίηση Απορρήτου"
-  },
-  "rewardsOnboardingOptInError": {
-    "message": "Αποτυχία συμμετοχής"
-  },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Μη έγκυρος κωδικός παραπομπής"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Κωδικός παραπομπής (προαιρετικά)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Ο κωδικός παραπομπής δεν ήταν δυνατό να επαληθευτεί."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Ελέγξτε τη σύνδεσή σας και προσπαθήστε ξανά."
-  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Επαλήθευση κωδικού παραπομπής...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7000,12 +7153,6 @@
   "rewardsPointsIcon": {
     "message": "Πόντοι ανταμοιβών",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "Θα χρειαστείτε την εφαρμογή για να παρακολουθείτε την πρόοδό σας και να εξαργυρώνετε ανταμοιβές. Σαρώστε αυτόν τον κωδικό QR και θα σας βοηθήσουμε να εισαγάγετε τους λογαριασμούς σας."
-  },
-  "rewardsQRCodeTitle": {
-    "message": "Κατεβάστε την εφαρμογή για κινητά"
   },
   "rewardsSignInFailed": {
     "message": "Αποτυχία σύνδεσης",
@@ -7093,10 +7240,6 @@
   "securityAlerts": {
     "message": "Ειδοποιήσεις ασφαλείας"
   },
-  "securityAlertsDescription": {
-    "message": "Αυτή η λειτουργία σας προειδοποιεί για κακόβουλη ή ασυνήθιστη δραστηριότητα, καθώς ελέγχει ενεργά τα αιτήματα συναλλαγών και υπογραφών. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "Αυτή η λειτουργία σας προειδοποιεί για κακόβουλη δραστηριότητα, καθώς ελέγχει ενεργά τα αιτήματα συναλλαγών και υπογραφών. $1"
   },
@@ -7106,11 +7249,12 @@
   "securityAndPrivacy": {
     "message": "Ασφάλεια και ιδιωτικότητα"
   },
-  "securityChangePassword": {
-    "message": "Αλλαγή κωδικού πρόσβασης"
-  },
   "securityChangePasswordToastError": {
     "message": "Δεν ήταν δυνατή η αλλαγή του κωδικού πρόσβασης. Προσπαθήστε ξανά."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε, αλλά το ξεκλείδωμα με $1 δεν μπόρεσε να ενεργοποιηθεί.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "Ο νέος κωδικός πρόσβασης αποθηκεύτηκε"
@@ -7260,8 +7404,16 @@
     "message": "Διαμόρφωση",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "Ρύθμιση του $1",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "Προσθήκη λογαριασμού στο snap"
+  },
+  "settingUpPasskey": {
+    "message": "Ρυθμίζοντας το $1",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "Ρυθμίσεις"
@@ -7909,9 +8061,6 @@
   "showFiatConversionInTestnets": {
     "message": "Εμφάνιση μετατροπής σε δίκτυα δοκιμών"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Επιλέξτε αυτό για να εμφανίσετε τη μετατροπή παραστατικών χρημάτων σε δίκτυα δοκιμών"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "Εμφανίζει τα tokens του δικτύου ως τοπικό νόμισμα σε δοκιμαστικά δίκτυα. Αν σας ζητήσουν να ενεργοποιήσετε αυτή τη λειτουργία, μπορεί να πρόκειται για απόπειρα απάτης. Μόνο για σκοπούς δοκιμής. $1",
     "description": "$1 is the 'Learn more' link"
@@ -7945,9 +8094,6 @@
   },
   "showTestnetNetworks": {
     "message": "Εμφάνιση δοκιμαστικών δικτύων"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Επιλέξτε το για να εμφανίζονται τα δοκιμαστικά δίκτυα στη λίστα δικτύων"
   },
   "sidePanelMigrationToast": {
     "message": "Το MetaMask ανοίγει πλέον στο πλευρικό πάνελ από προεπιλογή. Το $1 είναι διαθέσιμο οποιαδήποτε στιγμή από το μενού.",
@@ -8077,9 +8223,6 @@
   "skipDeepLinkInterstitial": {
     "message": "Μην εμφανίζετε το παράθυρο προειδοποίησης κατά το άνοιγμα ειδικών συνδέσμων"
   },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Επιλέγοντας αυτήν την επιλογή, δεν θα εμφανίζεται το παράθυρο προειδοποίησης όταν ανοίγετε ειδικούς συνδέσμους στο MetaMask. Ένας 'ειδικός σύνδεσμος' είναι όπως το https://link.metamask.io/home που ανοίγει το MetaMask, αυτοί οι σύνδεσμοι μπορούν να παραποιηθούν από τρίτους. Το παράθυρο προειδοποίησης έχει σχεδιαστεί για να σας προστατεύει από το να ανοίγετε κατά λάθος σελίδες μέσα στο MetaMask που μπορεί να εμφανίζουν τους λογαριασμούς σας, tokens, ιστορικό, υπόλοιπα, ρυθμίσεις ή άλλες ενδεχομένως ευαίσθητες πληροφορίες. Αυτή η ρύθμιση αφορά μόνο τους συνδέσμους που έχουν πιστοποιηθεί από το MetaMask."
-  },
   "skipLinkConfirmationScreens": {
     "message": "Παράκαμψη οθονών επιβεβαίωσης συνδέσμων"
   },
@@ -8106,6 +8249,9 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Αιτήματα έξυπνου λογαριασμού από αποκεντρωμένες εφαρμογές (dapps)"
+  },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Επιτρέψτε στις αποκεντρωμένες εφαρμογές να ζητούν λειτουργίες έξυπνων λογαριασμών για βασικούς λογαριασμούς. Το MetaMask θα αναβαθμίζει μόνο σε πιστοποιημένο έξυπνο λογαριασμό."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Ίδια διεύθυνση. Πιο έξυπνες λειτουργίες."
@@ -8589,9 +8735,6 @@
   "stateLogs": {
     "message": "Αρχεία καταγραφής κατάστασης"
   },
-  "stateLogsDescription": {
-    "message": "Τα αρχεία καταγραφής κατάστασης περιέχουν τις διευθύνσεις του δημόσιου λογαριασμού σας και τις συναλλαγές οι οποίες έχουν αποσταλεί."
-  },
   "stateLogsModalDescription": {
     "message": "Τα αρχεία καταγραφών κατάστασης μπορούν να μας βοηθήσουν να εντοπίσουμε και να διορθώσουμε προβλήματα που ίσως αντιμετωπίσετε. Στείλτε τα μόνο στο MetaMask για υποστήριξη, γιατί τα αρχεία καταγραφών κατάστασης περιέχουν τη δημόσια διεύθυνση του λογαριασμού σας και τις συναλλαγές σας."
   },
@@ -8666,9 +8809,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "Ενεργοποιήστε τις Έξυπνες Συναλλαγές για πιο αξιόπιστες και ασφαλείς συναλλαγές. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Ενεργοποιήστε τις Έξυπνες Συναλλαγές για πιο αξιόπιστες και ασφαλείς συναλλαγές σε υποστηριζόμενα δίκτυα. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ιδιωτική υποβολή της Ανταλλαγής σας..."
@@ -9099,9 +9239,6 @@
   "theme": {
     "message": "Θέμα"
   },
-  "themeDescription": {
-    "message": "Επιλέξτε το προτιμώμενο θέμα σας MetaMask."
-  },
   "thirdPartyApis": {
     "message": "API τρίτων"
   },
@@ -9370,6 +9507,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "Προέκυψε σφάλμα κατά την απενεργοποίηση των ειδοποιήσεων. Προσπαθήστε ξανά αργότερα."
   },
+  "turnOffPasskey": {
+    "message": "Απενεργοποίηση του $1",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "Δεν μπορέσαμε να απενεργοποιήσουμε το $1. Προσπαθήστε ξανά.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "Ενεργοποίηση"
   },
@@ -9472,6 +9617,10 @@
     "message": "Ξεκλειδώστε για να εμφανιστεί",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Ξεκλείδωμα με $1",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "Ξεκαρφίτσωμα"
   },
@@ -9555,8 +9704,8 @@
   "useNftDetectionDescription": {
     "message": "Εμφανίζει όλα τα NFT, συμπεριλαμβανομένων και των ψεύτικων που αποστέλλονται μέσω airdrop από απατεώνες."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Επιτρέψτε στο MetaMask να προσθέτει NFT που σας ανήκουν χρησιμοποιώντας υπηρεσίες τρίτων. Ο αυτόματος εντοπισμός NFT εκθέτει τη διεύθυνση IP και την διεύθυνση του λογαριασμού σας σε αυτές τις υπηρεσίες. Η ενεργοποίηση αυτής της λειτουργίας θα μπορούσε να συσχετίσει τη διεύθυνση IP σας με τη διεύθυνση Ethereum σας και να εμφανίσει ψεύτικα NFT τακτικής airdrop που διοχετεύουν οι απατεώνες. Μπορείτε να προσθέσετε tokens μη αυτόματα για να αποφύγετε αυτόν τον κίνδυνο."
+  "usePassword": {
+    "message": "Χρήση κωδικού πρόσβασης"
   },
   "usePhishingDetection": {
     "message": "Χρήση ανίχνευσης phishing"
@@ -9566,9 +9715,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Ο έλεγχος λεπτομερειών δικτύου"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "Το MetaMask χρησιμοποιεί μια υπηρεσία τρίτων που ονομάζεται $1 για να εμφανίζει ακριβείς και τυποποιημένες λεπτομέρειες δικτύου. Αυτό μειώνει τις πιθανότητες σύνδεσής σας με κακόβουλο ή λανθασμένο δίκτυο. Όταν χρησιμοποιείτε αυτή τη λειτουργία, η διεύθυνση IP σας εκτίθεται στο chainid.network."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "Μειώνει τις πιθανότητες να συνδεθείτε σε κακόβουλο ή μη αξιόπιστο δίκτυο. Το MetaMask χρησιμοποιεί το $1 για να εμφανίζει ακριβείς και τυποποιημένες πληροφορίες δικτύου."
