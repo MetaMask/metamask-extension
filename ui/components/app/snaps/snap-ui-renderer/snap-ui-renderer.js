@@ -9,17 +9,16 @@ import LuxonUtils from '@date-io/luxon';
 import { ThemeProvider } from '@material-ui/core/styles';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import { getInterface } from '../../../../selectors';
-import { Box } from '../../../component-library';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 
 import { SnapInterfaceContextProvider } from '../../../../contexts/snaps';
 import PulseLoader from '../../../ui/pulse-loader';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Display,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
+import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import {
@@ -127,11 +126,10 @@ const SnapUIRendererComponent = ({
   if (isLoading || !content) {
     return (
       <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        height={BlockSize.Full}
-        width={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
+        className="h-full w-full"
       >
         <PulseLoader />
       </Box>
@@ -149,9 +147,11 @@ const SnapUIRendererComponent = ({
       <ThemeProvider theme={muiPickerTheme}>
         <MuiPickersUtilsProvider utils={LuxonUtils} locale={locale}>
           <Box
-            className="snap-ui-renderer__content"
-            height={BlockSize.Full}
-            backgroundColor={backgroundColor}
+            className={`snap-ui-renderer__content h-full ${
+              backgroundColor === BackgroundColor.backgroundDefault
+                ? 'bg-default'
+                : 'bg-alternative'
+            }`}
             style={{
               overflowY: 'auto',
             }}

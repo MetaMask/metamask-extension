@@ -1,13 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Box, IconSize, Text } from '../../../component-library';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { IconSize, Text } from '../../../component-library';
 import { SnapIcon } from '../snap-icon';
 import { getSnapMetadata } from '../../../../selectors';
 import {
-  AlignItems,
-  BorderRadius,
-  Display,
-  FlexDirection,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -27,11 +28,9 @@ const SnapAuthorshipPill: React.FC<SnapAuthorshipPillProps> = ({
 
   return (
     <Box
-      className="snap-authorship-pill"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      borderRadius={BorderRadius.pill}
+      className="snap-authorship-pill rounded-full"
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
       paddingTop={1}
       paddingBottom={1}
       paddingLeft={1}

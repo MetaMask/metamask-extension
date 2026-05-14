@@ -55,11 +55,7 @@ describe('SnapUIRenderer', () => {
       },
     );
 
-    expect(
-      container.getElementsByClassName(
-        'mm-box--background-color-background-default',
-      ),
-    ).toHaveLength(1);
+    expect(container.getElementsByClassName('bg-default')).toHaveLength(1);
     expect(container).toMatchSnapshot();
   });
 
@@ -78,10 +74,11 @@ describe('SnapUIRenderer', () => {
     );
 
     expect(
-      container.getElementsByClassName(
-        'mm-box snap-ui-renderer__content mm-box--background-color-background-default',
-      ),
+      container.getElementsByClassName('snap-ui-renderer__content'),
     ).toHaveLength(1);
+    expect(
+      container.querySelector('.snap-ui-renderer__content.bg-default'),
+    ).not.toBeNull();
     expect(container).toMatchSnapshot();
   });
 

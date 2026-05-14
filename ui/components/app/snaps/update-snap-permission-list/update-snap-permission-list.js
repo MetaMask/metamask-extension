@@ -2,18 +2,18 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box, ButtonLink } from '../../../component-library';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { ButtonLink } from '../../../component-library';
 import {
   getMultipleTargetsSubjectMetadata,
   getSnapMetadata,
   getSnapsMetadata,
 } from '../../../../selectors';
 import SnapPermissionAdapter from '../snap-permission-adapter';
-import {
-  BlockSize,
-  Display,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
 import {
   MinPermissionAbstractionDisplayCount,
   PermissionWeightThreshold,
@@ -113,7 +113,7 @@ export default function UpdateSnapPermissionList({
   };
 
   return (
-    <Box width={BlockSize.Full}>
+    <Box className="w-full">
       <SnapPermissionAdapter
         permissions={newWeightedPermissions}
         snapId={snapId}
@@ -140,8 +140,8 @@ export default function UpdateSnapPermissionList({
       />
       {showAll ? null : (
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Center}
           paddingTop={2}
           paddingBottom={2}
         >

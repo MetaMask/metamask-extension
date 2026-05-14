@@ -1,12 +1,12 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { SnapUISelector } from './snap-ui-selector';
-import { Box, Text } from '../../../component-library';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../../helpers/constants/design-system';
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { Text } from '../../../component-library';
 import { shortenAddress } from '../../../../helpers/utils/util';
 import { SnapUICard } from '../snap-ui-card/snap-ui-card';
 import configureStore from '../../../../store/store';
@@ -64,32 +64,32 @@ AdvancedStory.args = {
   optionComponents: [
     <Box
       key="account1"
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
     >
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column}>
         <Text>Account 1</Text>
         <Text>
           {shortenAddress('0xc0ffee254729296a45a3885639AC7E10F9d54979')}
         </Text>
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column}>
         <Text>3000 USD</Text>
         <Text>1 ETH</Text>
       </Box>
     </Box>,
     <Box
       key="account2"
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
     >
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column}>
         <Text>Account 2</Text>
         <Text>
           {shortenAddress('0xc0ffee254729296a45a3885639AC7E10F9d54979')}
         </Text>
       </Box>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column}>
         <Text>0 USD</Text>
         <Text>0 ETH</Text>
       </Box>

@@ -3,7 +3,7 @@
 exports[`SnapUIForm will render 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div
@@ -13,7 +13,7 @@ exports[`SnapUIForm will render 1`] = `
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
       >
         <form
-          class="mm-box snap-ui-renderer__form mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+          class="flex flex-col gap-2 snap-ui-renderer__form"
           id="form"
         >
           <div
@@ -53,7 +53,7 @@ exports[`SnapUIForm will render 1`] = `
 exports[`SnapUIForm will render with fields 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div
@@ -63,7 +63,7 @@ exports[`SnapUIForm will render with fields 1`] = `
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
       >
         <form
-          class="mm-box snap-ui-renderer__form mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column"
+          class="flex flex-col gap-2 snap-ui-renderer__form"
           id="form"
         >
           <div

@@ -2,16 +2,19 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import {
-  BorderRadius,
   BackgroundColor,
   TextColor,
   Color,
-  Display,
   OverflowWrap,
   IconColor,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { Icon, IconName, Box, Text } from '../../../component-library';
+import {
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { Icon, IconName, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Tooltip from '../../../ui/tooltip';
 import { ShowMore } from '../show-more';
@@ -49,21 +52,20 @@ export const Copyable = ({
 
   return (
     <Box
-      display={Display.Flex}
+      flexDirection={BoxFlexDirection.Row}
       onClick={
         sensitive && !isVisible ? handleVisibilityClick : handleCopyClick
       }
-      className={classnames('copyable', {
+      className={classnames('copyable rounded-lg', {
         sensitive,
         clicked: isClicked,
         visible: isVisible,
       })}
       backgroundColor={
         isVisible && sensitive
-          ? BackgroundColor.errorMuted
-          : BackgroundColor.primaryMuted
+          ? BoxBackgroundColor.ErrorMuted
+          : BoxBackgroundColor.PrimaryMuted
       }
-      borderRadius={BorderRadius.LG}
       padding={2}
       marginTop={marginTop}
       marginBottom={marginBottom}

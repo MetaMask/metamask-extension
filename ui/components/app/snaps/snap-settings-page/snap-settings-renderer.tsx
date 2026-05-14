@@ -4,10 +4,10 @@ import { useSearchParams } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { deleteInterface } from '../../../../store/actions';
-import { Box, Text } from '../../../component-library';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
+import { Text } from '../../../component-library';
 import {
   BackgroundColor,
-  BlockSize,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
@@ -46,12 +46,11 @@ export const SnapSettingsRenderer = () => {
 
   return (
     <Box
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      className="h-full w-full"
     >
       {error && (
-        <Box height={BlockSize.Full} padding={4}>
+        <Box padding={4} className="h-full">
           <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
             <Text variant={TextVariant.bodySm} marginBottom={4}>
               {t('snapsUIError', [<b key="0">{snapName}</b>])}

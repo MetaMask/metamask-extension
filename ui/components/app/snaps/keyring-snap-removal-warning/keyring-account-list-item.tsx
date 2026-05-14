@@ -1,13 +1,13 @@
 import React from 'react';
-import { ButtonIcon, IconName, Text, Box } from '../../../component-library';
 import {
-  BlockSize,
-  BorderColor,
-  BorderRadius,
-  Display,
-  FlexDirection,
+  Box,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { ButtonIcon, IconName, Text } from '../../../component-library';
+import {
   IconColor,
-  JustifyContent,
   OverflowWrap,
   TextColor,
 } from '../../../../helpers/constants/design-system';
@@ -25,25 +25,22 @@ export const KeyringAccountListItem = ({
   const t = useI18nContext();
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      borderRadius={BorderRadius.MD}
-      borderColor={BorderColor.borderDefault}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      borderColor={BoxBorderColor.BorderDefault}
       padding={3}
-      width={BlockSize.Full}
+      className="w-full rounded-md"
       data-testid="keyring-account-list-item"
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        width={BlockSize.TenTwelfths}
+        flexDirection={BoxFlexDirection.Column}
+        className="w-10/12"
       >
-        <Box flexDirection={FlexDirection.Column} marginBottom={2}>
+        <Box flexDirection={BoxFlexDirection.Column} marginBottom={2}>
           <Text color={TextColor.textMuted}>{t('keyringAccountName')}</Text>
           <Text>{account.name}</Text>
         </Box>
-        <Box flexDirection={FlexDirection.Column}>
+        <Box flexDirection={BoxFlexDirection.Column}>
           <Text color={TextColor.textMuted}>
             {t('keyringAccountPublicAddress')}
           </Text>
@@ -53,9 +50,8 @@ export const KeyringAccountListItem = ({
         </Box>
       </Box>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
+        flexDirection={BoxFlexDirection.Column}
+        justifyContent={BoxJustifyContent.Center}
       >
         <ButtonIcon
           ariaLabel="snap-url-export"

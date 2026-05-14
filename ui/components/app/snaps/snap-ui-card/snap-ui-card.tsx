@@ -1,14 +1,15 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
   TextColor,
   TextVariant,
-  AlignItems,
 } from '../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../component-library';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { Text } from '../../../component-library';
 import { SnapUIImage } from '../snap-ui-image';
 
 export type SnapUICardProps = {
@@ -29,15 +30,15 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
   return (
     <Box
       className="snap-ui-renderer__card"
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Center}
       gap={2}
     >
       <Box
-        display={Display.Flex}
+        flexDirection={BoxFlexDirection.Row}
         gap={4}
-        alignItems={AlignItems.center}
+        alignItems={BoxAlignItems.Center}
         style={{ overflow: 'hidden' }}
       >
         {image && (
@@ -49,8 +50,7 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
           />
         )}
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          flexDirection={BoxFlexDirection.Column}
           style={{ overflow: 'hidden' }}
         >
           <Text variant={TextVariant.bodyMdMedium} ellipsis>
@@ -64,9 +64,8 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
         </Box>
       </Box>
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        textAlign={TextAlign.Right}
+        flexDirection={BoxFlexDirection.Column}
+        className="text-right"
         style={{ overflow: 'hidden' }}
       >
         <Text variant={TextVariant.bodyMdMedium} ellipsis>

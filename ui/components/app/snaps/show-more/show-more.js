@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 
 import classnames from 'clsx';
 import useIsOverflowing from '../../../../hooks/snaps/useIsOverflowing';
-import { Box, Button, ButtonVariant, Text } from '../../../component-library';
+import { Box } from '@metamask/design-system-react';
+import { Button, ButtonVariant, Text } from '../../../component-library';
 import {
   BackgroundColor,
   TextColor,

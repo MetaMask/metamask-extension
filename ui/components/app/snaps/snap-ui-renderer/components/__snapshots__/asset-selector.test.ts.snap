@@ -3,7 +3,7 @@
 exports[`SnapUIAssetSelector renders an asset selector 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div
@@ -107,7 +107,7 @@ exports[`SnapUIAssetSelector renders an asset selector 1`] = `
 exports[`SnapUIAssetSelector renders inside a field 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div

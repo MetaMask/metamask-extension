@@ -3,18 +3,19 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isSnapId } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box, IconSize, Text } from '../../../../components/component-library';
 import {
-  FlexDirection,
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { IconSize, Text } from '../../../../components/component-library';
+import {
   TextVariant,
-  JustifyContent,
-  AlignItems,
   TextAlign,
-  Display,
   FontWeight,
-  BlockSize,
   OverflowWrap,
-  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import SnapConnectCell from '../../../../components/app/snaps/snap-connect-cell/snap-connect-cell';
@@ -84,12 +85,10 @@ export default function SnapsConnect({
     if (isLoading) {
       return (
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          width={BlockSize.Full}
-          height={BlockSize.Full}
+          flexDirection={BoxFlexDirection.Column}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
+          className="h-full w-full"
         >
           <PulseLoader />
         </Box>
@@ -99,13 +98,13 @@ export default function SnapsConnect({
     if (snaps?.length > 1) {
       return (
         <Box
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           paddingTop={4}
-          width={BlockSize.Full}
+          className="w-full"
           style={{ overflowY: 'hidden' }}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          backgroundColor={BoxBackgroundColor.BackgroundAlternative}
         >
           <Text
             paddingBottom={2}
@@ -135,10 +134,9 @@ export default function SnapsConnect({
             ])}
           </Text>
           <Box
-            flexDirection={FlexDirection.Column}
-            display={Display.Flex}
+            flexDirection={BoxFlexDirection.Column}
             marginTop={4}
-            width={BlockSize.Full}
+            className="w-full"
             style={{ overflowY: 'auto', flex: 1 }}
           >
             {snaps.map((snap) => (
@@ -155,15 +153,13 @@ export default function SnapsConnect({
     } else if (snaps?.length === 1) {
       return (
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          width={BlockSize.Full}
-          height={BlockSize.Full}
+          flexDirection={BoxFlexDirection.Column}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           paddingLeft={4}
           paddingRight={4}
-          backgroundColor={BackgroundColor.backgroundAlternative}
+          className="h-full w-full"
+          backgroundColor={BoxBackgroundColor.BackgroundAlternative}
         >
           <Box paddingBottom={2}>
             <SnapIcon snapId={snaps[0]} avatarSize={IconSize.Xl} />
@@ -208,13 +204,10 @@ export default function SnapsConnect({
 
   return (
     <Box
-      className="snaps-connect"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundAlternative}
+      className="snaps-connect h-full w-full"
+      flexDirection={BoxFlexDirection.Column}
+      alignItems={BoxAlignItems.Center}
+      backgroundColor={BoxBackgroundColor.BackgroundAlternative}
     >
       {isShowingSnapsPrivacyWarning && (
         <SnapPrivacyWarning
@@ -226,11 +219,10 @@ export default function SnapsConnect({
         />
       )}
       <Box
-        display={Display.Flex}
-        height={BlockSize.Full}
-        width={BlockSize.Full}
+        flexDirection={BoxFlexDirection.Row}
         paddingLeft={4}
         paddingRight={4}
+        className="h-full w-full"
       >
         <SnapsConnectContent />
       </Box>

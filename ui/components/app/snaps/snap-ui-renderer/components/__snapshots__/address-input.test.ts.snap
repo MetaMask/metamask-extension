@@ -3,7 +3,7 @@
 exports[`SnapUIAddressInput renders the matched address info in a disabled state 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div
@@ -101,7 +101,7 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
 exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div
@@ -143,7 +143,7 @@ exports[`SnapUIAddressInput renders with an invalid CAIP Account ID 1`] = `
 exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div
@@ -185,7 +185,7 @@ exports[`SnapUIAddressInput will not render avatar when displayAvatar is false 1
 exports[`SnapUIAddressInput will render 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div
@@ -223,7 +223,7 @@ exports[`SnapUIAddressInput will render 1`] = `
 exports[`SnapUIAddressInput will render a matched address name 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div
@@ -321,7 +321,7 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
 exports[`SnapUIAddressInput will render avatar when displayAvatar is true 1`] = `
 <div>
   <div
-    class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
+    class="snap-ui-renderer__content h-full bg-alternative"
     style="overflow-y: auto;"
   >
     <div
