@@ -46,13 +46,15 @@ type MockedTokenManagementActions = {
 const getMockedActions = () =>
   jest.requireMock('../../store/actions') as MockedTokenManagementActions;
 
+type MockSearchResult = {
+  assetId: string;
+  symbol: string;
+  decimals: number;
+  name: string;
+};
+
 type MockSearchState = {
-  results: {
-    assetId: string;
-    symbol: string;
-    decimals: number;
-    name: string;
-  }[];
+  results: MockSearchResult[];
   isLoading: boolean;
   error: Error | null;
   hasNextPage: boolean;
@@ -68,14 +70,32 @@ const mockTokenSearch = {
   spy: jest.fn(),
 };
 
+// Bypass debouncing in tests so query updates reach `useTokenSearch`
+// synchronously.
+jest.mock('../../hooks/useDebouncedValue', () => ({
+  useDebouncedValue: <Value,>(value: Value) => value,
+}));
+
 jest.mock('../../hooks/useTokenSearch', () => ({
   useTokenSearch: (options: { query: string; networks?: string[] }) => {
     mockTokenSearch.spy(options);
     const trimmed = options.query.trim();
+    const { results, isLoading, error, hasNextPage } = mockTokenSearch.state;
+    // Match the {@link UseQueryResult} shape that the production hook returns
+    // closely enough for the consumer's intent derivation logic.
     return {
-      ...mockTokenSearch.state,
-      hasQuery: trimmed.length > 0,
-      hasResults: mockTokenSearch.state.results.length > 0,
+      data:
+        trimmed.length > 0
+          ? {
+              data: results,
+              count: results.length,
+              totalCount: results.length,
+              pageInfo: { hasNextPage, endCursor: '' },
+            }
+          : undefined,
+      isFetching: isLoading,
+      isLoading,
+      error,
     };
   },
 }));

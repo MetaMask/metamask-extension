@@ -69,6 +69,7 @@ import { sortAssetsWithPriority } from '../../components/app/assets/util/sortAss
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { Header } from '../../components/multichain/pages/page';
 import { ASSET_CELL_HEIGHT } from '../../components/app/assets/constants';
+import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { useTokenSearch } from '../../hooks/useTokenSearch';
 import { type TokenSearchResult } from '../../../shared/lib/token-search/token-search-api';
 import {
@@ -82,6 +83,12 @@ import {
 } from '../../components/component-library';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
+
+/**
+ * Debounce window applied to the search input before it reaches the Token API.
+ * Keeps the request rate sane while still feeling instant.
+ */
+const SEARCH_DEBOUNCE_MS = 300;
 
 /**
  * Full-screen Token Management page.
@@ -267,8 +274,11 @@ export const TokenManagementPage = () => {
   ]);
 
   const normalizedSearchQuery = searchQuery.trim();
+  const debouncedSearchQuery = useDebouncedValue(
+    normalizedSearchQuery,
+    SEARCH_DEBOUNCE_MS,
+  );
 
-  // Build the CAIP-2 network filter for the search API.
   const searchNetworks = useMemo(() => {
     if (enabledChainIds.length === 0) {
       return undefined;
@@ -279,17 +289,24 @@ export const TokenManagementPage = () => {
   }, [enabledChainIds]);
 
   const {
-    results: searchResults,
-    isLoading: isSearching,
-    error: searchError,
-    hasQuery,
-    hasResults,
+    data: searchResponse,
+    isFetching: isSearchFetching,
+    error: searchQueryError,
   } = useTokenSearch({
-    query: normalizedSearchQuery,
+    query: debouncedSearchQuery,
     networks: searchNetworks,
   });
 
-  // Quick lookup of which search results are already in the user's list
+  const hasQuery = normalizedSearchQuery.length > 0;
+  const isWaitingForDebounce =
+    hasQuery && normalizedSearchQuery !== debouncedSearchQuery;
+
+  const searchResults = hasQuery ? (searchResponse?.data ?? []) : [];
+  const hasResults = searchResults.length > 0;
+  const isSearching =
+    isWaitingForDebounce ||
+    (hasQuery && debouncedSearchQuery.length > 0 && isSearchFetching);
+  const searchError = hasQuery ? searchQueryError : null;
 
   const chainToHex = useCallback((chainId: string): string => {
     if (chainId.startsWith('eip155:')) {

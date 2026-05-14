@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 import {
   searchTokens,
   type TokenSearchResponse,
-  type TokenSearchResult,
 } from '../../shared/lib/token-search/token-search-api';
 
-const DEFAULT_DEBOUNCE_MS = 300;
 const DEFAULT_PAGE_SIZE = 25;
 /** How long results stay "fresh" before react-query will refetch on mount. */
 const TOKEN_SEARCH_STALE_TIME_MS = 30_000;
@@ -20,7 +18,9 @@ const TOKEN_SEARCH_QUERY_KEY_ROOT = [
 ] as const;
 
 export type UseTokenSearchOptions = {
-  /** Raw user input (trimmed before being sent to the API). */
+  /**
+   * The (already debounced) query string to send to the API. Callers are
+  */
   query: string;
   /**
    * CAIP-2 chain IDs to scope the search to. Pass `undefined` (or an empty
@@ -29,82 +29,46 @@ export type UseTokenSearchOptions = {
   networks?: string[];
   /** Max results per page. Defaults to 25 (the API default is 10). */
   first?: number;
-  /** Override the debounce duration in milliseconds. */
-  debounceMs?: number;
   /** When false, the hook becomes a no-op and never hits the API. */
   enabled?: boolean;
 };
 
-export type UseTokenSearchState = {
-  /** Current results, or `[]` while loading / when the query is empty. */
-  results: TokenSearchResult[];
-  isLoading: boolean;
-  error: Error | null;
-  /** True when the current results array is non-empty. */
-  hasResults: boolean;
-  /** True when a non-empty query has been entered (post-trim). */
-  hasQuery: boolean;
-  hasNextPage: boolean;
-};
-
 /**
- * Drives the API-backed token search field on the Manage Tokens page.
+ * Thin react-query wrapper around the Token API `/tokens/search` endpoint.
+
  *
  * @param options - Hook configuration.
  * @param options.query
  * @param options.networks
  * @param options.first
- * @param options.debounceMs
  * @param options.enabled
- * @returns The current search state. {@see UseTokenSearchState}.
+ * @returns The react-query result for the token-search request.
  */
 export const useTokenSearch = ({
   query,
   networks,
   first = DEFAULT_PAGE_SIZE,
-  debounceMs = DEFAULT_DEBOUNCE_MS,
   enabled = true,
-}: UseTokenSearchOptions): UseTokenSearchState => {
+}: UseTokenSearchOptions): UseQueryResult<TokenSearchResponse, Error> => {
   const trimmedQuery = query.trim();
 
-  // Debounced version of the user's query. We start blank so that the very
-  // first render (mount with a non-empty query) still has to wait one debounce
-  // window before firing — otherwise the debounce wouldn't apply to the
-  // initial keystroke that triggered the hook.
-  const [debouncedQuery, setDebouncedQuery] = useState('');
-  useEffect(() => {
-    if (debounceMs <= 0) {
-      setDebouncedQuery(trimmedQuery);
-      return undefined;
-    }
-    const timer = setTimeout(() => {
-      setDebouncedQuery(trimmedQuery);
-    }, debounceMs);
-    return () => clearTimeout(timer);
-  }, [trimmedQuery, debounceMs]);
-
-  // Stable, JSON-friendly view of the networks list for the query key.
   const networksKey = useMemo(
     () => (networks && networks.length > 0 ? [...networks].sort() : []),
     [networks],
   );
 
-  const isEnabled = enabled && debouncedQuery.length > 0;
+  const isEnabled = enabled && trimmedQuery.length > 0;
 
-  const {
-    data,
-    isFetching,
-    error: queryError,
-  } = useQuery({
+  return useQuery<TokenSearchResponse, Error>({
     queryKey: [
       ...TOKEN_SEARCH_QUERY_KEY_ROOT,
-      debouncedQuery,
+      trimmedQuery,
       networksKey,
       first,
     ] as const,
     queryFn: ({ signal }: { signal?: AbortSignal }) =>
       searchTokens({
-        query: debouncedQuery,
+        query: trimmedQuery,
         networks: networksKey.length > 0 ? networksKey : undefined,
         first,
         signal,
@@ -117,27 +81,4 @@ export const useTokenSearch = ({
     // as v4 so we use the older name here.
     cacheTime: TOKEN_SEARCH_GC_TIME_MS,
   });
-
-  const response = data as TokenSearchResponse | undefined;
-
-  // Surface results based on the *raw* (post-trim) query, not the debounced
-  // value, so clearing the input wipes the visible results immediately even
-  // though `keepPreviousData` still has the prior page cached.
-  const showResults = enabled && trimmedQuery.length > 0;
-  const results = showResults ? (response?.data ?? []) : [];
-  const hasNextPage = showResults
-    ? Boolean(response?.pageInfo?.hasNextPage)
-    : false;
-
-  const isWaitingForDebounce =
-    enabled && trimmedQuery.length > 0 && trimmedQuery !== debouncedQuery;
-
-  return {
-    results,
-    isLoading: isWaitingForDebounce || (isEnabled && isFetching),
-    error: (queryError as Error | null) ?? null,
-    hasResults: results.length > 0,
-    hasQuery: trimmedQuery.length > 0,
-    hasNextPage,
-  };
 };

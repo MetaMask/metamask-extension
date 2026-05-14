@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as tokenSearchApi from '../../shared/lib/token-search/token-search-api';
@@ -25,31 +25,27 @@ describe('useTokenSearch', () => {
   let searchSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    jest.useFakeTimers();
     searchSpy = jest
       .spyOn(tokenSearchApi, 'searchTokens')
       .mockResolvedValue(emptyPage);
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
     searchSpy.mockRestore();
   });
 
-  it('does not hit the API when the query is empty', () => {
-    renderHook(() => useTokenSearch({ query: '   ' }), {
+  it('does not hit the API when the (trimmed) query is empty', async () => {
+    const { result } = renderHook(() => useTokenSearch({ query: '   ' }), {
       wrapper: createWrapper(),
     });
 
-    act(() => {
-      jest.advanceTimersByTime(1_000);
-    });
+    await waitFor(() => expect(result.current.isFetching).toBe(false));
 
     expect(searchSpy).not.toHaveBeenCalled();
+    expect(result.current.data).toBeUndefined();
   });
 
-  it('debounces requests and maps state into the response payload', async () => {
+  it('forwards the trimmed query and networks to the API and exposes the raw response', async () => {
     const payload = {
       ...emptyPage,
       data: [
@@ -69,19 +65,11 @@ describe('useTokenSearch', () => {
     const { result } = renderHook(
       () =>
         useTokenSearch({
-          query: 'usdc',
+          query: '  usdc  ',
           networks: ['eip155:1'],
-          debounceMs: 200,
         }),
       { wrapper: createWrapper() },
     );
-
-    expect(searchSpy).not.toHaveBeenCalled();
-
-    await act(async () => {
-      jest.advanceTimersByTime(200);
-      await Promise.resolve();
-    });
 
     await waitFor(() => expect(searchSpy).toHaveBeenCalledTimes(1));
     expect(searchSpy).toHaveBeenCalledWith(
@@ -90,81 +78,29 @@ describe('useTokenSearch', () => {
         networks: ['eip155:1'],
       }),
     );
-    await waitFor(() => expect(result.current.results).toEqual(payload.data));
-    expect(result.current.hasNextPage).toBe(true);
+
+    await waitFor(() => expect(result.current.data).toEqual(payload));
     expect(result.current.error).toBeNull();
   });
 
-  it('surfaces errors and clears results when the API throws', async () => {
+  it('surfaces errors from the API on the query result', async () => {
     searchSpy.mockRejectedValueOnce(new Error('boom'));
 
-    const { result } = renderHook(
-      () => useTokenSearch({ query: 'usdc', debounceMs: 100 }),
-      { wrapper: createWrapper() },
-    );
-
-    await act(async () => {
-      jest.advanceTimersByTime(100);
-      await Promise.resolve();
+    const { result } = renderHook(() => useTokenSearch({ query: 'usdc' }), {
+      wrapper: createWrapper(),
     });
 
     await waitFor(() => expect(result.current.error).not.toBeNull());
-    expect(result.current.results).toEqual([]);
+    expect((result.current.error as Error).message).toBe('boom');
   });
 
-  it('reports isLoading=true during the debounce window before the request fires', () => {
+  it('is disabled when the consumer passes enabled=false even with a non-empty query', async () => {
     const { result } = renderHook(
-      () => useTokenSearch({ query: 'usdc', debounceMs: 200 }),
+      () => useTokenSearch({ query: 'usdc', enabled: false }),
       { wrapper: createWrapper() },
     );
 
-    expect(result.current.isLoading).toBe(true);
+    await waitFor(() => expect(result.current.isFetching).toBe(false));
     expect(searchSpy).not.toHaveBeenCalled();
-  });
-
-  it('settles isLoading to false once the API resolves', async () => {
-    const { result } = renderHook(
-      () => useTokenSearch({ query: 'usdc', debounceMs: 100 }),
-      { wrapper: createWrapper() },
-    );
-
-    await act(async () => {
-      jest.advanceTimersByTime(100);
-      await Promise.resolve();
-    });
-
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
-  });
-
-  it('clears results immediately when the query becomes empty', async () => {
-    searchSpy.mockResolvedValueOnce({
-      ...emptyPage,
-      data: [
-        {
-          assetId: 'eip155:1/erc20:0xaaa',
-          symbol: 'USDC',
-          decimals: 6,
-          name: 'USD Coin',
-        },
-      ],
-      count: 1,
-      totalCount: 1,
-    });
-    const { result, rerender } = renderHook(
-      ({ query }: { query: string }) =>
-        useTokenSearch({ query, debounceMs: 50 }),
-      { initialProps: { query: 'usdc' }, wrapper: createWrapper() },
-    );
-
-    await act(async () => {
-      jest.advanceTimersByTime(50);
-      await Promise.resolve();
-    });
-    await waitFor(() => expect(result.current.results.length).toBe(1));
-
-    rerender({ query: '' });
-
-    expect(result.current.results).toEqual([]);
-    expect(result.current.hasQuery).toBe(false);
   });
 });
