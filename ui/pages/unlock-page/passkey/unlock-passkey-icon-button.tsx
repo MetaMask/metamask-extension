@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import {
   ButtonIcon,
   ButtonIconVariant,
@@ -8,7 +9,13 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { getPasskeyAuthMethodKey } from '../../../../shared/lib/passkey';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getPasskeyDerivationMethod } from '../../../selectors';
 
 export type UnlockPasskeyIconButtonProps = {
   disabled: boolean;
@@ -21,6 +28,21 @@ export const UnlockPasskeyIconButton = ({
 }: UnlockPasskeyIconButtonProps) => {
   const t = useI18nContext() as (key: string, ...args: unknown[]) => string;
   const passkeyMethodLabel = t(getPasskeyAuthMethodKey());
+  const { trackEvent } = useContext(MetaMetricsContext);
+  const passkeyDerivationMethod = useSelector(getPasskeyDerivationMethod);
+
+  const handleClick = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.PasskeyUnlockInteracted,
+      properties: {
+        status: 'passkey_icon_clicked',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        derivation_method: passkeyDerivationMethod,
+      },
+    });
+    onClick();
+  }, [onClick, passkeyDerivationMethod, trackEvent]);
 
   return (
     <ButtonIcon
@@ -36,7 +58,7 @@ export const UnlockPasskeyIconButton = ({
       }}
       className="flex self-start mb-4 h-12 w-12 rounded-lg"
       disabled={disabled}
-      onClick={onClick}
+      onClick={handleClick}
       type="button"
     />
   );
