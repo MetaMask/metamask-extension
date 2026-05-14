@@ -8,7 +8,7 @@ import {
   AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
   MULTICHAIN_NETWORK_TICKER,
 } from '@metamask/multichain-network-controller';
-import * as metamaskDuck from '../ducks/metamask/metamask';
+import * as metamaskBaseSelectors from '../ducks/metamask/base-selectors';
 import {
   getCurrentCurrency,
   getNativeCurrency,
@@ -1021,25 +1021,29 @@ describe('Multichain Selectors', () => {
     });
 
     it('returns numeric conversion rate for EVM when getConversionRate returns a number', () => {
-      jest.spyOn(metamaskDuck, 'getConversionRate').mockReturnValue(3100.75);
+      jest
+        .spyOn(metamaskBaseSelectors, 'getConversionRate')
+        .mockReturnValue(3100.75);
       expect(getMultichainConversionRate(getEvmState())).toBe(3100.75);
     });
 
     it('returns numeric conversion rate for EVM when getConversionRate returns a numeric string', () => {
       jest
-        .spyOn(metamaskDuck, 'getConversionRate')
+        .spyOn(metamaskBaseSelectors, 'getConversionRate')
         .mockImplementation(() => '2100.25' as never);
       expect(getMultichainConversionRate(getEvmState())).toBe(2100.25);
     });
 
     it('returns undefined when EVM conversion rate is undefined', () => {
-      jest.spyOn(metamaskDuck, 'getConversionRate').mockReturnValue(undefined);
+      jest
+        .spyOn(metamaskBaseSelectors, 'getConversionRate')
+        .mockReturnValue(undefined);
       expect(getMultichainConversionRate(getEvmState())).toBeUndefined();
     });
 
     it('returns undefined when EVM conversion rate is null', () => {
       jest
-        .spyOn(metamaskDuck, 'getConversionRate')
+        .spyOn(metamaskBaseSelectors, 'getConversionRate')
         .mockImplementation(() => null as never);
       expect(getMultichainConversionRate(getEvmState())).toBeUndefined();
     });
