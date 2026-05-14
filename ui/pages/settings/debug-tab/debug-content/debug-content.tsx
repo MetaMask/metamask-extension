@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,10 +20,6 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../../helpers/constants/routes';
-import {
-  getNumberOfSettingRoutesInTab,
-  handleSettingsRefs,
-} from '../../../../helpers/utils/settings-search';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
@@ -44,36 +40,20 @@ import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
 import MigrateToSplitStateTest from './migrate-to-split-state-test';
 
-/**
- * Content for Debug Tab (internal-only)
- *
- * This page does not need i18n translation support because it's an internal settings page.
- * We only support the t('developerOptions') translation because the general settings architecture
- * utilizes the translation key to render.
- *
- * @returns
- */
 const DebugContent = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // This translation call is only required for the "Generate Page Crash" test button.
+  // The crash mechanism works by setting 'debug' to undefined in the locale,
+  // which causes this t() call to throw an error that triggers the error boundary.
+  t('debug');
+
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
   const [isServiceWorkerKeptAlive, setIsServiceWorkerKeptAlive] =
     useState(true);
-
-  const settingsRefs = Array(
-    getNumberOfSettingRoutesInTab(t, t('developerOptions')),
-  )
-    .fill(undefined)
-    .map(() => {
-      return React.createRef();
-    });
-
-  useEffect(() => {
-    handleSettingsRefs(t, t('developerOptions'), settingsRefs);
-  }, [t, settingsRefs]);
 
   const handleResetAnnouncementClick = useCallback((): void => {
     resetViewedNotifications();
@@ -107,7 +87,6 @@ const DebugContent = () => {
   const renderAnnouncementReset = () => {
     return (
       <Box
-        ref={settingsRefs[1] as React.RefObject<HTMLDivElement>}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -154,7 +133,6 @@ const DebugContent = () => {
   const renderOnboardingReset = () => {
     return (
       <Box
-        ref={settingsRefs[2] as React.RefObject<HTMLDivElement>}
         className="settings-page__content-row"
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
@@ -213,7 +191,6 @@ const DebugContent = () => {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
         dataTestId="developer-options-service-worker-alive-toggle"
-        settingsRef={settingsRefs[3] as React.RefObject<HTMLDivElement>}
       />
     );
   };
@@ -269,7 +246,6 @@ const DebugContent = () => {
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
         paddingTop={6}
-        ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
       >
         Current States
       </Text>
@@ -280,7 +256,6 @@ const DebugContent = () => {
         className="settings-page__security-tab-sub-header"
         color={TextColor.textAlternative}
         paddingTop={6}
-        ref={settingsRefs[0] as React.RefObject<HTMLDivElement>}
       >
         Reset States
       </Text>
