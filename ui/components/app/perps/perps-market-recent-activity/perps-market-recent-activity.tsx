@@ -99,6 +99,7 @@ export const PerpsMarketRecentActivity: React.FC<
         <ButtonBase
           onClick={handleSeeAll}
           className="w-full flex flex-row justify-between items-center pt-4 pb-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
+          style={{ paddingLeft: 0, paddingRight: 0 }}
           data-testid="perps-market-detail-view-all-activity"
           aria-label={t('perpsSeeAll')}
         >
