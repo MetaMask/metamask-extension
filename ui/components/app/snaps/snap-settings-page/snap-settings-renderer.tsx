@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { deleteInterface } from '../../../../store/actions';
-import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { Text } from '../../../component-library';
 import {
   BackgroundColor,

@@ -1,14 +1,14 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 import {
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 import { Text } from '../../../component-library';
 import { SnapUIImage } from '../snap-ui-image';
 

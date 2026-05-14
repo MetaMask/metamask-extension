@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ButtonLink } from '../../../component-library';
 import {
   getMultipleTargetsSubjectMetadata,

@@ -2,16 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-  Color,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
-import {
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import {
+  Color,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 import { Text } from '../../../component-library';
 import { SnapIcon } from '../snap-icon';
 

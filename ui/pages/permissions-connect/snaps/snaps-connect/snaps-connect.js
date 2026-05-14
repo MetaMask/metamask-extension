@@ -2,7 +2,6 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isSnapId } from '@metamask/snaps-utils';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   BoxAlignItems,
@@ -10,6 +9,7 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { IconSize, Text } from '../../../../components/component-library';
 import {
   TextVariant,

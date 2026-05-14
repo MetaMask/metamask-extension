@@ -4,6 +4,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxBorderColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   BorderStyle,
   Color,
   FontWeight,
@@ -16,14 +24,6 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapRegistryData } from '../../../../selectors';
 import { disableSnap, enableSnap } from '../../../../store/actions';
-import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxBorderColor,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import { ButtonLink, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
 import Tooltip from '../../../ui/tooltip/tooltip';

@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import {
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   BackgroundColor,
   TextColor,
   Color,
@@ -9,11 +14,6 @@ import {
   IconColor,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import {
-  Box,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
 import { Icon, IconName, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Tooltip from '../../../ui/tooltip';
