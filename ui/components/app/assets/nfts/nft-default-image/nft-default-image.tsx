@@ -1,13 +1,13 @@
 import React from 'react';
 import classnames from 'clsx';
 import { useDispatch } from 'react-redux';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { ButtonLink } from '../../../../component-library';
 import { showIpfsModal } from '../../../../../store/actions';
 

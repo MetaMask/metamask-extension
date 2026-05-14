@@ -2,6 +2,12 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   getEnabledNetworksByNamespace,
   getSelectedAccount,
   getTokenSortConfig,
@@ -9,12 +15,6 @@ import {
 import { filterAssets } from '../util/filter';
 import { sortAssets } from '../util/sort';
 import PulseLoader from '../../../ui/pulse-loader';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import { useFormatters } from '../../../../hooks/useFormatters';

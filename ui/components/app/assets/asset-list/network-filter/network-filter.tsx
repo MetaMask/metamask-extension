@@ -1,5 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { setEnabledNetworks } from '../../../../../store/actions';
 import {
   getCurrentNetwork,
@@ -21,12 +27,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,

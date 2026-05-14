@@ -5,17 +5,17 @@ import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { CaipChainId, Hex, isCaipChainId } from '@metamask/utils';
 import { Skeleton } from '@metamask/design-system-react';
 import {
-  getMultichainNativeTokenBalance,
-  selectBalanceBySelectedAccountGroup,
-} from '../../../../selectors/assets';
-
-import { TextVariant } from '../../../../helpers/constants/design-system';
-import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxFlexWrap,
 } from '@metamask/design-system-react';
+import {
+  getMultichainNativeTokenBalance,
+  selectBalanceBySelectedAccountGroup,
+} from '../../../../selectors/assets';
+
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { SensitiveText } from '../../../component-library';
 import {
   getEnabledNetworksByNamespace,
