@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, createContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import useCurrencyRatePolling from '../hooks/useCurrencyRatePolling';
 import useTokenRatesPolling from '../hooks/useTokenRatesPolling';
@@ -32,15 +32,22 @@ const AssetsControllerPolling = ({ children }: { children: ReactNode }) => {
   return <>{children}</>;
 };
 
+export const AssetPollingContext = createContext({});
+
 // This provider is a step towards making controller polling fully UI based.
 // Eventually, individual UI components will call the use*Polling hooks to
 // poll and return particular data. This polls globally in the meantime.
 export const AssetPollingProvider = ({ children }: { children: ReactNode }) => {
   const isAssetsUnifyStateEnabled = useSelector(getIsAssetsUnifyStateEnabled);
+  const contextValue = useMemo(() => ({}), []);
 
-  if (isAssetsUnifyStateEnabled) {
-    return <AssetsControllerPolling>{children}</AssetsControllerPolling>;
-  }
-
-  return <LegacyAssetsPolling>{children}</LegacyAssetsPolling>;
+  return (
+    <AssetPollingContext.Provider value={contextValue}>
+      {isAssetsUnifyStateEnabled ? (
+        <AssetsControllerPolling>{children}</AssetsControllerPolling>
+      ) : (
+        <LegacyAssetsPolling>{children}</LegacyAssetsPolling>
+      )}
+    </AssetPollingContext.Provider>
+  );
 };
