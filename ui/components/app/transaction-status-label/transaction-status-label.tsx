@@ -51,7 +51,7 @@ const getStatusKey = (
   return status;
 };
 
-const shouldRenderStatusLabel = (
+const shouldRenderStatusText = (
   statusKey: string | undefined,
   statusDisplayMode: StatusDisplayMode,
 ): boolean => {
@@ -87,7 +87,7 @@ export type TransactionStatusLabelProps = {
 // copy with `date`, which list UIs use to show when the transaction completed.
 //
 // `statusDisplayMode: activityMinimal` is currently used on activity list: in this mode
-// only queued, signing, and failed states render labels.
+// only queued, signing, and failed states render label text.
 export default function TransactionStatusLabel({
   status,
   date,
@@ -95,14 +95,21 @@ export default function TransactionStatusLabel({
   isEarliestNonce,
   className,
   statusOnly,
-  statusDisplayMode,
+  statusDisplayMode = STATUS_DISPLAY_MODE.default,
 }: Readonly<TransactionStatusLabelProps>) {
   const t = useI18nContext();
   const statusKey = getStatusKey(status, isEarliestNonce);
-  const resolvedDisplayMode = statusDisplayMode ?? STATUS_DISPLAY_MODE.default;
-
-  if (!shouldRenderStatusLabel(statusKey, resolvedDisplayMode)) {
+  if (statusKey === undefined || statusKey === '') {
     return null;
+  }
+
+  if (!shouldRenderStatusText(statusKey, statusDisplayMode)) {
+    return (
+      <div
+        hidden
+        data-testid={`transaction-status-label--${statusKey}`}
+      />
+    );
   }
 
   const tooltipText = error?.rpc?.message || error?.message;
@@ -117,6 +124,7 @@ export default function TransactionStatusLabel({
     <Tooltip
       position="top"
       title={tooltipText}
+      data-testid={`transaction-status-label--${statusKey}`}
       wrapperClassName={classnames(
         'transaction-status-label',
         `transaction-status-label--${statusKey}`,

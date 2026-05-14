@@ -15,7 +15,7 @@ class ActivityListPage {
   };
 
   private readonly bridgeTransactionCompleted =
-    '.transaction-status-label--confirmed';
+    '[data-testid="transaction-status-label--confirmed"]';
 
   private readonly bridgeTransactionPending =
     '.bridge-transaction-details__segment--pending';
@@ -27,9 +27,11 @@ class ActivityListPage {
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
-  private readonly confirmedTransactions = {
-    text: 'Confirmed',
-    css: '.transaction-status-label--confirmed',
+  private readonly confirmedTransactions =
+    '[data-testid="transaction-status-label--confirmed"]';
+
+  private readonly confirmedTransactionRowAction = {
+    xpath: `//*[@data-testid="activity-list-item"][.//*[@data-testid="transaction-status-label--confirmed"]]//*[@data-testid="activity-list-item-action"]`,
   };
 
   private readonly copyTransactionHashButton = {
@@ -48,7 +50,7 @@ class ActivityListPage {
     '[data-testid="transaction-breakdown__gas-price"]';
 
   private readonly pendingTransactionItems =
-    '.transaction-status-label--pending';
+    '[data-testid="transaction-status-label--pending"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
@@ -133,7 +135,7 @@ class ActivityListPage {
 
   /**
    * This function checks if the specified number of confirmed transactions are displayed in the activity list on homepage.
-   * It waits up to 10 seconds for the expected number of confirmed transactions to be visible.
+   * It waits up to 60 seconds for the expected number of confirmed transactions to be visible.
    *
    * @param expectedNumber - The number of confirmed transactions expected to be displayed in activity list. Defaults to 1.
    * @returns A promise that resolves if the expected number of confirmed transactions is displayed within the timeout period.
@@ -157,7 +159,7 @@ class ActivityListPage {
 
   async clickConfirmedTransaction(): Promise<void> {
     console.log('Clicking on confirmed transaction');
-    await this.driver.clickElement(this.confirmedTransactions);
+    await this.driver.clickElement(this.confirmedTransactionRowAction);
   }
 
   /**
@@ -551,7 +553,7 @@ class ActivityListPage {
   async checkWaitForTransactionStatus(
     status: 'confirmed' | 'cancelled' | 'pending',
   ) {
-    await this.driver.waitForSelector(`.transaction-status-label--${status}`, {
+    await this.driver.waitForSelector(`[data-testid="transaction-status-label--${status}"]`, {
       timeout: 5000,
     });
   }

@@ -183,7 +183,7 @@ describe('TransactionStatusLabel Component', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows signing status text when approved', () => {
+    it('displays signing status text when approved', () => {
       render(
         <TransactionStatusLabel
           status={TransactionStatus.approved}
@@ -193,7 +193,7 @@ describe('TransactionStatusLabel Component', () => {
       expect(screen.getByText('signing')).toBeInTheDocument();
     });
 
-    it('hides confirmed status text', () => {
+    it('does not display confirmed status text', () => {
       render(
         <TransactionStatusLabel
           status={TransactionStatus.confirmed}
@@ -206,7 +206,7 @@ describe('TransactionStatusLabel Component', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('shows queued status textwhen submitted and not earliest nonce', () => {
+    it('displays queued status text when submitted and not earliest nonce', () => {
       render(
         <TransactionStatusLabel
           status={TransactionStatus.submitted}
@@ -217,7 +217,7 @@ describe('TransactionStatusLabel Component', () => {
       expect(screen.getByText('queued')).toBeInTheDocument();
     });
 
-    it('shows failed, rejected, and dropped status texts with tooltip unchanged', () => {
+    it('displays failed, rejected, and dropped status texts with tooltip unchanged', () => {
       const errorMessage = 'RPC blew up';
       const { rerender } = render(
         <TransactionStatusLabel
@@ -259,7 +259,7 @@ describe('TransactionStatusLabel Component', () => {
       );
     });
 
-    it('shows cancelled status text', () => {
+    it('displays cancelled status text', () => {
       render(
         <TransactionStatusLabel
           status={TransactionGroupStatus.cancelled}
