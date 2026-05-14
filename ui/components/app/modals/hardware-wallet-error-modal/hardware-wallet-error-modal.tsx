@@ -620,38 +620,30 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                       >
                         {t('hardwareWalletErrorRecoveryTitle')}
                       </Text>
-                      {standardErrorContent.recoveryInstructions.map(
-                        (instruction, index) => (
-                          <Box
-                            key={index}
-                            display={Display.Flex}
-                            flexDirection={BoxFlexDirection.Row}
-                            gap={2}
-                            paddingLeft={4}
-                            paddingRight={4}
-                            alignItems={BoxAlignItems.Start}
-                          >
-                            <Box as="li" key={index}>
+                      <ul
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px',
+                          listStyle: 'disc',
+                          paddingLeft: '16px',
+                          margin: 0,
+                        }}
+                      >
+                        {standardErrorContent.recoveryInstructions.map(
+                          (instruction, index) => (
+                            <li key={index}>
                               <Text
                                 variant={TextVariant.BodyMd}
                                 color={TextColor.TextDefault}
                               >
                                 {instruction}
                               </Text>
-                            </Box>
-                          </Box>
-                        ),
-                      )}
-                      {standardErrorContent.showRepairLink && onRepairDevice && (
-                        <Box
-                          display={Display.Flex}
-                          flexDirection={BoxFlexDirection.Row}
-                          gap={2}
-                          paddingLeft={4}
-                          paddingRight={4}
-                          alignItems={BoxAlignItems.Start}
-                        >
-                          <Box as="li">
+                            </li>
+                          ),
+                        )}
+                        {standardErrorContent.showRepairLink && onRepairDevice && (
+                          <li>
                             <Text
                               variant={TextVariant.BodyMd}
                               color={TextColor.PrimaryDefault}
@@ -660,9 +652,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                             >
                               {t('hardwareWalletRepairLink')}
                             </Text>
-                          </Box>
-                        </Box>
-                      )}
+                          </li>
+                        )}
+                      </ul>
                     </Box>
                   )}
                 </>
