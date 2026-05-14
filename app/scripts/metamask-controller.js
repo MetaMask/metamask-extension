@@ -879,8 +879,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
 
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
@@ -5506,12 +5504,6 @@ export default class MetamaskController extends EventEmitter {
         // unlock the seedless onboarding vault
         await this.seedlessOnboardingController.submitPassword(password);
       }
-    }
-
-    try {
-      await this.blockTracker.checkForLatestBlock();
-    } catch (error) {
-      log.error('Error while unlocking extension.', error);
     }
 
     await this.accountsController.updateAccounts();
