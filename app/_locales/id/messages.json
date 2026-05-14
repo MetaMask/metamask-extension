@@ -864,9 +864,6 @@
   "basicFunctionalityRequired_goToHome": {
     "message": "Buka halaman beranda"
   },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Buka halaman Buat Akun"
-  },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Buka halaman DeFi"
   },
@@ -2314,9 +2311,6 @@
   },
   "deepLink_theSwapsPage": {
     "message": "halaman swap"
-  },
-  "deepLink_theSwapsRampsPage": {
-    "message": "halaman Swap/Ramp"
   },
   "deepLink_theTransactionShieldPage": {
     "message": "halaman transaction shield"

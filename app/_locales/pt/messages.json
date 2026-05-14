@@ -864,9 +864,6 @@
   "basicFunctionalityRequired_goToHome": {
     "message": "Ir para a página inicial"
   },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Abrir a página Criar conta"
-  },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Abrir a página DeFi"
   },
@@ -2314,9 +2311,6 @@
   },
   "deepLink_theSwapsPage": {
     "message": "a página de trocas"
-  },
-  "deepLink_theSwapsRampsPage": {
-    "message": "a página de trocas/rampas"
   },
   "deepLink_theTransactionShieldPage": {
     "message": "a página de proteção de transações"

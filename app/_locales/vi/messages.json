@@ -864,9 +864,6 @@
   "basicFunctionalityRequired_goToHome": {
     "message": "Đến trang chủ"
   },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Mở trang Tạo tài khoản"
-  },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Mở trang DeFi"
   },
@@ -2314,9 +2311,6 @@
   },
   "deepLink_theSwapsPage": {
     "message": "trang hoán đổi"
-  },
-  "deepLink_theSwapsRampsPage": {
-    "message": "trang Hoán đổi/Chuyển đổi"
   },
   "deepLink_theTransactionShieldPage": {
     "message": "trang lá chắn giao dịch"

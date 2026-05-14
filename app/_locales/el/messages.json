@@ -864,9 +864,6 @@
   "basicFunctionalityRequired_goToHome": {
     "message": "Μετάβαση στην αρχική σελίδα"
   },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Ανοίξτε τη σελίδα Δημιουργία Λογαριασμού"
-  },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Ανοίξτε τη σελίδα DeFi"
   },
@@ -2314,9 +2311,6 @@
   },
   "deepLink_theSwapsPage": {
     "message": "σελίδα ανταλλαγών"
-  },
-  "deepLink_theSwapsRampsPage": {
-    "message": "η σελίδα Ανταλλαγών/Ramps"
   },
   "deepLink_theTransactionShieldPage": {
     "message": "η σελίδα προστασίας συναλλαγών"
