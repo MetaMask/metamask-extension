@@ -487,12 +487,8 @@ class PrivacySettings {
 
   async waitForPasskeyEnrollmentSuccess(): Promise<void> {
     console.log('Waiting for passkey enrollment success in settings');
-    await this.driver.waitForSelector(this.passkeyEnrollmentSteps, {
-      timeout: 10000,
-    });
-    await this.driver.waitForSelector(this.passkeyStepIndicatorSuccess, {
-      timeout: 30000,
-    });
+    await this.driver.waitForSelector(this.passkeyEnrollmentSteps);
+    await this.driver.waitForSelector(this.passkeyStepIndicatorSuccess);
   }
 
   async enterPasswordAndContinueForPasskeyTurnOff(

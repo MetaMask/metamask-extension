@@ -21,6 +21,7 @@ import {
 
 describe('Passkey settings', function () {
   it('Turns off biometrics with passkey fallback to password', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
       this.skip();
     }
@@ -32,10 +33,9 @@ describe('Passkey settings', function () {
           .build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+        virtualAuthenticator: true,
       },
       async ({ driver }: { driver: Driver }) => {
-        await addVirtualAuthenticator(driver);
-
         await login(driver, { ignorePasskeyUnlock: true });
 
         await navigateToSecurityAndPassword(driver);
@@ -59,13 +59,12 @@ describe('Passkey settings', function () {
         await loginPage.loginToHomepage();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-
-        await removeVirtualAuthenticator(driver);
       },
     );
   });
 
   it('Turns on biometrics from settings after passkey was removed', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
       this.skip();
     }
@@ -75,10 +74,9 @@ describe('Passkey settings', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+        virtualAuthenticator: true,
       },
       async ({ driver }: { driver: Driver }) => {
-        await addVirtualAuthenticator(driver);
-
         await completeOnboardingWithPasskey({ driver });
 
         // Replace the authenticator with a fresh empty one so the turn-off
@@ -109,8 +107,6 @@ describe('Passkey settings', function () {
         await privacySettings.waitForPasskeyEnrollmentSuccess();
 
         await privacySettings.checkSecurityAndPasswordPageIsLoaded();
-
-        await removeVirtualAuthenticator(driver);
       },
     );
   });

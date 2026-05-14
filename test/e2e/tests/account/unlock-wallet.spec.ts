@@ -24,10 +24,6 @@ import PrivacySettings from '../../page-objects/pages/settings/privacy-settings'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
 import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
-import {
-  addVirtualAuthenticator,
-  removeVirtualAuthenticator,
-} from '../../webdriver/virtual-authenticator';
 
 describe('Unlock wallet - ', function () {
   it('handle incorrect password during unlock and login successfully', async function () {
@@ -126,6 +122,9 @@ describe('Unlock wallet - ', function () {
   });
 
   it('Unlocks wallet with passkey after onboarding', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
+    // (WebAuthn platform authenticator emulation), so passkey tests are
+    // Chrome/Chromium only.
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
       this.skip();
     }
@@ -135,10 +134,9 @@ describe('Unlock wallet - ', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+        virtualAuthenticator: true,
       },
       async ({ driver }: { driver: Driver }) => {
-        await addVirtualAuthenticator(driver);
-
         await completeOnboardingWithPasskey({ driver });
 
         // Check unlock with passkey at first visit
@@ -155,6 +153,10 @@ describe('Unlock wallet - ', function () {
         await loginPage.clickUsePassword();
         await loginPage.checkPageIsLoaded();
 
+        // React re-renders the unlock page asynchronously when switching between
+        // passkey and password modes. No DOM condition reliably signals the
+        // transition is complete, so a brief delay prevents a race where
+        // clickUnlockWithPasskey acts on a stale/transitioning DOM.
         await driver.delay(2_000);
         await loginPage.clickUnlockWithPasskey();
         await homePage.checkPageIsLoaded();
@@ -166,8 +168,6 @@ describe('Unlock wallet - ', function () {
 
         await loginPage.loginToHomepage(WALLET_PASSWORD);
         await homePage.checkPageIsLoaded();
-
-        await removeVirtualAuthenticator(driver);
       },
     );
   });

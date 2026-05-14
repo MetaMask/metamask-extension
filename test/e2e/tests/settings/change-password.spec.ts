@@ -21,11 +21,7 @@ import { navigateToSecurityAndPassword } from '../../page-objects/flows/settings
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
 import { Driver } from '../../webdriver/driver';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
-import {
-  addVirtualAuthenticator,
-  removeVirtualAuthenticator,
-  DUMMY_PASSKEY_RECORD,
-} from '../../webdriver/virtual-authenticator';
+import { DUMMY_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
 
 async function doPasswordChangeAndLockWallet(
   driver: Driver,
@@ -49,7 +45,9 @@ async function doPasswordChangeAndLockWallet(
     await changePasswordPage.confirmChangePasswordWarning();
   }
 
-  // Wait for the password change to be applied
+  // Password change triggers an async vault re-encryption. No UI element
+  // reliably signals completion, so a brief delay avoids navigating away
+  // before the new password is persisted.
   await driver.delay(2_000);
 
   const settingsPage = new SettingsPage(driver);
@@ -137,6 +135,7 @@ describe('Change wallet password', function () {
   });
 
   it('Changes password with passkey fallback to password verification + turn off biometrics', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
       this.skip();
     }
@@ -150,10 +149,9 @@ describe('Change wallet password', function () {
           .build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+        virtualAuthenticator: true,
       },
       async ({ driver }: { driver: Driver }) => {
-        await addVirtualAuthenticator(driver);
-
         await login(driver, { ignorePasskeyUnlock: true });
 
         await doPasswordChangeAndLockWallet(
@@ -169,13 +167,12 @@ describe('Change wallet password', function () {
         await loginPage.loginToHomepage(PASSKEY_NEW_PASSWORD);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-
-        await removeVirtualAuthenticator(driver);
       },
     );
   });
 
   it('Changes password with passkey verification (real enrollment) + keep biometrics on', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
       this.skip();
     }
@@ -187,10 +184,9 @@ describe('Change wallet password', function () {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
+        virtualAuthenticator: true,
       },
       async ({ driver }: { driver: Driver }) => {
-        await addVirtualAuthenticator(driver);
-
         await completeOnboardingWithPasskey({ driver });
 
         await navigateToSecurityAndPassword(driver);
@@ -203,6 +199,9 @@ describe('Change wallet password', function () {
 
         await changePasswordPage.changePassword(PASSKEY_NEW_PASSWORD);
 
+        // Password change triggers an async vault re-encryption. No UI element
+        // reliably signals completion, so a brief delay avoids navigating away
+        // before the new password is persisted.
         await driver.delay(2_000);
 
         const settingsPage = new SettingsPage(driver);
@@ -218,8 +217,6 @@ describe('Change wallet password', function () {
         await loginPage.loginToHomepage(PASSKEY_NEW_PASSWORD);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-
-        await removeVirtualAuthenticator(driver);
       },
     );
   });

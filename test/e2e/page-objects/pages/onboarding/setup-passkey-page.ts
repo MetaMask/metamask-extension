@@ -45,14 +45,12 @@ class SetupPasskeyPage {
 
   async waitForEnrollmentSteps(): Promise<void> {
     console.log('Waiting for passkey enrollment steps to appear');
-    await this.driver.waitForSelector(this.enrollmentSteps, { timeout: 10000 });
+    await this.driver.waitForSelector(this.enrollmentSteps);
   }
 
   async waitForEnrollmentSuccess(): Promise<void> {
     console.log('Waiting for passkey enrollment to complete successfully');
-    await this.driver.waitForSelector(this.stepIndicatorSuccess, {
-      timeout: 30000,
-    });
+    await this.driver.waitForSelector(this.stepIndicatorSuccess,);
   }
 }
 

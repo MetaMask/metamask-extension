@@ -26,6 +26,9 @@ const {
 } = require('./websocket/account-activity-mocks');
 const { perpsWebSocketConfig } = require('./websocket/perps-mocks');
 const { WEBSOCKET_SERVICES } = require('./websocket/constants');
+const {
+  addVirtualAuthenticator,
+} = require('./webdriver/virtual-authenticator');
 
 // Register each WebSocket service explicitly.
 WebSocketRegistry.register(solanaWebSocketConfig);
@@ -169,6 +172,7 @@ async function withFixtures(options, testSuite) {
     perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
+    virtualAuthenticator,
   } = options;
 
   // Normalize localNodeOptions
@@ -431,6 +435,10 @@ async function withFixtures(options, testSuite) {
           return Reflect.get(target, prop, receiver);
         },
       });
+    }
+
+    if (virtualAuthenticator) {
+      await addVirtualAuthenticator(driverProxy ?? driver);
     }
 
     console.log(`\nExecuting testcase: '${title}'\n`);

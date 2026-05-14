@@ -3,6 +3,7 @@ import {
   Transport,
   Protocol,
 } from 'selenium-webdriver/lib/virtual_authenticator';
+import type { PasskeyRecord } from '@metamask/passkey-controller';
 import { Driver } from './driver';
 
 type RawDriverWithVirtualAuth = {
@@ -39,7 +40,7 @@ export async function removeVirtualAuthenticator(
   await getRawDriver(driver).removeVirtualAuthenticator();
 }
 
-export const DUMMY_PASSKEY_RECORD = {
+export const DUMMY_PASSKEY_RECORD: PasskeyRecord = {
   credential: {
     id: 'dummy-credential-id',
     publicKey: 'dummy-public-key',

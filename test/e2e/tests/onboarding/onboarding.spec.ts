@@ -28,10 +28,6 @@ import {
   skipPasskeySetup,
 } from '../../page-objects/flows/onboarding.flow';
 import LoginPage from '../../page-objects/pages/login-page';
-import {
-  addVirtualAuthenticator,
-  removeVirtualAuthenticator,
-} from '../../webdriver/virtual-authenticator';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -608,6 +604,7 @@ describe('MetaMask onboarding', function () {
   });
 
   it('Creates a new wallet and sets up passkey with virtual authenticator during onboarding', async function () {
+    // Firefox does not support Selenium's Virtual Authenticator API
     if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
       this.skip();
     }
@@ -616,17 +613,14 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilderV2({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
+        virtualAuthenticator: true,
       },
       async ({ driver }: { driver: Driver }) => {
-        await addVirtualAuthenticator(driver);
-
         await completeOnboardingWithPasskey({ driver });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedBalanceIsDisplayed('0');
-
-        await removeVirtualAuthenticator(driver);
       },
     );
   });
