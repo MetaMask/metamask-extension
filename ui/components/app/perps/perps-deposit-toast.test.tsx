@@ -293,6 +293,113 @@ describe('PerpsDepositToast', () => {
     );
   });
 
+  it('does not clear deposit result when completion toast rerenders before the duration elapses', () => {
+    jest.useFakeTimers();
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          lastDepositResult: {
+            success: true,
+            error: 'same result re-render',
+            timestamp: 1_700_000_000_000,
+          },
+        },
+      });
+    });
+
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(4999);
+    });
+
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'perpsClearDepositResult',
+      [],
+    );
+  });
+
+  it('does not let a stale completion timer clear a newer deposit result', () => {
+    jest.useFakeTimers();
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    act(() => {
+      jest.advanceTimersByTime(2500);
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          lastDepositResult: {
+            success: true,
+            error: '',
+            timestamp: 1_700_000_005_000,
+          },
+        },
+      });
+    });
+
+    act(() => {
+      jest.advanceTimersByTime(2500);
+    });
+
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(2500);
+    });
+
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'perpsClearDepositResult',
+      [],
+    );
+  });
+
   it('clears deposit result when unmounted during completion toast', () => {
     jest.useFakeTimers();
     const store = configureStore({
