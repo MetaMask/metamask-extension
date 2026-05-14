@@ -5926,10 +5926,10 @@
     "message": "Adding funds to Perps"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Your funds are ready to trade."
+    "message": "Funds are ready to trade"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Funds added to Perps"
+    "message": "Your Perps account was funded"
   },
   "perpsDeposits": {
     "message": "Deposits"
