@@ -2,6 +2,8 @@
 // Auto-update skills on `yarn install`. Best-effort: never fails the install.
 //
 // - Skipped on CI, or when SKILLS_SKIP_POSTINSTALL=1.
+// - Override CI skip with SKILLS_FORCE_POSTINSTALL=1 (for CI jobs that
+//   actually need skills installed, e.g. agent-driven review bots).
 // - Clones https://github.com/MetaMask/skills (public, no auth) into
 //   .skills-cache/metamask-skills if absent.
 // - `git fetch + reset` to origin/main if present.
@@ -15,7 +17,10 @@ const { spawnSync } = require('child_process');
 const { existsSync, mkdirSync, statSync } = require('fs');
 const path = require('path');
 
-if (process.env.CI || process.env.SKILLS_SKIP_POSTINSTALL) {
+if (process.env.SKILLS_SKIP_POSTINSTALL) {
+  process.exit(0);
+}
+if (process.env.CI && !process.env.SKILLS_FORCE_POSTINSTALL) {
   process.exit(0);
 }
 
