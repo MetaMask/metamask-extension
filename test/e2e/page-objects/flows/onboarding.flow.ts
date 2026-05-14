@@ -496,6 +496,7 @@ export const completeOnboardingWithPasskey = async ({
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
+  await homePage.waitForLoadingOverlayToDisappear();
 };
 
 /**
