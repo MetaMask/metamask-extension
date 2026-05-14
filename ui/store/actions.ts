@@ -121,7 +121,6 @@ import {
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
   getInternalAccountByAddress,
-  getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
   getOriginOfCurrentTab,
   getIsSocialLoginFlow,
