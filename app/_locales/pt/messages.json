@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Adicionar conta"
   },
-  "addAccountFromNetwork": {
-    "message": "Adicionar conta $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Adicionar conta ou carteira"
-  },
   "addAcquiredTokens": {
     "message": "Adicione os tokens que você adquiriu usando a MetaMask"
   },
   "addAlias": {
     "message": "Adicionar pseudônimo"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Conta Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Adicionar um explorador de blocos"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Trocar tokens"
   },
-  "addHardwareWalletLabel": {
-    "message": "Carteira de hardware"
-  },
   "addMemo": {
     "message": "Adicionar observação"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "Um site está sugerindo detalhes adicionais da rede."
-  },
-  "addNewAccount": {
-    "message": "Adicionar uma nova conta Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Conta Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Conta Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Conta Tron"
   },
   "addNft": {
     "message": "Adicionar NFT"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "Conectar contas"
   },
-  "connectAnAccountHeader": {
-    "message": "Conectar uma conta"
-  },
   "connectHardwareDevice": {
     "message": "Conectar $1",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "$1 redes conectadas",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Conectado com $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Conectando"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "Adicionando conta...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "Crie uma conta"
   },
   "createPassword": {
     "message": "Criar senha"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "O ID de um NFT é um identificador único, pois não há dois NFTs iguais. Novamente, na OpenSea, esse número se encontra em \"Detalhes\". Anote-o ou copie-o para sua área de transferência."
   },
-  "importPrivateKey": {
-    "message": "Chave privada"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Importar Frase de Recuperação Secreta"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "Não foi possível importar os tokens. Volte a tentar mais tarde."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Importe uma carteira ou conta"
   },
   "importWalletSuccess": {
     "message": "Carteira $1 importada",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "Nova!"
-  },
-  "newAccount": {
-    "message": "Nova conta"
   },
   "newAccountIconMessage": {
     "message": "Atualizamos os ícones das contas para ajudar você a diferenciar suas contas com mais facilidade. Você pode mudar o estilo em $1 > $2 > $3.",
@@ -6954,14 +6910,6 @@
   "requestingFor": {
     "message": "Solicitando para"
   },
-  "requestingForAccount": {
-    "message": "Solicitando para $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Solicitando para $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Obrigatório"
   },
@@ -8462,12 +8410,6 @@
   "snapsUIError": {
     "message": "Contate os criadores de $1 para receber mais suporte.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Este site está solicitando uma conta Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "É necessária uma conta Solana para se conectar a este site."
   },
   "someNetworks": {
     "message": "Redes de $1"

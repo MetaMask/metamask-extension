@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Добавить аккаунт"
   },
-  "addAccountFromNetwork": {
-    "message": "Добавить счет $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Добавить счет или кошелек"
-  },
   "addAcquiredTokens": {
     "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
   },
   "addAlias": {
     "message": "Добавить псевдоним"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Счет Биткойн (бета-версия)"
   },
   "addBlockExplorer": {
     "message": "Добавить обозреватель блоков"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Обменять токены"
   },
-  "addHardwareWalletLabel": {
-    "message": "Аппаратный кошелек"
-  },
   "addMemo": {
     "message": "Добавить примечание"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "Сайт предлагает дополнительную информацию о сети."
-  },
-  "addNewAccount": {
-    "message": "Добавить новый счет Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Счет Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Счет Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Счет Tron"
   },
   "addNft": {
     "message": "Добавить NFT"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "Подключить счета"
   },
-  "connectAnAccountHeader": {
-    "message": "Подключить счет"
-  },
   "connectHardwareDevice": {
     "message": "Подключиться к $1",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "Сети ($1) не подключены",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Подключен к $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Подключение"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "Добавление счета...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "Создать новый счет"
   },
   "createPassword": {
     "message": "Создать пароль"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT является уникальным идентификатором, поскольку нет двух одинаковых NFT. Опять же, в OpenSea этот номер находится в разделе «Подробности». Запишите его или скопируйте в буфер обмена."
   },
-  "importPrivateKey": {
-    "message": "Закрытый ключ"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Импортировать секретную фразу для восстановления"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "Нам не удалось импортировать токены. Повторите попытку позже."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Импортировать кошелек или счет"
   },
   "importWalletSuccess": {
     "message": "Кошелек $1 импортирован",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "Новые!"
-  },
-  "newAccount": {
-    "message": "Новый счет"
   },
   "newAccountIconMessage": {
     "message": "Мы обновили значки счетов, чтобы вам было проще различать их. Вы можете изменять стиль в разделе $1 > $2 > $3.",
@@ -6954,14 +6910,6 @@
   "requestingFor": {
     "message": "Запрашивается для"
   },
-  "requestingForAccount": {
-    "message": "Запрашивается для $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Запрашивается для $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Требуется"
   },
@@ -8462,12 +8410,6 @@
   "snapsUIError": {
     "message": "Свяжитесь с авторами $1 для получения дополнительной поддержки.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Этот сайт запрашивает счет Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Для подключения к этому сайту необходим счет Solana."
   },
   "someNetworks": {
     "message": "Сети $1"

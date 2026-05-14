@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "アカウントを追加"
   },
-  "addAccountFromNetwork": {
-    "message": "$1アカウントを追加",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "アカウントまたはウォレットを追加"
-  },
   "addAcquiredTokens": {
     "message": "MetaMaskを使用して取得したトークンを追加します"
   },
   "addAlias": {
     "message": "別名を追加"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "ビットコインアカウント"
   },
   "addBlockExplorer": {
     "message": "ブロックエクスプローラーを追加"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "トークンをスワップ"
   },
-  "addHardwareWalletLabel": {
-    "message": "ハードウェアウォレット"
-  },
   "addMemo": {
     "message": "メモを追加"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "あるサイトが追加のネットワーク情報を提案しています。"
-  },
-  "addNewAccount": {
-    "message": "新しいイーサリアムアカウントを追加"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "イーサリアムアカウント"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solanaアカウント"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tronアカウント"
   },
   "addNft": {
     "message": "NFTを追加"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "アカウントの接続"
   },
-  "connectAnAccountHeader": {
-    "message": "アカウントの接続"
-  },
   "connectHardwareDevice": {
     "message": "$1を接続",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "$1個のネットワークが接続されました",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "$1と接続されました",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "接続中"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "アカウントを追加しています...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "新しいアカウントの作成"
   },
   "createPassword": {
     "message": "パスワードを作成"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFTのIDは一意の識別子で、同じNFTは2つとして存在しません。前述の通り、OpenSeaではこの番号は「詳細」に表示されます。このIDを書き留めるか、クリップボードにコピーしてください。"
   },
-  "importPrivateKey": {
-    "message": "秘密鍵"
-  },
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "トークンをインポートできませんでした。後ほど再度お試しください。"
-  },
-  "importWalletOrAccountHeader": {
-    "message": "ウォレットまたはアカウントのインポート"
   },
   "importWalletSuccess": {
     "message": "$1ウォレットがインポートされました",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "新登場!"
-  },
-  "newAccount": {
-    "message": "新規アカウント"
   },
   "newAccountIconMessage": {
     "message": "アカウントを見分けやすくするために、アカウントアイコンを更新しました。$1 > $2 > $3 でスタイルを変更できます。",
@@ -6954,14 +6910,6 @@
   "requestingFor": {
     "message": "次の要求:"
   },
-  "requestingForAccount": {
-    "message": "$1の要求",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "$1の要求",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "必須"
   },
@@ -8462,12 +8410,6 @@
   "snapsUIError": {
     "message": "今後のサポートは、$1の作成者にお問い合わせください。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "このサイトがSolanaアカウントを求めています。"
-  },
-  "solanaAccountRequired": {
-    "message": "このサイトへの接続には、Solanaアカウントが必要です。"
   },
   "someNetworks": {
     "message": "$1個のネットワーク"

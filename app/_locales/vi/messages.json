@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Thêm tài khoản"
   },
-  "addAccountFromNetwork": {
-    "message": "Thêm tài khoản $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Thêm tài khoản hoặc ví"
-  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },
   "addAlias": {
     "message": "Thêm biệt danh"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Tài khoản Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Thêm một trình khám phá khối"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Hoán đổi token"
   },
-  "addHardwareWalletLabel": {
-    "message": "Ví cứng"
-  },
   "addMemo": {
     "message": "Thêm bản ghi nhớ"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "Một trang web đang đề xuất thêm thông tin mạng."
-  },
-  "addNewAccount": {
-    "message": "Thêm tài khoản Ethereum mới"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Tài khoản Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Tài khoản Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tài khoản Tron"
   },
   "addNft": {
     "message": "Thêm NFT"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "Kết nối tài khoản"
   },
-  "connectAnAccountHeader": {
-    "message": "Kết nối tài khoản"
-  },
   "connectHardwareDevice": {
     "message": "Kết nối $1",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "Đã kết nối $1 mạng",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Đã kết nối với $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Đang kết nối"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "Đang thêm tài khoản...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "Tạo tài khoản mới"
   },
   "createPassword": {
     "message": "Mật khẩu MetaMask"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "ID của NFT là một mã nhận dạng duy nhất vì không có hai NFT nào giống hệt nhau. Một lần nữa, trên OpenSea, mã số này nằm bên dưới mục \"Chi tiết\". Hãy ghi chú lại hoặc sao chép vào bộ nhớ đệm."
   },
-  "importPrivateKey": {
-    "message": "Khóa riêng tư"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Nhập Cụm từ khôi phục bí mật"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "Chúng tôi không thể nhập token. Vui lòng thử lại sau."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Nhập ví hoặc tài khoản"
   },
   "importWalletSuccess": {
     "message": "Đã nhập ví $1",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "Mới!"
-  },
-  "newAccount": {
-    "message": "Tài khoản mới"
   },
   "newAccountIconMessage": {
     "message": "Chúng tôi đã làm mới biểu tượng tài khoản để giúp bạn dễ phân biệt các tài khoản hơn. Bạn có thể thay đổi kiểu trong $1 > $2 > $3.",
@@ -6958,14 +6914,6 @@
   "requestingFor": {
     "message": "Yêu cầu cho"
   },
-  "requestingForAccount": {
-    "message": "Yêu cầu cho $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Yêu cầu cho $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Bắt buộc"
   },
@@ -8466,12 +8414,6 @@
   "snapsUIError": {
     "message": "Liên hệ với những người tạo ra $1 để được hỗ trợ thêm.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Trang web này yêu cầu tài khoản Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Cần có tài khoản Solana để kết nối với trang web này."
   },
   "someNetworks": {
     "message": "$1 mạng"

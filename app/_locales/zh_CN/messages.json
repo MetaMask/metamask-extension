@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "添加账户"
   },
-  "addAccountFromNetwork": {
-    "message": "添加 $1 账户",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "添加账户或钱包"
-  },
   "addAcquiredTokens": {
     "message": "添加您通过MetaMask获得的代币"
   },
   "addAlias": {
     "message": "添加别名"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "比特币账户"
   },
   "addBlockExplorer": {
     "message": "添加区块浏览器"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "兑换代币"
   },
-  "addHardwareWalletLabel": {
-    "message": "硬件钱包"
-  },
   "addMemo": {
     "message": "添加备忘录"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "一个网站正在提示额外的网络详细信息。"
-  },
-  "addNewAccount": {
-    "message": "添加新账户"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "以太坊账户"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana 账户"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tron 账户"
   },
   "addNft": {
     "message": "添加NFT"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "连接账户"
   },
-  "connectAnAccountHeader": {
-    "message": "连接账户"
-  },
   "connectHardwareDevice": {
     "message": "连接$1",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "已连接 $1 网络",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "与 $1 连接",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "连接中……"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "正在添加账户……",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "创建新账户"
   },
   "createPassword": {
     "message": "创建密码"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT的ID是唯一标识符，因为所有NFT都是独一无二的。同样，在OpenSea上，此数字位于“详情”下方。记下它，或将它复制到剪贴板上。"
   },
-  "importPrivateKey": {
-    "message": "私钥"
-  },
   "importSecretRecoveryPhrase": {
     "message": "导入私钥助记词"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "我们无法导入代币。请稍后再试。"
-  },
-  "importWalletOrAccountHeader": {
-    "message": "导入钱包或账户"
   },
   "importWalletSuccess": {
     "message": "钱包 $1 已导入",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "新增!"
-  },
-  "newAccount": {
-    "message": "新账户"
   },
   "newAccountIconMessage": {
     "message": "我们已更新账户图标，助您更轻松地区分不同账户。您可通过 $1 > $2 > $3 调整图标样式。",
@@ -6954,14 +6910,6 @@
   "requestingFor": {
     "message": "请求"
   },
-  "requestingForAccount": {
-    "message": "请求 $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "请求 $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "必需"
   },
@@ -8462,12 +8410,6 @@
   "snapsUIError": {
     "message": "联系 $1 的创建者以获得进一步支持。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "此网站正在请求 Solana 账户。"
-  },
-  "solanaAccountRequired": {
-    "message": "连接到此网站需要 Solana 账户。"
   },
   "someNetworks": {
     "message": "$1 网络"

@@ -187,21 +187,11 @@
   "addAccount": {
     "message": "Cuir cuntas leis"
   },
-  "addAccountFromNetwork": {
-    "message": "Cuir cuntas $1 leis",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Cuir cuntas nó sparán leis"
-  },
   "addAcquiredTokens": {
     "message": "Cuir na comharthaí leis atá faighte agat ag baint úsáide as MetaMask"
   },
   "addAlias": {
     "message": "Cuir leasainm leis"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Cuntas Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Cuir taiscéalaí bloc leis"
@@ -243,9 +233,6 @@
   "addFriendsAndAddresses": {
     "message": "Cuir cairde agus seoltaí muiníneacha leis"
   },
-  "addHardwareWalletLabel": {
-    "message": "Sparán crua-earraí"
-  },
   "addMemo": {
     "message": "Cuir meamram leis"
   },
@@ -255,15 +242,6 @@
   "addNetworkConfirmationTitle": {
     "message": "Cuir $1 leis",
     "description": "$1 represents network name"
-  },
-  "addNewAccount": {
-    "message": "Cuir cuntas Ethereum nua leis"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Cuntas Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Cuntas Solana"
   },
   "addNft": {
     "message": "Cuir NFT leis"
@@ -1286,9 +1264,6 @@
   "connectAccounts": {
     "message": "Ceangail cuntais"
   },
-  "connectAnAccountHeader": {
-    "message": "Ceangail cuntas"
-  },
   "connectManually": {
     "message": "Ceangail de láimh leis an suíomh reatha"
   },
@@ -1347,10 +1322,6 @@
   "connectedWithNetwork": {
     "message": "$1 líonra ceangailte",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Ceangailte le $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Ag ceangal"
@@ -1463,9 +1434,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "Ag cruthú cuntais...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "Cruthaigh cuntas nua"
   },
   "createPassword": {
     "message": "Pasfhocal MetaMask"
@@ -2586,9 +2554,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Is aitheantóir uathúil é aitheantas NFT ós rud é nach bhfuil dhá NFT mar a chéile. Arís, ar OpenSea tá an uimhir seo faoi 'Sonraí'. Déan nóta de, nó cóipeáil í chuig do ghearrthaisce."
   },
-  "importPrivateKey": {
-    "message": "Eochair Phríobháideach"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Iompórtáil Frása Rúnda Aisghabhála"
   },
@@ -2603,9 +2568,6 @@
   },
   "importTokensError": {
     "message": "Níorbh fhéidir linn na comharthaí a allmhairiú. Déan iarracht arís ar ball."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Sparán nó cuntas a allmhairiú"
   },
   "importWalletSuccess": {
     "message": "Frása Rúnda Aisghabhála $1 allmhairithe",
@@ -3391,9 +3353,6 @@
   },
   "new": {
     "message": "Nua!"
-  },
-  "newAccount": {
-    "message": "Cuntas nua"
   },
   "newAccountIconMessage": {
     "message": "Tá deilbhíní cuntais athnuachana againn chun cabhrú leat do chuntais a aithint óna chéile níos éasca. Is féidir leat an stíl a athrú i $1 > $2 > $3.",
@@ -4585,14 +4544,6 @@
   "requestingFor": {
     "message": "Ag iarraidh"
   },
-  "requestingForAccount": {
-    "message": "Ag iarraidh $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Ag iarraidh $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Riachtanach"
   },
@@ -5481,12 +5432,6 @@
   "snapsUIError": {
     "message": "Téigh i dteagmháil le cruthaitheoirí $1 le haghaidh tuilleadh tacaíochta.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Tá an suíomh seo ag iarraidh cuntas Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Tá cuntas Solana ag teastáil chun ceangal leis an suíomh seo."
   },
   "someNetworks": {
     "message": "Líonraí $1"

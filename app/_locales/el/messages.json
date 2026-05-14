@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
   },
-  "addAccountFromNetwork": {
-    "message": "Προσθήκη λογαριασμού σε $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Προσθήκη λογαριασμού ή πορτοφολιού"
-  },
   "addAcquiredTokens": {
     "message": "Προσθέστε τα tokens που αποκτήσατε χρησιμοποιώντας το MetaMask"
   },
   "addAlias": {
     "message": "Προσθήκη ψευδωνύμου"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Λογαριασμός Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Προσθήκη ενός block explorer"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Ανταλλαγή tokens"
   },
-  "addHardwareWalletLabel": {
-    "message": "Πορτοφόλι υλικού"
-  },
   "addMemo": {
     "message": "Προσθήκη σημειώματος"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "Ένας ιστότοπος προτείνει πρόσθετες λεπτομέρειες δικτύου."
-  },
-  "addNewAccount": {
-    "message": "Προσθήκη νέου λογαριασμού Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Λογαριασμός Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Λογαριασμός Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Λογαριασμός Tron"
   },
   "addNft": {
     "message": "Προσθήκη του NFT"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
   },
-  "connectAnAccountHeader": {
-    "message": "Σύνδεση λογαριασμού"
-  },
   "connectHardwareDevice": {
     "message": "Σύνδεση $1",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "$1 δίκτυα συνδεδεμένα",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Συνδέεται με $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Σύνδεση"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "Προσθήκη λογαριασμού…",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "Δημιουργία νέου λογαριασμού"
   },
   "createPassword": {
     "message": "Κωδικός πρόσβασης στο MetaMask"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Το αναγνωριστικό ενός NFT είναι μοναδικό δεδομένου ότι δεν υπάρχουν δύο ίδια NFT. Και πάλι, στο OpenSea αυτός ο αριθμός βρίσκεται στην ενότητα \"Λεπτομέρειες\". Σημειώστε τον ή αντιγράψτε τον στο πρόχειρο σας."
   },
-  "importPrivateKey": {
-    "message": "Ιδιωτικό κλειδί"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Εισαγωγή της Μυστικής Φράσης Ανάκτησης"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "Δεν μπορέσαμε να εισάγουμε τα tokens. Προσπαθήστε ξανά αργότερα."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Εισαγωγή πορτοφολιού ή λογαριασμού"
   },
   "importWalletSuccess": {
     "message": "Έγινε εισαγωγή του πορτοφολιού $1",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "Νέα!"
-  },
-  "newAccount": {
-    "message": "Νέος λογαριασμός"
   },
   "newAccountIconMessage": {
     "message": "Ανανεώσαμε τα εικονίδια λογαριασμών για να μπορείτε να ξεχωρίζετε πιο εύκολα τους λογαριασμούς σας. Μπορείτε να αλλάξετε το στυλ στις $1 > $2 > $3.",
@@ -6954,14 +6910,6 @@
   "requestingFor": {
     "message": "Ζητάει για το"
   },
-  "requestingForAccount": {
-    "message": "Ζητάει για το $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Ζητήθηκε για $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Απαιτείται"
   },
@@ -8462,12 +8410,6 @@
   "snapsUIError": {
     "message": "Επικοινωνήστε με τους διαχειριστές του $1 για περαιτέρω υποστήριξη.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Αυτός ο ιστότοπος απαιτεί λογαριασμό στο Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Απαιτείται λογαριασμός στο Solana για να συνδεθείτε σε αυτόν τον ιστότοπο."
   },
   "someNetworks": {
     "message": "$1 δίκτυα"

@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Magdagdag ng account"
   },
-  "addAccountFromNetwork": {
-    "message": "Magdagdag ng $1 account",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Magdagdag ng account o wallet"
-  },
   "addAcquiredTokens": {
     "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
   },
   "addAlias": {
     "message": "Magdagdag ng alias"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Bitcoin account (Beta)"
   },
   "addBlockExplorer": {
     "message": "Magdagdag ng block explorer"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Ipagpalit ang mga token"
   },
-  "addHardwareWalletLabel": {
-    "message": "Hardware wallet"
-  },
   "addMemo": {
     "message": "Magdagdag ng memo"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "Nagmumungkahi ng dagdag na detalye ng network ang isang site."
-  },
-  "addNewAccount": {
-    "message": "Magdagdag ng bagong account sa Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Ethereum account"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana account"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Account sa Tron"
   },
   "addNft": {
     "message": "Magdagdag ng NFT"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "Ikonekta ang mga account"
   },
-  "connectAnAccountHeader": {
-    "message": "Magkonekta ng account"
-  },
   "connectHardwareDevice": {
     "message": "Ikonekta ang $1",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "$1 (na) network ang nakakonekta",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Nakakonekta sa $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Kumonekta"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "Nagdadagdag ng account...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "Gumawa ng bagong account"
   },
   "createPassword": {
     "message": "Gumawa ng password"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
   },
-  "importPrivateKey": {
-    "message": "Pribadong Key"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "Hindi namin ma-import ang mga token. Pakisubukan ulit mamaya."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Mag-import ng wallet o account"
   },
   "importWalletSuccess": {
     "message": "Na-import ang wallet na $1",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "Bago!"
-  },
-  "newAccount": {
-    "message": "Bagong account"
   },
   "newAccountIconMessage": {
     "message": "Ni-refresh namin ang mga icon ng account para matulungan kang makilala nang mas madali ang iyong mga account. Maaari mong palitan ang estilo nito sa $1 > $2 > $3.",
@@ -6954,14 +6910,6 @@
   "requestingFor": {
     "message": "Humihiling ng"
   },
-  "requestingForAccount": {
-    "message": "Humihiling ng $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Hinihiling para sa $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Kinakailangan"
   },
@@ -8462,12 +8410,6 @@
   "snapsUIError": {
     "message": "Makipag-ugnayan sa mga tagalikha ng $1 para sa karagdagang suporta.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Humihiling ng Solana account ang site na ito."
-  },
-  "solanaAccountRequired": {
-    "message": "Kinakailangan ng Solana account para kumonekta sa site na ito."
   },
   "someNetworks": {
     "message": "Mga network ng $1"

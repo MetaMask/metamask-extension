@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Konto hinzufügen"
   },
-  "addAccountFromNetwork": {
-    "message": "$1-Konto hinzufügen",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Konto oder Wallet hinzufügen"
-  },
   "addAcquiredTokens": {
     "message": "Fügen Sie die Tokens hinzu, die Sie mittels MetaMask erlangt haben."
   },
   "addAlias": {
     "message": "Alias hinzufügen"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Bitcoin-Konto"
   },
   "addBlockExplorer": {
     "message": "Einen Block-Explorer hinzufügen"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Tokens tauschen"
   },
-  "addHardwareWalletLabel": {
-    "message": "Hardware-Wallet"
-  },
   "addMemo": {
     "message": "Notiz hinzufügen"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "Eine Website schlägt zusätzliche Netzwerkdetails vor."
-  },
-  "addNewAccount": {
-    "message": "Ein neues Konto hinzufügen"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Ethereum-Konto"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana-Konto"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tron-Konto"
   },
   "addNft": {
     "message": "NFT hinzufügen"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "Konten verbinden"
   },
-  "connectAnAccountHeader": {
-    "message": "Konten verbinden"
-  },
   "connectHardwareDevice": {
     "message": "Mit $1 verbinden",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "$1 Netzwerke verbunden",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Verbunden mit $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Verbinden"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "Konto wird hinzugefügt ...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "Neues Konto erstellen"
   },
   "createPassword": {
     "message": "MetaMask-Passwort"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Die ID eines NFTs ist eine eindeutige Kennung, da keine zwei NFTs gleich sind. Auch diese Nummer finden Sie in OpenSea unter „Details“. Notieren Sie diese oder kopieren Sie sie in Ihre Zwischenablage."
   },
-  "importPrivateKey": {
-    "message": "Privater Schlüssel"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase importieren"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "Wir konnten die Tokens nicht importieren. Bitte versuchen Sie es später erneut."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Wallet oder Konto importieren"
   },
   "importWalletSuccess": {
     "message": "Wallet $1 importiert",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "Neu!"
-  },
-  "newAccount": {
-    "message": "Neues Konto"
   },
   "newAccountIconMessage": {
     "message": "Wir haben die Kontosymbole überarbeitet, damit Sie Ihre Konten leichter voneinander unterscheiden können. Den Stil können Sie unter $1 > $2 > $3 ändern.",
@@ -6954,14 +6910,6 @@
   "requestingFor": {
     "message": "Anforderung von"
   },
-  "requestingForAccount": {
-    "message": "Anforderung von $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Anfordern für $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Erforderlich"
   },
@@ -8462,12 +8410,6 @@
   "snapsUIError": {
     "message": "Kontaktieren Sie die Ersteller von $1 für weitere Unterstützung.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Diese Website fordert ein Solana-Konto."
-  },
-  "solanaAccountRequired": {
-    "message": "Für die Verbindung mit dieser Website ist ein Solana-Konto erforderlich."
   },
   "someNetworks": {
     "message": "$1 Netzwerke"

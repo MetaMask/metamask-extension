@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "अकाउंट जोड़ें"
   },
-  "addAccountFromNetwork": {
-    "message": "$1 अकाउंट जोड़ें",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "अकाउंट या वॉलेट जोड़ें"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask का इस्तेमाल करके, आपके द्वारा प्राप्त किए गए टोकन जोड़ें"
   },
   "addAlias": {
     "message": "उपनाम जोड़ें"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Bitcoin अकाउंट"
   },
   "addBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर जोड़ें"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "टोकन स्वैप करें"
   },
-  "addHardwareWalletLabel": {
-    "message": "हार्डवेयर वॉलेट"
-  },
   "addMemo": {
     "message": "मेमो जोड़ें"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "एक साइट अतिरिक्त नेटवर्क डिटेल्स का सुझाव दे रही है।"
-  },
-  "addNewAccount": {
-    "message": "एक नया Ethereum अकाउंट जोड़ें"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Ethereum अकाउंट"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana अकाउंट"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tron अकाउंट"
   },
   "addNft": {
     "message": "NFT जोड़ें"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
   },
-  "connectAnAccountHeader": {
-    "message": "किसी अकाउंट को कनेक्ट करें"
-  },
   "connectHardwareDevice": {
     "message": "$1 को कनेक्ट करें",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "$1 नेटवर्क कनेक्ट किए गए",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "$1 से कनेक्ट किए गए",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "कनेक्ट किया जा रहा है"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "अकाउंट जोड़ा जा रहा है...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "एक नया अकाउंट बनाएं"
   },
   "createPassword": {
     "message": "MetaMask पासवर्ड"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "किसी NFT की ID एक विशिष्ट पहचानकर्ता है क्योंकि कोई भी दो NFT एक जैसे नहीं होते हैं। फिर से, OpenSea पर यह संख्या 'डिटेल्स' के नीचे होगी। इसे नोट कर लें या अपने क्लिपबोर्ड पर कॉपी कर लें।"
   },
-  "importPrivateKey": {
-    "message": "प्राइवेट की (key)"
-  },
   "importSecretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "हम टोकनों को इंपोर्ट नहीं कर सके। कृपया बाद में फिर से कोशिश करें।"
-  },
-  "importWalletOrAccountHeader": {
-    "message": "वॉलेट या अकाउंट इंपोर्ट करें"
   },
   "importWalletSuccess": {
     "message": "वॉलेट $1 को इंपोर्ट किया गया",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "नया!"
-  },
-  "newAccount": {
-    "message": "नया अकाउंट"
   },
   "newAccountIconMessage": {
     "message": "हमने आपके एकाउंट्स को आसानी से पहचानने में मदद के लिए अकाउंट आइकन रिफ्रेश किए हैं। आप इसका स्टाइल $1 > $2 > $3 में बदल सकते हैं।",
@@ -6954,14 +6910,6 @@
   "requestingFor": {
     "message": "के लिए अनुरोध कर रहे हैं"
   },
-  "requestingForAccount": {
-    "message": "$1 के लिए अनुरोध कर रहे हैं",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "$1 के लिए अनुरोध कर रहे हैं",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "जरुरी"
   },
@@ -8462,12 +8410,6 @@
   "snapsUIError": {
     "message": "अधिक सहायता के लिए $1 के निर्माताओं से कॉन्टेक्ट करें।",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "यह साइट Solana अकाउंट का अनुरोध कर रही है।"
-  },
-  "solanaAccountRequired": {
-    "message": "इस साइट से कनेक्ट करने के लिए एक Solana अकाउंट आवश्यक है।"
   },
   "someNetworks": {
     "message": "$1 नेटवर्क"

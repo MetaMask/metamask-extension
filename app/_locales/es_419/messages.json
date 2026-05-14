@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Agregar cuenta"
   },
-  "addAccountFromNetwork": {
-    "message": "Agregar cuenta de $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Añadir una cuenta o una billetera"
-  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que adquirió con MetaMask"
   },
   "addAlias": {
     "message": "Agregar alias"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Cuenta de Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Agregar un explorador de bloque"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Canjear tokens"
   },
-  "addHardwareWalletLabel": {
-    "message": "Billetera física"
-  },
   "addMemo": {
     "message": "Añadir memo"
   },
@@ -282,18 +269,6 @@
   },
   "addNetworkDescription": {
     "message": "Un sitio web sugiere detalles adicionales de la red."
-  },
-  "addNewAccount": {
-    "message": "Añadir una cuenta nueva de Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Cuenta de Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Cuenta de Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Cuenta de Tron"
   },
   "addNft": {
     "message": "Añadir NFT"
@@ -1862,9 +1837,6 @@
   "connectAccounts": {
     "message": "Conectar cuentas"
   },
-  "connectAnAccountHeader": {
-    "message": "Conectar una cuenta"
-  },
   "connectHardwareDevice": {
     "message": "Conectar $1",
     "description": "$1 is the hardware wallet device name"
@@ -1927,10 +1899,6 @@
   "connectedWithNetwork": {
     "message": "$1 redes conectadas",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Conectado con $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Conectando"
@@ -2058,9 +2026,6 @@
   "createMultichainAccountButtonLoading": {
     "message": "Agregando cuenta...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
-  },
-  "createNewAccountHeader": {
-    "message": "Crear una nueva cuenta"
   },
   "createPassword": {
     "message": "Contraseña de MetaMask"
@@ -3565,9 +3530,6 @@
   "importNFTTokenIdToolTip": {
     "message": "La ID de un NFT es un identificador único, ya que no hay dos NFT iguales. Nuevamente, en OpenSea, este número se encuentra en 'Detalles'. Tome nota de ello o cópielo en su portapapeles."
   },
-  "importPrivateKey": {
-    "message": "Clave privada"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Importar frase secreta de recuperación"
   },
@@ -3582,9 +3544,6 @@
   },
   "importTokensError": {
     "message": "No pudimos importar los tokens. Por favor, inténtelo de nuevo más tarde."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Importar una billetera o una cuenta"
   },
   "importWalletSuccess": {
     "message": "Billetera $1 importada",
@@ -4697,9 +4656,6 @@
   },
   "new": {
     "message": "Nuevo!"
-  },
-  "newAccount": {
-    "message": "Nueva cuenta"
   },
   "newAccountIconMessage": {
     "message": "Hemos actualizado los íconos de las cuentas para que puedas distinguirlas más fácilmente. Puedes cambiar el estilo en $1 > $2 > $3.",
@@ -6958,14 +6914,6 @@
   "requestingFor": {
     "message": "Solicitando para"
   },
-  "requestingForAccount": {
-    "message": "Solicitando para $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Solicitando para $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Requerido"
   },
@@ -8466,12 +8414,6 @@
   "snapsUIError": {
     "message": "Póngase en contacto con los creadores de $1 para obtener más ayuda.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Este sitio solicita una cuenta de Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Se requiere una cuenta de Solana para conectarse a este sitio."
   },
   "someNetworks": {
     "message": "$1 redes"
