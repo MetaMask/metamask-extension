@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Низкая скорость"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Спонсорская оплата газа недоступна"
-  },
   "alertReasonGasTooLow": {
     "message": "Низкий лимит газа"
   },

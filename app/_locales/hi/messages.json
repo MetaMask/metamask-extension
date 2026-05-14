@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "धीमी गति"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "गैस स्पॉन्सरशिप उपलब्ध नहीं है"
-  },
   "alertReasonGasTooLow": {
     "message": "कम गैस लिमिट"
   },

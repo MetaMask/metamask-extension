@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Αργή ταχύτητα"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Η κάλυψη των τελών δεν είναι διαθέσιμη"
-  },
   "alertReasonGasTooLow": {
     "message": "Χαμηλό όριο τελών συναλλαγών"
   },

@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Velocidade lenta"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Patrocínio de gás indisponível"
-  },
   "alertReasonGasTooLow": {
     "message": "Baixo limite de gás"
   },

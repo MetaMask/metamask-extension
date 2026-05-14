@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "速度慢"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "燃料赞助不可用"
-  },
   "alertReasonGasTooLow": {
     "message": "燃料限制较低"
   },

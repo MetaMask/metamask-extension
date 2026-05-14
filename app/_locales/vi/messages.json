@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Tốc độ chậm"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Tài trợ phí gas không khả dụng"
-  },
   "alertReasonGasTooLow": {
     "message": "Hạn mức phí gas thấp"
   },

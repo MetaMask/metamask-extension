@@ -18,13 +18,23 @@ import { Severity } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { RevertReason } from '../../../components/revert-reason/revert-reason';
 import { useEstimationFailed } from '../../gas/useEstimationFailed';
+import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
 
 export function useGasEstimateFailedAlerts(): Alert[] {
   const t = useI18nContext();
   const estimationFailed = useEstimationFailed();
 
+  const {
+    isSupported: isGaslessSupported,
+    pending: isGaslessSupportCheckPending,
+  } = useIsGaslessSupported();
+
   return useMemo(() => {
-    if (!estimationFailed) {
+    if (
+      !estimationFailed ||
+      isGaslessSupportCheckPending ||
+      isGaslessSupported
+    ) {
       return [];
     }
 
@@ -43,7 +53,7 @@ export function useGasEstimateFailedAlerts(): Alert[] {
         severity: Severity.Warning,
       },
     ];
-  }, [estimationFailed, t]);
+  }, [t, estimationFailed, isGaslessSupportCheckPending, isGaslessSupported]);
 }
 
 function GasEstimateFailedAlertMessage() {

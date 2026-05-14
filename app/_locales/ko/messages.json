@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "느린 속도"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "가스 후원을 사용할 수 없음"
-  },
   "alertReasonGasTooLow": {
     "message": "낮은 가스 한도"
   },

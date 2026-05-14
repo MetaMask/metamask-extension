@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Hız yavaş"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Gaz sponsorluğu kullanılamıyor"
-  },
   "alertReasonGasTooLow": {
     "message": "Gaz limiti düşük"
   },

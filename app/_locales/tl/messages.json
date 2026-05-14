@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "Mabagal na bilis"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Hindi available ang pag-iisponsor ng gas"
-  },
   "alertReasonGasTooLow": {
     "message": "Mababang gas limit"
   },
