@@ -9,9 +9,6 @@ import React, {
 import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxJustifyContent,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -31,10 +28,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { Modal, ModalContent, ModalHeader } from '../../../component-library';
-import {
-  BlockSize,
-  Display,
-} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import { useHardwareWalletRecoveryLocation } from '../../../../hooks/useHardwareWalletRecoveryLocation';
@@ -516,11 +509,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
           <ModalOverlay />
           <ModalContent>
             <ModalHeader onClose={handleRecoveredClose}>
-              <Box
-                display={Display.Flex}
-                alignItems={BoxAlignItems.Center}
-                justifyContent={BoxJustifyContent.Center}
-              >
+              <Box className="flex items-center justify-center">
                 <Icon
                   name={IconName.Confirmation}
                   color={IconColor.SuccessDefault}
@@ -529,12 +518,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
               </Box>
             </ModalHeader>
             <ModalBody>
-              <Box
-                display={Display.Flex}
-                flexDirection={BoxFlexDirection.Column}
-                alignItems={BoxAlignItems.Center}
-                gap={4}
-              >
+              <Box className="flex flex-col items-center gap-4">
                 <Text
                   variant={TextVariant.HeadingSm}
                   textAlign={TextAlign.Center}
@@ -560,23 +544,14 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         <ModalContent>
           <ModalHeader onClose={handleClose}>
             {headerContent && (
-              <Box
-                display={Display.Flex}
-                alignItems={BoxAlignItems.Center}
-                justifyContent={BoxJustifyContent.Center}
-              >
+              <Box className="flex items-center justify-center">
                 {headerContent}
               </Box>
             )}
           </ModalHeader>
 
           <ModalBody>
-            <Box
-              display={Display.Flex}
-              flexDirection={BoxFlexDirection.Column}
-              alignItems={BoxAlignItems.Center}
-              gap={4}
-            >
+            <Box className="flex flex-col items-center gap-4">
               {isQrCameraFlow &&
                 renderQrCameraFlowContent({
                   errorCode: error.code,
@@ -608,12 +583,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
                   {standardErrorContent.variant ===
                     HardwareWalletErrorContentVariant.Recovery && (
-                    <Box
-                      width={BlockSize.Full}
-                      display={Display.Flex}
-                      flexDirection={BoxFlexDirection.Column}
-                      gap={2}
-                    >
+                    <Box className="flex w-full flex-col gap-2">
                       <Text
                         variant={TextVariant.BodyMd}
                         fontWeight={FontWeight.Medium}
@@ -665,12 +635,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
           {!isQrCameraFlow && (
             <ModalFooter>
-              <Box
-                display={Display.Flex}
-                flexDirection={BoxFlexDirection.Row}
-                gap={2}
-                width={BlockSize.Full}
-              >
+              <Box className="flex w-full flex-row gap-2">
                 {isRetryableHardwareWalletError(error) ? (
                   <Button
                     variant={ButtonVariant.Primary}
