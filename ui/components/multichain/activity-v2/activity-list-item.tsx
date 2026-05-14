@@ -39,7 +39,8 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       ? TransactionStatus.failed
       : TransactionStatus.confirmed;
 
-  const activityListItemStatusKey = getTransactionDisplayStatusKey(transactionStatus);
+  const activityListItemStatusKey =
+    getTransactionDisplayStatusKey(transactionStatus);
 
   return (
     <Box

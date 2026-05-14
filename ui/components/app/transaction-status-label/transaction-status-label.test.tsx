@@ -2,7 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
-import TransactionStatusLabel, { STATUS_DISPLAY_MODE, getTransactionDisplayStatusKey } from '.';
+import TransactionStatusLabel, {
+  STATUS_DISPLAY_MODE,
+  getTransactionDisplayStatusKey,
+} from '.';
 
 // Mock the useI18nContext hook
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -32,17 +35,21 @@ jest.mock('../../ui/tooltip', () => {
 
 describe('getTransactionDisplayStatusKey', () => {
   it('maps approved to signing', () => {
-    expect(getTransactionDisplayStatusKey(TransactionStatus.approved)).toBe('signing');
-  });
-
-  it('maps submitted to pending when earliest nonce', () => {
-    expect(getTransactionDisplayStatusKey(TransactionStatus.submitted, true)).toBe(
-      TransactionGroupStatus.pending,
+    expect(getTransactionDisplayStatusKey(TransactionStatus.approved)).toBe(
+      'signing',
     );
   });
 
+  it('maps submitted to pending when earliest nonce', () => {
+    expect(
+      getTransactionDisplayStatusKey(TransactionStatus.submitted, true),
+    ).toBe(TransactionGroupStatus.pending);
+  });
+
   it('maps submitted to queued when not earliest nonce', () => {
-    expect(getTransactionDisplayStatusKey(TransactionStatus.submitted, false)).toBe('queued');
+    expect(
+      getTransactionDisplayStatusKey(TransactionStatus.submitted, false),
+    ).toBe('queued');
   });
 });
 
