@@ -34,7 +34,6 @@ import {
 import type {
   ClosePositionParams,
   OrderType,
-  OrderParams,
   PriceUpdate,
 } from '@metamask/perps-controller';
 import {
@@ -112,6 +111,7 @@ import {
   type OrderFormState,
   type OrderMode,
   type OrderCalculations,
+  formStateToOrderParams,
 } from '../../components/app/perps/order-entry';
 import {
   PERPS_TOAST_KEYS,
@@ -145,57 +145,6 @@ export function shouldShowPerpsOrderSubmissionToasts(
   hasPendingPerpsDeposit: boolean,
 ) {
   return !hasPendingPerpsDeposit;
-}
-
-/**
- * Convert UI OrderFormState to PerpsController OrderParams
- *
- * @param formState - Current order form state
- * @param currentPrice - Current asset price in USD
- * @param mode - Order mode (new, modify, close)
- * @param existingPositionSize - Size of existing position when closing
- */
-function formStateToOrderParams(
-  formState: OrderFormState,
-  currentPrice: number,
-  mode: OrderMode,
-  existingPositionSize?: string,
-): OrderParams {
-  const isBuy = formState.direction === 'long';
-  const marginAmount = Number.parseFloat(formState.amount) || 0;
-  const positionSize =
-    currentPrice > 0 ? (marginAmount * formState.leverage) / currentPrice : 0;
-  const size =
-    mode === 'close' && existingPositionSize
-      ? Math.abs(Number.parseFloat(existingPositionSize)).toString()
-      : positionSize.toString();
-  const cleanAmount = formState.amount.replaceAll(',', '');
-
-  const params: OrderParams = {
-    symbol: formState.asset,
-    isBuy,
-    size,
-    orderType: formState.type,
-    leverage: formState.leverage,
-    currentPrice,
-    usdAmount: cleanAmount,
-  };
-
-  if (formState.type === 'limit' && formState.limitPrice) {
-    params.price = formState.limitPrice.replaceAll(',', '');
-  }
-  if (formState.autoCloseEnabled && formState.takeProfitPrice) {
-    params.takeProfitPrice = formState.takeProfitPrice.replaceAll(',', '');
-  }
-  if (formState.autoCloseEnabled && formState.stopLossPrice) {
-    params.stopLossPrice = formState.stopLossPrice.replaceAll(',', '');
-  }
-  if (mode === 'close') {
-    params.reduceOnly = true;
-    params.isFullClose = true;
-  }
-
-  return params;
 }
 
 const FULL_CLOSE_PERCENT = 100;

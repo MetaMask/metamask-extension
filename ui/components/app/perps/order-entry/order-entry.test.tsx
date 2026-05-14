@@ -7,6 +7,8 @@ import { renderWithProvider } from '../../../../../test/lib/render-helpers-navig
 import configureStore from '../../../../store/store';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { OrderEntry } from './order-entry';
+import { formStateToOrderParams } from './order-params';
+import type { OrderFormState } from './order-entry.types';
 
 jest.mock('../../../../hooks/perps/useUserHistory', () => ({
   useUserHistory: () => ({
@@ -125,6 +127,24 @@ describe('OrderEntry', () => {
 
       expect(screen.getByTestId('order-entry-submit-button')).toHaveTextContent(
         'Open short BTC',
+      );
+    });
+
+    it('uses directional submit button colors by default', () => {
+      const { rerender } = renderWithProvider(
+        <OrderEntry {...defaultProps} />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveClass(
+        'w-full',
+        'bg-success-default',
+      );
+
+      rerender(<OrderEntry {...defaultProps} initialDirection="short" />);
+
+      expect(screen.getByTestId('order-entry-submit-button')).toHaveClass(
+        'bg-error-default',
       );
     });
 
@@ -604,5 +624,55 @@ describe('OrderEntry', () => {
         }),
       );
     });
+  });
+});
+
+describe('formStateToOrderParams', () => {
+  const formState: OrderFormState = {
+    asset: 'BTC',
+    direction: 'long',
+    closePercent: 100,
+    amount: '1,000',
+    leverage: 5,
+    balancePercent: 0,
+    takeProfitPrice: '50,000',
+    stopLossPrice: '40,000',
+    limitPrice: '45,000',
+    type: 'limit',
+    autoCloseEnabled: true,
+  };
+
+  it('converts order form state to controller params', () => {
+    expect(formStateToOrderParams(formState, 50000)).toStrictEqual({
+      symbol: 'BTC',
+      isBuy: true,
+      size: '0.1',
+      orderType: 'limit',
+      leverage: 5,
+      currentPrice: 50000,
+      usdAmount: '1000',
+      price: '45000',
+      takeProfitPrice: '50000',
+      stopLossPrice: '40000',
+    });
+  });
+
+  it('sets close-only params for close mode', () => {
+    expect(
+      formStateToOrderParams(
+        { ...formState, direction: 'short', type: 'market' },
+        50000,
+        'close',
+        '-0.25',
+      ),
+    ).toStrictEqual(
+      expect.objectContaining({
+        isBuy: false,
+        size: '0.25',
+        orderType: 'market',
+        reduceOnly: true,
+        isFullClose: true,
+      }),
+    );
   });
 });

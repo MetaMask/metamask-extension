@@ -1,23 +1,35 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
+  AvatarTokenSize,
   Box,
-  BoxFlexDirection,
   BoxAlignItems,
+  BoxFlexDirection,
   BoxJustifyContent,
-  Text,
-  TextVariant,
-  TextColor,
+  ButtonBase,
   FontWeight,
   Icon,
+  IconColor,
   IconName,
   IconSize,
-  IconColor,
-  AvatarTokenSize,
+  Text,
+  TextColor,
+  TextVariant,
+  twMerge,
 } from '@metamask/design-system-react';
 import type { PerpsMarketData } from '@metamask/perps-controller';
-import { PERPS_MARKET_EXPANDED_ROUTE } from '../../../../helpers/constants/routes';
-import { getChangeColor, filterMarketsByQuery } from '../utils';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import {
+  filterMarketsByQuery,
+  formatSignedChangePercent,
+  getChangeColor,
+  getDisplayName,
+} from '../utils';
 import { PerpsTokenLogo } from '../perps-token-logo';
 
 export type PerpsMarketSelectorProps = {
@@ -25,248 +37,314 @@ export type PerpsMarketSelectorProps = {
   markets: PerpsMarketData[];
   /** Currently selected symbol */
   currentSymbol: string;
-  /** Current market price (formatted string from market data) */
-  currentPrice?: string;
+  /** Callback fired when a different market is selected */
+  onMarketSelect: (symbol: string) => void;
 };
 
 /**
- * PerpsMarketSelector — compact trigger + searchable dropdown for switching
- * between perps markets in the expanded trading view.
+ * Compact searchable market picker for the expanded trading view.
+ *
+ * @param options0 - Component props.
+ * @param options0.markets - Markets available in the selector.
+ * @param options0.currentSymbol - Currently selected market symbol.
+ * @param options0.onMarketSelect - Called when the user selects a market.
  */
 export const PerpsMarketSelector: React.FC<PerpsMarketSelectorProps> = ({
   markets,
   currentSymbol,
-  currentPrice,
+  onMarketSelect,
 }) => {
-  const navigate = useNavigate();
+  const t = useI18nContext();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const currentMarket = useMemo(
+    () =>
+      markets.find(
+        (market) => market.symbol.toLowerCase() === currentSymbol.toLowerCase(),
+      ),
+    [currentSymbol, markets],
+  );
 
   const filteredMarkets = useMemo(
     () => (query ? filterMarketsByQuery(markets, query) : markets),
     [markets, query],
   );
 
-  const handleToggle = useCallback(() => {
-    setIsOpen((prev) => {
-      if (!prev) {
-        // Focus search input when opening
-        setTimeout(() => inputRef.current?.focus(), 0);
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+
+    const handleMouseDown = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setIsOpen(false);
+        setQuery('');
       }
-      return !prev;
-    });
+    };
+
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => document.removeEventListener('mousedown', handleMouseDown);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) {
+      inputRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  const handleToggle = useCallback(() => {
+    setIsOpen((previous) => !previous);
     setQuery('');
   }, []);
 
-  const handleSelect = useCallback(
-    (symbol: string) => {
-      setIsOpen(false);
-      setQuery('');
-      if (symbol !== currentSymbol) {
-        navigate(`${PERPS_MARKET_EXPANDED_ROUTE}/${encodeURIComponent(symbol)}`);
+  const handleTriggerKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (
+        event.key === 'Enter' ||
+        event.key === ' ' ||
+        event.key === 'ArrowDown'
+      ) {
+        event.preventDefault();
+        setIsOpen(true);
       }
     },
-    [currentSymbol, navigate],
+    [],
   );
 
-  const handleBlur = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
-    // Close only if focus leaves the entire container
-    if (!containerRef.current?.contains(e.relatedTarget as Node)) {
+  const handleInputKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setIsOpen(false);
+        setQuery('');
+        triggerRef.current?.focus();
+      }
+    },
+    [],
+  );
+
+  const handleSelect = useCallback(
+    (nextSymbol: string) => {
       setIsOpen(false);
       setQuery('');
-    }
-  }, []);
+      if (nextSymbol !== currentSymbol) {
+        onMarketSelect(nextSymbol);
+      }
+      triggerRef.current?.focus();
+    },
+    [currentSymbol, onMarketSelect],
+  );
+
+  const displaySymbol = getDisplayName(currentSymbol);
 
   return (
-    <div
-      ref={containerRef}
-      onBlur={handleBlur}
-      style={{ position: 'relative', display: 'inline-block' }}
-    >
-      {/* Trigger button */}
-      <button
+    <Box ref={containerRef} className="relative min-w-0">
+      <ButtonBase
+        ref={triggerRef}
         type="button"
         onClick={handleToggle}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          background: 'rgba(255,255,255,0.06)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '8px',
-          padding: '6px 10px',
-          cursor: 'pointer',
-          color: 'inherit',
-        }}
+        onKeyDown={handleTriggerKeyDown}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        className="!grid h-10 min-w-[192px] max-w-[220px] grid-cols-[24px_minmax(0,1fr)_16px] items-center gap-2 rounded-md border border-border-muted bg-background-muted px-2.5 py-1.5 hover:bg-hover active:bg-pressed"
+        data-testid="perps-market-selector-button"
       >
-        <PerpsTokenLogo symbol={currentSymbol} size={AvatarTokenSize.Sm} />
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          color={TextColor.textDefault}
-          fontWeight={FontWeight.Medium}
-          style={{ whiteSpace: 'nowrap' }}
+        <PerpsTokenLogo
+          symbol={currentSymbol}
+          size={AvatarTokenSize.Sm}
+          className="shrink-0"
+        />
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+          className="min-w-0"
         >
-          {currentSymbol}-PERP
-        </Text>
-        {currentPrice && (
           <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.textAlternative}
-            style={{ whiteSpace: 'nowrap' }}
+            variant={TextVariant.BodyMd}
+            fontWeight={FontWeight.Medium}
+            className="truncate"
           >
-            {currentPrice}
+            {displaySymbol}-USD
           </Text>
-        )}
+          {currentMarket?.maxLeverage ? (
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+              className="shrink-0 rounded bg-background-default px-1.5 leading-5"
+            >
+              {currentMarket.maxLeverage}
+            </Text>
+          ) : null}
+        </Box>
         <Icon
           name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
           size={IconSize.Xs}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
+          className="shrink-0"
         />
-      </button>
+      </ButtonBase>
 
-      {/* Dropdown */}
-      {isOpen && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 'calc(100% + 6px)',
-            left: 0,
-            zIndex: 100,
-            background: 'var(--color-background-default)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            borderRadius: '10px',
-            width: '280px',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-            overflow: 'hidden',
-          }}
+      {isOpen ? (
+        <Box
+          className="absolute left-0 top-full z-50 mt-1 w-[400px] max-w-[calc(100vw-24px)] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg"
+          flexDirection={BoxFlexDirection.Column}
+          role="listbox"
+          data-testid="perps-market-selector-menu"
         >
-          {/* Search */}
-          <div style={{ padding: '8px' }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                background: 'rgba(255,255,255,0.06)',
-                borderRadius: '6px',
-                padding: '6px 10px',
-              }}
+          <Box className="border-b border-border-muted px-2.5 py-2.5">
+            <Box
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+              className="min-h-9 rounded-md bg-background-muted px-2.5 py-1.5"
             >
               <Icon
                 name={IconName.Search}
                 size={IconSize.Sm}
-                color={IconColor.iconAlternative}
+                color={IconColor.IconAlternative}
               />
               <input
                 ref={inputRef}
-                type="text"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search markets…"
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  color: 'inherit',
-                  fontSize: '13px',
-                  flex: 1,
-                  fontFamily: 'inherit',
-                }}
+                onChange={(event) => setQuery(event.target.value)}
+                onKeyDown={handleInputKeyDown}
+                placeholder={t('perpsSearchMarkets')}
+                className="min-w-0 flex-1 border-0 bg-transparent p-0 text-sm text-default outline-none placeholder:text-alternative"
+                data-testid="perps-market-selector-search"
               />
-            </div>
-          </div>
+            </Box>
+          </Box>
 
-          {/* Market list */}
-          <div
-            style={{
-              maxHeight: '320px',
-              overflowY: 'auto',
-              paddingBottom: '4px',
-            }}
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            className="max-h-[380px] overflow-y-auto py-1"
           >
             {filteredMarkets.length === 0 ? (
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Center}
                 justifyContent={BoxJustifyContent.Center}
-                style={{ padding: '16px' }}
+                padding={4}
               >
                 <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
                 >
-                  No markets found
+                  {t('perpsNoMarketsFound')}
                 </Text>
               </Box>
             ) : (
               filteredMarkets.map((market) => {
                 const isSelected =
                   market.symbol.toLowerCase() === currentSymbol.toLowerCase();
-                const changeColor = getChangeColor(market.change24hPercent);
+                const displayChange = formatSignedChangePercent(
+                  market.change24hPercent,
+                );
+                const changeColor = getChangeColor(displayChange);
 
                 return (
-                  <button
+                  <ButtonBase
                     key={market.symbol}
                     type="button"
                     onClick={() => handleSelect(market.symbol)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      width: '100%',
-                      padding: '8px 12px',
-                      background: isSelected
-                        ? 'rgba(255,255,255,0.06)'
-                        : 'transparent',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: 'inherit',
-                      textAlign: 'left',
-                      gap: '8px',
-                    }}
+                    role="option"
+                    aria-selected={isSelected}
+                    className={twMerge(
+                      '!grid min-h-[52px] w-full min-w-0 grid-cols-[24px_minmax(0,1fr)_minmax(92px,auto)_16px] items-center gap-2.5 rounded-none px-2.5 py-1.5 text-left',
+                      isSelected
+                        ? 'bg-hover'
+                        : 'bg-transparent hover:bg-hover active:bg-pressed',
+                    )}
+                    data-testid={`perps-market-selector-option-${market.symbol}`}
+                    isFullWidth
                   >
-                    <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Sm} />
+                    <PerpsTokenLogo
+                      symbol={market.symbol}
+                      size={AvatarTokenSize.Sm}
+                      className="shrink-0"
+                    />
                     <Box
                       flexDirection={BoxFlexDirection.Column}
-                      style={{ flex: 1, minWidth: 0 }}
+                      alignItems={BoxAlignItems.Start}
+                      className="min-w-0 flex-1"
+                      gap={1}
                     >
-                      <Text
-                        variant={TextVariant.bodySmMedium}
-                        color={TextColor.textDefault}
-                        fontWeight={FontWeight.Medium}
+                      <Box
+                        flexDirection={BoxFlexDirection.Row}
+                        alignItems={BoxAlignItems.Center}
+                        gap={1}
+                        className="min-w-0 max-w-full"
                       >
-                        {market.symbol}
-                      </Text>
+                        <Text
+                          variant={TextVariant.BodySm}
+                          fontWeight={FontWeight.Medium}
+                          className="min-w-0 truncate"
+                        >
+                          {getDisplayName(market.symbol)}
+                        </Text>
+                        {market.maxLeverage ? (
+                          <Text
+                            variant={TextVariant.BodyXs}
+                            color={TextColor.TextAlternative}
+                            className="shrink-0 rounded bg-background-muted px-1.5 leading-5"
+                          >
+                            {market.maxLeverage}
+                          </Text>
+                        ) : null}
+                      </Box>
                       <Text
-                        variant={TextVariant.bodyXs}
-                        color={TextColor.textAlternative}
+                        variant={TextVariant.BodyXs}
+                        color={TextColor.TextAlternative}
+                        className="max-w-full truncate"
                       >
-                        {market.name}
+                        {market.name
+                          ? getDisplayName(market.name)
+                          : market.volume}
                       </Text>
                     </Box>
-                    <Box flexDirection={BoxFlexDirection.Column} alignItems={BoxAlignItems.FlexEnd}>
+                    <Box
+                      flexDirection={BoxFlexDirection.Column}
+                      alignItems={BoxAlignItems.End}
+                      className="min-w-0"
+                      gap={1}
+                    >
                       <Text
-                        variant={TextVariant.bodySmMedium}
-                        color={TextColor.textDefault}
+                        variant={TextVariant.BodySm}
                         fontWeight={FontWeight.Medium}
+                        className="max-w-[112px] truncate text-right tabular-nums"
                       >
                         {market.price}
                       </Text>
                       <Text
-                        variant={TextVariant.bodyXs}
-                        style={{ color: changeColor }}
+                        variant={TextVariant.BodyXs}
+                        color={changeColor}
+                        className="whitespace-nowrap text-right tabular-nums"
                       >
-                        {market.change24hPercent}
+                        {displayChange}
                       </Text>
                     </Box>
-                  </button>
+                    {isSelected ? (
+                      <Icon
+                        name={IconName.Check}
+                        size={IconSize.Sm}
+                        color={IconColor.IconDefault}
+                        className="shrink-0"
+                      />
+                    ) : (
+                      <Box className="h-4 w-4 shrink-0" />
+                    )}
+                  </ButtonBase>
                 );
               })
             )}
-          </div>
-        </div>
-      )}
-    </div>
+          </Box>
+        </Box>
+      ) : null}
+    </Box>
   );
 };

@@ -141,6 +141,11 @@ export type OrderEntryProps = {
   autoFocusLimitPrice?: boolean;
   /** Placeholder override for the USD input. Defaults to AmountInput's '0.00'. */
   usdPlaceholder?: string;
+  /**
+   * External request to prefill the limit price, keyed by id so repeated clicks
+   * on the same price can still be handled by the form.
+   */
+  prefillLimitPrice?: { price: string; id: number };
 };
 
 /**

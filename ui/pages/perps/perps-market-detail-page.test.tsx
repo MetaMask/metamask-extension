@@ -14,7 +14,10 @@ import {
   mockTransactions,
 } from '../../components/app/perps/mocks';
 import { PERPS_LIQUIDATION_PRICE_FALLBACK } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import { PERPS_ACTIVITY_ROUTE } from '../../helpers/constants/routes';
+import {
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_MARKET_EXPANDED_ROUTE,
+} from '../../helpers/constants/routes';
 
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
@@ -138,6 +141,11 @@ jest.mock('loglevel', () => ({
   trace: jest.fn(),
   setLevel: jest.fn(),
   setDefaultLevel: jest.fn(),
+}));
+
+const mockGetEnvironmentType = jest.fn(() => 'popup');
+jest.mock('../../../shared/lib/environment-type', () => ({
+  getEnvironmentType: () => mockGetEnvironmentType(),
 }));
 
 const mockSubmitRequestToBackground = jest
@@ -395,6 +403,7 @@ describe('PerpsMarketDetailPage', () => {
       isInitialLoading: false,
     });
     mockUseParams.mockReturnValue({ symbol: 'ETH' });
+    mockGetEnvironmentType.mockReturnValue('popup');
     latestPriceSubscriber = undefined;
     mockUseLocation.mockReturnValue({
       pathname: '/perps/market/ETH',
@@ -404,6 +413,20 @@ describe('PerpsMarketDetailPage', () => {
   });
 
   describe('when perps feature is enabled', () => {
+    it('redirects to expanded market page in fullscreen', async () => {
+      mockGetEnvironmentType.mockReturnValue('fullscreen');
+      const store = mockStore(createMockState(true));
+
+      await renderPage(store);
+
+      expect(mockNavigateComponent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: `${PERPS_MARKET_EXPANDED_ROUTE}/ETH`,
+          replace: true,
+        }),
+      );
+    });
+
     it('renders market detail page for ETH', async () => {
       const store = mockStore(createMockState(true));
 

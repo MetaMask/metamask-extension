@@ -55,7 +55,7 @@ import {
   PERPS_ORDER_ENTRY_ROUTE,
   PERPS_MARKET_EXPANDED_ROUTE,
 } from '../../helpers/constants/routes';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../shared/constants/app';
 import {
   usePerpsLivePositions,
@@ -69,6 +69,7 @@ import {
   usePerpsEventTracking,
   usePerpsMarketInfo,
 } from '../../hooks/perps';
+import { useFundingCountdown } from '../../hooks/perps/useFundingCountdown';
 import { getPerpsStreamManager } from '../../providers/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMeasurement } from '../../hooks/perps/usePerpsMeasurement';
@@ -126,52 +127,6 @@ import {
 } from '../../selectors/perps-controller';
 import { setTutorialModalOpen } from '../../ducks/perps';
 import { PerpsTutorialModal } from '../../components/app/perps/perps-tutorial-modal';
-
-/**
- * Calculate the funding countdown string (time until next UTC hour).
- * Funding on HyperLiquid is paid every hour on the hour (UTC).
- *
- * @returns Formatted countdown string, e.g. "00:23:45"
- */
-function calculateFundingCountdown(): string {
-  const now = new Date();
-  let minutesRemaining = 59 - now.getUTCMinutes();
-  let secondsRemaining = 60 - now.getUTCSeconds();
-
-  // Handle rollover: if seconds hit 60, carry to minutes
-  if (secondsRemaining === 60) {
-    secondsRemaining = 0;
-    minutesRemaining += 1;
-  }
-
-  // Handle rollover: if minutes hit 60, display as 01:00:00
-  if (minutesRemaining === 60) {
-    return '01:00:00';
-  }
-
-  const hh = '00';
-  const mm = String(minutesRemaining).padStart(2, '0');
-  const ss = String(secondsRemaining).padStart(2, '0');
-  return `${hh}:${mm}:${ss}`;
-}
-
-/**
- * Hook that returns a live funding countdown string, updated every second.
- *
- * @returns Formatted countdown string, e.g. "00:23:45"
- */
-function useFundingCountdown(): string {
-  const [countdown, setCountdown] = useState(calculateFundingCountdown);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown(calculateFundingCountdown());
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return countdown;
-}
 
 type PopoverMenuItemProps = {
   icon: IconName;
@@ -915,10 +870,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   }, []);
 
   // In the expanded / full-size view, use the dedicated full-width trading page
-  if (
-    getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN &&
-    decodedSymbol
-  ) {
+  if (getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN && decodedSymbol) {
     return (
       <Navigate
         to={`${PERPS_MARKET_EXPANDED_ROUTE}/${encodeURIComponent(decodedSymbol)}`}

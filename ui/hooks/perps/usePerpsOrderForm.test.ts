@@ -593,6 +593,39 @@ describe('usePerpsOrderForm', () => {
       expect(result.current.formState.leverage).toBe(10);
       expect(result.current.formState.type).toBe('limit');
     });
+
+    it('prefills limit price without resetting amount, leverage, or direction', () => {
+      const props = {
+        prefillLimitPrice: undefined as
+          | { price: string; id: number }
+          | undefined,
+      };
+      const { result, rerender } = renderHookWithProvider(
+        () =>
+          usePerpsOrderForm({
+            ...defaultOptions,
+            orderType: 'limit',
+            initialDirection: 'short',
+            prefillLimitPrice: props.prefillLimitPrice,
+          }),
+        mockStateWithLocale,
+      );
+
+      act(() => {
+        result.current.handleAmountChange('1000');
+        result.current.handleLeverageChange(8);
+      });
+
+      props.prefillLimitPrice = { price: '45123.5', id: 1 };
+      act(() => {
+        rerender();
+      });
+
+      expect(result.current.formState.limitPrice).toBe('45123.5');
+      expect(result.current.formState.amount).toBe('1000');
+      expect(result.current.formState.leverage).toBe(8);
+      expect(result.current.formState.direction).toBe('short');
+    });
   });
 
   describe('form state change callback', () => {
