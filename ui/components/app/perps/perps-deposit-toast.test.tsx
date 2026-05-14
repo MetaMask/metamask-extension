@@ -99,7 +99,7 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('does not render pending toast for token-funded deposits', () => {
+  it('renders pending toast for token-funded deposits', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -119,7 +119,18 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastLoading).not.toHaveBeenCalled();
+    expect(mockToastLoading).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastPendingTitle.message,
+          description: messages.perpsDepositToastPendingDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: Infinity,
+      },
+    );
   });
 
   it('renders pending toast for native-token-funded deposits', () => {
@@ -218,6 +229,36 @@ describe('PerpsDepositToast', () => {
     );
   });
 
+  it('renders success toast when the deposit transaction is no longer active', () => {
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [],
+        lastDepositTransactionId: null,
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastSuccessTitle.message,
+          description: messages.perpsDepositToastSuccessDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
+  });
+
   it('clears deposit result when completion toast duration elapses', () => {
     jest.useFakeTimers();
     const store = configureStore({
@@ -252,7 +293,61 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('clears deposit result when unmounted during completion toast', () => {
+  it('does not clear deposit result when completion toast rerenders before the duration elapses', () => {
+    jest.useFakeTimers();
+    const store = configureStore({
+      metamask: {
+        ...mockState.metamask,
+        transactions: [
+          buildPendingDepositTransaction({
+            id: 'result-tx-1',
+            status: TransactionStatus.confirmed,
+          }),
+        ],
+        lastDepositTransactionId: 'result-tx-1',
+        lastDepositResult: {
+          success: true,
+          error: '',
+          timestamp: 1_700_000_000_000,
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsDepositToast />, store);
+
+    act(() => {
+      store.dispatch({
+        type: 'UPDATE_METAMASK_STATE',
+        value: {
+          lastDepositResult: {
+            success: true,
+            error: 'same result re-render',
+            timestamp: 1_700_000_000_000,
+          },
+        },
+      });
+    });
+
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(4999);
+    });
+
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
+
+    act(() => {
+      jest.advanceTimersByTime(1);
+    });
+
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
+    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
+      'perpsClearDepositResult',
+      [],
+    );
+  });
+
+  it('dismisses the completion toast without clearing deposit result when unmounted before duration elapses', () => {
     jest.useFakeTimers();
     const store = configureStore({
       metamask: {
@@ -279,17 +374,13 @@ describe('PerpsDepositToast', () => {
     unmount();
 
     expect(mockToastDismiss).toHaveBeenCalledWith('perps-deposit-toast');
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'perpsClearDepositResult',
-      [],
-    );
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
 
     act(() => {
       jest.advanceTimersByTime(5000);
     });
 
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
   });
 
   it('renders error toast when lastDepositResult is unsuccessful', () => {
@@ -458,7 +549,7 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('does not show completion toast for token-funded deposits', () => {
+  it('shows completion toast for token-funded deposits', () => {
     const store = configureStore({
       metamask: {
         ...mockState.metamask,
@@ -487,7 +578,18 @@ describe('PerpsDepositToast', () => {
 
     renderWithProvider(<PerpsDepositToast />, store);
 
-    expect(mockToastSuccess).not.toHaveBeenCalled();
+    expect(mockToastSuccess).toHaveBeenCalledWith(
+      expect.objectContaining({
+        props: expect.objectContaining({
+          title: messages.perpsDepositToastSuccessTitle.message,
+          description: messages.perpsDepositToastSuccessDescription.message,
+        }),
+      }),
+      {
+        id: 'perps-deposit-toast',
+        duration: 5000,
+      },
+    );
   });
 
   it('shows pending for the active deposit only when a stale perps tx remains submitted', () => {
