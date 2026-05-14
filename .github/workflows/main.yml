@@ -34,10 +34,11 @@ env:
   HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
   RUN_ID: ${{ github.run_id }}
 
+# Workflow-level grants are read-only. Any job that needs more
+# elevation (S3 OIDC, commit statuses, etc.) declares it inline.
 permissions:
-  contents: write # required for releases
-  id-token: write # required for s3 uploads
-  statuses: write # required for build-source-hash and ci-status-gate
+  contents: read
+  actions: read # required for download-artifact with run-id (cross-run reuse)
 
 jobs:
   get-requirements:
@@ -450,6 +451,10 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' && needs.get-requirements.outputs.builds-from-run == github.run_id }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read # required for cross-run download-artifact
+      id-token: write # required for OIDC auth in S3 upload
     environment: ${{ github.ref_name == 'main' && 'default-branch' || null }}
     env:
       EXTENSION_BUNDLESIZE_STATS_TOKEN: ${{ secrets.EXTENSION_BUNDLESIZE_STATS_TOKEN }}
