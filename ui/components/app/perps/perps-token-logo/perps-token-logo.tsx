@@ -7,6 +7,12 @@ import {
 import { getDisplaySymbol, getAssetIconUrls } from '../utils';
 import { Skeleton } from '../../../component-library/skeleton';
 import { BorderRadius } from '../../../../helpers/constants/design-system';
+import { useTheme } from '../../../../hooks/useTheme';
+import { ThemeType } from '../../../../../shared/constants/preferences';
+import {
+  ASSETS_REQUIRING_DARK_BG,
+  ASSETS_REQUIRING_LIGHT_BG,
+} from './perps-asset-bg-config';
 
 export type PerpsTokenLogoProps = {
   /** Asset symbol (e.g., "BTC", "ETH", "xyz:TSLA") */
@@ -33,6 +39,17 @@ export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
 }) => {
   const displaySymbol = useMemo(() => getDisplaySymbol(symbol), [symbol]);
   const sanitizedSymbol = symbol.replace(/:/gu, '-');
+  const theme = useTheme();
+  const bgClass = useMemo(() => {
+    const upper = displaySymbol.toUpperCase();
+    if (theme === ThemeType.dark && ASSETS_REQUIRING_LIGHT_BG.has(upper)) {
+      return 'bg-white';
+    }
+    if (theme === ThemeType.light && ASSETS_REQUIRING_DARK_BG.has(upper)) {
+      return 'bg-icon-default';
+    }
+    return '';
+  }, [displaySymbol, theme]);
   const [resolvedSrc, setResolvedSrc] = useState<string | undefined>(undefined);
   const [isResolving, setIsResolving] = useState(true);
 
@@ -98,7 +115,7 @@ export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
       name={displaySymbol}
       src={resolvedSrc}
       size={size}
-      className={twMerge('bg-white', className)}
+      className={twMerge(bgClass, className)}
       data-testid={`perps-token-logo-${sanitizedSymbol}`}
     />
   );
