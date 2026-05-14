@@ -226,6 +226,7 @@ describe('PerpsMarketRecentActivity', () => {
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       await user.click(screen.getByText(messages.perpsRecentActivity.message));
+
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
 
