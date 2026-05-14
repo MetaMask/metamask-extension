@@ -387,6 +387,11 @@
         "@metamask/utils>pony-cause": true,
         "semver": true
       }
+    },
+    "@emotion/react>@emotion/cache": {
+      "globals": {
+        "document.createElement": true
+      }
     }
   }
 }
