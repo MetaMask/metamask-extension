@@ -28,6 +28,16 @@ import {
 } from './utils';
 import { COMPONENT_MAPPING } from './components';
 
+// Maps legacy BackgroundColor enum values used by Snaps content to the
+// Tailwind utility classes consumed by `@metamask/design-system-react` Box.
+const BACKGROUND_TO_TAILWIND = {
+  [BackgroundColor.backgroundDefault]: 'bg-default',
+  [BackgroundColor.backgroundAlternative]: 'bg-alternative',
+  [BackgroundColor.backgroundSection]: 'bg-section',
+  [BackgroundColor.backgroundSubsection]: 'bg-subsection',
+  [BackgroundColor.backgroundMuted]: 'bg-muted',
+};
+
 // Component for tracking the number of re-renders
 // DO NOT USE IN PRODUCTION
 const PerformanceTracker = () => {
@@ -147,11 +157,7 @@ const SnapUIRendererComponent = ({
       <ThemeProvider theme={muiPickerTheme}>
         <MuiPickersUtilsProvider utils={LuxonUtils} locale={locale}>
           <Box
-            className={`snap-ui-renderer__content h-full ${
-              backgroundColor === BackgroundColor.backgroundDefault
-                ? 'bg-default'
-                : 'bg-alternative'
-            }`}
+            className={`snap-ui-renderer__content h-full ${BACKGROUND_TO_TAILWIND[backgroundColor] ?? 'bg-alternative'}`}
             style={{
               overflowY: 'auto',
             }}

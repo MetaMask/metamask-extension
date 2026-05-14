@@ -70,7 +70,10 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
 
   return (
     <Box
-      className={classnames('snaps-authorship-expanded rounded-lg w-full', className)}
+      className={classnames(
+        'snaps-authorship-expanded rounded-lg w-full',
+        className,
+      )}
       backgroundColor={BoxBackgroundColor.BackgroundDefault}
       borderColor={BoxBorderColor.BorderDefault}
       borderWidth={1}
