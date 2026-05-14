@@ -24,10 +24,21 @@ import {
 } from './assets-migration';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
-// so these selector tests exercise the real feature-flag gating logic.
-jest.mock('../assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual('../assets-unify-state/remote-feature-flag'),
-);
+// and provide the pure flag-evaluation logic without the IN_TEST bypass
+// (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
+// so using jest.requireActual here would make the function always return true,
+// breaking all "when disabled" test cases).
+jest.mock('../assets-unify-state/remote-feature-flag', () => ({
+  ...jest.requireActual('../assets-unify-state/remote-feature-flag'),
+  isAssetsUnifyStateFeatureEnabled: jest.fn(
+    (
+      featureFlag: { enabled: boolean; featureVersion: string } | undefined | null,
+      featureVersion: string,
+    ) =>
+      Boolean(featureFlag?.enabled) &&
+      featureFlag?.featureVersion === featureVersion,
+  ),
+}));
 
 jest.mock('../environment', () => ({
   ...jest.requireActual('../environment'),
