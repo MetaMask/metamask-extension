@@ -181,6 +181,17 @@ describe('sentinel-api', () => {
         undefined,
       );
     });
+
+    it('returns undefined if getNetworkData returns null', async () => {
+      fetchMock.mockResolvedValueOnce({
+        json: async () => null,
+        ok: true,
+      } as Response);
+
+      await expect(getSentinelNetworkFlags('0x1' as Hex)).resolves.toBe(
+        undefined,
+      );
+    });
   });
 
   describe('getSendBundleSupportedChains', () => {
@@ -224,6 +235,20 @@ describe('sentinel-api', () => {
 
     it('returns false for all chains if getNetworkData throws', async () => {
       fetchMock.mockRejectedValueOnce(new Error('API connection error'));
+
+      const result = await getSendBundleSupportedChains(chainIds);
+      expect(result).toEqual({
+        '0x1': false,
+        '0x89': false,
+        '0xFAFA': false,
+      });
+    });
+
+    it('returns false for all chains if getNetworkData returns null', async () => {
+      fetchMock.mockResolvedValueOnce({
+        json: async () => null,
+        ok: true,
+      } as Response);
 
       const result = await getSendBundleSupportedChains(chainIds);
       expect(result).toEqual({
@@ -315,6 +340,15 @@ describe('sentinel-api', () => {
         json: async () => {
           throw new Error('Invalid JSON');
         },
+        ok: true,
+      } as Response);
+
+      await expect(isSendBundleSupported(mainnetHex)).resolves.toBe(false);
+    });
+
+    it('returns false if response json is null', async () => {
+      fetchMock.mockResolvedValueOnce({
+        json: async () => null,
         ok: true,
       } as Response);
 

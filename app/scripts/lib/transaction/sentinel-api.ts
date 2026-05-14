@@ -99,10 +99,15 @@ async function getAllSentinelNetworkFlags(): Promise<SentinelNetworkMap> {
     const url = `${buildUrl('ethereum-mainnet')}${ENDPOINT_NETWORKS}`;
     const headers = await getSentinelApiHeadersAsync();
     const response = await getFetchWithTimeout()(url, { headers });
-    return await response.json();
+    const networkFlags = (await response.json()) as unknown;
+    return isSentinelNetworkMap(networkFlags) ? networkFlags : {};
   } catch {
     return {};
   }
+}
+
+function isSentinelNetworkMap(value: unknown): value is SentinelNetworkMap {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
 /**
