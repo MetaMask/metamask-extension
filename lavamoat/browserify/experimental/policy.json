@@ -19,7 +19,8 @@
       "globals": {
         "document": false,
         "document.head": true,
-        "document.querySelectorAll": true
+        "document.querySelectorAll": true,
+        "document.createElement": true
       },
       "packages": {
         "@emotion/react>@emotion/cache>@emotion/memoize": true,
