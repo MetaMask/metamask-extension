@@ -123,9 +123,11 @@ describe('HardwareWalletRepair', () => {
     mockRequestHardwareWalletPermission.mockResolvedValue(false);
     const { getByTestId, findByText } = renderRepairPage();
     fireEvent.click(getByTestId('hardware-wallet-repair-reconnect'));
-    expect(
-      await findByText('hardwareWalletRepairDeviceNotDetected'),
-    ).toBeInTheDocument();
+    const errorMessage = await findByText(
+      'hardwareWalletRepairDeviceNotDetected',
+    );
+    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toHaveClass('text-error-default');
     expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
   });
 

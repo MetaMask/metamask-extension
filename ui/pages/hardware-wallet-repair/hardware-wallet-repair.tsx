@@ -10,6 +10,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonVariant,
+  FontWeight,
   Icon,
   IconName,
   IconSize,
@@ -170,12 +171,12 @@ export const HardwareWalletRepair: React.FC = () => {
             >
               <Icon name={IconName.CheckBold} size={IconSize.Xl} />
               <Text
-                variant={TextVariant.headingSm}
+                variant={TextVariant.HeadingSm}
                 textAlign={TextAlign.Center}
               >
                 {t('hardwareWalletRepairSuccessTitle')}
               </Text>
-              <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+              <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
                 {t('hardwareWalletRepairSuccessDescription')}
               </Text>
             </Box>
@@ -186,7 +187,7 @@ export const HardwareWalletRepair: React.FC = () => {
               gap={4}
               paddingTop={4}
             >
-              <Text variant={TextVariant.headingSm}>
+              <Text variant={TextVariant.HeadingSm}>
                 {t('hardwareWalletRepairPermissionsTitle')}
               </Text>
 
@@ -219,10 +220,13 @@ export const HardwareWalletRepair: React.FC = () => {
                       flexDirection={BoxFlexDirection.Column}
                       gap={1}
                     >
-                      <Text variant={TextVariant.bodyMdBold}>
+                      <Text
+                        variant={TextVariant.BodyMd}
+                        fontWeight={FontWeight.Bold}
+                      >
                         {`${index + 1}. ${t(step.titleKey)}`}
                       </Text>
-                      <Text variant={TextVariant.bodyMd}>
+                      <Text variant={TextVariant.BodyMd}>
                         {t(step.descriptionKey)}
                       </Text>
                     </Box>
@@ -232,8 +236,8 @@ export const HardwareWalletRepair: React.FC = () => {
 
               {error && (
                 <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.errorDefault}
+                  variant={TextVariant.BodySm}
+                  color={TextColor.ErrorDefault}
                   textAlign={TextAlign.Center}
                 >
                   {error}
@@ -241,7 +245,7 @@ export const HardwareWalletRepair: React.FC = () => {
               )}
 
               {isConnecting && (
-                <Text variant={TextVariant.bodyMd} textAlign={TextAlign.Center}>
+                <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
                   {t('hardwareWalletRepairDetecting')}
                 </Text>
               )}

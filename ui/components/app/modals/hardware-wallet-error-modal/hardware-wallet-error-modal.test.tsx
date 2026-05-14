@@ -399,6 +399,34 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
+    it('renders the repair link as an accessible button', async () => {
+      const error = createTestError(
+        ErrorCode.DeviceDisconnected,
+        'Device disconnected',
+        'Device not found.',
+      );
+      const onRepairDevice = jest.fn();
+
+      const { getByRole } = renderWithMetrics(
+        <HardwareWalletErrorModal
+          error={error}
+          onRepairDevice={onRepairDevice}
+        />,
+      );
+
+      const repairButton = getByRole('button', {
+        name: '[hardwareWalletRepairLink]',
+      });
+
+      expect(repairButton).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(repairButton);
+      });
+
+      expect(onRepairDevice).toHaveBeenCalledTimes(1);
+    });
+
     it('displays unlock instructions for ConnectionClosed', () => {
       const error = createTestError(
         ErrorCode.ConnectionClosed,

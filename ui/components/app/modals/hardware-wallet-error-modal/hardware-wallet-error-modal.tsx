@@ -24,6 +24,8 @@ import {
   ModalFooter,
   ModalOverlay,
   Text,
+  TextButton,
+  TextButtonSize,
   TextAlign,
   TextColor,
   TextVariant,
@@ -644,14 +646,13 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                         )}
                         {standardErrorContent.showRepairLink && onRepairDevice && (
                           <li>
-                            <Text
-                              variant={TextVariant.BodyMd}
-                              color={TextColor.PrimaryDefault}
+                            <TextButton
+                              size={TextButtonSize.BodyMd}
                               onClick={handleRepairDevice}
-                              style={{ cursor: 'pointer' }}
+                              className="hover:bg-transparent active:bg-transparent w-fit"
                             >
                               {t('hardwareWalletRepairLink')}
-                            </Text>
+                            </TextButton>
                           </li>
                         )}
                       </ul>
