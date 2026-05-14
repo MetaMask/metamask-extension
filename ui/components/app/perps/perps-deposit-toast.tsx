@@ -1,4 +1,4 @@
-import React, { type MutableRefObject, useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { SECOND } from '../../../../shared/constants/time';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -18,36 +18,6 @@ const clearDepositResult = () =>
     () => undefined,
   );
 
-type DepositResult = NonNullable<
-  ReturnType<typeof selectPerpsLastDepositResult>
->;
-
-const getDepositResultKey = (depositResult: DepositResult) =>
-  depositResult.timestamp === undefined
-    ? [
-        depositResult.success,
-        depositResult.error,
-        depositResult.txHash,
-        depositResult.amount,
-        depositResult.asset,
-      ].join(':')
-    : `timestamp:${depositResult.timestamp}`;
-
-const clearDepositResultForKey = (
-  depositResultKey: string | null,
-  clearedDepositResultKeyRef: MutableRefObject<string | null>,
-) => {
-  if (
-    !depositResultKey ||
-    clearedDepositResultKeyRef.current === depositResultKey
-  ) {
-    return;
-  }
-
-  clearedDepositResultKeyRef.current = depositResultKey;
-  clearDepositResult();
-};
-
 export function PerpsDepositToast() {
   const t = useI18nContext();
   const depositInProgress = useSelector(selectPerpsDepositPending);
@@ -56,25 +26,7 @@ export function PerpsDepositToast() {
   const hasDepositResult = Boolean(lastDepositResult);
   const lastDepositResultError = lastDepositResult?.error;
   const lastDepositResultSuccess = lastDepositResult?.success;
-  const depositResultKey = lastDepositResult
-    ? getDepositResultKey(lastDepositResult)
-    : null;
-  const latestDepositResultKeyRef = useRef<string | null>(null);
-  const clearedDepositResultKeyRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    latestDepositResultKeyRef.current = depositResultKey;
-  }, [depositResultKey]);
-
-  useEffect(
-    () => () => {
-      clearDepositResultForKey(
-        latestDepositResultKeyRef.current,
-        clearedDepositResultKeyRef,
-      );
-    },
-    [],
-  );
+  const lastDepositResultTimestamp = lastDepositResult?.timestamp;
 
   useEffect(() => {
     if (!hasDepositResult) {
@@ -99,30 +51,21 @@ export function PerpsDepositToast() {
       toast.error(content, options);
     }
 
-    return () => {
-      toast.dismiss(id);
-    };
-  }, [
-    depositResultKey,
-    hasDepositResult,
-    lastDepositResultError,
-    lastDepositResultSuccess,
-    t,
-  ]);
-
-  useEffect(() => {
-    if (!depositResultKey) {
-      return;
-    }
-
     const timeoutId = setTimeout(() => {
-      clearDepositResultForKey(depositResultKey, clearedDepositResultKeyRef);
+      clearDepositResult();
     }, duration);
 
     return () => {
       clearTimeout(timeoutId);
+      toast.dismiss(id);
     };
-  }, [depositResultKey]);
+  }, [
+    hasDepositResult,
+    lastDepositResultError,
+    lastDepositResultSuccess,
+    lastDepositResultTimestamp,
+    t,
+  ]);
 
   useEffect(() => {
     if (hasDepositResult) {

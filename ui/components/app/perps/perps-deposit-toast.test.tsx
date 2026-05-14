@@ -347,60 +347,7 @@ describe('PerpsDepositToast', () => {
     );
   });
 
-  it('does not let a stale completion timer clear a newer deposit result', () => {
-    jest.useFakeTimers();
-    const store = configureStore({
-      metamask: {
-        ...mockState.metamask,
-        transactions: [
-          buildPendingDepositTransaction({
-            id: 'result-tx-1',
-            status: TransactionStatus.confirmed,
-          }),
-        ],
-        lastDepositTransactionId: 'result-tx-1',
-        lastDepositResult: {
-          success: true,
-          error: '',
-          timestamp: 1_700_000_000_000,
-        },
-      },
-    });
-
-    renderWithProvider(<PerpsDepositToast />, store);
-
-    act(() => {
-      jest.advanceTimersByTime(2500);
-      store.dispatch({
-        type: 'UPDATE_METAMASK_STATE',
-        value: {
-          lastDepositResult: {
-            success: true,
-            error: '',
-            timestamp: 1_700_000_005_000,
-          },
-        },
-      });
-    });
-
-    act(() => {
-      jest.advanceTimersByTime(2500);
-    });
-
-    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
-
-    act(() => {
-      jest.advanceTimersByTime(2500);
-    });
-
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'perpsClearDepositResult',
-      [],
-    );
-  });
-
-  it('clears deposit result when unmounted during completion toast', () => {
+  it('dismisses the completion toast without clearing deposit result when unmounted before duration elapses', () => {
     jest.useFakeTimers();
     const store = configureStore({
       metamask: {
@@ -427,17 +374,13 @@ describe('PerpsDepositToast', () => {
     unmount();
 
     expect(mockToastDismiss).toHaveBeenCalledWith('perps-deposit-toast');
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledWith(
-      'perpsClearDepositResult',
-      [],
-    );
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
 
     act(() => {
       jest.advanceTimersByTime(5000);
     });
 
-    expect(submitRequestToBackgroundMock).toHaveBeenCalledTimes(1);
+    expect(submitRequestToBackgroundMock).not.toHaveBeenCalled();
   });
 
   it('renders error toast when lastDepositResult is unsuccessful', () => {
