@@ -13,11 +13,7 @@ import {
   login,
 } from '../../page-objects/flows/login.flow';
 import { navigateToSecurityAndPassword } from '../../page-objects/flows/settings.flow';
-import {
-  addVirtualAuthenticator,
-  removeVirtualAuthenticator,
-  DUMMY_PASSKEY_RECORD,
-} from '../../webdriver/virtual-authenticator';
+import { DUMMY_PASSKEY_RECORD } from '../../webdriver/virtual-authenticator';
 
 describe('Passkey settings', function () {
   it('Turns off biometrics with passkey fallback to password', async function () {
@@ -76,14 +72,19 @@ describe('Passkey settings', function () {
         ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         virtualAuthenticator: true,
       },
-      async ({ driver }: { driver: Driver }) => {
+      async ({
+        driver,
+        resetVirtualAuthenticator,
+      }: {
+        driver: Driver;
+        resetVirtualAuthenticator: () => Promise<void>;
+      }) => {
         await completeOnboardingWithPasskey({ driver });
 
         // Replace the authenticator with a fresh empty one so the turn-off
         // ceremony fails programmatically (no matching credentials) instead of
         // showing a native Chrome dialog.
-        await removeVirtualAuthenticator(driver);
-        await addVirtualAuthenticator(driver);
+        await resetVirtualAuthenticator();
 
         await navigateToSecurityAndPassword(driver);
 
