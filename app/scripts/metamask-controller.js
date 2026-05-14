@@ -137,6 +137,7 @@ import {
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { isSnapId } from '@metamask/snaps-utils';
 import { KeyringType } from '@metamask/keyring-api/v2';
+import { KeyringControllerErrorMessage } from '@metamask/keyring-controller';
 import { KeyringType as KeyringTypes } from '../../shared/constants/keyring';
 import { ExtensionPasskeyErrorCode } from '../../shared/lib/passkey/passkey-error';
 import {
@@ -5683,10 +5684,21 @@ export default class MetamaskController extends EventEmitter {
    * @returns {HardwareKeyringType} Keyring hardware type
    */
   async getHardwareTypeForMetric(address) {
-    return await this.keyringController.withKeyring(
-      { address },
-      ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
-    );
+    try {
+      return await this.keyringController.withKeyringV2(
+        { address },
+        ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
+      );
+    } catch (error) {
+      if (
+        error?.message?.includes(
+          KeyringControllerErrorMessage.KeyringV2NotSupported,
+        )
+      ) {
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   /**
@@ -5718,15 +5730,24 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'hardware' | 'imported' | 'snap' | 'MetaMask'}
    */
   async getAccountType(address) {
+    // `getAccountKeyringType` returns the legacy keyring `.type` string
+    // ('Ledger Hardware', etc). For hardware cases the V2-keyed
+    // `KEYRING_DEVICE_PROPERTY_MAP` is indexed via the matching V2 enum
+    // value so the legacy lookup and rekeyed map stay aligned without
+    // requiring a V2 builder for snap accounts.
     const keyringType =
       await this.keyringController.getAccountKeyringType(address);
     switch (keyringType) {
       case KeyringTypes.trezor:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Trezor];
       case KeyringTypes.oneKey:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.OneKey];
       case KeyringTypes.lattice:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Lattice];
       case KeyringTypes.qr:
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Qr];
       case KeyringTypes.ledger:
-        return KEYRING_DEVICE_PROPERTY_MAP[keyringType];
+        return KEYRING_DEVICE_PROPERTY_MAP[KeyringType.Ledger];
       case KeyringTypes.imported:
         return 'imported';
       case KeyringTypes.snap:
@@ -5745,26 +5766,37 @@ export default class MetamaskController extends EventEmitter {
    * @returns {'ledger' | 'lattice' | string | undefined}
    */
   async getDeviceModel(address) {
-    return this.keyringController.withKeyring(
-      { address },
-      async ({ keyring }) => {
-        switch (keyring.type) {
-          case KeyringTypes.trezor:
-          case KeyringTypes.oneKey:
-            return keyring.getModel();
-          case KeyringTypes.qr:
-            return keyring.getName();
-          case KeyringTypes.ledger:
-            // TODO: get model after ledger keyring exposes method
-            return HardwareDeviceNames.ledger;
-          case KeyringTypes.lattice:
-            // TODO: get model after lattice keyring exposes method
-            return HardwareDeviceNames.lattice;
-          default:
-            return undefined;
-        }
-      },
-    );
+    try {
+      return await this.keyringController.withKeyringV2(
+        { address },
+        async ({ keyring }) => {
+          switch (keyring.type) {
+            case KeyringType.Trezor:
+            case KeyringType.OneKey:
+              return keyring.getModel();
+            case KeyringType.Qr:
+              return keyring.getName();
+            case KeyringType.Ledger:
+              // TODO: get model after ledger keyring exposes method
+              return HardwareDeviceNames.ledger;
+            case KeyringType.Lattice:
+              // TODO: get model after lattice keyring exposes method
+              return HardwareDeviceNames.lattice;
+            default:
+              return undefined;
+          }
+        },
+      );
+    } catch (error) {
+      if (
+        error?.message?.includes(
+          KeyringControllerErrorMessage.KeyringV2NotSupported,
+        )
+      ) {
+        return undefined;
+      }
+      throw error;
+    }
   }
 
   /**
