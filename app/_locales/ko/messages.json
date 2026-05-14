@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "NFT 추가"
   },
-  "addNonEvmAccount": {
-    "message": "$1 계정 추가",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "$1 네트워크를 활성화하려면 $2 계정을 만들어야 합니다.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "RPC URL 추가"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "현재 사이트에 직접 연결"
   },
-  "connectMoreAccounts": {
-    "message": "더 많은 계정 연결"
-  },
   "connectSnap": {
     "message": "$1 연결",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask가 이 사이트에 연결되어 있지 않습니다. web3 사이트를 연결하려면 사이트에서 연결 버튼을 찾아 클릭하세요."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1은(는) 계정 잔액, 주소, 활동을 확인하고 연결된 계정에 대해 승인할 거래를 제안할 수 있습니다.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "연결된 사이트"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "$1 불러오기에 실패했습니다. 네트워크를 확인하고 다시 시도하세요.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "사이트에 연결하려면 연결 버튼을 선택하세요. MetaMask는 웹3 사이트에만 연결할 수 있습니다."
   },
   "connectionRequest": {
     "message": "연결 요청"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "계정 만들기"
-  },
-  "createSolanaAccount": {
-    "message": "솔라나 계정 만들기"
   },
   "creatorAddress": {
     "message": "크리에이터 주소"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "연결을 해제하시겠습니까? 사이트 기능을 이용하지 못하게 될 수도 있습니다."
   },
-  "disconnectAllAccountsText": {
-    "message": "계정"
-  },
   "disconnectAllDescriptionText": {
     "message": "이 사이트에서 연결을 해제하면, 이 사이트를 다시 사용하기 위해 계정과 네트워크를 다시 연결해야 합니다."
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "모든 디앱의 연결이 성공적으로 해제되었습니다."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "이렇게 하면 이 사이트와의 연결이 해제됩니다"
@@ -7173,10 +7146,6 @@
   "secretRecoveryPhrase": {
     "message": "비밀복구구문"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "비밀복구구문 $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "지갑 보호"
   },
@@ -9625,9 +9594,6 @@
   },
   "urlErrorMsg": {
     "message": "URI에는 적절한 HTTP/HTTPS 접두사가 필요합니다."
-  },
-  "urlUnknown": {
-    "message": "URL 알 수 없음"
   },
   "use4ByteResolution": {
     "message": "스마트 계약 디코딩"

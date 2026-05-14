@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "Thêm NFT"
   },
-  "addNonEvmAccount": {
-    "message": "Thêm tài khoản $1",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Để kích hoạt mạng $1, bạn cần tạo tài khoản $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "Thêm URL RPC"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "Kết nối thủ công với trang web hiện tại"
   },
-  "connectMoreAccounts": {
-    "message": "Kết nối thêm tài khoản"
-  },
   "connectSnap": {
     "message": "Kết nối $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask chưa kết nối với trang web này. Để kết nối với một trang web trên web3, hãy tìm nút kết nối trên trang web của họ."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 có thể xem số dư tài khoản, địa chỉ, hoạt động và gợi ý các giao dịch cần phê duyệt cho tài khoản được kết nối.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Trang web đã kết nối"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "Tìm nạp $1 thất bại, hãy kiểm tra mạng của bạn và thử lại.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Để kết nối với trang web, hãy chọn nút kết nối. MetaMask chỉ có thể kết nối với các trang web web3."
   },
   "connectionRequest": {
     "message": "Yêu cầu kết nối"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Tạo tài khoản"
-  },
-  "createSolanaAccount": {
-    "message": "Tạo tài khoản Solana"
   },
   "creatorAddress": {
     "message": "Địa chỉ của người tạo"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Bạn có chắc chắn muốn ngắt kết nối không? Bạn có thể bị mất chức năng của trang web."
   },
-  "disconnectAllAccountsText": {
-    "message": "tài khoản"
-  },
   "disconnectAllDescriptionText": {
     "message": "Nếu bạn ngắt kết nối khỏi trang web này, bạn sẽ cần kết nối lại tài khoản và mạng của bạn để sử dụng lại trang web này."
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Đã ngắt kết nối tất cả dapp thành công."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "Hành động này sẽ ngắt kết nối bạn khỏi trang web này"
@@ -7173,10 +7146,6 @@
   "secretRecoveryPhrase": {
     "message": "Cụm từ khôi phục bí mật"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Cụm từ khôi phục bí mật $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Bảo mật ví"
   },
@@ -9625,9 +9594,6 @@
   },
   "urlErrorMsg": {
     "message": "URL phải có tiền tố HTTP/HTTPS phù hợp."
-  },
-  "urlUnknown": {
-    "message": "URL không xác định"
   },
   "use4ByteResolution": {
     "message": "Giải mã hợp đồng thông minh"

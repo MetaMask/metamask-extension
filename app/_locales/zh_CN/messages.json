@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "添加 NFT"
   },
-  "addNonEvmAccount": {
-    "message": "添加 $1 账户",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "要启用 $1 网络，您需要创建 $2 账户。",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "添加 RPC（远程过程调用）URL"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "手动连接到当前站点"
   },
-  "connectMoreAccounts": {
-    "message": "连接更多账户"
-  },
   "connectSnap": {
     "message": "连接$1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask 没有连接到该网站。要连接到 web3 网站，请找到并点击连接按钮。"
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 可以查看账户余额、地址、活动，并建议要批准的关联账户交易。",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "已连接的网站"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "获取$1失败，请检查您的网络，然后重试。",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "如要连接网站，请选择“连接”按钮。MetaMask 仅支持连接 Web3 网站。"
   },
   "connectionRequest": {
     "message": "连接请求"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "创建账户"
-  },
-  "createSolanaAccount": {
-    "message": "创建 Solana 账户"
   },
   "creatorAddress": {
     "message": "创建者地址"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "您确定要断开连接吗？您可能会失去网站功能。"
   },
-  "disconnectAllAccountsText": {
-    "message": "账户"
-  },
   "disconnectAllDescriptionText": {
     "message": "如果您断开与此网站的连接，则需要重新连接您的账户和网络才能再次使用此网站。"
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "所有去中心化应用均已成功断开连接。"
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "这将断开您与此站点的连接"
@@ -7169,10 +7142,6 @@
   "secretRecoveryPhrase": {
     "message": "私钥助记词"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "私钥助记词 $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "保护钱包安全"
   },
@@ -9621,9 +9590,6 @@
   },
   "urlErrorMsg": {
     "message": "URL 需要相应的 HTTP/HTTPS 前缀。"
-  },
-  "urlUnknown": {
-    "message": "URL 未知"
   },
   "use4ByteResolution": {
     "message": "对智能合约进行解码"

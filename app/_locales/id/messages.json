@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "Tambahkan NFT"
   },
-  "addNonEvmAccount": {
-    "message": "Tambahkan akun $1",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Untuk mengaktifkan jaringan $1, Anda perlu membuat akun $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "Tambahkan URL RPC"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
   },
-  "connectMoreAccounts": {
-    "message": "Hubungkan lebih banyak akun"
-  },
   "connectSnap": {
     "message": "Hubungkan $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask tidak terhubung ke situs ini. Untuk terhubung ke situs web3, cari dan klik tombol hubungkan."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 dapat melihat saldo akun, alamat, aktivitas, dan menyarankan transaksi yang akan disetujui untuk akun terhubung.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Situs yang terhubung"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "Pengambilan $1 gagal, periksa jaringan Anda dan coba lagi.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Untuk terhubung ke situs, pilih tombol hubungkan. MetaMask hanya dapat terhubung ke situs web3."
   },
   "connectionRequest": {
     "message": "Permintaan koneksi"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Buat akun"
-  },
-  "createSolanaAccount": {
-    "message": "Buat akun Solana"
   },
   "creatorAddress": {
     "message": "Alamat pembuat"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Anda yakin ingin memutus koneksi? Fungsionalitas situs Anda bisa hilang."
   },
-  "disconnectAllAccountsText": {
-    "message": "akun"
-  },
   "disconnectAllDescriptionText": {
     "message": "Jika Anda memutuskan koneksi dari situs ini, Anda harus menghubungkan kembali akun dan jaringan agar dapat menggunakan situs ini lagi."
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Semua dapp berhasil diputus koneksinya."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "Ini akan memutus koneksi dari situs ini"
@@ -7173,10 +7146,6 @@
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Frasa Pemulihan Rahasia $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Amankan dompet"
   },
@@ -9625,9 +9594,6 @@
   },
   "urlErrorMsg": {
     "message": "URL memerlukan awalan HTTP/HTTPS yang sesuai."
-  },
-  "urlUnknown": {
-    "message": "URL tidak dikenal"
   },
   "use4ByteResolution": {
     "message": "Uraikan kode kontrak cerdas"

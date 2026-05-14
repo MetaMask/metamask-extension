@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "Añadir NFT"
   },
-  "addNonEvmAccount": {
-    "message": "Añadir cuenta de $1",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para habilitar la red de $1, debe crear una cuenta de $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "Agregar URL de RPC"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "Conectarse manualmente al sitio actual"
   },
-  "connectMoreAccounts": {
-    "message": "Conectar más cuentas"
-  },
   "connectSnap": {
     "message": "Conectar $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask no está conectado a este sitio. Para conectarse a un sitio de Web3, busque el botón de conexión en su sitio."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 puede ver el saldo de la cuenta, la dirección, la actividad y sugerir transacciones para aprobar para las cuentas conectadas.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Sitios conectados"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "Error al obtener $1, verifique su red y vuelva a intentarlo.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Para conectarse a un sitio, seleccione el botón de conexión. MetaMask solo puede conectarse a sitios Web3."
   },
   "connectionRequest": {
     "message": "Solicitud de conexión"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Crear cuenta"
-  },
-  "createSolanaAccount": {
-    "message": "Crear cuenta de Solana"
   },
   "creatorAddress": {
     "message": "Dirección del creador"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "¿Está seguro de que se quiere desconectar? Podría perder la funcionalidad del sitio."
   },
-  "disconnectAllAccountsText": {
-    "message": "cuentas"
-  },
   "disconnectAllDescriptionText": {
     "message": "Si se desconecta de este sitio, tendrá que volver a conectar sus cuentas y redes para volver a utilizarlo."
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Todas las dapps se desconectaron con éxito."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Esto lo desconectará de este sitio"
@@ -7173,10 +7146,6 @@
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Frase secreta de recuperación $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Proteger billetera"
   },
@@ -9625,9 +9594,6 @@
   },
   "urlErrorMsg": {
     "message": "Las direcciones URL requieren el prefijo HTTP/HTTPS adecuado."
-  },
-  "urlUnknown": {
-    "message": "URL desconocida"
   },
   "use4ByteResolution": {
     "message": "Decodificar contratos inteligentes"

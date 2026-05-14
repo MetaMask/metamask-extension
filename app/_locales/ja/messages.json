@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "NFTを追加"
   },
-  "addNonEvmAccount": {
-    "message": "$1アカウントを追加",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "$1ネットワークを有効にするには、$2アカウントを作成する必要があります。",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "RPC URLを追加"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "現在のサイトに手動で接続"
   },
-  "connectMoreAccounts": {
-    "message": "他のアカウントを接続"
-  },
   "connectSnap": {
     "message": "$1を接続",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMaskはこのサイトに接続されていません。web3サイトに接続するには、そのサイトの接続ボタンをクリックしてください。"
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1はアカウントの残高、アドレス、アクティビティを確認し、接続されたアカウントで承認するトランザクションを提案できます。",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "接続済みのサイト"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "$1を取得できませんでした。ネットワークを確認してもう一度お試しください。",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "サイトに接続するには、「接続」ボタンを選択します。MetaMaskはWeb3のサイトにしか接続できません。"
   },
   "connectionRequest": {
     "message": "接続の要求"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "アカウントを作成"
-  },
-  "createSolanaAccount": {
-    "message": "Solanaアカウントを作成"
   },
   "creatorAddress": {
     "message": "クリエイターのアドレス"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "本当に接続解除しますか？サイトの機能を失う可能性があります。"
   },
-  "disconnectAllAccountsText": {
-    "message": "アカウント"
-  },
   "disconnectAllDescriptionText": {
     "message": "このサイトとの接続を解除すると、このサイトをもう一度使用するには、アカウントとネットワークを接続しなおす必要があります。"
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "すべてのDAppの接続が解除されました。"
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "これにより、このサイトへの接続が解除されます"
@@ -7169,10 +7142,6 @@
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "シークレットリカバリーフレーズ$1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "ウォレットの安全を確保"
   },
@@ -9621,9 +9590,6 @@
   },
   "urlErrorMsg": {
     "message": "URLには適切なHTTP/HTTPSプレフィックスが必要です。"
-  },
-  "urlUnknown": {
-    "message": "URLが不明です"
   },
   "use4ByteResolution": {
     "message": "スマートコントラクトのデコード"

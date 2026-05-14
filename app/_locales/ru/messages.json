@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "Добавить NFT"
   },
-  "addNonEvmAccount": {
-    "message": "Добавить $1 счет",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Чтобы активировать сеть $1, нужно создать счет $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "Добавить URL-адрес RPC"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "Подключиться к текущему сайту вручную"
   },
-  "connectMoreAccounts": {
-    "message": "Подключите еще счета"
-  },
   "connectSnap": {
     "message": "Подключиться к $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask не подключен к этому сайту. Чтобы подключиться к сайту web3, найдите и нажмите кнопку подключения."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 может видеть баланс счета, адрес, активность и предлагать транзакции для одобрения для подключенных счетов.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Подключенные сайты"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "Не удалось получить $1, проверьте свою сеть и повторите попытку.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Для подключения к сайту нажмите кнопку подключения. MetaMask может подключаться только к сайтам web3."
   },
   "connectionRequest": {
     "message": "Запрос подключения"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Создать счет"
-  },
-  "createSolanaAccount": {
-    "message": "Создать счет Solana"
   },
   "creatorAddress": {
     "message": "Адрес создателя"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Уверены, что хотите отключить? Вы можете потерять доступ к функциям сайта."
   },
-  "disconnectAllAccountsText": {
-    "message": "счета"
-  },
   "disconnectAllDescriptionText": {
     "message": "Если вы отключитесь от этого сайта, вам придется повторно подключить свои счета и сети, чтобы снова использовать этот сайт."
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Все приложения dapp успешно отключены."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Это отключит вас от этого сайта"
@@ -7169,10 +7142,6 @@
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Секретная фраза для восстановления $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Безопасный кошелек"
   },
@@ -9621,9 +9590,6 @@
   },
   "urlErrorMsg": {
     "message": "URL должен иметь соответствующий префикс HTTP/HTTPS."
-  },
-  "urlUnknown": {
-    "message": "URL неизвестно"
   },
   "use4ByteResolution": {
     "message": "Расшифровать смарт-контракты"

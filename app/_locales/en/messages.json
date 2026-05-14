@@ -279,14 +279,6 @@
   "addNfts": {
     "message": "Add NFTs"
   },
-  "addNonEvmAccount": {
-    "message": "Add $1 account",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "To enable the $1 network, you need to create a $2 account.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "Add RPC URL"
   },
@@ -1850,9 +1842,6 @@
   "connectManually": {
     "message": "Manually connect to current site"
   },
-  "connectMoreAccounts": {
-    "message": "Connect more accounts"
-  },
   "connectSnap": {
     "message": "Connect $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1869,10 +1858,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask is not connected to this site. To connect to a web3 site, find and click the connect button."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 can see the account balance, address, activity, and suggest transactions to approve for connected accounts.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Connected sites"
@@ -1939,9 +1924,6 @@
   "connectionFailedDescription": {
     "message": "Fetching of $1 failed, check your network and try again.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "To connect to a site, select the connect button. MetaMask can only connect to web3 sites."
   },
   "connectionRequest": {
     "message": "Connection request"
@@ -2057,9 +2039,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Create account"
-  },
-  "createSolanaAccount": {
-    "message": "Create Solana account"
   },
   "creatorAddress": {
     "message": "Creator address"
@@ -2488,9 +2467,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
-  "disconnectAllAccountsText": {
-    "message": "accounts"
-  },
   "disconnectAllDescriptionText": {
     "message": "If you disconnect from this site, you’ll need to reconnect your accounts and networks to use this site again."
   },
@@ -2505,9 +2481,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "All dapps successfully disconnected."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "This will disconnect you from this site"
@@ -7283,10 +7256,6 @@
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Secret Recovery Phrase $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Secure wallet"
   },
@@ -9738,9 +9707,6 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
-  },
-  "urlUnknown": {
-    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"

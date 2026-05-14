@@ -249,14 +249,6 @@
   "addNfts": {
     "message": "Cuir NFTanna leis"
   },
-  "addNonEvmAccount": {
-    "message": "Cuir cuntas $1 leis",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Chun an líonra $1 a chumasú, ní mór duit cuntas $2 a chruthú.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "Cuir URL RPC leis"
   },
@@ -1267,9 +1259,6 @@
   "connectManually": {
     "message": "Ceangail de láimh leis an suíomh reatha"
   },
-  "connectMoreAccounts": {
-    "message": "Ceangail níos mó cuntas"
-  },
   "connectSnap": {
     "message": "Ceangail $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1286,10 +1275,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "Níl MetaMask ceangailte leis an suíomh seo. Chun ceangal le suíomh gréasáin, aimsigh agus cliceáil an cnaipe ceangail."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "Is féidir le $1 iarmhéid an chuntais, an seoladh, an ghníomhaíocht a fheiceáil, agus idirbhearta a mholadh le ceadú do chuntais nasctha.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Suíomhanna ceangailte"
@@ -1356,9 +1341,6 @@
   "connectionFailedDescription": {
     "message": "Theip ar $1 a fháil, seiceáil do líonra agus déan iarracht arís.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Chun ceangal le suíomh, roghnaigh an cnaipe ceangail. Ní féidir le MetaMask ceangal ach le suíomhanna gréasáin 3."
   },
   "connectionRequest": {
     "message": "Iarratas ceangail"
@@ -1459,9 +1441,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Cruthaigh cuntas"
-  },
-  "createSolanaAccount": {
-    "message": "Cruthaigh cuntas Solana"
   },
   "creatorAddress": {
     "message": "Seoladh an chruthaitheora"
@@ -1768,14 +1747,8 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "An bhfuil tú cinnte gur mian leat dícheangal? D’fhéadfá feidhmiúlacht an tsuímh a chailleadh."
   },
-  "disconnectAllAccountsText": {
-    "message": "cuntais"
-  },
   "disconnectAllDescriptionText": {
     "message": "Má dhícheanglaíonn tú ón suíomh seo, beidh ort do chuntais agus do líonraí a athcheangal le go mbeidh tú in ann an suíomh seo a úsáid arís."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snapanna"
   },
   "disconnectMessage": {
     "message": "Déanfaidh sé seo tú a dhícheangal ón suíomh seo"
@@ -4691,10 +4664,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Frása Rúnda Aisghabhála"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Frása Rúnda Aisghabhála $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Sparán slán"

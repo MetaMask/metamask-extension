@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "Magdagdag ng mga NFT"
   },
-  "addNonEvmAccount": {
-    "message": "Magdagdag ng $1 account",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para i-enable ang $1 network, kailangan mong gumawa ng $2 account.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "Magdagdag ng RPC URL"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "Manu-manong kumonekta sa kasalukuyang site"
   },
-  "connectMoreAccounts": {
-    "message": "Ikonekta ang higit pang mga account"
-  },
   "connectSnap": {
     "message": "Ikonekta ang $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "Ang MetaMask ay hindi konektado sa site na ito. Upang kumonekta sa isang web3 site, hanapin at i-click ang button na kumonekta."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "Maaaring makita ng $1 ang balanse ng account, address, aktibidad, at magmungkahi ng mga transaksyon na aprubahan para sa mga konektadong account.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Mga konektadong site"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "Nabigo ang pagkuha ng $1, suriin ang iyong network at subukan ulit.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Upang kumonekta sa isang site, piliin ang button para sa pagkonekta. Sa mga web3 site lang puwedeng kumonekta ang MetaMask."
   },
   "connectionRequest": {
     "message": "Kahilingan sa koneksyon"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Gumawa ng account"
-  },
-  "createSolanaAccount": {
-    "message": "Gumawa ng Solana account"
   },
   "creatorAddress": {
     "message": "Address ng creator"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Sigurado ka bang gusto mong idiskonekta? Maaaring mawala ang functionality ng site."
   },
-  "disconnectAllAccountsText": {
-    "message": "mga account"
-  },
   "disconnectAllDescriptionText": {
     "message": "Kapag idiniskonekta mo sa site na ito, kakailanganin mong muling ikonekta ang mga account at network mo para magamit muli ang site na ito."
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Matagumpay na naidiskonekta ang lahat ng dapp."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Mga Snap"
   },
   "disconnectMessage": {
     "message": "Ididiskonekta ka nito mula sa site na ito"
@@ -7169,10 +7142,6 @@
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Secret Recovery Phrase $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "I-secure ang wallet"
   },
@@ -9621,9 +9590,6 @@
   },
   "urlErrorMsg": {
     "message": "Kinakailangan ng mga URL ang naaangkop na HTTP/HTTPS prefix."
-  },
-  "urlUnknown": {
-    "message": "Hindi kilalang URL"
   },
   "use4ByteResolution": {
     "message": "I-decode ang mga smart na kontrata"

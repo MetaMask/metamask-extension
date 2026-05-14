@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "Ajouter des NFT"
   },
-  "addNonEvmAccount": {
-    "message": "Ajouter un compte $1",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Pour activer le réseau $1, vous devez créer un compte $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "Ajouter l’URL de l’appel de procédure à distance (RPC)"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "Se connecter manuellement au site actuel"
   },
-  "connectMoreAccounts": {
-    "message": "Connecter plus de comptes"
-  },
   "connectSnap": {
     "message": "Connecter $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask n’est pas connecté à ce site. Pour vous connecter à un site web3, cliquez sur le bouton de connexion."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 peut voir le solde, l’adresse et l’activité du compte, et suggérer des transactions à approuver pour les comptes connectés.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Sites connectés"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "L’extraction de $1 a échoué, vérifiez votre connexion réseau et réessayez.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Pour vous connecter à un site, sélectionnez le bouton de connexion. MetaMask ne peut se connecter qu’à des sites Web3."
   },
   "connectionRequest": {
     "message": "Demande de connexion"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Créer un compte"
-  },
-  "createSolanaAccount": {
-    "message": "Créer un compte Solana"
   },
   "creatorAddress": {
     "message": "Adresse du créateur"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Souhaitez-vous vraiment vous déconnecter ? Vous risquez de perdre certaines fonctionnalités du site."
   },
-  "disconnectAllAccountsText": {
-    "message": "comptes"
-  },
   "disconnectAllDescriptionText": {
     "message": "Si vous vous déconnectez de ce site, vous devrez reconnecter vos comptes et réseaux pour pouvoir l’utiliser à nouveau."
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Toutes les dapps ont été déconnectées avec succès."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Cela vous déconnectera de ce site"
@@ -7169,10 +7142,6 @@
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Phrase secrète de récupération $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Portefeuille sécurisé"
   },
@@ -9621,9 +9590,6 @@
   },
   "urlErrorMsg": {
     "message": "Les URLs requièrent un préfixe HTTP/HTTPS approprié."
-  },
-  "urlUnknown": {
-    "message": "URL inconnue"
   },
   "use4ByteResolution": {
     "message": "Décoder les contrats intelligents"

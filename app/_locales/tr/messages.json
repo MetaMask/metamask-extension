@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "NFT ekleyin"
   },
-  "addNonEvmAccount": {
-    "message": "$1 hesap ekle",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "$1 ağını etkinleştirmek için bir $2 hesabı oluşturmanız gerekir.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "RPC URL adresi ekle"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "Mevcut siteye manuel olarak bağlan"
   },
-  "connectMoreAccounts": {
-    "message": "Daha fazla hesap bağla"
-  },
   "connectSnap": {
     "message": "Şuna bağlanın: $1",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask bu siteye bağlı değil. Bir web3 sitesine bağlanmak için siteyi bulun ve bağlan düğmesine tıklayın."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 hesap bakiyenizi, adresinizi, aktivitenizi görebilir ve bağlı hesapları onaylamak için işlem önerebilir.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Bağlı siteler"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "$1 getirme başarısız oldu, ağınızı kontrol edip tekrar deneyin.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Bir siteye bağlanmak için bağlan düğmesini seçin. MetaMask yalnızca web3 sitelerine bağlanabilir."
   },
   "connectionRequest": {
     "message": "Bağlantı talebi"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Hesap oluştur"
-  },
-  "createSolanaAccount": {
-    "message": "Solana hesabı oluştur"
   },
   "creatorAddress": {
     "message": "Oluşturucu adresi"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Bağlantıyı kesmek istediğinizden emin misiniz? Sitenin işlevselliğini kaybedebilirsiniz."
   },
-  "disconnectAllAccountsText": {
-    "message": "hesap"
-  },
   "disconnectAllDescriptionText": {
     "message": "Bu site ile bağlantınızı keserseniz bu siteyi tekrar kullanabilmek için hesaplarınızı ve ağlarınızı tekrar bağlamanız gerekecek."
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Tüm dapp'lerin bağlantısı başarıyla kesildi."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap'ler"
   },
   "disconnectMessage": {
     "message": "Bu işlem bu siteyle bağlantınızı kesecektir"
@@ -7173,10 +7146,6 @@
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Gizli Kurtarma İfadesi $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Cüzdanı güvenli hale getir"
   },
@@ -9625,9 +9594,6 @@
   },
   "urlErrorMsg": {
     "message": "URL adresleri için uygun HTTP/HTTPS ön eki gerekir."
-  },
-  "urlUnknown": {
-    "message": "Bilinmeyen URL"
   },
   "use4ByteResolution": {
     "message": "Akıllı sözleşmeleri çözümle"

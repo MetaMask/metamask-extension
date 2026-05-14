@@ -276,14 +276,6 @@
   "addNfts": {
     "message": "NFTs hinzufügen"
   },
-  "addNonEvmAccount": {
-    "message": "$1-Konto hinzufügen",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Um das $1-Netzwerk zu aktivieren, müssen Sie ein $2-Konto erstellen.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
-  },
   "addRpcUrl": {
     "message": "RPC-URL hinzufügen"
   },
@@ -1844,9 +1836,6 @@
   "connectManually": {
     "message": "Manuelle Verbindung zur aktuellen Seite"
   },
-  "connectMoreAccounts": {
-    "message": "Mehr Konten verbinden"
-  },
   "connectSnap": {
     "message": "Mit $1 verbinden",
     "description": "$1 is the snap for which a connection is being requested."
@@ -1863,10 +1852,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask ist nicht mit dieser Seite verbunden. Um sich mit einer Web3-Seite zu verbinden, finden und klicken Sie auf die Schaltfläche „Verbinden“."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 kann den Kontostand, die Adresse und die Aktivitäten einsehen und Transaktionen vorschlagen, um für verbundene Konten zu genehmigen.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Verbundene Seiten"
@@ -1933,9 +1918,6 @@
   "connectionFailedDescription": {
     "message": "Abrufen von $1 fehlgeschlagen. Netzwerkverbindung überprüfen und erneut versuchen.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Um eine Verbindung zu einer Website herzustellen, klicken Sie auf die Schaltfläche „Verbinden“. MetaMask kann sich nur mit web3-Websites verbinden."
   },
   "connectionRequest": {
     "message": "Verbindungsanfrage"
@@ -2051,9 +2033,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Konto erstellen"
-  },
-  "createSolanaAccount": {
-    "message": "Solana-Konto erstellen"
   },
   "creatorAddress": {
     "message": "Adresse des Erstellers"
@@ -2482,9 +2461,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Sind Sie sicher, dass Sie die Verbindung trennen möchten? Sie könnten die Seitenfunktionalität verlieren."
   },
-  "disconnectAllAccountsText": {
-    "message": "Konten"
-  },
   "disconnectAllDescriptionText": {
     "message": "Falls Sie die Verbindung zu dieser Seite trennen, müssen Sie Ihre Konten und Netzwerke bei einer weiteren Nutzung dieser Website erneut verbinden."
   },
@@ -2499,9 +2475,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Alle dApps wurden erfolgreich getrennt."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Dadurch wird die Verbindung zu dieser Seite getrennt"
@@ -7169,10 +7142,6 @@
   "secretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Geheime Wiederherstellungsphrase $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Wallet sichern"
   },
@@ -9621,9 +9590,6 @@
   },
   "urlErrorMsg": {
     "message": "URIs benötigen die korrekten HTTP/HTTPS Präfixe."
-  },
-  "urlUnknown": {
-    "message": "URL unbekannt"
   },
   "use4ByteResolution": {
     "message": "Smart Contracts dekodieren"
