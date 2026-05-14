@@ -211,6 +211,7 @@ describe('Change wallet password', function () {
 
         const loginPage = new LoginPage(driver);
         await loginPage.clickUsePassword();
+        await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage(OLD_PASSWORD);
         await loginPage.checkIncorrectPasswordMessageIsDisplayed();
 
