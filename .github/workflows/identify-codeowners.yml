@@ -41,9 +41,9 @@ jobs:
           node-version-file: '.nvmrc'
 
       - name: Install script dependencies
-        run: npm install --no-save @actions/core@^3.0.1 @actions/github@^9.1.1 micromatch@^4.0.8 tsx@^4.21.0
+        run: npm install --no-save @actions/core@^3.0.1 @actions/github@^9.1.1 micromatch@^4.0.8
 
       - name: Identify codeowners
         env:
           PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
-        run: ./node_modules/.bin/tsx ./.github/scripts/identify-codeowners.mts
+        run: node ./.github/scripts/identify-codeowners.mts
