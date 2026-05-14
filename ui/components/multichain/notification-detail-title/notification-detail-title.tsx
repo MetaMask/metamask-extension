@@ -2,16 +2,16 @@ import React from 'react';
 import type { FC } from 'react';
 
 import {
-  TextVariant,
-  TextAlign,
-  OverflowWrap,
-} from '../../../helpers/constants/design-system';
-import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import {
+  TextVariant,
+  TextAlign,
+  OverflowWrap,
+} from '../../../helpers/constants/design-system';
 import { Text } from '../../component-library';
 
 export type NotificationDetailTitleProps = {

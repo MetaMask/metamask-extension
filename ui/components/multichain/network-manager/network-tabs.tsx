@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { hideModal } from '../../../store/actions';
 import { Box } from '@metamask/design-system-react';
+import { hideModal } from '../../../store/actions';
 import { ModalHeader, ModalBody } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { t } from '../../../../shared/lib/translate';

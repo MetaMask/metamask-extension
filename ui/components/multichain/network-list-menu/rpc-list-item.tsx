@@ -1,12 +1,12 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   Box,
   BoxBorderColor,
   BoxFlexDirection,
 } from '@metamask/design-system-react';
+import { infuraProjectId } from '../../../../shared/constants/network';
 import { Tag, Text } from '../../component-library';
 import {
   Display,

@@ -6,14 +6,14 @@ import {
 } from '@metamask/network-controller';
 import { isStrictHexString, type CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
-import { AssetType } from '../../../../../shared/constants/transaction';
 import {
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexWrap,
 } from '@metamask/design-system-react';
+import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
+import { AssetType } from '../../../../../shared/constants/transaction';
 import { MarketClosedModal } from '../../../app/assets/market-closed-modal';
 import { TokenListItem } from '../../token-list-item';
 import LoadingScreen from '../../../ui/loading-screen';

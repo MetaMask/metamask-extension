@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import classNames from 'clsx';
 import {
-  BackgroundColor,
-  BorderColor,
-} from '../../../helpers/constants/design-system';
-import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import {
+  BackgroundColor,
+  BorderColor,
+} from '../../../helpers/constants/design-system';
 import { BadgeWrapper } from '../../component-library';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import Tooltip from '../../ui/tooltip';

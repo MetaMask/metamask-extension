@@ -2,14 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import {
-  Display,
-  BlockSize,
-  FontWeight,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import {
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
@@ -17,6 +9,14 @@ import {
   BoxFlexWrap,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import {
+  Display,
+  BlockSize,
+  FontWeight,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { Text } from '../../component-library';
 
 export const ActivityListItem = ({

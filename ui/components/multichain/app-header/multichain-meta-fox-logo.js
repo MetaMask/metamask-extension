@@ -1,14 +1,14 @@
 import React, { useCallback } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { useTheme } from '../../../hooks/useTheme';
-
 import {
   Box,
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { useTheme } from '../../../hooks/useTheme';
+
 
 import Logo from '../../ui/metafox-logo';
 
