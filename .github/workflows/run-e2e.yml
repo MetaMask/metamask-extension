@@ -50,6 +50,9 @@ jobs:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    permissions:
+      contents: read
+      actions: read # required for download-artifact with run-id (cross-run)
     env:
       SELENIUM_HEADLESS: true
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
