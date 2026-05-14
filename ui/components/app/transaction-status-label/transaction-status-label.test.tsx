@@ -10,9 +10,8 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 }));
 
 // Mock the Tooltip component
-jest.mock('../../ui/tooltip', () => ({
-  __esModule: true,
-  default: ({
+jest.mock('../../ui/tooltip', () => {
+  const MockTooltip = ({
     children,
     title,
   }: {
@@ -22,8 +21,14 @@ jest.mock('../../ui/tooltip', () => ({
     <div data-testid="tooltip" data-tooltip-title={title ?? ''}>
       {children}
     </div>
-  ),
-}));
+  );
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ESM interop
+    __esModule: true,
+    default: MockTooltip,
+  };
+});
 
 describe('TransactionStatusLabel Component', () => {
   it('should render CONFIRMED status and date', () => {

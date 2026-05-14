@@ -15,7 +15,6 @@ import {
   IN_PROGRESS_TRANSACTION_STATUSES,
   NATIVE_TOKEN_ADDRESS,
   SmartTransactionStatus,
-  TransactionGroupStatus,
 } from '../../../../shared/constants/transaction';
 import { resolveTransactionType as resolveMusdClaimType } from '../../app/transaction-list-item/helpers';
 import { formatUnits } from '../../../../shared/lib/unit';
@@ -116,8 +115,7 @@ const isTerminalEvmActivityStatus = (status: string): boolean => {
     status === TransactionStatus.failed ||
     status === TransactionStatus.dropped ||
     status === TransactionStatus.rejected ||
-    status === TransactionStatus.cancelled ||
-    status === TransactionGroupStatus.cancelled
+    status === TransactionStatus.cancelled
   );
 };
 
@@ -267,8 +265,16 @@ export function groupAndFlattenMergedTransactions(
     return [];
   }
 
-  const pending = mergedItems.filter(isActivityPendingMergedItem);
-  const historical = mergedItems.filter((m) => !isActivityPendingMergedItem(m));
+  const pending: MergedItem[] = [];
+  const historical: MergedItem[] = [];
+
+  for (const item of mergedItems) {
+    if (isActivityPendingMergedItem(item)) {
+      pending.push(item);
+    } else {
+      historical.push(item);
+    }
+  }
 
   const flattened: FlattenedItem[] = [];
 

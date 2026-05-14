@@ -17,6 +17,7 @@ import type {
   TransactionGroup,
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
+import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 import {
   getPrimaryAmount,
   calculateFiatFromMarketRates,
@@ -29,7 +30,6 @@ import {
   isActivityPendingMergedItem,
   filterLocalNotInApi,
 } from './helpers';
-import { PENDING_STATUS_HASH } from '../../../helpers/constants/transactions';
 
 const ethToken: Token = {
   address: NATIVE_TOKEN_ADDRESS,
