@@ -52,14 +52,6 @@
     position: relative;
     z-index: 1;
   }
-}
-
-// Shared styling hook used by the multichain edit pages
-// (`multichain-edit-accounts-page`, `multichain-edit-networks-page`).
-.connect-page {
-  .multichain-page-content {
-    overflow: hidden;
-  }
 
   .multichain-account-list-item {
     &:hover,

@@ -140,7 +140,6 @@ export const MultichainEditAccountsPage: React.FC<
       data-testid="modal-page"
       className={classnames(
         'main-container',
-        'connect-page',
         'multichain-edit-accounts-page',
         {
           'multichain-edit-accounts-page--snap':
