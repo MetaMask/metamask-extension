@@ -309,5 +309,16 @@ describe('sentinel-api', () => {
       fetchMock.mockRejectedValueOnce(new Error('API error!'));
       await expect(isSendBundleSupported(mainnetHex)).resolves.toBe(false);
     });
+
+    it('returns false if response json parsing fails', async () => {
+      fetchMock.mockResolvedValueOnce({
+        json: async () => {
+          throw new Error('Invalid JSON');
+        },
+        ok: true,
+      } as Response);
+
+      await expect(isSendBundleSupported(mainnetHex)).resolves.toBe(false);
+    });
   });
 });
