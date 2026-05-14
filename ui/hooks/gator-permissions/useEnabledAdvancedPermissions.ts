@@ -1,5 +1,5 @@
 import type { SupportedPermissionType } from '@metamask/gator-permissions-controller';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG,
@@ -21,16 +21,15 @@ const isMalformedEnabledAdvancedPermissionsFeatureFlag = (flag: unknown) =>
     flag === null ||
     !Array.isArray((flag as { permissions?: unknown }).permissions));
 
-let reportedMalformedRemoteFeatureFlag = false;
-
 export const useEnabledAdvancedPermissions = (): SupportedPermissionType[] => {
   const enabledAdvancedPermissionsFeatureFlag = useSelector(
     getEnabledAdvancedPermissionsFeatureFlag,
   );
+  const reportedMalformedRemoteFeatureFlagRef = useRef(false);
 
   useEffect(() => {
     if (
-      reportedMalformedRemoteFeatureFlag ||
+      reportedMalformedRemoteFeatureFlagRef.current ||
       !isMalformedEnabledAdvancedPermissionsFeatureFlag(
         enabledAdvancedPermissionsFeatureFlag,
       )
@@ -38,7 +37,7 @@ export const useEnabledAdvancedPermissions = (): SupportedPermissionType[] => {
       return;
     }
 
-    reportedMalformedRemoteFeatureFlag = true;
+    reportedMalformedRemoteFeatureFlagRef.current = true;
     captureMessage('Invalid enabledAdvancedPermissions remote feature flag', {
       level: 'warning',
       extra: {

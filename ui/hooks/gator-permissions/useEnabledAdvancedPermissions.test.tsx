@@ -121,4 +121,24 @@ describe('useEnabledAdvancedPermissions', () => {
       },
     );
   });
+
+  it('reports malformed remote flags for each hook instance', () => {
+    process.env.GATOR_ENABLED_PERMISSION_TYPES = 'native-token-stream';
+
+    const store = createStore({
+      [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: true,
+    });
+
+    renderHook(() => useEnabledAdvancedPermissions(), {
+      wrapper: createWrapper(store),
+    });
+    expect(captureMessage).toHaveBeenCalledTimes(1);
+
+    jest.mocked(captureMessage).mockClear();
+
+    renderHook(() => useEnabledAdvancedPermissions(), {
+      wrapper: createWrapper(store),
+    });
+    expect(captureMessage).toHaveBeenCalledTimes(1);
+  });
 });
