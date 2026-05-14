@@ -24,7 +24,6 @@ import {
   SolMethod,
   TrxAccountType,
 } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
   Hex,
@@ -58,6 +57,7 @@ import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { transitionBack } from '../../../components/ui/transition';
 import {
   getDataCollectionForMarketing,
+  getSelectedInternalAccount,
   getIsBridgeChain,
   getIsSwapsChain,
   getMetaMetricsId,
@@ -91,6 +91,7 @@ import {
 } from '../../../hooks/musd';
 import { MusdAssetCta } from '../../../components/app/musd';
 import { isMusdToken } from '../../../components/app/musd/constants';
+import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
@@ -121,7 +122,9 @@ const AssetPage = ({
     : formatChainIdToCaip(asset.chainId);
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
+  );
+  const selectedInternalAccount = useSelector(getSelectedInternalAccount);
+  const accountForActions = selectedAccount ?? selectedInternalAccount;
 
   useEffect(() => {
     endTrace({ name: TraceName.AssetDetails });
@@ -135,11 +138,11 @@ const AssetPage = ({
   );
 
   const isSigningEnabled =
-    selectedAccount.methods.includes(EthMethod.SignTransaction) ||
-    selectedAccount.methods.includes(EthMethod.SignUserOperation) ||
-    selectedAccount.methods.includes(SolMethod.SignTransaction) ||
-    selectedAccount.methods.includes(BtcMethod.SignPsbt) ||
-    selectedAccount.type === TrxAccountType.Eoa;
+    accountForActions.methods.includes(EthMethod.SignTransaction) ||
+    accountForActions.methods.includes(EthMethod.SignUserOperation) ||
+    accountForActions.methods.includes(SolMethod.SignTransaction) ||
+    accountForActions.methods.includes(BtcMethod.SignPsbt) ||
+    accountForActions.type === TrxAccountType.Eoa;
 
   const isTestnet = useMultichainSelector(getMultichainIsTestnet);
   const shouldShowFiat = useMultichainSelector(getMultichainShouldShowFiat);
@@ -166,7 +169,7 @@ const AssetPage = ({
       if (type === AssetType.token) {
         return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
       }
-      return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
+      return isEvm ? getNativeTokenAddress(chainId as Hex) : nativeAssetType;
     })() ?? '';
 
   const shouldShowContractAddress = type === AssetType.token;
@@ -193,7 +196,7 @@ const AssetPage = ({
   const assetId = assetWithBalance?.assetId || '';
   const balance = assetWithBalance?.balance ?? '0';
   const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
-  const tokenHexBalance = assetWithBalance?.rawBalance as string;
+  const tokenHexBalance = assetWithBalance?.rawBalance ?? '0x0';
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -204,11 +207,11 @@ const AssetPage = ({
         metaMetricsId,
         isMetaMetricsEnabled,
         isMarketingEnabled,
-        selectedAccount.address,
+        selectedAccount?.address ?? '',
         'spending-caps',
       ),
     [
-      selectedAccount.address,
+      selectedAccount?.address,
       isMarketingEnabled,
       isMetaMetricsEnabled,
       metaMetricsId,
@@ -234,8 +237,9 @@ const AssetPage = ({
     },
   };
 
+  const resolvedAssetId = bip44Asset?.assetId || assetId || address;
   const tokenWithFiatAmount = {
-    address: isEvm ? address : assetId,
+    address: isEvm ? address : assetId || address,
     chainId,
     symbol,
     image,
@@ -249,7 +253,7 @@ const AssetPage = ({
     balance,
     secondary: balance ? Number(balance) : 0,
     accountType: bip44Asset?.accountType,
-    assetId: bip44Asset?.assetId ?? assetId,
+    assetId: resolvedAssetId,
     rwaData,
   };
   const { safeChains } = useSafeChains();
@@ -336,7 +340,7 @@ const AssetPage = ({
         {isUpdatedAssetNative ? (
           <CoinButtons
             {...{
-              account: selectedAccount,
+              account: accountForActions,
               trackingLocation: 'asset-page',
               isBuyableChain,
               isSigningEnabled,
@@ -361,7 +365,7 @@ const AssetPage = ({
         ) : null}
       </Box>
       <Box flexDirection={BoxFlexDirection.Column} paddingTop={3}>
-        {showTronResources && (
+        {showTronResources && selectedAccount && (
           <Box>
             <TronDailyResources
               account={selectedAccount}
@@ -441,7 +445,7 @@ const AssetPage = ({
           !isMusdAssetPage &&
           checkMusdCtaVisibility({
             address: (asset as { address: Hex }).address,
-            chainId,
+            chainId: chainId as Hex,
             symbol,
           }) && (
             <Box marginTop={2} paddingLeft={4} paddingRight={4}>

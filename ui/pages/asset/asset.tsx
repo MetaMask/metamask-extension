@@ -1,14 +1,28 @@
 import { Nft } from '@metamask/assets-controllers';
-import { CaipChainId, Hex } from '@metamask/utils';
+import {
+  CaipAssetType,
+  CaipChainId,
+  Hex,
+  isCaipAssetType,
+  isCaipChainId,
+  parseCaipAssetType,
+} from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useParams, useLocation } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+import {
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../shared/lib/hexstring-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { ScrollContainer } from '../../contexts/scroll-container';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
+import {
+  getAssetsMetadata,
+  getTokenByAccountAndAddressAndChainId,
+} from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 
@@ -37,6 +51,7 @@ const Asset = () => {
   const decodedAsset = asset ? decodeURIComponent(asset) : undefined;
 
   const nfts = useSelector((state) => getNFTsByChainId(state, chainId));
+  const assetsMetadataByAssetId = useSelector(getAssetsMetadata);
 
   const ownedToken = useSelector((state) =>
     getTokenByAccountAndAddressAndChainId(
@@ -47,8 +62,51 @@ const Asset = () => {
     ),
   );
 
-  // Use token from location state as fallback when user doesn't own the token
-  const token = ownedToken ?? locationState?.token;
+  const fallbackToken =
+    chainId &&
+    decodedAsset &&
+    ((isCaipChainId(chainId) && isCaipAssetType(decodedAsset)) ||
+      (!isCaipChainId(chainId) && isValidHexAddress(decodedAsset)))
+      ? (() => {
+          if (isCaipChainId(chainId) && isCaipAssetType(decodedAsset)) {
+            const parsedAssetType = parseCaipAssetType(
+              decodedAsset as CaipAssetType,
+            );
+            if (parsedAssetType.chainId !== chainId) {
+              return null;
+            }
+
+            const metadata = assetsMetadataByAssetId[decodedAsset];
+            const symbol = metadata?.symbol ?? parsedAssetType.assetReference;
+
+            return {
+              address: decodedAsset,
+              symbol,
+              name: metadata?.name ?? symbol,
+              chainId,
+              image: metadata?.iconUrl ?? '',
+              isNative: parsedAssetType.assetNamespace === 'slip44',
+              decimals: metadata?.units?.[0]?.decimals ?? 0,
+            };
+          }
+
+          const normalizedAddress = toChecksumHexAddress(decodedAsset);
+
+          return {
+            address: normalizedAddress,
+            symbol: normalizedAddress,
+            name: normalizedAddress,
+            chainId,
+            image: '',
+            isNative: false,
+            decimals: 0,
+          };
+        })()
+      : null;
+
+  // Use token from location state or URL-derived metadata as fallback when user
+  // doesn't own the token
+  const token = ownedToken ?? locationState?.token ?? fallbackToken;
 
   const nft: Nft = nfts.find(
     ({ address, tokenId }: { address: Hex; tokenId: string }) =>

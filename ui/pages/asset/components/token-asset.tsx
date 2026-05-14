@@ -3,6 +3,7 @@ import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import { NetworkConfiguration } from '@metamask/network-controller';
 import {
   CaipAssetType,
+  CaipChainId,
   Hex,
   isCaipChainId,
   parseCaipAssetType,
@@ -10,7 +11,6 @@ import {
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -33,7 +33,13 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import AssetOptions from './asset-options';
 import AssetPage from './asset-page';
 
-const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
+const TokenAsset = ({
+  token,
+  chainId,
+}: {
+  token: Token;
+  chainId: Hex | CaipChainId;
+}) => {
   const { address, symbol, decimals, isERC721, image } = token;
 
   const tokenList = useSelector(getTokenList);
@@ -41,20 +47,20 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
     [key: `0x${string}`]: NetworkConfiguration;
   } = useSelector(getNetworkConfigurationsByChainId);
   // get the correct rpc url for the current token
-  const defaultIdx = allNetworks[chainId]?.defaultBlockExplorerUrlIndex;
+  const evmChainId = chainId as Hex;
+  const defaultIdx = allNetworks[evmChainId]?.defaultBlockExplorerUrlIndex;
   const currentTokenBlockExplorer =
     defaultIdx === undefined
       ? null
-      : allNetworks[chainId]?.blockExplorerUrls[defaultIdx];
+      : allNetworks[evmChainId]?.blockExplorerUrls[defaultIdx];
 
   const caipChainId = isCaipChainId(chainId)
     ? chainId
     : formatChainIdToCaip(chainId);
   const selectedAccount = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, caipChainId),
-  ) as InternalAccount;
-
-  const { address: walletAddress } = selectedAccount;
+  );
+  const walletAddress = selectedAccount?.address ?? '';
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
 
@@ -104,18 +110,19 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
 
   const tokenTrackerLink = getTokenTrackerLink(
     token.address,
-    chainId,
+    evmChainId,
     '',
     walletAddress,
     { blockExplorerUrl: currentTokenBlockExplorer ?? '' },
   );
 
-  const blockExplorerLink = isEvm
-    ? tokenTrackerLink
-    : getAssetDetailsAccountUrl(
-        parseCaipAssetType(address as CaipAssetType).assetReference,
-        multichainNetwork,
-      );
+  const blockExplorerLink =
+    isEvm || !selectedAccount
+      ? tokenTrackerLink
+      : getAssetDetailsAccountUrl(
+          parseCaipAssetType(address as CaipAssetType).assetReference,
+          multichainNetwork,
+        );
 
   return (
     <AssetPage
@@ -147,6 +154,9 @@ const TokenAsset = ({ token, chainId }: { token: Token; chainId: Hex }) => {
             )
           }
           onClickBlockExplorer={() => {
+            if (!blockExplorerLink) {
+              return;
+            }
             trackEvent({
               event: 'Clicked Block Explorer Link',
               category: MetaMetricsEventCategory.Navigation,

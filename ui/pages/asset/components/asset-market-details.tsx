@@ -74,7 +74,7 @@ export const AssetMarketDetails = ({
       : nonEvmConversionRates?.[address as CaipAssetType]?.marketData;
 
   const tokenMarketDetails = isEvm
-    ? evmMarketData[chainId]?.[address as Hex]
+    ? evmMarketData[chainId as Hex]?.[address as Hex]
     : nonEvmMarketData;
 
   const shouldDisplayMarketData =

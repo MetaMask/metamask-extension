@@ -14,7 +14,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import classnames from 'clsx';
 import { brandColor } from '@metamask/design-tokens';
-import { Hex } from '@metamask/utils';
+import { CaipChainId, Hex } from '@metamask/utils';
 import { trim } from 'lodash';
 import { Duration } from 'luxon';
 import { useTheme } from '../../../../hooks/useTheme';
@@ -141,7 +141,7 @@ const AssetChart = ({
   currency,
   asset,
 }: {
-  chainId: Hex;
+  chainId: Hex | CaipChainId;
   address: string;
   currentPrice?: number;
   currency: string;
