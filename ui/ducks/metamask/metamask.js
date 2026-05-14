@@ -23,7 +23,7 @@ import {
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import * as actionConstants from '../../store/actionConstants';
-import { updateTransactionGasFees } from '../../store/actions';
+import { updateTransactionGasFees } from '../../store/actions/update-transaction-gas-fees';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import log from 'loglevel';
 import {
   Box,
   BoxAlignItems,
@@ -21,6 +22,7 @@ import {
   getPasskeyAuthMethodKey,
   cancelPasskeyCeremony,
 } from '../../../../shared/lib/passkey';
+import { getPasskeyErrorCode } from '../../../../shared/lib/passkey/passkey-error';
 import {
   forceUpdateMetamaskState,
   removePasskeyWithPasswordVerification,
@@ -79,9 +81,32 @@ export default function PasskeyTurnOffSubPage() {
         return;
       }
 
+      const startedAt = Date.now();
+      const baseProperties = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        verification_method: 'password',
+      };
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOff,
+        properties: {
+          ...baseProperties,
+          status: 'started',
+        },
+      });
       try {
         await removePasskeyWithPasswordVerification(walletPassword);
         await forceUpdateMetamaskState(dispatch);
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeyTurnOff,
+          properties: {
+            ...baseProperties,
+            status: 'completed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+          },
+        });
         toast.success(
           <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
           {
@@ -92,12 +117,31 @@ export default function PasskeyTurnOffSubPage() {
           category: MetaMetricsEventCategory.Settings,
           event: MetaMetricsEventName.SettingsUpdated,
           properties: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention -- MetaMetrics snake_case contract
-            passkey_registered: false,
+            /* eslint-disable @typescript-eslint/naming-convention */
+            settings_group: 'security_privacy',
+            settings_type: 'passkey',
+            old_value: true,
+            new_value: false,
+            /* eslint-enable @typescript-eslint/naming-convention */
           },
         });
         goToSettings();
-      } catch {
+      } catch (error: unknown) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Settings,
+          event: MetaMetricsEventName.PasskeyTurnOff,
+          properties: {
+            ...baseProperties,
+            status: 'failed',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            duration_ms: Date.now() - startedAt,
+            reason: getPasskeyErrorCode(error),
+          },
+        });
+        log.error(
+          'Passkey turn off with password verification failed after password was verified',
+          error,
+        );
         toast.error(
           <ToastContent
             title={t('turnOffPasskeyFailed', [passkeyMethodLabel])}
