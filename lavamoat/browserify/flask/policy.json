@@ -18,9 +18,9 @@
     "@emotion/react>@emotion/cache": {
       "globals": {
         "document": false,
+        "document.createElement": true,
         "document.head": true,
-        "document.querySelectorAll": true,
-        "document.createElement": true
+        "document.querySelectorAll": true
       },
       "packages": {
         "@emotion/react>@emotion/cache>@emotion/memoize": true,
