@@ -191,6 +191,32 @@ describe('Carousel', () => {
     expect(screen.getByText('Test Slide 1')).toBeInTheDocument();
   });
 
+  it('does not follow href when the slide click handler consumes the click', () => {
+    const onSlideClickMock = jest.fn().mockReturnValue(true);
+    const slides = [
+      {
+        ...mockSlides[0],
+        id: 'download-mobile-slide',
+        href: 'https://link.metamask.io/buy?amount=100',
+        variableName: 'downloadMobileApp',
+      },
+    ];
+
+    render(
+      <Carousel
+        {...defaultProps}
+        slides={slides}
+        onSlideClick={onSlideClickMock}
+      />,
+    );
+
+    fireEvent.click(screen.getByTestId('carousel-slide-download-mobile-slide'));
+
+    expect(onSlideClickMock).toHaveBeenCalledWith('download-mobile-slide');
+    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(global.platform.openTab).not.toHaveBeenCalled();
+  });
+
   type CarouselClickTestCase = {
     testName: string;
     linkUrl: string;

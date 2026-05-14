@@ -5,7 +5,7 @@ export type CarouselProps = {
   slides: CarouselSlide[];
   className?: string;
   isLoading?: boolean;
-  onSlideClick?: (slideId: string) => void;
+  onSlideClick?: (slideId: string) => boolean | void;
   onEmptyState?: () => void;
   onSlideClose?: (slideId: string, isLastSlide: boolean) => void;
   onActiveSlideChange?: (slide: CarouselSlide) => void;

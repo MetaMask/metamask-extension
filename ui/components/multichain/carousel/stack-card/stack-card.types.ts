@@ -7,7 +7,7 @@ export type StackCardProps = {
   isLastSlide?: boolean;
   isExiting?: boolean;
   transitionState?: TransitionState;
-  onSlideClick?: (slideId: string) => void;
+  onSlideClick?: (slideId: string) => boolean | void;
   onTransitionToNextCard?: (slideId: string, isLastSlide: boolean) => void;
   className?: string;
 };

@@ -45,6 +45,13 @@ export const StackCard: React.FC<StackCardProps> = ({
       return;
     }
 
+    const clickHandled = onSlideClick?.(slide.id);
+
+    if (clickHandled) {
+      // If the click was handled by the parent component, we assume it took care of navigation or any other side effects, so we don't proceed with the `linkUrl` behavior.
+      return;
+    }
+
     if (slide.href) {
       const href = await resolveCarouselHref(slide.href);
 
@@ -54,8 +61,6 @@ export const StackCard: React.FC<StackCardProps> = ({
         global.platform.openTab({ url: href });
       }
     }
-
-    onSlideClick?.(slide.id);
   };
 
   return (

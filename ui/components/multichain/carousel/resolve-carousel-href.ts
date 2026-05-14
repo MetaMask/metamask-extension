@@ -21,6 +21,8 @@ export async function resolveCarouselHref(href: string): Promise<string> {
     const parsed = await parse(url);
 
     if (!parsed) {
+      // Unsupported MetaMask deep links intentionally fall back to the original
+      // URL so Branch can apply its default handling.
       return href;
     }
 
