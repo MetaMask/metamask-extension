@@ -26,11 +26,7 @@ export default function GenericAssetCellLayout({
   footerRightDisplay,
 }: GenericAssetCellLayoutProps) {
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      gap={4}
-      className="h-full w-full"
-    >
+    <Box flexDirection={BoxFlexDirection.Row} gap={4} className="h-full w-full">
       <Box asChild>
         <a
           onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {

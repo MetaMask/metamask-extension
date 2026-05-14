@@ -17,7 +17,10 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { SelectableListItem } from '../sort-control/sort-control';
 import { Text } from '../../../../component-library/text/text';
-import { TextColor, TextVariant } from '../../../../../helpers/constants/design-system';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
 import {
   Box,
   BoxAlignItems,
