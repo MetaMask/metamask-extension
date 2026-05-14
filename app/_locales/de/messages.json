@@ -754,10 +754,6 @@
   "autoDetectTokens": {
     "message": "Tokens automatisch erkennen"
   },
-  "autoDetectTokensDescription": {
-    "message": "Wir verwenden APIs von Drittanbietern, um neue Token zu erkennen und anzuzeigen, die in Ihrer Wallet gesendet werden. Deaktivieren Sie dies, wenn Sie keine Daten von diesen Diensten beziehen möchten. $1",
-    "description": "$1 is a link to a support article"
-  },
   "autoDetectTokensDescriptionV2": {
     "message": "Zeigt neue, an Ihre Wallet gesendete Token an."
   },
@@ -784,9 +780,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Auto-Lock-Timer (Minuten)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Stellen Sie die inaktive Zeit in Minuten ein, nach der sich MetaMask automatisch ausloggen soll."
   },
   "available": {
     "message": "verfügbar"
@@ -1018,9 +1011,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "Wenn Sie diese Anfrage genehmigen, wird eine dritte Partei, die für Betrügereien bekannt ist, alle Ihre Assets an sich reißen."
-  },
-  "blockaidMessage": {
-    "message": "Wahrung der Privatsphäre – keine Daten werden an Dritte weitergegeben. Verfügbar auf Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base und Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "Dies ist eine betrügerische Anfrage."
@@ -1481,9 +1471,6 @@
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
   },
-  "builtAroundTheWorld": {
-    "message": "MetaMask ist weltweit konzipiert und aufgebaut."
-  },
   "busy": {
     "message": "Ausgelastet"
   },
@@ -1572,13 +1559,6 @@
   "checkNetworkConnectivityOr": {
     "message": "Überprüfen Sie die Netzwerkverbindung oder $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "Wählen Sie Ihr Netzwerk"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "Wenn Sie unsere Standardeinstellungen und -konfigurationen verwenden, nutzen wir Infura als Standard-RPC-Anbieter (Remote Procedure Call), um einen möglichst zuverlässigen und privaten Zugriff auf Ethereum-Daten zu gewährleisten. In Ausnahmefällen können wir auch andere RPC-Anbieter einsetzen, um unseren Nutzern das bestmögliche Erlebnis zu bieten. Sie können Ihren eigenen RPC wählen, doch bedenken Sie dabei, dass jeder RPC Ihre IP-Adresse und Ihr Ethereum-Wallet zur Durchführung von Transaktionen erhalten wird. Weitere Informationen darüber, wie Infura Daten für EVM-Konten verarbeitet, finden Sie in unserer $1 und für Solana-Konten in der $2.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrer Hardware-Wallet zu verbinden."
@@ -2129,9 +2109,6 @@
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
-  "currencyConversion": {
-    "message": "Währung"
-  },
   "currencyRateCheckToggle": {
     "message": "Guthaben und Token-Preisprüfer anzeigen"
   },
@@ -2165,9 +2142,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 Std.: $1 bis $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "Aktuelle Sprache"
   },
   "currentNetwork": {
     "message": "Aktuelles Netzwerk",
@@ -2527,9 +2501,6 @@
   "details": {
     "message": "Details"
   },
-  "developerOptions": {
-    "message": "Entwickler-Optionen"
-  },
   "developerTools": {
     "message": "Entwicklertools"
   },
@@ -2586,17 +2557,8 @@
   "dismiss": {
     "message": "Verwerfen"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Aktivieren Sie diese Option, um die Erinnerungsmeldung zur Sicherung der geheimen Wiederherstellungsphrase zu deaktivieren. Wir empfehlen Ihnen dringend, eine Sicherungskopie Ihrer geheimen Wiederherstellungsphrase zu erstellen, um den Verlust von Geldern zu vermeiden"
-  },
-  "dismissReminderField": {
-    "message": "Erinnerung an die Sicherung der geheimen Wiederherstellungsphrase ignorieren"
-  },
   "displayNftMedia": {
     "message": "NFT-Medien anzeigen"
-  },
-  "displayNftMediaDescription": {
-    "message": "Das Anzeigen von NFT-Medien und Daten gibt legt IP-Adresse OpenSea oder andere Drittanbieter gegenüber offen. Dies kann es Angreifern gestatten, Ihre IP-Adresse mit Ihrer Etherum-Adresse in Verbindung zu bringen. Die automatische NFT-Erkennung benötigt diese Einstellung und wird nicht zur Verfügung stehen, wenn diese deaktiviert ist."
   },
   "displayNftMediaDescriptionV2": {
     "message": "Die automatische NFT-Erkennung beruht auf dieser Funktion."
@@ -3757,9 +3719,6 @@
   "ipfsGateway": {
     "message": "IPFS-Gateway"
   },
-  "ipfsGatewayDescription": {
-    "message": "MetaMask verwendet Dienste von Drittanbietern, um Bilder Ihrer auf IPFS gespeicherten NFTs wiederzugeben, Informationen zu ENS-Adressen anzuzeigen, die Sie in die Adressleiste Ihres Browsers eingeben, und Symbole für verschiedene Tokens abzurufen. Ihre IP-Adresse kann diesen Diensten offengelegt werden, wenn Sie diese nutzen."
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "Verwendet Dienste von Drittanbietern, um Bilder Ihrer auf IPFS gespeicherten NFTs, Informationen zu den in der Adressleiste Ihres Browsers eingegebenen ENS-Adressen und Symbole für verschiedene Token anzuzeigen. Wählen Sie unten Ihren bevorzugten IPFS-Gateway aus."
   },
@@ -3940,9 +3899,6 @@
   "likeToImportTokens": {
     "message": "Möchten Sie diese Token hinzufügen?"
   },
-  "lineaGoerli": {
-    "message": "Linea-Testnetzwerk"
-  },
   "lineaMainnet": {
     "message": "Linea"
   },
@@ -3954,9 +3910,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Verlinken Sie Ihre Coinbase- oder Binance-Konten, um Kryptos kostenfrei an MetaMask zu übweisen."
-  },
-  "links": {
-    "message": "Links"
   },
   "loading": {
     "message": "Wird geladen ..."
@@ -4700,9 +4653,6 @@
   "networkPermissionToast": {
     "message": "Netzwerkgenehmigungen aktualisiert"
   },
-  "networkProvider": {
-    "message": "Netzwerkanbieter"
-  },
   "networkStatus": {
     "message": "Netzwerkstatus"
   },
@@ -5310,9 +5260,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policy-Header aufheben"
-  },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "Diese Option dient als Behelfslösung für ein bekanntes Problem in Firefox, bei dem der Content-Security-Policy-Header einer dApp verhindern kann, dass die Erweiterung ordnungsgemäß geladen wird. Die Deaktivierung dieser Option wird nicht empfohlen, es sei denn, sie ist für die Kompatibilität bestimmter Webseiten erforderlich."
   },
   "padlock": {
     "message": "Padlock"
@@ -7096,9 +7043,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "Geheime Wiederherstellungsphrase offenlegen"
   },
-  "revealSeedWords": {
-    "message": "Geheime Wiederherstellungsphrase anzeigen"
-  },
   "revealSeedWordsDescription1": {
     "message": "Ihr $1 gewährt Ihnen vollen Zugriff auf Ihre Wallet, Ihre Gelder und Ihre Konten.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -7296,10 +7240,6 @@
   "securityAlerts": {
     "message": "Sicherheitsbenachrichtigungen"
   },
-  "securityAlertsDescription": {
-    "message": "Diese Funktion warnt Sie vor bösartigen Aktivitäten, indem sie aktiv Transaktionen und Signaturanfragen überprüft. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "Diese Funktion warnt Sie vor bösartigen Aktivitäten, indem sie aktiv Transaktionen und Signaturanfragen überprüft. $1"
   },
@@ -7308,9 +7248,6 @@
   },
   "securityAndPrivacy": {
     "message": "Sicherheit und Datenschutz"
-  },
-  "securityChangePassword": {
-    "message": "Passwort ändern"
   },
   "securityChangePasswordToastError": {
     "message": "Passwort konnte nicht geändert werden. Bitte versuchen Sie es erneut."
@@ -8124,9 +8061,6 @@
   "showFiatConversionInTestnets": {
     "message": "Umrechnung auf Testnetzwerk anzeigen"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Wählen Sie dies aus, um die Fiat-Umrechnung in Testnetzwerken anzuzeigen."
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "Zeigt Netzwerk-Token als lokale Währung in Testnetzwerken an. Falls Sie aufgefordert werden, diese Funktion zu aktivieren, handelt es sich möglicherweise um Betrug. Nur zu Testzwecken. $1",
     "description": "$1 is the 'Learn more' link"
@@ -8160,9 +8094,6 @@
   },
   "showTestnetNetworks": {
     "message": "Testnetzwerke anzeigen"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Wählen Sie dies, um Testnetzwerke in der Netzwerkliste anzuzeigen."
   },
   "sidePanelMigrationToast": {
     "message": "MetaMask wird nun standardmäßig in der Seitenleiste geöffnet. $1 jederzeit über das Menü.",
@@ -8291,9 +8222,6 @@
   },
   "skipDeepLinkInterstitial": {
     "message": "Beim Öffnen von Deeplinks keinen Zwischenbildschirm anzeigen"
-  },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Wenn Sie diese Option aktivieren, wird der Zwischenbildschirm übersprungen, der beim Öffnen von Deeplinks in MetaMask angezeigt wird. Ein „Deeplink“ ist ein Link wie https://link.metamask.io/home, der MetaMask öffnet; diese Links können von anderen verschleiert werden. Der Zwischenbildschirm soll Sie davor schützen, versehentlich Seiten in MetaMask zu öffnen, die Ihre Konten, Token, Ihren Verlauf, Kontostände, Einstellungen oder andere potenziell sensible Daten anzeigen könnten. Diese Einstellung gilt nur für von MetaMask signierte Links."
   },
   "skipLinkConfirmationScreens": {
     "message": "Link zu Bestätigungsbildschirmen überspringen"
@@ -8807,9 +8735,6 @@
   "stateLogs": {
     "message": "Statusprotokolle"
   },
-  "stateLogsDescription": {
-    "message": "Statelogs zeigen die Public Adresse und die gesendeten Transaktionen Ihres Kontos."
-  },
   "stateLogsModalDescription": {
     "message": "Statusprotokolle unterstützen uns bei der Fehlerbehebung von Problemen, die Sie möglicherweise haben. Senden Sie diese nur für Supportzwecke an MetaMask, da die Statusprotokolle Ihre öffentliche Kontoadresse und Transaktionen enthalten."
   },
@@ -8884,9 +8809,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "Schalten Sie Smart Transactions für zuverlässigere und sicherere Transaktionen ein. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Schalten Sie Smart Transactions für zuverlässigere und sicherere Transaktionen in unterstützten Netzwerken ein. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ihr Swap wird privat abgesendet ..."
@@ -9316,9 +9238,6 @@
   },
   "theme": {
     "message": "Design"
-  },
-  "themeDescription": {
-    "message": "Wählen Sie Ihr bevorzugtes MetaMask-Design."
   },
   "thirdPartyApis": {
     "message": "Drittanbieter-APIs"
@@ -9785,9 +9704,6 @@
   "useNftDetectionDescription": {
     "message": "Zeigt alle NFTs an, einschließlich der von Betrügern abgeworfenen gefälschten NFTs."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Lassen Sie MetaMask NFTs, die Sie besitzen, anhand von Drittanbieterdiensten hinzufügen. Durch die automatische Erkennung von NFTs werden Ihre IP- und Kontoadresse für diese Dienste offengelegt. Durch die Aktivierung dieser Funktion können eventuell Ihre IP- und Ethereum-Adresse miteinander in Verbindung gebracht und gefälschte, von Betrügern per Airdropping abgesetzte NFTs anzeigt werden. Es ist möglich, Tokens manuell hinzufügen, um dieses Risiko zu vermeiden."
-  },
   "usePassword": {
     "message": "Passwort verwenden"
   },
@@ -9799,9 +9715,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Überprüfung der Netzwerkangaben"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask verwendet einen Drittanbieter-Service namens $1, um genaue und standardisierte Netzwerkangaben anzuzeigen. Dies verringert die Wahrscheinlichkeit, dass Sie mit einem bösartigen oder falschen Netzwerk in Verbindungen treten. Wenn Sie diese Funktion benutzen, wird Ihre IP-Adresse chainid.network gegenüber offengelegt."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "Verringert Ihr Risiko, sich mit einem bösartigen oder falschen Netzwerk zu verbinden. MetaMask verwendet $1 zur Anzeige genauer und standardisierter Netzwerkdetails."

@@ -58,7 +58,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
-import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
+import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
   backedUpStateKeys,
   hasVault,
@@ -2142,35 +2142,55 @@ async function triggerUi() {
   }
 }
 
-// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
-const addAppInstalledEvent = async () => {
-  if (controller) {
-    controller.metaMetricsController.updateTraits({
-      [MetaMetricsUserTrait.InstallDateExt]: new Date()
-        .toISOString()
-        .split('T')[0], // yyyy-mm-dd
-    });
+// It queues the "App Installed" event before consent, or tracks it immediately if consent already exists.
+const addAppInstalledEvent = async (installAttributionPromise) => {
+  const { deferredDeepLink, traits: installAttributionTraits } =
+    await installAttributionPromise;
 
-    const deferredDeepLink = await getDeferredDeepLinkFromCookie();
-    const eventProperties = {};
+  controller.metaMetricsController.updateTraits({
+    [MetaMetricsUserTrait.InstallDateExt]: new Date()
+      .toISOString()
+      .split('T')[0], // yyyy-mm-dd
+    ...installAttributionTraits,
+  });
+  const eventProperties = {};
 
-    if (deferredDeepLink) {
-      controller.appStateController.setDeferredDeepLink(deferredDeepLink);
-      eventProperties.install_source = 'deeplink';
-      eventProperties.deeplink_path = deferredDeepLink.referringLink;
-    }
+  if (deferredDeepLink) {
+    controller.appStateController.setDeferredDeepLink(deferredDeepLink);
+    eventProperties.install_source = 'deeplink';
+    eventProperties.deeplink_path = deferredDeepLink.referringLink;
+  }
 
-    controller.metaMetricsController.addEventBeforeMetricsOptIn({
-      category: MetaMetricsEventCategory.App,
-      event: MetaMetricsEventName.AppInstalled,
-      properties: eventProperties,
-    });
+  const appInstalledEvent = {
+    category: MetaMetricsEventCategory.App,
+    event: MetaMetricsEventName.AppInstalled,
+    properties: eventProperties,
+  };
+
+  const { participateInMetaMetrics, metaMetricsId } =
+    controller.metaMetricsController.state;
+
+  if (participateInMetaMetrics === false) {
+    // We can skip tracking completely if they've already explicitly opted out
     return;
   }
-  setTimeout(async () => {
-    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
-    await addAppInstalledEvent();
-  }, 500);
+
+  // Track immediately only once consent is active and the controller has a
+  // persisted MetaMetrics ID. Otherwise keep the event buffered for the opt-in
+  // flush path so it is not dropped.
+  // No need to call getMetaMetricsId() first: setParticipateInMetaMetrics()
+  // generates and persists the ID before setting participation to true, and this
+  // install handler should not create a metrics ID outside that consent path.
+  if (participateInMetaMetrics === true && metaMetricsId) {
+    controller.metaMetricsController.trackEvent(appInstalledEvent);
+  } else {
+    // participateInMetaMetrics is either `null` (not opted in or out yet) or
+    // `true` (opted in, but for some reason we don't have a MetaMetrics ID yet),
+    // so we queue the metrics event for possible submission later.
+    controller.metaMetricsController.addEventBeforeMetricsOptIn(
+      appInstalledEvent,
+    );
+  }
 };
 
 /**
@@ -2196,10 +2216,16 @@ async function handleOnInstalled([details]) {
  */
 async function onInstall() {
   log.debug('First install detected');
+  const installAttributionPromise = getInstallAttribution();
+
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
-  await addAppInstalledEvent();
+
+  // The controller must exist before we can persist install attribution.
+  await isInitialized;
+
+  await addAppInstalledEvent(installAttributionPromise);
 }
 
 /**

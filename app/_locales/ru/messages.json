@@ -754,10 +754,6 @@
   "autoDetectTokens": {
     "message": "Автоопределение токенов"
   },
-  "autoDetectTokensDescription": {
-    "message": "Мы используем сторонние API для определения и отображения новых токенов, отправленных в ваш кошелек. Отключите, если не хотите, чтобы приложение извлекало данные из этих служб. $1",
-    "description": "$1 is a link to a support article"
-  },
   "autoDetectTokensDescriptionV2": {
     "message": "Отображает новые токены, отправленные в ваш кошелек."
   },
@@ -784,9 +780,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Таймер автоблокировки (минуты)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Установите время бездействия в минутах, прежде чем MetaMask будет заблокирован."
   },
   "available": {
     "message": "доступные"
@@ -1018,9 +1011,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "Если вы одобрите этот запрос, третья сторона, известная мошенничеством, похитит все ваши активы."
-  },
-  "blockaidMessage": {
-    "message": "Сохранение конфиденциальности – никакие данные не передаются третьим сторонам. Доступно в Arbitrum, Avalanche, BNB Chain, Мейн-нете Ethereum, Linea, Optimism, Polygon, Base и Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "Это запрос с целью обмана"
@@ -1481,9 +1471,6 @@
   "browserNotSupported": {
     "message": "Ваш браузер не поддерживается..."
   },
-  "builtAroundTheWorld": {
-    "message": "MetaMask разработан и создан с учетом потребностей мира."
-  },
   "busy": {
     "message": "Занят"
   },
@@ -1572,13 +1559,6 @@
   "checkNetworkConnectivityOr": {
     "message": "Проверьте возможность подключения к сети или $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "Выберите свою сеть"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "Когда вы используете наши настройки и конфигурации по умолчанию, мы используем Infura в качестве нашего поставщика удаленного вызова процедур (RPC) по умолчанию, чтобы предложить наиболее надежный и конфиденциальный доступ к данным Ethereum, который мы можем предложить. В ограниченных случаях мы можем использовать других поставщиков RPC, чтобы обеспечить наилучший опыт для наших пользователей. Вы можете выбрать свой собственный RPC, но помните, что любой RPC получит ваш IP-адрес и кошелек Ethereum для совершения транзакций. Чтобы узнать больше о том, как Infura обрабатывает данные для учетных записей EVM, прочтите нашу статью $1, а для счетов Solana — статью $2.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Вам необходимо использовать MetaMask в Google Chrome, чтобы подключиться к аппаратному кошельку."
@@ -2129,9 +2109,6 @@
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
-  "currencyConversion": {
-    "message": "Обмен валюты"
-  },
   "currencyRateCheckToggle": {
     "message": "Показать средство проверки баланса и цены токена"
   },
@@ -2165,9 +2142,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 ч: $1–$2 Гвей"
-  },
-  "currentLanguage": {
-    "message": "Текущий язык"
   },
   "currentNetwork": {
     "message": "Текущая сеть",
@@ -2527,9 +2501,6 @@
   "details": {
     "message": "Подробности"
   },
-  "developerOptions": {
-    "message": "Параметры разработчика"
-  },
   "developerTools": {
     "message": "Инструменты разработчика"
   },
@@ -2586,17 +2557,8 @@
   "dismiss": {
     "message": "Отклонить"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Включите этот параметр, чтобы отклонить сообщение с напоминанием о создании резервной копии фразы для восстановления. Мы настоятельно рекомендуем создать резервную копию секретной фразы для восстановления, чтобы избежать потери средств."
-  },
-  "dismissReminderField": {
-    "message": "Отклонить напоминание о необходимости создать резервную копию секретной фразы для восстановления"
-  },
   "displayNftMedia": {
     "message": "Показать NFT-носитель"
-  },
-  "displayNftMediaDescription": {
-    "message": "Отображение носителя и данных NFT раскрывает ваш IP-адрес для OpenSea или других третьих лиц. Это может позволить злоумышленникам связать ваш IP-адрес с вашим адресом Ethereum. Автоопределение NFT зависит от этого параметра и будет недоступно, если он отключен."
   },
   "displayNftMediaDescriptionV2": {
     "message": "Автоматическое обнаружение NFT зависит от этой функции."
@@ -3757,9 +3719,6 @@
   "ipfsGateway": {
     "message": "шлюз IPFS"
   },
-  "ipfsGatewayDescription": {
-    "message": "MetaMask использует сторонние службы для показа изображений ваших NFT, хранящихся в IPFS, отображения информации, связанной с адресами ENS, введенными в адресную строку вашего браузера, и получения значков для различных токенов. Ваш IP-адрес может быть открыт для этих служб, когда вы их используете."
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "Использует сторонние сервисы для отображения изображений ваших NFT, хранящихся в IPFS, отображения информации, связанной с ENS-адресами, введенными в адресную строку вашего браузера, и получения значков для различных токенов. Выберите предпочитаемый шлюз IPFS ниже."
   },
@@ -3940,9 +3899,6 @@
   "likeToImportTokens": {
     "message": "Вы хотели бы импортировать эти токены?"
   },
-  "lineaGoerli": {
-    "message": "Тестовая сеть Linea Goerli"
-  },
   "lineaMainnet": {
     "message": "Мейн-нет Linea"
   },
@@ -3954,9 +3910,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Привяжите счета Coinbase или Binance, чтобы бесплатно переводить криптовалюту в MetaMask."
-  },
-  "links": {
-    "message": "Ссылки"
   },
   "loading": {
     "message": "Загрузка..."
@@ -4700,9 +4653,6 @@
   "networkPermissionToast": {
     "message": "Сетевые разрешения обновлены"
   },
-  "networkProvider": {
-    "message": "Поставщик услуг сети"
-  },
   "networkStatus": {
     "message": "Статус сети"
   },
@@ -5310,9 +5260,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Переопределить заголовок Content-Security-Policy"
-  },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "Этот вариант является обходным решением известной проблемы в Firefox, когда заголовок Content-Security-Policy децентрализованного приложения может препятствовать правильной загрузке расширения. Отключать эту опцию не рекомендуется, если только это не требуется для совместимости конкретной веб-страницы."
   },
   "padlock": {
     "message": "Замок"
@@ -7096,9 +7043,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "Показать секретную фразу для восстановления"
   },
-  "revealSeedWords": {
-    "message": "Показать секретную фразу для восстановления"
-  },
   "revealSeedWordsDescription1": {
     "message": "Ваша $1 дает полный доступ к вашему кошельку, средствам и счетам.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -7296,10 +7240,6 @@
   "securityAlerts": {
     "message": "Оповещения безопасности"
   },
-  "securityAlertsDescription": {
-    "message": "Эта функция предупреждает вас о вредоносной активности, активно проверяя транзакции и запросы на подпись. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "Эта функция предупреждает вас о вредоносной активности, активно проверяя транзакции и запросы на подпись. $1"
   },
@@ -7308,9 +7248,6 @@
   },
   "securityAndPrivacy": {
     "message": "Безопасность и конфиденциальность"
-  },
-  "securityChangePassword": {
-    "message": "Изменить пароль"
   },
   "securityChangePasswordToastError": {
     "message": "Не удалось изменить пароль. Попробуйте еще раз."
@@ -8124,9 +8061,6 @@
   "showFiatConversionInTestnets": {
     "message": "Показывать обмен в тестовых сетях"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Выберите это, чтобы показывать обмен на фиатную валюту в тестовых сетях"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "Отображает сетевые токены в качестве местной валюты в тестовых сетях. Если вас попросили включить эту функцию, возможно, вас обманывают. Только для тестирования. $1",
     "description": "$1 is the 'Learn more' link"
@@ -8160,9 +8094,6 @@
   },
   "showTestnetNetworks": {
     "message": "Показать тестнеты"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Выберите эту опцию, чтобы показать тестовые сети в списке сетей"
   },
   "sidePanelMigrationToast": {
     "message": "Теперь MetaMask по умолчанию открывается в боковой панели. $1 в любое время из меню.",
@@ -8291,9 +8222,6 @@
   },
   "skipDeepLinkInterstitial": {
     "message": "Не показывать промежуточный экран при открытии диплинков"
-  },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Включение этой опции позволит пропустить промежуточный экран, который отображается при открытии диплинков в MetaMask. Диплинк — это ссылка типа https://link.metamask.io/home, которая приведет к открытию MetaMask; эти ссылки могут быть замаскированы другими людьми. Промежуточный экран предназначен для защиты от случайного открытия страниц в MetaMask, которые могут отображать ваши счета, токены, историю, балансы, настройки или другую потенциально конфиденциальную информацию. Этот параметр применяется только к ссылкам, подписанным MetaMask."
   },
   "skipLinkConfirmationScreens": {
     "message": "Пропускать экраны подтверждения ссылок"
@@ -8807,9 +8735,6 @@
   "stateLogs": {
     "message": "Журналы состояний"
   },
-  "stateLogsDescription": {
-    "message": "Журналы состояния содержат ваши адреса публичных счетов и отправленные транзакции."
-  },
   "stateLogsModalDescription": {
     "message": "Журналы состояния могут помочь нам в отладке проблем, с которыми вы можете столкнуться. Отправляйте их в службу поддержки MetaMask только в этом случае, поскольку журналы состояния содержат публичный адрес вашего счета и информацию о ваших транзакциях."
   },
@@ -8884,9 +8809,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "Включите функцию «Умные транзакции» для более надежного и безопасного выполнения транзакций. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Включите функцию «Смарт-транзакции» для более надежных и безопасных транзакций в поддерживаемых сетях. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Приватная отправка вашего свопа..."
@@ -9316,9 +9238,6 @@
   },
   "theme": {
     "message": "Тема"
-  },
-  "themeDescription": {
-    "message": "Выберите предпочтительную тему MetaMask."
   },
   "thirdPartyApis": {
     "message": "Сторонние API"
@@ -9785,9 +9704,6 @@
   "useNftDetectionDescription": {
     "message": "Отображает все NFT, включая поддельные, аирдропнутые мошенниками."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Разрешает MetaMask добавлять ваши собственные NFT с помощью сторонних сервисов. Автоопределение NFT раскрывает ваш IP-адрес и адрес счета этим сервисам. Включение этой функции может связать ваш IP-адрес с вашим адресом Ethereum и отобразить поддельные NFT-файлы, аирдропнутые мошенниками. Вы можете добавлять токены вручную, чтобы избежать этой угрозы."
-  },
   "usePassword": {
     "message": "Использовать пароль"
   },
@@ -9799,9 +9715,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Проверка сведений о сети"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask использует сторонний сервис под названием $1 для отображения точных и стандартизированных сведений о сети. Это снижает ваши шансы подключиться к вредоносной или неправильной сети. При использовании этой функции ваш IP-адрес доступен сети chainid.network."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "Снижает вероятность подключения к вредоносной или некорректной сети. MetaMask использует $1 для отображения точных и стандартизированных данных о сети."

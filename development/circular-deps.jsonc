@@ -13,6 +13,5 @@
     "ui/components/app/metamask-template-renderer/safe-component-list.js",
     "ui/components/app/metamask-translation/index.js",
     "ui/components/app/metamask-translation/metamask-translation.js"
-  ],
-  ["ui/ducks/metamask/metamask.js", "ui/store/actions.ts"]
+  ]
 ]
