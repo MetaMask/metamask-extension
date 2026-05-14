@@ -231,6 +231,68 @@ describe('selectTransactions', () => {
     expect(result.pages[0].data).toHaveLength(1);
   });
 
+  it('shows swaps where only valueTransfers identify the account', () => {
+    const router = '0x2222222222222222222222222222222222222222';
+    const pool = '0x3333333333333333333333333333333333333333';
+    const usdcAddress = '0x754704Bc059F8C67012fEd69BC8A327a5aafb603';
+
+    const result = selectTransactions({ address: account })(
+      createData([
+        {
+          ...baseRawTx,
+          chainId: 143,
+          from: router,
+          to: pool,
+          value: '0',
+          valueTransfers: [
+            {
+              from: account,
+              to: router,
+              amount: '30000000000000000000',
+              decimal: 18,
+              symbol: 'MON',
+              transferType: 'internal',
+            },
+            {
+              from: pool,
+              to: account,
+              amount: '866885',
+              decimal: 6,
+              symbol: 'USDC',
+              name: 'USD Coin',
+              contractAddress: usdcAddress,
+              transferType: 'erc20',
+            },
+          ],
+        },
+      ]),
+    );
+
+    const transaction = result.pages[0]?.data[0];
+    expect(transaction).toBeDefined();
+    if (!transaction) {
+      throw new Error('Expected Monad swap transaction to be included');
+    }
+    expect(transaction.amounts?.from).toStrictEqual({
+      token: {
+        address: NATIVE_TOKEN_ADDRESS,
+        symbol: 'MON',
+        decimals: 18,
+        chainId: '0x8f',
+      },
+      amount: -30000000000000000000n,
+    });
+    expect(transaction.amounts?.to).toStrictEqual({
+      token: {
+        address: usdcAddress.toLowerCase(),
+        symbol: 'USDC',
+        decimals: 6,
+        chainId: '0x8f',
+      },
+      amount: 866885n,
+    });
+  });
+
   it('blocks incoming native transfers where the account is the recipient', () => {
     const result = selectTransactions({ address: account })(
       createData([
