@@ -754,10 +754,6 @@
   "autoDetectTokens": {
     "message": "Autodeteksi token"
   },
-  "autoDetectTokensDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan token baru yang dikirim ke dompet Anda. Nonaktifkan jika Anda tidak ingin aplikasi memakai data secara otomatis dari layanan tersebut. $1",
-    "description": "$1 is a link to a support article"
-  },
   "autoDetectTokensDescriptionV2": {
     "message": "Menampilkan token baru yang dikirim ke dompet Anda."
   },
@@ -784,9 +780,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Timer kunci otomatis (menit)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Atur waktu siaga dalam menit sebelum MetaMask terkunci."
   },
   "available": {
     "message": "tersedia"
@@ -1018,9 +1011,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "Jika Anda menyetujui permintaan ini, pihak ketiga yang terdeteksi melakukan penipuan akan mengambil semua aset Anda."
-  },
-  "blockaidMessage": {
-    "message": "Menjaga privasi - tidak ada data yang dibagikan kepada pihak ketiga. Tersedia di Arbitrum, Avalanche, BNB chain, Mainnet Ethereum, Linea, Optimism, Polygon, Base, dan Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "Ini adalah permintaan tipuan"
@@ -1481,9 +1471,6 @@
   "browserNotSupported": {
     "message": "Browser Anda tidak didukung..."
   },
-  "builtAroundTheWorld": {
-    "message": "MetaMask dirancang dan dibangun di seluruh dunia."
-  },
   "busy": {
     "message": "Sibuk"
   },
@@ -1572,13 +1559,6 @@
   "checkNetworkConnectivityOr": {
     "message": "Periksa konektivitas jaringan, atau $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "Pilih jaringan Anda"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "Bila Anda menggunakan pengaturan dan konfigurasi default, kami menggunakan Infura sebagai penyedia panggilan prosedur jarak jauh (RPC) default kami untuk menawarkan akses paling andal dan pribadi ke data Ethereum yang kami bisa. Dalam kasus terbatas, kami dapat menggunakan penyedia RPC lain untuk memberikan pengalaman terbaik bagi pengguna kami. Anda dapat memilih RPC sendiri, tetapi ingatlah bahwa setiap RPC akan menerima alamat IP dan dompet Ethereum Anda untuk melakukan transaksi. Untuk mempelajari selengkapnya tentang cara Infura menangani data untuk akun EVM, baca $1, dan untuk akun Solana, $2.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Anda perlu menggunakan MetaMask di Google Chrome untuk terhubung ke Dompet Perangkat Keras Anda."
@@ -2129,9 +2109,6 @@
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
-  "currencyConversion": {
-    "message": "Mata uang"
-  },
   "currencyRateCheckToggle": {
     "message": "Tampilkan saldo dan pemeriksa harga token"
   },
@@ -2165,9 +2142,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 jam: $1 - $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "Bahasa saat ini"
   },
   "currentNetwork": {
     "message": "Jaringan saat ini",
@@ -2527,9 +2501,6 @@
   "details": {
     "message": "Detail"
   },
-  "developerOptions": {
-    "message": "Opsi pengembang"
-  },
   "developerTools": {
     "message": "Alat pengembang"
   },
@@ -2586,17 +2557,8 @@
   "dismiss": {
     "message": "Lewatkan"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Aktifkan ini untuk melewatkan pesan pengingat pencadangan frasa pemulihan. Kami sangat merekomendasikan agar Anda mencadangkan Frasa Pemulihan Rahasia Anda untuk menghindari hilangnya dana"
-  },
-  "dismissReminderField": {
-    "message": "Lewatkan pengingat pencadangan Frasa Pemulihan Rahasia"
-  },
   "displayNftMedia": {
     "message": "Tampilkan media NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Alamat IP Anda dapat diketahui oleh OpenSea atau pihak ketiga lainnya saat Anda menampilkan media dan data NFT. Ini memungkinkan penyerang menghubungkan alamat IP dengan alamat Ethereum Anda. Deteksi otomatis NFT bergantung pada pengaturan ini, dan tidak akan tersedia saat dinonaktifkan."
   },
   "displayNftMediaDescriptionV2": {
     "message": "Autodeteksi NFT bergantung pada fitur ini."
@@ -3757,9 +3719,6 @@
   "ipfsGateway": {
     "message": "gateway IPFS"
   },
-  "ipfsGatewayDescription": {
-    "message": "MetaMask menggunakan layanan pihak ketiga untuk menampilkan gambar NFT Anda yang disimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser Anda, serta mengambil ikon untuk token yang berbeda. Alamat IP Anda mungkin tidak memberikan perlindungan terhadap layanan ini saat Anda menggunakannya."
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "Menggunakan layanan pihak ketiga untuk menampilkan gambar NFT yang tersimpan di IPFS, menampilkan informasi terkait alamat ENS yang dimasukkan di bilah alamat browser Anda, serta mengambil ikon untuk berbagai token. Pilih gateway IPFS pilihan Anda di bawah ini."
   },
@@ -3940,9 +3899,6 @@
   "likeToImportTokens": {
     "message": "Apakah Anda ingin menambahkan token ini?"
   },
-  "lineaGoerli": {
-    "message": "Jaringan uji Linea Goerli"
-  },
   "lineaMainnet": {
     "message": "Linea"
   },
@@ -3954,9 +3910,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Tautkan akun Coinbase atau Binance untuk mentransfer kripto ke MetaMask secara gratis."
-  },
-  "links": {
-    "message": "Tautan"
   },
   "loading": {
     "message": "Memuat..."
@@ -3978,9 +3931,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Mengunci MetaMask..."
-  },
-  "logOut": {
-    "message": "Keluar"
   },
   "loginErrorConnectButton": {
     "message": "Coba lagi"
@@ -4700,9 +4650,6 @@
   "networkPermissionToast": {
     "message": "Izin jaringan diperbarui"
   },
-  "networkProvider": {
-    "message": "Penyedia jaringan"
-  },
   "networkStatus": {
     "message": "Status jaringan"
   },
@@ -5310,9 +5257,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "Batalkan header Content-Security-Policy"
-  },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "Opsi ini merupakan solusi sementara untuk masalah yang diketahui di Firefox, di mana header Content-Security-Policy dapp dapat mencegah ekstensi dimuat dengan benar. Menonaktifkan opsi ini tidak disarankan kecuali diperlukan untuk kompatibilitas halaman web tertentu."
   },
   "padlock": {
     "message": "Gembok"
@@ -7100,9 +7044,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "Tampilkan Frasa Pemulihan Rahasia"
   },
-  "revealSeedWords": {
-    "message": "Tampilkan Frasa Pemulihan Rahasia"
-  },
   "revealSeedWordsDescription1": {
     "message": "$1 memberikan akses penuh ke dompet, dana, dan akun Anda.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -7300,10 +7241,6 @@
   "securityAlerts": {
     "message": "Peringatan keamanan"
   },
-  "securityAlertsDescription": {
-    "message": "Fitur ini memperingatkan Anda tentang aktivitas berbahaya atau tidak biasa dengan secara aktif meninjau transaksi dan permintaan tanda tangan. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "Fitur ini memperingatkan Anda tentang aktivitas jahat dengan meninjau permintaan transaksi dan tanda tangan secara aktif. $1"
   },
@@ -7312,9 +7249,6 @@
   },
   "securityAndPrivacy": {
     "message": "Keamanan dan privasi"
-  },
-  "securityChangePassword": {
-    "message": "Ubah kata sandi"
   },
   "securityChangePasswordToastError": {
     "message": "Kata sandi tidak dapat diubah. Coba lagi."
@@ -8128,9 +8062,6 @@
   "showFiatConversionInTestnets": {
     "message": "Tampilkan konversi di jaringan uji"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Pilih ini untuk menampilkan konversi fiat di jaringan uji"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "Menampilkan token jaringan sebagai mata uang lokal di jaringan uji. Jika Anda diminta untuk mengaktifkan fitur ini, Anda mungkin sedang menjadi korban penipuan. Hanya untuk tujuan pengujian. $1",
     "description": "$1 is the 'Learn more' link"
@@ -8164,9 +8095,6 @@
   },
   "showTestnetNetworks": {
     "message": "Tampilkan jaringan pengujian"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Pilih opsi ini untuk menampilkan jaringan pengujian dalam daftar jaringan"
   },
   "sidePanelMigrationToast": {
     "message": "MetaMask kini terbuka di panel samping secara default. $1 setiap saat dari menu.",
@@ -8295,9 +8223,6 @@
   },
   "skipDeepLinkInterstitial": {
     "message": "Jangan tampilkan layar interstisial saat membuka deep link"
-  },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Mengaktifkan opsi ini akan melewati layar interstisial yang ditampilkan saat membuka deep link di MetaMask. \"Deep link\" merupakan tautan seperti https://link.metamask.io/home yang akan menyebabkan MetaMask terbuka; tautan ini dapat dikaburkan oleh orang lain. Layar interstisial dirancang untuk melindungi Anda dari membuka halaman secara tidak sengaja di dalam MetaMask yang mungkin menampilkan akun, token, riwayat, saldo, pengaturan, atau informasi sensitif lainnya. Pengaturan ini hanya berlaku untuk tautan yang ditandatangani oleh MetaMask."
   },
   "skipLinkConfirmationScreens": {
     "message": "Lewati layar konfirmasi tautan"
@@ -8811,9 +8736,6 @@
   "stateLogs": {
     "message": "Log status"
   },
-  "stateLogsDescription": {
-    "message": "Log status berisi alamat akun publik Anda dan transaksi terkirim."
-  },
   "stateLogsModalDescription": {
     "message": "Log state dapat membantu kami mendebug masalah yang mungkin Anda temui. Kirimkan hanya ke MetaMask untuk mendapatkan dukungan, karena log state berisi alamat akun publik dan transaksi Anda."
   },
@@ -8888,9 +8810,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "Aktifkan Transaksi Cerdas untuk transaksi yang lebih andal dan aman. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Aktifkan Transaksi Pintar untuk transaksi yang lebih andal dan aman di jaringan yang didukung. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Kirimkan Swap Anda secara pribadi..."
@@ -9320,9 +9239,6 @@
   },
   "theme": {
     "message": " Saya menyetujui Ketentuan Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
-  },
-  "themeDescription": {
-    "message": "Pilih tema MetaMask yang Anda sukai."
   },
   "thirdPartyApis": {
     "message": "API pihak ketiga"
@@ -9789,9 +9705,6 @@
   "useNftDetectionDescription": {
     "message": "Menampilkan semua NFT, termasuk NFT palsu yang di-airdrop oleh penipu."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Izinkan MetaMask menambahkan NFT yang Anda miliki menggunakan layanan pihak ketiga. Autodeteksi NFT mengekspos alamat IP dan akun Anda ke layanan ini. Mengaktifkan fitur ini dapat mengaitkan alamat IP dengan alamat Ethereum Anda dan menampilkan NFT palsu yang di-airdrop oleh penipu. Anda dapat menambahkan token secara manual untuk menghindari risiko ini."
-  },
   "usePassword": {
     "message": "Gunakan kata sandi"
   },
@@ -9803,9 +9716,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Pemeriksaan detail jaringan"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask menggunakan layanan pihak ketiga yang disebut $1 untuk menampilkan detail jaringan yang akurat dan terstandardisasi. Hal ini dapat mengurangi kemungkinan Anda untuk terhubung ke jaringan berbahaya atau salah. Saat menggunakan fitur ini, alamat IP akan diketahui oleh chainid.network."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "Mengurangi kemungkinan Anda terhubung ke jaringan yang berbahaya atau salah. MetaMask menggunakan $1 untuk menampilkan detail jaringan yang akurat dan terstandardisasi."

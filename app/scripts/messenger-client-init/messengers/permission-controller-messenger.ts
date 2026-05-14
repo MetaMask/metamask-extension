@@ -100,6 +100,7 @@ export function getPermissionControllerInitMessenger(
     actions: [
       'AppStateController:getUnlockPromise',
       'AccountsController:listAccounts',
+      'AssetsController:getState',
       'CurrencyRateController:getState',
       'KeyringController:getKeyringsByType',
       'KeyringController:withKeyring',
@@ -111,6 +112,7 @@ export function getPermissionControllerInitMessenger(
       'PhishingController:testOrigin',
       'PreferencesController:getState',
       'RateLimitController:call',
+      'RemoteFeatureFlagController:getState',
       'SnapController:clearSnapState',
       'SnapController:getSnap',
       'SnapController:getSnapState',

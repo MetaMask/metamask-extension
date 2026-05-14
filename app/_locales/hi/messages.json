@@ -754,10 +754,6 @@
   "autoDetectTokens": {
     "message": "टोकन ऑटो-डिटेक्ट करें"
   },
-  "autoDetectTokensDescription": {
-    "message": "हम आपके वॉलेट में भेजे गए नए टोकन का पता लगाने और दिखाने के लिए थर्ड-पार्टी APIs का इस्तेमाल करते हैं। अगर आप नहीं चाहते हैं कि ऐप उन सेवाओं से डेटा अपने आप खींचे तो इसे बंद कर दें। $1",
-    "description": "$1 is a link to a support article"
-  },
   "autoDetectTokensDescriptionV2": {
     "message": "आपके वॉलेट में भेजे गए नए टोकन दिखाता है।"
   },
@@ -784,9 +780,6 @@
   },
   "autoLockTimeLimit": {
     "message": "ऑटो-लॉक टाइमर (मिनट)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "MetaMask लॉक होने से पहले खाली गए समय को मिनट में सेट करें।"
   },
   "available": {
     "message": "उपलब्ध"
@@ -1018,9 +1011,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "यदि आप इस रिक्वेस्ट को एप्रूव करते हैं, तो स्कैम के लिए मशहूर कोई थर्ड पार्टी आपके सारे एसेट चुरा लेगी।"
-  },
-  "blockaidMessage": {
-    "message": "गोपनीयता को सुरक्षित रखना - कोई भी डेटा थर्ड पार्टी के साथ साझा नहीं किया जाता है। Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base और Sepolia पर उपलब्ध है।"
   },
   "blockaidTitleDeceptive": {
     "message": "इस अनुरोध को धोखेबाजी के उद्देश्य से भेजा गया है"
@@ -1481,9 +1471,6 @@
   "browserNotSupported": {
     "message": "आपका ब्राउज़र सपोर्टेड नहीं है..."
   },
-  "builtAroundTheWorld": {
-    "message": "MetaMask दुनिया भर में डिज़ाइन किया और बनाया गया है।"
-  },
   "busy": {
     "message": "बिज़ी"
   },
@@ -1572,13 +1559,6 @@
   "checkNetworkConnectivityOr": {
     "message": "नेटवर्क कनेक्टिविटी जाँचें या $1।",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "अपना नेटवर्क चुनें"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "जब आप हमारी डिफॉल्ट सेटिंग्स और कॉन्फ़िगरेशन का उपयोग करते हैं, तो हम Ethereum डेटा तक सबसे विश्वसनीय और निजी पहुँच प्रदान करने के लिए Infura को अपने डिफॉल्ट रिमोट प्रोसीजर कॉल (RPC) प्रदाता के रूप में उपयोग करते हैं। सीमित मामलों में, हम अपने उपयोगकर्ताओं को सर्वश्रेष्ठ अनुभव प्रदान करने के लिए अन्य RPC प्रदाताओं का उपयोग कर सकते हैं। आप अपना खुद का RPC चुन सकते हैं, लेकिन याद रखें कि कोई भी RPC ट्रांसेक्शन करने के लिए आपका आईपी ​​एड्रेस और Ethereum वॉलेट प्राप्त करेगा। EVM एकाउंट्स के लिए Infura डेटा को कैसे संभालता है, इसके बारे में अधिक जानने के लिए, हमारी $1 पढ़ें और Solana एकाउंट्स, $2 के लिए।",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "अपने hardware wallet से कनेक्ट करने के लिए आपको Google Chrome पर MetaMask का इस्तेमाल करने की आवश्यकता है।"
@@ -2129,9 +2109,6 @@
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
-  "currencyConversion": {
-    "message": "करेंसी"
-  },
   "currencyRateCheckToggle": {
     "message": "बैलेंस और टोकन प्राइस चेकर दिखाएं"
   },
@@ -2165,9 +2142,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 घंटे: $1 - $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "वर्तमान भाषा"
   },
   "currentNetwork": {
     "message": "वर्तमान नेटवर्क",
@@ -2527,9 +2501,6 @@
   "details": {
     "message": "विवरण"
   },
-  "developerOptions": {
-    "message": "डेवलपर विकल्प"
-  },
   "developerTools": {
     "message": "डेवलपर टूल्स"
   },
@@ -2586,17 +2557,8 @@
   "dismiss": {
     "message": "खारिज करें"
   },
-  "dismissReminderDescriptionField": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ बैकअप रिमाइंडर मैसेज को खारिज करने के लिए इसे चालू करें। हम ज़ोर देकर सलाह देते हैं कि आप पैसे के नुकसान से बचने के लिए अपने गुप्त रिकवरी फ्रेज का बैकअप लें"
-  },
-  "dismissReminderField": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ बैकअप रिमाइंडर खारिज करें"
-  },
   "displayNftMedia": {
     "message": "NFT मीडिया को दिखाएं"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFT मीडिया और डेटा दिखाने से आपका IP एड्रेस OpenSea या अन्य थर्ड पार्टियों के सामने आ जाता है। ऐसा होने पर, हमला करने वाले आपके IP एड्रेस को आपके Ethereum एड्रेस के साथ जोड़ पाते हैं। NFT ऑटोडिटेक्शन की सुविधा इस सेटिंग पर निर्भर करती है, और इस सेटिंग को बंद किए जाने पर उपलब्ध नहीं रहेगी।"
   },
   "displayNftMediaDescriptionV2": {
     "message": "NFT ऑटोडिटेक्शन इसी फीचर पर निर्भर करता है।"
@@ -3757,9 +3719,6 @@
   "ipfsGateway": {
     "message": "IPFS गेटवे"
   },
-  "ipfsGatewayDescription": {
-    "message": "IPFS पर स्टोर किए गए आपके NFT की इमेज दिखाने, आपके ब्राउज़र के एड्रेस बार में एंटर किए गए ENS एड्रेस से संबंधित जानकारी दिखाने और अलग-अलग टोकनों के लिए आइकन लाने के लिए MetaMask तृतीय-पक्ष के सेवाओं का इस्तेमाल करता है। जब आप इन सेवाओं का इस्तेमाल कर रहे हों तो आपका IP एड्रेस इन सेवाओं को भी दिख सकता है।"
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "IPFS पर स्टोर किए गए आपके NFT की इमेज दिखाने, आपके ब्राउज़़र के एड्रेस बार में एंटर किए गए ENS एड्रेस से संबंधित जानकारी दिखाने और अलग-अलग टोकनों के लिए आइकन लाने के लिए थर्ड-पार्टी सर्विसेज़ का इस्तेमाल करता है। जब आप इन सेवाओं का इस्तेमाल कर रहे हों तो आपका IP एड्रेस इन सेवाओं को भी दिख सकता है। नीचे अपना पसंदीदा IPFS गेटवे चुनें।"
   },
@@ -3940,9 +3899,6 @@
   "likeToImportTokens": {
     "message": "क्या आप इन टोकन को इंपोर्ट करना चाहते हैं?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli टेस्ट नेटवर्क"
-  },
   "lineaMainnet": {
     "message": "Linea"
   },
@@ -3954,9 +3910,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "क्रिप्टो को मुफ्त में MetaMask में ट्रांसफ़र करने के लिए अपने Coinbase या Binance अकाउंट को लिंक करें।"
-  },
-  "links": {
-    "message": "लिंक"
   },
   "loading": {
     "message": "लोड हो रहा है..."
@@ -3978,9 +3931,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask लॉक हो रहा है..."
-  },
-  "logOut": {
-    "message": "लॉग आउट करें"
   },
   "loginErrorConnectButton": {
     "message": "फिर से कोशिश करें"
@@ -4700,9 +4650,6 @@
   "networkPermissionToast": {
     "message": "नेटवर्क अनुमतियाँ अपडेट की गईं"
   },
-  "networkProvider": {
-    "message": "नेटवर्क प्रोवाइडर"
-  },
   "networkStatus": {
     "message": "नेटवर्क का स्टेटस"
   },
@@ -5310,9 +5257,6 @@
   },
   "overrideContentSecurityPolicyHeader": {
     "message": "कंटेंट-सिक्योरिटी-पॉलिसी हेडर को ओवरराइड करें"
-  },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "यह विकल्प Firefox में एक ज्ञात समस्या के लिए एक समाधान है, जहां एक dapp का कंटेंट-सिक्योरिटी-पॉलिसी हेडर एक्सटेंशन को ठीक से लोड होने से रोक सकता है। जब तक विशिष्ट वेब पेज अनुकूलता के लिए आवश्यक न हो, इस विकल्प को बंद करने की सलाह नहीं दी जाती है।"
   },
   "padlock": {
     "message": "पैडलॉक"
@@ -7096,9 +7040,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
   },
-  "revealSeedWords": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ दिखाएं"
-  },
   "revealSeedWordsDescription1": {
     "message": "आपका $1 आपके वॉलेट, फंड और अकाउंट तक फुल एक्सेस देता है।",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -7296,10 +7237,6 @@
   "securityAlerts": {
     "message": "सुरक्षा एलर्ट"
   },
-  "securityAlertsDescription": {
-    "message": "यह फीचर सक्रिय रूप से ट्रांसेक्शन और सिग्नेचर अनुरोधों की समीक्षा करके आपको बुरी नीयत वाली गतिविधि के प्रति एलर्ट करती है। $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "यह फीचर सक्रिय रूप से ट्रांसेक्शन और सिग्नेचर अनुरोधों की समीक्षा करके आपको बुरी नीयत वाली गतिविधि के प्रति एलर्ट करती है। $1"
   },
@@ -7308,9 +7245,6 @@
   },
   "securityAndPrivacy": {
     "message": "सुरक्षा और गोपनीयता"
-  },
-  "securityChangePassword": {
-    "message": "पासवर्ड बदलें"
   },
   "securityChangePasswordToastError": {
     "message": "पासवर्ड बदला नहीं जा सका। कृपया फिर से प्रयास करें।"
@@ -8124,9 +8058,6 @@
   "showFiatConversionInTestnets": {
     "message": "टेस्ट नेटवर्क पर कन्वर्शन दिखाएं"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "टेस्ट नेटवर्क पर फिएट कन्वर्शन दिखाने के लिए इसको चुनें"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "टेस्ट नेटवर्क पर नेटवर्क टोकन को लोकल करेंसी के रूप में दिखाता है। अगर आपको यह फ़ीचर चालू करने के लिए कहा गया है, तो हो सकता है कि आपके साथ स्कैम हो रहा हो। सिर्फ़ टेस्टिंग के लिए। $1",
     "description": "$1 is the 'Learn more' link"
@@ -8160,9 +8091,6 @@
   },
   "showTestnetNetworks": {
     "message": "परीक्षण नेटवर्क दिखाएं"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "नेटवर्क लिस्ट में परीक्षण नेटवर्क दिखाने के लिए इसे चुनें"
   },
   "sidePanelMigrationToast": {
     "message": "MetaMask अब डिफ़ॉल्ट रूप से साइड पैनल में खुलता है। मेनू से किसी भी समय $1।",
@@ -8291,9 +8219,6 @@
   },
   "skipDeepLinkInterstitial": {
     "message": "डीप लिंक खोलते समय इंटरस्टिशियल स्क्रीन न दिखाएं"
-  },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "इस विकल्प को चालू करने से MetaMask में डीप लिंक खोलने पर दिखाई देने वाली इंटरस्टिशियल स्क्रीन को स्किप कर दिया जाएगा। \"डीप लिंक\" https://link.metamask.io/home जैसा लिंक होता है जो MetaMask को खोलने का कारण बनता है; ऐसे लिंक को अन्य लोग छुपा या बदल सकते हैं। इंटरस्टिशियल स्क्रीन आपको MetaMask के भीतर गलती से खुलने वाले पेज से बचाने के लिए डिज़ाइन की गई है जो आपके एकाउंट्स, टोकन, इतिहास, बैलेंस, सेटिंग्स या अन्य संभावित रूप से संवेदनशील जानकारी प्रदर्शित कर सकते हैं। यह सेटिंग केवल MetaMask द्वारा साइन किए गए लिंक पर लागू होती है।"
   },
   "skipLinkConfirmationScreens": {
     "message": "लिंक कन्फर्मेशन स्क्रीन स्किप करें"
@@ -8807,9 +8732,6 @@
   "stateLogs": {
     "message": "स्टेट लॉग"
   },
-  "stateLogsDescription": {
-    "message": "स्टेट लॉग में आपके सार्वजनिक अकाउंट के एड्रेस और भेजे गए ट्रांसेक्शन शामिल होते हैं।"
-  },
   "stateLogsModalDescription": {
     "message": "स्टेट लॉग्स हमें उन दिक्कतों को डीबग करने में मदद कर सकते हैं जिनका आपको सामना करना पड़ सकता है। इसे सपोर्ट के लिए सिर्फ़ MetaMask को भेजें, क्योंकि स्टेट लॉग्स में आपका पब्लिक अकाउंट एड्रेस और ट्रांसेक्शन होते हैं।"
   },
@@ -8884,9 +8806,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "अधिक विश्वसनीय और सुरक्षित ट्रांसेक्शन के लिए स्मार्ट ट्रांसेक्शन चालू करें। $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "समर्थित नेटवर्क पर अधिक विश्वसनीय और सुरक्षित ट्रांसेक्शन के लिए स्मार्ट ट्रांसेक्शन चालू करें। $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "आपका स्वैप निजी रूप से सबमिट किया जा रहा है..."
@@ -9316,9 +9235,6 @@
   },
   "theme": {
     "message": "थीम"
-  },
-  "themeDescription": {
-    "message": "अपनी पसंदीदा MetaMask थीम चुनें।"
   },
   "thirdPartyApis": {
     "message": "थर्ड-पार्टी APIs"
@@ -9785,9 +9701,6 @@
   "useNftDetectionDescription": {
     "message": "सभी NFT दिखाता है, जिसमें स्कैमर द्वारा एयरड्रॉप किए गए नकली NFT भी शामिल हैं।"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "MetaMask को थर्ड पार्टी सर्विसेज़ का उपयोग करके आपके NFTs जोड़ने दें। NFTs को ऑटोडिटेक्ट करने से आपका आईपी और अकाउंट एड्रेस इन सेवाओं के सामने आ जाता है। इस फ़ीचर को चालू करने से आपका आईपी ​​एड्रेस आपके Ethereum एड्रेस के साथ जुड़ सकता है और धोखाधड़ी करने वाले लोगों द्वारा एयरड्रॉप किए गए नकली NFTs दिख सकते हैं। आप मैन्युअल तरीके से टोकन जोड़कर इस ख़तरे से बच सकते हैं।"
-  },
   "usePassword": {
     "message": "पासवर्ड का उपयोग करें"
   },
@@ -9799,9 +9712,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "नेटवर्क डिटेल्स की जांच"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask, सटीक और स्टैंडर्डाइज़्ड नेटवर्क डिटेल्स दिखाने के लिए, $1 नाम की थर्ड-पार्टी सर्विस इस्तेमाल करता है। इससे बुरी नीयत वाले या गलत नेटवर्क से आपके जुड़ने की संभावना कम हो जाती है। इस फ़ीचर को इस्तेमाल करते समय आपका आईपी एड्रेस, chainid.network के सामने आ जाता है।"
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "किसी खराब या गलत नेटवर्क से कनेक्ट होने के आपके चांस कम करता है। MetaMask सही और स्टैंडर्ड नेटवर्क डिटेल्स दिखाने के लिए $1 का इस्तेमाल करता है।"
