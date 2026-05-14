@@ -9423,6 +9423,9 @@
     "message": "$1 token permissions",
     "description": "$1 is the count of token permissions (plural form)"
   },
+  "tokenSearchError": {
+    "message": "Couldn't load search results. Please try again."
+  },
   "tokenStandard": {
     "message": "Token standard"
   },
