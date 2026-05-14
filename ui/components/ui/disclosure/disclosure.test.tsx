@@ -22,7 +22,7 @@ describe('Disclosure', () => {
       <Disclosure title="Test Title">Test</Disclosure>,
     );
     expect(getByText('Test Title')).toBeInTheDocument();
-    expect(container.querySelector('.disclosure__content').textContent).toBe(
+    expect(container.querySelector('.disclosure__content')?.textContent).toBe(
       'Test',
     );
 

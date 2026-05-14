@@ -78,13 +78,13 @@ const Disclosure = ({
   }, [isScrollToBottomOnOpen, open]);
 
   return (
-    <div className="disclosure" data-testid="disclosure">
+    <div
+      className="disclosure"
+      data-testid="disclosure"
+      onClick={() => setOpen((state) => !state)}
+    >
       {title ? (
-        <details
-          onToggle={(e) =>
-            setOpen((e.currentTarget as HTMLDetailsElement).open)
-          }
-        >
+        <details>
           {renderSummaryByType(variant, title, size)}
 
           <div className={classnames('disclosure__content', size)}>
