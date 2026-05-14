@@ -7651,7 +7651,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/perps-controller@npm:^5.0.0":
+"@metamask/perps-controller@npm:5.0.0":
   version: 5.0.0
   resolution: "@metamask/perps-controller@npm:5.0.0"
   dependencies:
@@ -7669,6 +7669,27 @@ __metadata:
     "@myx-trade/sdk":
       optional: true
   checksum: 10/33ecfb66d7a76b92238467d13211f7a0e28ebfac2d98c9d06918fb5ef851cf0b564e8e7325df32528a3986b45e325013b8954b46738e1bd6eb93a5a0d3cdcb7f
+  languageName: node
+  linkType: hard
+
+"@metamask/perps-controller@patch:@metamask/perps-controller@npm%3A5.0.0#~/.yarn/patches/@metamask-perps-controller-npm-5.0.0-8e8b402216.patch":
+  version: 5.0.0
+  resolution: "@metamask/perps-controller@patch:@metamask/perps-controller@npm%3A5.0.0#~/.yarn/patches/@metamask-perps-controller-npm-5.0.0-8e8b402216.patch::version=5.0.0&hash=2883e8"
+  dependencies:
+    "@metamask/abi-utils": "npm:^2.0.3"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^11.20.0"
+    "@metamask/messenger": "npm:^1.2.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@myx-trade/sdk": "npm:^0.1.265"
+    "@nktkas/hyperliquid": "npm:^0.32.2"
+    bignumber.js: "npm:^9.1.2"
+    reselect: "npm:^5.1.1"
+    uuid: "npm:^8.3.2"
+  dependenciesMeta:
+    "@myx-trade/sdk":
+      optional: true
+  checksum: 10/055569abaa0caf57294081d2077032c2eb7e45c0692ecab895b6ea7ae1e19782b77e8a602407029d652fe7d571524d90f972ee7d120f13c36a80ad348022ca0d
   languageName: node
   linkType: hard
 
