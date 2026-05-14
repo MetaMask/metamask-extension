@@ -132,29 +132,19 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
       data-testid="perps-recent-activity"
     >
       {/* Section Header */}
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        paddingLeft={4}
-        paddingRight={4}
-        paddingTop={4}
-        marginBottom={2}
+      <ButtonBase
+        className="w-full flex flex-row justify-between items-center px-4 pt-4 mb-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
+        onClick={handleSeeAll}
+        data-testid="perps-recent-activity-see-all"
+        aria-label={t('perpsSeeAll')}
       >
         <Text fontWeight={FontWeight.Medium}>{t('perpsRecentActivity')}</Text>
-        <ButtonBase
-          onClick={handleSeeAll}
-          className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
-          data-testid="perps-recent-activity-see-all"
-          aria-label={t('perpsSeeAll')}
-        >
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={IconColor.IconAlternative}
-          />
-        </ButtonBase>
-      </Box>
+        <Icon
+          name={IconName.ArrowRight}
+          size={IconSize.Sm}
+          color={IconColor.IconAlternative}
+        />
+      </ButtonBase>
 
       {/* Transaction List */}
       <Box flexDirection={BoxFlexDirection.Column}>

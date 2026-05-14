@@ -251,6 +251,17 @@ describe('PerpsRecentActivity', () => {
     expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
   });
 
+  it('navigates to activity route when the Recent Activity header text is clicked', () => {
+    renderWithProvider(
+      <PerpsRecentActivity transactions={mockTransactions} />,
+      mockStore,
+    );
+
+    fireEvent.click(screen.getByText(messages.perpsRecentActivity.message));
+
+    expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+  });
+
   it('calls onTransactionClick when a transaction is clicked', () => {
     const handleClick = jest.fn();
     renderWithProvider(

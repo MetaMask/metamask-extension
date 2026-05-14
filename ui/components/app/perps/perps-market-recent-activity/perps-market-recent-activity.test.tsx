@@ -214,6 +214,19 @@ describe('PerpsMarketRecentActivity', () => {
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
 
+    it('navigates to PERPS_ACTIVITY_ROUTE when the Recent Activity header text is clicked', () => {
+      mockUsePerpsMarketFills.mockReturnValue({
+        fills: [],
+        isInitialLoading: false,
+      });
+      mockTransformFills.mockReturnValue([createTransaction('tx-1')]);
+
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
+
+      fireEvent.click(screen.getByText(messages.perpsRecentActivity.message));
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+    });
+
     it('navigates to PERPS_ACTIVITY_ROUTE when a transaction row is tapped', () => {
       mockUsePerpsMarketFills.mockReturnValue({
         fills: [],
