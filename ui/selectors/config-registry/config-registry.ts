@@ -1,76 +1,37 @@
 import type { AddNetworkFields } from '@metamask/network-controller';
-import { RpcEndpointType } from '@metamask/network-controller';
-import { selectFeaturedNetworks } from '@metamask/config-registry-controller';
-import { createSelector } from 'reselect';
-import { add0x, parseCaipChainId, KnownCaipNamespace } from '@metamask/utils';
-import type { RegistryNetworkConfig } from '@metamask/config-registry-controller';
-import { getRemoteFeatureFlags } from '../remote-feature-flags';
-import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
+  RpcEndpointType,
   AddNetworkCustomRpcEndpointFields,
   InfuraRpcEndpoint,
-} from 'node_modules/@metamask/network-controller/dist/NetworkController.d.cts';
+} from '@metamask/network-controller';
+import { createSelector } from 'reselect';
 import {
-  InfuraNetworkType,
-  isInfuraNetworkType,
-} from '@metamask/controller-utils';
-
-/** Default empty controller state shape for selectFeaturedNetworks. */
-const EMPTY_REGISTRY_CONTROLLER_STATE = {
-  configs: { networks: {} },
-  version: null,
-  lastFetched: null,
-  etag: null,
-} as const;
-
-/**
- * ConfigRegistryController state slice as it appears in the flat metamask state.
- * The controller state is merged into the root by the store's getFlatState().
- */
-export type ConfigRegistryStateSlice = {
-  configs?: { networks: Record<string, RegistryNetworkConfig> };
-  version?: string | null;
-  lastFetched?: number | null;
-  etag?: string | null;
-};
+  add0x,
+  CaipChainId,
+  CaipChainIdStruct,
+  Hex,
+  parseCaipChainId,
+} from '@metamask/utils';
+import type {
+  ConfigRegistryControllerState,
+  RegistryNetworkConfig,
+} from '@metamask/config-registry-controller';
+import { isInfuraNetworkType } from '@metamask/controller-utils';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
+import { FEATURED_RPCS } from '../../../shared/constants/network';
+import { captureException } from '../../../shared/lib/sentry';
+import { createSentryError } from '../../../shared/lib/error';
 
 /**
- * Redux state shape required by config-registry selectors.
- * Exported for use in tests. Metamask slice is optional (e.g. during bootstrap).
+ * Get the Configs from the ConfigRegistryController state, or undefined if not set.
  */
-export type StateWithConfigRegistry = {
-  metamask?: ConfigRegistryStateSlice & {
-    remoteFeatureFlags?: Record<string, unknown>;
-  };
-};
-
-/**
- * Returns the Config Registry controller state slice from Redux state.
- * Used to pass into @metamask/config-registry-controller selectors.
- * @param state
- */
-export const getConfigRegistryState = (
-  state: StateWithConfigRegistry,
-): ConfigRegistryStateSlice | undefined => state.metamask;
-
-/**
- * Builds the shape expected by @metamask/config-registry-controller selectFeaturedNetworks
- * from the flat state slice.
- * @param slice
- */
-function toRegistryControllerState(
-  slice: ConfigRegistryStateSlice | undefined,
-) {
-  if (!slice) {
-    return { ...EMPTY_REGISTRY_CONTROLLER_STATE };
-  }
-  return {
-    configs: slice.configs ?? { networks: {} },
-    version: slice.version ?? null,
-    lastFetched: slice.lastFetched ?? null,
-    etag: slice.etag ?? null,
-  };
-}
+export const getRegistryConfigs = createSelector(
+  (state: { metamask?: Partial<ConfigRegistryControllerState> }) =>
+    state.metamask?.configs,
+  (configs): ConfigRegistryControllerState['configs'] | undefined => {
+    return configs;
+  },
+);
 
 /**
  * Returns whether the Config Registry API feature flag is enabled.
@@ -110,6 +71,18 @@ export type FeaturedNetworkForAdditionalList = AddNetworkFields & {
   imageUrl?: string;
 };
 
+function caipChainIdToHex(chainId: CaipChainId): Hex {
+  const { namespace, reference } = parseCaipChainId(chainId);
+  if (namespace !== 'eip155') {
+    throw new Error(`Unsupported CAIP namespace: ${namespace}`);
+  }
+  const decimalChainId = parseInt(reference, 10);
+  if (isNaN(decimalChainId)) {
+    throw new Error(`Invalid CAIP reference: ${reference}`);
+  }
+  return add0x(decimalChainId.toString(16));
+}
+
 /**
  * Converts a RegistryNetworkConfig (EVM only) to AddNetworkFields for the add-network flow.
  * Returns null for non-EVM, missing default RPC, or invalid RPC URL (non-https).
@@ -119,58 +92,55 @@ export type FeaturedNetworkForAdditionalList = AddNetworkFields & {
 function registryConfigToAddNetworkFields(
   config: RegistryNetworkConfig,
 ): FeaturedNetworkForAdditionalList | null {
-  let namespace: string;
   try {
-    ({ namespace } = parseCaipChainId(config.chainId as `eip155:${string}`));
-  } catch {
+    CaipChainIdStruct.assert(config.chainId);
+    const hexChainId = caipChainIdToHex(config.chainId);
+
+    const defaultRpc = config.rpcProviders?.default;
+    if (!defaultRpc || !isAllowedRpcUrl(defaultRpc.url)) {
+      return null;
+    }
+
+    const blockExplorerUrls = config.blockExplorerUrls?.default
+      ? [config.blockExplorerUrls.default]
+      : [];
+    const nativeCurrency = config.assets?.native?.symbol ?? 'ETH';
+
+    const rpcEndpoint: AddNetworkCustomRpcEndpointFields | InfuraRpcEndpoint =
+      defaultRpc.type === RpcEndpointType.Infura &&
+      isInfuraNetworkType(defaultRpc.networkClientId)
+        ? {
+            type: RpcEndpointType.Infura,
+            networkClientId: defaultRpc.networkClientId,
+            url: `https://${defaultRpc.networkClientId}.infura.io/v3/{infuraProjectId}`,
+          }
+        : {
+            type: RpcEndpointType.Custom,
+            url: defaultRpc.url,
+          };
+
+    return {
+      chainId: hexChainId,
+      name: config.name,
+      nativeCurrency,
+      rpcEndpoints: [rpcEndpoint],
+      defaultRpcEndpointIndex: 0,
+      blockExplorerUrls: blockExplorerUrls as `https://${string}`[],
+      defaultBlockExplorerUrlIndex:
+        blockExplorerUrls.length > 0 ? 0 : undefined,
+      ...(config.imageUrl && isAllowedImageUrl(config.imageUrl)
+        ? { imageUrl: config.imageUrl }
+        : {}),
+    };
+  } catch (error) {
+    captureException(
+      createSentryError(
+        'Error converting registry config to add network fields:',
+        error,
+      ),
+    );
     return null;
   }
-  if (namespace !== KnownCaipNamespace.Eip155) {
-    return null;
-  }
-  const reference = config.chainId.split(':')[1];
-  const parsed = Number.parseInt(reference, 10);
-  if (Number.isNaN(parsed) || parsed < 0) {
-    return null;
-  }
-  const hexChainId = add0x(parsed.toString(16));
-
-  const defaultRpc = config.rpcProviders?.default;
-  if (!defaultRpc || !isAllowedRpcUrl(defaultRpc.url)) {
-    return null;
-  }
-
-  const blockExplorerUrls = config.blockExplorerUrls?.default
-    ? [config.blockExplorerUrls.default]
-    : [];
-  const nativeCurrency = config.assets?.native?.symbol ?? 'ETH';
-
-  const rpcEndpoint: AddNetworkCustomRpcEndpointFields | InfuraRpcEndpoint =
-    defaultRpc.type === 'infura' &&
-    isInfuraNetworkType(defaultRpc.networkClientId)
-      ? {
-          type: RpcEndpointType.Infura,
-          networkClientId: defaultRpc.networkClientId as InfuraNetworkType,
-          url: defaultRpc.url as InfuraRpcEndpoint['url'],
-        }
-      : {
-          type: RpcEndpointType.Custom,
-          url: defaultRpc.url,
-        };
-
-  const result: FeaturedNetworkForAdditionalList = {
-    chainId: hexChainId,
-    name: config.name,
-    nativeCurrency,
-    rpcEndpoints: [rpcEndpoint],
-    defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: blockExplorerUrls as `https://${string}`[],
-    defaultBlockExplorerUrlIndex: blockExplorerUrls.length > 0 ? 0 : undefined,
-  };
-  if (config.imageUrl && isAllowedImageUrl(config.imageUrl)) {
-    result.imageUrl = config.imageUrl;
-  }
-  return result;
 }
 
 /**
@@ -180,36 +150,34 @@ function registryConfigToAddNetworkFields(
  * static FEATURED_RPCS list.
  */
 export const getFeaturedNetworksForAdditionalList = createSelector(
-  getConfigRegistryState,
+  getRegistryConfigs,
   getIsConfigRegistryApiEnabled,
-  (
-    configRegistryState,
-    isConfigRegistryEnabled,
-  ): FeaturedNetworkForAdditionalList[] => {
+  (configs, isConfigRegistryEnabled): FeaturedNetworkForAdditionalList[] => {
     if (
       !isConfigRegistryEnabled ||
-      !configRegistryState?.configs?.networks ||
-      Object.keys(configRegistryState.configs.networks).length === 0
+      !configs?.networks ||
+      Object.keys(configs.networks).length === 0
     ) {
-      return FEATURED_RPCS as FeaturedNetworkForAdditionalList[];
+      return FEATURED_RPCS;
     }
 
-    const registryControllerState =
-      toRegistryControllerState(configRegistryState);
-    const featuredFromRegistry = selectFeaturedNetworks(
-      registryControllerState,
-    );
-    const evmNetworks: FeaturedNetworkForAdditionalList[] = [];
-
-    for (const config of Object.values(featuredFromRegistry)) {
+    const evmNetworks = Object.values(configs.networks).reduce<
+      FeaturedNetworkForAdditionalList[]
+    >((acc, config) => {
+      if (
+        config.config.isActive !== true ||
+        config.config.isFeatured !== true ||
+        config.config.isTestnet === true
+      ) {
+        return acc;
+      }
       const fields = registryConfigToAddNetworkFields(config);
       if (fields) {
-        evmNetworks.push(fields);
+        acc.push(fields);
       }
-    }
+      return acc;
+    }, []);
 
-    return evmNetworks.length > 0
-      ? evmNetworks
-      : (FEATURED_RPCS as FeaturedNetworkForAdditionalList[]);
+    return evmNetworks.length > 0 ? evmNetworks : FEATURED_RPCS;
   },
 );

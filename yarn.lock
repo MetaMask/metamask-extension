@@ -6113,20 +6113,20 @@ __metadata:
   linkType: hard
 
 "@metamask/config-registry-controller@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/config-registry-controller@npm:0.3.0"
+  version: 0.3.1
+  resolution: "@metamask/config-registry-controller@npm:0.3.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/controller-utils": "npm:^11.20.0"
-    "@metamask/keyring-controller": "npm:^25.3.0"
+    "@metamask/controller-utils": "npm:^12.0.0"
+    "@metamask/keyring-controller": "npm:^25.5.0"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/polling-controller": "npm:^16.0.4"
+    "@metamask/polling-controller": "npm:^16.0.5"
     "@metamask/profile-sync-controller": "npm:^28.0.2"
-    "@metamask/remote-feature-flag-controller": "npm:^4.2.0"
+    "@metamask/remote-feature-flag-controller": "npm:^4.2.1"
     "@metamask/superstruct": "npm:^3.1.0"
     "@metamask/utils": "npm:^11.9.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/da830fdfc076edea1c3cf1c0f5ba0ecbd6a9eaecd1d7c032d7e8a6bac492059f645891b1141d89b9791f8c6490ee2691dd5cf1c051750af4b0fac68cc5aa7706
+  checksum: 10/11b1fe66b15d9d074774fe4afe805c16a92bb6fe0ede3a20ca5fb0259f676a7a60babb5c1d121925d9e726aa7ccd22b62d791a98425cd967143c1d9407b55de3
   languageName: node
   linkType: hard
 
@@ -7019,7 +7019,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^25.1.0, @metamask/keyring-controller@npm:^25.1.1, @metamask/keyring-controller@npm:^25.2.0, @metamask/keyring-controller@npm:^25.3.0, @metamask/keyring-controller@npm:^25.4.0, @metamask/keyring-controller@npm:^25.5.0":
+"@metamask/keyring-controller@npm:^25.1.0, @metamask/keyring-controller@npm:^25.1.1, @metamask/keyring-controller@npm:^25.2.0, @metamask/keyring-controller@npm:^25.4.0, @metamask/keyring-controller@npm:^25.5.0":
   version: 25.5.0
   resolution: "@metamask/keyring-controller@npm:25.5.0"
   dependencies:
@@ -7644,18 +7644,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^16.0.0, @metamask/polling-controller@npm:^16.0.2, @metamask/polling-controller@npm:^16.0.4":
-  version: 16.0.4
-  resolution: "@metamask/polling-controller@npm:16.0.4"
+"@metamask/polling-controller@npm:^16.0.0, @metamask/polling-controller@npm:^16.0.2, @metamask/polling-controller@npm:^16.0.4, @metamask/polling-controller@npm:^16.0.5":
+  version: 16.0.5
+  resolution: "@metamask/polling-controller@npm:16.0.5"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/network-controller": "npm:^30.0.1"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.0.0"
+    "@metamask/network-controller": "npm:^31.0.0"
     "@metamask/utils": "npm:^11.9.0"
     "@types/uuid": "npm:^8.3.0"
     fast-json-stable-stringify: "npm:^2.1.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/c656f78f010103c65ae2018e75ef2c51c3b915bc9dd2624bdd7b06a327704a2428d0d0ec78c2570425cc611e7a7b85bfcaa9f0f0d2d16cfbc686e0e9fe3f29c2
+  checksum: 10/0fa32076672860e5bc27ac2720223b0f4199aaae9c952c5ec74b53ad49248705cc63a9b07dd25219512c348a85f87d04038f94a45eb2d2219af14d941f327275
   languageName: node
   linkType: hard
 
@@ -7882,16 +7882,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/remote-feature-flag-controller@npm:^4.1.0, @metamask/remote-feature-flag-controller@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "@metamask/remote-feature-flag-controller@npm:4.2.0"
+"@metamask/remote-feature-flag-controller@npm:^4.1.0, @metamask/remote-feature-flag-controller@npm:^4.2.0, @metamask/remote-feature-flag-controller@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "@metamask/remote-feature-flag-controller@npm:4.2.1"
   dependencies:
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/controller-utils": "npm:^11.19.0"
-    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/base-controller": "npm:^9.1.0"
+    "@metamask/controller-utils": "npm:^12.0.0"
+    "@metamask/messenger": "npm:^1.2.0"
     "@metamask/utils": "npm:^11.9.0"
     uuid: "npm:^8.3.2"
-  checksum: 10/bb8d4cf6d90cb895d994d471d53429ed816c2b60aef85f62b0731536cc2822cda3795b16ed5bd77cf87a934bcecda7a021024f4c224d5cda866d717db76d3400
+  checksum: 10/b789836eb03dfe45374a86209d00fad4b1e2284bd61fa7e0342504f577b2227336db01da67063b0166ece24edee7cb0482f63512143f0bbd5710942fba9b1d60
   languageName: node
   linkType: hard
 
@@ -20109,9 +20109,9 @@ __metadata:
   linkType: hard
 
 "basic-ftp@npm:^5.0.2":
-  version: 5.3.0
-  resolution: "basic-ftp@npm:5.3.0"
-  checksum: 10/08eef717642f32d92936e02f516ab6426ecc61084e4a75b542cd202dd84dddff2520dda321db1be34b7e49860cf1b2aed67ab275dc3e53b185949df311241396
+  version: 5.3.1
+  resolution: "basic-ftp@npm:5.3.1"
+  checksum: 10/9232ee155114efafadf5adee86a6750208653a9071e53e9803dceac61a66b3ba3974771ff2490ff28f1a118fdfb806ffcc488f64609e61a9cedb52480b312843
   languageName: node
   linkType: hard
 
@@ -22852,10 +22852,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"data-uri-to-buffer@npm:^6.0.0":
-  version: 6.0.1
-  resolution: "data-uri-to-buffer@npm:6.0.1"
-  checksum: 10/9140e68c585ae33d950f5943bd476751346c8b789ae80b01a578a33cb8f7f706d1ca7378aff2b1878b2a6d9a8c88c55cc286d88191c8b8ead8255c3c4d934530
+"data-uri-to-buffer@npm:^6.0.2":
+  version: 6.0.2
+  resolution: "data-uri-to-buffer@npm:6.0.2"
+  checksum: 10/8b6927c33f9b54037f442856be0aa20e5fd49fa6c9c8ceece408dc306445d593ad72d207d57037c529ce65f413b421da800c6827b1dbefb607b8056f17123a61
   languageName: node
   linkType: hard
 
@@ -27623,14 +27623,13 @@ __metadata:
   linkType: hard
 
 "get-uri@npm:^6.0.1":
-  version: 6.0.2
-  resolution: "get-uri@npm:6.0.2"
+  version: 6.0.5
+  resolution: "get-uri@npm:6.0.5"
   dependencies:
     basic-ftp: "npm:^5.0.2"
-    data-uri-to-buffer: "npm:^6.0.0"
+    data-uri-to-buffer: "npm:^6.0.2"
     debug: "npm:^4.3.4"
-    fs-extra: "npm:^8.1.0"
-  checksum: 10/beaf1978986f7e446b46655a047e19eb7a14ac1d8a3dec543ae34f814a84dbf8867a42660f91b1a5dbdfba50f5f9c3a6efdd8ae14632ff12a865a3790c6a4790
+  checksum: 10/6daa56eb367dc030ae7bf6db4b5d36f200c9bb47ab00593c142176e4f33f22e129a294ac94329c6bcaebda19b7506080267a336742d20a915fb2bef9c400347f
   languageName: node
   linkType: hard
 
@@ -29628,13 +29627,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ip-address@npm:^9.0.5":
-  version: 9.0.5
-  resolution: "ip-address@npm:9.0.5"
-  dependencies:
-    jsbn: "npm:1.1.0"
-    sprintf-js: "npm:^1.1.3"
-  checksum: 10/1ed81e06721af012306329b31f532b5e24e00cb537be18ddc905a84f19fe8f83a09a1699862bf3a1ec4b9dea93c55a3fa5faf8b5ea380431469df540f38b092c
+"ip-address@npm:^10.1.1":
+  version: 10.2.0
+  resolution: "ip-address@npm:10.2.0"
+  checksum: 10/12fec399e1af5753ac322e47a6d81a50d3a528b3abb17c09525b2a2edcaedcca628c40520706f7037bc4d8e951b0296c47e7b86d0a8e6e2335c8f0ba4afcfac1
   languageName: node
   linkType: hard
 
@@ -31521,13 +31517,6 @@ __metadata:
   version: 3.2.5
   resolution: "jsbi@npm:3.2.5"
   checksum: 10/2cceb3a06dcb16493e936aa22384d912dd5f0a1fd474b97b5c6705011bd0aac8214d9a392a730b3f3ffb61a8fbe910a34d0fe881329be6a02857520d7a61ace6
-  languageName: node
-  linkType: hard
-
-"jsbn@npm:1.1.0":
-  version: 1.1.0
-  resolution: "jsbn@npm:1.1.0"
-  checksum: 10/bebe7ae829bbd586ce8cbe83501dd8cb8c282c8902a8aeeed0a073a89dc37e8103b1244f3c6acd60278bcbfe12d93a3f83c9ac396868a3b3bbc3c5e5e3b648ef
   languageName: node
   linkType: hard
 
@@ -41073,12 +41062,12 @@ __metadata:
   linkType: hard
 
 "socks@npm:^2.6.2, socks@npm:^2.8.3":
-  version: 2.8.4
-  resolution: "socks@npm:2.8.4"
+  version: 2.8.8
+  resolution: "socks@npm:2.8.8"
   dependencies:
-    ip-address: "npm:^9.0.5"
+    ip-address: "npm:^10.1.1"
     smart-buffer: "npm:^4.2.0"
-  checksum: 10/ab3af97aeb162f32c80e176c717ccf16a11a6ebb4656a62b94c0f96495ea2a1f4a8206c04b54438558485d83d0c5f61920c07a1a5d3963892a589b40cc6107dd
+  checksum: 10/2108b9bd9cd3ab3248704a8319c875681bd8219afb13ae29648810193e4f3a24432baf20364eda1cb8ec144f2e1f3eb0692ce53281f05fe29aff5385e60b9b42
   languageName: node
   linkType: hard
 

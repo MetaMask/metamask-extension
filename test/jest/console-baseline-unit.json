@@ -496,9 +496,13 @@
     },
     "ui/components/multichain/network-list-menu/network-list-menu.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 3,
-      "React: componentWill* lifecycle deprecations": 1
+      "React: componentWill* lifecycle deprecations": 1,
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1
     },
     "ui/components/multichain/network-manager/network-manager.test.tsx": {
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
       "error: Unexpected key \"internalAccounts\" found in": 1
     },
     "ui/components/multichain/networks-form/networks-form.test.js": {
@@ -1604,6 +1608,11 @@
     "ui/selectors/assets.test.ts": {
       "Reselect: Identity function warnings": 1,
       "warn: No tokens found for chainId:": 1
+    },
+    "ui/selectors/config-registry/config-registry.test.ts": {
+      "Reselect: Identity function warnings": 1,
+      "Reselect: Input stability warnings": 1,
+      "error: Error: Error converting registry config": 2
     },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2

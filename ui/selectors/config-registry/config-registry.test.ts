@@ -1,37 +1,34 @@
-import type { RemoteFeatureFlagsState } from '../remote-feature-flags';
 import { FEATURED_RPCS } from '../../../shared/constants/network';
 import {
-  getConfigRegistryState,
+  getRegistryConfigs,
   getIsConfigRegistryApiEnabled,
   getFeaturedNetworksForAdditionalList,
-  type StateWithConfigRegistry,
 } from './config-registry';
 
 /** State shape that satisfies both config-registry and remote feature flag selectors. */
-type ConfigRegistryTestState = StateWithConfigRegistry &
-  RemoteFeatureFlagsState;
-
 describe('config-registry selectors', () => {
-  describe('getConfigRegistryState', () => {
-    it('returns metamask slice from state', () => {
-      const state: StateWithConfigRegistry = {
+  describe('getRegistryConfigs', () => {
+    it('returns registry config from state', () => {
+      const state = {
         metamask: {
           configs: { networks: {} },
+          lastFetched: null,
+          etag: null,
           version: '1.0',
         },
       };
-      expect(getConfigRegistryState(state)).toBe(state.metamask);
+      expect(getRegistryConfigs(state)).toStrictEqual(state.metamask.configs);
     });
 
     it('returns undefined when metamask is undefined', () => {
-      const state: StateWithConfigRegistry = {};
-      expect(getConfigRegistryState(state)).toBeUndefined();
+      const state = {};
+      expect(getRegistryConfigs(state)).toBeUndefined();
     });
   });
 
   describe('getIsConfigRegistryApiEnabled', () => {
     it('returns true when configRegistryApiEnabled is true', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
         },
@@ -40,7 +37,7 @@ describe('config-registry selectors', () => {
     });
 
     it('returns false when configRegistryApiEnabled is false', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: false },
         },
@@ -49,7 +46,7 @@ describe('config-registry selectors', () => {
     });
 
     it('returns false when remoteFeatureFlags is empty', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: { remoteFeatureFlags: {} },
       };
       expect(getIsConfigRegistryApiEnabled(state)).toBe(false);
@@ -58,10 +55,13 @@ describe('config-registry selectors', () => {
 
   describe('getFeaturedNetworksForAdditionalList', () => {
     it('returns FEATURED_RPCS when feature flag is off', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: false },
           configs: { networks: { 'eip155:1': {} as never } },
+          lastFetched: null,
+          etag: null,
+          version: '1.0',
         },
       };
       const result = getFeaturedNetworksForAdditionalList(state);
@@ -69,10 +69,13 @@ describe('config-registry selectors', () => {
     });
 
     it('returns FEATURED_RPCS when configs.networks is empty', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: { networks: {} },
+          lastFetched: null,
+          etag: null,
+          version: '1.0',
         },
       };
       const result = getFeaturedNetworksForAdditionalList(state);
@@ -80,9 +83,12 @@ describe('config-registry selectors', () => {
     });
 
     it('returns FEATURED_RPCS when configs is missing', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
+          lastFetched: null,
+          etag: null,
+          version: '1.0',
         },
       };
       const result = getFeaturedNetworksForAdditionalList(state);
@@ -90,7 +96,7 @@ describe('config-registry selectors', () => {
     });
 
     it('returns dynamic list when flag is on and registry has featured EVM networks', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: {
@@ -151,7 +157,7 @@ describe('config-registry selectors', () => {
     });
 
     it('omits imageUrl when registry config has non-https imageUrl', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: {
@@ -208,7 +214,7 @@ describe('config-registry selectors', () => {
     });
 
     it('returns FEATURED_RPCS when registry has only non-EVM featured networks', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: {
@@ -238,7 +244,7 @@ describe('config-registry selectors', () => {
     });
 
     it('returns FEATURED_RPCS when selectFeaturedNetworks returns no featured EVM networks', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: {
@@ -272,7 +278,7 @@ describe('config-registry selectors', () => {
     });
 
     it('returns FEATURED_RPCS when featured EVM network has no default RPC URL', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: {
@@ -306,7 +312,7 @@ describe('config-registry selectors', () => {
     });
 
     it('skips entries with malformed chainId and falls back to FEATURED_RPCS when no valid entries remain', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: {
@@ -345,7 +351,7 @@ describe('config-registry selectors', () => {
     });
 
     it('skips malformed chainId entries but includes valid ones', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: {
@@ -410,7 +416,7 @@ describe('config-registry selectors', () => {
     });
 
     it('returns FEATURED_RPCS when featured EVM network has non-https RPC URL', () => {
-      const state: ConfigRegistryTestState = {
+      const state = {
         metamask: {
           remoteFeatureFlags: { configRegistryApiEnabled: true },
           configs: {
