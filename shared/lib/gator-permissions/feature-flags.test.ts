@@ -5,6 +5,13 @@ import {
 
 describe('getEnabledAdvancedPermissions', () => {
   let originalGatorEnabledPermissionTypes: string | undefined;
+  const remoteFeatureFlagSource = {
+    remoteFeatureFlags: {
+      [ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG]: {
+        permissions: ['native-token-stream'],
+      },
+    },
+  };
 
   const restoreGatorEnabledPermissionTypes = () => {
     if (originalGatorEnabledPermissionTypes === undefined) {
@@ -27,12 +34,16 @@ describe('getEnabledAdvancedPermissions', () => {
 
   it('returns an empty array when GATOR_ENABLED_PERMISSION_TYPES is not set', () => {
     delete process.env.GATOR_ENABLED_PERMISSION_TYPES;
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([]);
+    expect(getEnabledAdvancedPermissions(remoteFeatureFlagSource)).toStrictEqual(
+      [],
+    );
   });
 
   it('returns an empty array when GATOR_ENABLED_PERMISSION_TYPES is an empty string', () => {
     process.env.GATOR_ENABLED_PERMISSION_TYPES = '';
-    expect(getEnabledAdvancedPermissions()).toStrictEqual([]);
+    expect(getEnabledAdvancedPermissions(remoteFeatureFlagSource)).toStrictEqual(
+      [],
+    );
   });
 
   it('parses comma-separated build values', () => {
