@@ -431,9 +431,6 @@
     "ui/components/multichain/activity-list-item/activity-list-item.test.js": {
       "React: DOM nesting violations": 1
     },
-    "ui/components/multichain/address-list-item/address-list-item.test.tsx": {
-      "React: DOM nesting violations": 1
-    },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 4
@@ -445,15 +442,6 @@
     },
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 16
-    },
-    "ui/components/multichain/connect-accounts-modal/connect-accounts-modal-list.test.tsx": {
-      "MetaMask: Background connection not initialized": 12
-    },
-    "ui/components/multichain/connect-accounts-modal/connect-accounts-modal.test.tsx": {
-      "MetaMask: Background connection not initialized": 8
-    },
-    "ui/components/multichain/connected-site-popover/connected-site-popover.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 4
     },
     "ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
