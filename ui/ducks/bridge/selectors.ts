@@ -676,7 +676,10 @@ export const getFromTokenBalanceInUsd = createSelector(
     (state) => Number(getFromTokenConversionRate(state)?.usd),
   ],
   (fromTokenBalance, fromTokenConversionRate) => {
-    if (isNaN(fromTokenBalance) || isNaN(fromTokenConversionRate)) {
+    if (
+      Number.isNaN(fromTokenBalance) ||
+      Number.isNaN(fromTokenConversionRate)
+    ) {
       return undefined;
     }
     return fromTokenBalance * fromTokenConversionRate;
@@ -808,7 +811,7 @@ export const getPriceImpact = createSelector(
   ],
   (priceImpact) => {
     const priceImpactNumber = Number(priceImpact);
-    if (isNaN(priceImpactNumber)) {
+    if (Number.isNaN(priceImpactNumber)) {
       return null;
     }
     return priceImpactNumber;
@@ -959,7 +962,7 @@ export const getQuoteRequestInsufficientBal = createSelector(
       insufficientNativeReserveError ||
       (validatedSrcAmount &&
         fromTokenBalance &&
-        !isNaN(Number(fromTokenBalance)) &&
+        !Number.isNaN(Number(fromTokenBalance)) &&
         new BigNumber(fromTokenBalance).lt(validatedSrcAmount)),
     ),
 );
@@ -1079,7 +1082,7 @@ const _getBaseValidationErrors = createDeepEqualSelector(
       isInsufficientBalance:
         validatedSrcAmount &&
         fromTokenBalance &&
-        !isNaN(Number(fromTokenBalance))
+        !Number.isNaN(Number(fromTokenBalance))
           ? new BigNumber(fromTokenBalance).lt(validatedSrcAmount)
           : false,
       isEstimatedReturnLow:
