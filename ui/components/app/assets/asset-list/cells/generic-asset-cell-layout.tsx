@@ -53,7 +53,7 @@ export default function GenericAssetCellLayout({
           >
             <Box
               flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.SpaceBetween}
+              justifyContent={BoxJustifyContent.Between}
             >
               {headerLeftDisplay}
               {headerRightDisplay}
@@ -61,7 +61,7 @@ export default function GenericAssetCellLayout({
 
             <Box
               flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.SpaceBetween}
+              justifyContent={BoxJustifyContent.Between}
             >
               {footerLeftDisplay}
               {footerRightDisplay}

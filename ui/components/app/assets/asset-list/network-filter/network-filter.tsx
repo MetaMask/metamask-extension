@@ -126,7 +126,7 @@ const NetworkFilter = ({
       >
         <Box
           flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.SpaceBetween}
+          justifyContent={BoxJustifyContent.Between}
           gap={3}
           className="w-full"
         >
@@ -193,7 +193,7 @@ const NetworkFilter = ({
       >
         <Box
           flexDirection={BoxFlexDirection.Row}
-          justifyContent={BoxJustifyContent.SpaceBetween}
+          justifyContent={BoxJustifyContent.Between}
           gap={3}
           alignItems={BoxAlignItems.Center}
           className="w-full"

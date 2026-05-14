@@ -58,7 +58,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
                   class="mm-box mm-badge-wrapper nft-item__badge-wrapper nft-item__badge-wrapper__clickable mm-box--display-block"
                 >
                   <div
-                    class="mm-box nft-item__default-image nft-default nft-default--clickable mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--rounded-lg"
+                    class="flex flex-row items-center justify-center nft-item__default-image nft-default rounded-lg nft-default--clickable"
                     data-testid="nft-default-image"
                     tabindex="0"
                   >
