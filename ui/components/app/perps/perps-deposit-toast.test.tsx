@@ -305,7 +305,7 @@ describe('PerpsDepositToast', () => {
         lastDepositTransactionId: 'result-tx-1',
         lastDepositResult: {
           success: false,
-          error: 'Bridge failed',
+          error: messages.perpsDepositErrorBridgeFailed.message,
         },
       },
     });
@@ -316,7 +316,7 @@ describe('PerpsDepositToast', () => {
       expect.objectContaining({
         props: expect.objectContaining({
           title: messages.perpsDepositToastErrorTitle.message,
-          description: 'Bridge failed',
+          description: messages.perpsDepositErrorBridgeFailed.message,
         }),
       }),
       {

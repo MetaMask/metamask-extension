@@ -5904,6 +5904,9 @@
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Bridge failed"
+  },
   "perpsDepositFailed": {
     "message": "Deposit could not be completed. Try again."
   },
@@ -6400,6 +6403,9 @@
   },
   "perpsTrades": {
     "message": "Trades"
+  },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Opened long"
   },
   "perpsTriggerPrice": {
     "message": "Trigger price"
