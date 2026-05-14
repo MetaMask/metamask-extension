@@ -48,8 +48,14 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
 
 /**
  * Isolated component that starts/stops EVM token balance polling.
- * Kept separate so that balance state updates only re-render this
- * small component instead of the entire AccountOverviewTabs subtree.
+ *
+ * This intentionally returns null and only runs a hook. While that may seem
+ * like an anti-pattern, it is the correct React performance pattern here:
+ * `useTokenBalances` internally calls `useSelector(getTokenBalances)`, which
+ * subscribes the calling component to every token-balance state update
+ * (every ~30 s). By placing the call in this tiny component instead of in
+ * `AccountOverviewTabs`, only this component re-renders when balances change,
+ * rather than the entire tabs subtree and all of its children.
  *
  * @param options - Component options.
  * @param options.chainIds - The chain IDs to poll balances for.
@@ -95,8 +101,9 @@ export const AccountOverviewTabs = ({
     [allEnabledNetworks],
   );
 
-  // EVM specific tokenBalance polling, updates state via polling loop per chainId
-  // Rendered as an isolated component so balance updates don't re-render this subtree
+  // EVM token-balance polling is handled by TokenBalancesPoller (rendered below).
+  // Keeping it in an isolated child prevents balance updates from re-rendering
+  // this entire subtree every ~30 s.
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTab) => {
