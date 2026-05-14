@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   LOW_SLIPPAGE_PERCENT_THRESHOLD,
   SLIPPAGE_PERCENT_OPTIONS,
 } from '../../../../constants/batch-sell';
+import { BATCH_SELL_SELECT_ROUTE } from '../../../../helpers/constants/routes';
 import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';
 import { Header } from './components/Header';
 import { QuotesList } from './components/QuotesList';
@@ -34,6 +36,7 @@ export const BatchSellReviewPage = () => {
     editingSlippageAssetId,
     canDeleteAssets,
     receivedAssets,
+    hasInitialSelection,
     setSendAmountPercent,
     setSlippagePercent,
     setEditingSlippageAssetId,
@@ -41,12 +44,17 @@ export const BatchSellReviewPage = () => {
     deleteAsset,
   } = useBatchSellQuotesConfig();
 
-  const { data, isLoading } = useBatchSellQuotesFetching({
-    sendAssetsConfig,
-    receivedAsset: selectedReceiveAsset,
-  });
+  const { data } = useBatchSellQuotesFetching(
+    {
+      sendAssetsConfig,
+      receivedAsset: selectedReceiveAsset,
+    },
+    { enabled: hasInitialSelection },
+  );
 
-  // TODO: if availableBatchSellAssetsForNetworkList or selectedAssetsId is empty render error
+  if (!hasInitialSelection) {
+    return <Navigate to={BATCH_SELL_SELECT_ROUTE} replace />;
+  }
 
   return (
     <Box

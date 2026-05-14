@@ -40,6 +40,10 @@ export const useBatchSellQuotesConfig = () => {
     ).filter((asset) => selectedAssetsId?.includes(asset.assetId)),
   );
 
+  const hasInitialSelection =
+    Boolean(selectedAssetsId?.length) &&
+    availableBatchSellAssetsForNetworkList.length > 0;
+
   const [state, dispatch] = useReducer(
     batchSellReviewStateReducer,
     undefined,
@@ -107,6 +111,7 @@ export const useBatchSellQuotesConfig = () => {
     editingSlippageAssetId: state.editingSlippageAssetId,
     canDeleteAssets,
     receivedAssets,
+    hasInitialSelection,
     setSendAmountPercent,
     setSlippagePercent,
     setEditingSlippageAssetId,

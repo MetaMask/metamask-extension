@@ -1,14 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 
-export const useBatchSellQuotesFetching = ({
-  sendAssetsConfig,
-  receivedAsset,
-}: BatchSellQuotesConfig) => {
+type Options = {
+  enabled: boolean
+}
+
+export const useBatchSellQuotesFetching = (
+  { sendAssetsConfig, receivedAsset }: BatchSellQuotesConfig,
+  { enabled }: Options,
+) => {
   const { data, isLoading } = useQuery({
+    enabled,
     queryKey: [
       'batch-sell',
-      receivedAsset.id,
+      receivedAsset?.id,
       ...Object.values(sendAssetsConfig).map(
         ({ asset, sendAmountPercent, slippagePercent }) =>
           [asset.assetId, sendAmountPercent, slippagePercent].join('-'),
