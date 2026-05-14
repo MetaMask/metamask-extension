@@ -19,10 +19,27 @@ import LatticeKeyring from 'eth-lattice-keyring';
 
 type LegacyLatticeKeyring = InstanceType<typeof LatticeKeyring>;
 
+type LatticePage = { address: string; balance: string | null }[];
+
 // `LatticeKeyring` returns `any[]` from `addAccounts` and lacks the full
 // `EthKeyring` signature surface, but it implements the same runtime methods.
-// We assert it conforms to `EthKeyring` so the V2 wrapper can use it.
-type LatticeKeyringAsEthKeyring = LegacyLatticeKeyring & EthKeyring;
+// We assert it conforms to `EthKeyring` (plus the runtime device-management
+// methods the wrapper depends on) so the V2 wrapper can use it.
+type LatticeKeyringAsEthKeyring = LegacyLatticeKeyring &
+  EthKeyring & {
+    hdPath: string;
+    appName: string | undefined;
+    network: string | null;
+    setHdPath(hdPath: string): void;
+    setAccountToUnlock(index: number): void;
+    addAccounts(n?: number): Promise<string[]>;
+    getFirstPage(): Promise<LatticePage>;
+    getNextPage(): Promise<LatticePage>;
+    getPreviousPage(): Promise<LatticePage>;
+    isUnlocked(): boolean;
+    forgetDevice(): void;
+    removeAccount(address: string): void;
+  };
 
 /**
  * Methods supported by Lattice keyring EOA accounts. Lattice supports the
@@ -142,9 +159,8 @@ export class LatticeKeyringV2
         );
       }
 
-      const { entropySource, addressIndex } = options as
-        | LatticeCreateAccountOptions
-        | (CreateAccountOptions & { addressIndex?: number });
+      const { entropySource, addressIndex } =
+        options as LatticeCreateAccountOptions;
 
       if (entropySource !== this.entropySource) {
         throw new Error(
@@ -246,7 +262,7 @@ export class LatticeKeyringV2
    * @param n - The number of accounts to add. Defaults to 1.
    * @returns The list of added account addresses.
    */
-  async addAccounts(n?: number): Promise<string[]> {
+  async addAccounts(n = 1): Promise<string[]> {
     return this.inner.addAccounts(n);
   }
 
@@ -255,7 +271,7 @@ export class LatticeKeyringV2
    *
    * @returns The first page of accounts.
    */
-  async getFirstPage(): Promise<ReturnType<LegacyLatticeKeyring['getFirstPage']>> {
+  async getFirstPage(): Promise<LatticePage> {
     return this.inner.getFirstPage();
   }
 
@@ -264,7 +280,7 @@ export class LatticeKeyringV2
    *
    * @returns The next page of accounts.
    */
-  async getNextPage(): Promise<ReturnType<LegacyLatticeKeyring['getNextPage']>> {
+  async getNextPage(): Promise<LatticePage> {
     return this.inner.getNextPage();
   }
 
@@ -273,9 +289,7 @@ export class LatticeKeyringV2
    *
    * @returns The previous page of accounts.
    */
-  async getPreviousPage(): Promise<
-    ReturnType<LegacyLatticeKeyring['getPreviousPage']>
-  > {
+  async getPreviousPage(): Promise<LatticePage> {
     return this.inner.getPreviousPage();
   }
 

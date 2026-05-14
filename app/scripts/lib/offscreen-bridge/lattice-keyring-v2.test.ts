@@ -1,7 +1,10 @@
 import LatticeKeyring from 'eth-lattice-keyring';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { EthScope } from '@metamask/keyring-api';
-import { LatticeKeyringV2 } from './lattice-keyring-v2';
+import {
+  LatticeKeyringV2,
+  type LatticeCreateAccountOptions,
+} from './lattice-keyring-v2';
 
 const entropySource = 'lattice-device-id-1234';
 
@@ -11,6 +14,16 @@ const TEST_ADDRESSES = [
   '0x3333333333333333333333333333333333333333',
 ];
 
+// The upstream `eth-lattice-keyring` declarations don't surface
+// method-overload shapes that `jest.spyOn` and `mockResolvedValue` can
+// narrow from, and parts of the V2 `CreateAccountOptions` discriminated
+// union strip extension-specific fields like `entropySource`. The wrapper
+// is the unit under test; the inner keyring's interaction surface is
+// exercised only via mocks, so we expose it loosely-typed here to keep
+// the call sites readable.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type InnerLatticeKeyringForTests = any;
+
 /**
  * Build a `LatticeKeyringV2` wrapping a freshly-constructed legacy keyring.
  *
@@ -18,11 +31,14 @@ const TEST_ADDRESSES = [
  */
 function createWrapper(): {
   wrapper: LatticeKeyringV2;
-  inner: InstanceType<typeof LatticeKeyring>;
+  inner: InnerLatticeKeyringForTests;
 } {
-  const inner = new LatticeKeyring();
-  const wrapper = new LatticeKeyringV2({ legacyKeyring: inner, entropySource });
-  return { wrapper, inner };
+  const innerReal = new LatticeKeyring({});
+  const wrapper = new LatticeKeyringV2({
+    legacyKeyring: innerReal,
+    entropySource,
+  });
+  return { wrapper, inner: innerReal };
 }
 
 describe('LatticeKeyringV2', () => {
@@ -83,7 +99,6 @@ describe('LatticeKeyringV2', () => {
 
       await expect(
         wrapper.createAccounts({
-          // @ts-expect-error: deliberately exercising the unsupported path
           type: 'bip44:derive-index',
           entropySource,
           groupIndex: 0,
@@ -96,11 +111,10 @@ describe('LatticeKeyringV2', () => {
 
       await expect(
         wrapper.createAccounts({
-          // @ts-expect-error: testing runtime check
           type: 'custom',
           entropySource: 'other-source',
           addressIndex: 0,
-        }),
+        } as LatticeCreateAccountOptions),
       ).rejects.toThrow(/Entropy source mismatch/u);
     });
 
@@ -109,11 +123,10 @@ describe('LatticeKeyringV2', () => {
 
       await expect(
         wrapper.createAccounts({
-          // @ts-expect-error: testing runtime check
           type: 'custom',
           entropySource,
           addressIndex: -1,
-        }),
+        } as LatticeCreateAccountOptions),
       ).rejects.toThrow(/Invalid addressIndex/u);
     });
 
@@ -125,11 +138,10 @@ describe('LatticeKeyringV2', () => {
       jest.spyOn(inner, 'addAccounts').mockResolvedValue([TEST_ADDRESSES[2]]);
 
       const accounts = await wrapper.createAccounts({
-        // @ts-expect-error: the wrapper's CreateAccountOptions union is narrower than the V2 supertype
         type: 'custom',
         entropySource,
         addressIndex: 5,
-      });
+      } as LatticeCreateAccountOptions);
 
       expect(setAccountToUnlockSpy).toHaveBeenCalledWith(5);
       expect(accounts).toHaveLength(1);
