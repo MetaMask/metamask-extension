@@ -6,16 +6,16 @@ import * as actions from '../../store/actions';
 
 const mockNavigate = jest.fn();
 
-// Capture the latest props the Lock component receives so each test can assert
-// against them without coupling to implementation details of the HOC chain.
-let capturedProps: Record<string, unknown> = {};
+// jest.fn() records every call, so the mock component can call it with props
+// during render without writing to any external variable (which would violate
+// the react-compiler rule). Use getCapturedProps() to read the latest render.
+const mockLockRender = jest.fn();
 
 jest.mock('./lock.component', () => {
-  const LockComponent = (props: Record<string, unknown>) => {
-    capturedProps = props;
+  return function LockComponent(props: Record<string, unknown>) {
+    mockLockRender(props);
     return <div data-testid="mock-lock" />;
   };
-  return LockComponent;
 });
 
 // withRouterHooks calls useNavigate / useLocation / useParams. Supply a
@@ -46,21 +46,23 @@ const renderLockContainer = (isUnlocked = false) => {
   return renderWithProvider(<LockContainer />, store);
 };
 
+const getCapturedProps = () =>
+  (mockLockRender.mock.lastCall?.[0] ?? {}) as Record<string, unknown>;
+
 describe('lock.container', () => {
   beforeEach(() => {
-    capturedProps = {};
     jest.clearAllMocks();
   });
 
   describe('mapStateToProps', () => {
     it('passes isUnlocked: false when the wallet is locked', () => {
       renderLockContainer(false);
-      expect(capturedProps.isUnlocked).toBe(false);
+      expect(getCapturedProps().isUnlocked).toBe(false);
     });
 
     it('passes isUnlocked: true when the wallet is unlocked', () => {
       renderLockContainer(true);
-      expect(capturedProps.isUnlocked).toBe(true);
+      expect(getCapturedProps().isUnlocked).toBe(true);
     });
   });
 
@@ -69,13 +71,13 @@ describe('lock.container', () => {
       // Return a plain action so the thunk middleware does not try to hit
       // background APIs during the test.
       const fakeAction = { type: 'LOCK_METAMASK_TEST' };
-      jest
-        .spyOn(actions, 'lockMetamask')
-        .mockReturnValue(fakeAction as never);
+      jest.spyOn(actions, 'lockMetamask').mockReturnValue(fakeAction as never);
 
       renderLockContainer(true);
 
-      const { lockMetamask } = capturedProps as { lockMetamask: () => void };
+      const { lockMetamask } = getCapturedProps() as {
+        lockMetamask: () => void;
+      };
       lockMetamask();
 
       expect(actions.lockMetamask).toHaveBeenCalledTimes(1);
@@ -85,22 +87,22 @@ describe('lock.container', () => {
   describe('mergeProps', () => {
     it('forwards navigate from withRouterHooks to the Lock component', () => {
       renderLockContainer();
-      expect(capturedProps.navigate).toBe(mockNavigate);
+      expect(getCapturedProps().navigate).toBe(mockNavigate);
     });
 
     it('does not forward location to the Lock component', () => {
       renderLockContainer();
-      expect(capturedProps.location).toBeUndefined();
+      expect(getCapturedProps().location).toBeUndefined();
     });
 
     it('does not forward params to the Lock component', () => {
       renderLockContainer();
-      expect(capturedProps.params).toBeUndefined();
+      expect(getCapturedProps().params).toBeUndefined();
     });
 
     it('still forwards isUnlocked and lockMetamask alongside navigate', () => {
       renderLockContainer(true);
-      expect(capturedProps).toMatchObject({
+      expect(getCapturedProps()).toMatchObject({
         navigate: mockNavigate,
         isUnlocked: true,
         lockMetamask: expect.any(Function),
