@@ -180,7 +180,6 @@ describe('TokenList', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     getMockTrackEvent().mockClear();
-    window.sessionStorage.clear();
 
     jest
       .mocked(getPreferences)

@@ -71,29 +71,14 @@ type TokenListDisplayItem =
     };
 
 const LOW_VALUE_ASSET_FIAT_THRESHOLD = 1;
-const LOW_VALUE_ASSETS_EXPANDED_SESSION_KEY =
-  'metamask:home-low-value-assets-expanded';
+let lowValueAssetsExpandedSessionValue = false;
 
 const getInitialLowValueAssetsExpanded = () => {
-  try {
-    return (
-      window.sessionStorage.getItem(LOW_VALUE_ASSETS_EXPANDED_SESSION_KEY) ===
-      'true'
-    );
-  } catch {
-    return false;
-  }
+  return lowValueAssetsExpandedSessionValue;
 };
 
 const setLowValueAssetsExpandedSessionValue = (isExpanded: boolean) => {
-  try {
-    window.sessionStorage.setItem(
-      LOW_VALUE_ASSETS_EXPANDED_SESSION_KEY,
-      String(isExpanded),
-    );
-  } catch {
-    // Session persistence is best-effort only.
-  }
+  lowValueAssetsExpandedSessionValue = isExpanded;
 };
 
 const isLowValueAsset = (token: TokenWithFiatAmount) => {
@@ -136,7 +121,7 @@ const LowValueAssetsToggle = ({
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center bg-background-default px-4 text-start text-inherit hover:bg-hover focus:outline focus:outline-2 focus:outline-primary-default focus:-outline-offset-2"
+      className="flex w-full items-center bg-background-default px-4 text-start text-inherit hover:bg-hover focus:outline-none"
       style={{ height: ASSET_CELL_HEIGHT }}
       aria-expanded={isExpanded}
       data-testid="low-value-assets-toggle"
