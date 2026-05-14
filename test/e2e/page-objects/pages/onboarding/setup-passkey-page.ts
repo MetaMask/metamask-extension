@@ -50,7 +50,7 @@ class SetupPasskeyPage {
 
   async waitForEnrollmentSuccess(): Promise<void> {
     console.log('Waiting for passkey enrollment to complete successfully');
-    await this.driver.waitForSelector(this.stepIndicatorSuccess,);
+    await this.driver.waitForSelector(this.stepIndicatorSuccess);
   }
 }
 
