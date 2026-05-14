@@ -732,7 +732,6 @@ describe('createPerpsInfrastructure', () => {
       const infrastructure = createPerpsInfrastructure(getDeps());
       const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
         'eip155:42161:0x1234',
-        0,
       );
       expect(discount).toBe(0);
     });
