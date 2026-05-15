@@ -62,7 +62,7 @@ describe('AppHeaderUnlockedContent trace', () => {
     );
 
     const networksSubtitle = screen.getByTestId('networks-subtitle-test-id');
-    // The hover handler is on the first child Box inside MultichainHoveredAddressRowsList
+    // The hover handler is on the first child Box inside MultichainTriggeredAddressRowsList
     const hoverTarget = networksSubtitle.firstElementChild as HTMLElement;
     fireEvent.mouseEnter(hoverTarget);
 

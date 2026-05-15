@@ -34,14 +34,15 @@ import {
   SECURITY_ROUTE,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../helpers/constants/routes';
 import { toRelativeRoutePath } from '../routes/utils';
 import {
   getCompletedOnboarding,
   getIsPrimarySeedPhraseBackedUp,
-  getIsUnlocked,
   getOpenedWithSidepanel,
 } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   createNewVaultAndGetSeedPhrase,
   unlockAndGetSeedPhrase,
@@ -49,6 +50,8 @@ import {
   restoreSocialBackupAndGetSeedPhrase,
   createNewVaultAndSyncWithSocial,
   setCompletedOnboarding,
+  setUseSidePanelAsDefault,
+  setCompletedOnboardingWithSidepanel,
 } from '../../store/actions';
 import {
   getFirstTimeFlowType,
@@ -71,6 +74,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { isFlask } from '../../../shared/lib/build-types';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+import { useSidePanelEnabled } from '../../hooks/useSidePanelEnabled';
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -85,6 +89,7 @@ import AccountExist from './account-exist/account-exist';
 import AccountNotFound from './account-not-found/account-not-found';
 import RevealRecoveryPhrase from './recovery-phrase/reveal-recovery-phrase';
 import OnboardingDownloadApp from './download-app/download-app';
+import SetupPasskey from './setup-passkey/setup-passkey';
 
 // Lazy-load ExperimentalArea so the flask/ module is only fetched in Flask builds.
 // This is not just for performance, it is necessary so non-Flask builds don't try
@@ -107,6 +112,7 @@ export default function OnboardingFlow() {
   const { pathname, search } = location;
   const navigate = useNavigate();
   const theme = useTheme();
+  const isSidePanelEnabled = useSidePanelEnabled();
   const completedOnboarding: boolean = useSelector(getCompletedOnboarding);
   const openedWithSidepanel = useSelector(getOpenedWithSidepanel);
   const nextRoute = useSelector(getFirstTimeFlowTypeRouteAfterUnlock);
@@ -114,7 +120,7 @@ export default function OnboardingFlow() {
   const isFromSettingsSecurity = new URLSearchParams(search).get(
     'isFromSettingsSecurity',
   );
-  const { bufferedTrace, onboardingParentContext } =
+  const { bufferedTrace, onboardingParentContext, trackEvent } =
     useContext(MetaMetricsContext);
   const isUnlocked = useSelector(getIsUnlocked);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
@@ -167,9 +173,12 @@ export default function OnboardingFlow() {
       ONBOARDING_REVIEW_SRP_ROUTE,
       ONBOARDING_CONFIRM_SRP_ROUTE,
     ].some((route) => pathname?.startsWith(route));
+    const isSetupPasskeyRoute = pathname?.startsWith(
+      ONBOARDING_SETUP_PASSKEY_ROUTE,
+    );
 
     if (isUnlocked && !completedOnboarding && !secretRecoveryPhrase) {
-      if (isSRPBackupRoute) {
+      if (isSRPBackupRoute || isSetupPasskeyRoute) {
         navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
       }
     }
@@ -232,6 +241,21 @@ export default function OnboardingFlow() {
     }
   };
 
+  const handleSocialLoginRehydration = async () => {
+    if (isSidePanelEnabled) {
+      await dispatch(setUseSidePanelAsDefault(true));
+      await dispatch(setCompletedOnboardingWithSidepanel());
+
+      // for sidepanel, we need to navigate to the next route (i.e. Home)
+      navigate(nextRoute, { replace: true });
+    } else {
+      // For existing social login users, set onboarding complete
+      // The useEffect watching completedOnboarding will handle navigation to DEFAULT_ROUTE
+      // Don't navigate here - let the useEffect handle it to avoid duplicate navigations
+      await dispatch(setCompletedOnboarding());
+    }
+  };
+
   const handleUnlock = async (password: string) => {
     try {
       setIsLoading(true);
@@ -242,7 +266,7 @@ export default function OnboardingFlow() {
         firstTimeFlowType === FirstTimeFlowType.socialImport
       ) {
         retrievedSecretRecoveryPhrase = await dispatch(
-          restoreSocialBackupAndGetSeedPhrase(password),
+          restoreSocialBackupAndGetSeedPhrase(password, trackEvent),
         );
       } else {
         retrievedSecretRecoveryPhrase = await dispatch(
@@ -254,10 +278,7 @@ export default function OnboardingFlow() {
         setSecretRecoveryPhrase(retrievedSecretRecoveryPhrase);
       }
       if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
-        // For existing social login users, set onboarding complete
-        // The useEffect watching completedOnboarding will handle navigation to DEFAULT_ROUTE
-        await dispatch(setCompletedOnboarding());
-        // Don't navigate here - let the useEffect handle it to avoid duplicate navigations
+        await handleSocialLoginRehydration();
         return;
       }
       navigate(nextRoute, { replace: true });
@@ -351,6 +372,10 @@ export default function OnboardingFlow() {
                   secretRecoveryPhrase={secretRecoveryPhrase}
                 />
               }
+            />
+            <Route
+              path={toRelativePath(ONBOARDING_SETUP_PASSKEY_ROUTE)}
+              element={<SetupPasskey />}
             />
             <Route
               path={toRelativePath(ONBOARDING_REVEAL_SRP_ROUTE)}

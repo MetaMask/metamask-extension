@@ -10,21 +10,24 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   getFirstTimeFlowType,
-  getCurrentKeyring,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getIsSocialLoginFlow,
   getSocialLoginType,
   getIsParticipateInMetaMetricsSet,
+  getIsPasskeyFeatureAvailable,
 } from '../../../selectors';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
@@ -71,6 +74,7 @@ export default function CreatePassword({
   } = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
   const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
+  const isPasskeyFeatureAvailable = useSelector(getIsPasskeyFeatureAvailable);
   const socialLoginType = useSelector(getSocialLoginType);
   const isWalletResetInProgress = useSelector(getIsWalletResetInProgress);
 
@@ -107,6 +111,16 @@ export default function CreatePassword({
       !newAccountCreationInProgress &&
       !isWalletResetInProgress
     ) {
+      // route to passkey setup
+      if (
+        isPasskeyFeatureAvailable &&
+        (firstTimeFlowType === FirstTimeFlowType.import ||
+          firstTimeFlowType === FirstTimeFlowType.create)
+      ) {
+        navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
+        return;
+      }
+
       if (
         firstTimeFlowType === FirstTimeFlowType.import ||
         firstTimeFlowType === FirstTimeFlowType.socialImport
@@ -144,6 +158,7 @@ export default function CreatePassword({
     secretRecoveryPhrase,
     isParticipateInMetaMetricsSet,
     isWalletResetInProgress,
+    isPasskeyFeatureAvailable,
   ]);
 
   useEffect(() => {
@@ -204,7 +219,9 @@ export default function CreatePassword({
       },
     });
 
-    if (isFirefox || isSocialLoginFlow) {
+    if (isPasskeyFeatureAvailable) {
+      navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
+    } else if (isFirefox || isSocialLoginFlow) {
       navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_METAMETRICS, { replace: true });
@@ -265,11 +282,25 @@ export default function CreatePassword({
       },
     });
     if (isSocialLoginFlow) {
+      // track analytics preference selected event for social login users
+      // as social login users will not see the metametrics screen
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+        properties: {
+          [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
+          [MetaMetricsUserTrait.HasMarketingConsent]: termsChecked,
+          location: 'onboarding_create_password',
+        },
+      });
+
       if (termsChecked) {
         dispatch(setMarketingConsent(true));
         dispatch(setDataCollectionForMarketing(true));
       }
       navigate(ONBOARDING_DOWNLOAD_APP_ROUTE, { replace: true });
+    } else if (isPasskeyFeatureAvailable) {
+      navigate(ONBOARDING_SETUP_PASSKEY_ROUTE, { replace: true });
     } else {
       navigate(ONBOARDING_REVIEW_SRP_ROUTE, { replace: true });
     }

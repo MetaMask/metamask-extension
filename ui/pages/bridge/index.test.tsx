@@ -1,6 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { act, fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
@@ -11,8 +12,10 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletProvider,
 } from '../../contexts/hardware-wallets';
+import * as bridgeActions from '../../ducks/bridge/actions';
 import CrossChainSwap from '.';
 
+const mockResetBridgeStore = jest.spyOn(bridgeActions, 'resetInputFields');
 const mockResetBridgeState = jest.fn();
 const mockUseHardwareWalletConfig = jest.fn();
 const mockUseHardwareWalletActions = jest.fn();
@@ -126,6 +129,44 @@ describe('Bridge', () => {
 
     expect(getByText(messages.swap.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
+    expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
+    expect(mockResetBridgeState).toHaveBeenCalledTimes(0);
+  });
+
+  it('resets the bridge store and state when the Back button is clicked', async () => {
+    const bridgeMockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          support: true,
+          refreshRate: 5000,
+          maxRefreshCount: 5,
+          chains: {
+            '1': {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
+      metamaskStateOverrides: {
+        useExternalServices: true,
+      },
+    });
+    const store = configureMockStore(middleware)(bridgeMockStore);
+
+    const { getByRole } = renderWithProvider(
+      <HardwareWalletProvider>
+        <CrossChainSwap />
+      </HardwareWalletProvider>,
+      store,
+      PREPARE_SWAP_ROUTE,
+    );
+
+    const backButton = getByRole('button', { name: messages.back.message });
+    await act(async () => {
+      fireEvent.click(backButton);
+    });
+    expect(mockResetBridgeStore).toHaveBeenCalledTimes(0);
     expect(mockResetBridgeState).toHaveBeenCalledTimes(1);
   });
 });

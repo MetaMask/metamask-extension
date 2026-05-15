@@ -33,7 +33,16 @@ import { loadOAuthConfig } from './config';
 const AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH =
   '/api/v1/oauth/marketing_opt_in_status';
 
-export default class OAuthService {
+const MESSENGER_EXPOSED_METHODS = [
+  'startOAuthLogin',
+  'getNewRefreshToken',
+  'revokeRefreshToken',
+  'renewRefreshToken',
+  'getMarketingConsent',
+  'setMarketingConsent',
+] as const;
+
+export class OAuthService {
   // Required for modular initialisation.
   name: ServiceName = SERVICE_NAME;
 
@@ -79,24 +88,9 @@ export default class OAuthService {
     this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
     this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
 
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:startOAuthLogin`,
-      this.startOAuthLogin.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:getNewRefreshToken`,
-      this.getNewRefreshToken.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:revokeRefreshToken`,
-      this.revokeRefreshToken.bind(this),
-    );
-
-    this.#messenger.registerActionHandler(
-      `${SERVICE_NAME}:renewRefreshToken`,
-      this.renewRefreshToken.bind(this),
+    this.#messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 
@@ -278,13 +272,27 @@ export default class OAuthService {
                   reject(error);
                 }
               } else {
+                const browserAuthFlowError = checkForLastError();
                 const userCancelledLoginError =
-                  this.#getUserCancelledLoginError();
+                  this.#getUserCancelledLoginError(browserAuthFlowError);
                 if (userCancelledLoginError) {
                   reject(userCancelledLoginError);
                   return;
                 }
-                // Throw default error for no redirect URL found
+                if (browserAuthFlowError) {
+                  const message =
+                    browserAuthFlowError.message ||
+                    OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR;
+                  const authError = new Error(message) as Error & {
+                    cause?: Error;
+                  };
+                  authError.cause = browserAuthFlowError as Error;
+                  reject(authError);
+                  return;
+                }
+
+                // Fall back to the generic error when the browser API did not
+                // provide a redirect URL or a useful runtime error.
                 reject(
                   new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
                 );
@@ -318,8 +326,8 @@ export default class OAuthService {
       if (!isUserCancelled) {
         this.#messenger.captureException?.(
           createSentryError(
-            TraceName.OnboardingOAuthProviderLoginError,
-            error as Error,
+            `${TraceName.OnboardingOAuthProviderLoginError} (${authConnection})`,
+            error,
           ),
         );
       }
@@ -459,8 +467,7 @@ export default class OAuthService {
     return url.searchParams.get('code');
   }
 
-  #getUserCancelledLoginError(): Error | undefined {
-    const error = checkForLastError();
+  #getUserCancelledLoginError(error = checkForLastError()): Error | undefined {
     if (isUserCancelledLoginError(error)) {
       return error;
     }

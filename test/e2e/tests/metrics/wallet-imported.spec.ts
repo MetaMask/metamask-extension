@@ -6,39 +6,30 @@ import {
   withFixtures,
   assertInAnyOrder,
 } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { mockSegment } from './mocks/segment';
 
 describe('Wallet Created Events - Imported Account', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
-    const eventsChrome = [
-      'App Installed',
-      'App Installed',
-      'SRP Backup Confirmed',
-      'Wallet Import Attempted',
-      'Wallet Imported',
-      'Wallet Setup Completed',
-    ];
-
-    const eventsFirefox = [
-      'App Installed',
-      'App Installed',
-      'App Installed',
-      'Analytics Preference Selected',
-      'Wallet Import Started',
-      'SRP Backup Confirmed',
-      'Wallet Import Attempted',
-      'Wallet Imported',
-      'Wallet Setup Completed',
+    const expectedEvents = [
+      MetaMetricsEventName.AppInstalled,
+      MetaMetricsEventName.AppInstalled,
+      MetaMetricsEventName.AppInstalled,
+      MetaMetricsEventName.AnalyticsPreferenceSelected,
+      MetaMetricsEventName.WalletImportStarted,
+      MetaMetricsEventName.OnboardingWalletSecurityPhraseConfirmed,
+      MetaMetricsEventName.WalletImportAttempted,
+      MetaMetricsEventName.WalletImported,
+      MetaMetricsEventName.WalletSetupCompleted,
     ];
     const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
-    const expectedEvents = isFirefox ? eventsFirefox : eventsChrome;
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
+        fixtures: new FixtureBuilderV2({ onboarding: true })
           .withMetaMetricsController({
             participateInMetaMetrics: true,
           })

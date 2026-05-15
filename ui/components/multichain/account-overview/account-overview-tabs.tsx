@@ -16,7 +16,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
-import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import { useSafeChains } from '../networks-form/use-safe-chains';
 import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
@@ -30,14 +30,13 @@ import {
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
-import { PerpsView, PerpsViewStreamBoundary } from '../../app/perps';
+import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { ActivityList } from '../activity-v2/activity-list';
-import { usePrefetchTransactions } from '../activity-v2/hooks';
+import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
 import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
-import { AssetListTokenDetection } from './asset-list-token-detection';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
@@ -45,6 +44,25 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showNfts: boolean;
   showActivity: boolean;
   showDefi?: boolean;
+};
+
+/**
+ * Isolated component that starts/stops EVM token balance polling.
+ *
+ * This intentionally returns null and only runs a hook. While that may seem
+ * like an anti-pattern, it is the correct React performance pattern here:
+ * `useTokenBalances` internally calls `useSelector(getTokenBalances)`, which
+ * subscribes the calling component to every token-balance state update
+ * (every ~30 s). By placing the call in this tiny component instead of in
+ * `AccountOverviewTabs`, only this component re-renders when balances change,
+ * rather than the entire tabs subtree and all of its children.
+ *
+ * @param options - Component options.
+ * @param options.chainIds - The chain IDs to poll balances for.
+ */
+const TokenBalancesPoller = ({ chainIds }: { chainIds: Hex[] }) => {
+  useTokenBalances({ chainIds });
+  return null;
 };
 
 export const AccountOverviewTabs = ({
@@ -83,10 +101,9 @@ export const AccountOverviewTabs = ({
     [allEnabledNetworks],
   );
 
-  // EVM specific tokenBalance polling, updates state via polling loop per chainId
-  useTokenBalances({
-    chainIds: selectedChainIds as Hex[],
-  });
+  // EVM token-balance polling is handled by TokenBalancesPoller (rendered below).
+  // Keeping it in an isolated child prevents balance updates from re-rendering
+  // this entire subtree every ~30 s.
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTab) => {
@@ -139,7 +156,9 @@ export const AccountOverviewTabs = ({
   );
   const onClickDeFi = useCallback(
     (chainId: string, protocolId: string) =>
-      navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+      transitionForward(() =>
+        navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+      ),
     [navigate],
   );
 
@@ -149,8 +168,7 @@ export const AccountOverviewTabs = ({
 
   return (
     <>
-      <AssetListTokenDetection />
-
+      <TokenBalancesPoller chainIds={selectedChainIds as Hex[]} />
       <Tabs<AccountOverviewTab>
         animated
         activeTab={activeTabKey}
@@ -181,11 +199,7 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >
-            <ErrorBoundary key="perps">
-              <PerpsViewStreamBoundary>
-                <PerpsView />
-              </PerpsViewStreamBoundary>
-            </ErrorBoundary>
+            <PerpsTab />
           </Tab>
         )}
 

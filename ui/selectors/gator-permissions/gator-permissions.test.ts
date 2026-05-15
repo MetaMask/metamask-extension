@@ -95,6 +95,7 @@ function createPermissionInfoWithMetadata<
       delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
     },
     siteOrigin,
+    status: 'Active',
   };
 }
 
@@ -165,6 +166,8 @@ describe('Gator Permissions Selectors', () => {
         'erc20-token-stream',
         'native-token-periodic',
         'erc20-token-periodic',
+        'native-token-allowance',
+        'erc20-token-allowance',
         'erc20-token-revocation',
         'other',
       ]);

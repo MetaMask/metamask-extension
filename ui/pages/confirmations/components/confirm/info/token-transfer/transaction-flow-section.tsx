@@ -1,23 +1,15 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { NameType } from '@metamask/name-controller';
-import {
-  AvatarAccountSize,
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import React from 'react';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
-import { FlexDirection } from '../../../../../../helpers/constants/design-system';
-import { ConfirmInfoAlertRow } from '../../../../../../components/app/confirm/info/row/alert-row/alert-row';
 import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/constants';
-import { ConfirmInfoRowAddressDisplay } from '../../../../../../components/app/confirm/info/row/address-display';
-import { PreferredAvatar } from '../../../../../../components/app/preferred-avatar';
 import { toChecksumHexAddress } from '../../../../../../../shared/lib/hexstring-utils';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useDisplayName } from '../../../../../../hooks/useDisplayName';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransferRecipient } from '../hooks/useTransferRecipient';
+import { AccountFlowRow } from '../../../rows/account-flow-row/account-flow-row';
 
 export const TransactionFlowSection = () => {
   const t = useI18nContext();
@@ -66,37 +58,16 @@ export const TransactionFlowSection = () => {
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
       <Box flexDirection={BoxFlexDirection.Column} paddingRight={2}>
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Box style={{ flex: 1, minWidth: 0 }}>
-            <ConfirmInfoAlertRow
-              alertKey={RowAlertKey.SigningInWith}
-              label={fromLabel}
-              ownerId={transactionMeta.id}
-              style={{ flexDirection: FlexDirection.Column, width: '100%' }}
-            >
-              <Box data-testid="sender-address" className="w-full">
-                <ConfirmInfoRowAddressDisplay
-                  address={fromAddress}
-                  chainId={chainId}
-                  name={fromName}
-                  isAccount={fromIsAccount}
-                  image={fromImage}
-                  displayState={fromDisplayState}
-                  showAvatar={false}
-                />
-              </Box>
-            </ConfirmInfoAlertRow>
-          </Box>
-          <PreferredAvatar
-            address={toChecksumHexAddress(fromAddress)}
-            size={AvatarAccountSize.Md}
-            style={{ flexShrink: 0 }}
-          />
-        </Box>
+        <AccountFlowRow
+          address={fromAddress}
+          label={fromLabel}
+          alertKey={RowAlertKey.SigningInWith}
+          name={fromName}
+          isAccount={fromIsAccount}
+          image={fromImage}
+          displayState={fromDisplayState}
+          data-testid="sender-address"
+        />
 
         <Box
           style={{
@@ -107,37 +78,16 @@ export const TransactionFlowSection = () => {
           marginBottom={1}
         />
 
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={2}
-        >
-          <Box style={{ flex: 1, minWidth: 0 }}>
-            <ConfirmInfoAlertRow
-              alertKey={RowAlertKey.InteractingWith}
-              label={toLabel}
-              ownerId={transactionMeta.id}
-              style={{ flexDirection: FlexDirection.Column, width: '100%' }}
-            >
-              <Box data-testid="recipient-address" className="w-full">
-                <ConfirmInfoRowAddressDisplay
-                  address={toAddress}
-                  chainId={chainId}
-                  name={toName}
-                  isAccount={toIsAccount}
-                  image={toImage}
-                  displayState={toDisplayState}
-                  showAvatar={false}
-                />
-              </Box>
-            </ConfirmInfoAlertRow>
-          </Box>
-          <PreferredAvatar
-            address={toChecksumHexAddress(toAddress)}
-            size={AvatarAccountSize.Md}
-            style={{ flexShrink: 0 }}
-          />
-        </Box>
+        <AccountFlowRow
+          address={toAddress}
+          label={toLabel}
+          alertKey={RowAlertKey.InteractingWith}
+          name={toName}
+          isAccount={toIsAccount}
+          image={toImage}
+          displayState={toDisplayState}
+          data-testid="recipient-address"
+        />
       </Box>
     </ConfirmInfoSection>
   );

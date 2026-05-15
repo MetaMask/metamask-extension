@@ -24,7 +24,7 @@ describe('Basic functionality off', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -53,7 +53,7 @@ describe('Basic functionality off', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -79,7 +79,7 @@ describe('Basic functionality off', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         await openSwapsPageAndWaitForRedirectToBasicFunctionalityOffPage(
           driver,

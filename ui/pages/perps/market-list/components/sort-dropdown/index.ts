@@ -1,6 +1,2 @@
-export { SortDropdown, SORT_OPTIONS } from './sort-dropdown';
-export type {
-  SortDropdownProps,
-  SortOptionId,
-  SortOption,
-} from './sort-dropdown';
+export { SortDropdown, SORT_FIELD_OPTIONS } from './sort-dropdown';
+export type { SortDropdownProps, SortOption } from './sort-dropdown';

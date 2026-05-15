@@ -642,7 +642,8 @@ describe('Reveal Seed Page', () => {
           properties: {
             // eslint-disable-next-line @typescript-eslint/naming-convention
             key_type: MetaMetricsEventKeyType.Srp,
-            hostname: 'evil.com',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            dapp_host_name: 'evil.com',
           },
         });
       });

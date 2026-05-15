@@ -21,6 +21,14 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as assetUtilsModule from '../../../../shared/lib/asset-utils';
 import { ImportTokensModal } from '.';
 
+// Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
+// so these tests exercise the real feature-flag gating logic via state.
+jest.mock('../../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual(
+    '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
+);
+
 jest.mock('../../../hooks/bridge/useTokensWithFiltering');
 jest.mock('@metamask/bridge-controller');
 jest.mock('../../../../shared/lib/asset-utils');

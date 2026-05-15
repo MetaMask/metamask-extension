@@ -1,19 +1,13 @@
 import { Driver } from '../../webdriver/driver';
-import HeaderNavbar from './header-navbar';
-import SettingsPage from './settings/settings-page';
-import DevelopOptionsPage from './developer-options-page';
 
 const FEEDBACK_MESSAGE =
-  'Message: Unable to find value of key "developerOptions" for locale "en"';
+  'Message: Unable to find value of key "debug" for locale "en"';
 
 class ErrorPage {
   private readonly driver: Driver;
 
   // Locators
-  private readonly errorPageTitle: object = {
-    text: 'MetaMask encountered an error',
-    css: 'h3',
-  };
+  private readonly errorPageTitle = '[data-testid="error-page-title"]';
 
   private readonly errorMessage = '[data-testid="error-page-error-message"]';
 
@@ -58,21 +52,9 @@ class ErrorPage {
     console.log('Error page is loaded');
   }
 
-  async triggerPageCrash(): Promise<void> {
-    const headerNavbar = new HeaderNavbar(this.driver);
-    await headerNavbar.openSettingsPage();
-    const settingsPage = new SettingsPage(this.driver);
-    await settingsPage.checkPageIsLoaded();
-    await settingsPage.goToDeveloperOptions();
-
-    const developOptionsPage = new DevelopOptionsPage(this.driver);
-    await developOptionsPage.checkPageIsLoaded();
-    await developOptionsPage.clickGenerateCrashButton();
-  }
-
   async validateErrorMessage(): Promise<void> {
     await this.driver.waitForSelector({
-      text: `Message: Unable to find value of key "developerOptions" for locale "en"`,
+      text: `Message: Unable to find value of key "debug" for locale "en"`,
       css: this.errorMessage,
     });
   }
@@ -90,7 +72,7 @@ class ErrorPage {
   async clickContactButton(): Promise<void> {
     console.log(`Contact metamask support form in a separate page`);
     await this.driver.waitUntilXWindowHandles(1);
-    await this.driver.clickElement(this.contactSupportButton);
+    await this.driver.findScrollToAndClickElement(this.contactSupportButton);
   }
 
   async consentDataToMetamaskSupport(): Promise<void> {

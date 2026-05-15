@@ -135,6 +135,9 @@ class SitePermissionPage {
     for (const networkName of networkNames) {
       await this.driver.clickElement({ text: networkName, tag: 'p' });
     }
+    await this.driver.waitForElementToStopMoving(
+      this.confirmEditNetworksButton,
+    );
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmEditNetworksButton,
     );

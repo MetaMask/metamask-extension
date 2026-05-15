@@ -166,9 +166,9 @@ describe('Privacy Settings Onboarding View', () => {
         updatedMockStore,
       );
 
-      // Default Settings - Security & privacy category
+      // Default Settings - Security & privacy category (social login copy)
       const itemCategorySecurityPrivacy = getByText(
-        messages.securityAndPrivacy.message,
+        messages.securityDefaultSettingsSocialLogin.message,
       );
       expect(itemCategorySecurityPrivacy).toBeInTheDocument();
     });

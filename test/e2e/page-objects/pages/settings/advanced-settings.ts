@@ -35,11 +35,13 @@ class AdvancedSettings {
   };
 
   private readonly hexDataToggle = {
-    testId: 'advanced-setting-hex-data',
+    testId: 'transactions-show-hex-data-toggle',
   };
 
-  private readonly showConversionOnTestnetsToggle =
-    '.show-fiat-on-testnets-toggle';
+  private readonly showConversionOnTestnetsToggle = {
+    xpath:
+      "//label[contains(@class,'toggle-button')][.//*[@data-testid='developer-options-show-testnet-conversion-toggle']]",
+  };
 
   private readonly showTestnetsToggle =
     '[data-testid="advanced-setting-show-testnets"] .toggle-button';

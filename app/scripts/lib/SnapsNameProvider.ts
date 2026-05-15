@@ -17,17 +17,17 @@ import {
 import { HandlerType } from '@metamask/snaps-utils';
 import log from 'loglevel';
 import {
-  GetAllSnaps,
-  GetSnap,
-  HandleSnapRequest,
+  SnapControllerGetAllSnapsAction,
+  SnapControllerGetSnapAction,
+  SnapControllerHandleRequestAction,
 } from '@metamask/snaps-controllers';
 import { Messenger } from '@metamask/messenger';
 import { getChainIdsCaveat } from '@metamask/snaps-rpc-methods';
 
 type AllowedActions =
-  | GetAllSnaps
-  | GetSnap
-  | HandleSnapRequest
+  | SnapControllerGetAllSnapsAction
+  | SnapControllerGetSnapAction
+  | SnapControllerHandleRequestAction
   | GetPermissionControllerState;
 
 export type SnapsNameProviderMessenger = Messenger<
@@ -57,7 +57,10 @@ export class SnapsNameProvider implements NameProvider {
 
     const sourceLabels = snaps.reduce(
       (acc: NameProviderMetadata['sourceLabels'], snap) => {
-        const snapDetails = this.#messenger.call('SnapController:get', snap.id);
+        const snapDetails = this.#messenger.call(
+          'SnapController:getSnap',
+          snap.id,
+        );
         const snapName = snapDetails?.manifest.proposedName;
 
         return {
@@ -109,7 +112,7 @@ export class SnapsNameProvider implements NameProvider {
       'PermissionController:getState',
     ).subjects;
 
-    const snaps = this.#messenger.call('SnapController:getAll');
+    const snaps = this.#messenger.call('SnapController:getAllSnaps');
 
     return snaps.filter(({ id }) => {
       const permission =

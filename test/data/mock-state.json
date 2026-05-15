@@ -12,7 +12,6 @@
   "appState": {
     "confirmationExchangeRates": {},
     "nextNonce": 71,
-    "welcomeScreenSeen": false,
     "pendingTokens": {},
     "customTokenAmount": "10",
     "networkDropdownOpen": false,
@@ -67,8 +66,8 @@
     "usePhishDetect": true,
     "useMultiAccountBalanceChecker": false,
     "participateInMetaMetrics": false,
+    "passkeyRecord": null,
     "gasEstimateType": "fee-market",
-    "showBetaHeader": false,
     "pendingExtensionVersion": null,
     "updateModalLastDismissedAt": null,
     "lastUpdatedAt": null,
@@ -531,8 +530,8 @@
         ]
       }
     },
+    "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
     "accountTree": {
-      "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
       "wallets": {
         "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
           "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
@@ -551,7 +550,8 @@
                   "groupIndex": 0
                 },
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },
@@ -574,6 +574,7 @@
                 "name": "Account 2",
                 "hidden": false,
                 "pinned": false,
+                "lastSelected": 0,
                 "entropy": {
                   "groupIndex": 0
                 }
@@ -598,7 +599,8 @@
               "metadata": {
                 "name": "Ledger Account 1",
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },
@@ -620,7 +622,8 @@
               "metadata": {
                 "name": "Another Snap Account 1",
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },
@@ -642,7 +645,8 @@
               "metadata": {
                 "name": "Snap Account 1",
                 "hidden": false,
-                "pinned": false
+                "pinned": false,
+                "lastSelected": 0
               }
             }
           },
@@ -1030,9 +1034,30 @@
     },
     "ticker": "ETH",
     "currentCurrency": "usd",
+    "selectedCurrency": "usd",
     "currencyRates": {
       "ETH": {
         "conversionRate": 556.12
+      }
+    },
+    "assetsInfo": {
+      "eip155:1/slip44:60": {
+        "type": "native",
+        "decimals": 18,
+        "symbol": "ETH"
+      },
+      "eip155:5/slip44:60": {
+        "type": "native",
+        "decimals": 18,
+        "symbol": "GoerliETH"
+      }
+    },
+    "assetsPrice": {
+      "eip155:1/slip44:60": {
+        "assetPriceType": "fungible",
+        "price": 556.12,
+        "usdPrice": 556.12,
+        "lastUpdated": 1721393858000
       }
     },
     "addressBook": {
@@ -1642,7 +1667,6 @@
     },
     "txHistory": {},
     "throttledOrigins": {},
-    "delegations": {},
     "accountsAssets": {},
     "assetsMetadata": {},
     "allIgnoredAssets": {},

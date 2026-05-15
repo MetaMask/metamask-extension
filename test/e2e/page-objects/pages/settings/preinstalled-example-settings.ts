@@ -4,8 +4,8 @@ class PreinstalledExampleSettings {
   private readonly driver: Driver;
 
   private readonly settingsPageTitle = {
-    text: 'General',
-    tag: 'h4',
+    text: 'Preferences and display',
+    tag: 'p',
   };
 
   private readonly snapRenderPanel = '.snap-ui-renderer__panel';

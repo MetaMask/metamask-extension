@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { ButtonSize } from '@metamask/design-system-react';
@@ -26,6 +26,7 @@ import {
   Display,
 } from '../../../helpers/constants/design-system';
 import { getCurrentNetwork } from '../../../selectors';
+import { useBoolean } from '../../../hooks/useBoolean';
 
 export default function SmartTransactionListItem({
   smartTransaction,
@@ -35,7 +36,7 @@ export default function SmartTransactionListItem({
 }) {
   const dispatch = useDispatch();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
+  const { value: showDetails, toggle: toggleShowDetails } = useBoolean();
   const { title, category, primaryCurrency, recipientAddress, isPending } =
     useTransactionDisplayData(transactionGroup);
   const currentChain = useSelector(getCurrentNetwork);
@@ -51,9 +52,6 @@ export default function SmartTransactionListItem({
   const showCancelSwapLink =
     smartTransaction.cancellable && !cancelSwapLinkClicked;
   const className = 'transaction-list-item transaction-list-item--unconfirmed';
-  const toggleShowDetails = useCallback(() => {
-    setShowDetails((prev) => !prev);
-  }, []);
   const senderAddress = transactionGroup.initialTransaction.txParams?.from;
 
   return (

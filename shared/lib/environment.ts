@@ -1,4 +1,3 @@
-import { SupportedPermissionType } from '@metamask/gator-permissions-controller';
 import { ENVIRONMENT } from '../../development/build/constants';
 
 export const isProduction = (): boolean => {
@@ -39,25 +38,19 @@ export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
 };
 
-/**
- * Returns the list of enabled Gator permission types from the environment configuration.
- * These permission types control which advanced permissions (e.g., token streams,
- * periodic transfers) are available in the current build.
- *
- * @returns An array of enabled permission type strings (e.g., 'native-token-stream',
- * 'erc20-token-periodic'), or an empty array if none are configured.
- */
-export const getEnabledAdvancedPermissions = (): SupportedPermissionType[] => {
-  const enabled =
-    process.env.GATOR_ENABLED_PERMISSION_TYPES?.toString().trim() || '';
-
-  return enabled.split(',').filter(Boolean) as SupportedPermissionType[];
-};
-
 export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
   return (
     process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED?.toString() === 'true'
   );
+};
+
+/**
+ * Compile-time gate (`NEW_HARDWARE_WALLET_ONBOARDING`): when true the
+ * extension uses the redesigned hardware-wallet onboarding flows (device
+ * discovery and error handling).
+ */
+export const getIsNewHardwareWalletOnboardingEnabled = (): boolean => {
+  return process.env.NEW_HARDWARE_WALLET_ONBOARDING?.toString() === 'true';
 };
 
 export const getIsSidePanelFeatureEnabled = (): boolean => {
@@ -86,4 +79,8 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
   }
 
   return true;
+};
+
+export const getIsPasskeyFeatureEnabled = (): boolean => {
+  return process.env.PASSKEY_ENABLED?.toString() === 'true';
 };

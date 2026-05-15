@@ -179,7 +179,9 @@ describe('PerpsRecentActivity', () => {
       mockStore,
     );
 
-    expect(screen.getByText(messages.perpsSeeAll.message)).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-recent-activity-see-all'),
+    ).toBeInTheDocument();
   });
 
   it('limits displayed transactions to maxTransactions', () => {
@@ -243,7 +245,7 @@ describe('PerpsRecentActivity', () => {
       mockStore,
     );
 
-    const seeAllButton = screen.getByText(messages.perpsSeeAll.message);
+    const seeAllButton = screen.getByTestId('perps-recent-activity-see-all');
     fireEvent.click(seeAllButton);
 
     expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
@@ -268,15 +270,18 @@ describe('PerpsRecentActivity', () => {
     );
   });
 
-  it('renders transaction cards without onClick when onTransactionClick is not provided', () => {
+  it('navigates to activity route when a row is tapped and no onTransactionClick is provided', () => {
     renderWithProvider(
       <PerpsRecentActivity transactions={mockTransactions} />,
       mockStore,
     );
 
     const card = screen.getByTestId('transaction-card-tx-001');
-    // Without onClick, the card should not have cursor-pointer class
-    expect(card).not.toHaveClass('cursor-pointer');
+    expect(card).toHaveClass('cursor-pointer');
+
+    fireEvent.click(card);
+
+    expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
   });
 });
 

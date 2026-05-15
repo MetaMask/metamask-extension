@@ -316,13 +316,16 @@ export const useHardwareWalletConnection = ({
   const ensureDeviceReady = useCallback(
     async (options?: EnsureDeviceReadyOptions): Promise<boolean> => {
       const requireBlindSigning = options?.requireBlindSigning ?? true;
+      const dedupKey = `${requireBlindSigning}:${options?.preflightMessageBytes ?? ''}`;
       const inFlightPromise =
-        refs.ensureDeviceReadyPromiseRef.current.get(requireBlindSigning);
+        refs.ensureDeviceReadyPromiseRef.current.get(dedupKey);
       if (inFlightPromise) {
         return inFlightPromise;
       }
 
       const ensurePromise = (async (): Promise<boolean> => {
+        refs.isEnsuringDeviceReadyRef.current = true;
+
         const abortSignalAtStart = refs.abortControllerRef.current?.signal;
         if (abortSignalAtStart?.aborted) {
           return false;
@@ -405,17 +408,16 @@ export const useHardwareWalletConnection = ({
         return false;
       })();
 
-      refs.ensureDeviceReadyPromiseRef.current.set(
-        requireBlindSigning,
-        ensurePromise,
-      );
+      refs.ensureDeviceReadyPromiseRef.current.set(dedupKey, ensurePromise);
 
       ensurePromise.finally(() => {
         const trackedPromise =
-          refs.ensureDeviceReadyPromiseRef.current.get(requireBlindSigning);
+          refs.ensureDeviceReadyPromiseRef.current.get(dedupKey);
         if (trackedPromise === ensurePromise) {
-          refs.ensureDeviceReadyPromiseRef.current.delete(requireBlindSigning);
+          refs.ensureDeviceReadyPromiseRef.current.delete(dedupKey);
         }
+        refs.isEnsuringDeviceReadyRef.current =
+          refs.ensureDeviceReadyPromiseRef.current.size > 0;
       });
 
       return ensurePromise;

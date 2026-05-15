@@ -27,7 +27,7 @@ export function TotalRow({
   variant = ConfirmInfoRowSize.Default,
 }: TotalRowProps) {
   const t = useI18nContext();
-  const formatFiat = useFiatFormatter();
+  const formatFiat = useFiatFormatter({ overrideCurrency: 'usd' });
   const isLoading = useIsTransactionPayLoading();
   const totals = useTransactionPayTotals();
 

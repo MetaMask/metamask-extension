@@ -20,7 +20,7 @@ describe.skip('QR Hardware', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await login(driver, { waitForNonEvmAccounts: false });
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();

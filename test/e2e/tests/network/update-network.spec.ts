@@ -1,5 +1,5 @@
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import { NetworkStatus, RpcEndpointType } from '@metamask/network-controller';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -7,6 +7,7 @@ import { Mockttp } from '../../mock-e2e';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import HomePage from '../../page-objects/pages/home/homepage';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
 import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -40,14 +41,14 @@ describe('Update Network:', function (this: Suite) {
         // Update the network name and save the changes
         await editNetworkModal.fillNetworkNameInputField(inputData.networkName);
         await editNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          inputData.networkName,
+        );
+        await editNetworkModal.clickBackButton();
 
         // Verify the new network name is visible
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed(
-          inputData.networkName,
-        );
-        await homePage.closeUseNetworkNotificationModal();
         // Since switching networks is disabled via the networks modal in global menu, we don't need to check the selected network anymore
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -98,37 +99,39 @@ describe('Update Network:', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
-            networkConfigurations: {
-              networkConfigurationId: {
-                chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-              },
-              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+            networkConfigurationsByChainId: {
+              '0xa4b1': {
+                blockExplorerUrls: [],
                 chainId: '0xa4b1',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Arbitrum mainnet',
-                rpcPrefs: {},
-                rpcUrl: 'https://arbitrum-mainnet.infura.io',
-                ticker: 'ETH',
+                defaultRpcEndpointIndex: 0,
+                name: 'Arbitrum',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                    type: RpcEndpointType.Custom,
+                    url: 'https://arbitrum-mainnet.infura.io',
+                  },
+                  {
+                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
+                    type: RpcEndpointType.Custom,
+                    url: 'https://responsive-rpc.test/',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                EIPS: {},
+                status: NetworkStatus.Available,
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                chainId: '0xa4b1',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                nickname: 'Arbitrum mainnet 2',
-                rpcPrefs: {},
-                rpcUrl: 'https://responsive-rpc.test/',
-                ticker: 'ETH',
+                EIPS: {},
+                status: NetworkStatus.Available,
               },
             },
-            selectedNetworkClientId: 'networkConfigurationId',
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -136,6 +139,9 @@ describe('Update Network:', function (this: Suite) {
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
+        const assetListPage = new AssetListPage(driver);
+        const originalFilterLabel =
+          await assetListPage.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -155,10 +161,13 @@ describe('Update Network:', function (this: Suite) {
           false,
         );
         await editNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          'Arbitrum',
+        );
+        await editNetworkModal.clickBackButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        await homePage.closeUseNetworkNotificationModal();
+        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
 
         // Re-open the network menu and go back to edit the network
         await headerNavbar.openGlobalNetworksMenu();
@@ -194,37 +203,40 @@ describe('Update Network:', function (this: Suite) {
     }
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
+        fixtures: new FixtureBuilderV2()
           .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
-            networkConfigurations: {
-              networkConfigurationId: {
-                chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-              },
-              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+            networkConfigurationsByChainId: {
+              '0xa4b1': {
+                blockExplorerUrls: [],
                 chainId: '0xa4b1',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Arbitrum mainnet',
-                rpcPrefs: {},
-                rpcUrl: 'https://arbitrum-mainnet.infura.io',
-                ticker: 'ETH',
+                defaultRpcEndpointIndex: 0,
+                name: 'Arbitrum',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                    type: RpcEndpointType.Custom,
+                    url: 'https://arbitrum-mainnet.infura.io',
+                  },
+                ],
               },
             },
-            selectedNetworkClientId: 'networkConfigurationId',
+            networksMetadata: {
+              '2ce66016-8aab-47df-b27f-318c80865eb0': {
+                EIPS: {},
+                status: NetworkStatus.Available,
+              },
+            },
           })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockRPCURLAndChainId,
       },
-
       async ({ driver }: { driver: Driver }) => {
         await login(driver);
+        const assetListPage = new AssetListPage(driver);
+        const originalFilterLabel =
+          await assetListPage.getNetworksFilterLabel();
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openGlobalNetworksMenu();
 
@@ -251,10 +263,13 @@ describe('Update Network:', function (this: Suite) {
 
         // Save the network
         await editNetworkModal.saveEditedNetwork();
+        await selectNetworkDialog.checkEditNetworkMessageIsDisplayed(
+          'Arbitrum',
+        );
+        await editNetworkModal.clickBackButton();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
-        await homePage.closeUseNetworkNotificationModal();
+        await assetListPage.waitUntilFilterLabelIs(originalFilterLabel);
 
         // Re-open the network menu and go back to edit the network
         await headerNavbar.openGlobalNetworksMenu();

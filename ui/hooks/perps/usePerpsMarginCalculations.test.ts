@@ -11,19 +11,47 @@ describe('usePerpsMarginCalculations', () => {
   const account = mockAccountState;
 
   describe('add mode', () => {
-    it('returns available balance as maxAmount', () => {
+    const accountWithTradeableBalance = {
+      ...mockAccountState,
+      spendableBalance: '10125.00',
+      withdrawableBalance: '9000.00',
+    };
+
+    const accountWithoutTradeableBalance = {
+      ...mockAccountState,
+      spendableBalance: '10125.00',
+      withdrawableBalance: '10125.00',
+    };
+
+    it('returns tradeable balance as maxAmount when available', () => {
       const { result } = renderHook(() =>
         usePerpsMarginCalculations({
           position,
           currentPrice,
-          account,
+          account: accountWithTradeableBalance,
           mode: 'add',
           amount: '0',
         }),
       );
 
       expect(result.current.maxAmount).toBe(
-        parseFloat(mockAccountState.availableBalance),
+        Number.parseFloat(accountWithTradeableBalance.withdrawableBalance),
+      );
+    });
+
+    it('uses withdrawableBalance as maxAmount when both balances match', () => {
+      const { result } = renderHook(() =>
+        usePerpsMarginCalculations({
+          position,
+          currentPrice,
+          account: accountWithoutTradeableBalance,
+          mode: 'add',
+          amount: '0',
+        }),
+      );
+
+      expect(result.current.maxAmount).toBe(
+        Number.parseFloat(accountWithoutTradeableBalance.withdrawableBalance),
       );
     });
 
@@ -69,7 +97,22 @@ describe('usePerpsMarginCalculations', () => {
       expect(result.current.isValid).toBe(false);
     });
 
-    it('computes currentLiquidationDistance from position', () => {
+    it('estimated liquidation equals anchor when adjustment amount is zero', () => {
+      const { result } = renderHook(() =>
+        usePerpsMarginCalculations({
+          position,
+          currentPrice,
+          account,
+          mode: 'add',
+          amount: '0',
+        }),
+      );
+
+      const anchor = parseFloat(position.liquidationPrice ?? '0');
+      expect(result.current.estimatedLiquidationPrice).toBe(anchor);
+    });
+
+    it('computes anchor liquidation distance from mark and anchor liq', () => {
       const { result } = renderHook(() =>
         usePerpsMarginCalculations({
           position,
@@ -82,7 +125,7 @@ describe('usePerpsMarginCalculations', () => {
 
       const liqPrice = parseFloat(position.liquidationPrice ?? '0');
       const expected = (Math.abs(currentPrice - liqPrice) / currentPrice) * 100;
-      expect(result.current.currentLiquidationDistance).toBeCloseTo(expected);
+      expect(result.current.anchorLiquidationDistance).toBeCloseTo(expected);
     });
   });
 
@@ -159,7 +202,7 @@ describe('usePerpsMarginCalculations', () => {
       liquidationPrice: null as string | null,
     };
 
-    it('returns currentLiquidationDistance 0', () => {
+    it('returns anchorLiquidationDistance 0', () => {
       const { result } = renderHook(() =>
         usePerpsMarginCalculations({
           position: positionNoLiq,
@@ -170,10 +213,10 @@ describe('usePerpsMarginCalculations', () => {
         }),
       );
 
-      expect(result.current.currentLiquidationDistance).toBe(0);
+      expect(result.current.anchorLiquidationDistance).toBe(0);
     });
 
-    it('returns newLiquidationPrice null when current liq is null', () => {
+    it('returns estimatedLiquidationPrice null when anchor liq is null', () => {
       const { result } = renderHook(() =>
         usePerpsMarginCalculations({
           position: positionNoLiq,
@@ -184,7 +227,31 @@ describe('usePerpsMarginCalculations', () => {
         }),
       );
 
-      expect(result.current.newLiquidationPrice).toBeNull();
+      expect(result.current.estimatedLiquidationPrice).toBeNull();
     });
+  });
+
+  describe('with position that has a non-positive liquidation price', () => {
+    for (const liquidationPrice of ['0', '-1']) {
+      it(`returns fallback values when liquidation price is ${liquidationPrice}`, () => {
+        const { result } = renderHook(() =>
+          usePerpsMarginCalculations({
+            position: {
+              ...position,
+              liquidationPrice,
+            },
+            currentPrice,
+            account,
+            mode: 'add',
+            amount: '100',
+          }),
+        );
+
+        expect(result.current.anchorLiquidationPrice).toBeNull();
+        expect(result.current.estimatedLiquidationPrice).toBeNull();
+        expect(result.current.anchorLiquidationDistance).toBe(0);
+        expect(result.current.estimatedLiquidationDistance).toBeNull();
+      });
+    }
   });
 });

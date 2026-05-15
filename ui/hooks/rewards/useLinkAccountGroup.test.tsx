@@ -104,6 +104,7 @@ const buildStateWithAccounts = (accounts: InternalAccount[]) => {
             pinned: false,
             hidden: false,
             entropy: { groupIndex: 0 },
+            lastSelected: 0,
           },
           accounts: accounts.map((a) => a.id),
         },
@@ -114,7 +115,6 @@ const buildStateWithAccounts = (accounts: InternalAccount[]) => {
   return createMockMultichainAccountsState(
     {
       wallets,
-      selectedAccountGroup: GROUP_ID,
     },
     {
       accounts: accounts.reduce<Record<string, InternalAccount>>((acc, a) => {
@@ -123,6 +123,8 @@ const buildStateWithAccounts = (accounts: InternalAccount[]) => {
       }, {}),
       selectedAccount: accounts[0]?.id ?? '',
     },
+    undefined,
+    GROUP_ID,
   );
 };
 

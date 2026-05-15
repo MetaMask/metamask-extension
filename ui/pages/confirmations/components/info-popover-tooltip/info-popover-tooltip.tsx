@@ -3,17 +3,15 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconColor,
   IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import {
-  Icon,
-  IconName as LegacyIconName,
-  IconSize,
   Popover,
   PopoverPosition,
 } from '../../../../components/component-library';
-import { IconColor as LegacyIconColor } from '../../../../helpers/constants/design-system';
 
 const POPOVER_STYLE = {
   zIndex: 3,
@@ -30,7 +28,7 @@ type InfoPopoverTooltipProps = {
   position?: PopoverPosition;
   iconName?: IconName;
   iconSize?: ButtonIconSize;
-  iconColor?: IconColor | LegacyIconColor | string;
+  iconColor?: IconColor | string;
   iconMarginLeft?: number;
   /**
    * When true, renders a plain Icon instead of a ButtonIcon so the trigger
@@ -88,9 +86,9 @@ export function InfoPopoverTooltip({
           }}
         >
           <Icon
-            name={iconName as unknown as LegacyIconName}
+            name={iconName}
             size={IconSize.Sm}
-            color={iconColor as LegacyIconColor}
+            color={iconColor as IconColor}
           />
         </button>
       ) : (

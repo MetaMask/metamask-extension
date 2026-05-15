@@ -7,6 +7,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
+import TransactionsSettingsPage from '../../page-objects/pages/settings/transactions-settings';
 
 async function mockServerCalls(mockServer: Mockttp) {
   return [
@@ -80,24 +81,24 @@ describe('PPOM Blockaid Alert - Metrics', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver);
 
-        // toggle on
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
 
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
+        await settingsPage.goToTransactionsSettings();
+
+        const transactionsSettingsPage = new TransactionsSettingsPage(driver);
+        await transactionsSettingsPage.waitForSecurityAlertsSection();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-
-        // toggle off
+        // Default fixture has security alerts enabled; first click turns them off.
         await privacySettings.toggleBlockaidAlerts();
 
         // wait for state to update
         await driver.delay(1000);
 
-        // toggle back ON
+        // Second click turns security alerts back on.
         await privacySettings.toggleBlockaidAlerts();
 
         await driver.delay(1000);

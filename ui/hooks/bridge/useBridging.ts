@@ -11,7 +11,6 @@ import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametri
 import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { toAssetId } from '../../../shared/lib/asset-utils';
-import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
 import {
   getBip44DefaultPairsConfig,
   getFromChain,
@@ -19,11 +18,11 @@ import {
   getLastSelectedChainId,
 } from '../../ducks/bridge/selectors';
 import {
-  resetBridgeControllerAndCache,
   resetInputFields,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
+import { isSupportedBridgeChain } from '../../ducks/bridge/utils';
 import {
   BridgeNavigationOptions,
   useBridgeNavigation,
@@ -43,12 +42,9 @@ const useBridging = () => {
   const fromChains = useSelector(getFromChains);
   const bip44DefaultPairsConfig = useSelector(getBip44DefaultPairsConfig);
 
-  const isChainIdSupportedForBridging = (chainId: string | number) =>
-    ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
-
   const isChainIdEnabledForBridging = useCallback(
     (chainId: string | number) =>
-      isChainIdSupportedForBridging(chainId) &&
+      isSupportedBridgeChain(chainId) &&
       fromChains.some(
         (chain) =>
           formatChainIdToCaip(chain.chainId) === formatChainIdToCaip(chainId),
@@ -73,8 +69,7 @@ const useBridging = () => {
         chainId: GenericQuoteRequest['srcChainId'];
       },
     ) => {
-      dispatch(resetInputFields());
-      dispatch(resetBridgeControllerAndCache());
+      !bridgeState && dispatch(resetInputFields());
       trace({
         name: TraceName.SwapViewLoaded,
         startTime: Date.now(),
@@ -98,7 +93,7 @@ const useBridging = () => {
        * Defined if the token is a valid src or dest token
        */
       const assetId =
-        token?.chainId && isChainIdSupportedForBridging(token.chainId)
+        token?.chainId && isSupportedBridgeChain(token.chainId)
           ? toAssetId(token.address, formatChainIdToCaip(token.chainId))
           : undefined;
 

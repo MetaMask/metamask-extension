@@ -105,7 +105,6 @@ export const Amount = ({
     amount,
     fiatMode,
     getFiatValue,
-    getNativeValue,
     setAmount,
     setAmountInputTypeFiat,
     setAmountInputTypeToken,

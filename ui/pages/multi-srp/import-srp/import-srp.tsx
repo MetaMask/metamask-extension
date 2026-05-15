@@ -1,12 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  hideWarning,
-  checkIsSeedlessPasswordOutdated,
-  importMnemonicToVault,
-} from '../../../store/actions';
 import {
   ButtonIcon,
   ButtonSize,
@@ -14,26 +8,31 @@ import {
   Box,
   Button,
   Text,
-} from '../../../components/component-library';
-import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
+  TextVariant,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  hideWarning,
+  checkIsSeedlessPasswordOutdated,
+  importMnemonicToVault,
+} from '../../../store/actions';
+import { SECOND } from '../../../../shared/constants/time';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
-import { getIsSocialLoginFlow } from '../../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getMetaMaskHdKeyrings,
+} from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import SrpInputForm from '../../srp-input-form';
-import {
-  BlockSize,
-  FlexDirection,
-  AlignItems,
-  Display,
-  JustifyContent,
-  TextAlign,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+
+const toastId = 'new-srp-added-toast';
+const autoHideToastDelay = 5 * SECOND;
 
 export const ImportSrp = () => {
   const t = useI18nContext();
@@ -43,6 +42,7 @@ export const ImportSrp = () => {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
+  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
   const { trackEvent } = useContext(MetaMetricsContext);
 
   // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
@@ -78,8 +78,17 @@ export const ImportSrp = () => {
 
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
+      toast.success(
+        <ToastContent
+          dataTestId={toastId}
+          title={t('importWalletSuccess', [hdKeyrings.length + 1])}
+        />,
+        {
+          id: toastId,
+          duration: autoHideToastDelay,
+        },
+      );
       navigate(DEFAULT_ROUTE);
-      dispatch(setShowNewSrpAddedToast(true));
     } catch (error) {
       switch ((error as Error)?.message) {
         case 'KeyringController - The account you are trying to import is a duplicate':
@@ -119,30 +128,21 @@ export const ImportSrp = () => {
         {t('importSecretRecoveryPhrase')}
       </Header>
       {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
-      <Box textAlign={TextAlign.Left} marginBottom={2}>
-        <Text variant={TextVariant.headingLg}>{t('importAWallet')}</Text>
+      <Box className="text-left" marginBottom={2}>
+        <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
       </Box>
       <SrpInputForm
         error={srpError}
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClearCallback={() => setSrpError('')}
       />
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        width={BlockSize.Full}
-        textAlign={TextAlign.Left}
-      >
+      <Box className="w-full cta-footer">
         <Button
-          width={BlockSize.Full}
           size={ButtonSize.Lg}
-          type="primary"
           data-testid="import-srp-confirm"
           onClick={importWallet}
           disabled={!secretRecoveryPhrase.trim() || Boolean(srpError)}
-          className="import-srp__continue-button"
+          className="w-full import-srp__continue-button"
         >
           {t('continue')}
         </Button>

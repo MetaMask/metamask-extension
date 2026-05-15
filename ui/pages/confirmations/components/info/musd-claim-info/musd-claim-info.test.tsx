@@ -120,7 +120,7 @@ describe('MusdClaimInfo', () => {
       result = renderWithConfirmContextProvider(<MusdClaimInfo />, mockStore);
 
       // Hero heading is rendered
-      expect(result.getByTestId('musd-claim-heading')).toBeDefined();
+      expect(result.getByTestId('musd-claim-heading-amount')).toBeDefined();
 
       // Details section is rendered
       expect(result.getByTestId('musd-claim-details-section')).toBeDefined();

@@ -1,5 +1,11 @@
 @use "design-system";
 
+.bridge-quote-option {
+  &:hover:not(&--selected) {
+    background: var(--color-background-default-hover);
+  }
+}
+
 .quotes-modal {
   .mm-modal-content {
     padding: 0;

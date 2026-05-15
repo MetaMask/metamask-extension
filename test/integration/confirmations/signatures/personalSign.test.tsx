@@ -84,6 +84,7 @@ describe('PersonalSign Confirmation', () => {
         preloadedState: {
           ...mockedMetaMaskState,
           participateInMetaMetrics: true,
+          metaMetricsId: 'test-metametrics-id',
           dataCollectionForMarketing: false,
         },
         backgroundConnection: backgroundConnectionMocked,

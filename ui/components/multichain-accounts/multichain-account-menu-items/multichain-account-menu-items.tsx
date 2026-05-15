@@ -1,13 +1,16 @@
 import React, { useMemo } from 'react';
 import classnames from 'clsx';
-import { Box, Icon, IconSize, Text } from '../../component-library';
 import {
-  AlignItems,
-  Display,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
   FontWeight,
-  JustifyContent,
+  Icon,
+  IconSize,
+  Text,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MultichainAccountMenuItemsProps } from './multichain-account-menu-items.types';
 
@@ -25,6 +28,7 @@ export const MultichainAccountMenuItems = ({
         !isDisabled && (
           <Box
             key={item.textKey}
+            data-testid={`multichain-account-menu-item-${item.textKey}`}
             className={classnames('multichain-account-cell-menu-item', {
               'multichain-account-cell-menu-item--with-border': !isLast,
               'multichain-account-cell-menu-item--disabled': isDisabled,
@@ -34,15 +38,15 @@ export const MultichainAccountMenuItems = ({
             paddingRight={4}
             paddingTop={3}
             paddingBottom={3}
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            alignItems={AlignItems.center}
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
             onClick={item.onClick}
             aria-label={t(item.textKey)}
           >
             <Text
               fontWeight={FontWeight.Medium}
-              variant={TextVariant.bodyMdMedium}
+              variant={TextVariant.BodyMd}
               color={item.textColor}
             >
               {t(item.textKey)}

@@ -13,7 +13,7 @@ import {
   WINDOW_TITLES,
 } from '../constants';
 import { withFixtures, convertETHToHexGwei } from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
@@ -194,7 +194,7 @@ async function withAccountSnap(
 ) {
   await withFixtures(
     {
-      fixtures: new FixtureBuilder().build(),
+      fixtures: new FixtureBuilderV2().build(),
       title,
       useBundler: true,
       usePaymaster: Boolean(paymaster),

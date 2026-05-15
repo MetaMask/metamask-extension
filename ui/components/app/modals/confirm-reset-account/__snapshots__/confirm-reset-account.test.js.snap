@@ -19,7 +19,7 @@ exports[`Confirm Reset Account should match snapshot 1`] = `
         <div
           class="modal-content__description"
         >
-          This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change.
+          Resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change.
         </div>
       </div>
     </div>

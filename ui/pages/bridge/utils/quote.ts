@@ -9,8 +9,13 @@ export const formatTokenAmount = (
   locale: string,
   amount: string,
   symbol: string = '',
+  roundingMode?: number,
 ) => {
-  const stringifiedAmount = formatAmount(locale, new BigNumber(amount));
+  const stringifiedAmount = formatAmount(
+    locale,
+    new BigNumber(amount),
+    roundingMode,
+  );
 
   return [stringifiedAmount, symbol].join(' ').trim();
 };

@@ -20,7 +20,7 @@ class ConnectHardwareWalletPage {
 
   private readonly connectQrButton = '[data-testid="connect-qr-btn"]';
 
-  private readonly continueButton = { text: 'Continue', tag: 'button' };
+  private readonly continueButton = { testId: 'connect-hardware-continue-btn' };
 
   private readonly closeButton = '[data-testid="hardware-connect-close-btn"]';
 
@@ -84,10 +84,7 @@ class ConnectHardwareWalletPage {
     });
 
     // Continue button should be disabled
-    const continueButton = await this.driver.findElement({
-      text: 'Continue',
-      tag: 'button',
-    });
+    const continueButton = await this.driver.findElement(this.continueButton);
     const isDisabled = (await continueButton.getAttribute('disabled')) !== null;
     if (!isDisabled) {
       throw new Error('Continue button should be disabled in Firefox');

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useGasFeeContext } from '../../../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
@@ -13,11 +12,10 @@ export default function TransactionDetail({
   disableEditGasFeeButton: _disableEditGasFeeButton = false,
 }) {
   const t = useI18nContext();
-  const { supportsEIP1559 } = useGasFeeContext();
 
   return (
     <div className="transaction-detail">
-      {!supportsEIP1559 && onEdit && (
+      {onEdit && (
         <div className="transaction-detail-edit">
           <button onClick={onEdit}>{t('edit')}</button>
         </div>

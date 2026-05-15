@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import {
   FontWeight,
+  IconColor,
   IconName,
   Text,
   TextButton,
@@ -9,7 +10,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { PopoverPosition } from '../../../../../components/component-library';
-import { Color } from '../../../../../helpers/constants/design-system';
 import { InfoPopoverTooltip } from '../../info-popover-tooltip';
 import {
   ConfirmInfoRow,
@@ -60,7 +60,7 @@ export function ClaimableBonusRow({
         <InfoPopoverTooltip
           position={PopoverPosition.TopStart}
           iconName={IconName.Question}
-          iconColor={Color.iconAlternative}
+          iconColor={IconColor.IconAlternative}
           iconMarginLeft={1}
           plainIcon
           ariaLabel={t('musdClaimableBonusTooltipAria') as string}

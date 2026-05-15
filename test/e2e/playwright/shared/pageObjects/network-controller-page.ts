@@ -42,7 +42,9 @@ export class NetworkController {
     this.networkListEdit = this.page.getByTestId(
       'network-list-item-options-edit',
     );
-    this.addNetworkButton = this.page.getByText('Add a custom network');
+    this.addNetworkButton = this.page.getByTestId(
+      'networks-page-add-custom-network-button',
+    );
     this.addRpcDropDown = this.page.getByTestId('test-add-rpc-drop-down');
     this.addRpcURLBtn = this.page.getByRole('button', { name: 'Add RPC URL' });
     this.addURLBtn = this.page.getByRole('button', { name: 'Add URL' });

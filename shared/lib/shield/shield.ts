@@ -10,7 +10,7 @@ import { DefaultSubscriptionPaymentOptions } from '../../types/metametrics';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { PreferencesController } from '../../../app/scripts/controllers/preferences-controller';
 // eslint-disable-next-line import-x/no-restricted-paths
-import MetaMetricsController from '../../../app/scripts/controllers/metametrics-controller';
+import { MetaMetricsController } from '../../../app/scripts/controllers/metametrics-controller';
 import { SETTINGS_ROUTE } from '../deep-links/routes/route';
 import { SHIELD_QUERY_PARAMS } from '../deep-links/routes/shield';
 import { getIsShieldSubscriptionActive } from './subscription-utils';

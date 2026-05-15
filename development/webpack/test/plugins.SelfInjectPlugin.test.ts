@@ -42,7 +42,7 @@ describe('SelfInjectPlugin', () => {
         // we should have matched our file so it should have been updated:
 
         assert.strictEqual(compilation.updateAsset.mock.callCount(), 1);
-        const newAsset = compilation.updateAsset.mock.calls[0].result;
+        const newAsset = compilation.getAsset(filename)?.source;
         assert(newAsset, 'newAsset should be defined');
         const { source: newSource, map: newMap } = newAsset.sourceAndMap();
 

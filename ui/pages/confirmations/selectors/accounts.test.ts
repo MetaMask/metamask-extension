@@ -1,20 +1,10 @@
 import { MultichainNetworkConfigurationsByChainIdState } from '../../../../shared/lib/selectors/networks';
-import mockState from '../../../../test/data/mock-state.json';
-import { getAccountByAddress } from '../../../helpers/utils/util';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
-import {
-  selectAccountGroupNameByInternalAccount,
-  selectInternalAccountNameByAddress,
-} from './accounts';
-import { RootState } from './preferences';
+import { selectAccountGroupNameByInternalAccount } from './accounts';
 
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   getAccountGroupsByAddress: jest.fn(),
-}));
-
-jest.mock('../../../helpers/utils/util', () => ({
-  getAccountByAddress: jest.fn(),
 }));
 
 describe('selectAccountGroupNameByInternalAccount', () => {
@@ -74,50 +64,6 @@ describe('selectAccountGroupNameByInternalAccount', () => {
     );
 
     expect(getAccountGroupsByAddress).not.toHaveBeenCalled();
-    expect(result).toBeNull();
-  });
-});
-
-describe('selectInternalAccountNameByAddress', () => {
-  it('returns the internal account name for a matching address', () => {
-    (getAccountByAddress as jest.Mock).mockReturnValue({
-      metadata: { name: 'Account 1' },
-    });
-
-    const result = selectInternalAccountNameByAddress(
-      mockState as RootState,
-      '0x123',
-    );
-
-    expect(getAccountByAddress).toHaveBeenCalledWith(
-      expect.any(Array),
-      '0x123',
-    );
-    expect(result).toBe('Account 1');
-  });
-
-  it('returns null when no account matches the address', () => {
-    (getAccountByAddress as jest.Mock).mockReturnValue(undefined);
-
-    const result = selectInternalAccountNameByAddress(
-      mockState as RootState,
-      '0x000',
-    );
-
-    expect(getAccountByAddress).toHaveBeenCalledWith(
-      expect.any(Array),
-      '0x000',
-    );
-    expect(result).toBeNull();
-  });
-
-  it('returns null when address is undefined', () => {
-    const result = selectInternalAccountNameByAddress(
-      mockState as RootState,
-      undefined,
-    );
-
-    expect(getAccountByAddress).toHaveBeenCalled();
     expect(result).toBeNull();
   });
 });

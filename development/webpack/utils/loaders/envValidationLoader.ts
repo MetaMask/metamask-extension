@@ -192,11 +192,13 @@ function walkAst(node: Node, envVars: Set<string>): void {
  * This is a validation-only loader; the source code is passed through unmodified.
  *
  * @example
+ * ```ts
  * // webpack.config.ts
  * {
  *   loader: 'envValidationLoader',
- *   options: { declarations: ['NODE_ENV', 'API_URL'] }
+ *   options: { declarations: ['NODE_ENV', 'API_URL'] },
  * }
+ * ```
  * @param source - The source code content of the file being processed.
  * @throws Emits a webpack error if any `process.env.*` references
  * are found that aren't included in the `declarations` set.

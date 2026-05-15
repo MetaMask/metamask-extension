@@ -38,6 +38,10 @@ jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+jest.mock('../../../hooks/rewards/useRewardsModal', () => ({
+  useRewardsModal: jest.fn(),
+}));
+
 jest.mock('../../../ducks/locale/locale', () => ({
   ...jest.requireActual('../../../ducks/locale/locale'),
   getIntlLocale: jest.fn(),
@@ -101,6 +105,7 @@ describe('EthOverview', () => {
     },
     metamask: {
       ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+      selectedAccountGroup: 'entropy:wallet1/group1',
       accountTree: {
         wallets: {
           'entropy:wallet1': {
@@ -114,12 +119,12 @@ describe('EthOverview', () => {
                   name: 'Account 1',
                   hidden: false,
                   pinned: false,
+                  lastSelected: 0,
                 },
               },
             },
           },
         },
-        selectedAccountGroup: 'entropy:wallet1/group1',
       },
       tokenBalances: {
         [CHAIN_IDS.MAINNET]: {},

@@ -7,7 +7,9 @@ import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
+import { wasPerpsUnmountedInAppRecently } from '../../helpers/perps/in-app-leave-marker';
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
@@ -49,6 +51,8 @@ import {
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
+  PERPS_ROUTE,
+  PERPS_REOPEN_TTL_MS,
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
 import { METAMETRICS_SETTINGS_LINK } from '../../helpers/constants/common';
@@ -56,7 +60,7 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
-import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
+import RewardsModal from '../../components/app/rewards/onboarding/RewardsModal';
 import { Pna25Modal } from '../../components/app/modals/pna25-modal';
 import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
 import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
@@ -125,10 +129,6 @@ export default class Home extends PureComponent {
     editedNetwork: PropTypes.object,
     isSigningQRHardwareTransaction: PropTypes.bool,
     isHardwareWalletErrorModalVisible: PropTypes.bool,
-    newNftAddedMessage: PropTypes.string,
-    setNewNftAddedMessage: PropTypes.func.isRequired,
-    removeNftMessage: PropTypes.string,
-    setRemoveNftMessage: PropTypes.func.isRequired,
     attemptCloseNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
     newTokensImportedError: PropTypes.string,
@@ -153,12 +153,16 @@ export default class Home extends PureComponent {
     setPendingShieldCohort: PropTypes.func,
     isSignedIn: PropTypes.bool,
     rewardsEnabled: PropTypes.bool,
-    rewardsOnboardingEnabled: PropTypes.bool,
-    rewardsOnboardingModalOpen: PropTypes.bool,
+    rewardsModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
     envType: PropTypes.string,
     pendingRedirectRoute: PropTypes.object,
     clearPendingRedirectRoute: PropTypes.func,
+    lastVisitedPerpsRoute: PropTypes.shape({
+      path: PropTypes.string.isRequired,
+      timestamp: PropTypes.number.isRequired,
+    }),
+    clearLastVisitedPerpsRoute: PropTypes.func,
   };
 
   state = {
@@ -230,10 +234,66 @@ export default class Home extends PureComponent {
     }
   }
 
+  /**
+   * Resume a recent Perps session if the user reopened the extension within
+   * {@link PERPS_REOPEN_TTL_MS}. Explicit `pendingRedirectRoute` always wins
+   * to avoid overriding a route set by a background flow. The persisted entry
+   * is cleared after inspection so it never hijacks a later home mount.
+   */
+  checkLastVisitedPerpsRoute() {
+    const {
+      lastVisitedPerpsRoute,
+      pendingRedirectRoute,
+      envType,
+      setRedirectAfterDefaultPage,
+      clearLastVisitedPerpsRoute,
+    } = this.props;
+
+    if (!lastVisitedPerpsRoute) {
+      return;
+    }
+
+    const { path, timestamp } = lastVisitedPerpsRoute;
+    const isFresh = Date.now() - timestamp < PERPS_REOPEN_TTL_MS;
+    // Exact match on `/perps` or a `/perps/...` sub-route only. Prevents a
+    // future sibling like `/perpsNew` from silently resuming off a stale
+    // persisted path. Strip any query/hash suffix first so a stored path
+    // like `/perps?tab=1` still matches.
+    const pathname = typeof path === 'string' ? path.split(/[?#]/u)[0] : '';
+    const isPerpsPath =
+      pathname === PERPS_ROUTE || pathname.startsWith(`${PERPS_ROUTE}/`);
+
+    // An in-app departure from `/perps/*` scheduled a Redux clear in the
+    // passive-effect phase — React fires this `componentDidMount` first, so
+    // the clear hasn't landed yet. The module-level marker tells us this is
+    // an in-app transition (not a popup reopen) and we must not replay the
+    // redirect. A fresh JS context (popup close→reopen) starts with an
+    // unset marker, so the real resume path still fires.
+    // `pendingRedirectRoute` is a higher-priority cross-session redirect
+    // (e.g. a background-initiated deeplink); skip the perps resume when
+    // one will actually fire in this environment. Mirror the
+    // `checkPendingRedirectRoute` env applicability check so an
+    // environment-mismatched pending entry (still non-null because the
+    // clear is async) does not suppress the perps resume. Always clear
+    // the persisted entry afterwards so a later home mount cannot replay
+    // it.
+    const pendingApplies =
+      Boolean(pendingRedirectRoute) &&
+      (!pendingRedirectRoute.environmentType ||
+        pendingRedirectRoute.environmentType === envType);
+    const justLeftPerpsInApp = wasPerpsUnmountedInAppRecently(1500);
+    if (!pendingApplies && !justLeftPerpsInApp && isFresh && isPerpsPath) {
+      setRedirectAfterDefaultPage({ path });
+    }
+
+    clearLastVisitedPerpsRoute?.();
+  }
+
   componentDidMount() {
     this.props.fetchBuyableChains();
 
     this.checkPendingRedirectRoute();
+    this.checkLastVisitedPerpsRoute();
     this.checkRedirectAfterDefaultPage();
 
     // Ensure we have up-to-date connectivity statuses for all enabled networks
@@ -311,6 +371,11 @@ export default class Home extends PureComponent {
       this.checkPendingRedirectRoute();
     }
 
+    // Same one-shot pattern: only react when lastVisitedPerpsRoute hydrates from null to a value.
+    if (this.props.lastVisitedPerpsRoute && !prevProps.lastVisitedPerpsRoute) {
+      this.checkLastVisitedPerpsRoute();
+    }
+
     // clearRedirectAfterDefaultPage is a synchronous Redux action, so the guard condition flips before the next render.
     this.checkRedirectAfterDefaultPage();
   }
@@ -371,12 +436,8 @@ export default class Home extends PureComponent {
       disableWeb3ShimUsageAlert,
       infuraBlocked,
       showOutdatedBrowserWarning,
-      newNftAddedMessage,
-      setNewNftAddedMessage,
       newNetworkAddedName,
       editedNetwork,
-      removeNftMessage,
-      setRemoveNftMessage,
       newTokensImported,
       newTokensImportedError,
       setNewTokensImported,
@@ -387,8 +448,6 @@ export default class Home extends PureComponent {
     } = this.props;
 
     const onAutoHide = () => {
-      setNewNftAddedMessage('');
-      setRemoveNftMessage('');
       setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
       setNewTokensImportedError('');
       clearEditedNetwork(); // dispatches setEditedNetwork(), setting editedNetwork to undefined, which clears the editedNetwork state
@@ -410,75 +469,6 @@ export default class Home extends PureComponent {
       );
 
     const items = [
-      newNftAddedMessage === 'success' ? (
-        <ActionableMessage
-          key="new-nft-added"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('newNftAddedMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
-      removeNftMessage === 'success' ? (
-        <ActionableMessage
-          key="remove-nft"
-          type="success"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
-      removeNftMessage === 'error' ? (
-        <ActionableMessage
-          key="remove-nft-error"
-          type="danger"
-          className="home__new-network-notification"
-          autoHideTime={autoHideDelay}
-          onAutoHide={onAutoHide}
-          message={
-            <Box display={Display.InlineFlex}>
-              <i className="fa fa-check-circle home__new-nft-notification-icon" />
-              <Text variant={TextVariant.BodySm} asChild>
-                <h6>{t('removeNftErrorMessage')}</h6>
-              </Text>
-              <ButtonIcon
-                iconName={IconName.Close}
-                size={ButtonIconSize.Sm}
-                ariaLabel={t('close')}
-                onClick={onAutoHide}
-              />
-            </Box>
-          }
-        />
-      ) : null,
       newNetworkAddedName ? (
         <ActionableMessage
           key="new-network-added"
@@ -678,7 +668,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: false,
+          [MetaMetricsUserTrait.HasMarketingConsent]: false,
           location: 'marketing_consent_modal',
         },
       });
@@ -690,7 +680,7 @@ export default class Home extends PureComponent {
         category: MetaMetricsEventCategory.Home,
         event: MetaMetricsEventName.AnalyticsPreferenceSelected,
         properties: {
-          has_marketing_consent: consent,
+          [MetaMetricsUserTrait.HasMarketingConsent]: consent,
           location: 'marketing_consent_modal',
         },
       });
@@ -829,8 +819,7 @@ export default class Home extends PureComponent {
       showShieldEntryModal,
       isSocialLoginFlow,
       rewardsEnabled,
-      rewardsOnboardingEnabled,
-      rewardsOnboardingModalOpen,
+      rewardsModalOpen,
       showPna25Modal,
     } = this.props;
 
@@ -863,7 +852,6 @@ export default class Home extends PureComponent {
 
     const showRewardsModal =
       rewardsEnabled &&
-      rewardsOnboardingEnabled &&
       canSeeModals &&
       !showTermsOfUse &&
       !showMultiRpcEditModal &&
@@ -881,7 +869,7 @@ export default class Home extends PureComponent {
       !isSeedlessPasswordOutdated &&
       !showShieldEntryModal &&
       !showRecoveryPhrase &&
-      !rewardsOnboardingModalOpen;
+      !rewardsModalOpen;
 
     const { location } = this.props;
 
@@ -922,7 +910,7 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
-          {showRewardsModal && <RewardsOnboardingModal />}
+          {showRewardsModal && <RewardsModal />}
           {showPna25ModalComponent && <Pna25Modal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()

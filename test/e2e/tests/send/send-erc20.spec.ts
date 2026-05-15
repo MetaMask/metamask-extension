@@ -77,6 +77,7 @@ describe('Send ERC20', function () {
           await confirmation.checkPageIsLoaded();
           await confirmation.clickFooterConfirmButton();
 
+          await homePage.goToActivityList();
           await activityListPage.checkTransactionActivityByText('Sent');
           await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
         },

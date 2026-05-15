@@ -19,7 +19,6 @@ export type AccountTreeWallets = {
 
 export type AccountTreeState = {
   wallets: AccountTreeWallets;
-  selectedAccountGroup: AccountGroupId;
 };
 
 export type InternalAccountsState = {
@@ -29,6 +28,7 @@ export type InternalAccountsState = {
 
 export type MultichainAccountsState = {
   metamask: {
+    selectedAccountGroup: AccountGroupId;
     accountTree: AccountTreeState;
     internalAccounts: InternalAccountsState;
     accountIdByAddress: Record<string, AccountId>;
