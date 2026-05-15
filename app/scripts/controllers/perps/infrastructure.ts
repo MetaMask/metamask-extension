@@ -356,6 +356,7 @@ export function createPerpsInfrastructure(
     rewards: {
       getPerpsDiscountForAccount: async (
         _caipAccountId: `${string}:${string}:${string}`,
+        _baseFeeBips: number,
       ) => {
         // TODO: Wire to RewardsController when available
         return 0;
