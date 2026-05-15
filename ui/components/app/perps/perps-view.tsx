@@ -209,6 +209,16 @@ export const PerpsView: React.FC = () => {
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
       });
+
+      try {
+        const fresh = await submitRequestToBackground<Position[]>(
+          'perpsGetPositions',
+          [],
+        );
+        applyPositionsSnapshot(fresh ?? []);
+      } catch {
+        // Refresh failure is non-critical; positions were already closed.
+      }
     } catch {
       setBatchActionError(t('somethingWentWrong'));
       track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
@@ -220,16 +230,6 @@ export const PerpsView: React.FC = () => {
       });
     } finally {
       setIsCloseAllPending(false);
-    }
-
-    try {
-      const fresh = await submitRequestToBackground<Position[]>(
-        'perpsGetPositions',
-        [],
-      );
-      applyPositionsSnapshot(fresh ?? []);
-    } catch {
-      // Refresh failure is non-critical; positions were already closed.
     }
   }, [
     applyPositionsSnapshot,

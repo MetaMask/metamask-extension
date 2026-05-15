@@ -71,25 +71,35 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     [positions],
   );
 
-  // Group notional values by symbol so each symbol's fee rate applies only
-  // to that symbol's notional, avoiding cross-symbol fee mismatches (e.g.
-  // crypto vs HIP-3 equity markets).
-  const symbolNotionals = useMemo(() => {
+  // Build a stable, JSON-serialisable key from position symbols + notionals
+  // so the fee-fetching effect only re-fires when actual data changes, not on
+  // every streaming array reference swap.
+  const symbolNotionalPairs = useMemo(() => {
     const map = new Map<string, number>();
     for (const pos of positions) {
       const notional = Math.abs(Number.parseFloat(pos.positionValue) || 0);
       map.set(pos.symbol, (map.get(pos.symbol) ?? 0) + notional);
     }
-    return map;
+    return [...map.entries()].sort(([a], [b]) => a.localeCompare(b));
   }, [positions]);
+
+  const symbolNotionalKey = useMemo(
+    () => JSON.stringify(symbolNotionalPairs),
+    [symbolNotionalPairs],
+  );
 
   const [estimatedFees, setEstimatedFees] = useState(0);
   const feeRequestId = useRef(0);
 
   useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const entries: [string, number][] = JSON.parse(symbolNotionalKey);
+
     feeRequestId.current += 1;
     const currentId = feeRequestId.current;
-    const entries = [...symbolNotionals.entries()];
 
     if (entries.length === 0) {
       setEstimatedFees(0);
@@ -113,7 +123,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
         setEstimatedFees(perSymbolFees.reduce((sum, fee) => sum + fee, 0));
       }
     });
-  }, [symbolNotionals]);
+  }, [isOpen, symbolNotionalKey]);
 
   const roundedMargin = useMemo(
     () => Math.round(totalMargin * 100) / 100,
