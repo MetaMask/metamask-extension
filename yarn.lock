@@ -17745,12 +17745,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ulissesferreira/bitcoin-regtest-up@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@ulissesferreira/bitcoin-regtest-up@npm:0.1.1"
+"@ulissesferreira/bitcoin-regtest-up@file:../bitcoin-regtest-up/ulissesferreira-bitcoin-regtest-up-0.1.2.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.1.2
+  resolution: "@ulissesferreira/bitcoin-regtest-up@file:../bitcoin-regtest-up/ulissesferreira-bitcoin-regtest-up-0.1.2.tgz#../bitcoin-regtest-up/ulissesferreira-bitcoin-regtest-up-0.1.2.tgz::hash=c8329c&locator=metamask-crx%40workspace%3A."
   bin:
     bitcoin-regtest-up: dist/bin/bitcoin-regtest-up.js
-  checksum: 10/8ad906aa6a662540daf7471db43cc567b8780d5449657aaec063c8453b42b30aea4be0e49fbf785850fc5289066a19740aff32dcd5b8e389ac7984cc048185bb
+  checksum: 10/c09ec081bf0c1d387f6a876aa152a73a3ee9f746dd35e5c955d8cfd24b730d374e6c647edf3cda232f0df20239d697fcd9725b35cca6e71448a2868c299581fc
   languageName: node
   linkType: hard
 
@@ -33765,7 +33765,7 @@ __metadata:
     "@types/yazl": "npm:^3.3.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.1.0"
     "@typescript-eslint/parser": "npm:^8.1.0"
-    "@ulissesferreira/bitcoin-regtest-up": "npm:^0.1.1"
+    "@ulissesferreira/bitcoin-regtest-up": "file:../bitcoin-regtest-up/ulissesferreira-bitcoin-regtest-up-0.1.2.tgz"
     "@ulissesferreira/java-tron-up": "npm:^0.1.2"
     "@ulissesferreira/solana-test-validator-up": "npm:^0.1.1"
     "@viem/anvil": "npm:^0.0.10"

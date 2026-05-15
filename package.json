@@ -687,7 +687,7 @@
     "@types/yazl": "^3.3.0",
     "@typescript-eslint/eslint-plugin": "^8.1.0",
     "@typescript-eslint/parser": "^8.1.0",
-    "@ulissesferreira/bitcoin-regtest-up": "^0.1.1",
+    "@ulissesferreira/bitcoin-regtest-up": "file:../bitcoin-regtest-up/ulissesferreira-bitcoin-regtest-up-0.1.2.tgz",
     "@ulissesferreira/java-tron-up": "^0.1.2",
     "@ulissesferreira/solana-test-validator-up": "^0.1.1",
     "@viem/anvil": "^0.0.10",
