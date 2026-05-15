@@ -43,11 +43,13 @@ export function getSwcLoader(
               envs,
             },
           },
+          decoratorVersion: '2022-03',
         },
         parser: {
           syntax,
           [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
           importAttributes: true,
+          decorators: true,
         },
       },
       module: {
