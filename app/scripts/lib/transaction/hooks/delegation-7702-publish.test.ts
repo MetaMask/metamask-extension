@@ -243,6 +243,31 @@ describe('Delegation 7702 Publish Hook', () => {
         transactionHash: undefined,
       });
     });
+
+    it('transaction type revokeDelegation must not be relayed', async () => {
+      isAtomicBatchSupportedMock.mockResolvedValueOnce([
+        {
+          chainId: TRANSACTION_META_MOCK.chainId,
+          delegationAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+          isSupported: true,
+          upgradeContractAddress: UPGRADE_CONTRACT_ADDRESS_MOCK,
+        },
+      ]);
+
+      const result = await hookClass.getHook()(
+        {
+          ...TRANSACTION_META_MOCK,
+          type: TransactionType.revokeDelegation,
+          isGasFeeSponsored: true,
+          gasFeeTokens: [GAS_FEE_TOKEN_MOCK],
+          selectedGasFeeToken: GAS_FEE_TOKEN_MOCK.tokenAddress,
+        } as unknown as TransactionMeta,
+        SIGNED_TX_MOCK,
+      );
+
+      expect(result).toEqual({ transactionHash: undefined });
+      expect(submitRelayTransactionMock).not.toHaveBeenCalled();
+    });
   });
 
   it('submits request to transaction relay', async () => {

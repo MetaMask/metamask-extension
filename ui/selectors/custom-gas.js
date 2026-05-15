@@ -9,8 +9,8 @@ import { GasEstimateTypes as GAS_FEE_CONTROLLER_ESTIMATE_TYPES } from '../../sha
 import {
   getGasEstimateType,
   getGasFeeEstimates,
-  isEIP1559Network,
 } from '../ducks/metamask/metamask';
+import { isEIP1559Network } from '../ducks/metamask/base-selectors';
 import { calcGasTotal } from '../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../shared/lib/Numeric';
 import { EtherDenomination } from '../../shared/constants/common';

@@ -28,7 +28,7 @@ const BackupAndSyncTab = () => {
     return result;
   }, [isBackupAndSyncEnabled]);
 
-  return <SettingsTab items={items} tabMessageKey="backupAndSync" />;
+  return <SettingsTab items={items} />;
 };
 
 export default BackupAndSyncTab;

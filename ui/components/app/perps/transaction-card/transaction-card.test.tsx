@@ -25,11 +25,11 @@ const createMockTransaction = (
   type: 'trade',
   category: 'position_open',
   symbol: 'ETH',
-  title: 'Opened long',
+  title: messages.perpsTransactionTitleOpenedLong.message,
   subtitle: '2.5 ETH @ $2,850.00',
   timestamp: Date.now() - 3600000,
   fill: {
-    shortTitle: 'Opened long',
+    shortTitle: messages.perpsTransactionTitleOpenedLong.message,
     amount: '+$7,125.00',
     amountNumber: 7125,
     isPositive: true,
@@ -58,14 +58,16 @@ describe('TransactionCard', () => {
 
   it('displays the transaction title', () => {
     const transaction = createMockTransaction({
-      title: 'Opened long',
+      title: messages.perpsTransactionTitleOpenedLong.message,
     });
     renderWithProvider(
       <TransactionCard transaction={transaction} />,
       mockStore,
     );
 
-    expect(screen.getByText('Opened long')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsTransactionTitleOpenedLong.message),
+    ).toBeInTheDocument();
   });
 
   it('displays the token logo', () => {
@@ -171,7 +173,7 @@ describe('TransactionCard', () => {
         type: 'trade',
         symbol: 'ETH',
         fill: {
-          shortTitle: 'Opened long',
+          shortTitle: messages.perpsTransactionTitleOpenedLong.message,
           amount: '+$7,125.00',
           amountNumber: 7125,
           isPositive: true,
@@ -496,9 +498,9 @@ describe('TransactionCard', () => {
         type: 'trade',
         category: 'position_open',
         symbol: 'xyz:TSLA',
-        title: 'Opened long',
+        title: messages.perpsTransactionTitleOpenedLong.message,
         fill: {
-          shortTitle: 'Opened long',
+          shortTitle: messages.perpsTransactionTitleOpenedLong.message,
           amount: '+$2,400.00',
           amountNumber: 2400,
           isPositive: true,
