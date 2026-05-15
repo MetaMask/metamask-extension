@@ -72,12 +72,6 @@ class ChromeDriver {
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
       );
       args.push('--headless=new');
-      if (!constrainWindowSize) {
-        // Headless Chrome has no physical display, so without an explicit size
-        // the viewport depends on platform defaults (which changed when
-        // --no-sandbox was added unconditionally). Pin to a consistent size.
-        args.push('--window-size=1280,720');
-      }
     }
 
     const options = new chrome.Options().addArguments(args);
