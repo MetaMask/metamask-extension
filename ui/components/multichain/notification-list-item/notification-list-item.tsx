@@ -8,12 +8,12 @@ import {
   IconName,
   IconColor,
   IconSize,
-
   Box,
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
-  BoxJustifyContent} from '@metamask/design-system-react';
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { Text } from '../../component-library';
 import {
   FontWeight,
