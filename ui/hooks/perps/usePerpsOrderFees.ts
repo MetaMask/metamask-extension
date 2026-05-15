@@ -4,6 +4,7 @@ import type {
   OrderType,
 } from '@metamask/perps-controller';
 
+import { PERPS_FALLBACK_FEE_RATES } from '../../../shared/constants/perps';
 import { submitRequestToBackground } from '../../store/background-connection';
 
 type UsePerpsOrderFeesOptions = {
@@ -37,21 +38,15 @@ type UsePerpsOrderFeesReturn = {
   hasError: boolean;
 };
 
-const FALLBACK_FEE_RATES = {
-  feeRate: 0.00145,
-  protocolFeeRate: 0.00045,
-  metamaskFeeRate: 0.001,
-} as const;
-
 function createFallbackFeeResult(amount?: string): FeeCalculationResult {
   const parsedAmount = Number.parseFloat(amount ?? '');
   const notional = Number.isFinite(parsedAmount) ? parsedAmount : 0;
 
   return {
-    ...FALLBACK_FEE_RATES,
-    feeAmount: notional * FALLBACK_FEE_RATES.feeRate,
-    protocolFeeAmount: notional * FALLBACK_FEE_RATES.protocolFeeRate,
-    metamaskFeeAmount: notional * FALLBACK_FEE_RATES.metamaskFeeRate,
+    ...PERPS_FALLBACK_FEE_RATES,
+    feeAmount: notional * PERPS_FALLBACK_FEE_RATES.feeRate,
+    protocolFeeAmount: notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
+    metamaskFeeAmount: notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
   };
 }
 

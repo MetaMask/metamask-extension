@@ -1,10 +1,16 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { CloseAllPositionsModal } from './close-all-positions-modal';
+
+const mockSubmitRequestToBackground = jest.fn();
+jest.mock('../../../../store/background-connection', () => ({
+  submitRequestToBackground: (...args: unknown[]) =>
+    mockSubmitRequestToBackground(...args),
+}));
 
 jest.mock('../../../../../shared/lib/perps-formatters', () => ({
   PRICE_RANGES_UNIVERSAL: [],
@@ -28,10 +34,6 @@ jest.mock('../../../../../shared/lib/perps-formatters', () => ({
   },
 }));
 
-jest.mock('../../../../hooks/perps/usePerpsOrderFees', () => ({
-  usePerpsOrderFees: () => ({ feeRate: 0.00145, isLoading: false }),
-}));
-
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -51,6 +53,7 @@ const defaultProps = {
 describe('CloseAllPositionsModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSubmitRequestToBackground.mockResolvedValue({ feeRate: 0.00145 });
   });
 
   it('renders when open', () => {
@@ -144,5 +147,47 @@ describe('CloseAllPositionsModal', () => {
     expect(
       screen.queryByTestId('perps-close-all-positions-modal'),
     ).not.toBeInTheDocument();
+  });
+
+  it('fetches fees per unique symbol rather than using a single rate', async () => {
+    const feeRateBySymbol: Record<string, number> = {
+      ETH: 0.001,
+      BTC: 0.002,
+    };
+    mockSubmitRequestToBackground.mockImplementation(
+      (_method: string, args: unknown[]) => {
+        const { symbol } = (args as [{ symbol: string }])[0];
+        return Promise.resolve({
+          feeRate: feeRateBySymbol[symbol] ?? 0.00145,
+        });
+      },
+    );
+
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsCalculateFees',
+        [expect.objectContaining({ symbol: 'ETH' })],
+      );
+      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+        'perpsCalculateFees',
+        [expect.objectContaining({ symbol: 'BTC' })],
+      );
+    });
+  });
+
+  it('uses fallback fee rate when background call fails', async () => {
+    mockSubmitRequestToBackground.mockRejectedValue(
+      new Error('Background unreachable'),
+    );
+
+    renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toBeInTheDocument();
+    });
   });
 });

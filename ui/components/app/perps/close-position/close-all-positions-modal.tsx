@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -10,11 +10,13 @@ import {
   TextAlign,
   FontWeight,
 } from '@metamask/design-system-react';
+import type { FeeCalculationResult } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
   formatPnl,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
+import { PERPS_FALLBACK_FEE_RATES } from '../../../../../shared/constants/perps';
 import {
   Modal,
   ModalContent,
@@ -25,7 +27,7 @@ import {
   ModalFooter,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { submitRequestToBackground } from '../../../../store/background-connection';
 import type { Position } from '../types';
 
 export type CloseAllPositionsModalProps = {
@@ -69,25 +71,49 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     [positions],
   );
 
-  const totalNotional = useMemo(
-    () =>
-      positions.reduce(
-        (sum, pos) =>
-          sum + Math.abs(Number.parseFloat(pos.positionValue) || 0),
-        0,
+  // Group notional values by symbol so each symbol's fee rate applies only
+  // to that symbol's notional, avoiding cross-symbol fee mismatches (e.g.
+  // crypto vs HIP-3 equity markets).
+  const symbolNotionals = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const pos of positions) {
+      const notional = Math.abs(Number.parseFloat(pos.positionValue) || 0);
+      map.set(pos.symbol, (map.get(pos.symbol) ?? 0) + notional);
+    }
+    return map;
+  }, [positions]);
+
+  const [estimatedFees, setEstimatedFees] = useState(0);
+  const feeRequestId = useRef(0);
+
+  useEffect(() => {
+    feeRequestId.current += 1;
+    const currentId = feeRequestId.current;
+    const entries = [...symbolNotionals.entries()];
+
+    if (entries.length === 0) {
+      setEstimatedFees(0);
+      return;
+    }
+
+    Promise.all(
+      entries.map(([symbol, notional]) =>
+        submitRequestToBackground<FeeCalculationResult>(
+          'perpsCalculateFees',
+          [{ orderType: 'market' as const, isMaker: false, symbol }],
+        )
+          .then(
+            (result) =>
+              notional * (result?.feeRate ?? PERPS_FALLBACK_FEE_RATES.feeRate),
+          )
+          .catch(() => notional * PERPS_FALLBACK_FEE_RATES.feeRate),
       ),
-    [positions],
-  );
-
-  const { feeRate } = usePerpsOrderFees({
-    symbol: positions[0]?.symbol ?? 'BTC',
-    orderType: 'market',
-  });
-
-  const estimatedFees = useMemo(
-    () => totalNotional * (feeRate ?? 0),
-    [totalNotional, feeRate],
-  );
+    ).then((perSymbolFees) => {
+      if (currentId === feeRequestId.current) {
+        setEstimatedFees(perSymbolFees.reduce((sum, fee) => sum + fee, 0));
+      }
+    });
+  }, [symbolNotionals]);
 
   const roundedMargin = useMemo(
     () => Math.round(totalMargin * 100) / 100,
