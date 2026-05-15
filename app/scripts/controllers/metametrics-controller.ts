@@ -658,15 +658,19 @@ export class MetaMetricsController extends BaseController<
       options.initialEvent === TransactionMetaMetricsEvent.submitted &&
       fragments[id];
 
-    const additionalFragmentProps = hasExistingSubmittedFragment
-      ? {
-          ...fragments[id],
-          canDeleteIfAbandoned: false,
-        }
-      : {};
+    const additionalFragmentProps: Partial<MetaMetricsEventFragment> =
+      hasExistingSubmittedFragment
+        ? {
+            ...fragments[id],
+            canDeleteIfAbandoned: false,
+          }
+        : {};
 
     this.update((state) => {
-      state.fragments[id] = merge({}, additionalFragmentProps, fragment);
+      state.fragments[id] = {
+        ...additionalFragmentProps,
+        ...fragment,
+      };
     });
 
     if (fragment.initialEvent) {
