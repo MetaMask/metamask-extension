@@ -1,5 +1,6 @@
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { KnownSessionProperties } from '@metamask/chain-agnostic-permission';
+import { isCaipChainId, parseCaipChainId } from '@metamask/utils';
 import { getNetworkConfigurationsByChainId } from '../../shared/lib/selectors/networks';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { getCaip25CaveatValueFromPermissions } from '../pages/permissions-connect/connect-page/utils';
@@ -10,6 +11,9 @@ import {
   getAllDomains,
 } from './selectors';
 import { getMultichainNetworkConfigurationsByChainId } from './multichain';
+
+// TODO: Add support for other non-EVM networks (Bitcoin, ...) and test
+const SUPPORTED_NON_EVM_NAMESPACES = new Set(['solana', 'tron']);
 
 export const getDappActiveNetwork = createDeepEqualSelector(
   getOrderedConnectedAccountsForActiveTab,
@@ -62,9 +66,14 @@ export const getDappActiveNetwork = createDeepEqualSelector(
         }
       }
     } else {
-      // TODO: Add support for other networks (Bitcoin, Solana)
-      const nonEvmScope = selectedAccount.scopes.find((scope: string) =>
-        scope.startsWith('solana:'),
+      const nonEvmScope = selectedAccount.scopes.find(
+        (scope: `${string}:${string}`) => {
+          if (!isCaipChainId(scope)) {
+            return false;
+          }
+          const { namespace } = parseCaipChainId(scope);
+          return SUPPORTED_NON_EVM_NAMESPACES.has(namespace);
+        },
       );
 
       if (nonEvmScope) {

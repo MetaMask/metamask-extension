@@ -93,7 +93,33 @@ describe('getDappActiveNetwork selector', () => {
     options: {},
   };
 
-  const mockMultichainNetworkConfig: NetworkConfiguration = {
+  const mockTronAccount = {
+    id: '1e535d1b-4f7c-443a-803d-c32717c48983',
+    address: 'TGJn1wnUYHJbvN88cynZbsAz2EMeZq73yx',
+    type: 'tron:eoa',
+    metadata: {
+      name: '',
+      lastSelected: Date.now(),
+    },
+    scopes: ['tron:728126428', 'tron:3448148188', 'tron:2494104990'],
+    methods: [],
+    options: {},
+  };
+
+  const mockNonCaipAccount = {
+    id: '3e79-4f99-993a-993d-c99717c47411',
+    address: '0xfoo',
+    type: 'foo:bar',
+    metadata: {
+      name: '',
+      lastSelected: Date.now(),
+    },
+    scopes: ['nonCaipInvalid'],
+    methods: [],
+    options: {},
+  };
+
+  const mockSolanaMultichainNetworkConfig: NetworkConfiguration = {
     chainId: '0x1' as `0x${string}`,
     name: 'Solana Mainnet',
     nativeCurrency: 'SOL',
@@ -107,6 +133,21 @@ describe('getDappActiveNetwork selector', () => {
       },
     ],
   };
+
+  const mockTronMultichainNetworkConfig: NetworkConfiguration = {
+    chainId: 'tron:728126428',
+    name: 'Tron',
+    nativeCurrency: 'TRX',
+    blockExplorerUrls: [],
+    defaultRpcEndpointIndex: 0,
+    rpcEndpoints: [
+      {
+        networkClientId: 'tron-mainnet',
+        type: RpcEndpointType.Custom,
+        url: '',
+      },
+    ],
+  } as unknown as NetworkConfiguration;
 
   const arrangeMocks = () => {
     mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
@@ -145,11 +186,30 @@ describe('getDappActiveNetwork selector', () => {
       mockSolanaAccount as MockedValue,
     ]);
     mocks.mockGetMultichainNetworkConfigurationsByChainId.mockReturnValue({
-      'solana:mainnet': mockMultichainNetworkConfig,
+      'solana:mainnet': mockSolanaMultichainNetworkConfig,
     });
 
     const result = getDappActiveNetwork(mocks.mockState);
-    expect(result).toEqual({ ...mockMultichainNetworkConfig, isEvm: false });
+    expect(result).toEqual({
+      ...mockSolanaMultichainNetworkConfig,
+      isEvm: false,
+    });
+  });
+
+  it('returns correct non-EVM network configuration for Tron account', () => {
+    const mocks = arrangeMocks();
+    mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
+      mockTronAccount as MockedValue,
+    ]);
+    mocks.mockGetMultichainNetworkConfigurationsByChainId.mockReturnValue({
+      'tron:728126428': mockTronMultichainNetworkConfig,
+    });
+
+    const result = getDappActiveNetwork(mocks.mockState);
+    expect(result).toEqual({
+      ...mockTronMultichainNetworkConfig,
+      isEvm: false,
+    });
   });
 
   it('returns null when no connected accounts', () => {
@@ -179,6 +239,17 @@ describe('getDappActiveNetwork selector', () => {
     const mocks = arrangeMocks();
     mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
       mockSolanaAccount as MockedValue,
+    ]);
+    mocks.mockGetMultichainNetworkConfigurationsByChainId.mockReturnValue({});
+
+    const result = getDappActiveNetwork(mocks.mockState);
+    expect(result).toBeNull();
+  });
+
+  it('returns null when a non-caip network is being used (no crash)', () => {
+    const mocks = arrangeMocks();
+    mocks.mockGetOrderedConnectedAccountsForActiveTab.mockReturnValue([
+      mockNonCaipAccount as MockedValue,
     ]);
     mocks.mockGetMultichainNetworkConfigurationsByChainId.mockReturnValue({});
 
