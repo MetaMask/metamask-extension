@@ -170,13 +170,10 @@ export const TokenManagementPage = () => {
   >(() => new Set<string>());
   const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
 
-  const stageHide = useCallback(
-    (key: string, payload: StagedHidePayload) => {
-      stagedHidesRef.current.set(key, payload);
-      setStagedHideKeys(new Set(stagedHidesRef.current.keys()));
-    },
-    [],
-  );
+  const stageHide = useCallback((key: string, payload: StagedHidePayload) => {
+    stagedHidesRef.current.set(key, payload);
+    setStagedHideKeys(new Set(stagedHidesRef.current.keys()));
+  }, []);
 
   const unstageHide = useCallback((key: string) => {
     if (!stagedHidesRef.current.has(key)) {
@@ -211,19 +208,16 @@ export const TokenManagementPage = () => {
     });
   }, []);
 
-  const getStagedHideKey = useCallback(
-    (token: ManagedAsset): string | null => {
-      if (isEvmChainId(token.chainId as Hex | CaipChainId)) {
-        if (!('address' in token) || !token.address) {
-          return null;
-        }
-        const caip = toAssetId(token.address as Hex, token.chainId as Hex);
-        return caip ? caip.toLowerCase() : null;
+  const getStagedHideKey = useCallback((token: ManagedAsset): string | null => {
+    if (isEvmChainId(token.chainId as Hex | CaipChainId)) {
+      if (!('address' in token) || !token.address) {
+        return null;
       }
-      return token.assetId ? String(token.assetId).toLowerCase() : null;
-    },
-    [],
-  );
+      const caip = toAssetId(token.address as Hex, token.chainId as Hex);
+      return caip ? caip.toLowerCase() : null;
+    }
+    return token.assetId ? String(token.assetId).toLowerCase() : null;
+  }, []);
 
   /**
    * Flushes every staged hide to the underlying controllers. Stored behind
