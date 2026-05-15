@@ -1611,7 +1611,6 @@
     },
     "ui/selectors/config-registry/config-registry.test.ts": {
       "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 1,
       "error: Error: Error converting registry config": 2
     },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {

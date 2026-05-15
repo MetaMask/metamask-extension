@@ -163,15 +163,15 @@ export const getFeaturedNetworksForAdditionalList = createSelector(
 
     const evmNetworks = Object.values(configs.networks).reduce<
       FeaturedNetworkForAdditionalList[]
-    >((acc, config) => {
+    >((acc, network) => {
       if (
-        config.config.isActive !== true ||
-        config.config.isFeatured !== true ||
-        config.config.isTestnet === true
+        !network.config.isActive ||
+        !network.config.isFeatured ||
+        network.config.isTestnet
       ) {
         return acc;
       }
-      const fields = registryConfigToAddNetworkFields(config);
+      const fields = registryConfigToAddNetworkFields(network);
       if (fields) {
         acc.push(fields);
       }
