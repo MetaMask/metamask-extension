@@ -43,19 +43,33 @@ describe('getLiquidationDistancePercent', () => {
   });
 
   describe('invalid inputs', () => {
-    it.each([
-      ['null current', null, '1500', 'long' as const],
-      ['undefined current', undefined, '1500', 'long' as const],
-      ['NaN current', Number.NaN, '1500', 'long' as const],
-      ['zero current', 0, '1500', 'long' as const],
-      ['negative current', -1, '1500', 'long' as const],
-      ['null liq', 2000, null, 'long' as const],
-      ['undefined liq', 2000, undefined, 'long' as const],
-      ['zero liq', 2000, '0', 'long' as const],
-      ['negative liq', 2000, '-100', 'long' as const],
-      ['non-numeric liq', 2000, 'abc', 'long' as const],
-    ])('returns null for %s', (_label, current, liq, side) => {
-      expect(getLiquidationDistancePercent(current, liq, side)).toBeNull();
+    type InvalidCase = {
+      label: string;
+      current: number | null | undefined;
+      liq: string | number | null | undefined;
+      side: 'long' | 'short';
+    };
+    const cases: InvalidCase[] = [
+      { label: 'null current', current: null, liq: '1500', side: 'long' },
+      {
+        label: 'undefined current',
+        current: undefined,
+        liq: '1500',
+        side: 'long',
+      },
+      { label: 'NaN current', current: Number.NaN, liq: '1500', side: 'long' },
+      { label: 'zero current', current: 0, liq: '1500', side: 'long' },
+      { label: 'negative current', current: -1, liq: '1500', side: 'long' },
+      { label: 'null liq', current: 2000, liq: null, side: 'long' },
+      { label: 'undefined liq', current: 2000, liq: undefined, side: 'long' },
+      { label: 'zero liq', current: 2000, liq: '0', side: 'long' },
+      { label: 'negative liq', current: 2000, liq: '-100', side: 'long' },
+      { label: 'non-numeric liq', current: 2000, liq: 'abc', side: 'long' },
+    ];
+    cases.forEach(({ label, current, liq, side }) => {
+      it(`returns null for ${label}`, () => {
+        expect(getLiquidationDistancePercent(current, liq, side)).toBeNull();
+      });
     });
   });
 });
