@@ -1,10 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
-import {
-  Box,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   ButtonSecondary,
   FormTextField,
@@ -16,9 +13,7 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountGroupName } from '../../../store/actions';
-import {
-  FontWeight,
-} from '../../../helpers/constants/design-system';
+import { FontWeight } from '../../../helpers/constants/design-system';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
 
 export type MultichainAccountEditModalProps = {
@@ -75,10 +70,7 @@ export const MultichainAccountEditModal = ({
           {t('rename')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            flexDirection={BoxFlexDirection.Column}
-            gap={4}
-          >
+          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
             <Box>
               <FormTextField
                 label={t('accountName')}

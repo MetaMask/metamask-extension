@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { CaipChainId } from '@metamask/utils';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   IconName,
   ButtonIcon,

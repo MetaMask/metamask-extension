@@ -23,9 +23,6 @@ import { isEqual } from 'lodash';
 import { AccountGroupObject } from '@metamask/account-tree-controller';
 
 import { Tooltip } from 'react-tippy';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getPermissions } from '../../../selectors';
-import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import {
   Box,
   BoxAlignItems,
@@ -33,6 +30,9 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getPermissions } from '../../../selectors';
+import { getAllNetworkConfigurationsByCaipChainId } from '../../../../shared/lib/selectors/networks';
 import {
   AvatarBase,
   AvatarBaseSize,
@@ -544,10 +544,7 @@ export const MultichainAccountsConnectPage: React.FC<
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header paddingTop={8} paddingBottom={4}>
-        <Box
-          justifyContent={BoxJustifyContent.Center}
-          marginBottom={8}
-        >
+        <Box justifyContent={BoxJustifyContent.Center} marginBottom={8}>
           {targetSubjectMetadata.iconUrl ? (
             <AvatarFavicon
               backgroundColor={BackgroundColor.backgroundMuted}
@@ -704,11 +701,7 @@ export const MultichainAccountsConnectPage: React.FC<
         </Tabs>
       </Content>
       <Footer>
-        <Box
-          flexDirection={BoxFlexDirection.Column}
-          gap={4}
-          className="w-full"
-        >
+        <Box flexDirection={BoxFlexDirection.Column} gap={4} className="w-full">
           <Box gap={4} className="w-full">
             <Button
               block

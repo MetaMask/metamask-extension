@@ -7,6 +7,11 @@ import {
   getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
@@ -23,11 +28,6 @@ import {
   setPermittedAccounts,
   setPermittedChains,
 } from '../../../../store/actions';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
 import {
   AvatarFavicon,
   AvatarFaviconSize,

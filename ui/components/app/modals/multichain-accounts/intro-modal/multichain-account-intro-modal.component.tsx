@@ -1,14 +1,14 @@
 import React from 'react';
 import {
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../../../helpers/constants/design-system';
 import {
   Button,
   ButtonSize,
@@ -97,10 +97,7 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
             </ModalBody>
 
             <ModalFooter>
-              <Box
-                flexDirection={BoxFlexDirection.Column}
-                gap={4}
-              >
+              <Box flexDirection={BoxFlexDirection.Column} gap={4}>
                 <Button
                   variant={ButtonVariant.Primary}
                   size={ButtonSize.Lg}
