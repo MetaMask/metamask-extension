@@ -37771,7 +37771,7 @@ authors: 강동윤 <kdy1997.dev@gmail.com>
 
 ******************************
 
-@swc/core-linux-x64-gnu
+@swc/core-darwin-arm64
 1.13.2 <https://github.com/swc-project/swc>
 license: Apache-2.0 AND MIT
 authors: 강동윤 <kdy1997.dev@gmail.com>
