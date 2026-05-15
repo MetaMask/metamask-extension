@@ -3,34 +3,9 @@ const path = require('node:path');
 const ts = require('typescript');
 const { version: reactVersion } = require('react/package.json');
 
-// The same `app` <-> `ui` <-> `shared` architectural zones defined in
-// `.eslintrc.base.js`. Duplicated here so the router-registry override
-// below can re-enable them while turning off only the route-isolation
-// zones. Keep these in sync with `.eslintrc.base.js`.
-const architecturalZones = [
-  {
-    target: './app',
-    from: './ui',
-    message:
-      'Should not import from UI in background, use shared directory instead',
-  },
-  {
-    target: './ui',
-    from: './app',
-    message:
-      'Should not import from background in UI, use shared directory instead',
-  },
-  {
-    target: './shared',
-    from: './app',
-    message: 'Should not import from background in shared',
-  },
-  {
-    target: './shared',
-    from: './ui',
-    message: 'Should not import from UI in shared',
-  },
-];
+const {
+  architecturalZones,
+} = require('./development/eslint-restricted-paths-zones.js');
 
 const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
