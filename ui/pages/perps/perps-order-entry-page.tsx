@@ -1151,16 +1151,27 @@ const PerpsOrderEntryPage: React.FC = () => {
             ],
           );
         if (!tpslResult.success) {
-          // The market order already filled; surface the TP/SL failure
-          // separately so the user knows the position opened but the
-          // trigger orders were not attached.
+          // The market order already filled — treat as "position opened,
+          // TP/SL not set": show the TP/SL-specific failure toast and
+          // navigate back to the market detail page so the user can attach
+          // TP/SL from the open position rather than re-submitting the
+          // order form (which would open a duplicate position).
           const tpslMessage =
             tpslResult.error || 'Failed to attach TP/SL to position';
           reportTransactionFailure(
             MetaMetricsEventName.PerpsRiskManagement,
             tpslMessage,
           );
-          throw new Error(tpslMessage);
+          const translatedTpslError = translatePerpsError(
+            new Error(tpslMessage),
+            t as (key: string) => string,
+          );
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+            description: translatedTpslError ?? tpslMessage,
+          });
+          handleBackClick();
+          return;
         }
       }
       // Navigate only on success. On failure, stay on the form so the catch

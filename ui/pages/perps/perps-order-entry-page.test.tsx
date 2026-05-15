@@ -1557,9 +1557,12 @@ describe('PerpsOrderEntryPage', () => {
       );
       expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
         expect.objectContaining({
-          key: 'perpsToastOrderFailed',
+          key: 'perpsToastUpdateFailed',
         }),
       );
+      expect(mockUseNavigate).toHaveBeenCalledWith('/perps/market/ETH', {
+        replace: true,
+      });
     });
   });
 
