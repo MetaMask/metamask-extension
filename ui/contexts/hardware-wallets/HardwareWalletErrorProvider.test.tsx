@@ -167,6 +167,7 @@ describe('HardwareWalletErrorProvider', () => {
         error,
         onRetry: expect.any(Function),
         onCancel: expect.any(Function),
+        onRepairDevice: expect.any(Function),
         isOpen: true,
       });
     });
@@ -339,6 +340,7 @@ describe('HardwareWalletErrorProvider', () => {
         error: userCancelError,
         onRetry: expect.any(Function),
         onCancel: expect.any(Function),
+        onRepairDevice: expect.any(Function),
         isOpen: true,
       });
     });

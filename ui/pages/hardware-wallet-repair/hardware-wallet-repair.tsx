@@ -175,11 +175,7 @@ export const HardwareWalletRepair: React.FC = () => {
               </Text>
             </Box>
           ) : (
-            <Box
-              flexDirection={BoxFlexDirection.Column}
-              gap={4}
-              paddingTop={4}
-            >
+            <Box flexDirection={BoxFlexDirection.Column} gap={4} paddingTop={4}>
               <Text variant={TextVariant.HeadingSm}>
                 {t('hardwareWalletRepairPermissionsTitle')}
               </Text>
@@ -206,10 +202,7 @@ export const HardwareWalletRepair: React.FC = () => {
                     >
                       <Icon name={step.icon} size={IconSize.Lg} />
                     </Box>
-                    <Box
-                      flexDirection={BoxFlexDirection.Column}
-                      gap={1}
-                    >
+                    <Box flexDirection={BoxFlexDirection.Column} gap={1}>
                       <Text
                         variant={TextVariant.BodyMd}
                         fontWeight={FontWeight.Bold}
