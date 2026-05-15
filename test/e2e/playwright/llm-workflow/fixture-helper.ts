@@ -40,9 +40,15 @@ function applyAnvilPort(
   return builder.withNetworkController({
     networkConfigurationsByChainId: {
       '0x539': {
+        blockExplorerUrls: [],
+        chainId: '0x539',
+        defaultRpcEndpointIndex: 0,
         name: `Localhost ${anvilPort}`,
+        nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
+            networkClientId: 'localhost',
+            type: 'custom',
             url: `http://localhost:${anvilPort}`,
           },
         ],
