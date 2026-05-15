@@ -9740,6 +9740,12 @@ export default class MetamaskController extends EventEmitter {
           // The legacy keyring clears `appName` in `forgetDevice` and
           // `_resetDefaults`, so re-apply it on every entry.
           keyring.appName = 'MetaMask';
+          // The legacy eth-lattice-keyring passes `network` to the GridPlus
+          // SDK Client on `_initSession`. Keep this in sync with the active
+          // network so fresh pairings target the right chain.
+          keyring.network = getProviderConfig({
+            metamask: this.networkController.state,
+          }).type;
         }
 
         return await callback(keyring);
