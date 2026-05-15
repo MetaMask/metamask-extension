@@ -751,15 +751,19 @@ module.exports = {
       },
     },
     /**
-     * Route module isolation exemptions
+     * Route module isolation exemptions (defense-in-depth)
      *
-     * The router registry (`ui/pages/routes/`) and the top-level `ui/pages`
-     * entrypoint must reference every route module by design. Re-define
-     * `import-x/no-restricted-paths` for these files with only the
-     * architectural `app` <-> `ui` <-> `shared` zones, dropping the
-     * route-isolation zones. This keeps the existing boundaries enforced
-     * while letting the registry import every route. See ADR 0021
-     * (modularize-routes) / WPC-402.
+     * The router registry (`ui/pages/routes/`) and the top-level
+     * `ui/pages/index.js` must reference every route module by design.
+     * In the current setup the route-isolation zones don't actually
+     * target these files — `routes` is excluded from `ROUTE_ISOLATION_EXEMPT_DIRS`
+     * in `development/eslint-restricted-paths-zones.js`, and `index.js`
+     * sits above any route's `target`. Still, this override re-defines
+     * `import-x/no-restricted-paths` for these paths with **only** the
+     * architectural `app` <-> `ui` <-> `shared` zones so that if the
+     * exemption list is ever changed, the registry's sibling-route
+     * imports continue to be permitted without silently losing the
+     * `ui` <-> `app` boundary. See ADR 0021 (modularize-routes) / WPC-402.
      */
     {
       files: ['ui/pages/routes/**/*.{js,ts,tsx}', 'ui/pages/index.js'],
