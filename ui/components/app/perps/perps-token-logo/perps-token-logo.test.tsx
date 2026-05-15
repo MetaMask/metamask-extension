@@ -209,6 +209,34 @@ describe('PerpsTokenLogo', () => {
     );
   });
 
+  it.each(['RESOLV', 'USUAL'])(
+    'applies only the light-mode dark background override to %s',
+    (symbol) => {
+      const { rerender } = renderWithProvider(
+        <PerpsTokenLogo symbol={symbol} />,
+        mockStore,
+      );
+
+      act(() => {
+        mockImg.onload?.();
+      });
+
+      expect(screen.getByTestId(`perps-token-logo-${symbol}`)).toHaveClass(
+        'bg-icon-default',
+      );
+
+      mockUseTheme.mockReturnValue('dark');
+      rerender(<PerpsTokenLogo symbol={symbol} />);
+
+      expect(screen.getByTestId(`perps-token-logo-${symbol}`)).not.toHaveClass(
+        'bg-white',
+      );
+      expect(screen.getByTestId(`perps-token-logo-${symbol}`)).not.toHaveClass(
+        'bg-icon-default',
+      );
+    },
+  );
+
   it('does not apply a background override to BTC', () => {
     mockUseTheme.mockReturnValue('dark');
     renderWithProvider(<PerpsTokenLogo symbol="BTC" />, mockStore);
