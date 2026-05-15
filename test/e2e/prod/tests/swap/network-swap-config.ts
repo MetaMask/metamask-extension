@@ -16,23 +16,71 @@ export interface NetworkSwapConfig {
   chainId: number;
   /** Native token symbol (e.g., MON, ETH) */
   nativeTokenSymbol: string;
-  /** URL to the tokenlist JSON file */
-  tokenlistUrl: string;
-  /** Optional: Fixture setup method name from FixtureBuilder */
-  fixtureSetupMethod?: string;
+  /**
+   * URL to the tokenlist JSON file. Required when `manualTokens` is not provided.
+   * Mutually exclusive with `manualTokens`.
+   */
+  tokenlistUrl?: string;
+  /**
+   * Manually specified tokens to import instead of fetching from `tokenlistUrl`.
+   * Use for networks without a public tokenlist or when exact contract addresses
+   * are required. Mutually exclusive with `tokenlistUrl`.
+   */
+  manualTokens?: ManualToken[];
+  /** Fixture setup method name from FixtureBuilder */
+  fixtureSetupMethod: string;
   /** Optional: Block explorer URL */
   blockExplorerUrl?: string;
   /** Optional: ERC-20 token symbols to resolve from tokenlist for execution tests */
   swapExecutionTokenSymbols?: string[];
   /** Optional: Ordered swap routes for execution tests */
-  swapExecutionRoutes?: Array<{ from: string; to: string }>;
+  swapExecutionRoutes?: SwapExecutionRoute[];
   /**
-   * When true, the "Total gas fee" row on the swap detail page is expected to
-   * show "Paid by MetaMask" (green badge). Set for networks where MetaMask
+   * Legacy default source amount for routes that do not define `amount`.
+   * Prefer route-level `amount` in `swapExecutionRoutes` for precise control.
+   */
+  defaultSwapAmount?: number;
+  /**
+   * When true, the ""Total gas fee"" row on the swap detail page is expected to
+   * show ""Paid by MetaMask"" (green badge). Set for networks where MetaMask
    * sponsors gas (e.g. Monad, SEI). Defaults to false.
    */
   gasFeeSponsoredByProtocol?: boolean;
 }
+
+/**
+ * A manually specified token for import — used when a network does not have a
+ * public tokenlist URL or when exact contract addresses are required.
+ */
+export type ManualToken = {
+  /** Token symbol as it appears in MetaMask (e.g. 'USDC') */
+  symbol: string;
+  /** ERC-20 contract address on the network */
+  address: string;
+  /** Optional display name; defaults to symbol when omitted */
+  name?: string;
+  /** Token decimal precision; defaults to 18 when omitted */
+  decimals?: number;
+};
+
+/**
+ * Ordered swap route definition for execution tests.
+ */
+export type SwapExecutionRoute = {
+  /** Source token symbol for the route */
+  from: string;
+  /** Destination token symbol for the route */
+  to: string;
+  /**
+   * Source amount to enter for this route.
+   * Ignored when `useMax` is true.
+   */
+  amount?: string | number;
+  /**
+   * When true, click Max instead of filling amount input.
+   */
+  useMax?: boolean;
+};
 
 /**
  * Token object structure (matching standard tokenlist format)
@@ -91,7 +139,7 @@ export interface QuotationTestResult {
  * Result of a single swap execution route
  */
 export interface SwapRouteResult {
-  /** Route label e.g. "MON → AUSD" */
+  /** Route label e.g. ""MON → AUSD"" */
   route: string;
   fromSymbol: string;
   toSymbol: string;
@@ -162,34 +210,72 @@ export const DEFAULT_SWAP_AMOUNT = 20;
  * Add new networks here to support them in tests
  */
 export const SWAP_TEST_NETWORKS: NetworkSwapConfig[] = [
-  {
-    networkId: 'Mon',
-    networkName: 'Monad',
-    chainId: 143,
-    nativeTokenSymbol: 'MON',
-    tokenlistUrl:
-      'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
-    fixtureSetupMethod: 'withNetworkControllerOnMonad',
-    blockExplorerUrl: 'https://explorer.monad.xyz',
-    swapExecutionTokenSymbols: ['AUSD', 'AZND'],
-    // swapExecutionTokenSymbols: ['AUSD', 'AZND', 'BTC.b'],
-    swapExecutionRoutes: [
-      { from: 'MON', to: 'AUSD' },
-      { from: 'AUSD', to: 'AZND' },
-      // { from: 'AZND', to: 'BTC.b' },
-      { from: 'AZND', to: 'MON' },
-    ],
-    gasFeeSponsoredByProtocol: true,
-  },
-  // Add more networks here as needed
-  // Example for future network:
   // {
-  //   networkId: 'Base',
-  //   networkName: 'Base',
-  //   chainId: 8453,
-  //   nativeTokenSymbol: 'ETH',
-  //   tokenlistUrl: 'https://example.com/tokenlist.json',
-  //   fixtureSetupMethod: 'withNetworkControllerOnBase',
+  //   networkId: 'Mon',
+  //   networkName: 'Monad',
+  //   chainId: 143,
+  //   nativeTokenSymbol: 'MON',
+  //   tokenlistUrl:
+  //     'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+  //   fixtureSetupMethod: 'withNetworkControllerOnMonad',
+  //   blockExplorerUrl: 'https://explorer.monad.xyz',
+  //   swapExecutionTokenSymbols: ['AUSD', 'AZND'],
+  //   swapExecutionRoutes: [
+  //     { from: 'MON', to: 'AUSD', amount: 20 },
+  //     { from: 'AUSD', to: 'AZND', amount: 0.55 },
+  //     { from: 'AZND', to: 'MON', useMax: true },
+  //   ],
+  //   defaultSwapAmount: 20,
+  //   gasFeeSponsoredByProtocol: true,
+  // },
+  // Add more networks here as needed.
+  // Example using manualTokens (no tokenlist URL needed):
+  {
+    networkId: 'Base',
+    networkName: 'Base',
+    chainId: 8453,
+    nativeTokenSymbol: 'ETH',
+    manualTokens: [
+      {
+        symbol: 'USDC',
+        name: 'USD Coin',
+        address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        decimals: 6,
+      },
+      {
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0x4200000000000000000000000000000000000006',
+        decimals: 18,
+      },
+    ],
+    fixtureSetupMethod: 'withNetworkControllerOnBase',
+    blockExplorerUrl: 'https://basescan.org',
+    swapExecutionTokenSymbols: ['USDC', 'WETH'],
+    defaultSwapAmount: 0.0000001,
+    swapExecutionRoutes: [
+      { from: 'ETH', to: 'USDC', amount: '0.0000001' },
+      { from: 'USDC', to: 'WETH', amount: 0.01 },
+      { from: 'WETH', to: 'ETH', useMax: true },
+    ],
+  },
+  // {
+  //   networkId: 'CHZ',
+  //   networkName: 'Chiliz Chain',
+  //   chainId: 88888,
+  //   nativeTokenSymbol: 'CHZ',
+  //   tokenlistUrl:
+  //     'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
+  //   fixtureSetupMethod: 'withNetworkControllerOnMonad',
+  //   blockExplorerUrl: 'https://explorer.chiliz.com',
+  //   swapExecutionTokenSymbols: ['AUSD', 'AZND'],
+  //   swapExecutionRoutes: [
+  //     { from: 'MON', to: 'AUSD', amount: 20 },
+  //     { from: 'AUSD', to: 'AZND', amount: 0.55 },
+  //     { from: 'AZND', to: 'MON', useMax: true },
+  //   ],
+  //   defaultSwapAmount: 20,
+  //   gasFeeSponsoredByProtocol: true,
   // },
 ];
 
@@ -230,7 +316,30 @@ export function validateNetworkSwapConfig(config: NetworkSwapConfig): void {
   if (!config.nativeTokenSymbol) {
     throw new Error('Network config missing required field: nativeTokenSymbol');
   }
-  if (!config.tokenlistUrl) {
-    throw new Error('Network config missing required field: tokenlistUrl');
+  if (!config.tokenlistUrl && !config.manualTokens?.length) {
+    throw new Error(
+      'Network config must provide either tokenlistUrl or manualTokens',
+    );
+  }
+  if (!config.fixtureSetupMethod) {
+    throw new Error(
+      'Network config missing required field: fixtureSetupMethod',
+    );
+  }
+
+  if (config.swapExecutionRoutes?.length) {
+    config.swapExecutionRoutes.forEach((route, routeIndex) => {
+      if (!route.from || !route.to) {
+        throw new Error(
+          `Network config route #${routeIndex + 1} must include both from and to symbols`,
+        );
+      }
+
+      if (!route.useMax && route.amount === undefined) {
+        throw new Error(
+          `Network config route #${routeIndex + 1} must include amount or set useMax=true`,
+        );
+      }
+    });
   }
 }

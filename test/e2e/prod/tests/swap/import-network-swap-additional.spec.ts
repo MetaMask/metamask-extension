@@ -73,11 +73,22 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
       it(`should execute swap routes for ${networkConfig.nativeTokenSymbol}`, async function () {
         // Collect per-route results for the final markdown report
         const routeResults: SwapRouteResult[] = [];
+        const fixtureBuilder = new FixtureBuilder();
+        const setupMethod =
+          fixtureBuilder[
+            networkConfig.fixtureSetupMethod as keyof typeof fixtureBuilder
+          ];
+
+        if (typeof setupMethod !== 'function') {
+          throw new Error(
+            `Invalid fixture setup method: ${networkConfig.fixtureSetupMethod}`,
+          );
+        }
 
         await withProductionFixtures(
           {
-            fixtures: new FixtureBuilder()
-              .withNetworkControllerOnMonad()
+            fixtures: (setupMethod as () => FixtureBuilder)
+              .call(fixtureBuilder)
               .build(),
             title:
               this.test?.fullTitle() ||
@@ -121,35 +132,51 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
 
             // ----------------------------------------------------------------
             // Step 3: Import funded account
-            // PRIVATE_KEY_TO holds the account that has balance for swaps.
+            // PRIVATE_KEY_FROM holds the account that has balance for swaps.
             // This does NOT import the entire wallet — it adds one funded
             // account to the existing MetaMask instance.
             // ----------------------------------------------------------------
-            console.log(`[TEST] Importing funded account (PRIVATE_KEY_TO)...`);
-            const privateKeyTo = getRequiredE2EEnv('PRIVATE_KEY_TO');
-            await importSingleFundedAccount(driver, privateKeyTo);
+            console.log(`[TEST] Importing funded account (PRIVATE_KEY_FROM)...`);
+            const privateKeyFrom = getRequiredE2EEnv('PRIVATE_KEY_FROM');
+            await importSingleFundedAccount(driver, privateKeyFrom);
             console.log(`[TEST] ✅ Funded account imported and active`);
 
             // ----------------------------------------------------------------
-            // Step 4: Fetch tokenlist and import ERC-20 tokens
-            // Fetch a larger set so symbol-based resolution can find all
-            // configured symbols regardless of tokenlist order.
+            // Step 4: Resolve ERC-20 tokens to import.
+            // When manualTokens is provided the config supplies exact contract
+            // addresses — no tokenlist fetch is needed.  Otherwise tokens are
+            // fetched from tokenlistUrl and resolved by symbol.
             // ----------------------------------------------------------------
-            console.log(
-              `[TEST] Fetching tokenlist for ${networkConfig.networkName}...`,
-            );
-            const tokenlistTokens = await importTokensFromTokenlist(
-              networkConfig.tokenlistUrl,
-              networkConfig.chainId,
-              50, // fetch up to 50 tokens so we can find symbols by name
-            );
+            let resolvedTokens: Token[];
 
-            const executionSymbols =
-              networkConfig.swapExecutionTokenSymbols ?? [];
-            const resolvedTokens = resolveTokensBySymbols(
-              tokenlistTokens,
-              executionSymbols,
-            );
+            if (networkConfig.manualTokens?.length) {
+              console.log(
+                `[TEST] Using manual token list for ${networkConfig.networkName}...`,
+              );
+              resolvedTokens = networkConfig.manualTokens.map((mt) => ({
+                chainId: networkConfig.chainId,
+                address: mt.address,
+                name: mt.name ?? mt.symbol,
+                symbol: mt.symbol,
+                decimals: mt.decimals ?? 18,
+              }));
+            } else {
+              console.log(
+                `[TEST] Fetching tokenlist for ${networkConfig.networkName}...`,
+              );
+              const tokenlistTokens = await importTokensFromTokenlist(
+                networkConfig.tokenlistUrl as string,
+                networkConfig.chainId,
+                50, // fetch up to 50 tokens so we can find symbols by name
+              );
+              const executionSymbols =
+                networkConfig.swapExecutionTokenSymbols ?? [];
+              resolvedTokens = resolveTokensBySymbols(
+                tokenlistTokens,
+                executionSymbols,
+              );
+            }
+
             console.log(
               `[TEST] Resolved ${resolvedTokens.length} execution tokens: ${resolvedTokens.map((t) => t.symbol).join(', ')}`,
             );
@@ -167,24 +194,23 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
             );
 
             // ----------------------------------------------------------------
-            // Step 5: Execute each route sequentially
-            // Route 1 starts with 20 MON. Each subsequent route uses the
-            // previous route's exact received amount so the chain stays at the
-            // live equivalent of the initial 20 MON swap.
+            // Step 5: Execute each route sequentially.
+            // Amounts are route-configured (`route.amount`) unless `useMax`
+            // is enabled for that route.
             // ----------------------------------------------------------------
-            let nextRouteFromAmount = DEFAULT_SWAP_AMOUNT.toString();
             // swapExecutionRoutes is guaranteed non-empty (checked by the
             // outer guard: `if (!networkConfig.swapExecutionRoutes?.length)`)
             const executionRoutes = networkConfig.swapExecutionRoutes ?? [];
 
-            for (const [routeIndex, route] of executionRoutes.entries()) {
-              const { from: fromSymbol, to: toSymbol } = route;
+            for (const route of executionRoutes) {
+              const { from: fromSymbol, to: toSymbol, amount, useMax } = route;
               const routeLabel = `${fromSymbol} → ${toSymbol}`;
-              const plannedFromAmount = nextRouteFromAmount;
-              const useMaxForRoute =
-                routeIndex === executionRoutes.length - 1 &&
-                fromSymbol === 'BTC.b' &&
-                toSymbol === networkConfig.nativeTokenSymbol;
+              const plannedFromAmount = String(
+                amount ??
+                  networkConfig.defaultSwapAmount ??
+                  DEFAULT_SWAP_AMOUNT,
+              );
+              const useMaxForRoute = Boolean(useMax);
 
               const routeResult: SwapRouteResult = {
                 route: routeLabel,
@@ -211,6 +237,9 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
               const destinationAddress = isToNative
                 ? toSymbol
                 : (tokenBySymbol.get(toSymbol)?.address ?? toSymbol);
+              const destinationTokenNetworkName = isToNative
+                ? networkConfig.networkName
+                : undefined;
 
               console.log(`\n[TEST] ── Route: ${routeLabel} ──`);
 
@@ -222,14 +251,16 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                 await performSwapFlow(driver, {
                   sourceTokenSymbol: fromSymbol,
                   sourceTokenName: tokenBySymbol.get(fromSymbol)?.name,
+                  networkName: networkConfig.networkName,
                   destinationTokenAddress: destinationAddress,
                   destinationTokenSymbol: toSymbol,
+                  destinationTokenNetworkName,
                   fromAmount: plannedFromAmount,
                   useMax: useMaxForRoute,
                 });
 
                 // -- Wait for quote and assert fee text --
-                // -- Check for "Insufficient funds" and auto-reduce to 75% --
+                // -- Check for ""Insufficient funds"" and auto-reduce to 75% --
                 // Skip for Max routes (the Max button already uses full available balance).
                 if (!useMaxForRoute) {
                   const reducedAmount = await handleInsufficientFundsIfPresent(
@@ -254,7 +285,6 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                   await captureSwapAmounts(driver);
                 routeResult.fromAmount = fromAmount;
                 routeResult.toAmount = toAmount;
-                nextRouteFromAmount = toAmount;
 
                 // -- Submit and wait for confirmed activity entry --
                 await submitSwapAndWaitForConfirmed(
@@ -264,23 +294,34 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                 );
 
                 // -- Assert activity list primary/secondary currency --
-                await assertActivityPrimaryCurrency(
-                  driver,
-                  `-${fromAmount} ${fromSymbol}`,
-                );
+                if (useMaxForRoute) {
+                  // Max swaps can render rounded/truncated activity amounts,
+                  // so validate by token symbol instead of exact raw amount.
+                  await assertActivityPrimaryCurrency(
+                    driver,
+                    `${fromSymbol}`,
+                  );
+                } else {
+                  await assertActivityPrimaryCurrency(
+                    driver,
+                    `-${fromAmount} ${fromSymbol}`,
+                  );
+                }
                 recordValidation(
                   'Activity primary amount',
                   'passed',
-                  `-${fromAmount} ${fromSymbol}`,
+                  useMaxForRoute
+                    ? `contains ${fromSymbol} (max route)`
+                    : `-${fromAmount} ${fromSymbol}`,
                 );
                 await assertActivitySecondaryCurrency(
                   driver,
-                  `-${toAmount} "$"`,
+                  `-${toAmount} ""$""`,
                 );
                 recordValidation(
                   'Activity secondary value',
                   'passed',
-                  `-${toAmount} "$"`,
+                  `-${toAmount} ""$""`,
                 );
 
                 // -- Open detail page --
@@ -313,15 +354,21 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
                   timestampResult.message,
                 );
 
-                await assertDetailRow(
-                  driver,
-                  'You sent',
-                  `${fromAmount} ${fromSymbol}`,
-                );
+                if (useMaxForRoute) {
+                  await assertDetailRow(driver, 'You sent', fromSymbol);
+                } else {
+                  await assertDetailRow(
+                    driver,
+                    'You sent',
+                    `${fromAmount} ${fromSymbol}`,
+                  );
+                }
                 recordValidation(
                   'Detail You sent row',
                   'passed',
-                  `${fromAmount} ${fromSymbol}`,
+                  useMaxForRoute
+                    ? `contains ${fromSymbol} (max route)`
+                    : `${fromAmount} ${fromSymbol}`,
                 );
                 const receivedRowResult =
                   await validateDetailRowAmountAtPrecision(
