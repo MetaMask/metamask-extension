@@ -63,6 +63,7 @@ type ClosePositionParams = {
   orderType: 'market';
   currentPrice: number;
   size?: string;
+  position?: Position;
 };
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
@@ -86,17 +87,20 @@ const buildCloseRequestParams = ({
   currentPrice,
   isPartialClose,
   closeSize,
+  position,
 }: {
   symbol: string;
   currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
+  position: Position;
 }): ClosePositionParams => {
   if (!isPartialClose) {
     return {
       symbol,
       orderType: 'market',
       currentPrice,
+      position,
     };
   }
 
@@ -105,6 +109,7 @@ const buildCloseRequestParams = ({
     orderType: 'market',
     currentPrice,
     size: closeSize.toString(),
+    position,
   };
 };
 
@@ -393,6 +398,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           currentPrice,
           isPartialClose,
           closeSize,
+          position,
         }),
       ]);
       if (!result.success) {
@@ -534,8 +540,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 >
                   <Icon
                     name={IconName.Warning}
-                    size={IconSize.Sm}
+                    size={IconSize.Md}
                     color={IconColor.WarningDefault}
+                    className="shrink-0"
                   />
                   <Text
                     variant={TextVariant.BodySm}
@@ -671,6 +678,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               'data-testid': 'perps-close-position-modal-submit',
               children: t('perpsClosePosition'),
               disabled: isSubmitDisabled,
+              autoFocus: true,
             }}
           />
         </ModalContent>

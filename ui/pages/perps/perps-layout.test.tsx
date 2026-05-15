@@ -6,6 +6,7 @@ import mockState from '../../../test/data/mock-state.json';
 import PerpsLayout from './perps-layout';
 
 jest.mock('@metamask/perps-controller', () => ({
+  PROVIDER_CONFIG: { DefaultProvider: 'hyperliquid' },
   PERPS_ERROR_CODES: {
     CLIENT_NOT_INITIALIZED: 'CLIENT_NOT_INITIALIZED',
     CLIENT_REINITIALIZING: 'CLIENT_REINITIALIZING',
@@ -85,18 +86,67 @@ describe('PerpsLayout', () => {
   it('signals perpsViewActive on mount and unmount', () => {
     const { unmount } = renderWithProvider(<PerpsLayout />, store);
 
-    expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
-      1,
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsViewActive',
       [true],
     );
 
     unmount();
 
-    expect(mockSubmitRequestToBackground).toHaveBeenNthCalledWith(
-      2,
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
       'perpsViewActive',
       [false],
     );
+  });
+
+  it('persists the active perps path on mount and clears it on unmount', () => {
+    const { unmount } = renderWithProvider(
+      <PerpsLayout />,
+      store,
+      '/perps/market/BTC',
+    );
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'setLastVisitedRoute',
+      ['perps', '/perps/market/BTC'],
+    );
+
+    unmount();
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'setLastVisitedRoute',
+      ['perps', null],
+    );
+  });
+
+  it('includes the search query when persisting the path', () => {
+    renderWithProvider(
+      <PerpsLayout />,
+      store,
+      '/perps/market/BTC?source=toast',
+    );
+
+    expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+      'setLastVisitedRoute',
+      ['perps', '/perps/market/BTC?source=toast'],
+    );
+  });
+
+  it('does not fail when the background rejects setLastVisitedRoute', () => {
+    mockSubmitRequestToBackground.mockImplementation((method: string) => {
+      if (method === 'setLastVisitedRoute') {
+        return Promise.reject(new Error('boom'));
+      }
+      return Promise.resolve(undefined);
+    });
+
+    expect(() => {
+      const { unmount } = renderWithProvider(
+        <PerpsLayout />,
+        store,
+        '/perps/market/BTC',
+      );
+      unmount();
+    }).not.toThrow();
   });
 });

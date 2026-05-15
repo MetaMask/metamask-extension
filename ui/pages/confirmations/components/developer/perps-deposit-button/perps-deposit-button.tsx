@@ -7,7 +7,7 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../../../../store/actions';
-import { getSelectedInternalAccount } from '../../../../../selectors';
+import { getSelectedInternalAccount } from '../../../../../../shared/lib/selectors/accounts';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { DeveloperButton } from '../developer-button';
 import {

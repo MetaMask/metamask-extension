@@ -163,9 +163,6 @@
   "likeToImportTokens": {
     "message": "Chcete přidat tyto tokeny?"
   },
-  "links": {
-    "message": "Odkazy"
-  },
   "loading": {
     "message": "Načítám..."
   },
@@ -184,9 +181,6 @@
   },
   "networks": {
     "message": "Sítě"
-  },
-  "newAccount": {
-    "message": "Nový účet"
   },
   "newAccountNumberName": {
     "message": "Účet $1",
@@ -239,9 +233,6 @@
   "required": {
     "message": "Povinné"
   },
-  "revealSeedWords": {
-    "message": "Zobrazit slova klíčové fráze"
-  },
   "revealSeedWordsWarning": {
     "message": "Nebnovujte slova klíčové fráze na veřejnosti! Tato slova mohou být použita k odcizení veškerých vyašich účtů.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -278,9 +269,6 @@
   },
   "stateLogs": {
     "message": "Stavové protokoly"
-  },
-  "stateLogsDescription": {
-    "message": "Stavové protokoly obsahují vaše veřejné adresy účtů a odeslané transakce."
   },
   "submitted": {
     "message": "Odesláno"

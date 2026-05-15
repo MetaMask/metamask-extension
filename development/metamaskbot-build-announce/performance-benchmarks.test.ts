@@ -1110,7 +1110,7 @@ describe('buildPerformanceBenchmarksSection', () => {
       .mockResolvedValue({
         baseline: {},
         latestCommit: 'abc1234567890def',
-        latestTimestamp: 1700000000, // Unix timestamp in seconds
+        latestTimestamp: 1700000000000, // Unix timestamp in milliseconds
       });
     mockFetch.mockResolvedValue({
       ok: true,
@@ -1194,7 +1194,7 @@ describe('buildPerformanceBenchmarksSection', () => {
           },
         },
         latestCommit: 'abc123',
-        latestTimestamp: 1700000000, // Unix timestamp in seconds
+        latestTimestamp: 1700000000000, // Unix timestamp in milliseconds
       });
 
     const html = await buildPerformanceBenchmarksSection(HOST);

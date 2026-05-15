@@ -20,15 +20,16 @@ import {
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
-  getSelectedInternalAccount,
   getEditedNetwork,
   getShowUpdateModal,
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
   getPendingRedirectRoute,
+  getLastVisitedPerpsRoute,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/lib/selectors/networks';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
@@ -47,6 +48,7 @@ import {
   lookupSelectedNetworks,
   setPendingShieldCohort,
   setPendingRedirectRoute,
+  setLastVisitedPerpsRoute,
 } from '../../store/actions';
 import { openBasicFunctionalityModal } from '../../ducks/app/app';
 import {
@@ -57,8 +59,7 @@ import {
 import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
-  selectRewardsOnboardingEnabled,
-  selectOnboardingModalOpen,
+  selectRewardsModalOpen,
 } from '../../ducks/rewards/selectors';
 import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
 // TODO: Remove restricted import
@@ -166,10 +167,10 @@ const mapStateToProps = (state) => {
     pendingShieldCohort: getPendingShieldCohort(state),
     isSignedIn: state.metamask.isSignedIn,
     rewardsEnabled: selectRewardsEnabled(state),
-    rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
-    rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
+    rewardsModalOpen: selectRewardsModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
     pendingRedirectRoute: getPendingRedirectRoute(state),
+    lastVisitedPerpsRoute: getLastVisitedPerpsRoute(state),
   };
 };
 
@@ -220,6 +221,7 @@ const mapDispatchToProps = (dispatch) => {
     setPendingShieldCohort: (cohort) =>
       dispatch(setPendingShieldCohort(cohort)),
     clearPendingRedirectRoute: () => dispatch(setPendingRedirectRoute(null)),
+    clearLastVisitedPerpsRoute: () => dispatch(setLastVisitedPerpsRoute(null)),
   };
 };
 

@@ -2,6 +2,8 @@ import {
   LEDGER_USB_VENDOR_ID,
   TREZOR_USB_VENDOR_IDS,
 } from '../../../shared/constants/hardware-wallets';
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../shared/constants/app';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { CameraPermissionState } from './constants';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 
@@ -529,4 +531,68 @@ export function subscribeToHardwareWalletEvents(
         // No-op cleanup
       };
   }
+}
+
+/**
+ * Returns `true` when the extension is running in an environment where the
+ * native browser camera-permission prompt cannot appear (side panel only).
+ */
+export function isRestrictedCameraEnvironment(): boolean {
+  return getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+}
+
+/**
+ * Opens the current page in a fullscreen tab, preserving the hash route so
+ * the user lands on the exact same confirmation / transaction screen.
+ *
+ * For most flows (e.g. Send) transaction parameters live in background
+ * controller state and survive the context switch automatically. Flows whose
+ * form data is stored in UI-only Redux (e.g. Swap / Bridge) must supply a
+ * `queryString` so the fullscreen tab can restore the values via deep-link
+ * query parameters.
+ *
+ * @param queryString - Optional query string appended to the fullscreen URL.
+ */
+export function redirectToFullscreen(queryString?: string | null): void {
+  const currentUrl = new URL(globalThis.location.href);
+  const currentHash = currentUrl.hash;
+  const currentRoute = currentHash ? currentHash.substring(1) : null;
+  globalThis.platform.openExtensionInBrowser(currentRoute, queryString ?? null);
+}
+
+/**
+ * Resolves the Continue action within QR recovery flow
+ * based on the current camera permission state and the extension environment.
+ *
+ * @param onRetry - The default retry handler (e.g. calls `ensureDeviceReady`).
+ * @param redirectQueryString - Optional query string forwarded to the
+ * fullscreen tab so flows with UI-only state (Swap / Bridge) can restore
+ * their form parameters via deep-link query params.
+ */
+export async function handleContinueWithPermissionCheck(
+  onRetry: () => Promise<void>,
+  redirectQueryString?: string | null,
+): Promise<void> {
+  let permissionState: PermissionState;
+  try {
+    permissionState = await checkCameraPermission();
+  } catch {
+    await onRetry();
+    return;
+  }
+
+  if (permissionState === CameraPermissionState.Granted) {
+    await onRetry();
+    return;
+  }
+
+  if (permissionState === CameraPermissionState.Prompt) {
+    if (isRestrictedCameraEnvironment()) {
+      redirectToFullscreen(redirectQueryString);
+    } else {
+      await onRetry();
+    }
+  }
+
+  // Permission is still denied — user hasn't changed settings yet.
 }

@@ -61,6 +61,9 @@ import { CloseAmountSection } from './components/close-amount-section';
  * @param props.initialLeverage
  * @param props.sizeDecimals
  * @param props.markPrice
+ * @param props.autoFocusUsd
+ * @param props.autoFocusLimitPrice
+ * @param props.usdPlaceholder
  */
 export const OrderEntry: React.FC<OrderEntryProps> = ({
   asset,
@@ -82,6 +85,9 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   initialLeverage,
   sizeDecimals,
   markPrice,
+  autoFocusUsd = false,
+  autoFocusLimitPrice = false,
+  usdPlaceholder,
 }) => {
   const t = useI18nContext();
 
@@ -162,6 +168,20 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
     handleOrderTypeChange(type);
     onOrderTypeChange?.(type);
   };
+
+  // Refocus the USD size input whenever the user switches back to market mode,
+  // so the keyboard-first flow stays consistent across order-type toggles.
+  const usdInputRef = useRef<HTMLInputElement | null>(null);
+  useEffect(() => {
+    if (
+      autoFocusUsd &&
+      mode !== 'close' &&
+      formState.type === 'market' &&
+      usdInputRef.current
+    ) {
+      usdInputRef.current.focus();
+    }
+  }, [autoFocusUsd, mode, formState.type]);
 
   // Determine submit button text based on mode
   const submitButtonText = useMemo(() => {
@@ -313,6 +333,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             midPrice={midPrice}
             direction={formState.direction}
             liquidationPrice={calculations.liquidationPriceRaw}
+            autoFocus={autoFocusLimitPrice}
           />
         )}
 
@@ -329,6 +350,9 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             currentPrice={currentPrice}
             szDecimals={marketInfo?.szDecimals}
             onAddFunds={onAddFunds}
+            autoFocus={autoFocusUsd && formState.type === 'market'}
+            usdPlaceholder={usdPlaceholder}
+            usdInputRef={usdInputRef}
           />
         )}
 

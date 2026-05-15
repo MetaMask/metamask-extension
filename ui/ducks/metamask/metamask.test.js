@@ -10,22 +10,20 @@ import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import reduceMetamask, {
-  getConversionRate,
   getGasEstimateType,
   getGasEstimateTypeByChainId,
   getGasFeeEstimates,
   getGasFeeEstimatesByChainId,
-  getIsPasskeyRegistered,
   getIsNetworkBusyByChainId,
   getPasskeyAutoUnlockSuppressed,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
-  isNotEIP1559Network,
   getCurrentCurrency,
   getAllNfts,
   getTokensByChainId,
 } from './metamask';
+import { getConversionRate, isNotEIP1559Network } from './base-selectors';
 
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
@@ -776,28 +774,6 @@ describe('MetaMask Reducers', () => {
   });
 
   describe('passkey selectors', () => {
-    describe('getIsPasskeyRegistered', () => {
-      it('returns true when a passkey record exists', () => {
-        const state = {
-          metamask: {
-            passkeyRecord: { credentialId: 'credential-id' },
-          },
-        };
-
-        expect(getIsPasskeyRegistered(state)).toBe(true);
-      });
-
-      it('returns false when no passkey record exists', () => {
-        const state = {
-          metamask: {
-            passkeyRecord: null,
-          },
-        };
-
-        expect(getIsPasskeyRegistered(state)).toBe(false);
-      });
-    });
-
     describe('getPasskeyAutoUnlockSuppressed', () => {
       it('returns true when passkey auto unlock is suppressed', () => {
         const state = {
