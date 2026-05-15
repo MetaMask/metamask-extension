@@ -2,6 +2,7 @@ import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+import type { TransactionData } from '@metamask/transaction-pay-controller';
 import type { Hex } from 'viem';
 import {
   PaymentType,
@@ -48,6 +49,8 @@ export type TransactionMetricsRequest = {
     standard?: TokenStandard;
   }>;
   getTransaction: (transactionId: string) => TransactionMeta;
+  getTransactionPayData: (transactionId: string) => TransactionData | undefined;
+  getAllTransactions: () => TransactionMeta[];
   provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973

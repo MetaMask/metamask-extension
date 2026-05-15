@@ -9,24 +9,16 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import SendPage from '../../page-objects/pages/send/send-page';
+import { shortenAddress } from '../../../../ui/helpers/utils/util';
 
 describe('ENS', function (this: Suite) {
-  const sampleAddress: string = '1111111111111111111111111111111111111111';
-
-  const shortSampleAddress = '0x11111...11111';
+  const shortSampleAddress = shortenAddress(
+    '0x225f137127d9067788314bc7fcc1f36746a3c3B5',
+  );
   const chainId = 1;
 
-  // ENS Contract Addresses and Function Signatures
-  const ENSRegistryWithFallback: string =
-    '0x00000000000c2e074ec69a0dfb2997ba6c7d2e1e';
-  const resolverSignature: string = '0x0178b8bf';
-  const ensNode: string =
-    'eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1';
-  const resolverNodeAddress: string =
-    '226159d592e2b063810a10ebf6dcbada94ed68b8';
-  const supportsInterfaceSignature: string = '0x01ffc9a7';
-  const addressSignature: string = '0x3b3b57de';
-  const sampleEnsDomain: string = 'test.eth';
+  const UR_PROXY = '0xeeeeeeee14d718c2b47d9923deab1335e144eeee';
+  const sampleEnsDomain = 'luc.eth';
 
   async function mockInfura(mockServer: MockttpServer): Promise<void> {
     await mockMultiNetworkBalancePolling(mockServer);
@@ -35,43 +27,18 @@ describe('ENS', function (this: Suite) {
       ['eth_blockNumber'],
       ['eth_getBlockByNumber'],
       ['eth_chainId', { result: `0x${chainId}` }],
-      // 1. Get the address of the resolver for the specified node
+      // Get the address from the universal resolver
       [
         'eth_call',
         {
           params: [
             {
-              to: ENSRegistryWithFallback,
-              data: `${resolverSignature}${ensNode}`,
+              to: UR_PROXY,
+              data: '0xa1472844000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000009036c75630365746800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000243b3b57dee1e7bcf2ca33c28a806ee265cfedf02fedf1b124ca73b2203ca80cc7c91a02ad00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000014782d62617463682d676174657761793a74727565000000000000000000000000',
             },
           ],
-          result: `0x000000000000000000000000${resolverNodeAddress}`,
-        },
-      ],
-      // 2. Check supportsInterface from the public resolver
-      [
-        'eth_call',
-        {
-          params: [
-            {
-              to: `0x${resolverNodeAddress}`,
-              data: `${supportsInterfaceSignature}9061b92300000000000000000000000000000000000000000000000000000000`,
-            },
-          ],
-          result: `0x0000000000000000000000000000000000000000000000000000000000000000`,
-        },
-      ],
-      // 3. Return the address associated with an ENS
-      [
-        'eth_call',
-        {
-          params: [
-            {
-              to: `0x${resolverNodeAddress}`,
-              data: `${addressSignature}eb4f647bea6caa36333c816d7b46fdcb05f9466ecacc140ea8c66faf15b3d9f1`,
-            },
-          ],
-          result: `0x000000000000000000000000${sampleAddress}`,
+          result:
+            '0x00000000000000000000000000000000000000000000000000000000000000400000000000000000000000004976fb03c32e5b8cfe2b6ccb31c09ba78ebaba410000000000000000000000000000000000000000000000000000000000000020000000000000000000000000225f137127d9067788314bc7fcc1f36746a3c3b5',
         },
       ],
     ]);

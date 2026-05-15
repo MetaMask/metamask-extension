@@ -1,91 +1,155 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import { AvatarTokenSize } from '@metamask/design-system-react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
-import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from '../constants';
+import {
+  HYPERLIQUID_ASSET_ICONS_BASE_URL,
+  METAMASK_PERPS_ICONS_BASE_URL,
+} from '../constants';
 import { PerpsTokenLogo } from './perps-token-logo';
 
 const mockStore = configureStore({
-  metamask: {
-    ...mockState.metamask,
-  },
+  metamask: { ...mockState.metamask },
 });
 
+// Plain object the component writes callbacks into directly — avoids setter-only accessor-pairs lint error
+let mockImg: { onload?: () => void; onerror?: () => void; src: string } = {
+  src: '',
+};
+
+beforeEach(() => {
+  mockImg = { src: '' };
+  jest
+    .spyOn(window, 'Image')
+    .mockImplementation(() => mockImg as unknown as HTMLImageElement);
+});
+
+afterEach(() => jest.restoreAllMocks());
+
 describe('PerpsTokenLogo', () => {
-  it('renders the token logo with correct data-testid', () => {
+  it('shows skeleton while resolving image URL', () => {
     renderWithProvider(<PerpsTokenLogo symbol="BTC" />, mockStore);
 
-    expect(screen.getByTestId('perps-token-logo-BTC')).toBeInTheDocument();
+    const el = screen.getByTestId('perps-token-logo-BTC');
+    expect(el).toBeInTheDocument();
+    expect(el.querySelector('img')).toBeNull();
   });
 
-  it('renders with regular symbol', () => {
-    renderWithProvider(<PerpsTokenLogo symbol="ETH" />, mockStore);
-
-    expect(screen.getByTestId('perps-token-logo-ETH')).toBeInTheDocument();
-  });
-
-  it('renders with HIP-3 prefixed symbol', () => {
-    renderWithProvider(<PerpsTokenLogo symbol="xyz:TSLA" />, mockStore);
-
-    // Test ID sanitizes colons to hyphens (xyz:TSLA -> xyz-TSLA)
-    expect(screen.getByTestId('perps-token-logo-xyz-TSLA')).toBeInTheDocument();
-  });
-
-  it('uses the correct icon URL for regular assets', () => {
+  it('shows AvatarToken with primary URL once primary loads', () => {
     renderWithProvider(<PerpsTokenLogo symbol="BTC" />, mockStore);
 
-    const avatar = screen.getByTestId('perps-token-logo-BTC');
-    const img = avatar.querySelector('img');
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    const img = screen.getByTestId('perps-token-logo-BTC').querySelector('img');
+    expect(img).toHaveAttribute(
+      'src',
+      `${METAMASK_PERPS_ICONS_BASE_URL}BTC.svg`,
+    );
+  });
+
+  it('falls back to HyperLiquid URL when primary fails', () => {
+    renderWithProvider(<PerpsTokenLogo symbol="BTC" />, mockStore);
+
+    // Primary fails → loads fallback
+    act(() => {
+      mockImg.onerror?.();
+    });
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    const img = screen.getByTestId('perps-token-logo-BTC').querySelector('img');
     expect(img).toHaveAttribute(
       'src',
       `${HYPERLIQUID_ASSET_ICONS_BASE_URL}BTC.svg`,
     );
   });
 
-  it('uses the correct icon URL for HIP-3 assets', () => {
-    renderWithProvider(<PerpsTokenLogo symbol="xyz:AAPL" />, mockStore);
+  it('shows letter fallback when both URLs fail', () => {
+    renderWithProvider(<PerpsTokenLogo symbol="xyz:NATGAS" />, mockStore);
 
-    // Test ID sanitizes colons to hyphens
-    const avatar = screen.getByTestId('perps-token-logo-xyz-AAPL');
-    const img = avatar.querySelector('img');
+    act(() => {
+      mockImg.onerror?.();
+    }); // primary fails
+    act(() => {
+      mockImg.onerror?.();
+    }); // fallback fails
+
+    const el = screen.getByTestId('perps-token-logo-xyz-NATGAS');
+    expect(el.querySelector('img')).toBeNull();
+  });
+
+  it('uses hip3 format for MetaMask CDN primary URL on HIP-3 assets', () => {
+    renderWithProvider(<PerpsTokenLogo symbol="xyz:TSLA" />, mockStore);
+
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    const img = screen
+      .getByTestId('perps-token-logo-xyz-TSLA')
+      .querySelector('img');
     expect(img).toHaveAttribute(
       'src',
-      `${HYPERLIQUID_ASSET_ICONS_BASE_URL}xyz:AAPL.svg`,
+      `${METAMASK_PERPS_ICONS_BASE_URL}hip3:xyz_TSLA.svg`,
     );
   });
 
-  it('displays the symbol name as fallback', () => {
-    renderWithProvider(<PerpsTokenLogo symbol="BTC" />, mockStore);
-
-    const avatar = screen.getByTestId('perps-token-logo-BTC');
-    expect(avatar).toBeInTheDocument();
-  });
-
-  it('displays extracted symbol name for HIP-3 assets', () => {
+  it('sanitizes colon to hyphen in test ID for HIP-3 symbols', () => {
     renderWithProvider(<PerpsTokenLogo symbol="xyz:TSLA" />, mockStore);
 
-    // Test ID sanitizes colons to hyphens
-    const avatar = screen.getByTestId('perps-token-logo-xyz-TSLA');
-    expect(avatar).toBeInTheDocument();
+    expect(screen.getByTestId('perps-token-logo-xyz-TSLA')).toBeInTheDocument();
   });
 
-  it('applies custom className when provided', () => {
-    renderWithProvider(
-      <PerpsTokenLogo symbol="BTC" className="custom-logo-class" />,
+  it('resets to skeleton when symbol changes', () => {
+    const { rerender } = renderWithProvider(
+      <PerpsTokenLogo symbol="BTC" />,
       mockStore,
     );
 
-    const avatar = screen.getByTestId('perps-token-logo-BTC');
-    expect(avatar).toHaveClass('custom-logo-class');
+    // Resolve BTC
+    act(() => {
+      mockImg.onload?.();
+    });
+    expect(
+      screen.getByTestId('perps-token-logo-BTC').querySelector('img'),
+    ).toBeInTheDocument();
+
+    rerender(<PerpsTokenLogo symbol="ETH" />);
+
+    // Should be back in skeleton state for ETH
+    const ethEl = screen.getByTestId('perps-token-logo-ETH');
+    expect(ethEl.querySelector('img')).toBeNull();
   });
 
-  it('renders with default size when not specified', () => {
-    renderWithProvider(<PerpsTokenLogo symbol="ETH" />, mockStore);
+  it('applies custom className to skeleton during loading', () => {
+    renderWithProvider(
+      <PerpsTokenLogo symbol="BTC" className="custom-class" />,
+      mockStore,
+    );
 
-    // Component should render without errors with default size
-    expect(screen.getByTestId('perps-token-logo-ETH')).toBeInTheDocument();
+    expect(screen.getByTestId('perps-token-logo-BTC')).toHaveClass(
+      'custom-class',
+    );
+  });
+
+  it('applies custom className to AvatarToken after resolving', () => {
+    renderWithProvider(
+      <PerpsTokenLogo symbol="BTC" className="custom-class" />,
+      mockStore,
+    );
+
+    act(() => {
+      mockImg.onload?.();
+    });
+
+    expect(screen.getByTestId('perps-token-logo-BTC')).toHaveClass(
+      'custom-class',
+    );
   });
 
   it('renders with specified size', () => {

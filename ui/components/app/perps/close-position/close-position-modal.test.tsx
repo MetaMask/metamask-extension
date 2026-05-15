@@ -2,10 +2,38 @@ import React from 'react';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { tEn } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { mockPositions } from '../mocks';
 import { ClosePositionModal } from './close-position-modal';
+
+jest.mock('../../../../../shared/lib/perps-formatters', () => ({
+  PRICE_RANGES_UNIVERSAL: [],
+  formatPerpsFiat: (value: number | string) => {
+    const amount = Number(value);
+    return `$${amount
+      .toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 6,
+      })
+      .replace(/(\.\d*?[1-9])0+$/u, '$1')
+      .replace(/\.0+$/u, '')}`;
+  },
+  formatPnl: (value: number | string) => {
+    const amount = Number(value);
+    const abs = Math.abs(amount).toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return amount >= 0 ? `+$${abs}` : `-$${abs}`;
+  },
+  formatPositionSize: (value: number, decimals?: number) =>
+    Number(value).toLocaleString('en-US', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: decimals ?? 4,
+    }),
+}));
 
 jest.mock('@metamask/perps-controller', () => ({
   PERPS_ERROR_CODES: {
@@ -68,9 +96,10 @@ jest.mock('@metamask/perps-controller', () => ({
   },
 }));
 
-/** Matches rendered `perpsClosePartialMinNotional` after $1 is replaced with a formatted USD amount */
-const PARTIAL_MIN_NOTIONAL_PATTERN =
-  /Partial closes must be at least \$[\d,.]+ in USD value\. Increase the close amount or set the slider to 100%\./u;
+const PARTIAL_MIN_NOTIONAL_AMOUNT = '$10';
+const PARTIAL_MIN_NOTIONAL_MESSAGE = tEn('perpsClosePartialMinNotional', [
+  PARTIAL_MIN_NOTIONAL_AMOUNT,
+]);
 
 const mockSubmitRequestToBackground = jest.fn();
 const mockReplacePerpsToastByKey = jest.fn();
@@ -118,6 +147,26 @@ describe('ClosePositionModal', () => {
     mockSubmitRequestToBackground.mockResolvedValue({ success: true });
   });
 
+  describe('auto-focus', () => {
+    it('auto-focuses the Close Position submit button on mount', async () => {
+      renderWithProvider(
+        <ClosePositionModal
+          isOpen
+          onClose={jest.fn()}
+          position={basePosition}
+          currentPrice={2900}
+        />,
+        mockStore,
+      );
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('perps-close-position-modal-submit'),
+        ).toHaveFocus();
+      });
+    });
+  });
+
   describe('ORDER_SIZE_MIN from background', () => {
     it('shows localized min-notional message when close rejects with ORDER_SIZE_MIN', async () => {
       const user = userEvent.setup();
@@ -139,7 +188,7 @@ describe('ClosePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
+          screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
         ).toBeInTheDocument();
       });
     });
@@ -165,7 +214,7 @@ describe('ClosePositionModal', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
+          screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE),
         ).toBeInTheDocument();
       });
     });
@@ -201,7 +250,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       await user.keyboard('{ArrowLeft}');
@@ -252,7 +301,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -322,7 +371,7 @@ describe('ClosePositionModal', () => {
 
       // Move slider left to get a partial close
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -350,7 +399,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -384,7 +433,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -444,7 +493,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -480,7 +529,7 @@ describe('ClosePositionModal', () => {
         expect(mockReplacePerpsToastByKey).toHaveBeenCalledWith(
           expect.objectContaining({
             key: 'perpsToastCloseFailed',
-            description: expect.stringMatching(PARTIAL_MIN_NOTIONAL_PATTERN),
+            description: expect.stringContaining(PARTIAL_MIN_NOTIONAL_MESSAGE),
           }),
         );
       });
@@ -502,7 +551,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       fireEvent.keyDown(slider, { key: 'ArrowLeft' });
@@ -537,7 +586,7 @@ describe('ClosePositionModal', () => {
       );
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       await user.keyboard(
@@ -545,9 +594,9 @@ describe('ClosePositionModal', () => {
       );
 
       await waitFor(() => {
-        expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
-        ).toBeInTheDocument();
+        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);
+        expect(warningMessage).toBeInTheDocument();
+        expect(warningMessage).not.toHaveTextContent(/slider|slide/u);
         expect(
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();
@@ -576,15 +625,15 @@ describe('ClosePositionModal', () => {
       ).not.toBeDisabled();
 
       const slider = within(
-        screen.getByTestId('close-amount-slider'),
+        screen.getByTestId('close-amount-slider-pct-100'),
       ).getByRole('slider');
       slider.focus();
       await user.keyboard('{ArrowLeft}');
 
       await waitFor(() => {
-        expect(
-          screen.getByText(PARTIAL_MIN_NOTIONAL_PATTERN),
-        ).toBeInTheDocument();
+        const warningMessage = screen.getByText(PARTIAL_MIN_NOTIONAL_MESSAGE);
+        expect(warningMessage).toBeInTheDocument();
+        expect(warningMessage).not.toHaveTextContent(/slider|slide/u);
         expect(
           screen.getByTestId('perps-close-position-modal-submit'),
         ).toBeDisabled();

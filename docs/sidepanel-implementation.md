@@ -140,7 +140,7 @@ During onboarding (in `ui/pages/onboarding-flow/creation-successful/creation-suc
 
 ### Sidepanel-Specific Styling
 
-The routes component applies `app--sidepanel` CSS class when running in sidepanel context. The settings page (`ui/pages/settings/index.scss`) includes sidepanel-specific styles that apply popup layout regardless of viewport width and handle back button, close button, and logo display.
+The routes component applies `app--sidepanel` CSS class when running in sidepanel context.
 
 ---
 

@@ -29,6 +29,7 @@ import {
 } from '../../../ui/helpers/utils/metrics';
 import { isSnapPreinstalled } from '../../../shared/lib/snaps/snaps';
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
+import { getIframeProperties } from './getIframeProperties';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -257,7 +258,7 @@ export default function createRPCMethodTrackingMiddleware({
     /** @type {any} */ res,
     /** @type {Function} */ next,
   ) {
-    const { origin, method, params } = req;
+    const { origin, method, params, mainFrameOrigin, frameId } = req;
 
     const isMultichainRequest = isMultichainRequestMethod(method);
     // requestedThrough and eventCategory are currently redundant so we will want to
@@ -312,8 +313,15 @@ export default function createRPCMethodTrackingMiddleware({
     // keys for the various events in the flow.
     const eventType = EVENT_NAME_MAP[invokedMethod];
 
+    const iframeProps = getIframeProperties({
+      frameId,
+      origin,
+      mainFrameOrigin,
+    });
+
     const eventProperties = {
       api_source: requestedThrough,
+      ...iframeProps,
     };
 
     if (multichainApiRequestScope) {

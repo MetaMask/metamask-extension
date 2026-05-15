@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChainId, getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../../../../shared/constants/bridge';
+import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../../../test/data/bridge/mock-bridge-store';
 import configureStore from '../../../../../store/store';
@@ -28,7 +29,7 @@ describe('SelectedAssetButton', () => {
       toBridgeToken(BRIDGE_CHAINID_COMMON_TOKEN_PAIR['eip155:1'] as never),
     );
 
-    expect(getByText('mUSD')).toBeInTheDocument();
+    expect(getByText(messages.musdSymbol.message)).toBeInTheDocument();
     expect(container).toMatchSnapshot();
   });
 

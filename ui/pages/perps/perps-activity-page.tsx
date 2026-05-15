@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
@@ -56,9 +56,15 @@ const PerpsActivityPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
-  // Fetch real transaction data from the Perps controller
-  const { transactions, isLoading, error, refetch } =
-    usePerpsTransactionHistory();
+  // Fetch real transaction data from the Perps controller.
+  // forceFreshOnMount: user opening the Activity page must see the latest
+  // orders/funding/deposits even if PerpsView ("Recent activity") grabbed a
+  // snapshot inside the 10s TTL. Orders/funding/userHistory do not update via
+  // the live-fills WebSocket merge, so without this the page could render a
+  // stale snapshot. The hook's in-flight dedup still suppresses bursts.
+  const { transactions, isLoading, error } = usePerpsTransactionHistory({
+    forceFreshOnMount: true,
+  });
 
   usePerpsEventTracking({
     eventName: MetaMetricsEventName.PerpsScreenViewed,
@@ -69,11 +75,6 @@ const PerpsActivityPage: React.FC = () => {
       [PERPS_EVENT_PROPERTY.SOURCE]: PERPS_EVENT_VALUE.SOURCE.ASSET_DETAILS,
     },
   });
-
-  // Refetch on mount to ensure fresh data
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
 
   // Filter options for dropdown
   const filterOptions: DropdownOption<PerpsTransactionFilter>[] = useMemo(

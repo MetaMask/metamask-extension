@@ -210,4 +210,18 @@ describe('TransactionDetails', () => {
       ).toBeInTheDocument();
     });
   });
+
+  describe('summary section visibility', () => {
+    it('renders summary section for perpsDeposit transactions', () => {
+      const { getByTestId } = render(TransactionType.perpsDeposit, true);
+      expect(getByTestId('transaction-details-summary')).toBeInTheDocument();
+    });
+
+    it('hides summary section for perpsWithdraw transactions', () => {
+      const { queryByTestId } = render(TransactionType.perpsWithdraw, true);
+      expect(
+        queryByTestId('transaction-details-summary'),
+      ).not.toBeInTheDocument();
+    });
+  });
 });

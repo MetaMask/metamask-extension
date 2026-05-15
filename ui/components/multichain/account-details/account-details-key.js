@@ -5,6 +5,8 @@ import {
 } from '@lavamoat/lavadome-react';
 import PropTypes from 'prop-types';
 import {
+  BannerAlert,
+  BannerAlertSeverity,
   Box,
   BoxAlignItems,
   BoxBorderColor,
@@ -18,13 +20,7 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import {
-  BannerAlert,
-  HelpText,
-  HelpTextSeverity,
-} from '../../component-library';
-
-import { Severity } from '../../../helpers/constants/design-system';
+import { HelpText, HelpTextSeverity } from '../../component-library';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -85,7 +81,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           {t('lavaDomeCopyWarning')}
         </HelpText>
       )}
-      <BannerAlert severity={Severity.Danger} marginTop={4}>
+      <BannerAlert severity={BannerAlertSeverity.Danger} marginTop={4}>
         <Text variant={TextVariant.BodySm}>{t('privateKeyWarning')}</Text>
       </BannerAlert>
       <Button

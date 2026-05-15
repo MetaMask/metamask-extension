@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionStatus,
@@ -39,9 +39,17 @@ const RECENT_CLAIM_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
  * the callback if any are found within RECENT_CLAIM_WINDOW_MS.
  *
  * @param onConfirmed - Callback fired when a pending claim is confirmed
+ * @returns `isClaimInFlight` — true while a Merkl claim tx is approved, signed, or submitted
  */
-export const useOnMerklClaimConfirmed = (onConfirmed: () => void): void => {
+export const useOnMerklClaimConfirmed = (
+  onConfirmed: () => void,
+): { isClaimInFlight: boolean } => {
   const transactions = useSelector(getTransactions) as TransactionMeta[];
+
+  const isClaimInFlight = useMemo(() => {
+    const merklClaimTxs = transactions.filter(isMerklClaimTransaction);
+    return merklClaimTxs.some((tx) => IN_FLIGHT_STATUSES.includes(tx.status));
+  }, [transactions]);
 
   // Track IDs of pending claims we've seen
   const pendingClaimIdsRef = useRef<Set<string>>(new Set());
@@ -95,4 +103,6 @@ export const useOnMerklClaimConfirmed = (onConfirmed: () => void): void => {
       onConfirmedRef.current();
     }
   }, [transactions]);
+
+  return { isClaimInFlight };
 };

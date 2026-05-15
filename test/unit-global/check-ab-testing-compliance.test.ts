@@ -132,11 +132,11 @@ describe('check-ab-testing-compliance.ts', () => {
     expect(result.output).toContain("added 'ab_tests' payload");
   });
 
-  it('fails when literal active_ab_tests object misses key/value fields', () => {
+  it('fails when literal active_ab_tests object misses key_value_pair', () => {
     const repo = createRepo();
     appendFileSync(
       path.join(repo, 'app/sample.ts'),
-      "const payload = { active_ab_tests: [{ key: 'swapsSWAPS9999AbtestFoo' }] };\n",
+      "const payload = { active_ab_tests: [{ key: 'swapsSWAPS9999AbtestFoo', value: 'control' }] };\n",
     );
 
     const result = runChecker(repo, ['--staged']);
@@ -179,7 +179,7 @@ describe('check-ab-testing-compliance.ts', () => {
       [
         'const { variantName, isActive } = useABTest(FLAG_KEY, VARIANTS);',
         'const payload = isActive',
-        '  ? { active_ab_tests: [{ key: FLAG_KEY, value: variantName }] }',
+        '  ? { active_ab_tests: [createActiveABTestAssignment(FLAG_KEY, variantName)] }',
         '  : {};',
         '',
       ].join('\n'),
@@ -191,6 +191,57 @@ describe('check-ab-testing-compliance.ts', () => {
     expect(result.output).not.toContain(
       'inline useABTest variants object is missing control',
     );
+  });
+
+  it('passes when helper-only active_ab_tests has sibling metadata key/value fields', () => {
+    const repo = createRepo();
+    appendFileSync(
+      path.join(repo, 'app/sample.ts'),
+      "const payload = { active_ab_tests: [createActiveABTestAssignment(FLAG_KEY, variantName)], metadata: { key: 'foo', value: 'bar' } };\n",
+    );
+
+    const result = runChecker(repo, ['--staged']);
+
+    expect(result.status).toBe(0);
+    expect(result.output).not.toContain(
+      'malformed literal active_ab_tests object',
+    );
+  });
+
+  it('passes when literal active_ab_tests includes key_value_pair', () => {
+    const repo = createRepo();
+    appendFileSync(
+      path.join(repo, 'app/sample.ts'),
+      "const payload = { active_ab_tests: [{ key: 'swapsSWAPS9999AbtestFoo', value: 'control', key_value_pair: 'swapsSWAPS9999AbtestFoo=control' }] };\n",
+    );
+
+    const result = runChecker(repo, ['--staged']);
+
+    expect(result.status).toBe(0);
+    expect(result.output).not.toContain(
+      'malformed literal active_ab_tests object',
+    );
+  });
+
+  it('fails when helper-built and malformed literal entries are mixed together', () => {
+    const repo = createRepo();
+    appendFileSync(
+      path.join(repo, 'app/sample.ts'),
+      [
+        'const payload = {',
+        '  active_ab_tests: [',
+        '    createActiveABTestAssignment(FLAG_KEY, variantName),',
+        "    { key: 'swapsSWAPS9999AbtestFoo', value: 'control' },",
+        '  ],',
+        '};',
+        '',
+      ].join('\n'),
+    );
+
+    const result = runChecker(repo, ['--staged']);
+
+    expect(result.status).toBe(1);
+    expect(result.output).toContain('malformed literal active_ab_tests object');
   });
 
   it('ignores invalid A/B examples in test files', () => {

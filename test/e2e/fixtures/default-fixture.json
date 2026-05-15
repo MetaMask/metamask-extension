@@ -174,7 +174,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 204,
+      "currentMigrationVersion": 211,
       "firstTimeInfo": {},
       "previousAppVersion": "",
       "previousMigrationVersion": 0
@@ -188,7 +188,6 @@
       "defaultHomeActiveTabName": null,
       "hadAdvancedGasFeesSetPriorToMigration92_3": false,
       "hasShownMultichainAccountsIntroModal": false,
-      "isRampCardClosed": false,
       "isWalletResetInProgress": false,
       "lastUpdatedAt": null,
       "lastUpdatedFromVersion": null,
@@ -197,7 +196,6 @@
       "musdConversionEducationSeen": false,
       "newPrivacyPolicyToastClickedOrClosed": true,
       "newPrivacyPolicyToastShownDate": 1770282512702,
-      "nftsDetectionNoticeDismissed": false,
       "outdatedBrowserWarningLastShown": null,
       "pendingShieldCohort": null,
       "pendingShieldCohortTxType": null,
@@ -206,15 +204,9 @@
       "recoveryPhraseReminderHasBeenShown": false,
       "shieldEndingToastLastClickedOrClosed": null,
       "shieldPausedToastLastClickedOrClosed": null,
-      "showAccountBanner": true,
-      "showBetaHeader": false,
       "showDownloadMobileAppSlide": true,
-      "showNetworkBanner": true,
-      "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
-      "showTestnetMessageInDropdown": true,
       "slides": [],
-      "surveyLinkLastClickedOrClosed": null,
       "termsOfUseLastAgreed": 1770282497124,
       "timeoutMinutes": 0,
       "trezorModel": null,
@@ -244,6 +236,11 @@
           "conversionRate": 1700,
           "usdConversionRate": null
         },
+        "MON": {
+          "conversionDate": null,
+          "conversionRate": null,
+          "usdConversionRate": null
+        },
         "POL": {
           "conversionDate": null,
           "conversionRate": null,
@@ -251,9 +248,6 @@
         }
       },
       "currentCurrency": "usd"
-    },
-    "DelegationController": {
-      "delegations": {}
     },
     "EnsController": {
       "ensEntries": {
@@ -359,7 +353,31 @@
       }
     },
     "MultichainAssetsRatesController": {
-      "conversionRates": {}
+      "conversionRates": {
+        "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+          "conversionTime": 1776106420,
+          "currency": "swift:0/iso4217:USD",
+          "expirationTime": 1776106480,
+          "marketData": {
+            "allTimeHigh": "126080",
+            "allTimeLow": "67.81",
+            "circulatingSupply": "19975290",
+            "fungible": true,
+            "marketCap": "1836592437357",
+            "pricePercentChange": {
+              "P14D": 4.795747124043681,
+              "P1D": 1.6980683447716627,
+              "P1Y": -1.0484081200296924,
+              "P200D": -14.088182161660676,
+              "P30D": 2.1388997840239408,
+              "P7D": -1.6285705945180806,
+              "PT1H": -0.09840133404969334
+            },
+            "totalVolume": "45216146754"
+          },
+          "rate": "106763"
+        }
+      }
     },
     "MultichainBalancesController": {
       "balances": {
@@ -588,6 +606,22 @@
             }
           ]
         },
+        "0x8f": {
+          "blockExplorerUrls": ["https://monadscan.com"],
+          "chainId": "0x8f",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Monad",
+          "nativeCurrency": "MON",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [],
+              "networkClientId": "monad-mainnet",
+              "type": "infura",
+              "url": "https://monad-mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
         "0xa": {
           "blockExplorerUrls": ["https://optimistic.etherscan.io"],
           "chainId": "0xa",
@@ -736,6 +770,7 @@
           "0x38": false,
           "0x539": true,
           "0x89": false,
+          "0x8f": false,
           "0xa": false,
           "0xa4b1": false,
           "0xaa36a7": false,
@@ -760,6 +795,7 @@
         "eip155:11155111": "eip155:11155111/slip44:60",
         "eip155:1337": "eip155:1337/slip44:1",
         "eip155:137": "eip155:137/slip44:60",
+        "eip155:143": "eip155:143/slip44:60",
         "eip155:42161": "eip155:42161/slip44:60",
         "eip155:56": "eip155:56/slip44:60",
         "eip155:59141": "eip155:59141/slip44:1",
@@ -818,6 +854,9 @@
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []
+    },
+    "PasskeyController": {
+      "passkeyRecord": null
     },
     "PermissionController": {},
     "PermissionLogController": {
@@ -917,8 +956,8 @@
         "gmx": {},
         "hyperliquid": {}
       },
-      "showSidePanelMigrationToast": false,
       "securityAlertsEnabled": true,
+      "showSidePanelMigrationToast": false,
       "snapRegistryList": {},
       "snapsAddSnapAccountModalDismissed": false,
       "theme": "os",
@@ -1051,6 +1090,7 @@
         "0x38": {},
         "0x539": {},
         "0x89": {},
+        "0x8f": {},
         "0xa": {},
         "0xa4b1": {},
         "0xe708": {}
@@ -1080,6 +1120,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 204
+    "version": 211
   }
 }

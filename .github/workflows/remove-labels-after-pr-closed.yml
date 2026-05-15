@@ -26,24 +26,32 @@ jobs:
 
         run: |
           LABELS=(
-            "product-backlog"
-            "needs-design"
-            "design-in-progress"
-            "ready-for-dev"
-            "sprint-backlog"
-            "in-progress"
             "blocked"
+            "design-in-progress"
+            "force-builds"
+            "force-e2e"
+            "in-progress"
+            "issues-found"
+            "needs-design"
             "needs-dev-review"
             "needs-qa"
-            "issues-found"
+            "product-backlog"
+            "ready-for-dev"
             "ready-for-release"
             "retry-ci"
+            "skip-builds"
+            "skip-e2e"
+            "sprint-backlog"
           )
 
           for LABEL in "${LABELS[@]}"; do
-            curl \
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
             -X DELETE \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/labels/$LABEL"
+            "https://api.github.com/repos/$REPO/issues/$ISSUE_NUMBER/labels/$LABEL")
+            # 200 = removed, 404 = label wasn't present (both are fine)
+            if [[ "$HTTP_CODE" != "200" && "$HTTP_CODE" != "404" ]]; then
+              echo "WARNING: Failed to remove label '$LABEL' (HTTP $HTTP_CODE)" >&2
+            fi
           done

@@ -10,20 +10,20 @@ import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import reduceMetamask, {
-  getConversionRate,
   getGasEstimateType,
   getGasEstimateTypeByChainId,
   getGasFeeEstimates,
   getGasFeeEstimatesByChainId,
   getIsNetworkBusyByChainId,
+  getPasskeyAutoUnlockSuppressed,
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
-  isNotEIP1559Network,
   getCurrentCurrency,
   getAllNfts,
   getTokensByChainId,
 } from './metamask';
+import { getConversionRate, isNotEIP1559Network } from './base-selectors';
 
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
@@ -770,6 +770,30 @@ describe('MetaMask Reducers', () => {
       };
       const tokens = getTokensByChainId(stateWithNoTokens, '0x1');
       expect(tokens).toStrictEqual([]);
+    });
+  });
+
+  describe('passkey selectors', () => {
+    describe('getPasskeyAutoUnlockSuppressed', () => {
+      it('returns true when passkey auto unlock is suppressed', () => {
+        const state = {
+          metamask: {
+            passkeyAutoUnlockSuppressed: true,
+          },
+        };
+
+        expect(getPasskeyAutoUnlockSuppressed(state)).toBe(true);
+      });
+
+      it('returns false when passkey auto unlock is not suppressed', () => {
+        const state = {
+          metamask: {
+            passkeyAutoUnlockSuppressed: false,
+          },
+        };
+
+        expect(getPasskeyAutoUnlockSuppressed(state)).toBe(false);
+      });
     });
   });
 });

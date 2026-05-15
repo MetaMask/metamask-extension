@@ -1,5 +1,9 @@
 import { Hex } from '@metamask/utils';
-import { TransactionMeta, CHAIN_IDS } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+  CHAIN_IDS,
+} from '@metamask/transaction-controller';
 import {
   TransactionPayRequiredToken,
   TransactionPayTotals,
@@ -71,6 +75,23 @@ function runHook(
   );
 }
 
+function runHookForPerpsWithdraw(
+  props: Parameters<typeof useInsufficientPayTokenBalanceAlert>[0] = {},
+  { chainId = CHAIN_IDS.ARBITRUM as Hex } = {},
+) {
+  const transaction = {
+    ...genUnapprovedContractInteractionConfirmation({ chainId }),
+    type: TransactionType.perpsWithdraw,
+  } as TransactionMeta;
+
+  const state = getMockConfirmStateForTransaction(transaction);
+
+  return renderHookWithConfirmContextProvider(
+    () => useInsufficientPayTokenBalanceAlert(props),
+    state,
+  );
+}
+
 describe('useInsufficientPayTokenBalanceAlert', () => {
   const useTransactionPayTotalsMock = jest.mocked(useTransactionPayTotals);
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
@@ -135,6 +156,7 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
           key: AlertsName.InsufficientPayTokenBalance,
           field: RowAlertKey.EstimatedFee,
           isBlocking: true,
+          reason: 'Insufficient funds',
           message: 'Insufficient funds',
           severity: Severity.Danger,
         },
@@ -344,5 +366,167 @@ describe('useInsufficientPayTokenBalanceAlert', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual([]);
+  });
+
+  // For Perps Withdraw (and other post-quote flows), `payToken` is the
+  // *destination* token — its balance has nothing to do with whether the
+  // user can fund the withdraw. Only the source-network gas check on the
+  // transaction's own chainId remains relevant.
+  describe('post-quote (perpsWithdraw)', () => {
+    it('returns no alert when pay token balance is less than required token amount', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          chainId: '0x38' as Hex,
+          balanceUsd: '4.00',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHookForPerpsWithdraw();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('returns no alert for fees check when pay token raw balance is below source amount', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          chainId: '0x38' as Hex,
+          balanceRaw: '4000000000000000000',
+        },
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      const { result } = runHookForPerpsWithdraw();
+
+      expect(result.current).toStrictEqual([]);
+    });
+
+    it('still raises the source-network alert when native balance on the tx chain is below gas fee', () => {
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: CHAIN_IDS.ARBITRUM as Hex,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      const { result } = runHookForPerpsWithdraw();
+
+      expect(result.current).toStrictEqual([
+        {
+          key: AlertsName.InsufficientPayTokenNative,
+          field: RowAlertKey.EstimatedFee,
+          isBlocking: true,
+          reason: 'Insufficient funds',
+          message: expect.stringContaining('Not enough'),
+          severity: Severity.Danger,
+        },
+      ]);
+    });
+
+    it('runs the source-network alert even when no payToken has been selected yet', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: undefined,
+        isNative: false,
+        setPayToken: jest.fn(),
+      });
+
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: CHAIN_IDS.ARBITRUM as Hex,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      const { result } = runHookForPerpsWithdraw();
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.InsufficientPayTokenNative,
+        }),
+      ]);
+    });
+
+    it('treats payToken as non-native when it is on a different chain than the transaction (suppression guard)', () => {
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          address: NATIVE_TOKEN_MOCK.address,
+          chainId: '0x38' as Hex,
+          balanceRaw: '10000000000000000000',
+        },
+        // `isNative` from `useTransactionPayToken` is computed against the
+        // pay-token's own chain — for post-quote we must re-evaluate against
+        // the transaction's source chain instead.
+        isNative: true,
+        setPayToken: jest.fn(),
+      });
+
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: CHAIN_IDS.ARBITRUM as Hex,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      const { result } = runHookForPerpsWithdraw();
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.InsufficientPayTokenNative,
+        }),
+      ]);
+    });
+
+    it('still raises the source-network alert when payToken is the native token of the source chain', () => {
+      // Withdrawing TO ETH on Arbitrum (same chain as the placeholder tx).
+      // For non-post-quote this would mark the pay token native and suppress
+      // the gas check; in post-quote `payToken` is the destination, so the
+      // gas check must remain live against the user's source native balance.
+      useTransactionPayTokenMock.mockReturnValue({
+        payToken: {
+          ...PAY_TOKEN_MOCK,
+          address: NATIVE_TOKEN_MOCK.address,
+          chainId: CHAIN_IDS.ARBITRUM as Hex,
+          balanceRaw: '10000000000000000000',
+        },
+        isNative: true,
+        setPayToken: jest.fn(),
+      });
+
+      useTokenWithBalanceMock.mockReturnValue({
+        address: NATIVE_TOKEN_MOCK.address,
+        chainId: CHAIN_IDS.ARBITRUM as Hex,
+        symbol: 'ETH',
+        decimals: 18,
+        balance: '0.0001',
+        balanceRaw: '100000000000000',
+        balanceFiat: '$0.00',
+        tokenFiatAmount: 0,
+      });
+
+      const { result } = runHookForPerpsWithdraw();
+
+      expect(result.current).toStrictEqual([
+        expect.objectContaining({
+          key: AlertsName.InsufficientPayTokenNative,
+        }),
+      ]);
+    });
   });
 });

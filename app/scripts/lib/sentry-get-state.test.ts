@@ -178,7 +178,7 @@ describe('sentry-get-state', () => {
         getPersistedState: async () => {
           throw new Error('persisted unavailable');
         },
-        getBackupState: async () => undefined,
+        getBackupState: async () => null,
       };
 
       await expect(getMetaMetricsState()).resolves.toStrictEqual({

@@ -11,6 +11,10 @@ import {
   TransactionControllerTransactionFailedEvent,
   TransactionControllerTransactionDroppedEvent,
 } from '@metamask/transaction-controller';
+import {
+  NetworkControllerFindNetworkClientIdByChainIdAction,
+  NetworkControllerGetNetworkClientByIdAction,
+} from '@metamask/network-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 export type GatorPermissionsControllerMessenger = ReturnType<
@@ -19,7 +23,9 @@ export type GatorPermissionsControllerMessenger = ReturnType<
 
 type MessengerActions =
   | SnapControllerHandleRequestAction
-  | SnapControllerHasSnapAction;
+  | SnapControllerHasSnapAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | NetworkControllerGetNetworkClientByIdAction;
 
 type MessengerEvents =
   | GatorPermissionsControllerStateChangeEvent
@@ -50,7 +56,12 @@ export function getGatorPermissionsControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: ['SnapController:handleRequest', 'SnapController:hasSnap'],
+    actions: [
+      'SnapController:handleRequest',
+      'SnapController:hasSnap',
+      'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getNetworkClientById',
+    ],
     events: [
       'TransactionController:transactionApproved',
       'TransactionController:transactionRejected',

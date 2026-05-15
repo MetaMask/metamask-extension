@@ -35,7 +35,10 @@ export function useAutomaticGasFeeTokenSelect() {
 
   let firstGasFeeTokenAddress = gasFeeTokens?.[0]?.tokenAddress;
 
-  if (!isSmartTransaction && firstGasFeeTokenAddress === NATIVE_TOKEN_ADDRESS) {
+  if (
+    (!isSmartTransaction || excludeNativeTokenForFee) &&
+    firstGasFeeTokenAddress === NATIVE_TOKEN_ADDRESS
+  ) {
     firstGasFeeTokenAddress = gasFeeTokens?.[1]?.tokenAddress;
   }
 

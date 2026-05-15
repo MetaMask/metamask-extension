@@ -33,7 +33,7 @@ import {
 } from '@metamask/perps-controller';
 import { isValidPerpsWithdrawAmount } from '../../components/app/perps/constants';
 import { Content, Footer, Page } from '../../components/multichain/pages/page';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { FlexDirection } from '../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../helpers/utils/accounts';
 import {
@@ -75,8 +75,9 @@ function parsePerpsAmountInput(raw: string): number {
  * Perps withdraw screen: enter USDC amount, validate against routes and balance,
  * submit `perpsWithdraw` with HyperLiquid USDC CAIP asset id.
  *
- * Layout mirrors deposit confirmations (`CustomAmountInfo` + small summary rows)
- * while remaining a standalone multichain page (no `TransactionMeta` / pay flow).
+ * Layout mirrors deposit confirmations (`CustomAmountInfo` + small summary rows).
+ * The Perps tab opens this page by default; confirmations-backed withdraw remains
+ * gated by the Pay post-quote feature flag.
  */
 const PerpsWithdrawPage: React.FC = () => {
   const t = useI18nContext();
@@ -94,7 +95,8 @@ const PerpsWithdrawPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const availableBalance = account?.availableBalance ?? '0';
+  const availableBalance =
+    account?.withdrawableBalance ?? account?.spendableBalance ?? '0';
   const availableNum = parseFloat(availableBalance) || 0;
 
   const usdcAssetId = useMemo(
@@ -377,7 +379,7 @@ const PerpsWithdrawPage: React.FC = () => {
       },
       {
         label: t('perpsWithdrawEstimatedTime'),
-        value: t('perpsWithdrawMinutesApprox', [String(estimatedMinutes)]),
+        value: t('perpsWithdrawMinutesApprox', [estimatedMinutes]),
         'data-testid': 'perps-withdraw-summary-time',
       },
       {
@@ -450,6 +452,7 @@ const PerpsWithdrawPage: React.FC = () => {
             style={{ flex: 1, minHeight: 0 }}
           >
             <PerpsFiatHeroAmountInput
+              autoFocus
               value={amount}
               onChange={handleHeroAmountChange}
               disabled={isSubmitting}

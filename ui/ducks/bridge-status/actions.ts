@@ -28,6 +28,7 @@ const callBridgeStatusControllerMethod = <T extends unknown[]>(
  * @param quote - Quote payload forwarded to the bridge status controller.
  * @param isStxSupportedInClient - Whether STX is enabled for the client.
  * @param context - Metrics context captured when quotes were received.
+ * @param tokenSecurityTypeDestination - Security classification of the destination token (e.g. "Malicious", "Warning"), or null when unavailable.
  * @returns A thunk that dispatches the `submitTx` bridge status action.
  */
 export const submitBridgeTx = (
@@ -35,6 +36,7 @@ export const submitBridgeTx = (
   quote: QuoteResponse & QuoteMetadata,
   isStxSupportedInClient: boolean,
   context: RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
+  tokenSecurityTypeDestination: string | null,
 ) =>
   callBridgeStatusControllerMethod<
     [
@@ -42,8 +44,21 @@ export const submitBridgeTx = (
       QuoteResponse & QuoteMetadata,
       boolean,
       RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
+      undefined,
+      undefined,
+      undefined,
+      string | null,
     ]
-  >('submitTx', [accountAddress, quote, isStxSupportedInClient, context]);
+  >('submitTx', [
+    accountAddress,
+    quote,
+    isStxSupportedInClient,
+    context,
+    undefined,
+    undefined,
+    undefined,
+    tokenSecurityTypeDestination,
+  ]);
 
 /**
  * Submit an intent quote through the bridge status controller.
@@ -51,10 +66,12 @@ export const submitBridgeTx = (
  * @param params - Intent submission payload.
  * @param params.quoteResponse - Quote response that contains the intent data.
  * @param params.accountAddress - Account submitting the signed intent.
+ * @param params.tokenSecurityTypeDestination - Security classification of the destination token (e.g. "Malicious", "Warning"), or null when unavailable.
  * @returns A thunk that dispatches the `submitIntent` bridge status action.
  */
 export const submitBridgeIntent = (params: {
   quoteResponse: QuoteResponse & QuoteMetadata;
   accountAddress: string;
+  tokenSecurityTypeDestination?: string | null;
 }) =>
   callBridgeStatusControllerMethod<[typeof params]>('submitIntent', [params]);

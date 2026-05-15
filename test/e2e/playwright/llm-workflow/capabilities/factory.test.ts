@@ -1,3 +1,5 @@
+import type { WorkflowContext } from '@metamask/client-mcp-core';
+import { metaMaskSessionManager } from '../metamask-provider';
 import { createMetaMaskE2EContext, createMetaMaskProdContext } from './factory';
 import { MetaMaskFixtureCapability } from './fixture';
 import { MetaMaskChainCapability, NoOpChainCapability } from './chain';
@@ -51,7 +53,6 @@ describe('Capability Factory', () => {
 
       expect(context.config.environment).toBe('e2e');
       expect(context.config.extensionName).toBe('MetaMask');
-      expect(context.config.toolPrefix).toBe('mm');
     });
 
     it('uses default password', () => {
@@ -68,11 +69,13 @@ describe('Capability Factory', () => {
       expect(context.config.defaultChainId).toBe(1337);
     });
 
-    it('uses custom ports when provided', () => {
+    it('uses custom ports when provided via config', () => {
       const context = createMetaMaskE2EContext({
-        ports: {
-          anvil: 9545,
-          fixtureServer: 23456,
+        config: {
+          ports: {
+            anvil: 9545,
+            fixtureServer: 23456,
+          },
         },
       });
 
@@ -80,16 +83,64 @@ describe('Capability Factory', () => {
       expect(context.fixture).toBeInstanceOf(MetaMaskFixtureCapability);
     });
 
+    it('wires ports from config into capabilities', () => {
+      const context = createMetaMaskE2EContext({
+        config: {
+          ports: {
+            anvil: 9545,
+            fixtureServer: 23456,
+          },
+        },
+      });
+
+      const chain = context.chain as unknown as { port: number };
+      const fixture = context.fixture as unknown as { port: number };
+
+      expect(chain.port).toBe(9545);
+      expect(fixture.port).toBe(23456);
+    });
+
+    it('stores ports in config.ports for downstream consumers', () => {
+      const context = createMetaMaskE2EContext({
+        config: {
+          ports: {
+            anvil: 9545,
+            fixtureServer: 23456,
+          },
+        },
+      });
+
+      const e2eConfig = context.config as { ports?: Record<string, number> };
+      expect(e2eConfig.ports?.anvil).toBe(9545);
+      expect(e2eConfig.ports?.fixtureServer).toBe(23456);
+    });
+
+    it('keeps config.ports and capability ports in sync', () => {
+      const context = createMetaMaskE2EContext({
+        config: {
+          ports: {
+            anvil: 7777,
+            fixtureServer: 8888,
+          },
+        },
+      });
+
+      const chain = context.chain as unknown as { port: number };
+      const fixture = context.fixture as unknown as { port: number };
+      const e2eConfig = context.config as { ports?: Record<string, number> };
+
+      expect(chain.port).toBe(e2eConfig.ports?.anvil);
+      expect(fixture.port).toBe(e2eConfig.ports?.fixtureServer);
+    });
+
     it('merges custom config with defaults', () => {
       const context = createMetaMaskE2EContext({
         config: {
           extensionName: 'CustomWallet',
-          toolPrefix: 'cw',
         },
       });
 
       expect(context.config.extensionName).toBe('CustomWallet');
-      expect(context.config.toolPrefix).toBe('cw');
       expect(context.config.environment).toBe('e2e');
     });
   });
@@ -228,47 +279,41 @@ describe('Capability Factory', () => {
   });
 
   describe('MetaMaskSessionManager context switching', () => {
-    let sessionManager: typeof import('../mcp-server/metamask-provider').metaMaskSessionManager;
-
     beforeEach(() => {
-      /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-      sessionManager =
-        require('../mcp-server/metamask-provider').metaMaskSessionManager;
-      sessionManager.setWorkflowContext(
-        createMetaMaskE2EContext() as import('@metamask/client-mcp-core').WorkflowContext,
+      metaMaskSessionManager.setWorkflowContext(
+        createMetaMaskE2EContext() as WorkflowContext,
       );
-      /* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
     });
 
     afterEach(() => {
-      sessionManager.setWorkflowContext(
-        undefined as unknown as import('@metamask/client-mcp-core').WorkflowContext,
+      metaMaskSessionManager.setWorkflowContext(
+        undefined as unknown as WorkflowContext,
       );
     });
 
     describe('setContext', () => {
       it('switches from e2e to prod context successfully', () => {
-        expect(sessionManager.getEnvironmentMode()).toBe('e2e');
-        sessionManager.setContext('prod');
-        expect(sessionManager.getEnvironmentMode()).toBe('prod');
+        expect(metaMaskSessionManager.getEnvironmentMode()).toBe('e2e');
+        metaMaskSessionManager.setContext('prod');
+        expect(metaMaskSessionManager.getEnvironmentMode()).toBe('prod');
       });
 
       it('is no-op when switching to same context', () => {
-        sessionManager.setContext('e2e');
-        expect(sessionManager.getEnvironmentMode()).toBe('e2e');
+        metaMaskSessionManager.setContext('e2e');
+        expect(metaMaskSessionManager.getEnvironmentMode()).toBe('e2e');
       });
 
       it('rebuilds same context when options are provided', () => {
-        const originalContext = sessionManager.getWorkflowContext();
+        const originalContext = metaMaskSessionManager.getWorkflowContext();
 
-        sessionManager.setContext('e2e', {
+        metaMaskSessionManager.setContext('e2e', {
           mockServer: {
             enabled: true,
             port: 18000,
           },
         });
 
-        const updatedContext = sessionManager.getWorkflowContext();
+        const updatedContext = metaMaskSessionManager.getWorkflowContext();
         const mockServerCapability = updatedContext?.mockServer as unknown as {
           enabled: boolean;
           port: number | undefined;
@@ -280,14 +325,14 @@ describe('Capability Factory', () => {
       });
 
       it('passes prod context options when switching to prod', () => {
-        sessionManager.setContext('prod', {
+        metaMaskSessionManager.setContext('prod', {
           remoteChain: {
             rpcUrl: 'https://mainnet.infura.io/v3/test-key',
             chainId: 1,
           },
         });
 
-        const context = sessionManager.getWorkflowContext();
+        const context = metaMaskSessionManager.getWorkflowContext();
 
         expect(context?.config.environment).toBe('prod');
         expect(context?.chain).toBeInstanceOf(NoOpChainCapability);
@@ -295,13 +340,13 @@ describe('Capability Factory', () => {
 
       it('throws MM_CONTEXT_SWITCH_BLOCKED when session is active', () => {
         const hasActiveSessionSpy = jest
-          .spyOn(sessionManager, 'hasActiveSession')
+          .spyOn(metaMaskSessionManager, 'hasActiveSession')
           .mockReturnValue(true);
         const getSessionIdSpy = jest
-          .spyOn(sessionManager, 'getSessionId')
+          .spyOn(metaMaskSessionManager, 'getSessionId')
           .mockReturnValue('test-session-123');
 
-        expect(() => sessionManager.setContext('prod')).toThrow(
+        expect(() => metaMaskSessionManager.setContext('prod')).toThrow(
           'MM_CONTEXT_SWITCH_BLOCKED',
         );
 
@@ -310,35 +355,35 @@ describe('Capability Factory', () => {
       });
 
       it('creates new context instance on switch', () => {
-        const originalContext = sessionManager.getWorkflowContext();
-        sessionManager.setContext('prod');
-        sessionManager.setContext('e2e');
-        const newContext = sessionManager.getWorkflowContext();
+        const originalContext = metaMaskSessionManager.getWorkflowContext();
+        metaMaskSessionManager.setContext('prod');
+        metaMaskSessionManager.setContext('e2e');
+        const newContext = metaMaskSessionManager.getWorkflowContext();
         expect(newContext).not.toBe(originalContext);
       });
     });
 
     describe('getContextInfo', () => {
       it('returns correct info for e2e context', () => {
-        const info = sessionManager.getContextInfo();
+        const info = metaMaskSessionManager.getContextInfo();
         expect(info.currentContext).toBe('e2e');
         expect(info.capabilities.available).not.toContain('build');
       });
 
       it('returns canSwitchContext=false when session active', () => {
         const spy = jest
-          .spyOn(sessionManager, 'hasActiveSession')
+          .spyOn(metaMaskSessionManager, 'hasActiveSession')
           .mockReturnValue(true);
-        const info = sessionManager.getContextInfo();
+        const info = metaMaskSessionManager.getContextInfo();
         expect(info.canSwitchContext).toBe(false);
         spy.mockRestore();
       });
 
       it('returns canSwitchContext=true when no session', () => {
         const spy = jest
-          .spyOn(sessionManager, 'hasActiveSession')
+          .spyOn(metaMaskSessionManager, 'hasActiveSession')
           .mockReturnValue(false);
-        const info = sessionManager.getContextInfo();
+        const info = metaMaskSessionManager.getContextInfo();
         expect(info.canSwitchContext).toBe(true);
         spy.mockRestore();
       });

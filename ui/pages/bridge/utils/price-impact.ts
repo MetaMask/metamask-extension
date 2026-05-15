@@ -8,14 +8,18 @@ import { formatCurrencyAmount } from './quote';
  */
 export function formatPriceImpactPercentage(
   priceImpact: string | number | undefined | null,
-): string {
+): string | null {
   if (priceImpact === undefined || priceImpact === null) {
-    return '0%';
+    return null;
   }
 
   const impact = Number(priceImpact);
 
-  if (isNaN(impact) || !impact || impact < 0) {
+  if (isNaN(impact)) {
+    return null;
+  }
+
+  if (impact <= 0) {
     return '0%';
   }
 

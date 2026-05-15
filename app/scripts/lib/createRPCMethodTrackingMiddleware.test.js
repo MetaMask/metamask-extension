@@ -367,6 +367,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
+          is_iframe: false,
+          is_cross_origin_iframe: false,
+          iframe_origin: null,
+          top_level_origin: null,
         },
         referrer: { url: 'some.dapp' },
         uniqueIdentifier: expectedUniqueIdentifier,
@@ -1047,6 +1051,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
           batch_transaction_count: 2,
           method: MESSAGE_TYPE.WALLET_SEND_CALLS,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
+          is_iframe: false,
+          is_cross_origin_iframe: false,
+          iframe_origin: null,
+          top_level_origin: null,
         },
       ],
       [
@@ -1056,6 +1064,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
         {
           method: MESSAGE_TYPE.WALLET_GET_CALLS_STATUS,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
+          is_iframe: false,
+          is_cross_origin_iframe: false,
+          iframe_origin: null,
+          top_level_origin: null,
         },
       ],
       [
@@ -1065,6 +1077,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
         {
           method: MESSAGE_TYPE.WALLET_GET_CAPABILITIES,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
+          is_iframe: false,
+          is_cross_origin_iframe: false,
+          iframe_origin: null,
+          top_level_origin: null,
         },
       ],
     ])(
@@ -1093,6 +1109,197 @@ describe('createRPCMethodTrackingMiddleware', () => {
         );
       },
     );
+    describe('iframe detection properties', () => {
+      it('should include is_iframe=false when frameId is 0 (top-level frame)', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.PERSONAL_SIGN,
+          origin: 'some.dapp',
+          mainFrameOrigin: 'some.dapp',
+          frameId: 0,
+        };
+
+        const res = { error: null };
+        const { next } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+          is_iframe: false,
+          is_cross_origin_iframe: false,
+          iframe_origin: null,
+          top_level_origin: null,
+        });
+      });
+
+      it('should include is_iframe=true and is_cross_origin_iframe=true when frameId > 0 and origins differ', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.PERSONAL_SIGN,
+          origin: 'https://iframe.malicious.com',
+          mainFrameOrigin: 'https://top-level.dapp.com',
+          frameId: 1,
+        };
+
+        const res = { error: null };
+        const { next } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+          is_iframe: true,
+          is_cross_origin_iframe: true,
+          iframe_origin: 'https://iframe.malicious.com',
+          top_level_origin: 'https://top-level.dapp.com',
+        });
+      });
+
+      it('should include is_iframe=true but is_cross_origin_iframe=false for same-origin iframes', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.PERSONAL_SIGN,
+          origin: 'https://dapp.com',
+          mainFrameOrigin: 'https://dapp.com',
+          frameId: 2,
+        };
+
+        const res = { error: null };
+        const { next } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+          is_iframe: true,
+          is_cross_origin_iframe: false,
+          iframe_origin: null,
+          top_level_origin: null,
+        });
+      });
+
+      it('should include is_iframe=false when frameId is not present', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.PERSONAL_SIGN,
+          origin: 'some.dapp',
+        };
+
+        const res = { error: null };
+        const { next } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0].properties).toMatchObject({
+          is_iframe: false,
+          is_cross_origin_iframe: false,
+          iframe_origin: null,
+          top_level_origin: null,
+        });
+      });
+
+      it('should include iframe properties on Permissions Approved events', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+          origin: 'https://iframe.malicious.com',
+          mainFrameOrigin: 'https://top-level.dapp.com',
+          frameId: 1,
+          params: {
+            requiredScopes: { 'eip155:1': {} },
+            optionalScopes: {},
+          },
+        };
+
+        const res = {
+          result: {
+            sessionScopes: { 'eip155:1': {} },
+          },
+        };
+        const { next, executeMiddlewareStack } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+        await executeMiddlewareStack();
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+          event: MetaMetricsEventName.PermissionsRequested,
+          properties: {
+            is_iframe: true,
+            iframe_origin: 'https://iframe.malicious.com',
+            top_level_origin: 'https://top-level.dapp.com',
+          },
+        });
+        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+          event: MetaMetricsEventName.PermissionsApproved,
+          properties: {
+            is_iframe: true,
+            iframe_origin: 'https://iframe.malicious.com',
+            top_level_origin: 'https://top-level.dapp.com',
+          },
+        });
+      });
+
+      it('should include iframe properties on Permissions Rejected events', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.WALLET_CREATE_SESSION,
+          origin: 'https://iframe.malicious.com',
+          mainFrameOrigin: 'https://top-level.dapp.com',
+          frameId: 1,
+          params: {
+            requiredScopes: { 'eip155:1': {} },
+            optionalScopes: {},
+          },
+        };
+
+        const res = {
+          error: { code: errorCodes.provider.userRejectedRequest },
+        };
+        const { next, executeMiddlewareStack } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+        await executeMiddlewareStack();
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(2);
+        expect(trackEventSpy.mock.calls[1][0]).toMatchObject({
+          event: MetaMetricsEventName.PermissionsRejected,
+          properties: {
+            is_iframe: true,
+            iframe_origin: 'https://iframe.malicious.com',
+            top_level_origin: 'https://top-level.dapp.com',
+          },
+        });
+      });
+
+      it('should include iframe properties on signature events from iframes', async () => {
+        const req = {
+          id: MOCK_ID,
+          method: MESSAGE_TYPE.PERSONAL_SIGN,
+          origin: 'https://iframe.malicious.com',
+          mainFrameOrigin: 'https://top-level.dapp.com',
+          frameId: 1,
+        };
+
+        const res = { error: null };
+        const { next } = getNext();
+        const handler = createHandler();
+        await handler(req, res, next);
+
+        expect(trackEventSpy).toHaveBeenCalledTimes(1);
+        expect(trackEventSpy.mock.calls[0][0]).toMatchObject({
+          event: MetaMetricsEventName.SignatureRequested,
+          properties: {
+            is_iframe: true,
+            iframe_origin: 'https://iframe.malicious.com',
+            top_level_origin: 'https://top-level.dapp.com',
+          },
+        });
+      });
+    });
+
     describe('Multichain API requests', () => {
       beforeEach(() => {
         metaMetricsController.setParticipateInMetaMetrics(true);

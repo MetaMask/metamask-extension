@@ -34,9 +34,11 @@ class ChromeDriver {
   }) {
     const args = [
       `--proxy-server=${getProxyServer(proxyPort)}`, // Set proxy in the way that doesn't interfere with Selenium Manager
-      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying', // Stop chrome from calling home so much (auto-downloads of AI models; time sync)
+      '--disable-features=OptimizationGuideModelDownloading,OptimizationHintsFetching,OptimizationTargetPrediction,OptimizationHints,NetworkTimeServiceQuerying,Crashpad', // disable Crashpad to prevent orphaned crash-reporter processes
+      '--disable-crash-reporter', // Prevent chrome_crashpad_handler zombie accumulation in CI
       '--disable-component-update', // Stop chrome from calling home so much (auto-update)
       '--disable-dev-shm-usage',
+      '--no-sandbox',
     ];
 
     if (process.env.MULTIPROVIDER) {
@@ -70,8 +72,6 @@ class ChromeDriver {
         '*** Running e2e tests in headless mode is experimental and some tests are known to fail for unknown reasons',
       );
       args.push('--headless=new');
-    } else {
-      args.push('--no-sandbox');
     }
 
     const options = new chrome.Options().addArguments(args);
@@ -116,19 +116,42 @@ class ChromeDriver {
     builder.setChromeService(service);
     const driver = builder.build();
 
-    // When the manifest has a `key`, the extension ID is deterministic and can
-    // be computed locally — skipping the chrome://extensions round-trip (~880ms).
-    let extensionId = ChromeDriver._computeExtensionId('dist/chrome');
-    if (!extensionId) {
-      const chromeDriver = new ChromeDriver(driver);
-      extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
-    }
+    // Ensure Chrome is cleaned up if anything below fails (extension ID
+    // lookup, etc.).  Without this, a partial failure orphans the browser.
+    try {
+      // When the manifest has a `key`, the extension ID is deterministic and can
+      // be computed locally — skipping the chrome://extensions round-trip (~880ms).
+      let extensionId = ChromeDriver._computeExtensionId('dist/chrome');
+      if (!extensionId) {
+        const chromeDriver = new ChromeDriver(driver);
+        extensionId = await chromeDriver.getExtensionIdByName('MetaMask');
+      }
 
-    return {
-      driver,
-      extensionId,
-      extensionUrl: `chrome-extension://${extensionId}`,
-    };
+      return {
+        driver,
+        extensionId,
+        extensionUrl: `chrome-extension://${extensionId}`,
+      };
+    } catch (error) {
+      // Clean up Chrome on partial build failure. Must close all windows
+      // before quit() — on Windows, quit() alone leaves Chrome running
+      // (see PR #31962).
+      try {
+        const handles = await driver.getAllWindowHandles();
+        for (const handle of handles) {
+          await driver.switchTo().window(handle);
+          await driver.close();
+        }
+      } catch {
+        // best-effort
+      }
+      try {
+        await driver.quit();
+      } catch {
+        // best-effort
+      }
+      throw error;
+    }
   }
 
   /**

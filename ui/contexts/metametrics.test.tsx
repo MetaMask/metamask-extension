@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { render, waitFor } from '@testing-library/react';
+import { act, render, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { Provider } from 'react-redux';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
@@ -157,6 +157,25 @@ describe('MetaMetricsProvider', () => {
       );
     });
 
+    expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
+  });
+
+  it('does not buffer normal events when the user has opted out of MetaMetrics', async () => {
+    renderProvider({
+      event: MetaMetricsEventName.AnalyticsPreferenceSelected,
+      state: {
+        metamask: {
+          participateInMetaMetrics: false,
+          metaMetricsId: '0x123',
+        },
+      },
+    });
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(mockedTrackMetaMetricsEvent).not.toHaveBeenCalled();
     expect(mockedSubmitRequestToBackground).not.toHaveBeenCalled();
   });
 });

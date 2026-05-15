@@ -10,13 +10,13 @@ import {
   updateSlides,
 } from '../../store/actions';
 import {
-  getRemoteFeatureFlags,
   getSelectedAccountCachedBalance,
-  getSelectedInternalAccount,
   getShowDownloadMobileAppSlide,
   getSlides,
   getUseExternalServices,
 } from '../../selectors';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentLocale } from '../../ducks/locale/locale';
 import { isMaintainedLocale } from '../../../shared/constants/locales';
 import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';

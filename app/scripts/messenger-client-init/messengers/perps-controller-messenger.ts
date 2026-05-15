@@ -3,7 +3,7 @@ import {
   AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
   AccountTreeControllerSelectedAccountGroupChangeEvent,
 } from '@metamask/account-tree-controller';
-import type { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
+import { GeolocationControllerGetGeolocationAction } from '@metamask/geolocation-controller';
 import {
   KeyringControllerGetStateAction,
   KeyringControllerSignTypedMessageAction,
@@ -18,12 +18,16 @@ import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerStateChangeEvent,
 } from '@metamask/remote-feature-flag-controller';
+import {
+  StorageServiceGetItemAction,
+  StorageServiceRemoveItemAction,
+  StorageServiceSetItemAction,
+} from '@metamask/storage-service';
 import { TransactionControllerAddTransactionAction } from '@metamask/transaction-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
-  | GeolocationControllerGetGeolocationAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
@@ -32,8 +36,12 @@ type AllowedActions =
   | TransactionControllerAddTransactionAction
   | RemoteFeatureFlagControllerGetStateAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
+  | GeolocationControllerGetGeolocationAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction
-  | MetaMetricsControllerTrackEventAction;
+  | MetaMetricsControllerTrackEventAction
+  | StorageServiceGetItemAction
+  | StorageServiceSetItemAction
+  | StorageServiceRemoveItemAction;
 
 type AllowedEvents =
   | RemoteFeatureFlagControllerStateChangeEvent
@@ -67,7 +75,6 @@ export function getPerpsControllerMessenger(
   messenger.delegate({
     messenger: perpsControllerMessenger,
     actions: [
-      'GeolocationController:getGeolocation',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
@@ -76,8 +83,12 @@ export function getPerpsControllerMessenger(
       'TransactionController:addTransaction',
       'RemoteFeatureFlagController:getState',
       'AccountTreeController:getAccountsFromSelectedAccountGroup',
+      'GeolocationController:getGeolocation',
       'AuthenticationController:getBearerToken',
       'MetaMetricsController:trackEvent',
+      'StorageService:getItem',
+      'StorageService:setItem',
+      'StorageService:removeItem',
     ],
     events: [
       'RemoteFeatureFlagController:stateChange',

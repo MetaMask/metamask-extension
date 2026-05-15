@@ -8,8 +8,6 @@ export const getHashMetricsProperties: TransactionMetricsBuilder = ({
 }) => {
   const properties: MetricsProperties = {};
 
-  const isExtensionUxPna25Enabled =
-    transactionMetricsRequest.getFeatureFlags()?.extensionUxPna25;
   const isPna25Acknowledged = transactionMetricsRequest.getPna25Acknowledged();
   const isMetricsOptedIn = transactionMetricsRequest.getParticipateInMetrics();
   const isFinalisedStatus = [
@@ -18,12 +16,7 @@ export const getHashMetricsProperties: TransactionMetricsBuilder = ({
     TransactionStatus.failed,
   ].includes(transactionMeta.status);
 
-  if (
-    isExtensionUxPna25Enabled &&
-    isPna25Acknowledged &&
-    isMetricsOptedIn &&
-    isFinalisedStatus
-  ) {
+  if (isPna25Acknowledged && isMetricsOptedIn && isFinalisedStatus) {
     properties.transaction_hash = transactionMeta.hash;
   }
 
