@@ -258,11 +258,6 @@
         "WorkerGlobalScope": false,
         "importScripts": false
       }
-    },
-    "@emotion/react>@emotion/cache": {
-      "globals": {
-        "document.createElement": true
-      }
     }
   }
 }
