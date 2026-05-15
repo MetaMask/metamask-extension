@@ -105,8 +105,12 @@ describe('PerpsFillTag', () => {
 
     renderWithProvider(<PerpsFillTag transaction={transaction} />, store);
 
-    expect(screen.getByText(messages.perpsTakeProfit.message)).toBeInTheDocument();
-    expect(screen.getByTestId('perps-fill-tag-take-profit')).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsTakeProfit.message),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-fill-tag-take-profit'),
+    ).toBeInTheDocument();
   });
 
   it('renders Stop Loss badge', () => {
@@ -115,7 +119,9 @@ describe('PerpsFillTag', () => {
 
     renderWithProvider(<PerpsFillTag transaction={transaction} />, store);
 
-    expect(screen.getByText(messages.perpsStopLoss.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsStopLoss.message),
+    ).toBeInTheDocument();
     expect(screen.getByTestId('perps-fill-tag-stop-loss')).toBeInTheDocument();
   });
 
@@ -125,7 +131,9 @@ describe('PerpsFillTag', () => {
 
     renderWithProvider(<PerpsFillTag transaction={transaction} />, store);
 
-    expect(screen.getByText(messages.perpsAutoDeleveraging.message)).toBeInTheDocument();
+    expect(
+      screen.getByText(messages.perpsAutoDeleveraging.message),
+    ).toBeInTheDocument();
     expect(screen.getByTestId('perps-fill-tag-adl')).toBeInTheDocument();
   });
 
@@ -168,10 +176,10 @@ describe('PerpsFillTag', () => {
 
     renderWithProvider(<PerpsFillTag transaction={transaction} />, store);
 
-    expect(screen.getByText(messages.perpsLiquidated.message)).toBeInTheDocument();
     expect(
-      screen.getByTestId('perps-fill-tag-liquidated'),
+      screen.getByText(messages.perpsLiquidated.message),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-fill-tag-liquidated')).toBeInTheDocument();
   });
 
   it('does not render Liquidated badge when user is not the liquidated user', () => {

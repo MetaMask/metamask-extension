@@ -13,9 +13,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../../../shared/constants/perps-events';
 import { PERPS_SUPPORT_ARTICLES_URLS } from '../../../../../shared/constants/perps';
-import {
-  MetaMetricsEventName,
-} from '../../../../../shared/constants/metametrics';
+import { MetaMetricsEventName } from '../../../../../shared/constants/metametrics';
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
