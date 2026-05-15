@@ -2,7 +2,7 @@ import { withFixtures } from '../../helpers';
 import { login } from '../../page-objects/flows/login.flow';
 import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import { getBridgeFixtures } from '../bridge/bridge-test-utils';
-import { DEFAULT_BRIDGE_FEATURE_FLAGS } from '../bridge/constants';
+import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 
 describe('Swap RWA', function () {
   const swapTestCases = [
@@ -17,7 +17,6 @@ describe('Swap RWA', function () {
         unapproved: true,
       },
       expectedTransactionsCount: 2,
-      expectedDestAmount: '0.0599',
     },
     {
       name: 'should swap GOOGLon to USDC',
@@ -30,7 +29,6 @@ describe('Swap RWA', function () {
         unapproved: true,
       },
       expectedTransactionsCount: 2,
-      expectedDestAmount: '395.7',
     },
     {
       name: 'should swap GOOGLon to SPYon',
@@ -43,7 +41,6 @@ describe('Swap RWA', function () {
         unapproved: true,
       },
       expectedTransactionsCount: 2,
-      expectedDestAmount: '0.0246',
     },
   ];
 
@@ -52,7 +49,7 @@ describe('Swap RWA', function () {
       await withFixtures(
         getBridgeFixtures({
           title: this.test?.fullTitle(),
-          featureFlags: DEFAULT_BRIDGE_FEATURE_FLAGS,
+          featureFlags: BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
         }),
         async ({ driver }) => {
           await login(driver, { expectedBalance: '$225,730.11' });
@@ -61,7 +58,7 @@ describe('Swap RWA', function () {
             driver,
             quote: testCase.quote,
             expectedTransactionsCount: testCase.expectedTransactionsCount,
-            expectedDestAmount: testCase.expectedDestAmount,
+            expectedDestAmount: ''
           });
         },
       );

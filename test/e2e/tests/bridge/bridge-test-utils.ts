@@ -1954,7 +1954,7 @@ async function mockSwapUSDCtoGOOGLON(
       })
       .thenStream(
         200,
-        mockSseEventSource(MOCK_SWAP_QUOTES_USDC_GOOGLON),
+        mockSseEventSource(MOCK_SWAP_QUOTES_USDC_GOOGLON, 100),
         SSE_RESPONSE_HEADER,
       );
   }
@@ -1986,7 +1986,7 @@ async function mockSwapGOOGLONtoUSDC(
       })
       .thenStream(
         200,
-        mockSseEventSource(MOCK_SWAP_QUOTES_GOOGLON_USDC),
+        mockSseEventSource(MOCK_SWAP_QUOTES_GOOGLON_USDC, 100),
         SSE_RESPONSE_HEADER,
       );
   }
@@ -2014,11 +2014,11 @@ async function mockSwapGOOGLONtoSPYON(
       .forGet(/getQuoteStream/u)
       .withQuery({
         srcTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
-        destTokenAddress: '0xfEdc5f4a6c38211C1338aa411018DfaF26612C08',
+        destTokenAddress: '0xFeDC5f4a6c38211c1338aa411018DFAf26612c08',
       })
       .thenStream(
         200,
-        mockSseEventSource(MOCK_SWAP_QUOTES_GOOGLON_SPYON),
+        mockSseEventSource(MOCK_SWAP_QUOTES_GOOGLON_SPYON, 100),
         SSE_RESPONSE_HEADER,
       );
   }
@@ -2027,7 +2027,7 @@ async function mockSwapGOOGLONtoSPYON(
     .forGet(/getQuote/u)
     .withQuery({
       srcTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
-      destTokenAddress: '0xfEdc5f4a6c38211C1338aa411018DfaF26612C08',
+      destTokenAddress: '0xFeDC5f4a6c38211c1338aa411018DFAf26612c08',
     })
     .thenCallback(() => {
       return {
