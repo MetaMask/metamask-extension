@@ -63,6 +63,7 @@ import {
   isBurnAddress,
   isValidHexAddress,
 } from '../../../../shared/lib/hexstring-utils';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { INVALID_RECIPIENT_ADDRESS_ERROR } from '../../confirmations/send-utils/send.constants';
 import { isValidDomainName } from '../../../helpers/utils/util';
 import type { AddContactFormProps } from '../contacts.types';

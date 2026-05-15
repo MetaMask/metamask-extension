@@ -41,6 +41,7 @@ import {
 } from '../../../store/actions';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { CreatePasswordForm } from '../../create-password-form';
 
 type CreatePasswordProps = {

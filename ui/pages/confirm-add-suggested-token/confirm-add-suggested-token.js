@@ -36,6 +36,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { getSuggestedTokens } from '../../selectors';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
 

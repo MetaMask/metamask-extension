@@ -60,6 +60,7 @@ import { useUserPreferencedCurrency } from '../../hooks/useUserPreferencedCurren
 import { useCurrencyDisplay } from '../../hooks/useCurrencyDisplay';
 import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { Nav } from '../confirmations/components/confirm/nav';
 import { hideAppHeader } from '../routes/utils';
 

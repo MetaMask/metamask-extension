@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Text } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { SnapAccountCard } from '../../../remove-snap-account/snap-account-card';
 
 const SnapAccountSuccessMessage = ({

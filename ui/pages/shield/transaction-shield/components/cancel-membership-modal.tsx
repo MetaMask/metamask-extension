@@ -11,6 +11,7 @@ import {
 } from '../../../../components/component-library';
 import { AlignItems } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { getShortDateFormatterV2 } from '../../../asset/util';
 import {
   getIsShieldSubscriptionPaused,

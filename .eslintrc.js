@@ -746,5 +746,19 @@ module.exports = {
         ],
       },
     },
+    /**
+     * Route module isolation exemptions
+     *
+     * The router registry (`ui/pages/routes/`) and the top-level `ui/pages`
+     * entrypoint must reference every route module by design. Disable the
+     * route-isolation zones for these specific files. See ADR 0021
+     * (modularize-routes) / WPC-402.
+     */
+    {
+      files: ['ui/pages/routes/**/*.{js,ts,tsx}', 'ui/pages/index.js'],
+      rules: {
+        'import-x/no-restricted-paths': 'off',
+      },
+    },
   ],
 };

@@ -84,6 +84,7 @@ import {
 import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';
 import {
   useMusdCtaVisibility,

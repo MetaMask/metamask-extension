@@ -32,6 +32,7 @@ import {
   getSelectedMultichainNetworkChainId,
 } from '../../selectors/multichain/networks';
 import { getEditedNetwork } from '../../selectors/selectors';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { SettingsHeader } from '../settings/shared/settings-header';
 import { AddRpcUrlPageForm } from './add-rpc-url-page-form';
 import { NetworksPageList } from './networks-page-list';

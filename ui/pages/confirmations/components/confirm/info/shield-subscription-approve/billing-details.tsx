@@ -6,6 +6,7 @@ import {
 } from '../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { getShortDateFormatterV2 } from '../../../../../asset/util';
 import { TextColor } from '../../../../../../helpers/constants/design-system';
 

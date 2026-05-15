@@ -1,3 +1,33 @@
+const fs = require('node:fs');
+const path = require('node:path');
+
+// Top-level route directories under `ui/pages/`. Each top-level directory is
+// treated as a "route module" per ADR 0021 (modularize-routes) / WPC-402.
+// The `routes` subdirectory holds the React Router registry (which must
+// reference every route by design) and is exempted via overrides in
+// `.eslintrc.js`.
+const PAGES_DIR = path.join(__dirname, 'ui/pages');
+const ROUTE_ISOLATION_EXEMPT_DIRS = new Set(['routes']);
+const routeDirs = fs
+  .readdirSync(PAGES_DIR, { withFileTypes: true })
+  .filter(
+    (entry) => entry.isDirectory() && !ROUTE_ISOLATION_EXEMPT_DIRS.has(entry.name),
+  )
+  .map((entry) => entry.name);
+
+// For each route, forbid imports from anywhere else inside `ui/pages/`
+// except itself and the router registry. `import-x/no-restricted-paths`
+// resolves `except` paths relative to `from`, so we can keep one zone per
+// route instead of a quadratic pair list.
+const routeIsolationZones = routeDirs.map((route) => ({
+  target: `./ui/pages/${route}`,
+  from: './ui/pages',
+  except: [`./${route}`, './routes'],
+  message:
+    `Route directories must be isolated. "${route}" must not import ` +
+    `from a sibling route directory. See ADR 0021 (modularize-routes) / WPC-402.`,
+}));
+
 module.exports = {
   extends: ['@metamask/eslint-config'],
 
@@ -122,6 +152,7 @@ module.exports = {
             from: './ui',
             message: 'Should not import from UI in shared',
           },
+          ...routeIsolationZones,
         ],
       },
     ],

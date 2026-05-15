@@ -33,6 +33,7 @@ import {
   useUserSubscriptionByProduct,
   useUserSubscriptions,
 } from '../../../hooks/subscription/useSubscription';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { getShortDateFormatterV2 } from '../../asset/util';
 import {
   DEFAULT_ROUTE,

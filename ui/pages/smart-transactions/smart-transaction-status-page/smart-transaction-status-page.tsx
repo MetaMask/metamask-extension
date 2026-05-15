@@ -30,6 +30,7 @@ import { getFullTxData } from '../../../selectors';
 import { BaseUrl } from '../../../../shared/constants/urls';
 import { hideLoadingIndication } from '../../../store/actions';
 import { hexToDecimal } from '../../../../shared/lib/conversion.utils';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 import { SimulationDetails } from '../../confirmations/components/simulation-details';
 import { NOTIFICATION_WIDTH } from '../../../../shared/constants/notifications';
 
