@@ -94,24 +94,37 @@ class FirefoxDriver {
 
     builder.setFirefoxService(service);
     const driver = builder.build();
-    const fxDriver = new FirefoxDriver(driver);
 
-    // Pre-build an XPI and cache it across test runs.
-    // Without this, installAddon() zips the 348MB unpacked dir on every call,
-    // adding ~10s of overhead per test.
-    const xpiPath = await getOrBuildXpi('dist/firefox');
-    const installedExtensionId = await fxDriver.installExtension(xpiPath);
-    const internalExtensionId = await fxDriver.getInternalId();
+    // Ensure Firefox is cleaned up if anything below fails (XPI build,
+    // extension install, etc.).  Without this, a partial failure orphans
+    // the browser.
+    try {
+      const fxDriver = new FirefoxDriver(driver);
 
-    if (responsive || constrainWindowSize) {
-      await driver.manage().window().setRect({ width: 320, height: 600 });
+      // Pre-build an XPI and cache it across test runs.
+      // Without this, installAddon() zips the 348MB unpacked dir on every call,
+      // adding ~10s of overhead per test.
+      const xpiPath = await getOrBuildXpi('dist/firefox');
+      const installedExtensionId = await fxDriver.installExtension(xpiPath);
+      const internalExtensionId = await fxDriver.getInternalId();
+
+      if (responsive || constrainWindowSize) {
+        await driver.manage().window().setRect({ width: 320, height: 600 });
+      }
+
+      return {
+        driver,
+        extensionId: installedExtensionId,
+        extensionUrl: `moz-extension://${internalExtensionId}`,
+      };
+    } catch (error) {
+      try {
+        await driver.quit();
+      } catch {
+        // best-effort cleanup
+      }
+      throw error;
     }
-
-    return {
-      driver,
-      extensionId: installedExtensionId,
-      extensionUrl: `moz-extension://${internalExtensionId}`,
-    };
   }
 
   /**

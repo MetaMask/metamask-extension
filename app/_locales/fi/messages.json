@@ -370,9 +370,6 @@
   "nevermind": {
     "message": "Antaa olla"
   },
-  "newAccount": {
-    "message": "Uusi tili"
-  },
   "newAccountNumberName": {
     "message": "Tili $1",
     "description": "Default name of next account to be created on create account screen"

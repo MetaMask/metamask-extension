@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Добавить аккаунт"
   },
-  "addAccountFromNetwork": {
-    "message": "Добавить счет $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Добавить счет или кошелек"
-  },
   "addAcquiredTokens": {
     "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
   },
   "addAlias": {
     "message": "Добавить псевдоним"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Счет Биткойн (бета-версия)"
   },
   "addBlockExplorer": {
     "message": "Добавить обозреватель блоков"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Обменять токены"
   },
-  "addHardwareWalletLabel": {
-    "message": "Аппаратный кошелек"
-  },
   "addMemo": {
     "message": "Добавить примечание"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "Сайт предлагает дополнительную информацию о сети."
   },
-  "addNewAccount": {
-    "message": "Добавить новый счет Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Счет Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Счет Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Счет Tron"
-  },
   "addNft": {
     "message": "Добавить NFT"
   },
   "addNfts": {
     "message": "Добавить NFT"
-  },
-  "addNonEvmAccount": {
-    "message": "Добавить $1 счет",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Чтобы активировать сеть $1, нужно создать счет $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Добавить URL-адрес RPC"
@@ -893,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "Перейти на главную страницу"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Открыть страницу «Создать счет»"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Открыть страницу DeFi"
@@ -1859,18 +1823,12 @@
   "connectAccounts": {
     "message": "Подключить счета"
   },
-  "connectAnAccountHeader": {
-    "message": "Подключить счет"
-  },
   "connectHardwareDevice": {
     "message": "Подключиться к $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Подключиться к текущему сайту вручную"
-  },
-  "connectMoreAccounts": {
-    "message": "Подключите еще счета"
   },
   "connectSnap": {
     "message": "Подключиться к $1",
@@ -1888,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask не подключен к этому сайту. Чтобы подключиться к сайту web3, найдите и нажмите кнопку подключения."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 может видеть баланс счета, адрес, активность и предлагать транзакции для одобрения для подключенных счетов.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Подключенные сайты"
@@ -1924,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "Сети ($1) не подключены",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Подключен к $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Подключение"
@@ -1962,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "Не удалось получить $1, проверьте свою сеть и повторите попытку.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Для подключения к сайту нажмите кнопку подключения. MetaMask может подключаться только к сайтам web3."
   },
   "connectionRequest": {
     "message": "Запрос подключения"
@@ -2056,9 +2003,6 @@
     "message": "Добавление счета...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Создать новый счет"
-  },
   "createPassword": {
     "message": "Создать пароль"
   },
@@ -2083,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Создать счет"
-  },
-  "createSolanaAccount": {
-    "message": "Создать счет Solana"
   },
   "creatorAddress": {
     "message": "Адрес создателя"
@@ -2368,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "страница свопов"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "страница «Свопы/рампы»"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "страница защиты транзакций"
   },
@@ -2514,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Уверены, что хотите отключить? Вы можете потерять доступ к функциям сайта."
   },
-  "disconnectAllAccountsText": {
-    "message": "счета"
-  },
   "disconnectAllDescriptionText": {
     "message": "Если вы отключитесь от этого сайта, вам придется повторно подключить свои счета и сети, чтобы снова использовать этот сайт."
   },
@@ -2531,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Все приложения dapp успешно отключены."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Это отключит вас от этого сайта"
@@ -3562,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT является уникальным идентификатором, поскольку нет двух одинаковых NFT. Опять же, в OpenSea этот номер находится в разделе «Подробности». Запишите его или скопируйте в буфер обмена."
   },
-  "importPrivateKey": {
-    "message": "Закрытый ключ"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Импортировать секретную фразу для восстановления"
   },
@@ -3579,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "Нам не удалось импортировать токены. Повторите попытку позже."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Импортировать кошелек или счет"
   },
   "importWalletSuccess": {
     "message": "Кошелек $1 импортирован",
@@ -4691,9 +4617,6 @@
   },
   "new": {
     "message": "Новые!"
-  },
-  "newAccount": {
-    "message": "Новый счет"
   },
   "newAccountIconMessage": {
     "message": "Мы обновили значки счетов, чтобы вам было проще различать их. Вы можете изменять стиль в разделе $1 > $2 > $3.",
@@ -6948,14 +6871,6 @@
   "requestingFor": {
     "message": "Запрашивается для"
   },
-  "requestingForAccount": {
-    "message": "Запрашивается для $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Запрашивается для $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Требуется"
   },
@@ -7214,10 +7129,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Секретная фраза для восстановления $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Безопасный кошелек"
@@ -8457,12 +8368,6 @@
     "message": "Свяжитесь с авторами $1 для получения дополнительной поддержки.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "Этот сайт запрашивает счет Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Для подключения к этому сайту необходим счет Solana."
-  },
   "someNetworks": {
     "message": "Сети $1"
   },
@@ -9673,9 +9578,6 @@
   },
   "urlErrorMsg": {
     "message": "URL должен иметь соответствующий префикс HTTP/HTTPS."
-  },
-  "urlUnknown": {
-    "message": "URL неизвестно"
   },
   "use4ByteResolution": {
     "message": "Расшифровать смарт-контракты"

@@ -361,9 +361,6 @@
   "nevermind": {
     "message": "Nema veze"
   },
-  "newAccount": {
-    "message": "Nov nalog"
-  },
   "newAccountNumberName": {
     "message": "Nalog $1",
     "description": "Default name of next account to be created on create account screen"
