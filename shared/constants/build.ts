@@ -1,4 +1,4 @@
-import environment from './build.json';
+import environment from './build-environment.json';
 
 export const ENVIRONMENT = environment;
 

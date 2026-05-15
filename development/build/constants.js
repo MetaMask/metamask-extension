@@ -1,4 +1,4 @@
-const ENVIRONMENT = require('../../shared/constants/build.json');
+const ENVIRONMENT = require('../../shared/constants/build-environment.json');
 
 /**
  * The build target. This descrbes the overall purpose of the build.

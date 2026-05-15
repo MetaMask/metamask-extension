@@ -1,7 +1,7 @@
 {
   "DEVELOPMENT": "development",
-  "PRODUCTION": "production",
   "OTHER": "other",
+  "PRODUCTION": "production",
   "PULL_REQUEST": "pull-request",
   "RELEASE_CANDIDATE": "release-candidate",
   "STAGING": "staging",
