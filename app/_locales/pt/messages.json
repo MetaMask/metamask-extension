@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Adicionar conta"
   },
-  "addAccountFromNetwork": {
-    "message": "Adicionar conta $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Adicionar conta ou carteira"
-  },
   "addAcquiredTokens": {
     "message": "Adicione os tokens que você adquiriu usando a MetaMask"
   },
   "addAlias": {
     "message": "Adicionar pseudônimo"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Conta Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Adicionar um explorador de blocos"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Trocar tokens"
   },
-  "addHardwareWalletLabel": {
-    "message": "Carteira de hardware"
-  },
   "addMemo": {
     "message": "Adicionar observação"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "Um site está sugerindo detalhes adicionais da rede."
   },
-  "addNewAccount": {
-    "message": "Adicionar uma nova conta Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Conta Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Conta Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Conta Tron"
-  },
   "addNft": {
     "message": "Adicionar NFT"
   },
   "addNfts": {
     "message": "Adicionar NFTs"
-  },
-  "addNonEvmAccount": {
-    "message": "Adicionar $1 conta",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para ativar a rede $1, é necessário criar uma conta $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Adicionar URL da RPC"
@@ -557,9 +524,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Velocidade lenta"
-  },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Patrocínio de gás indisponível"
   },
   "alertReasonGasTooLow": {
     "message": "Baixo limite de gás"
@@ -896,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "Ir para a página inicial"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Abrir a página Criar conta"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Abrir a página DeFi"
@@ -1862,18 +1823,12 @@
   "connectAccounts": {
     "message": "Conectar contas"
   },
-  "connectAnAccountHeader": {
-    "message": "Conectar uma conta"
-  },
   "connectHardwareDevice": {
     "message": "Conectar $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Conectar manualmente ao site atual"
-  },
-  "connectMoreAccounts": {
-    "message": "Conectar mais contas"
   },
   "connectSnap": {
     "message": "Conectar $1",
@@ -1891,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "A MetaMask não está conectada a esse site. Para conectar-se a um site da web3, encontre e clique no botão \"conectar\"."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 pode ver o saldo, endereço e atividade da conta, além das transações sugeridas para aprovar para contas conectadas.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Sites conectados"
@@ -1927,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "$1 redes conectadas",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Conectado com $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Conectando"
@@ -1965,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "Falha ao buscar $1. Verifique sua rede e tente de novo.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Para se conectar a um site, selecione o botão \"conectar\". A MetaMask só pode se conectar a sites Web3."
   },
   "connectionRequest": {
     "message": "Solicitação de conexão"
@@ -2059,9 +2003,6 @@
     "message": "Adicionando conta...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Crie uma conta"
-  },
   "createPassword": {
     "message": "Criar senha"
   },
@@ -2086,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Criar conta"
-  },
-  "createSolanaAccount": {
-    "message": "Criar conta Solana"
   },
   "creatorAddress": {
     "message": "Endereço do criador"
@@ -2371,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "a página de trocas"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "a página de trocas/rampas"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "a página de proteção de transações"
   },
@@ -2517,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Quer mesmo desconectar? Você pode perder a funcionalidade do site."
   },
-  "disconnectAllAccountsText": {
-    "message": "contas"
-  },
   "disconnectAllDescriptionText": {
     "message": "Se você se desconectar deste site, precisará reconectar suas contas e redes para usar este site novamente."
   },
@@ -2534,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Todos os dapps foram desconectados com sucesso."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Isso desconectará você deste site"
@@ -3565,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "O ID de um NFT é um identificador único, pois não há dois NFTs iguais. Novamente, na OpenSea, esse número se encontra em \"Detalhes\". Anote-o ou copie-o para sua área de transferência."
   },
-  "importPrivateKey": {
-    "message": "Chave privada"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Importar Frase de Recuperação Secreta"
   },
@@ -3582,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "Não foi possível importar os tokens. Volte a tentar mais tarde."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Importe uma carteira ou conta"
   },
   "importWalletSuccess": {
     "message": "Carteira $1 importada",
@@ -3931,9 +3854,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Trancando a MetaMask..."
-  },
-  "logOut": {
-    "message": "Sair"
   },
   "loginErrorConnectButton": {
     "message": "Tentar novamente"
@@ -4697,9 +4617,6 @@
   },
   "new": {
     "message": "Nova!"
-  },
-  "newAccount": {
-    "message": "Nova conta"
   },
   "newAccountIconMessage": {
     "message": "Atualizamos os ícones das contas para ajudar você a diferenciar suas contas com mais facilidade. Você pode mudar o estilo em $1 > $2 > $3.",
@@ -6954,14 +6871,6 @@
   "requestingFor": {
     "message": "Solicitando para"
   },
-  "requestingForAccount": {
-    "message": "Solicitando para $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Solicitando para $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Obrigatório"
   },
@@ -7220,10 +7129,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Frase de Recuperação Secreta $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Carteira segura"
@@ -8463,12 +8368,6 @@
     "message": "Contate os criadores de $1 para receber mais suporte.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "Este site está solicitando uma conta Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "É necessária uma conta Solana para se conectar a este site."
-  },
   "someNetworks": {
     "message": "Redes de $1"
   },
@@ -9679,9 +9578,6 @@
   },
   "urlErrorMsg": {
     "message": "Os URLs precisam do prefixo HTTP/HTTPS adequado."
-  },
-  "urlUnknown": {
-    "message": "URL desconhecido"
   },
   "use4ByteResolution": {
     "message": "Decodificar contratos inteligentes"

@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Tambah akun"
   },
-  "addAccountFromNetwork": {
-    "message": "Tambahkan akun $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Tambahkan akun atau dompet"
-  },
   "addAcquiredTokens": {
     "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
   },
   "addAlias": {
     "message": "Tambahkan alias"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Akun Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Tambahkan block explorer"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Tukar token"
   },
-  "addHardwareWalletLabel": {
-    "message": "Dompet perangkat keras"
-  },
   "addMemo": {
     "message": "Tambahkan memo"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "Sebuah situs menyarankan detail jaringan tambahan."
   },
-  "addNewAccount": {
-    "message": "Tambahkan akun Ethereum baru"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Akun Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Akun Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Akun Tron"
-  },
   "addNft": {
     "message": "Tambahkan NFT"
   },
   "addNfts": {
     "message": "Tambahkan NFT"
-  },
-  "addNonEvmAccount": {
-    "message": "Tambahkan akun $1",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Untuk mengaktifkan jaringan $1, Anda perlu membuat akun $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Tambahkan URL RPC"
@@ -557,9 +524,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Kecepatan lambat"
-  },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Sponsor gas tidak tersedia"
   },
   "alertReasonGasTooLow": {
     "message": "Batas gas rendah"
@@ -896,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "Buka halaman beranda"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Buka halaman Buat Akun"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Buka halaman DeFi"
@@ -1862,18 +1823,12 @@
   "connectAccounts": {
     "message": "Hubungkan akun"
   },
-  "connectAnAccountHeader": {
-    "message": "Hubungkan akun"
-  },
   "connectHardwareDevice": {
     "message": "Hubungkan $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
-  },
-  "connectMoreAccounts": {
-    "message": "Hubungkan lebih banyak akun"
   },
   "connectSnap": {
     "message": "Hubungkan $1",
@@ -1891,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask tidak terhubung ke situs ini. Untuk terhubung ke situs web3, cari dan klik tombol hubungkan."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 dapat melihat saldo akun, alamat, aktivitas, dan menyarankan transaksi yang akan disetujui untuk akun terhubung.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Situs yang terhubung"
@@ -1927,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "$1 jaringan terhubung",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Terhubung dengan $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Menghubungkan"
@@ -1965,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "Pengambilan $1 gagal, periksa jaringan Anda dan coba lagi.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Untuk terhubung ke situs, pilih tombol hubungkan. MetaMask hanya dapat terhubung ke situs web3."
   },
   "connectionRequest": {
     "message": "Permintaan koneksi"
@@ -2059,9 +2003,6 @@
     "message": "Menambahkan akun...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Buat akun baru"
-  },
   "createPassword": {
     "message": "Kata sandi MetaMask"
   },
@@ -2086,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Buat akun"
-  },
-  "createSolanaAccount": {
-    "message": "Buat akun Solana"
   },
   "creatorAddress": {
     "message": "Alamat pembuat"
@@ -2371,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "halaman swap"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "halaman Swap/Ramp"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "halaman transaction shield"
   },
@@ -2517,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Anda yakin ingin memutus koneksi? Fungsionalitas situs Anda bisa hilang."
   },
-  "disconnectAllAccountsText": {
-    "message": "akun"
-  },
   "disconnectAllDescriptionText": {
     "message": "Jika Anda memutuskan koneksi dari situs ini, Anda harus menghubungkan kembali akun dan jaringan agar dapat menggunakan situs ini lagi."
   },
@@ -2534,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Semua dapp berhasil diputus koneksinya."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "Ini akan memutus koneksi dari situs ini"
@@ -3565,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT merupakan pengenal unik karena tidak ada dua NFT yang sama. Sekali lagi, angka ini berada di bawah 'Detail' pada OpenSea. Catat atau salin ke papan klip."
   },
-  "importPrivateKey": {
-    "message": "Kunci Pribadi"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Impor Frasa Pemulihan Rahasia"
   },
@@ -3582,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "Kami tidak dapat mengimpor token. Coba lagi nanti."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Impor dompet atau akun"
   },
   "importWalletSuccess": {
     "message": "Dompet $1 diimpor",
@@ -3931,9 +3854,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Mengunci MetaMask..."
-  },
-  "logOut": {
-    "message": "Keluar"
   },
   "loginErrorConnectButton": {
     "message": "Coba lagi"
@@ -4697,9 +4617,6 @@
   },
   "new": {
     "message": "Baru!"
-  },
-  "newAccount": {
-    "message": "Akun baru"
   },
   "newAccountIconMessage": {
     "message": "Kami telah memperbarui ikon akun agar Anda dapat membedakan akun dengan lebih mudah. ​​Anda dapat mengubah gayanya di $1 > $2 > $3.",
@@ -6958,14 +6875,6 @@
   "requestingFor": {
     "message": "Meminta untuk"
   },
-  "requestingForAccount": {
-    "message": "Meminta untuk $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Meminta untuk $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Diperlukan"
   },
@@ -7224,10 +7133,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Frasa Pemulihan Rahasia $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Amankan dompet"
@@ -8467,12 +8372,6 @@
     "message": "Hubungi pembuat $1 untuk dukungan lebih lanjut.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "Situs ini meminta akun Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Akun Solana diperlukan untuk terhubung ke situs ini."
-  },
   "someNetworks": {
     "message": "$1 jaringan"
   },
@@ -9683,9 +9582,6 @@
   },
   "urlErrorMsg": {
     "message": "URL memerlukan awalan HTTP/HTTPS yang sesuai."
-  },
-  "urlUnknown": {
-    "message": "URL tidak dikenal"
   },
   "use4ByteResolution": {
     "message": "Uraikan kode kontrak cerdas"

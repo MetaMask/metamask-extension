@@ -269,7 +269,9 @@ class PrivacySettings {
       await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
     }
     await this.driver.waitForSelector(this.revealSrpQuizQuestionOne);
-    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
+    await this.driver.findScrollToAndClickElement(
+      this.revealSrpQuizRightAnswerButton,
+    );
     await this.driver.clickElement(this.revealSrpQuizContinueButton);
 
     // answer quiz question 2
@@ -282,7 +284,9 @@ class PrivacySettings {
       await this.driver.clickElement(this.revealSrpQuizTryAgainButton);
     }
     await this.driver.waitForSelector(this.revealSrpQuizQuestionTwo);
-    await this.driver.clickElement(this.revealSrpQuizRightAnswerButton);
+    await this.driver.findScrollToAndClickElement(
+      this.revealSrpQuizRightAnswerButton,
+    );
     await this.driver.clickElement(this.revealSrpQuizContinueButton);
   }
 
