@@ -2,6 +2,7 @@
 import { base58 } from '@scure/base';
 import { keccak256 } from 'ethereum-cryptography/keccak';
 import { sha256 } from 'ethereum-cryptography/sha256';
+import { type JavaTronPrivateNetworkPorts } from './java-tron-config';
 
 export const TRON_CHAIN_ID = 'tron:728126428';
 export const SUN_PER_TRX = 1_000_000;
@@ -29,6 +30,7 @@ export type TronTrc20Token = TronAssetMetadata & {
 
 export type TronLocalNodeOptions = {
   initialBalances?: Record<string, number>;
+  ports?: Partial<JavaTronPrivateNetworkPorts>;
   trc10Balances?: Record<string, Partial<Record<TronTrc10Symbol, string>>>;
   trc20Balances?: Record<string, Partial<Record<TronTrc20Symbol, string>>>;
   /**

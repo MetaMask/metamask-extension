@@ -6,6 +6,8 @@ export type JavaTronPrivateNetworkPorts = {
   grpcSolidityPort: number;
   jsonRpcPort: number;
   jsonRpcSolidityPort: number;
+  pbftGrpcPort: number;
+  pbftHttpPort: number;
   p2pPort: number;
   solidityHttpPort: number;
 };
@@ -209,11 +211,13 @@ node {
     fullNodePort = 18190
     solidityEnable = true
     solidityPort = 18191
+    PBFTPort = 8092
   }
 
   rpc {
     port = 50051
     solidityPort = 50052
+    PBFTPort = 50071
     # Number of gRPC thread, default availableProcessors / 2
     # thread = 16
 
@@ -489,8 +493,10 @@ export function createJavaTronPrivateNetworkConfig(
     .replace('port = 10001', `port = ${ports.backupPort}`)
     .replace('fullNodePort = 18190', `fullNodePort = ${ports.fullNodePort}`)
     .replace('solidityPort = 18191', `solidityPort = ${ports.solidityHttpPort}`)
+    .replace('PBFTPort = 8092', `PBFTPort = ${ports.pbftHttpPort}`)
     .replace('port = 50051', `port = ${ports.grpcPort}`)
     .replace('solidityPort = 50052', `solidityPort = ${ports.grpcSolidityPort}`)
+    .replace('PBFTPort = 50071', `PBFTPort = ${ports.pbftGrpcPort}`)
     .replace(
       'httpFullNodePort = 8545',
       `httpFullNodePort = ${ports.jsonRpcPort}`,

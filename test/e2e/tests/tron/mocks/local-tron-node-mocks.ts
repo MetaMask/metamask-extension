@@ -6,7 +6,7 @@ import {
   normalizeTronHexAddress,
   TronNativeAccount,
 } from '../../../seeder/tron/assets';
-import { TronNode, TRON_LOCAL_NODE_URL } from '../../../seeder/tron/node';
+import { TronNode } from '../../../seeder/tron/node';
 
 type TronNodeLike = Pick<
   TronNode,
@@ -520,15 +520,4 @@ export async function proxyTronBlockchainCalls(
   );
 
   return endpoints;
-}
-
-export async function proxyDefaultTronBlockchainCalls(
-  mockServer: Mockttp,
-  accountAddress: string,
-): Promise<MockedEndpoint[]> {
-  return proxyTronBlockchainCalls(
-    mockServer,
-    TRON_LOCAL_NODE_URL,
-    accountAddress,
-  );
 }
