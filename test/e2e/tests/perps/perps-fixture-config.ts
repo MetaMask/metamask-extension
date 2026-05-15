@@ -1,26 +1,27 @@
 import type { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
+import {
+  getProductionRemoteFlagApiResponse,
+  getProductionRemoteFlagDefaults,
+} from '../../feature-flags/feature-flag-registry';
 
-const PERPS_ENABLED_FLAG = {
-  remoteFeatureFlags: {
-    perpsEnabledVersion: {
-      enabled: true,
-      minimumVersion: '0.0.0',
-    },
-  },
-};
+/**
+ * Production remote flag defaults used as the base for all perps manifest flag
+ * overrides. Starting from these ensures any flag added to the registry is
+ * automatically included without having to update this file.
+ */
+const PROD_REMOTE_FLAGS = getProductionRemoteFlagDefaults();
 
 /**
  * Remote feature flags for eligible (non-geo-blocked) users.
- * Explicitly clears the geo-block list so US-TX (the E2E geolocation mock) remains eligible.
+ * Starts from production defaults, enables perps, and clears the geo-block list
+ * so US-TX (the E2E geolocation mock) remains eligible.
  */
-const PERPS_ELIGIBLE_FLAG = {
+export const PERPS_ELIGIBLE_FLAG = {
   remoteFeatureFlags: {
-    ...PERPS_ENABLED_FLAG.remoteFeatureFlags,
-    perpsPerpTradingGeoBlockedCountriesV2: {
-      blockedRegions: [],
-    },
+    ...PROD_REMOTE_FLAGS,
+    perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+    perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
   },
 };
 
@@ -31,10 +32,9 @@ const PERPS_ELIGIBLE_FLAG = {
  */
 const PERPS_GEO_BLOCKED_FLAG = {
   remoteFeatureFlags: {
-    ...PERPS_ENABLED_FLAG.remoteFeatureFlags,
-    perpsPerpTradingGeoBlockedCountriesV2: {
-      blockedRegions: ['US'],
-    },
+    ...PROD_REMOTE_FLAGS,
+    perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+    perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
   },
 };
 

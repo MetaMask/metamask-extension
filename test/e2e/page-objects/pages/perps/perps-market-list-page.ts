@@ -12,6 +12,12 @@ export class PerpsMarketListPage {
     testId: 'perps-explore-markets-row',
   };
 
+  private readonly filterOption = (optionId: string) => {
+    return {
+      xpath: `//*[@data-testid='filter-select-button'][contains(normalize-space(.), '${optionId}')]`,
+    };
+  };
+
   private readonly filterSelectButton = { testId: 'filter-select-button' };
 
   private readonly filterSortRow = { testId: 'market-list-filter-sort-row' };
@@ -19,6 +25,10 @@ export class PerpsMarketListPage {
   private readonly headerBackButton = { testId: 'back-button' };
 
   private readonly marketListView = { testId: 'market-list-view' };
+
+  private readonly marketRow = {
+    xpath: "//*[starts-with(@data-testid,'market-row-')]",
+  };
 
   /** CSS selector for the search input; driver.fill() expects a string locator. */
   private readonly searchInput = '[data-testid="search-input"]';
@@ -111,9 +121,7 @@ export class PerpsMarketListPage {
    * Market rows have data-testid="market-row-{SYMBOL}" (e.g. market-row-BTC).
    */
   async waitForAnyMarketRow(): Promise<void> {
-    await this.driver.waitForSelector({
-      xpath: "//*[starts-with(@data-testid,'market-row-')]",
-    });
+    await this.driver.waitForSelector(this.marketRow);
   }
 
   /**
@@ -122,9 +130,7 @@ export class PerpsMarketListPage {
    * @param label - Expected visible label on the filter button.
    */
   async waitForFilterLabel(label: string): Promise<void> {
-    await this.driver.waitForSelector({
-      xpath: `//*[@data-testid='filter-select-button'][contains(normalize-space(.), '${label}')]`,
-    });
+    await this.driver.waitForSelector(this.filterOption(label));
   }
 
   /**

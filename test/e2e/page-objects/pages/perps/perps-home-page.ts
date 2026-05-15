@@ -63,14 +63,13 @@ export class PerpsHomePage extends PerpsPositionsBase {
 
   private readonly perpsWatchlist = { testId: 'perps-watchlist' };
 
-  private readonly positionCardsSelector = '[data-testid^="position-card-"]';
+  private readonly perpsWatchlistMarket = (symbol: string) => {
+    return {
+      testId: `perps-watchlist-${symbol}`,
+    };
+  };
 
-  /**
-   * Waits for the "Explore markets" row to be visible on the Perps home.
-   */
-  async waitForExploreMarketsRow(): Promise<void> {
-    await this.driver.waitForSelector(this.perpsExploreMarketsRow);
-  }
+  private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
   /**
    * Waits for the Perps Home view to be loaded and visible.
@@ -156,6 +155,13 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
+   * Waits for the "Explore markets" row to be visible on the Perps home.
+   */
+  async waitForExploreMarketsRow(): Promise<void> {
+    await this.driver.waitForSelector(this.perpsExploreMarketsRow);
+  }
+
+  /**
    * Waits until the number of position cards equals `expectedCount` (uses waitUntil to avoid race conditions).
    *
    * @param expectedCount - Expected number of position cards.
@@ -220,9 +226,7 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * @param symbol - Market symbol, e.g. 'ETH'.
    */
   async waitForWatchlistMarket(symbol: string): Promise<void> {
-    await this.driver.waitForSelector({
-      testId: `perps-watchlist-${symbol}`,
-    });
+    await this.driver.waitForSelector(this.perpsWatchlistMarket(symbol));
   }
 
   /**
@@ -231,9 +235,10 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * @param symbol - Market symbol, e.g. 'ETH'.
    */
   async checkMarketNotInWatchlist(symbol: string): Promise<void> {
-    await this.driver.assertElementNotPresent({
-      testId: `perps-watchlist-${symbol}`,
-    });
+    await this.driver.assertElementNotPresent(
+      this.perpsWatchlistMarket(symbol),
+      { waitAtLeastGuard: 1000 },
+    );
   }
 
   /**
@@ -243,4 +248,5 @@ export class PerpsHomePage extends PerpsPositionsBase {
   async checkWatchlistSectionGone(): Promise<void> {
     await this.driver.assertElementNotPresent(this.perpsWatchlist);
   }
+
 }

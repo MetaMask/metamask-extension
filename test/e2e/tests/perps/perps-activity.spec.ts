@@ -24,8 +24,6 @@ import { getPerpsConfigEligibleWithActivity } from './perps-fixture-config';
 import { WS_WITH_ACTIVITY_DATA } from './mocks/websocketActivityMocks';
 
 describe('Perps Activity', function (this: Suite) {
-  this.timeout(10 * 60 * 1000);
-
   // ─── Filter dropdown UI ────────────────────────────────────────────────────
 
   it('shows all four filter options in the activity filter dropdown', async function () {

@@ -18,8 +18,6 @@ import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market
 import { getPerpsConfigEligible } from './perps-fixture-config';
 
 describe('Perps Watchlist', function (this: Suite) {
-  this.timeout(10 * 60 * 1000);
-
   it('adds a market to the watchlist and verifies it on Perps home', async function () {
     await withFixtures(
       {
@@ -39,7 +37,6 @@ describe('Perps Watchlist', function (this: Suite) {
 
         const marketDetailPage = new PerpsMarketDetailPage(driver);
         await marketDetailPage.navigateToMarket('BTC');
-        await marketDetailPage.waitForFavoriteButton();
 
         // Add BTC to the watchlist
         await marketDetailPage.clickFavoriteButton();
@@ -72,7 +69,6 @@ describe('Perps Watchlist', function (this: Suite) {
         // Add ETH to the watchlist first so the section is never fully empty
         await marketListPage.navigateToMarketList();
         await marketDetailPage.navigateToMarket('ETH');
-        await marketDetailPage.waitForFavoriteButton();
         await marketDetailPage.clickFavoriteButton();
         await marketDetailPage.clickBack();
         await perpsHomePage.waitForWatchlistMarket('ETH');
@@ -81,11 +77,10 @@ describe('Perps Watchlist', function (this: Suite) {
         await marketListPage.navigateToMarketList();
 
         await marketDetailPage.navigateToMarket('ETH');
-        await marketDetailPage.waitForFavoriteButton();
         await marketDetailPage.clickFavoriteButton();
 
         // Wait for the button to reflect the unfavorited state before leaving
-        await marketDetailPage.waitForFavoriteUnfavorited();
+        await marketDetailPage.waitForFavoriteButton('unfavorited');
 
         // Navigate back to Perps home and verify the watchlist section is gone
         await marketDetailPage.clickBack();
@@ -113,14 +108,12 @@ describe('Perps Watchlist', function (this: Suite) {
         // Add ETH to watchlist
         await marketListPage.navigateToMarketList();
         await marketDetailPage.navigateToMarket('ETH');
-        await marketDetailPage.waitForFavoriteButton();
         await marketDetailPage.clickFavoriteButton();
         await marketDetailPage.clickBack();
 
         // Add AVAX to watchlist
         await marketListPage.navigateToMarketList();
         await marketDetailPage.navigateToMarket('AVAX');
-        await marketDetailPage.waitForFavoriteButton();
         await marketDetailPage.clickFavoriteButton();
         await marketDetailPage.clickBack();
 

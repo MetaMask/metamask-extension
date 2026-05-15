@@ -21,6 +21,14 @@ export class PerpsActivityPage {
 
   private readonly filterButton = { testId: 'perps-activity-filter-button' };
 
+  private readonly activityFilterOption = (
+    type: 'trade' | 'order' | 'funding' | 'deposit',
+  ) => {
+    return {
+      xpath: `//*[@data-testid='perps-activity-filter-option-${type}']`,
+    };
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -74,9 +82,7 @@ export class PerpsActivityPage {
   async selectFilter(
     type: 'trade' | 'order' | 'funding' | 'deposit',
   ): Promise<void> {
-    await this.driver.clickElement({
-      testId: `perps-activity-filter-option-${type}`,
-    });
+    await this.driver.clickElement(this.activityFilterOption(type));
   }
 
   /**
@@ -87,9 +93,7 @@ export class PerpsActivityPage {
   async waitForFilterOption(
     type: 'trade' | 'order' | 'funding' | 'deposit',
   ): Promise<void> {
-    await this.driver.waitForSelector({
-      testId: `perps-activity-filter-option-${type}`,
-    });
+    await this.driver.waitForSelector(this.activityFilterOption(type));
   }
 
   /**

@@ -23,10 +23,6 @@ export class PerpsMarketDetailPage {
 
   private readonly addFundsCtaButton = { testId: 'perps-add-funds-cta-button' };
 
-  private readonly favoriteButton = {
-    testId: 'perps-market-detail-favorite-button',
-  };
-
   private readonly addMarginModal = { testId: 'perps-add-margin-modal' };
 
   private readonly amountInputField = { testId: 'amount-input-field' };
@@ -79,6 +75,10 @@ export class PerpsMarketDetailPage {
 
   private readonly editMarginModalSave = {
     testId: 'perps-edit-margin-modal-save',
+  };
+
+  private readonly favoriteButton = {
+    testId: 'perps-market-detail-favorite-button',
   };
 
   private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
@@ -187,8 +187,6 @@ export class PerpsMarketDetailPage {
   private readonly tpslModalTpPriceInputLocator = {
     xpath: `(//*[@data-testid="perps-update-tpsl-modal"]//input[contains(@class,"mm-text-field__input")])[1]`,
   };
-
-  private readonly tradeCtaButtons = { testId: 'perps-trade-cta-buttons' };
 
   private readonly updateTpslModal = { testId: 'perps-update-tpsl-modal' };
 
@@ -302,20 +300,23 @@ export class PerpsMarketDetailPage {
   }
 
   /**
-   * Waits for the favourite button to be visible in the market detail header.
+   * Waits for the favorite (star) button to reach the given state.
+   * Pass `'favorited'` for aria-label "Remove from favorites",
+   * `'unfavorited'` for "Add to favorites", or omit to wait for any state.
+   *
+   * @param state - Target button state, or undefined for any state.
    */
-  async waitForFavoriteButton(): Promise<void> {
-    await this.driver.waitForSelector(this.favoriteButton);
-  }
-
-  /**
-   * Waits until the favourite button reflects an "unfavorited" state
-   * (aria-label = "Add to favorites"). Use after clicking to remove a market
-   * from the watchlist to confirm the state change before navigating away.
-   */
-  async waitForFavoriteUnfavorited(): Promise<void> {
+  async waitForFavoriteButton(
+    state?: 'favorited' | 'unfavorited',
+  ): Promise<void> {
+    if (state === undefined) {
+      await this.driver.waitForSelector(this.favoriteButton);
+      return;
+    }
+    const ariaLabel =
+      state === 'favorited' ? 'Remove from favorites' : 'Add to favorites';
     await this.driver.waitForSelector({
-      xpath: `//*[@data-testid='perps-market-detail-favorite-button'][@aria-label='Add to favorites']`,
+      xpath: `//*[@data-testid='perps-market-detail-favorite-button'][@aria-label='${ariaLabel}']`,
     });
   }
 
