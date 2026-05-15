@@ -246,4 +246,97 @@ describe('BridgeFeeRow', () => {
     expect(tooltip.textContent).toContain(`${messages.providerFee.message}:`);
     expect(tooltip.textContent).not.toContain(`${messages.bridgeFee.message}:`);
   });
+
+  describe('MetaMask fee value', () => {
+    it('renders the MetaMask fee value in the tooltip when ≥ $0.01', async () => {
+      useTransactionPayTotalsMock.mockReturnValue({
+        fees: {
+          provider: { usd: '1.00' },
+          metaMask: { usd: '0.50' },
+          sourceNetwork: { estimate: { usd: '0.20' } },
+          targetNetwork: { usd: '0.03' },
+        },
+      } as TransactionPayTotals);
+
+      const user = userEvent.setup();
+      const { getByTestId, findByText } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      await user.hover(getByTestId('bridge-fee-row-tooltip'));
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.metamaskFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain(
+        `${messages.metamaskFee.message}: $0.50`,
+      );
+    });
+
+    it('renders "<$0.01" in the tooltip when MetaMask fee is sub-cent but > 0', async () => {
+      useTransactionPayTotalsMock.mockReturnValue({
+        fees: {
+          provider: { usd: '0.04' },
+          metaMask: { usd: '0.004347' },
+          sourceNetwork: { estimate: { usd: '0' } },
+          targetNetwork: { usd: '0' },
+        },
+      } as TransactionPayTotals);
+
+      const user = userEvent.setup();
+      const { getByTestId, findByText } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      await user.hover(getByTestId('bridge-fee-row-tooltip'));
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.metamaskFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain(
+        `${messages.metamaskFee.message}: <$0.01`,
+      );
+    });
+
+    it('renders "$0.00" in the tooltip when MetaMask fee is exactly 0', async () => {
+      useTransactionPayTotalsMock.mockReturnValue({
+        fees: {
+          provider: { usd: '1.00' },
+          metaMask: { usd: '0' },
+          sourceNetwork: { estimate: { usd: '0.20' } },
+          targetNetwork: { usd: '0.03' },
+        },
+      } as TransactionPayTotals);
+
+      const user = userEvent.setup();
+      const { getByTestId, findByText } = render({
+        variant: ConfirmInfoRowSize.Small,
+      });
+
+      await user.hover(getByTestId('bridge-fee-row-tooltip'));
+
+      const tooltip = await findByText((content) =>
+        content.includes(`${messages.metamaskFee.message}:`),
+      );
+      expect(tooltip.textContent).toContain(
+        `${messages.metamaskFee.message}: $0.00`,
+      );
+    });
+
+    it('includes the MetaMask fee in the Transaction fee total', () => {
+      useTransactionPayTotalsMock.mockReturnValue({
+        fees: {
+          provider: { usd: '0.042058' },
+          metaMask: { usd: '0.004347' },
+          sourceNetwork: { estimate: { usd: '0' } },
+          targetNetwork: { usd: '0' },
+        },
+      } as TransactionPayTotals);
+
+      const { getByTestId } = render();
+
+      // 0.042058 + 0.004347 = 0.046405 → rounds to $0.05
+      expect(getByTestId('transaction-fee-value')).toHaveTextContent('$0.05');
+    });
+  });
 });

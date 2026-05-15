@@ -35,6 +35,7 @@ import {
   applyGatingPolicy,
   compareBenchmarkEntries,
   formatDeltaPercent,
+  scaleThresholdsForBrowser,
   COMPARISON_SEVERITY,
   type BenchmarkEntryComparison,
 } from './comparison-utils';
@@ -88,6 +89,8 @@ export function runComparison(
   let anyFailed = false;
 
   for (const { name, data } of benchmarks) {
+    const parsed = parseArtifactName(name);
+
     for (const [entryName, results] of Object.entries(data)) {
       if (!results.p75 || !results.p95) {
         console.warn(
@@ -96,14 +99,19 @@ export function runComparison(
         continue;
       }
 
-      const thresholdConfig = THRESHOLD_REGISTRY[entryName];
+      const baseThresholdConfig = THRESHOLD_REGISTRY[entryName];
 
-      if (!thresholdConfig) {
+      if (!baseThresholdConfig) {
         console.warn(
           `No threshold config for benchmark "${entryName}" in file "${name}". Add an entry to THRESHOLD_REGISTRY in thresholds.ts.`,
         );
         continue;
       }
+
+      const thresholdConfig = scaleThresholdsForBrowser(
+        baseThresholdConfig,
+        parsed?.browser,
+      );
 
       const baselineMetrics = resolveBaselineFromArtifactName(
         baseline,
@@ -119,7 +127,6 @@ export function runComparison(
       );
       const comparison = applyGatingPolicy(rawComparison, GATED_METRICS);
 
-      const parsed = parseArtifactName(name);
       if (parsed) {
         comparison.source = `${parsed.browser}-${parsed.buildType}`;
       }

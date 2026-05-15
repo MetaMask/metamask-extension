@@ -19,7 +19,13 @@
  *
  * @see CameraReadyState for the state machine definition.
  */
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import log from 'loglevel';
 import { URDecoder } from '@ngraveio/bc-ur';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
@@ -29,6 +35,8 @@ import {
   getMozExtensionOriginForDisplay,
   isFirefoxBrowser,
 } from '../../../../shared/lib/browser-runtime.utils';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import WebcamUtils from '../../../helpers/utils/webcam-utils';
 import PageContainerFooter from '../../ui/page-container/page-container-footer/page-container-footer.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -43,6 +51,10 @@ import {
   type CameraReadyStateValue,
   type WebcamError,
 } from './base-reader.types';
+import {
+  cameraReadyStateToErrorCode,
+  buildQrCameraRecoveryTrackEventArgs,
+} from './base-reader-utils';
 import EnhancedReader from './enhanced-reader';
 
 // ---------------------------------------------------------------------------
@@ -105,6 +117,7 @@ const BaseReader = ({
   setErrorTitle,
 }: BaseReaderProps) => {
   const t = useI18nContext();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const [readyState, setReadyState] = useState<CameraReadyStateValue>(
     CameraReadyState.AccessingCamera,
@@ -115,10 +128,64 @@ const BaseReader = ({
   const [permissionActionLoading, setPermissionActionLoading] = useState(false);
 
   const mountedRef = useRef(false);
+  const errorTypeViewCountRef = useRef(0);
+  const lastTrackedReadyStateRef = useRef<CameraReadyStateValue | null>(null);
+  const prevErrorReadyStateRef = useRef<CameraReadyStateValue | null>(null);
   const {
     attach: attachPermissionListener,
     cleanup: cleanupPermissionListener,
   } = usePermissionChangeListener();
+
+  // ---- MetaMetrics tracking -----------------------------------------------
+  // `readyState` is set asynchronously from multiple code paths (initial
+  // permission query, getUserMedia rejection, Continue-button retry, and the
+  // PermissionStatus change listener). A reactive `useEffect` is the only
+  // way to reliably track every transition without duplicating fire-once
+  // guards inside each handler.
+
+  useEffect(() => {
+    const errorCode = cameraReadyStateToErrorCode(readyState);
+
+    if (errorCode === null) {
+      if (
+        readyState === CameraReadyState.Ready &&
+        prevErrorReadyStateRef.current !== null
+      ) {
+        const prevErrorCode = cameraReadyStateToErrorCode(
+          prevErrorReadyStateRef.current,
+        );
+        if (prevErrorCode !== null) {
+          trackEvent(
+            buildQrCameraRecoveryTrackEventArgs(
+              MetaMetricsEventName.HardwareWalletRecoverySuccessModalViewed,
+              prevErrorCode,
+              errorTypeViewCountRef.current,
+            ),
+          );
+        }
+        prevErrorReadyStateRef.current = null;
+        errorTypeViewCountRef.current = 0;
+        lastTrackedReadyStateRef.current = null;
+      }
+      return;
+    }
+
+    prevErrorReadyStateRef.current = readyState;
+
+    if (lastTrackedReadyStateRef.current === readyState) {
+      return;
+    }
+    lastTrackedReadyStateRef.current = readyState;
+    errorTypeViewCountRef.current += 1;
+
+    trackEvent(
+      buildQrCameraRecoveryTrackEventArgs(
+        MetaMetricsEventName.HardwareWalletRecoveryModalViewed,
+        errorCode,
+        errorTypeViewCountRef.current,
+      ),
+    );
+  }, [readyState, trackEvent]);
 
   // ---- camera helpers -----------------------------------------------------
 
@@ -272,11 +339,26 @@ const BaseReader = ({
 
   // ---- "Continue" handlers for camera-access error states -----------------
 
+  const trackCameraRecoveryCtaClicked = useCallback(() => {
+    const errorCode = cameraReadyStateToErrorCode(readyState);
+    if (errorCode === null) {
+      return;
+    }
+    trackEvent(
+      buildQrCameraRecoveryTrackEventArgs(
+        MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+        errorCode,
+        errorTypeViewCountRef.current,
+      ),
+    );
+  }, [readyState, trackEvent]);
+
   /**
    * Handler for the "needed" (prompt-dismissed) Continue button.
    * Re-requests camera access via `getUserMedia`.
    */
   const handleCameraAccessNeededContinue = useCallback(async () => {
+    trackCameraRecoveryCtaClicked();
     setPermissionActionLoading(true);
     try {
       const stream = await WebcamUtils.requestVideoStream();
@@ -304,13 +386,18 @@ const BaseReader = ({
         setPermissionActionLoading(false);
       }
     }
-  }, [cleanupPermissionListener, reconcileNotAllowedPermission]);
+  }, [
+    cleanupPermissionListener,
+    reconcileNotAllowedPermission,
+    trackCameraRecoveryCtaClicked,
+  ]);
 
   /**
    * Handler for the "blocked" Continue button.
    * Re-checks the permission state; if no longer denied, acquires the camera.
    */
   const handleCameraAccessBlockedContinue = useCallback(async () => {
+    trackCameraRecoveryCtaClicked();
     setPermissionActionLoading(true);
     try {
       const { state } = await WebcamUtils.queryCameraPermission();
@@ -335,7 +422,11 @@ const BaseReader = ({
         setPermissionActionLoading(false);
       }
     }
-  }, [cleanupPermissionListener, reconcileNotAllowedPermission]);
+  }, [
+    cleanupPermissionListener,
+    reconcileNotAllowedPermission,
+    trackCameraRecoveryCtaClicked,
+  ]);
 
   /**
    * Opens the Chromium camera site-settings page in a new tab.
@@ -492,7 +583,7 @@ const BaseReader = ({
       <>
         <div className="qr-scanner__content">
           {readyState === CameraReadyState.Ready ? (
-            <EnhancedReader handleScan={handleScan} />
+            <EnhancedReader onFrame={handleScan} />
           ) : null}
         </div>
         {scanProgress > 0 && (

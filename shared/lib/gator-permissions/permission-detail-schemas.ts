@@ -109,6 +109,22 @@ const permissionInfoSection: SchemaSection = {
       includeInViews: ['confirmation'],
     },
     { type: 'network', includeInViews: ['confirmation', 'reviewDetail'] },
+    {
+      type: 'rule-address',
+      labelKey: 'redeemer',
+      testId: 'confirmation-redeemer',
+      getValue: (ctx) => ctx.redeemerAddresses ?? undefined,
+      isVisible: (ctx) => Boolean(ctx.redeemerAddresses?.length),
+      includeInViews: ['confirmation', 'reviewDetail'],
+    },
+    {
+      type: 'rule-address',
+      labelKey: 'payee',
+      testId: 'confirmation-payee',
+      getValue: (ctx) => ctx.payeeAddresses ?? undefined,
+      isVisible: (ctx) => Boolean(ctx.payeeAddresses?.length),
+      includeInViews: ['confirmation', 'reviewDetail'],
+    },
   ],
 };
 
@@ -316,6 +332,47 @@ const nativeTokenStreamSchema: PermissionSchemaEntry = {
           getValue: () => ({ key: 'unlimited' }),
           isVisible: (ctx) => getStreamTotalExposure(ctx) === null,
           includeInViews: ['confirmation'],
+        },
+      ],
+    },
+    reviewSummaryAccountSection,
+  ],
+};
+
+const nativeTokenAllowanceSchema: PermissionSchemaEntry = {
+  tokenVariant: 'native',
+  tokenResolution: { kind: 'native' },
+  validate: requireStartTime,
+  sections: [
+    justificationSection,
+    permissionInfoSection,
+    {
+      testId: 'native-token-allowance-details-section',
+      elements: [
+        {
+          type: 'amount',
+          labelKey: 'amount',
+          testId: 'review-gator-permission-amount-label',
+          getValue: (ctx) =>
+            parseHexPermissionAmount(getData<string>(ctx, 'allowanceAmount')),
+          isVisible: alwaysVisible,
+          includeInViews: ['confirmation', 'reviewSummary'],
+        },
+        {
+          type: 'date',
+          labelKey: 'gatorPermissionsStartDate',
+          testId: 'review-gator-permission-start-date',
+          getValue: (ctx) => getData<number>(ctx, 'startTime'),
+          isVisible: alwaysVisible,
+          includeInViews: ['confirmation', 'reviewDetail'],
+        },
+        {
+          type: 'expiry',
+          labelKey: 'gatorPermissionsExpirationDate',
+          testId: 'review-gator-permission-expiration-date',
+          getValue: (ctx) => ctx.expiry,
+          isVisible: alwaysVisible,
+          includeInViews: ['confirmation', 'reviewDetail'],
         },
       ],
     },
@@ -542,6 +599,51 @@ const erc20TokenStreamSchema: PermissionSchemaEntry = {
   ],
 };
 
+const erc20TokenAllowanceSchema: PermissionSchemaEntry = {
+  tokenVariant: 'erc20',
+  tokenResolution: {
+    kind: 'erc20',
+    getTokenAddress: (p) => p.data.tokenAddress as string,
+  },
+  validate: requireStartTime,
+  sections: [
+    justificationSection,
+    permissionInfoSection,
+    {
+      testId: 'erc20-token-allowance-details-section',
+      elements: [
+        {
+          type: 'amount',
+          labelKey: 'amount',
+          testId: 'review-gator-permission-amount-label',
+          getValue: (ctx) =>
+            parseHexPermissionAmount(getData<string>(ctx, 'allowanceAmount')),
+          getTokenAddress: (ctx) => getData<Hex>(ctx, 'tokenAddress'),
+          isVisible: alwaysVisible,
+          includeInViews: ['confirmation', 'reviewSummary'],
+        },
+        {
+          type: 'date',
+          labelKey: 'gatorPermissionsStartDate',
+          testId: 'review-gator-permission-start-date',
+          getValue: (ctx) => getData<number>(ctx, 'startTime'),
+          isVisible: alwaysVisible,
+          includeInViews: ['confirmation', 'reviewDetail'],
+        },
+        {
+          type: 'expiry',
+          labelKey: 'gatorPermissionsExpirationDate',
+          testId: 'review-gator-permission-expiration-date',
+          getValue: (ctx) => ctx.expiry,
+          isVisible: alwaysVisible,
+          includeInViews: ['confirmation', 'reviewDetail'],
+        },
+      ],
+    },
+    reviewSummaryAccountSection,
+  ],
+};
+
 const erc20TokenRevocationSchema: PermissionSchemaEntry = {
   tokenVariant: 'none',
   tokenResolution: { kind: 'none' },
@@ -580,8 +682,10 @@ const erc20TokenRevocationSchema: PermissionSchemaEntry = {
 export const PERMISSION_SCHEMAS: PermissionSchemaRegistry = {
   'native-token-periodic': nativeTokenPeriodicSchema,
   'native-token-stream': nativeTokenStreamSchema,
+  'native-token-allowance': nativeTokenAllowanceSchema,
   'erc20-token-periodic': erc20TokenPeriodicSchema,
   'erc20-token-stream': erc20TokenStreamSchema,
+  'erc20-token-allowance': erc20TokenAllowanceSchema,
   'erc20-token-revocation': erc20TokenRevocationSchema,
 };
 

@@ -37,8 +37,9 @@ describe('PasskeyControllerInit', () => {
     expect(jest.mocked(PasskeyController)).toHaveBeenCalledWith({
       state: undefined,
       messenger: expect.any(Object),
-      rpID: 'chrome-extension://mock-id',
+      rpId: undefined,
       rpName: 'MetaMask',
+      expectedRPID: 'chrome-extension://mock-id',
       expectedOrigin: 'chrome-extension://mock-id',
       userName: 'MetaMask Wallet',
       userDisplayName: 'MetaMask Wallet',

@@ -81,7 +81,7 @@ import {
   selectIsMerklClaimingEnabled,
   selectIsMusdConversionFlowEnabled,
 } from '../../../selectors/musd';
-import { useSafeChains } from '../../settings/networks-tab/networks-form/use-safe-chains';
+import { useSafeChains } from '../../../components/multichain/networks-form/use-safe-chains';
 import { useCurrentPrice } from '../hooks/useCurrentPrice';
 import { isNativeAsset, type Asset } from '../types/asset';
 import { useRWAToken } from '../../bridge/hooks/useRWAToken';

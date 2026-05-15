@@ -29,7 +29,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
-  ONBOARDING_WELCOME_ROUTE,
   DEFAULT_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
@@ -52,6 +51,7 @@ import {
   getCompletedOnboarding,
   getIsInitialized,
   getIsPrimarySeedPhraseBackedUp,
+  getIsWalletResetInProgress,
 } from '../../../ducks/metamask/metamask';
 import {
   toggleExternalServices,
@@ -97,6 +97,7 @@ export default function CreationSuccessful() {
     useSelector(getDeferredDeepLink);
 
   const isInitialized = useSelector(getIsInitialized);
+  const isResetWalletInProgress = useSelector(getIsWalletResetInProgress);
 
   const learnMoreLink = ZENDESK_URLS.BASIC_SAFETY_TIPS;
 
@@ -113,10 +114,10 @@ export default function CreationSuccessful() {
     if (isFromReminder) {
       return;
     }
-    if (!isInitialized) {
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
+    if (!isInitialized || isResetWalletInProgress) {
+      navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }, [isInitialized, isFromReminder, navigate]);
+  }, [isInitialized, isFromReminder, navigate, isResetWalletInProgress]);
 
   useEffect(() => {
     const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -252,6 +253,12 @@ export default function CreationSuccessful() {
       return;
     }
 
+    if (isResetWalletInProgress) {
+      // if the wallet reset is in progress, we navigate to the default route (i.e. onboarding start page)
+      navigate(DEFAULT_ROUTE);
+      return;
+    }
+
     const deferredDeepLinkResult =
       await getDeferredDeepLinkRoute(deferredDeepLink);
     const shouldOpenSidePanel =
@@ -376,6 +383,7 @@ export default function CreationSuccessful() {
     trackEvent,
     participateInMetaMetrics,
     handleOnDoneNavigation,
+    isResetWalletInProgress,
   ]);
 
   const renderDoneButton = () => {

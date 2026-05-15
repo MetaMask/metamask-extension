@@ -16,10 +16,8 @@ import {
   getNetworkDiscoverButtonEnabled,
   getSelectedMultichainNetworkChainId,
 } from '../../../../selectors';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../../../ducks/metamask/base-selectors';
 import { useAccountCreationOnNetworkChange } from '../../../../hooks/accounts/useAccountCreationOnNetworkChange';
 
 export const useNetworkItemCallbacks = () => {

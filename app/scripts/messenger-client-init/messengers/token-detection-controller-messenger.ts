@@ -22,8 +22,6 @@ import {
   TokensControllerAddTokensAction,
   TokensControllerGetStateAction,
   AssetsContractControllerGetBalancesInSingleCallAction,
-  TokenListStateChange,
-  GetTokenListState,
 } from '@metamask/assets-controllers';
 import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
 import type {
@@ -39,7 +37,6 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetNetworkConfigurationByNetworkClientId
   | NetworkControllerGetStateAction
-  | GetTokenListState
   | KeyringControllerGetStateAction
   | PreferencesControllerGetStateAction
   | TokensControllerGetStateAction
@@ -51,7 +48,6 @@ type AllowedActions =
 type AllowedEvents =
   | AccountsControllerSelectedEvmAccountChangeEvent
   | NetworkControllerNetworkDidChangeEvent
-  | TokenListStateChange
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent
   | PreferencesControllerStateChangeEvent
@@ -91,7 +87,6 @@ export function getTokenDetectionControllerMessenger(
       'NetworkController:getState',
       'TokensController:getState',
       'TokensController:addDetectedTokens',
-      'TokenListController:getState',
       'PreferencesController:getState',
       'TokensController:addTokens',
       'NetworkController:findNetworkClientIdByChainId',
@@ -102,7 +97,6 @@ export function getTokenDetectionControllerMessenger(
       'KeyringController:lock',
       'KeyringController:unlock',
       'NetworkController:networkDidChange',
-      'TokenListController:stateChange',
       'PreferencesController:stateChange',
       'TransactionController:transactionConfirmed',
     ],
