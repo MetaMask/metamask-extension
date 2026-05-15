@@ -98,7 +98,11 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
             </ModalBody>
 
             <ModalFooter>
-              <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={4}>
+              <Box
+                className="flex"
+                flexDirection={BoxFlexDirection.Column}
+                gap={4}
+              >
                 <Button
                   variant={ButtonVariant.Primary}
                   size={ButtonSize.Lg}

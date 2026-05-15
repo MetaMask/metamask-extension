@@ -544,7 +544,11 @@ export const MultichainAccountsConnectPage: React.FC<
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header paddingTop={8} paddingBottom={4}>
-        <Box className="flex" justifyContent={BoxJustifyContent.Center} marginBottom={8}>
+        <Box
+          className="flex"
+          justifyContent={BoxJustifyContent.Center}
+          marginBottom={8}
+        >
           {targetSubjectMetadata.iconUrl ? (
             <AvatarFavicon
               backgroundColor={BackgroundColor.backgroundMuted}
@@ -703,7 +707,11 @@ export const MultichainAccountsConnectPage: React.FC<
         </Tabs>
       </Content>
       <Footer>
-        <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex w-full">
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={4}
+          className="flex w-full"
+        >
           <Box gap={4} className="w-full">
             <Button
               block
