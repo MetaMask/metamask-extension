@@ -12,6 +12,7 @@ import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/prefe
 import { SECURITY_ITEMS } from '../search-config';
 import ManageWalletRecoveryItem from './manage-wallet-recovery-item';
 import { formatAutoLockLabel } from './auto-lock-utils';
+import PasskeyItem from './passkey-item';
 
 const PhishingDetectionItem = createToggleItem({
   name: 'PhishingDetectionItem',
@@ -55,6 +56,7 @@ const SECURITY_AND_PASSWORD_SETTING_ITEMS: SettingItemConfig[] = [
     ),
   },
   { id: 'password', component: PasswordItem },
+  { id: 'passkey', component: PasskeyItem },
   { id: 'auto-lock', component: AutoLockItem },
   { id: 'phishing-detection', component: PhishingDetectionItem },
 ];

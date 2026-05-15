@@ -1,4 +1,8 @@
 import { createSelector } from 'reselect';
+import {
+  getEnforcedSimulationsSlippage,
+  getIsEnforcedSimulationsEnabled,
+} from '../../../../shared/lib/transaction/enforced-simulations';
 import { getRemoteFeatureFlags } from '../../../selectors/remote-feature-flags';
 
 type ConfirmationsPayDappsFlag = {
@@ -20,4 +24,16 @@ const selectConfirmationsPayDappsFlag = createSelector(
 export const selectIsMetaMaskPayDappsEnabled = createSelector(
   selectConfirmationsPayDappsFlag,
   (flag): boolean => flag?.enabled ?? false,
+);
+
+export const selectIsEnforcedSimulationsEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags): boolean =>
+    getIsEnforcedSimulationsEnabled({ remoteFeatureFlags }),
+);
+
+export const selectEnforcedSimulationsSlippage = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags): number =>
+    getEnforcedSimulationsSlippage({ remoteFeatureFlags }),
 );

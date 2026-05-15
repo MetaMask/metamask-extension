@@ -2125,6 +2125,23 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     status: FeatureFlagStatus.Active,
   },
 
+  coreExtensionUxCeux1024AbtestReferralUi: {
+    name: 'coreExtensionUxCeux1024AbtestReferralUi',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: [
+      {
+        name: 'control',
+        scope: { type: 'threshold', value: 1 },
+      },
+      {
+        name: 'treatment',
+        scope: { type: 'threshold', value: 0 },
+      },
+    ],
+    status: FeatureFlagStatus.Active,
+  },
+
   extensionUxSidepanel: {
     name: 'extensionUxSidepanel',
     type: FeatureFlagType.Remote,

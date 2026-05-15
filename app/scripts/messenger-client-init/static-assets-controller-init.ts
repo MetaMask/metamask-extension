@@ -3,13 +3,11 @@ import {
   DEFAULT_TOP_X,
   DEFAULT_CACHE_EXPIRATION_MS,
   StaticAssetsController,
+  StaticAssetsControllerMessenger,
   StaticAssetsPollingFeatureFlagOptions,
 } from '../controllers/static-assets-controller';
 import { MessengerClientInitFunction } from './types';
-import {
-  StaticAssetsControllerMessenger,
-  StaticAssetsControllerInitMessenger,
-} from './messengers';
+import { StaticAssetsControllerInitMessenger } from './messengers';
 
 function getRemoteFeatureFlagControllerState(
   initMessenger: StaticAssetsControllerInitMessenger,

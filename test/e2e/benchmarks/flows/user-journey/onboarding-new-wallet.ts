@@ -49,7 +49,6 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         title: testTitle,
         manifestFlags: {
           testing: {
-            disableSync: true,
             infuraProjectId: process.env.INFURA_PROJECT_ID,
           },
         },

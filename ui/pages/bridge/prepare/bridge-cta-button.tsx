@@ -22,6 +22,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import {
   ConnectionStatus,
+  HardwareWalletType,
   useHardwareWalletConfig,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
@@ -85,10 +86,21 @@ export const BridgeCTAButton = ({
     if (!isHardwareWalletAccount) {
       return true;
     }
+    // QR wallets don't need a physical device connection before showing the
+    // primary CTA. Submitting still runs ensureDeviceReady, which handles
+    // camera permission before signing.
+    if (walletType === HardwareWalletType.Qr) {
+      return true;
+    }
+    // Trezor on Firefox uses a different connection flow and does not require
+    // the "Connect Trezor" preflight step before the CTA.
+    if (walletType === HardwareWalletType.Trezor && isFirefoxBrowser()) {
+      return true;
+    }
     return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
       connectionState.status,
     );
-  }, [connectionState.status, isHardwareWalletAccount]);
+  }, [connectionState.status, isHardwareWalletAccount, walletType]);
 
   /**
    * Defines the behavior of the CTA button based on the current state

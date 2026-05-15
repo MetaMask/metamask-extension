@@ -157,6 +157,37 @@ describe('UpdateTPSLModalContent', () => {
       ).toBeInTheDocument();
     });
 
+    it('auto-focuses the TP trigger price input on mount', () => {
+      renderTpslModalContent();
+
+      const input = screen.getByTestId(
+        'perps-update-tpsl-tp-price-input',
+      ) as HTMLInputElement;
+      expect(input).toHaveFocus();
+    });
+
+    it('selects existing TP price value on focus', () => {
+      renderTpslModalContent();
+
+      const input = screen.getByTestId(
+        'perps-update-tpsl-tp-price-input',
+      ) as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
+    it('selects existing SL price value on focus', () => {
+      renderTpslModalContent();
+
+      const input = screen.getByTestId(
+        'perps-update-tpsl-sl-price-input',
+      ) as HTMLInputElement;
+      const selectSpy = jest.spyOn(input, 'select');
+      fireEvent.focus(input);
+      expect(selectSpy).toHaveBeenCalled();
+    });
+
     it('renders four text inputs (TP price, TP %, SL price, SL %)', () => {
       renderTpslModalContent();
 
@@ -164,6 +195,36 @@ describe('UpdateTPSLModalContent', () => {
       const percentInputs = screen.getAllByPlaceholderText('0');
       expect(priceInputs).toHaveLength(2);
       expect(percentInputs).toHaveLength(2);
+    });
+
+    it('keeps the TP percent value selected after focus switches to the raw value', async () => {
+      renderTpslModalContent();
+
+      const tpPercentInput = screen.getAllByPlaceholderText(
+        '0',
+      )[0] as HTMLInputElement;
+      fireEvent.focus(tpPercentInput);
+
+      await waitFor(() => {
+        expect(tpPercentInput.value.length).toBeGreaterThan(0);
+        expect(tpPercentInput.selectionStart).toBe(0);
+        expect(tpPercentInput.selectionEnd).toBe(tpPercentInput.value.length);
+      });
+    });
+
+    it('keeps the SL percent value selected after focus switches to the raw value', async () => {
+      renderTpslModalContent();
+
+      const slPercentInput = screen.getAllByPlaceholderText(
+        '0',
+      )[1] as HTMLInputElement;
+      fireEvent.focus(slPercentInput);
+
+      await waitFor(() => {
+        expect(slPercentInput.value.length).toBeGreaterThan(0);
+        expect(slPercentInput.selectionStart).toBe(0);
+        expect(slPercentInput.selectionEnd).toBe(slPercentInput.value.length);
+      });
     });
   });
 
@@ -786,6 +847,52 @@ describe('UpdateTPSLModalContent', () => {
       } finally {
         jest.useRealTimers();
       }
+    });
+  });
+
+  describe('keyboard submission', () => {
+    it('submits TP/SL update when Enter is pressed on the TP price input', async () => {
+      renderTpslModalContent();
+
+      const input = screen.getByTestId(
+        'perps-update-tpsl-tp-price-input',
+      ) as HTMLInputElement;
+
+      fireEvent.keyDown(input, { key: 'Enter' });
+
+      await waitFor(() => {
+        expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
+          'perpsUpdatePositionTPSL',
+          [
+            {
+              symbol: positionWithTPSL.symbol,
+              takeProfitPrice: '3200.00',
+              stopLossPrice: '2600.00',
+            },
+          ],
+        );
+      });
+    });
+
+    it('does not submit when Enter is pressed with invalid TP/SL', async () => {
+      renderTpslModalContent();
+
+      const tpInput = screen.getByTestId(
+        'perps-update-tpsl-tp-price-input',
+      ) as HTMLInputElement;
+      // For a long position, TP must be above entry (2850); set it below.
+      fireEvent.change(tpInput, { target: { value: '100' } });
+
+      fireEvent.keyDown(tpInput, { key: 'Enter' });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
+        'perpsUpdatePositionTPSL',
+        expect.anything(),
+      );
     });
   });
 

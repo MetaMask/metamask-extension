@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.31.0]
+
+### Added
+
+- Redesigned the critical error screen (#42421)
+- Added "Restore accounts" on the critical error screen when a backup exists (#40306)
+- Added passkey setup during onboarding and passkey-based unlock with password fallback (#42169)
+- Added passkey management in Security settings and improved changing the wallet password when passkey unlock is enabled (#42299)
+- Improved biometric setup and troubleshooting flows for passkey onboarding, unlock, and Settings experiences (#42443)
+- Improved passkey support when using Google Password Manager by completing passkey steps in a full extension tab instead of the side panel (#42459)
+- Added a redesigned DeFi referral consent UI behind an A/B test (#42449)
+- Hyperliquid DeFi referral flow now runs after permitting an additional account for the site from the account picker (#41996)
+- Added auto-focus to the amount input on MetaMask Pay deposit, withdraw, and mUSD conversion screens (#42204)
+- Improved Perps order entry with auto-focus, auto-select-on-focus, real-time minimum-order-size validation, and Enter-to-submit keyboard shortcut (#41949)
+- Pre-fetched popular tokens on the Bridge page so quotes load faster (#42239)
+
+### Changed
+
+- Added transitions to DeFi and NFT navigation (#42502)
+- Prevented toasts from overlapping the confirmation footer call-to-action (#42479)
+- Updated the description under the "Smart account requests from dapps" setting to clarify that MetaMask will only upgrade to its audited smart account (#42052)
+
+### Fixed
+
+- Fixed an issue where Blockaid warnings were not shown for some multichain API signature requests (#42276)
+- Fixed Sei Mainnet by replacing the deprecated Seitrace explorer with Seiscan (`https://seiscan.io`); existing installs are migrated via migration 207 (#42064)
+- Fixed a bug where the token asset details page showed Send for zero-balance tokens (#42451)
+- Fixed an alert that incorrectly warned about a previous signing or submitting transaction when the previous transaction was on a different chain or from a different account (#42194)
+- Fixed an issue where resetting or restoring a wallet from the side panel or popup could leave onboarding stuck or make Open wallet unresponsive (#42386)
+- Fixed UX for camera access and QR recovery flow in the side panel (#42363)
+- Fixed the candle period selection resetting to default when navigating away from the Perps market detail page (#42285)
+- Fixed Activity pagination to start from the last completed EVM transaction (#42344)
+- Fixed token detection so an ERC-20 asset ID (`erc20:0x…`) is still resolved when an upstream `toAssetId` call errors (#42054)
+- Fixed `eth_getTransactionByHash` to return `nonce: '0x0'` for gasless transactions so dapps that read the nonce no longer fail (#42119)
+- Fixed the Activity screen showing the wrong currency symbol (e.g. R$ instead of $) for MetaMask Pay, Perps deposit, and mUSD transaction amounts (#42151)
+- Fixed QR hardware accounts so they skip the "Connect QR" step when the account is already known (#42294)
+
 ## [13.30.0]
 
 ### Added
@@ -2267,7 +2304,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...HEAD
+[13.31.0]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...v13.31.0
 [13.30.0]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...v13.30.0
 [13.29.0]: https://github.com/MetaMask/metamask-extension/compare/v13.28.0...v13.29.0
 [13.28.0]: https://github.com/MetaMask/metamask-extension/compare/v13.27.0...v13.28.0

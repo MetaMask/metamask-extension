@@ -105,6 +105,7 @@ export type Preferences = {
   };
   useNativeCurrencyAsPrimaryCurrency: boolean;
   useSidePanelAsDefault?: boolean;
+  perpsSelectedCandlePeriod?: string;
 };
 
 // Omitting properties that already exist in the PreferencesState, as part of the preferences property.

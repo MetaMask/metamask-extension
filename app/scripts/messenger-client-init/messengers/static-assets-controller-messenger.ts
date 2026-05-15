@@ -1,32 +1,12 @@
-import type { ControllerGetStateAction } from '@metamask/base-controller';
-import { Messenger, MessengerEvents } from '@metamask/messenger';
-import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
-import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import {
-  TokensControllerState,
-  TokensControllerAddTokensAction,
-} from '@metamask/assets-controllers';
+  Messenger,
+  type MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 
 import { RootMessenger } from '../../lib/messenger';
-import { type StaticAssetsControllerMessenger as StaticAssetsControllerMessengerType } from '../../controllers/static-assets-controller';
-
-type TokensControllerGetStateAction = ControllerGetStateAction<
-  'TokensController',
-  TokensControllerState
->;
-
-type AllowedActions =
-  | AccountsControllerGetSelectedAccountAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | TokensControllerGetStateAction
-  | TokensControllerAddTokensAction;
-
-type AllowedEvents = MessengerEvents<StaticAssetsControllerMessengerType>;
-
-export type StaticAssetsControllerMessenger = ReturnType<
-  typeof getStaticAssetsControllerMessenger
->;
+import { type StaticAssetsControllerMessenger } from '../../controllers/static-assets-controller';
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -36,14 +16,12 @@ export type StaticAssetsControllerMessenger = ReturnType<
  * messenger.
  */
 export function getStaticAssetsControllerMessenger(
-  messenger: RootMessenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<
+    MessengerActions<StaticAssetsControllerMessenger>,
+    MessengerEvents<StaticAssetsControllerMessenger>
+  >,
 ) {
-  const controllerMessenger = new Messenger<
-    'StaticAssetsController',
-    AllowedActions,
-    AllowedEvents,
-    typeof messenger
-  >({
+  const controllerMessenger: StaticAssetsControllerMessenger = new Messenger({
     namespace: 'StaticAssetsController',
     parent: messenger,
   });

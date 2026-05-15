@@ -34,6 +34,7 @@ export function Toaster() {
       containerClassName="toast-container"
       containerStyle={{
         display: 'var(--toast-display, flex)',
+        bottom: 'var(--toaster-bottom-offset, 16px)',
       }}
       toastOptions={{
         className: 'w-[360px] max-w-[360px] border border-border-muted',

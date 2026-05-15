@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Provider } from '@metamask/network-controller';
-import { act, render } from '@testing-library/react';
+import { act, render, fireEvent } from '@testing-library/react';
 import {
   formatChainIdToCaip,
   QuoteStreamCompleteReason,
@@ -429,5 +429,170 @@ describe('PrepareBridgePage', () => {
     expect(getByTestId('bridge-no-quotes')).toHaveTextContent(
       'No quotes available. Try a smaller amount.',
     );
+  });
+
+  describe('token_security_type_destination coverage', () => {
+    const TOKEN_ADDRESS = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984';
+    const WALLET_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+    const makeStoreWithSecurityData = (
+      securityType: string | undefined,
+      extraBridgeSlice: Record<string, unknown> = {},
+    ) =>
+      createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: true },
+              [CHAIN_IDS.LINEA_MAINNET]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+            ],
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenInputValue: '1',
+          fromToken: {
+            address: TOKEN_ADDRESS,
+            decimals: 6,
+            symbol: 'USDC',
+            chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+            assetId: toAssetId(
+              TOKEN_ADDRESS,
+              formatChainIdToCaip(CHAIN_IDS.MAINNET),
+            ),
+          },
+          toToken: {
+            symbol: 'UNI',
+            address: TOKEN_ADDRESS,
+            decimals: 6,
+            chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+            assetId: toAssetId(
+              TOKEN_ADDRESS,
+              formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+            ),
+            ...(securityType === undefined
+              ? {}
+              : { securityData: { type: securityType } }),
+          },
+          ...extraBridgeSlice,
+        },
+        bridgeStateOverrides: {
+          quoteRequest: {
+            srcTokenAddress: TOKEN_ADDRESS,
+            destTokenAddress: TOKEN_ADDRESS,
+            // String chain IDs make isValidQuoteRequest return true, enabling the switch button
+            srcChainId: '0x1',
+            destChainId: '0xe708',
+            walletAddress: WALLET_ADDRESS,
+            slippage: 0.5,
+          },
+        },
+      });
+
+    const backgroundWithAllMethods = {
+      resetState: jest.fn(),
+      getStatePatches: jest.fn(),
+      updateBridgeQuoteRequestParams: jest.fn(),
+      trackUnifiedSwapBridgeEvent: jest.fn(),
+      setEnabledAllPopularNetworks: jest.fn(),
+      setActiveNetwork: jest.fn(),
+    } as never;
+
+    beforeEach(() => {
+      jest
+        .spyOn(reactRouterUtils, 'useSearchParams')
+        .mockReturnValue([{ get: () => null }] as never);
+    });
+
+    it('evaluates token_security_type_destination as the security type when toToken has securityData', async () => {
+      jest.useFakeTimers();
+      setBackgroundConnection(backgroundWithAllMethods);
+
+      const mockStore = makeStoreWithSecurityData('Malicious');
+
+      const { getByTestId } = renderWithProvider(
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
+        configureStore(mockStore),
+      );
+
+      // Advance past the 1-second isSwitchingTemporarilyDisabled debounce
+      await act(async () => {
+        jest.advanceTimersByTime(1100);
+      });
+
+      // Switch button is now enabled; click it to trigger lines 469-470
+      const switchButton = getByTestId('switch-tokens').closest('button');
+      expect(switchButton).not.toBeDisabled();
+      await act(async () => {
+        fireEvent.click(switchButton as HTMLElement);
+      });
+
+      jest.useRealTimers();
+    });
+
+    it('evaluates token_security_type_destination as null when toToken has no securityData', async () => {
+      jest.useFakeTimers();
+      setBackgroundConnection(backgroundWithAllMethods);
+
+      const mockStore = makeStoreWithSecurityData(undefined, {
+        wasTxDeclined: true,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
+        configureStore(mockStore),
+      );
+
+      // Advance past the 1-second isSwitchingTemporarilyDisabled debounce
+      await act(async () => {
+        jest.advanceTimersByTime(1100);
+      });
+
+      // Switch button click covers lines 469-470 null branch
+      const switchButton = getByTestId('switch-tokens').closest('button');
+      expect(switchButton).not.toBeDisabled();
+      await act(async () => {
+        fireEvent.click(switchButton as HTMLElement);
+      });
+
+      jest.useRealTimers();
+
+      // CTA button with wasTxDeclined=true shows "Get new quote", clicking it covers lines 609-610 null branch
+      const ctaButton = getByTestId('bridge-cta-button');
+      await act(async () => {
+        fireEvent.click(ctaButton);
+      });
+    });
+
+    it('evaluates token_security_type_destination as the security type in onFetchNewQuotes', async () => {
+      setBackgroundConnection(backgroundWithAllMethods);
+
+      const mockStore = makeStoreWithSecurityData('Warning', {
+        wasTxDeclined: true,
+      });
+
+      const { getByTestId } = renderWithProvider(
+        <HardwareWalletProvider>
+          <PrepareBridgePage onOpenSettings={jest.fn()} />
+        </HardwareWalletProvider>,
+        configureStore(mockStore),
+      );
+
+      // CTA button with wasTxDeclined=true shows "Get new quote", clicking it covers lines 609-610 non-null branch
+      const ctaButton = getByTestId('bridge-cta-button');
+      await act(async () => {
+        fireEvent.click(ctaButton);
+      });
+    });
   });
 });

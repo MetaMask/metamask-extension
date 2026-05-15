@@ -1,5 +1,5 @@
 import React from 'react';
-import ManageShieldPlan from '../../settings/transaction-shield-tab/manage-shield-plan/manage-shield-plan';
+import ManageShieldPlan from '../../shield/transaction-shield/manage-shield-plan/manage-shield-plan';
 
 const ManagePastPlanSubPage = () => {
   return <ManageShieldPlan isPastPlan />;

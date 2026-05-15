@@ -19,6 +19,8 @@ import {
   PREFERENCES_AND_DISPLAY_ROUTE,
   SECURITY_AND_PASSWORD_ROUTE,
   SECURITY_PASSWORD_CHANGE_V2_ROUTE,
+  SECURITY_REGISTER_PASSKEY_ROUTE,
+  SECURITY_TURN_OFF_PASSKEY_ROUTE,
   SETTINGS_V2_ROUTE,
   SNAP_SETTINGS_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
@@ -31,7 +33,7 @@ import {
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
-import { CLAIMS_TAB_KEYS } from '../settings/transaction-shield-tab/types';
+import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
 
 /**
  * Route definition for a Settings V2 page.
@@ -170,6 +172,20 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
       () => import('./security-and-password-tab/password-sub-page.tsx'),
     ),
   },
+  [SECURITY_REGISTER_PASSKEY_ROUTE]: {
+    labelKey: 'setUpPasskey',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/passkey-register-sub-page.tsx'),
+    ),
+  },
+  [SECURITY_TURN_OFF_PASSKEY_ROUTE]: {
+    labelKey: 'turnOffPasskey',
+    parentPath: SECURITY_AND_PASSWORD_ROUTE,
+    component: mmLazy(
+      () => import('./security-and-password-tab/passkey-turn-off-sub-page.tsx'),
+    ),
+  },
 
   // --- Privacy tab ---
   [PRIVACY_ROUTE]: {
@@ -202,9 +218,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
   [TRANSACTION_SHIELD_ROUTE]: {
     labelKey: 'shieldTx',
     parentPath: SETTINGS_V2_ROUTE,
-    component: mmLazy(
-      () => import('../settings/transaction-shield-tab/index.ts'),
-    ),
+    component: mmLazy(() => import('../shield/transaction-shield/index.ts')),
     isTab: true,
     iconName: IconName.ShieldLock,
   },
@@ -230,7 +244,7 @@ export const SETTINGS_V2_ROUTES: Record<string, SettingsV2RouteMeta> = {
     labelKey: 'shieldClaimsListTitle',
     parentPath: TRANSACTION_SHIELD_ROUTE,
     component: mmLazy(
-      () => import('../settings/transaction-shield-tab/claims-area/index.ts'),
+      () => import('../shield/transaction-shield/claims-area/index.ts'),
     ),
   },
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: {
