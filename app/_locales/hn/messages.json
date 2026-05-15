@@ -168,9 +168,6 @@
   "networks": {
     "message": "नेटवर्क"
   },
-  "newAccount": {
-    "message": "नया खाता"
-  },
   "newAccountNumberName": {
     "message": "नया खाता $1",
     "description": "Default name of next account to be created on create account screen"

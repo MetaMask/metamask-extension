@@ -22,7 +22,5 @@
       "skipAsyncImports": true
     }
   },
-  "allowedCircularGlob": [
-    "ui/components/app/**"
-  ]
+  "allowedCircularGlob": []
 }

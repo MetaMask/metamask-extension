@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Hesap ekleyin"
   },
-  "addAccountFromNetwork": {
-    "message": "$1 hesabı ekle",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Hesap veya cüzdan ekle"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask kullanarak elde ettiğiniz tokenları ekleyin"
   },
   "addAlias": {
     "message": "Diğer adı ekle"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Bitcoin hesabı"
   },
   "addBlockExplorer": {
     "message": "Bir blok gezgini ekle"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Token swap işlemi yapın"
   },
-  "addHardwareWalletLabel": {
-    "message": "Donanım cüzdanı"
-  },
   "addMemo": {
     "message": "Not ekleyin"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "Bir site ek ağ bilgileri öneriyor."
   },
-  "addNewAccount": {
-    "message": "Yeni bir Ethereum hesabı ekle"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Ethereum hesabı"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana hesabı"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tron hesabı"
-  },
   "addNft": {
     "message": "NFT ekleyin"
   },
   "addNfts": {
     "message": "NFT ekleyin"
-  },
-  "addNonEvmAccount": {
-    "message": "$1 hesap ekle",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "$1 ağını etkinleştirmek için bir $2 hesabı oluşturmanız gerekir.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC URL adresi ekle"
@@ -557,9 +524,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Hız yavaş"
-  },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Gaz sponsorluğu kullanılamıyor"
   },
   "alertReasonGasTooLow": {
     "message": "Gaz limiti düşük"
@@ -896,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "Ana sayfaya git"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Hesap Oluştur sayfasını açın"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "DeFi sayfasını açın"
@@ -1862,18 +1823,12 @@
   "connectAccounts": {
     "message": "Hesapları bağla"
   },
-  "connectAnAccountHeader": {
-    "message": "Bir hesabı bağla"
-  },
   "connectHardwareDevice": {
     "message": "Şuna bağlanın: $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Mevcut siteye manuel olarak bağlan"
-  },
-  "connectMoreAccounts": {
-    "message": "Daha fazla hesap bağla"
   },
   "connectSnap": {
     "message": "Şuna bağlanın: $1",
@@ -1891,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask bu siteye bağlı değil. Bir web3 sitesine bağlanmak için siteyi bulun ve bağlan düğmesine tıklayın."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 hesap bakiyenizi, adresinizi, aktivitenizi görebilir ve bağlı hesapları onaylamak için işlem önerebilir.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Bağlı siteler"
@@ -1927,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "$1 ağ bağlandı",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "$1 ile bağlandı",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Bağlanıyor"
@@ -1965,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "$1 getirme başarısız oldu, ağınızı kontrol edip tekrar deneyin.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Bir siteye bağlanmak için bağlan düğmesini seçin. MetaMask yalnızca web3 sitelerine bağlanabilir."
   },
   "connectionRequest": {
     "message": "Bağlantı talebi"
@@ -2059,9 +2003,6 @@
     "message": "Hesap ekleniyor...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Yeni bir hesap oluştur"
-  },
   "createPassword": {
     "message": "MetaMask şifresi"
   },
@@ -2086,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Hesap oluştur"
-  },
-  "createSolanaAccount": {
-    "message": "Solana hesabı oluştur"
   },
   "creatorAddress": {
     "message": "Oluşturucu adresi"
@@ -2371,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "takaslar sayfası"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "Takas İşlemleri/Ramp sayfası"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "işlem kalkanı sayfası"
   },
@@ -2517,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Bağlantıyı kesmek istediğinizden emin misiniz? Sitenin işlevselliğini kaybedebilirsiniz."
   },
-  "disconnectAllAccountsText": {
-    "message": "hesap"
-  },
   "disconnectAllDescriptionText": {
     "message": "Bu site ile bağlantınızı keserseniz bu siteyi tekrar kullanabilmek için hesaplarınızı ve ağlarınızı tekrar bağlamanız gerekecek."
   },
@@ -2534,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Tüm dapp'lerin bağlantısı başarıyla kesildi."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap'ler"
   },
   "disconnectMessage": {
     "message": "Bu işlem bu siteyle bağlantınızı kesecektir"
@@ -3565,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Hiçbir iki NFT kimliği birbiriyle aynı olmadığı için her NFT kimliği benzersiz bir tanımlayıcıdır. Yine, OpenSea'de bu sayı 'Detaylar' kısmının altında yer alır. Not alın veya panonuza kopyalayın."
   },
-  "importPrivateKey": {
-    "message": "Özel Anahtar"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesini İçe Aktar"
   },
@@ -3582,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "Tokenları içe aktaramadık. Lütfen daha sonra tekrar deneyin."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Bir cüzdanı veya hesabı içe aktar"
   },
   "importWalletSuccess": {
     "message": "Cüzdan $1 içe aktarıldı",
@@ -3931,9 +3854,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask kilitleniyor..."
-  },
-  "logOut": {
-    "message": "Oturumu kapat"
   },
   "loginErrorConnectButton": {
     "message": "Tekrar deneyin"
@@ -4697,9 +4617,6 @@
   },
   "new": {
     "message": "Yeni!"
-  },
-  "newAccount": {
-    "message": "Yeni hesap"
   },
   "newAccountIconMessage": {
     "message": "Hesaplarınızı daha kolay ayırt edebilmeniz için hesap simgelerini yeniledik. $1 > $2 > $3 kısmında stili değiştirebilirsiniz.",
@@ -6958,14 +6875,6 @@
   "requestingFor": {
     "message": "Talep:"
   },
-  "requestingForAccount": {
-    "message": "$1 için talep ediliyor",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "$1 için talep ediliyor",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Gerekli"
   },
@@ -7224,10 +7133,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Gizli Kurtarma İfadesi $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Cüzdanı güvenli hale getir"
@@ -8467,12 +8372,6 @@
     "message": "Daha fazla destek için $1 oluşturucuları ile iletişime geçin.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "Bu site bir Solana hesabı talep ediyor."
-  },
-  "solanaAccountRequired": {
-    "message": "Bu siteye bağlanmak için bir Solana hesabı gereklidir."
-  },
   "someNetworks": {
     "message": "$1 ağ"
   },
@@ -9683,9 +9582,6 @@
   },
   "urlErrorMsg": {
     "message": "URL adresleri için uygun HTTP/HTTPS ön eki gerekir."
-  },
-  "urlUnknown": {
-    "message": "Bilinmeyen URL"
   },
   "use4ByteResolution": {
     "message": "Akıllı sözleşmeleri çözümle"
