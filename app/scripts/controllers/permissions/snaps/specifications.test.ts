@@ -15,7 +15,10 @@ jest.mock(
     ),
     isAssetsUnifyStateFeatureEnabled: jest.fn(
       (
-        featureFlag: { enabled: boolean; featureVersion: string } | undefined | null,
+        featureFlag:
+          | { enabled: boolean; featureVersion: string }
+          | undefined
+          | null,
         featureVersion: string,
       ) =>
         Boolean(featureFlag?.enabled) &&

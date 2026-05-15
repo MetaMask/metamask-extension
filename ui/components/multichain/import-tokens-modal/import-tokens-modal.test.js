@@ -26,16 +26,19 @@ import { ImportTokensModal } from '.';
 // (test/helpers/setup-helper.js sets process.env.IN_TEST=true for all unit tests,
 // so using jest.requireActual here would make the function always return true,
 // breaking tests that exercise the disabled-flag path).
-jest.mock('../../../../shared/lib/assets-unify-state/remote-feature-flag', () => ({
-  ...jest.requireActual(
-    '../../../../shared/lib/assets-unify-state/remote-feature-flag',
-  ),
-  isAssetsUnifyStateFeatureEnabled: jest.fn(
-    (featureFlag, featureVersion) =>
-      Boolean(featureFlag?.enabled) &&
-      featureFlag?.featureVersion === featureVersion,
-  ),
-}));
+jest.mock(
+  '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/assets-unify-state/remote-feature-flag',
+    ),
+    isAssetsUnifyStateFeatureEnabled: jest.fn(
+      (featureFlag, featureVersion) =>
+        Boolean(featureFlag?.enabled) &&
+        featureFlag?.featureVersion === featureVersion,
+    ),
+  }),
+);
 
 jest.mock('../../../hooks/bridge/useTokensWithFiltering');
 jest.mock('@metamask/bridge-controller');
