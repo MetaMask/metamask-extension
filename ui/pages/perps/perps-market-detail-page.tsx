@@ -89,7 +89,6 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
   formatSignedChangePercent,
-  getPositionDirection,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -1493,7 +1492,6 @@ const PerpsMarketDetailPage: React.FC = () => {
                   const liqDistance = getLiquidationDistancePercent(
                     currentPrice,
                     position.liquidationPrice,
-                    getPositionDirection(position.size),
                   );
                   if (liqDistance === null) {
                     return null;

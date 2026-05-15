@@ -44,20 +44,18 @@ export function formatPerpsLiquidationPrice(
 }
 
 /**
- * Compute the distance between the current price and the liquidation price
- * as a percentage of the current price. Direction-aware per
- * Hyperliquid conventions: for a long, liquidation sits below the current
- * price; for a short, it sits above. Returns null when either input is
- * unusable.
+ * Compute the absolute distance between the current price and the
+ * liquidation price as a percentage of the current price. Matches mobile
+ * (`Math.abs(currentPrice - liquidationPrice) / currentPrice * 100`) so
+ * crossed/already-liquidated edges never render negative percentages.
+ * Returns null when either input is unusable.
  *
  * @param currentPrice - Live mark / market price.
  * @param liquidationPrice - Position liquidation price (raw or parsed).
- * @param side - 'long' or 'short'.
  */
 export function getLiquidationDistancePercent(
   currentPrice: number | null | undefined,
   liquidationPrice: string | number | null | undefined,
-  side: 'long' | 'short',
 ): number | null {
   if (
     typeof currentPrice !== 'number' ||
@@ -70,11 +68,7 @@ export function getLiquidationDistancePercent(
     return null;
   }
   const liq = parsePerpsDisplayPrice(liquidationPrice as string | number);
-  const distance =
-    side === 'short'
-      ? ((liq - currentPrice) / currentPrice) * 100
-      : ((currentPrice - liq) / currentPrice) * 100;
-  return distance;
+  return (Math.abs(currentPrice - liq) / currentPrice) * 100;
 }
 
 /**

@@ -65,7 +65,6 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   const liquidationDistance = getLiquidationDistancePercent(
     currentPrice,
     position.liquidationPrice,
-    direction,
   );
 
   const handleClick = useCallback(() => {
