@@ -7,12 +7,11 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { Text, TextColor, TextVariant } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  Display,
-  FlexDirection,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
-import {
   Box,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { BlockSize } from '../../../helpers/constants/design-system';
+import {
   Button,
   ButtonSize,
   ButtonVariant,
@@ -176,8 +175,7 @@ const MultichainPrivateKeyList = ({
           ) : null}
         </Box>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
+          flexDirection={BoxFlexDirection.Row}
           gap={4}
           paddingBottom={2}
           paddingTop={8}
@@ -256,8 +254,7 @@ const MultichainPrivateKeyList = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-private-keyring-list"
     >
       {reveal ? renderedRows : renderedPasswordInput}

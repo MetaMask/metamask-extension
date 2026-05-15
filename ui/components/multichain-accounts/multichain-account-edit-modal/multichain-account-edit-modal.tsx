@@ -3,6 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId } from '@metamask/account-api';
 import {
   Box,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   ButtonSecondary,
   FormTextField,
   Modal,
@@ -14,8 +17,6 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setAccountGroupName } from '../../../store/actions';
 import {
-  Display,
-  FlexDirection,
   FontWeight,
 } from '../../../helpers/constants/design-system';
 import { getMultichainAccountGroupById } from '../../../selectors/multichain-accounts/account-tree';
@@ -75,8 +76,7 @@ export const MultichainAccountEditModal = ({
         </ModalHeader>
         <ModalBody>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            flexDirection={BoxFlexDirection.Column}
             gap={4}
           >
             <Box>

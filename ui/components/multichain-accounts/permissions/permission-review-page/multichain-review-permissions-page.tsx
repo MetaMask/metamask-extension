@@ -7,12 +7,6 @@ import {
   getCaipAccountIdsFromCaip25CaveatValue,
 } from '@metamask/chain-agnostic-permission';
 import log from 'loglevel';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getAllNetworkConfigurationsByCaipChainId } from '../../../../../shared/lib/selectors/networks';
 import {
@@ -30,9 +24,13 @@ import {
   setPermittedChains,
 } from '../../../../store/actions';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   AvatarFavicon,
   AvatarFaviconSize,
-  Box,
   Button,
   ButtonPrimary,
   ButtonPrimarySize,
@@ -414,11 +412,10 @@ export const MultichainReviewPermissions = () => {
           <>
             {existingConnectedCaipAccountIds.length > 0 ? (
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                width={BlockSize.Full}
+                flexDirection={BoxFlexDirection.Column}
+                className="w-full"
                 gap={2}
-                alignItems={AlignItems.center}
+                alignItems={BoxAlignItems.Center}
               >
                 {showAccountToast ? (
                   <ToastContainer>

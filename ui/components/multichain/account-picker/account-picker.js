@@ -5,6 +5,10 @@ import { AvatarAccountSize } from '@metamask/design-system-react';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   ButtonBase,
   ButtonBaseSize,
   IconName,
@@ -54,9 +58,8 @@ export const AccountPicker = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
       className="w-full"
     >
       <ButtonBase
@@ -87,11 +90,10 @@ export const AccountPicker = ({
         style={AccountMenuStyle}
       >
         <Box
-          display={Display.Flex}
           flexDirection={
-            showAvatarAccount ? FlexDirection.Row : FlexDirection.Column
+            showAvatarAccount ? BoxFlexDirection.Row : BoxFlexDirection.Column
           }
-          alignItems={AlignItems.center}
+          alignItems={BoxAlignItems.Center}
           gap={showAvatarAccount ? 2 : 0}
           className="min-w-0"
         >

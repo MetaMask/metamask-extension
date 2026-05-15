@@ -1,19 +1,22 @@
 import React, { useCallback, useContext, useMemo, useRef } from 'react';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon, IconName, TextColor } from '@metamask/design-system-react';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxJustifyContent,
+  Icon,
+  IconName,
+  TextColor,
+} from '@metamask/design-system-react';
+import {
   ModalFocus,
   Popover,
   PopoverPosition,
 } from '../../component-library';
 import {
-  AlignItems,
-  BackgroundColor,
   BorderRadius,
-  Display,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
   MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE,
@@ -247,15 +250,15 @@ export const MultichainAccountMenu = ({
   return (
     <>
       <Box
-        className="multichain-account-cell-popover-menu-button"
+        className="multichain-account-cell-popover-menu-button rounded-lg"
         ref={popoverRef}
-        display={Display.Flex}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.center}
+        alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Center}
         backgroundColor={
-          buttonBackgroundColor || BackgroundColor.backgroundMuted
+          buttonBackgroundColor
+            ? (buttonBackgroundColor as unknown as BoxBackgroundColor)
+            : BoxBackgroundColor.BackgroundMuted
         }
-        borderRadius={BorderRadius.LG}
         padding={1}
         onClick={togglePopover}
       >
