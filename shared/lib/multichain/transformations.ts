@@ -114,15 +114,9 @@ export function normalizeTransaction(
       vt.contractAddress,
   );
 
-  const hasOutgoingValueTransfer =
-    transaction.valueTransfers?.some(
-      (vt) => vt.from?.toLowerCase() === address.toLowerCase(),
-    ) ?? false;
-
   const isIncomingTokenTransfer =
     valueTransfer?.to?.toLowerCase() === address.toLowerCase() &&
-    from.toLowerCase() !== address.toLowerCase() &&
-    !hasOutgoingValueTransfer;
+    from.toLowerCase() !== address.toLowerCase();
 
   const amount = valueTransfer?.amount;
   const contractAddress = valueTransfer?.contractAddress as string;
@@ -204,6 +198,9 @@ export function selectTransactions({
         // Filter out transactions not involving the current address
         const rawFrom = raw.from?.toLowerCase();
         const rawTo = raw.to?.toLowerCase();
+        if (rawFrom !== addr && rawTo !== addr) {
+          return result;
+        }
 
         // Filter out excluded transaction hashes (e.g. internal prerequisite transactions)
         if (raw.hash && excludedTxHashes?.has(raw.hash.toLowerCase())) {
