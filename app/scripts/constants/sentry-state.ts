@@ -46,6 +46,7 @@ export const SENTRY_BACKGROUND_STATE: SentryBackgroundControllerMasks = {
   },
   AuthenticationController: {
     isSignedIn: false,
+    needsProfilePairing: false,
     srpSessionData: false,
   },
   NetworkOrderController: {

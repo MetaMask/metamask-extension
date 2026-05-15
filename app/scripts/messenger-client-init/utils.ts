@@ -12,6 +12,11 @@ import { MESSENGER_FACTORIES } from './messengers';
 
 const log = createProjectLogger('messenger-client-init');
 
+/** A function tagged with the controller that owns it. */
+export type TaggedApiMethod = ((...args: unknown[]) => unknown) & {
+  _controllerName?: string;
+};
+
 /** Result of initializing messenger clients. */
 export type InitMessengerClientsResult = {
   /** All API methods exposed by the messenger clients. */
@@ -149,6 +154,12 @@ export function initMessengerClients({
     } = result;
 
     const api = result.api ?? {};
+
+    for (const fn of Object.values(api)) {
+      if (typeof fn === 'function') {
+        (fn as TaggedApiMethod)._controllerName = messengerClientName;
+      }
+    }
 
     const persistedStateKey =
       persistedStateKeyRaw === null

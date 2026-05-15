@@ -2349,6 +2349,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
+                canonicalProfileId: 'profileId',
                 metaMetricsId: 'testid',
               },
             },
@@ -2433,6 +2434,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
+                canonicalProfileId: 'profileId',
                 metaMetricsId: 'testid',
               },
             },
@@ -2497,6 +2499,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
+                canonicalProfileId: 'profileId',
                 metaMetricsId: 'testid',
               },
             },
