@@ -187,21 +187,11 @@
   "addAccount": {
     "message": "Cuir cuntas leis"
   },
-  "addAccountFromNetwork": {
-    "message": "Cuir cuntas $1 leis",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Cuir cuntas nó sparán leis"
-  },
   "addAcquiredTokens": {
     "message": "Cuir na comharthaí leis atá faighte agat ag baint úsáide as MetaMask"
   },
   "addAlias": {
     "message": "Cuir leasainm leis"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Cuntas Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Cuir taiscéalaí bloc leis"
@@ -243,9 +233,6 @@
   "addFriendsAndAddresses": {
     "message": "Cuir cairde agus seoltaí muiníneacha leis"
   },
-  "addHardwareWalletLabel": {
-    "message": "Sparán crua-earraí"
-  },
   "addMemo": {
     "message": "Cuir meamram leis"
   },
@@ -256,28 +243,11 @@
     "message": "Cuir $1 leis",
     "description": "$1 represents network name"
   },
-  "addNewAccount": {
-    "message": "Cuir cuntas Ethereum nua leis"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Cuntas Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Cuntas Solana"
-  },
   "addNft": {
     "message": "Cuir NFT leis"
   },
   "addNfts": {
     "message": "Cuir NFTanna leis"
-  },
-  "addNonEvmAccount": {
-    "message": "Cuir cuntas $1 leis",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Chun an líonra $1 a chumasú, ní mór duit cuntas $2 a chruthú.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Cuir URL RPC leis"
@@ -1286,14 +1256,8 @@
   "connectAccounts": {
     "message": "Ceangail cuntais"
   },
-  "connectAnAccountHeader": {
-    "message": "Ceangail cuntas"
-  },
   "connectManually": {
     "message": "Ceangail de láimh leis an suíomh reatha"
-  },
-  "connectMoreAccounts": {
-    "message": "Ceangail níos mó cuntas"
   },
   "connectSnap": {
     "message": "Ceangail $1",
@@ -1311,10 +1275,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "Níl MetaMask ceangailte leis an suíomh seo. Chun ceangal le suíomh gréasáin, aimsigh agus cliceáil an cnaipe ceangail."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "Is féidir le $1 iarmhéid an chuntais, an seoladh, an ghníomhaíocht a fheiceáil, agus idirbhearta a mholadh le ceadú do chuntais nasctha.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Suíomhanna ceangailte"
@@ -1347,10 +1307,6 @@
   "connectedWithNetwork": {
     "message": "$1 líonra ceangailte",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Ceangailte le $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Ag ceangal"
@@ -1385,9 +1341,6 @@
   "connectionFailedDescription": {
     "message": "Theip ar $1 a fháil, seiceáil do líonra agus déan iarracht arís.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Chun ceangal le suíomh, roghnaigh an cnaipe ceangail. Ní féidir le MetaMask ceangal ach le suíomhanna gréasáin 3."
   },
   "connectionRequest": {
     "message": "Iarratas ceangail"
@@ -1464,9 +1417,6 @@
     "message": "Ag cruthú cuntais...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Cruthaigh cuntas nua"
-  },
   "createPassword": {
     "message": "Pasfhocal MetaMask"
   },
@@ -1491,9 +1441,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Cruthaigh cuntas"
-  },
-  "createSolanaAccount": {
-    "message": "Cruthaigh cuntas Solana"
   },
   "creatorAddress": {
     "message": "Seoladh an chruthaitheora"
@@ -1688,9 +1635,6 @@
   "deepLink_theSwapsPage": {
     "message": "an leathanach malartuithe"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "an leathanach Malartuithe/Rampaí"
-  },
   "defaultRpcUrl": {
     "message": "URL RPC réamhshocraithe"
   },
@@ -1800,14 +1744,8 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "An bhfuil tú cinnte gur mian leat dícheangal? D’fhéadfá feidhmiúlacht an tsuímh a chailleadh."
   },
-  "disconnectAllAccountsText": {
-    "message": "cuntais"
-  },
   "disconnectAllDescriptionText": {
     "message": "Má dhícheanglaíonn tú ón suíomh seo, beidh ort do chuntais agus do líonraí a athcheangal le go mbeidh tú in ann an suíomh seo a úsáid arís."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snapanna"
   },
   "disconnectMessage": {
     "message": "Déanfaidh sé seo tú a dhícheangal ón suíomh seo"
@@ -2586,9 +2524,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Is aitheantóir uathúil é aitheantas NFT ós rud é nach bhfuil dhá NFT mar a chéile. Arís, ar OpenSea tá an uimhir seo faoi 'Sonraí'. Déan nóta de, nó cóipeáil í chuig do ghearrthaisce."
   },
-  "importPrivateKey": {
-    "message": "Eochair Phríobháideach"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Iompórtáil Frása Rúnda Aisghabhála"
   },
@@ -2603,9 +2538,6 @@
   },
   "importTokensError": {
     "message": "Níorbh fhéidir linn na comharthaí a allmhairiú. Déan iarracht arís ar ball."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Sparán nó cuntas a allmhairiú"
   },
   "importWalletSuccess": {
     "message": "Frása Rúnda Aisghabhála $1 allmhairithe",
@@ -3391,9 +3323,6 @@
   },
   "new": {
     "message": "Nua!"
-  },
-  "newAccount": {
-    "message": "Cuntas nua"
   },
   "newAccountIconMessage": {
     "message": "Tá deilbhíní cuntais athnuachana againn chun cabhrú leat do chuntais a aithint óna chéile níos éasca. Is féidir leat an stíl a athrú i $1 > $2 > $3.",
@@ -4585,14 +4514,6 @@
   "requestingFor": {
     "message": "Ag iarraidh"
   },
-  "requestingForAccount": {
-    "message": "Ag iarraidh $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Ag iarraidh $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Riachtanach"
   },
@@ -4740,10 +4661,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Frása Rúnda Aisghabhála"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Frása Rúnda Aisghabhála $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Sparán slán"
@@ -5481,12 +5398,6 @@
   "snapsUIError": {
     "message": "Téigh i dteagmháil le cruthaitheoirí $1 le haghaidh tuilleadh tacaíochta.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Tá an suíomh seo ag iarraidh cuntas Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Tá cuntas Solana ag teastáil chun ceangal leis an suíomh seo."
   },
   "someNetworks": {
     "message": "Líonraí $1"

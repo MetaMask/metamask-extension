@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "계정 추가"
   },
-  "addAccountFromNetwork": {
-    "message": "$1 계정 추가",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "계정 또는 지갑 추가"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
   },
   "addAlias": {
     "message": "별칭 추가"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "비트코인 계정"
   },
   "addBlockExplorer": {
     "message": "블록 탐색기 추가"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "토큰 스왑"
   },
-  "addHardwareWalletLabel": {
-    "message": "하드웨어 지갑"
-  },
   "addMemo": {
     "message": "메모 추가"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "사이트가 추가 네트워크 정보를 요구하고 있습니다."
   },
-  "addNewAccount": {
-    "message": "새 이더리움 계정 추가"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "이더리움 계정"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "솔라나 계정"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tron 계정"
-  },
   "addNft": {
     "message": "NFT 추가"
   },
   "addNfts": {
     "message": "NFT 추가"
-  },
-  "addNonEvmAccount": {
-    "message": "$1 계정 추가",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "$1 네트워크를 활성화하려면 $2 계정을 만들어야 합니다.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC URL 추가"
@@ -893,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "홈페이지로 가기"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "계정 생성 페이지 열기"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "디파이 페이지 열기"
@@ -1859,18 +1823,12 @@
   "connectAccounts": {
     "message": "계정 연결"
   },
-  "connectAnAccountHeader": {
-    "message": "계정 연결"
-  },
   "connectHardwareDevice": {
     "message": "$1 연결",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "현재 사이트에 직접 연결"
-  },
-  "connectMoreAccounts": {
-    "message": "더 많은 계정 연결"
   },
   "connectSnap": {
     "message": "$1 연결",
@@ -1888,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask가 이 사이트에 연결되어 있지 않습니다. web3 사이트를 연결하려면 사이트에서 연결 버튼을 찾아 클릭하세요."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1은(는) 계정 잔액, 주소, 활동을 확인하고 연결된 계정에 대해 승인할 거래를 제안할 수 있습니다.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "연결된 사이트"
@@ -1924,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "$1 네트워크 연결됨",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "$1 계정과 연결됨",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "연결 중"
@@ -1962,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "$1 불러오기에 실패했습니다. 네트워크를 확인하고 다시 시도하세요.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "사이트에 연결하려면 연결 버튼을 선택하세요. MetaMask는 웹3 사이트에만 연결할 수 있습니다."
   },
   "connectionRequest": {
     "message": "연결 요청"
@@ -2056,9 +2003,6 @@
     "message": "계정 추가 중...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "새 계정 만들기"
-  },
   "createPassword": {
     "message": "비밀번호 생성"
   },
@@ -2083,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "계정 만들기"
-  },
-  "createSolanaAccount": {
-    "message": "솔라나 계정 만들기"
   },
   "creatorAddress": {
     "message": "크리에이터 주소"
@@ -2368,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "스왑 페이지"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "스왑/램프 페이지"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "트랜잭션 보호 페이지"
   },
@@ -2514,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "연결을 해제하시겠습니까? 사이트 기능을 이용하지 못하게 될 수도 있습니다."
   },
-  "disconnectAllAccountsText": {
-    "message": "계정"
-  },
   "disconnectAllDescriptionText": {
     "message": "이 사이트에서 연결을 해제하면, 이 사이트를 다시 사용하기 위해 계정과 네트워크를 다시 연결해야 합니다."
   },
@@ -2531,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "모든 디앱의 연결이 성공적으로 해제되었습니다."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "이렇게 하면 이 사이트와의 연결이 해제됩니다"
@@ -3562,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT의 ID는 고유한 식별자이므로 동일한 NFT는 존재하지 않습니다. 다시 말하지만, OpenSea에서 이 번호는 '세부 정보'에서 찾아볼 수 있습니다. 이를 기록하거나 클립보드에 복사해 두세요."
   },
-  "importPrivateKey": {
-    "message": "개인 키"
-  },
   "importSecretRecoveryPhrase": {
     "message": "비밀복구구문 가져오기"
   },
@@ -3579,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "토큰을 가져올 수 없습니다. 나중에 다시 시도하세요."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "지갑 또는 계정 가져오기"
   },
   "importWalletSuccess": {
     "message": "지갑 $1 가져오기 완료",
@@ -4691,9 +4617,6 @@
   },
   "new": {
     "message": "신규!"
-  },
-  "newAccount": {
-    "message": "새 계정"
   },
   "newAccountIconMessage": {
     "message": "계정 아이콘을 새롭게 변경해 계정을 더 쉽게 구별할 수 있도록 했습니다. $1 > $2 > $3에서 스타일을 변경할 수 있습니다.",
@@ -6952,14 +6875,6 @@
   "requestingFor": {
     "message": "요청 중:"
   },
-  "requestingForAccount": {
-    "message": "$1 요청 중",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "$1 요청 중",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "필수"
   },
@@ -7218,10 +7133,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "비밀복구구문"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "비밀복구구문 $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "지갑 보호"
@@ -8461,12 +8372,6 @@
     "message": "$1 작성자에게 연락하여 향후 지원을 요청하세요.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "이 사이트에서는 솔라나 계정이 필요합니다."
-  },
-  "solanaAccountRequired": {
-    "message": "이 사이트에 연결하려면 솔라나 계정이 필요합니다."
-  },
   "someNetworks": {
     "message": "네트워크 $1개"
   },
@@ -9677,9 +9582,6 @@
   },
   "urlErrorMsg": {
     "message": "URI에는 적절한 HTTP/HTTPS 접두사가 필요합니다."
-  },
-  "urlUnknown": {
-    "message": "URL 알 수 없음"
   },
   "use4ByteResolution": {
     "message": "스마트 계약 디코딩"
