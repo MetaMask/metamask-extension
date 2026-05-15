@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -126,6 +132,93 @@ export const TokenManagementPage = () => {
       next.delete(key);
       return next;
     });
+  }, []);
+
+  /**
+   * Tokens the user has toggled OFF in this session but whose hide we
+   * intentionally defer: the row stays visible (showing the toggle as OFF)
+   * and the user can still flip it back ON to restore. The actual hide
+   * dispatch is flushed when the page unmounts, so leaving the screen is
+   * the implicit "commit".
+   *
+   * Keyed by the lowercased CAIP asset id so the same key works whether
+   * the toggle is hit from the visible-list view or from a search result.
+   */
+  type StagedHidePayload =
+    | {
+        kind: 'evm';
+        hexChainId: Hex;
+        address: string;
+        caipAssetId?: CaipAssetType;
+      }
+    | {
+        kind: 'multichain';
+        assetId: CaipAssetType;
+        accountId: string;
+      };
+
+  const [stagedHideKeys, setStagedHideKeys] = useState<ReadonlySet<string>>(
+    () => new Set<string>(),
+  );
+  const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
+
+  const stageHide = useCallback(
+    (key: string, payload: StagedHidePayload) => {
+      stagedHidesRef.current.set(key, payload);
+      setStagedHideKeys(new Set(stagedHidesRef.current.keys()));
+    },
+    [],
+  );
+
+  const unstageHide = useCallback((key: string) => {
+    if (!stagedHidesRef.current.has(key)) {
+      return false;
+    }
+    stagedHidesRef.current.delete(key);
+    setStagedHideKeys(new Set(stagedHidesRef.current.keys()));
+    return true;
+  }, []);
+
+  const getStagedHideKey = useCallback(
+    (token: ManagedAsset): string | null => {
+      if (isEvmChainId(token.chainId as Hex | CaipChainId)) {
+        if (!('address' in token) || !token.address) {
+          return null;
+        }
+        const caip = toAssetId(token.address as Hex, token.chainId as Hex);
+        return caip ? caip.toLowerCase() : null;
+      }
+      return token.assetId ? String(token.assetId).toLowerCase() : null;
+    },
+    [],
+  );
+
+  /**
+   * Flushes every staged hide to the underlying controllers. Stored behind
+   * a ref + late-binding effect so each invocation picks up the most recent
+   * `dispatch` / `getNetworkMeta` / flag values rather than stale closures.
+   */
+  const commitStagedHidesRef = useRef<() => Promise<void>>(
+    async () => undefined,
+  );
+
+  // Tracks whether the component is still mounted so the commit path can
+  // skip `setStagedHideKeys` during unmount cleanup (which would otherwise
+  // log a "state update on unmounted component" warning in development).
+  const isMountedRef = useRef(true);
+
+  /**
+   * Imperative "flush the staged hides now" — wired to every non-toggle
+   * interaction that we treat as the user having moved on (search input,
+   * network filter, add-custom CTA, navigation away). Re-toggling the same
+   * staged token does NOT commit; instead it unstages, which is what
+   * powers the in-page restore behavior.
+   */
+  const commitStagedHides = useCallback(() => {
+    if (stagedHidesRef.current.size === 0) {
+      return;
+    }
+    commitStagedHidesRef.current().catch(() => undefined);
   }, []);
 
   const isAssetsUnifiedStateInBuild = useMemo(
@@ -373,12 +466,27 @@ export const TokenManagementPage = () => {
   }, [chainToHex, importedEvmTokensByChain, visibleTokens]);
 
   const handleOpenNetworkFilter = useCallback(() => {
+    commitStagedHides();
     dispatch(showModal({ name: 'NETWORK_MANAGER' }));
-  }, [dispatch]);
+  }, [commitStagedHides, dispatch]);
 
   const handleAddCustomToken = useCallback(() => {
+    commitStagedHides();
     navigate(CUSTOM_TOKEN_IMPORT_ROUTE);
-  }, [navigate]);
+  }, [commitStagedHides, navigate]);
+
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      commitStagedHides();
+      setSearchQuery(event.target.value);
+    },
+    [commitStagedHides],
+  );
+
+  const handleSearchClear = useCallback(() => {
+    commitStagedHides();
+    setSearchQuery('');
+  }, [commitStagedHides]);
 
   const networkFilterLabel = useMemo(() => {
     const enabledCount = enabledChainIds.length;
@@ -408,84 +516,138 @@ export const TokenManagementPage = () => {
     return `${token.chainId}:${address.toLowerCase()}`;
   }, []);
 
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    commitStagedHidesRef.current = async () => {
+      if (stagedHidesRef.current.size === 0) {
+        return;
+      }
+      const entries = Array.from(stagedHidesRef.current.values());
+      stagedHidesRef.current.clear();
+      if (isMountedRef.current) {
+        setStagedHideKeys(new Set());
+      }
+
+      await Promise.allSettled(
+        entries.map(async (entry) => {
+          if (entry.kind === 'evm') {
+            const { networkClientId } = getNetworkMeta(entry.hexChainId);
+            if (!networkClientId) {
+              return;
+            }
+            await dispatch(
+              ignoreTokensAction({
+                tokensToIgnore: [entry.address],
+                dontShowLoadingIndicator: true,
+                networkClientId,
+              }),
+            );
+            if (isAssetsUnifiedStateInBuild && entry.caipAssetId) {
+              await dispatch(hideAsset(entry.caipAssetId));
+            }
+            return;
+          }
+          await dispatch(
+            multichainIgnoreAssets([entry.assetId], entry.accountId),
+          );
+          if (isAssetsUnifiedStateInBuild) {
+            await dispatch(hideAsset(entry.assetId));
+          }
+        }),
+      );
+    };
+  });
+
+  useEffect(() => {
+    return () => {
+      commitStagedHidesRef.current().catch(() => undefined);
+    };
+  }, []);
+
+  /**
+   * Visible-list toggle. Hides are staged in local state so the row stays
+   * visible (and restorable) until the user leaves the page. Re-toggling a
+   * staged-off row simply unstages it — no dispatch ever fires for that
+   * intermediate state.
+   */
   const handleToggle = useCallback(
-    async (token: ManagedAsset, nextValue: boolean) => {
+    (token: ManagedAsset, nextValue: boolean) => {
       const isNativeToken = Boolean(token.isNative);
+      if (isNativeToken) {
+        return;
+      }
+
       const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
       const canIgnoreEvmToken = isEvmToken && 'address' in token;
       const canIgnoreMultichainToken =
         !isEvmToken && Boolean(token.assetId) && Boolean(token.accountId);
-
-      if (
-        nextValue ||
-        isNativeToken ||
-        (!canIgnoreEvmToken && !canIgnoreMultichainToken)
-      ) {
+      if (!canIgnoreEvmToken && !canIgnoreMultichainToken) {
         return;
       }
 
-      const key = getTokenKey(token);
-      addPendingKey(key);
-      try {
-        if (canIgnoreEvmToken) {
-          const { networkClientId } = getNetworkMeta(token.chainId as Hex);
-          if (!networkClientId) {
-            return;
-          }
-          await dispatch(
-            ignoreTokensAction({
-              tokensToIgnore: [token.address],
-              dontShowLoadingIndicator: true,
-              networkClientId,
-            }),
-          );
-          if (isAssetsUnifiedStateInBuild) {
-            const caipAssetId = toAssetId(
-              token.address as Hex,
-              token.chainId as Hex,
-            );
-            if (caipAssetId) {
-              await dispatch(hideAsset(caipAssetId));
-            }
-          }
+      const stagedKey = getStagedHideKey(token);
+      if (!stagedKey) {
+        return;
+      }
+
+      if (nextValue) {
+        unstageHide(stagedKey);
+        return;
+      }
+
+      if (canIgnoreEvmToken) {
+        const { networkClientId } = getNetworkMeta(token.chainId as Hex);
+        if (!networkClientId) {
           return;
         }
-
-        await dispatch(
-          multichainIgnoreAssets([token.assetId], token.accountId),
+        const caipAssetId = toAssetId(
+          token.address as Hex,
+          token.chainId as Hex,
         );
-        if (isAssetsUnifiedStateInBuild) {
-          await dispatch(hideAsset(token.assetId as CaipAssetType));
-        }
-      } finally {
-        removePendingKey(key);
+        stageHide(stagedKey, {
+          kind: 'evm',
+          hexChainId: token.chainId as Hex,
+          address: token.address,
+          caipAssetId: caipAssetId ?? undefined,
+        });
+        return;
       }
+
+      stageHide(stagedKey, {
+        kind: 'multichain',
+        assetId: token.assetId as CaipAssetType,
+        accountId: token.accountId,
+      });
     },
-    [
-      addPendingKey,
-      dispatch,
-      getNetworkMeta,
-      getTokenKey,
-      isAssetsUnifiedStateInBuild,
-      removePendingKey,
-    ],
+    [getNetworkMeta, getStagedHideKey, stageHide, unstageHide],
   );
 
   /**
-   * Search-result-specific toggle. Mirrors the mobile import flow
-   * (`metamask-mobile#26108`):
+   * Search-result-specific toggle. Imports (toggle ON for a never-imported
+   * result) still dispatch immediately so the user sees the asset land in
+   * the list. Hides (toggle OFF for an already-imported result) are staged
+   * just like the visible-list toggle, so flipping the row back ON before
+   * leaving the page restores it without ever dispatching a hide.
    *
-   * - EVM result, toggle ON → `addImportedTokens` + `addCustomAsset`.
-   * - EVM result, toggle OFF → `ignoreTokens` + `hideAsset`.
-   * - Non-EVM result, toggle ON → `multichainAddAssets` + `addCustomAsset`.
-   * - Non-EVM result, toggle OFF → `multichainIgnoreAssets` + `hideAsset`.
+   * Mirrors the mobile dual-dispatch contract (`metamask-mobile#26108`):
    *
-   * `addCustomAsset` / `hideAsset` only fire when the unified AssetsController
-   * is included in the build (`ASSETS_UNIFIED_STATE_ENABLED`).
+   * - EVM result, toggle ON (fresh) → `addImportedTokens` + `addCustomAsset`.
+   * - Non-EVM result, toggle ON (fresh) → `multichainAddAssets`
+   * + `addCustomAsset`.
+   * - Toggle OFF (any) → stage hide; commit fires on unmount.
    *
-   * Native assets (slip44 namespace or EVM zero-address) are not importable —
-   * the toggle never reaches this handler for them, but we guard here too so
-   * a buggy API response can't dispatch a malformed payload.
+   * `addCustomAsset` only fires when the unified AssetsController is
+   * included in the build (`ASSETS_UNIFIED_STATE_ENABLED`).
+   *
+   * Native assets are not importable — the toggle never reaches this handler
+   * for them, but we guard here too so a buggy API response can't dispatch
+   * a malformed payload.
    */
   const handleSearchResultToggle = useCallback(
     async (payload: SearchResultImportPayload, nextValue: boolean) => {
@@ -493,8 +655,43 @@ export const TokenManagementPage = () => {
         return;
       }
 
-      const importedKey = payload.assetId.toLowerCase();
-      addPendingKey(importedKey);
+      const stagedKey = payload.assetId.toLowerCase();
+
+      if (!nextValue) {
+        if (payload.isEvm) {
+          if (!payload.hexChainId) {
+            return;
+          }
+          const { networkClientId } = getNetworkMeta(payload.hexChainId);
+          if (!networkClientId) {
+            return;
+          }
+          stageHide(stagedKey, {
+            kind: 'evm',
+            hexChainId: payload.hexChainId,
+            address: payload.assetReference,
+            caipAssetId: payload.assetId,
+          });
+          return;
+        }
+
+        const account = getAccountForChain(payload.caipChainId);
+        if (!account?.id) {
+          return;
+        }
+        stageHide(stagedKey, {
+          kind: 'multichain',
+          assetId: payload.assetId,
+          accountId: account.id,
+        });
+        return;
+      }
+
+      if (unstageHide(stagedKey)) {
+        return;
+      }
+
+      addPendingKey(stagedKey);
       try {
         if (payload.isEvm) {
           if (!payload.hexChainId) {
@@ -505,40 +702,26 @@ export const TokenManagementPage = () => {
             return;
           }
           const evmAccount = getAccountForChain(payload.caipChainId);
-
-          if (nextValue) {
-            if (!evmAccount?.id) {
-              return;
-            }
-            await dispatch(
-              addImportedTokens(
-                [
-                  {
-                    address: payload.assetReference,
-                    symbol: payload.symbol,
-                    decimals: payload.decimals,
-                    isERC721: false,
-                    name: payload.name,
-                    ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
-                  },
-                ],
-                networkClientId,
-              ),
-            );
-            if (isAssetsUnifiedStateInBuild) {
-              await dispatch(addCustomAsset(evmAccount.id, payload.assetId));
-            }
+          if (!evmAccount?.id) {
             return;
           }
           await dispatch(
-            ignoreTokensAction({
-              tokensToIgnore: [payload.assetReference],
-              dontShowLoadingIndicator: true,
+            addImportedTokens(
+              [
+                {
+                  address: payload.assetReference,
+                  symbol: payload.symbol,
+                  decimals: payload.decimals,
+                  isERC721: false,
+                  name: payload.name,
+                  ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
+                },
+              ],
               networkClientId,
-            }),
+            ),
           );
           if (isAssetsUnifiedStateInBuild) {
-            await dispatch(hideAsset(payload.assetId));
+            await dispatch(addCustomAsset(evmAccount.id, payload.assetId));
           }
           return;
         }
@@ -547,19 +730,12 @@ export const TokenManagementPage = () => {
         if (!account?.id) {
           return;
         }
-        if (nextValue) {
-          await dispatch(multichainAddAssets([payload.assetId], account.id));
-          if (isAssetsUnifiedStateInBuild) {
-            await dispatch(addCustomAsset(account.id, payload.assetId));
-          }
-          return;
-        }
-        await dispatch(multichainIgnoreAssets([payload.assetId], account.id));
+        await dispatch(multichainAddAssets([payload.assetId], account.id));
         if (isAssetsUnifiedStateInBuild) {
-          await dispatch(hideAsset(payload.assetId));
+          await dispatch(addCustomAsset(account.id, payload.assetId));
         }
       } finally {
-        removePendingKey(importedKey);
+        removePendingKey(stagedKey);
       }
     },
     [
@@ -569,6 +745,8 @@ export const TokenManagementPage = () => {
       getNetworkMeta,
       isAssetsUnifiedStateInBuild,
       removePendingKey,
+      stageHide,
+      unstageHide,
     ],
   );
 
@@ -588,6 +766,8 @@ export const TokenManagementPage = () => {
     (info: { item: ManagedAsset }) => {
       const token = info.item;
       const key = getTokenKey(token);
+      const stagedKey = getStagedHideKey(token);
+      const isStagedOff = stagedKey ? stagedHideKeys.has(stagedKey) : false;
       const isNativeToken = Boolean(token.isNative);
       const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
       const isManageableToken =
@@ -603,7 +783,7 @@ export const TokenManagementPage = () => {
           assetId={token.assetId as CaipAssetType | Hex}
           primaryLabel={token.name ?? token.symbol}
           secondaryLabel={`${token.balance} ${token.symbol}`}
-          isOn
+          isOn={!isStagedOff}
           disabled={isNativeToken || pendingKeys.has(key)}
           onToggle={(nextValue) => handleToggle(token, nextValue)}
           showToggle={isManageableToken || isNativeToken}
@@ -611,7 +791,14 @@ export const TokenManagementPage = () => {
         />
       );
     },
-    [getTokenImage, getTokenKey, handleToggle, pendingKeys],
+    [
+      getStagedHideKey,
+      getTokenImage,
+      getTokenKey,
+      handleToggle,
+      pendingKeys,
+      stagedHideKeys,
+    ],
   );
 
   /**
@@ -645,6 +832,7 @@ export const TokenManagementPage = () => {
       const isImported =
         importedAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
+      const isStagedOff = stagedHideKeys.has(lowerAssetId);
 
       return (
         <TokenManagementCell
@@ -661,7 +849,7 @@ export const TokenManagementPage = () => {
             allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
             payload.caipChainId
           }
-          isOn={isImported || payload.isNative}
+          isOn={(isImported && !isStagedOff) || payload.isNative}
           disabled={payload.isNative || pendingKeys.has(lowerAssetId)}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
           showToggle={!payload.isNative}
@@ -675,6 +863,7 @@ export const TokenManagementPage = () => {
       importedAssetIds,
       networkConfigurations,
       pendingKeys,
+      stagedHideKeys,
     ],
   );
 
@@ -763,8 +952,8 @@ export const TokenManagementPage = () => {
         <TextFieldSearch
           value={searchQuery}
           placeholder={t('enterTokenNameOrAddressManageTokens')}
-          onChange={(event) => setSearchQuery(event.target.value)}
-          clearButtonOnClick={() => setSearchQuery('')}
+          onChange={handleSearchChange}
+          clearButtonOnClick={handleSearchClear}
           size={TextFieldSearchSize.Lg}
           className="w-full"
           inputProps={{

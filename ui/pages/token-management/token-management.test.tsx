@@ -460,15 +460,25 @@ describe('TokenManagementPage', () => {
     );
   });
 
-  it('toggling OFF an EVM token ignores it and hides it in AssetsController', async () => {
+  it('toggling OFF an EVM token defers the hide and keeps the row visible until unmount', async () => {
     const actions = getMockedActions();
 
-    renderPage();
+    const { unmount } = renderPage();
 
     const toggle = screen.getByTestId(
       `token-management-cell-0x1:${mainnetToken.address}-toggle`,
-    );
+    ) as HTMLInputElement;
     fireEvent.click(toggle);
+
+    // The row should remain visible (we don't drop it from the list) and
+    // the toggle should flip to OFF in place, but no hide actions have been
+    // dispatched yet — that happens on the next user action.
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(toggle.value).toBe('false');
+    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+    expect(actions.hideAsset).not.toHaveBeenCalled();
+
+    unmount();
 
     await waitFor(() =>
       expect(actions.ignoreTokens).toHaveBeenCalledWith({
@@ -482,6 +492,78 @@ describe('TokenManagementPage', () => {
         `eip155:1/erc20:${mainnetToken.address}`,
       ),
     );
+  });
+
+  it('commits the staged hide when the user starts typing in the search field', async () => {
+    const actions = getMockedActions();
+
+    renderPage();
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    ) as HTMLInputElement;
+    fireEvent.click(toggle);
+    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: 'usdc' },
+    });
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+  });
+
+  it('commits the staged hide when the user clicks the Add custom token CTA', async () => {
+    const actions = getMockedActions();
+
+    renderPage();
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    ) as HTMLInputElement;
+    fireEvent.click(toggle);
+    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+
+    fireEvent.click(
+      screen.getByTestId('token-management-add-custom-token-button'),
+    );
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+  });
+
+  it('toggling an EVM token OFF and back ON restores it without dispatching a hide', async () => {
+    const actions = getMockedActions();
+
+    const { unmount } = renderPage();
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    ) as HTMLInputElement;
+
+    fireEvent.click(toggle);
+    expect(toggle.value).toBe('false');
+
+    fireEvent.click(toggle);
+    expect(toggle.value).toBe('true');
+
+    unmount();
+
+    // Even after unmount the hide must not fire, because the user
+    // restored the token before leaving the page.
+    expect(actions.ignoreTokens).not.toHaveBeenCalled();
+    expect(actions.hideAsset).not.toHaveBeenCalled();
+    expect(actions.multichainIgnoreAssets).not.toHaveBeenCalled();
   });
 
   it('shows a search result as ON when TokensController already holds the imported address (no balance yet)', () => {
