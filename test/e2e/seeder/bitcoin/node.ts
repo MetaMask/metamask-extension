@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { spawn, type ChildProcess } from 'child_process';
 import { mkdir, mkdtemp, rm } from 'fs/promises';
-import { createServer } from 'net';
 import { tmpdir } from 'os';
 import { join, resolve } from 'path';
 import {
@@ -10,6 +9,11 @@ import {
   DEFAULT_BTC_FEE_RATE,
   SATS_IN_1_BTC,
 } from '../../constants';
+import {
+  assertValidPort,
+  getAvailablePorts,
+  isTcpPortAvailable,
+} from '../ports';
 
 const BITCOIN_NODE_PROCESS_OUTPUT_LIMIT = 8_000;
 const BITCOIN_RPC_PASSWORD = 'metamask';
@@ -84,6 +88,9 @@ const MAINNET_COMPAT_BLOCKS: EsploraBlock[] = [
 
 export type BitcoinRegtestLocalNodeOptions = {
   initialBalances?: Record<string, number>;
+  ports?: {
+    rpcPort?: number;
+  };
 };
 
 type FetchJsonOptions = RequestInit & {
@@ -220,8 +227,6 @@ export class BitcoinRegtestNode {
 
   #nodeProcessExitError: Error | undefined;
 
-  #p2pPort: number | undefined;
-
   #rpcPort: number | undefined;
 
   #runtimeDirectory: string | undefined;
@@ -239,7 +244,7 @@ export class BitcoinRegtestNode {
 
   async start(options: BitcoinRegtestLocalNodeOptions = {}): Promise<void> {
     try {
-      await this.#startNativeBitcoinNode();
+      await this.#startNativeBitcoinNode(options.ports);
       await this.waitForReady(120_000);
       await this.#initializeFunding(
         options.initialBalances ?? {
@@ -252,28 +257,33 @@ export class BitcoinRegtestNode {
     }
   }
 
-  async #startNativeBitcoinNode(): Promise<void> {
+  async #startNativeBitcoinNode(
+    ports: BitcoinRegtestLocalNodeOptions['ports'] = {},
+  ): Promise<void> {
     await this.#runPackageBinary('bitcoin-regtest-up', ['install']);
 
     const runtimeDirectory = await mkdtemp(join(tmpdir(), 'bitcoin-e2e-'));
-    const [rpcPort, p2pPort] = await getAvailablePorts(2);
+    const { rpcPort } = await resolveBitcoinRegtestPorts(ports);
     await mkdir(runtimeDirectory, { recursive: true });
 
     this.#runtimeDirectory = runtimeDirectory;
     this.#rpcPort = rpcPort;
-    this.#p2pPort = p2pPort;
     this.#nodeProcessExitError = undefined;
     this.#stderr = '';
     this.#stdout = '';
 
     const bitcoindBinary = getPackageBinaryPath('bitcoind');
+    // bitcoind brings up one listener here: RPC (`rpcPort`, exposed as
+    // `baseUrl`). P2P and onion listeners are disabled so parallel E2E runs
+    // don't need to reserve hidden ports like the default onion `port + 1`.
     const nodeProcess = spawn(
       bitcoindBinary,
       [
         '-regtest',
         '-server',
         `-datadir=${runtimeDirectory}`,
-        `-port=${p2pPort}`,
+        '-listen=0',
+        '-listenonion=0',
         `-rpcport=${rpcPort}`,
         '-rpcbind=127.0.0.1',
         '-rpcallowip=127.0.0.1',
@@ -501,7 +511,6 @@ export class BitcoinRegtestNode {
     this.#nodeProcess = undefined;
     this.#runtimeDirectory = undefined;
     this.#rpcPort = undefined;
-    this.#p2pPort = undefined;
     this.#fundingOutpoints.clear();
     this.#blockHeaderCache.clear();
 
@@ -510,7 +519,7 @@ export class BitcoinRegtestNode {
     }
 
     if (runtimeDirectory) {
-      await rm(runtimeDirectory, { force: true, recursive: true });
+      await removeRuntimeDirectory(runtimeDirectory);
     }
   }
 
@@ -786,6 +795,31 @@ async function fetchJson<ResponseBody>(
   }
 }
 
+export async function resolveBitcoinRegtestPorts(
+  ports: BitcoinRegtestLocalNodeOptions['ports'] = {},
+): Promise<{ rpcPort: number }> {
+  if (ports.rpcPort !== undefined) {
+    assertValidPort(ports.rpcPort, 'Bitcoin RPC port');
+  }
+
+  if (
+    ports.rpcPort !== undefined &&
+    !(await isTcpPortAvailable(ports.rpcPort))
+  ) {
+    throw new Error(`Bitcoin RPC port ${ports.rpcPort} is already in use`);
+  }
+
+  const [allocatedRpcPort] =
+    ports.rpcPort === undefined ? await getAvailablePorts(1) : [];
+  const rpcPort = ports.rpcPort ?? allocatedRpcPort;
+
+  if (rpcPort === undefined) {
+    throw new Error('Unable to allocate Bitcoin regtest RPC port');
+  }
+
+  return { rpcPort };
+}
+
 function transformBlock(block: BitcoinCoreBlock): EsploraBlock {
   return {
     bits: Number.parseInt(block.bits, 16),
@@ -853,31 +887,6 @@ function getPackageBinaryPath(command: string): string {
   return resolve(process.cwd(), 'node_modules', '.bin', command);
 }
 
-async function getAvailablePorts(count: number): Promise<number[]> {
-  const ports: number[] = [];
-  for (let index = 0; index < count; index += 1) {
-    ports.push(await getAvailablePort());
-  }
-  return ports;
-}
-
-async function getAvailablePort(): Promise<number> {
-  return await new Promise((resolvePromise, rejectPromise) => {
-    const server = createServer();
-    server.unref();
-    server.on('error', rejectPromise);
-    server.listen(0, '127.0.0.1', () => {
-      const address = server.address();
-      if (!address || typeof address === 'string') {
-        rejectPromise(new Error('Unable to allocate an available port'));
-        return;
-      }
-      const { port } = address;
-      server.close(() => resolvePromise(port));
-    });
-  });
-}
-
 async function stopProcess(child: ChildProcess): Promise<void> {
   if (child.exitCode !== null || child.signalCode) {
     return;
@@ -922,6 +931,20 @@ function appendProcessOutput(current: string, chunk: Buffer): string {
 
 function formatProcessOutput(stdout: string, stderr: string): string {
   return `\nstdout:\n${stdout || '<empty>'}\nstderr:\n${stderr || '<empty>'}`;
+}
+
+async function removeRuntimeDirectory(runtimeDirectory: string): Promise<void> {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      await rm(runtimeDirectory, { force: true, recursive: true });
+      return;
+    } catch (error) {
+      if (attempt === 4) {
+        throw error;
+      }
+      await delay(250);
+    }
+  }
 }
 
 async function delay(ms: number): Promise<void> {

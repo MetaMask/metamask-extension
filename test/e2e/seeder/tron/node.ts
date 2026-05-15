@@ -8,13 +8,17 @@
  */
 import { spawn, type ChildProcess } from 'child_process';
 import { mkdir, mkdtemp, rm, writeFile } from 'fs/promises';
-import { createServer, type Server } from 'net';
 import { tmpdir } from 'os';
 import { join, resolve } from 'path';
 import { createRequire } from 'module';
 import { keccak256 } from 'ethereum-cryptography/keccak';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { secp256k1 } from 'ethereum-cryptography/secp256k1';
+import {
+  assertValidPort,
+  getAvailablePorts,
+  isTcpPortAvailable,
+} from '../ports';
 import {
   TRON_TEST_ASSETS,
   TronLocalNodeOptions,
@@ -31,7 +35,10 @@ import {
   hexAddressToBase58,
   normalizeTronHexAddress,
 } from './assets';
-import { createJavaTronPrivateNetworkConfig } from './java-tron-config';
+import {
+  createJavaTronPrivateNetworkConfig,
+  type JavaTronPrivateNetworkPorts,
+} from './java-tron-config';
 
 type Base58Encoder = {
   encode(input: Uint8Array): string;
@@ -40,13 +47,17 @@ type Base58Encoder = {
 const requireFromCurrentFile = createRequire(__filename);
 const bs58 = requireFromCurrentFile('bs58').default as Base58Encoder;
 
-const HTTP_PORT = 9090;
 const JAVA_TRON_GENESIS_PRIVATE_KEY =
   '0000000000000000000000000000000000000000000000000000000000000001';
 const JAVA_TRON_GENESIS_ADDRESS = 'TMVQGm1qAQYVdetCeGRRkTWYYrLXuHK2HC';
 const JAVA_TRON_PROCESS_OUTPUT_LIMIT = 8_000;
+const JAVA_TRON_PRIVATE_NETWORK_PORT_KEYS = [
+  'fullNodePort',
+] as const satisfies readonly (keyof JavaTronPrivateNetworkPorts)[];
 
-export const TRON_LOCAL_NODE_URL = `http://localhost:${HTTP_PORT}`;
+const JAVA_TRON_PRIVATE_NETWORK_PORT_LABELS = {
+  fullNodePort: 'java-tron HTTP full node port',
+} as const satisfies Record<keyof JavaTronPrivateNetworkPorts, string>;
 
 /**
  * Private keys for known E2E test accounts, keyed by Tron base58 address.
@@ -84,6 +95,8 @@ type FetchJsonOptions = RequestInit & {
 export class TronNode {
   #fundingAccount: TronFundingAccount | undefined;
 
+  #fullNodePort: number | undefined;
+
   #nodeProcess: ChildProcess | undefined;
 
   #nodeProcessExitError: Error | undefined;
@@ -106,7 +119,12 @@ export class TronNode {
 
   readonly #stakedTrxBalances: Record<string, string> = {};
 
-  readonly baseUrl = TRON_LOCAL_NODE_URL;
+  get baseUrl(): string {
+    if (!this.#fullNodePort) {
+      throw new Error('Tron local node has not started');
+    }
+    return `http://127.0.0.1:${this.#fullNodePort}`;
+  }
 
   readonly trc10Tokens: Partial<Record<TronTrc10Symbol, TronTrc10Token>> = {};
 
@@ -120,6 +138,7 @@ export class TronNode {
    *
    * @param options - Start options.
    * @param options.initialBalances - Map of Tron address to amount in SUN.
+   * @param options.ports - java-tron private network ports.
    * @param options.trc10Balances - Map of Tron address to named TRC10 balances.
    * @param options.trc20Balances - Map of Tron address to named TRC20 balances.
    * @param options.stakedTrxBalances - Map of Tron address to staked TRX in SUN.
@@ -130,7 +149,7 @@ export class TronNode {
     this.#fundingAccount = undefined;
 
     try {
-      await this.#startNativeJavaTron();
+      await this.#startNativeJavaTron(options.ports);
       await this.waitForReady(120_000);
 
       for (const [address, amountInSun] of Object.entries(
@@ -153,42 +172,32 @@ export class TronNode {
     }
   }
 
-  async #startNativeJavaTron(): Promise<void> {
+  async #startNativeJavaTron(
+    ports: TronLocalNodeOptions['ports'] = {},
+  ): Promise<void> {
     await this.#runPackageBinary('java-tron-up', ['install']);
 
     const runtimeDirectory = await mkdtemp(join(tmpdir(), 'java-tron-e2e-'));
     const configPath = join(runtimeDirectory, 'fullnode.conf');
     const outputDirectory = join(runtimeDirectory, 'output');
-    const [
-      backupPort,
-      grpcPort,
-      grpcSolidityPort,
-      jsonRpcPort,
-      jsonRpcSolidityPort,
-      p2pPort,
-      solidityHttpPort,
-    ] = await getAvailablePorts(7);
+    const resolvedPorts = await resolveJavaTronPrivateNetworkPorts(ports);
     await mkdir(outputDirectory, { recursive: true });
     await writeFile(
       configPath,
-      createJavaTronPrivateNetworkConfig({
-        backupPort,
-        fullNodePort: HTTP_PORT,
-        grpcPort,
-        grpcSolidityPort,
-        jsonRpcPort,
-        jsonRpcSolidityPort,
-        p2pPort,
-        solidityHttpPort,
-      }),
+      createJavaTronPrivateNetworkConfig(resolvedPorts),
     );
 
+    this.#fullNodePort = resolvedPorts.fullNodePort;
     this.#runtimeDirectory = runtimeDirectory;
     this.#nodeProcessExitError = undefined;
     this.#stderr = '';
     this.#stdout = '';
 
     const javaTronBinary = getPackageBinaryPath('java-tron');
+    // java-tron brings up one listener for E2E: full-node HTTP (`baseUrl`).
+    // Solidity HTTP/gRPC, PBFT HTTP/gRPC, JSON-RPC, P2P, and backup are
+    // disabled in the generated config; make any re-enabled listener
+    // customizable before parallelizing it.
     const nodeProcess = spawn(
       javaTronBinary,
       ['-c', configPath, '--witness', '-d', outputDirectory],
@@ -257,6 +266,7 @@ export class TronNode {
   async quit(): Promise<void> {
     const nodeProcess = this.#nodeProcess;
     const runtimeDirectory = this.#runtimeDirectory;
+    this.#fullNodePort = undefined;
     this.#nodeProcess = undefined;
     this.#runtimeDirectory = undefined;
 
@@ -868,49 +878,59 @@ function formatProcessOutput(stdout: string, stderr: string): string {
   return sections.join('');
 }
 
-async function getAvailablePorts(count: number): Promise<number[]> {
-  const servers = await Promise.all(
-    Array.from({ length: count }, () => openEphemeralServer()),
+export async function resolveJavaTronPrivateNetworkPorts(
+  ports: Partial<JavaTronPrivateNetworkPorts> = {},
+): Promise<JavaTronPrivateNetworkPorts> {
+  const explicitPortEntries = JAVA_TRON_PRIVATE_NETWORK_PORT_KEYS.flatMap(
+    (key) => {
+      const port = ports[key];
+      return port === undefined ? [] : [[key, port] as const];
+    },
   );
+  const explicitPorts = explicitPortEntries.map(([, port]) => port);
+  const seenPorts = new Map<number, keyof JavaTronPrivateNetworkPorts>();
 
-  try {
-    return servers.map(({ port }) => port);
-  } finally {
-    await Promise.all(
-      servers.map(
-        ({ server }) =>
-          new Promise<void>((resolvePromise, rejectPromise) => {
-            server.close((error) => {
-              if (error) {
-                rejectPromise(error);
-                return;
-              }
-              resolvePromise();
-            });
-          }),
-      ),
-    );
+  for (const [key, port] of explicitPortEntries) {
+    const label = JAVA_TRON_PRIVATE_NETWORK_PORT_LABELS[key];
+    assertValidPort(port, label);
+
+    const duplicateKey = seenPorts.get(port);
+    if (duplicateKey) {
+      throw new Error(
+        `${label} must be different from ${
+          JAVA_TRON_PRIVATE_NETWORK_PORT_LABELS[duplicateKey]
+        }`,
+      );
+    }
+    seenPorts.set(port, key);
   }
-}
 
-async function openEphemeralServer(): Promise<{
-  port: number;
-  server: Server;
-}> {
-  return await new Promise((resolvePromise, rejectPromise) => {
-    const server = createServer();
-    server.once('error', rejectPromise);
-    server.listen(0, '127.0.0.1', () => {
-      const address = server.address();
-      if (typeof address === 'object' && address?.port) {
-        resolvePromise({ port: address.port, server });
-        return;
-      }
+  for (const [key, port] of explicitPortEntries) {
+    if (!(await isTcpPortAvailable(port))) {
+      throw new Error(
+        `${JAVA_TRON_PRIVATE_NETWORK_PORT_LABELS[key]} ${port} is already in use`,
+      );
+    }
+  }
 
-      server.close();
-      rejectPromise(new Error('Failed to allocate a port for java-tron.'));
-    });
-  });
+  const missingPortKeys = JAVA_TRON_PRIVATE_NETWORK_PORT_KEYS.filter(
+    (key) => ports[key] === undefined,
+  );
+  const allocatedPorts = await getAvailablePorts(
+    missingPortKeys.length,
+    explicitPorts,
+  );
+  const resolvedPorts = { ...ports };
+
+  for (const key of missingPortKeys) {
+    const port = allocatedPorts.shift();
+    if (port === undefined) {
+      throw new Error('Unable to allocate java-tron private network ports');
+    }
+    resolvedPorts[key] = port;
+  }
+
+  return resolvedPorts as JavaTronPrivateNetworkPorts;
 }
 
 async function stopProcess(childProcess: ChildProcess): Promise<void> {

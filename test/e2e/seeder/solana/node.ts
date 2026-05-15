@@ -1,15 +1,39 @@
 import { spawn, type ChildProcess } from 'child_process';
 import { mkdir, mkdtemp, rm } from 'fs/promises';
-import { createServer } from 'net';
 import { tmpdir } from 'os';
 import { join, resolve } from 'path';
+import {
+  assertValidPort,
+  getAvailablePorts,
+  isTcpPortAvailable,
+  isTcpPortRangeAvailable,
+  parsePortRange,
+  type PortRange,
+} from '../ports';
 
 const SOLANA_NODE_PROCESS_OUTPUT_LIMIT = 8_000;
+const SOLANA_RPC_PUBSUB_PORT_OFFSET = 1;
+const SOLANA_VALIDATOR_PORT_COUNT = 32;
+const SOLANA_VALIDATOR_PORT_ALLOCATION_ATTEMPTS = 20;
+const SOLANA_VALIDATOR_MAX_PORT = 65_535;
 
 export const LAMPORTS_PER_SOL = 1_000_000_000;
 
 export type SolanaLocalNodeOptions = {
   initialBalances?: Record<string, number>;
+  ports?: {
+    dynamicPortRange?: string;
+    faucetPort?: number;
+    gossipPort?: number;
+    rpcPort?: number;
+  };
+};
+
+export type SolanaValidatorPorts = {
+  dynamicPortRange: string;
+  faucetPort: number;
+  gossipPort: number;
+  rpcPort: number;
 };
 
 type FetchJsonOptions = RequestInit & {
@@ -43,7 +67,7 @@ export class SolanaNode {
 
   async start(options: SolanaLocalNodeOptions = {}): Promise<void> {
     try {
-      await this.#startNativeSolanaValidator();
+      await this.#startNativeSolanaValidator(options.ports);
       await this.waitForReady(120_000);
 
       for (const [address, lamports] of Object.entries(
@@ -60,13 +84,15 @@ export class SolanaNode {
     }
   }
 
-  async #startNativeSolanaValidator(): Promise<void> {
+  async #startNativeSolanaValidator(
+    ports: SolanaLocalNodeOptions['ports'] = {},
+  ): Promise<void> {
     await this.#runPackageBinary('solana-test-validator-up', ['install']);
 
     const runtimeDirectory = await mkdtemp(join(tmpdir(), 'solana-e2e-'));
     const ledgerDirectory = join(runtimeDirectory, 'ledger');
     const { dynamicPortRange, faucetPort, gossipPort, rpcPort } =
-      await getSolanaValidatorPorts();
+      await resolveSolanaValidatorPorts(ports);
     await mkdir(ledgerDirectory, { recursive: true });
 
     this.#rpcPort = rpcPort;
@@ -76,6 +102,11 @@ export class SolanaNode {
     this.#stdout = '';
 
     const validatorBinary = getPackageBinaryPath('solana-test-validator');
+    // With a derived RPC port, solana-test-validator uses a 32-port bundle:
+    // RPC, implicit RPC pubsub at `rpcPort + 1`, faucet, gossip, and the
+    // dynamic range. This validator version also opens UDP *:8000 outside the
+    // configurable range. Keep the whole bundle non-overlapping for parallel
+    // runs and revisit if the validator exposes a flag for that UDP listener.
     const nodeProcess = spawn(
       validatorBinary,
       [
@@ -298,47 +329,73 @@ function getPackageBinaryPath(command: string): string {
   return resolve(process.cwd(), 'node_modules', '.bin', command);
 }
 
-async function getAvailablePort(): Promise<number> {
-  return await new Promise((resolvePromise, rejectPromise) => {
-    const server = createServer();
-    server.unref();
-    server.on('error', rejectPromise);
-    server.listen(0, '127.0.0.1', () => {
-      const address = server.address();
-      if (!address || typeof address === 'string') {
-        rejectPromise(new Error('Unable to allocate an available port'));
-        return;
-      }
-      const { port } = address;
-      server.close(() => resolvePromise(port));
+export async function resolveSolanaValidatorPorts(
+  ports: SolanaLocalNodeOptions['ports'] = {},
+): Promise<SolanaValidatorPorts> {
+  validateSolanaIndividualPorts(ports);
+  const { dynamicPortRange } = ports;
+
+  if (Object.values(ports).every((port) => port === undefined)) {
+    return await findSolanaValidatorPortBundle();
+  }
+
+  if (ports.rpcPort !== undefined && !dynamicPortRange) {
+    const derivedPorts = deriveSolanaValidatorPortsFromRpcPort(ports.rpcPort);
+    return await validateSolanaValidatorPorts({
+      ...derivedPorts,
+      faucetPort: ports.faucetPort ?? derivedPorts.faucetPort,
+      gossipPort: ports.gossipPort ?? derivedPorts.gossipPort,
     });
+  }
+
+  if (!dynamicPortRange) {
+    const derivedPorts = await findSolanaValidatorPortBundle(
+      getDefinedPorts([ports.faucetPort, ports.gossipPort]),
+    );
+    return await validateSolanaValidatorPorts({
+      ...derivedPorts,
+      faucetPort: ports.faucetPort ?? derivedPorts.faucetPort,
+      gossipPort: ports.gossipPort ?? derivedPorts.gossipPort,
+    });
+  }
+
+  return await resolveSolanaValidatorPortsWithDynamicRange({
+    ...ports,
+    dynamicPortRange,
   });
 }
 
-async function getSolanaValidatorPorts(): Promise<{
-  dynamicPortRange: string;
-  faucetPort: number;
-  gossipPort: number;
-  rpcPort: number;
-}> {
-  const portCount = 32;
+async function findSolanaValidatorPortBundle(
+  excludedPorts: Iterable<number> = [],
+): Promise<SolanaValidatorPorts> {
+  const excluded = new Set(excludedPorts);
 
-  for (let attempt = 0; attempt < 20; attempt += 1) {
-    const candidate = await getAvailablePort();
-    const rpcPort = candidate;
-    const lastPort = rpcPort + portCount - 1;
+  for (
+    let attempt = 0;
+    attempt < SOLANA_VALIDATOR_PORT_ALLOCATION_ATTEMPTS;
+    attempt += 1
+  ) {
+    const [rpcPort] = await getAvailablePorts(1, excluded);
 
-    if (lastPort > 65535) {
+    try {
+      const ports = deriveSolanaValidatorPortsFromRpcPort(rpcPort);
+      const reservedPorts = getSolanaValidatorReservedPorts(ports);
+
+      if (reservedPorts.some((port) => excluded.has(port))) {
+        excluded.add(rpcPort);
+        continue;
+      }
+
+      if (await isTcpPortRangeAvailable(rpcPort, SOLANA_VALIDATOR_PORT_COUNT)) {
+        return ports;
+      }
+
+      for (const port of reservedPorts) {
+        excluded.add(port);
+      }
+    } catch {
+      excluded.add(rpcPort);
       continue;
-    }
-
-    if (await isTcpPortRangeAvailable(rpcPort, portCount)) {
-      return {
-        rpcPort,
-        faucetPort: rpcPort + 2,
-        gossipPort: rpcPort + 3,
-        dynamicPortRange: `${rpcPort + 4}-${lastPort}`,
-      };
     }
   }
 
@@ -347,40 +404,187 @@ async function getSolanaValidatorPorts(): Promise<{
   );
 }
 
-async function isTcpPortRangeAvailable(
-  startPort: number,
-  count: number,
-): Promise<boolean> {
-  const servers: ReturnType<typeof createServer>[] = [];
+function deriveSolanaValidatorPortsFromRpcPort(
+  rpcPort: number,
+): SolanaValidatorPorts {
+  assertValidPort(rpcPort, 'Solana RPC port');
 
-  try {
-    for (let offset = 0; offset < count; offset += 1) {
-      servers.push(await listenOnTcpPort(startPort + offset));
-    }
-    return true;
-  } catch {
-    return false;
-  } finally {
-    await Promise.all(
-      servers.map(
-        (server) =>
-          new Promise<void>((resolvePromise) => {
-            server.close(() => resolvePromise());
-          }),
-      ),
+  const lastPort = rpcPort + SOLANA_VALIDATOR_PORT_COUNT - 1;
+  if (lastPort > SOLANA_VALIDATOR_MAX_PORT) {
+    throw new Error('Solana validator port range exceeds 65535');
+  }
+
+  return {
+    dynamicPortRange: `${rpcPort + 4}-${lastPort}`,
+    faucetPort: rpcPort + 2,
+    gossipPort: rpcPort + 3,
+    rpcPort,
+  };
+}
+
+async function resolveSolanaValidatorPortsWithDynamicRange(
+  ports: SolanaLocalNodeOptions['ports'] & { dynamicPortRange: string },
+): Promise<SolanaValidatorPorts> {
+  const dynamicRange = parsePortRange(ports.dynamicPortRange);
+  const explicitPorts = getDefinedPorts([
+    ports.faucetPort,
+    ports.gossipPort,
+    ports.rpcPort,
+    ...getPortRangeValues(dynamicRange),
+  ]);
+  const missingPortKeys = (
+    ['rpcPort', 'faucetPort', 'gossipPort'] as const
+  ).filter((key) => ports[key] === undefined);
+  const excludedPorts = new Set(explicitPorts);
+  let lastError: Error | undefined;
+
+  for (
+    let attempt = 0;
+    attempt < SOLANA_VALIDATOR_PORT_ALLOCATION_ATTEMPTS;
+    attempt += 1
+  ) {
+    const allocatedPorts = await getAvailablePorts(
+      missingPortKeys.length,
+      excludedPorts,
     );
+    const resolvedPorts = {
+      dynamicPortRange: ports.dynamicPortRange,
+      faucetPort: ports.faucetPort,
+      gossipPort: ports.gossipPort,
+      rpcPort: ports.rpcPort,
+    };
+
+    for (const key of missingPortKeys) {
+      resolvedPorts[key] = allocatedPorts.shift();
+    }
+
+    try {
+      return await validateSolanaValidatorPorts(
+        resolvedPorts as SolanaValidatorPorts,
+      );
+    } catch (error) {
+      lastError = error as Error;
+      for (const port of getDefinedPorts([
+        resolvedPorts.faucetPort,
+        resolvedPorts.gossipPort,
+        resolvedPorts.rpcPort,
+      ])) {
+        excludedPorts.add(port);
+      }
+    }
+  }
+
+  throw new Error(
+    `Unable to allocate available Solana validator ports.${
+      lastError ? ` ${lastError.message}` : ''
+    }`,
+  );
+}
+
+async function validateSolanaValidatorPorts(
+  ports: SolanaValidatorPorts,
+): Promise<SolanaValidatorPorts> {
+  const dynamicRange = assertSolanaValidatorPortStructure(ports);
+
+  for (const [label, port] of [
+    ['Solana RPC port', ports.rpcPort],
+    ['Solana RPC pubsub port', ports.rpcPort + SOLANA_RPC_PUBSUB_PORT_OFFSET],
+    ['Solana faucet port', ports.faucetPort],
+    ['Solana gossip port', ports.gossipPort],
+  ] as const) {
+    if (!(await isTcpPortAvailable(port))) {
+      throw new Error(`${label} ${port} is already in use`);
+    }
+  }
+
+  const dynamicRangeCount = dynamicRange.endPort - dynamicRange.startPort + 1;
+  if (
+    !(await isTcpPortRangeAvailable(dynamicRange.startPort, dynamicRangeCount))
+  ) {
+    throw new Error(
+      `Solana dynamic port range ${ports.dynamicPortRange} is already in use`,
+    );
+  }
+
+  return ports;
+}
+
+function assertSolanaValidatorPortStructure(
+  ports: SolanaValidatorPorts,
+): PortRange {
+  validateSolanaIndividualPorts(ports);
+
+  const dynamicRange = parsePortRange(ports.dynamicPortRange);
+  const rpcPubsubPort = ports.rpcPort + SOLANA_RPC_PUBSUB_PORT_OFFSET;
+  assertValidPort(rpcPubsubPort, 'Solana RPC pubsub port');
+
+  const namedPorts = [
+    ['Solana RPC port', ports.rpcPort],
+    ['Solana RPC pubsub port', rpcPubsubPort],
+    ['Solana faucet port', ports.faucetPort],
+    ['Solana gossip port', ports.gossipPort],
+  ] as const;
+  const seenPorts = new Map<number, string>();
+
+  for (const [label, port] of namedPorts) {
+    const duplicateLabel = seenPorts.get(port);
+    if (duplicateLabel) {
+      throw new Error(`${label} must be different from ${duplicateLabel}`);
+    }
+    seenPorts.set(port, label);
+
+    if (isPortInRange(port, dynamicRange)) {
+      throw new Error(`${label} must be outside the Solana dynamic port range`);
+    }
+  }
+
+  return dynamicRange;
+}
+
+function validateSolanaIndividualPorts(
+  ports: Partial<SolanaValidatorPorts>,
+): void {
+  for (const [label, port] of [
+    ['Solana RPC port', ports.rpcPort],
+    ['Solana faucet port', ports.faucetPort],
+    ['Solana gossip port', ports.gossipPort],
+  ] as const) {
+    if (port !== undefined) {
+      assertValidPort(port, label);
+    }
+  }
+
+  if (ports.dynamicPortRange) {
+    parsePortRange(ports.dynamicPortRange);
   }
 }
 
-async function listenOnTcpPort(port: number) {
-  return await new Promise<ReturnType<typeof createServer>>(
-    (resolvePromise, rejectPromise) => {
-      const server = createServer();
-      server.unref();
-      server.once('error', rejectPromise);
-      server.listen(port, '127.0.0.1', () => resolvePromise(server));
-    },
+function getSolanaValidatorReservedPorts(
+  ports: SolanaValidatorPorts,
+): number[] {
+  const dynamicRange = parsePortRange(ports.dynamicPortRange);
+  return [
+    ports.rpcPort,
+    ports.rpcPort + SOLANA_RPC_PUBSUB_PORT_OFFSET,
+    ports.faucetPort,
+    ports.gossipPort,
+    ...getPortRangeValues(dynamicRange),
+  ];
+}
+
+function getPortRangeValues(range: PortRange): number[] {
+  return Array.from(
+    { length: range.endPort - range.startPort + 1 },
+    (_, offset) => range.startPort + offset,
   );
+}
+
+function isPortInRange(port: number, range: PortRange): boolean {
+  return port >= range.startPort && port <= range.endPort;
+}
+
+function getDefinedPorts(ports: Iterable<number | undefined>): number[] {
+  return [...ports].filter((port): port is number => port !== undefined);
 }
 
 async function stopProcess(child: ChildProcess): Promise<void> {

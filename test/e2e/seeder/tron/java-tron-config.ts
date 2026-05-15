@@ -1,13 +1,6 @@
 /* eslint-disable @metamask/design-tokens/color-no-hex */
 export type JavaTronPrivateNetworkPorts = {
-  backupPort: number;
   fullNodePort: number;
-  grpcPort: number;
-  grpcSolidityPort: number;
-  jsonRpcPort: number;
-  jsonRpcSolidityPort: number;
-  p2pPort: number;
-  solidityHttpPort: number;
 };
 
 const JAVA_TRON_PRIVATE_NETWORK_CONFIG_TEMPLATE = String.raw`net {
@@ -151,14 +144,11 @@ crypto {
 # prometheus metrics end
 
 node {
-  # trust node for solidity node
-  # trustNode = "ip:port"
-  trustNode = "127.0.0.1:50051"
-
   # expose extension api to public or not
   walletExtensionApi = true
 
-  listen.port = 18888
+  # Disable the P2P listener for local E2E private networks.
+  listen.port = 0
 
   connection.timeout = 2
 
@@ -207,13 +197,19 @@ node {
   http {
     fullNodeEnable = true
     fullNodePort = 18190
-    solidityEnable = true
+    solidityEnable = false
     solidityPort = 18191
+    PBFTEnable = false
+    PBFTPort = 8092
   }
 
   rpc {
+    enable = false
+    solidityEnable = false
+    PBFTEnable = false
     port = 50051
     solidityPort = 50052
+    PBFTPort = 50071
     # Number of gRPC thread, default availableProcessors / 2
     # thread = 16
 
@@ -262,11 +258,11 @@ node {
     # Note: If you turn on jsonrpc and run it for a while and then turn it off, you will not
     # be able to get the data from eth_getLogs for that period of time.
 
-    httpFullNodeEnable = true
+    httpFullNodeEnable = false
     httpFullNodePort = 8545
-    httpSolidityEnable = true
+    httpSolidityEnable = false
     httpSolidityPort = 8555
-    # httpPBFTEnable = true
+    httpPBFTEnable = false
     # httpPBFTPort = 8565
   }
 
@@ -482,21 +478,7 @@ export function createJavaTronPrivateNetworkConfig(
   ports: JavaTronPrivateNetworkPorts,
 ): string {
   return JAVA_TRON_PRIVATE_NETWORK_CONFIG_TEMPLATE.replace(
-    'trustNode = "127.0.0.1:50051"',
-    `trustNode = "127.0.0.1:${ports.grpcPort}"`,
-  )
-    .replace('listen.port = 18888', `listen.port = ${ports.p2pPort}`)
-    .replace('port = 10001', `port = ${ports.backupPort}`)
-    .replace('fullNodePort = 18190', `fullNodePort = ${ports.fullNodePort}`)
-    .replace('solidityPort = 18191', `solidityPort = ${ports.solidityHttpPort}`)
-    .replace('port = 50051', `port = ${ports.grpcPort}`)
-    .replace('solidityPort = 50052', `solidityPort = ${ports.grpcSolidityPort}`)
-    .replace(
-      'httpFullNodePort = 8545',
-      `httpFullNodePort = ${ports.jsonRpcPort}`,
-    )
-    .replace(
-      'httpSolidityPort = 8555',
-      `httpSolidityPort = ${ports.jsonRpcSolidityPort}`,
-    );
+    'fullNodePort = 18190',
+    `fullNodePort = ${ports.fullNodePort}`,
+  );
 }
