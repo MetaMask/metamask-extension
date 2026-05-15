@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.32.0]
 
+### Uncategorized
+
+- chore: sync stable into release/13.32.0 (#42717)
+- Bump perps-controller to 6.1.0 (#42695)
+- perf(6918): memoize AssetPollingContext value to prevent unnecessary consumer re-renders (#42686)
+- perf(6917): extract useTokenBalances to isolated components to prevent subtree re-renders (#42685)
+- Set up batch sell quotes (#42434)
+- perf(6643): extract network/approval-driven route state from Routes (#42493)
+- chore: bump basic-ftp to 5.3.1 to fix GHSA-rpmf-866q-6p89 (#42508)
+- Update assets controllers to version 106.0.0 (#42465)
+- Migrate to new assets controller (#42297)
+- Remove tokensChainsCache usage from useTokenDetails (#42547)
+- Modified useERC20Tokens to make an API call instead of reading from the cache (#42489)
+
 ### Added
 
 - Added search to the manage tokens page (#42624)
@@ -36,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- fix: patch assets controller 7.0.0 (#42666)
 - Fixed a bug that prevented some Perps deposits from showing completion toasts (#42671)
 - Fixed transaction publishing when Sentinel network flag requests fail (#42677)
 - Fixed 7702 `revokeDelegation` transactions being routed through the Delegation7702 publish hook on sponsored networks; they now use the standard publish path and no longer display the "Paid by MetaMask" pill (#42614)
