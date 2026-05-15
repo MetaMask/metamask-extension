@@ -155,28 +155,22 @@ jobs:
               core.info(`No pull request detected for branch '${process.env.BRANCH}'`);
             }
       - name: Get bundle-size baseline commit hashes
-        if: ${{ env.BUILDS_FROM_SHA && env.PR_NUMBER }}
+        if: ${{ env.BUILDS_FROM_SHA }}
         run: |
           baseline_commit_hashes=""
 
           if git fetch --filter=blob:none --no-tags origin \
             "+main:refs/merge-base/base" \
-            "+refs/pull/${PR_NUMBER}/head:refs/merge-base/head"; then
+            "+${BUILDS_FROM_SHA}:refs/merge-base/builds-from"; then
 
-            actual_head_commit_hash="$(git rev-parse refs/merge-base/head 2>/dev/null || true)"
+            merge_base_commit_hash="$(
+              git merge-base refs/merge-base/base refs/merge-base/builds-from || true
+            )"
 
-            if [[ "${actual_head_commit_hash}" == "${BUILDS_FROM_SHA}" ]]; then
-              merge_base_commit_hash="$(
-                git merge-base refs/merge-base/base refs/merge-base/head || true
+            if [[ -n "${merge_base_commit_hash}" ]]; then
+              baseline_commit_hashes="$(
+                git rev-list --first-parent --max-count=200 "${merge_base_commit_hash}" || true
               )"
-
-              if [[ -n "${merge_base_commit_hash}" ]]; then
-                baseline_commit_hashes="$(
-                  git rev-list --first-parent --max-count=200 "${merge_base_commit_hash}" || true
-                )"
-              fi
-            else
-              echo "::warning::Fetched PR head '${actual_head_commit_hash}', but expected '${BUILDS_FROM_SHA}'. Skipping bundle-size baseline detection."
             fi
           else
             echo "::warning::Could not fetch commits needed to determine bundle-size baseline."
