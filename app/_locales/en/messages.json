@@ -6092,15 +6092,15 @@
   "perpsLimitPriceNearLiquidation": {
     "message": "Current price is near the estimated liquidation price"
   },
+  "perpsLiquidated": {
+    "message": "Liquidated",
+    "description": "Badge label for trades that were liquidated"
+  },
   "perpsLiquidationDistance": {
     "message": "Liquidation distance"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
-  },
-  "perpsLiquidated": {
-    "message": "Liquidated",
-    "description": "Badge label for trades that were liquidated"
   },
   "perpsLong": {
     "message": "Long"

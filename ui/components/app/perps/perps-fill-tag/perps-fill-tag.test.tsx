@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { FillType } from '../types/transactionHistory';
@@ -104,7 +105,7 @@ describe('PerpsFillTag', () => {
 
     renderWithProvider(<PerpsFillTag transaction={transaction} />, store);
 
-    expect(screen.getByText('Take profit')).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsTakeProfit.message)).toBeInTheDocument();
     expect(screen.getByTestId('perps-fill-tag-take-profit')).toBeInTheDocument();
   });
 
@@ -114,7 +115,7 @@ describe('PerpsFillTag', () => {
 
     renderWithProvider(<PerpsFillTag transaction={transaction} />, store);
 
-    expect(screen.getByText('Stop loss')).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsStopLoss.message)).toBeInTheDocument();
     expect(screen.getByTestId('perps-fill-tag-stop-loss')).toBeInTheDocument();
   });
 
@@ -124,7 +125,7 @@ describe('PerpsFillTag', () => {
 
     renderWithProvider(<PerpsFillTag transaction={transaction} />, store);
 
-    expect(screen.getByText('Auto-deleveraging')).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsAutoDeleveraging.message)).toBeInTheDocument();
     expect(screen.getByTestId('perps-fill-tag-adl')).toBeInTheDocument();
   });
 
@@ -167,7 +168,7 @@ describe('PerpsFillTag', () => {
 
     renderWithProvider(<PerpsFillTag transaction={transaction} />, store);
 
-    expect(screen.getByText('Liquidated')).toBeInTheDocument();
+    expect(screen.getByText(messages.perpsLiquidated.message)).toBeInTheDocument();
     expect(
       screen.getByTestId('perps-fill-tag-liquidated'),
     ).toBeInTheDocument();
