@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { BtcScope, SolScope, TrxScope, XlmScope } from '@metamask/keyring-api';
 import {
   Box,
   IconName,
@@ -77,6 +77,12 @@ export const EditAccountAddAccountForm: React.FC<
           clientType: WalletClientType.Tron,
           chainId: TrxScope.Mainnet,
           networkName: t('networkNameTron'),
+        };
+      case WalletClientType.Stellar:
+        return {
+          clientType: WalletClientType.Stellar,
+          chainId: XlmScope.Pubnet,
+          networkName: t('networkNameStellar'),
         };
       default:
         return { clientType: null, chainId: null, networkName: null };

@@ -56,6 +56,14 @@ const SNAP_CLIENT_CONFIG_MAP: Record<
     clientType: WalletClientType.Solana,
     chainId: MultichainNetworks.SOLANA_DEVNET,
   },
+  [MultichainNetworks.STELLAR]: {
+    clientType: WalletClientType.Stellar,
+    chainId: MultichainNetworks.STELLAR,
+  },
+  [MultichainNetworks.STELLAR_TESTNET]: {
+    clientType: WalletClientType.Stellar,
+    chainId: MultichainNetworks.STELLAR_TESTNET,
+  },
 };
 
 const AddNonEvmAccountModal = ({ chainId }: { chainId: CaipChainId }) => {

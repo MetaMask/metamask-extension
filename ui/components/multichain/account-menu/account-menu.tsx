@@ -38,6 +38,7 @@ import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
   getIsTronSupportEnabled,
+  getIsStellarSupportEnabled,
   getHdKeyringOfSelectedAccountOrPrimaryKeyring,
   getMetaMaskHdKeyrings,
   getManageInstitutionalWallets,
@@ -94,6 +95,8 @@ export const ACTION_MODES = {
   ADD_SOLANA: 'add-solana',
   // Displays the add account form controls (for tron account)
   ADD_TRON: 'add-tron',
+  // Displays the add account form controls (for stellar account)
+  ADD_STELLAR: 'add-stellar',
   // Displays the import account form controls
   IMPORT: 'import',
   CREATE_SRP: 'create-srp',
@@ -118,6 +121,10 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
   [ACTION_MODES.ADD_TRON]: {
     clientType: WalletClientType.Tron,
     chainId: MultichainNetworks.TRON,
+  },
+  [ACTION_MODES.ADD_STELLAR]: {
+    clientType: WalletClientType.Stellar,
+    chainId: MultichainNetworks.STELLAR,
   },
 };
 
@@ -145,6 +152,8 @@ export const getActionTitle = (
       return t('addAccountFromNetwork', [t('networkNameSolana')]);
     case ACTION_MODES.ADD_TRON:
       return t('addAccountFromNetwork', [t('networkNameTron')]);
+    case ACTION_MODES.ADD_STELLAR:
+      return t('addAccountFromNetwork', [t('networkNameStellar')]);
     case ACTION_MODES.IMPORT:
       return t('importPrivateKey');
     case ACTION_MODES.CREATE_SRP:
@@ -226,6 +235,11 @@ export const AccountMenu = ({
   const tronSupportEnabled = useSelector(getIsTronSupportEnabled);
   const tronWalletSnapClient = useMultichainWalletSnapClient(
     WalletClientType.Tron,
+  );
+
+  const stellarSupportEnabled = useSelector(getIsStellarSupportEnabled);
+  const stellarWalletSnapClient = useMultichainWalletSnapClient(
+    WalletClientType.Stellar,
   );
 
   const [primaryKeyring] = useSelector(getMetaMaskHdKeyrings);
@@ -477,6 +491,31 @@ export const AccountMenu = ({
                   data-testid="multichain-account-menu-popover-add-tron-account"
                 >
                   {t('addNewTronAccountLabel')}
+                </ButtonLink>
+              </Box>
+            )}
+
+            {stellarSupportEnabled && (
+              <Box marginTop={4}>
+                <ButtonLink
+                  size={ButtonLinkSize.Sm}
+                  startIconName={IconName.Add}
+                  startIconProps={{ size: IconSize.Md }}
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onClick={async () => {
+                    return await handleMultichainSnapAccountCreation(
+                      stellarWalletSnapClient,
+                      {
+                        scope: MultichainNetworks.STELLAR,
+                        entropySource: primaryKeyring.metadata.id,
+                      },
+                      ACTION_MODES.ADD_STELLAR,
+                    );
+                  }}
+                  data-testid="multichain-account-menu-popover-add-stellar-account"
+                >
+                  {t('addNewStellarAccountLabel')}
                 </ButtonLink>
               </Box>
             )}

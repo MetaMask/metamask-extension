@@ -52,6 +52,10 @@ jest.mock('../../../../../pages/bridge/hooks/useRWAToken', () => ({
   }),
 }));
 
+jest.mock('../../../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
+
 describe('TokenCellTitle', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -94,6 +98,19 @@ describe('TokenCellTitle', () => {
     const { queryByTestId } = render(<TokenCellTitle token={token} />);
 
     expect(queryByTestId('tag')).not.toBeInTheDocument();
+  });
+
+  it('renders no trustline tag when isStellarTrustlineInactive is true', () => {
+    const token = createMockToken({
+      accountType: undefined,
+      isStellarTrustlineInactive: true,
+    });
+    const { getByTestId } = render(<TokenCellTitle token={token} />);
+
+    expect(getByTestId('tag')).toHaveAttribute(
+      'data-label',
+      'stellarTrustlineInactive',
+    );
   });
 
   it('does not render tag when accountType is undefined', () => {

@@ -298,6 +298,9 @@
   "addNewTronAccountLabel": {
     "message": "Tron account"
   },
+  "addNewStellarAccountLabel": {
+    "message": "Stellar account"
+  },
   "addNft": {
     "message": "Add NFT"
   },
@@ -4709,6 +4712,9 @@
   "networkNameTron": {
     "message": "Tron"
   },
+  "networkNameStellar": {
+    "message": "Stellar"
+  },
   "networkOptions": {
     "message": "Network options"
   },
@@ -8832,6 +8838,34 @@
   },
   "staked": {
     "message": "Staked"
+  },
+  "stellarTrustlineInactive": {
+    "message": "No trustline",
+    "description": "Label for a Stellar classic token the user imported but has not established an on-chain trustline for yet"
+  },
+  "stellarClassicActivateOnStellarTitle": {
+    "message": "Activate $1 on Stellar",
+    "description": "Title for the trustline activation card on the Stellar asset detail page. $1 is the token symbol."
+  },
+  "stellarClassicActivateOnStellarBody": {
+    "message": "Approve adding this token trustline in MetaMask. You need a funded Stellar account and enough XLM for fees and reserve.",
+    "description": "Explainer for the trustline activation card on the Stellar asset detail page"
+  },
+  "stellarClassicActivateOnStellarButton": {
+    "message": "Activate",
+    "description": "Primary button to submit a Stellar classic trustline add via the wallet snap"
+  },
+  "stellarClassicTrustlineAddError": {
+    "message": "Something went wrong while adding this trustline. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt add request fails for a reason other than user cancel"
+  },
+  "stellarClassicRemoveTrustline": {
+    "message": "Remove trustline",
+    "description": "Button label to remove an active Stellar classic trustline from the asset detail page"
+  },
+  "stellarClassicTrustlineRemoveError": {
+    "message": "Something went wrong while removing this trustline. Your balance must be zero. Try again.",
+    "description": "Alert when the Stellar changeTrustOpt delete request fails for a reason other than user cancel"
   },
   "stakingDeposit": {
     "message": "Staking deposit"

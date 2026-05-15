@@ -12,11 +12,7 @@ import {
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { type TokenWithFiatAmount } from '../types';
-import {
-  getSelectedMultichainNetworkConfiguration,
-  getIsEvmMultichainNetworkSelected,
-  getAllEnabledNetworksForAllNamespaces,
-} from '../../../../selectors/multichain/networks';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
 import {
   getAssetsBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
@@ -43,8 +39,6 @@ type TokenListProps = {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
-  const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
-  const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const shouldHideZeroBalanceTokens = useSelector(
@@ -86,14 +80,21 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       tokenSortConfig,
     );
 
-    // Filter out non-EVM assets when basic functionality toggle is OFF
-    // Exception: Keep assets for the currently selected non-EVM chain
+    // When basic functionality is off (useExternalServices false), the previous
+    // rule "EVM or only the *currently selected* non-EVM chain" hid all other
+    // enabled non-EVM (e.g. Stellar) whenever the multichain picker was on an EVM
+    // network, so the account list looked empty for those chains. We already
+    // scoped chains above via allEnabledNetworksForAllNamespaces; show every
+    // non-EVM asset whose chain is still enabled, not only the one matching the
+    // header's current non-EVM network.
     const finalAccountAssets = useExternalServices
       ? accountAssets
       : accountAssets.filter(
           (asset) =>
             isEvmChainId(asset.chainId) ||
-            (!isEvm && asset.chainId === currentNetwork.chainId),
+            allEnabledNetworksForAllNamespaces.includes(
+              asset.chainId as CaipChainId,
+            ),
         );
 
     return finalAccountAssets.map((asset) => {
@@ -104,13 +105,14 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         title: asset.name,
         address: 'address' in asset ? asset.address : (asset.assetId as Hex),
         chainId: asset.chainId as Hex,
+        ...(asset.isStellarTrustlineInactive && {
+          isStellarTrustlineInactive: true,
+        }),
       };
 
       return token;
     });
   }, [
-    isEvm,
-    currentNetwork.chainId,
     tokenSortConfig,
     accountGroupIdAssets,
     allEnabledNetworksForAllNamespaces,

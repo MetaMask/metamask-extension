@@ -53,6 +53,16 @@ export const isTronAddress = (address: string): boolean => {
 };
 
 /**
+ * Stellar account address (StrKey, starts with G).
+ *
+ * @param address - The address to check.
+ * @returns `true` if the string matches the Stellar account key format.
+ */
+export function isStellarAddress(address: string): boolean {
+  return /^G[A-Z2-7]{55}$/u.test(address);
+}
+
+/**
  * Returns the associated chain's type for the given address.
  *
  * @param address - The address to check.
@@ -69,6 +79,10 @@ export function getCaipNamespaceFromAddress(address: string): CaipNamespace {
 
   if (isTronAddress(address)) {
     return KnownCaipNamespace.Tron;
+  }
+
+  if (isStellarAddress(address)) {
+    return KnownCaipNamespace.Stellar;
   }
 
   // Defaults to "Ethereum" for all other cases for now.

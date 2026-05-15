@@ -117,6 +117,7 @@ export const useTokenDisplayInfo = ({
       secondary,
       isStakeable,
       tokenChainImage: tokenChainImage as string,
+      isStellarTrustlineInactive: token.isStellarTrustlineInactive,
     };
   }
 
@@ -132,6 +133,7 @@ export const useTokenDisplayInfo = ({
     secondary: showFiat ? nonEvmSecondary : null,
     isStakeable: false,
     tokenChainImage: token.image as string,
+    isStellarTrustlineInactive: token.isStellarTrustlineInactive,
   };
 };
 

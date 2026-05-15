@@ -47,6 +47,7 @@ export type TokenDisplayInfo = TokenDisplayValues & {
   tokenImage: string;
   isStakeable?: boolean;
   tokenChainImage: string;
+  isStellarTrustlineInactive?: boolean;
 };
 
 // Token type that includes fiat amount, balance, and display values
@@ -58,6 +59,7 @@ export type TokenWithFiatAmount = Token &
     rwaData?: TokenListToken['rwaData'];
     // TODO BIP44: This will not need to be optional once BIP44 is enabled
     accountType?: KeyringAccountType;
+    isStellarTrustlineInactive?: boolean;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;
