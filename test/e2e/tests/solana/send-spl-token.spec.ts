@@ -299,7 +299,6 @@ describe('Send flow - SPL Token', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        // await driver.delay(1000000);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
