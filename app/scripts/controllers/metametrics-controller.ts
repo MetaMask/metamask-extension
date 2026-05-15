@@ -1398,8 +1398,10 @@ export class MetaMetricsController extends BaseController<
   ): Partial<MetaMetricsUserTraits> | null {
     const { traits } = this.state;
     const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
+    const cookieIdTrait = traits[MetaMetricsUserTrait.CookieId];
+    const gaClientIdTrait = traits[MetaMetricsUserTrait.GaClientId];
 
-    const currentTraits = {
+    const currentTraits: MetaMetricsUserTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
@@ -1474,6 +1476,14 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.Os]: getOs(),
       ...this.#getAccountCompositionTraits(metamaskState),
     };
+
+    if (cookieIdTrait !== undefined) {
+      currentTraits[MetaMetricsUserTrait.CookieId] = cookieIdTrait;
+    }
+
+    if (gaClientIdTrait !== undefined) {
+      currentTraits[MetaMetricsUserTrait.GaClientId] = gaClientIdTrait;
+    }
 
     if (!this.previousUserTraits && metamaskState.participateInMetaMetrics) {
       this.previousUserTraits = currentTraits;

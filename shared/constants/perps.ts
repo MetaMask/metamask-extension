@@ -9,6 +9,15 @@ export const PERPS_FALLBACK_FEE_RATES = {
   metamaskFeeRate: 0.001,
 } as const;
 
+/**
+ * i18n keys referenced from Perps tests via `enLocale`. Quoted literals are picked
+ * up by `yarn verify-locales` (development/verify-locale-strings.js).
+ */
+export const PERPS_TEST_EN_LOCALE_KEYS = {
+  depositErrorBridgeFailed: 'perpsDepositErrorBridgeFailed',
+  transactionTitleOpenedLong: 'perpsTransactionTitleOpenedLong',
+} as const;
+
 /** Max items shown in the Perps tab Recent Activity preview (matches Activity page slice). */
 export const PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS = 5;
 

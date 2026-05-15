@@ -111,6 +111,9 @@ describe('Account syncing - Multiple SRPs', function () {
         // Importing an SRP can be long, so we add a bit of extra time here
         await driver.delay(10000);
 
+        // Dismiss any lingering toast so it cannot overlay the add-account button.
+        await homePage.dismissSrpAddedToast();
+
         // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
