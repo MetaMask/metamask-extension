@@ -10662,6 +10662,10 @@
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
+  "unexpectedError": {
+    "message": "An unexpected error occurred.",
+    "description": "This is a fallback error message used for unexpected errors."
+  },
   "unifiedSwapAllowSwappingOf": {
     "message": "Allow exact access to $1 $2 on $3 for swapping"
   },

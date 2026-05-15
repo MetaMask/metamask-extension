@@ -2837,20 +2837,16 @@ describe('Actions', () => {
 
     it('returns expected actions for successful action', async () => {
       const store = mockStore();
-
       const testPrivKey = 'a-test-priv-key';
-
       const verifyPasswordStub = sinon.stub().resolves();
-
       const exportAccountStub = sinon.stub().resolves(testPrivKey);
-
+      const setPrivateKeyStub = jest.fn();
+      const setShowHoldToReveal = jest.fn();
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
         exportAccount: exportAccountStub,
       });
-
       setBackgroundConnection(background.getApi());
-
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
@@ -2860,60 +2856,46 @@ describe('Actions', () => {
         actions.exportAccount(
           'a-test-password',
           '0xAddress',
-          jest.fn(),
-          jest.fn(),
+          setPrivateKeyStub,
+          setShowHoldToReveal,
         ),
       );
 
-      expect(verifyPasswordStub.callCount).toStrictEqual(1);
-      expect(exportAccountStub.callCount).toStrictEqual(1);
       expect(store.getActions()).toStrictEqual(expectedActions);
+      expect(setPrivateKeyStub).toHaveBeenCalledWith(testPrivKey);
+      expect(setShowHoldToReveal).toHaveBeenCalledWith(true);
     });
 
-    it('returns action errors when first func callback errors', async () => {
+    it('returns invalidPassword error when password validation failes', async () => {
       const store = mockStore();
-
       const verifyPasswordStub = sinon.stub().rejects(new Error('error'));
-
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
       });
-
       setBackgroundConnection(background.getApi());
-
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
-        { type: 'DISPLAY_WARNING', payload: 'Incorrect Password.' },
       ];
 
       await expect(
         store.dispatch(actions.exportAccount('a-test-password', '0xAddress')),
-      ).rejects.toThrow('error');
+      ).resolves.toStrictEqual({ error: 'invalidPassword' });
 
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
 
-    it('returns action errors when second func callback errors', async () => {
+    it('throws when account export fails', async () => {
       const store = mockStore();
-
       const verifyPasswordStub = sinon.stub().resolves();
-
       const exportAccountStub = sinon.stub().rejects(new Error('error'));
-
       background.getApi.returns({
         verifyPassword: verifyPasswordStub,
         exportAccount: exportAccountStub,
       });
-
       setBackgroundConnection(background.getApi());
-
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        {
-          type: 'DISPLAY_WARNING',
-          payload: 'Had a problem exporting the account.',
-        },
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
