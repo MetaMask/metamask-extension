@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 // Auto-update skills on `yarn install`. Best-effort: never fails the install.
 //
 // - Skipped on CI, or when SKILLS_SKIP_POSTINSTALL=1.
@@ -13,9 +12,9 @@
 // - All errors swallowed with a one-line warning. Engineers can run
 //   `yarn skills` manually for interactive feedback.
 
-const { spawnSync } = require('child_process');
-const { existsSync, mkdirSync, statSync } = require('fs');
-const path = require('path');
+import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
+import { existsSync, mkdirSync, statSync } from 'node:fs';
+import path from 'node:path';
 
 if (process.env.SKILLS_SKIP_POSTINSTALL) {
   process.exit(0);
@@ -28,20 +27,20 @@ const REPO = 'metamask-extension';
 const CACHE_DIR = '.skills-cache/metamask-skills';
 const PUBLIC_REPO = 'https://github.com/MetaMask/skills.git';
 
-function warn(msg) {
+function warn(msg: string): void {
   process.stderr.write(
     `skills postinstall: ${msg} (run \`yarn skills\` for details)\n`,
   );
 }
 
-function run(cmd, args) {
+function run(cmd: string, args: string[]): SpawnSyncReturns<Buffer> {
   return spawnSync(cmd, args, { stdio: 'ignore' });
 }
 
-function isGitDir(dir) {
+function isGitDir(dir: string): boolean {
   try {
     return statSync(path.join(dir, '.git')).isDirectory();
-  } catch (_) {
+  } catch {
     return false;
   }
 }
