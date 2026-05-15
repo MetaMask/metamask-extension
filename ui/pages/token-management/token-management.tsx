@@ -926,9 +926,9 @@ export const TokenManagementPage = () => {
         ? false
         : Boolean(
             accountIdForChain &&
-              allIgnoredAssetsByAccount[accountIdForChain]?.some(
-                (assetId) => String(assetId).toLowerCase() === lowerAssetId,
-              ),
+            allIgnoredAssetsByAccount[accountIdForChain]?.some(
+              (assetId) => String(assetId).toLowerCase() === lowerAssetId,
+            ),
           );
       const isHidden =
         stagedHideKeys.has(lowerAssetId) ||
