@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -8,8 +8,10 @@ import {
   FontWeight,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { usePerpsLivePrices } from '../../../../hooks/perps/stream';
 import { PositionCard } from '../position-card';
 import { OrderCard } from '../order-card';
+import { parsePerpsDisplayPrice } from '../utils/formatPerpsDisplayPrice';
 import type { Position, Order } from '../types';
 
 export type PerpsPositionsOrdersProps = {
@@ -32,6 +34,12 @@ export const PerpsPositionsOrders: React.FC<PerpsPositionsOrdersProps> = ({
   const t = useI18nContext();
   const hasPositions = positions.length > 0;
   const hasOrders = orders.length > 0;
+
+  const positionSymbols = useMemo(
+    () => positions.map((p) => p.symbol),
+    [positions],
+  );
+  const { prices } = usePerpsLivePrices({ symbols: positionSymbols });
 
   if (!hasPositions && !hasOrders) {
     return null;
@@ -75,9 +83,20 @@ export const PerpsPositionsOrders: React.FC<PerpsPositionsOrdersProps> = ({
             </ButtonBase> */}
           </Box>
           <Box flexDirection={BoxFlexDirection.Column}>
-            {positions.map((position) => (
-              <PositionCard key={position.symbol} position={position} />
-            ))}
+            {positions.map((position) => {
+              const priceUpdate = prices[position.symbol];
+              const livePrice = priceUpdate?.markPrice ?? priceUpdate?.price;
+              const currentPrice = livePrice
+                ? parsePerpsDisplayPrice(livePrice)
+                : undefined;
+              return (
+                <PositionCard
+                  key={position.symbol}
+                  position={position}
+                  currentPrice={currentPrice}
+                />
+              );
+            })}
           </Box>
         </Box>
       )}

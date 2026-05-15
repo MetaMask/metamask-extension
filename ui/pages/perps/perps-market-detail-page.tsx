@@ -89,12 +89,15 @@ import {
   safeDecodeURIComponent,
   getChangeColor,
   formatSignedChangePercent,
+  getPositionDirection,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
   formatPerpsLiquidationPrice,
+  getLiquidationDistancePercent,
+  formatLiquidationDistancePercent,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -1484,6 +1487,40 @@ const PerpsMarketDetailPage: React.FC = () => {
                     {formatPerpsLiquidationPrice(position.liquidationPrice)}
                   </Text>
                 </Box>
+
+                {/* Liquidation Distance Row */}
+                {(() => {
+                  const liqDistance = getLiquidationDistancePercent(
+                    currentPrice,
+                    position.liquidationPrice,
+                    getPositionDirection(position.size),
+                  );
+                  if (liqDistance === null) {
+                    return null;
+                  }
+                  return (
+                    <Box
+                      className="bg-muted px-4 py-3"
+                      flexDirection={BoxFlexDirection.Row}
+                      justifyContent={BoxJustifyContent.Between}
+                      alignItems={BoxAlignItems.Center}
+                    >
+                      <Text
+                        variant={TextVariant.BodySm}
+                        color={TextColor.TextAlternative}
+                      >
+                        {t('perpsLiquidationDistance')}
+                      </Text>
+                      <Text
+                        variant={TextVariant.BodySm}
+                        fontWeight={FontWeight.Medium}
+                        data-testid="perps-position-liquidation-distance-value"
+                      >
+                        {formatLiquidationDistancePercent(liqDistance)}
+                      </Text>
+                    </Box>
+                  );
+                })()}
 
                 {/* Funding Payments Row */}
                 <Box

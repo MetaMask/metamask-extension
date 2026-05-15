@@ -42,3 +42,46 @@ export function formatPerpsLiquidationPrice(
     ? formatPerpsFiatUniversal(value as string | number)
     : PERPS_LIQUIDATION_PRICE_FALLBACK;
 }
+
+/**
+ * Compute the distance between the current price and the liquidation price
+ * as a percentage of the current price. Direction-aware per
+ * Hyperliquid conventions: for a long, liquidation sits below the current
+ * price; for a short, it sits above. Returns null when either input is
+ * unusable.
+ *
+ * @param currentPrice - Live mark / market price.
+ * @param liquidationPrice - Position liquidation price (raw or parsed).
+ * @param side - 'long' or 'short'.
+ */
+export function getLiquidationDistancePercent(
+  currentPrice: number | null | undefined,
+  liquidationPrice: string | number | null | undefined,
+  side: 'long' | 'short',
+): number | null {
+  if (
+    typeof currentPrice !== 'number' ||
+    !Number.isFinite(currentPrice) ||
+    currentPrice <= 0
+  ) {
+    return null;
+  }
+  if (!isPerpsLiquidationPriceValid(liquidationPrice)) {
+    return null;
+  }
+  const liq = parsePerpsDisplayPrice(liquidationPrice as string | number);
+  const distance =
+    side === 'short'
+      ? ((liq - currentPrice) / currentPrice) * 100
+      : ((currentPrice - liq) / currentPrice) * 100;
+  return distance;
+}
+
+/**
+ * Format a liquidation distance percentage for display.
+ *
+ * @param percent - Numeric distance percentage.
+ */
+export function formatLiquidationDistancePercent(percent: number): string {
+  return `${Math.round(percent)}%`;
+}
