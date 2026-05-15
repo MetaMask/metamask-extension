@@ -1612,5 +1612,92 @@ describe('useHwBatchSignTracker', () => {
         ['tx-finished'],
       );
     });
+
+    it('returns early when enabled is false', async () => {
+      const { result } = renderHook(() =>
+        useHwBatchSignTracker(
+          FROM_ADDRESS,
+          true,
+          true,
+          dispatchEvent,
+          undefined,
+          { enabled: false },
+        ),
+      );
+
+      mockSubmitRequestToBackground.mockClear();
+
+      await act(async () => {
+        await result.current.cancelCurrentBatch();
+      });
+
+      expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('enabled option', () => {
+    it('does not subscribe when enabled is false', () => {
+      renderHook(() =>
+        useHwBatchSignTracker(
+          FROM_ADDRESS,
+          true,
+          true,
+          dispatchEvent,
+          undefined,
+          { enabled: false },
+        ),
+      );
+
+      expect(mockSubscribe).not.toHaveBeenCalled();
+    });
+
+    it('subscribes when enabled is true', async () => {
+      const createMockUnsubscribe = () => {
+        const fn = jest.fn().mockResolvedValue(undefined) as jest.Mock & {
+          catch: jest.Mock;
+        };
+        fn.catch = jest.fn();
+        return fn;
+      };
+      mockSubscribe.mockResolvedValue(createMockUnsubscribe());
+
+      renderHook(() =>
+        useHwBatchSignTracker(
+          FROM_ADDRESS,
+          true,
+          true,
+          dispatchEvent,
+          undefined,
+          { enabled: true },
+        ),
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      expect(mockSubscribe).toHaveBeenCalledTimes(3);
+    });
+
+    it('subscribes by default when options not provided', async () => {
+      const createMockUnsubscribe = () => {
+        const fn = jest.fn().mockResolvedValue(undefined) as jest.Mock & {
+          catch: jest.Mock;
+        };
+        fn.catch = jest.fn();
+        return fn;
+      };
+      mockSubscribe.mockResolvedValue(createMockUnsubscribe());
+
+      renderHook(() =>
+        useHwBatchSignTracker(FROM_ADDRESS, true, true, dispatchEvent),
+      );
+
+      await act(async () => {
+        await jest.runAllTimersAsync();
+      });
+
+      expect(mockSubscribe).toHaveBeenCalledTimes(3);
+    });
   });
 });

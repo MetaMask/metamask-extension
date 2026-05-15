@@ -20,7 +20,7 @@ import {
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
-import { isHardwareWallet } from '../../../selectors/selectors';
+import { getIsStxEnabled } from '../../../ducks/bridge/selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -58,6 +58,8 @@ import {
   hardwareWalletSignaturesReducer,
 } from './hardware-wallet-signatures-state-machine';
 import { useHwBatchSignTracker } from './useHwBatchSignTracker';
+import { useHwSequentialSignTracker } from './useHwSequentialSignTracker';
+import { isHardwareWallet } from 'shared/lib/selectors/keyring';
 
 const SIGNATURE_STUCK_TIMEOUT_MS = 5_000;
 
@@ -71,6 +73,7 @@ function isAwaitingSignature(status: HardwareWalletSignatureStatus): boolean {
 export default function HardwareWalletSignatures() {
   const t = useI18nContext();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
+  const isStxEnabled = useSelector(getIsStxEnabled);
   const { trackEvent } = useContext(MetaMetricsContext);
   const { navigateToBridgePage } = useBridgeNavigation();
 
@@ -189,13 +192,25 @@ export default function HardwareWalletSignatures() {
 
   useHwSwapNavigation({ signatureState });
 
-  const { cancelCurrentBatch } = useHwBatchSignTracker(
+  const { cancelCurrentBatch: cancelBatch } = useHwBatchSignTracker(
     fromAddress,
     hardwareWalletUsed,
     needsTwoConfirmations,
     dispatchSignatureEvent,
     retryGenerationRef,
+    { enabled: isStxEnabled },
   );
+
+  const { cancelCurrentBatch: cancelSequential } = useHwSequentialSignTracker(
+    fromAddress,
+    hardwareWalletUsed,
+    needsTwoConfirmations,
+    dispatchSignatureEvent,
+    retryGenerationRef,
+    { enabled: !isStxEnabled },
+  );
+
+  const cancelCurrentBatch = isStxEnabled ? cancelBatch : cancelSequential;
 
   // WORKAROUND: Set the Trezor signing-in-progress flag to suppress
   // spurious WebUSB disconnect teardowns during signing. See
@@ -427,6 +442,7 @@ export default function HardwareWalletSignatures() {
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
       style={{ flex: 1, width: '100%', minHeight: '100%' }}
+      data-testid="hardware-wallet-signatures"
     >
       <Box
         className="hardware-wallet-signatures__content"
@@ -446,6 +462,7 @@ export default function HardwareWalletSignatures() {
           className="hardware-wallet-signatures__title"
           color={TextColor.TextDefault}
           variant={TextVariant.HeadingLg}
+          data-testid="hardware-wallet-signatures__title"
         >
           {displayedTitle}
         </Text>
@@ -465,7 +482,10 @@ export default function HardwareWalletSignatures() {
                 />
               </Box>
             )}
-            <ul className="hardware-wallet-signatures__steps">
+            <ul
+              className="hardware-wallet-signatures__steps"
+              data-testid="hardware-wallet-signatures__steps"
+            >
               {needsTwoConfirmations && (
                 <li>
                   <SignatureStatusIcon
@@ -559,6 +579,7 @@ export default function HardwareWalletSignatures() {
               isFullWidth
               isDisabled={isRetrying}
               onClick={handleRetry}
+              data-testid="hardware-wallet-signatures__retry-button"
             >
               {signatureState.status ===
               HardwareWalletSignatureStatus.Disconnected
@@ -572,6 +593,7 @@ export default function HardwareWalletSignatures() {
               size={ButtonSize.Lg}
               isFullWidth
               onClick={handleRetry}
+              data-testid="hardware-wallet-signatures__resend-button"
             >
               {t('bridgeHwResendTransaction')}
             </Button>
@@ -591,6 +613,7 @@ export default function HardwareWalletSignatures() {
             size={ButtonSize.Lg}
             isFullWidth
             onClick={handleCancel}
+            data-testid="hardware-wallet-signatures__cancel-button"
           >
             {t('cancel')}
           </Button>
