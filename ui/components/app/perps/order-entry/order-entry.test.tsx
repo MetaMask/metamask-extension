@@ -394,7 +394,9 @@ describe('OrderEntry', () => {
       expect(
         screen.getByText(messages.perpsAvailableToClose.message),
       ).toBeInTheDocument();
-      expect(screen.getByTestId('close-amount-slider')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('close-amount-slider-pct-100'),
+      ).toBeInTheDocument();
     });
 
     it('hides amount input in close mode', () => {

@@ -19,12 +19,10 @@ export const PerpsWithdrawInfo = () => {
 
   const preferredToken = usePerpsWithdrawDefaultToken();
 
-  // Release-branch Unified Account bridge: source the custom-amount percentage
-  // balance from the user-visible Perps withdraw max.
   const { account } = usePerpsLiveAccount();
   const balanceUsdOverride =
     parseFloat(
-      account?.availableToTradeBalance ?? account?.availableBalance ?? '0',
+      account?.withdrawableBalance ?? account?.spendableBalance ?? '0',
     ) || 0;
 
   return (

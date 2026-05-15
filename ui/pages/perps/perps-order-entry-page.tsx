@@ -47,7 +47,7 @@ import {
 } from '../../../shared/constants/perps-events';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
@@ -473,7 +473,7 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   // Order-entry surface — use tradeable balance so HyperLiquid unified accounts
   // funded by spot USDC are recognized as tradeable. Withdraw screens still
-  // read `account.availableBalance` directly.
+  // read `account.spendableBalance` directly.
   const availableBalance = Number.parseFloat(getTradeableBalance(account));
   const hasNoAvailableBalance =
     orderMode === 'new' && !isLoadingAccount && availableBalance <= 0;
@@ -1424,11 +1424,6 @@ const PerpsOrderEntryPage: React.FC = () => {
           initialLeverage={initialLeverage}
           autoFocusUsd={orderMode !== 'close'}
           autoFocusLimitPrice={orderMode !== 'close'}
-          usdPlaceholder={
-            orderType === 'market'
-              ? `min $${PERPS_MIN_MARKET_ORDER_USD}`
-              : undefined
-          }
           sizeDecimals={marketInfo?.szDecimals}
         />
       </Box>

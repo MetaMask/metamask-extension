@@ -362,6 +362,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            unlock_type: 'password',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            passkey_enabled: this.props.isPasskeyActive,
           },
         },
         {
@@ -457,6 +461,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           failed_attempts: this.failed_attempts,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          unlock_type: 'password',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_enabled: this.props.isPasskeyActive,
         },
       });
     }
@@ -546,10 +554,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   handleUnlockPasskeyFromPasswordForm = () => {
     if (this.props.mustDeferPasskeyToBrowserTab) {
       cancelPasskeyCeremony();
-      globalThis.platform?.openExtensionInBrowser?.(
-        UNLOCK_ROUTE,
-        'from=sidepanel',
-      );
+      globalThis.platform?.openExtensionInBrowser?.(UNLOCK_ROUTE);
       return;
     }
     this.setPasswordUnlockMode(false);
