@@ -35,7 +35,7 @@ export const AccountDetailsAuthenticate = ({
       exportAccount(password, address, setPrivateKey, setShowHoldToReveal),
     )
       .then((res) => {
-        if (res.error && res.error === 'invalidPassword') {
+        if (res && res.error && res.error === 'invalidPassword') {
           setWarning(t('wrongPassword'));
         } else if (warning !== '') {
           setWarning('');
@@ -45,7 +45,16 @@ export const AccountDetailsAuthenticate = ({
         setWarning(t('unexpectedError'));
         captureException(error);
       });
-  }, [dispatch, password, address, setPrivateKey, setShowHoldToReveal, t]);
+  }, [
+    dispatch,
+    password,
+    address,
+    setPrivateKey,
+    setShowHoldToReveal,
+    setWarning,
+    t,
+    warning,
+  ]);
 
   const handleKeyPress = useCallback(
     (e) => {
