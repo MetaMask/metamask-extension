@@ -558,6 +558,89 @@ describe('TokenManagementPage', () => {
     );
   });
 
+  it('keeps a hidden search result OFF after the user clears and repeats the search', async () => {
+    const actions = getMockedActions();
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    renderPage();
+
+    const searchInput = screen.getByTestId('token-management-search-input');
+    fireEvent.change(searchInput, {
+      target: { value: mainnetToken.name },
+    });
+
+    const firstSearchResultToggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    fireEvent.click(firstSearchResultToggle);
+    expect(firstSearchResultToggle.value).toBe('false');
+
+    fireEvent.change(searchInput, { target: { value: '' } });
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+
+    fireEvent.change(searchInput, {
+      target: { value: mainnetToken.name },
+    });
+
+    const secondSearchResultToggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(secondSearchResultToggle.value).toBe('false');
+  });
+
+  it('commits the staged hide before navigating back', async () => {
+    const actions = getMockedActions();
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: mainnetToken.name },
+    });
+    fireEvent.click(
+      screen.getByTestId(
+        `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+      ),
+    );
+
+    fireEvent.click(screen.getByTestId('token-management-header-back-button'));
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+  });
+
   it('commits the staged hide when the user clicks the Add custom token CTA', async () => {
     const actions = getMockedActions();
 
@@ -648,6 +731,61 @@ describe('TokenManagementPage', () => {
       `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
     ) as HTMLInputElement;
     expect(toggle.value).toBe('true');
+  });
+
+  it('shows an ignored EVM search result as OFF after reopening token management', () => {
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    const selectedAddress =
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts
+          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
+      ]?.address;
+    if (!selectedAddress) {
+      throw new Error('Expected selected account address');
+    }
+
+    const stateWithIgnoredToken = createState();
+    stateWithIgnoredToken.metamask = {
+      ...stateWithIgnoredToken.metamask,
+      allTokens: {
+        '0x1': {
+          [selectedAddress]: [
+            {
+              address: mainnetToken.address,
+              symbol: mainnetToken.symbol,
+              decimals: mainnetToken.decimals,
+            },
+          ],
+        },
+      },
+      allIgnoredTokens: {
+        '0x1': {
+          [selectedAddress]: [mainnetToken.address],
+        },
+      },
+    };
+
+    renderPage(stateWithIgnoredToken);
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: mainnetToken.name },
+    });
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(toggle.value).toBe('false');
   });
 
   it('keeps stale results visible while the next query is being fetched', () => {

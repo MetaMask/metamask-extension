@@ -64,7 +64,11 @@ import {
 } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
-import { getTokensControllerAllTokens } from '../../../shared/lib/selectors/assets-migration';
+import {
+  getMultiChainAssetsControllerAllIgnoredAssets,
+  getTokensControllerAllIgnoredTokens,
+  getTokensControllerAllTokens,
+} from '../../../shared/lib/selectors/assets-migration';
 import {
   getAssetImageUrl,
   isEvmChainId,
@@ -242,11 +246,11 @@ export const TokenManagementPage = () => {
    * staged token does NOT commit; instead it unstages, which is what
    * powers the in-page restore behavior.
    */
-  const commitStagedHides = useCallback(() => {
+  const commitStagedHides = useCallback(async () => {
     if (stagedHidesRef.current.size === 0) {
       return;
     }
-    commitStagedHidesRef.current().catch(() => undefined);
+    await commitStagedHidesRef.current();
   }, []);
 
   const isAssetsUnifiedStateInBuild = useMemo(
@@ -294,6 +298,12 @@ export const TokenManagementPage = () => {
     string,
     Record<string, { address: string }[]>
   >;
+  const allIgnoredTokensByChain = useSelector(
+    getTokensControllerAllIgnoredTokens,
+  ) as Record<string, Record<string, string[]>>;
+  const allIgnoredAssetsByAccount = useSelector(
+    getMultiChainAssetsControllerAllIgnoredAssets,
+  ) as Record<string, CaipAssetType[]>;
   const selectedAddress = useSelector(getSelectedAddress) as string | undefined;
 
   // Looks up the internal account in the selected account group that maps to
@@ -493,26 +503,60 @@ export const TokenManagementPage = () => {
     return set;
   }, [chainToHex, importedEvmTokensByChain, visibleTokens]);
 
+  const ignoredEvmAssetIds = useMemo(() => {
+    const set = new Set<string>();
+    if (!selectedAddress) {
+      return set;
+    }
+
+    const lowercasedSelectedAddress = selectedAddress.toLowerCase();
+    Object.entries(allIgnoredTokensByChain ?? {}).forEach(
+      ([chainId, tokensByAddress]) => {
+        const hexChainId = chainToHex(chainId);
+        Object.entries(tokensByAddress ?? {}).forEach(
+          ([accountAddress, tokenAddresses]) => {
+            if (accountAddress.toLowerCase() !== lowercasedSelectedAddress) {
+              return;
+            }
+
+            tokenAddresses.forEach((tokenAddress) => {
+              const lowercasedTokenAddress = tokenAddress.toLowerCase();
+              set.add(`${hexChainId}:${lowercasedTokenAddress}`);
+              const caipAssetId = toAssetId(
+                tokenAddress as Hex,
+                hexChainId as Hex,
+              );
+              if (caipAssetId) {
+                set.add(caipAssetId.toLowerCase());
+              }
+            });
+          },
+        );
+      },
+    );
+    return set;
+  }, [allIgnoredTokensByChain, chainToHex, selectedAddress]);
+
   const handleOpenNetworkFilter = useCallback(() => {
-    commitStagedHides();
+    commitStagedHides().catch(() => undefined);
     dispatch(showModal({ name: 'NETWORK_MANAGER' }));
   }, [commitStagedHides, dispatch]);
 
   const handleAddCustomToken = useCallback(() => {
-    commitStagedHides();
+    commitStagedHides().catch(() => undefined);
     navigate(CUSTOM_TOKEN_IMPORT_ROUTE);
   }, [commitStagedHides, navigate]);
 
   const handleSearchChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      commitStagedHides();
+      commitStagedHides().catch(() => undefined);
       setSearchQuery(event.target.value);
     },
     [commitStagedHides],
   );
 
   const handleSearchClear = useCallback(() => {
-    commitStagedHides();
+    commitStagedHides().catch(() => undefined);
     setSearchQuery('');
   }, [commitStagedHides]);
 
@@ -786,6 +830,16 @@ export const TokenManagementPage = () => {
     ],
   );
 
+  const handleBack = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      event.preventDefault();
+      commitStagedHides()
+        .catch(() => undefined)
+        .finally(() => navigate(DEFAULT_ROUTE));
+    },
+    [commitStagedHides, navigate],
+  );
+
   const getTokenImage = useCallback((token: ManagedAsset) => {
     if (token.isNative && isEvmChainId(token.chainId as Hex | CaipChainId)) {
       return getNativeCurrencyForChain(token.chainId as Hex) ?? token.image;
@@ -871,8 +925,23 @@ export const TokenManagementPage = () => {
       const isImported =
         importedAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
+      const accountIdForChain = payload.isEvm
+        ? undefined
+        : getAccountForChain(payload.caipChainId)?.id;
+      const isIgnoredMultichainAsset = payload.isEvm
+        ? false
+        : Boolean(
+            accountIdForChain &&
+              allIgnoredAssetsByAccount[accountIdForChain]?.some(
+                (assetId) => String(assetId).toLowerCase() === lowerAssetId,
+              ),
+          );
       const isHidden =
-        stagedHideKeys.has(lowerAssetId) || committedHideKeys.has(lowerAssetId);
+        stagedHideKeys.has(lowerAssetId) ||
+        committedHideKeys.has(lowerAssetId) ||
+        ignoredEvmAssetIds.has(lowerAssetId) ||
+        (evmImportedKey ? ignoredEvmAssetIds.has(evmImportedKey) : false) ||
+        isIgnoredMultichainAsset;
 
       return (
         <TokenManagementCell
@@ -899,8 +968,11 @@ export const TokenManagementPage = () => {
     },
     [
       allMultichainNetworkConfigurations,
+      allIgnoredAssetsByAccount,
       committedHideKeys,
+      getAccountForChain,
       handleSearchResultToggle,
+      ignoredEvmAssetIds,
       importedAssetIds,
       networkConfigurations,
       pendingKeys,
@@ -964,7 +1036,7 @@ export const TokenManagementPage = () => {
   );
 
   const startAccessory = (
-    <Link to={DEFAULT_ROUTE} aria-label={t('back')}>
+    <Link to={DEFAULT_ROUTE} aria-label={t('back')} onClick={handleBack}>
       <ButtonIcon
         iconName={IconName.ArrowLeft}
         ariaLabel={t('back')}
