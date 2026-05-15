@@ -23,5 +23,40 @@ export function getLegacyBackgroundApiServiceMessenger(
     parent: messenger,
   });
 
+  messenger.delegate({
+    messenger: serviceMessenger,
+    actions: [
+      'PreferencesController:setPreference',
+      'NetworkController:getState',
+      'NetworkController:getNetworkClientById',
+      'KeyringController:getAccounts',
+      'RemoteFeatureFlagController:getState',
+      'CurrencyRateController:setCurrentCurrency',
+      'AssetsController:setSelectedCurrency',
+      'KeyringController:exportSeedPhrase',
+      'AccountsController:getSelectedAccount',
+      'ApprovalController:getState',
+      'TransactionController:getState',
+      'ApprovalController:rejectRequest',
+      'TransactionController:wipeTransactions',
+      'SmartTransactionsController:wipeSmartTransactions',
+      'BridgeStatusController:wipeBridgeStatus',
+      'NetworkController:resetConnection',
+      'KeyringController:importAccountWithStrategy',
+      'OnboardingController:getIsSocialLoginFlow',
+      'KeyringController:withKeyring',
+      'KeyringController:removeAccount',
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setSelectedAccount',
+      'SeedlessOnboardingController:addNewSecretData',
+      'SeedlessOnboardingController:updateBackupMetadataState',
+      'PermissionController:updatePermissionsByCaveat',
+      'KeyringController:getKeyringsByType',
+      'KeyringController:addNewKeyring',
+      'OnboardingController:getState',
+      'SeedlessOnboardingController:checkIsPasswordOutdated',
+    ],
+  });
+
   return serviceMessenger;
 }

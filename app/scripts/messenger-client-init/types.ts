@@ -247,6 +247,26 @@ export type MessengerClientInitRequest<
    * The user's preferred language code, if any.
    */
   initLangCode: string | null;
+
+  /**
+   * Gets the record of request account tab IDs.
+   */
+  getRequestAccountTabIds: () => Record<string, number>;
+
+  /**
+   * Gets the record of open MetaMask tab IDs.
+   */
+  getOpenMetamaskTabsIds: () => Record<string, number>;
+
+  /**
+   * Marks the password forgotten.
+   */
+  markPasswordForgotten: () => void;
+
+  /**
+   * Un-marks the password forgotten.
+   */
+  unMarkPasswordForgotten: () => void;
 };
 
 /**

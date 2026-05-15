@@ -5,15 +5,1240 @@ import {
   MOCK_ANY_NAMESPACE,
   MockAnyNamespace,
 } from '@metamask/messenger';
+import { SupportedCurrency } from '@metamask/core-backend';
+import { address } from '@solana/addresses';
+import {
+  AccountImportStrategy,
+  KeyringTypes,
+} from '@metamask/keyring-controller';
+import { add0x, hexToBytes } from '@metamask/utils';
+import { SecretType } from '@metamask/seedless-onboarding-controller';
+import { Caip25CaveatType } from '@metamask/chain-agnostic-permission';
+import { SnapId } from '@metamask/snaps-sdk';
+import mockState from '../../../test/data/mock-state.json';
+import { SMART_TRANSACTION_CONFIRMATION_TYPES } from '../../../shared/constants/app';
+import { createSentryError } from '../../../shared/lib/error';
 import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
 
+jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
+
 describe('LegacyBackgroundApiService', () => {
   it('initializes a new instance of LegacyBackgroundApiService', async () => {
     await withService(async ({ service }) => {
       expect(service).toBeInstanceOf(LegacyBackgroundApiService);
+    });
+  });
+
+  describe('isAssetsUnifyStateEnabled', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      // Clear the require cache and resets process.env before each test to ensure a clean environment.
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      // Restore original environment
+      process.env = originalEnv;
+    });
+
+    it('returns false when the feature flag is undefined', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({ RemoteFeatureFlags: {} }),
+        );
+
+        const result = rootMessenger.call(
+          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('returns false when the feature flag is disabled', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: false, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const result = rootMessenger.call(
+          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('returns false when the feature flag has an unsupported version', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '2' },
+            },
+          }),
+        );
+
+        const result = rootMessenger.call(
+          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('returns true when the feature flag is enabled with the correct version', async () => {
+      await withService(({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const result = rootMessenger.call(
+          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
+        );
+
+        expect(result).toStrictEqual(true);
+      });
+    });
+
+    it('returns false when the feature flag is enabled but the build gate is disabled', async () => {
+      await withService(({ rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        const result = rootMessenger.call(
+          'LegacyBackgroundApiService:isAssetsUnifyStateEnabled',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+  });
+
+  describe('setCurrentCurrency', () => {
+    const originalEnv = process.env;
+
+    beforeEach(() => {
+      // Clear the require cache and resets process.env before each test to ensure a clean environment.
+      jest.resetModules();
+      process.env = { ...originalEnv };
+    });
+
+    afterEach(() => {
+      // Restore original environment
+      process.env = originalEnv;
+    });
+
+    it('sets the currency in the CurrencyRateController', async () => {
+      const currencyCode: SupportedCurrency = 'usd';
+
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'false';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: false, featureVersion: '1' },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'CurrencyRateController:setCurrentCurrency',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setCurrentCurrency',
+            currencyCode,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'CurrencyRateController:setCurrentCurrency',
+          currencyCode,
+        );
+      });
+    });
+
+    it('sets the currency in the AssetsController and CurrencyRateController when assets unify state is enabled', async () => {
+      const currencyCode: SupportedCurrency = 'usd';
+
+      await withService(async ({ serviceMessenger, rootMessenger }) => {
+        process.env.ASSETS_UNIFIED_STATE_ENABLED = 'true';
+
+        rootMessenger.registerActionHandler(
+          'RemoteFeatureFlagController:getState',
+          jest.fn().mockReturnValue({
+            remoteFeatureFlags: {
+              assetsUnifyState: { enabled: true, featureVersion: '1' },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'CurrencyRateController:setCurrentCurrency',
+          jest.fn(),
+        );
+
+        rootMessenger.registerActionHandler(
+          'AssetsController:setSelectedCurrency',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:setCurrentCurrency',
+            currencyCode,
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'CurrencyRateController:setCurrentCurrency',
+          currencyCode,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AssetsController:setSelectedCurrency',
+          currencyCode,
+        );
+      });
+    });
+  });
+
+  describe('setAvatarType', () => {
+    it('calls the messenger with the correct arguments', async () => {
+      const avatarType = 'jazzicon';
+
+      await withService(({ serviceMessenger, rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'PreferencesController:setPreference',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.call(
+          'LegacyBackgroundApiService:setAvatarType',
+          avatarType,
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PreferencesController:setPreference',
+          'avatarType',
+          avatarType,
+        );
+      });
+    });
+  });
+
+  describe('getProviderConfig', () => {
+    it('returns the provider config based on the current network state', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            networkConfigurationsByChainId:
+              mockState.metamask.networkConfigurationsByChainId,
+            selectedNetworkClientId: mockState.metamask.selectedNetworkClientId,
+          }),
+        );
+        const providerConfig = rootMessenger.call(
+          'LegacyBackgroundApiService:getProviderConfig',
+        );
+
+        expect(providerConfig).toEqual({
+          chainId: '0x5',
+          id: 'goerli',
+          nickname: 'Goerli',
+          rpcPrefs: {},
+          rpcUrl: 'https://goerli.com',
+          ticker: 'ETH',
+          type: 'rpc',
+        });
+      });
+    });
+  });
+
+  describe('isPublicEndpointUrl', () => {
+    it('returns true for a public endpoint URL', async () => {
+      await withService(({ rootMessenger }) => {
+        const result = rootMessenger.call(
+          'LegacyBackgroundApiService:isPublicEndpointUrl',
+          'https://mainnet.infura.io/v3/test-infura-project-id',
+        );
+        expect(result).toStrictEqual(true);
+      });
+    });
+
+    it('returns false for a non-public endpoint URL', async () => {
+      await withService(({ rootMessenger }) => {
+        const result = rootMessenger.call(
+          'LegacyBackgroundApiService:isPublicEndpointUrl',
+          'https://my-private-node.com',
+        );
+        expect(result).toStrictEqual(false);
+      });
+    });
+  });
+
+  describe('getRequestAccountTabIds', () => {
+    it('returns the record of request account tab IDs', async () => {
+      const mockTabIds = { '0x123': 1, '0x456': 2 };
+      const mockGetRequestAccountTabIds = jest.fn().mockReturnValue(mockTabIds);
+
+      await withService(
+        {
+          options: {
+            getRequestAccountTabIds: mockGetRequestAccountTabIds,
+          },
+        },
+        ({ rootMessenger }) => {
+          const result = rootMessenger.call(
+            'LegacyBackgroundApiService:getRequestAccountTabIds',
+          );
+
+          expect(result).toEqual(mockTabIds);
+          expect(mockGetRequestAccountTabIds).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('getOpenMetamaskTabsIds', () => {
+    it('returns the record of open MetaMask tab IDs', async () => {
+      const mockTabIds = { '0x123': 1, '0x456': 2 };
+      const mockGetOpenMetamaskTabsIds = jest.fn().mockReturnValue(mockTabIds);
+
+      await withService(
+        {
+          options: {
+            getOpenMetamaskTabsIds: mockGetOpenMetamaskTabsIds,
+          },
+        },
+        ({ rootMessenger }) => {
+          const result = rootMessenger.call(
+            'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
+          );
+
+          expect(result).toEqual(mockTabIds);
+          expect(mockGetOpenMetamaskTabsIds).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('markPasswordForgotten', () => {
+    it('calls the markPasswordForgotten function', async () => {
+      const mockMarkPasswordForgotten = jest.fn();
+
+      await withService(
+        {
+          options: {
+            markPasswordForgotten: mockMarkPasswordForgotten,
+          },
+        },
+        ({ rootMessenger }) => {
+          rootMessenger.call(
+            'LegacyBackgroundApiService:markPasswordForgotten',
+          );
+
+          expect(mockMarkPasswordForgotten).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('unMarkPasswordForgotten', () => {
+    it('calls the unMarkPasswordForgotten function', async () => {
+      const mockUnMarkPasswordForgotten = jest.fn();
+
+      await withService(
+        {
+          options: {
+            unMarkPasswordForgotten: mockUnMarkPasswordForgotten,
+          },
+        },
+        ({ rootMessenger }) => {
+          rootMessenger.call(
+            'LegacyBackgroundApiService:unMarkPasswordForgotten',
+          );
+
+          expect(mockUnMarkPasswordForgotten).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('getCode', () => {
+    it('returns the code of a contract at a given address for a specific network client', async () => {
+      await withService(({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({
+            provider: {
+              request: jest.fn().mockResolvedValue('0x123'),
+            },
+          }),
+        );
+
+        const result = rootMessenger.call(
+          'LegacyBackgroundApiService:getCode',
+          '0x123',
+          'networkClientId',
+        );
+
+        expect(result).resolves.toStrictEqual('0x123');
+      });
+    });
+  });
+
+  describe('getSeedPhrase', () => {
+    it('returns the seed phrase', async () => {
+      const mockSeedPhrase = new Uint8Array([
+        119, 97, 114, 114, 105, 111, 114, 32, 108, 97, 110, 103, 117, 97, 103,
+        101, 32, 106, 111, 107, 101, 32, 98, 111, 110, 117, 115, 32, 117, 110,
+        102, 97, 105, 114, 32, 97, 114, 116, 105, 115, 116, 32, 107, 97, 110,
+        103, 97, 114, 111, 111, 32, 99, 105, 114, 99, 108, 101, 32, 101, 120,
+        112, 97, 110, 100, 32, 104, 111, 112, 101, 32, 109, 105, 100, 100, 108,
+        101, 32, 103, 97, 117, 103, 101,
+      ]);
+
+      const encodedSeedPhrase = Buffer.from([
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+        32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+        32, 32, 32, 32,
+      ]);
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:exportSeedPhrase',
+          jest.fn().mockReturnValue(mockSeedPhrase),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getSeedPhrase',
+          'password',
+        );
+
+        expect(result).toEqual(encodedSeedPhrase);
+      });
+    });
+  });
+
+  describe('resetAccount', () => {
+    it('resets the account and returns the selected address', async () => {
+      const selectedAddress = '0x123';
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            selectedNetworkClientId: 'baz',
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({
+            configuration: { chainId: '0x1' },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          jest.fn().mockReturnValue({ address: selectedAddress }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:getState',
+          jest.fn().mockReturnValue({
+            pendingApprovals: {
+              foo: {
+                id: 'foo',
+                type: SMART_TRANSACTION_CONFIRMATION_TYPES.showSmartTransactionStatusPage,
+                requestState: {
+                  txId: 'bar',
+                },
+              },
+            },
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:getState',
+          jest.fn().mockReturnValue({
+            transactions: [
+              {
+                id: 'bar',
+                chainId: '0x1',
+                txParams: {
+                  from: selectedAddress,
+                },
+              },
+            ],
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'ApprovalController:rejectRequest',
+          jest.fn(),
+        );
+
+        rootMessenger.registerActionHandler(
+          'TransactionController:wipeTransactions',
+          jest.fn(),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SmartTransactionsController:wipeSmartTransactions',
+          jest.fn(),
+        );
+
+        rootMessenger.registerActionHandler(
+          'BridgeStatusController:wipeBridgeStatus',
+          jest.fn(),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:resetConnection',
+          jest.fn(),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:resetAccount',
+        );
+
+        expect(result).toStrictEqual(selectedAddress);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'ApprovalController:rejectRequest',
+          'foo',
+          expect.any(Error),
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'TransactionController:wipeTransactions',
+          { address: selectedAddress, chainId: '0x1' },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'SmartTransactionsController:wipeSmartTransactions',
+          { address: selectedAddress, ignoreNetwork: false },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'BridgeStatusController:wipeBridgeStatus',
+          {
+            address: selectedAddress,
+            ignoreNetwork: false,
+          },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'NetworkController:resetConnection',
+        );
+      });
+    });
+  });
+
+  describe('getGlobalChainId', () => {
+    it('returns the global chain ID', async () => {
+      const globalChainId = '0x1';
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'NetworkController:getState',
+          jest.fn().mockReturnValue({
+            selectedNetworkClientId: 'baz',
+          }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'NetworkController:getNetworkClientById',
+          jest.fn().mockReturnValue({
+            configuration: { chainId: globalChainId },
+          }),
+        );
+
+        const result = rootMessenger.call(
+          'LegacyBackgroundApiService:getGlobalChainId',
+        );
+
+        expect(result).toStrictEqual(globalChainId);
+      });
+    });
+  });
+
+  describe('removeAccount', () => {
+    it('removes an account', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:removeAccount',
+          jest.fn(),
+        );
+
+        rootMessenger.registerActionHandler(
+          'PermissionController:updatePermissionsByCaveat',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:removeAccount',
+          '0x123',
+        );
+
+        expect(result).toStrictEqual('0x123');
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:removeAccount',
+          '0x123',
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'PermissionController:updatePermissionsByCaveat',
+          Caip25CaveatType,
+          expect.any(Function),
+        );
+      });
+    });
+  });
+
+  describe('importAccountWithStrategy', () => {
+    it('imports an account without social login', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:importAccountWithStrategy',
+          jest.fn().mockResolvedValue('0x123'),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue({ id: 'foo' }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importAccountWithStrategy',
+            AccountImportStrategy.privateKey,
+            ['foo', 'bar', 'baz'],
+            { shouldCreateSocialBackup: true, shouldSelectAccount: true },
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:importAccountWithStrategy',
+          AccountImportStrategy.privateKey,
+          ['foo', 'bar', 'baz'],
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:getAccountByAddress',
+          '0x123',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:setSelectedAccount',
+          'foo',
+        );
+      });
+    });
+
+    it('imports an account with social login', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:importAccountWithStrategy',
+          jest.fn().mockResolvedValue('0x123'),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue({ id: 'foo' }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:withKeyring',
+          jest.fn().mockImplementation(({ _address }, callback) =>
+            callback({
+              keyring: {
+                exportAccount: jest
+                  .fn()
+                  .mockResolvedValue(
+                    '0000000000000000000000000000000000000000000000000000000000000001',
+                  ),
+              },
+              metadata: {
+                id: 'foo',
+              },
+            }),
+          ),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:addNewSecretData',
+          jest.fn(),
+        );
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importAccountWithStrategy',
+            AccountImportStrategy.privateKey,
+            ['foo', 'bar', 'baz'],
+            { shouldCreateSocialBackup: true, shouldSelectAccount: true },
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:withKeyring',
+          { address: '0x123' },
+          expect.any(Function),
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:addNewSecretData',
+          hexToBytes(
+            add0x(
+              '0000000000000000000000000000000000000000000000000000000000000001',
+            ),
+          ),
+          SecretType.PrivateKey,
+          { keyringId: 'foo' },
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:importAccountWithStrategy',
+          AccountImportStrategy.privateKey,
+          ['foo', 'bar', 'baz'],
+        );
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:getAccountByAddress',
+          '0x123',
+        );
+        expect(callSpy).toHaveBeenCalledWith(
+          'AccountsController:setSelectedAccount',
+          'foo',
+        );
+      });
+    });
+
+    it('throws an error if the imported account is not found', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:importAccountWithStrategy',
+          jest.fn().mockResolvedValue('0x123'),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue(null),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importAccountWithStrategy',
+            AccountImportStrategy.privateKey,
+            ['foo', 'bar', 'baz'],
+            { shouldCreateSocialBackup: true, shouldSelectAccount: true },
+          ),
+        ).rejects.toThrow('No account found for address: 0x123');
+      });
+    });
+
+    it('throws an error if it fails to add new secret data for a social login account', async () => {
+      const mockError = new Error('Failed to add new secret data');
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:importAccountWithStrategy',
+          jest.fn().mockResolvedValue('0x123'),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue({ id: 'foo' }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:withKeyring',
+          jest.fn().mockImplementation(({ _address }, callback) =>
+            callback({
+              keyring: {
+                exportAccount: jest
+                  .fn()
+                  .mockResolvedValue(
+                    '0000000000000000000000000000000000000000000000000000000000000001',
+                  ),
+              },
+              metadata: {
+                id: 'foo',
+              },
+            }),
+          ),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:addNewSecretData',
+          jest.fn().mockRejectedValue(mockError),
+        );
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:removeAccount',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importAccountWithStrategy',
+            AccountImportStrategy.privateKey,
+            ['foo', 'bar', 'baz'],
+            { shouldCreateSocialBackup: true, shouldSelectAccount: true },
+          ),
+        ).rejects.toThrow(mockError);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:removeAccount',
+          '0x123',
+        );
+      });
+    });
+
+    it('Does not sync with server if shouldCreateSocialBackup is false', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:importAccountWithStrategy',
+          jest.fn().mockResolvedValue('0x123'),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue({ id: 'foo' }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:withKeyring',
+          jest.fn().mockImplementation(({ _address }, callback) =>
+            callback({
+              keyring: {
+                exportAccount: jest
+                  .fn()
+                  .mockResolvedValue(
+                    '0000000000000000000000000000000000000000000000000000000000000001',
+                  ),
+              },
+              metadata: {
+                id: 'foo',
+              },
+            }),
+          ),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:updateBackupMetadataState',
+          jest.fn(),
+        );
+
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importAccountWithStrategy',
+            AccountImportStrategy.privateKey,
+            ['foo', 'bar', 'baz'],
+            { shouldCreateSocialBackup: false, shouldSelectAccount: true },
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:updateBackupMetadataState',
+          {
+            keyringId: 'foo',
+            data: hexToBytes(
+              '0000000000000000000000000000000000000000000000000000000000000001',
+            ),
+            type: SecretType.PrivateKey,
+          },
+        );
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'SeedlessOnboardingController:addNewSecretData',
+          hexToBytes(
+            add0x(
+              '0000000000000000000000000000000000000000000000000000000000000001',
+            ),
+          ),
+          SecretType.PrivateKey,
+          { keyringId: 'foo' },
+        );
+      });
+    });
+
+    it('Does not select the account if shouldSelectAccount is false', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:importAccountWithStrategy',
+          jest.fn().mockResolvedValue('0x123'),
+        );
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:getAccountByAddress',
+          jest.fn().mockReturnValue({ id: 'foo' }),
+        );
+        rootMessenger.registerActionHandler(
+          'AccountsController:setSelectedAccount',
+          jest.fn(),
+        );
+
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:importAccountWithStrategy',
+            AccountImportStrategy.privateKey,
+            ['foo', 'bar', 'baz'],
+            { shouldCreateSocialBackup: true, shouldSelectAccount: false },
+          ),
+        ).resolves.toBeUndefined();
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:importAccountWithStrategy',
+          AccountImportStrategy.privateKey,
+          ['foo', 'bar', 'baz'],
+        );
+
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AccountsController:getAccountByAddress',
+          '0x123',
+        );
+        expect(callSpy).not.toHaveBeenCalledWith(
+          'AccountsController:setSelectedAccount',
+          'foo',
+        );
+      });
+    });
+  });
+
+  describe('getSnapKeyring', () => {
+    it('returns the snap keyring', async () => {
+      const snapKeyring = { id: 'foo', type: KeyringTypes.snap };
+
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getKeyringsByType',
+          jest.fn().mockReturnValue([snapKeyring]),
+        );
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:addNewKeyring',
+          jest.fn(),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getSnapKeyring',
+        );
+
+        expect(result).toStrictEqual(snapKeyring);
+      });
+    });
+
+    it('creates and returns a snap keyring if one does not already exist', async () => {
+      const snapKeyring = { id: 'foo', type: KeyringTypes.snap };
+
+      const mockGetKeyringsByType = jest
+        .fn()
+        .mockReturnValueOnce([])
+        .mockReturnValueOnce([snapKeyring]);
+
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:getKeyringsByType',
+          mockGetKeyringsByType,
+        );
+
+        rootMessenger.registerActionHandler(
+          'KeyringController:addNewKeyring',
+          jest.fn(),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getSnapKeyring',
+        );
+
+        expect(result).toStrictEqual(snapKeyring);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'KeyringController:addNewKeyring',
+          KeyringTypes.snap,
+        );
+      });
+    });
+  });
+
+  describe('getAccountsBySnapId', () => {
+    it('calls getSnapKeyring and returns the address from the snap keyring', async () => {
+      const snapKeyring = {
+        id: 'foo',
+        type: KeyringTypes.snap,
+        getAccountsBySnapId: jest.fn().mockReturnValue(['0x123']),
+      };
+
+      await withService(async ({ rootMessenger, service }) => {
+        rootMessenger.registerActionHandler(
+          'KeyringController:getKeyringsByType',
+          jest.fn().mockReturnValue([snapKeyring]),
+        );
+
+        const callSpy = jest.spyOn(service, 'getSnapKeyring');
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:getAccountsBySnapId',
+          'snapId' as SnapId,
+        );
+
+        expect(callSpy).toHaveBeenCalled();
+        expect(result).toStrictEqual(['0x123']);
+      });
+    });
+  });
+
+  describe('checkIsSeedlessPasswordOutdated', () => {
+    it("returns false if it's a social login flow", async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('returns false if the user has not completed onboarding', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(false),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: false }),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('returns true if the password is outdated', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockResolvedValue(true),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(true);
+      });
+    });
+
+    it('returns false if the password is not outdated', async () => {
+      await withService(async ({ rootMessenger }) => {
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockResolvedValue(false),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+        );
+
+        expect(result).toStrictEqual(false);
+      });
+    });
+
+    it('skips the cache if specified', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const callSpy = jest.spyOn(serviceMessenger, 'call');
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockResolvedValue(false),
+        );
+
+        const result = await rootMessenger.call(
+          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+          { skipCache: true },
+        );
+
+        expect(result).toStrictEqual(false);
+
+        expect(callSpy).toHaveBeenCalledWith(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          { skipCache: true },
+        );
+      });
+    });
+
+    it('captures and throws an error', async () => {
+      await withService(async ({ rootMessenger, serviceMessenger }) => {
+        const error = new Error('Test error');
+
+        const captureExceptionSpy = jest.spyOn(
+          serviceMessenger,
+          'captureException',
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getIsSocialLoginFlow',
+          jest.fn().mockReturnValue(true),
+        );
+
+        rootMessenger.registerActionHandler(
+          'OnboardingController:getState',
+          jest.fn().mockReturnValue({ completedOnboarding: true }),
+        );
+
+        rootMessenger.registerActionHandler(
+          'SeedlessOnboardingController:checkIsPasswordOutdated',
+          jest.fn().mockRejectedValue(error),
+        );
+
+        await expect(
+          rootMessenger.call(
+            'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
+            { captureSentryError: true },
+          ),
+        ).rejects.toThrow(error);
+
+        expect(captureExceptionSpy).toHaveBeenCalledWith(
+          createSentryError(
+            'Failed to check if seedless password is outdated',
+            error,
+          ),
+        );
+      });
     });
   });
 });
@@ -51,7 +1276,10 @@ type WithServiceOptions = {
  * @returns The root messenger.
  */
 function getRootMessenger(): RootMessenger {
-  return new Messenger({ namespace: MOCK_ANY_NAMESPACE });
+  return new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+    captureException: jest.fn(),
+  });
 }
 
 /**
@@ -64,10 +1292,47 @@ function getRootMessenger(): RootMessenger {
 function getMessenger(
   rootMessenger: RootMessenger,
 ): LegacyBackgroundApiServiceMessenger {
-  return new Messenger({
+  const serviceMessenger: LegacyBackgroundApiServiceMessenger = new Messenger({
     namespace: 'LegacyBackgroundApiService',
     parent: rootMessenger,
   });
+
+  rootMessenger.delegate({
+    messenger: serviceMessenger,
+    actions: [
+      'PreferencesController:setPreference',
+      'NetworkController:getState',
+      'NetworkController:getNetworkClientById',
+      'KeyringController:getAccounts',
+      'RemoteFeatureFlagController:getState',
+      'CurrencyRateController:setCurrentCurrency',
+      'AssetsController:setSelectedCurrency',
+      'KeyringController:exportSeedPhrase',
+      'AccountsController:getSelectedAccount',
+      'ApprovalController:getState',
+      'TransactionController:getState',
+      'ApprovalController:rejectRequest',
+      'TransactionController:wipeTransactions',
+      'SmartTransactionsController:wipeSmartTransactions',
+      'BridgeStatusController:wipeBridgeStatus',
+      'NetworkController:resetConnection',
+      'KeyringController:importAccountWithStrategy',
+      'OnboardingController:getIsSocialLoginFlow',
+      'KeyringController:withKeyring',
+      'KeyringController:removeAccount',
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setSelectedAccount',
+      'SeedlessOnboardingController:addNewSecretData',
+      'SeedlessOnboardingController:updateBackupMetadataState',
+      'PermissionController:updatePermissionsByCaveat',
+      'KeyringController:getKeyringsByType',
+      'KeyringController:addNewKeyring',
+      'OnboardingController:getState',
+      'SeedlessOnboardingController:checkIsPasswordOutdated',
+    ],
+  });
+
+  return serviceMessenger;
 }
 
 /**
@@ -92,6 +1357,11 @@ async function withService<ReturnValue>(
   const serviceMessenger = getMessenger(rootMessenger);
   const service = new LegacyBackgroundApiService({
     messenger: serviceMessenger,
+    infuraProjectId: 'test-infura-project-id',
+    getRequestAccountTabIds: () => ({}),
+    getOpenMetamaskTabsIds: () => ({}),
+    markPasswordForgotten: () => jest.fn(),
+    unMarkPasswordForgotten: () => jest.fn(),
     ...options,
   });
   return await testFunction({ service, rootMessenger, serviceMessenger });
