@@ -239,9 +239,7 @@ describe('LatticeKeyringV2', () => {
     it('forgetDevice delegates to inner.forgetDevice and clears the registry', async () => {
       const { wrapper, inner } = createWrapper();
       jest.spyOn(inner, 'getAccounts').mockResolvedValue([TEST_ADDRESSES[0]]);
-      const forgetSpy = jest
-        .spyOn(inner, 'forgetDevice')
-        .mockImplementation();
+      const forgetSpy = jest.spyOn(inner, 'forgetDevice').mockImplementation();
 
       // Populate the registry
       await wrapper.getAccounts();

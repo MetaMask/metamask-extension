@@ -18,7 +18,9 @@ describe('getMnemonicSeed', () => {
           type: KeyringTypes.hd,
           index: 0,
         });
-        return (operation as (args: { keyring: { seed: Uint8Array } }) => unknown)({
+        return (
+          operation as (args: { keyring: { seed: Uint8Array } }) => unknown
+        )({
           keyring: { seed: SEED },
         });
       });
@@ -44,17 +46,27 @@ describe('getMnemonicSeed', () => {
     it('returns the seed for an HD keyring matched by id', async () => {
       const messenger = buildMessenger(async (_action, selector, operation) => {
         expect(selector).toStrictEqual({ id: 'keyring-id' });
-        return (operation as (args: { keyring: { type: string; seed: Uint8Array } }) => unknown)({
+        return (
+          operation as (args: {
+            keyring: { type: string; seed: Uint8Array };
+          }) => unknown
+        )({
           keyring: { type: KeyringType.Hd, seed: SEED },
         });
       });
 
-      await expect(getMnemonicSeed(messenger, 'keyring-id')).resolves.toBe(SEED);
+      await expect(getMnemonicSeed(messenger, 'keyring-id')).resolves.toBe(
+        SEED,
+      );
     });
 
     it('throws when the keyring is not an HD keyring', async () => {
       const messenger = buildMessenger(async (_action, _selector, operation) =>
-        (operation as (args: { keyring: { type: string; seed?: Uint8Array } }) => unknown)({
+        (
+          operation as (args: {
+            keyring: { type: string; seed?: Uint8Array };
+          }) => unknown
+        )({
           keyring: { type: 'Ledger Hardware' },
         }),
       );
