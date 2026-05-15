@@ -9,120 +9,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.32.0]
 
-### Uncategorized
-
-- Bump perps-controller to 6.1.0 (#42695)
-- perf(6918): memoize AssetPollingContext value to prevent unnecessary consumer re-renders (#42686)
-- perf(6917): extract useTokenBalances to isolated components to prevent subtree re-renders (#42685)
-- Set up batch sell quotes (#42434)
-- perf(6643): extract network/approval-driven route state from Routes (#42493)
-- chore: bump basic-ftp to 5.3.1 to fix GHSA-rpmf-866q-6p89 (#42508)
-- Update assets controllers to version 106.0.0 (#42465)
-- Migrate to new assets controller (#42297)
-- Remove tokensChainsCache usage from useTokenDetails (#42547)
-- Modified useERC20Tokens to make an API call instead of reading from the cache (#42489)
-- Add transitions to defi and nft navigation (#42502)
-- Updates internal Debug tab feature flag output styles (#42486)
-- chore(6939): add @mui/material v5, Emotion, and @mui/x-date-pickers dependencies (#41954)
-- Updated the description under the "Smart account requests from dapps" setting to clarify that MetaMask will only upgrade (#42052)
-  to our audited smart account.
-- Moved shared tabs to security-tab (#42255)
-
 ### Added
 
-- Remove gas alerts from confirmation modal in gasless flows (#42300)
-  update copy of 10 MON minimal reserve confirmation
-  alert
-- Added search for new manage tokens Page (#42624)
-- Text update (#42697)
+- Added search to the manage tokens page (#42624)
+- Added a "Lock" label to the global menu in place of "Log out" (#42697)
 - Added in-app notifications for Perps withdrawals (#42607)
 - Added a feature-flagged confirmation flow for Perps withdrawals (#42608)
-- Hidden the EVM network picker on the dapp connection control bar for non-EIP-1193 connections (Solana, Tron, pure Multichain (#42498)
-  API). The picker now renders only for connections with the
-  `eip1193-compatible` session property.
-- Add support for displaying first party contract names in Snaps components (#42648)
-- Add new `native-token-allowance` and `erc20-token-allowance` via `wallet_requestExecutionPermissions` (#42431)
-- Enables previously disabled flipPosition entry point UI (#42467)
-- **Changed**: Clicking the network selector in the Dapp Connection Control Bar now opens an inline popover anchored to the (#41997)
-  selector instead of the full-screen network picker;
-  **Added**: New `DappBarNetworkSelectorPopover` that lists the user's
-  enabled EVM networks, highlights the active one, and switches the dapp's
-  active network on selection.
-- Added decoded revert reasons to the confirmation simulation section and gas estimation alert when advanced details are (#42365)
-  enabled.
+- Added support for displaying first-party contract names in Snaps components (#42648)
+- Added new `native-token-allowance` and `erc20-token-allowance` execution permissions via `wallet_requestExecutionPermissions` (#42431)
+- Enabled the previously disabled flipPosition entry-point UI (#42467)
+- Added decoded revert reasons to the confirmation simulation section and gas estimation alert when advanced details are enabled (#42365)
 - Added custom token import flow (#42574)
-- Fixed Perps Withdraw token defaults and fee display (#42537)
-- Default network selection on the connect screen is now scoped to the requesting client's namespace. Connecting through a (#42286)
-  single-namespace dapp (EVM, Solana, Tron, or Bitcoin) only pre-permits
-  networks in that namespace; previously, all four namespaces' popular
-  networks were silently pre-permitted regardless of which provider the
-  dapp used.
-- Enable Passkey feature in all builds (#42521)
-- Updated passkey-related copy to use Windows Hello, Touch ID, or Biometrics depending on the user’s platform. (#42491)
-- Redesigned critical error screen (#42421)
-- Prevent toast overlapping CTA footer (#42479)
-- Added a redesigned DeFi referral consent UI behind an A/B test (#42449)
-- Improved passkey support when using Google Password Manager by completing passkey steps in a full extension tab instead of (#42459)
-  the side panel.
-- Added auto-focus to the amount input on MetaMask Pay deposit, withdraw, and mUSD conversion screens (#42204)
-- Improved biometric setup and troubleshooting flows for passkey onboarding, unlock, and Settings experiences. (#42443)
-- Added passkey management in Security settings and improved changing the wallet password when passkey unlock is enabled. (#42299)
-- Added passkey setup during onboarding and passkey-based unlock with password fallback. (#42169)
-- Pre-fetch popular tokens for Bridge page (#42239)
-- Tempo disable tx management for testnet moderato (#42201)
-- Hyperliquid DeFi referral flow now runs after permitting an additional account for the site from the account-picker (#41996)
-- Adds "Restore accounts" on critical error screen when a backup exists. (#40306)
-- Improved perps order entry with auto-focus, auto-select-on-focus, real-time minimum-order-size validation, and (#41949)
-  Enter-to-submit keyboard shortcut.
+- Scoped default network selection on the connect screen to the requesting client's namespace; single-namespace dapps (EVM, Solana, Tron, or Bitcoin) only pre-permit networks in that namespace instead of all four (#42286)
+- Enabled the Passkey feature in all builds (#42521)
 
 ### Changed
 
 - Aligned previously base-enabled custom network logos (Stable, Flow, XDC, Fraxtal, Hemi, Plasma, Lukso, Rootstock, MSU, Sonic, Lens, Plume) to a square format consistent with Popular networks (#42555)
+- Replaced the full-screen network picker triggered from the Dapp Connection Control Bar with an inline `DappBarNetworkSelectorPopover` that lists enabled EVM networks, highlights the active one, and switches the dapp's active network on selection (#41997)
+- Hid the EVM network picker on the Dapp Connection Control Bar for non-EIP-1193 connections (Solana, Tron, pure Multichain API); the picker now renders only for connections with the `eip1193-compatible` session property (#42498)
+- Updated passkey-related copy to use Windows Hello, Touch ID, or Biometrics depending on the user's platform (#42491)
+- Removed gas alerts from the confirmation modal in gasless flows and updated the 10 MON minimum reserve confirmation alert copy (#42300)
+- Adjusted the Perps market filter modal design to improve sort hierarchy readability and use the correct grey selected state (#42578)
+- Improved login speed on slow networks (#42693)
+- Disabled transaction management on Tempo's moderato testnet (#42201)
 
 ### Fixed
 
-- Improve login speed on slow networks (#42693)
-- Fixed a bug that prevented some Perps deposits from showing completion toasts. (#42671)
-- fix: patch assets controller 7.0.0 (#42666)
-- Fixed transaction publishing when Sentinel network flag requests fail. (#42677)
-- Route 7702 downgrade through standard publish path on sponsored networks (#42614)
-- Fixed a crash ("new BigNumber() number type has more than 15 significant digits") that could occur when viewing transaction (#42674)
-  confirmations, especially for users with non-USD currencies
-- Handle unsupported network from API (#42657)
+- Fixed a bug that prevented some Perps deposits from showing completion toasts (#42671)
+- Fixed transaction publishing when Sentinel network flag requests fail (#42677)
+- Fixed 7702 `revokeDelegation` transactions being routed through the Delegation7702 publish hook on sponsored networks; they now use the standard publish path and no longer display the "Paid by MetaMask" pill (#42614)
+- Fixed a crash ("new BigNumber() number type has more than 15 significant digits") that could occur when viewing transaction confirmations, especially for users with non-USD currencies (#42674)
+- Fixed handling of unsupported networks returned as 400 errors from the API (#42657)
 - Fixed a bug that caused Perps liquidation price and distance to show misleading values for non-positive liquidation prices (#42429)
-- Fixes websocket connection console errors on user initiated actions like account switch (#42473)
-- Adjusted Perps market filter modal design to improve sort hierarchy readability and use correct grey selected state (#42578)
-- Fixed perps order screen showing a redundant `min $10` placeholder and not auto-scrolling the auto-close section into view when (#42538)
-  enabled.
+- Fixed benign websocket connection console errors triggered by user actions like account switch (#42473)
+- Fixed the Perps order screen showing a redundant `min $10` placeholder and not auto-scrolling the auto-close section into view when enabled (#42538)
 - Fixed a Perps close-position warning that referenced the slider instead of closing the full position (#42435)
 - Fixed a bug where Perps RoE values could differ between the summary row and a single open position card (#42302)
-- Fixed an issue where Recent Activity rows on the Perps tab and market detail page were not tappable; tapping a row now opens (#42303)
-  the full activity list.
-- Fixed a bug that hid max leverage on the perps market detail page (#42404)
-- Fixed a bug that caused Perps TP/SL auto-close prices generated from percentage input to show too many decimal places for some (#42461)
-  markets.
-- Fix missing Explorer button on receive for Tempo (#42481)
-- Modals in lock screen (#42548)
-- Adds default background colour to network form footer (#42497)
-- Fixed an issue where Blockaid warnings were not shown for some multichain API signature requests (#42276)
-- Fixed Sei Mainnet: replaced deprecated Seitrace explorer with Seiscan (`https://seiscan.io`). Existing installs are (#42064)
-  migrated via migration 207.
-- Fixed a bug where the token asset details page showed Send for zero-balance tokens. (#42451)
-- Fixed an alert that incorrectly warned about a previous signing or submitting transaction when the previous transaction was on a (#42194)
-  different chain or from a different account.
-- Fixed an issue where resetting or restoring a wallet from the side panel or popup could leave onboarding stuck or make Open (#42386)
-  wallet unresponsive.
-  Guarded the onboarding-completion page with
-  `isResetWalletInProgress` state to prevent the wallet state sync issue
-  with UI.
-- Fixed UX for camera access and QR recovery flow in side panel (#42363)
-- Fixed the candle period selection resetting to default when navigating away from the Perps market detail page (#42285)
-- Paginate from last evm completed transaction (#42344)
-- Drop early return in `toAssetId` if error so we allow fallback assetId erc20:0x... (#42054)
-- Returns `nonce: '0x0'` when eth_getTransactionByHash is called for a gasless tx (#42119)
-- Fixed activity screen showing wrong currency symbol (e.g. R$ instead of $) for MM Pay, Perps deposit, and mUSD transaction (#42151)
-  amounts
-- Skip connect qr for QR accounts. (#42294)
+- Fixed an issue where Recent Activity rows on the Perps tab and market detail page were not tappable; tapping a row now opens the full activity list (#42303)
+- Fixed a bug that hid max leverage on the Perps market detail page (#42404)
+- Fixed a bug that caused Perps TP/SL auto-close prices generated from percentage input to show too many decimal places for some markets (#42461)
+- Fixed the missing Explorer button on Receive for Tempo (#42481)
+- Fixed modals being incorrectly rendered on the lock screen (#42548)
+- Fixed the network form footer rendering with a transparent background (#42497)
+- Fixed Perps Withdraw token defaults and fee display (#42537)
+
 ## [13.31.0]
 
 ### Added
@@ -2421,8 +2352,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.32.0...HEAD
-[13.32.0]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...v13.32.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...HEAD
+[13.32.0]: https://github.com/MetaMask/metamask-extension/compare/v13.31.0...v13.32.0
 [13.31.0]: https://github.com/MetaMask/metamask-extension/compare/v13.30.0...v13.31.0
 [13.30.0]: https://github.com/MetaMask/metamask-extension/compare/v13.29.0...v13.30.0
 [13.29.0]: https://github.com/MetaMask/metamask-extension/compare/v13.28.0...v13.29.0
