@@ -67,10 +67,8 @@ import { Content, Footer, Page } from '../../../../multichain/pages/page';
 import { formatCurrency } from '../../../../../helpers/utils/confirm-tx.util';
 import { getShortDateFormatterV2 } from '../../../../../pages/asset/util';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../../shared/constants/common';
-import {
-  getConversionRate,
-  getCurrentCurrency,
-} from '../../../../../ducks/metamask/metamask';
+import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
+import { getConversionRate } from '../../../../../ducks/metamask/base-selectors';
 import { Numeric } from '../../../../../../shared/lib/Numeric';
 // TODO: Remove restricted import
 import {
@@ -163,7 +161,7 @@ export function NftDetailsComponent({
 
   const hasFloorAskPrice = Boolean(
     collection?.floorAsk?.price?.amount?.usd &&
-      collection?.floorAsk?.price?.amount?.native,
+    collection?.floorAsk?.price?.amount?.native,
   );
   const hasLastSalePrice = Boolean(
     lastSale?.price?.amount?.usd && lastSale?.price?.amount?.native,

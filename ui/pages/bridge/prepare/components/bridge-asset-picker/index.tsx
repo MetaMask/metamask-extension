@@ -7,14 +7,12 @@ import React, {
 } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  ButtonIconSize,
   Icon,
   IconColor,
   IconName,
   IconSize,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
-import { uniqBy } from 'lodash';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
@@ -25,6 +23,7 @@ import {
   ModalContent,
   ModalBody,
   ModalHeader,
+  ButtonIconSize,
   PickerNetwork,
   TextField,
   ModalContentSize,
@@ -41,10 +40,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
 import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
-import { getBridgeSortedAssets } from '../../../../../ducks/bridge/asset-selectors';
-import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
-import { toBridgeToken } from '../../../../../ducks/bridge/utils';
 import { MarketClosedModal } from '../../../../../components/app/assets/market-closed-modal';
 import { useRWAToken } from '../../../hooks/useRWAToken';
 import { NetworkPicker } from './network-picker';
@@ -77,9 +73,6 @@ export const BridgeAssetPicker = ({
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );
-  const assetsWithBalance = useSelector((state: BridgeAppState) =>
-    getBridgeSortedAssets(state, accountGroup?.id),
-  );
 
   const t = useI18nContext();
   const { isStockToken, isTokenTradingOpen } = useRWAToken();
@@ -105,27 +98,6 @@ export const BridgeAssetPicker = ({
   const chainIdsSet = useMemo(() => {
     return new Set(chainIdsList);
   }, [chainIdsList]);
-
-  const assetsToInclude = useMemo(
-    () =>
-      uniqBy(
-        assetsWithBalance.filter((token) => {
-          const matchesChainIdFilter = chainIdsSet.has(token.chainId);
-
-          return matchesChainIdFilter;
-        }),
-        (a) => a.assetId?.toLowerCase(),
-      ).map((token) => toBridgeToken(token)),
-    // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
-    [chainIdsSet, accountGroup?.id, accountAddress],
-  );
-
-  const { popularTokensList, isLoading: isPopularTokensLoading } =
-    usePopularTokens({
-      assetsToInclude,
-      accountAddress,
-      chainIds: chainIdsSet,
-    });
 
   const selectedNetworkName = selectedChainId
     ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]
@@ -278,13 +250,10 @@ export const BridgeAssetPicker = ({
 
             {!isNetworkPickerOpen && (
               <BridgeAssetList
-                assetsToInclude={assetsToInclude}
+                accountGroupId={accountGroup?.id}
                 chainIds={chainIdsSet}
-                accountAddress={accountAddress}
                 searchQuery={searchQuery.trim()}
                 selectedAssetId={selectedAsset.assetId}
-                popularTokensList={popularTokensList}
-                isPopularTokensLoading={isPopularTokensLoading}
                 onAssetChange={(asset: BridgeToken) => {
                   if (isStockToken(asset) && !isTokenTradingOpen(asset)) {
                     closeFromMarketCloseRef.current = true;

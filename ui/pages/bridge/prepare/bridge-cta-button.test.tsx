@@ -6,7 +6,7 @@ import {
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { userEvent } from '@testing-library/user-event';
-import { act, render, waitFor } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import {
   createProviderWrapper,
   renderWithProvider,
@@ -25,11 +25,7 @@ import {
   HardwareWalletType,
 } from '../../../contexts/hardware-wallets';
 import { setBackgroundConnection } from '../../../store/background-connection';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-  MetaMetricsHardwareWalletRecoveryLocation,
-} from '../../../../shared/constants/metametrics';
+import { MetaMetricsHardwareWalletRecoveryLocation } from '../../../../shared/constants/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
 import * as useSubmitBridgeTransactionModule from '../hooks/useSubmitBridgeTransaction';
 import { BridgeCTAButton } from './bridge-cta-button';
@@ -98,7 +94,7 @@ describe('BridgeCTAButton', () => {
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -134,7 +130,7 @@ describe('BridgeCTAButton', () => {
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -172,7 +168,7 @@ describe('BridgeCTAButton', () => {
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -209,7 +205,7 @@ describe('BridgeCTAButton', () => {
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -249,7 +245,7 @@ describe('BridgeCTAButton', () => {
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -273,7 +269,7 @@ describe('BridgeCTAButton', () => {
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={onFetchNewQuotes}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -321,7 +317,7 @@ describe('BridgeCTAButton', () => {
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -333,24 +329,14 @@ describe('BridgeCTAButton', () => {
     expect(getByRole('button')).not.toBeDisabled();
   });
 
-  it('calls recovery CTA analytics when hardware wallet user submits while device is disconnected', async () => {
-    const mockSubmitBridgeTransaction = jest.fn().mockResolvedValue(undefined);
-    const useSubmitSpy = jest
-      .spyOn(useSubmitBridgeTransactionModule, 'default')
-      .mockImplementation(() => ({
-        submitBridgeTransaction: mockSubmitBridgeTransaction,
-        isSubmitting: false,
-      }));
-
-    const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
-    const connectionState = { status: ConnectionStatus.Disconnected as const };
+  it('should render swap label for QR hardware wallet when disconnected', () => {
     mockUseHardwareWalletConfig.mockReturnValue({
       ...baseHardwareWalletConfig,
       isHardwareWalletAccount: true,
-      walletType: HardwareWalletType.Ledger,
+      walletType: HardwareWalletType.Qr,
     });
     mockUseHardwareWalletState.mockReturnValue({
-      connectionState,
+      connectionState: { status: ConnectionStatus.Disconnected },
     });
 
     const mockStore = createBridgeMockStore({
@@ -376,36 +362,137 @@ describe('BridgeCTAButton', () => {
         quotesLoadingStatus: RequestStatus.FETCHED,
       },
     });
-    const store = configureStore(mockStore);
-    const Wrapper = createProviderWrapper(store, '/', () => mockTrackEvent);
 
-    const { getByRole } = render(
+    const { getByText, queryByText, getByRole } = renderWithProvider(
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
       </HardwareWalletProvider>,
-      { wrapper: Wrapper },
+      configureStore(mockStore),
     );
 
-    await act(async () => {
-      await userEvent.click(getByRole('button'));
-    });
+    const button = getByRole('button') as HTMLButtonElement;
 
-    expect(
-      mockTrackHardwareWalletRecoveryConnectCtaClicked,
-    ).toHaveBeenCalledWith(mockTrackEvent, {
-      location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
-      walletType: HardwareWalletType.Ledger,
-      connectionState,
-    });
-    expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(1);
-
-    useSubmitSpy.mockRestore();
+    expect(getByText(messages.swap.message)).toBeTruthy();
+    expect(queryByText('Connect QR')).toBeNull();
+    expect(button.disabled).toBe(false);
   });
+
+  // @ts-expect-error: each is a valid test function in jest
+  it.each([
+    {
+      description: 'no alert modal is provided',
+      isAlertModalProvided: false,
+      expectedAlertModalCalls: 0,
+      expectedSubmitBridgeTransactionCalls: 1,
+    },
+    {
+      description: 'alert modal is provided',
+      isAlertModalProvided: true,
+      expectedAlertModalCalls: 1,
+      expectedSubmitBridgeTransactionCalls: 0,
+    },
+  ])(
+    'calls recovery CTA analytics when hardware wallet user submits while device is disconnected and $description',
+    async ({
+      isAlertModalProvided,
+      expectedAlertModalCalls,
+      expectedSubmitBridgeTransactionCalls,
+    }: {
+      isAlertModalProvided: boolean;
+      expectedAlertModalCalls: number;
+      expectedSubmitBridgeTransactionCalls: number;
+    }) => {
+      const mockSubmitBridgeTransaction = jest
+        .fn()
+        .mockResolvedValue(undefined);
+      const useSubmitSpy = jest
+        .spyOn(useSubmitBridgeTransactionModule, 'default')
+        .mockImplementation(() => ({
+          submitBridgeTransaction: mockSubmitBridgeTransaction,
+          isSubmitting: false,
+        }));
+
+      const mockTrackEvent = jest.fn().mockResolvedValue(undefined);
+      const connectionState = {
+        status: ConnectionStatus.Disconnected as const,
+      };
+      mockUseHardwareWalletConfig.mockReturnValue({
+        ...baseHardwareWalletConfig,
+        isHardwareWalletAccount: true,
+        walletType: HardwareWalletType.Ledger,
+      });
+      mockUseHardwareWalletState.mockReturnValue({
+        connectionState,
+      });
+
+      const mockStore = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+            ],
+          },
+        },
+        bridgeSliceOverrides: {
+          fromTokenInputValue: '1',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          toToken: toBridgeToken(
+            getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+          ),
+        },
+        bridgeStateOverrides: {
+          quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
+          quotesLastFetched: Date.now(),
+          quotesLoadingStatus: RequestStatus.FETCHED,
+        },
+      });
+      const store = configureStore(mockStore);
+      const Wrapper = createProviderWrapper(store, '/', () => mockTrackEvent);
+
+      const { getByRole } = render(
+        <HardwareWalletProvider>
+          <BridgeCTAButton
+            onFetchNewQuotes={jest.fn()}
+            onOpenAlertModals={
+              isAlertModalProvided
+                ? mockOnOpenPriceImpactWarningModal
+                : undefined
+            }
+            onOpenRecipientModal={jest.fn()}
+            onOpenMarketClosedModal={jest.fn()}
+          />
+        </HardwareWalletProvider>,
+        { wrapper: Wrapper },
+      );
+
+      await act(async () => {
+        await userEvent.click(getByRole('button'));
+      });
+
+      expect(
+        mockTrackHardwareWalletRecoveryConnectCtaClicked,
+      ).toHaveBeenCalledWith(mockTrackEvent, {
+        location: MetaMetricsHardwareWalletRecoveryLocation.Swaps,
+        walletType: HardwareWalletType.Ledger,
+        connectionState,
+      });
+      expect(mockOnOpenPriceImpactWarningModal).toHaveBeenCalledTimes(
+        expectedAlertModalCalls,
+      );
+      expect(mockSubmitBridgeTransaction).toHaveBeenCalledTimes(
+        expectedSubmitBridgeTransactionCalls,
+      );
+
+      useSubmitSpy.mockRestore();
+    },
+  );
 
   it('should disable the component when quotes are loading and there are no existing quotes', () => {
     const mockStore = createBridgeMockStore({
@@ -435,7 +522,7 @@ describe('BridgeCTAButton', () => {
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -455,8 +542,26 @@ describe('BridgeCTAButton', () => {
       { isInsufficientGasForQuote: true },
       messages.insufficientFundsSend.message,
     ],
+    [
+      'disable',
+      'there is insufficient native reserve',
+      { isInsufficientNativeReserve: true },
+      messages.insufficientFundsSend.message,
+    ],
     ['enable', 'the estimated return is low', { isEstimatedReturnLow: true }],
     ['enable', 'there are no validation errors', {}, messages.swap.message],
+    [
+      'disable',
+      'network fee is unavailable',
+      { isNetworkFeeUnavailable: true },
+      messages.insufficientFundsSend.message,
+    ],
+    [
+      'disable',
+      'network fee is unavailable with insufficient gas for quote',
+      { isNetworkFeeUnavailable: true, isInsufficientGasForQuote: true },
+      messages.insufficientFundsSend.message,
+    ],
     [
       'enable',
       'market is closed',
@@ -512,18 +617,21 @@ describe('BridgeCTAButton', () => {
         isInsufficientGasBalance: false,
         isInsufficientGasForQuote: false,
         isInsufficientBalance: false,
+        isInsufficientNativeReserve: false,
+        isNetworkFeeUnavailable: false,
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
         isStockMarketClosed: false,
         isPriceImpactWarning: false,
         isPriceImpactError: false,
+        isQuoteExpired: false,
         ...validationErrors,
       });
       const { findByRole, getByText } = renderWithProvider(
         <HardwareWalletProvider>
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
-            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
             onOpenRecipientModal={jest.fn()}
             onOpenMarketClosedModal={jest.fn()}
             {...propOverrides}
@@ -578,17 +686,20 @@ describe('BridgeCTAButton', () => {
         isInsufficientGasBalance: false,
         isInsufficientGasForQuote: false,
         isInsufficientBalance: false,
+        isInsufficientNativeReserve: false,
+        isNetworkFeeUnavailable: false,
         isEstimatedReturnLow: false,
         isTxAlertLoading: false,
         isPriceImpactWarning: false,
         isPriceImpactError: false,
         isStockMarketClosed: true,
+        isQuoteExpired: false,
       });
       const { container } = renderWithProvider(
         <HardwareWalletProvider>
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
-            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
             onOpenRecipientModal={jest.fn()}
             onOpenMarketClosedModal={jest.fn()}
             {...propOverrides}
@@ -663,7 +774,7 @@ describe('BridgeCTAButton', () => {
         <HardwareWalletProvider>
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
-            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
             onOpenRecipientModal={jest.fn()}
             onOpenMarketClosedModal={jest.fn()}
           />
@@ -701,17 +812,20 @@ describe('BridgeCTAButton', () => {
       isInsufficientGasBalance: false,
       isInsufficientGasForQuote: false,
       isInsufficientBalance: false,
+      isInsufficientNativeReserve: false,
+      isNetworkFeeUnavailable: false,
       isEstimatedReturnLow: false,
       isTxAlertLoading: false,
       isPriceImpactWarning: false,
       isPriceImpactError: false,
       isStockMarketClosed: true,
+      isQuoteExpired: true,
     });
     const { getByText } = renderWithProvider(
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -750,7 +864,7 @@ describe('BridgeCTAButton', () => {
       <HardwareWalletProvider>
         <BridgeCTAButton
           onFetchNewQuotes={jest.fn()}
-          onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+          onOpenAlertModals={mockOnOpenPriceImpactWarningModal}
           onOpenRecipientModal={jest.fn()}
           onOpenMarketClosedModal={jest.fn()}
         />
@@ -823,7 +937,11 @@ describe('BridgeCTAButton', () => {
         <HardwareWalletProvider>
           <BridgeCTAButton
             onFetchNewQuotes={jest.fn()}
-            onOpenPriceImpactWarningModal={mockOnOpenPriceImpactWarningModal}
+            onOpenAlertModals={
+              expectedOpenModalCalls
+                ? mockOnOpenPriceImpactWarningModal
+                : undefined
+            }
             onOpenRecipientModal={jest.fn()}
             onOpenMarketClosedModal={jest.fn()}
           />

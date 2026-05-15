@@ -681,6 +681,64 @@ class PerpsStreamManager {
     clearPerpsMarketFillsModuleCache();
     clearAllCoalescedRequests();
   }
+
+  /**
+   * Seed the per-channel caches from the background controller's persisted
+   * snapshots so a fresh popup mount renders real data on its first frame
+   * instead of a skeleton. Existing cache is left untouched — the first
+   * push from the live stream wins over the persisted snapshot.
+   *
+   * User-scoped channels (positions/orders/account) are only hydrated when
+   * the snapshot's owning address matches the account the manager is being
+   * initialised for, so an account switch while the popup is closed does
+   * not paint the old account's data under the new account's identity.
+   *
+   * Empty arrays intentionally no-op: pushing an empty array would flip
+   * `hasCachedData()` to true (since the pushed reference differs from
+   * `initialValue`) and suppress the WS-grace REST fallback in each
+   * channel's `connectFn`.
+   *
+   * @param snapshot - Controller caches for the active provider + network.
+   * @param snapshot.markets - Cached `PerpsMarketData[]` (provider-scoped).
+   * @param snapshot.positions - Cached positions for `snapshot.address`.
+   * @param snapshot.orders - Cached orders for `snapshot.address`.
+   * @param snapshot.account - Cached `AccountState` for `snapshot.address`.
+   * @param snapshot.address - Address that owns the user-scoped entries. User channels are skipped unless this matches the currently selected address. Pass `null` to hydrate nothing user-scoped.
+   * @param selectedAddress - Address the caller considers active; must equal `snapshot.address` for user channels to hydrate.
+   */
+  hydrateFromControllerCache(
+    snapshot: {
+      markets?: PerpsMarketData[] | null;
+      positions?: Position[] | null;
+      orders?: Order[] | null;
+      account?: AccountState | null;
+      address?: string | null;
+    },
+    selectedAddress?: string | null,
+  ): void {
+    if (snapshot.markets?.length && !this.markets.hasCachedData()) {
+      this.markets.pushData(snapshot.markets);
+    }
+
+    const snapshotAddress = snapshot.address;
+    if (
+      !selectedAddress ||
+      !snapshotAddress ||
+      snapshotAddress.toLowerCase() !== selectedAddress.toLowerCase()
+    ) {
+      return;
+    }
+
+    if (snapshot.positions?.length && !this.positions.hasCachedData()) {
+      this.positions.pushData(snapshot.positions);
+    }
+    if (snapshot.orders?.length && !this.orders.hasCachedData()) {
+      this.orders.pushData(snapshot.orders);
+    }
+    if (snapshot.account && !this.account.hasCachedData()) {
+      this.account.pushData(snapshot.account);
+    }
+  }
 }
 
 // Module-level singleton instance

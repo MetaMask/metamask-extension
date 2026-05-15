@@ -8,8 +8,7 @@ class SelectNetwork {
 
   private readonly addNetworkButton = '[data-testid="test-add-button"]';
 
-  private readonly closeButton =
-    '[data-testid="settings-v2-header-back-button"]';
+  private readonly closeButton = '[data-testid="settings-header-back-button"]';
 
   private readonly confirmDeleteNetworkButton = {
     text: 'Delete',
@@ -37,10 +36,9 @@ class SelectNetwork {
   private readonly rpcUrlItem = '.select-rpc-url__item';
 
   private readonly searchButton =
-    '[data-testid="settings-v2-header-search-button"]';
+    '[data-testid="settings-header-search-button"]';
 
-  private readonly searchInput =
-    '[data-testid="settings-v2-header-search-input"]';
+  private readonly searchInput = '[data-testid="settings-header-search-input"]';
 
   private readonly selectNetworkMessage = {
     text: 'Networks',
@@ -58,6 +56,10 @@ class SelectNetwork {
   };
 
   private readonly showTestNetworksToggle = '.toggle-button';
+
+  private readonly networksPageSuccessToast = {
+    testId: 'networks-page-network-success-toast',
+  };
 
   private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
     `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"]`;
@@ -274,6 +276,26 @@ class SelectNetwork {
       parent: {
         css: `[data-testid="popular-network-${chainId}"]`,
       },
+    });
+  }
+
+  async checkAddNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for adding network ${networkName} is displayed on networks page`,
+    );
+    await this.driver.waitForSelector({
+      ...this.networksPageSuccessToast,
+      text: `“${networkName}” was successfully added!`,
+    });
+  }
+
+  async checkEditNetworkMessageIsDisplayed(networkName: string): Promise<void> {
+    console.log(
+      `Check the toaster message for editing network ${networkName} is displayed on networks page`,
+    );
+    await this.driver.waitForSelector({
+      ...this.networksPageSuccessToast,
+      text: `“${networkName}” was successfully edited!`,
     });
   }
 }

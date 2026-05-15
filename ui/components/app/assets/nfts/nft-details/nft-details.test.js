@@ -74,13 +74,14 @@ describe('NFT Details', () => {
     );
     shortenAddress.mockReturnValue('0xDc738...06414');
 
-    const { container } = renderWithProvider(
+    const { container, queryByTestId } = renderWithProvider(
       <NftDetails {...props} nftChainId={CHAIN_IDS.GOERLI} />,
       mockStore,
     );
 
     await waitFor(() => {
       expect(container).toMatchSnapshot();
+      expect(queryByTestId('nft-details__description')).not.toBeInTheDocument();
     });
   });
 

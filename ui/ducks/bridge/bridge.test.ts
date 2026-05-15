@@ -87,6 +87,7 @@ describe('Ducks - Bridge', () => {
           "isVerified": undefined,
           "name": "SYMBOL",
           "rwaData": undefined,
+          "securityData": undefined,
           "symbol": "SYMBOL",
           "tokenFiatAmount": undefined,
         }
@@ -210,6 +211,7 @@ describe('Ducks - Bridge', () => {
         chainId: 'eip155:10',
         rwaData: undefined,
         isVerified: undefined,
+        securityData: undefined,
         iconUrl:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
       });
@@ -268,6 +270,9 @@ describe('Ducks - Bridge', () => {
             token_symbol_destination: 'ETH',
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
+            token_security_type_destination: null,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             security_warnings: [],
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -296,11 +301,16 @@ describe('Ducks - Bridge', () => {
           token_symbol_destination: 'ETH',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_security_type_destination: null,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           security_warnings: [],
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           usd_amount_source: 1000,
         },
+        0,
+        1,
       );
     });
   });

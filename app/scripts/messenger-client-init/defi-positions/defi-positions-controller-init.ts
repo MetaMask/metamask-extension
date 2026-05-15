@@ -32,9 +32,9 @@ export const DeFiPositionsControllerInit: MessengerClientInitFunction<
       const assetsDefiPositionsEnabled = Boolean(
         initMessenger.call('RemoteFeatureFlagController:getState')
           ?.remoteFeatureFlags?.[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
-          DEFAULT_FEATURE_FLAG_VALUES[
-            FeatureFlagNames.AssetsDefiPositionsEnabled
-          ],
+        DEFAULT_FEATURE_FLAG_VALUES[
+          FeatureFlagNames.AssetsDefiPositionsEnabled
+        ],
       );
 
       return (

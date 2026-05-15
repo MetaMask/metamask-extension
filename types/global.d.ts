@@ -22,13 +22,14 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
-import type { Preferences } from '../app/scripts/controllers/preferences-controller';
+import type { Preferences } from '../shared/types/preferences';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
 import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
 import type {
   LongTaskMetrics,
   LongTaskMetricsWithTBT,
 } from '../ui/helpers/utils/performance-observers';
+import type { Backup } from '../shared/lib/stores/persistence-manager';
 
 declare class MessageSender {
   documentId?: string;
@@ -259,9 +260,7 @@ type StateHooks = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getPersistedState: () => Promise<any>;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getBackupState?: () => Promise<any>;
+  getBackupState?: () => Promise<Backup | null>;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getSentryAppState?: () => any;

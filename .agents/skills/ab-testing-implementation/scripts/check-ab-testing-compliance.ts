@@ -14,7 +14,8 @@ const CODE_FILE_REGEX = /\.(ts|tsx|js|jsx)$/u;
 const TEST_FILE_REGEX = /\.(test|spec)\.(ts|tsx|js|jsx)$/u;
 const VALID_FLAG_KEY_REGEX =
   /^[a-z][A-Za-z0-9]*[A-Z]{2,}[0-9]+Abtest[A-Z][A-Za-z0-9]*$/u;
-const ABTEST_STRING_LITERAL_REGEX = /(['"])([A-Za-z0-9]*Abtest[A-Za-z0-9]*)\1/gu;
+const ABTEST_STRING_LITERAL_REGEX =
+  /(['"])([A-Za-z0-9]*Abtest[A-Za-z0-9]*)\1/gu;
 const RISKY_CHANGE_REGEX =
   /useABTest\(|resolveABTestAssignment\(|enrichWithABTests\(|AB_TEST_ANALYTICS_MAPPINGS|active_ab_tests\s*:|ab_tests\s*:|trackEvent\(|createEventBuilder\(|MetaMetricsEvents\.|Experiment Viewed|ExperimentViewed/u;
 
@@ -311,7 +312,9 @@ function main(): void {
         'A/B compliance check: no staged files and no working-tree changed files to inspect.',
       );
     } else {
-      console.log('A/B compliance check: no files to inspect from --files input.');
+      console.log(
+        'A/B compliance check: no files to inspect from --files input.',
+      );
     }
     process.exit(0);
   }
@@ -378,7 +381,11 @@ function main(): void {
         const callSegments: string[] = [];
         let parenDepth = 0;
 
-        for (let segmentIndex = index; segmentIndex < addedLines.length; segmentIndex += 1) {
+        for (
+          let segmentIndex = index;
+          segmentIndex < addedLines.length;
+          segmentIndex += 1
+        ) {
           let segment = addedLines[segmentIndex];
           if (segmentIndex === index) {
             segment = `useABTest${segment.split('useABTest').slice(1).join('useABTest')}`;
@@ -409,10 +416,7 @@ function main(): void {
         /useABTest\s*\(\s*['"]([^'"]+)['"]/u,
       )?.[1];
 
-      if (
-        useAbTestLiteralKey &&
-        !isValidFlagKey(useAbTestLiteralKey)
-      ) {
+      if (useAbTestLiteralKey && !isValidFlagKey(useAbTestLiteralKey)) {
         warnings.push(
           `${file}: flag key '${useAbTestLiteralKey}' does not match {team}{TICKET}Abtest{Name}.`,
         );

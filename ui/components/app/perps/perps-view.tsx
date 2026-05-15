@@ -28,6 +28,7 @@ import {
 } from '../../../ducks/perps';
 
 import { usePerpsEligibility } from '../../../hooks/perps';
+import { getTradeableBalance } from '../../../hooks/perps/getTradeableBalance';
 import { usePerpsMeasurement } from '../../../hooks/perps/usePerpsMeasurement';
 import { usePerpsEventTracking } from '../../../hooks/perps/usePerpsEventTracking';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
@@ -35,7 +36,6 @@ import {
   PERPS_EVENT_PROPERTY,
   PERPS_EVENT_VALUE,
 } from '../../../../shared/constants/perps-events';
-
 import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
@@ -73,11 +73,11 @@ export const PerpsView: React.FC = () => {
   const tutorialCompleted = useSelector(selectTutorialCompleted);
   const { isEligible } = usePerpsEligibility();
   const { trigger: triggerDeposit } = usePerpsDepositConfirmation();
+  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
   const [isCloseAllPending, setIsCloseAllPending] = useState(false);
   const [isCancelAllPending, setIsCancelAllPending] = useState(false);
   const [batchActionError, setBatchActionError] = useState<string | null>(null);
   const [isGeoBlockModalOpen, setIsGeoBlockModalOpen] = useState(false);
-  const { trigger: triggerWithdraw } = usePerpsWithdrawNavigation();
 
   // Stream hooks must run before any effects that touch PerpsStreamManager.
   // `usePerpsStreamManager` (inside these hooks) calls `perpsInit` then `init(address)`;
@@ -203,10 +203,13 @@ export const PerpsView: React.FC = () => {
   }, [isEligible, applyOrdersSnapshot, orders.length, t]);
 
   const hasPositions = positions.length > 0;
+  // Only the single-position view can mirror a card-level RoE; for zero or
+  // multiple positions, summary RoE remains the account aggregate.
+  const singlePosition = positions.length === 1 ? positions[0] : undefined;
   const isLoading =
     positionsLoading || ordersLoading || marketsLoading || accountLoading;
   const hasPerpBalance = Boolean(
-    account && Number.parseFloat(account.availableBalance) > 0,
+    account && Number.parseFloat(getTradeableBalance(account)) > 0,
   );
 
   usePerpsMeasurement('PerpsTabLoaded', !isLoading);
@@ -269,6 +272,7 @@ export const PerpsView: React.FC = () => {
       {/* Balance header with Add funds / Withdraw dropdown */}
       <PerpsBalanceDropdown
         hasPositions={hasPositions}
+        singlePosition={singlePosition}
         onAddFunds={triggerDeposit}
         onWithdraw={triggerWithdraw}
       />

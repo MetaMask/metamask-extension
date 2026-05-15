@@ -25,7 +25,9 @@ const buttonIconSizeToIconSize: Record<ButtonIconSize, IconSize> = {
 };
 
 /**
- * @deprecated Please update your code to use `ButtonIcon` from `@metamask/design-system-react`
+ * @deprecated Please update your code to use `ButtonIcon` from `@metamask/design-system-react`.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#buttonicon-component | Migration Guide}
+ * @see {@link https://metamask.github.io/metamask-design-system/?path=/docs/react-components-buttonicon--docs | Storybook Documentation}
  */
 export const ButtonIcon: ButtonIconComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

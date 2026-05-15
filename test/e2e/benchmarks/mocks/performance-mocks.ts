@@ -5,6 +5,10 @@
  */
 import { Mockttp, MockedEndpoint, RequestRuleBuilder } from 'mockttp';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
+import {
+  setPassThroughInterceptor,
+  type PassThroughInterceptor,
+} from '../../mock-e2e-pass-through';
 import { POWER_USER_PRICES } from './price-data';
 import { buildSseResponseBody } from './swap-mocks';
 import bridgeNetworkTokens from './bridge-network-tokens.json';
@@ -539,6 +543,28 @@ export function getCommonMocks(server: Mockttp): Promise<MockedEndpoint>[] {
         return { statusCode: 200, json: { signature: 'mock-signature' } };
       }),
   ];
+}
+
+export function userStorageHostMock(server: Mockttp): Promise<MockedEndpoint> {
+  const endpointPromise = server
+    .forGet()
+    .forHost('user-storage.api.cx.metamask.io')
+    .always()
+    .thenCallback(() => ({ statusCode: 200, json: null }));
+
+  const existingInterceptor = (server as unknown as Record<string, unknown>)
+    .__passThroughInterceptor as PassThroughInterceptor | undefined;
+  setPassThroughInterceptor(server, (req) => {
+    if (req.url.includes('user-storage.api.cx.metamask.io')) {
+      if (req.method === 'PUT' || req.method === 'DELETE') {
+        return { response: { statusCode: 204 } };
+      }
+      return { response: { statusCode: 200, json: null } };
+    }
+    return existingInterceptor?.(req) ?? null;
+  });
+
+  return endpointPromise;
 }
 
 const SOLANA_URL_REGEX = /^https:\/\/solana-mainnet\.infura\.io\/v3\/.*/u;

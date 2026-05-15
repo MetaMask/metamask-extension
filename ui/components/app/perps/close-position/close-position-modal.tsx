@@ -63,6 +63,7 @@ type ClosePositionParams = {
   orderType: 'market';
   currentPrice: number;
   size?: string;
+  position?: Position;
 };
 
 type CloseToastConfig = Pick<PerpsToastKeyConfig, 'key' | 'description'>;
@@ -86,17 +87,20 @@ const buildCloseRequestParams = ({
   currentPrice,
   isPartialClose,
   closeSize,
+  position,
 }: {
   symbol: string;
   currentPrice: number;
   isPartialClose: boolean;
   closeSize: number;
+  position: Position;
 }): ClosePositionParams => {
   if (!isPartialClose) {
     return {
       symbol,
       orderType: 'market',
       currentPrice,
+      position,
     };
   }
 
@@ -105,6 +109,7 @@ const buildCloseRequestParams = ({
     orderType: 'market',
     currentPrice,
     size: closeSize.toString(),
+    position,
   };
 };
 
@@ -393,6 +398,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
           currentPrice,
           isPartialClose,
           closeSize,
+          position,
         }),
       ]);
       if (!result.success) {
@@ -496,7 +502,21 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
       >
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
-          <ModalHeader onClose={onClose}>{t('perpsClosePosition')}</ModalHeader>
+          <ModalHeader onClose={onClose}>
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              <Icon name={IconName.CircleX} size={IconSize.Xl} />
+              <Text
+                variant={TextVariant.HeadingSm}
+                textAlign={TextAlign.Center}
+              >
+                {t('perpsClosePosition')}
+              </Text>
+            </Box>
+          </ModalHeader>
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
               {/* Close Amount Section (input + slider) */}
@@ -520,8 +540,9 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                 >
                   <Icon
                     name={IconName.Warning}
-                    size={IconSize.Sm}
+                    size={IconSize.Md}
                     color={IconColor.WarningDefault}
+                    className="shrink-0"
                   />
                   <Text
                     variant={TextVariant.BodySm}
@@ -657,6 +678,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
               'data-testid': 'perps-close-position-modal-submit',
               children: t('perpsClosePosition'),
               disabled: isSubmitDisabled,
+              autoFocus: true,
             }}
           />
         </ModalContent>

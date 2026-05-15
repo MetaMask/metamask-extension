@@ -163,6 +163,7 @@ describe('Bridge functionality', function (this: Suite) {
         const bridgePage = await enterBridgeQuote(driver);
 
         await bridgePage.submitQuote();
+        await bridgePage.approveModalIfPresent();
         await driver.clickElement({ text: 'View activity' });
 
         const activityList = new ActivityListPage(driver);

@@ -61,12 +61,10 @@ describe('Custom RPC history', function (this: Suite) {
         await addRpcUrlModal.fillAddRpcNameInput('test-name');
         await addRpcUrlModal.saveAddRpcUrl();
         await addEditNetworkModal.saveEditedNetwork();
-        await selectNetworkDialog.clickCloseButton();
-
         // Validate the network was added
-        const homepage = new Homepage(driver);
-        await homepage.checkPageIsLoaded();
-        await homepage.checkAddNetworkMessageIsDisplayed(networkName);
+        await selectNetworkDialog.checkAddNetworkMessageIsDisplayed(
+          networkName,
+        );
       },
     );
   });

@@ -1,16 +1,15 @@
-// eslint-disable-next-line import-x/no-restricted-paths -- Required to mock background utility used by webcam-utils
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_FULLSCREEN,
-  PLATFORM_FIREFOX,
   PLATFORM_CHROME,
+  PLATFORM_FIREFOX,
 } from '../../../shared/constants/app';
 import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
 import WebcamUtils from './webcam-utils';
 
-jest.mock('../../../app/scripts/lib/util', () => ({
+jest.mock('../../../shared/lib/environment-type', () => ({
   getEnvironmentType: jest.fn(),
 }));
 
@@ -189,6 +188,63 @@ describe('WebcamUtils', () => {
           });
         });
       });
+    });
+  });
+
+  describe('queryCameraPermission', () => {
+    beforeEach(() => {
+      Object.defineProperty(window, 'navigator', {
+        value: {
+          ...originalNavigator,
+          mediaDevices: {
+            enumerateDevices: mockEnumerateDevices,
+          },
+          permissions: {
+            query: jest.fn(),
+          },
+        },
+        writable: true,
+        configurable: true,
+      });
+    });
+
+    it('returns state and permissionStatus when supported', async () => {
+      const permissionStatus = {
+        state: 'denied',
+      } as PermissionStatus;
+      (
+        window.navigator.permissions.query as jest.MockedFunction<
+          typeof window.navigator.permissions.query
+        >
+      ).mockResolvedValue(permissionStatus);
+
+      await expect(WebcamUtils.queryCameraPermission()).resolves.toStrictEqual({
+        state: 'denied',
+        permissionStatus,
+      });
+    });
+
+    it('falls back to prompt when query throws', async () => {
+      (
+        window.navigator.permissions.query as jest.MockedFunction<
+          typeof window.navigator.permissions.query
+        >
+      ).mockRejectedValue(new Error('unsupported'));
+
+      await expect(WebcamUtils.queryCameraPermission()).resolves.toStrictEqual({
+        state: 'prompt',
+        permissionStatus: null,
+      });
+    });
+  });
+
+  describe('stopVideoStream', () => {
+    it('stops all tracks', () => {
+      const stop = jest.fn();
+      WebcamUtils.stopVideoStream({
+        getTracks: () => [{ stop }],
+      } as unknown as MediaStream);
+      expect(stop).toHaveBeenCalledTimes(1);
     });
   });
 });
