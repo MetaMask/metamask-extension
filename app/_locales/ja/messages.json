@@ -558,9 +558,6 @@
   "alertReasonGasFeeLow": {
     "message": "低速"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "ガススポンサーシップが利用できません"
-  },
   "alertReasonGasTooLow": {
     "message": "低ガスリミット"
   },
@@ -754,10 +751,6 @@
   "autoDetectTokens": {
     "message": "トークンの自動検出"
   },
-  "autoDetectTokensDescription": {
-    "message": "サードパーティAPIを使用して、ウォレットに送られた新しいトークンを検出・表示します。アプリがこれらのサービスからデータを自動的に取得しないようにするには、オフにしてください。$1",
-    "description": "$1 is a link to a support article"
-  },
   "autoDetectTokensDescriptionV2": {
     "message": "ウォレットに送信された新しいトークンを表示します。"
   },
@@ -784,9 +777,6 @@
   },
   "autoLockTimeLimit": {
     "message": "オートロックタイマー (分)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "MetaMaskがロックされるまでのアイドル時間を分単位で設定します。"
   },
   "available": {
     "message": "使用可能"
@@ -1018,9 +1008,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "このリクエストを承認すると、詐欺が判明しているサードパーティに資産をすべて奪われます。"
-  },
-  "blockaidMessage": {
-    "message": "プライバシーを保護 - サードパーティとデータが一切共有されません。Arbitrum、Avalanche、BNB Chain、イーサリアムメインネット、Linea、Optimism、Polygon、Base、Sepoliaで利用可能。"
   },
   "blockaidTitleDeceptive": {
     "message": "これは虚偽のリクエストです"
@@ -1481,9 +1468,6 @@
   "browserNotSupported": {
     "message": "ご使用のブラウザはサポートされていません..."
   },
-  "builtAroundTheWorld": {
-    "message": "MetaMaskは、世界中でデザイン・開発されています。"
-  },
   "busy": {
     "message": "ビジー状態"
   },
@@ -1572,13 +1556,6 @@
   "checkNetworkConnectivityOr": {
     "message": "ネットワーク接続を確認してください。またはこちらへ：$1。",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "ネットワークを選択してください"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "デフォルトの設定と構成を使用する場合、当社はInfuraをデフォルトの遠隔手続き呼び出し (RPC) プロバイダーとして使用し、イーサリアムデータへの可能な限り最も信頼性が高くプライベートなアクセスを提供します。まれに、ユーザーに最も優れたエクスペリエンスを提供するために、他のRPCプロバイダーが使用される場合もあります。ユーザーが自らRPCを選択することもできますが、トランザクションを実行するために、どのRPCでもユーザーのIPアドレスとイーサリアムウォレットが取得される点にご注意ください。InfuraによるEVMアカウントのデータの取り扱いに関する詳細は、$1をご覧ください。Solanaアカウントの場合は、$2。",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "ハードウェアウォレットに接続するには、MetaMaskをGoogle Chromeで使用する必要があります。"
@@ -2129,9 +2106,6 @@
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
-  "currencyConversion": {
-    "message": "通貨"
-  },
   "currencyRateCheckToggle": {
     "message": "残高とトークン価格チェッカーを表示"
   },
@@ -2165,9 +2139,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12時間: $1 - $2 gwei"
-  },
-  "currentLanguage": {
-    "message": "現在の言語"
   },
   "currentNetwork": {
     "message": "現在のネットワーク",
@@ -2527,9 +2498,6 @@
   "details": {
     "message": "詳細"
   },
-  "developerOptions": {
-    "message": "開発者用オプション"
-  },
   "developerTools": {
     "message": "開発者ツール"
   },
@@ -2586,17 +2554,8 @@
   "dismiss": {
     "message": "閉じる"
   },
-  "dismissReminderDescriptionField": {
-    "message": "これをオンにすると、シークレットリカバリーフレーズのバックアップのリマインダーメッセージが解除されます。資金の損失を防ぐために、シークレットリカバリーフレーズのバックアップを取ることを強くお勧めします。"
-  },
-  "dismissReminderField": {
-    "message": "シークレットリカバリーフレーズのバックアップリマインダーを解除"
-  },
   "displayNftMedia": {
     "message": "NFTメディアの表示"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFTのメディアとデータを表示した場合、IPアドレスがOpenSeaをはじめとするサードパーティに公開されます。その結果、攻撃者がユーザーのIPアドレスとイーサリアムアドレスを関連付けられるようになる可能性があります。NFTの自動検出はこの設定に依存しており、この設定を無効にすると利用できなくなります。"
   },
   "displayNftMediaDescriptionV2": {
     "message": "NFTの自動検出はこの機能に依拠しています。"
@@ -3757,9 +3716,6 @@
   "ipfsGateway": {
     "message": "IPFS ゲートウェイ"
   },
-  "ipfsGatewayDescription": {
-    "message": "MetaMaskは、サードパーティサービスを使用して、IPFSに保管されているNFTの画像の表示、ブラウザのアドレスバーに入力されたENSアドレスに関する情報の表示、様々なトークンのアイコンの取得を行います。これらのサービスの使用時には、IPアドレスが当該サービスに公開される可能性があります。"
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "サードパーティサービスを使用して、IPFSに保管されているNFTの画像の表示、ブラウザのアドレスバーに入力されたENSアドレスに関する情報の表示、様々なトークンのアイコンの取得を行います。下から希望のIPFSゲートウェイを選択してください。"
   },
@@ -3940,9 +3896,6 @@
   "likeToImportTokens": {
     "message": "これらのトークンを追加しますか？"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerliテストネットワーク"
-  },
   "lineaMainnet": {
     "message": "Lineaメインネット"
   },
@@ -3954,9 +3907,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "CoinbaseまたはBinanceアカウントをリンクして、無料でMetaMaskに仮想通貨を送金します。"
-  },
-  "links": {
-    "message": "リンク"
   },
   "loading": {
     "message": "読み込み中..."
@@ -3978,9 +3928,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMaskをロックしています…"
-  },
-  "logOut": {
-    "message": "ログアウト"
   },
   "loginErrorConnectButton": {
     "message": "再試行"
@@ -4700,9 +4647,6 @@
   "networkPermissionToast": {
     "message": "ネットワークのアクセス許可が更新されました"
   },
-  "networkProvider": {
-    "message": "ネットワークプロバイダー"
-  },
   "networkStatus": {
     "message": "ネットワークステータス"
   },
@@ -5311,9 +5255,6 @@
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policyヘッダーを上書き"
   },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "このオプションは、DAppのContent-Security-Policyヘッダーによって拡張機能が正しく読み込まれない場合があるという、Firefoxの既知の問題に対する回避策です。特定のWebページの互換性に必要な場合を除き、このオプションを無効にすることはお勧めしません。"
-  },
   "padlock": {
     "message": "南京錠"
   },
@@ -5329,57 +5270,69 @@
   "participateInMetaMetricsDescription": {
     "message": "MetaMetricsに参加して、MetaMaskの改善にご協力ください"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "生体認証",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
   "passkeyDescription": {
     "message": "パスワードを入力する代わりに、$1を使ってMetaMaskのロックを解除できます。これにより、このデバイスのみにパスキーが作成されます。",
     "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
   },
   "passkeyErrorAlreadyEnrolled": {
     "message": "$1はすでにこのウォレットで使えるように設定されています。",
-    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
     "message": "$1を確認できませんでした。もう一度お試しください。",
-    "description": "Shown when passkey authentication response verification fails."
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorMissingKeyMaterial": {
     "message": "$1の応答が不完全でした。もう一度お試しください。",
-    "description": "Shown when the passkey assertion is missing required key material."
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNoAuthenticationCeremony": {
     "message": "$1のサインインセッションが期限切れになりました。もう一度お試しください。",
-    "description": "Shown when passkey authentication runs without an active authentication ceremony."
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNoRegistrationCeremony": {
     "message": "$1のセットアップセッションが期限切れになりました。もう一度最初からお試しください。",
-    "description": "Shown when passkey registration verification runs without an active registration ceremony."
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotEnrolled": {
     "message": "$1がこのウォレットで使えるように設定されていません。設定で$1をオンにしてください。",
-    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorRegistrationFailed": {
     "message": "$1の設定に失敗しました。もう一度お試しください",
-    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorRegistrationVerificationFailed": {
     "message": "$1の設定を確認できませんでした。もう一度お試しください。",
-    "description": "Shown when passkey registration response verification fails."
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVaultKeyDecryptionFailed": {
     "message": "$1でロックを解除できませんでした。もう一度試すか、設定で$1を設定しなおしてください。",
-    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVaultKeyMismatch": {
     "message": "$1が現在のウォレットのロックと一致しません。設定で$1を設定しなおしてください。",
-    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVaultKeyRenewalFailed": {
     "message": "パスワードは更新されましたが、$1によるロック解除はオンにできませんでした。",
-    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVerificationFailed": {
     "message": "$1を確認できませんでした。もう一度試すか、パスワードを使用してください。",
-    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeySetupStepRegister": {
     "message": "$1の登録",
@@ -5428,6 +5381,14 @@
   "passkeyUnlockFailed": {
     "message": "$1のロック解除に失敗しました。パスワードをお試しください。",
     "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "パスワードを入力する代わりに、$1で確認します。",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "$1での確定",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "パスワード"
@@ -5878,7 +5839,7 @@
     "message": "ロングをクローズ"
   },
   "perpsClosePartialMinNotional": {
-    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、スライダーを100%に設定してください。"
+    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、ポジション全体をクローズしてください。"
   },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
@@ -7076,9 +7037,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "シークレットリカバリーフレーズを確認"
   },
-  "revealSeedWords": {
-    "message": "シークレットリカバリーフレーズを確認"
-  },
   "revealSeedWordsDescription1": {
     "message": "$1があれば、ウォレット、資金、アカウントに自由にアクセスできます。",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -7156,9 +7114,6 @@
   "rewardsLinkAccountError": {
     "message": "アカウントの追加に失敗しました"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "アクティビティに対してポイントを獲得できます。\nレベルを上げてリワードのロックを解除しましょう。"
-  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "お住いの国でリワードプログラムへのオプトインが許可されているかを確認できません。接続を確認して、もう一度お試しください。"
   },
@@ -7170,21 +7125,6 @@
   },
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "再試行"
-  },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "250ポイントを請求する"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "資格の有無を確認中..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "地域を確認中…"
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "後で"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "リワードのご紹介"
   },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "現在、お住まいの地域ではリワードをご利用いただけません。対象地域を拡大中ですので、後日再度ご確認ください。"
@@ -7294,10 +7234,6 @@
   "securityAlerts": {
     "message": "セキュリティアラート"
   },
-  "securityAlertsDescription": {
-    "message": "この機能は、トランザクションと署名要求を能動的に確認し、悪質または異常なアクティビティに関するアラートを発します。$1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "この機能は、トランザクションと署名要求を能動的に確認し、悪質なアクティビティに関するアラートを発します。$1"
   },
@@ -7307,15 +7243,12 @@
   "securityAndPrivacy": {
     "message": "セキュリティとプライバシー"
   },
-  "securityChangePassword": {
-    "message": "パスワードの変更"
-  },
   "securityChangePasswordToastError": {
     "message": "パスワードを変更できませんでした。もう一度お試しください。"
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
     "message": "新しいパスワードは保存されましたが、$1によるロック解除はオンにできませんでした。",
-    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "新しいパスワードを保存しました"
@@ -7474,7 +7407,7 @@
   },
   "settingUpPasskey": {
     "message": "$1の設定",
-    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "設定"
@@ -8122,9 +8055,6 @@
   "showFiatConversionInTestnets": {
     "message": "テストネット上に換算レートを表示"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "これを選択すると、テストネット上に法定通貨の換算レートが表示されます"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "テストネットワーク上でネットワークトークンを現地通貨として表示します。この機能をオンにするよう求められた場合、詐欺の可能性があります。これはテスト目的のみです。$1",
     "description": "$1 is the 'Learn more' link"
@@ -8158,9 +8088,6 @@
   },
   "showTestnetNetworks": {
     "message": "テストネットワークを表示"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "ネットワークリストにテストネットワークを表示するには、こちらを選択してください"
   },
   "sidePanelMigrationToast": {
     "message": "MetaMaskはデフォルトでサイドパネルで開かれるようになりました。メニューからいつでも$1ことができます。",
@@ -8289,9 +8216,6 @@
   },
   "skipDeepLinkInterstitial": {
     "message": "ディープリンクを開く際にインタースティシャル画面を表示しない"
-  },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "このオプションを有効にすると、MetaMaskでディープリンクを開く際に表示されるインタースティシャル画面がスキップされます。「ディープリンク」とは、https://link.metamask.io/homeなど、MetaMaskが開くようになっているリンクのことです。これらのリンクは、第三者によって偽装されている場合があります。インタースティシャル画面は、MetaMask内でユーザーのアカウント、トークン、履歴、残高、設定、その他機微情報に該当する可能性のある情報を表示する恐れのあるページを誤って開かないように、ユーザーを保護するものです。この設定は、MetaMaskによって署名されたリンクにのみ適用されます。"
   },
   "skipLinkConfirmationScreens": {
     "message": "リンクの確認画面をスキップ"
@@ -8805,9 +8729,6 @@
   "stateLogs": {
     "message": "ステートログ"
   },
-  "stateLogsDescription": {
-    "message": "ステートログには、パブリックアカウントアドレスと送信済みトランザクションが含まれています。"
-  },
   "stateLogsModalDescription": {
     "message": "ステートログは、ユーザーが遭遇する可能性のある問題のデバッグに役立ちます。ステートログにはパブリックアカウントアドレスとトランザクションが含まれるため、サポート目的でMetaMaskにのみ送信してください。"
   },
@@ -8882,9 +8803,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "スマートトランザクションをオンにして、トランザクションの信頼性と安全性を高めましょう。$1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "スマートトランザクションをオンにして、サポートされているネットワーク上でのトランザクションの信頼性と安全性を高めましょう。$1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "スワップを非公開で送信中..."
@@ -9314,9 +9232,6 @@
   },
   "theme": {
     "message": "テーマ"
-  },
-  "themeDescription": {
-    "message": "お好みのMetaMaskテーマを選択してください。"
   },
   "thirdPartyApis": {
     "message": "サードパーティAPI"
@@ -9783,9 +9698,6 @@
   "useNftDetectionDescription": {
     "message": "すべてのNFTを表示します (エアドロップ詐欺による偽のNFTを含む)。"
   },
-  "useNftDetectionDescriptionText": {
-    "message": "MetaMaskが、サードパーティサービス を使って、ユーザーが所有するNFTを追加することを許可します。NFTの自動検出機能を利用すると、ユーザーのIPとアカウントアドレスがこれらのサービスに公開されます。この機能を有効にした場合、ユーザーのIPアドレスとイーサリアムアドレスが紐付けられ、詐欺師によりエアドロップされた偽のNFTが表示される可能性があります。このリスクを回避するため、手動でトークンを追加することもできます。"
-  },
   "usePassword": {
     "message": "パスワードを使用"
   },
@@ -9797,9 +9709,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "ネットワーク情報の確認"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMaskは$1というサードパーティサービスを利用して、正確かつ標準化されたネットワーク情報を表示しています。これにより、悪質なネットワークや正しくないネットワークに接続してしまう可能性が減ります。この機能を使用すると、ユーザーのIPアドレスがchainid.networkに公開されます。"
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "悪意のある、または正しくないネットワークに接続する可能性が低くなります。MetaMaskは$1を使用して、正確かつ標準化されたネットワーク情報を表示します。"

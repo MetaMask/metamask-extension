@@ -7,8 +7,8 @@ import {
   getIsMainnet,
   getUseNftDetection,
   getNftIsStillFetchingIndication,
-  getPreferences,
 } from '../../../../../selectors';
+import { getPreferences } from '../../../../../../shared/lib/selectors/preferences';
 import { Box } from '../../../../component-library';
 import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import { endTrace, TraceName } from '../../../../../../shared/lib/trace';

@@ -170,9 +170,6 @@
   "autoLockTimeLimit": {
     "message": "Timer com bloqueio automático (minutos)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Defina o tempo ocioso, em minutos, antes de a MetaMask ser bloqueada."
-  },
   "average": {
     "message": "Média"
   },
@@ -227,9 +224,6 @@
   },
   "browserNotSupported": {
     "message": "Seu navegador não é compatível..."
-  },
-  "builtAroundTheWorld": {
-    "message": "A MetaMask é concebida e desenvolvida em todo o mundo."
   },
   "busy": {
     "message": "Ocupado"
@@ -373,9 +367,6 @@
   "createPassword": {
     "message": "Criar senha"
   },
-  "currencyConversion": {
-    "message": "Conversão de moeda"
-  },
   "currencySymbol": {
     "message": "Símbolo da moeda"
   },
@@ -387,9 +378,6 @@
   },
   "currentExtension": {
     "message": "Página atual da extensão"
-  },
-  "currentLanguage": {
-    "message": "Idioma atual"
   },
   "currentlyUnavailable": {
     "message": "Indisponível nessa rede"
@@ -466,12 +454,6 @@
   },
   "dismiss": {
     "message": "Descartar"
-  },
-  "dismissReminderDescriptionField": {
-    "message": "Ative isso para descartar a mensagem de lembrete de backup da Frase de Recuperação Secreta. Recomendamos enfaticamente que você faça o backup da sua Frase de Recuperação Secreta para evitar a perda de fundos"
-  },
-  "dismissReminderField": {
-    "message": "Descartar o lembrete de backup da Frase de Recuperação Secreta"
   },
   "domain": {
     "message": "Domínio"
@@ -876,14 +858,8 @@
   "likeToImportTokens": {
     "message": "Você gostaria de importar esses tokens?"
   },
-  "lineaGoerli": {
-    "message": "Rede de testes Linea Goerli"
-  },
   "link": {
     "message": "Link"
-  },
-  "links": {
-    "message": "Links"
   },
   "loading": {
     "message": "Carregando..."
@@ -1222,9 +1198,6 @@
   "reusedTokenNameWarning": {
     "message": "Um token aqui reutiliza um símbolo de outro token que você acompanha; isso pode causar confusão ou induzir a erros."
   },
-  "revealSeedWords": {
-    "message": "Revelar Frase de Recuperação Secreta"
-  },
   "revealSeedWordsWarning": {
     "message": "Essas palavras podem ser usadas para roubar todas as suas contas.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -1299,9 +1272,6 @@
   "showFiatConversionInTestnets": {
     "message": "Mostrar conversão nas redes de teste"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Selecione essa opção para mostrar a conversão de moeda fiduciária nas redes de teste"
-  },
   "showHexData": {
     "message": "Mostrar dados hexadecimais"
   },
@@ -1313,9 +1283,6 @@
   },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Selecione essa opção para mostrar redes de teste na lista de redes"
   },
   "sign": {
     "message": "Assinar"
@@ -1352,9 +1319,6 @@
   },
   "stateLogs": {
     "message": "Registros de estado"
-  },
-  "stateLogsDescription": {
-    "message": "Os registros de estado contêm os endereços da sua conta pública e as transações enviadas."
   },
   "statusNotConnected": {
     "message": "Não conectado"

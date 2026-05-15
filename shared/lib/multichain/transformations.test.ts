@@ -260,4 +260,30 @@ describe('selectTransactions', () => {
     );
     expect(result.pages[0].data).toHaveLength(0);
   });
+
+  it('blocks spam token transactions by transactionProtocol', () => {
+    const result = selectTransactions({ address: account })(
+      createData([
+        {
+          ...baseRawTx,
+          from: other,
+          to: account,
+          transactionProtocol: 'SPAM_TOKEN',
+          valueTransfers: [
+            {
+              from: other,
+              to: account,
+              amount: '1',
+              decimal: 18,
+              symbol: 'SPAM',
+              name: 'Spam Token',
+              contractAddress: '0x4444444444444444444444444444444444444444',
+              transferType: 'erc20',
+            },
+          ],
+        },
+      ]),
+    );
+    expect(result.pages[0].data).toHaveLength(0);
+  });
 });

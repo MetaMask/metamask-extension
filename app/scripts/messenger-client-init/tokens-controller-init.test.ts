@@ -93,6 +93,7 @@ describe('TokensControllerInit', () => {
       state: undefined,
       chainId: '0x1',
       provider: MOCK_PROVIDER,
+      tokenListService: expect.any(Object),
     });
   });
 });

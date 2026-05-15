@@ -48,8 +48,8 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getDefaultHomeActiveTabName,
   getHDEntropyIndex,
-  getPreferences,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MultichainAccountMenu } from '../multichain-account-menu';
 import { AddMultichainAccount } from '../add-multichain-account';

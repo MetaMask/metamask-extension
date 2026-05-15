@@ -17,7 +17,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
-import * as sharedSelectors from '../../../../shared/lib/selectors';
+import * as keyringSelectors from '../../../../shared/lib/selectors/keyring';
 import * as sentry from '../../../../shared/lib/sentry';
 import * as bridgeStatusActions from '../../../ducks/bridge-status/actions';
 import * as bridgeActions from '../../../ducks/bridge/actions';
@@ -108,17 +108,27 @@ jest.mock('../../../../shared/lib/selectors/networks', () => {
     getNetworkConfigurationsByChainId: jest.fn(
       () => MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
     ),
-  };
-});
-
-jest.mock('../../../../shared/lib/selectors', () => {
-  const smartTransactions = jest.requireActual(
-    '../../../../shared/lib/selectors/smart-transactions',
-  );
-  return {
-    ...smartTransactions,
-    getHardwareWalletType: jest.fn(() => undefined),
-    isHardwareWallet: jest.fn(() => false),
+    // Override these too since they live in the same module — their
+    // closure-captured reference to `getNetworkConfigurationsByChainId`
+    // bypasses the mock above.
+    selectNetworkConfigurationByChainId: jest.fn(
+      (
+        _state: unknown,
+        chainId: keyof typeof MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
+      ) => MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID[chainId],
+    ),
+    selectDefaultRpcEndpointByChainId: jest.fn(
+      (
+        _state: unknown,
+        chainId: keyof typeof MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID,
+      ) => {
+        const config = MOCK_NETWORK_CONFIGURATIONS_BY_CHAIN_ID[chainId];
+        if (!config) {
+          return undefined;
+        }
+        return config.rpcEndpoints[config.defaultRpcEndpointIndex];
+      },
+    ),
   };
 });
 
@@ -131,6 +141,11 @@ jest.mock('../../../selectors', () => {
     checkNetworkAndAccountSupports1559: () => true,
   };
 });
+jest.mock('../../../../shared/lib/selectors/keyring', () => ({
+  ...jest.requireActual('../../../../shared/lib/selectors/keyring'),
+  getHardwareWalletType: jest.fn(() => undefined),
+  isHardwareWallet: jest.fn(() => false),
+}));
 
 const middleware = [thunk];
 
@@ -172,7 +187,7 @@ const makeWrapper = (store: ReturnType<typeof makeMockStore>) => {
 
 const submitTxSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeTx');
 const submitIntentSpy = jest.spyOn(bridgeStatusActions, 'submitBridgeIntent');
-const isHardwareWalletSpy = sharedSelectors.isHardwareWallet as jest.Mock;
+const isHardwareWalletSpy = keyringSelectors.isHardwareWallet as jest.Mock;
 const captureExceptionSpy = jest.spyOn(sentry, 'captureException');
 const mockResetState = jest.fn();
 const resetBridgeStoreSpy = jest.spyOn(bridgeActions, 'resetInputFields');
