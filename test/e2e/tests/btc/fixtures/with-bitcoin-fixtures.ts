@@ -4,6 +4,8 @@ import { withFixtures } from '../../../helpers';
 import {
   BitcoinRegtestLocalNodeOptions,
   BitcoinRegtestNode,
+  type EsploraTransaction,
+  getScripthashForAddress,
 } from '../../../seeder/bitcoin/node';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from '../mocks/min-api';
 import {
@@ -13,14 +15,18 @@ import {
   mockSolanaSpotPrices,
   mockSupportedVsCurrencies,
 } from '../mocks/price-api';
-import { proxyBitcoinBlockchainCalls } from '../mocks/local-bitcoin-node-mocks';
+import {
+  type BitcoinFixtureBlockchainState,
+  proxyBitcoinBlockchainCalls,
+} from '../mocks/local-bitcoin-node-mocks';
 
 type WithFixturesOptions = Parameters<typeof withFixtures>[0];
 type WithFixturesTestSuite = Parameters<typeof withFixtures>[1];
 
 export type BitcoinFixtureAccount = {
   address: string;
-  balanceBtc?: number;
+  balance?: number;
+  transactions?: EsploraTransaction[];
 };
 
 export type WithBitcoinFixturesOptions = Omit<
@@ -28,25 +34,58 @@ export type WithBitcoinFixturesOptions = Omit<
   'localNodeOptions' | 'testSpecificMock'
 > & {
   accounts?: BitcoinFixtureAccount[];
+  dappOptions?: unknown;
+  fixtures?: unknown;
   includeAnvil?: boolean;
   testSpecificMock?: (
     mockServer: Mockttp,
     context: { localNodes: unknown[] },
   ) => Promise<MockedEndpoint[]>;
+  title?: string;
 };
 
 export function buildBitcoinNodeOptions(
   accounts: BitcoinFixtureAccount[] = [
-    { address: DEFAULT_BTC_ADDRESS, balanceBtc: DEFAULT_BTC_BALANCE },
+    { address: DEFAULT_BTC_ADDRESS, balance: DEFAULT_BTC_BALANCE },
   ],
 ): BitcoinRegtestLocalNodeOptions {
   return {
     initialBalances: Object.fromEntries(
       accounts.map((account) => [
         account.address,
-        account.balanceBtc ?? DEFAULT_BTC_BALANCE,
+        account.balance ?? DEFAULT_BTC_BALANCE,
       ]),
     ),
+  };
+}
+
+export function buildBitcoinFixtureBlockchainState(
+  accounts: BitcoinFixtureAccount[] = [],
+): BitcoinFixtureBlockchainState {
+  const transactionHistoryByScripthash = new Map<
+    string,
+    EsploraTransaction[]
+  >();
+  const transactionsByTxid = new Map<string, EsploraTransaction>();
+
+  for (const account of accounts) {
+    if (account.transactions === undefined) {
+      continue;
+    }
+
+    transactionHistoryByScripthash.set(
+      getScripthashForAddress(account.address),
+      account.transactions,
+    );
+
+    for (const transaction of account.transactions) {
+      transactionsByTxid.set(transaction.txid, transaction);
+    }
+  }
+
+  return {
+    transactionHistoryByScripthash,
+    transactionsByTxid,
   };
 }
 
@@ -78,6 +117,7 @@ export async function withBitcoinFixtures(
         const customEndpoints =
           (await testSpecificMock?.(mockServer, context)) ?? [];
         const bitcoinEndpoints = await mockBitcoinFixtureApis(mockServer, {
+          accounts,
           localNodes: context.localNodes,
         });
         return [...customEndpoints, ...bitcoinEndpoints];
@@ -89,7 +129,10 @@ export async function withBitcoinFixtures(
 
 async function mockBitcoinFixtureApis(
   mockServer: Mockttp,
-  { localNodes }: { localNodes: unknown[] },
+  {
+    accounts,
+    localNodes,
+  }: { accounts?: BitcoinFixtureAccount[]; localNodes: unknown[] },
 ): Promise<MockedEndpoint[]> {
   const bitcoinNode = localNodes.find(
     (node): node is BitcoinRegtestNode => node instanceof BitcoinRegtestNode,
@@ -106,6 +149,10 @@ async function mockBitcoinFixtureApis(
     await mockSupportedVsCurrencies(mockServer),
     await mockPriceMulti(mockServer),
     await mockPriceMultiBtcAndSol(mockServer),
-    ...(await proxyBitcoinBlockchainCalls(mockServer, bitcoinNode)),
+    ...(await proxyBitcoinBlockchainCalls(
+      mockServer,
+      bitcoinNode,
+      buildBitcoinFixtureBlockchainState(accounts),
+    )),
   ];
 }

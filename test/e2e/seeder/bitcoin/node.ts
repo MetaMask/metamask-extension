@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { spawn, type ChildProcess } from 'child_process';
+import { createHash } from 'crypto';
 import { mkdir, mkdtemp, rm } from 'fs/promises';
 import { tmpdir } from 'os';
 import { join, resolve } from 'path';
+import { bech32, bech32m } from '@scure/base';
 import {
   DEFAULT_BTC_ADDRESS,
   DEFAULT_BTC_BALANCE,
@@ -19,10 +21,6 @@ const BITCOIN_NODE_PROCESS_OUTPUT_LIMIT = 8_000;
 const BITCOIN_RPC_PASSWORD = 'metamask';
 const BITCOIN_RPC_USER = 'metamask';
 const BITCOIN_WALLET_NAME = 'e2e';
-const E2E_BTC_SCRIPTPUBKEY = '0014469d76e8387e11cbe9010c72ee4b748dd9152fa5';
-const E2E_BTC_SCRIPTHASH =
-  '538c172f4f5ff9c24693359c4cdc8ee4666565326a789d5e4b2df1db7acb4721';
-const E2E_BTC_REGTEST_ADDRESS = 'bcrt1qg6whd6pc0cguh6gpp3ewujm53hv32ta9lzr5cs';
 const MAINNET_COMPAT_GENESIS_BLOCK_HASH =
   '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f';
 const MAINNET_COMPAT_FUNDING_BLOCK_HASH =
@@ -175,7 +173,7 @@ type EsploraBlock = {
   weight: number;
 };
 
-type EsploraTransaction = {
+export type EsploraTransaction = {
   fee: number;
   locktime: number;
   size: number;
@@ -211,6 +209,13 @@ type EsploraOutput = {
   value: number;
 };
 
+type EsploraOutspend = {
+  spent: boolean;
+  status?: EsploraTransaction['status'];
+  txid?: string;
+  vin?: number;
+};
+
 type FundingOutpoint = {
   scripthash: string;
   txid: string;
@@ -218,10 +223,18 @@ type FundingOutpoint = {
   vout: number;
 };
 
+type SegwitAddress = {
+  prefix: string;
+  program: Uint8Array;
+  version: number;
+};
+
 export class BitcoinRegtestNode {
   #blockHeaderCache = new Map<string, BitcoinCoreBlock>();
 
   #fundingOutpoints = new Map<string, FundingOutpoint>();
+
+  #scriptPubKeyAddressOverrides = new Map<string, string>();
 
   #nodeProcess: ChildProcess | undefined;
 
@@ -326,20 +339,16 @@ export class BitcoinRegtestNode {
     );
     await this.#runBitcoinCli(['generatetoaddress', '101', miningAddress]);
 
-    for (const [address, balanceBtc] of Object.entries(initialBalances)) {
-      if (balanceBtc <= 0) {
+    for (const [address, balance] of Object.entries(initialBalances)) {
+      if (balance <= 0) {
         continue;
       }
 
       const regtestAddress = getRegtestAddressForFunding(address);
       const scripthash = getScripthashForAddress(address);
+      const scriptPubKey = getScriptPubKeyForAddress(address);
       const txid = await this.#runBitcoinCli(
-        [
-          '-rpcwallet=e2e',
-          'sendtoaddress',
-          regtestAddress,
-          balanceBtc.toString(),
-        ],
+        ['-rpcwallet=e2e', 'sendtoaddress', regtestAddress, balance.toString()],
         { trimStdout: true },
       );
       await this.#runBitcoinCli(['generatetoaddress', '6', miningAddress]);
@@ -349,7 +358,7 @@ export class BitcoinRegtestNode {
         [txid, true],
       );
       const outputIndex = tx.vout.findIndex(
-        (output) => output.scriptPubKey.hex === E2E_BTC_SCRIPTPUBKEY,
+        (output) => output.scriptPubKey.hex === scriptPubKey,
       );
 
       if (outputIndex === -1) {
@@ -358,6 +367,7 @@ export class BitcoinRegtestNode {
         );
       }
 
+      this.#scriptPubKeyAddressOverrides.set(scriptPubKey, address);
       this.#fundingOutpoints.set(scripthash, {
         scripthash,
         txid,
@@ -513,6 +523,7 @@ export class BitcoinRegtestNode {
     this.#rpcPort = undefined;
     this.#fundingOutpoints.clear();
     this.#blockHeaderCache.clear();
+    this.#scriptPubKeyAddressOverrides.clear();
 
     if (nodeProcess) {
       await stopProcess(nodeProcess);
@@ -627,7 +638,9 @@ export class BitcoinRegtestNode {
 
   async getTxOutspends(txid: string) {
     const transaction = await this.getTransaction(txid);
-    const outspends = transaction.vout.map(() => ({ spent: false }));
+    const outspends: EsploraOutspend[] = transaction.vout.map(() => ({
+      spent: false,
+    }));
     const mempoolTxids = await this.#rpc<string[]>('getrawmempool');
 
     for (const mempoolTxid of mempoolTxids) {
@@ -681,7 +694,9 @@ export class BitcoinRegtestNode {
     transaction: BitcoinCoreRawTransaction,
   ): Promise<EsploraTransaction> {
     const status = await this.#getTransactionStatus(transaction);
-    const vout = transaction.vout.map(transformOutput);
+    const vout = transaction.vout.map((output) =>
+      transformOutput(output, this.#scriptPubKeyAddressOverrides),
+    );
     const inputValue = await this.#getInputValue(transaction);
     const outputValue = vout.reduce((total, output) => total + output.value, 0);
 
@@ -742,7 +757,10 @@ export class BitcoinRegtestNode {
         'getrawtransaction',
         [txid, true],
       );
-      return transformOutput(transaction.vout[outputIndex]);
+      return transformOutput(
+        transaction.vout[outputIndex],
+        this.#scriptPubKeyAddressOverrides,
+      );
     } catch {
       return null;
     }
@@ -838,14 +856,16 @@ function transformBlock(block: BitcoinCoreBlock): EsploraBlock {
   };
 }
 
-function transformOutput(output: BitcoinCoreOutput): EsploraOutput {
+function transformOutput(
+  output: BitcoinCoreOutput,
+  scriptPubKeyAddressOverrides: Map<string, string>,
+): EsploraOutput {
   const scriptpubkey = output.scriptPubKey.hex;
   return {
     scriptpubkey,
     scriptpubkey_address:
-      scriptpubkey === E2E_BTC_SCRIPTPUBKEY
-        ? DEFAULT_BTC_ADDRESS
-        : output.scriptPubKey.address,
+      scriptPubKeyAddressOverrides.get(scriptpubkey) ??
+      output.scriptPubKey.address,
     scriptpubkey_asm: output.scriptPubKey.asm,
     scriptpubkey_type: mapScriptPubKeyType(output.scriptPubKey.type),
     value: btcToSats(output.value),
@@ -862,21 +882,85 @@ function mapScriptPubKeyType(type: string): string {
   return type;
 }
 
-function getRegtestAddressForFunding(address: string): string {
-  if (address === DEFAULT_BTC_ADDRESS) {
-    return E2E_BTC_REGTEST_ADDRESS;
-  }
-  if (address.startsWith('bcrt1')) {
+export function getRegtestAddressForFunding(address: string): string {
+  const decoded = decodeSegwitAddress(address);
+
+  if (decoded.prefix === 'bcrt') {
     return address;
   }
+
+  return encodeSegwitAddress({ ...decoded, prefix: 'bcrt' });
+}
+
+export function getScripthashForAddress(address: string): string {
+  const scriptPubKey = getScriptPubKeyForAddress(address);
+  return createHash('sha256')
+    .update(Buffer.from(scriptPubKey, 'hex'))
+    .digest('hex');
+}
+
+export function getScriptPubKeyForAddress(address: string): string {
+  const { program, version } = decodeSegwitAddress(address);
+  const programHex = Buffer.from(program).toString('hex');
+
+  if (version === 0) {
+    if (program.length === 20) {
+      return `0014${programHex}`;
+    }
+
+    if (program.length === 32) {
+      return `0020${programHex}`;
+    }
+
+    throw new Error(`Unsupported Bitcoin fixture address: ${address}`);
+  }
+
+  if (version >= 1 && version <= 16) {
+    return `${(0x50 + version).toString(16)}${program.length
+      .toString(16)
+      .padStart(2, '0')}${programHex}`;
+  }
+
   throw new Error(`Unsupported Bitcoin fixture address: ${address}`);
 }
 
-function getScripthashForAddress(address: string): string {
-  if (address === DEFAULT_BTC_ADDRESS || address === E2E_BTC_REGTEST_ADDRESS) {
-    return E2E_BTC_SCRIPTHASH;
+function decodeSegwitAddress(address: string): SegwitAddress {
+  const normalizedAddress = address.toLowerCase();
+  const bech32Decoded = bech32.decodeUnsafe(normalizedAddress, 1023);
+  const bech32mDecoded = bech32m.decodeUnsafe(normalizedAddress, 1023);
+  const decoded = bech32Decoded ?? bech32mDecoded;
+
+  if (!decoded || !['bc', 'tb', 'bcrt'].includes(decoded.prefix)) {
+    throw new Error(`Unsupported Bitcoin fixture address: ${address}`);
   }
-  throw new Error(`Unsupported Bitcoin fixture address: ${address}`);
+
+  const [version, ...programWords] = decoded.words;
+  const program = bech32.fromWords(programWords);
+
+  if (version === undefined || program.length < 2 || program.length > 40) {
+    throw new Error(`Unsupported Bitcoin fixture address: ${address}`);
+  }
+
+  if (version === 0 && !bech32Decoded) {
+    throw new Error(`Unsupported Bitcoin fixture address: ${address}`);
+  }
+
+  if (version !== 0 && !bech32mDecoded) {
+    throw new Error(`Unsupported Bitcoin fixture address: ${address}`);
+  }
+
+  return {
+    prefix: decoded.prefix,
+    program,
+    version,
+  };
+}
+
+function encodeSegwitAddress({ prefix, program, version }: SegwitAddress) {
+  const words = [version, ...bech32.toWords(program)];
+  return version === 0
+    ? bech32.encode(prefix, words, 1023)
+    : bech32m.encode(prefix, words, 1023);
 }
 
 function btcToSats(value: number): number {

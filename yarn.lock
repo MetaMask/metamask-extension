@@ -5349,6 +5349,33 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask-previews/bitcoin-regtest-up@npm:0.0.0-preview-82e080825":
+  version: 0.0.0-preview-82e080825
+  resolution: "@metamask-previews/bitcoin-regtest-up@npm:0.0.0-preview-82e080825"
+  bin:
+    bitcoin-regtest-up: ./dist/bin/bitcoin-regtest-up.mjs
+  checksum: 10/932859128e554c0f41a0d8fe628575252405dd44db97524698c423c282c84b93e6ae6ca8d93653350c09e3f86f6d50d81d3219b31da3bc6f53cb08a257c22791
+  languageName: node
+  linkType: hard
+
+"@metamask-previews/java-tron-up@npm:0.0.0-preview-73cf60340":
+  version: 0.0.0-preview-73cf60340
+  resolution: "@metamask-previews/java-tron-up@npm:0.0.0-preview-73cf60340"
+  bin:
+    java-tron-up: ./dist/bin/java-tron-up.mjs
+  checksum: 10/9a9acbbb1fae050eb553e3e950a95e5d4f5395bca99aab021a673abaf43258a4ddb2f23962b0b12e34973630875faba7ab900fa30394e2506f69cf990e395548
+  languageName: node
+  linkType: hard
+
+"@metamask-previews/solana-test-validator-up@npm:0.0.0-preview-9b6bf0851":
+  version: 0.0.0-preview-9b6bf0851
+  resolution: "@metamask-previews/solana-test-validator-up@npm:0.0.0-preview-9b6bf0851"
+  bin:
+    solana-test-validator-up: ./dist/bin/solana-test-validator-up.mjs
+  checksum: 10/a619b50139abe2db48a23caeb8bba290c5453113b08fcd4fa897850c776d4b2f4dcf95a1778a7a7ddc33cc2010a43da68ed51f80f540f210fd6212aeac67f881
+  languageName: node
+  linkType: hard
+
 "@metamask/7715-permission-types@npm:^0.7.1":
   version: 0.7.1
   resolution: "@metamask/7715-permission-types@npm:0.7.1"
@@ -17742,33 +17769,6 @@ __metadata:
     "@typescript-eslint/types": "npm:8.55.0"
     eslint-visitor-keys: "npm:^4.2.1"
   checksum: 10/c35f2b1b69d103edb78dca5ba28acb2454c2eb75a97e4c90a205059df73790185627326c8816b671d5734f1d966196ece605cf592dfa10d323ec6530b3260140
-  languageName: node
-  linkType: hard
-
-"@ulissesferreira/bitcoin-regtest-up@file:../bitcoin-regtest-up/ulissesferreira-bitcoin-regtest-up-0.1.2.tgz::locator=metamask-crx%40workspace%3A.":
-  version: 0.1.2
-  resolution: "@ulissesferreira/bitcoin-regtest-up@file:../bitcoin-regtest-up/ulissesferreira-bitcoin-regtest-up-0.1.2.tgz#../bitcoin-regtest-up/ulissesferreira-bitcoin-regtest-up-0.1.2.tgz::hash=c8329c&locator=metamask-crx%40workspace%3A."
-  bin:
-    bitcoin-regtest-up: dist/bin/bitcoin-regtest-up.js
-  checksum: 10/c09ec081bf0c1d387f6a876aa152a73a3ee9f746dd35e5c955d8cfd24b730d374e6c647edf3cda232f0df20239d697fcd9725b35cca6e71448a2868c299581fc
-  languageName: node
-  linkType: hard
-
-"@ulissesferreira/java-tron-up@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@ulissesferreira/java-tron-up@npm:0.1.2"
-  bin:
-    java-tron-up: dist/bin/java-tron-up.js
-  checksum: 10/b694b4fd59a8e8bb182ba3deff955de7626a0eae608ce16a30202121e864e627ab4c7f769351b75818c18e22fe90c1ddcd83f590db2079f3e1688b50758fdbec
-  languageName: node
-  linkType: hard
-
-"@ulissesferreira/solana-test-validator-up@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@ulissesferreira/solana-test-validator-up@npm:0.1.1"
-  bin:
-    solana-test-validator-up: dist/bin/solana-test-validator-up.js
-  checksum: 10/3d46506f008c486b863279beef9337d653ee4d42d6119dfbac976b693aa9c4d856010a7deb208833e284457ac19a5d622648a4a3e595c9bee95d69818f4b76e7
   languageName: node
   linkType: hard
 
@@ -33519,6 +33519,11 @@ __metadata:
     "@ledgerhq/hw-transport": "npm:^6.31.0"
     "@ledgerhq/hw-transport-webhid": "npm:^6.31.0"
     "@lydell/node-pty": "npm:^1.1.0"
+    "@material-ui/core": "npm:^4.12.4"
+    "@material-ui/pickers": "npm:^3.3.11"
+    "@metamask-previews/bitcoin-regtest-up": "npm:0.0.0-preview-82e080825"
+    "@metamask-previews/java-tron-up": "npm:0.0.0-preview-73cf60340"
+    "@metamask-previews/solana-test-validator-up": "npm:0.0.0-preview-9b6bf0851"
     "@metamask/7715-permission-types": "npm:^0.7.1"
     "@metamask/abi-utils": "npm:^3.0.0"
     "@metamask/account-api": "npm:^1.0.4"
@@ -33765,9 +33770,6 @@ __metadata:
     "@types/yazl": "npm:^3.3.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.1.0"
     "@typescript-eslint/parser": "npm:^8.1.0"
-    "@ulissesferreira/bitcoin-regtest-up": "file:../bitcoin-regtest-up/ulissesferreira-bitcoin-regtest-up-0.1.2.tgz"
-    "@ulissesferreira/java-tron-up": "npm:^0.1.2"
-    "@ulissesferreira/solana-test-validator-up": "npm:^0.1.1"
     "@viem/anvil": "npm:^0.0.10"
     "@welldone-software/why-did-you-render": "npm:^8.0.3"
     "@zxing/browser": "npm:^0.1.5"

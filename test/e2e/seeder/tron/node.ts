@@ -3,7 +3,7 @@
  * @file node.ts — Tron local node seeder
  *
  * The local node runs a native java-tron private network. The
- * `@ulissesferreira/java-tron-up` package installs the managed Java runtime,
+ * `@metamask-previews/java-tron-up` package installs the managed Java runtime,
  * FullNode.jar, and the node_modules/.bin/java-tron wrapper used here.
  */
 import { spawn, type ChildProcess } from 'child_process';
@@ -28,7 +28,6 @@ import {
   TronTrc20Symbol,
   TronTrc20Token,
   base58AddressToHex,
-  buildPermissiveTrc20Bytecode,
   createTronGridAccountResponse,
   encodeTrc20TransferParameter,
   getContractAddressFromTx,
@@ -39,6 +38,11 @@ import {
   createJavaTronPrivateNetworkConfig,
   type JavaTronPrivateNetworkPorts,
 } from './java-tron-config';
+import {
+  encodeTrc20ConstructorParameters,
+  getTronSmartContractConfig,
+} from './smart-contracts';
+import { resolveTronLocalNodeOptions } from './state';
 
 type Base58Encoder = {
   encode(input: Uint8Array): string;
@@ -147,23 +151,26 @@ export class TronNode {
    */
   async start(options: TronLocalNodeOptions = {}): Promise<void> {
     this.#fundingAccount = undefined;
+    const resolvedOptions = await resolveTronLocalNodeOptions(options);
 
     try {
-      await this.#startNativeJavaTron(options.ports);
+      await this.#startNativeJavaTron(resolvedOptions.ports);
       await this.waitForReady(120_000);
 
       for (const [address, amountInSun] of Object.entries(
-        options.initialBalances ?? {},
+        resolvedOptions.initialBalances ?? {},
       )) {
         if (amountInSun > 0) {
           await this.fundAccount(address, amountInSun);
         }
       }
 
-      await this.initializeTrc10Balances(options.trc10Balances ?? {});
-      await this.initializeTrc20Balances(options.trc20Balances ?? {});
+      await this.initializeTrc10Balances(resolvedOptions.trc10Balances ?? {});
+      await this.initializeTrc20Balances(resolvedOptions.trc20Balances ?? {});
 
-      await this.initializeStakedTrxBalances(options.stakedTrxBalances ?? {});
+      await this.initializeStakedTrxBalances(
+        resolvedOptions.stakedTrxBalances ?? {},
+      );
       // `trc721Balances` and `trc1155Balances` are accepted and ignored — see the
       // JSDoc on TronLocalNodeOptions.
     } catch (error) {
@@ -463,41 +470,24 @@ export class TronNode {
     await this.signAndBroadcastTransaction(tx, fundingAccount.privateKey);
   }
 
-  async deployTrc20Token(symbol: TronTrc20Symbol): Promise<TronTrc20Token> {
-    const metadata = TRON_TEST_ASSETS[symbol];
+  async deployTrc20Token(
+    symbol: TronTrc20Symbol,
+    initialSupply = '0',
+  ): Promise<TronTrc20Token> {
+    const contractConfig = getTronSmartContractConfig(symbol);
     const fundingAccount = await this.getFundingAccount();
     const tx = (await this.fetchJson('/wallet/deploycontract', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         owner_address: fundingAccount.address,
-        name: metadata.symbol,
-        abi: JSON.stringify([
-          {
-            name: 'transfer',
-            type: 'Function',
-            inputs: [
-              { name: 'to', type: 'address' },
-              { name: 'amount', type: 'uint256' },
-            ],
-            outputs: [{ type: 'bool' }],
-          },
-          {
-            name: 'balanceOf',
-            type: 'Function',
-            inputs: [{ name: 'owner', type: 'address' }],
-            outputs: [{ type: 'uint256' }],
-            constant: true,
-          },
-          {
-            name: 'decimals',
-            type: 'Function',
-            inputs: [],
-            outputs: [{ type: 'uint8' }],
-            constant: true,
-          },
-        ]),
-        bytecode: buildPermissiveTrc20Bytecode(metadata.decimals),
+        name: contractConfig.symbol,
+        abi: JSON.stringify(contractConfig.abi),
+        bytecode: contractConfig.bytecode,
+        parameter: encodeTrc20ConstructorParameters(
+          contractConfig,
+          initialSupply,
+        ),
         call_value: 0,
         consume_user_resource_percent: 100,
         fee_limit: 150_000_000,
@@ -531,7 +521,7 @@ export class TronNode {
       ? hexAddressToBase58(normalizeTronHexAddress(contractAddress))
       : getContractAddressFromTx(fundingAccount.address, tx.txID ?? '');
     const token = {
-      ...metadata,
+      ...contractConfig,
       address,
       hexAddress: base58AddressToHex(address),
       symbol,
@@ -540,6 +530,17 @@ export class TronNode {
     this.trc20Tokens[symbol] = token;
 
     return token;
+  }
+
+  recordTrc20Balance(
+    address: string,
+    symbol: TronTrc20Symbol,
+    amount: string,
+  ): void {
+    this.#trc20Balances[address] = {
+      ...this.#trc20Balances[address],
+      [symbol]: amount,
+    };
   }
 
   async transferTrc20Token(
@@ -664,15 +665,12 @@ export class TronNode {
     const totals = this.getTokenTotals(balancesByAddress);
 
     for (const symbol of Object.keys(totals) as TronTrc20Symbol[]) {
-      const token = await this.deployTrc20Token(symbol);
+      const token = await this.deployTrc20Token(symbol, totals[symbol]);
       for (const [address, balances] of Object.entries(balancesByAddress)) {
         const amount = balances[symbol];
         if (amount) {
           await this.transferTrc20Token(token, address, amount);
-          this.#trc20Balances[address] = {
-            ...this.#trc20Balances[address],
-            [symbol]: amount,
-          };
+          this.recordTrc20Balance(address, symbol, amount);
         }
       }
     }

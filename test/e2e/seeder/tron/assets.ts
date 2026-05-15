@@ -30,6 +30,13 @@ export type TronTrc20Token = TronAssetMetadata & {
 
 export type TronLocalNodeOptions = {
   initialBalances?: Record<string, number>;
+  /**
+   * Path to a JSON state file. Unlike Anvil's storage-level state, this is a
+   * java-tron seeder state file: it may contain the same balance maps accepted
+   * here, or fixture-style `accounts[].assets` entries that are normalized into
+   * those maps before the node is seeded.
+   */
+  loadState?: string;
   ports?: Partial<JavaTronPrivateNetworkPorts>;
   trc10Balances?: Record<string, Partial<Record<TronTrc10Symbol, string>>>;
   trc20Balances?: Record<string, Partial<Record<TronTrc20Symbol, string>>>;
@@ -144,22 +151,6 @@ export function encodeTrc20TransferParameter(
   const encodedAmount = BigInt(amount).toString(16).padStart(64, '0');
 
   return `${encodedRecipient}${encodedAmount}`;
-}
-
-export function buildPermissiveTrc20Bytecode(decimals: number): string {
-  const runtime = [
-    '60003560e01c80',
-    '63a9059cbb14602957',
-    '806370a0823114603457',
-    '8063313ce56714603f57',
-    '60006000f3',
-    '5b600160005260206000f3',
-    '5b600060005260206000f3',
-    `5b60${decimals.toString(16).padStart(2, '0')}60005260206000f3`,
-  ].join('');
-  const runtimeLength = (runtime.length / 2).toString(16).padStart(2, '0');
-
-  return `60${runtimeLength}600c60003960${runtimeLength}6000f3${runtime}`;
 }
 
 export function createTronGridAccountResponse({

@@ -1,7 +1,9 @@
 import { spawn, type ChildProcess } from 'child_process';
-import { mkdir, mkdtemp, rm } from 'fs/promises';
+import { mkdir, mkdtemp, readFile, rm, stat } from 'fs/promises';
+import { createRequire } from 'module';
 import { tmpdir } from 'os';
-import { join, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
+import type { Connection, Keypair, PublicKey } from '@solana/web3.js';
 import {
   assertValidPort,
   getAvailablePorts,
@@ -10,6 +12,11 @@ import {
   parsePortRange,
   type PortRange,
 } from '../ports';
+import type {
+  SolanaSeedAsset,
+  SolanaTokenAccount,
+  SolanaTokenMint,
+} from './assets';
 
 const SOLANA_NODE_PROCESS_OUTPUT_LIMIT = 8_000;
 const SOLANA_RPC_PUBSUB_PORT_OFFSET = 1;
@@ -19,8 +26,14 @@ const SOLANA_VALIDATOR_MAX_PORT = 65_535;
 
 export const LAMPORTS_PER_SOL = 1_000_000_000;
 
+const requireFromCurrentFile = createRequire(__filename);
+const requireFromSolanaTestDapp = createRequire(
+  requireFromCurrentFile.resolve('@metamask/test-dapp-solana/package.json'),
+);
+
 export type SolanaLocalNodeOptions = {
   initialBalances?: Record<string, number>;
+  loadState?: string;
   ports?: {
     dynamicPortRange?: string;
     faucetPort?: number;
@@ -45,7 +58,71 @@ type JsonRpcResponse<ResponseBody> = {
   result?: ResponseBody;
 };
 
+type SolanaValidatorAccountState = {
+  address: string;
+  path: string;
+};
+
+type SolanaValidatorProgramState = {
+  address: string;
+  path: string;
+};
+
+type SolanaValidatorUpgradeableProgramState = SolanaValidatorProgramState & {
+  upgradeAuthority: string;
+};
+
+type SolanaValidatorStateManifest = {
+  accountDirs?: string[];
+  accountDirectories?: string[];
+  accounts?: Record<string, string> | SolanaValidatorAccountState[];
+  bpfPrograms?: SolanaValidatorProgramState[];
+  upgradeablePrograms?: SolanaValidatorUpgradeableProgramState[];
+};
+
+type SolanaSplTokenModule = {
+  createMint: (
+    connection: Connection,
+    payer: Keypair,
+    mintAuthority: PublicKey,
+    freezeAuthority: PublicKey | null,
+    decimals: number,
+    keypair: Keypair | undefined,
+    confirmOptions: SolanaConfirmOptions,
+    programId: PublicKey,
+  ) => Promise<PublicKey>;
+  getOrCreateAssociatedTokenAccount: (
+    connection: Connection,
+    payer: Keypair,
+    mint: PublicKey,
+    owner: PublicKey,
+    allowOwnerOffCurve: boolean,
+    commitment: 'confirmed',
+    confirmOptions: SolanaConfirmOptions,
+    programId: PublicKey,
+  ) => Promise<{ address: PublicKey }>;
+  mintTo: (
+    connection: Connection,
+    payer: Keypair,
+    mint: PublicKey,
+    destination: PublicKey,
+    authority: Keypair,
+    amount: bigint,
+    multiSigners: Keypair[],
+    confirmOptions: SolanaConfirmOptions,
+    programId: PublicKey,
+  ) => Promise<string>;
+  token2022ProgramId: PublicKey;
+  tokenProgramId: PublicKey;
+};
+
+type SolanaConfirmOptions = {
+  commitment: 'confirmed';
+};
+
 export class SolanaNode {
+  #connection: Connection | undefined;
+
   #nodeProcess: ChildProcess | undefined;
 
   #nodeProcessExitError: Error | undefined;
@@ -54,9 +131,13 @@ export class SolanaNode {
 
   #runtimeDirectory: string | undefined;
 
+  #seederPayer: Keypair | undefined;
+
   #stderr = '';
 
   #stdout = '';
+
+  readonly tokenMints: Partial<Record<string, SolanaTokenMint>> = {};
 
   get baseUrl(): string {
     if (!this.#rpcPort) {
@@ -67,7 +148,7 @@ export class SolanaNode {
 
   async start(options: SolanaLocalNodeOptions = {}): Promise<void> {
     try {
-      await this.#startNativeSolanaValidator(options.ports);
+      await this.#startNativeSolanaValidator(options);
       await this.waitForReady(120_000);
 
       for (const [address, lamports] of Object.entries(
@@ -85,14 +166,18 @@ export class SolanaNode {
   }
 
   async #startNativeSolanaValidator(
-    ports: SolanaLocalNodeOptions['ports'] = {},
+    options: Pick<SolanaLocalNodeOptions, 'loadState' | 'ports'> = {},
   ): Promise<void> {
     await this.#runPackageBinary('solana-test-validator-up', ['install']);
 
+    const ports = options.ports ?? {};
     const runtimeDirectory = await mkdtemp(join(tmpdir(), 'solana-e2e-'));
     const ledgerDirectory = join(runtimeDirectory, 'ledger');
     const { dynamicPortRange, faucetPort, gossipPort, rpcPort } =
       await resolveSolanaValidatorPorts(ports);
+    const stateArgs = options.loadState
+      ? await buildSolanaValidatorStateArgs(options.loadState)
+      : [];
     await mkdir(ledgerDirectory, { recursive: true });
 
     this.#rpcPort = rpcPort;
@@ -124,6 +209,7 @@ export class SolanaNode {
         dynamicPortRange,
         '--bind-address',
         '127.0.0.1',
+        ...stateArgs,
       ],
       {
         cwd: runtimeDirectory,
@@ -193,6 +279,8 @@ export class SolanaNode {
     this.#nodeProcess = undefined;
     this.#runtimeDirectory = undefined;
     this.#rpcPort = undefined;
+    this.#connection = undefined;
+    this.#seederPayer = undefined;
 
     if (nodeProcess) {
       await stopProcess(nodeProcess);
@@ -257,6 +345,89 @@ export class SolanaNode {
     return response.result as ResponseBody;
   }
 
+  async createTokenMint(asset: SolanaSeedAsset): Promise<SolanaTokenMint> {
+    if (asset.mintAddress) {
+      throw new Error(
+        `Cannot create exact Solana mint ${asset.mintAddress}. Use loadState with account snapshots for exact mint addresses.`,
+      );
+    }
+
+    const payer = await this.#getSeederPayer();
+    const connection = await this.#getConnection();
+    const { createMint: createSolanaMint } = loadSolanaSplToken();
+    const tokenProgramId = getTokenProgramPublicKey(asset.type);
+    const decimals = asset.type === 'nft' ? 0 : asset.decimals;
+    const mintAddress = await createSolanaMint(
+      connection,
+      payer,
+      payer.publicKey,
+      null,
+      decimals,
+      undefined,
+      { commitment: 'confirmed' },
+      tokenProgramId,
+    );
+    const mint = {
+      address: mintAddress.toBase58(),
+      decimals,
+      name: asset.name,
+      symbol: asset.symbol,
+      tokenProgramId: tokenProgramId.toBase58(),
+      type: asset.type,
+      ...(asset.type === 'nft' && asset.uri ? { uri: asset.uri } : {}),
+    } satisfies SolanaTokenMint;
+    this.tokenMints[asset.symbol] = mint;
+
+    return mint;
+  }
+
+  async mintTokenToAddress(
+    mint: SolanaTokenMint,
+    ownerAddress: string,
+    amount: string,
+  ): Promise<SolanaTokenAccount> {
+    const payer = await this.#getSeederPayer();
+    const connection = await this.#getConnection();
+    const { PublicKey: SolanaPublicKey } = loadSolanaWeb3();
+    const {
+      getOrCreateAssociatedTokenAccount:
+        getOrCreateSolanaAssociatedTokenAccount,
+      mintTo: mintSolanaTokenTo,
+    } = loadSolanaSplToken();
+    const tokenProgramId = new SolanaPublicKey(mint.tokenProgramId);
+    const mintPublicKey = new SolanaPublicKey(mint.address);
+    const ownerPublicKey = new SolanaPublicKey(ownerAddress);
+    const tokenAccount = await getOrCreateSolanaAssociatedTokenAccount(
+      connection,
+      payer,
+      mintPublicKey,
+      ownerPublicKey,
+      false,
+      'confirmed',
+      { commitment: 'confirmed' },
+      tokenProgramId,
+    );
+
+    await mintSolanaTokenTo(
+      connection,
+      payer,
+      mintPublicKey,
+      tokenAccount.address,
+      payer,
+      BigInt(amount),
+      [],
+      { commitment: 'confirmed' },
+      tokenProgramId,
+    );
+
+    return {
+      address: tokenAccount.address.toBase58(),
+      mintAddress: mint.address,
+      ownerAddress,
+      symbol: mint.symbol,
+    };
+  }
+
   async requestAirdrop(address: string, lamports: number): Promise<string> {
     return await this.request<string>('requestAirdrop', [address, lamports]);
   }
@@ -296,6 +467,70 @@ export class SolanaNode {
   #formatProcessOutput(): string {
     return formatProcessOutput(this.#stdout, this.#stderr);
   }
+
+  async #getConnection(): Promise<Connection> {
+    const { Connection: SolanaConnection } = loadSolanaWeb3();
+    this.#connection ??= new SolanaConnection(this.baseUrl, 'confirmed');
+    return this.#connection;
+  }
+
+  async #getSeederPayer(): Promise<Keypair> {
+    if (this.#seederPayer) {
+      return this.#seederPayer;
+    }
+
+    const { Keypair: SolanaKeypair } = loadSolanaWeb3();
+    const payer = SolanaKeypair.generate();
+    await this.requestAirdrop(
+      payer.publicKey.toBase58(),
+      10 * LAMPORTS_PER_SOL,
+    );
+    await this.waitForBalance(payer.publicKey.toBase58(), LAMPORTS_PER_SOL);
+    this.#seederPayer = payer;
+
+    return payer;
+  }
+}
+
+export async function buildSolanaValidatorStateArgs(
+  loadState: string,
+): Promise<string[]> {
+  const absoluteLoadState = resolve(process.cwd(), loadState);
+  const loadStateStats = await stat(absoluteLoadState);
+  const manifestPath = loadStateStats.isDirectory()
+    ? join(absoluteLoadState, 'manifest.json')
+    : absoluteLoadState;
+  const manifestDirectory = loadStateStats.isDirectory()
+    ? absoluteLoadState
+    : dirname(absoluteLoadState);
+
+  let manifest: SolanaValidatorStateManifest;
+  try {
+    manifest = JSON.parse(
+      await readFile(manifestPath, 'utf8'),
+    ) as SolanaValidatorStateManifest;
+  } catch (error) {
+    if (
+      loadStateStats.isDirectory() &&
+      (error as NodeJS.ErrnoException).code === 'ENOENT'
+    ) {
+      return ['--account-dir', absoluteLoadState];
+    }
+    throw error;
+  }
+
+  return [
+    ...getAccountStateArgs(manifest.accounts, manifestDirectory),
+    ...getAccountDirectoryStateArgs(
+      [...(manifest.accountDirs ?? []), ...(manifest.accountDirectories ?? [])],
+      manifestDirectory,
+    ),
+    ...getProgramStateArgs(manifest.bpfPrograms ?? [], manifestDirectory),
+    ...getUpgradeableProgramStateArgs(
+      manifest.upgradeablePrograms ?? [],
+      manifestDirectory,
+    ),
+  ];
 }
 
 async function fetchJson<ResponseBody>(
@@ -327,6 +562,90 @@ async function fetchJson<ResponseBody>(
 
 function getPackageBinaryPath(command: string): string {
   return resolve(process.cwd(), 'node_modules', '.bin', command);
+}
+
+function getTokenProgramPublicKey(
+  assetType: SolanaSeedAsset['type'],
+): PublicKey {
+  const { token2022ProgramId, tokenProgramId } = loadSolanaSplToken();
+  if (assetType === 'spl-token-2022') {
+    return token2022ProgramId;
+  }
+
+  return tokenProgramId;
+}
+
+function loadSolanaWeb3(): typeof import('@solana/web3.js') {
+  return requireFromSolanaTestDapp(
+    '@solana/web3.js',
+  ) as typeof import('@solana/web3.js');
+}
+
+function loadSolanaSplToken(): SolanaSplTokenModule {
+  const splTokenModule = requireFromSolanaTestDapp(
+    '@solana/spl-token',
+  ) as Record<string, unknown>;
+
+  return {
+    createMint: splTokenModule.createMint as SolanaSplTokenModule['createMint'],
+    getOrCreateAssociatedTokenAccount:
+      splTokenModule.getOrCreateAssociatedTokenAccount as SolanaSplTokenModule['getOrCreateAssociatedTokenAccount'],
+    mintTo: splTokenModule.mintTo as SolanaSplTokenModule['mintTo'],
+    token2022ProgramId: splTokenModule.TOKEN_2022_PROGRAM_ID as PublicKey,
+    tokenProgramId: splTokenModule.TOKEN_PROGRAM_ID as PublicKey,
+  };
+}
+
+function getAccountStateArgs(
+  accounts: SolanaValidatorStateManifest['accounts'],
+  manifestDirectory: string,
+): string[] {
+  if (!accounts) {
+    return [];
+  }
+
+  const accountEntries = Array.isArray(accounts)
+    ? accounts
+    : Object.entries(accounts).map(([address, path]) => ({ address, path }));
+
+  return accountEntries.flatMap(({ address, path }) => [
+    '--account',
+    address,
+    resolve(manifestDirectory, path),
+  ]);
+}
+
+function getAccountDirectoryStateArgs(
+  accountDirectories: string[],
+  manifestDirectory: string,
+): string[] {
+  return accountDirectories.flatMap((accountDirectory) => [
+    '--account-dir',
+    resolve(manifestDirectory, accountDirectory),
+  ]);
+}
+
+function getProgramStateArgs(
+  programs: SolanaValidatorProgramState[],
+  manifestDirectory: string,
+): string[] {
+  return programs.flatMap(({ address, path }) => [
+    '--bpf-program',
+    address,
+    resolve(manifestDirectory, path),
+  ]);
+}
+
+function getUpgradeableProgramStateArgs(
+  programs: SolanaValidatorUpgradeableProgramState[],
+  manifestDirectory: string,
+): string[] {
+  return programs.flatMap(({ address, path, upgradeAuthority }) => [
+    '--upgradeable-program',
+    address,
+    resolve(manifestDirectory, path),
+    upgradeAuthority,
+  ]);
 }
 
 export async function resolveSolanaValidatorPorts(

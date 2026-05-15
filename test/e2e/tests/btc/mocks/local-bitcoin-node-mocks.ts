@@ -1,5 +1,8 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
-import { BitcoinRegtestNode } from '../../../seeder/bitcoin/node';
+import {
+  BitcoinRegtestNode,
+  type EsploraTransaction,
+} from '../../../seeder/bitcoin/node';
 
 const BITCOIN_ESPLORA_BASE_RE =
   /^https:\/\/bitcoin-(mainnet|testnet|testnet4|mutinynet|regtest)\.infura\.io\/v3\/[a-f0-9]{32}\/esplora/u;
@@ -8,9 +11,22 @@ function esploraPath(path: string): RegExp {
   return new RegExp(`${BITCOIN_ESPLORA_BASE_RE.source}${path}$`, 'u');
 }
 
+type EsploraOutspend = {
+  spent: boolean;
+  status?: EsploraTransaction['status'];
+  txid?: string;
+  vin?: number;
+};
+
+export type BitcoinFixtureBlockchainState = {
+  transactionHistoryByScripthash?: Map<string, EsploraTransaction[]>;
+  transactionsByTxid?: Map<string, EsploraTransaction>;
+};
+
 export async function proxyBitcoinBlockchainCalls(
   mockServer: Mockttp,
   bitcoinNode: BitcoinRegtestNode,
+  fixtureState: BitcoinFixtureBlockchainState = {},
 ): Promise<MockedEndpoint[]> {
   return [
     await mockServer
@@ -65,6 +81,13 @@ export async function proxyBitcoinBlockchainCalls(
       .thenCallback(async (req) => {
         const scripthash =
           req.url.match(/\/scripthash\/([0-9a-f]{64})\/txs$/u)?.[1] ?? '';
+        if (fixtureState.transactionHistoryByScripthash?.has(scripthash)) {
+          return {
+            json: fixtureState.transactionHistoryByScripthash.get(scripthash),
+            statusCode: 200,
+          };
+        }
+
         return {
           json: await bitcoinNode.getScripthashTxs(scripthash),
           statusCode: 200,
@@ -88,6 +111,14 @@ export async function proxyBitcoinBlockchainCalls(
       .always()
       .thenCallback(async (req) => {
         const txid = req.url.match(/\/tx\/([0-9a-f]{64})$/u)?.[1] ?? '';
+        const fixtureTransaction = fixtureState.transactionsByTxid?.get(txid);
+        if (fixtureTransaction) {
+          return {
+            json: fixtureTransaction,
+            statusCode: 200,
+          };
+        }
+
         return {
           json: await bitcoinNode.getTransaction(txid),
           statusCode: 200,
@@ -100,6 +131,14 @@ export async function proxyBitcoinBlockchainCalls(
       .thenCallback(async (req) => {
         const txid =
           req.url.match(/\/tx\/([0-9a-f]{64})\/outspends$/u)?.[1] ?? '';
+        const fixtureTransaction = fixtureState.transactionsByTxid?.get(txid);
+        if (fixtureTransaction) {
+          return {
+            json: createUnspentOutspends(fixtureTransaction),
+            statusCode: 200,
+          };
+        }
+
         return {
           json: await bitcoinNode.getTxOutspends(txid),
           statusCode: 200,
@@ -115,11 +154,17 @@ export async function proxyBitcoinBlockchainCalls(
       .forPost(esploraPath('/tx'))
       .always()
       .thenCallback(async (req) => {
-        const rawTransaction = await req.body.getText();
+        const rawTransaction = (await req.body.getText()) ?? '';
         return {
           body: await bitcoinNode.broadcastTransaction(rawTransaction),
           statusCode: 200,
         };
       }),
   ];
+}
+
+function createUnspentOutspends(
+  transaction: EsploraTransaction,
+): EsploraOutspend[] {
+  return transaction.vout.map(() => ({ spent: false }));
 }

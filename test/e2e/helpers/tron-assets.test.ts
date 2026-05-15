@@ -1,9 +1,12 @@
 import {
-  buildPermissiveTrc20Bytecode,
   createTronGridAccountResponse,
   encodeTrc20TransferParameter,
   getTronAssetMetadata,
 } from '../seeder/tron/assets';
+import {
+  TEST_TRC20_ABI,
+  TEST_TRC20_BYTECODE,
+} from '../seeder/tron/contracts/test-trc20';
 import { createTronPortfolioNodeOptions } from '../seeder/tron/profiles';
 
 describe('Tron local asset helpers', () => {
@@ -39,12 +42,25 @@ describe('Tron local asset helpers', () => {
     );
   });
 
-  it('builds local TRC20 bytecode with transfer and balance selectors', () => {
-    const bytecode = buildPermissiveTrc20Bytecode(6);
+  it('uses a real TRC20 contract artifact with standard token functions', () => {
+    const functionNames = TEST_TRC20_ABI.filter(
+      (entry) => entry.type === 'function',
+    ).map((entry) => entry.name);
 
-    expect(bytecode).toContain('a9059cbb');
-    expect(bytecode).toContain('70a08231');
-    expect(bytecode).toContain('313ce567');
+    expect(functionNames).toEqual(
+      expect.arrayContaining([
+        'allowance',
+        'approve',
+        'balanceOf',
+        'decimals',
+        'name',
+        'symbol',
+        'totalSupply',
+        'transfer',
+        'transferFrom',
+      ]),
+    );
+    expect(TEST_TRC20_BYTECODE).toMatch(/^6080/u);
   });
 
   it('creates a TronGrid account envelope from local token balances', () => {
