@@ -300,7 +300,7 @@ const buildMockKeyringBridge = (
     init: jest.fn(),
     dispose: jest.fn(),
     destroy: jest.fn(),
-    updateTransportMethod: jest.fn(),
+    updateTransportMethod: jest.fn().mockResolvedValue(undefined),
     getPublicKey: jest.fn(async () => publicKeyPayload),
     getAppConfiguration: jest.fn(async () => appConfiguration),
   }));
@@ -2558,7 +2558,7 @@ describe('MetaMaskController', () => {
           };
 
           const withKeyringSpy = jest
-            .spyOn(metamaskController.keyringController, 'withKeyring')
+            .spyOn(metamaskController.keyringController, 'withKeyringV2')
             .mockImplementation(async (_selector, fn) => {
               return await fn({ keyring: mockKeyring });
             });
@@ -2581,7 +2581,7 @@ describe('MetaMaskController', () => {
           'should return the correct type for %s',
           async (type) => {
             jest
-              .spyOn(metamaskController.keyringController, 'withKeyring')
+              .spyOn(metamaskController.keyringController, 'withKeyringV2')
               .mockImplementation((_, fn) => fn({ keyring: { type } }));
 
             const result =

@@ -26,7 +26,7 @@ import { Box } from '../../component-library';
 import {
   getCaip25CaveatValueFromPermissions,
   getCaip25PermissionsResponse,
-} from '../../../pages/permissions-connect/connect-page/utils';
+} from '../../../pages/permissions-connect/utils';
 import { TemplateAlertContextProvider } from '../../../pages/confirmations/confirmation/alerts/TemplateAlertContext';
 import { containsEthPermissionsAndNonEvmAccount } from '../../../helpers/utils/permissions';
 import { PermissionPageContainerFooter } from './permission-page-container-footer.component';

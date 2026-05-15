@@ -5833,6 +5833,12 @@ export default class MetamaskController extends EventEmitter {
       { name: deviceName, hdPath },
       async (keyring) => {
         const { entropySource } = keyring;
+        // Callers may omit `hdPath` and rely on the keyring's currently
+        // configured base path (the legacy V1 surface implicitly did this
+        // via `keyring.setAccountToUnlock` + `addAccounts`). Fall back to
+        // the keyring's `hdPath` so V2 `createAccounts` builds a valid
+        // derivation path.
+        const effectiveHdPath = hdPath ?? keyring.hdPath;
         let createdAccount;
 
         switch (deviceName) {
@@ -5840,9 +5846,9 @@ export default class MetamaskController extends EventEmitter {
             // Ledger Live mode uses a per-account hardened third segment;
             // Legacy and BIP-44 modes are `${hdPath}/${index}`.
             const derivationPath =
-              hdPath === LEDGER_LIVE_PATH
+              effectiveHdPath === LEDGER_LIVE_PATH
                 ? `m/44'/60'/${index}'/0/0`
-                : `${hdPath}/${index}`;
+                : `${effectiveHdPath}/${index}`;
             [createdAccount] = await keyring.createAccounts({
               type: 'bip44:derive-path',
               entropySource,
@@ -5855,7 +5861,7 @@ export default class MetamaskController extends EventEmitter {
             [createdAccount] = await keyring.createAccounts({
               type: 'bip44:derive-path',
               entropySource,
-              derivationPath: `${hdPath}/${index}`,
+              derivationPath: `${effectiveHdPath}/${index}`,
             });
             break;
           }

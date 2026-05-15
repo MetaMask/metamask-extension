@@ -53,7 +53,7 @@ import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/netw
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
-import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/connect-page/utils';
+import { getCaip25CaveatValueFromPermissions } from '../../../../pages/permissions-connect/utils';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPage } from '../multichain-edit-accounts-page/multichain-edit-accounts-page';
 import {
