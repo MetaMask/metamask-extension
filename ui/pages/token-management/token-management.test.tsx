@@ -274,17 +274,20 @@ describe('TokenManagementPage', () => {
     },
   });
 
-  const renderPage = (state = createState()) => {
+  const renderPage = (state = createState(), routeState?: unknown) => {
     const store = configureStore({
       ...state,
     });
+    const initialRoute =
+      routeState === undefined
+        ? TOKEN_MANAGEMENT_ROUTE
+        : {
+            pathname: TOKEN_MANAGEMENT_ROUTE,
+            state: routeState,
+          };
     return {
       store,
-      ...renderWithProvider(
-        <TokenManagementPage />,
-        store,
-        TOKEN_MANAGEMENT_ROUTE,
-      ),
+      ...renderWithProvider(<TokenManagementPage />, store, initialRoute),
     };
   };
 
@@ -326,6 +329,28 @@ describe('TokenManagementPage', () => {
     // routes the user to the dedicated CUSTOM_TOKEN_IMPORT_ROUTE page instead.
     expect(store.getState().appState.importTokensModalOpen).toBeFalsy();
     expect(CUSTOM_TOKEN_IMPORT_ROUTE).toBe('/custom-token-import');
+  });
+
+  it('shows and dismisses the custom token success toast from route state', async () => {
+    renderPage(createState(), {
+      tokenManagementToast: {
+        type: 'customTokenAdded',
+        symbol: 'APE',
+      },
+    });
+
+    const toast = await screen.findByTestId(
+      'token-management-custom-token-success-toast',
+    );
+    expect(toast).toHaveTextContent('APE');
+
+    fireEvent.click(screen.getByLabelText(messages.close.message));
+
+    await waitFor(() =>
+      expect(
+        screen.queryByTestId('token-management-custom-token-success-toast'),
+      ).not.toBeInTheDocument(),
+    );
   });
 
   it('shows tokens from the enabled home-page network filter', () => {
@@ -755,23 +780,26 @@ describe('TokenManagementPage', () => {
       throw new Error('Expected selected account address');
     }
 
-    const stateWithIgnoredToken = createState();
-    stateWithIgnoredToken.metamask = {
-      ...stateWithIgnoredToken.metamask,
-      allTokens: {
-        '0x1': {
-          [selectedAddress]: [
-            {
-              address: mainnetToken.address,
-              symbol: mainnetToken.symbol,
-              decimals: mainnetToken.decimals,
-            },
-          ],
+    const baseState = createState();
+    const stateWithIgnoredToken = {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        allTokens: {
+          '0x1': {
+            [selectedAddress]: [
+              {
+                address: mainnetToken.address,
+                symbol: mainnetToken.symbol,
+                decimals: mainnetToken.decimals,
+              },
+            ],
+          },
         },
-      },
-      allIgnoredTokens: {
-        '0x1': {
-          [selectedAddress]: [mainnetToken.address],
+        allIgnoredTokens: {
+          '0x1': {
+            [selectedAddress]: [mainnetToken.address],
+          },
         },
       },
     };

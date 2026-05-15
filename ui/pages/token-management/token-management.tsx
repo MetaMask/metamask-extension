@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useDispatch, useSelector, useStore } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -18,7 +18,10 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
+  Icon,
+  IconColor,
   IconName,
+  IconSize,
   Text,
   TextAlign,
   TextColor,
@@ -61,6 +64,7 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors
 import {
   CUSTOM_TOKEN_IMPORT_ROUTE,
   DEFAULT_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
@@ -99,6 +103,29 @@ type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
  * Keeps the request rate sane while still feeling instant.
  */
 const SEARCH_DEBOUNCE_MS = 300;
+const TOKEN_MANAGEMENT_PAGE_TOAST_DURATION_MS = 5000;
+
+type TokenManagementRouteState = {
+  tokenManagementToast?: {
+    type: 'customTokenAdded';
+    symbol: string;
+  };
+};
+
+const getTokenManagementToastFromRouteState = (state: unknown) => {
+  if (!state || typeof state !== 'object') {
+    return null;
+  }
+
+  const toast = (state as TokenManagementRouteState).tokenManagementToast;
+  if (toast?.type !== 'customTokenAdded' || !toast.symbol) {
+    return null;
+  }
+
+  return {
+    symbol: toast.symbol,
+  };
+};
 
 /**
  * Full-screen Token Management page.
@@ -113,11 +140,15 @@ export const TokenManagementPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [pageToast, setPageToast] = useState<{ symbol: string } | null>(null);
   const [pendingKeys, setPendingKeys] = useState<ReadonlySet<string>>(
     () => new Set<string>(),
   );
+
+  const dismissPageToast = useCallback(() => setPageToast(null), []);
 
   const addPendingKey = useCallback((key: string) => {
     setPendingKeys((prev) => {
@@ -588,6 +619,29 @@ export const TokenManagementPage = () => {
       isMountedRef.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    const toast = getTokenManagementToastFromRouteState(location.state);
+    if (!toast) {
+      return;
+    }
+
+    setPageToast(toast);
+    navigate(TOKEN_MANAGEMENT_ROUTE, { replace: true, state: null });
+  }, [location.state, navigate]);
+
+  useEffect(() => {
+    if (!pageToast) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(
+      dismissPageToast,
+      TOKEN_MANAGEMENT_PAGE_TOAST_DURATION_MS,
+    );
+
+    return () => clearTimeout(timeoutId);
+  }, [dismissPageToast, pageToast]);
 
   useEffect(() => {
     commitStagedHidesRef.current = async () => {
@@ -1133,23 +1187,46 @@ export const TokenManagementPage = () => {
         )}
       </ScrollContainer>
 
-      {canImportCustomTokens ? (
+      {pageToast || canImportCustomTokens ? (
         <Box
-          flexDirection={BoxFlexDirection.Row}
+          flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
           backgroundColor={BoxBackgroundColor.BackgroundDefault}
           paddingHorizontal={4}
           paddingTop={3}
           paddingBottom={3}
-          className="sticky bottom-0 z-10"
+          className="sticky bottom-0 z-10 gap-3"
         >
-          <ButtonBase
-            data-testid="token-management-add-custom-token-button"
-            className="w-full bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed"
-            onClick={handleAddCustomToken}
-          >
-            {t('addCustomToken')}
-          </ButtonBase>
+          {pageToast ? (
+            <Box
+              data-testid="token-management-custom-token-success-toast"
+              className="flex w-full items-center gap-3 rounded-xl border border-border-muted bg-background-section p-3"
+            >
+              <Icon
+                name={IconName.Confirmation}
+                size={IconSize.Md}
+                color={IconColor.SuccessDefault}
+              />
+              <Text variant={TextVariant.BodyMd} className="flex-1">
+                {t('newCustomTokenAdded', [pageToast.symbol])}
+              </Text>
+              <ButtonIcon
+                ariaLabel={t('close')}
+                iconName={IconName.Close}
+                size={ButtonIconSize.Sm}
+                onClick={dismissPageToast}
+              />
+            </Box>
+          ) : null}
+          {canImportCustomTokens ? (
+            <ButtonBase
+              data-testid="token-management-add-custom-token-button"
+              className="w-full bg-muted text-default hover:bg-muted-hover active:bg-muted-pressed"
+              onClick={handleAddCustomToken}
+            >
+              {t('addCustomToken')}
+            </ButtonBase>
+          ) : null}
         </Box>
       ) : null}
     </Box>
