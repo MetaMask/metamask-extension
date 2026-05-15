@@ -82,9 +82,7 @@ describe('AccountPicker', () => {
     expect(screen.getByTestId('account-address')).toHaveTextContent(
       '0x0DCD5...3E7bc',
     );
-    expect(screen.getByTestId('account-address')).toHaveClass(
-      'custom-address',
-    );
+    expect(screen.getByTestId('account-address')).toHaveClass('custom-address');
     expect(screen.getByTestId('preferred-avatar')).toHaveAttribute(
       'data-size',
       AvatarAccountSize.Md,
