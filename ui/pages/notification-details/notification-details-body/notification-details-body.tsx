@@ -8,7 +8,7 @@ import {
 import {
   NotificationComponentType,
   type NotificationComponent,
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
+  // eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 } from '../../notifications/notification-components/types/notifications/notifications';
 
 type NotificationDetailsBodyProps = {

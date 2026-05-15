@@ -11,7 +11,8 @@ const ROUTE_ISOLATION_EXEMPT_DIRS = new Set(['routes']);
 const routeDirs = fs
   .readdirSync(PAGES_DIR, { withFileTypes: true })
   .filter(
-    (entry) => entry.isDirectory() && !ROUTE_ISOLATION_EXEMPT_DIRS.has(entry.name),
+    (entry) =>
+      entry.isDirectory() && !ROUTE_ISOLATION_EXEMPT_DIRS.has(entry.name),
   )
   .map((entry) => entry.name);
 

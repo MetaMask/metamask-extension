@@ -10,7 +10,7 @@ import { isSignatureTransactionType } from '../../confirmations/utils';
 import type {
   Confirmation,
   SignatureRequestType,
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
+  // eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
 } from '../../confirmations/types/confirm';
 import {
   ResultType,
