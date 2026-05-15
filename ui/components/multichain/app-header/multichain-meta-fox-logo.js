@@ -9,7 +9,6 @@ import {
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { useTheme } from '../../../hooks/useTheme';
 
-
 import Logo from '../../ui/metafox-logo';
 
 export const MultichainMetaFoxLogo = () => {
