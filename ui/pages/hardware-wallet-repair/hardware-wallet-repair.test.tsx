@@ -10,6 +10,7 @@ import {
 } from '../../contexts/hardware-wallets';
 import { HardwareWalletType } from '../../contexts/hardware-wallets/types';
 import { HardwareWalletRepair } from './hardware-wallet-repair';
+import * as hardwareWalletRepairPageModule from '.';
 
 jest.mock('../../hooks/useI18nContext', () => ({
   useI18nContext: jest.fn(),
@@ -67,6 +68,15 @@ describe('HardwareWalletRepair', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useI18nContext as jest.Mock).mockReturnValue((key: string) => key);
+  });
+
+  it('exports the repair page as the default route module export', () => {
+    const routeModule =
+      hardwareWalletRepairPageModule as typeof hardwareWalletRepairPageModule & {
+        default?: unknown;
+      };
+
+    expect(routeModule.default).toBe(HardwareWalletRepair);
   });
 
   it('renders the page title and permissions title', () => {

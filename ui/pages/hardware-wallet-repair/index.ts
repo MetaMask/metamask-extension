@@ -1,1 +1,4 @@
-export { HardwareWalletRepair } from './hardware-wallet-repair';
+export {
+  HardwareWalletRepair,
+  HardwareWalletRepair as default,
+} from './hardware-wallet-repair';
