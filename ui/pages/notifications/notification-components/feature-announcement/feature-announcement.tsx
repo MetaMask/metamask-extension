@@ -2,6 +2,7 @@ import React from 'react';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
 // eslint-disable-next-line import-x/no-named-as-default
 import DOMPurify from 'dompurify';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { isOfTypeNodeGuard } from '../node-guard';
 import {
   NotificationComponentType,
@@ -12,15 +13,12 @@ import {
   createTextItems,
   formatIsoDateString,
 } from '../../../../helpers/utils/notification.util';
-import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { Text } from '../../../../components/component-library';
 import {
   NotificationListItem,
   NotificationDetailTitle,
 } from '../../../../components/multichain';
-import {
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { FeatureAnnouncementNotification } from './types';
 import {
   ExtensionLinkButton,

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Box } from '@metamask/design-system-react';
 import { I18nContext } from '../../../../contexts/i18n';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import { useMetamaskNotificationsContext } from '../../../../contexts/metamask-notifications/metamask-notifications';
@@ -30,8 +31,9 @@ import {
   Text,
   ModalFooter,
 } from '../../../component-library';
-import { Box } from '@metamask/design-system-react';
 import {
+  AlignItems,
+  FlexDirection,
   FontWeight,
   TextColor,
 } from '../../../../helpers/constants/design-system';

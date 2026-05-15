@@ -2,12 +2,12 @@ import React, { useContext, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { hasProperty } from '@metamask/utils';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';
 import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';

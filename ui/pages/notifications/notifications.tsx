@@ -6,6 +6,11 @@ import {
   TRIGGER_TYPES,
   NOTIFICATION_API_TRIGGER_TYPES_SET,
 } from '@metamask/notification-services-controller/notification-services';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   IconName,
@@ -13,7 +18,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
 } from '../../components/component-library';
-import { Box, BoxAlignItems, BoxJustifyContent } from '@metamask/design-system-react';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import {
   DEFAULT_ROUTE,

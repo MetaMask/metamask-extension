@@ -17,10 +17,7 @@ export const NotificationDetailsBody = ({
   notification,
 }: NotificationDetailsBodyProps) => {
   return (
-    <Box
-      flexDirection={BoxFlexDirection.Column}
-      padding={0}
-    >
+    <Box flexDirection={BoxFlexDirection.Column} padding={0}>
       {body.type === NotificationComponentType.AnnouncementBody && (
         <>
           <body.Image notification={notification} />

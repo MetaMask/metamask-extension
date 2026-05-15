@@ -1,6 +1,6 @@
 import React from 'react';
-import { useUnreadNotificationsCounter } from '../../../hooks/metamask-notifications/useCounter';
 import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
+import { useUnreadNotificationsCounter } from '../../../hooks/metamask-notifications/useCounter';
 import { Text } from '../../component-library';
 import {
   TextColor,

@@ -1,6 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import type { OnChainRawNotificationsWithNetworkFields } from '@metamask/notification-services-controller/notification-services';
 
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -20,7 +27,6 @@ import {
   IconSize,
   Text,
 } from '../../component-library';
-import { Box, BoxAlignItems, BoxBackgroundColor, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
 import {
   BackgroundColor,
   FontWeight,
@@ -48,10 +54,7 @@ export type NotificationDetailNetworkFeeProps = {
 };
 
 const FeeDetail = ({ label, value }: { label: string; value: string }) => (
-  <Box
-    justifyContent={BoxJustifyContent.Between}
-    padding={4}
-  >
+  <Box justifyContent={BoxJustifyContent.Between} padding={4}>
     <Text
       color={TextColor.textDefault}
       variant={TextVariant.bodyMd}
@@ -219,7 +222,10 @@ const NotificationDetailNetworkFee_ = ({
             paddingTop={0}
           >
             <button onClick={handleClick}>
-              <Text color={TextColor.primaryDefault} variant={TextVariant.bodyMd}>
+              <Text
+                color={TextColor.primaryDefault}
+                variant={TextVariant.bodyMd}
+              >
                 {t('notificationDetail')}
               </Text>
               <Icon

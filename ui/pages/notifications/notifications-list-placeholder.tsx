@@ -1,15 +1,17 @@
 import React from 'react';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   IconName,
   IconSize,
   Text,
   Icon,
 } from '../../components/component-library';
-import { Box, BoxAlignItems, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
-import {
-  TextVariant,
-  TextAlign,
-} from '../../helpers/constants/design-system';
+import { TextVariant, TextAlign } from '../../helpers/constants/design-system';
 
 type NotificationsPlaceholderProps = {
   title: string;

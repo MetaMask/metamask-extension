@@ -4,7 +4,11 @@ import {
   TRIGGER_TYPES,
   type INotification,
 } from '@metamask/notification-services-controller/notification-services';
-import { Box, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { NOTIFICATIONS_ROUTE } from '../../helpers/constants/routes';
 import { Content, Page } from '../../components/multichain/pages/page';
 import { useMarkNotificationAsRead } from '../../hooks/metamask-notifications/useNotifications';

@@ -3,6 +3,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   NotificationDetailTitle,
   NotificationListItemSnap,
 } from '../../../../components/multichain';
@@ -18,7 +23,6 @@ import {
   BackgroundColor,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
-import { Box, BoxAlignItems, BoxFlexDirection } from '@metamask/design-system-react';
 import { IconSize, Text } from '../../../../components/component-library';
 import { isOfTypeNodeGuard } from '../node-guard';
 import { SnapIcon } from '../../../../components/app/snaps/snap-icon';
@@ -93,10 +97,7 @@ export const components: NotificationComponent<SnapNotification> = {
               flexDirection={BoxFlexDirection.Column}
               padding={[4, 2, 4, 4]}
             >
-              <Box
-                alignItems={BoxAlignItems.Center}
-                paddingBottom={2}
-              >
+              <Box alignItems={BoxAlignItems.Center} paddingBottom={2}>
                 <SnapIcon snapId={snapId} avatarSize={IconSize.Xl} />
                 <Text paddingLeft={4} fontWeight={FontWeight.Medium}>
                   {snapsNameGetter(snapId)}

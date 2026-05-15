@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -16,7 +17,6 @@ import {
   ContainerMaxWidth,
   Text,
 } from '../../components/component-library';
-import { Box } from '@metamask/design-system-react';
 import {
   TextAlign,
   BlockSize,

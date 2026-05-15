@@ -1,7 +1,13 @@
 import React from 'react';
 
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { Icon, IconName, Text, IconSize } from '../../component-library';
-import { Box, BoxAlignItems, BoxBackgroundColor, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
 import {
   FontWeight,
   IconColor,
@@ -83,9 +89,7 @@ export const NotificationListItemSnap = ({
         style={{ paddingLeft: '6px', paddingRight: '6px', paddingTop: '2px' }}
       >
         {!isRead && (
-          <Box
-            className="block notification-list-item__unread-dot__wrapper--snap"
-          >
+          <Box className="block notification-list-item__unread-dot__wrapper--snap">
             <Icon
               name={IconName.FullCircle}
               color={IconColor.primaryDefault}
@@ -99,11 +103,7 @@ export const NotificationListItemSnap = ({
           <SnapIcon snapId={snapId} avatarSize={IconSize.Md} />
         </Box>
 
-        <Box
-          gap={4}
-          className="h-full w-full"
-          alignItems={BoxAlignItems.Start}
-        >
+        <Box gap={4} className="h-full w-full" alignItems={BoxAlignItems.Start}>
           <Box
             className="block w-full text-left"
             flexDirection={BoxFlexDirection.Column}

@@ -8,8 +8,12 @@ import {
   IconName,
   IconColor,
   IconSize,
-} from '@metamask/design-system-react';
-import { Box, BoxAlignItems, BoxBackgroundColor, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
+
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent} from '@metamask/design-system-react';
 import { Text } from '../../component-library';
 import {
   FontWeight,
@@ -114,9 +118,7 @@ export const NotificationListItem = ({
       >
         <button onClick={handleClick}>
           {!isRead && (
-            <Box
-              className="block notification-list-item__unread-dot__wrapper"
-            >
+            <Box className="block notification-list-item__unread-dot__wrapper">
               <Icon
                 name={IconName.FullCircle}
                 color={IconColor.InfoDefault}

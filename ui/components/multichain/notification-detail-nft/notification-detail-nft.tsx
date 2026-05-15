@@ -1,5 +1,9 @@
 import React, { FC } from 'react';
-import { Box, BoxAlignItems, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { NftItem } from '../nft-item';
 
 export type NotificationDetailNftProps = {

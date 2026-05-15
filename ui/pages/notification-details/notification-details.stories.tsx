@@ -5,7 +5,11 @@ import configureStore from '../../store/store';
 import NotificationDetails from './notification-details';
 import testData from '../../../.storybook/test-data';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { Box, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   createMockNotificationEthSent,
   createMockNotificationEthReceived,
