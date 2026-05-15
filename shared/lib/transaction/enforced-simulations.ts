@@ -65,14 +65,14 @@ export function getIsEnforcedSimulationsEnabled(
 
 /**
  * Whether enforced simulations are force-enabled via the
- * `FORCE_ENABLE_SIMULATIONS` build flag. When `true`, callers should
+ * `FORCE_ENFORCED_SIMULATIONS` build flag. When `true`, callers should
  * skip the remote feature flag check and bypass trust signals.
  * Intended for local development and QA only.
  *
  * @returns Whether enforced simulations are force-enabled.
  */
 export function isEnforcedSimulationsForceEnabled(): boolean {
-  return process.env.FORCE_ENABLE_SIMULATIONS?.toString() === 'true';
+  return process.env.FORCE_ENFORCED_SIMULATIONS?.toString() === 'true';
 }
 
 /**
