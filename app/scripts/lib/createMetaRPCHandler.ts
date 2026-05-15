@@ -5,8 +5,8 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import type { TaggedApiMethod } from '../messenger-client-init/utils';
-import { extractTraceContext } from '../../../shared/lib/trace';
-import { withTraceContextHandler } from '../../../shared/lib/with-trace-context';
+import { extractTraceContext as extractRpcTraceContext } from '../../../shared/lib/trace';
+import { extractTraceContext } from '../../../shared/lib/with-trace-context-decorators';
 import { isStreamWritable, type StreamLike } from './stream-utils';
 
 type MetaRpcApi = Record<string, TaggedApiMethod>;
@@ -15,7 +15,51 @@ type RpcStream = StreamLike & {
   write: (data: PendingJsonRpcResponse) => void;
 };
 
+class RpcDispatcher {
+  api: MetaRpcApi;
+
+  constructor(api: MetaRpcApi) {
+    this.api = api;
+  }
+
+  @extractTraceContext({
+    extract: (data: JsonRpcRequest) => {
+      const { cleanParams, traceContext } = extractRpcTraceContext(data.params);
+      return {
+        cleanInput: {
+          ...data,
+          params: cleanParams as JsonRpcRequest['params'],
+        },
+        context: traceContext,
+      };
+    },
+    getSpanRequest(this: RpcDispatcher, data: JsonRpcRequest) {
+      const handler = this.api[data.method];
+      const controller = handler._controllerName;
+      const name: `Background RPC: ${string}` = controller
+        ? `Background RPC: ${controller}.${data.method}`
+        : `Background RPC: ${data.method}`;
+      return {
+        name,
+        op: 'rpc.handler',
+        data: {
+          method: data.method,
+          ...(controller && { controller }),
+        },
+      };
+    },
+  })
+  async dispatch(data: JsonRpcRequest): Promise<unknown> {
+    const handler = this.api[data.method];
+    if (Array.isArray(data.params)) {
+      return handler.call(this.api, ...data.params);
+    }
+    return handler.call(this.api, data.params);
+  }
+}
+
 const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
+  const dispatcher = new RpcDispatcher(api);
   return async (data: JsonRpcRequest) => {
     if (!isStreamWritable(outStream)) {
       return;
@@ -31,18 +75,10 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
       return;
     }
 
-    const handler = api[data.method];
-    const controller = handler._controllerName;
-    const spanName: `Background RPC: ${string}` = controller
-      ? `Background RPC: ${controller}.${data.method}`
-      : `Background RPC: ${data.method}`;
-
     let result: unknown;
     let error: unknown;
     try {
-      result = await tracedHandler({ handler, api, data, spanName })(
-        data.params,
-      );
+      result = await dispatcher.dispatch(data);
     } catch (err) {
       error = err;
     }
@@ -69,40 +105,5 @@ const createMetaRPCHandler = (api: MetaRpcApi, outStream: RpcStream) => {
     }
   };
 };
-
-function tracedHandler({
-  handler,
-  api,
-  data,
-  spanName,
-}: {
-  handler: TaggedApiMethod;
-  api: MetaRpcApi;
-  data: JsonRpcRequest;
-  spanName: `Background RPC: ${string}`;
-}) {
-  return withTraceContextHandler<
-    [JsonRpcRequest['params']],
-    unknown[],
-    unknown
-  >({
-    handler: (...cleanArgs) => handler.call(api, ...cleanArgs),
-    extract: ([rawParams]) => {
-      const { cleanParams, traceContext } = extractTraceContext(rawParams);
-      const cleanArgs = Array.isArray(cleanParams)
-        ? cleanParams
-        : [cleanParams];
-      return { cleanArgs, context: traceContext };
-    },
-    getSpanRequest: () => ({
-      name: spanName,
-      op: 'rpc.handler',
-      data: {
-        method: data.method,
-        ...(handler._controllerName && { controller: handler._controllerName }),
-      },
-    }),
-  });
-}
 
 export default createMetaRPCHandler;

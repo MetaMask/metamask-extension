@@ -3,8 +3,7 @@ import type { Json, JsonRpcNotification } from '@metamask/utils';
 // eslint-disable-next-line import-x/no-restricted-paths
 import { type MetaRpcClientFactory } from '../../app/scripts/lib/metaRPCClientFactory';
 import { MESSENGER_SUBSCRIPTION_NOTIFICATION } from '../../shared/constants/messages';
-import { withTraceContextDispatch } from '../../shared/lib/with-trace-context';
-import type { SerializedTraceContext } from '../../shared/lib/trace';
+import { propagateTraceContext } from '../../shared/lib/with-trace-context-decorators';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,6 +26,27 @@ export const generateActionId = () => Date.now() + Math.random();
  * @param [args] - arguments to that method, if any
  * @returns
  */
+type SendArgs = [keyof Api, unknown[]?];
+
+class BackgroundClient {
+  @propagateTraceContext({
+    inject: ([method, args]: SendArgs, context) =>
+      [
+        method,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        [...(args ?? []), { _traceContext: context }],
+      ] as SendArgs,
+  })
+  async send<Result>(
+    method: keyof Api,
+    args?: Parameters<Api[typeof method]>,
+  ): Promise<Result> {
+    return background[method](...(args ?? [])) as unknown as Promise<Result>;
+  }
+}
+
+const backgroundClient = new BackgroundClient();
+
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function submitRequestToBackground<R>(
@@ -43,21 +63,7 @@ export function submitRequestToBackground<R>(
     }
   }
 
-  const send = withTraceContextDispatch({
-    dispatch: (...rpcArgs: unknown[]) =>
-      background[method](...rpcArgs) as unknown as Promise<R>,
-    inject: (
-      injectArgs: Parameters<(typeof background)[typeof method]>,
-      context: SerializedTraceContext,
-    ) =>
-      [
-        ...injectArgs,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        { _traceContext: context },
-      ] as unknown as Parameters<(typeof background)[typeof method]>,
-  });
-
-  return send(...(args ?? [])) as unknown as Promise<R>;
+  return backgroundClient.send<R>(method, args);
 }
 
 /**
