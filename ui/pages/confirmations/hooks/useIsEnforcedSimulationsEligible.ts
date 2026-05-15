@@ -28,7 +28,10 @@ export function useIsEnforcedSimulationsEligible(): boolean {
 
   const enabled = useSelector(selectIsEnforcedSimulationsEnabled);
 
-  if ((!enabled && !isEnforcedSimulationsForceEnabled()) || !currentConfirmation) {
+  if (
+    (!enabled && !isEnforcedSimulationsForceEnabled()) ||
+    !currentConfirmation
+  ) {
     return false;
   }
 
