@@ -4,7 +4,13 @@ import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { Text, TextColor, TextVariant , Box, BoxFlexDirection } from '@metamask/design-system-react';
+import {
+  Text,
+  TextColor,
+  TextVariant,
+  Box,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BlockSize } from '../../../helpers/constants/design-system';
 import {
