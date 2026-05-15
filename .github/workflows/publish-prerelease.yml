@@ -120,7 +120,7 @@ jobs:
       PR_NUMBER: ${{ github.event.pull_request.number }}
       BASE_COMMIT_HASH: ${{ github.event.pull_request.base.sha }}
       HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
-      MERGE_BASE_COMMIT_HASH: '' # placeholder so that we have autocomplete and logs
+      BUNDLE_SIZE_BASELINE_COMMIT_HASHES: '' # placeholder so that we have autocomplete and logs
       CLOUDFRONT_REPO_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}
       HOST_URL: ${{ vars.AWS_CLOUDFRONT_URL }}/${{ github.event.repository.name }}/${{ inputs.builds-from-run }}
       SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
@@ -154,17 +154,40 @@ jobs:
             } else {
               core.info(`No pull request detected for branch '${process.env.BRANCH}'`);
             }
-
-      - name: Get main merge base commit hash
-        if: ${{ env.HEAD_COMMIT_HASH }}
+      - name: Get bundle-size baseline commit hashes
+        if: ${{ env.BUILDS_FROM_SHA && env.PR_NUMBER }}
         run: |
-          git fetch --filter=blob:none --no-tags origin \
-            main:refs/remotes/origin/main \
-            "${HEAD_COMMIT_HASH}:refs/remotes/origin/pr-head"
-          merge_base_commit_hash="$(git merge-base "origin/main" "refs/remotes/origin/pr-head")"
-          echo "MERGE_BASE_COMMIT_HASH=${merge_base_commit_hash}" >> "${GITHUB_ENV}"
-          echo "The merge base commit hash is '${merge_base_commit_hash}'"
+          baseline_commit_hashes=""
+
+          if git fetch --filter=blob:none --no-tags origin \
+            "+main:refs/merge-base/base" \
+            "+refs/pull/${PR_NUMBER}/head:refs/merge-base/head"; then
+
+            actual_head_commit_hash="$(git rev-parse refs/merge-base/head 2>/dev/null || true)"
+
+            if [[ "${actual_head_commit_hash}" == "${BUILDS_FROM_SHA}" ]]; then
+              merge_base_commit_hash="$(
+                git merge-base refs/merge-base/base refs/merge-base/head || true
+              )"
+
+              if [[ -n "${merge_base_commit_hash}" ]]; then
+                baseline_commit_hashes="$(
+                  git rev-list --first-parent --max-count=200 "${merge_base_commit_hash}" || true
+                )"
+              fi
+            else
+              echo "::warning::Fetched PR head '${actual_head_commit_hash}', but expected '${BUILDS_FROM_SHA}'. Skipping bundle-size baseline detection."
+            fi
+          else
+            echo "::warning::Could not fetch commits needed to determine bundle-size baseline."
+          fi
+
+          {
+            echo "BUNDLE_SIZE_BASELINE_COMMIT_HASHES<<EOF"
+            echo "${baseline_commit_hashes}"
+            echo "EOF"
+          } >> "${GITHUB_ENV}"
 
       - name: Publish prerelease
-        if: ${{ env.MERGE_BASE_COMMIT_HASH && env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
+        if: ${{ env.PR_NUMBER && env.PR_COMMENT_TOKEN && vars.AWS_CLOUDFRONT_URL }}
         run: yarn tsx ./development/metamaskbot-build-announce/index.ts
