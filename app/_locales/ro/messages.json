@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Temporizator deconectare automată (minute)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Setați perioada de inactivitate în minute înainte ca MetaMask să se deconecteze automat"
-  },
   "average": {
     "message": "Mediu"
   },
@@ -180,12 +177,6 @@
   },
   "createPassword": {
     "message": "Creare parolă"
-  },
-  "currencyConversion": {
-    "message": "Schimb valutar"
-  },
-  "currentLanguage": {
-    "message": "Limba actuală"
   },
   "custom": {
     "message": "Avansate"
@@ -333,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
   },
-  "lineaGoerli": {
-    "message": "Rețea de test Linea Goerli"
-  },
-  "links": {
-    "message": "Link-uri"
-  },
   "loading": {
     "message": "Se încarcă…"
   },
@@ -375,9 +360,6 @@
   },
   "nevermind": {
     "message": "Nu mai contează"
-  },
-  "newAccount": {
-    "message": "Cont nou"
   },
   "newAccountNumberName": {
     "message": "Cont $1",
@@ -484,9 +466,6 @@
   "restore": {
     "message": "Restabilește"
   },
-  "revealSeedWords": {
-    "message": "Arată cuvintele din seed"
-  },
   "revealSeedWordsWarning": {
     "message": "Aceste cuvinte pot fi folosite pentru a vă fura toate conturile.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -533,9 +512,6 @@
   "showFiatConversionInTestnets": {
     "message": "Afișează conversiile pe rețelele de test (testnets)"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Selectați pentru a afișa conversia fiat pe Testnets"
-  },
   "showHexData": {
     "message": "Arată datele hex"
   },
@@ -565,9 +541,6 @@
   },
   "stateLogs": {
     "message": "Jurnale de stare"
-  },
-  "stateLogsDescription": {
-    "message": "Jurnalele de stare conțin adresele contului dvs. public și tranzacțiile trimise."
   },
   "submitted": {
     "message": "Trimis"

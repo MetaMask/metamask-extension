@@ -2,10 +2,13 @@
 /* eslint-disable import-x/no-useless-path-segments */
 /* eslint-disable import-x/extensions */
 import classnames from 'clsx';
-import React, { Suspense, useEffect, useRef } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
+
+import type { ApprovalRequest } from '@metamask/approval-controller';
+import type { Json } from '@metamask/utils';
 
 import { useAppSelector } from '../../store/store';
 import Loading from '../../components/ui/loading-screen';
@@ -54,9 +57,9 @@ import {
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
-  NONEVM_BALANCE_CHECK_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
+  CUSTOM_TOKEN_IMPORT_ROUTE,
   SHIELD_PLAN_ROUTE,
   GATOR_PERMISSIONS,
   TOKEN_TRANSFER_ROUTE,
@@ -75,12 +78,10 @@ import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
   getNetworkIdentifier,
-  getPreferences,
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
-  getNetworkToAutomaticallySwitchTo,
-  getNumberOfAllUnapprovedTransactionsAndMessages,
 } from '../../selectors';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useTheme } from '../../hooks/useTheme';
 import { useIsRedesignedConfirmationType } from '../../hooks/useIsRedesignedTransactionType';
 
@@ -91,14 +92,11 @@ import {
   setLastActiveTime,
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
-  automaticallySwitchNetwork,
   hideKeyringRemovalResultModal,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
@@ -120,7 +118,6 @@ import NetworkConfirmationPopover from '../../components/multichain/network-list
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
-import { type Confirmation } from '../confirmations/types/confirm';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -142,8 +139,9 @@ import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '..
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
 import { getConnectingLabel, setTheme } from './utils';
-import { ConfirmationHandler } from './confirmation-handler';
+import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
+import { NetworkHandler } from './network-handler';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
@@ -158,6 +156,9 @@ const Settings = mmLazy(() => import('../settings/index.ts'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
+);
+const CustomTokenImportPage = mmLazy(
+  () => import('../custom-token-import/index.ts'),
 );
 const NotificationDetails = mmLazy(
   () => import('../notification-details/index.js'),
@@ -224,9 +225,6 @@ const MultichainAccountDetailsPage = mmLazy(
 const SmartAccountPage = mmLazy(
   () => import('../multichain-accounts/smart-account-page/index.ts'),
 );
-const NonEvmBalanceCheck = mmLazy(
-  () => import('../nonevm-balance-check/index.tsx'),
-);
 const ShieldPlan = mmLazy(() => import('../shield/plan/index.ts'));
 const PerpsMarketDetailPage = mmLazy(
   () => import('../perps/perps-market-detail-page.tsx'),
@@ -265,6 +263,18 @@ export const TokenManagementFeatureRoute = () => {
   }
 
   return <TokenManagementPage />;
+};
+
+export const CustomTokenImportFeatureRoute = () => {
+  const isTokenManagementFilterEnabled = useAppSelector(
+    getIsTokenManagementFilterEnabled,
+  );
+
+  if (!isTokenManagementFilterEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
+
+  return <CustomTokenImportPage />;
 };
 
 export const routeConfig = [
@@ -320,6 +330,10 @@ export const routeConfig = [
       {
         path: TOKEN_MANAGEMENT_ROUTE,
         element: <TokenManagementFeatureRoute />,
+      },
+      {
+        path: CUSTOM_TOKEN_IMPORT_ROUTE,
+        element: <CustomTokenImportFeatureRoute />,
       },
       {
         path: `${SETTINGS_ROUTE}/*`,
@@ -474,10 +488,6 @@ export const routeConfig = [
             element: <MusdConversionPage />,
           },
           {
-            path: NONEVM_BALANCE_CHECK_ROUTE,
-            element: <NonEvmBalanceCheck />,
-          },
-          {
             path: SHIELD_PLAN_ROUTE,
             element: <ShieldPlan />,
           },
@@ -531,10 +541,6 @@ export default function Routes() {
     useAppSelector(getPreferences);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
 
-  const networkToAutomaticallySwitchTo = useAppSelector(
-    getNetworkToAutomaticallySwitchTo,
-  );
-
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
   const currentCurrency = useAppSelector(
@@ -566,9 +572,6 @@ export default function Routes() {
   const isIpfsModalOpen = useAppSelector(
     (state) => state.appState.showIpfsModalOpen,
   );
-  const totalUnapprovedConfirmationCount = useAppSelector(
-    getNumberOfAllUnapprovedTransactionsAndMessages,
-  );
   const currentExtensionPopupId = useAppSelector(
     (state) => state.metamask.currentExtensionPopupId,
   );
@@ -576,7 +579,9 @@ export default function Routes() {
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
     (state) => state.appState.showKeyringRemovalSnapModal,
   );
-  const pendingConfirmations = useAppSelector(getUnapprovedConfirmations);
+  const pendingConfirmations = useAppSelector(
+    getUnapprovedConfirmations,
+  ) as ApprovalRequest<Record<string, Json>>[];
   const hideShowKeyringSnapRemovalResultModal = () =>
     dispatch(hideKeyringRemovalResultModal());
 
@@ -585,38 +590,6 @@ export default function Routes() {
     useMultichainAccountsIntroModal(isUnlocked, location);
 
   const isUsingRedesignedConfirmationType = useIsRedesignedConfirmationType();
-
-  const prevPropsRef = useRef({
-    isUnlocked,
-    totalUnapprovedConfirmationCount,
-  });
-
-  useEffect(() => {
-    const prevProps = prevPropsRef.current;
-
-    // Automatically switch the network if the user
-    // no longer has unapproved transactions and they
-    // should be on a different network for the
-    // currently active tab's dapp
-    if (
-      networkToAutomaticallySwitchTo &&
-      totalUnapprovedConfirmationCount === 0 &&
-      (prevProps.totalUnapprovedConfirmationCount > 0 ||
-        (prevProps.isUnlocked === false && isUnlocked))
-    ) {
-      dispatch(automaticallySwitchNetwork(networkToAutomaticallySwitchTo));
-    }
-
-    prevPropsRef.current = {
-      isUnlocked,
-      totalUnapprovedConfirmationCount,
-    };
-  }, [
-    networkToAutomaticallySwitchTo,
-    isUnlocked,
-    totalUnapprovedConfirmationCount,
-    dispatch,
-  ]);
 
   useEffect(() => {
     // Terminate the popup when another popup is opened
@@ -693,7 +666,7 @@ export default function Routes() {
     isLoading &&
     completedOnboarding &&
     !pendingConfirmations.some(
-      (confirmation: Confirmation) =>
+      (confirmation) =>
         confirmation.type ===
         SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ) &&
@@ -716,7 +689,8 @@ export default function Routes() {
       })}
       dir={textDirection}
     >
-      <ConfirmationHandler />
+      <ConfirmationRouter />
+      <NetworkHandler />
       <ToastListener />
 
       <QRHardwarePopover />

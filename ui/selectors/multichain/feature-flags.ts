@@ -2,7 +2,8 @@
 
 import { createSelector } from 'reselect';
 import { isMultichainFeatureEnabled } from '../../../shared/lib/multichain-feature-flags';
-import { getRemoteFeatureFlags } from '../remote-feature-flags';
+import { getBooleanFeatureFlag } from '../../../shared/lib/remote-feature-flag-utils';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 
 /**
  * Get the state of the `bitcoinAccounts` feature flag with version check.
@@ -96,7 +97,5 @@ export const getIsTransactionLabelsEnabled = createSelector(
 export const getIsTokenManagementFilterEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ extensionUxTokenManagementFilter }) =>
-    extensionUxTokenManagementFilter === true ||
-    (extensionUxTokenManagementFilter as { enabled?: boolean } | undefined)
-      ?.enabled === true,
+    getBooleanFeatureFlag(extensionUxTokenManagementFilter, false),
 );

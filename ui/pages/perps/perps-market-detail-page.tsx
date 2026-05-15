@@ -46,8 +46,8 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../shared/constants/perps-events';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
-import { getPreferences } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useTheme } from '../../hooks/useTheme';
 import {
@@ -94,6 +94,7 @@ import {
   parsePerpsDisplayPrice,
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
+  formatPerpsLiquidationPrice,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
 import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
@@ -1480,9 +1481,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-position-liquidation-value"
                   >
-                    {position.liquidationPrice
-                      ? formatPerpsFiatUniversal(position.liquidationPrice)
-                      : '-'}
+                    {formatPerpsLiquidationPrice(position.liquidationPrice)}
                   </Text>
                 </Box>
 
@@ -1847,7 +1846,6 @@ const PerpsMarketDetailPage: React.FC = () => {
                     onClick={handleReduceExposure}
                     data-testid="perps-modify-menu-reduce-exposure"
                   />
-                  {/* Reverse Position temporarily disabled — see TAT-XXXX
                   <PopoverMenuItem
                     icon={IconName.SwapHorizontal}
                     label={t('perpsReversePosition')}
@@ -1860,7 +1858,6 @@ const PerpsMarketDetailPage: React.FC = () => {
                     className="rounded-b-lg"
                     data-testid="perps-modify-menu-reverse-position"
                   />
-                  */}
                 </Box>
               </Popover>
             </Box>
@@ -1928,7 +1925,6 @@ const PerpsMarketDetailPage: React.FC = () => {
         />
       )}
 
-      {/* Reverse position modal temporarily disabled — see TAT-XXXX
       {position && isReverseModalOpen && (
         <ReversePositionModal
           isOpen={isReverseModalOpen}
@@ -1938,7 +1934,6 @@ const PerpsMarketDetailPage: React.FC = () => {
           sizeDecimals={marketInfo?.szDecimals}
         />
       )}
-      */}
 
       {/* TP/SL update modal (from Auto Close row) */}
       {position && isTPSLModalOpen && (

@@ -96,9 +96,7 @@
     "assetExchangeRates": "object",
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
-    "quoteRequest": {
-      "srcTokenAddress": "0x0000000000000000000000000000000000000000"
-    },
+    "quoteRequest": "object",
     "quoteStreamComplete": null,
     "quotes": "object",
     "quotesInitialLoadTime": null,
@@ -125,6 +123,11 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "MON": {
+        "conversionDate": "object",
+        "conversionRate": null,
+        "usdConversionRate": null
       },
       "POL": {
         "conversionDate": null,

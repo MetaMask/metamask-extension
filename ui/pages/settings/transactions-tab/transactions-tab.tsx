@@ -13,9 +13,9 @@ import {
 } from '../shared';
 import {
   getIsSecurityAlertsEnabled,
-  getPreferences,
   getUseExternalNameSources,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getIsActiveShieldSubscription } from '../../../selectors/subscription';
 import {
   setDismissSmartAccountSuggestionEnabled,

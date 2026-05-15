@@ -21,7 +21,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 
-import { getPreferences, getSelectedAccount } from '../../../selectors';
+import { getSelectedAccount } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { useFormatters } from '../../../hooks/useFormatters';
 import { AssetCellBadge } from '../../../components/app/assets/asset-list/cells/asset-cell-badge';

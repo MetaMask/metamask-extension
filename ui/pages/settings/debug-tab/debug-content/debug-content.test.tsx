@@ -35,8 +35,7 @@ jest.mock('../../../../store/actions.ts', () => ({
   perpsToggleTestnet: () => mockPerpsToggleTestnet(),
 }));
 
-jest.mock('../../../../selectors', () => ({
-  ...jest.requireActual('../../../../selectors'),
+jest.mock('../../../../../shared/lib/selectors/remote-feature-flags', () => ({
   getRemoteFeatureFlags: jest.fn(() => mockRemoteFeatureFlags),
 }));
 

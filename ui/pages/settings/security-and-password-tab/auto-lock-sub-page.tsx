@@ -16,7 +16,7 @@ import {
 } from '@metamask/design-system-react';
 import { setAutoLockTimeLimit } from '../../../store/actions';
 import { SECURITY_AND_PASSWORD_ROUTE } from '../../../helpers/constants/routes';
-import { getPreferences } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';

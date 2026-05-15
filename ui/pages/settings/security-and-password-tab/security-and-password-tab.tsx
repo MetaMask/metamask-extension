@@ -1,7 +1,8 @@
 import React from 'react';
 import { SettingItemConfig } from '../types';
 import { SettingsTab, createSelectItem, createToggleItem } from '../shared';
-import { getPreferences, getUsePhishDetect } from '../../../selectors';
+import { getUsePhishDetect } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { setUsePhishDetect } from '../../../store/actions';
 import {
   AUTO_LOCK_ROUTE,
