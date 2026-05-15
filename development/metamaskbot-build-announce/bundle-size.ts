@@ -95,8 +95,10 @@ export async function buildBundleSizeDiffSection(
       }
 
       // This annotation narrows the untyped json() result to the known schema of the dev bundle size data.
-      const devBundleSizeStats: Record<string, Record<string, number>> =
-        await devBundleSizeStatsResponse.json();
+      const devBundleSizeStats: Record<
+        string,
+        Record<string, number>
+      > = await devBundleSizeStatsResponse.json();
 
       const baselineCommitHash = baselineCommitHashes.find(
         (commitHash) => devBundleSizeStats[commitHash],
@@ -156,9 +158,7 @@ export async function buildBundleSizeDiffSection(
 
   const bundleSizeContent = `<ul>${(
     sizeRows ??
-    bundleParts.map(
-      (part) => `${part}: ${getHumanReadableSize(prSizes[part])}`,
-    )
+    bundleParts.map((part) => `${part}: ${getHumanReadableSize(prSizes[part])}`)
   )
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
