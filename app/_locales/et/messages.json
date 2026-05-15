@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Automaatse väljalogimise taimer (minutites)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Seadistage jõudeolek minutites, enne kui MetaMask automaatselt välja logib"
-  },
   "average": {
     "message": "Keskmine"
   },
@@ -180,12 +177,6 @@
   },
   "createPassword": {
     "message": "Loo parool"
-  },
-  "currencyConversion": {
-    "message": "Valuuta teisendamine"
-  },
-  "currentLanguage": {
-    "message": "Praegune keel"
   },
   "custom": {
     "message": "Täpsemad"
@@ -339,12 +330,6 @@
   "likeToImportTokens": {
     "message": "Kas soovite need load lisada?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli testvõrk"
-  },
-  "links": {
-    "message": "Lingid"
-  },
   "loading": {
     "message": "Laadimine..."
   },
@@ -378,9 +363,6 @@
   },
   "nevermind": {
     "message": "Unusta"
-  },
-  "newAccount": {
-    "message": "Uus konto"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -487,9 +469,6 @@
   "restore": {
     "message": "Taasta"
   },
-  "revealSeedWords": {
-    "message": "Kuva seemnesõnu"
-  },
   "revealSeedWordsWarning": {
     "message": "Neid sõnu saab kasutada kõigi teie kontode tühjendamiseks.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -536,9 +515,6 @@
   "showFiatConversionInTestnets": {
     "message": "Kuva teisendus Testnetsis"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Valige see, et kuvada Testnetsis fiati teisendus"
-  },
   "showHexData": {
     "message": "Kuva Hex-andmed"
   },
@@ -568,9 +544,6 @@
   },
   "stateLogs": {
     "message": "Olekulogid"
-  },
-  "stateLogsDescription": {
-    "message": "Olekulogid sisaldavad teie avalikke konto aadresse ja saadetud tehinguid."
   },
   "submitted": {
     "message": "Edastatud"

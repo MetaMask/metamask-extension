@@ -96,7 +96,7 @@ export const MultichainEditNetworksPage = ({
   return (
     <Page
       data-testid="modal-page"
-      className="main-container connect-page"
+      className="main-container multichain-edit-networks-page"
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header

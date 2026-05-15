@@ -31,13 +31,17 @@ import {
   getIsWalletResetInProgress,
   getPasskeyAutoUnlockSuppressed,
 } from '../../ducks/metamask/metamask';
-import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
+import withRouterHooks, {
+  RouterHooksProps,
+} from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import UnlockPage from './unlock-page.component';
 
 type OwnProps = {
   navigate: NavigateFunction;
   location: RouterLocation;
+  /** Injected by withRouterHooks; stripped in mergeProps — UnlockPage does not use URL params. */
+  params: RouterHooksProps['params'];
   onSubmit?: (password: string) => Promise<void>;
 };
 
@@ -97,6 +101,9 @@ const mergeProps = (
     navigate,
     onSubmit: ownPropsSubmit,
     location,
+    // Strip unused router prop — UnlockPage does not use URL params; excluding it
+    // prevents unnecessary re-renders when route parameters change.
+    params: _params,
     ...restOwnProps
   } = ownProps;
 

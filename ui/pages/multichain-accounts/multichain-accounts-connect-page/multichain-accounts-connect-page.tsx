@@ -635,7 +635,7 @@ export const MultichainAccountsConnectPage = ({
               </Box>
               {selectedAccountGroupIds.length === 0 && (
                 <Box
-                  className="connect-page__accounts-empty"
+                  className="multichain-connect-page__accounts-empty"
                   display={Display.Flex}
                   justifyContent={JustifyContent.flexStart}
                   alignItems={AlignItems.center}
@@ -657,7 +657,7 @@ export const MultichainAccountsConnectPage = ({
                   padding={4}
                 >
                   <Box
-                    className="connect-page__edit-icon"
+                    className="multichain-connect-page__edit-icon"
                     marginRight={4}
                     display={Display.Flex}
                     alignItems={AlignItems.center}
