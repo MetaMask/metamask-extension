@@ -413,7 +413,7 @@ export const MultichainReviewPermissions = () => {
             {existingConnectedCaipAccountIds.length > 0 ? (
               <Box
                 flexDirection={BoxFlexDirection.Column}
-                className="w-full"
+                className="flex w-full"
                 gap={2}
                 alignItems={BoxAlignItems.Center}
               >

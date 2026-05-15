@@ -177,6 +177,7 @@ const MultichainPrivateKeyList = ({
           ) : null}
         </Box>
         <Box
+          className="flex"
           flexDirection={BoxFlexDirection.Row}
           gap={4}
           paddingBottom={2}
@@ -256,6 +257,7 @@ const MultichainPrivateKeyList = ({
 
   return (
     <Box
+      className="flex"
       flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-private-keyring-list"
     >

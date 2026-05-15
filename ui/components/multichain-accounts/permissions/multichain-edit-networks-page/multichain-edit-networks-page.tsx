@@ -172,9 +172,10 @@ export const MultichainEditNetworksPage: React.FC<
             flexDirection={BoxFlexDirection.Column}
             gap={4}
             alignItems={BoxAlignItems.Center}
-            className="w-full"
+            className="flex w-full"
           >
             <Box
+              className="flex"
               gap={1}
               alignItems={BoxAlignItems.Center}
               justifyContent={BoxJustifyContent.Center}

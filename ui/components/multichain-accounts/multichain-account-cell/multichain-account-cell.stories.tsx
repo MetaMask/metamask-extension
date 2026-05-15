@@ -16,7 +16,7 @@ const MoreOptionsAccessory = () => (
     alignItems={BoxAlignItems.Center}
     justifyContent={BoxJustifyContent.Center}
     backgroundColor={BoxBackgroundColor.BackgroundMuted}
-    className="rounded-lg"
+    className="flex rounded-lg"
     padding={1}
   >
     <Icon name={IconName.MoreVertical} />
@@ -25,6 +25,7 @@ const MoreOptionsAccessory = () => (
 
 const CheckboxAccessory = ({ checked = false }: { checked?: boolean }) => (
   <Box
+    className="flex"
     alignItems={BoxAlignItems.Center}
     justifyContent={BoxJustifyContent.Center}
     marginRight={2}

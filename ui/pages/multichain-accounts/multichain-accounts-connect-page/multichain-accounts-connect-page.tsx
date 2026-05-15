@@ -544,7 +544,7 @@ export const MultichainAccountsConnectPage: React.FC<
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Header paddingTop={8} paddingBottom={4}>
-        <Box justifyContent={BoxJustifyContent.Center} marginBottom={8}>
+        <Box className="flex" justifyContent={BoxJustifyContent.Center} marginBottom={8}>
           {targetSubjectMetadata.iconUrl ? (
             <AvatarFavicon
               backgroundColor={BackgroundColor.backgroundMuted}
@@ -567,6 +567,7 @@ export const MultichainAccountsConnectPage: React.FC<
           )}
         </Box>
         <Box
+          className="flex"
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Center}
           gap={2}
@@ -608,7 +609,7 @@ export const MultichainAccountsConnectPage: React.FC<
             </Tooltip>
           )}
         </Box>
-        <Box justifyContent={BoxJustifyContent.Center}>
+        <Box className="flex" justifyContent={BoxJustifyContent.Center}>
           <Text color={TextColor.textAlternative}>
             {t('connectionDescription')}
           </Text>
@@ -635,7 +636,7 @@ export const MultichainAccountsConnectPage: React.FC<
               </Box>
               {selectedAccountGroupIds.length === 0 && (
                 <Box
-                  className="multichain-connect-page__accounts-empty rounded-xl"
+                  className="flex multichain-connect-page__accounts-empty rounded-xl"
                   justifyContent={BoxJustifyContent.Start}
                   alignItems={BoxAlignItems.Center}
                 >
@@ -649,12 +650,13 @@ export const MultichainAccountsConnectPage: React.FC<
               )}
               {selectedAccountGroupIds.length > 0 && (
                 <Box
+                  className="flex"
                   marginTop={4}
                   justifyContent={BoxJustifyContent.Start}
                   padding={4}
                 >
                   <Box
-                    className="multichain-connect-page__edit-icon rounded-md"
+                    className="flex multichain-connect-page__edit-icon rounded-md"
                     marginRight={4}
                     alignItems={BoxAlignItems.Center}
                     justifyContent={BoxJustifyContent.Center}
@@ -701,7 +703,7 @@ export const MultichainAccountsConnectPage: React.FC<
         </Tabs>
       </Content>
       <Footer>
-        <Box flexDirection={BoxFlexDirection.Column} gap={4} className="w-full">
+        <Box flexDirection={BoxFlexDirection.Column} gap={4} className="flex w-full">
           <Box gap={4} className="w-full">
             <Button
               block

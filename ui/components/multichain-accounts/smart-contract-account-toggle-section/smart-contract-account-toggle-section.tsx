@@ -33,6 +33,7 @@ export const SmartContractAccountToggleSection = ({
     if (pending) {
       return (
         <Box
+          className="flex"
           paddingTop={12}
           paddingBottom={12}
           justifyContent={BoxJustifyContent.Center}

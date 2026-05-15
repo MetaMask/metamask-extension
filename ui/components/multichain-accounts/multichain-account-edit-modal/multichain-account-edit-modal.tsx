@@ -70,7 +70,7 @@ export const MultichainAccountEditModal = ({
           {t('rename')}
         </ModalHeader>
         <ModalBody>
-          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={4}>
             <Box>
               <FormTextField
                 label={t('accountName')}

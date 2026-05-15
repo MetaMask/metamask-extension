@@ -53,6 +53,7 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
             </ModalHeader>
             <ModalBody>
               <Box
+                className="flex"
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Center}
                 justifyContent={BoxJustifyContent.Center}
@@ -68,7 +69,7 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Start}
-                className="w-full"
+                className="flex w-full"
                 gap={3}
               >
                 <Box>
@@ -97,7 +98,7 @@ export const MultichainAccountIntroModal: React.FC<MultichainAccountIntroModalPr
             </ModalBody>
 
             <ModalFooter>
-              <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+              <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={4}>
                 <Button
                   variant={ButtonVariant.Primary}
                   size={ButtonSize.Lg}

@@ -244,7 +244,7 @@ export const MultichainAccountMenu = ({
   return (
     <>
       <Box
-        className="multichain-account-cell-popover-menu-button rounded-lg"
+        className="flex multichain-account-cell-popover-menu-button rounded-lg"
         ref={popoverRef}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
