@@ -1489,8 +1489,20 @@ const PerpsMarketDetailPage: React.FC = () => {
 
                 {/* Liquidation Distance Row */}
                 {(() => {
+                  // Match the positions-tab/mobile source: prefer live mark
+                  // price, then live last price, then the chart/market
+                  // fallback so detail + list stay in lockstep.
+                  const liveMarkOrPrice =
+                    livePrice?.markPrice ?? livePrice?.price;
+                  const parsedLive = liveMarkOrPrice
+                    ? parsePerpsDisplayPrice(liveMarkOrPrice)
+                    : Number.NaN;
+                  const liqDistanceCurrentPrice =
+                    Number.isFinite(parsedLive) && parsedLive > 0
+                      ? parsedLive
+                      : currentPrice;
                   const liqDistance = getLiquidationDistancePercent(
-                    currentPrice,
+                    liqDistanceCurrentPrice,
                     position.liquidationPrice,
                   );
                   if (liqDistance === null) {
