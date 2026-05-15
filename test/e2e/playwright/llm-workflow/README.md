@@ -129,6 +129,45 @@ mm cleanup
 - `mm knowledge-last`: Get last N step records from this session.
 - `mm knowledge-sessions`: List recent sessions with metadata.
 
+### Memory Profiling
+
+Use `yarn llm:memory` for repeatable Chrome DevTools Protocol memory samples
+against the extension page. The command launches the same MetaMask E2E
+environment as `mm launch`, unlocks the default wallet by default, runs a route
+flow, samples heap/DOM counters after forced garbage collection, and writes a
+JSON report under `test-artifacts/memory`.
+
+```bash
+# Build first if dist/chrome is not current
+yarn build:test:webpack
+
+# Route-cycle profile with a final heap snapshot
+yarn llm:memory -- --iterations 25 --flow route-cycle --snapshot final
+
+# Fail the run if used heap growth exceeds 25 MiB
+yarn llm:memory -- --iterations 50 --max-used-heap-growth 25MiB
+
+# Send-flow profile with only baseline/final samples and no Playwright DOM count
+yarn llm:memory -- --iterations 50 --flow send-open-back --sample final --probe cdp
+
+# Fail when DOM counters regress past known budgets
+yarn llm:memory -- --iterations 50 --flow send-open-back \
+  --max-dom-nodes-growth 1000 \
+  --max-js-event-listeners-growth 300
+```
+
+The report includes `Runtime.getHeapUsage`, `Performance.getMetrics`,
+`Memory.getDOMCounters`, per-run deltas, threshold results, and any
+`.heapsnapshot` artifact paths.
+
+Use `--sample final` when checking whether repeated CDP sampling is affecting
+retention; it records the baseline and final samples only. The default
+`--sample each` keeps per-iteration trend data.
+
+Use `--probe cdp` to skip the Playwright live-DOM locator count while keeping
+CDP heap and DOM counters. Use `--probe heap` to skip DOM counters too, which is
+useful when isolating app heap growth from DOM-counter observer effects.
+
 ---
 
 ## Launch Modes
