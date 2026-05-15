@@ -518,6 +518,46 @@ describe('TokenManagementPage', () => {
     );
   });
 
+  it('shows a token hidden by a committed staged hide as OFF in search results', async () => {
+    const actions = getMockedActions();
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    renderPage();
+
+    const visibleListToggle = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+    ) as HTMLInputElement;
+    fireEvent.click(visibleListToggle);
+    expect(visibleListToggle.value).toBe('false');
+
+    fireEvent.change(screen.getByTestId('token-management-search-input'), {
+      target: { value: mainnetToken.name },
+    });
+
+    const searchResultToggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(searchResultToggle.value).toBe('false');
+
+    await waitFor(() =>
+      expect(actions.ignoreTokens).toHaveBeenCalledWith({
+        tokensToIgnore: [mainnetToken.address],
+        dontShowLoadingIndicator: true,
+        networkClientId: 'mainnet',
+      }),
+    );
+  });
+
   it('commits the staged hide when the user clicks the Add custom token CTA', async () => {
     const actions = getMockedActions();
 

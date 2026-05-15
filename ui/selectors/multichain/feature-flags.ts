@@ -96,5 +96,6 @@ export const getIsTransactionLabelsEnabled = createSelector(
  */
 export const getIsTokenManagementFilterEnabled = createSelector(
   getRemoteFeatureFlags,
-  ({ extensionUxTokenManagementFilter }) => true
+  ({ extensionUxTokenManagementFilter }) =>
+    getBooleanFeatureFlag(extensionUxTokenManagementFilter, false),
 );

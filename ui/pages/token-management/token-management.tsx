@@ -160,6 +160,10 @@ export const TokenManagementPage = () => {
   const [stagedHideKeys, setStagedHideKeys] = useState<ReadonlySet<string>>(
     () => new Set<string>(),
   );
+  // Render override for hides already flushed but not yet reflected in Redux.
+  const [committedHideKeys, setCommittedHideKeys] = useState<
+    ReadonlySet<string>
+  >(() => new Set<string>());
   const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
 
   const stageHide = useCallback(
@@ -177,6 +181,30 @@ export const TokenManagementPage = () => {
     stagedHidesRef.current.delete(key);
     setStagedHideKeys(new Set(stagedHidesRef.current.keys()));
     return true;
+  }, []);
+
+  const addCommittedHideKeys = useCallback((keys: string[]) => {
+    if (keys.length === 0) {
+      return;
+    }
+
+    setCommittedHideKeys((previousKeys) => {
+      const nextKeys = new Set(previousKeys);
+      keys.forEach((key) => nextKeys.add(key));
+      return nextKeys;
+    });
+  }, []);
+
+  const removeCommittedHideKey = useCallback((key: string) => {
+    setCommittedHideKeys((previousKeys) => {
+      if (!previousKeys.has(key)) {
+        return previousKeys;
+      }
+
+      const nextKeys = new Set(previousKeys);
+      nextKeys.delete(key);
+      return nextKeys;
+    });
   }, []);
 
   const getStagedHideKey = useCallback(
@@ -528,14 +556,15 @@ export const TokenManagementPage = () => {
       if (stagedHidesRef.current.size === 0) {
         return;
       }
-      const entries = Array.from(stagedHidesRef.current.values());
+      const entries = Array.from(stagedHidesRef.current.entries());
       stagedHidesRef.current.clear();
       if (isMountedRef.current) {
         setStagedHideKeys(new Set());
+        addCommittedHideKeys(entries.map(([key]) => key));
       }
 
       await Promise.allSettled(
-        entries.map(async (entry) => {
+        entries.map(async ([, entry]) => {
           if (entry.kind === 'evm') {
             const { networkClientId } = getNetworkMeta(entry.hexChainId);
             if (!networkClientId) {
@@ -562,7 +591,12 @@ export const TokenManagementPage = () => {
         }),
       );
     };
-  });
+  }, [
+    addCommittedHideKeys,
+    dispatch,
+    getNetworkMeta,
+    isAssetsUnifiedStateInBuild,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -690,6 +724,7 @@ export const TokenManagementPage = () => {
       if (unstageHide(stagedKey)) {
         return;
       }
+      removeCommittedHideKey(stagedKey);
 
       addPendingKey(stagedKey);
       try {
@@ -745,6 +780,7 @@ export const TokenManagementPage = () => {
       getNetworkMeta,
       isAssetsUnifiedStateInBuild,
       removePendingKey,
+      removeCommittedHideKey,
       stageHide,
       unstageHide,
     ],
@@ -767,7 +803,9 @@ export const TokenManagementPage = () => {
       const token = info.item;
       const key = getTokenKey(token);
       const stagedKey = getStagedHideKey(token);
-      const isStagedOff = stagedKey ? stagedHideKeys.has(stagedKey) : false;
+      const isHidden = stagedKey
+        ? stagedHideKeys.has(stagedKey) || committedHideKeys.has(stagedKey)
+        : false;
       const isNativeToken = Boolean(token.isNative);
       const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
       const isManageableToken =
@@ -783,7 +821,7 @@ export const TokenManagementPage = () => {
           assetId={token.assetId as CaipAssetType | Hex}
           primaryLabel={token.name ?? token.symbol}
           secondaryLabel={`${token.balance} ${token.symbol}`}
-          isOn={!isStagedOff}
+          isOn={!isHidden}
           disabled={isNativeToken || pendingKeys.has(key)}
           onToggle={(nextValue) => handleToggle(token, nextValue)}
           showToggle={isManageableToken || isNativeToken}
@@ -792,6 +830,7 @@ export const TokenManagementPage = () => {
       );
     },
     [
+      committedHideKeys,
       getStagedHideKey,
       getTokenImage,
       getTokenKey,
@@ -832,7 +871,8 @@ export const TokenManagementPage = () => {
       const isImported =
         importedAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? importedAssetIds.has(evmImportedKey) : false);
-      const isStagedOff = stagedHideKeys.has(lowerAssetId);
+      const isHidden =
+        stagedHideKeys.has(lowerAssetId) || committedHideKeys.has(lowerAssetId);
 
       return (
         <TokenManagementCell
@@ -849,7 +889,7 @@ export const TokenManagementPage = () => {
             allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
             payload.caipChainId
           }
-          isOn={(isImported && !isStagedOff) || payload.isNative}
+          isOn={(isImported && !isHidden) || payload.isNative}
           disabled={payload.isNative || pendingKeys.has(lowerAssetId)}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
           showToggle={!payload.isNative}
@@ -859,6 +899,7 @@ export const TokenManagementPage = () => {
     },
     [
       allMultichainNetworkConfigurations,
+      committedHideKeys,
       handleSearchResultToggle,
       importedAssetIds,
       networkConfigurations,
