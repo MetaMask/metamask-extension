@@ -382,9 +382,13 @@ export class PerpsMarketDetailPage {
 
   /**
    * Opens the margin Add/Remove popover: clicks the margin summary card, then waits for the menu.
+   *
+   * Dismisses any visible toast and scrolls the card to the viewport centre
+   * so that sticky CTA buttons at the bottom cannot intercept the click.
    */
   async clickMarginMenu(): Promise<void> {
-    await this.driver.clickElement(this.marginCard);
+    await this.dismissPerpsToastIfPresent();
+    await this.driver.findScrollToAndClickElement(this.marginCard);
     await this.driver.waitForSelector(this.marginMenu);
   }
 
@@ -455,9 +459,13 @@ export class PerpsMarketDetailPage {
   /**
    * Clicks the auto-close row to open the TP/SL update modal.
    * Works whether the position has no TP/SL yet (shows a CTA) or already has one.
+   *
+   * Dismisses any visible toast and scrolls the row to the viewport centre
+   * so that sticky CTA buttons at the bottom cannot intercept the click.
    */
   async clickAutoCloseRow(): Promise<void> {
-    await this.driver.clickElement(this.autoCloseRow);
+    await this.dismissPerpsToastIfPresent();
+    await this.driver.findScrollToAndClickElement(this.autoCloseRow);
   }
 
   /**

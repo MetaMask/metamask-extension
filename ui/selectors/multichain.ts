@@ -33,10 +33,10 @@ import {
   getRatesControllerRates,
 } from '../../shared/lib/selectors/assets-migration';
 import {
-  getConversionRate,
   getCurrentCurrency,
   getNativeCurrency,
 } from '../ducks/metamask/metamask';
+import { getConversionRate } from '../ducks/metamask/base-selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multichain/assets';
@@ -54,11 +54,10 @@ import {
 import { getConversionRatesForNativeAsset } from '../../app/scripts/lib/util';
 import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import {
-  AccountsState,
-  getInternalAccounts,
+  type AccountsState,
   getSelectedInternalAccount,
-  isSolanaAccount,
-} from './accounts';
+} from '../../shared/lib/selectors/accounts';
+import { getInternalAccounts, isSolanaAccount } from './accounts';
 import {
   getIsMainnet,
   getNativeCurrencyImage,
@@ -407,7 +406,7 @@ export function getMultichainConversionRate(
   const { chainId } = getMultichainNetwork(state, account);
 
   const conversionRate = getMultichainIsEvm(state, account)
-    ? getConversionRate(state)
+    ? getConversionRate(state as Parameters<typeof getConversionRate>[0])
     : getConversionRatesForNativeAsset({
         conversionRates:
           getMultichainAssetsRatesControllerConversionRates(state),

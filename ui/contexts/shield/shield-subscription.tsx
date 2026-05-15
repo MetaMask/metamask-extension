@@ -29,7 +29,7 @@ import {
   getIsActiveShieldSubscription,
 } from '../../selectors/subscription';
 import { MetaMaskReduxDispatch } from '../../store/store';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useSubscriptionMetrics } from '../../hooks/shield/metrics/useSubscriptionMetrics';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { captureException } from '../../../shared/lib/sentry';

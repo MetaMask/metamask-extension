@@ -22,7 +22,7 @@ import {
   OffscreenCommunicationTarget,
   TrezorAction,
 } from '../shared/constants/offscreen-communication';
-import type { Preferences } from '../app/scripts/controllers/preferences-controller';
+import type { Preferences } from '../shared/types/preferences';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
 import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
 import type {
