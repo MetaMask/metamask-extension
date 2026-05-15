@@ -1,4 +1,10 @@
-import React, { useMemo, useCallback, useState, useEffect, useRef } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useState,
+  useEffect,
+  useRef,
+} from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -108,10 +114,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 
     Promise.all(
       entries.map(([symbol, notional]) =>
-        submitRequestToBackground<FeeCalculationResult>(
-          'perpsCalculateFees',
-          [{ orderType: 'market' as const, isMaker: false, symbol }],
-        )
+        submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
+          { orderType: 'market' as const, isMaker: false, symbol },
+        ])
           .then(
             (result) =>
               notional * (result?.feeRate ?? PERPS_FALLBACK_FEE_RATES.feeRate),

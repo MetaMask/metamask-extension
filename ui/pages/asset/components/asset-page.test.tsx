@@ -24,6 +24,10 @@ import { MUSD_TOKEN_ADDRESS } from '../../../components/app/musd/constants';
 import { enLocale as messages } from '../../../../test/lib/i18n-helpers';
 import AssetPage from './asset-page';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_ERROR_CODES: new Proxy({}, { get: (_t, p) => String(p) }),
+}));
+
 jest.mock('../../../hooks/musd/useMusdGeoBlocking', () => ({
   ...jest.requireActual('../../../hooks/musd/useMusdGeoBlocking'),
   useMusdGeoBlocking: () => ({

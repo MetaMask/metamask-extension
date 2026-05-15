@@ -22,6 +22,10 @@ import {
 } from '../../../contexts/hardware-wallets';
 import PrepareBridgePage from './prepare-bridge-page';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_ERROR_CODES: new Proxy({}, { get: (_t, p) => String(p) }),
+}));
+
 // Mock the bridge hooks
 jest.mock('../hooks/useGasIncluded7702', () => ({
   useGasIncluded7702: jest.fn().mockReturnValue(false),

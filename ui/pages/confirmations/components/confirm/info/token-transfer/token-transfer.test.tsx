@@ -4,6 +4,10 @@ import { getMockTokenTransferConfirmState } from '../../../../../../../test/data
 import { renderWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import TokenTransferInfo from './token-transfer';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_ERROR_CODES: new Proxy({}, { get: (_t, p) => String(p) }),
+}));
+
 jest.mock('../../../simulation-details/useBalanceChanges', () => ({
   useBalanceChanges: jest.fn(() => ({ pending: false, value: [] })),
 }));

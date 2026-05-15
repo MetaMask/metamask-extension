@@ -4,6 +4,10 @@ import { render } from '@testing-library/react';
 import { renderControlledInput } from '../../../../test/lib/render-helpers';
 import { TextFieldSearch } from './text-field-search';
 
+jest.mock('@metamask/perps-controller', () => ({
+  PERPS_ERROR_CODES: new Proxy({}, { get: (_t, p) => String(p) }),
+}));
+
 describe('TextFieldSearch', () => {
   it('should render correctly', () => {
     const { getByRole, container } = render(<TextFieldSearch />);
