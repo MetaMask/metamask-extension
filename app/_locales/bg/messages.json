@@ -370,9 +370,6 @@
   "nevermind": {
     "message": "Няма значение"
   },
-  "newAccount": {
-    "message": "Нов акаунт"
-  },
   "newAccountNumberName": {
     "message": "Акаунт $1",
     "description": "Default name of next account to be created on create account screen"

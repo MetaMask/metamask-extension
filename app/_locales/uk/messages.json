@@ -370,9 +370,6 @@
   "nevermind": {
     "message": "Не зважати"
   },
-  "newAccount": {
-    "message": "Новий обліковий запис"
-  },
   "newAccountNumberName": {
     "message": "Обліковий запис $1",
     "description": "Default name of next account to be created on create account screen"

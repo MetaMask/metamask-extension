@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "アカウントを追加"
   },
-  "addAccountFromNetwork": {
-    "message": "$1アカウントを追加",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "アカウントまたはウォレットを追加"
-  },
   "addAcquiredTokens": {
     "message": "MetaMaskを使用して取得したトークンを追加します"
   },
   "addAlias": {
     "message": "別名を追加"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "ビットコインアカウント"
   },
   "addBlockExplorer": {
     "message": "ブロックエクスプローラーを追加"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "トークンをスワップ"
   },
-  "addHardwareWalletLabel": {
-    "message": "ハードウェアウォレット"
-  },
   "addMemo": {
     "message": "メモを追加"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "あるサイトが追加のネットワーク情報を提案しています。"
   },
-  "addNewAccount": {
-    "message": "新しいイーサリアムアカウントを追加"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "イーサリアムアカウント"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solanaアカウント"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tronアカウント"
-  },
   "addNft": {
     "message": "NFTを追加"
   },
   "addNfts": {
     "message": "NFTを追加"
-  },
-  "addNonEvmAccount": {
-    "message": "$1アカウントを追加",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "$1ネットワークを有効にするには、$2アカウントを作成する必要があります。",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC URLを追加"
@@ -893,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "ホームページに移動"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "アカウントの作成ページを開く"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "DeFiページを開く"
@@ -1859,18 +1823,12 @@
   "connectAccounts": {
     "message": "アカウントの接続"
   },
-  "connectAnAccountHeader": {
-    "message": "アカウントの接続"
-  },
   "connectHardwareDevice": {
     "message": "$1を接続",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "現在のサイトに手動で接続"
-  },
-  "connectMoreAccounts": {
-    "message": "他のアカウントを接続"
   },
   "connectSnap": {
     "message": "$1を接続",
@@ -1888,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMaskはこのサイトに接続されていません。web3サイトに接続するには、そのサイトの接続ボタンをクリックしてください。"
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1はアカウントの残高、アドレス、アクティビティを確認し、接続されたアカウントで承認するトランザクションを提案できます。",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "接続済みのサイト"
@@ -1924,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "$1個のネットワークが接続されました",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "$1と接続されました",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "接続中"
@@ -1962,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "$1を取得できませんでした。ネットワークを確認してもう一度お試しください。",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "サイトに接続するには、「接続」ボタンを選択します。MetaMaskはWeb3のサイトにしか接続できません。"
   },
   "connectionRequest": {
     "message": "接続の要求"
@@ -2056,9 +2003,6 @@
     "message": "アカウントを追加しています...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "新しいアカウントの作成"
-  },
   "createPassword": {
     "message": "パスワードを作成"
   },
@@ -2083,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "アカウントを作成"
-  },
-  "createSolanaAccount": {
-    "message": "Solanaアカウントを作成"
   },
   "creatorAddress": {
     "message": "クリエイターのアドレス"
@@ -2368,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "スワップページ"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "スワップ/ランプのページ"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "トランザクションシールドページ"
   },
@@ -2514,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "本当に接続解除しますか？サイトの機能を失う可能性があります。"
   },
-  "disconnectAllAccountsText": {
-    "message": "アカウント"
-  },
   "disconnectAllDescriptionText": {
     "message": "このサイトとの接続を解除すると、このサイトをもう一度使用するには、アカウントとネットワークを接続しなおす必要があります。"
   },
@@ -2531,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "すべてのDAppの接続が解除されました。"
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "これにより、このサイトへの接続が解除されます"
@@ -3562,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFTのIDは一意の識別子で、同じNFTは2つとして存在しません。前述の通り、OpenSeaではこの番号は「詳細」に表示されます。このIDを書き留めるか、クリップボードにコピーしてください。"
   },
-  "importPrivateKey": {
-    "message": "秘密鍵"
-  },
   "importSecretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズをインポート"
   },
@@ -3579,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "トークンをインポートできませんでした。後ほど再度お試しください。"
-  },
-  "importWalletOrAccountHeader": {
-    "message": "ウォレットまたはアカウントのインポート"
   },
   "importWalletSuccess": {
     "message": "$1ウォレットがインポートされました",
@@ -4691,9 +4617,6 @@
   },
   "new": {
     "message": "新登場!"
-  },
-  "newAccount": {
-    "message": "新規アカウント"
   },
   "newAccountIconMessage": {
     "message": "アカウントを見分けやすくするために、アカウントアイコンを更新しました。$1 > $2 > $3 でスタイルを変更できます。",
@@ -6948,14 +6871,6 @@
   "requestingFor": {
     "message": "次の要求:"
   },
-  "requestingForAccount": {
-    "message": "$1の要求",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "$1の要求",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "必須"
   },
@@ -7214,10 +7129,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "シークレットリカバリーフレーズ$1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "ウォレットの安全を確保"
@@ -8457,12 +8368,6 @@
     "message": "今後のサポートは、$1の作成者にお問い合わせください。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "このサイトがSolanaアカウントを求めています。"
-  },
-  "solanaAccountRequired": {
-    "message": "このサイトへの接続には、Solanaアカウントが必要です。"
-  },
   "someNetworks": {
     "message": "$1個のネットワーク"
   },
@@ -9673,9 +9578,6 @@
   },
   "urlErrorMsg": {
     "message": "URLには適切なHTTP/HTTPSプレフィックスが必要です。"
-  },
-  "urlUnknown": {
-    "message": "URLが不明です"
   },
   "use4ByteResolution": {
     "message": "スマートコントラクトのデコード"

@@ -672,9 +672,6 @@
   "nevermind": {
     "message": "算了"
   },
-  "newAccount": {
-    "message": "新帳戶"
-  },
   "newAccountNumberName": {
     "message": "帳戶 $1",
     "description": "Default name of next account to be created on create account screen"
