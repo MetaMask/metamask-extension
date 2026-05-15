@@ -67,8 +67,11 @@ function renderHookWithProvider({
     setIsScrollToBottomCompleted: jest.fn(),
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const wrapper: React.ComponentType<any> = ({ children }) => (
+  const wrapper: React.ComponentType<{
+    children?: React.ReactNode;
+    currentDisable?: boolean;
+    currentPreferredToken?: SetPayTokenRequest;
+  }> = ({ children }) => (
     <Provider store={store}>
       <ConfirmContext.Provider value={confirmContextValue as never}>
         {children}
