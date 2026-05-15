@@ -3,11 +3,11 @@
 exports[`All Connections render renders correctly 1`] = `
 <div>
   <div
-    class="mm-box multichain-page multichain-page--has-app-header mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+    class="flex flex-row justify-center bg-default multichain-page multichain-page--has-app-header w-full h-full"
     data-testid="multichain-page"
   >
     <div
-      class="mm-box multichain-page__inner-container main-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default"
+      class="flex flex-col bg-default multichain-page__inner-container w-full h-full main-container"
       data-testid="permissions-page"
     >
       <div
@@ -44,7 +44,7 @@ exports[`All Connections render renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box multichain-page-content mm-box--padding-0 mm-box--padding-top-0 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+        class="flex flex-col p-0 pt-0 multichain-page-content w-full h-full"
         style="overflow: auto;"
       >
         <div
@@ -106,7 +106,7 @@ exports[`All Connections render renders correctly 1`] = `
         </button>
       </div>
       <div
-        class="mm-box multichain-page-footer mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--width-full"
+        class="flex flex-row gap-4 p-4 multichain-page-footer w-full"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"

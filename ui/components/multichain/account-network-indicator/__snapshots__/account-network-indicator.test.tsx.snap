@@ -16,14 +16,14 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
         tabindex="0"
       >
         <div
-          class="mm-box multichain-avatar-group mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
+          class="flex flex-row gap-1 items-center multichain-avatar-group"
           data-testid="avatar-group"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--align-items-center"
+            class="flex flex-row items-center"
           >
             <div
-              class="mm-box mm-box--rounded-full"
+              class="rounded-full"
               style="margin-left: 0px;"
             >
               <div
@@ -37,7 +37,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               </div>
             </div>
             <div
-              class="mm-box mm-box--rounded-full"
+              class="rounded-full"
               style="margin-left: -8px;"
             >
               <div
@@ -51,7 +51,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               </div>
             </div>
             <div
-              class="mm-box mm-box--rounded-full"
+              class="rounded-full"
               style="margin-left: -8px;"
             >
               <div
@@ -61,7 +61,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
               </div>
             </div>
             <div
-              class="mm-box mm-box--rounded-full"
+              class="rounded-full"
               style="margin-left: -8px;"
             >
               <div
@@ -76,7 +76,7 @@ exports[`AccountNetworkIndicator renders the avatar group with network images: a
             </div>
           </div>
           <div
-            class="mm-box"
+            class=""
           >
             <p
               class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
