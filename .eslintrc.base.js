@@ -1,7 +1,7 @@
 const {
   architecturalZones,
   routeIsolationZones,
-} = require('./development/eslint-restricted-paths-zones.js');
+} = require('./development/eslint-restricted-paths-zones');
 
 module.exports = {
   extends: ['@metamask/eslint-config'],

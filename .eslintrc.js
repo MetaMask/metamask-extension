@@ -5,7 +5,7 @@ const { version: reactVersion } = require('react/package.json');
 
 const {
   architecturalZones,
-} = require('./development/eslint-restricted-paths-zones.js');
+} = require('./development/eslint-restricted-paths-zones');
 
 const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
