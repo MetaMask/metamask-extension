@@ -67,6 +67,7 @@ describe('KeyringControllerInit', () => {
       state: undefined,
       encryptor: expect.any(Object),
       keyringBuilders: expect.any(Array),
+      keyringV2Builders: expect.any(Array),
     });
   });
 });
