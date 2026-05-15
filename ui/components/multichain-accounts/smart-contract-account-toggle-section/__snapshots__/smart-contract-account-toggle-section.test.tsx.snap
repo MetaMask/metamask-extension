@@ -194,7 +194,7 @@ exports[`SmartContractAccountToggleSection Loading State shows loading spinner w
       class=""
     >
       <div
-        class="items-center justify-center pt-12 pb-12"
+        class="items-center justify-center pt-12 pb-12 flex"
         data-testid="network-loader"
       >
         <svg
