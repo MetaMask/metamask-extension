@@ -425,6 +425,20 @@ describe('HardwareWalletErrorModal', () => {
       });
 
       expect(onRepairDevice).toHaveBeenCalledTimes(1);
+      expect(
+        mockTrackEvent.mock.calls.some(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
+        ),
+      ).toBe(true);
+      expect(
+        mockTrackEvent.mock.calls.some(
+          (call) =>
+            call[0].event ===
+            MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+        ),
+      ).toBe(false);
     });
 
     it('displays unlock instructions for ConnectionClosed', () => {

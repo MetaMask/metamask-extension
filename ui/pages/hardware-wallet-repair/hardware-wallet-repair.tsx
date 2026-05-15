@@ -39,7 +39,7 @@ type InstructionStep = {
   descriptionKey: string;
 };
 
-const LEDGER_INSTRUCTIONS: InstructionStep[] = [
+const COMMON_INSTRUCTIONS: InstructionStep[] = [
   {
     icon: IconName.Usb,
     titleKey: 'hardwareWalletRepairStepOneTitle',
@@ -50,6 +50,10 @@ const LEDGER_INSTRUCTIONS: InstructionStep[] = [
     titleKey: 'hardwareWalletRepairStepTwoTitle',
     descriptionKey: 'hardwareWalletRepairStepTwoDescription',
   },
+];
+
+const LEDGER_INSTRUCTIONS: InstructionStep[] = [
+  ...COMMON_INSTRUCTIONS,
   {
     icon: IconName.Apps,
     titleKey: 'hardwareWalletRepairStepThreeTitle',
@@ -57,28 +61,19 @@ const LEDGER_INSTRUCTIONS: InstructionStep[] = [
   },
 ];
 
-const TREZOR_INSTRUCTIONS: InstructionStep[] = [
-  {
-    icon: IconName.Usb,
-    titleKey: 'hardwareWalletRepairStepOneTitle',
-    descriptionKey: 'hardwareWalletRepairStepOneDescription',
-  },
-  {
-    icon: IconName.Lock,
-    titleKey: 'hardwareWalletRepairStepTwoTitle',
-    descriptionKey: 'hardwareWalletRepairStepTwoDescription',
-  },
-];
-
 function getInstructionSteps(
   walletType: HardwareWalletType | null,
 ): InstructionStep[] {
   switch (walletType) {
-    case HardwareWalletType.Trezor:
-      return TREZOR_INSTRUCTIONS;
     case HardwareWalletType.Ledger:
-    default:
       return LEDGER_INSTRUCTIONS;
+    case HardwareWalletType.Trezor:
+    case HardwareWalletType.OneKey:
+    case HardwareWalletType.Lattice:
+    case HardwareWalletType.Qr:
+    case HardwareWalletType.Unknown:
+    default:
+      return COMMON_INSTRUCTIONS;
   }
 }
 

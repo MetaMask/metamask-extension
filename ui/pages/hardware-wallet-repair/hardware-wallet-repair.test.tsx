@@ -48,7 +48,7 @@ const memoryRouterFuture = {
 } as NonNullable<MemoryRouterProps['future']>;
 
 function renderRepairPage(
-  walletType: HardwareWalletType = HardwareWalletType.Ledger,
+  walletType: HardwareWalletType | null = HardwareWalletType.Ledger,
 ) {
   (useHardwareWalletConfig as jest.Mock).mockReturnValue({
     walletType,
@@ -106,6 +106,28 @@ describe('HardwareWalletRepair', () => {
       queryByText(/hardwareWalletRepairStepThreeTitle/u),
     ).not.toBeInTheDocument();
   });
+
+  it.each([
+    HardwareWalletType.OneKey,
+    HardwareWalletType.Lattice,
+    HardwareWalletType.Qr,
+    HardwareWalletType.Unknown,
+    null,
+  ])(
+    'does not render Ledger-specific Ethereum app instructions for %s',
+    (walletType) => {
+      const { getByText, queryByText } = renderRepairPage(walletType);
+      expect(
+        getByText(/hardwareWalletRepairStepOneTitle/u),
+      ).toBeInTheDocument();
+      expect(
+        getByText(/hardwareWalletRepairStepTwoTitle/u),
+      ).toBeInTheDocument();
+      expect(
+        queryByText(/hardwareWalletRepairStepThreeTitle/u),
+      ).not.toBeInTheDocument();
+    },
+  );
 
   it('renders instruction descriptions', () => {
     const { getByText } = renderRepairPage();

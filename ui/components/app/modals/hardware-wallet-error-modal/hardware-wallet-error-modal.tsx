@@ -355,7 +355,8 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         const deviceModel = getHardwareWalletMetricDeviceModel(error);
         trackEvent({
           category: MetaMetricsEventCategory.Accounts,
-          event: MetaMetricsEventName.HardwareWalletRecoveryCtaClicked,
+          event:
+            MetaMetricsEventName.HardwareWalletRecoveryRepairCtaClicked,
           properties: buildHardwareWalletRecoverySegmentProperties({
             location: recoveryLocation,
             deviceType: trackableMetricDeviceType,
