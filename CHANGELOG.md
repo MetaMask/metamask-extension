@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Aligned previously base-enabled custom network logos (Stable, Flow, XDC, Fraxtal, Hemi, Plasma, Lukso, Rootstock, MSU, Sonic, Lens, Plume) to a square format consistent with Popular networks (#42555)
+
 ## [13.31.0]
 
 ### Added
@@ -43,9 +47,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed `eth_getTransactionByHash` to return `nonce: '0x0'` for gasless transactions so dapps that read the nonce no longer fail (#42119)
 - Fixed the Activity screen showing the wrong currency symbol (e.g. R$ instead of $) for MetaMask Pay, Perps deposit, and mUSD transaction amounts (#42151)
 - Fixed QR hardware accounts so they skip the "Connect QR" step when the account is already known (#42294)
-### Changed
-
-- Aligned previously base-enabled custom network logos (Stable, Flow, XDC, Fraxtal, Hemi, Plasma, Lukso, Rootstock, MSU, Sonic, Lens, Plume) to a square format consistent with Popular networks (#42555)
 
 ## [13.30.0]
 
