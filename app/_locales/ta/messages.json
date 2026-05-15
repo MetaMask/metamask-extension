@@ -197,9 +197,6 @@
   "likeToImportTokens": {
     "message": "இந்த டோக்கன்களைச் சேர்க்க விரும்புகிறீர்களா?"
   },
-  "links": {
-    "message": "இணைப்புகள்"
-  },
   "loading": {
     "message": "ஏற்றுகிறது…"
   },
@@ -227,9 +224,6 @@
   },
   "networks": {
     "message": "நெட்வொர்க்ஸ்"
-  },
-  "newAccount": {
-    "message": "புதிய கணக்கு"
   },
   "newAccountNumberName": {
     "message": "கணக்கு $1",
@@ -309,9 +303,6 @@
   "restore": {
     "message": "மீட்டமை"
   },
-  "revealSeedWords": {
-    "message": "விதை வார்த்தைகள் வெளிப்படுத்த"
-  },
   "revealSeedWordsWarning": {
     "message": "உங்கள் விதை வார்த்தைகள் ஒரு பொது இடத்தில் மீட்க வேண்டாம்! உங்கள் எல்லா கணக்குகளையும் திருட இந்த வார்த்தைகள் பயன்படுத்தப்படலாம்.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -345,9 +336,6 @@
   },
   "stateLogs": {
     "message": "மாநில பதிவுகள்"
-  },
-  "stateLogsDescription": {
-    "message": "மாநில பதிவுகள் உங்கள் பொது கணக்கு முகவரிகள் மற்றும் பரிமாற்றங்களை அனுப்பியுள்ளன."
   },
   "submitted": {
     "message": "சமர்ப்பிக்கப்பட்டது"

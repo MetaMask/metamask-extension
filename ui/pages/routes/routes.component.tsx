@@ -57,7 +57,6 @@ import {
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
-  NONEVM_BALANCE_CHECK_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
@@ -225,9 +224,6 @@ const MultichainAccountDetailsPage = mmLazy(
 );
 const SmartAccountPage = mmLazy(
   () => import('../multichain-accounts/smart-account-page/index.ts'),
-);
-const NonEvmBalanceCheck = mmLazy(
-  () => import('../nonevm-balance-check/index.tsx'),
 );
 const ShieldPlan = mmLazy(() => import('../shield/plan/index.ts'));
 const PerpsMarketDetailPage = mmLazy(
@@ -490,10 +486,6 @@ export const routeConfig = [
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
             element: <MusdConversionPage />,
-          },
-          {
-            path: NONEVM_BALANCE_CHECK_ROUTE,
-            element: <NonEvmBalanceCheck />,
           },
           {
             path: SHIELD_PLAN_ROUTE,
