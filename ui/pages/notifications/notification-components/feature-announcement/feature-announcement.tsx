@@ -12,17 +12,14 @@ import {
   createTextItems,
   formatIsoDateString,
 } from '../../../../helpers/utils/notification.util';
-import { Box, Text } from '../../../../components/component-library';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
+import { Text } from '../../../../components/component-library';
 import {
   NotificationListItem,
   NotificationDetailTitle,
 } from '../../../../components/multichain';
 import {
   TextVariant,
-  Display,
-  JustifyContent,
-  BorderRadius,
-  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import { FeatureAnnouncementNotification } from './types';
 import {
@@ -76,22 +73,22 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
         type: NotificationComponentType.AnnouncementBody,
         Image: ({ notification }) => (
           <Box
-            display={Display.Block}
-            width={BlockSize.Full}
+            className="block w-full"
             paddingLeft={4}
             paddingRight={4}
             paddingBottom={4}
           >
             <Box
-              as="img"
-              src={`https:${notification.data.image.url}?fm=jpg&fl=progressive&w=1000&q=80`}
-              alt={notification.data.title}
-              title={notification.data.title}
-              display={Display.Block}
-              justifyContent={JustifyContent.center}
-              borderRadius={BorderRadius.XL}
-              width={BlockSize.Full}
-            />
+              asChild
+              justifyContent={BoxJustifyContent.Center}
+              className="block rounded-xl w-full"
+            >
+              <img
+                src={`https:${notification.data.image.url}?fm=jpg&fl=progressive&w=1000&q=80`}
+                alt={notification.data.title}
+                title={notification.data.title}
+              />
+            </Box>
           </Box>
         ),
         Description: ({ notification }) => (

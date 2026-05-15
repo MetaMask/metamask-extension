@@ -9,17 +9,15 @@ import {
   AvatarToken,
   BadgeWrapper,
   BadgeWrapperPosition,
-  Box,
   Text,
   AvatarTokenSize,
 } from '../../component-library';
+import { Box, BoxBackgroundColor, BoxBorderColor, BoxJustifyContent } from '@metamask/design-system-react';
 import {
   BackgroundColor,
   BorderColor,
   BorderRadius,
-  Display,
   FontWeight,
-  JustifyContent,
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -62,14 +60,13 @@ export const NotificationDetailCollection = ({
     <BadgeWrapper position={BadgeWrapperPosition.topRight} badge={badgeIcon}>
       {ipfsImageIsRenderable || openseaImageIsRenderable ? (
         <Box
-          as="img"
-          src={src}
-          display={Display.Block}
-          justifyContent={JustifyContent.center}
-          backgroundColor={BackgroundColor.primaryMuted}
-          borderRadius={BorderRadius.LG}
-          className="notification-detail-collection__image"
-        />
+          asChild
+          justifyContent={BoxJustifyContent.Center}
+          backgroundColor={BoxBackgroundColor.PrimaryMuted}
+          className="block rounded-lg notification-detail-collection__image"
+        >
+          <img src={src} />
+        </Box>
       ) : (
         <NftDefaultImage
           className="nft-item__default-image notification-detail-collection__image"

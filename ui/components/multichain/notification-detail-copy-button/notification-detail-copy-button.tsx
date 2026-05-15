@@ -8,13 +8,12 @@ import {
 import {
   ButtonBase,
   IconName,
-  Box,
   ButtonBaseSize,
 } from '../../component-library';
+import { Box } from '@metamask/design-system-react';
 import {
   AlignItems,
   BackgroundColor,
-  Display,
   FontWeight,
   TextColor,
   TextVariant,
@@ -108,7 +107,7 @@ export const NotificationDetailCopyButton = ({
         data-testid="address-copy-button-text"
         size={ButtonBaseSize.Sm}
       >
-        <Box display={Display.Flex}>{displayText}</Box>
+        <Box>{displayText}</Box>
       </ButtonBase>
     </Tooltip>
   );

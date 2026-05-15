@@ -1,17 +1,12 @@
 import React from 'react';
 import {
-  Box,
   IconName,
   IconSize,
   Text,
   Icon,
 } from '../../components/component-library';
+import { Box, BoxAlignItems, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
 import {
-  BlockSize,
-  Display,
-  JustifyContent,
-  FlexDirection,
-  AlignItems,
   TextVariant,
   TextAlign,
 } from '../../helpers/constants/design-system';
@@ -29,12 +24,10 @@ export function NotificationsPlaceholder({
 }: NotificationsPlaceholderProps) {
   return (
     <Box
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      display={Display.Flex}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      flexDirection={FlexDirection.Column}
+      className="h-full w-full"
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
+      flexDirection={BoxFlexDirection.Column}
       gap={2}
       data-testid="notifications-list-placeholder"
     >

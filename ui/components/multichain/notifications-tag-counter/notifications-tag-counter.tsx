@@ -1,11 +1,8 @@
 import React from 'react';
 import { useUnreadNotificationsCounter } from '../../../hooks/metamask-notifications/useCounter';
-import { Box, Text } from '../../component-library';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
+import { Text } from '../../component-library';
 import {
-  BackgroundColor,
-  BorderRadius,
-  BorderStyle,
-  Display,
   TextColor,
   TextVariant,
   TextAlign,
@@ -27,8 +24,7 @@ export const NotificationsTagCounter = ({
   if (noLabel) {
     return (
       <Box
-        display={Display.Block}
-        className="notification-list-item__unread-dot__wrapper"
+        className="block rounded-lg notification-list-item__unread-dot__wrapper"
         style={{
           position: 'absolute',
           cursor: 'pointer',
@@ -36,9 +32,7 @@ export const NotificationsTagCounter = ({
           left: '50%',
           zIndex: 1,
         }}
-        backgroundColor={BackgroundColor.errorDefault}
-        borderStyle={BorderStyle.none}
-        borderRadius={BorderRadius.LG}
+        backgroundColor={BoxBackgroundColor.ErrorDefault}
         paddingTop={0}
         paddingBottom={0}
         paddingLeft={0}
@@ -59,12 +53,10 @@ export const NotificationsTagCounter = ({
 
   return (
     <Box
-      backgroundColor={BackgroundColor.errorDefault}
-      borderStyle={BorderStyle.none}
-      borderRadius={BorderRadius.LG}
+      backgroundColor={BoxBackgroundColor.ErrorDefault}
+      className="rounded-lg notifications-tag-counter"
       paddingTop={0}
       paddingBottom={0}
-      className="notifications-tag-counter"
     >
       <Text
         color={TextColor.errorInverse}

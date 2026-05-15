@@ -12,8 +12,8 @@ import {
   IconSize,
   ButtonIcon,
   ButtonIconSize,
-  Box,
 } from '../../components/component-library';
+import { Box, BoxAlignItems, BoxJustifyContent } from '@metamask/design-system-react';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import {
   DEFAULT_ROUTE,
@@ -29,11 +29,6 @@ import {
   selectIsMetamaskNotificationsEnabled,
   getMetamaskNotifications,
 } from '../../selectors/metamask-notifications/metamask-notifications';
-import {
-  AlignItems,
-  Display,
-  JustifyContent,
-} from '../../helpers/constants/design-system';
 import { deleteExpiredNotifications } from '../../store/actions';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 import { NewFeatureTag } from './NewFeatureTag';
@@ -216,9 +211,8 @@ export default function Notifications() {
               data-testid={TAB_KEYS.WALLET}
               name={
                 <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
+                  justifyContent={BoxJustifyContent.Center}
+                  alignItems={BoxAlignItems.Center}
                   gap={2}
                 >
                   {t('wallet')}

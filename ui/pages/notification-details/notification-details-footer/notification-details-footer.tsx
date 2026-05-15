@@ -1,12 +1,6 @@
 import React from 'react';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
-import { Box } from '../../../components/component-library';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
+import { Box, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
 import {
   NotificationComponentType,
   type NotificationComponent,
@@ -24,10 +18,9 @@ export const NotificationDetailsFooter = ({
 }: NotificationDetailsFooterProps) => {
   return (
     <Box
-      width={BlockSize.Full}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
+      className="w-full"
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
       padding={4}
       gap={4}
     >
@@ -36,10 +29,9 @@ export const NotificationDetailsFooter = ({
       )}
       {footer.type === NotificationComponentType.AnnouncementFooter && (
         <Box
-          display={Display.Flex}
           gap={4}
-          flexDirection={FlexDirection.Row}
-          width={BlockSize.Full}
+          flexDirection={BoxFlexDirection.Row}
+          className="w-full"
         >
           <footer.ExternalLink notification={notification} />
           <footer.ExtensionLink notification={notification} />

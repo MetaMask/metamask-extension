@@ -1,14 +1,9 @@
 import React from 'react';
 
-import { Box, Icon, IconName, Text, IconSize } from '../../component-library';
+import { Icon, IconName, Text, IconSize } from '../../component-library';
+import { Box, BoxAlignItems, BoxBackgroundColor, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
 import {
-  AlignItems,
-  BlockSize,
-  BackgroundColor,
-  Display,
-  FlexDirection,
   FontWeight,
-  JustifyContent,
   IconColor,
   TextColor,
   TextVariant,
@@ -65,14 +60,11 @@ export const NotificationListItemSnap = ({
 
   return (
     <Box
-      className={`notification-list-item ${
+      className={`w-full flex-col notification-list-item ${
         isRead ? '' : 'notification-list-item--unread'
       }`}
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      justifyContent={JustifyContent.spaceBetween}
-      alignItems={AlignItems.flexStart}
-      width={BlockSize.Full}
+      justifyContent={BoxJustifyContent.Between}
+      alignItems={BoxAlignItems.Start}
       paddingBottom={3}
       paddingRight={5}
       paddingLeft={5}
@@ -82,20 +74,17 @@ export const NotificationListItemSnap = ({
       style={{ cursor: 'pointer' }}
     >
       <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.spaceBetween}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.flexStart}
-        width={BlockSize.Full}
-        backgroundColor={BackgroundColor.transparent}
+        justifyContent={BoxJustifyContent.Between}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Start}
+        className="w-full h-full"
+        backgroundColor={BoxBackgroundColor.Transparent}
         gap={4}
-        height={BlockSize.Full}
         style={{ paddingLeft: '6px', paddingRight: '6px', paddingTop: '2px' }}
       >
         {!isRead && (
           <Box
-            display={Display.Block}
-            className="notification-list-item__unread-dot__wrapper--snap"
+            className="block notification-list-item__unread-dot__wrapper--snap"
           >
             <Icon
               name={IconName.FullCircle}
@@ -106,29 +95,24 @@ export const NotificationListItemSnap = ({
           </Box>
         )}
 
-        <Box height={BlockSize.Full} className="notification-list-item__icon">
+        <Box className="h-full notification-list-item__icon">
           <SnapIcon snapId={snapId} avatarSize={IconSize.Md} />
         </Box>
 
         <Box
-          display={Display.Flex}
           gap={4}
-          height={BlockSize.Full}
-          alignItems={AlignItems.flexStart}
-          width={BlockSize.Full}
+          className="h-full w-full"
+          alignItems={BoxAlignItems.Start}
         >
           <Box
-            display={Display.Block}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.flexStart}
-            textAlign={TextAlign.Left}
-            width={BlockSize.Full}
+            className="block w-full text-left"
+            flexDirection={BoxFlexDirection.Column}
+            alignItems={BoxAlignItems.Start}
           >
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Row}
-              alignItems={AlignItems.flexStart}
-              justifyContent={JustifyContent.spaceBetween}
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Start}
+              justifyContent={BoxJustifyContent.Between}
             >
               {/* Notification Title */}
               <Box onClick={handleButtonClick}>

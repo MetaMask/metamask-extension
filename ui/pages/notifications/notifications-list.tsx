@@ -1,14 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { INotification } from '@metamask/notification-services-controller/notification-services';
-import { Box } from '../../components/component-library';
-import {
-  BlockSize,
-  Display,
-  JustifyContent,
-  FlexDirection,
-  AlignItems,
-} from '../../helpers/constants/design-system';
+import { Box, BoxAlignItems, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
 import Preloader from '../../components/ui/icon/preloader/preloader-icon.component';
 import { selectIsMetamaskNotificationsEnabled } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -47,12 +40,10 @@ export const enum TAB_KEYS {
 const LoadingContent = () => {
   return (
     <Box
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      display={Display.Flex}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      flexDirection={FlexDirection.Column}
+      className="h-full w-full"
+      justifyContent={BoxJustifyContent.Center}
+      alignItems={BoxAlignItems.Center}
+      flexDirection={BoxFlexDirection.Column}
       data-testid="notifications-list-loading"
     >
       <Preloader size={36} />
@@ -127,9 +118,7 @@ export const NotificationsList = (props: NotificationsListProps) => {
   return (
     <Box
       data-testid="notifications-list"
-      height={BlockSize.Full}
-      width={BlockSize.Full}
-      className="notifications__list"
+      className="h-full w-full notifications__list"
     >
       {/* Actual list (handling all states) */}
       <NotificationsListStates {...props} />

@@ -1,10 +1,6 @@
 import React from 'react';
 import type { INotification } from '@metamask/notification-services-controller/notification-services';
-import { Box } from '../../../components/component-library';
-import {
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   NotificationComponentType,
   type NotificationComponent,
@@ -22,8 +18,7 @@ export const NotificationDetailsBody = ({
 }: NotificationDetailsBodyProps) => {
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       padding={0}
     >
       {body.type === NotificationComponentType.AnnouncementBody && (

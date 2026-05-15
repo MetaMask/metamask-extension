@@ -10,24 +10,19 @@ import { useEnableNotifications } from '../../hooks/metamask-notifications/useNo
 import { getIsUpdatingMetamaskNotifications } from '../../selectors/metamask-notifications/metamask-notifications';
 import { useMetamaskNotificationsContext } from '../../contexts/metamask-notifications/metamask-notifications';
 import {
-  Box,
   Button,
   ButtonSize,
   Container,
   ContainerMaxWidth,
   Text,
 } from '../../components/component-library';
+import { Box } from '@metamask/design-system-react';
 import {
   TextAlign,
   BlockSize,
-  Display,
   FontWeight,
-  JustifyContent,
-  FlexDirection,
-  AlignItems,
   TextColor,
   TextVariant,
-  BorderRadius,
 } from '../../helpers/constants/design-system';
 
 export const NotificationsListTurnOnNotifications = () => {
@@ -93,10 +88,10 @@ export const NotificationsListTurnOnNotifications = () => {
       maxWidth={ContainerMaxWidth.Sm}
       height={BlockSize.Full}
       margin="auto"
-      display={Display.Flex}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
-      flexDirection={FlexDirection.Column}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexDirection="column"
       gap={4}
       data-testid="notifications-list-turn-on-notifications"
       textAlign={TextAlign.Center}
@@ -107,12 +102,9 @@ export const NotificationsListTurnOnNotifications = () => {
       <Text variant={TextVariant.headingSm}>
         {t('metamaskNotificationsAreOff')}
       </Text>
-      <Box
-        as="img"
-        src="./images/turn-on-metamask-notifications.png"
-        width={BlockSize.Full}
-        borderRadius={BorderRadius.MD}
-      />
+      <Box asChild className="w-full rounded-md">
+        <img src="./images/turn-on-metamask-notifications.png" />
+      </Box>
 
       <Text as="p">
         {t('turnOnMetamaskNotificationsMessageSecond', [privacyLink])}

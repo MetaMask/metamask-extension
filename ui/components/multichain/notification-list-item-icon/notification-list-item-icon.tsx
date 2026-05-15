@@ -11,18 +11,15 @@ import {
   AvatarTokenSize,
   BadgeWrapper,
   BadgeWrapperPosition,
-  Box,
   IconName,
   IconSize,
 } from '../../component-library';
+import { Box, BoxBackgroundColor, BoxBorderColor, BoxJustifyContent } from '@metamask/design-system-react';
 import {
   BackgroundColor,
   BorderColor,
-  BorderRadius,
   BorderStyle,
-  Display,
   IconColor,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
 
 export enum NotificationListItemIconType {
@@ -70,14 +67,13 @@ const NftImage = ({ src }: { src: string }): JSX.Element => {
   return ipfsImageIsRenderable || openseaImageIsRenderable ? (
     <Box
       data-testid="nft-image"
-      as="img"
-      src={src}
-      display={Display.Block}
-      justifyContent={JustifyContent.center}
-      backgroundColor={BackgroundColor.primaryMuted}
-      borderRadius={BorderRadius.SM}
-      className="notification-list-item-icon__image"
-    />
+      asChild
+      justifyContent={BoxJustifyContent.Center}
+      backgroundColor={BoxBackgroundColor.PrimaryMuted}
+      className="block rounded-sm notification-list-item-icon__image"
+    >
+      <img src={src} />
+    </Box>
   ) : (
     <NftDefaultImage
       className="nft-item__default-image notification-list-item-icon__image"
@@ -90,12 +86,12 @@ const NftImage = ({ src }: { src: string }): JSX.Element => {
 const DefaultIcon = (): JSX.Element => (
   <Box
     data-testid="default-icon"
-    as="img"
-    display={Display.Block}
-    borderRadius={BorderRadius.SM}
-    backgroundColor={BackgroundColor.backgroundDefault}
-    className="notification-list-item-icon__image"
-  />
+    asChild
+    backgroundColor={BoxBackgroundColor.BackgroundDefault}
+    className="block rounded-sm notification-list-item-icon__image"
+  >
+    <img />
+  </Box>
 );
 
 const getBadge = (badge: BadgeProps, children: JSX.Element): JSX.Element => {
@@ -155,7 +151,7 @@ export const NotificationListItemIcon = ({
       {badge ? (
         getBadge(badge, NotificationIcon)
       ) : (
-        <Box borderRadius={BorderRadius.XL}>{NotificationIcon}</Box>
+        <Box className="rounded-xl">{NotificationIcon}</Box>
       )}
     </>
   );

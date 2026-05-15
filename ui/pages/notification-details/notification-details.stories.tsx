@@ -5,7 +5,7 @@ import configureStore from '../../store/store';
 import NotificationDetails from './notification-details';
 import testData from '../../../.storybook/test-data';
 import { NotificationServicesController } from '@metamask/notification-services-controller';
-import { Box } from '../../components/component-library';
+import { Box, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
 import {
   createMockNotificationEthSent,
   createMockNotificationEthReceived,
@@ -24,12 +24,6 @@ import {
   createMockNotificationRocketPoolUnStakeCompleted,
   createMockFeatureAnnouncementRaw,
 } from '@metamask/notification-services-controller/notification-services/mocks';
-import {
-  BlockSize,
-  Display,
-  FlexDirection,
-  JustifyContent,
-} from '../../helpers/constants/design-system';
 import { Content, Page } from '../../components/multichain/pages/page';
 import { NotificationComponents } from '../notifications/notification-components';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
@@ -89,12 +83,10 @@ const Template = ({ notification }: { notification: Notification }) => {
         </NotificationDetailsHeader>
         <Content padding={0}>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            flexDirection={BoxFlexDirection.Column}
             gap={2}
-            width={BlockSize.Full}
-            height={BlockSize.Full}
-            justifyContent={JustifyContent.spaceBetween}
+            className="w-full h-full"
+            justifyContent={BoxJustifyContent.Between}
           >
             <NotificationDetailsBody
               body={ncs.details.body}
