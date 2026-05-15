@@ -355,9 +355,6 @@
   "nevermind": {
     "message": "ምንም አይደል"
   },
-  "newAccount": {
-    "message": "አዲስ መለያ"
-  },
   "newAccountNumberName": {
     "message": "መለያ $1",
     "description": "Default name of next account to be created on create account screen"

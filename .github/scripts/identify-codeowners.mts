@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
-import { retrievePullRequestFiles, PullRequestFile } from './shared/pull-request.mts';
+import { retrievePullRequestFiles, type PullRequestFile } from './shared/pull-request-files.mts';
 import micromatch from 'micromatch';
 
 

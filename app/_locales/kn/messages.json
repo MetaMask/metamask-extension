@@ -370,9 +370,6 @@
   "nevermind": {
     "message": "ಪರವಾಗಿಲ್ಲ"
   },
-  "newAccount": {
-    "message": "ಹೊಸ ಖಾತೆ"
-  },
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",
     "description": "Default name of next account to be created on create account screen"

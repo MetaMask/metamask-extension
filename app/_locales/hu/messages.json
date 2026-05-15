@@ -367,9 +367,6 @@
   "nevermind": {
     "message": "Nem fontos"
   },
-  "newAccount": {
-    "message": "Új fiók"
-  },
   "newAccountNumberName": {
     "message": "$1 fiók",
     "description": "Default name of next account to be created on create account screen"
