@@ -147,6 +147,20 @@ describe('LatticeKeyringV2', () => {
       expect(accounts).toHaveLength(1);
       expect(accounts[0]?.address).toBe(TEST_ADDRESSES[2]);
     });
+
+    it('throws when the inner keyring returns no new address', async () => {
+      const { wrapper, inner } = createWrapper();
+      jest.spyOn(inner, 'setAccountToUnlock').mockImplementation();
+      jest.spyOn(inner, 'addAccounts').mockResolvedValue([]);
+
+      await expect(
+        wrapper.createAccounts({
+          type: 'custom',
+          entropySource,
+          addressIndex: 5,
+        } as LatticeCreateAccountOptions),
+      ).rejects.toThrow(/Failed to create new account/u);
+    });
   });
 
   describe('deleteAccount', () => {
@@ -165,6 +179,14 @@ describe('LatticeKeyringV2', () => {
       await wrapper.deleteAccount(account.id);
 
       expect(removeAccountSpy).toHaveBeenCalledWith(TEST_ADDRESSES[0]);
+    });
+
+    it('throws when the accountId is not in the registry', async () => {
+      const { wrapper } = createWrapper();
+
+      await expect(
+        wrapper.deleteAccount('00000000-0000-0000-0000-000000000000'),
+      ).rejects.toThrow();
     });
   });
 
