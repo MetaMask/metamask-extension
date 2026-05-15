@@ -17745,30 +17745,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ulissesferreira/bitcoin-regtest-up@file:../bitcoin-regtest-up::locator=metamask-crx%40workspace%3A.":
-  version: 0.1.0
-  resolution: "@ulissesferreira/bitcoin-regtest-up@file:../bitcoin-regtest-up#../bitcoin-regtest-up::hash=22507a&locator=metamask-crx%40workspace%3A."
+"@ulissesferreira/bitcoin-regtest-up@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@ulissesferreira/bitcoin-regtest-up@npm:0.1.1"
   bin:
     bitcoin-regtest-up: dist/bin/bitcoin-regtest-up.js
-  checksum: 10/2a7296355365f18ef49903b946aa4ac55d5ce45b38c8fa6dc6315a1e269bee248f53ef3698b389098031d251e3b50d776d2a3bdece2580216e8669f284df2007
+  checksum: 10/8ad906aa6a662540daf7471db43cc567b8780d5449657aaec063c8453b42b30aea4be0e49fbf785850fc5289066a19740aff32dcd5b8e389ac7984cc048185bb
   languageName: node
   linkType: hard
 
-"@ulissesferreira/java-tron-up@npm:0.1.1":
-  version: 0.1.1
-  resolution: "@ulissesferreira/java-tron-up@npm:0.1.1"
+"@ulissesferreira/java-tron-up@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@ulissesferreira/java-tron-up@npm:0.1.2"
   bin:
     java-tron-up: dist/bin/java-tron-up.js
-  checksum: 10/58f154eb94522861c5085bf6834ca920ef923454b3650f3b4317914c9798f5f0679b25bba3aa5895dfb6bc9c280b71932f0e16e7d4012d9a5bd52e59ac706fea
+  checksum: 10/b694b4fd59a8e8bb182ba3deff955de7626a0eae608ce16a30202121e864e627ab4c7f769351b75818c18e22fe90c1ddcd83f590db2079f3e1688b50758fdbec
   languageName: node
   linkType: hard
 
-"@ulissesferreira/solana-test-validator-up@file:../solana-test-validator-up::locator=metamask-crx%40workspace%3A.":
-  version: 0.1.0
-  resolution: "@ulissesferreira/solana-test-validator-up@file:../solana-test-validator-up#../solana-test-validator-up::hash=3946cf&locator=metamask-crx%40workspace%3A."
+"@ulissesferreira/solana-test-validator-up@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@ulissesferreira/solana-test-validator-up@npm:0.1.1"
   bin:
     solana-test-validator-up: dist/bin/solana-test-validator-up.js
-  checksum: 10/6a2c99618cca4dcd9bfec43ed3bc47e988c8ec7fdac718a5cc3294d5884bb27b50e9bb6e4fe6c5f4a5b12f01b6e349cf8ca1547a6f87c032e7b031196fbc1e90
+  checksum: 10/3d46506f008c486b863279beef9337d653ee4d42d6119dfbac976b693aa9c4d856010a7deb208833e284457ac19a5d622648a4a3e595c9bee95d69818f4b76e7
   languageName: node
   linkType: hard
 
@@ -33765,9 +33765,9 @@ __metadata:
     "@types/yazl": "npm:^3.3.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.1.0"
     "@typescript-eslint/parser": "npm:^8.1.0"
-    "@ulissesferreira/bitcoin-regtest-up": "file:../bitcoin-regtest-up"
-    "@ulissesferreira/java-tron-up": "npm:0.1.1"
-    "@ulissesferreira/solana-test-validator-up": "file:../solana-test-validator-up"
+    "@ulissesferreira/bitcoin-regtest-up": "npm:^0.1.1"
+    "@ulissesferreira/java-tron-up": "npm:^0.1.2"
+    "@ulissesferreira/solana-test-validator-up": "npm:^0.1.1"
     "@viem/anvil": "npm:^0.0.10"
     "@welldone-software/why-did-you-render": "npm:^8.0.3"
     "@zxing/browser": "npm:^0.1.5"
