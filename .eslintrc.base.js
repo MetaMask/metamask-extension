@@ -29,6 +29,34 @@ const routeIsolationZones = routeDirs.map((route) => ({
     `from a sibling route directory. See ADR 0021 (modularize-routes) / WPC-402.`,
 }));
 
+// Architectural boundaries between `app` (background), `ui`, and `shared`.
+// Exposed so the router-registry override in `.eslintrc.js` can keep these
+// enforced while opting out of the route-isolation zones.
+const architecturalZones = [
+  {
+    target: './app',
+    from: './ui',
+    message:
+      'Should not import from UI in background, use shared directory instead',
+  },
+  {
+    target: './ui',
+    from: './app',
+    message:
+      'Should not import from background in UI, use shared directory instead',
+  },
+  {
+    target: './shared',
+    from: './app',
+    message: 'Should not import from background in shared',
+  },
+  {
+    target: './shared',
+    from: './ui',
+    message: 'Should not import from UI in shared',
+  },
+];
+
 module.exports = {
   extends: ['@metamask/eslint-config'],
 
@@ -130,31 +158,7 @@ module.exports = {
       'error',
       {
         basePath: './',
-        zones: [
-          {
-            target: './app',
-            from: './ui',
-            message:
-              'Should not import from UI in background, use shared directory instead',
-          },
-          {
-            target: './ui',
-            from: './app',
-            message:
-              'Should not import from background in UI, use shared directory instead',
-          },
-          {
-            target: './shared',
-            from: './app',
-            message: 'Should not import from background in shared',
-          },
-          {
-            target: './shared',
-            from: './ui',
-            message: 'Should not import from UI in shared',
-          },
-          ...routeIsolationZones,
-        ],
+        zones: [...architecturalZones, ...routeIsolationZones],
       },
     ],
 

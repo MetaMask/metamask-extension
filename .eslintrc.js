@@ -3,6 +3,35 @@ const path = require('node:path');
 const ts = require('typescript');
 const { version: reactVersion } = require('react/package.json');
 
+// The same `app` <-> `ui` <-> `shared` architectural zones defined in
+// `.eslintrc.base.js`. Duplicated here so the router-registry override
+// below can re-enable them while turning off only the route-isolation
+// zones. Keep these in sync with `.eslintrc.base.js`.
+const architecturalZones = [
+  {
+    target: './app',
+    from: './ui',
+    message:
+      'Should not import from UI in background, use shared directory instead',
+  },
+  {
+    target: './ui',
+    from: './app',
+    message:
+      'Should not import from background in UI, use shared directory instead',
+  },
+  {
+    target: './shared',
+    from: './app',
+    message: 'Should not import from background in shared',
+  },
+  {
+    target: './shared',
+    from: './ui',
+    message: 'Should not import from UI in shared',
+  },
+];
+
 const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
@@ -750,14 +779,20 @@ module.exports = {
      * Route module isolation exemptions
      *
      * The router registry (`ui/pages/routes/`) and the top-level `ui/pages`
-     * entrypoint must reference every route module by design. Disable the
-     * route-isolation zones for these specific files. See ADR 0021
+     * entrypoint must reference every route module by design. Re-define
+     * `import-x/no-restricted-paths` for these files with only the
+     * architectural `app` <-> `ui` <-> `shared` zones, dropping the
+     * route-isolation zones. This keeps the existing boundaries enforced
+     * while letting the registry import every route. See ADR 0021
      * (modularize-routes) / WPC-402.
      */
     {
       files: ['ui/pages/routes/**/*.{js,ts,tsx}', 'ui/pages/index.js'],
       rules: {
-        'import-x/no-restricted-paths': 'off',
+        'import-x/no-restricted-paths': [
+          'error',
+          { basePath: './', zones: architecturalZones },
+        ],
       },
     },
   ],
