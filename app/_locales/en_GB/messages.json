@@ -958,11 +958,20 @@
   "batchSellHightRateAlertModalDescription": {
     "message": "Batch selling one token could lead to a higher rate. Want to do a swap instead?"
   },
+  "batchSellInsufficientGasMessage": {
+    "message": "You need more $1 in your wallet to cover the network fee for this transaction."
+  },
+  "batchSellInsufficientGasTitle": {
+    "message": "Not enough $1 for network fee"
+  },
   "batchSellMaxSelectedTokens": {
     "message": "Max $1 tokens allowed"
   },
   "batchSellMinimumReceiveExplanation": {
     "message": "The minimum amount you'll receive if the price changes while your transaction is processing, based on your slippage tolerance. This is an estimate from our liquidity providers. Final amounts may differ."
+  },
+  "batchSellNetworkFeeTooltip": {
+    "message": "Network fees depend on how busy the network is and how complex your transaction is."
   },
   "batchSellReceiveStablecoin": {
     "message": "Select a stablecoin"
@@ -10128,6 +10137,9 @@
   "youReceived": {
     "message": "You received",
     "description": "Label indicating the amount and asset the user received."
+  },
+  "youSell": {
+    "message": "You sell"
   },
   "youSent": {
     "message": "You sent",

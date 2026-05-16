@@ -37,10 +37,9 @@ export const AssetsReceivedTotalAmountsSummary = ({
   return (
     <Box>
       <Box
-        marginHorizontal={2}
+        margin={2}
         borderWidth={1}
         borderColor={BoxBorderColor.BorderMuted}
-        marginBottom={3}
       />
       <Box
         padding={2}

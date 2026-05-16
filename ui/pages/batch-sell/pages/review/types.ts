@@ -22,12 +22,15 @@ export type BatchSellQuotesResults = {
       minimumReceivedAmount?: number;
       hasQuote: boolean;
       hasHighPriceImpactWarning?: boolean;
+      quoteBpsFee?: number;
     };
   };
   receivedAsset: ReceivedAsset;
   totalReceivedAmount: number;
   totalReceivedAmountFiat: number;
   minimumReceivedAmount: number;
+  totalNetworkFee: number;
+  totalNetworkFeeFiat: number;
 };
 
 export enum BatchSellReviewStateActionType {

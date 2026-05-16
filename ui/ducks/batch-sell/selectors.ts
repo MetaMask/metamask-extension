@@ -280,6 +280,20 @@ export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
   },
 );
 
+export const getNativeAssetForChain = createSelector(
+  getAssetsBySelectedAccountGroup,
+  (_state: unknown, chainId: CaipChainId | null | undefined) => chainId,
+  (assetsByChain, chainId) => {
+    if (!chainId) {
+      return undefined;
+    }
+    const isEvm = isEvmChainId(chainId as Hex | CaipChainId);
+    const lookupKey = isEvm ? convertCaipToHexChainId(chainId) : chainId;
+    const assets = assetsByChain[lookupKey] ?? [];
+    return assets.find((asset) => asset.isNative);
+  },
+);
+
 export const getAvailableBatchSellReceiveAssetsForNetwork = createSelector(
   [
     (state: BridgeAppState, chainId?: CaipChainId) =>

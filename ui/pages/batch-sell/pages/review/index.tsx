@@ -15,12 +15,14 @@ import { TotalReceivedModal } from './components/TotalReceivedModal';
 import { SlippageModal } from './components/SlippageModal';
 import { ReviewAndConfirmModal } from './components/ReviewAndConfirmModal';
 import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
+import { useBatchSellValidation } from './hooks/useBatchSellValidation';
 
-// TODO: receive modal
 // CASE: no quotes available for any asset should disable the info button and review
 // CASE: no quotes available for some assets should not render row in review
 // TODO: add test ids
 // TODO: write tests
+// TODO: migrate hook tests to components
+// TODO: try to extract test configurations
 
 export const BatchSellReviewPage = () => {
   const [selectReceivedAssetModalIsOpen, setSelectReceivedAssetModalIsOpen] =
@@ -29,6 +31,9 @@ export const BatchSellReviewPage = () => {
     useState(false);
   const [totalReceivedModalIsOpen, setTotalReceivedAssetModalIsOpen] =
     useState(false);
+  // call debounce from use query
+  // read getBatchSellQuotesSelectors
+  // read network fees from getNetwork fees once micaela integrtes controller
 
   const {
     sendAssetsConfig,
@@ -44,13 +49,19 @@ export const BatchSellReviewPage = () => {
     deleteAsset,
   } = useBatchSellQuotesConfig();
 
-  const { data } = useBatchSellQuotesFetching(
+  const { data, isLoading } = useBatchSellQuotesFetching(
     {
       sendAssetsConfig,
       receivedAsset: selectedReceiveAsset,
     },
     { enabled: hasInitialSelection },
   );
+
+  const validation = useBatchSellValidation({
+    sendAssetsConfig,
+    quotes: data?.quotes,
+    totalNetworkFee: data?.totalNetworkFee,
+  });
 
   if (!hasInitialSelection) {
     return <Navigate to={BATCH_SELL_SELECT_ROUTE} replace />;
@@ -87,7 +98,7 @@ export const BatchSellReviewPage = () => {
       />
       <Footer
         onReviewClick={() => setReviewAndConfirmModalIsOpen(true)}
-        reviewIsDisabled={false}
+        reviewIsDisabled={isLoading || !data || validation.isNoQuotesAvailable}
       />
       <SelectReceivedAssetModal
         assets={receivedAssets}
@@ -123,6 +134,16 @@ export const BatchSellReviewPage = () => {
       <ReviewAndConfirmModal
         open={reviewAndConfirmModalIsOpen}
         onClose={() => setReviewAndConfirmModalIsOpen(false)}
+        sendAssetsConfig={sendAssetsConfig}
+        quotes={data?.quotes}
+        receivedAsset={{
+          symbol: selectedReceiveAsset.symbol,
+        }}
+        totalReceivedAmount={data?.totalReceivedAmount}
+        minimumReceivedAmount={data?.minimumReceivedAmount}
+        totalNetworkFee={data?.totalNetworkFee}
+        totalNetworkFeeFiat={data?.totalNetworkFeeFiat}
+        isInsufficientGasForFee={validation.isInsufficientGasForFee}
       />
     </Box>
   );

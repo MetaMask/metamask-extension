@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 
 type Options = {
-  enabled: boolean
-}
+  enabled: boolean;
+};
 
 export const useBatchSellQuotesFetching = (
   { sendAssetsConfig, receivedAsset }: BatchSellQuotesConfig,
@@ -41,6 +41,7 @@ export const useBatchSellQuotesFetching = (
                   minimumReceivedAmount: 846.2,
                   hasQuote: true,
                   hasHighPriceImpactWarning: Math.random() < 0.5,
+                  quoteBpsFee: 87.5,
                 },
           ],
         ),
@@ -69,6 +70,8 @@ export const useBatchSellQuotesFetching = (
         minimumReceivedAmount,
         totalReceivedAmount,
         totalReceivedAmountFiat,
+        totalNetworkFee: Math.random() * 100,
+        totalNetworkFeeFiat: Math.random() * 100,
       };
     },
   });
