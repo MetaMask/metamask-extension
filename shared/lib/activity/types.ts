@@ -8,6 +8,7 @@ export type ActivityType =
   | 'buy'
   | 'deposit'
   | 'swap'
+  | 'swapIncomplete'
   | 'claim'
   | 'claimMusdBonus'
   | 'send'
@@ -44,7 +45,8 @@ export type ActivityType =
   | 'perpsCloseLongTakeProfit'
   | 'marketShort'
   | 'stopMarketCloseShort'
-  | 'marketCloseShort';
+  | 'marketCloseShort'
+  | 'nftMint';
 
 export type ActivityListItem =
   | {
@@ -53,8 +55,8 @@ export type ActivityListItem =
       status: Status;
       timestamp: number;
       data: {
-        from: string;
         hash?: string;
+        from: string;
         to: string;
         tokenSymbol?: string;
       };
@@ -65,8 +67,8 @@ export type ActivityListItem =
       status: Status;
       timestamp: number;
       data: {
-        from: string;
         hash?: string;
+        from: string;
         to: string;
         tokenSymbol?: string;
       };
@@ -77,9 +79,29 @@ export type ActivityListItem =
       status: Status;
       timestamp: number;
       data: {
-        destinationTokenSymbol?: string;
         hash?: string;
         sourceTokenSymbol?: string;
+        destinationTokenSymbol?: string;
+      };
+    }
+  | {
+      type: 'swapIncomplete';
+      chainId: CaipChainId;
+      status: Status;
+      timestamp: number;
+      data: {
+        hash?: string;
+        sourceTokenSymbol?: string;
+      };
+    }
+  | {
+      type: 'buy';
+      chainId: CaipChainId;
+      status: Status;
+      timestamp: number;
+      data: {
+        hash?: string;
+        tokenSymbol?: string;
       };
     }
   | {
@@ -142,15 +164,27 @@ export type ActivityListItem =
       };
     }
   | {
+      type: 'nftMint';
+      chainId: CaipChainId;
+      status: Status;
+      timestamp: number;
+      data: {
+        hash?: string;
+        from: string;
+        to: string;
+        tokenSymbol?: string;
+      };
+    }
+  | {
       type: 'contractInteraction';
       chainId: CaipChainId;
       status: Status;
       timestamp: number;
       data: {
-        from: string;
         hash?: string;
-        methodId?: string;
+        from: string;
         to: string;
+        methodId?: string;
         transactionCategory?: string;
         transactionProtocol?: string;
         transactionType?: string;

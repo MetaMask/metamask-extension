@@ -1,6 +1,6 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { CHAIN_IDS } from '../../../constants/network';
-import { mapMultiAccountTransaction } from './multiaccount-transaction';
+import { mapEvmTransactions } from './evm-transactions';
 
 const subjectAddress = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
 const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
@@ -15,7 +15,7 @@ const bscContractCallerAddress = '0xf70da97812cb96acdf810712aa562db8dfa3dbef';
 const bscUniversalRouter = '0xca11bde05977b3631167028862be2a173976ca11';
 const bscRecipientAddress = '0xb92fe925dc43a0ecde6c8b1a2709c170ec4fff4f';
 
-describe('mapMultiAccountTransaction', () => {
+describe('mapEvmTransactions', () => {
   it('maps an ERC-20 transfer sent by the account to a Send activity', () => {
     const transaction = {
       timestamp: '2026-05-12T13:37:47.000Z',
@@ -33,7 +33,7 @@ describe('mapMultiAccountTransaction', () => {
     } as unknown as V1TransactionByHashResponse;
 
     expect(
-      mapMultiAccountTransaction({
+      mapEvmTransactions({
         subjectAddress,
         transaction,
       }),
@@ -68,7 +68,7 @@ describe('mapMultiAccountTransaction', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapMultiAccountTransaction({
+      mapEvmTransactions({
         subjectAddress,
         transaction,
       }),
@@ -103,7 +103,7 @@ describe('mapMultiAccountTransaction', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapMultiAccountTransaction({
+      mapEvmTransactions({
         subjectAddress,
         transaction,
       }),
@@ -147,7 +147,7 @@ describe('mapMultiAccountTransaction', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapMultiAccountTransaction({
+      mapEvmTransactions({
         subjectAddress,
         transaction,
       }),
@@ -184,7 +184,7 @@ describe('mapMultiAccountTransaction', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapMultiAccountTransaction({
+      mapEvmTransactions({
         subjectAddress,
         transaction,
       }),
@@ -218,7 +218,7 @@ describe('mapMultiAccountTransaction', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapMultiAccountTransaction({
+      mapEvmTransactions({
         subjectAddress,
         transaction,
       }),

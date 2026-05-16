@@ -1,71 +1,58 @@
-import React, { useMemo } from 'react';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Text,
-} from '@metamask/design-system-react';
-import { NETWORK_TO_NAME_MAP } from '../../../shared/constants/network';
-import type { ActivityListItem as ActivityListItemModel } from '../../../shared/lib/activity/types';
-import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
+import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Box, Text } from '@metamask/design-system-react';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
+import { formatDateWithYearContext } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getImageForChainId } from '../../selectors/multichain';
-import { useGetLabel } from './useGetLabel';
+import { selectEnabledEvmNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
+import { ListItem } from './cells/ListItem';
 import { useTransactionQuery } from './useTransactionQuery';
 
 const activityItemHeight = 72;
 
-const ListItem = ({ activity }: { activity: ActivityListItemModel }) => {
-  const { description, title } = useGetLabel(activity);
-  const chainId = convertCaipToHexChainId(activity.chainId);
-
-  return (
-    <Box className="px-4 py-3 border-b border-border-muted">
-      <div className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4">
-        <AvatarNetwork
-          size={AvatarNetworkSize.Sm}
-          name={
-            NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
-            activity.chainId
-          }
-          src={getImageForChainId(chainId)}
-        />
-        <div className="min-w-0">
-          <Text className="font-medium truncate">{title}</Text>
-          {description ? (
-            <Text variant="body-sm" className="text-alternative truncate">
-              {description}
-            </Text>
-          ) : null}
-        </div>
-        <Text className="text-sm text-alternative text-right whitespace-nowrap">
-          {activity.type}
-        </Text>
-      </div>
-    </Box>
-  );
-};
-
-function getActivityKey(activity: ActivityListItemModel, index: number) {
-  return `${activity.chainId}:${activity.timestamp}:${activity.type}:${index}`;
+function parseDate(timestamp: number) {
+  const date = new Date(timestamp);
+  date.setHours(0, 0, 0, 0);
+  return date.getTime();
 }
 
 export function ActivityList() {
   const t = useI18nContext();
+  const enabledEvmNetworks = useSelector(
+    selectEnabledEvmNetworksAsCaipChainIds,
+  );
+  const [selectedNetwork, setSelectedNetwork] = useState('');
+  const networks = selectedNetwork ? [selectedNetwork] : enabledEvmNetworks;
+
   const {
     data,
     isInitialLoading,
-    isError,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useTransactionQuery();
+  } = useTransactionQuery({ networks });
 
   const activities = useMemo(
     () => data?.pages.flatMap((page) => page.data) ?? [],
     [data],
   );
+  const groupedActivities = useMemo(() => {
+    let currentDate: number | null = null;
+
+    return activities.flatMap((activity) => {
+      const date = parseDate(activity.timestamp);
+
+      if (date === currentDate) {
+        return [{ type: 'activity' as const, activity }];
+      }
+
+      currentDate = date;
+      return [
+        { type: 'date-header' as const, date },
+        { type: 'activity' as const, activity },
+      ];
+    });
+  }, [activities]);
 
   if (isInitialLoading) {
     return (
@@ -76,27 +63,59 @@ export function ActivityList() {
   }
 
   return (
-    <VirtualizedList
-      data={activities}
-      estimatedItemSize={activityItemHeight}
-      keyExtractor={getActivityKey}
-      renderItem={({ item }) => <ListItem activity={item} />}
-      listFooterComponent={
-        hasNextPage ? (
-          <Box className="p-4 flex justify-center">
-            <button
-              type="button"
-              className="text-primary-default"
-              disabled={isFetchingNextPage}
-              onClick={() => {
-                fetchNextPage();
-              }}
-            >
-              {isFetchingNextPage ? t('loading') : t('showMore')}
-            </button>
-          </Box>
-        ) : null
-      }
-    />
+    <>
+      <Box className="p-3 border-b border-border-muted">
+        <select
+          className="rounded border border-border-muted bg-background-default text-sm"
+          value={selectedNetwork}
+          onChange={(event) => {
+            setSelectedNetwork(event.target.value);
+          }}
+        >
+          <option value="">All networks</option>
+          {enabledEvmNetworks.map((network) => (
+            <option key={network} value={network}>
+              {network}
+            </option>
+          ))}
+        </select>
+      </Box>
+      <VirtualizedList
+        data={groupedActivities}
+        estimatedItemSize={activityItemHeight}
+        keyExtractor={(item, index) =>
+          item.type === 'date-header'
+            ? `date-header:${item.date}`
+            : `${item.activity.chainId}:${item.activity.timestamp}:${item.activity.type}:${index}`
+        }
+        renderItem={({ item }) =>
+          item.type === 'date-header' ? (
+            <Box className="px-4 py-2 bg-background-default">
+              <Text className="text-sm text-alternative">
+                {formatDateWithYearContext(item.date, 'MMM d, y', 'MMM d, y')}
+              </Text>
+            </Box>
+          ) : (
+            <ListItem data={item.activity} />
+          )
+        }
+        listFooterComponent={
+          hasNextPage ? (
+            <Box className="p-4 flex justify-center">
+              <button
+                type="button"
+                className="text-primary-default"
+                disabled={isFetchingNextPage}
+                onClick={() => {
+                  fetchNextPage();
+                }}
+              >
+                {isFetchingNextPage ? t('loading') : t('showMore')}
+              </button>
+            </Box>
+          ) : null
+        }
+      />
+    </>
   );
 }

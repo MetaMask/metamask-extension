@@ -31,12 +31,22 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
           activity.data.destinationTokenSymbol ?? '',
         ],
       };
+    // Source in title.
+    case 'swapIncomplete':
+      return {
+        title: [activity.data.sourceTokenSymbol ?? ''],
+      };
     // Token in title, token in description.
+    case 'buy':
     case 'claim':
     case 'lendingDeposit':
       return {
         title: [activity.data.tokenSymbol ?? ''],
         description: [activity.data.tokenSymbol ?? ''],
+      };
+    case 'nftMint':
+      return {
+        title: [activity.data.tokenSymbol ?? 'NFT'],
       };
     // Token in description.
     case 'approveSpendingCap':
