@@ -2,10 +2,10 @@ import React from 'react';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
+  BadgeWrapper,
   Box,
-  Icon,
-  IconName,
-  IconSize,
   Text,
 } from '@metamask/design-system-react';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
@@ -16,15 +16,11 @@ import type { ActivityCellProps } from './types';
 
 type BaseActivityCellProps = ActivityCellProps & {
   description?: string;
-  iconClassName?: string;
-  iconName: IconName;
 };
 
 export function BaseActivityCell({
   data,
   description: descriptionOverride,
-  iconClassName = 'bg-muted text-primary-default',
-  iconName,
 }: BaseActivityCellProps) {
   const { description: labelDescription, title } = useGetLabel(data);
   const description = descriptionOverride ?? labelDescription;
@@ -33,23 +29,39 @@ export function BaseActivityCell({
   const networkName =
     NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
     data.chainId;
+  const tokenSymbol =
+    data.type === 'swap'
+      ? (data.data.sourceTokenSymbol ?? data.data.destinationTokenSymbol)
+      : data.type === 'swapIncomplete'
+        ? data.data.sourceTokenSymbol
+        : data.type === 'claimMusdBonus'
+          ? 'mUSD'
+          : 'tokenSymbol' in data.data
+            ? data.data.tokenSymbol
+            : undefined;
+  const networkIconSrc = getImageForChainId(chainId);
 
   return (
-    <Box className="px-4 py-3 border-b border-border-muted">
-      <div className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-3">
-        <div className="relative flex h-10 w-10 items-center justify-center">
-          <div
-            className={`flex h-10 w-10 items-center justify-center rounded-full ${iconClassName}`}
+    <Box className="px-4 py-3">
+      <div className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-2">
+        <div className="relative flex items-center justify-center">
+          <BadgeWrapper
+            badge={
+              <div className="rounded-full bg-background-default p-0.5">
+                <AvatarNetwork
+                  size={AvatarNetworkSize.Xs}
+                  name={networkName}
+                  src={networkIconSrc}
+                />
+              </div>
+            }
           >
-            <Icon name={iconName} size={IconSize.Md} />
-          </div>
-          <div className="absolute -bottom-1 -right-1 rounded-full bg-background-default p-0.5">
-            <AvatarNetwork
-              size={AvatarNetworkSize.Xs}
-              name={networkName}
-              src={getImageForChainId(chainId)}
+            <AvatarToken
+              className="size-8"
+              name={tokenSymbol}
+              size={AvatarTokenSize.Md}
             />
-          </div>
+          </BadgeWrapper>
         </div>
         <div className="min-w-0">
           <Text className="font-medium truncate">{title}</Text>

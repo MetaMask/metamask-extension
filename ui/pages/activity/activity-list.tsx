@@ -64,7 +64,7 @@ export function ActivityList() {
 
   return (
     <>
-      <Box className="p-3 border-b border-border-muted">
+      <Box className="p-3">
         <select
           className="rounded border border-border-muted bg-background-default text-sm"
           value={selectedNetwork}
