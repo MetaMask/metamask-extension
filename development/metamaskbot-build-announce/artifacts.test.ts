@@ -12,9 +12,7 @@ describe('getArtifactLinks', () => {
       '42',
     );
 
-    expect(links.bundleSizeStats.url).toBe(
-      `${HOST}/bundle-size/chrome.json`,
-    );
+    expect(links.bundleSizeStats.url).toBe(`${HOST}/bundle-size/chrome.json`);
     expect(links.interactionStats.url).toBe(
       `${HOST}/benchmarks/benchmark-chrome-webpack-interactionUserActions.json`,
     );
