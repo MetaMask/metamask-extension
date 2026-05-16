@@ -1,5 +1,6 @@
 import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
+import type { Backup } from '../../../shared/lib/stores/persistence-manager';
 
 type SentryAppStateSnapshot = Record<string, unknown>;
 
@@ -116,10 +117,9 @@ function getMetaMetricsStateFromPersistedState(
  * @param backupState
  */
 function getMetaMetricsStateFromBackupState(
-  backupState: unknown,
+  backupState: Backup | null,
 ): Exclude<MetaMetricsParticipation, null> {
-  const controller = (backupState as Record<string, unknown> | undefined)
-    ?.MetaMetricsController as
+  const controller = backupState?.MetaMetricsController as
     | {
         participateInMetaMetrics?: boolean;
         metaMetricsId?: string;

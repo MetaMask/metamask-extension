@@ -272,13 +272,27 @@ export class OAuthService {
                   reject(error);
                 }
               } else {
+                const browserAuthFlowError = checkForLastError();
                 const userCancelledLoginError =
-                  this.#getUserCancelledLoginError();
+                  this.#getUserCancelledLoginError(browserAuthFlowError);
                 if (userCancelledLoginError) {
                   reject(userCancelledLoginError);
                   return;
                 }
-                // Throw default error for no redirect URL found
+                if (browserAuthFlowError) {
+                  const message =
+                    browserAuthFlowError.message ||
+                    OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR;
+                  const authError = new Error(message) as Error & {
+                    cause?: Error;
+                  };
+                  authError.cause = browserAuthFlowError as Error;
+                  reject(authError);
+                  return;
+                }
+
+                // Fall back to the generic error when the browser API did not
+                // provide a redirect URL or a useful runtime error.
                 reject(
                   new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
                 );
@@ -312,8 +326,8 @@ export class OAuthService {
       if (!isUserCancelled) {
         this.#messenger.captureException?.(
           createSentryError(
-            TraceName.OnboardingOAuthProviderLoginError,
-            error as Error,
+            `${TraceName.OnboardingOAuthProviderLoginError} (${authConnection})`,
+            error,
           ),
         );
       }
@@ -453,8 +467,7 @@ export class OAuthService {
     return url.searchParams.get('code');
   }
 
-  #getUserCancelledLoginError(): Error | undefined {
-    const error = checkForLastError();
+  #getUserCancelledLoginError(error = checkForLastError()): Error | undefined {
     if (isUserCancelledLoginError(error)) {
       return error;
     }

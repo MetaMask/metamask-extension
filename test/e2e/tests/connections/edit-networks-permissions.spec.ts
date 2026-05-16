@@ -46,8 +46,11 @@ describe('Edit Networks Permissions', function () {
         // Disconnect Mainnet
         await sitePermissionPage.editPermissionsForNetwork(['Ethereum']);
 
-        // Default Chains Connected: Linea, Base, Arbitrum, BSC, Optimism, Polygon, Solana, BTC, Tron, Sei
-        await sitePermissionPage.checkConnectedNetworksNumber(10);
+        // EIP-1193 connects with no specific chains default to EVM popular
+        // networks only (Bitcoin/Solana/Tron are no longer silently granted).
+        // After disconnecting Mainnet the remaining defaults are:
+        // Linea, Base, Arbitrum, BSC, Optimism, Polygon, Monad, Localhost
+        await sitePermissionPage.checkConnectedNetworksNumber(8);
       },
     );
   });

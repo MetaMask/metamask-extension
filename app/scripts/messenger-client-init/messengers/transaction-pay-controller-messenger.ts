@@ -54,7 +54,11 @@ export function getTransactionPayControllerMessenger(
       'KeyringController:signTypedMessage',
     ],
     events: [
+      'AssetsController:stateChange',
       'BridgeStatusController:stateChange',
+      'CurrencyRateController:stateChange',
+      'TokenRatesController:stateChange',
+      'TokensController:stateChange',
       'TransactionController:stateChange',
       'TransactionController:unapprovedTransactionAdded',
     ],

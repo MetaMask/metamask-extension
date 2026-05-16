@@ -750,6 +750,19 @@ class Driver {
               error.name
             }`,
           );
+
+          // When another element (e.g. a toast banner) overlaps the target,
+          // scrolling it to the viewport center usually moves it clear of the
+          // obstruction so the next attempt can succeed.
+          if (error.name === 'ElementClickInterceptedError') {
+            try {
+              const el = await this.findElement(rawLocator);
+              await this.scrollToElement(el);
+            } catch {
+              // Element may have gone stale; the next iteration will re-find it.
+            }
+          }
+
           await this.delay(1000);
         } else {
           throw error;
@@ -949,7 +962,7 @@ class Driver {
    */
   async scrollToElement(element) {
     await this.driver.executeScript(
-      'arguments[0].scrollIntoView(true)',
+      'arguments[0].scrollIntoView({block:"center"})',
       element,
     );
   }
@@ -1089,11 +1102,9 @@ class Driver {
   async pasteIntoField(rawLocator, contentToPaste) {
     // Click to focus the field
     await this.clickElement(rawLocator);
-    await this.executeScript(
-      `navigator.clipboard.writeText("${contentToPaste.replace(
-        /"/gu,
-        '\\"',
-      )}")`,
+    await this.driver.executeScript(
+      'navigator.clipboard.writeText(arguments[0])',
+      contentToPaste,
     );
     await this.fill(rawLocator, Key.chord(this.Key.MODIFIER, 'v'));
   }
@@ -1551,6 +1562,24 @@ class Driver {
    */
   async closeWindow() {
     await this.driver.close();
+  }
+
+  /**
+   * Closes every browser tab/window except the currently focused one.
+   *
+   * @returns {Promise<void>} promise resolving after all other windows are closed
+   */
+  async closeAllOtherTabs() {
+    const handles = await this.getAllWindowHandles();
+    const current = await this.driver.getWindowHandle();
+    for (const h of handles) {
+      if (h !== current) {
+        await this.driver.switchTo().window(h);
+        await this.driver.close();
+      }
+    }
+    await this.driver.switchTo().window(current);
+    await this.getAllWindowHandles();
   }
 
   /**

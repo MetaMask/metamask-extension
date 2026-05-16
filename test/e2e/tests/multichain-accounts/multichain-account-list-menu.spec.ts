@@ -60,7 +60,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
           'Account 1',
           'Wallet 2',
         );
-        await accountListPage.checkAddWalletButttonIsDisplayed();
+        await accountListPage.checkAddWalletButtonIsDisplayed();
 
         await accountListPage.checkMultichainAccountBalanceDisplayed({
           account: 'Account 1',
@@ -127,7 +127,7 @@ describe('Multichain Accounts - Account tree', function (this: Suite) {
         // Ensure that wallet information is displayed
         await accountListPage.checkWalletDisplayedInAccountListMenu('Wallet 1');
         await accountListPage.checkWalletDisplayedInAccountListMenu('Ledger');
-        await accountListPage.checkAddWalletButttonIsDisplayed();
+        await accountListPage.checkAddWalletButtonIsDisplayed();
 
         // The balance is not loaded for a non-selected account (which was never selected before)
         await accountListPage.checkMultichainAccountBalanceDisplayed({
