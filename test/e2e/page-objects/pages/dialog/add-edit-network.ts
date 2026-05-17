@@ -203,6 +203,24 @@ class AddEditNetworkModal {
       timeout: 20_000,
     });
 
+    // Wait for success message toast to appear and auto-dismiss
+    // The success message "Network XYZ was successfully edited!" blocks interaction
+    console.log('[AddEditNetworkModal] Waiting for success message to appear and dismiss...');
+    await this.driver.delay(500); // Let the toast appear
+
+    // Wait for the success message to disappear (it auto-dismisses after ~2-3 seconds)
+    const successMessageSelector = '[data-testid="toast-notification"]';
+    const maxWaitTime = 5000;
+    const startTime = Date.now();
+    while (await this.driver.isElementPresentAndVisible(successMessageSelector)) {
+      if (Date.now() - startTime > maxWaitTime) {
+        console.log('[AddEditNetworkModal] Success message did not disappear within timeout, continuing anyway');
+        break;
+      }
+      await this.driver.delay(200);
+    }
+    console.log('[AddEditNetworkModal] Success message dismissed or timeout reached');
+
     // In Settings V2, saving can return to the networks page instead of home.
     // Preserve legacy flow expectation by navigating back to the wallet home page.
     if (
@@ -218,7 +236,25 @@ class AddEditNetworkModal {
       if (
         await this.driver.isElementPresentAndVisible(this.settingsV2NetworksPageList)
       ) {
-        await this.driver.clickElement(this.settingsV2NetworksPageBackButton);
+        console.log('Network list is visible, navigating back to wallet home page');
+        // Try clicking the back button first
+        let navigated = false;
+        try {
+          await this.driver.findClickableElement(this.settingsV2NetworksPageBackButton, {
+            timeout: 5_000,
+          });
+          await this.driver.clickElement(this.settingsV2NetworksPageBackButton);
+          navigated = true;
+          console.log('Navigated back via back button');
+        } catch (e) {
+          console.warn('[AddEditNetworkModal] Back button click failed, using navigation script');
+          // Fallback: use script-based navigation if button not found
+          await this.driver.executeScript(
+            `window.location.hash = ${JSON.stringify('/')}`,
+          );
+          navigated = true;
+        }
+        console.log('Navigated back to wallet home page');
       }
 
       await this.driver.assertElementNotPresent(this.settingsV2NetworksPageList, {

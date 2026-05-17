@@ -970,6 +970,162 @@ class AssetListPage {
       },
     );
   }
+
+  /**
+   * Verifies a custom network is visible in the network selector by chain ID.
+   * Opens the network filter, clicks on the "Custom" tab if available,
+   * and verifies the network exists with the given chain ID.
+   *
+   * @param chainId - The chain ID to verify (e.g., "88888" for Chiliz)
+   * @param networkName - Optional network name for logging
+   */
+  async verifyCustomNetworkExistsInSelector(
+    chainId: string,
+    networkName: string = `Chain ${chainId}`,
+  ): Promise<void> {
+    console.log(
+      `[AssetList] Verifying custom network ${networkName} (chainId: ${chainId}) exists in network selector`,
+    );
+
+    // Open the network filter
+    await this.openNetworksFilter();
+    console.log(`[AssetList] Network filter opened, looking for Custom tab`);
+
+    // Try to click on the "Custom" tab
+    try {
+      const customTabButton =
+        'button:has-text("Custom")[role="tab"], button[role="tab"]:text("Custom"), [data-testid*="custom"][role="tab"]';
+      await this.driver.waitForSelector(
+        { text: 'Custom', tag: 'button' },
+        { timeout: 3000 },
+      );
+      await this.driver.clickElement({ text: 'Custom', tag: 'button' });
+      console.log(`[AssetList] Clicked on Custom tab`);
+    } catch (e) {
+      console.warn(
+        `[AssetList] Custom tab not found or click failed, continuing anyway: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
+      );
+    }
+
+    // Wait for and verify the custom network exists by chain ID
+    const networkEip155Selector = `[data-testid="network-list-item-eip155:${String(
+      chainId,
+    )}"]`;
+    console.log(
+      `[AssetList] Waiting for network selector: ${networkEip155Selector}`,
+    );
+
+    try {
+      await this.driver.waitForSelector(networkEip155Selector, {
+        timeout: 5000,
+      });
+      console.log(
+        `[AssetList] ✅ Custom network ${networkName} (chainId: ${chainId}) found in network selector`,
+      );
+    } catch (e) {
+      console.error(
+        `[AssetList] ❌ Custom network ${networkName} (chainId: ${chainId}) NOT found in network selector`,
+      );
+      throw e;
+    }
+
+    // Close the network filter modal
+    try {
+      await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
+      console.log(`[AssetList] Network filter modal closed`);
+    } catch {
+      console.warn(`[AssetList] Could not close network filter modal`);
+    }
+  }
+
+  /**
+   * Selects a custom network from the network selector and verifies it's active.
+   * Opens the network filter, clicks on the "Custom" tab, selects the network
+   * by chain ID, and verifies it's displayed on the home page.
+   *
+   * @param chainId - The chain ID to select (e.g., "88888" for Chiliz)
+   * @param networkName - Optional network name for logging
+   */
+  async selectCustomNetworkByChainId(
+    chainId: string,
+    networkName: string = `Chain ${chainId}`,
+  ): Promise<void> {
+    console.log(
+      `[AssetList] Selecting custom network ${networkName} (chainId: ${chainId})`,
+    );
+
+    // Open the network filter
+    await this.openNetworksFilter();
+    console.log(`[AssetList] Network filter opened`);
+
+    // Try to click on the "Custom" tab
+    try {
+      await this.driver.waitForSelector(
+        { text: 'Custom', tag: 'button' },
+        { timeout: 3000 },
+      );
+      await this.driver.clickElement({ text: 'Custom', tag: 'button' });
+      console.log(`[AssetList] Clicked on Custom tab`);
+      await this.driver.delay(500); // Wait for tab transition
+    } catch (e) {
+      console.warn(
+        `[AssetList] Custom tab not found or click failed: ${
+          e instanceof Error ? e.message : String(e)
+        }`,
+      );
+    }
+
+    // Click on the network by chain ID
+    const networkEip155Selector = `[data-testid="network-list-item-eip155:${String(
+      chainId,
+    )}"]`;
+    console.log(
+      `[AssetList] Clicking on network selector: ${networkEip155Selector}`,
+    );
+
+    try {
+      await this.driver.waitForSelector(networkEip155Selector, {
+        timeout: 5000,
+      });
+      await this.driver.clickElement(networkEip155Selector);
+      console.log(`[AssetList] Clicked on network ${networkName}`);
+      await this.driver.delay(1000); // Wait for network switch
+    } catch (e) {
+      console.error(
+        `[AssetList] ❌ Failed to click on network ${networkName} (chainId: ${chainId})`,
+      );
+      throw e;
+    }
+
+    // Wait for modal to close
+    try {
+      await this.driver.assertElementNotPresent(this.modalCloseButton, {
+        timeout: 5000,
+      });
+      console.log(`[AssetList] Network filter modal closed automatically`);
+    } catch {
+      console.warn(
+        `[AssetList] Modal close button still present, trying to close it`,
+      );
+      try {
+        await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
+      } catch {
+        console.warn(`[AssetList] Could not close network filter modal`);
+      }
+    }
+
+    // Verify the network is now active on the home page
+    await this.driver.delay(1000); // Wait for page to settle
+    console.log(
+      `[AssetList] Verifying network ${networkName} is active on home page`,
+    );
+    await this.checkNetworkFilterText(networkName);
+    console.log(
+      `[AssetList] ✅ Custom network ${networkName} (chainId: ${chainId}) successfully selected and active`,
+    );
+  }
 }
 
 export default AssetListPage;

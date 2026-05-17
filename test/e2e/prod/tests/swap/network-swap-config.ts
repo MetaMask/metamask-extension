@@ -7,7 +7,7 @@
 /**
  * Network configuration for swap tests
  */
-export interface NetworkSwapConfig {
+export type NetworkSwapConfig = {
   /** Unique identifier for the network */
   networkId: string;
   /** Display name of the network */
@@ -21,6 +21,8 @@ export interface NetworkSwapConfig {
    * Mutually exclusive with `manualTokens`.
    */
   tokenlistUrl?: string;
+  rpcUrl?: string;
+  rpcName?: string;
   /**
    * Manually specified tokens to import instead of fetching from `tokenlistUrl`.
    * Use for networks without a public tokenlist or when exact contract addresses
@@ -46,6 +48,12 @@ export interface NetworkSwapConfig {
    * sponsors gas (e.g. Monad, SEI). Defaults to false.
    */
   gasFeeSponsoredByProtocol?: boolean;
+  /**
+   * When true, this is a custom network requiring manual RPC setup during test.
+   * Custom networks are added via the UI (SelectNetwork → AddCustomNetworkModal → RpcUrlModal).
+   * Defaults to false.
+   */
+  requiresManualSetup?: boolean;
 }
 
 /**
@@ -85,7 +93,7 @@ export type SwapExecutionRoute = {
 /**
  * Token object structure (matching standard tokenlist format)
  */
-export interface Token {
+export type Token = {
   chainId: number | string;
   address: string;
   name: string;
@@ -98,7 +106,7 @@ export interface Token {
 /**
  * Swap quotation snapshot (values captured before/after token switch)
  */
-export interface QuotationSnapshot {
+export type QuotationSnapshot = {
   fromAmount: string;
   toAmount: string;
   networkFeeSponsored: string;
@@ -111,7 +119,7 @@ export interface QuotationSnapshot {
 /**
  * Token pair quotations for comparison
  */
-export interface TokenPairQuotations {
+export type TokenPairQuotations = {
   sourceToken: Token;
   destinationToken: Token;
   beforeSwitch: QuotationSnapshot;
@@ -125,7 +133,7 @@ export interface TokenPairQuotations {
 /**
  * Result of a single token-pair test
  */
-export interface QuotationTestResult {
+export type QuotationTestResult = {
   networkName: string;
   tokenPair: string;
   sourceTokenSymbol: string;
@@ -138,7 +146,7 @@ export interface QuotationTestResult {
 /**
  * Result of a single swap execution route
  */
-export interface SwapRouteResult {
+export type SwapRouteResult = {
   /** Route label e.g. ""MON → AUSD"" */
   route: string;
   fromSymbol: string;
@@ -156,7 +164,7 @@ export interface SwapRouteResult {
 /**
  * Result of an individual validation check within a swap route.
  */
-export interface SwapValidationResult {
+export type SwapValidationResult = {
   /** Human-readable validation name */
   name: string;
   /** Whether the validation passed, failed, or only warned */
@@ -168,7 +176,7 @@ export interface SwapValidationResult {
 /**
  * Consolidated report for a swap execution test run
  */
-export interface SwapExecutionReport {
+export type SwapExecutionReport = {
   networkName: string;
   chainId: number;
   timestamp: string;
@@ -182,7 +190,7 @@ export interface SwapExecutionReport {
 /**
  * Consolidated test results for report generation
  */
-export interface ConsolidatedTestResults {
+export type ConsolidatedTestResults = {
   networkName: string;
   chainId: number;
   tokenlistUrl: string;
@@ -210,6 +218,7 @@ export const DEFAULT_SWAP_AMOUNT = 20;
  * Add new networks here to support them in tests
  */
 export const SWAP_TEST_NETWORKS: NetworkSwapConfig[] = [
+   //  Additional  network list
   // {
   //   networkId: 'Mon',
   //   networkName: 'Monad',
@@ -229,54 +238,72 @@ export const SWAP_TEST_NETWORKS: NetworkSwapConfig[] = [
   //   gasFeeSponsoredByProtocol: true,
   // },
   // Add more networks here as needed.
-  // Example using manualTokens (no tokenlist URL needed):
+  //  Popular network list
+  // {
+  //   networkId: 'Base',
+  //   networkName: 'Base',
+  //   chainId: 8453,
+  //   nativeTokenSymbol: 'ETH',
+  //   manualTokens: [
+  //     {
+  //       symbol: 'USDC',
+  //       name: 'USD Coin',
+  //       address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+  //       decimals: 6,
+  //     },
+  //     {
+  //       symbol: 'WETH',
+  //       name: 'Wrapped Ether',
+  //       address: '0x4200000000000000000000000000000000000006',
+  //       decimals: 18,
+  //     },
+  //   ],
+  //   fixtureSetupMethod: 'withNetworkControllerOnBase',
+  //   blockExplorerUrl: 'https://basescan.org',
+  //   swapExecutionTokenSymbols: ['USDC', 'WETH'],
+  //   defaultSwapAmount: 0.0000001,
+  //   swapExecutionRoutes: [
+  //     { from: 'ETH', to: 'USDC', amount: '0.0000001' },
+  //     { from: 'USDC', to: 'WETH', amount: 0.01 },
+  //     { from: 'WETH', to: 'ETH', useMax: true },
+  //   ],
+  // },
+  // Custom network list
   {
-    networkId: 'Base',
-    networkName: 'Base',
-    chainId: 8453,
-    nativeTokenSymbol: 'ETH',
+    networkId: 'Chiliz',
+    networkName: 'Chiliz Chain',
+    chainId: 88888,
+    nativeTokenSymbol: 'CHZ',
+    rpcUrl: 'https://rpc.ankr.com/chiliz',
+    rpcName: 'Chiliz RPC',
+    tokenlistUrl:
+      'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
     manualTokens: [
       {
         symbol: 'USDC',
-        name: 'USD Coin',
-        address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        name: 'Bridged USDC (ChainPort)',
+        address: '0xa37936F56249965d407E39347528a1A91eB1cbef',
         decimals: 6,
       },
       {
-        symbol: 'WETH',
-        name: 'Wrapped Ether',
-        address: '0x4200000000000000000000000000000000000006',
+        symbol: 'PEPPER',
+        name: 'PEPPER',
+        address: '0x60F397acBCfB8f4e3234C659A3E10867e6fA6b67',
         decimals: 18,
       },
     ],
-    fixtureSetupMethod: 'withNetworkControllerOnBase',
-    blockExplorerUrl: 'https://basescan.org',
-    swapExecutionTokenSymbols: ['USDC', 'WETH'],
-    defaultSwapAmount: 0.0000001,
+    fixtureSetupMethod: 'withNetworkControllerOnMainnet',
+    blockExplorerUrl: 'https://explorer.chiliz.com',
+    swapExecutionTokenSymbols: ['USDC', 'PEPPER'],
     swapExecutionRoutes: [
-      { from: 'ETH', to: 'USDC', amount: '0.0000001' },
-      { from: 'USDC', to: 'WETH', amount: 0.01 },
-      { from: 'WETH', to: 'ETH', useMax: true },
+      { from: 'CHZ', to: 'USDC', amount: 5 },
+      { from: 'USDC', to: 'PEPPER', amount: 0.55 },
+      { from: 'PEPPER', to: 'CHZ', useMax: true },
     ],
+    defaultSwapAmount: 20,
+    gasFeeSponsoredByProtocol: true,
+    requiresManualSetup: true,
   },
-  // {
-  //   networkId: 'CHZ',
-  //   networkName: 'Chiliz Chain',
-  //   chainId: 88888,
-  //   nativeTokenSymbol: 'CHZ',
-  //   tokenlistUrl:
-  //     'https://raw.githubusercontent.com/monad-crypto/token-list/refs/heads/main/tokenlist-mainnet.json',
-  //   fixtureSetupMethod: 'withNetworkControllerOnMonad',
-  //   blockExplorerUrl: 'https://explorer.chiliz.com',
-  //   swapExecutionTokenSymbols: ['AUSD', 'AZND'],
-  //   swapExecutionRoutes: [
-  //     { from: 'MON', to: 'AUSD', amount: 20 },
-  //     { from: 'AUSD', to: 'AZND', amount: 0.55 },
-  //     { from: 'AZND', to: 'MON', useMax: true },
-  //   ],
-  //   defaultSwapAmount: 20,
-  //   gasFeeSponsoredByProtocol: true,
-  // },
 ];
 
 /**
@@ -296,6 +323,15 @@ export function getNetworkSwapConfig(
  */
 export function getAllSwapTestNetworkIds(): string[] {
   return SWAP_TEST_NETWORKS.map((config) => config.networkId);
+}
+
+/**
+ * Get custom network configs that require manual setup
+ * These networks need to be added via UI during test execution
+ * @returns Array of custom network configurations
+ */
+export function getSwapCustomNetworks(): NetworkSwapConfig[] {
+  return SWAP_TEST_NETWORKS.filter((config) => config.requiresManualSetup === true);
 }
 
 /**
