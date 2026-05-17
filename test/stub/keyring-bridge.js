@@ -333,7 +333,10 @@ export class FakeLedgerBridge extends FakeKeyringBridge {
     throw new Error('Unsupported transaction type.');
   }
 
-  updateTransportMethod() {
+  // The real Ledger bridge's `updateTransportMethod` is async (it awaits a
+  // round-trip to the device). Callers `.then`/`.catch` the result, so the
+  // stub must return a Promise to match.
+  async updateTransportMethod() {
     return true;
   }
 
