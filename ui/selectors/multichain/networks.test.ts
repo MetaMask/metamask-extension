@@ -29,7 +29,6 @@ import {
   selectFirstUnavailableEvmNetwork,
   getEvmMultichainNetworkConfigurations,
   getAllMultichainNetworkConfigurations,
-  selectEnabledEvmNetworksAsCaipChainIds,
 } from './networks';
 
 jest.mock('./feature-flags', () => ({
@@ -1015,30 +1014,6 @@ describe('Multichain network selectors', () => {
         isInfuraEndpoint: true,
         infuraEndpointIndex: undefined,
       });
-    });
-  });
-
-  describe('selectEnabledEvmNetworksAsCaipChainIds', () => {
-    it('returns only enabled EVM networks as CAIP chain IDs', () => {
-      const state = {
-        metamask: {
-          enabledNetworkMap: {
-            [KnownCaipNamespace.Eip155]: {
-              '0x1': true,
-              '0xaa36a7': false,
-              '0x89': true,
-            },
-            [KnownCaipNamespace.Solana]: {
-              [SolScope.Mainnet]: true,
-            },
-          },
-        },
-      };
-
-      expect(selectEnabledEvmNetworksAsCaipChainIds(state)).toStrictEqual([
-        'eip155:1',
-        'eip155:137',
-      ]);
     });
   });
 });

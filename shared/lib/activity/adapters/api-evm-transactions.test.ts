@@ -170,8 +170,6 @@ describe('mapEvmTransactions', () => {
       from: subjectAddress,
       to: metamaskBonusContract,
       transactionCategory: 'CLAIM_BONUS',
-      transactionType: 'METAMASK_CLAIM_BONUS',
-      transactionProtocol: 'METAMASK',
       valueTransfers: [
         {
           from: metamaskBonusContract,
@@ -206,6 +204,7 @@ describe('mapEvmTransactions', () => {
       to: bscUniversalRouter,
       methodId: '0x174dea71',
       transactionCategory: 'CONTRACT_CALL',
+      transactionProtocol: 'GENERIC',
       transactionType: 'GENERIC_CONTRACT_CALL',
       valueTransfers: [
         {
@@ -232,7 +231,7 @@ describe('mapEvmTransactions', () => {
         methodId: '0x174dea71',
         to: bscUniversalRouter,
         transactionCategory: 'CONTRACT_CALL',
-        transactionProtocol: undefined,
+        transactionProtocol: 'GENERIC',
         transactionType: 'GENERIC_CONTRACT_CALL',
       },
     });

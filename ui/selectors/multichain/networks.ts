@@ -366,14 +366,6 @@ export const selectEnabledNetworksAsCaipChainIds = createSelector(
       .sort(),
 );
 
-export const selectEnabledEvmNetworksAsCaipChainIds = createSelector(
-  selectEnabledNetworksAsCaipChainIds,
-  (networks) =>
-    networks.filter((network) =>
-      network.startsWith(`${KnownCaipNamespace.Eip155}:`),
-    ),
-);
-
 export const selectNonEvmChainIds = createSelector(
   getEnabledNetworks,
   (enabledNetworkMap) =>
