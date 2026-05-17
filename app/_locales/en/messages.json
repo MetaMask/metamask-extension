@@ -8782,6 +8782,15 @@
     "message": "You can paste your entire Secret Recovery Phrase into any field.",
     "description": "Our secret recovery phrase input is split into one field per word. This message explains to users that they can paste their entire secrete recovery phrase into any field, and we will handle it correctly."
   },
+  "srpRevealMaliciousBlockBody": {
+    "message": "This website is trying to steal your Secret Recovery Phrase. Close the tab and never share your phrase — not even with MetaMask."
+  },
+  "srpRevealMaliciousBlockHeading": {
+    "message": "You might be getting scammed right now"
+  },
+  "srpRevealMaliciousBlockIconAriaLabel": {
+    "message": "Danger"
+  },
   "srpSecurityQuizGetStarted": {
     "message": "Get started"
   },
