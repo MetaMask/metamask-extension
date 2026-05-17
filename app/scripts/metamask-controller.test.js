@@ -21,6 +21,7 @@ import {
   SolAccountType,
   TrxAccountType,
 } from '@metamask/keyring-api';
+import { KeyringType as KeyringTypeV2 } from '@metamask/keyring-api/v2';
 import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { LoggingController, LogType } from '@metamask/logging-controller';
 import {
@@ -2577,19 +2578,23 @@ describe('MetaMaskController', () => {
       });
 
       describe('getHardwareTypeForMetric', () => {
-        it.each(['ledger', 'lattice', 'trezor', 'oneKey', 'qr'])(
-          'should return the correct type for %s',
-          async (type) => {
-            jest
-              .spyOn(metamaskController.keyringController, 'withKeyringV2')
-              .mockImplementation((_, fn) => fn({ keyring: { type } }));
+        it.each([
+          KeyringTypeV2.Ledger,
+          KeyringTypeV2.Lattice,
+          KeyringTypeV2.Trezor,
+          KeyringTypeV2.OneKey,
+          KeyringTypeV2.Qr,
+        ])('should return the correct type for %s', async (type) => {
+          jest
+            .spyOn(metamaskController.keyringController, 'withKeyringV2')
+            .mockImplementation((_, fn) => fn({ keyring: { type } }));
 
-            const result =
-              await metamaskController.getHardwareTypeForMetric('0x123');
+          const result =
+            await metamaskController.getHardwareTypeForMetric('0x123');
 
-            expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
-          },
-        );
+          expect(result).toBe(KEYRING_DEVICE_PROPERTY_MAP[type]);
+          expect(result).toBeDefined();
+        });
       });
 
       describe('forgetDevice', () => {
