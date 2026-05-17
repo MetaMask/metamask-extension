@@ -2165,12 +2165,6 @@
   "dappConnections": {
     "message": "Kết nối Dapp"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Phát hiện trang web độc hại"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Trang web này được đánh dấu là có khả năng nguy hiểm. Nếu bạn tiết lộ Cụm từ khôi phục bí mật, bạn có thể gặp rủi ro về tiền bạc."
-  },
   "dappSuggested": {
     "message": "Trang web đề xuất"
   },

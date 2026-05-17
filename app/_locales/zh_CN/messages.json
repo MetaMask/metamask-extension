@@ -2165,12 +2165,6 @@
   "dappConnections": {
     "message": "去中心化应用连接"
   },
-  "dappScanMaliciousTitle": {
-    "message": "检测到恶意网站"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "该网站被标记为可能存在风险。如果您泄露了私钥助记词，您的资金可能会面临风险。"
-  },
   "dappSuggested": {
     "message": "建议的网站"
   },

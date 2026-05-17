@@ -2165,12 +2165,6 @@
   "dappConnections": {
     "message": "Mga koneksyon ng Dapp"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Natukoy ang mapanganib na website"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Na-flag ang website na ito bilang potensyal na mapanganib. Kapag ipinakita mo ang iyong Secret Recovery Phrase, maaari mong mailagay sa panganib ang mga pondo mo."
-  },
   "dappSuggested": {
     "message": "Iminungkahing site"
   },

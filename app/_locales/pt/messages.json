@@ -2165,12 +2165,6 @@
   "dappConnections": {
     "message": "Conexões do dapp"
   },
-  "dappScanMaliciousTitle": {
-    "message": "Site malicioso detectado"
-  },
-  "dappScanMaliciousWarning": {
-    "message": "Este site está sinalizado como potencialmente perigoso. Se você revelar sua Frase de Recuperação Secreta, poderá colocar seus fundos em risco."
-  },
   "dappSuggested": {
     "message": "Site sugerido"
   },
