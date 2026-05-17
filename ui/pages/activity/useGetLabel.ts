@@ -1,4 +1,4 @@
-import { getLabels } from '../../../shared/lib/activity/labels';
+import { getLabelKeys } from '../../../shared/lib/activity/label-keys';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import type { I18NSubstitution } from '../../../shared/lib/i18n';
 import { shortenAddress } from '../../helpers/utils/util';
@@ -11,19 +11,19 @@ type LabelSubstitutions = {
 
 function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
   switch (activity.type) {
-    // Token in title, sender in description.
+    // Token in title, sender in description
     case 'receive':
       return {
         title: [activity.data.tokenSymbol ?? ''],
         description: [shortenAddress(activity.data.from)],
       };
-    // Token in title, recipient in description.
+    // Token in title, recipient in description
     case 'send':
       return {
         title: [activity.data.tokenSymbol ?? ''],
         description: [shortenAddress(activity.data.to)],
       };
-    // Source and destination in title.
+    // Source and destination in title
     case 'swap':
       return {
         title: [
@@ -31,12 +31,12 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
           activity.data.destinationTokenSymbol ?? '',
         ],
       };
-    // Source in title.
+    // Source in title
     case 'swapIncomplete':
       return {
         title: [activity.data.sourceTokenSymbol ?? ''],
       };
-    // Token in title, token in description.
+    // Token in title, token in description
     case 'buy':
     case 'claim':
     case 'lendingDeposit':
@@ -48,14 +48,14 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
       return {
         title: [activity.data.tokenSymbol ?? 'NFT'],
       };
-    // Token in description.
+    // Token in description
     case 'approveSpendingCap':
     case 'increaseSpendingCap':
     case 'revokeSpendingCap':
       return {
         description: [activity.data.tokenSymbol ?? ''],
       };
-    // No substitutions.
+    // No substitutions
     default:
       return {};
   }
@@ -63,14 +63,14 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
 
 export function useGetLabel(activity: ActivityListItem) {
   const t = useI18nContext();
-  const labels = getLabels({
+  const labelKeys = getLabelKeys({
     type: activity.type,
     status: activity.status,
   });
   const substitutions = getSubstitutions(activity);
 
   return {
-    title: t(labels.title.key, substitutions.title),
-    description: t(labels.description.key, substitutions.description),
+    title: t(labelKeys.title.key, substitutions.title),
+    description: t(labelKeys.description.key, substitutions.description),
   };
 }

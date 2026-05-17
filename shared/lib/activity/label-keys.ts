@@ -2,7 +2,7 @@ import type { ActivityType, Status } from './types';
 
 const fallbackLabelKey = 'activity_fallback';
 
-export function getLabels({
+export function getLabelKeys({
   type,
   status,
 }: {

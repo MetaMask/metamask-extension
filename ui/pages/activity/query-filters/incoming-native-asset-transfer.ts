@@ -1,5 +1,5 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
-import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
+import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../../../shared/lib/string-utils';
 import { parseValueTransfers } from '../../../../shared/lib/multichain/transformations';
 import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 
@@ -10,7 +10,7 @@ export function isIncomingNativeAssetTransfer(
   const { to, from } = parseValueTransfers(subjectAddress, transaction);
 
   return (
-    !isEqualCaseInsensitive(transaction.from, subjectAddress) &&
+    !equalsIgnoreCase(transaction.from, subjectAddress) &&
     !from &&
     to?.token.address === NATIVE_TOKEN_ADDRESS
   );

@@ -5,7 +5,7 @@ import type {
 } from '@metamask/core-backend';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { mapEvmTransactions } from '../../../../shared/lib/activity/adapters/evm-transactions';
+import { mapApiEvmTransactions } from '../../../../shared/lib/activity/adapters/api-evm-transactions';
 import { selectRequiredTransactionHashes } from '../../../selectors/transactionController';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
 import { isIncomingNativeAssetTransfer } from './incoming-native-asset-transfer';
@@ -14,7 +14,7 @@ import { isSpamTransaction } from './spam-transactions';
 import { isTopLevelAccountTransaction } from './top-level-account-transaction';
 import { isZeroValueSelfSend } from './zero-value-self-send';
 
-export function useClientFilters(subjectAddress: string) {
+export function useQueryFilters(subjectAddress: string) {
   const excludedHashes = useSelector(selectRequiredTransactionHashes);
 
   return useCallback(
@@ -38,7 +38,7 @@ export function useClientFilters(subjectAddress: string) {
               filters.every((filter) => filter(transaction)),
             )
             .map((transaction) =>
-              mapEvmTransactions({ subjectAddress, transaction }),
+              mapApiEvmTransactions({ subjectAddress, transaction }),
             ),
         })),
       };

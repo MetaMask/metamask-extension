@@ -48,145 +48,67 @@ export type ActivityType =
   | 'marketCloseShort'
   | 'nftMint';
 
+type ActivityItem<Type extends ActivityType, Data> = {
+  type: Type;
+  chainId: CaipChainId;
+  status: Status;
+  timestamp: number;
+  data: Data & {
+    hash?: string;
+  };
+};
+
 export type ActivityListItem =
-  | {
-      type: 'send';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
+  | ActivityItem<
+      'send' | 'receive',
+      {
         from: string;
         to: string;
         tokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'receive';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
-        from: string;
-        to: string;
-        tokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'swap';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
+      }
+    >
+  | ActivityItem<
+      'swap',
+      {
         sourceTokenSymbol?: string;
         destinationTokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'swapIncomplete';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
+      }
+    >
+  | ActivityItem<
+      'swapIncomplete',
+      {
         sourceTokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'buy';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
+      }
+    >
+  | ActivityItem<
+      'buy' | 'lendingDeposit' | 'claim',
+      {
         tokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'lendingDeposit';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
+      }
+    >
+  | ActivityItem<'claimMusdBonus', object>
+  | ActivityItem<
+      'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
+      {
         tokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'claim';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
-        tokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'claimMusdBonus';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
-      };
-    }
-  | {
-      type: 'approveSpendingCap';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
-        tokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'revokeSpendingCap';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
-        tokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'increaseSpendingCap';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
-        tokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'nftMint';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
+      }
+    >
+  | ActivityItem<
+      'nftMint',
+      {
         from: string;
         to: string;
         tokenSymbol?: string;
-      };
-    }
-  | {
-      type: 'contractInteraction';
-      chainId: CaipChainId;
-      status: Status;
-      timestamp: number;
-      data: {
-        hash?: string;
+      }
+    >
+  | ActivityItem<
+      'contractInteraction',
+      {
         from: string;
         to: string;
         methodId?: string;
         transactionCategory?: string;
         transactionProtocol?: string;
         transactionType?: string;
-      };
-    };
+      }
+    >;

@@ -1,5 +1,5 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
-import { isEqualCaseInsensitive } from '../../../../shared/lib/string-utils';
+import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../../../shared/lib/string-utils';
 
 export function isIncomingTokenTransfer(
   transaction: V1TransactionByHashResponse,
@@ -7,7 +7,7 @@ export function isIncomingTokenTransfer(
 ) {
   return Boolean(
     transaction.valueTransfers?.some(({ to }) =>
-      isEqualCaseInsensitive(to, subjectAddress),
-    ) && !isEqualCaseInsensitive(transaction.from, subjectAddress),
+      equalsIgnoreCase(to, subjectAddress),
+    ) && !equalsIgnoreCase(transaction.from, subjectAddress),
   );
 }

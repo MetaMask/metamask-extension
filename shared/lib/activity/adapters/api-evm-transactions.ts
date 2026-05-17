@@ -1,13 +1,12 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
-import { Hex, zeroAddress } from 'viem';
-import { isEqualCaseInsensitive } from '../../string-utils';
+import { zeroAddress } from 'viem';
+import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status } from '../types';
 import { supplyMethodIds } from './constants';
-import { SET_APPROVAL_FOR_ALL } from '../../../constants/transaction';
-import { parseApprovalTransactionData } from '../../transaction.utils';
 
-export function mapEvmTransactions({
+// Converts indexed API transactions into the shared activity item shape
+export function mapApiEvmTransactions({
   subjectAddress,
   transaction,
 }: {
@@ -23,10 +22,10 @@ export function mapEvmTransactions({
   );
 
   const sentTransfer = valueTransfers?.find(({ from }) =>
-    isEqualCaseInsensitive(from, subjectAddress),
+    equalsIgnoreCase(from, subjectAddress),
   );
   const receivedTransfer = valueTransfers?.find(({ to }) =>
-    isEqualCaseInsensitive(to, subjectAddress),
+    equalsIgnoreCase(to, subjectAddress),
   );
   const hasSupplyMethodId =
     transaction.methodId && supplyMethodIds.has(transaction.methodId);
@@ -59,26 +58,7 @@ export function mapEvmTransactions({
   }
 
   if (transactionCategory === 'APPROVE') {
-    const { methodId } = transaction;
-
     // TODO: Categorize REVOKE in the backend
-    const isSetApprovalForAll = methodId === SET_APPROVAL_FOR_ALL;
-    const approvalData = parseApprovalTransactionData(methodId as Hex);
-
-    if (isSetApprovalForAll) {
-      if (!approvalData || approvalData.isRevokeAll) {
-        return {
-          type: 'revokeSpendingCap',
-          chainId,
-          status,
-          timestamp,
-          data: {
-            hash,
-            tokenSymbol: approvalData?.name,
-          },
-        };
-      }
-    }
 
     return {
       type: 'approveSpendingCap',
@@ -167,8 +147,8 @@ export function mapEvmTransactions({
   ) {
     const isReceive =
       Boolean(receivedTransfer) ||
-      (isEqualCaseInsensitive(transaction.to, subjectAddress) &&
-        !isEqualCaseInsensitive(transaction.from, subjectAddress));
+      (equalsIgnoreCase(transaction.to, subjectAddress) &&
+        !equalsIgnoreCase(transaction.from, subjectAddress));
 
     const transfer = isReceive ? receivedTransfer : sentTransfer;
 

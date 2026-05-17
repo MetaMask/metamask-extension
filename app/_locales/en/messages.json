@@ -953,26 +953,6 @@
   "activity_stopMarketCloseShort_success_title": {
     "message": "Closed short - stop market"
   },
-  "activity_swap_failed_description": {
-    "message": ""
-  },
-  "activity_swap_failed_title": {
-    "message": "Swap failed"
-  },
-  "activity_swap_pending_description": {
-    "message": ""
-  },
-  "activity_swap_pending_title": {
-    "message": "Swapping $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
-  },
-  "activity_swap_success_description": {
-    "message": ""
-  },
-  "activity_swap_success_title": {
-    "message": "Swapped $1 to $2",
-    "description": "$1 is the source token symbol, $2 is the destination token symbol"
-  },
   "activity_swapIncomplete_failed_description": {
     "message": ""
   },
@@ -992,6 +972,26 @@
   "activity_swapIncomplete_success_title": {
     "message": "Swapped $1",
     "description": "$1 is the source token symbol"
+  },
+  "activity_swap_failed_description": {
+    "message": ""
+  },
+  "activity_swap_failed_title": {
+    "message": "Swap failed"
+  },
+  "activity_swap_pending_description": {
+    "message": ""
+  },
+  "activity_swap_pending_title": {
+    "message": "Swapping $1 to $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
+  },
+  "activity_swap_success_description": {
+    "message": ""
+  },
+  "activity_swap_success_title": {
+    "message": "Swapped $1 to $2",
+    "description": "$1 is the source token symbol, $2 is the destination token symbol"
   },
   "activity_unwrap_failed_description": {
     "message": "Unwrap failed"

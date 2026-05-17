@@ -1,6 +1,6 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { CHAIN_IDS } from '../../../constants/network';
-import { mapEvmTransactions } from './evm-transactions';
+import { mapApiEvmTransactions } from './api-evm-transactions';
 
 const subjectAddress = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
 const baseUsdc = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913';
@@ -33,7 +33,7 @@ describe('mapEvmTransactions', () => {
     } as unknown as V1TransactionByHashResponse;
 
     expect(
-      mapEvmTransactions({
+      mapApiEvmTransactions({
         subjectAddress,
         transaction,
       }),
@@ -68,7 +68,7 @@ describe('mapEvmTransactions', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapEvmTransactions({
+      mapApiEvmTransactions({
         subjectAddress,
         transaction,
       }),
@@ -86,7 +86,7 @@ describe('mapEvmTransactions', () => {
     });
   });
 
-  it('maps an exchange transaction to a Swap activity', () => {
+  it('maps an exchange transaction without a received token to an incomplete Swap activity', () => {
     const transaction = {
       timestamp: '2026-05-05T17:57:53.000Z',
       chainId: Number(CHAIN_IDS.LINEA_MAINNET),
@@ -103,17 +103,16 @@ describe('mapEvmTransactions', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapEvmTransactions({
+      mapApiEvmTransactions({
         subjectAddress,
         transaction,
       }),
     ).toStrictEqual({
-      type: 'swap',
+      type: 'swapIncomplete',
       chainId: 'eip155:59144',
       status: 'success',
       timestamp: 1778003873000,
       data: {
-        destinationTokenSymbol: undefined,
         hash: undefined,
         sourceTokenSymbol: 'mUSD',
       },
@@ -147,7 +146,7 @@ describe('mapEvmTransactions', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapEvmTransactions({
+      mapApiEvmTransactions({
         subjectAddress,
         transaction,
       }),
@@ -184,7 +183,7 @@ describe('mapEvmTransactions', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapEvmTransactions({
+      mapApiEvmTransactions({
         subjectAddress,
         transaction,
       }),
@@ -218,7 +217,7 @@ describe('mapEvmTransactions', () => {
     } as V1TransactionByHashResponse;
 
     expect(
-      mapEvmTransactions({
+      mapApiEvmTransactions({
         subjectAddress,
         transaction,
       }),

@@ -8,42 +8,41 @@ import {
   Box,
   Text,
 } from '@metamask/design-system-react';
+import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
+import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { useGetLabel } from '../useGetLabel';
 import type { ActivityCellProps } from './types';
 
-type BaseActivityCellProps = ActivityCellProps & {
+type GenericActivityCellProps = ActivityCellProps & {
   description?: string;
 };
 
-export function BaseActivityCell({
+export function GenericActivityCell({
   data,
   description: descriptionOverride,
-}: BaseActivityCellProps) {
+}: GenericActivityCellProps) {
   const { description: labelDescription, title } = useGetLabel(data);
   const description = descriptionOverride ?? labelDescription;
   const shortHash = data.data.hash?.slice(0, 6);
-  const chainId = convertCaipToHexChainId(data.chainId);
+  const { namespace } = parseCaipChainId(data.chainId);
+  const chainId =
+    namespace === KnownCaipNamespace.Eip155
+      ? convertCaipToHexChainId(data.chainId)
+      : data.chainId;
   const networkName =
     NETWORK_TO_NAME_MAP[chainId as keyof typeof NETWORK_TO_NAME_MAP] ??
+    MULTICHAIN_NETWORK_TO_NICKNAME[
+      data.chainId as keyof typeof MULTICHAIN_NETWORK_TO_NICKNAME
+    ] ??
     data.chainId;
-  const tokenSymbol =
-    data.type === 'swap'
-      ? (data.data.sourceTokenSymbol ?? data.data.destinationTokenSymbol)
-      : data.type === 'swapIncomplete'
-        ? data.data.sourceTokenSymbol
-        : data.type === 'claimMusdBonus'
-          ? 'mUSD'
-          : 'tokenSymbol' in data.data
-            ? data.data.tokenSymbol
-            : undefined;
   const networkIconSrc = getImageForChainId(chainId);
 
   return (
-    <Box className="px-4 py-3">
-      <div className="grid grid-cols-[48px_minmax(0,1fr)_auto] items-center gap-2">
+    <Box className="px-4 py-3 transition-transform duration-200 ease-out">
+      <div className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-3">
         <div className="relative flex items-center justify-center">
           <BadgeWrapper
             badge={
@@ -58,7 +57,7 @@ export function BaseActivityCell({
           >
             <AvatarToken
               className="size-8"
-              name={tokenSymbol}
+              name="token"
               size={AvatarTokenSize.Md}
             />
           </BadgeWrapper>

@@ -1,9 +1,9 @@
-import { getLabels } from './labels';
+import { getLabelKeys } from './label-keys';
 
 describe('getLabels', () => {
   it('returns title and description keys', () => {
     expect(
-      getLabels({
+      getLabelKeys({
         type: 'swap',
         status: 'pending',
       }),
