@@ -269,7 +269,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-receive-value"
                 >
-                  {isLoadingFees ? '--' : formatFiat(Math.max(youWillReceive, 0))}
+                  {isLoadingFees
+                    ? '--'
+                    : formatFiat(Math.max(youWillReceive, 0))}
                 </Text>
               </Box>
             </Box>
