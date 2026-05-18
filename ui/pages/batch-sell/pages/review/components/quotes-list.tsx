@@ -7,6 +7,7 @@ import { QuotesListItem } from './quotes-list-item';
 type QuotesListProps = {
   sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
   quotes?: BatchSellQuotesResults['quotes'];
+  isLoading: boolean;
   canDeleteAssets: boolean;
   onAssetDeleteClick: (asset: BatchSellAsset) => void;
   onSlippagePercentChangeClick: (asset: BatchSellAsset) => void;
@@ -23,6 +24,7 @@ export const QuotesList = ({
   onAssetDeleteClick,
   canDeleteAssets,
   quotes,
+  isLoading,
 }: QuotesListProps) => {
   return (
     <Box className="flex-1">
@@ -31,6 +33,7 @@ export const QuotesList = ({
           key={asset.assetId}
           asset={asset}
           quote={quotes?.[asset.assetId]}
+          isLoading={isLoading}
           canDeleteAssets={canDeleteAssets}
           sendAmountPercent={sendAmountPercent}
           onSlippagePercentChangeClick={onSlippagePercentChangeClick}

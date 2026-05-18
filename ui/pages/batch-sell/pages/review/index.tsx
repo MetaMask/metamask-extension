@@ -15,7 +15,7 @@ import { TotalReceivedModal } from './components/total-received-modal';
 import { SlippageModal } from './components/slippage-modal';
 import { ReviewAndConfirmModal } from './components/review-and-confirm-modal';
 import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
-import { useBatchSellValidation } from './hooks/useBatchSellValidation';
+import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateValidation';
 
 // CASE: no quotes available for any asset should disable the info button and review
 // CASE: no quotes available for some assets should not render row in review
@@ -23,6 +23,7 @@ import { useBatchSellValidation } from './hooks/useBatchSellValidation';
 // TODO: write tests
 // TODO: migrate hook tests to components
 // TODO: try to extract test configurations
+// TODO: add security warnings array
 
 export const BatchSellReviewPage = () => {
   const [selectReceivedAssetModalIsOpen, setSelectReceivedAssetModalIsOpen] =
@@ -57,7 +58,7 @@ export const BatchSellReviewPage = () => {
     { enabled: hasInitialSelection },
   );
 
-  const validation = useBatchSellValidation({
+  const validation = useBatchSellAggregateValidation({
     sendAssetsConfig,
     quotes: data?.quotes,
     totalNetworkFee: data?.totalNetworkFee,
@@ -75,6 +76,7 @@ export const BatchSellReviewPage = () => {
     >
       <Header
         totalReceivedFiat={data?.totalReceivedAmountFiat}
+        isLoading={isLoading}
         selectedAsset={{
           symbol: selectedReceiveAsset.symbol,
           image: selectedReceiveAsset.image,
@@ -89,6 +91,7 @@ export const BatchSellReviewPage = () => {
       <QuotesList
         sendAssetsConfig={sendAssetsConfig}
         quotes={data?.quotes}
+        isLoading={isLoading}
         onSendAmountPercentChange={setSendAmountPercent}
         onSlippagePercentChangeClick={(asset) =>
           setEditingSlippageAssetId(asset.assetId)

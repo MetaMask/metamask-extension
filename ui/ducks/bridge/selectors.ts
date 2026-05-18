@@ -14,6 +14,8 @@ import {
   selectBatchSellQuotes,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
+  type QuoteMetadata,
+  type QuoteResponse,
   type QuoteWarning,
   isCrossChain,
   RequestStatus,
@@ -114,7 +116,7 @@ import {
   getMaybeHexChainId,
   isSupportedBridgeChain,
 } from './utils';
-import type { BridgeNetwork, BridgeState, BridgeToken } from './types';
+import type { BridgeNetwork, BridgeState, BridgeToken, QuoteValidationErrors } from './types';
 
 const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
@@ -970,6 +972,124 @@ export const getQuoteRequestInsufficientBal = createSelector(
 const getQuoteStreamComplete = (state: BridgeAppState) =>
   state.metamask.quoteStreamComplete;
 
+const computeQuoteValidationErrors = (
+  quote: (QuoteMetadata & QuoteResponse) | undefined | null,
+  {
+    priceImpactThresholds: { warning, error },
+    isHardwareWalletAccount,
+    minimumBalanceForRentExemptionInSOL,
+    fromToken,
+    fromTokenInputValue,
+    validatedSrcAmount,
+    nativeBalance,
+    fromTokenBalance,
+    quoteRequest,
+    insufficientNativeReserveError,
+  }: {
+    priceImpactThresholds: { warning: number; error: number };
+    isHardwareWalletAccount: boolean;
+    minimumBalanceForRentExemptionInSOL: string;
+    fromToken?: ReturnType<typeof getFromToken>;
+    fromTokenInputValue?: ReturnType<typeof getFromAmount>;
+    validatedSrcAmount?: ReturnType<typeof _getValidatedSrcAmount>;
+    nativeBalance?: ReturnType<typeof _getFromNativeBalance>;
+    fromTokenBalance?: ReturnType<typeof getFromTokenBalance>;
+    quoteRequest?: ReturnType<typeof getQuoteRequest>;
+    insufficientNativeReserveError?: ReturnType<
+      typeof getActiveQuoteInsufficientNativeReserveError
+    >;
+  },
+): QuoteValidationErrors => {
+  const { gasIncluded, gasIncluded7702, gasSponsored } = quote?.quote ?? {};
+  // gasIncluded7702 and gasSponsored are gated at request time via
+  // useGasIncluded7702 (returns false for HW), so the backend won't
+  // return those flags for HW accounts.
+  // gasIncluded (STX path) works for HW wallets; only 7702/sponsored
+  // need gating. We also gate 7702/sponsored here as defense-in-depth.
+  const isGasless = isHardwareWalletAccount
+    ? gasIncluded
+    : gasIncluded || gasIncluded7702 || gasSponsored;
+
+  const srcChainId = quoteRequest?.srcChainId ?? quote?.quote?.srcChainId;
+  const minimumBalanceToKeep =
+    srcChainId && isSolanaChainId(srcChainId)
+      ? minimumBalanceForRentExemptionInSOL
+      : '0';
+
+  const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
+  const isNetworkFeeUnavailable = Boolean(
+    quote &&
+    srcChainId &&
+    isBitcoinChainId(srcChainId) &&
+    !isGasless &&
+    (quote.totalNetworkFee?.amount === undefined ||
+      new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),
+  );
+
+  const priceImpactNumber = (() => {
+    const parsed = Number(quote?.quote?.priceData?.priceImpact);
+    return Number.isNaN(parsed) ? null : parsed;
+  })();
+
+  return {
+    // Shown prior to fetching quotes (native reserve error takes precedence)
+    isInsufficientGasBalance: Boolean(
+      nativeBalance &&
+      !quote &&
+      validatedSrcAmount &&
+      fromToken &&
+      !isGasless &&
+      (isNativeAddress(fromToken.assetId)
+        ? new BigNumber(nativeBalance)
+            .sub(minimumBalanceToKeep)
+            .lte(validatedSrcAmount)
+        : new BigNumber(nativeBalance).lte(0)),
+    ),
+    isInsufficientNativeReserve,
+    isNetworkFeeUnavailable,
+    // Shown after fetching quotes
+    isInsufficientGasForQuote: Boolean(
+      !isNetworkFeeUnavailable &&
+      nativeBalance &&
+      quote &&
+      fromToken &&
+      fromTokenInputValue &&
+      !isGasless &&
+      (isNativeAddress(fromToken.assetId)
+        ? new BigNumber(nativeBalance)
+            .sub(quote.totalNetworkFee.amount)
+            .sub(quote.sentAmount.amount)
+            .sub(minimumBalanceToKeep)
+            .lte(0)
+        : new BigNumber(nativeBalance).lte(quote.totalNetworkFee.amount)),
+    ),
+    isInsufficientBalance:
+      validatedSrcAmount &&
+      fromTokenBalance &&
+      !Number.isNaN(Number(fromTokenBalance))
+        ? new BigNumber(fromTokenBalance).lt(validatedSrcAmount)
+        : false,
+    isEstimatedReturnLow:
+      quote?.sentAmount?.valueInCurrency &&
+      quote?.adjustedReturn?.valueInCurrency &&
+      fromTokenInputValue
+        ? new BigNumber(quote.adjustedReturn.valueInCurrency).lt(
+            new BigNumber(
+              1 - BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
+            ).times(quote.sentAmount.valueInCurrency),
+          )
+        : false,
+    isPriceImpactWarning: Boolean(
+      priceImpactNumber &&
+      priceImpactNumber > warning &&
+      priceImpactNumber <= error,
+    ),
+    isPriceImpactError: Boolean(
+      priceImpactNumber && priceImpactNumber > error,
+    ),
+  };
+};
+
 const _getBaseValidationErrors = createDeepEqualSelector(
   [
     getBridgeQuotes,
@@ -983,7 +1103,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     _getFromNativeBalance,
     getFromTokenBalance,
     ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
-    getPriceImpact,
     getPriceImpactThresholds,
     (state: BridgeAppState) => isHardwareWallet(state as never),
     getQuoteStreamComplete,
@@ -1000,41 +1119,26 @@ const _getBaseValidationErrors = createDeepEqualSelector(
     nativeBalance,
     fromTokenBalance,
     txAlertStatus,
-    priceImpactNumber,
-    { warning, error },
+    priceImpactThresholds,
     isHardwareWalletAccount,
     quoteStreamCompleteData,
     insufficientNativeReserveError,
   ) => {
-    const { gasIncluded, gasIncluded7702, gasSponsored } =
-      activeQuote?.quote ?? {};
-    // gasIncluded7702 and gasSponsored are gated at request time via
-    // useGasIncluded7702 (returns false for HW), so the backend won't
-    // return those flags for HW accounts.
-    // gasIncluded (STX path) works for HW wallets; only 7702/sponsored
-    // need gating. We also gate 7702/sponsored here as defense-in-depth.
-    const isGasless = isHardwareWalletAccount
-      ? gasIncluded
-      : gasIncluded || gasIncluded7702 || gasSponsored;
-
-    const srcChainId =
-      quoteRequest.srcChainId ?? activeQuote?.quote?.srcChainId;
-    const minimumBalanceToKeep =
-      srcChainId && isSolanaChainId(srcChainId)
-        ? minimumBalanceForRentExemptionInSOL
-        : '0';
-
-    const isInsufficientNativeReserve = Boolean(insufficientNativeReserveError);
-    const isNetworkFeeUnavailable = Boolean(
-      activeQuote &&
-      srcChainId &&
-      isBitcoinChainId(srcChainId) &&
-      !isGasless &&
-      (activeQuote.totalNetworkFee?.amount === undefined ||
-        new BigNumber(activeQuote.totalNetworkFee?.amount ?? '0').lte(0)),
-    );
+    const quoteValidation = computeQuoteValidationErrors(activeQuote, {
+      priceImpactThresholds,
+      isHardwareWalletAccount,
+      minimumBalanceForRentExemptionInSOL,
+      fromToken,
+      fromTokenInputValue,
+      validatedSrcAmount,
+      nativeBalance,
+      fromTokenBalance,
+      quoteRequest,
+      insufficientNativeReserveError,
+    });
 
     return {
+      ...quoteValidation,
       isTxAlertPresent: Boolean(txAlert),
       isTxAlertLoading: txAlertStatus === RequestStatus.LOADING,
       isNoQuotesAvailable:
@@ -1046,65 +1150,35 @@ const _getBaseValidationErrors = createDeepEqualSelector(
           !isLoading &&
           quotesRefreshCount > 0,
         ),
-      // Shown prior to fetching quotes (native reserve error takes precedence)
-      isInsufficientGasBalance: Boolean(
-        nativeBalance &&
-        !activeQuote &&
-        validatedSrcAmount &&
-        fromToken &&
-        !isGasless &&
-        (isNativeAddress(fromToken.assetId)
-          ? new BigNumber(nativeBalance)
-              .sub(minimumBalanceToKeep)
-              .lte(validatedSrcAmount)
-          : new BigNumber(nativeBalance).lte(0)),
-      ),
-      isInsufficientNativeReserve,
-      isNetworkFeeUnavailable,
-      // Shown after fetching quotes
-      isInsufficientGasForQuote: Boolean(
-        !isNetworkFeeUnavailable &&
-        nativeBalance &&
-        activeQuote &&
-        fromToken &&
-        fromTokenInputValue &&
-        !isGasless &&
-        (isNativeAddress(fromToken.assetId)
-          ? new BigNumber(nativeBalance)
-              .sub(activeQuote.totalNetworkFee.amount)
-              .sub(activeQuote.sentAmount.amount)
-              .sub(minimumBalanceToKeep)
-              .lte(0)
-          : new BigNumber(nativeBalance).lte(
-              activeQuote.totalNetworkFee.amount,
-            )),
-      ),
-      isInsufficientBalance:
-        validatedSrcAmount &&
-        fromTokenBalance &&
-        !Number.isNaN(Number(fromTokenBalance))
-          ? new BigNumber(fromTokenBalance).lt(validatedSrcAmount)
-          : false,
-      isEstimatedReturnLow:
-        activeQuote?.sentAmount?.valueInCurrency &&
-        activeQuote?.adjustedReturn?.valueInCurrency &&
-        fromTokenInputValue
-          ? new BigNumber(activeQuote.adjustedReturn.valueInCurrency).lt(
-              new BigNumber(
-                1 - BRIDGE_QUOTE_MAX_RETURN_DIFFERENCE_PERCENTAGE,
-              ).times(activeQuote.sentAmount.valueInCurrency),
-            )
-          : false,
-      isPriceImpactWarning: Boolean(
-        priceImpactNumber &&
-        priceImpactNumber > warning &&
-        priceImpactNumber <= error,
-      ),
-      isPriceImpactError: Boolean(
-        priceImpactNumber && priceImpactNumber > error,
-      ),
     };
   },
+);
+
+// Per-quote validation errors for batch-sell. Returns an array of length
+// `requestCount`, one entry per slot in `recommendedQuotes`. Slots without a
+// quote get the default (all flags `false`).
+export const getBatchSellQuotesValidationErrors = createDeepEqualSelector(
+  [
+    (state: BridgeAppState, params: { requestCount: number }) =>
+      getBatchSellQuotes(state, params),
+    getPriceImpactThresholds,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
+    ({ metamask }: BridgeAppState) =>
+      selectMinimumBalanceForRentExemptionInSOL(metamask),
+  ],
+  (
+    { recommendedQuotes },
+    priceImpactThresholds,
+    isHardwareWalletAccount,
+    minimumBalanceForRentExemptionInSOL,
+  ): QuoteValidationErrors[] =>
+    recommendedQuotes.map((quote) =>
+      computeQuoteValidationErrors(quote, {
+        priceImpactThresholds,
+        isHardwareWalletAccount,
+        minimumBalanceForRentExemptionInSOL,
+      }),
+    ),
 );
 
 /**

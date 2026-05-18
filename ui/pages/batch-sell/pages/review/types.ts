@@ -1,5 +1,7 @@
 import { CaipAssetType } from '@metamask/utils';
+import { type BridgeController } from '@metamask/bridge-controller';
 import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
+import { BridgeAssetV2 } from '../../../bridge/utils/tokens';
 
 export type BatchSellQuotesConfig = {
   sendAssetsConfig: {
@@ -22,7 +24,7 @@ export type BatchSellQuotesResults = {
       minimumReceivedAmount?: number;
       hasQuote: boolean;
       hasHighPriceImpactWarning?: boolean;
-      quoteBpsFee?: number;
+      quoteBpsFee?: string | number;
     };
   };
   receivedAsset: ReceivedAsset;
@@ -67,7 +69,23 @@ export type ReceivedAsset = {
   symbol: string;
   fiatBalance?: number | null;
   image?: string | null;
+  securityData?: BridgeAssetV2['securityData'];
 };
+
+export type SendAssetEntry = {
+  assetId: CaipAssetType;
+  asset: BatchSellAsset;
+  sendAmountPercent: number;
+  slippagePercent: number;
+};
+
+export type QuoteRequestParams = Parameters<
+  BridgeController['updateBridgeQuoteRequestParams']
+>[0];
+
+export type QuoteRequestContext = Parameters<
+  BridgeController['updateBridgeQuoteRequestParams']
+>[1];
 
 export type BatchSellReviewState = {
   sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];

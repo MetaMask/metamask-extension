@@ -25,6 +25,7 @@ import { Skeleton } from '../../../../../components/component-library/skeleton';
 
 type HeaderProps = {
   totalReceivedFiat?: number;
+  isLoading: boolean;
   selectedAsset: {
     symbol: string;
     image?: string | null;
@@ -35,6 +36,7 @@ type HeaderProps = {
 
 export const Header = ({
   totalReceivedFiat,
+  isLoading,
   selectedAsset,
   onSelectReceivedAssetClick: onSelectAssetClick,
   onTotalReceivedFiatIconClick,
@@ -44,7 +46,7 @@ export const Header = ({
   const formattedTotalReceive = useMemo(
     () =>
       totalReceivedFiat === undefined
-        ? '12345678' // Hardocded value to allow skeleton to render
+        ? '12345678' // Hardcoded value to allow skeleton to render
         : formatCurrencyAmount(totalReceivedFiat.toString(), currency, 2),
     [totalReceivedFiat, currency],
   );
@@ -73,7 +75,7 @@ export const Header = ({
         justifyContent={BoxJustifyContent.Between}
         flexWrap={BoxFlexWrap.Wrap}
       >
-        <Skeleton isLoading={totalReceivedFiat === undefined}>
+        <Skeleton isLoading={isLoading}>
           <Text
             variant={
               (formattedTotalReceive?.length ?? 0) > 10

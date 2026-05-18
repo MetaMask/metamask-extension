@@ -19,7 +19,7 @@ export type BatchSellValidationResult = {
   nativeAssetSymbol: string | undefined;
 };
 
-export const useBatchSellValidation = ({
+export const useBatchSellAggregateValidation = ({
   sendAssetsConfig,
   quotes,
   totalNetworkFee,

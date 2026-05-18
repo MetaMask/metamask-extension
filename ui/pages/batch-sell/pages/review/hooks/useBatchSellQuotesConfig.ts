@@ -30,6 +30,7 @@ export const useBatchSellQuotesConfig = () => {
       symbol: asset.symbol,
       fiatBalance: asset.tokenFiatAmount,
       image: asset.iconUrl,
+      securityData: asset.securityData,
     })),
   );
 

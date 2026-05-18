@@ -39,6 +39,7 @@ import { MAX_SEND_PERCENT, MIN_SEND_PERCENT, SEND_PERCENTS_STEPS } from '../../.
 type QuotesListItemProps = {
   asset: BatchSellAsset;
   quote?: BatchSellQuotesResults['quotes'][CaipAssetType];
+  isLoading: boolean;
   sendAmountPercent: number;
   canDeleteAssets: boolean;
   onSlippagePercentChangeClick: (asset: BatchSellAsset) => void;
@@ -57,10 +58,17 @@ export const QuotesListItem = ({
   onAssetDeleteClick,
   canDeleteAssets,
   quote,
+  isLoading,
 }: QuotesListItemProps) => {
   const t = useI18nContext();
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
+
+  // Show skeleton while quotes are being (re)fetched or before the first
+  // result lands. Only surface "no quote available" once we have a settled
+  // result with `hasQuote: false`.
+  const showSkeleton = isLoading || !quote;
+  const showNoQuoteAvailable = !isLoading && quote && !quote.hasQuote;
 
   const quoteFiatAmount = useMemo(
     () =>
@@ -98,22 +106,22 @@ export const QuotesListItem = ({
           size={AvatarTokenSize.Lg}
         />
         <Box gap={1} className="flex-1">
-          <Skeleton isLoading={!quote} width="50%">
+          <Skeleton isLoading={showSkeleton} width="50%">
             <Box flexDirection={BoxFlexDirection.Row} gap={2}>
-              {quote?.hasQuote ? (
-                <Text
-                  variant={TextVariant.BodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {quoteFiatAmount}
-                </Text>
-              ) : (
+              {showNoQuoteAvailable ? (
                 <Text
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
                   color={TextColor.ErrorDefault}
                 >
                   {t('noQuoteAvailable')}
+                </Text>
+              ) : (
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {quoteFiatAmount}
                 </Text>
               )}
               {quote?.hasHighPriceImpactWarning && (

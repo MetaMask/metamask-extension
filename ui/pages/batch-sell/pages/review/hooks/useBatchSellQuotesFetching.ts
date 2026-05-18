@@ -1,80 +1,177 @@
-import { useQuery } from '@tanstack/react-query';
-import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import { useEffect, useMemo, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { debounce } from 'lodash';
+import { CaipAssetType } from '@metamask/utils';
+import {
+  resetBridgeController,
+  setSelectedQuote,
+  updateQuoteRequestParams,
+} from '../../../../../ducks/bridge/actions';
+import {
+  type BridgeAppState,
+  getBatchSellQuotes,
+  getBatchSellQuotesValidationErrors,
+  getFromAccount,
+  getIsStxEnabled,
+} from '../../../../../ducks/bridge/selectors';
+import { getMultichainProviderConfig } from '../../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
+import {
+  BatchSellQuotesConfig,
+  BatchSellQuotesResults,
+  QuoteRequestContext,
+  QuoteRequestParams,
+  SendAssetEntry,
+} from '../types';
+import {
+  buildQuoteRequestContext,
+  buildQuoteRequestForEntry,
+  buildResults,
+} from '../utils';
 
 type Options = {
   enabled: boolean;
 };
 
+const QUOTE_REQUEST_DEBOUNCE_MS = 300;
+
 export const useBatchSellQuotesFetching = (
   { sendAssetsConfig, receivedAsset }: BatchSellQuotesConfig,
   { enabled }: Options,
 ) => {
-  const { data, isLoading } = useQuery({
-    enabled,
-    queryKey: [
-      'batch-sell',
-      receivedAsset?.id,
-      ...Object.values(sendAssetsConfig).map(
-        ({ asset, sendAmountPercent, slippagePercent }) =>
-          [asset.assetId, sendAmountPercent, slippagePercent].join('-'),
+  const dispatch = useDispatch();
+
+  const selectedAccount = useSelector(getFromAccount);
+  const providerConfig = useMultichainSelector(getMultichainProviderConfig);
+  const smartTransactionsEnabled = useSelector(getIsStxEnabled);
+
+  const entries = useMemo<SendAssetEntry[]>(
+    () =>
+      Object.entries(sendAssetsConfig).map(
+        ([assetId, { asset, sendAmountPercent, slippagePercent }]) => ({
+          assetId: assetId as CaipAssetType,
+          asset,
+          sendAmountPercent,
+          slippagePercent,
+        }),
       ),
-    ],
-    cacheTime: 0,
-    staleTime: 0,
-    queryFn: async (): Promise<BatchSellQuotesResults> => {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+    [sendAssetsConfig],
+  );
 
-      const quotes: BatchSellQuotesResults['quotes'] = Object.fromEntries(
-        Object.entries(sendAssetsConfig).map(
-          ([assetId, { asset, sendAmountPercent, slippagePercent }]) => [
-            assetId,
-            Math.random() < 0.5
-              ? {
-                  asset,
-                  hasQuote: false,
-                }
-              : {
-                  asset,
-                  slippagePercent,
-                  receivedAmount: 847.34,
-                  receivedAmountFiat: 590,
-                  minimumReceivedAmount: 846.2,
-                  hasQuote: true,
-                  hasHighPriceImpactWarning: Math.random() < 0.5,
-                  quoteBpsFee: 87.5,
-                },
-          ],
-        ),
-      );
+  const requestCount = entries.length;
 
-      const quoteValues = Object.values(quotes);
+  const controllerResult = useSelector((state: BridgeAppState) =>
+    getBatchSellQuotes(state, { requestCount }),
+  );
 
-      const totalReceivedAmount = quoteValues.reduce(
-        (sum, q) => sum + (q?.receivedAmount ?? 0),
-        0,
-      );
+  const validationErrorsByIndex = useSelector((state: BridgeAppState) =>
+    getBatchSellQuotesValidationErrors(state, { requestCount }),
+  );
 
-      const minimumReceivedAmount = quoteValues.reduce(
-        (sum, q) => sum + (q?.minimumReceivedAmount ?? 0),
-        0,
-      );
+  const data = useMemo<BatchSellQuotesResults | undefined>(() => {
+    if (!enabled || requestCount === 0) {
+      return undefined;
+    }
+    return buildResults({
+      controllerResult,
+      entries,
+      receivedAsset,
+      validationErrorsByIndex,
+    });
+  }, [
+    enabled,
+    requestCount,
+    controllerResult,
+    entries,
+    receivedAsset,
+    validationErrorsByIndex,
+  ]);
 
-      const totalReceivedAmountFiat = quoteValues.reduce(
-        (sum, q) => sum + (q?.receivedAmountFiat ?? 0),
-        0,
-      );
+  // The dispatcher reference is stable across renders. `useRef(debounce(...))`
+  // is used because `useCallback` and React Compiler don't track that
+  // `debounce` returns a fresh function reference; the inner function only
+  // touches `dispatch` and an action creator, so it's safe not to recreate.
+  const debouncedDispatchQuoteRequests = useRef(
+    debounce(
+      (
+        requests: {
+          params: QuoteRequestParams;
+          context: QuoteRequestContext;
+          index: number;
+          total: number;
+        }[],
+      ) => {
+        requests.forEach(({ params, context, index, total }) => {
+          dispatch(updateQuoteRequestParams(params, context, index, total));
+        });
+      },
+      QUOTE_REQUEST_DEBOUNCE_MS,
+    ),
+  );
 
-      return {
-        quotes,
-        receivedAsset,
-        minimumReceivedAmount,
-        totalReceivedAmount,
-        totalReceivedAmountFiat,
-        totalNetworkFee: Math.random() * 100,
-        totalNetworkFeeFiat: Math.random() * 100,
-      };
-    },
-  });
+  useEffect(() => {
+    if (!enabled || requestCount === 0 || !selectedAccount?.address) {
+      return;
+    }
+
+    const requests = entries
+      .map((entry, index) => {
+        const params = buildQuoteRequestForEntry({
+          entry,
+          destAssetId: receivedAsset.id,
+          walletAddress: selectedAccount.address,
+          rpcUrl: providerConfig?.rpcUrl,
+        });
+        if (!params) {
+          return undefined;
+        }
+        return {
+          params,
+          context: buildQuoteRequestContext({
+            sourceAsset: entry.asset,
+            receivedAsset,
+            sendAmountPercent: entry.sendAmountPercent,
+            smartTransactionsEnabled,
+          }),
+          index,
+          total: requestCount,
+        };
+      })
+      .filter((request) => request !== undefined);
+
+    if (requests.length === 0) {
+      return;
+    }
+
+    dispatch(setSelectedQuote(null));
+    debouncedDispatchQuoteRequests.current(requests);
+  }, [
+    enabled,
+    entries,
+    receivedAsset,
+    requestCount,
+    selectedAccount?.address,
+    providerConfig?.rpcUrl,
+    smartTransactionsEnabled,
+    dispatch,
+  ]);
+
+  // Cancel pending dispatches and reset controller state on unmount so quotes
+  // don't leak across navigations between batch-sell and other flows.
+  useEffect(() => {
+    const debounced = debouncedDispatchQuoteRequests.current;
+    return () => {
+      debounced.cancel();
+      dispatch(resetBridgeController());
+    };
+  }, [dispatch]);
+
+  // Set loading to true on first render.
+  const hasEverFetched = controllerResult.quotesLastFetchedMs !== null;
+  const isLoading =
+    enabled &&
+    requestCount > 0 &&
+    (!hasEverFetched || controllerResult.isLoading);
 
   return { data, isLoading };
 };
