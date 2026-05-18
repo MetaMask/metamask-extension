@@ -3,6 +3,7 @@ export { AccountListItemMenu } from './account-list-item-menu';
 export { AccountOverview } from './account-overview';
 export { AccountPicker } from './account-picker';
 export { ActivityListItem } from './activity-list-item';
+export { ActivityItemAvatar } from './activity-v2/activity-item-avatar';
 export { AppHeader } from './app-header';
 export { TokenListItem } from './token-list-item';
 export { AddressCopyButton } from './address-copy-button';
