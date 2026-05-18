@@ -12,9 +12,12 @@ import type {
 
 type DelegateeMessenger = Messenger<string, ActionConstraint, EventConstraint>;
 
-type DelegateArgs = {
-  actions?: UIMessengerActions['type'][];
-  events?: UIMessengerEvents['type'][];
+type DelegateArgs<
+  Actions extends UIMessengerActions,
+  Events extends UIMessengerEvents,
+> = {
+  actions?: Actions['type'][];
+  events?: Events['type'][];
   messenger: DelegateeMessenger;
 };
 
@@ -38,31 +41,28 @@ type DelegateArgs = {
  */
 export function createMockUIMessenger<
   Actions extends UIMessengerActions = never,
+  Events extends UIMessengerEvents = never,
 >(actionHandlers?: {
   [Action in Actions as Action['type']]: Action['handler'];
 }): UIMessenger {
   return {
-    async delegate({ actions = [], messenger }: DelegateArgs) {
+    async delegate({ actions = [], messenger }: DelegateArgs<Actions, Events>) {
       for (const actionType of actions) {
         const handler =
-          (
-            actionHandlers as Record<
-              string,
-              ActionHandler<UIMessengerActions, UIMessengerActions['type']>
-            >
-          )?.[actionType] ??
+          actionHandlers?.[actionType] ??
           (() => {
             throw new Error(
-              `No handler registered for action "${String(actionType)}"`,
+              `No handler registered for action "${String(actionType)}".`,
             );
           });
 
         messenger._internalRegisterDelegatedActionHandler(actionType, handler);
       }
+
       // No background connection in tests — events are not subscribed to.
     },
 
-    async revoke({ actions = [], messenger }: DelegateArgs) {
+    async revoke({ actions = [], messenger }: DelegateArgs<Actions, Events>) {
       for (const actionType of actions) {
         messenger._internalUnregisterDelegatedActionHandler(actionType);
       }
