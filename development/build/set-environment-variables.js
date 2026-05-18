@@ -55,6 +55,8 @@ function setEnvironmentVariables({
       testing: isTestBuild,
     }),
     METAMASK_DEBUG: isDevBuild || variables.getMaybe('METAMASK_DEBUG') === true,
+    SENTRY_DISTRIBUTED_TRACING_DISABLED:
+      variables.getMaybe('SENTRY_DISTRIBUTED_TRACING_DISABLED') === true,
     METAMASK_BUILD_NAME: buildName,
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,
@@ -281,7 +283,6 @@ function getPhishingWarningPageUrl({ variables, testing }) {
 
   let phishingWarningPageUrlObject;
   try {
-    // eslint-disable-next-line no-new
     phishingWarningPageUrlObject = new URL(phishingWarningPageUrl);
   } catch (error) {
     throw new Error(
