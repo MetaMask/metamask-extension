@@ -478,7 +478,9 @@ export class OAuthService {
 
   #getAuthFlowError(error = checkForLastError()): Error {
     if (error) {
-      const authFlowError = new Error(error.message) as Error & {
+      const authFlowError = new Error(
+        error.message || OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR,
+      ) as Error & {
         cause: Error;
       };
       authFlowError.cause = error;

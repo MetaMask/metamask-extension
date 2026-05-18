@@ -468,6 +468,46 @@ describe('OAuthService - startOAuthLogin', () => {
     expect(sentryError.message).not.toContain(MOCK_REDIRECT_URI);
   });
 
+  it('falls back to the generic no redirect error when the browser reports an empty lastError message', async () => {
+    const captureException = jest.fn();
+    const messenger = getMessenger({ captureException });
+    mockBrowserRuntime.lastError = {
+      message: '',
+    };
+
+    const oauthService = new OAuthService({
+      messenger,
+      env: getOAuthLoginEnvs(),
+      webAuthenticator: {
+        ...mockWebAuthenticator,
+        launchWebAuthFlow: jest.fn().mockImplementation((_options, cb) => {
+          cb(undefined);
+        }),
+      },
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+      platform: mockPlatform,
+    });
+
+    await expect(
+      oauthService.startOAuthLogin(AuthConnection.Google),
+    ).rejects.toThrow(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR);
+
+    const sentryError = captureException.mock.calls[0][0] as Error & {
+      cause?: Error & { cause?: Error };
+    };
+
+    expect(sentryError.cause?.message).toBe(
+      OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR,
+    );
+    expect(sentryError.cause?.cause?.message).toBe('');
+    expect(sentryError.message).toContain(AuthConnection.Google);
+    expect(sentryError.message).not.toContain(MOCK_REDIRECT_URI);
+  });
+
   describe('OAuthService:startOAuthLogin action', () => {
     it('starts the OAuth login process with `Google`', async () => {
       const messenger = getMessenger();
