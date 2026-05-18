@@ -47,10 +47,8 @@ import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
-import {
-  getGasFeesSponsoredNetworkEnabled,
-  isHardwareWallet,
-} from '../../../selectors/selectors';
+import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 import { PriceImpactQuoteDetailsRow } from '../components/price-impact-quote-details-row';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 

@@ -84,6 +84,7 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
     networks[CHAIN_IDS.BSC].name = 'BNB Chain';
     networks[CHAIN_IDS.OPTIMISM].name = 'OP';
     networks[CHAIN_IDS.POLYGON].name = 'Polygon';
+    networks[CHAIN_IDS.MONAD].name = 'Monad';
 
     // Remove Sei from initial state so it appears in Additional Networks section
     // Users can add it manually, and it will be available in FEATURED_RPCS
@@ -285,19 +286,23 @@ export const NetworkControllerInit: MessengerClientInitFunction<
     'NetworkController:rpcEndpointDegraded',
     async ({
       chainId,
+      duration,
       endpointUrl,
       error,
       rpcMethodName,
+      traceId,
       type,
       retryReason,
     }) => {
       onRpcEndpointDegraded({
         chainId,
+        duration,
         endpointUrl,
         error,
         infuraProjectId,
         retryReason,
         rpcMethodName,
+        traceId,
         trackEvent: initMessenger.call.bind(
           initMessenger,
           'MetaMetricsController:trackEvent',

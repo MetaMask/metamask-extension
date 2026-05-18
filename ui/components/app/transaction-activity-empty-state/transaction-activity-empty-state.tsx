@@ -13,7 +13,7 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
-import { getSelectedInternalAccount } from '../../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 
 export type TransactionActivityEmptyStateProps = {
   /**
