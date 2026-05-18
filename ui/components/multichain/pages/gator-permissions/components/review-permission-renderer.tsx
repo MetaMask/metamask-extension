@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useState } from 'react';
 import type { Rule } from '@metamask/7715-permission-types';
-import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import {
   BoxFlexDirection,
@@ -38,14 +37,15 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import type { GatorTokenInfo } from '../../../../../hooks/gator-permissions/useGatorPermissionTokenInfo';
 import {
   convertTimestampToReadableDate,
+  extractAddressesFromRuleByType,
   extractExpiryTimestampFromRules,
   formatDecimalShiftedValue,
 } from '../../../../../../shared/lib/gator-permissions';
 import { getImageForChainId } from '../../../../../selectors/multichain';
-import { getInternalAccountByAddress } from '../../../../../selectors';
-import { shortenAddress } from '../../../../../helpers/utils/util';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { CopyIcon } from '../../../../app/confirm/info/row/copy-icon';
+import { useFallbackDisplayName } from '../../../../app/confirm/info/row/hook';
+import NicknamePopovers from '../../../../app/modals/nickname-popovers';
 import {
   GatorPermissionDetailRow,
   gatorPermissionDetailRowStyle,
@@ -94,15 +94,51 @@ function schemaElementDomKey(
 // Custom field components (use hooks, so must be React components)
 // ---------------------------------------------------------------------------
 
+const ReviewAddressDisplay: React.FC<{
+  address: string;
+  testId: string;
+  style?: React.CSSProperties;
+}> = ({ address, testId, style }) => {
+  const { displayName, hexAddress } = useFallbackDisplayName(address);
+  const [isNicknamePopoverShown, setIsNicknamePopoverShown] = useState(false);
+  const handleDisplayNameClick = () => setIsNicknamePopoverShown(true);
+
+  return (
+    <>
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.End}
+        style={style}
+        gap={2}
+        alignItems={BoxAlignItems.Center}
+        onClick={handleDisplayNameClick}
+      >
+        <PreferredAvatar address={address} />
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          data-testid={testId}
+        >
+          {displayName}
+        </Text>
+        <CopyIcon
+          copyText={address}
+          style={{ position: 'static', right: 'auto', top: 'auto' }}
+          isStopPropagationEnabled
+        />
+      </Box>
+      {isNicknamePopoverShown ? (
+        <NicknamePopovers
+          onClose={() => setIsNicknamePopoverShown(false)}
+          address={hexAddress}
+        />
+      ) : null}
+    </>
+  );
+};
+
 const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
   const t = useI18nContext() as I18nFunction;
-  const internalAccount = useSelector((state) =>
-    getInternalAccountByAddress(state, address),
-  );
-  const accountText = useMemo(
-    () => internalAccount?.metadata?.name || shortenAddress(address),
-    [internalAccount, address],
-  );
 
   return (
     <Box
@@ -119,26 +155,11 @@ const ReviewAccountRow: React.FC<{ address: string }> = ({ address }) => {
       >
         {t('account')}
       </Text>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.End}
+      <ReviewAddressDisplay
+        address={address}
+        testId="review-gator-permission-account-name"
         style={gatorPermissionDetailRowStyle}
-        gap={2}
-        alignItems={BoxAlignItems.Center}
-      >
-        <PreferredAvatar address={address} />
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          data-testid="review-gator-permission-account-name"
-        >
-          {accountText}
-        </Text>
-        <CopyIcon
-          copyText={address}
-          style={{ position: 'static', right: 'auto', top: 'auto' }}
-        />
-      </Box>
+      />
     </Box>
   );
 };
@@ -184,6 +205,43 @@ const ReviewNetworkRow: React.FC<{
         >
           {networkName}
         </Text>
+      </Box>
+    </Box>
+  );
+};
+
+const ReviewRuleAddressRow: React.FC<{
+  addresses: string[];
+  label: string;
+}> = ({ addresses, label }) => {
+  return (
+    <Box
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
+      style={gatorPermissionDetailRowStyle}
+      gap={4}
+      marginTop={2}
+    >
+      <Text
+        textAlign={TextAlign.Left}
+        color={TextColor.TextAlternative}
+        variant={TextVariant.BodyMd}
+      >
+        {label}
+      </Text>
+      <Box
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.End}
+        style={gatorPermissionDetailRowStyle}
+        gap={2}
+      >
+        {addresses.map((addr) => (
+          <ReviewAddressDisplay
+            key={addr}
+            address={addr}
+            testId="review-gator-permission-rule-address"
+          />
+        ))}
       </Box>
     </Box>
   );
@@ -296,6 +354,19 @@ function renderElement({
           networkName={extraProps.networkName}
         />
       ) : null;
+    case 'rule-address': {
+      const addresses = element.getValue(ctx);
+      if (!addresses?.length) {
+        return null;
+      }
+      return (
+        <ReviewRuleAddressRow
+          key={rowKey}
+          addresses={addresses}
+          label={t(element.labelKey)}
+        />
+      );
+    }
 
     case 'divider':
     case 'origin':
@@ -461,6 +532,11 @@ export const ReviewPermissionRenderer: React.FC<
   assertPermissionSchemaEntry(permissionType, schemaEntry);
 
   const effectiveExpiry = extractExpiryTimestampFromRules(rules ?? []);
+  const redeemerAddresses = extractAddressesFromRuleByType(
+    rules ?? [],
+    'redeemer',
+  );
+  const payeeAddresses = extractAddressesFromRuleByType(rules ?? [], 'payee');
 
   const ctx: PermissionRenderContext = {
     permission: {
@@ -469,6 +545,8 @@ export const ReviewPermissionRenderer: React.FC<
       justification: permissionData.justification as string | undefined,
     },
     expiry: effectiveExpiry,
+    redeemerAddresses,
+    payeeAddresses,
     chainId,
     tokenInfo: {
       symbol: tokenInfo.symbol,

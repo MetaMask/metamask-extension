@@ -16,7 +16,11 @@ import {
   KeyringControllerLockEvent,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
-import type { NetworkControllerStateChangeEvent } from '@metamask/network-controller';
+import type {
+  NetworkControllerStateChangeEvent,
+  NetworkControllerNetworkAddedEvent,
+  NetworkControllerNetworkRemovedEvent,
+} from '@metamask/network-controller';
 import type {
   BackendWebSocketServiceActions,
   BackendWebSocketServiceEvents,
@@ -184,7 +188,9 @@ type AllowedEvents =
   | BackendWebsocketDataSourceEvents
   | SnapDataSourceEvents
   | PreferencesControllerStateChangeEvent
-  | AccountTreeControllerStateChangeEvent;
+  | AccountTreeControllerStateChangeEvent
+  | NetworkControllerNetworkRemovedEvent
+  | NetworkControllerNetworkAddedEvent;
 /**
  * Messenger type for AssetsController initialization.
  */
@@ -241,6 +247,8 @@ export function getAssetsControllerMessenger(
       'KeyringController:lock',
       'KeyringController:unlock',
       'NetworkController:stateChange',
+      'NetworkController:networkRemoved',
+      'NetworkController:networkAdded',
       'BackendWebSocketService:connectionStateChanged',
       'AccountsController:accountBalancesUpdated',
       'PermissionController:stateChange',

@@ -18,7 +18,7 @@ import {
 import EditableLabel from '../../ui/editable-label/editable-label';
 
 import { setAccountLabel } from '../../../store/actions';
-import { getHardwareWalletType } from '../../../selectors';
+import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
 import { shortenString } from '../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {

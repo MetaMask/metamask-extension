@@ -35,7 +35,7 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentMigrationVersion": 208,
+      "currentMigrationVersion": 211,
       "firstTimeInfo": {
         "date": 0,
         "version": "13.17.0"
@@ -109,9 +109,6 @@
         }
       },
       "currentCurrency": "usd"
-    },
-    "DelegationController": {
-      "delegations": {}
     },
     "EnsController": {
       "ensEntries": {
@@ -420,6 +417,22 @@
             }
           ]
         },
+        "0x8f": {
+          "blockExplorerUrls": ["https://monadscan.com"],
+          "chainId": "0x8f",
+          "defaultBlockExplorerUrlIndex": 0,
+          "defaultRpcEndpointIndex": 0,
+          "name": "Monad",
+          "nativeCurrency": "MON",
+          "rpcEndpoints": [
+            {
+              "failoverUrls": [],
+              "networkClientId": "monad-mainnet",
+              "type": "infura",
+              "url": "https://monad-mainnet.infura.io/v3/{infuraProjectId}"
+            }
+          ]
+        },
         "0xa": {
           "blockExplorerUrls": ["https://optimistic.etherscan.io"],
           "chainId": "0xa",
@@ -531,6 +544,7 @@
           "0x279f": false,
           "0x38": true,
           "0x89": true,
+          "0x8f": true,
           "0xa": true,
           "0xa4b1": true,
           "0xaa36a7": false,
@@ -554,6 +568,7 @@
         "eip155:10143": "eip155:10143/slip44:60",
         "eip155:11155111": "eip155:11155111/slip44:60",
         "eip155:137": "eip155:137/slip44:60",
+        "eip155:143": "eip155:143/slip44:60",
         "eip155:42161": "eip155:42161/slip44:60",
         "eip155:56": "eip155:56/slip44:60",
         "eip155:59141": "eip155:59141/slip44:1",
@@ -587,12 +602,12 @@
       "firstTimeFlowType": null,
       "seedPhraseBackedUp": null
     },
-    "PasskeyController": {
-      "passkeyRecord": null
-    },
     "PPOMController": {
       "storageMetadata": [],
       "versionInfo": []
+    },
+    "PasskeyController": {
+      "passkeyRecord": null
     },
     "PermissionController": {
       "subjects": {
@@ -2251,6 +2266,6 @@
   },
   "meta": {
     "storageKind": "split",
-    "version": 208
+    "version": 211
   }
 }
