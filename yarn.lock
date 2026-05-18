@@ -33740,7 +33740,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^23.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
     "@metamask/profile-metrics-controller": "npm:^3.0.4"
-    "@metamask/profile-sync-controller": "npm:^28.0.2"
+    "@metamask/profile-sync-controller": "npm:^28.1.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/react-data-query": "npm:^0.2.0"
