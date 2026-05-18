@@ -13,6 +13,7 @@ import type {
   TransactionViewModel,
 } from '../../../../shared/lib/multichain/types';
 import {
+  enrichApiWithLocal,
   getPrimaryAmount,
   calculateFiatFromMarketRates,
   mergeAllTransactionsByTime,
@@ -485,5 +486,68 @@ describe('resolveTransactionType', () => {
       }),
     );
     expect(result).toBe(TransactionType.swap);
+  });
+});
+
+describe('enrichApiWithLocal', () => {
+  function makeApi(
+    overrides: Partial<TransactionViewModel> & { id: string },
+  ): TransactionViewModel {
+    return overrides as TransactionViewModel;
+  }
+
+  it('overlays local error, revert, and txParams.data onto matching API entries', () => {
+    const apiTx = makeApi({
+      id: 'api-1',
+      hash: '0xABC',
+      error: { name: 'Error', message: 'Transaction failed' },
+      txParams: { data: '0x', from: '0x0', to: '0x0' },
+    });
+    const localGroup = makeLocalGroup({
+      time: 1,
+      hash: '0xabc',
+      error: {
+        name: 'OnChainFailureError',
+        message: 'Transaction failed on-chain: NativeBalanceChangeEnforcer:x',
+      },
+      revert: { receipt: { message: 'NativeBalanceChangeEnforcer:x' } },
+      txParams: {
+        data: '0xcef6d20900',
+        from: '0x0',
+        to: '0x0',
+        nonce: '0x0',
+      },
+    });
+
+    const [enriched] = enrichApiWithLocal([apiTx], [localGroup]);
+
+    expect(enriched.error?.message).toBe(
+      'Transaction failed on-chain: NativeBalanceChangeEnforcer:x',
+    );
+    expect(enriched.revert?.receipt?.message).toBe(
+      'NativeBalanceChangeEnforcer:x',
+    );
+    expect(enriched.txParams?.data).toBe('0xcef6d20900');
+  });
+
+  it('returns the API entry unchanged when no local match exists', () => {
+    const apiTx = makeApi({
+      id: 'api-1',
+      hash: '0xabc',
+      error: { name: 'Error', message: 'Transaction failed' },
+    });
+    const [enriched] = enrichApiWithLocal([apiTx], []);
+    expect(enriched).toBe(apiTx);
+  });
+
+  it('matches hashes case-insensitively', () => {
+    const apiTx = makeApi({ id: 'api-1', hash: '0xAbCdEf' });
+    const localGroup = makeLocalGroup({
+      time: 1,
+      hash: '0xabcdef',
+      error: { name: 'Error', message: 'rich' },
+    });
+    const [enriched] = enrichApiWithLocal([apiTx], [localGroup]);
+    expect(enriched.error?.message).toBe('rich');
   });
 });

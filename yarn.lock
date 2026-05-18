@@ -6228,7 +6228,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/core-backend@npm:^6.1.1, @metamask/core-backend@npm:^6.2.0, @metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2":
+"@metamask/core-backend@npm:^6.1.1, @metamask/core-backend@npm:^6.2.1, @metamask/core-backend@npm:^6.2.2, @metamask/core-backend@npm:^6.3.0":
   version: 6.3.0
   resolution: "@metamask/core-backend@npm:6.3.0"
   dependencies:
@@ -33662,7 +33662,7 @@ __metadata:
     "@metamask/connectivity-controller": "npm:^0.2.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^12.1.0"
-    "@metamask/core-backend": "npm:^6.2.0"
+    "@metamask/core-backend": "npm:^6.3.0"
     "@metamask/delegation-controller": "npm:^3.0.0"
     "@metamask/delegation-core": "npm:^2.0.0"
     "@metamask/delegation-deployments": "npm:^1.3.0"
