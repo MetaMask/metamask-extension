@@ -61,7 +61,7 @@ export default function TransactionStatusLabel({
 }) {
   const t = useI18nContext();
   const statusKey = getStatusKey(status, isEarliestNonce);
-  const tooltipText = tooltip ?? error?.rpc?.message ?? error?.message;
+  const tooltipText = tooltip || error?.rpc?.message || error?.message;
   let statusText = label ?? (statusKey && t(statusKey));
 
   if (!label && statusKey === TransactionStatus.confirmed && !statusOnly) {

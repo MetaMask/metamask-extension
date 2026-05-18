@@ -13,11 +13,7 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 jest.mock('../../ui/tooltip', () => ({
   __esModule: true,
   default: ({ children, title, wrapperClassName }) => (
-    <div
-      data-testid="tooltip"
-      data-title={title}
-      className={wrapperClassName}
-    >
+    <div data-testid="tooltip" data-title={title} className={wrapperClassName}>
       {children}
     </div>
   ),
