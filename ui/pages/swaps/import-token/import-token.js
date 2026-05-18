@@ -4,7 +4,9 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   TextVariant,
   AlignItems,
+  Display,
   Severity,
+  FlexDirection,
   BlockSize,
 } from '../../../helpers/constants/design-system';
 
