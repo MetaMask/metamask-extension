@@ -37,8 +37,8 @@ const EXPECTED_ALERT = {
   field: RowAlertKey.EstimatedFee,
   isBlocking: true,
   key: AlertsName.InsufficientPayTokenBalance,
-  message: 'Amount exceeds your available Perps balance.',
-  reason: 'Enter a valid amount.',
+  message: 'Insufficient funds',
+  reason: 'Insufficient funds',
   severity: Severity.Danger,
 };
 
