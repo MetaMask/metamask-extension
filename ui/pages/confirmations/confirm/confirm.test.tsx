@@ -21,10 +21,6 @@ import { SignatureRequestType } from '../types/confirm';
 import { memoizedGetTokenStandardAndDetails } from '../utils/token';
 import Confirm from './confirm';
 
-jest.mock('@metamask/perps-controller', () => ({
-  PERPS_ERROR_CODES: new Proxy({}, { get: (_t, p) => String(p) }),
-}));
-
 jest.mock('../hooks/useAssetDetails', () => ({
   ...jest.requireActual('../hooks/useAssetDetails'),
   useAssetDetails: jest.fn().mockResolvedValue({
