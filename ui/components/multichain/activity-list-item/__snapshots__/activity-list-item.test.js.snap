@@ -3,7 +3,7 @@
 exports[`ActivityListItem should match snapshot with no props 1`] = `
 <div>
   <div
-    class="mm-box activity-list-item activity-list-item--single-content-row mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
+    class="mm-box activity-list-item mm-box--padding-top-3 mm-box--padding-bottom-3 mm-box--padding-inline-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--width-full mm-box--background-color-background-default"
     tabindex="0"
   >
     <div
@@ -14,6 +14,7 @@ exports[`ActivityListItem should match snapshot with no props 1`] = `
       >
         <div
           class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--min-width-0"
+          data-testid="activity-list-item-status--pending"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"
@@ -60,6 +61,7 @@ exports[`ActivityListItem should match snapshot with props 1`] = `
       >
         <div
           class="mm-box activity-list-item__detail-container mm-box--display-inline-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--min-width-0"
+          data-testid="activity-list-item-status--confirmed"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--align-items-center"

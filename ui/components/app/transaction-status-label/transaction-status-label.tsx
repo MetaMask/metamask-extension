@@ -4,6 +4,12 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
+import {
+  getTransactionDisplayStatusKey,
+  QUEUED_PSEUDO_STATUS,
+  shouldShowActivityListStatusSubtitle,
+  SIGNING_PSEUDO_STATUS,
+} from '../../../../shared/lib/activity/transaction-display-status';
 
 export const STATUS_DISPLAY_MODE = {
   default: 'default',
@@ -13,17 +19,6 @@ export const STATUS_DISPLAY_MODE = {
 export type StatusDisplayMode =
   (typeof STATUS_DISPLAY_MODE)[keyof typeof STATUS_DISPLAY_MODE];
 
-const QUEUED_PSEUDO_STATUS = 'queued';
-const SIGNING_PSUEDO_STATUS = 'signing';
-
-const pendingStatusHash: Partial<
-  Record<TransactionStatus, TransactionGroupStatus>
-> = {
-  [TransactionStatus.submitted]: TransactionGroupStatus.pending,
-  [TransactionStatus.approved]: TransactionGroupStatus.pending,
-  [TransactionStatus.signed]: TransactionGroupStatus.pending,
-};
-
 const statusToClassNameHash: Partial<Record<string, string>> = {
   [TransactionStatus.unapproved]: 'transaction-status-label--unapproved',
   [TransactionStatus.rejected]: 'transaction-status-label--rejected',
@@ -31,24 +26,8 @@ const statusToClassNameHash: Partial<Record<string, string>> = {
   [TransactionStatus.dropped]: 'transaction-status-label--dropped',
   [TransactionGroupStatus.cancelled]: 'transaction-status-label--cancelled',
   [QUEUED_PSEUDO_STATUS]: 'transaction-status-label--queued',
+  [SIGNING_PSEUDO_STATUS]: 'transaction-status-label--signing',
   [TransactionGroupStatus.pending]: 'transaction-status-label--pending',
-};
-
-export const getTransactionDisplayStatusKey = (
-  status: string | undefined,
-  isEarliestNonce?: boolean,
-): string | undefined => {
-  if (status === TransactionStatus.approved) {
-    return SIGNING_PSUEDO_STATUS;
-  }
-
-  if (status && pendingStatusHash[status as TransactionStatus]) {
-    return isEarliestNonce
-      ? TransactionGroupStatus.pending
-      : QUEUED_PSEUDO_STATUS;
-  }
-
-  return status;
 };
 
 const shouldRenderStatusText = (
@@ -58,14 +37,7 @@ const shouldRenderStatusText = (
   if (statusDisplayMode !== STATUS_DISPLAY_MODE.activityMinimal) {
     return true;
   }
-  return (
-    statusKey === QUEUED_PSEUDO_STATUS ||
-    statusKey === SIGNING_PSUEDO_STATUS ||
-    statusKey === TransactionStatus.failed ||
-    statusKey === TransactionStatus.rejected ||
-    statusKey === TransactionStatus.dropped ||
-    statusKey === TransactionGroupStatus.cancelled
-  );
+  return shouldShowActivityListStatusSubtitle(statusKey);
 };
 
 export type TransactionStatusLabelProps = {

@@ -18,9 +18,9 @@ import { TransactionDetailsModal } from '../../../pages/confirmations/components
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel, {
-  STATUS_DISPLAY_MODE,
   getTransactionDisplayStatusKey,
 } from '../transaction-status-label';
+import { ActivityListStatusSubtitle } from '../activity-list-status';
 import TransactionIcon from '../transaction-icon';
 import {
   Color,
@@ -328,14 +328,11 @@ function TransactionListItemInner({
               transactionGroup={transactionGroup}
             />
           ) : (
-            <TransactionStatusLabel
-              statusOnly
-              isPending={isPending}
+            <ActivityListStatusSubtitle
               isEarliestNonce={isEarliestNonce || shouldShowPendingBridgeStatus}
               error={error}
               date={date}
               status={displayedStatusKey}
-              statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
             />
           )
         }

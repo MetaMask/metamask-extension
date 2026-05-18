@@ -13,10 +13,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 import TransactionIcon from '../transaction-icon';
-import TransactionStatusLabel, {
-  STATUS_DISPLAY_MODE,
-  getTransactionDisplayStatusKey,
-} from '../transaction-status-label';
+import { getTransactionDisplayStatusKey } from '../transaction-status-label';
+import { ActivityListStatusSubtitle } from '../activity-list-status';
 import { ActivityListItem } from '../../multichain/activity-list-item/activity-list-item';
 import Segment from '../../../pages/bridge/transaction-details/segment';
 import {
@@ -179,45 +177,36 @@ const MultichainBridgeTransactionListItem: React.FC<
       }
       title={title}
       subtitle={
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={1}
-        >
-          {isTerminalState ? (
-            <TransactionStatusLabel
-              date={formatTimestamp(transaction.timestamp)}
-              error={{}}
-              status={KEYRING_TRANSACTION_STATUS_KEY[transaction.status]}
-              statusOnly
-              statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
-              className={
-                isBridgeFullyComplete
-                  ? 'transaction-status-label--confirmed'
-                  : undefined
-              }
-            />
-          ) : (
-            <Box
-              marginTop={0}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={1}
-              width={BlockSize.Full}
+        isTerminalState ? (
+          <ActivityListStatusSubtitle
+            date={formatTimestamp(transaction.timestamp)}
+            error={{}}
+            status={KEYRING_TRANSACTION_STATUS_KEY[transaction.status]}
+            className={
+              isBridgeFullyComplete
+                ? 'transaction-status-label--confirmed'
+                : undefined
+            }
+          />
+        ) : (
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={1}
+            width={BlockSize.Full}
+          >
+            <Text
+              color={TextColor.textAlternative}
+              variant={TextVariant.bodySm}
             >
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
-              >
-                {t('bridgeTransactionProgress', [txIndex])}
-              </Text>
-              <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
-                <Segment type={srcSegmentStatus} />
-                <Segment type={destSegmentStatus} />
-              </Box>
+              {t('bridgeTransactionProgress', [txIndex])}
+            </Text>
+            <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
+              <Segment type={srcSegmentStatus} />
+              <Segment type={destSegmentStatus} />
             </Box>
-          )}
-        </Box>
+          </Box>
+        )
       }
     />
   );

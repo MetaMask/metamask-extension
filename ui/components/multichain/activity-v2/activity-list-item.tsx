@@ -2,10 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import TransactionStatusLabel, {
-  STATUS_DISPLAY_MODE,
-  getTransactionDisplayStatusKey,
-} from '../../app/transaction-status-label';
+import { getTransactionDisplayStatusKey } from '../../app/transaction-status-label';
+import { ActivityListStatusSubtitle } from '../../app/activity-list-status';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -66,13 +64,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
           >
             {title}
           </Text>
-          <div className="text-s-body-sm font-medium">
-            <TransactionStatusLabel
-              status={transactionStatus}
-              statusOnly
-              statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
-            />
-          </div>
+          <ActivityListStatusSubtitle status={transactionStatus} />
         </div>
 
         {/* Right side - Value */}

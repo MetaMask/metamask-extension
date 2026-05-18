@@ -2,10 +2,11 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
-import TransactionStatusLabel, {
-  STATUS_DISPLAY_MODE,
+import {
   getTransactionDisplayStatusKey,
-} from '.';
+  shouldShowActivityListStatusSubtitle,
+} from '../../../../shared/lib/activity/transaction-display-status';
+import TransactionStatusLabel, { STATUS_DISPLAY_MODE } from '.';
 
 // Mock the useI18nContext hook
 jest.mock('../../../hooks/useI18nContext', () => ({
@@ -50,6 +51,33 @@ describe('getTransactionDisplayStatusKey', () => {
     expect(
       getTransactionDisplayStatusKey(TransactionStatus.submitted, false),
     ).toBe('queued');
+  });
+});
+
+describe('shouldShowActivityListStatusSubtitle', () => {
+  it('returns false for undefined, empty string, and confirmed', () => {
+    expect(shouldShowActivityListStatusSubtitle(undefined)).toBe(false);
+    expect(shouldShowActivityListStatusSubtitle('')).toBe(false);
+    expect(
+      shouldShowActivityListStatusSubtitle(TransactionStatus.confirmed),
+    ).toBe(false);
+  });
+
+  it('returns true for keys that render a status subtitle', () => {
+    expect(shouldShowActivityListStatusSubtitle('queued')).toBe(true);
+    expect(shouldShowActivityListStatusSubtitle('signing')).toBe(true);
+    expect(
+      shouldShowActivityListStatusSubtitle(TransactionStatus.failed),
+    ).toBe(true);
+    expect(
+      shouldShowActivityListStatusSubtitle(TransactionGroupStatus.cancelled),
+    ).toBe(true);
+  });
+
+  it('returns false for pending (earliest nonce) key', () => {
+    expect(
+      shouldShowActivityListStatusSubtitle(TransactionGroupStatus.pending),
+    ).toBe(false);
   });
 });
 

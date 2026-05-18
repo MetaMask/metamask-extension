@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ButtonSize } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import TransactionStatusLabel, {
-  STATUS_DISPLAY_MODE,
   getTransactionDisplayStatusKey,
 } from '../transaction-status-label';
+import { ActivityListStatusSubtitle } from '../activity-list-status';
 import TransactionIcon from '../transaction-icon';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
@@ -93,12 +93,10 @@ export default function SmartTransactionListItem({
           </BadgeWrapper>
         }
         subtitle={
-          <TransactionStatusLabel
-            isPending
+          <ActivityListStatusSubtitle
             isEarliestNonce={isEarliestNonce}
             date={date}
             status={displayedStatusKey}
-            statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
           />
         }
       >

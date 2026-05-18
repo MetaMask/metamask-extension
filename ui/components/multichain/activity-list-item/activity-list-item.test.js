@@ -15,6 +15,7 @@ describe('ActivityListItem', () => {
   const defaultProps = {
     className: CLASSNAME,
     title: TITLE,
+    activityListItemStatusKey: 'confirmed',
     'data-testid': 'test-id',
     subtitle: SUBTITLE,
     rightContent: RIGHT_CONTENT,
@@ -25,7 +26,9 @@ describe('ActivityListItem', () => {
   };
 
   it('should match snapshot with no props', () => {
-    const { container } = render(<ActivityListItem />);
+    const { container } = render(
+      <ActivityListItem activityListItemStatusKey="pending" />,
+    );
     expect(container).toMatchSnapshot();
   });
 

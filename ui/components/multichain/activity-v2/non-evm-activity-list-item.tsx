@@ -10,10 +10,8 @@ import {
 } from '../../../hooks/useMultichainTransactionDisplay';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
-import TransactionStatusLabel, {
-  STATUS_DISPLAY_MODE,
-  getTransactionDisplayStatusKey,
-} from '../../app/transaction-status-label';
+import { getTransactionDisplayStatusKey } from '../../app/transaction-status-label';
+import { ActivityListStatusSubtitle } from '../../app/activity-list-status';
 import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
@@ -68,12 +66,10 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
         }
         title="Redeposit"
         subtitle={
-          <TransactionStatusLabel
+          <ActivityListStatusSubtitle
             date={formatTimestamp(timestamp)}
             error={{}}
             status={statusKey}
-            statusOnly
-            statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
           />
         }
       />
@@ -112,12 +108,10 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
       }
       title={title}
       subtitle={
-        <TransactionStatusLabel
+        <ActivityListStatusSubtitle
           date={formatTimestamp(transaction.timestamp)}
           error={{}}
           status={statusKey}
-          statusOnly
-          statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
         />
       }
     />
