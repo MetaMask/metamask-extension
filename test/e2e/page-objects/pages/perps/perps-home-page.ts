@@ -248,5 +248,4 @@ export class PerpsHomePage extends PerpsPositionsBase {
   async checkWatchlistSectionGone(): Promise<void> {
     await this.driver.assertElementNotPresent(this.perpsWatchlist);
   }
-
 }
