@@ -474,6 +474,30 @@ describe('PerpsWithdrawPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('allows amounts below the available Perps balance', async () => {
+    const user = userEvent.setup();
+    mockUsePerpsLiveAccount.mockReturnValue({
+      account: {
+        spendableBalance: '0',
+        withdrawableBalance: '39.833436',
+      } as never,
+      isInitialLoading: false,
+    });
+
+    renderWithProvider(<PerpsWithdrawPage />, createMockStore());
+
+    await settleInitialWithdrawRoutesFetch();
+
+    const amountInput = screen.getByTestId('perps-fiat-hero-amount-input');
+    await user.clear(amountInput);
+    await user.type(amountInput, '37.833436');
+
+    expect(
+      screen.queryByText(messages.perpsWithdrawInsufficient.message),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('perps-withdraw-submit')).not.toBeDisabled();
+  });
+
   it('allows withdrawal even when user is geo-blocked', async () => {
     mockUsePerpsEligibility.mockReturnValue({ isEligible: false });
 

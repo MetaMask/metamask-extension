@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate } from 'react-router-dom';
+import BigNumber from 'bignumber.js';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -59,6 +60,7 @@ import {
   PERPS_EVENT_VALUE,
 } from '../../../shared/constants/perps-events';
 import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
+import { getTradeableBalance } from '../../hooks/perps/getTradeableBalance';
 import { formatAmountInputFromNumber } from './perps-withdraw-amount-format';
 
 /** Arbitrum native USDC (matches `ARBITRUM_USDC_TOKEN_OBJECT` in swaps constants). */
@@ -95,9 +97,14 @@ const PerpsWithdrawPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const availableBalance =
-    account?.withdrawableBalance ?? account?.spendableBalance ?? '0';
-  const availableNum = parseFloat(availableBalance) || 0;
+  const availableBalance = getTradeableBalance(account);
+  const availableAmount = useMemo(
+    () => new BigNumber(availableBalance || '0'),
+    [availableBalance],
+  );
+  const availableNum = availableAmount.isFinite()
+    ? availableAmount.toNumber()
+    : 0;
 
   const usdcAssetId = useMemo(
     () =>
@@ -122,7 +129,10 @@ const PerpsWithdrawPage: React.FC = () => {
     return WITHDRAWAL_CONSTANTS.DefaultMinAmount;
   }, [usdcRoute]);
 
-  const minWithdrawNum = parseFloat(minWithdrawAmount) || 0;
+  const minWithdrawValue = useMemo(
+    () => new BigNumber(minWithdrawAmount || '0'),
+    [minWithdrawAmount],
+  );
   const defaultFee = WITHDRAWAL_CONSTANTS.DefaultFeeAmount;
 
   const estimatedMinutes =
@@ -150,7 +160,15 @@ const PerpsWithdrawPage: React.FC = () => {
     };
   }, [t]);
 
+  const normalizedAmount = useMemo(
+    () => amount.trim().replace(/,/gu, '.'),
+    [amount],
+  );
   const amountNum = useMemo(() => parsePerpsAmountInput(amount), [amount]);
+  const amountValue = useMemo(
+    () => new BigNumber(normalizedAmount || 'NaN'),
+    [normalizedAmount],
+  );
 
   const youReceiveNum = useMemo(() => {
     if (!Number.isFinite(amountNum) || amountNum <= 0) {
@@ -164,27 +182,36 @@ const PerpsWithdrawPage: React.FC = () => {
     if (trimmed === '' || trimmed === '0') {
       return null;
     }
-    const normalizedForValidation = trimmed.replace(/,/gu, '.');
-    if (!isValidPerpsWithdrawAmount(normalizedForValidation)) {
+    if (!isValidPerpsWithdrawAmount(normalizedAmount)) {
       return t('perpsWithdrawInvalidAmount');
     }
-    if (!Number.isFinite(amountNum) || amountNum <= 0) {
+    if (!amountValue.isFinite() || amountValue.lte(0)) {
       return t('perpsWithdrawInvalidAmount');
     }
-    if (amountNum < minWithdrawNum) {
+    if (amountValue.lt(minWithdrawValue)) {
       return t('perpsWithdrawMinNotice', [minWithdrawAmount]);
     }
-    if (amountNum > availableNum) {
+    if (amountValue.gt(availableAmount)) {
       return t('perpsWithdrawInsufficient');
     }
     return null;
-  }, [amount, amountNum, availableNum, minWithdrawNum, minWithdrawAmount, t]);
+  }, [
+    amount,
+    amountValue,
+    availableAmount,
+    minWithdrawAmount,
+    minWithdrawValue,
+    normalizedAmount,
+    t,
+  ]);
 
   const hasValidInputs =
-    isValidPerpsWithdrawAmount(amount.trim().replace(/,/gu, '.')) &&
-    Number.isFinite(amountNum) &&
-    amountNum >= minWithdrawNum &&
-    amountNum <= availableNum;
+    isValidPerpsWithdrawAmount(normalizedAmount) &&
+    amountValue.isFinite() &&
+    minWithdrawValue.isFinite() &&
+    availableAmount.isFinite() &&
+    amountValue.gte(minWithdrawValue) &&
+    amountValue.lte(availableAmount);
 
   const handleHeroAmountChange = useCallback((value: string) => {
     const next = value.replace(/,/gu, '.');
