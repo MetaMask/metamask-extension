@@ -1991,6 +1991,10 @@ export async function addTransaction(
   ]);
 }
 
+type UpdateAndApproveTxOptions = {
+  closeAfterApprove?: boolean;
+};
+
 /**
  * Approve and submit a transaction.
  * For hardware wallets, if the user rejects on device, throws HardwareWalletTransactionRejectedError
@@ -1999,12 +2003,15 @@ export async function addTransaction(
  * @param txMeta - The transaction metadata
  * @param dontShowLoadingIndicator - Whether to skip showing loading indicator
  * @param loadingIndicatorMessage - Message to show during loading
+ * @param options - Additional approval behavior options
+ * @param options.closeAfterApprove - Whether to close the notification popup after approving the transaction
  * @throws HardwareWalletTransactionRejectedError - When hardware wallet user rejects on device
  */
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
+  options: UpdateAndApproveTxOptions = {},
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -2024,6 +2031,7 @@ export function updateAndApproveTx(
         txMeta,
         loadingIndicatorMessage,
         keyringType,
+        options,
       );
     }
 
@@ -2032,6 +2040,7 @@ export function updateAndApproveTx(
       txMeta,
       dontShowLoadingIndicator,
       loadingIndicatorMessage,
+      options,
     );
   };
 }
@@ -2041,7 +2050,10 @@ async function approveTransaction(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
+  options: UpdateAndApproveTxOptions = {},
 ): Promise<TransactionMeta | null> {
+  const { closeAfterApprove = true } = options;
+
   if (!dontShowLoadingIndicator) {
     dispatch(showLoadingIndication(loadingIndicatorMessage));
   }
@@ -2061,7 +2073,9 @@ async function approveTransaction(
     dispatch(completedTx(txMeta.id));
     dispatch(hideLoadingIndication());
     dispatch(updateCustomNonce(''));
-    dispatch(closeCurrentNotificationWindow());
+    if (closeAfterApprove) {
+      dispatch(closeCurrentNotificationWindow());
+    }
 
     return txMeta;
   } catch (err) {
@@ -2084,6 +2098,7 @@ async function approveTransaction(
  * @param txMeta - The transaction metadata
  * @param loadingIndicatorMessage - Message to show during signing
  * @param keyringType - The keyring type for the hardware wallet account
+ * @param options - Additional approval behavior options
  * @throws HardwareWalletError - When hardware wallet error occurs
  */
 async function approveHardwareWalletTransaction(
@@ -2091,7 +2106,10 @@ async function approveHardwareWalletTransaction(
   txMeta: TransactionMeta,
   loadingIndicatorMessage: string,
   keyringType: string,
+  options: UpdateAndApproveTxOptions = {},
 ): Promise<TransactionMeta | null> {
+  const { closeAfterApprove = true } = options;
+
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
   const walletType =
@@ -2110,7 +2128,9 @@ async function approveHardwareWalletTransaction(
     await forceUpdateMetamaskState(dispatch);
     dispatch(completedTx(txMeta.id));
     dispatch(updateCustomNonce(''));
-    dispatch(closeCurrentNotificationWindow());
+    if (closeAfterApprove) {
+      dispatch(closeCurrentNotificationWindow());
+    }
   } catch (error) {
     await forceUpdateMetamaskState(dispatch);
     // Reconstruct the error to ensure it's a proper HardwareWalletError instance

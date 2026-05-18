@@ -19,8 +19,8 @@ export const HYPERLIQUID_DEPOSIT_GAS_LIMIT = '0x186a0' as Hex;
 export const HYPERLIQUID_MIN_DEPOSIT_USDC = 5;
 export const HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID =
   'metamask:hyperliquidDeposit';
-export const HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE =
-  'metamask:hyperliquidDepositSidePanelRouteRequested';
+export const HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE =
+  'metamask:hyperliquidDepositPopupRouteRequested';
 
 export type HyperliquidDepositTransactionParams = {
   from: Hex;
@@ -30,8 +30,8 @@ export type HyperliquidDepositTransactionParams = {
   gas: Hex;
 };
 
-export type HyperliquidDepositSidePanelRouteMessage = {
-  type: typeof HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE;
+export type HyperliquidDepositPopupRouteMessage = {
+  type: typeof HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE;
   payload: {
     triggerId: string;
     tabId?: number;
@@ -100,14 +100,14 @@ export function isHyperliquidDepositConfirmation(
   );
 }
 
-export function isHyperliquidDepositSidePanelRouteMessage(
+export function isHyperliquidDepositPopupRouteMessage(
   message: unknown,
-): message is HyperliquidDepositSidePanelRouteMessage {
+): message is HyperliquidDepositPopupRouteMessage {
   return (
     Boolean(message) &&
     typeof message === 'object' &&
     'type' in message &&
-    message.type === HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE &&
+    message.type === HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE &&
     'payload' in message &&
     Boolean(message.payload) &&
     typeof message.payload === 'object' &&

@@ -35,8 +35,9 @@ export default class NotificationManager extends EventEmitter {
    *
    * @param {Function} setCurrentPopupId - setter of current popup id from appStateController
    * @param {number} currentPopupId - id of current opened metamask popup window
+   * @param {string} [url] - URL to open when creating a new notification popup
    */
-  async showPopup(setCurrentPopupId, currentPopupId) {
+  async showPopup(setCurrentPopupId, currentPopupId, url = 'notification.html') {
     this._popupId = currentPopupId;
     this._setCurrentPopupId = setCurrentPopupId;
     const popup = await this._getPopup(currentPopupId);
@@ -68,7 +69,7 @@ export default class NotificationManager extends EventEmitter {
       }
 
       const popupWindow = await this.platform.openWindow({
-        url: 'notification.html',
+        url,
         type: 'popup',
         width: NOTIFICATION_WIDTH,
         height: NOTIFICATION_HEIGHT,

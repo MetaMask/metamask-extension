@@ -105,6 +105,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
+  ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
@@ -138,7 +139,7 @@ import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
-import { isHyperliquidDepositSidePanelRouteMessage } from '../../../shared/lib/hyperliquid-deposit-transaction';
+import { isHyperliquidDepositPopupRouteMessage } from '../../../shared/lib/hyperliquid-deposit-transaction';
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
@@ -637,12 +638,16 @@ export default function Routes() {
   }, [showExtensionInFullSizeView]);
 
   useEffect(() => {
-    if (getEnvironmentType() !== ENVIRONMENT_TYPE_SIDEPANEL) {
+    const windowType = getEnvironmentType();
+    if (
+      windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
+      windowType !== ENVIRONMENT_TYPE_POPUP
+    ) {
       return undefined;
     }
 
     const handleHyperliquidDepositRouteMessage = (message: unknown) => {
-      if (!isHyperliquidDepositSidePanelRouteMessage(message)) {
+      if (!isHyperliquidDepositPopupRouteMessage(message)) {
         return undefined;
       }
 

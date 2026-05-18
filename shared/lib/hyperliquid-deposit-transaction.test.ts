@@ -4,11 +4,11 @@ import {
   HYPERLIQUID_DEPOSIT_CHAIN_ID,
   HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID,
   HYPERLIQUID_DEPOSIT_GAS_LIMIT,
-  HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE,
+  HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE,
   HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
   createHyperliquidDepositTransactionParams,
   isHyperliquidDepositConfirmation,
-  isHyperliquidDepositSidePanelRouteMessage,
+  isHyperliquidDepositPopupRouteMessage,
   parseUsdcAmountToAtomicUnits,
 } from './hyperliquid-deposit-transaction';
 
@@ -50,11 +50,11 @@ describe('isHyperliquidDepositConfirmation', () => {
   });
 });
 
-describe('isHyperliquidDepositSidePanelRouteMessage', () => {
-  it('returns true for Hyperliquid side panel route messages', () => {
+describe('isHyperliquidDepositPopupRouteMessage', () => {
+  it('returns true for Hyperliquid popup route messages', () => {
     expect(
-      isHyperliquidDepositSidePanelRouteMessage({
-        type: HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE,
+      isHyperliquidDepositPopupRouteMessage({
+        type: HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE,
         payload: {
           triggerId: 'trigger-1',
           tabId: 123,
@@ -65,8 +65,8 @@ describe('isHyperliquidDepositSidePanelRouteMessage', () => {
 
   it('returns false for malformed route messages', () => {
     expect(
-      isHyperliquidDepositSidePanelRouteMessage({
-        type: HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE,
+      isHyperliquidDepositPopupRouteMessage({
+        type: HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE,
         payload: {},
       }),
     ).toBe(false);

@@ -16,6 +16,7 @@ import {
   ConfirmationLoader,
   useConfirmationNavigation,
 } from '../confirmations/hooks/useConfirmationNavigation';
+import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import {
   HYPERLIQUID_DEPOSIT_CHAIN_ID,
   HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID,
@@ -40,11 +41,16 @@ jest.mock('../confirmations/hooks/useConfirmationNavigation', () => {
   };
 });
 
+jest.mock('../../hooks/perps/stream', () => ({
+  usePerpsLiveAccount: jest.fn(),
+}));
+
 const addTransactionMock = jest.mocked(addTransaction);
 const findNetworkClientIdByChainIdMock = jest.mocked(
   findNetworkClientIdByChainId,
 );
 const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
+const usePerpsLiveAccountMock = jest.mocked(usePerpsLiveAccount);
 
 const MOCK_NETWORK_CLIENT_ID = 'arbitrum-mainnet';
 const MOCK_TX_ID = 'hyperliquid-deposit-tx-id';
@@ -87,6 +93,10 @@ describe('HyperliquidDepositPage', () => {
     useConfirmationNavigationMock.mockReturnValue({
       navigateToTransaction: navigateToTransactionMock,
     } as never);
+    usePerpsLiveAccountMock.mockReturnValue({
+      account: null,
+      isInitialLoading: false,
+    });
   });
 
   it('starts on the intro screen without creating a transaction', () => {
@@ -94,6 +104,15 @@ describe('HyperliquidDepositPage', () => {
 
     expect(
       screen.getByRole('heading', { name: 'Deposit to Hyperliquid' }),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('hyperliquid-deposit-logo')).toHaveAttribute(
+      'src',
+      './images/hyperliquid-logo.svg',
+    );
+    expect(
+      screen.getByText(
+        'Fund your Hyperliquid account with any token from MetaMask.',
+      ),
     ).toBeInTheDocument();
     expect(screen.getByText('Review deposit')).toBeInTheDocument();
     expect(
@@ -138,25 +157,61 @@ describe('HyperliquidDepositPage', () => {
   it('shows a pending status before the deposit transaction confirms', () => {
     renderStatusPage(TransactionStatus.submitted);
 
-    expect(screen.getByText('Deposit Submitted')).toBeInTheDocument();
+    expect(screen.getByText('Deposit Pending')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Your Arbitrum transaction is pending. We will mark this funded once it confirms.',
+        "Your deposit is on its way. We'll update this screen once the funds are available in Hyperliquid.",
       ),
     ).toBeInTheDocument();
-    expect(screen.queryByText('Wallet Funded')).not.toBeInTheDocument();
+    expect(screen.queryByText('Account Funded')).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('status', { name: 'Waiting for confirmation' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('View activity')).toBeInTheDocument();
   });
 
   it('shows the funded status after the deposit transaction confirms', () => {
+    usePerpsLiveAccountMock.mockReturnValue({
+      account: { totalBalance: '1234.56' } as never,
+      isInitialLoading: false,
+    });
     renderStatusPage(TransactionStatus.confirmed);
 
-    expect(screen.getByText('Wallet Funded')).toBeInTheDocument();
+    expect(screen.getByText('Account Funded')).toBeInTheDocument();
     expect(
-      screen.getByText('Your perps wallet is ready to trade on Hyperliquid.'),
+      screen.getByText(
+        'Your Hyperliquid account has been funded and is ready for trading.',
+      ),
     ).toBeInTheDocument();
-    expect(screen.queryByText('Total balance')).not.toBeInTheDocument();
+    expect(screen.getByText('Current balance')).toBeInTheDocument();
+    expect(screen.getByText('$1,234.56')).toBeInTheDocument();
     expect(screen.getByText('Trade Perps on MetaMask')).toBeInTheDocument();
+  });
+
+  it('shows a loading balance row while the Perps balance is loading', () => {
+    usePerpsLiveAccountMock.mockReturnValue({
+      account: null,
+      isInitialLoading: true,
+    });
+
+    renderStatusPage(TransactionStatus.confirmed);
+
+    expect(screen.getByText('Current balance')).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
+
+  it('does not show cached zero as the final confirmed balance', () => {
+    usePerpsLiveAccountMock.mockReturnValue({
+      account: { totalBalance: '0' } as never,
+      isInitialLoading: false,
+    });
+
+    renderStatusPage(TransactionStatus.confirmed);
+
+    expect(screen.getByText('Current balance')).toBeInTheDocument();
+    expect(screen.getByText('Updating...')).toBeInTheDocument();
+    expect(screen.queryByText('$0')).not.toBeInTheDocument();
+    expect(screen.queryByText('$0.00')).not.toBeInTheDocument();
   });
 
   it('shows a failed status when the deposit transaction fails', () => {
@@ -169,6 +224,9 @@ describe('HyperliquidDepositPage', () => {
       ),
     ).toBeInTheDocument();
     expect(screen.getByText('Review activity')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('hyperliquid-deposit-balance-row'),
+    ).not.toBeInTheDocument();
   });
 
   it('shows an error if creating the confirmation fails', async () => {

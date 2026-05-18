@@ -82,10 +82,12 @@ const TRANSACTION_META_MOCK =
 function runHook({
   customNonceValue,
   gasFeeTokens,
+  pathname = '/',
   selectedGasFeeToken,
 }: {
   customNonceValue?: string;
   gasFeeTokens?: GasFeeToken[];
+  pathname?: string;
   selectedGasFeeToken?: Hex;
 } = {}) {
   const { result } = renderHookWithConfirmContextProvider(
@@ -102,6 +104,7 @@ function runHook({
         metamask: {},
       },
     ),
+    pathname,
   );
 
   return result.current;
@@ -176,6 +179,22 @@ describe('useTransactionConfirm', () => {
     await onTransactionConfirm();
 
     expect(updateAndApproveTxMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the notification window open when the confirmation has a goBackTo route', async () => {
+    const { onTransactionConfirm } = runHook({
+      pathname:
+        '/confirm-transaction/1?goBackTo=%2Fhyperliquid-deposit%3Fstep%3Dstatus%26txId%3D1',
+    });
+
+    await onTransactionConfirm();
+
+    expect(updateAndApproveTxMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      true,
+      '',
+      { closeAfterApprove: false },
+    );
   });
 
   it('updates custom nonce', async () => {

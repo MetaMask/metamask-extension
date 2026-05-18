@@ -6,6 +6,12 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import {
+  Icon as DsIcon,
+  IconColor as DsIconColor,
+  IconName as DsIconName,
+  IconSize as DsIconSize,
+} from '@metamask/design-system-react';
 
 import { getSelectedInternalAccount } from '../../selectors';
 import { selectTransactionById } from '../../selectors/transactionController';
@@ -27,6 +33,8 @@ import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_MARKET_LIST_ROUTE,
 } from '../../helpers/constants/routes';
+import { usePerpsLiveAccount } from '../../hooks/perps/stream';
+import { formatPerpsFiat } from '../../../shared/lib/perps-formatters';
 
 export const HYPERLIQUID_DEPOSIT_DEFAULT_AMOUNT_USDC = '100';
 
@@ -59,13 +67,16 @@ const FlowButton = ({
   );
 };
 
-const PerpsGlyph = ({ success = false }: { success?: boolean }) => {
+const HyperliquidLogo = ({ success = false }: { success?: boolean }) => {
   return (
-    <div className="hyperliquid-deposit__glyph-wrap">
-      <div className="hyperliquid-deposit__glyph" aria-hidden="true">
-        <span className="hyperliquid-deposit__glyph-node hyperliquid-deposit__glyph-node--left" />
-        <span className="hyperliquid-deposit__glyph-link" />
-        <span className="hyperliquid-deposit__glyph-node hyperliquid-deposit__glyph-node--right" />
+    <div className="hyperliquid-deposit__logo-wrap">
+      <div className="hyperliquid-deposit__logo-tile" aria-hidden="true">
+        <img
+          alt=""
+          className="hyperliquid-deposit__logo"
+          data-testid="hyperliquid-deposit-logo"
+          src="./images/hyperliquid-logo.svg"
+        />
       </div>
       {success ? (
         <span
@@ -76,6 +87,23 @@ const PerpsGlyph = ({ success = false }: { success?: boolean }) => {
           ✓
         </span>
       ) : null}
+    </div>
+  );
+};
+
+const PendingStatusIndicator = () => {
+  return (
+    <div
+      aria-label="Waiting for confirmation"
+      className="hyperliquid-deposit__pending-loader"
+      role="status"
+    >
+      <DsIcon
+        className="hyperliquid-deposit__pending-loader-icon"
+        color={DsIconColor.IconDefault}
+        name={DsIconName.Loading}
+        size={DsIconSize.Lg}
+      />
     </div>
   );
 };
@@ -112,10 +140,10 @@ const IntroStep = ({
 }) => {
   return (
     <div className="hyperliquid-deposit__step hyperliquid-deposit__step--intro">
-      <PerpsGlyph />
+      <HyperliquidLogo />
       <div className="hyperliquid-deposit__copy">
         <h1>Deposit to Hyperliquid</h1>
-        <p>Fund your Hyperliquid perps wallet from MetaMask.</p>
+        <p>Fund your Hyperliquid account with any token from MetaMask.</p>
       </div>
       <InlineError message={error} />
       <FlowButton
@@ -129,11 +157,33 @@ const IntroStep = ({
   );
 };
 
+const BalanceRow = ({
+  currentBalance,
+  isBalanceLoading,
+}: {
+  currentBalance?: string;
+  isBalanceLoading: boolean;
+}) => {
+  return (
+    <div
+      className="hyperliquid-deposit__balance-row"
+      data-testid="hyperliquid-deposit-balance-row"
+    >
+      <span>Current balance</span>
+      <strong>{getBalanceText({ currentBalance, isBalanceLoading })}</strong>
+    </div>
+  );
+};
+
 const StatusStep = ({
+  currentBalance,
+  isBalanceLoading,
   onReviewActivity,
   onTradePerps,
   status,
 }: {
+  currentBalance?: string;
+  isBalanceLoading: boolean;
   onReviewActivity: () => void;
   onTradePerps: () => void;
   status: HyperliquidDepositStatus;
@@ -143,11 +193,18 @@ const StatusStep = ({
 
   return (
     <div className="hyperliquid-deposit__step hyperliquid-deposit__step--status">
-      <PerpsGlyph success={isConfirmed} />
+      <HyperliquidLogo success={isConfirmed} />
       <div className="hyperliquid-deposit__copy">
         <h1>{getStatusTitle(status)}</h1>
         <p>{getStatusCopy(status)}</p>
       </div>
+      {!isConfirmed && !isFailed ? <PendingStatusIndicator /> : null}
+      {isConfirmed ? (
+        <BalanceRow
+          currentBalance={currentBalance}
+          isBalanceLoading={isBalanceLoading}
+        />
+      ) : null}
       <FlowButton
         dataTestId="hyperliquid-deposit-status-button"
         onClick={isConfirmed ? onTradePerps : onReviewActivity}
@@ -167,6 +224,8 @@ const HyperliquidDepositPage = () => {
   const depositTransaction = useSelector((state) =>
     selectTransactionById(state, transactionId),
   );
+  const { account, isInitialLoading: isBalanceLoading } =
+    usePerpsLiveAccount();
 
   const [step, setStep] = useState<HyperliquidDepositStep>(() =>
     getStepFromSearch(search),
@@ -220,6 +279,8 @@ const HyperliquidDepositPage = () => {
         ) : null}
         {step === 'status' ? (
           <StatusStep
+            currentBalance={account?.totalBalance}
+            isBalanceLoading={isBalanceLoading}
             onReviewActivity={() => navigate(PERPS_ACTIVITY_ROUTE)}
             onTradePerps={() => navigate(PERPS_MARKET_LIST_ROUTE)}
             status={getDepositStatus(depositTransaction?.status)}
@@ -273,14 +334,14 @@ function getDepositStatus(
 
 function getStatusTitle(status: HyperliquidDepositStatus): string {
   if (status === 'confirmed') {
-    return 'Wallet Funded';
+    return 'Account Funded';
   }
 
   if (status === 'failed') {
     return 'Deposit Failed';
   }
 
-  return 'Deposit Submitted';
+  return 'Deposit Pending';
 }
 
 function getStatusButtonText(status: HyperliquidDepositStatus): string {
@@ -297,14 +358,41 @@ function getStatusButtonText(status: HyperliquidDepositStatus): string {
 
 function getStatusCopy(status: HyperliquidDepositStatus): string {
   if (status === 'confirmed') {
-    return 'Your perps wallet is ready to trade on Hyperliquid.';
+    return 'Your Hyperliquid account has been funded and is ready for trading.';
   }
 
   if (status === 'failed') {
     return 'The transaction did not complete. Review activity for details.';
   }
 
-  return 'Your Arbitrum transaction is pending. We will mark this funded once it confirms.';
+  return "Your deposit is on its way. We'll update this screen once the funds are available in Hyperliquid.";
+}
+
+function getBalanceText({
+  currentBalance,
+  isBalanceLoading,
+}: {
+  currentBalance?: string;
+  isBalanceLoading: boolean;
+}): string {
+  if (isBalanceLoading) {
+    return 'Loading...';
+  }
+
+  if (currentBalance === undefined) {
+    return 'Unavailable';
+  }
+
+  const parsedBalance = Number.parseFloat(currentBalance);
+  if (!Number.isFinite(parsedBalance)) {
+    return 'Unavailable';
+  }
+
+  if (parsedBalance === 0) {
+    return 'Updating...';
+  }
+
+  return formatPerpsFiat(currentBalance);
 }
 
 async function createDepositConfirmationTransaction({

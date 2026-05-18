@@ -56,7 +56,7 @@ import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
-import { HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE } from '../../shared/lib/hyperliquid-deposit-transaction';
+import { HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE } from '../../shared/lib/hyperliquid-deposit-transaction';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
@@ -2144,66 +2144,48 @@ async function triggerUi() {
   }
 }
 
-const HYPERLIQUID_DEPOSIT_MODAL_SIDE_PANEL_PATH =
-  'sidepanel.html#/hyperliquid-deposit';
+const HYPERLIQUID_DEPOSIT_MODAL_POPUP_PATH =
+  'notification.html#/hyperliquid-deposit';
 
-async function openHyperliquidDepositModalSidePanel({ tabId, windowId }) {
-  if (!browser?.sidePanel?.open) {
-    log.warn('Unable to open Hyperliquid deposit flow in side panel', {
-      reason: 'side-panel-unavailable',
-    });
-    return;
-  }
-
+async function openHyperliquidDepositModalPopup({ tabId, windowId }) {
   const triggerId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
   try {
-    if (browser.sidePanel.setOptions) {
-      await browser.sidePanel.setOptions({
-        ...(tabId ? { tabId } : {}),
-        enabled: true,
-        path: getHyperliquidDepositModalSidePanelPath(triggerId),
-      });
-    }
+    const currentPopupId = controller.appStateController.getCurrentPopupId();
+    await notificationManager.showPopup(
+      (newPopupId) =>
+        controller.appStateController.setCurrentPopupId(newPopupId),
+      currentPopupId,
+      getHyperliquidDepositModalPopupPath(triggerId),
+    );
 
-    if (tabId) {
-      await browser.sidePanel.open({ tabId });
-    } else {
-      const sidePanelWindowId =
-        windowId ?? (await platform.getLastFocusedWindow()).id;
-
-      if (sidePanelWindowId) {
-        await browser.sidePanel.open({ windowId: sidePanelWindowId });
-      }
-    }
-
-    await notifyHyperliquidDepositSidePanelRoute({
+    await notifyHyperliquidDepositPopupRoute({
       tabId,
       triggerId,
       windowId,
     });
   } catch (error) {
-    log.warn('Unable to open Hyperliquid deposit flow in side panel', {
-      reason: 'side-panel-open-failed',
+    log.warn('Unable to open Hyperliquid deposit flow in popup', {
+      reason: 'popup-open-failed',
       error,
     });
   }
 }
 
-function getHyperliquidDepositModalSidePanelPath(triggerId) {
-  return `${HYPERLIQUID_DEPOSIT_MODAL_SIDE_PANEL_PATH}?trigger=${encodeURIComponent(
+function getHyperliquidDepositModalPopupPath(triggerId) {
+  return `${HYPERLIQUID_DEPOSIT_MODAL_POPUP_PATH}?trigger=${encodeURIComponent(
     triggerId,
   )}`;
 }
 
-async function notifyHyperliquidDepositSidePanelRoute({
+async function notifyHyperliquidDepositPopupRoute({
   tabId,
   triggerId,
   windowId,
 }) {
   try {
     await browser.runtime.sendMessage({
-      type: HYPERLIQUID_DEPOSIT_SIDE_PANEL_ROUTE_MESSAGE,
+      type: HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE,
       payload: {
         ...(tabId ? { tabId } : {}),
         triggerId,
@@ -2211,7 +2193,7 @@ async function notifyHyperliquidDepositSidePanelRoute({
       },
     });
   } catch (error) {
-    log.debug('No open side panel received Hyperliquid deposit route message', {
+    log.debug('No open popup received Hyperliquid deposit route message', {
       error,
     });
   }
@@ -2219,7 +2201,7 @@ async function notifyHyperliquidDepositSidePanelRoute({
 
 registerHyperliquidDepositModalListener({
   runtime: browser.runtime,
-  openDepositFlow: openHyperliquidDepositModalSidePanel,
+  openDepositFlow: openHyperliquidDepositModalPopup,
 });
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.

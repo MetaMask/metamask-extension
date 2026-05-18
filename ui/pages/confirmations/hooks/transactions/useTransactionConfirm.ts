@@ -25,7 +25,7 @@ export function useTransactionConfirm() {
   const { showErrorModal } = useHardwareWalletError();
   const customNonceValue = useSelector(getCustomNonceValue);
   const selectedGasFeeToken = useSelectedGasFeeToken();
-  const { currentConfirmation: transactionMeta } =
+  const { currentConfirmation: transactionMeta, goBackTo } =
     useConfirmContext<TransactionMeta>();
 
   const { isSupported: isGaslessSupportedSTX } =
@@ -104,7 +104,15 @@ export function useTransactionConfirm() {
     // navigate to shield settings page first before approving transaction to wait for subscription creation there
     handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
     try {
-      await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+      if (goBackTo) {
+        await dispatch(
+          updateAndApproveTx(newTransactionMeta, true, '', {
+            closeAfterApprove: false,
+          }),
+        );
+      } else {
+        await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
+      }
       onDappSwapCompleted();
       return true;
     } catch (error) {
@@ -126,6 +134,7 @@ export function useTransactionConfirm() {
   }, [
     newTransactionMeta,
     customNonceValue,
+    goBackTo,
     isGaslessSupportedSTX,
     dispatch,
     showErrorModal,
