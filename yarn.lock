@@ -7904,21 +7904,21 @@ __metadata:
   linkType: hard
 
 "@metamask/seedless-onboarding-controller@npm:^9.0.0":
-  version: 9.1.0
-  resolution: "@metamask/seedless-onboarding-controller@npm:9.1.0"
+  version: 9.0.0
+  resolution: "@metamask/seedless-onboarding-controller@npm:9.0.0"
   dependencies:
     "@metamask/auth-network-utils": "npm:^0.3.0"
-    "@metamask/base-controller": "npm:^9.0.1"
+    "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
-    "@metamask/keyring-controller": "npm:^25.1.1"
-    "@metamask/messenger": "npm:^1.0.0"
+    "@metamask/keyring-controller": "npm:^25.1.0"
+    "@metamask/messenger": "npm:^0.3.0"
     "@metamask/toprf-secure-backup": "npm:^0.11.0"
     "@metamask/utils": "npm:^11.9.0"
     "@noble/ciphers": "npm:^1.3.0"
     "@noble/curves": "npm:^1.9.2"
     "@noble/hashes": "npm:^1.8.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/cb5e232888c4e6388e5b09ef2ad166822cde8abfe445ec776eb112d82739e30ff615bcd21335ac45150ffd16053c591b7cabf1626ee66c53bf4d9e6e63e77771
+  checksum: 10/e547fc366c86ddef687e866e245a1895f174981dadbbdbf5250711555500305d0f33989be6ce95f48ff89e3aa31cb803c83cbdae8cb0608cebb9c08dbdb5c17f
   languageName: node
   linkType: hard
 
