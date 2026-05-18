@@ -163,7 +163,6 @@ jobs:
 
           merge_base_commit_hash="$(
             gh api \
-              -H "Accept: application/vnd.github+json" \
               "/repos/${GITHUB_REPOSITORY}/compare/main...${BUILDS_FROM_SHA}?per_page=1" \
               --jq '.merge_base_commit.sha' 2>/dev/null || true
           )"
@@ -174,7 +173,6 @@ jobs:
             if ! baseline_commit_hashes="$(
               for page in 1 2; do
                 gh api \
-                  -H "Accept: application/vnd.github+json" \
                   "/repos/${GITHUB_REPOSITORY}/commits?sha=${merge_base_commit_hash}&per_page=100&page=${page}" \
                   --jq '.[].sha' || exit 1
               done
