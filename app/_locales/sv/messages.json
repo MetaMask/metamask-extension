@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Timer för automatisk utloggning (minuter)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Ställ in efter hur lång tids inaktivitet som MetaMask automatiskt loggar ut"
-  },
   "average": {
     "message": "Genomsnitt"
   },
@@ -174,12 +171,6 @@
   },
   "createPassword": {
     "message": "Skapa lösenord"
-  },
-  "currencyConversion": {
-    "message": "Valutaomvandling"
-  },
-  "currentLanguage": {
-    "message": "Aktuellt språk"
   },
   "custom": {
     "message": "Avancerat"
@@ -333,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Vill du lägga till dessa tokens?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli testnätverk"
-  },
-  "links": {
-    "message": "Länkar"
-  },
   "loading": {
     "message": "Läser in..."
   },
@@ -372,9 +357,6 @@
   },
   "nevermind": {
     "message": "Strunt i det"
-  },
-  "newAccount": {
-    "message": "Nytt konto"
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -481,9 +463,6 @@
   "restore": {
     "message": "Återställ"
   },
-  "revealSeedWords": {
-    "message": "Visa seed-ord"
-  },
   "revealSeedWordsWarning": {
     "message": "De här orden kan användas för att stjäla alla dina konton.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -530,9 +509,6 @@
   "showFiatConversionInTestnets": {
     "message": "Visa omvandling på testnätverk"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Välj denna för att visa fiatomvandlingar på Testnätverk"
-  },
   "showHexData": {
     "message": "Visa hex-information"
   },
@@ -562,9 +538,6 @@
   },
   "stateLogs": {
     "message": "Statushistorik"
-  },
-  "stateLogsDescription": {
-    "message": "Statusloggar innehåller dina publika kontoadresser och skickade transaktioner."
   },
   "submitted": {
     "message": "Inskickat"
