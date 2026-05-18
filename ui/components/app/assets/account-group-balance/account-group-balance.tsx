@@ -22,7 +22,7 @@ import {
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import { Skeleton } from '../../../component-library/skeleton';
+import { Skeleton } from '@metamask/design-system-react';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 import {
@@ -124,11 +124,11 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
 
   return (
     <Skeleton
-      isLoading={
+      hideChildren={
         !anyEnabledNetworksAreAvailable &&
         (isZeroAmount(total) || currency === undefined)
       }
-      marginBottom={1}
+      className="mb-1"
     >
       <Box
         className={classnames(`${classPrefix}-overview__primary-balance`, {

@@ -22,7 +22,7 @@ import { TokenFiatDisplayInfo } from '../../types';
 import { useIsOriginalNativeTokenSymbol } from '../../../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../../../../shared/lib/selectors/networks';
 import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
-import { Skeleton } from '../../../../component-library/skeleton';
+import { Skeleton } from '@metamask/design-system-react';
 import { isZeroAmount } from '../../../../../helpers/utils/number-utils';
 
 type TokenCellSecondaryDisplayProps = {
@@ -86,12 +86,12 @@ export const TokenCellSecondaryDisplay = React.memo(
     // secondary display text
     return (
       <Skeleton
-        isLoading={
+        hideChildren={
           !anyEnabledNetworksAreAvailable &&
           isZeroAmount(secondaryDisplayText) &&
           secondaryDisplayText !== '—'
         }
-        marginBottom={1}
+        className="mb-1"
       >
         <SensitiveText
           fontWeight={token.secondary ? FontWeight.Medium : FontWeight.Normal}

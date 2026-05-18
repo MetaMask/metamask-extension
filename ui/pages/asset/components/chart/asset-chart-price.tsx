@@ -10,7 +10,7 @@ import {
 import { Box, Text } from '../../../../components/component-library';
 import { loadingOpacity, getDynamicShortDate } from '../../util';
 import { useFormatters } from '../../../../hooks/useFormatters';
-import { Skeleton } from '../../../../components/component-library/skeleton';
+import { Skeleton } from '@metamask/design-system-react';
 import { TokenCellPercentChange } from '../../../../components/app/assets/token-cell/cells';
 import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
 
@@ -20,7 +20,7 @@ import { TokenFiatDisplayInfo } from '../../../../components/app/assets/types';
  * does not shift when switching from price-loading to price-available.
  */
 const AssetChartMainPriceLoading = () => (
-  <Skeleton width="25%" marginBottom={1} borderRadius={BorderRadius.LG}>
+  <Skeleton width="25%" className="mb-1 rounded-lg">
     <Text variant={TextVariant.displayMd}>{'\u00A0'}</Text>
   </Skeleton>
 );
@@ -43,7 +43,7 @@ const AssetChartMainPriceEmptyState = () => (
  * price-delta-available.
  */
 const AssetChartDeltaLoading = () => (
-  <Skeleton width="33%" borderRadius={BorderRadius.LG}>
+  <Skeleton width="33%" className="rounded-lg">
     <Text variant={TextVariant.bodyMdMedium}>{'\u00A0'}</Text>
   </Skeleton>
 );
