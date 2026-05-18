@@ -8843,10 +8843,13 @@ export default class MetamaskController extends EventEmitter {
     // wrapper in `@metamask/eth-ledger-bridge-keyring/v2` so callers don't
     // need to reach through `bridge`. The V2 wrapper currently exposes the
     // bridge instance but not this top-level method.
+    //
+    // Use `await` (not `.then`/`.catch`) so callers tolerate any bridge whose
+    // `updateTransportMethod` is synchronous (e.g. older test stubs that
+    // returned a raw value before being aligned with the real bridge's
+    // Promise contract).
     if (keyring?.bridge?.updateTransportMethod) {
-      return keyring.bridge.updateTransportMethod(transportType).catch((e) => {
-        throw e;
-      });
+      await keyring.bridge.updateTransportMethod(transportType);
     }
 
     return undefined;
