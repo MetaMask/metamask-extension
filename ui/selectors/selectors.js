@@ -2869,6 +2869,16 @@ export function getIsPasskeyRegistered(state) {
 }
 
 /**
+ * Passkey vault wrapping key derivation method from the enrolled record.
+ *
+ * @param {object} state - Redux state
+ * @returns {'prf' | 'userHandle' | undefined}
+ */
+export function getPasskeyDerivationMethod(state) {
+  return state.metamask?.passkeyRecord?.keyDerivation?.method;
+}
+
+/**
  * True when the enrolled passkey's AAGUID is in the sidepanel-incompatible set
  * (defer passkey flows to a normal browser tab when also in sidepanel).
  *

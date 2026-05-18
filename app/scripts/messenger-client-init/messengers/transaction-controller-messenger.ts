@@ -54,6 +54,7 @@ import {
   TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import {
+  TransactionPayControllerGetDelegationTransactionAction,
   TransactionPayControllerGetStateAction,
   TransactionPayControllerGetStrategyAction,
 } from '@metamask/transaction-pay-controller';
@@ -138,6 +139,7 @@ type InitMessengerActions =
   | TransactionControllerGetStateAction
   | TransactionControllerIsAtomicBatchSupportedAction
   | TransactionControllerUpdateTransactionAction
+  | TransactionPayControllerGetDelegationTransactionAction
   | TransactionPayControllerGetStateAction
   | TransactionPayControllerGetStrategyAction;
 
@@ -218,6 +220,7 @@ export function getTransactionControllerInitMessenger(
       'TransactionController:getState',
       'TransactionController:isAtomicBatchSupported',
       'TransactionController:updateTransaction',
+      'TransactionPayController:getDelegationTransaction',
       'TransactionPayController:getState',
       'TransactionPayController:getStrategy',
     ],
