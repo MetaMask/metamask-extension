@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import { toChecksumHexAddress } from '../../../../shared/lib/hexstring-utils';
@@ -8,9 +9,6 @@ import {
   ButtonBaseSize,
   IconName,
   Text,
-  IconSize,
-  type ButtonBaseProps,
-  type TextProps,
 } from '../../component-library';
 import {
   AlignItems,
@@ -19,6 +17,7 @@ import {
   Display,
   FlexDirection,
   IconColor,
+  Size,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -27,48 +26,6 @@ import { trace, TraceName } from '../../../../shared/lib/trace';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 
 const AccountMenuStyle = { height: 'auto' };
-
-export type AccountPickerProps = Omit<
-  ButtonBaseProps<'button'>,
-  'children' | 'name' | 'onClick'
-> & {
-  /**
-   * Account name
-   */
-  name: string;
-  /**
-   * Account address, used for blockie or jazzicon
-   */
-  address: string;
-  /**
-   * Action to perform when the account picker is clicked
-   */
-  onClick: () => void;
-  /**
-   * Represents if the account address should display
-   */
-  showAddress?: boolean;
-  /**
-   * Props to be added to the address element
-   */
-  addressProps?: TextProps<'span'>;
-  /**
-   * Props to be added to the label element
-   */
-  labelProps?: TextProps<'span'>;
-  /**
-   * Props to be added to the text element
-   */
-  textProps?: ButtonBaseProps<'button'>['textProps'];
-  /**
-   * Additional className to be added to the AccountPicker
-   */
-  className?: string;
-  /**
-   * Represents if the avatar account should display
-   */
-  showAvatarAccount?: boolean;
-};
 
 export const AccountPicker = ({
   address,
@@ -82,15 +39,10 @@ export const AccountPicker = ({
   className = '',
   showAvatarAccount = true,
   ...props
-}: AccountPickerProps) => {
+}) => {
   const shortenedAddress = address
     ? shortenAddress(toChecksumHexAddress(address))
     : '';
-
-  const handleClick = useCallback(() => {
-    trace({ name: TraceName.AccountList });
-    onClick();
-  }, [onClick]);
 
   const accountNameStyling = useMemo(
     () => ({
@@ -110,7 +62,10 @@ export const AccountPicker = ({
       <ButtonBase
         className={classnames('multichain-account-picker', className)}
         data-testid="account-menu-icon"
-        onClick={handleClick}
+        onClick={() => {
+          trace({ name: TraceName.AccountList });
+          onClick();
+        }}
         backgroundColor={BackgroundColor.transparent}
         borderRadius={BorderRadius.LG}
         ellipsis
@@ -125,7 +80,7 @@ export const AccountPicker = ({
         endIconName={IconName.ArrowDown}
         endIconProps={{
           color: IconColor.iconDefault,
-          size: IconSize.Sm,
+          size: Size.SM,
         }}
         {...props}
         gap={1}
@@ -173,4 +128,51 @@ export const AccountPicker = ({
       </ButtonBase>
     </Box>
   );
+};
+
+AccountPicker.propTypes = {
+  /**
+   * Account name
+   */
+  name: PropTypes.string.isRequired,
+  /**
+   * Account address, used for blockie or jazzicon
+   */
+  address: PropTypes.string.isRequired,
+  /**
+   * Represents if the account address should display
+   */
+  showAddress: PropTypes.bool,
+  /**
+   * Props to be added to the address element
+   */
+  addressProps: PropTypes.object,
+  /**
+   * Action to perform when the account picker is clicked
+   */
+  onClick: PropTypes.func.isRequired,
+  /**
+   * Represents if the AccountPicker should be actionable
+   */
+  disabled: PropTypes.bool,
+  /**
+   * Represents if the AccountPicker should take full width
+   */
+  block: PropTypes.bool,
+  /**
+   * Props to be added to the label element
+   */
+  labelProps: PropTypes.object,
+  /**
+   * Props to be added to the text element
+   */
+  textProps: PropTypes.object,
+  /**
+   * Additional className to be added to the AccountPicker
+   */
+  className: PropTypes.string,
+  /**
+   * Represents if the avatar account should display
+   */
+  showAvatarAccount: PropTypes.bool,
 };
