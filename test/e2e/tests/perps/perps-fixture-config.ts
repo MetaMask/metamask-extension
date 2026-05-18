@@ -100,6 +100,35 @@ export function getPerpsGeoBlockConfig(title?: string) {
 }
 
 /**
+ * Registers the eligible feature-flag HTTP mock on `server`.
+ * Overrides /v1/flags so the background RemoteFeatureFlagController sees
+ * `perpsPerpTradingGeoBlockedCountriesV2` with `blockedRegions: []`,
+ * keeping US-TX eligible.
+ *
+ * Extracted to avoid duplicating this logic across config functions that
+ * all need the same flag mock alongside their own additional mocks.
+ *
+ * @param server - The Mockttp server instance to register the mock on.
+ */
+async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
+  const eligibleFlags = [
+    ...getProductionRemoteFlagApiResponse().filter(
+      (entry) =>
+        !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
+    ),
+    { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
+  ];
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({ client: 'extension', distribution: 'main' })
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: eligibleFlags,
+    }));
+}
+
+/**
  * withFixtures config for Perps E2E tests with an eligible (non-geo-blocked) user.
  * Use this for tests that exercise trading actions (Long/Short, Add Funds, Close All).
  *
@@ -121,23 +150,7 @@ export function getPerpsConfigEligible(title?: string) {
       .build(),
     title,
     manifestFlags: PERPS_ELIGIBLE_FLAG,
-    testSpecificMock: async (server: Mockttp) => {
-      const eligibleFlags = [
-        ...getProductionRemoteFlagApiResponse().filter(
-          (entry) =>
-            !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
-        ),
-        { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
-      ];
-      await server
-        .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-        .withQuery({ client: 'extension', distribution: 'main' })
-        .thenCallback(() => ({
-          ok: true,
-          statusCode: 200,
-          json: eligibleFlags,
-        }));
-    },
+    testSpecificMock: (server: Mockttp) => mockEligibleFeatureFlags(server),
   };
 }
 
@@ -169,22 +182,7 @@ export function getPerpsConfigEligibleWithActivity(title?: string) {
     title,
     manifestFlags: PERPS_ELIGIBLE_FLAG,
     testSpecificMock: async (server: Mockttp) => {
-      // Eligible feature flags (same as getPerpsConfigEligible)
-      const eligibleFlags = [
-        ...getProductionRemoteFlagApiResponse().filter(
-          (entry) =>
-            !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
-        ),
-        { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
-      ];
-      await server
-        .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-        .withQuery({ client: 'extension', distribution: 'main' })
-        .thenCallback(() => ({
-          ok: true,
-          statusCode: 200,
-          json: eligibleFlags,
-        }));
+      await mockEligibleFeatureFlags(server);
 
       // Override userFills — returns an ETH open-long fill for the Trades filter
       await server
