@@ -36,6 +36,50 @@ import {
 } from './messengers';
 
 /**
+ * Constructor signature shared by every V2 hardware-keyring wrapper.
+ *
+ * Each wrapper (`LatticeKeyringV2`, `LedgerKeyringV2`, etc.) takes a
+ * `{ legacyKeyring, entropySource }` options object. Declared here so
+ * `buildHardwareV2Builder` can construct any of them uniformly.
+ */
+type HardwareV2WrapperCtor<Wrapper> = new (options: {
+  legacyKeyring: never;
+  entropySource: string;
+}) => Wrapper;
+
+/**
+ * Wrap a hardware-keyring V2 class as a `KeyringV2Builder` keyed by the
+ * matching legacy keyring's `type` string. The five hardware V2 builders
+ * are mechanically identical apart from the wrapper class and the type
+ * marker; this factory keeps them in lockstep instead of repeating the
+ * `Object.assign` boilerplate per device.
+ *
+ * @param WrapperCtor - The V2 wrapper class to instantiate.
+ * @param legacyType - The matching legacy keyring's `type` string. The
+ * controller dispatches V2 builders by matching against the inner
+ * keyring's `type`, so this must equal `LegacyKeyring.type`.
+ * @returns A `KeyringV2Builder` ready for `keyringV2Builders`.
+ */
+function buildHardwareV2Builder<Wrapper>(
+  WrapperCtor: HardwareV2WrapperCtor<Wrapper>,
+  legacyType: string,
+): KeyringV2Builder {
+  const builder = Object.assign(
+    (keyring: unknown, metadata: { id: string }) =>
+      new WrapperCtor({
+        legacyKeyring: keyring as never,
+        entropySource: metadata.id,
+      }),
+    { type: legacyType },
+  );
+  // `KeyringV2Builder` declares parameter types (`Keyring`, `KeyringMetadata`)
+  // and return type (`KeyringV2`) from `@metamask/keyring-controller` that
+  // each wrapper satisfies structurally at runtime; this single boundary
+  // cast keeps callers free of repeated assertions.
+  return builder as unknown as KeyringV2Builder;
+}
+
+/**
  * Initialize the keyring controller.
  *
  * @param request - The request object.
@@ -115,71 +159,16 @@ export const KeyringControllerInit: MessengerClientInitFunction<
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   additionalKeyrings.push(snapKeyringBuilder);
 
-  const latticeKeyringV2Builder: KeyringV2Builder = Object.assign(
-    (keyring: unknown, metadata: { id: string }) =>
-      new LatticeKeyringV2({
-        legacyKeyring: keyring as ConstructorParameters<
-          typeof LatticeKeyringV2
-        >[0]['legacyKeyring'],
-        entropySource: metadata.id,
-      }),
-    { type: LatticeKeyring.type },
-  );
-
-  const ledgerKeyringV2Builder: KeyringV2Builder = Object.assign(
-    (keyring: unknown, metadata: { id: string }) =>
-      new LedgerKeyringV2({
-        legacyKeyring: keyring as ConstructorParameters<
-          typeof LedgerKeyringV2
-        >[0]['legacyKeyring'],
-        entropySource: metadata.id,
-      }),
-    { type: LedgerKeyring.type },
-  );
-
-  const qrKeyringV2Builder: KeyringV2Builder = Object.assign(
-    (keyring: unknown, metadata: { id: string }) =>
-      new QrKeyringV2({
-        legacyKeyring: keyring as ConstructorParameters<
-          typeof QrKeyringV2
-        >[0]['legacyKeyring'],
-        entropySource: metadata.id,
-      }),
-    { type: QrKeyring.type },
-  );
-
-  const trezorKeyringV2Builder: KeyringV2Builder = Object.assign(
-    (keyring: unknown, metadata: { id: string }) =>
-      new TrezorKeyringV2({
-        legacyKeyring: keyring as ConstructorParameters<
-          typeof TrezorKeyringV2
-        >[0]['legacyKeyring'],
-        entropySource: metadata.id,
-      }),
-    { type: TrezorKeyring.type },
-  );
-
-  const onekeyKeyringV2Builder: KeyringV2Builder = Object.assign(
-    (keyring: unknown, metadata: { id: string }) =>
-      new OneKeyKeyringV2({
-        legacyKeyring: keyring as ConstructorParameters<
-          typeof OneKeyKeyringV2
-        >[0]['legacyKeyring'],
-        entropySource: metadata.id,
-      }),
-    { type: OneKeyKeyring.type },
-  );
-
   const messengerClient = new KeyringController({
     state: persistedState.KeyringController,
     messenger: controllerMessenger,
     keyringBuilders: additionalKeyrings,
     keyringV2Builders: [
-      latticeKeyringV2Builder,
-      ledgerKeyringV2Builder,
-      qrKeyringV2Builder,
-      trezorKeyringV2Builder,
-      onekeyKeyringV2Builder,
+      buildHardwareV2Builder(LatticeKeyringV2, LatticeKeyring.type),
+      buildHardwareV2Builder(LedgerKeyringV2, LedgerKeyring.type),
+      buildHardwareV2Builder(QrKeyringV2, QrKeyring.type),
+      buildHardwareV2Builder(TrezorKeyringV2, TrezorKeyring.type),
+      buildHardwareV2Builder(OneKeyKeyringV2, OneKeyKeyring.type),
     ],
     encryptor: encryptor || encryptorFactory(600_000),
   });

@@ -109,6 +109,12 @@ export class LatticeKeyringV2
       capabilities: latticeKeyringCapabilities,
     });
     this.entropySource = options.entropySource;
+    // The legacy `eth-lattice-keyring` constructs with `appName` unset
+    // unless `opts.name`/`opts.appName` were provided, and `_resetDefaults`
+    // (called from `forgetDevice`) does not clear `appName`. Set it once
+    // here so every Lattice flow downstream sees a populated identifier
+    // without callers having to remember.
+    this.inner.appName = 'MetaMask';
   }
 
   #createKeyringAccount(address: Hex): KeyringAccount {

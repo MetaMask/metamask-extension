@@ -5,10 +5,11 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
+import { AppStateControllerRequestQrCodeScanAction } from '../controllers/app-state-controller-method-action-types';
 import { KeyringController } from '@metamask/keyring-controller';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
-import { QrKeyring } from '@metamask/eth-qr-keyring';
+import { QrKeyring, QrScanRequestType } from '@metamask/eth-qr-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -37,7 +38,9 @@ function getInitRequestMock({
 > {
   const baseMessenger = new Messenger<
     MockAnyNamespace,
-    NetworkControllerGetSelectedNetworkClientAction | ActionConstraint,
+    | NetworkControllerGetSelectedNetworkClientAction
+    | AppStateControllerRequestQrCodeScanAction
+    | ActionConstraint,
     never
   >({
     namespace: MOCK_ANY_NAMESPACE,
@@ -56,7 +59,6 @@ function getInitRequestMock({
 
   if (qrScanHandler) {
     baseMessenger.registerActionHandler(
-      // @ts-expect-error: AppStateController action not in test type union.
       'AppStateController:requestQrCodeScan',
       qrScanHandler,
     );
@@ -98,21 +100,18 @@ describe('KeyringControllerInit', () => {
     const controllerArgs = jest
       .mocked(KeyringController)
       .mock.calls.at(-1)?.[0];
-    const qrBuilder = controllerArgs?.keyringBuilders?.[0] as {
+    const qrBuilder = controllerArgs?.keyringBuilders?.[0] as (() => QrKeyring) & {
       type: string;
     };
     expect(qrBuilder.type).toBe(QrKeyring.type);
 
     // Build a QR keyring via the registered builder to exercise the
-    // `requestScan` closure that lives in its options.
-    const qrKeyring = (
-      qrBuilder as unknown as () => {
-        bridge: { requestScan: (req: unknown) => Promise<unknown> };
-      }
-    )();
-    const scanResult = await qrKeyring.bridge.requestScan({ payload: 'abc' });
+    // `requestScan` closure passed into `qrKeyringBuilderFactory`'s options.
+    const qrKeyring = qrBuilder();
+    const scanRequest = { type: QrScanRequestType.PAIR };
+    const scanResult = await qrKeyring.bridge.requestScan(scanRequest);
 
-    expect(qrScanHandler).toHaveBeenCalledWith({ payload: 'abc' });
+    expect(qrScanHandler).toHaveBeenCalledWith(scanRequest);
     expect(scanResult).toEqual({ scanned: true });
   });
 
