@@ -40,7 +40,7 @@ import { PerpsGeoBlockModal } from './perps-geo-block-modal';
 import { usePerpsDepositConfirmation } from './hooks/usePerpsDepositConfirmation';
 import { usePerpsWithdrawNavigation } from './hooks/usePerpsWithdrawNavigation';
 import { PerpsBalanceDropdown } from './perps-balance-dropdown';
-import { CloseAllPositionsModal } from './close-position';
+import { CloseAllPositionsModal } from './close-position/close-all-positions-modal';
 import { PerpsExploreMarkets } from './perps-explore-markets';
 import { PerpsPositionsOrders } from './perps-positions-orders';
 import { PerpsRecentActivity } from './perps-recent-activity';
