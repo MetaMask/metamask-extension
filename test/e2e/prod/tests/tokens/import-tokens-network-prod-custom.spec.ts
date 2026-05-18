@@ -118,7 +118,37 @@ async function runTokenImportTest(
       await addEditNetworkModal.checkPageIsLoaded();
       await addEditNetworkModal.saveEditedNetwork(networkConfig.networkName);
 
-      // Verify network was added
+      // Test
+      // saveEditedNetwork() handles navigation back to home page automatically
+      // Wait longer for the navigation and page state transitions
+      console.log(
+        `[TEST] Waiting for ${networkConfig.networkName} to be added and RPC to connect...`,
+      );
+      await driver.delay(PROD_DELAYS.RPC_RESPONSE * 3);
+
+      console.log(`[TEST] ✅ Network ${networkConfig.networkName} added successfully`);
+
+      // Wait for the home page to load with the new network
+      console.log(`[TEST] Verifying home page is loaded with new network active...`);
+      await driver.delay(PROD_DELAYS.API_RESPONSE);
+      console.log(`[TEST] ✅ Home page is loaded`);
+      // From wallet home, click on sort-by-networks button
+      console.log(`[TEST] Opening network selector modal...`);
+      const networksList = '[data-testid="sort-by-networks"]';
+      await driver.clickElement(networksList);
+      // Wait for dialog to appear
+      await driver.waitForSelector('[role="dialog"]');
+      console.log(`[TEST] Able to find network selector modal...`);
+      // ================================================================
+      // Select custom network from network selector
+      // ================================================================
+
+      const chainIdHex = networkConfig.chainId;
+      const networkListItemSelector = `[data-testid="network-list-item-eip155:${chainIdHex}"]`;
+      console.log(`[TEST] Clicking on network in list: ${networkListItemSelector}...`);
+      await driver.clickElement(networkListItemSelector);
+      await driver.delay(PROD_DELAYS.MODAL_TRANSITION);
+      // // Verify network was added
       const homepage = new HomePage(driver);
       await homepage.checkPageIsLoaded();
       await homepage.checkAddNetworkMessageIsDisplayed(
