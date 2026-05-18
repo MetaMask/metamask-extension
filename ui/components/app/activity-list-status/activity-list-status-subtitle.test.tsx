@@ -14,6 +14,7 @@ jest.mock('../../ui/tooltip', () => {
   );
 
   return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Jest ESM interop
     __esModule: true,
     default: MockTooltip,
   };

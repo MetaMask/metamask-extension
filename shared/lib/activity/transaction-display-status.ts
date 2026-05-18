@@ -15,6 +15,10 @@ const pendingStatusHash: Partial<
 /**
  * Normalizes a raw transaction status for activity list display and tests.
  * E.g. approved → signing; submitted/signed → pending vs queued by nonce order.
+ *
+ * @param status - Raw transaction status from the controller or keyring.
+ * @param isEarliestNonce - When true, submitted/signed map to pending instead of queued.
+ * @returns Resolved display key for labels and tests.
  */
 export function getTransactionDisplayStatusKey(
   status: string | undefined,
@@ -37,6 +41,9 @@ export function getTransactionDisplayStatusKey(
  * Whether the legacy activity list should render a status subtitle for this key.
  * Confirmed/pending (earliest) rows omit the second line; queued, signing, and
  * failure states keep it.
+ *
+ * @param resolvedStatusKey - Status key after {@link getTransactionDisplayStatusKey}.
+ * @returns True when the list should render subtitle text.
  */
 export function shouldShowActivityListStatusSubtitle(
   resolvedStatusKey: string | undefined,

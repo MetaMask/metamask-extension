@@ -18,6 +18,13 @@ export type ActivityListStatusSubtitleProps = {
 /**
  * Activity list second line for legacy EVM / multichain rows.
  * Returns null when the resolved status should not show subtitle text.
+ *
+ * @param options0 - Component props.
+ * @param options0.status - Raw transaction status.
+ * @param options0.isEarliestNonce - Whether this tx has the earliest nonce on its chain.
+ * @param options0.date - Optional completion date (unused in activity minimal mode).
+ * @param options0.error - Optional error for status tooltip text.
+ * @param options0.className - Optional class name for the status label.
  */
 export function ActivityListStatusSubtitle({
   status,
