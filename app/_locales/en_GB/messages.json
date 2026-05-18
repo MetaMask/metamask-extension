@@ -4650,6 +4650,9 @@
   "newContract": {
     "message": "New contract"
   },
+  "newCustomTokenAdded": {
+    "message": "“$1” was successfully added!"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Security and privacy"
   },
