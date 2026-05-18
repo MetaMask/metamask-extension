@@ -8,6 +8,7 @@ import {
   DEFAULT_MODEL,
   DEFAULT_SCENARIO,
   DEFAULT_SERVICE_NAME,
+  DEFAULT_TOOL_JUDGE_MODEL,
   DEFAULT_TRIALS,
 } from '../constants';
 import type { EvalConfig } from './schema';
@@ -20,6 +21,8 @@ type CliArgs = {
   telemetry?: boolean;
   judge?: boolean;
   judgeModel?: string;
+  toolJudge?: boolean;
+  toolJudgeModel?: string;
   maxTurns?: number;
   maxWallclockMs?: number;
   coldStart?: boolean;
@@ -39,6 +42,10 @@ export function loadConfig(args: CliArgs): EvalConfig {
     judge: {
       enabled: args.judge ?? envBool('EVAL_JUDGE') ?? false,
       model: args.judgeModel ?? env('EVAL_JUDGE_MODEL') ?? DEFAULT_JUDGE_MODEL,
+    },
+    toolJudge: {
+      enabled: args.toolJudge ?? envBool('EVAL_TOOL_JUDGE') ?? false,
+      model: args.toolJudgeModel ?? env('EVAL_TOOL_JUDGE_MODEL') ?? DEFAULT_TOOL_JUDGE_MODEL,
     },
     guardrails: {
       maxWallclockMs:

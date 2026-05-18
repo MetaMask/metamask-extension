@@ -74,6 +74,7 @@ function makeFailedTrial(
       mmCommandCount: 0,
     },
     judgeScores: null,
+    toolJudgeScores: null,
     agentSessionId: undefined,
     error: err instanceof Error ? err.message : String(err),
     artifactDir: '',

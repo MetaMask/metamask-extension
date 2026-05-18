@@ -4,6 +4,7 @@ export type EvalConfig = {
   model: string;
   telemetry: { enabled: boolean; serviceName: string };
   judge: { enabled: boolean; model: string };
+  toolJudge: { enabled: boolean; model: string };
   guardrails: { maxWallclockMs: number; maxTurns: number };
   coldStart: boolean;
   artifactsDir: string;

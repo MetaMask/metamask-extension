@@ -29,6 +29,8 @@ async function main() {
       telemetry: { type: 'boolean' },
       judge: { type: 'boolean' },
       'judge-model': { type: 'string' },
+      'tool-judge': { type: 'boolean' },
+      'tool-judge-model': { type: 'string' },
       'max-turns': { type: 'string' },
       'max-wallclock-ms': { type: 'string' },
       'no-cold-start': { type: 'boolean' },
@@ -63,6 +65,8 @@ async function runCommand(values: Record<string, unknown>) {
     telemetry: values.telemetry as boolean | undefined,
     judge: values.judge as boolean | undefined,
     judgeModel: values['judge-model'] as string | undefined,
+    toolJudge: values['tool-judge'] as boolean | undefined,
+    toolJudgeModel: values['tool-judge-model'] as string | undefined,
     maxTurns: values['max-turns']
       ? parseInt(values['max-turns'] as string, 10)
       : undefined,
@@ -116,8 +120,10 @@ Run options:
   -n, --trials <count>        Number of trials (default: 3)
   -m, --model <model>         Model to use (default: claude-sonnet-4-20250514)
       --telemetry             Enable Langfuse telemetry
-      --judge                 Enable LLM-as-judge scoring
-      --judge-model <model>   Model for judge (default: claude-sonnet-4-20250514)
+      --judge                 Enable LLM-as-judge scoring (agent performance)
+      --judge-model <model>   Model for agent judge (default: claude-opus-4-7)
+      --tool-judge            Enable LLM-as-judge scoring (mm CLI tool effectiveness)
+      --tool-judge-model <m>  Model for tool judge (default: claude-sonnet-4-6)
       --max-turns <n>         Max agent turns (default: 50)
       --max-wallclock-ms <n>  Max wall-clock time per trial (default: 300000)
       --no-cold-start         Allow knowledge store reuse between trials
@@ -127,8 +133,8 @@ Report options:
 
 Environment variables:
   EVAL_SCENARIO, EVAL_TRIALS, EVAL_MODEL, EVAL_TELEMETRY,
-  EVAL_JUDGE, EVAL_JUDGE_MODEL, EVAL_MAX_TURNS,
-  EVAL_MAX_WALLCLOCK_MS, EVAL_COLD_START, EVAL_SERVICE_NAME
+  EVAL_JUDGE, EVAL_JUDGE_MODEL, EVAL_TOOL_JUDGE, EVAL_TOOL_JUDGE_MODEL,
+  EVAL_MAX_TURNS, EVAL_MAX_WALLCLOCK_MS, EVAL_COLD_START, EVAL_SERVICE_NAME
 `);
 }
 

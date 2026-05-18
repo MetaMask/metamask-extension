@@ -33,6 +33,9 @@ export function writeTrialArtifact(
       coldStart: config.coldStart,
       telemetry: config.telemetry.enabled,
       judge: config.judge.enabled,
+      judgeModel: config.judge.enabled ? config.judge.model : undefined,
+      toolJudge: config.toolJudge.enabled,
+      toolJudgeModel: config.toolJudge.enabled ? config.toolJudge.model : undefined,
     },
     timestamp: new Date().toISOString(),
   };

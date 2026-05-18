@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import type { BatchSummary, JudgeScores, TrialResult } from '../types';
+import type { BatchSummary, JudgeScores, ToolJudgeScores, TrialResult } from '../types';
 import { summaryJsonPath, summaryMdPath } from './paths';
 
 export function writeBatchSummary(
@@ -29,6 +29,7 @@ export function writeBatchSummary(
     avgAgentDecisions: avg(decisions),
     avgMmCommands: avg(mmCmds),
     avgJudgeScores: computeAvgJudgeScores(trials),
+    avgToolJudgeScores: computeAvgToolJudgeScores(trials),
     trials,
   };
 
@@ -65,6 +66,25 @@ function computeAvgJudgeScores(
     toolUsage: avg(scored.map((s) => s.toolUsage)),
     recovery: avg(scored.map((s) => s.recovery)),
     strategy: avg(scored.map((s) => s.strategy)),
+  };
+}
+
+function computeAvgToolJudgeScores(
+  trials: TrialResult[],
+): Partial<Omit<ToolJudgeScores, 'reasoning'>> | null {
+  const scored = trials
+    .map((t) => t.toolJudgeScores)
+    .filter((s): s is ToolJudgeScores => s !== null);
+
+  if (scored.length === 0) {
+    return null;
+  }
+
+  return {
+    outputAccuracy: avg(scored.map((s) => s.outputAccuracy)),
+    outputClarity: avg(scored.map((s) => s.outputClarity)),
+    interactionReliability: avg(scored.map((s) => s.interactionReliability)),
+    errorQuality: avg(scored.map((s) => s.errorQuality)),
   };
 }
 
@@ -107,6 +127,29 @@ function renderMarkdown(summary: BatchSummary): string {
     }
     if (scores.strategy !== undefined) {
       lines.push(`| Strategy | ${scores.strategy.toFixed(2)} |`);
+    }
+  }
+
+  if (summary.avgToolJudgeScores) {
+    lines.push(
+      '',
+      '## Tool Judge Scores (avg)',
+      '',
+      '| Dimension | Score |',
+      '|-----------|-------|',
+    );
+    const toolScores = summary.avgToolJudgeScores;
+    if (toolScores.outputAccuracy !== undefined) {
+      lines.push(`| Output Accuracy | ${toolScores.outputAccuracy.toFixed(2)} |`);
+    }
+    if (toolScores.outputClarity !== undefined) {
+      lines.push(`| Output Clarity | ${toolScores.outputClarity.toFixed(2)} |`);
+    }
+    if (toolScores.interactionReliability !== undefined) {
+      lines.push(`| Interaction Reliability | ${toolScores.interactionReliability.toFixed(2)} |`);
+    }
+    if (toolScores.errorQuality !== undefined) {
+      lines.push(`| Error Quality | ${toolScores.errorQuality.toFixed(2)} |`);
     }
   }
 

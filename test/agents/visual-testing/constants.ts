@@ -5,6 +5,7 @@ export const DEFAULT_MODEL = 'claude-sonnet-4-6';
 export const DEFAULT_MAX_TURNS = 50;
 export const DEFAULT_MAX_WALLCLOCK_MS = 10 * 60 * 1000;
 export const DEFAULT_JUDGE_MODEL = 'claude-opus-4-7';
+export const DEFAULT_TOOL_JUDGE_MODEL = 'claude-sonnet-4-6';
 export const DEFAULT_SERVICE_NAME = 'metamask-visual-testing-eval';
 export const DEFAULT_SCENARIO = 'rename-happy-path';
 

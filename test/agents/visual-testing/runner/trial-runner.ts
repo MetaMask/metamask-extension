@@ -14,10 +14,11 @@ import {
   DEFAULT_ALLOWED_TOOLS,
   DISALLOWED_KNOWLEDGE_PATTERNS,
   DISALLOWED_LIFECYCLE_PATTERNS,
+  SKILL_MD_PATH,
 } from '../constants';
 import { composeTaskPrompt, loadSystemPrompt } from '../prompts/load-prompt';
 import type { Scenario } from '../scenarios/types';
-import type { JudgeScores, TrialResult } from '../types';
+import type { JudgeScores, ToolJudgeScores, TrialResult } from '../types';
 import { screenshotsDir, trialDir } from '../artifacts/paths';
 import { writeTrialArtifact } from '../artifacts/writer';
 import { extractHarnessMetrics } from '../scoring/harness-metrics';
@@ -28,12 +29,28 @@ import { setupTrial, takeScreenshot } from './setup';
 import { teardownTrial } from './teardown';
 
 const JUDGE_PROMPT_PATH = path.join(__dirname, '..', 'scoring', 'judge-prompt.md');
+const TOOL_JUDGE_PROMPT_PATH = path.join(__dirname, '..', 'scoring', 'tool-judge-prompt.md');
 
-const JUDGE_SCORE_FIELDS: JudgeScoreField[] = [
+/**
+ * A JudgeScoreField whose `name` must be a numeric key of the target
+ * score type. Catches field-name drift at compile time.
+ */
+type TypedScoreField<T> = JudgeScoreField & {
+  name: keyof Omit<T, 'reasoning'>;
+};
+
+const JUDGE_SCORE_FIELDS: TypedScoreField<JudgeScores>[] = [
   { name: 'efficiency', min: 1, max: 5 },
   { name: 'toolUsage', min: 1, max: 5 },
   { name: 'recovery', min: 1, max: 5 },
   { name: 'strategy', min: 1, max: 5 },
+];
+
+const TOOL_JUDGE_SCORE_FIELDS: TypedScoreField<ToolJudgeScores>[] = [
+  { name: 'outputAccuracy', min: 1, max: 5 },
+  { name: 'outputClarity', min: 1, max: 5 },
+  { name: 'interactionReliability', min: 1, max: 5 },
+  { name: 'errorQuality', min: 1, max: 5 },
 ];
 
 export async function runTrial(
@@ -79,6 +96,11 @@ export async function runTrial(
       judgeScores = await runJudge(runResult.result, scenario, status, config);
     }
 
+    let toolJudgeScores: ToolJudgeScores | null = null;
+    if (config.toolJudge.enabled) {
+      toolJudgeScores = await runToolJudge(runResult.result, scenario, status, config);
+    }
+
     const metrics = extractHarnessMetrics(runResult.result, runResult.counts);
 
     const result: TrialResult = {
@@ -88,6 +110,7 @@ export async function runTrial(
       assertion,
       metrics,
       judgeScores,
+      toolJudgeScores,
       agentSessionId: runResult.result.sessionId,
       error: runResult.result.error?.message,
       artifactDir,
@@ -170,35 +193,43 @@ async function executeAgent(
   return { result, counts: counter.counts };
 }
 
-async function runJudge(
+type JudgeEvalParams<T> = {
+  label: string;
+  rubric: string;
+  scoreFields: JudgeScoreField[];
+  model: string;
+  convertScores: (result: JudgeResult) => T | null;
+};
+
+async function runJudgeEval<T>(
+  params: JudgeEvalParams<T>,
   runResult: AgentRunResult,
   scenario: Scenario,
   status: string,
   config: EvalConfig,
-): Promise<JudgeScores | null> {
-  const rubric = fs.readFileSync(JUDGE_PROMPT_PATH, 'utf-8');
-  const judgeConfig: JudgeConfig = {
-    rubric,
-    scoreFields: JUDGE_SCORE_FIELDS,
-    queryOptions: {
-      model: config.judge.model,
-      maxTurns: 50
-    },
-  };
-
-  const runner = createAgentRunner({
-    telemetry: config.telemetry.enabled
-      ? {
-          mode: 'enabled',
-          serviceName: config.telemetry.serviceName,
-        }
-      : undefined,
-  });
+): Promise<T | null> {
+  let runner: ReturnType<typeof createAgentRunner> | null = null;
 
   try {
-    console.log('#### STARTING JUDGE ####');
+    const judgeConfig: JudgeConfig = {
+      rubric: params.rubric,
+      scoreFields: params.scoreFields,
+      queryOptions: {
+        model: params.model,
+        maxTurns: 50,
+      },
+    };
 
-    console.log('result.traceId', runResult.traceId);
+    runner = createAgentRunner({
+      telemetry: config.telemetry.enabled
+        ? {
+            mode: 'enabled',
+            serviceName: config.telemetry.serviceName,
+          }
+        : undefined,
+    });
+
+    console.log(`#### STARTING ${params.label.toUpperCase()} ####`);
     const result = await runner.judge(
       runResult,
       judgeConfig,
@@ -214,21 +245,45 @@ async function runJudge(
             process.stdout.write(line + '\n');
           }
         },
-      }
+      },
     );
 
-    return toJudgeScores(result);
+    return params.convertScores(result);
   } catch (error) {
-    console.warn('[judge] LLM judge evaluation failed:', error);
+    console.warn(`[${params.label}] LLM ${params.label} evaluation failed:`, error);
     return null;
   } finally {
-    try {
-      await runner.flush();
-      await runner.shutdown();
-    } catch {
-      /* best-effort */
+    if (runner) {
+      try {
+        await runner.flush();
+        await runner.shutdown();
+      } catch {
+        /* best-effort */
+      }
     }
   }
+}
+
+async function runJudge(
+  runResult: AgentRunResult,
+  scenario: Scenario,
+  status: string,
+  config: EvalConfig,
+): Promise<JudgeScores | null> {
+  const rubric = fs.readFileSync(JUDGE_PROMPT_PATH, 'utf-8');
+  return runJudgeEval(
+    {
+      label: 'judge',
+      rubric,
+      scoreFields: JUDGE_SCORE_FIELDS,
+      model: config.judge.model,
+      convertScores: toJudgeScores,
+    },
+    runResult,
+    scenario,
+    status,
+    config,
+  );
 }
 
 function toJudgeScores(result: JudgeResult): JudgeScores {
@@ -237,6 +292,75 @@ function toJudgeScores(result: JudgeResult): JudgeScores {
     toolUsage: result.scores.toolUsage ?? 0,
     recovery: result.scores.recovery ?? 0,
     strategy: result.scores.strategy ?? 0,
+    reasoning: result.reasoning,
+  };
+}
+
+async function runToolJudge(
+  runResult: AgentRunResult,
+  scenario: Scenario,
+  status: string,
+  config: EvalConfig,
+): Promise<ToolJudgeScores | null> {
+  try {
+    const baseRubric = fs.readFileSync(TOOL_JUDGE_PROMPT_PATH, 'utf-8');
+    const skillPath = path.join(config.extensionCwd, SKILL_MD_PATH);
+    const skillContent = fs.existsSync(skillPath)
+      ? fs.readFileSync(skillPath, 'utf-8')
+      : '';
+    const rubric = skillContent
+      ? `${baseRubric}\n\n## mm CLI Specification\n\n${skillContent}`
+      : baseRubric;
+
+    return await runJudgeEval(
+      {
+        label: 'tool-judge',
+        rubric,
+        scoreFields: TOOL_JUDGE_SCORE_FIELDS,
+        model: config.toolJudge.model,
+        convertScores: toToolJudgeScores,
+      },
+      runResult,
+      scenario,
+      status,
+      config,
+    );
+  } catch (error) {
+    console.warn('[tool-judge] LLM tool judge evaluation failed:', error);
+    return null;
+  }
+}
+
+function isValidScore(value: unknown): value is number {
+  return typeof value === 'number' && value >= 1 && value <= 5;
+}
+
+function toToolJudgeScores(result: JudgeResult): ToolJudgeScores | null {
+  const {
+    outputAccuracy,
+    outputClarity,
+    interactionReliability,
+    errorQuality,
+  } = result.scores;
+
+  if (
+    !isValidScore(outputAccuracy) ||
+    !isValidScore(outputClarity) ||
+    !isValidScore(interactionReliability) ||
+    !isValidScore(errorQuality)
+  ) {
+    console.warn(
+      '[tool-judge] Invalid or missing score fields, discarding result:',
+      result.scores,
+    );
+    return null;
+  }
+
+  return {
+    outputAccuracy,
+    outputClarity,
+    interactionReliability,
+    errorQuality,
     reasoning: result.reasoning,
   };
 }

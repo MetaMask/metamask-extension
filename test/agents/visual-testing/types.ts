@@ -21,7 +21,7 @@ export type AssertionResult = {
 };
 
 /**
- * Qualitative scores from the LLM-as-judge evaluation.
+ * Qualitative scores from the LLM-as-judge evaluation of agent performance.
  * Each dimension is scored 1–5.
  */
 export type JudgeScores = {
@@ -29,6 +29,20 @@ export type JudgeScores = {
   toolUsage: number;
   recovery: number;
   strategy: number;
+  reasoning: string;
+};
+
+/**
+ * Qualitative scores from the LLM-as-judge evaluation of mm CLI tool effectiveness.
+ * Evaluated by a separate, specialized judge to avoid score contamination
+ * with agent performance dimensions.
+ * Each dimension is scored 1–5.
+ */
+export type ToolJudgeScores = {
+  outputAccuracy: number;
+  outputClarity: number;
+  interactionReliability: number;
+  errorQuality: number;
   reasoning: string;
 };
 
@@ -53,6 +67,7 @@ export type TrialResult = {
   assertion: AssertionResult;
   metrics: TrialMetrics;
   judgeScores: JudgeScores | null;
+  toolJudgeScores: ToolJudgeScores | null;
   agentSessionId: string | undefined;
   error: string | undefined;
   artifactDir: string;
@@ -73,6 +88,7 @@ export type BatchSummary = {
   avgAgentDecisions: number;
   avgMmCommands: number;
   avgJudgeScores: Partial<Omit<JudgeScores, 'reasoning'>> | null;
+  avgToolJudgeScores: Partial<Omit<ToolJudgeScores, 'reasoning'>> | null;
   trials: TrialResult[];
 };
 
