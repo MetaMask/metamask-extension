@@ -112,6 +112,7 @@ export default function DefiList({ onClick }: DefiListProps) {
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
+        className="flex"
       >
         <PulseLoader />
       </Box>

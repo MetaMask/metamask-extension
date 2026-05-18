@@ -42,6 +42,7 @@ const NftDetailInformationFrame = ({
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Center}
+          className="flex"
         >
           {' '}
           {buttonAddressValue ? (

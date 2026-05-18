@@ -26,7 +26,7 @@ export default function GenericAssetCellLayout({
   footerRightDisplay,
 }: GenericAssetCellLayoutProps) {
   return (
-    <Box flexDirection={BoxFlexDirection.Row} gap={4} className="h-full w-full">
+    <Box flexDirection={BoxFlexDirection.Row} gap={4} className="flex h-full w-full">
       <Box asChild>
         <a
           onClick={(e?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
@@ -45,11 +45,12 @@ export default function GenericAssetCellLayout({
           <Box
             flexDirection={BoxFlexDirection.Column}
             justifyContent={BoxJustifyContent.Center}
-            className="w-full overflow-hidden grow"
+            className="flex w-full overflow-hidden grow"
           >
             <Box
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
+              className="flex"
             >
               {headerLeftDisplay}
               {headerRightDisplay}
@@ -58,6 +59,7 @@ export default function GenericAssetCellLayout({
             <Box
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
+              className="flex"
             >
               {footerLeftDisplay}
               {footerRightDisplay}

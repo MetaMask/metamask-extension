@@ -29,7 +29,7 @@ export default function NftDefaultImage({
     <Box
       tabIndex={0}
       data-testid="nft-default-image"
-      className={classnames(className, 'nft-default', 'rounded-lg', {
+      className={classnames('flex', className, 'nft-default', 'rounded-lg', {
         'nft-default--clickable': Boolean(clickable),
       })}
       flexDirection={BoxFlexDirection.Row}

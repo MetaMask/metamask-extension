@@ -35,7 +35,7 @@ const AccountGroupBalanceChangeComponent: React.FC<
         !anyEnabledNetworksAreAvailable && isZeroAmount(amountChange)
       }
     >
-      <Box flexDirection={BoxFlexDirection.Row} gap={1}>
+      <Box flexDirection={BoxFlexDirection.Row} gap={1} className="flex">
         <SensitiveText
           variant={TextVariant.bodyMdMedium}
           color={color}
