@@ -5,12 +5,12 @@ import {
   MockAnyNamespace,
 } from '@metamask/messenger';
 import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
-import { AppStateControllerRequestQrCodeScanAction } from '../controllers/app-state-controller-method-action-types';
 import { KeyringController } from '@metamask/keyring-controller';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { QrKeyring, QrScanRequestType } from '@metamask/eth-qr-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
+import { AppStateControllerRequestQrCodeScanAction } from '../controllers/app-state-controller-method-action-types';
 import { MessengerClientInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -100,7 +100,8 @@ describe('KeyringControllerInit', () => {
     const controllerArgs = jest
       .mocked(KeyringController)
       .mock.calls.at(-1)?.[0];
-    const qrBuilder = controllerArgs?.keyringBuilders?.[0] as (() => QrKeyring) & {
+    const qrBuilder = controllerArgs
+      ?.keyringBuilders?.[0] as (() => QrKeyring) & {
       type: string;
     };
     expect(qrBuilder.type).toBe(QrKeyring.type);
