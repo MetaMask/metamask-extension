@@ -3,16 +3,18 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Button, ButtonSize } from '@metamask/design-system-react';
 import {
   BannerAlert,
   BannerAlertSeverity,
+  Button,
+  ButtonSize,
   Text,
-} from '../../component-library';
-import { TextVariant } from '../../../helpers/constants/design-system';
+  TextVariant,
+} from '@metamask/design-system-react';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import TransactionBreakdown from '../transaction-breakdown';
+import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
@@ -179,10 +181,10 @@ export default class TransactionListItemDetails extends PureComponent {
           {isProtectedByEnforcedSimulations && (
             <BannerAlert
               severity={BannerAlertSeverity.Info}
-              marginInline={4}
+              className="mx-4"
               data-testid="transaction-protected-by-enforced-simulations"
             >
-              <Text variant={TextVariant.bodySm}>
+              <Text variant={TextVariant.BodySm}>
                 {t('transactionProtectedByEnforcedSimulations')}
               </Text>
             </BannerAlert>
@@ -228,12 +230,11 @@ export default class TransactionListItemDetails extends PureComponent {
               <div>{t('status')}</div>
               <div>
                 {isProtectedByEnforcedSimulations ? (
-                  <span
-                    className="transaction-status-label transaction-status-label--confirmed"
-                    data-testid="transaction-protected-status-pill"
-                  >
-                    {t('cancelled')}
-                  </span>
+                  <TransactionStatusLabel
+                    statusOnly
+                    label={t('cancelled')}
+                    tooltip={t('transactionProtectedByEnforcedSimulations')}
+                  />
                 ) : (
                   <TransactionStatus />
                 )}

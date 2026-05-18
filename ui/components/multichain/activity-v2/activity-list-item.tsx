@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
-import Tooltip from '../../ui/tooltip';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
@@ -69,26 +68,21 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
           >
             {title}
           </Text>
-          <div className="text-s-body-sm font-medium">
-            {isProtected ? (
-              <Tooltip
-                position="top"
-                title={t('transactionProtectedByEnforcedSimulations')}
-              >
-                <span
-                  className="text-success-default"
-                  data-testid="activity-list-item-protected-status"
-                >
-                  {t('cancelled')}
-                </span>
-              </Tooltip>
-            ) : (
-              <TransactionStatusLabel
-                status={transactionStatus}
-                error={failureError}
-                statusOnly
-              />
-            )}
+          <div
+            className="text-s-body-sm font-medium"
+            data-testid="activity-list-item-protected-status"
+          >
+            <TransactionStatusLabel
+              status={transactionStatus}
+              error={failureError}
+              statusOnly
+              label={isProtected ? t('cancelled') : undefined}
+              tooltip={
+                isProtected
+                  ? t('transactionProtectedByEnforcedSimulations')
+                  : undefined
+              }
+            />
           </div>
         </div>
 
