@@ -184,11 +184,15 @@ export function getErrorHtml(
     repairButtonLabel = t('criticalErrorResetMetaMaskState');
   }
 
+  const repairButtonClass = isStateCorruptionError
+    ? 'critical-error__button-restore button btn-primary'
+    : 'critical-error__button-secondary button';
+
   const repairButton = `<button
           id="critical-error-repair-button"
           type="button"
           disabled
-          class="critical-error__button-secondary button">
+          class="${repairButtonClass}">
           ${lodashEscape(repairButtonLabel)}
         </button>`;
 

@@ -331,6 +331,10 @@ describe('Error utils Tests', function () {
         '#critical-error-repair-button',
       );
       expect(repairButton?.disabled).toBe(true);
+      expect(repairButton?.classList).toContain(
+        'critical-error__button-secondary',
+      );
+      expect(repairButton?.classList).not.toContain('btn-primary');
     });
 
     it('uses recover accounts button copy for state corruption recover action', async () => {
@@ -463,6 +467,9 @@ describe('Error utils Tests', function () {
 
       expect(container.querySelector('#critical-error-button')).toBeNull();
       expect(container.querySelector('.critical-error__divider')).toBeNull();
+      expect(
+        container.querySelector('#critical-error-repair-button')?.classList,
+      ).toContain('btn-primary');
       expect(html).not.toContain(enMessages.restartMetamask.message);
       expect(html).not.toContain(
         enMessages.criticalErrorStillHavingIssues.message,
