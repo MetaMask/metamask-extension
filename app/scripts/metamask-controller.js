@@ -9750,11 +9750,8 @@ export default class MetamaskController extends EventEmitter {
         }
 
         if (options.name === HardwareDeviceNames.lattice) {
-          // `appName` is set once by `LatticeKeyringV2`'s constructor;
-          // the legacy keyring's `_resetDefaults` preserves it, so no
-          // reapplication is needed here. `network` is cleared by
-          // `_resetDefaults` (called from `forgetDevice`) and depends on
-          // runtime state, so keep tracking it on every entry. The
+          // `network` is cleared by `_resetDefaults` (called from `forgetDevice`) and depends on
+          // runtime state, so we keep tracking it on every entry. The
           // GridPlus SDK Client reads it on `_initSession` to target
           // the right chain.
           keyring.network = getProviderConfig({
