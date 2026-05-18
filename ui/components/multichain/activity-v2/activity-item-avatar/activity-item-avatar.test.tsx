@@ -12,7 +12,8 @@ const ethToken: ResolvedActivityToken = {
   symbol: 'ETH',
   chainId: '0x1',
   fallbackName: 'Ethereum',
-  imageUrl: 'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/eth_logo.svg',
+  imageUrl:
+    'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/eth_logo.svg',
 };
 
 const usdcToken: ResolvedActivityToken = {
@@ -46,7 +47,9 @@ describe('ActivityItemAvatar', () => {
       token: usdcToken,
     });
 
-    expect(screen.getByTestId('activity-item-avatar-token')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('activity-item-avatar-token'),
+    ).toBeInTheDocument();
     expect(
       screen.queryByTestId('activity-item-avatar-dual'),
     ).not.toBeInTheDocument();

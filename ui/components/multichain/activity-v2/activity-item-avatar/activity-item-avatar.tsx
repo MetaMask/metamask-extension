@@ -24,7 +24,7 @@ const ActivityTokenAvatar = ({
       data-testid="activity-item-avatar-token"
     />
   );
-}
+};
 
 const ActivityDualTokenAvatar = ({
   from,
@@ -49,13 +49,14 @@ const ActivityDualTokenAvatar = ({
       </div>
     </div>
   );
-}
+};
 
-export const ActivityItemAvatar = ({ config }: Readonly<ActivityItemAvatarProps>) => {
+export const ActivityItemAvatar = ({
+  config,
+}: Readonly<ActivityItemAvatarProps>) => {
   if (config.variant === 'single') {
     return <ActivityTokenAvatar token={config.token} />;
-  }
-  else {
+  } else {
     return <ActivityDualTokenAvatar from={config.from} to={config.to} />;
   }
-}
+};
