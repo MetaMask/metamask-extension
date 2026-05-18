@@ -12,6 +12,24 @@ import {
 } from '../../helpers/constants/routes';
 import { TokenManagementPage } from './token-management';
 
+const mockTokenManagementLocationState = {
+  current: null as unknown,
+};
+
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useLocation: () => ({
+      pathname: '/token-management',
+      search: '',
+      hash: '',
+      state: mockTokenManagementLocationState.current,
+      key: 'token-management-test',
+    }),
+  };
+});
+
 jest.mock('../../selectors/assets', () => ({
   ...jest.requireActual('../../selectors/assets'),
   getAssetsBySelectedAccountGroup: (state: {
@@ -56,36 +74,47 @@ type MockSearchResult = {
 type MockSearchState = {
   results: MockSearchResult[];
   isLoading: boolean;
+  isFetchingNextPage: boolean;
   error: Error | null;
   hasNextPage: boolean;
+  fetchNextPage: jest.Mock;
 };
 
 const mockTokenSearch = {
   state: {
     results: [],
     isLoading: false,
+    isFetchingNextPage: false,
     error: null,
     hasNextPage: false,
+    fetchNextPage: jest.fn(),
   } as MockSearchState,
   spy: jest.fn(),
 };
 
-// Bypass debouncing in tests so query updates reach `useTokenSearch`
-// synchronously.
 jest.mock('../../hooks/useDebouncedValue', () => ({
   useDebouncedValue: <Value,>(value: Value) => value,
 }));
 
 jest.mock('../../hooks/useTokenSearch', () => ({
-  useTokenSearch: (options: { query: string; networks?: string[] }) => {
+  useTokenSearch: (options: {
+    query: string;
+    networks?: string[];
+    enableTokenBrowse?: boolean;
+  }) => {
     mockTokenSearch.spy(options);
     const trimmed = options.query.trim();
-    const { results, isLoading, error, hasNextPage } = mockTokenSearch.state;
-    // Match the {@link UseQueryResult} shape that the production hook returns
-    // closely enough for the consumer's intent derivation logic.
+    const {
+      results,
+      isLoading,
+      isFetchingNextPage,
+      error,
+      hasNextPage,
+      fetchNextPage,
+    } = mockTokenSearch.state;
     return {
       data:
-        trimmed.length > 0
+        trimmed.length > 0 || options.enableTokenBrowse
           ? {
               data: results,
               count: results.length,
@@ -95,6 +124,9 @@ jest.mock('../../hooks/useTokenSearch', () => ({
           : undefined,
       isFetching: isLoading,
       isLoading,
+      isFetchingNextPage,
+      hasNextPage,
+      fetchNextPage,
       error,
     };
   },
@@ -107,8 +139,10 @@ const resetTokenSearchState = (): void => {
   setTokenSearchState({
     results: [],
     isLoading: false,
+    isFetchingNextPage: false,
     error: null,
     hasNextPage: false,
+    fetchNextPage: jest.fn(),
   });
   mockTokenSearch.spy.mockClear();
 };
@@ -198,6 +232,7 @@ describe('TokenManagementPage', () => {
   };
 
   beforeEach(() => {
+    mockTokenManagementLocationState.current = null;
     resetTokenSearchState();
     const actions = getMockedActions();
     actions.addCustomAsset.mockClear();
@@ -275,19 +310,17 @@ describe('TokenManagementPage', () => {
   });
 
   const renderPage = (state = createState(), routeState?: unknown) => {
+    mockTokenManagementLocationState.current = routeState ?? null;
     const store = configureStore({
       ...state,
     });
-    const initialRoute =
-      routeState === undefined
-        ? TOKEN_MANAGEMENT_ROUTE
-        : {
-            pathname: TOKEN_MANAGEMENT_ROUTE,
-            state: routeState,
-          };
     return {
       store,
-      ...renderWithProvider(<TokenManagementPage />, store, initialRoute),
+      ...renderWithProvider(
+        <TokenManagementPage />,
+        store,
+        TOKEN_MANAGEMENT_ROUTE,
+      ),
     };
   };
 
@@ -317,16 +350,11 @@ describe('TokenManagementPage', () => {
       'token-management-add-custom-token-button',
     );
 
-    // Sticky positioning is now applied via Tailwind utility classes on the
-    // wrapper Box (`sticky bottom-0 z-10`) rather than inline styles, matching
-    // the design-system migration in this file.
     expect(addCustomTokenButton.parentElement?.className).toMatch(/sticky/u);
     expect(addCustomTokenButton.parentElement?.className).toMatch(/bottom-0/u);
 
     fireEvent.click(addCustomTokenButton);
 
-    // The legacy import-tokens modal must not open anymore — the new flow
-    // routes the user to the dedicated CUSTOM_TOKEN_IMPORT_ROUTE page instead.
     expect(store.getState().appState.importTokensModalOpen).toBeFalsy();
     expect(CUSTOM_TOKEN_IMPORT_ROUTE).toBe('/custom-token-import');
   });
@@ -388,6 +416,25 @@ describe('TokenManagementPage', () => {
     ).toBeInTheDocument();
   });
 
+  it('enables API browse results when the page opens for EVM and non-EVM networks', () => {
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          eip155: { '0x1': true },
+          solana: { [solanaChainId]: true },
+        },
+      }),
+    );
+
+    expect(mockTokenSearch.spy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        query: '',
+        enableTokenBrowse: true,
+        networks: ['eip155:1', solanaChainId],
+      }),
+    );
+  });
+
   it('drives the search hook with the user query and the enabled networks as CAIP-2 ids', () => {
     renderPage(
       createState({
@@ -402,9 +449,6 @@ describe('TokenManagementPage', () => {
       target: { value: 'Beta' },
     });
 
-    // The hook is called with the current query and the enabled networks
-    // converted from hex chain ids to CAIP-2 ids. We assert on the *last*
-    // call because the hook also runs on the initial empty-query render.
     const { calls } = mockTokenSearch.spy.mock;
     expect(calls[calls.length - 1][0]).toEqual(
       expect.objectContaining({
@@ -432,9 +476,171 @@ describe('TokenManagementPage', () => {
       target: { value: 'usdc' },
     });
 
-    // Home-page tokens are hidden once the search drives the list.
     expect(screen.queryByText('Alpha Token')).not.toBeInTheDocument();
     expect(screen.getByText('USD Coin')).toBeInTheDocument();
+  });
+
+  it('renders imported tokens first and non-imported API browse results below as OFF', () => {
+    const apiTokenAssetId =
+      'eip155:1/erc20:0x0000000000000000000000000000000000000abc';
+    setTokenSearchState({
+      results: [
+        {
+          assetId: apiTokenAssetId,
+          symbol: 'CCC',
+          decimals: 18,
+          name: 'Charlie Token',
+        },
+      ],
+    });
+
+    renderPage();
+
+    const importedRow = screen.getByTestId(
+      `token-management-cell-0x1:${mainnetToken.address}`,
+    );
+    const apiRow = screen.getByTestId(
+      `token-management-cell-search-${apiTokenAssetId}`,
+    );
+    const rows = Array.from(document.querySelectorAll('[data-testid]')).filter(
+      (node) => {
+        const testId = node.getAttribute('data-testid') ?? '';
+        return (
+          testId.startsWith('token-management-cell-') &&
+          !testId.endsWith('-network-badge') &&
+          !testId.endsWith('-toggle')
+        );
+      },
+    );
+
+    expect(rows.indexOf(importedRow)).toBeLessThan(rows.indexOf(apiRow));
+    expect(
+      (
+        screen.getByTestId(
+          `token-management-cell-0x1:${mainnetToken.address}-toggle`,
+        ) as HTMLInputElement
+      ).value,
+    ).toBe('true');
+    expect(
+      (
+        screen.getByTestId(
+          `token-management-cell-search-${apiTokenAssetId}-toggle`,
+        ) as HTMLInputElement
+      ).value,
+    ).toBe('false');
+  });
+
+  it('renders hidden API-backed tokens in the unsearched list as OFF', () => {
+    const mainnetTokenAssetId = `eip155:1/erc20:${mainnetToken.address}`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: mainnetTokenAssetId,
+          symbol: mainnetToken.symbol,
+          decimals: mainnetToken.decimals,
+          name: mainnetToken.name,
+        },
+      ],
+    });
+
+    const selectedAddress =
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts
+          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
+      ]?.address;
+    if (!selectedAddress) {
+      throw new Error('Expected selected account address');
+    }
+
+    const baseState = createState({
+      accountGroupAssets: {
+        '0x1': [nativeToken],
+      },
+    });
+    const stateWithIgnoredToken = {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        allIgnoredTokens: {
+          '0x1': {
+            [selectedAddress]: [mainnetToken.address],
+          },
+        },
+      },
+    };
+
+    renderPage(stateWithIgnoredToken);
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-search-${mainnetTokenAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(screen.getByText('Alpha Token')).toBeInTheDocument();
+    expect(toggle.value).toBe('false');
+  });
+
+  it('renders non-EVM API browse results in the unsearched list as OFF', () => {
+    const browseAssetId = `${solanaChainId}/token:So11111111111111111111111111111111111111112`;
+    setTokenSearchState({
+      results: [
+        {
+          assetId: browseAssetId,
+          symbol: 'WSOL',
+          decimals: 9,
+          name: 'Wrapped SOL',
+        },
+      ],
+    });
+
+    renderPage(
+      createState({
+        enabledNetworkMap: {
+          solana: { [solanaChainId]: true },
+        },
+        accountGroupAssets: {
+          [solanaChainId]: [],
+        },
+      }),
+    );
+
+    const toggle = screen.getByTestId(
+      `token-management-cell-search-${browseAssetId.toLowerCase()}-toggle`,
+    ) as HTMLInputElement;
+    expect(screen.getByText('Wrapped SOL')).toBeInTheDocument();
+    expect(toggle.value).toBe('false');
+  });
+
+  it('fetches the next API page when the token list is scrolled near the bottom', () => {
+    const fetchNextPage = jest.fn().mockResolvedValue(undefined);
+    setTokenSearchState({
+      results: Array.from({ length: 12 }, (_, index) => ({
+        assetId: `eip155:1/erc20:0x${String(index + 100).padStart(40, '0')}`,
+        symbol: `T${index}`,
+        decimals: 18,
+        name: `Token ${index}`,
+      })),
+      hasNextPage: true,
+      fetchNextPage,
+    });
+
+    renderPage();
+
+    const list = screen.getByTestId('token-management-page-list');
+    Object.defineProperty(list, 'scrollHeight', {
+      configurable: true,
+      value: 1000,
+    });
+    Object.defineProperty(list, 'clientHeight', {
+      configurable: true,
+      value: 500,
+    });
+    Object.defineProperty(list, 'scrollTop', {
+      configurable: true,
+      value: 450,
+    });
+
+    fireEvent.scroll(list);
+
+    expect(fetchNextPage).toHaveBeenCalledTimes(1);
   });
 
   it('toggling ON a not-yet-imported search result imports the token and adds it to AssetsController', async () => {
@@ -495,9 +701,6 @@ describe('TokenManagementPage', () => {
     ) as HTMLInputElement;
     fireEvent.click(toggle);
 
-    // The row should remain visible (we don't drop it from the list) and
-    // the toggle should flip to OFF in place, but no hide actions have been
-    // dispatched yet — that happens on the next user action.
     expect(screen.getByText('Alpha Token')).toBeInTheDocument();
     expect(toggle.value).toBe('false');
     expect(actions.ignoreTokens).not.toHaveBeenCalled();
@@ -707,11 +910,53 @@ describe('TokenManagementPage', () => {
 
     unmount();
 
-    // Even after unmount the hide must not fire, because the user
-    // restored the token before leaving the page.
     expect(actions.ignoreTokens).not.toHaveBeenCalled();
     expect(actions.hideAsset).not.toHaveBeenCalled();
     expect(actions.multichainIgnoreAssets).not.toHaveBeenCalled();
+  });
+
+  it('shows imported EVM tokens from TokensController before balances exist', () => {
+    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+    const selectedAddress =
+      mockState.metamask.internalAccounts.accounts[
+        mockState.metamask.internalAccounts
+          .selectedAccount as keyof typeof mockState.metamask.internalAccounts.accounts
+      ]?.address;
+    if (!selectedAddress) {
+      throw new Error('Expected selected account address');
+    }
+
+    const baseState = createState({
+      accountGroupAssets: {
+        '0x1': [nativeToken],
+      },
+    });
+    const stateWithImportedToken = {
+      ...baseState,
+      metamask: {
+        ...baseState.metamask,
+        allTokens: {
+          '0x1': {
+            [selectedAddress]: [
+              {
+                address: usdcAddress,
+                symbol: 'USDC',
+                decimals: 6,
+                name: 'USD Coin',
+              },
+            ],
+          },
+        },
+      },
+    };
+
+    renderPage(stateWithImportedToken);
+
+    expect(screen.getByText('USD Coin')).toBeInTheDocument();
+    expect(screen.getByText('0 USDC')).toBeInTheDocument();
+    expect(
+      screen.getByTestId(`token-management-cell-0x1:${usdcAddress}-toggle`),
+    ).toBeInTheDocument();
   });
 
   it('shows a search result as ON when TokensController already holds the imported address (no balance yet)', () => {
