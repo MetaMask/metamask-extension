@@ -177,7 +177,7 @@ export class TelegramLoginHandler extends BaseLoginHandler {
       throw new Error(`Mint failed: ${mintRes.status} ${mintRes.statusText}`);
     }
 
-    const mintData = await mintRes.json();
+    const mintData: AuthTokenResponse = await mintRes.json();
 
     // check if telegram profile is already synced by looking for the alias in ext field
     const authPayload = JSON.parse(decodeIdToken(verifyData?.token));
@@ -193,6 +193,10 @@ export class TelegramLoginHandler extends BaseLoginHandler {
         break;
       }
     }
+
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    mintData.profile_pairing_token = hydraIdToken;
 
     return mintData;
   }
