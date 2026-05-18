@@ -36,7 +36,7 @@ describe('Bridge tests', function (this: Suite) {
       }),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await login(driver, {
-          expectedBalance: '0',
+          expectedBalance: '225,730.11',
           waitForNonEvmAccounts: false,
         });
 

@@ -1,5 +1,4 @@
 import { GasFeeEstimates } from '@metamask/gas-fee-controller';
-import { TxData } from '@metamask/bridge-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex, add0x } from '@metamask/utils';
 import { useCallback, useMemo } from 'react';
@@ -14,12 +13,11 @@ import {
   multiplyHexes,
 } from '../../../../../../../shared/lib/conversion.utils';
 import { Numeric } from '../../../../../../../shared/lib/Numeric';
-import { toHex } from '../../../../../../../shared/lib/delegation/utils';
 import { getCurrentCurrency } from '../../../../../../ducks/metamask/metamask';
 import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
 import { useGasFeeEstimates } from '../../../../../../hooks/useGasFeeEstimates';
 import { selectConversionRateByChainId } from '../../../../../../selectors';
-import { useDappSwapContextOptional } from '../../../../context/dapp-swap';
+import { useTransactionGasLimit } from '../../../../hooks/gas/useTransactionGasLimit';
 import { HEX_ZERO } from '../shared/constants';
 import { useEIP1559TxFees } from './useEIP1559TxFees';
 import { useSupportsEIP1559 } from './useSupportsEIP1559';
@@ -40,10 +38,6 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const currentCurrency = useSelector(getCurrentCurrency);
   const { chainId } = transactionMeta;
   const fiatFormatter = useFiatFormatter();
-  const dappSwapContext = useDappSwapContextOptional();
-  const selectedQuote = dappSwapContext?.selectedQuote;
-  const isQuotedSwapDisplayedInInfo =
-    dappSwapContext?.isQuotedSwapDisplayedInInfo ?? false;
 
   const conversionRate = useSelector((state) =>
     selectConversionRateByChainId(state, chainId),
@@ -51,32 +45,8 @@ export function useFeeCalculations(transactionMeta: TransactionMeta) {
   const hasValidConversionRate =
     Number.isFinite(conversionRate) && Number(conversionRate) > 0;
 
-  let quotedGasLimit;
-  if (isQuotedSwapDisplayedInInfo) {
-    quotedGasLimit = toHex(
-      ((selectedQuote?.approval as TxData)?.gasLimit ?? 0) +
-        ((selectedQuote?.trade as TxData)?.gasLimit ?? 0),
-    ) as Hex;
-  }
-
-  // When container types are set, the gas limit has been re-estimated for the
-  // wrapped transaction, so we should use `txParams.gas` directly. Otherwise,
-  // prefer the optimized values from simulation.
-  const hasContainerTypes = (transactionMeta?.containerTypes?.length ?? 0) > 0;
-
-  // `gasUsed` is the gas limit actually used by the transaction in the
-  // simulation environment.
-  const optimizedGasLimit = hasContainerTypes
-    ? transactionMeta?.txParams?.gas || HEX_ZERO
-    : quotedGasLimit ||
-      transactionMeta?.gasUsed ||
-      // While estimating gas for the transaction we add 50% gas limit buffer.
-      // With `gasLimitNoBuffer` that buffer is removed. see PR
-      // https://github.com/MetaMask/metamask-extension/pull/29502 for more
-      // details.
-      transactionMeta?.gasLimitNoBuffer ||
-      transactionMeta?.txParams?.gas ||
-      HEX_ZERO;
+  const { gasLimit: optimizedGasLimit, quotedGasLimit } =
+    useTransactionGasLimit(transactionMeta);
 
   const getFeesFromHex = useCallback(
     (hexFee: Hex) => {

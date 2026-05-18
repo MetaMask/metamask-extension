@@ -36,12 +36,23 @@ import {
   RewardsDataServiceGetSeasonMetadataAction,
   RewardsDataServiceGetDiscoverSeasonsAction,
   RewardsDataServiceGenerateChallengeAction,
+  RewardsDataServiceGetVipFeesAction,
 } from './rewards-data-service-method-action-types';
 import { RewardsControllerMethodActions } from './rewards-controller-method-action-types';
 
 export type LoginResponseDto = {
   sessionId: string;
   subscription: SubscriptionDto;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type VipFeatureDto = {
+  enabled: boolean;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type SubscriptionFeaturesDto = {
+  vip: VipFeatureDto;
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -54,6 +65,48 @@ export type SubscriptionDto = {
   }[];
   createdAt: string;
   candidateAt?: string;
+  /**
+   * Per-subscription feature flags (VIP, etc.). Optional for backward
+   * compatibility with subscriptions persisted before this field was added —
+   * callers must treat `features?.vip?.enabled !== true` as non-VIP.
+   */
+  features?: SubscriptionFeaturesDto;
+};
+
+// Backend wire format for GET /vip/fees — mirrors va-mmcx-rewards
+// src/main/vip/dto/vip-fees.dto.ts (PR #546). Fee bips are returned as
+// strings; the controller parses them as needed.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type HyperliquidVipFeesDto = {
+  builderCode: string;
+  builderFeeBips: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type SwapsVipFeesDto = {
+  feeBips: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type VipFeesGroupDto = {
+  hyperliquid: HyperliquidVipFeesDto;
+  swaps: SwapsVipFeesDto;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type VipFeesResponseDto = {
+  vipTier: number;
+  fees: VipFeesGroupDto | null;
+  updatedAt: string | null;
+};
+
+// Per-subscription cache for VIP perps builder fee.
+// We store the raw bips string from the backend rather than a derived
+// discount so the cache stays valid if the perps base fee constant changes.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type VipPerpsFeesState = {
+  hyperliquidBuilderFeeBips: string;
+  lastFetched: number;
 };
 
 export type MobileLoginDto = {
@@ -393,6 +446,11 @@ export type SeasonMetadataDto = {
    * The tiers for the season
    */
   tiers: SeasonTierDto[];
+
+  /**
+   * The activity types that earn points in this season
+   */
+  activityTypes: string[];
 };
 
 /**
@@ -757,6 +815,12 @@ export type RewardsControllerState = {
   rewardsSeasonStatuses: { [compositeId: string]: SeasonStatusState };
   rewardsSubscriptionTokens: { [subscriptionId: string]: string };
   /**
+   * Per-subscription cache of the latest VIP fees response (raw bips string)
+   * with a `lastFetched` timestamp. The discount is re-derived at read time
+   * so callers can pass a different base fee without invalidating the cache.
+   */
+  rewardsVipPerpsFees: { [subscriptionId: string]: VipPerpsFeesState };
+  /**
    * History of points estimates for Customer Support diagnostics.
    * Stores the last N successful estimates to verify user-reported discrepancies.
    */
@@ -856,6 +920,7 @@ type AllowedActions =
   | RewardsDataServiceGetSeasonMetadataAction
   | RewardsDataServiceGetDiscoverSeasonsAction
   | RewardsDataServiceGenerateChallengeAction
+  | RewardsDataServiceGetVipFeesAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
   | SnapControllerHandleRequestAction;
 

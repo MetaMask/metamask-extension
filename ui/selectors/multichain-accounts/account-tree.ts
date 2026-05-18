@@ -29,14 +29,11 @@ import {
   getOrderedConnectedAccountsForActiveTab,
   getPinnedAccountsList,
   getHiddenAccountsList,
-  getPreferences,
 } from '../selectors';
+import { getPreferences } from '../../../shared/lib/selectors/preferences';
 import { MergedInternalAccount } from '../selectors.types';
-import {
-  getInternalAccounts,
-  getInternalAccountsObject,
-  getSelectedInternalAccount,
-} from '../accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getInternalAccounts, getInternalAccountsObject } from '../accounts';
 
 import type { MetaMaskReduxState } from '../../store/store';
 import { getMultichainNetworkConfigurationsByChainId } from '../multichain/networks';
@@ -128,7 +125,12 @@ export const getWalletsWithAccounts = createSelector(
 
         Object.values(wallet.groups).forEach((group: AccountGroupObject) => {
           const accountsFromGroup = group.accounts
-            .filter((accountId) => accountsById[accountId] !== undefined)
+            .filter(
+              (accountId) =>
+                accountId !== undefined &&
+                accountId !== null &&
+                accountsById[accountId] !== undefined,
+            )
             .map((accountId) => {
               const accountWithMetadata = { ...accountsById[accountId] };
 

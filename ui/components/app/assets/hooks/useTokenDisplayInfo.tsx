@@ -51,9 +51,9 @@ export const useTokenDisplayInfo = ({
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTestnetSelected = Boolean(
     Object.keys(enabledNetworksByNamespace).length === 1 &&
-      TEST_CHAINS.includes(
-        Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
-      ),
+    TEST_CHAINS.includes(
+      Object.keys(enabledNetworksByNamespace)[0] as `0x${string}`,
+    ),
   );
 
   const isMainnet = !isTestnetSelected;

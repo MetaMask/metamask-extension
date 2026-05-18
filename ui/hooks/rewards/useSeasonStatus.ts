@@ -4,7 +4,7 @@ import {
   getRewardsSeasonMetadata,
   getRewardsSeasonStatus,
 } from '../../store/actions';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   SeasonDtoState,
   SeasonStatusState,

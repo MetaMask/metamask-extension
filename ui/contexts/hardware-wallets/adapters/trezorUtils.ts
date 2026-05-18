@@ -2,23 +2,12 @@
  * Utility functions for Trezor adapter validation and device checks.
  */
 
-const TREZOR_MODELS_USING_TREZOR_SUITE = new Set(['safe 7']);
-
 const REQUIRED_TREZOR_CAPABILITIES = [
   'Capability_Bitcoin',
   'Capability_Solana',
   'Capability_Ethereum',
 ] as const;
 type RequiredTrezorCapability = (typeof REQUIRED_TREZOR_CAPABILITIES)[number];
-
-/**
- * Check whether a Trezor model uses Trezor Suite (no popup-based sessions).
- *
- * @param model - The model identifier returned by the device features
- * @returns True if the model communicates via Trezor Suite instead of popups
- */
-export const isTrezorModelUsingTrezorSuite = (model: string): boolean =>
-  TREZOR_MODELS_USING_TREZOR_SUITE.has(model.toLowerCase());
 
 /**
  * Determine which required capabilities are absent from the device's reported set.

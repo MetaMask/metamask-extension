@@ -10,7 +10,7 @@ import {
 import {
   getRemoteFeatureFlags,
   type RemoteFeatureFlagsState,
-} from '../remote-feature-flags';
+} from '../../../shared/lib/selectors/remote-feature-flags';
 import {
   ASSETS_UNIFY_STATE_FLAG,
   ASSETS_UNIFY_STATE_VERSION_1,

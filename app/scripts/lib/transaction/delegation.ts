@@ -7,30 +7,29 @@ import type {
   TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerGetNonceLockAction,
 } from '@metamask/transaction-controller';
-import { Hex, add0x, createProjectLogger } from '@metamask/utils';
+import { Hex, add0x, bytesToHex, createProjectLogger } from '@metamask/utils';
 import { toHex } from '@metamask/controller-utils';
 import type { Messenger } from '@metamask/messenger';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
 import {
-  BATCH_DEFAULT_MODE,
-  Caveat,
-  ExecutionMode,
-  ExecutionStruct,
-  SINGLE_DEFAULT_MODE,
-  createCaveatBuilder,
-  getDeleGatorEnvironment,
-} from '../../../../shared/lib/delegation';
-import {
+  createExactExecutionBatchTerms,
+  createExactExecutionTerms,
+  createLimitedCallsTerms,
+  ROOT_AUTHORITY,
   ANY_BENEFICIARY,
-  type Delegation,
+} from '@metamask/delegation-core';
+import {
+  ExecutionMode,
+  getDeleGatorEnvironment,
   encodeRedeemDelegations,
-  createDelegation,
+  BATCH_DEFAULT_MODE,
+  SINGLE_DEFAULT_MODE,
+  type ExecutionStruct,
+  type Caveat,
+  type Delegation,
   type UnsignedDelegation,
-} from '../../../../shared/lib/delegation/delegation';
-import { limitedCalls } from '../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
-import { exactExecutionBatch } from '../../../../shared/lib/delegation/caveatBuilder/exactExecutionBatchBuilder';
-import { exactExecution } from '../../../../shared/lib/delegation/caveatBuilder/exactExecutionBuilder';
+} from '../../../../shared/lib/delegation';
 import { stripSingleLeadingZero } from './util';
 
 const log = createProjectLogger('transaction-delegation');
@@ -177,7 +176,7 @@ export async function convertTransactionToRedeemDelegations(
   return {
     authorizationList,
     data,
-    to: environment.DelegationManager as Hex,
+    to: environment.DelegationManager,
     type: authorizationList
       ? TransactionEnvelopeType.setCode
       : (transaction.txParams.type as TransactionEnvelopeType),
@@ -261,31 +260,37 @@ function buildDefaultCaveats(
   environment: ReturnType<typeof getDeleGatorEnvironment>,
   executions: ExecutionStruct[],
 ): Caveat[] {
-  const caveatBuilder = createCaveatBuilder(environment);
+  const caveats: Caveat[] = [
+    {
+      enforcer: environment.caveatEnforcers.LimitedCallsEnforcer,
+      terms: createLimitedCallsTerms({
+        limit: 1,
+      }),
+      args: '0x',
+    },
+  ];
 
   if (executions.length > 1) {
-    caveatBuilder.addCaveat(
-      exactExecutionBatch,
-      executions.map((e) => ({
-        to: e.target as string,
-        value: `0x${e.value.toString(16)}`,
-        data: e.callData as string | undefined,
-      })),
-    );
+    caveats.push({
+      enforcer: environment.caveatEnforcers.ExactExecutionBatchEnforcer,
+      terms: createExactExecutionBatchTerms({
+        executions,
+      }),
+      args: '0x',
+    });
   } else {
     const execution = executions[0];
 
-    caveatBuilder.addCaveat(
-      exactExecution,
-      execution.target as string,
-      `0x${execution.value.toString(16)}`,
-      execution.callData as string | undefined,
-    );
+    caveats.push({
+      enforcer: environment.caveatEnforcers.ExactExecutionEnforcer,
+      terms: createExactExecutionTerms({
+        execution,
+      }),
+      args: '0x',
+    });
   }
 
-  caveatBuilder.addCaveat(limitedCalls, 1);
-
-  return caveatBuilder.build();
+  return caveats;
 }
 
 async function signAndWrapDelegation({
@@ -301,11 +306,17 @@ async function signAndWrapDelegation({
   delegatee?: Hex;
   delegationSignature?: Hex;
 }): Promise<Delegation[][]> {
-  const unsignedDelegation: UnsignedDelegation = createDelegation({
-    from: transaction.txParams.from as Hex,
-    to: delegatee ?? ANY_BENEFICIARY,
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  const salt = bytesToHex(bytes);
+
+  const unsignedDelegation: UnsignedDelegation = {
+    delegator: transaction.txParams.from as Hex,
+    delegate: delegatee ?? ANY_BENEFICIARY,
+    authority: ROOT_AUTHORITY,
+    salt,
     caveats,
-  });
+  };
 
   log('Signing delegation', unsignedDelegation);
 

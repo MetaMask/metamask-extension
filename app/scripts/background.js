@@ -31,7 +31,10 @@ import {
 } from '../../shared/constants/app';
 import { AccountOverviewTabKey } from '../../shared/constants/app-state';
 import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
-import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/ui-initialization';
+import {
+  BACKGROUND_LIVENESS_METHOD,
+  BACKGROUND_INITIALIZED_METHOD,
+} from '../../shared/constants/ui-initialization';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -55,12 +58,14 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
-import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
-import { backedUpStateKeys } from '../../shared/lib/stores/persistence-manager';
+import { getInstallAttribution } from '../../shared/lib/install-attribution';
 import {
-  CorruptionHandler,
+  backedUpStateKeys,
   hasVault,
-} from './lib/state-corruption/state-corruption-recovery';
+} from '../../shared/lib/stores/persistence-manager';
+import { CriticalErrorHandler } from './lib/critical-error/critical-error-recovery';
+import { CorruptionHandler } from './lib/state-corruption/state-corruption-recovery';
+import { getAttentionRequiredApprovalCount } from './lib/approval/utils';
 import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
@@ -99,6 +104,13 @@ import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-l
 import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
 import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
+import {
+  readCriticalErrorRestoreSession,
+  clearCriticalErrorRestoreSession,
+  handoffRestoringTabToExtension,
+  openRestoringTabAndReload,
+} from './lib/critical-error/critical-error-tab-handoff';
+import { requestRepair } from './lib/repair';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
@@ -121,6 +133,29 @@ const BADGE_MAX_COUNT = 9;
 const maxSeenFailedNonces = 99;
 
 const inTest = process.env.IN_TEST;
+
+const VAULT_AT_STARTUP_TEST_WINDOW_MS = 60_000;
+
+/**
+ * Whether backup fetch saw a vault at startup less than {@link VAULT_AT_STARTUP_TEST_WINDOW_MS} ago.
+ *
+ * @param {number | null | undefined} hasVaultAtStartup - Timestamp when backup fetch saw a vault, or nullish.
+ * @returns {boolean}
+ */
+function hadVaultAtStartupRecently(hasVaultAtStartup) {
+  if (typeof hasVaultAtStartup !== 'number') {
+    return false;
+  }
+  return Date.now() - hasVaultAtStartup < VAULT_AT_STARTUP_TEST_WINDOW_MS;
+}
+
+/**
+ * Test-only state shared across startup and later port handling (hang simulations).
+ * `null` in production builds so we do not keep loose mutable test globals.
+ */
+const inTestState = inTest
+  ? { restoreInProgress: false, hasVaultAtStartup: null }
+  : null;
 
 const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
@@ -545,12 +580,14 @@ let connectEip1193;
 let connectCaipMultichain;
 
 const corruptionHandler = new CorruptionHandler();
+const criticalErrorHandler = new CriticalErrorHandler();
 /**
  * Handles the onConnect event.
  *
  * @param {browser.Runtime.Port} port - The port provided by a new context.
  */
 const handleOnConnect = async (port) => {
+  const { isMetaMaskUIPort } = parsePortInfo(port);
   if (inTest) {
     const simulatedDelay =
       getManifestFlags().testing?.simulateDelayedBackgroundResponse;
@@ -584,69 +621,104 @@ const handleOnConnect = async (port) => {
     return;
   }
 
+  let removeCriticalErrorListeners;
+  if (isMetaMaskUIPort) {
+    criticalErrorHandler.registerPortForCriticalError({
+      port,
+      repairCallback: () =>
+        requestRepair(() => openRestoringTabAndReload(requestSafeReload)),
+    });
+    removeCriticalErrorListeners = () =>
+      criticalErrorHandler.removeListenersForPort(port);
+  }
+
   // Queue up connection attempts here, waiting until after initialization
   try {
     await isInitialized;
 
+    // Notify UI that background initialization is complete, before sending state.
+    // This is sent on the raw port (like ALIVE) so the UI can distinguish between
+    // "background still initializing" vs "background initialized but state sync failed".
+    if (!tryPostMessage(port, BACKGROUND_INITIALIZED_METHOD)) {
+      return;
+    }
+
+    // For testing: skip connectWindowPostMessage to simulate state sync hang.
+    // Only when backup pre-existed at startup (i.e. after a runtime.reload(),
+    // not during the initial onboarding session) and we're not in the restore
+    // flow (so recovery can complete).
+    if (
+      inTest &&
+      getManifestFlags().testing?.simulateBackgroundStateSyncHang &&
+      !inTestState?.restoreInProgress &&
+      hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
+    ) {
+      return;
+    }
+
     // This is set in `setupController`, which is called as part of initialization
-    connectWindowPostMessage(port);
+    connectWindowPostMessage(port, removeCriticalErrorListeners);
   } catch (error) {
-    sentry?.captureException(error);
+    try {
+      sentry?.captureException(error);
 
-    // Only handle errors for MetaMask UI connections (popup, notification, fullscreen),
-    // not for contentscripts injected into regular web pages.
-    // Contentscripts can't display error screens and would create hanging promises.
-    if (parsePortInfo(port).isMetaMaskUIPort) {
-      // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
-      // restore from a backup, if we have one.
-      if (isStateCorruptionError(error)) {
-        await corruptionHandler.handleStateCorruptionError({
-          port,
-          error,
-          database: persistenceManager,
-          repairCallback: async (backup) => {
-            // we are going to reinitialize the background script, so we need to
-            // reset the initialization promises. this is gross since it is
-            // possible the original references could have been passed to other
-            // functions, and we can't update those references from here.
-            // right now, that isn't the case though.
-            setGlobalInitializers();
+      // Only handle errors for MetaMask UI connections (popup, notification, fullscreen),
+      // not for contentscripts injected into regular web pages.
+      // Contentscripts can't display error screens and would create hanging promises.
+      if (isMetaMaskUIPort) {
+        // If we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
+        // restore from a backup, if we have one.
+        if (isStateCorruptionError(error)) {
+          await corruptionHandler.handleStateCorruptionError({
+            port,
+            error,
+            database: persistenceManager,
+            repairCallback: async (backup) => {
+              // we are going to reinitialize the background script, so we need to
+              // reset the initialization promises. this is gross since it is
+              // possible the original references could have been passed to other
+              // functions, and we can't update those references from here.
+              // right now, that isn't the case though.
+              setGlobalInitializers();
 
-            if (hasVault(backup)) {
-              await initBackground(backup);
-              controller.onboardingController.setFirstTimeFlowType(
-                FirstTimeFlowType.restore,
-              );
-            } else {
-              // if we don't have a backup we need to make sure we clear the state
-              // from the database, and then reinitialize the background script
-              // with the first time state.
-              await persistenceManager.reset();
-              await initBackground(null);
-            }
-          },
-        });
-      } else {
-        // General errors
-        const errorLike = isObject(error)
-          ? {
-              message: error.message ?? 'Unknown error',
-              name: error.name ?? 'UnknownError',
-              stack: error.stack,
-              // Preserve sentryTags for searchable/filterable fields in Sentry UI
-              ...(error.sentryTags && { sentryTags: error.sentryTags }),
-            }
-          : {
-              message: String(error),
-              name: 'UnknownError',
-              stack: '',
-            };
-        tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
-          error: errorLike,
-          currentLocale:
-            controller?.preferencesController?.state?.currentLocale,
-        });
+              if (hasVault(backup)) {
+                await initBackground(backup);
+                controller.onboardingController.setFirstTimeFlowType(
+                  FirstTimeFlowType.restore,
+                );
+              } else {
+                // if we don't have a backup we need to make sure we clear the state
+                // from the database, and then reinitialize the background script
+                // with the first time state.
+                await persistenceManager.reset();
+                await initBackground(null);
+              }
+            },
+          });
+        } else {
+          // General errors
+          const errorLike = isObject(error)
+            ? {
+                message: error.message ?? 'Unknown error',
+                name: error.name ?? 'UnknownError',
+                stack: error.stack,
+                // Preserve sentryTags for searchable/filterable fields in Sentry UI
+                ...(error.sentryTags && { sentryTags: error.sentryTags }),
+              }
+            : {
+                message: String(error),
+                name: 'UnknownError',
+                stack: '',
+              };
+          tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+            error: errorLike,
+            currentLocale:
+              controller?.preferencesController?.state?.currentLocale,
+          });
+        }
       }
+    } finally {
+      removeCriticalErrorListeners?.();
     }
   }
 };
@@ -1635,7 +1707,7 @@ export function setupController(
     }
   };
 
-  connectWindowPostMessage = (remotePort) => {
+  connectWindowPostMessage = (remotePort, removeCriticalErrorListeners) => {
     if (metamaskBlockedPorts.includes(remotePort.name)) {
       return;
     }
@@ -1674,7 +1746,11 @@ export function setupController(
 
       // communication with popup
       controller.isClientOpen = true;
-      controller.setupTrustedCommunication(portStream, remotePort.sender);
+      controller
+        .setupTrustedCommunication(portStream, remotePort.sender)
+        .finally(() => {
+          removeCriticalErrorListeners?.();
+        });
       trackAppOpened(processName);
 
       // lazily update the remote feature flags every time the UI is opened.
@@ -1989,7 +2065,9 @@ export function setupController(
     try {
       const pendingApprovalCount =
         controller.appStateController.waitingForUnlock.length +
-        controller.approvalController.getTotalApprovalCount();
+        getAttentionRequiredApprovalCount({
+          approvalController: controller.approvalController,
+        });
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
@@ -2064,35 +2142,55 @@ async function triggerUi() {
   }
 }
 
-// It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
-const addAppInstalledEvent = async () => {
-  if (controller) {
-    controller.metaMetricsController.updateTraits({
-      [MetaMetricsUserTrait.InstallDateExt]: new Date()
-        .toISOString()
-        .split('T')[0], // yyyy-mm-dd
-    });
+// It queues the "App Installed" event before consent, or tracks it immediately if consent already exists.
+const addAppInstalledEvent = async (installAttributionPromise) => {
+  const { deferredDeepLink, traits: installAttributionTraits } =
+    await installAttributionPromise;
 
-    const deferredDeepLink = await getDeferredDeepLinkFromCookie();
-    const eventProperties = {};
+  controller.metaMetricsController.updateTraits({
+    [MetaMetricsUserTrait.InstallDateExt]: new Date()
+      .toISOString()
+      .split('T')[0], // yyyy-mm-dd
+    ...installAttributionTraits,
+  });
+  const eventProperties = {};
 
-    if (deferredDeepLink) {
-      controller.appStateController.setDeferredDeepLink(deferredDeepLink);
-      eventProperties.install_source = 'deeplink';
-      eventProperties.deeplink_path = deferredDeepLink.referringLink;
-    }
+  if (deferredDeepLink) {
+    controller.appStateController.setDeferredDeepLink(deferredDeepLink);
+    eventProperties.install_source = 'deeplink';
+    eventProperties.deeplink_path = deferredDeepLink.referringLink;
+  }
 
-    controller.metaMetricsController.addEventBeforeMetricsOptIn({
-      category: MetaMetricsEventCategory.App,
-      event: MetaMetricsEventName.AppInstalled,
-      properties: eventProperties,
-    });
+  const appInstalledEvent = {
+    category: MetaMetricsEventCategory.App,
+    event: MetaMetricsEventName.AppInstalled,
+    properties: eventProperties,
+  };
+
+  const { participateInMetaMetrics, metaMetricsId } =
+    controller.metaMetricsController.state;
+
+  if (participateInMetaMetrics === false) {
+    // We can skip tracking completely if they've already explicitly opted out
     return;
   }
-  setTimeout(async () => {
-    // If the controller is not set yet, we wait and try to add the "App Installed" event again.
-    await addAppInstalledEvent();
-  }, 500);
+
+  // Track immediately only once consent is active and the controller has a
+  // persisted MetaMetrics ID. Otherwise keep the event buffered for the opt-in
+  // flush path so it is not dropped.
+  // No need to call getMetaMetricsId() first: setParticipateInMetaMetrics()
+  // generates and persists the ID before setting participation to true, and this
+  // install handler should not create a metrics ID outside that consent path.
+  if (participateInMetaMetrics === true && metaMetricsId) {
+    controller.metaMetricsController.trackEvent(appInstalledEvent);
+  } else {
+    // participateInMetaMetrics is either `null` (not opted in or out yet) or
+    // `true` (opted in, but for some reason we don't have a MetaMetrics ID yet),
+    // so we queue the metrics event for possible submission later.
+    controller.metaMetricsController.addEventBeforeMetricsOptIn(
+      appInstalledEvent,
+    );
+  }
 };
 
 /**
@@ -2118,10 +2216,16 @@ async function handleOnInstalled([details]) {
  */
 async function onInstall() {
   log.debug('First install detected');
+  const installAttributionPromise = getInstallAttribution();
+
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
-  await addAppInstalledEvent();
+
+  // The controller must exist before we can persist install attribution.
+  await isInitialized;
+
+  await addAppInstalledEvent(installAttributionPromise);
 }
 
 /**
@@ -2440,6 +2544,23 @@ async function initBackground(backup) {
     }
     persistenceManager.cleanUpMostRecentRetrievedState();
 
+    // For testing: simulate initialization hang. Only when backup exists in
+    // IndexedDB and we're not already in the restore flow (backup param is
+    // null). Skip when backup param is non-null so vault recovery can complete.
+    if (
+      inTest &&
+      !backup &&
+      getManifestFlags().testing?.simulateBackgroundInitializationHang &&
+      hadVaultAtStartupRecently(inTestState.hasVaultAtStartup)
+    ) {
+      log.info(
+        'Simulating initialization hang (simulateBackgroundInitializationHang flag is set, backup exists)',
+      );
+      await new Promise(() => {
+        // Intentionally never resolves to simulate a hang
+      });
+    }
+
     log.info('MetaMask initialization complete.');
     resolveInitialization();
   } catch (error) {
@@ -2447,9 +2568,74 @@ async function initBackground(backup) {
     rejectInitialization(error);
   }
 }
-if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
+/**
+ * Service worker entry for background startup: normal init, or critical-error
+ * restore (when a session and vault backup exist).
+ */
+async function initOrRestoreBackground() {
+  if (process.env.SKIP_BACKGROUND_INITIALIZATION) {
+    return;
+  }
+
+  const restoreSession = await readCriticalErrorRestoreSession(browser);
+
+  // Fetch the backup once, shared by the restore path below and by
+  // the simulateBackground*Hang test flags (which need to know whether a
+  // backup already existed at startup, before onboarding can create one).
+  const testingFlags = inTest ? getManifestFlags().testing : undefined;
+  let backup = null;
+  if (
+    restoreSession ||
+    testingFlags?.simulateBackgroundStateSyncHang ||
+    testingFlags?.simulateBackgroundInitializationHang
+  ) {
+    backup = await persistenceManager.getBackup().catch(() => null);
+  }
+
+  const backupHasVault = hasVault(backup);
+
+  if (
+    testingFlags?.simulateBackgroundStateSyncHang ||
+    testingFlags?.simulateBackgroundInitializationHang
+  ) {
+    if (inTestState) {
+      inTestState.hasVaultAtStartup = backupHasVault ? Date.now() : null;
+    }
+  }
+
+  if (restoreSession) {
+    await clearCriticalErrorRestoreSession(browser);
+    if (backupHasVault) {
+      if (inTestState) {
+        inTestState.restoreInProgress = true;
+      }
+      const handoffPayload = {
+        tabId: restoreSession.tabId,
+        tabUrl: restoreSession.tabUrl,
+      };
+      initBackground(backup);
+      try {
+        await isInitialized;
+      } catch (error) {
+        log.error('critical-error-restore: initialization failed', error);
+        return;
+      }
+
+      controller.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.restore,
+      );
+
+      await handoffRestoringTabToExtension(platform, handoffPayload);
+      return;
+    }
+  }
+
   initBackground(null);
 }
+
+initOrRestoreBackground().catch((error) => {
+  log.error('initOrRestoreBackground failed', error);
+});
 
 if (inTest) {
   // listen for test messages from the background

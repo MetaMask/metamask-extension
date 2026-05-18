@@ -13,8 +13,8 @@ import {
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useFormatters } from '../../../../hooks/useFormatters';
 import { PerpsTokenLogo } from '../perps-token-logo';
+import { formatPerpsFiatUniversal } from '../utils/formatPerpsDisplayPrice';
 import { getDisplayName } from '../utils';
 import { formatOrderLabel } from '../utils/orderUtils';
 import type { Order } from '../types';
@@ -43,7 +43,6 @@ export const OrderCard: React.FC<OrderCardProps> = ({
 }) => {
   const navigate = useNavigate();
   const t = useI18nContext();
-  const { formatCurrencyWithMinThreshold } = useFormatters();
   const displayName = getDisplayName(order.symbol);
   const isTriggerBasedOrder =
     order.isTrigger === true || order.isPositionTpsl === true;
@@ -59,29 +58,19 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     }
   }, [navigate, order, onClick]);
 
-  // Limit/market: notional (size × limit price). TP/SL: trigger level (take-profit / stop-loss price).
+  // All order types display the limit/trigger price with universal decimals
+  // (matching market price precision: 0 for BTC, 2 for CL, 6 for CHIP).
+  // triggerPrice may be "0.0" for non-trigger orders, so parse both and pick
+  // the first non-zero value (preferring triggerPrice for TP/SL orders).
   const orderValueUsd = useMemo(() => {
-    if (isTriggerBasedOrder) {
-      const triggerLevel =
-        parseFloat(order.triggerPrice || order.price || '0') || 0;
-      if (triggerLevel > 0) {
-        return formatCurrencyWithMinThreshold(triggerLevel, 'USD');
-      }
-    }
-
-    const size = parseFloat(order.size) || 0;
-    const price = parseFloat(order.price) || 0;
-    if (size > 0 && price > 0) {
-      return formatCurrencyWithMinThreshold(size * price, 'USD');
+    const trigger = parseFloat(order.triggerPrice || '0') || 0;
+    const limit = parseFloat(order.price || '0') || 0;
+    const price = trigger || limit;
+    if (price > 0) {
+      return formatPerpsFiatUniversal(price);
     }
     return null;
-  }, [
-    isTriggerBasedOrder,
-    order.triggerPrice,
-    order.size,
-    order.price,
-    formatCurrencyWithMinThreshold,
-  ]);
+  }, [order.triggerPrice, order.price]);
 
   const baseStyles = 'cursor-pointer pt-2 pb-2 px-4';
   // Non-trigger rows keep the fixed 62 px height to match the position/token tabs.

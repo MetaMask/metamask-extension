@@ -6,8 +6,12 @@ import {
   BoxAlignItems,
   Text,
   TextVariant,
+  TextAlign,
   TextColor,
   FontWeight,
+  Icon,
+  IconName,
+  IconSize,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import {
@@ -40,6 +44,7 @@ import { getPositionDirection } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
 
@@ -106,6 +111,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     feeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
+    metamaskFeeRateDiscountPercentage,
   } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
@@ -191,7 +197,19 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
         <ModalOverlay />
         <ModalContent size={ModalContentSize.Sm}>
           <ModalHeader onClose={onClose}>
-            {t('perpsReversePosition')}
+            <Box
+              flexDirection={BoxFlexDirection.Column}
+              alignItems={BoxAlignItems.Center}
+              gap={2}
+            >
+              <Icon name={IconName.SwapHorizontal} size={IconSize.Xl} />
+              <Text
+                variant={TextVariant.HeadingSm}
+                textAlign={TextAlign.Center}
+              >
+                {t('perpsReversePosition')}
+              </Text>
+            </Box>
           </ModalHeader>
           <ModalBody>
             <Box flexDirection={BoxFlexDirection.Column} gap={4}>
@@ -243,17 +261,22 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 >
                   {t('perpsFees')}
                 </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  data-testid="perps-reverse-fee-value"
-                >
-                  {shouldShowFeePlaceholder
-                    ? '--'
-                    : formatPerpsFiat(estimatedFees, {
-                        ranges: PRICE_RANGES_MINIMAL_VIEW,
-                      })}
-                </Text>
+                <PerpsFeesDisplay
+                  metamaskFeeRateDiscountPercentage={
+                    shouldShowFeePlaceholder
+                      ? undefined
+                      : metamaskFeeRateDiscountPercentage
+                  }
+                  formatFeeText={
+                    shouldShowFeePlaceholder
+                      ? '--'
+                      : formatPerpsFiat(estimatedFees, {
+                          ranges: PRICE_RANGES_MINIMAL_VIEW,
+                        })
+                  }
+                  feeTextFontWeight={FontWeight.Medium}
+                  feeTextTestId="perps-reverse-fee-value"
+                />
               </Box>
               {error && (
                 <Box

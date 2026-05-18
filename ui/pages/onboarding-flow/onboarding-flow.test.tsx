@@ -19,6 +19,7 @@ import {
   ONBOARDING_METAMETRICS,
   ONBOARDING_REVEAL_SRP_ROUTE,
   ONBOARDING_ROUTE,
+  ONBOARDING_SETUP_PASSKEY_ROUTE,
 } from '../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
@@ -365,6 +366,22 @@ describe('Onboarding Flow', () => {
       `${ONBOARDING_REVEAL_SRP_ROUTE}`,
       { replace: true },
     );
+  });
+
+  it('should redirect setup passkey to onboarding unlock when unlocked without srp', () => {
+    renderWithProvider(
+      <OnboardingFlowWithRouteContext />,
+      createStore({
+        isUnlocked: true,
+        completedOnboarding: false,
+        secretRecoveryPhrase: '',
+      }),
+      ONBOARDING_SETUP_PASSKEY_ROUTE,
+    );
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_UNLOCK_ROUTE, {
+      replace: true,
+    });
   });
 
   it('should render import seed phrase', () => {

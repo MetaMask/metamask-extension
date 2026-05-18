@@ -52,7 +52,7 @@ describe('Token List via StorageService', function () {
           tokenName,
           networkName: MAINNET_DISPLAY_NAME,
         });
-        await assetListPage.checkTokenExistsInList(tokenSymbol);
+        await assetListPage.checkTokenExistsInList(tokenName);
       },
     );
   });

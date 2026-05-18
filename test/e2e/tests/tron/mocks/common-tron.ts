@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Mockttp, MockedEndpoint } from 'mockttp';
+import {
+  mockTokensV2SupportedNetworks,
+  mockTokensV3Assets,
+} from '../../btc/mocks/tokens-api';
 
 export const TRON_ACCOUNT_ADDRESS = 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3';
 export const TRON_RECIPIENT_ADDRESS = 'TK3xRFq22eEiATz6kfamDeAAQrPdfdGPeq';
@@ -87,13 +91,25 @@ export async function mockTronGetAccount(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint> {
+  // `($|\\?)` so the regex matches both with and without query params like ?visible=true
   return mockServer
-    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}`))
+    .forGet(
+      new RegExp(
+        `^${TRON_INFURA_BASE_URL}/v1/accounts/${TRON_ACCOUNT_ADDRESS}($|\\?)`,
+        'u',
+      ),
+    )
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
         data: [
           {
+            id: '',
+            version: 1,
+            address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
+            create_time: 1763374065000,
+            latest_opration_time: 1764149628000,
             owner_permission: {
               keys: [
                 {
@@ -125,9 +141,17 @@ export async function mockTronGetAccount(
                 permission_name: 'active',
               },
             ],
-            address: '4100dd57a0a3ee58392689f79c0bedcf44d3b6c255',
-            create_time: 1763374065000,
-            latest_opration_time: 1764149628000,
+            balance: mockZeroBalance ? 0 : TRX_BALANCE,
+            frozenV2: [
+              {},
+              {
+                amount: mockZeroBalance ? 0 : 20000000,
+                type: 'ENERGY',
+              },
+              {
+                type: 'TRON_POWER',
+              },
+            ],
             free_asset_net_usageV2: mockZeroBalance
               ? []
               : [
@@ -144,17 +168,6 @@ export async function mockTronGetAccount(
                     key: '1005074',
                   },
                 ],
-            frozenV2: [
-              {},
-              {
-                amount: mockZeroBalance ? 0 : 20000000,
-                type: 'ENERGY',
-              },
-              {
-                type: 'TRON_POWER',
-              },
-            ],
-            balance: mockZeroBalance ? 0 : TRX_BALANCE,
             trc20: mockZeroBalance
               ? []
               : [
@@ -181,6 +194,57 @@ export async function mockTronGetAccount(
         meta: {
           at: 1767888275562,
           page_size: 1,
+        },
+      },
+    }));
+}
+
+export async function mockTronGetTrc20Balance(
+  mockServer: Mockttp,
+  mockZeroBalance?: boolean,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/trc20/balance`))
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        data: mockZeroBalance
+          ? []
+          : [
+              {
+                contract_address: 'TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6',
+                balance: '3156454956836360132407885',
+                name: 'HTX',
+                symbol: 'HTX',
+                decimals: 18,
+              },
+              {
+                contract_address: 'TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh',
+                balance: '89851311',
+                name: 'SEED',
+                symbol: 'SEED',
+                decimals: 6,
+              },
+              {
+                contract_address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+                balance: '2804595',
+                name: 'Tether USD',
+                symbol: 'USDT',
+                decimals: 6,
+              },
+              {
+                contract_address: 'TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
+                balance: '289757448699320931',
+                name: 'Decentralized USD',
+                symbol: 'USDD',
+                decimals: 18,
+              },
+            ],
+        success: true,
+        meta: {
+          at: 1767888275562,
+          page_size: 10,
         },
       },
     }));
@@ -585,15 +649,33 @@ export async function mockTronSpotPrices(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
-    .withQuery({
-      vsCurrency: 'usd',
-      assetIds:
-        'tron:728126428/trc10:1005074,tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6,tron:728126428/trc20:TBwoSTyywvLrgjSgaatxrBhxt3DGpVuENh,tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t,tron:728126428/trc20:TXDk8mbtRbXeYuMNS83CfKPaYYT8XWv9Hz',
-      includeMarketData: 'true',
-    })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
+        'tron:728126428/slip44:195': {
+          id: 'tron',
+          price: TRX_TO_USD_RATE,
+          marketCap: 26501571090,
+          allTimeHigh: 0.431288,
+          allTimeLow: 0.00180434,
+          totalVolume: 584039469,
+          high1d: 0.281458,
+          low1d: 0.278801,
+          circulatingSupply: 94683395974.3822,
+          dilutedMarketCap: 26501570979,
+          marketCapPercentChange1d: -0.25,
+          priceChange1d: -0.000716844753300194,
+          pricePercentChange1h: 0.357582350741983,
+          pricePercentChange1d: -0.255462049152282,
+          pricePercentChange7d: 0.862835815143018,
+          pricePercentChange14d: 0.395394234400669,
+          pricePercentChange30d: -4.69037102835574,
+          pricePercentChange200d: 4.7347558395209,
+          pricePercentChange1y: -1.29971018156079,
+        },
+        'tron:3448148188/slip44:195': null,
+        'tron:2494104990/slip44:195': null,
         'tron:728126428/trc10:1005074': null,
         'tron:728126428/trc20:TUPM7K8REVzD2UdV4R5fe5M8XbnR2DdoJ6': {
           id: 'htx-dao',
@@ -665,8 +747,35 @@ export async function mockTronSpotPrices(
 
 export async function mockTrxNativeSpotPrices(
   mockServer: Mockttp,
-): Promise<MockedEndpoint> {
-  return mockServer
+): Promise<MockedEndpoint[]> {
+  const trxPriceResponse = {
+    'tron:728126428/slip44:195': {
+      id: 'tron',
+      price: TRX_TO_USD_RATE,
+      marketCap: 27908032838,
+      allTimeHigh: 0.431288,
+      allTimeLow: 0.00180434,
+      totalVolume: 681456174,
+      high1d: 0.298231,
+      low1d: 0.294641,
+      circulatingSupply: 94699702752.04857,
+      dilutedMarketCap: 27908037090,
+      marketCapPercentChange1d: -0.97531,
+      priceChange1d: -0.003047860467726426,
+      pricePercentChange1h: -0.15075140224689543,
+      pricePercentChange1d: -1.0236731036599194,
+      pricePercentChange7d: 3.655119648562475,
+      pricePercentChange14d: 6.071878922562999,
+      pricePercentChange30d: 4.476394163995479,
+      pricePercentChange200d: 10.682232053374577,
+      pricePercentChange1y: 16.823798348731327,
+    },
+    'tron:3448148188/slip44:195': null,
+    'tron:2494104990/slip44:195': null,
+  };
+
+  // Initial load: all three Tron chains bundled together
+  const allChainsEndpoint = await mockServer
     .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
     .withQuery({
       vsCurrency: 'usd',
@@ -674,34 +783,30 @@ export async function mockTrxNativeSpotPrices(
         'tron:728126428/slip44:195,tron:3448148188/slip44:195,tron:2494104990/slip44:195',
       includeMarketData: 'true',
     })
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: trxPriceResponse,
+    }));
+
+  // After switching to Tron network: single-chain refresh with cacheOnly=false
+  const singleChainEndpoint = await mockServer
+    .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+    .withQuery({
+      assetIds: 'tron:728126428/slip44:195',
+      vsCurrency: 'usd',
+      includeMarketData: 'true',
+    })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        'tron:728126428/slip44:195': {
-          id: 'tron',
-          price: TRX_TO_USD_RATE,
-          marketCap: 27908032838,
-          allTimeHigh: 0.431288,
-          allTimeLow: 0.00180434,
-          totalVolume: 681456174,
-          high1d: 0.298231,
-          low1d: 0.294641,
-          circulatingSupply: 94699702752.04857,
-          dilutedMarketCap: 27908037090,
-          marketCapPercentChange1d: -0.97531,
-          priceChange1d: -0.003047860467726426,
-          pricePercentChange1h: -0.15075140224689543,
-          pricePercentChange1d: -1.0236731036599194,
-          pricePercentChange7d: 3.655119648562475,
-          pricePercentChange14d: 6.071878922562999,
-          pricePercentChange30d: 4.476394163995479,
-          pricePercentChange200d: 10.682232053374577,
-          pricePercentChange1y: 16.823798348731327,
-        },
-        'tron:3448148188/slip44:195': null,
-        'tron:2494104990/slip44:195': null,
+        'tron:728126428/slip44:195':
+          trxPriceResponse['tron:728126428/slip44:195'],
       },
     }));
+
+  return [allChainsEndpoint, singleChainEndpoint];
 }
 
 export async function mockTronAssets(
@@ -1045,6 +1150,8 @@ export async function mockTronApis(
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint[]> {
   return [
+    await mockTokensV2SupportedNetworks(mockServer),
+    await mockTokensV3Assets(mockServer),
     await mockTronFeatureFlags(mockServer),
     await mockTronGetBlock(mockServer),
     await mockTronGetAccount(mockServer, mockZeroBalance),
@@ -1054,7 +1161,6 @@ export async function mockTronApis(
     await mockExchangeRates(mockServer),
     await mockFiatExchangeRates(mockServer),
     await mockTronSpotPrices(mockServer),
-    await mockTrxNativeSpotPrices(mockServer),
     await mockTronAssets(mockServer),
     await mockBroadTransaction(mockServer),
   ];

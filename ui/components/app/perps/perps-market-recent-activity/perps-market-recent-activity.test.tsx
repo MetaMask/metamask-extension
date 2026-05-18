@@ -128,7 +128,7 @@ describe('PerpsMarketRecentActivity', () => {
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
-        screen.queryByText(messages.perpsSeeAll.message),
+        screen.queryByTestId('perps-market-detail-view-all-activity'),
       ).not.toBeInTheDocument();
     });
   });
@@ -195,7 +195,7 @@ describe('PerpsMarketRecentActivity', () => {
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
       expect(
-        screen.getByText(messages.perpsSeeAll.message),
+        screen.getByTestId('perps-market-detail-view-all-activity'),
       ).toBeInTheDocument();
     });
 
@@ -208,7 +208,25 @@ describe('PerpsMarketRecentActivity', () => {
 
       renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
 
-      fireEvent.click(screen.getByText(messages.perpsSeeAll.message));
+      fireEvent.click(
+        screen.getByTestId('perps-market-detail-view-all-activity'),
+      );
+      expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
+    });
+
+    it('navigates to PERPS_ACTIVITY_ROUTE when a transaction row is tapped', () => {
+      mockUsePerpsMarketFills.mockReturnValue({
+        fills: [],
+        isInitialLoading: false,
+      });
+      mockTransformFills.mockReturnValue([createTransaction('tx-1')]);
+
+      renderWithProvider(<PerpsMarketRecentActivity symbol="BTC" />, mockStore);
+
+      const card = screen.getByTestId('transaction-card-tx-1');
+      expect(card).toHaveClass('cursor-pointer');
+
+      fireEvent.click(card);
       expect(mockNavigate).toHaveBeenCalledWith(PERPS_ACTIVITY_ROUTE);
     });
   });

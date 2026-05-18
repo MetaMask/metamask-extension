@@ -180,6 +180,65 @@ describe('PerpsView', () => {
       expect(screen.getByTestId('position-card-ETH')).toBeInTheDocument();
     });
 
+    it('renders single-position summary RoE from the same position value as the card', () => {
+      jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+        positions: [
+          {
+            ...mocks.mockPositions[0],
+            unrealizedPnl: '4.20',
+            returnOnEquity: '0.42',
+          },
+        ],
+        isInitialLoading: false,
+      });
+      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+        account: {
+          ...mocks.mockAccountState,
+          unrealizedPnl: '1.00',
+          returnOnEquity: '1',
+        },
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(
+        screen.getByTestId('perps-balance-dropdown-pnl'),
+      ).toHaveTextContent('42.00%');
+      expect(screen.getByTestId('position-card-roe-ETH')).toHaveTextContent(
+        '42.00%',
+      );
+    });
+
+    it('keeps multi-position summary RoE on the account aggregate', () => {
+      jest.mocked(streamHooks.usePerpsLivePositions).mockReturnValue({
+        positions: [
+          {
+            ...mocks.mockPositions[0],
+            returnOnEquity: '0.42',
+          },
+          {
+            ...mocks.mockPositions[1],
+            returnOnEquity: '0.24',
+          },
+        ],
+        isInitialLoading: false,
+      });
+      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+        account: {
+          ...mocks.mockAccountState,
+          returnOnEquity: '1',
+        },
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(<PerpsView />, mockStore);
+
+      expect(
+        screen.getByTestId('perps-balance-dropdown-pnl'),
+      ).toHaveTextContent('1.00%');
+    });
+
     it('renders order cards for each order', () => {
       renderWithProvider(<PerpsView />, mockStore);
 
@@ -612,6 +671,76 @@ describe('PerpsView', () => {
       expect(mockTrackEvent).not.toHaveBeenCalledWith(
         expect.objectContaining({
           event: MetaMetricsEventName.PerpsScreenViewed,
+        }),
+      );
+    });
+
+    it('tracks has_perp_balance when unified account funds are tradeable but not withdrawable', () => {
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+        account: {
+          ...mocks.mockAccountState,
+          spendableBalance: '0',
+          withdrawableBalance: '100',
+        },
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: true,
+          }),
+        }),
+      );
+    });
+
+    it('reports no perp balance when withdrawableBalance is zero even if spendableBalance is positive', () => {
+      const mockTrackEvent = jest.fn();
+      const mockMetaMetricsContext = {
+        trackEvent: mockTrackEvent,
+        bufferedTrace: jest.fn(),
+        bufferedEndTrace: jest.fn(),
+        onboardingParentContext: { current: null },
+      };
+
+      jest.mocked(streamHooks.usePerpsLiveAccount).mockReturnValue({
+        account: {
+          ...mocks.mockAccountState,
+          spendableBalance: '100',
+          withdrawableBalance: '0',
+        },
+        isInitialLoading: false,
+      });
+
+      renderWithProvider(
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
+          <PerpsView />
+        </MetaMetricsContext.Provider>,
+        mockStore,
+      );
+
+      expect(mockTrackEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: MetaMetricsEventName.PerpsScreenViewed,
+          properties: expect.objectContaining({
+            [PERPS_EVENT_PROPERTY.HAS_PERP_BALANCE]: false,
+          }),
         }),
       );
     });

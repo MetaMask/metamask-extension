@@ -11,16 +11,21 @@ import {
   TransactionMeta,
 } from '@metamask/transaction-controller';
 import {
+  createExactExecutionBatchTerms,
+  createExactExecutionTerms,
+  createLimitedCallsTerms,
+  ANY_BENEFICIARY,
+  ROOT_AUTHORITY,
+  type Hex,
+} from '@metamask/delegation-core';
+import { bytesToHex } from '@metamask/utils';
+import {
   BATCH_DEFAULT_MODE,
   ExecutionStruct,
   SINGLE_DEFAULT_MODE,
-  createCaveatBuilder,
+  encodeRedeemDelegations,
   getDeleGatorEnvironment,
 } from '../../../../shared/lib/delegation';
-import {
-  createDelegation,
-  encodeRedeemDelegations,
-} from '../../../../shared/lib/delegation/delegation';
 
 import { stripSingleLeadingZero } from './util';
 import {
@@ -33,15 +38,14 @@ import {
 jest.mock('../../../../shared/lib/delegation', () => ({
   ...jest.requireActual('../../../../shared/lib/delegation'),
   encodeRedeemDelegations: jest.fn(),
-  createDelegation: jest.fn(),
-  createCaveatBuilder: jest.fn(),
   getDeleGatorEnvironment: jest.fn(),
 }));
 
-jest.mock('../../../../shared/lib/delegation/delegation', () => ({
-  ...jest.requireActual('../../../../shared/lib/delegation/delegation'),
-  encodeRedeemDelegations: jest.fn(),
-  createDelegation: jest.fn(),
+jest.mock('@metamask/delegation-core', () => ({
+  ...jest.requireActual('@metamask/delegation-core'),
+  createLimitedCallsTerms: jest.fn(),
+  createExactExecutionTerms: jest.fn(),
+  createExactExecutionBatchTerms: jest.fn(),
 }));
 
 jest.mock('./util', () => ({
@@ -49,24 +53,26 @@ jest.mock('./util', () => ({
   stripSingleLeadingZero: jest.fn(),
 }));
 
-const DELEGATION_MANAGER_ADDRESS_MOCK =
-  '0xDelegationManagerAddress' as `0x${string}`;
+const DELEGATION_MANAGER_ADDRESS_MOCK = '0xDelegationManagerAddress' as Hex;
 
-const CAVEAT_ENFORCER_ADDRESS_MOCK = '0xCaveatEnforcerAddress' as `0x${string}`;
+const LIMITED_CALLS_ENFORCER_MOCK =
+  '0xLimitedCallsEnforcer0000000000000000000000' as Hex;
+const EXACT_EXECUTION_ENFORCER_MOCK =
+  '0xExactExecutionEnforcer00000000000000000000' as Hex;
+const EXACT_EXECUTION_BATCH_ENFORCER_MOCK =
+  '0xExactExecutionBatchEnforcer00000000000000' as Hex;
 
-const AUTHORIZATION_SIGNATURE_MOCK = `0x${'1'.repeat(130)}` as `0x${string}`;
+const TERMS_LIMITED_MOCK = '0xterms-limited' as Hex;
+const TERMS_EXACT_MOCK = '0xterms-exact' as Hex;
+const TERMS_BATCH_MOCK = '0xterms-batch' as Hex;
+
+const AUTHORIZATION_SIGNATURE_MOCK = `0x${'1'.repeat(130)}` as Hex;
 
 const UPGRADE_CONTRACT_ADDRESS_MOCK =
-  '0x1234567890123456789012345678901234567899' as `0x${string}`;
+  '0x1234567890123456789012345678901234567899' as Hex;
 
-const SIGNATURE_MOCK = '0xsignature' as `0x${string}`;
-const ENCODED_MOCK = '0xencoded' as `0x${string}`;
-
-const UNSIGNED_DELEGATION_MOCK = {
-  from: '0x1234567890123456789012345678901234567890',
-  to: '0xffffffffffffffffffffffffffffffffffffffff',
-  caveats: [{ enforcer: '0x', terms: '0x', args: '0x' }],
-};
+const SIGNATURE_MOCK = '0xsignature' as Hex;
+const ENCODED_MOCK = '0xencoded' as Hex;
 
 const CAVEATS_OVERRIDE_MOCK = [
   { enforcer: '0xaa', terms: '0xbb', args: '0xcc' },
@@ -90,11 +96,14 @@ const TRANSACTION_META_MOCK = {
 } as unknown as TransactionMeta;
 
 describe('delegation', () => {
-  const createCaveatBuilderMock = jest.mocked(createCaveatBuilder);
   const getDeleGatorEnvironmentMock = jest.mocked(getDeleGatorEnvironment);
-  const createDelegationMock = jest.mocked(createDelegation);
   const encodeRedeemDelegationsMock = jest.mocked(encodeRedeemDelegations);
   const stripSingleLeadingZeroMock = jest.mocked(stripSingleLeadingZero);
+  const createLimitedCallsTermsMock = jest.mocked(createLimitedCallsTerms);
+  const createExactExecutionTermsMock = jest.mocked(createExactExecutionTerms);
+  const createExactExecutionBatchTermsMock = jest.mocked(
+    createExactExecutionBatchTerms,
+  );
 
   const signDelegationMock: jest.MockedFn<
     DelegationControllerSignDelegationAction['handler']
@@ -113,11 +122,18 @@ describe('delegation', () => {
   > = jest.fn();
 
   let messenger: DelegationMessenger;
-  let addCaveatMock: jest.Mock;
-  let buildCaveatMock: jest.Mock;
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    jest.spyOn(crypto, 'getRandomValues').mockImplementation((array) => {
+      if (array) {
+        new Uint8Array(array.buffer, array.byteOffset, array.byteLength).fill(
+          0x42,
+        );
+      }
+      return array as ArrayBufferView;
+    });
 
     const baseMessenger = new Messenger<
       MockAnyNamespace,
@@ -175,25 +191,21 @@ describe('delegation', () => {
 
     messenger = childMessenger as DelegationMessenger;
 
-    addCaveatMock = jest.fn();
-
-    buildCaveatMock = jest
-      .fn()
-      .mockReturnValue([{ enforcer: '0x', terms: '0x', args: '0x' }]);
-
-    createCaveatBuilderMock.mockReturnValue({
-      addCaveat: addCaveatMock,
-      build: buildCaveatMock,
-    } as never);
-
     getDeleGatorEnvironmentMock.mockReturnValue({
       DelegationManager: DELEGATION_MANAGER_ADDRESS_MOCK,
-      ExactExecutionEnforcer: CAVEAT_ENFORCER_ADDRESS_MOCK,
-      ExactExecutionBatchEnforcer: CAVEAT_ENFORCER_ADDRESS_MOCK,
-      LimitedCallsEnforcer: CAVEAT_ENFORCER_ADDRESS_MOCK,
+      caveatEnforcers: {
+        LimitedCallsEnforcer: LIMITED_CALLS_ENFORCER_MOCK,
+        ExactExecutionEnforcer: EXACT_EXECUTION_ENFORCER_MOCK,
+        ExactExecutionBatchEnforcer: EXACT_EXECUTION_BATCH_ENFORCER_MOCK,
+      },
     } as never);
 
-    createDelegationMock.mockReturnValue(UNSIGNED_DELEGATION_MOCK as never);
+    createLimitedCallsTermsMock.mockReturnValue(TERMS_LIMITED_MOCK as never);
+    createExactExecutionTermsMock.mockReturnValue(TERMS_EXACT_MOCK as never);
+    createExactExecutionBatchTermsMock.mockReturnValue(
+      TERMS_BATCH_MOCK as never,
+    );
+
     encodeRedeemDelegationsMock.mockReturnValue(ENCODED_MOCK);
     signDelegationMock.mockResolvedValue(SIGNATURE_MOCK);
 
@@ -229,6 +241,23 @@ describe('delegation', () => {
 
       await convertTransactionToRedeemDelegations({ transaction, messenger });
 
+      expect(createLimitedCallsTermsMock).toHaveBeenCalledWith({ limit: 1 });
+      expect(createExactExecutionBatchTermsMock).toHaveBeenCalledWith({
+        executions: [
+          {
+            target: '0x1111111111111111111111111111111111111111',
+            value: 2n,
+            callData: '0xaaaa',
+          },
+          {
+            target: '0x2222222222222222222222222222222222222222',
+            value: 3n,
+            callData: '0xbbbb',
+          },
+        ],
+      });
+      expect(createExactExecutionTermsMock).not.toHaveBeenCalled();
+
       expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
         expect.objectContaining({
           executions: [
@@ -247,9 +276,6 @@ describe('delegation', () => {
           ],
         }),
       );
-
-      expect(addCaveatMock).toHaveBeenCalledTimes(2);
-      expect(buildCaveatMock).toHaveBeenCalledTimes(1);
     });
 
     it('normalizes nestedTransactions callData', async () => {
@@ -375,14 +401,15 @@ describe('delegation', () => {
         additionalExecutions: [ADDITIONAL_EXECUTION_MOCK],
       });
 
-      expect(addCaveatMock).toHaveBeenCalledWith(
-        'exactExecutionBatch',
-        expect.arrayContaining([
+      expect(createExactExecutionBatchTermsMock).toHaveBeenCalledWith({
+        executions: expect.arrayContaining([
           expect.objectContaining({
-            to: ADDITIONAL_EXECUTION_MOCK.target,
+            target: ADDITIONAL_EXECUTION_MOCK.target,
+            value: ADDITIONAL_EXECUTION_MOCK.value,
+            callData: ADDITIONAL_EXECUTION_MOCK.callData,
           }),
         ]),
-      );
+      });
     });
 
     it('uses provided caveats override instead of defaults', async () => {
@@ -392,10 +419,15 @@ describe('delegation', () => {
         caveats: CAVEATS_OVERRIDE_MOCK as never,
       });
 
-      expect(createCaveatBuilderMock).not.toHaveBeenCalled();
-      expect(createDelegationMock).toHaveBeenCalledWith(
+      expect(createLimitedCallsTermsMock).not.toHaveBeenCalled();
+      expect(createExactExecutionTermsMock).not.toHaveBeenCalled();
+      expect(createExactExecutionBatchTermsMock).not.toHaveBeenCalled();
+
+      expect(signDelegationMock).toHaveBeenCalledWith(
         expect.objectContaining({
-          caveats: CAVEATS_OVERRIDE_MOCK,
+          delegation: expect.objectContaining({
+            caveats: CAVEATS_OVERRIDE_MOCK,
+          }),
         }),
       );
     });
@@ -428,22 +460,98 @@ describe('delegation', () => {
     });
 
     it('signs delegation via DelegationController:signDelegation messenger action', async () => {
+      const expectedSalt = bytesToHex(new Uint8Array(32).fill(0x42));
+
+      const expectedUnsignedDelegation = {
+        delegator: TRANSACTION_META_MOCK.txParams.from,
+        delegate: ANY_BENEFICIARY,
+        authority: ROOT_AUTHORITY,
+        salt: expectedSalt,
+        caveats: [
+          {
+            enforcer: LIMITED_CALLS_ENFORCER_MOCK,
+            terms: TERMS_LIMITED_MOCK,
+            args: '0x',
+          },
+          {
+            enforcer: EXACT_EXECUTION_ENFORCER_MOCK,
+            terms: TERMS_EXACT_MOCK,
+            args: '0x',
+          },
+        ],
+      };
+
       await convertTransactionToRedeemDelegations({
         transaction: TRANSACTION_META_MOCK,
         messenger,
       });
 
+      expect(createLimitedCallsTermsMock).toHaveBeenCalledWith({ limit: 1 });
+      expect(createExactExecutionTermsMock).toHaveBeenCalledWith({
+        execution: {
+          target: TRANSACTION_META_MOCK.txParams.to,
+          value: 256n,
+          callData: '0xdeadbeef',
+        },
+      });
+      expect(createExactExecutionBatchTermsMock).not.toHaveBeenCalled();
+
       expect(signDelegationMock).toHaveBeenCalledWith({
         chainId: '0x1',
-        delegation: UNSIGNED_DELEGATION_MOCK,
+        delegation: expectedUnsignedDelegation,
       });
       expect(encodeRedeemDelegationsMock).toHaveBeenCalledWith(
         expect.objectContaining({
           delegations: [
-            [{ ...UNSIGNED_DELEGATION_MOCK, signature: SIGNATURE_MOCK }],
+            [{ ...expectedUnsignedDelegation, signature: SIGNATURE_MOCK }],
           ],
         }),
       );
+    });
+
+    it('uses a random salt for each delegation', async () => {
+      const randomSalt1 = new Uint8Array(32).fill(0x5a);
+      const randomSalt2 = new Uint8Array(32).fill(0x5b);
+
+      const getRandomValuesSpy = jest
+        .spyOn(crypto, 'getRandomValues')
+        .mockImplementationOnce((array) => {
+          if (!array) {
+            throw new Error('getRandomValues expected a buffer');
+          }
+          new Uint8Array(array.buffer, array.byteOffset, array.byteLength).set(
+            randomSalt1,
+          );
+          return array;
+        })
+        .mockImplementationOnce((array) => {
+          if (!array) {
+            throw new Error('getRandomValues expected a buffer');
+          }
+          new Uint8Array(array.buffer, array.byteOffset, array.byteLength).set(
+            randomSalt2,
+          );
+          return array;
+        });
+
+      await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+      });
+
+      await convertTransactionToRedeemDelegations({
+        transaction: TRANSACTION_META_MOCK,
+        messenger,
+      });
+
+      const firstSalt = signDelegationMock.mock.calls[0][0].delegation.salt;
+      const secondSalt = signDelegationMock.mock.calls[1][0].delegation.salt;
+
+      expect(firstSalt).toBe(bytesToHex(randomSalt1));
+      expect(secondSalt).toBe(bytesToHex(randomSalt2));
+      expect(firstSalt).not.toBe(secondSalt);
+
+      getRandomValuesSpy.mockRestore();
     });
 
     it('returns delegation manager address as to', async () => {

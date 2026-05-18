@@ -6,18 +6,47 @@ import {
   PLATFORM_BRAVE,
   PLATFORM_FIREFOX,
 } from '../../../shared/constants/app';
-// TODO: Remove restricted import
-// eslint-disable-next-line import-x/no-restricted-paths
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../shared/lib/environment-type';
 import { getBrowserName } from '../../../shared/lib/browser-runtime.utils';
+import {
+  openCameraVideoStream,
+  queryCameraPermissionWithStatus,
+  stopMediaStreamTracks,
+} from '../../contexts/hardware-wallets/webConnectionUtils';
 
 class WebcamUtils {
+  /**
+   * Queries the Permissions API for the camera. Some browsers (e.g. older Safari)
+   * do not support `name: 'camera'` — callers should treat failures as `'prompt'`
+   * and rely on `getUserMedia` errors for classification.
+   *
+   * @returns {Promise<{ state: 'granted' | 'denied' | 'prompt', permissionStatus: PermissionStatus | null }>}
+   */
+  static async queryCameraPermission() {
+    return queryCameraPermissionWithStatus();
+  }
+
+  /**
+   * @returns {Promise<MediaStream>}
+   */
+  static async requestVideoStream() {
+    return openCameraVideoStream();
+  }
+
+  /**
+   * @param {MediaStream} stream
+   */
+  static stopVideoStream(stream) {
+    stopMediaStreamTracks(stream);
+  }
+
   static async checkStatus() {
     const environmentType = getEnvironmentType();
     const isPopup = environmentType === ENVIRONMENT_TYPE_POPUP;
     const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    const browserName = getBrowserName();
     const isFirefoxOrBrave =
-      getBrowserName() === (PLATFORM_FIREFOX || PLATFORM_BRAVE);
+      browserName === PLATFORM_FIREFOX || browserName === PLATFORM_BRAVE;
 
     const devices = await window.navigator.mediaDevices.enumerateDevices();
     const webcams = devices.filter((device) => device.kind === 'videoinput');

@@ -1,5 +1,8 @@
 import { NameType } from '@metamask/name-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { act, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,13 +29,13 @@ import {
   getConversionRate,
   getCurrentNetwork,
   getNames,
-  getPreferences,
   getSelectedAccount,
   getShouldShowFiat,
   getTokenExchangeRates,
-  getSelectedInternalAccount,
   getMarketData,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
+import { getSelectedInternalAccount } from '../../../../shared/lib/selectors/accounts';
 import { getNftContractsByAddressByChain } from '../../../selectors/nft';
 import { abortTransactionSigning } from '../../../store/actions';
 import { setBackgroundConnection } from '../../../store/background-connection';
@@ -113,9 +116,13 @@ jest.mock('../../../store/actions.ts', () => ({
   abortTransactionSigning: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue({}),
   updatePreviousGasParams: jest.fn().mockReturnValue({ type: 'TYPE' }),
-  updateTransactionGasFees: jest.fn().mockReturnValue({ type: 'TYPE' }),
   createCancelTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
   createSpeedUpTransaction: jest.fn().mockReturnValue({ type: 'TYPE' }),
+  captureSingleException: jest.fn().mockReturnValue({ type: 'TYPE' }),
+}));
+
+jest.mock('../../../store/actions/update-transaction-gas-fees', () => ({
+  updateTransactionGasFees: jest.fn().mockReturnValue({ type: 'TYPE' }),
 }));
 
 const mockStore = configureStore();
@@ -424,6 +431,40 @@ describe('TransactionListItem', () => {
 
       expect(queryByTestId('cancel-button')).toBeInTheDocument();
       expect(queryByTestId('speed-up-button')).toBeInTheDocument();
+    });
+  });
+
+  describe('perpsWithdraw chain badge', () => {
+    beforeEach(() => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({ balance: '2AA1EFB94E0000' }),
+      );
+      useDispatch.mockReturnValue(jest.fn());
+    });
+
+    it('renders the ChainBadge using metamaskPay.chainId (source) for perpsWithdraw', () => {
+      const perpsWithdrawGroup = {
+        ...transactionGroup,
+        initialTransaction: {
+          ...transactionGroup.initialTransaction,
+          type: TransactionType.perpsWithdraw,
+          chainId: '0x38',
+          metamaskPay: { chainId: '0x2105' },
+        },
+        primaryTransaction: {
+          ...transactionGroup.primaryTransaction,
+          type: TransactionType.perpsWithdraw,
+          chainId: '0x38',
+          metamaskPay: { chainId: '0x2105' },
+          status: TransactionStatus.confirmed,
+        },
+      };
+
+      const { getByAltText } = renderWithProvider(
+        <TransactionListItem transactionGroup={perpsWithdrawGroup} />,
+      );
+
+      expect(getByAltText('Base')).toBeInTheDocument();
     });
   });
 });

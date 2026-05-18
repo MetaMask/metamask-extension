@@ -21,7 +21,7 @@ jobs:
       PR_NUMBER: ${{ github.event.issue.number }}
       COMMENT_ID: ${{ github.event.comment.id }}
     outputs:
-      IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
+      IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
       RUN_ID: ${{ steps.find-ci-run.outputs.RUN_ID }}
       NO_CI_RUN: ${{ steps.find-ci-run.outputs.NO_CI_RUN }}
       VALIDATION_PENDING: ${{ steps.find-ci-run.outputs.VALIDATION_PENDING }}
@@ -29,12 +29,12 @@ jobs:
       VALIDATION_FAILED: ${{ steps.find-ci-run.outputs.VALIDATION_FAILED }}
       FAILED_JOBS: ${{ steps.find-ci-run.outputs.FAILED_JOBS }}
     steps:
-      - name: Determine whether this PR is from a fork
-        id: is-fork
-        run: echo "IS_FORK=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json isCrossRepository --jq '.isCrossRepository')" >> "$GITHUB_OUTPUT"
+      - name: Determine whether this PR is cross-repo
+        id: is-cross-repo
+        run: echo "IS_CROSS_REPO_PR=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json isCrossRepository --jq '.isCrossRepository')" >> "$GITHUB_OUTPUT"
 
       - name: React to the comment
-        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
+        if: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR == 'false' }}
         run: |
           gh api \
             --method POST \
@@ -44,7 +44,7 @@ jobs:
             -f content='+1'
 
       - name: Find CI run for PR head commit
-        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
+        if: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR == 'false' }}
         id: find-ci-run
         run: |
           HEAD_SHA=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json headRefOid --jq '.headRefOid')
@@ -104,7 +104,7 @@ jobs:
   apply-and-commit:
     name: Apply policy diffs and commit
     needs: prepare
-    if: ${{ !cancelled() && needs.prepare.outputs.IS_FORK == 'false' }}
+    if: ${{ !cancelled() && needs.prepare.outputs.IS_CROSS_REPO_PR == 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:

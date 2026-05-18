@@ -5,8 +5,8 @@ import { BigNumber } from 'bignumber.js';
 import { PopoverPosition, Text } from '../../../components/component-library';
 import {
   getBridgeQuotes,
-  getIsQuoteExpired,
   BridgeAppState,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -16,7 +16,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row, Tooltip } from '../layout';
-import { getCurrentKeyring } from '../../../selectors/selectors';
+import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { bpsToPercentage } from '../../../ducks/bridge/utils';
 
@@ -25,8 +25,8 @@ export const BridgeCTAInfoText = () => {
 
   const { activeQuote } = useSelector(getBridgeQuotes);
 
-  const isQuoteExpired = useSelector((state) =>
-    getIsQuoteExpired(state as BridgeAppState, Date.now()),
+  const { isQuoteExpired } = useSelector((state) =>
+    getValidationErrors(state as BridgeAppState, Date.now()),
   );
 
   const keyring = useSelector(getCurrentKeyring);

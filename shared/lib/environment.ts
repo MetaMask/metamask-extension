@@ -1,4 +1,3 @@
-import { SupportedPermissionType } from '@metamask/gator-permissions-controller';
 import { ENVIRONMENT } from '../../development/build/constants';
 
 export const isProduction = (): boolean => {
@@ -37,21 +36,6 @@ export const getIsAssetsUnifiedStateIncludedInBuild = (): boolean => {
 
 export const getIsSettingsPageDevOptionsEnabled = (): boolean => {
   return process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS?.toString() === 'true';
-};
-
-/**
- * Returns the list of enabled Gator permission types from the environment configuration.
- * These permission types control which advanced permissions (e.g., token streams,
- * periodic transfers) are available in the current build.
- *
- * @returns An array of enabled permission type strings (e.g., 'native-token-stream',
- * 'erc20-token-periodic'), or an empty array if none are configured.
- */
-export const getEnabledAdvancedPermissions = (): SupportedPermissionType[] => {
-  const enabled =
-    process.env.GATOR_ENABLED_PERMISSION_TYPES?.toString().trim() || '';
-
-  return enabled.split(',').filter(Boolean) as SupportedPermissionType[];
 };
 
 export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
@@ -95,4 +79,8 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
   }
 
   return true;
+};
+
+export const getIsPasskeyFeatureEnabled = (): boolean => {
+  return process.env.PASSKEY_ENABLED?.toString() === 'true';
 };

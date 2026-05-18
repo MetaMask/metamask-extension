@@ -9,6 +9,10 @@ import {
   TextColor,
   FontWeight,
   ButtonBase,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -44,9 +48,10 @@ const RecentActivityEmpty: React.FC = () => {
   );
 };
 
-const RecentActivityList: React.FC<{ transactions: PerpsTransaction[] }> = ({
-  transactions,
-}) => (
+const RecentActivityList: React.FC<{
+  transactions: PerpsTransaction[];
+  onTransactionClick: () => void;
+}> = ({ transactions, onTransactionClick }) => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
@@ -57,6 +62,7 @@ const RecentActivityList: React.FC<{ transactions: PerpsTransaction[] }> = ({
         transaction={transaction}
         variant="muted"
         showTopBorder={index > 0}
+        onClick={onTransactionClick}
       />
     ))}
   </Box>
@@ -87,6 +93,8 @@ export const PerpsMarketRecentActivity: React.FC<
   const hasTransactions = transactions.length > 0;
   const showSkeleton = isInitialLoading && !hasTransactions;
 
+  const handleSeeAll = () => navigate(PERPS_ACTIVITY_ROUTE);
+
   return (
     <>
       <Box
@@ -101,23 +109,26 @@ export const PerpsMarketRecentActivity: React.FC<
         </Text>
         {hasTransactions && (
           <ButtonBase
-            onClick={() => navigate(PERPS_ACTIVITY_ROUTE)}
+            onClick={handleSeeAll}
             className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
             data-testid="perps-market-detail-view-all-activity"
+            aria-label={t('perpsSeeAll')}
           >
-            <Text
-              variant={TextVariant.BodySm}
-              color={TextColor.TextAlternative}
-            >
-              {t('perpsSeeAll')}
-            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
           </ButtonBase>
         )}
       </Box>
       {showSkeleton && <RecentActivitySkeleton />}
       {!showSkeleton && !hasTransactions && <RecentActivityEmpty />}
       {!showSkeleton && hasTransactions && (
-        <RecentActivityList transactions={transactions} />
+        <RecentActivityList
+          transactions={transactions}
+          onTransactionClick={handleSeeAll}
+        />
       )}
     </>
   );
