@@ -170,7 +170,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
                 class="m-0 p-0 rounded-md confirm-add-suggested-nft__nft-single"
               >
                 <div
-                  class="flex flex-row items-center justify-center confirm-add-suggested-nft__nft-single-image-default nft-default rounded-lg"
+                  class="flex-row items-center justify-center flex confirm-add-suggested-nft__nft-single-image-default nft-default rounded-lg"
                   data-testid="nft-default-image"
                   tabindex="0"
                 />
@@ -384,7 +384,7 @@ exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
               class="m-0 p-0 rounded-md confirm-add-suggested-nft__nft-single"
             >
               <div
-                class="flex flex-row items-center justify-center confirm-add-suggested-nft__nft-single-image-default nft-default rounded-lg"
+                class="flex-row items-center justify-center flex confirm-add-suggested-nft__nft-single-image-default nft-default rounded-lg"
                 data-testid="nft-default-image"
                 tabindex="0"
               />

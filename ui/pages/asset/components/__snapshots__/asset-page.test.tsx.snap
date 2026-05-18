@@ -220,7 +220,7 @@ exports[`AssetPage should render a native asset 1`] = `
         Your balance
       </h4>
       <div
-        class="flex flex-row gap-4 h-full w-full"
+        class="flex-row gap-4 flex h-full w-full"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -255,10 +255,10 @@ exports[`AssetPage should render a native asset 1`] = `
             </div>
           </div>
           <div
-            class="flex flex-col justify-center w-full overflow-hidden grow"
+            class="flex-col justify-center flex w-full overflow-hidden grow"
           >
             <div
-              class="flex flex-row justify-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="flex flex-row gap-2 min-w-0"
@@ -305,7 +305,7 @@ exports[`AssetPage should render a native asset 1`] = `
               </p>
             </div>
             <div
-              class="flex flex-row justify-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
@@ -588,7 +588,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
         Your balance
       </h4>
       <div
-        class="flex flex-row gap-4 h-full w-full"
+        class="flex-row gap-4 flex h-full w-full"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -623,10 +623,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             </div>
           </div>
           <div
-            class="flex flex-col justify-center w-full overflow-hidden grow"
+            class="flex-col justify-center flex w-full overflow-hidden grow"
           >
             <div
-              class="flex flex-row justify-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="flex flex-row gap-2 min-w-0"
@@ -647,7 +647,7 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               </p>
             </div>
             <div
-              class="flex flex-row justify-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
@@ -1009,7 +1009,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
         Your balance
       </h4>
       <div
-        class="flex flex-row gap-4 h-full w-full"
+        class="flex-row gap-4 flex h-full w-full"
       >
         <a
           class="flex w-full flex-row py-2 px-4 "
@@ -1044,10 +1044,10 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             </div>
           </div>
           <div
-            class="flex flex-col justify-center w-full overflow-hidden grow"
+            class="flex-col justify-center flex w-full overflow-hidden grow"
           >
             <div
-              class="flex flex-row justify-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="flex flex-row gap-2 min-w-0"
@@ -1068,7 +1068,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               </p>
             </div>
             <div
-              class="flex flex-row justify-between"
+              class="flex-row justify-between flex"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--align-items-center"
