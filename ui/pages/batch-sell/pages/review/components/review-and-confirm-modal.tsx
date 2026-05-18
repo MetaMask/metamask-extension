@@ -44,8 +44,8 @@ import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 import { IconColor } from '../../../../../helpers/constants/design-system';
-import { AssetsReceivedSummaryList } from './AssetsReceivedSummaryList';
-import { AssetsReceivedTotalAmountsSummary } from './AssetsReceivedTotalAmountsSummary';
+import { AssetsReceivedSummaryList } from './assets-received-list-item';
+import { AssetsReceivedTotalAmountsSummary } from './assets-received-total-amounts-summary';
 
 type ReviewAndConfirmModalProps = {
   open: boolean;

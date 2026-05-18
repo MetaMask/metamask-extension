@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { CaipChainId } from '@metamask/utils';
-import { NetworkChip } from './NetworkChip';
+import { NetworkChip } from './network-chip';
 
 type NetworkToolbarProps = {
   selectedNetworkChainId: CaipChainId;

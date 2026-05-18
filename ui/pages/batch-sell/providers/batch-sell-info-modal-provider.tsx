@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useMemo, useState } from 'react';
 import {
   BatchSellInfoModal,
   BatchSellInfoModalProps,
-} from '../components/BatchSellInfoModal';
+} from '../components/batch-sell-info-modal';
 
 type InfoModalProps = BatchSellInfoModalProps['modalProps'];
 

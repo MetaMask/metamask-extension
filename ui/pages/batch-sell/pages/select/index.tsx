@@ -17,12 +17,12 @@ import { MIN_SELECTED_ALLOWED_TOKENS } from '../../../../constants/batch-sell';
 import { transitionForward } from '../../../../components/ui/transition';
 import useBridging from '../../../../hooks/bridge/useBridging';
 import { MetaMetricsSwapsEventSource } from '../../../../../shared/constants/metametrics';
-import { SortingToolbar } from './components/SortingToolbar';
-import { NetworkToolbar } from './components/NetworkToolbar';
-import { Header } from './components/Header';
-import { Footer } from './components/Footer';
-import { AssetList } from './components/AssetList';
-import { BatchSellEmptySelectTokens } from './components/BatchSellEmptySelectTokens';
+import { SortingToolbar } from './components/sorting-toolbar';
+import { NetworkToolbar } from './components/network-toolbar';
+import { Header } from './components/header';
+import { Footer } from './components/footer';
+import { AssetList } from './components/asset-list';
+import { BatchSellEmptySelectTokens } from './components/batch-sell-empty-select-tokens';
 import { useInitialStateFromLocation } from './hooks/useInitialStateFromLocation';
 
 export const BatchSellSelectPage = () => {

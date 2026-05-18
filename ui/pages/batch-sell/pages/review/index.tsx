@@ -7,13 +7,13 @@ import {
 } from '../../../../constants/batch-sell';
 import { BATCH_SELL_SELECT_ROUTE } from '../../../../helpers/constants/routes';
 import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';
-import { Header } from './components/Header';
-import { QuotesList } from './components/QuotesList';
-import { Footer } from './components/Footer';
-import { SelectReceivedAssetModal } from './components/SelectReceivedAssetModal';
-import { TotalReceivedModal } from './components/TotalReceivedModal';
-import { SlippageModal } from './components/SlippageModal';
-import { ReviewAndConfirmModal } from './components/ReviewAndConfirmModal';
+import { Header } from './components/header';
+import { QuotesList } from './components/quotes-list';
+import { Footer } from './components/footer';
+import { SelectReceivedAssetModal } from './components/select-received-asset-modal';
+import { TotalReceivedModal } from './components/total-received-modal';
+import { SlippageModal } from './components/slippage-modal';
+import { ReviewAndConfirmModal } from './components/review-and-confirm-modal';
 import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
 import { useBatchSellValidation } from './hooks/useBatchSellValidation';
 

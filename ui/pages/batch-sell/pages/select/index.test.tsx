@@ -26,20 +26,20 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
 }));
 
 // Stubs for sub-components – we don't need their real rendering.
-jest.mock('./components/Header', () => ({ Header: () => null }));
-jest.mock('./components/NetworkToolbar', () => ({
+jest.mock('./components/header', () => ({ Header: () => null }));
+jest.mock('./components/network-toolbar', () => ({
   NetworkToolbar: () => null,
 }));
-jest.mock('./components/SortingToolbar', () => ({
+jest.mock('./components/sorting-toolbar', () => ({
   SortingToolbar: () => null,
 }));
-jest.mock('./components/AssetList', () => ({ AssetList: () => null }));
-jest.mock('./components/BatchSellEmptySelectTokens', () => ({
+jest.mock('./components/asset-list', () => ({ AssetList: () => null }));
+jest.mock('./components/batch-sell-empty-select-tokens', () => ({
   BatchSellEmptySelectTokens: () => <div>empty</div>,
 }));
 // Footer renders the submit button. We always enable it here so clicking it
 // always reaches onSubmit regardless of selection count.
-jest.mock('./components/Footer', () => ({
+jest.mock('./components/footer', () => ({
   Footer: ({ onSubmit }: { onSubmit: () => void }) => (
     <button data-testid="footer-submit" onClick={onSubmit}>
       submit

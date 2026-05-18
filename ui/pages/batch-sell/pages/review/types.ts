@@ -1,5 +1,5 @@
 import { CaipAssetType } from '@metamask/utils';
-import { BatchSellAsset } from 'ui/ducks/batch-sell/types';
+import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 
 export type BatchSellQuotesConfig = {
   sendAssetsConfig: {

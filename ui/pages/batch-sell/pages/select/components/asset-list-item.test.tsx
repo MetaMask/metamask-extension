@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { AssetListItem } from './AssetListItem';
+import { AssetListItem } from './asset-list-item';
 
 // Provide stub selectors that simply read from whatever state object is passed.
 // The real selectors have deep chains; for unit-testing the component we only

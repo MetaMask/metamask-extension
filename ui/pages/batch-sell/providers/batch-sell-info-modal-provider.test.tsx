@@ -4,7 +4,7 @@ import { TextVariant } from '@metamask/design-system-react';
 import {
   BatchSellInfoModalProvider,
   BatchSellInfoModalContext,
-} from './BatchSellInfoModalProvider';
+} from './batch-sell-info-modal-provider';
 
 const MODAL_PROPS = {
   titleProps: { variant: TextVariant.HeadingSm, children: 'Info title' },

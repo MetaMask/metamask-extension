@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { CaipChainId } from '@metamask/utils';
-import { NetworkChip } from './NetworkChip';
+import { NetworkChip } from './network-chip';
 
 const NETWORK = {
   chainId: 'eip155:1' as CaipChainId,

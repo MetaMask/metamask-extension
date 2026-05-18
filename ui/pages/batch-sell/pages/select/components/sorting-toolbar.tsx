@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
-import { SortingChip } from './SortingChip';
+import { SortingChip } from './sorting-chip';
 
 type SortingToolbarProps = {
   balance: {

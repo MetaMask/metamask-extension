@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { SortingToolbar } from './SortingToolbar';
+import { SortingToolbar } from './sorting-toolbar';
 
-jest.mock('./SortingChip', () => ({
+jest.mock('./sorting-chip', () => ({
   SortingChip: ({
     order,
     onClick,

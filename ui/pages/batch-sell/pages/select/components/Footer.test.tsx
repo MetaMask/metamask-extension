@@ -4,7 +4,7 @@ import {
   MAX_SELECTED_ALLOWED_TOKENS,
   MIN_SELECTED_ALLOWED_TOKENS,
 } from '../../../../../constants/batch-sell';
-import { Footer } from './Footer';
+import { Footer } from './footer';
 
 jest.mock('../../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string, args?: unknown[]) =>

@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, screen, act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { TextVariant } from '@metamask/design-system-react';
-import { BatchSellInfoModalProvider } from '../providers/BatchSellInfoModalProvider';
+import { BatchSellInfoModalProvider } from '../providers/batch-sell-info-modal-provider';
 import { useBatchSellInfoModal } from './useBatchSellInfoModal';
 
 const MODAL_PROPS = {

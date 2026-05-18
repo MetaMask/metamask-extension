@@ -34,6 +34,7 @@ import {
   BackgroundColor,
   TextColor as TextColorLegacy,
 } from '../../../../../helpers/constants/design-system';
+import { MAX_SEND_PERCENT, MIN_SEND_PERCENT, SEND_PERCENTS_STEPS } from '../../../../../constants/batch-sell';
 
 type QuotesListItemProps = {
   asset: BatchSellAsset;
@@ -154,9 +155,9 @@ export const QuotesListItem = ({
       </Box>
       <Box paddingRight={3}>
         <PerpsSlider
-          min={0}
-          max={100}
-          step={25}
+          min={MIN_SEND_PERCENT}
+          max={MAX_SEND_PERCENT}
+          step={SEND_PERCENTS_STEPS}
           value={sendAmountPercent}
           markInterval={1}
           onChange={(_, value) =>

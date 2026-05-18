@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { TextVariant } from '@metamask/design-system-react';
-import { BatchSellInfoModal } from './BatchSellInfoModal';
+import { BatchSellInfoModal } from './batch-sell-info-modal';
 
 const TITLE_PROPS = {
   variant: TextVariant.HeadingSm,

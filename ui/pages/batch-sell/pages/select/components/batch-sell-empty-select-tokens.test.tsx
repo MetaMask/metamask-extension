@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { ThemeType } from '../../../../../../shared/constants/preferences';
 import { getPortfolioUrl } from '../../../../../helpers/utils/portfolio';
-import { BatchSellEmptySelectTokens } from './BatchSellEmptySelectTokens';
+import { BatchSellEmptySelectTokens } from './batch-sell-empty-select-tokens';
 
 // ─── Dependency mocks ────────────────────────────────────────────────────────
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { CaipChainId } from '@metamask/utils';
-import { NetworkToolbar } from './NetworkToolbar';
+import { NetworkToolbar } from './network-toolbar';
 
 // Isolate NetworkToolbar from NetworkChip internals
-jest.mock('./NetworkChip', () => ({
+jest.mock('./network-chip', () => ({
   NetworkChip: ({
     network,
     isSelected,

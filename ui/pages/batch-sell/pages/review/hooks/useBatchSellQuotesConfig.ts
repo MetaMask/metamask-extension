@@ -14,7 +14,7 @@ import {
 } from '../../../../../constants/batch-sell';
 import { BatchSellReviewStateActionType } from '../types';
 import { batchSellReviewStateReducer } from '../reducers';
-import { BatchSellAsset } from 'ui/ducks/batch-sell/types';
+import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 
 export const useBatchSellQuotesConfig = () => {
   const { state: locationState } = useLocation();

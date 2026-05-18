@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
-import { AssetList } from './AssetList';
+import { AssetList } from './asset-list';
 
 // Stub AssetListItem so AssetList tests don't need Redux
-jest.mock('./AssetListItem', () => ({
+jest.mock('./asset-list-item', () => ({
   AssetListItem: ({
     asset,
     selected,

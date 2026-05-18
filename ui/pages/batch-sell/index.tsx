@@ -20,7 +20,7 @@ import {
 } from '../../helpers/constants/routes';
 import { BatchSellSelectPage } from './pages/select';
 import { BatchSellReviewPage } from './pages/review';
-import { BatchSellInfoModalProvider } from './providers/BatchSellInfoModalProvider';
+import { BatchSellInfoModalProvider } from './providers/batch-sell-info-modal-provider';
 
 const BatchSellPage = () => {
   const t = useI18nContext();

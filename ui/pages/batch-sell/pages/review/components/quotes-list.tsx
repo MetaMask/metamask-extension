@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@metamask/design-system-react';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
-import { QuotesListItem } from './QuotesListItem';
+import { QuotesListItem } from './quotes-list-item';
 
 type QuotesListProps = {
   sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];

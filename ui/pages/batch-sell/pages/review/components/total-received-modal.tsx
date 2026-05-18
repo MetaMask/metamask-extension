@@ -14,8 +14,8 @@ import {
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
-import { AssetsReceivedSummaryList } from './AssetsReceivedSummaryList';
-import { AssetsReceivedTotalAmountsSummary } from './AssetsReceivedTotalAmountsSummary';
+import { AssetsReceivedSummaryList } from './assets-received-list-item';
+import { AssetsReceivedTotalAmountsSummary } from './assets-received-total-amounts-summary';
 
 type TotalReceiveModalProps = {
   open: boolean;
