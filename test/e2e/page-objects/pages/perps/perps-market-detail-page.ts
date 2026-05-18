@@ -77,6 +77,10 @@ export class PerpsMarketDetailPage {
     testId: 'perps-edit-margin-modal-save',
   };
 
+  private readonly favoriteButton = {
+    testId: 'perps-market-detail-favorite-button',
+  };
+
   private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
 
   private readonly geoBlockModalDismiss = {
@@ -184,8 +188,6 @@ export class PerpsMarketDetailPage {
     xpath: `(//*[@data-testid="perps-update-tpsl-modal"]//input[contains(@class,"mm-text-field__input")])[1]`,
   };
 
-  private readonly tradeCtaButtons = { testId: 'perps-trade-cta-buttons' };
-
   private readonly updateTpslModal = { testId: 'perps-update-tpsl-modal' };
 
   private readonly updateTpslModalSubmit = {
@@ -287,6 +289,35 @@ export class PerpsMarketDetailPage {
     await this.driver.clickElementAndWaitToDisappear(
       this.marketDetailBackButton,
     );
+  }
+
+  /**
+   * Clicks the favourite (star) button to toggle watchlist for this market.
+   * The button is always visible in the market detail header.
+   */
+  async clickFavoriteButton(): Promise<void> {
+    await this.driver.clickElement(this.favoriteButton);
+  }
+
+  /**
+   * Waits for the favorite (star) button to reach the given state.
+   * Pass `'favorited'` for aria-label "Remove from favorites",
+   * `'unfavorited'` for "Add to favorites", or omit to wait for any state.
+   *
+   * @param state - Target button state, or undefined for any state.
+   */
+  async waitForFavoriteButton(
+    state?: 'favorited' | 'unfavorited',
+  ): Promise<void> {
+    if (state === undefined) {
+      await this.driver.waitForSelector(this.favoriteButton);
+      return;
+    }
+    const ariaLabel =
+      state === 'favorited' ? 'Remove from favorites' : 'Add to favorites';
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid='perps-market-detail-favorite-button'][@aria-label='${ariaLabel}']`,
+    });
   }
 
   /**

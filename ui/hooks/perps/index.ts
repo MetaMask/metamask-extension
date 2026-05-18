@@ -4,6 +4,7 @@ export { usePerpsMeasurement } from './usePerpsMeasurement';
 export { usePerpsLifecycleBreadcrumbs } from './usePerpsLifecycleBreadcrumbs';
 export { usePerpsMarketInfo } from './usePerpsMarketInfo';
 export { usePerpsOrderFees } from './usePerpsOrderFees';
+export { usePerpsMetamaskFeeDiscountBips } from './usePerpsMetamaskFeeDiscountBips';
 export type {
   UsePerpsOrderFormOptions,
   UsePerpsOrderFormReturn,
