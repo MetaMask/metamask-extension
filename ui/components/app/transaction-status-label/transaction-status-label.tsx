@@ -3,12 +3,9 @@ import classnames from 'clsx';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 import {
   getTransactionDisplayStatusKey,
-  QUEUED_PSEUDO_STATUS,
   shouldShowActivityListStatusSubtitle,
-  SIGNING_PSEUDO_STATUS,
 } from '../../../../shared/lib/activity/transaction-display-status';
 
 export const STATUS_DISPLAY_MODE = {
@@ -18,17 +15,6 @@ export const STATUS_DISPLAY_MODE = {
 
 export type StatusDisplayMode =
   (typeof STATUS_DISPLAY_MODE)[keyof typeof STATUS_DISPLAY_MODE];
-
-const statusToClassNameHash: Partial<Record<string, string>> = {
-  [TransactionStatus.unapproved]: 'transaction-status-label--unapproved',
-  [TransactionStatus.rejected]: 'transaction-status-label--rejected',
-  [TransactionStatus.failed]: 'transaction-status-label--failed',
-  [TransactionStatus.dropped]: 'transaction-status-label--dropped',
-  [TransactionGroupStatus.cancelled]: 'transaction-status-label--cancelled',
-  [QUEUED_PSEUDO_STATUS]: 'transaction-status-label--queued',
-  [SIGNING_PSEUDO_STATUS]: 'transaction-status-label--signing',
-  [TransactionGroupStatus.pending]: 'transaction-status-label--pending',
-};
 
 const shouldRenderStatusText = (
   statusKey: string | undefined,
@@ -95,7 +81,6 @@ export default function TransactionStatusLabel({
         'transaction-status-label',
         `transaction-status-label--${statusKey}`,
         className,
-        statusToClassNameHash[statusKey],
       )}
     >
       {statusText}
