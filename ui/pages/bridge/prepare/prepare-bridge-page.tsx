@@ -37,7 +37,6 @@ import {
   getToToken,
   getWasTxDeclined,
   getFromAmountInCurrency,
-  getValidationErrors,
   getIsToOrFromNonEvm,
   getFromAccount,
   getIsStxEnabled,
@@ -45,7 +44,7 @@ import {
   getValidatedFromValue,
   getIsSrcAssetPickerOpen,
   getIsDestAssetPickerOpen,
-  getBridgeUnavailableQuoteReason,
+  getQuoteRequestInsufficientBal,
 } from '../../../ducks/bridge/selectors';
 import {
   AvatarFavicon,
@@ -136,8 +135,9 @@ const PrepareBridgePage = ({
   const isSrcAssetPickerOpen = useSelector(getIsSrcAssetPickerOpen);
   const isDestAssetPickerOpen = useSelector(getIsDestAssetPickerOpen);
 
-  const { isInsufficientBalance, isInsufficientNativeReserve } =
-    useSelector(getValidationErrors);
+  const isQuoteRequestInsufficientBal = useSelector(
+    getQuoteRequestInsufficientBal,
+  );
   const { securityWarnings } = useSecurityAlerts(toToken);
   const { confirmationAlerts, alertsById } = useBridgeAlerts();
 
@@ -227,7 +227,7 @@ const PrepareBridgePage = ({
       // balance is less than the tenderly balance
       insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
         ? true
-        : isInsufficientBalance || isInsufficientNativeReserve,
+        : isQuoteRequestInsufficientBal,
       slippage,
       walletAddress: selectedAccount.address,
       destWalletAddress: selectedDestinationAccount?.address,
@@ -246,8 +246,7 @@ const PrepareBridgePage = ({
     providerConfig?.rpcUrl,
     effectiveGasIncluded,
     effectiveGasIncluded7702,
-    isInsufficientBalance,
-    isInsufficientNativeReserve,
+    isQuoteRequestInsufficientBal,
   ]);
 
   // `useRef` is used here to manually memoize a function reference.
