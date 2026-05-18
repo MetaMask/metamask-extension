@@ -1,13 +1,26 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import {
   en as messages,
   renderWithProvider,
 } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
-import { CUSTOM_TOKEN_IMPORT_ROUTE } from '../../helpers/constants/routes';
+import {
+  CUSTOM_TOKEN_IMPORT_ROUTE,
+  TOKEN_MANAGEMENT_ROUTE,
+} from '../../helpers/constants/routes';
 import { CustomTokenImportPage } from './custom-token-import';
+
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 // The page kicks off real on-chain probes through `getTokenStandardAndDetailsByChain`
 // and `tokenInfoGetter`. Replace them with deterministic stubs so the unit
@@ -16,6 +29,7 @@ jest.mock('../../store/actions', () => {
   const actual = jest.requireActual('../../store/actions');
   return {
     ...actual,
+    addImportedTokens: jest.fn(() => () => Promise.resolve()),
     getTokenStandardAndDetailsByChain: jest.fn().mockResolvedValue({
       standard: 'ERC20',
       symbol: 'APE',
@@ -36,7 +50,17 @@ jest.mock('../../helpers/utils/token-util', () => {
   };
 });
 
+const getMockedActions = () =>
+  jest.requireMock('../../store/actions') as {
+    addImportedTokens: jest.Mock;
+  };
+
 describe('CustomTokenImportPage', () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+    getMockedActions().addImportedTokens.mockClear();
+  });
+
   const buildState = () => ({
     ...mockState,
     metamask: {
@@ -124,5 +148,47 @@ describe('CustomTokenImportPage', () => {
 
     const networkItems = screen.getAllByTestId(/select-network-item-/u);
     expect(networkItems.length).toBeGreaterThan(0);
+  });
+
+  it('returns to token management with success toast state after submitting a custom token', async () => {
+    const actions = getMockedActions();
+    renderPage();
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: '0x1111111111111111111111111111111111111111' },
+    });
+
+    await screen.findByTestId('custom-token-import-symbol-input');
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('custom-token-import-submit-button'),
+      ).not.toBeDisabled(),
+    );
+
+    fireEvent.click(screen.getByTestId('custom-token-import-submit-button'));
+
+    await waitFor(() =>
+      expect(actions.addImportedTokens).toHaveBeenCalledWith(
+        [
+          expect.objectContaining({
+            address: '0x1111111111111111111111111111111111111111',
+            symbol: 'APE',
+            decimals: 18,
+            isERC721: false,
+          }),
+        ],
+        'mainnet',
+      ),
+    );
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith(TOKEN_MANAGEMENT_ROUTE, {
+        state: {
+          tokenManagementToast: {
+            type: 'customTokenAdded',
+            symbol: 'APE',
+          },
+        },
+      }),
+    );
   });
 });

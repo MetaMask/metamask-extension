@@ -61,6 +61,14 @@ export class PerpsHomePage extends PerpsPositionsBase {
     testId: 'perps-recent-activity-empty',
   };
 
+  private readonly perpsWatchlist = { testId: 'perps-watchlist' };
+
+  private readonly perpsWatchlistMarket = (symbol: string) => {
+    return {
+      testId: `perps-watchlist-${symbol}`,
+    };
+  };
+
   private readonly positionCardsSelector = '[data-testid^="position-card-"]';
 
   /**
@@ -147,6 +155,13 @@ export class PerpsHomePage extends PerpsPositionsBase {
   }
 
   /**
+   * Waits for the "Explore markets" row to be visible on the Perps home.
+   */
+  async waitForExploreMarketsRow(): Promise<void> {
+    await this.driver.waitForSelector(this.perpsExploreMarketsRow);
+  }
+
+  /**
    * Waits until the number of position cards equals `expectedCount` (uses waitUntil to avoid race conditions).
    *
    * @param expectedCount - Expected number of position cards.
@@ -203,5 +218,36 @@ export class PerpsHomePage extends PerpsPositionsBase {
    */
   async waitForEmptyActivitySection(): Promise<void> {
     await this.driver.waitForSelector(this.perpsRecentActivityEmpty);
+  }
+
+  /**
+   * Waits for a specific market to appear in the watchlist section.
+   *
+   * @param symbol - Market symbol, e.g. 'ETH'.
+   */
+  async waitForWatchlistMarket(symbol: string): Promise<void> {
+    await this.driver.waitForSelector(this.perpsWatchlistMarket(symbol));
+  }
+
+  /**
+   * Asserts that a market is NOT present in the watchlist section.
+   *
+   * @param symbol - Market symbol, e.g. 'ETH'.
+   */
+  async checkMarketNotInWatchlist(symbol: string): Promise<void> {
+    await this.driver.assertElementNotPresent(
+      this.perpsWatchlistMarket(symbol),
+      { waitAtLeastGuard: 1000 },
+    );
+  }
+
+  /**
+   * Asserts that the watchlist section is completely absent from the DOM.
+   * The section renders null when there are no watched markets.
+   */
+  async checkWatchlistSectionGone(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.perpsWatchlist, {
+      waitAtLeastGuard: 1000,
+    });
   }
 }
