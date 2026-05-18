@@ -87,19 +87,16 @@ export function filterLocalNotInApi(
 
   return localGroups.filter((group) => {
     const tx = group.primaryTransaction;
-    const hash = tx.hash?.toLowerCase();
-    const inApi = Boolean(hash && apiHashes.has(hash));
     const isPending = tx.status in pendingStatusHash;
-
-    // Pending rows are usually kept until the API lists them. If the tx hash
-    // is already in the API feed, drop the local copy so a lagging controller
-    // status cannot keep a confirmed tx stuck under Pending.
+    // Pending transactions are always included (not in API yet)
     if (isPending) {
-      return !inApi;
+      return true;
     }
 
     // Completed transactions: only include if NOT already in API
     // Transactions without a hash (e.g. failed relay transactions) are always included
+    const hash = tx.hash?.toLowerCase();
+    const inApi = Boolean(hash && apiHashes.has(hash));
     return !hash || !inApi;
   });
 }
@@ -120,7 +117,7 @@ const isTerminalEvmActivityStatus = (status: string): boolean => {
 };
 
 const isInProgressTransactionControllerStatus = (status: string): boolean => {
-  return IN_PROGRESS_TRANSACTION_STATUSES.some((s) => s === status);
+  return IN_PROGRESS_TRANSACTION_STATUSES.includes(status as TransactionStatus);
 };
 
 const isLocalTransactionGroupPending = (group: TransactionGroup): boolean => {
@@ -131,7 +128,7 @@ const isLocalTransactionGroupPending = (group: TransactionGroup): boolean => {
     return status === SmartTransactionStatus.pending;
   }
 
-  const effectiveStatus = getStatusKey(primaryTransaction) as string;
+  const effectiveStatus = getStatusKey(primaryTransaction);
 
   if (isTerminalEvmActivityStatus(effectiveStatus)) {
     return false;

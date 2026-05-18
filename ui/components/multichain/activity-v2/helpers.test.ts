@@ -163,26 +163,6 @@ describe('filterLocalNotInApi', () => {
     );
   });
 
-  it('drops pending local txs when the same hash exists in API data', () => {
-    const local = [
-      makeLocalGroup({
-        time: 1,
-        status: TransactionStatus.submitted,
-        hash: '0xAbC',
-      }),
-    ];
-    const api = [
-      makeApiTx({
-        time: 2,
-        hash: '0xabc',
-        status: TransactionStatus.confirmed,
-      }),
-    ];
-    expect(filterLocalNotInApi(local, api, PENDING_STATUS_HASH)).toHaveLength(
-      0,
-    );
-  });
-
   it('still includes pending local txs without a hash', () => {
     const local = [
       makeLocalGroup({
