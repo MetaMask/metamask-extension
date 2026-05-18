@@ -1,0 +1,104 @@
+{
+  "date": "2026-05-18",
+  "build": "latest main - build:test:webpack",
+  "summary": {
+    "pass": 7,
+    "warn": 0,
+    "fail": 5
+  },
+  "flows": [
+    {
+      "name": "Send (USDC Base)",
+      "result": "fail",
+      "notes": "Reached the send confirmation route, but the confirmation remained on loading skeletons after repeated waits for the confirm button.",
+      "screenshots": [
+        "screenshots/2026-05-18_send-usdc-base--confirmation-1779106385759.png",
+        "screenshots/2026-05-18_send-usdc-base--confirmation-ready-1779106453768.png"
+      ]
+    },
+    {
+      "name": "Dapp connect",
+      "result": "pass",
+      "notes": "Connected https://metamask.github.io/test-dapp/ and captured the connect confirmation.",
+      "screenshots": [
+        "screenshots/2026-05-18_dapp-connect--confirmation-1779106585285.png"
+      ]
+    },
+    {
+      "name": "Network switch to Base",
+      "result": "pass",
+      "notes": "Selected Base Mainnet in the dapp-internal network picker; dapp displayed CURRENT NETWORK: BASE MAINNET.",
+      "screenshots": []
+    },
+    {
+      "name": "Dapp send tx",
+      "result": "fail",
+      "notes": "The exact Send EIP 1559 Without Gas control was present in the dapp DOM but hidden/disabled. The visible Send fallback did not open a MetaMask notification.",
+      "screenshots": [
+        "screenshots/2026-05-18_dapp-send-eip1559--confirmation-1779106847833.png"
+      ]
+    },
+    {
+      "name": "Dapp batch tx (cancelled)",
+      "result": "fail",
+      "notes": "Clicked EIP-5792 Send Calls, but no MetaMask notification appeared before timeout, so there was no confirmation to screenshot or cancel.",
+      "screenshots": []
+    },
+    {
+      "name": "Personal sign + verify",
+      "result": "pass",
+      "notes": "Captured the signature confirmation, confirmed it, and ran the dapp Verify action.",
+      "screenshots": [
+        "screenshots/2026-05-18_personal-sign--confirmation-1779107116388.png"
+      ]
+    },
+    {
+      "name": "Permit signature + verify",
+      "result": "pass",
+      "notes": "Captured the permit confirmation, acknowledged the security warning, confirmed it, and ran the dapp Verify action.",
+      "screenshots": [
+        "screenshots/2026-05-18_permit-signature--confirmation-1779107191678.png"
+      ]
+    },
+    {
+      "name": "Typed data v4 + verify",
+      "result": "pass",
+      "notes": "Captured the queued typed data v4 confirmation, confirmed it, and ran the dapp Verify action.",
+      "screenshots": [
+        "screenshots/2026-05-18_typed-data-v4--confirmation-1779107322770.png",
+        "screenshots/2026-05-18_typed-data-v4--confirmation-ready-1779107447711.png"
+      ]
+    },
+    {
+      "name": "Seaport bulkorder",
+      "result": "pass",
+      "notes": "Captured and confirmed the Seaport BulkOrder typed data confirmation.",
+      "screenshots": [
+        "screenshots/2026-05-18_seaport-bulkorder--confirmation-1779107517835.png"
+      ]
+    },
+    {
+      "name": "Sign In With Ethereum",
+      "result": "pass",
+      "notes": "Captured and confirmed the SIWE signature confirmation.",
+      "screenshots": [
+        "screenshots/2026-05-18_sign-in-with-ethereum--confirmation-1779107587750.png"
+      ]
+    },
+    {
+      "name": "Perps deposit (cancelled)",
+      "result": "fail",
+      "notes": "Perps was enabled and the tutorial was dismissed. Add funds did not open a confirmation after repeated targeting attempts and wait-for-notification timed out.",
+      "screenshots": [
+        "screenshots/2026-05-18_perps-home-1779107675037.png",
+        "screenshots/2026-05-18_perps-home-ready-1779107712474.png"
+      ]
+    },
+    {
+      "name": "mUSD conversion (cancelled)",
+      "result": "fail",
+      "notes": "The Get mUSD banner opened education once, but Get started did not advance to a conversion confirmation. After skipping education, the Get mUSD CTA was a no-op and the stablecoin detail page had no Convert entry.",
+      "screenshots": []
+    }
+  ]
+}
