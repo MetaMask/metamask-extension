@@ -257,7 +257,8 @@
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
       "rewardsSubscriptionTokens": "object",
-      "rewardsSubscriptions": "object"
+      "rewardsSubscriptions": "object",
+      "rewardsVipPerpsFees": "object"
     },
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },

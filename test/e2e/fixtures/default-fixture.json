@@ -1127,7 +1127,8 @@
       "rewardsSeasonStatuses": {},
       "rewardsSeasons": {},
       "rewardsSubscriptionTokens": {},
-      "rewardsSubscriptions": {}
+      "rewardsSubscriptions": {},
+      "rewardsVipPerpsFees": {}
     },
     "SeedlessOnboardingController": {
       "isSeedlessOnboardingUserAuthenticated": false,
