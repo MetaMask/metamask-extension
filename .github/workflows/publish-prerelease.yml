@@ -156,24 +156,32 @@ jobs:
             }
       - name: Get bundle-size baseline commit hashes
         if: ${{ env.BUILDS_FROM_SHA }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           baseline_commit_hashes=""
 
-          if git fetch --filter=blob:none --no-tags origin \
-            "+main:refs/merge-base/base" \
-            "+${BUILDS_FROM_SHA}:refs/merge-base/builds-from"; then
+          merge_base_commit_hash="$(
+            gh api \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${GITHUB_REPOSITORY}/compare/main...${BUILDS_FROM_SHA}?per_page=1" \
+              --jq '.merge_base_commit.sha' 2>/dev/null || true
+          )"
 
-            merge_base_commit_hash="$(
-              git merge-base refs/merge-base/base refs/merge-base/builds-from || true
-            )"
-
-            if [[ -n "${merge_base_commit_hash}" ]]; then
-              baseline_commit_hashes="$(
-                git rev-list --first-parent --max-count=200 "${merge_base_commit_hash}" || true
-              )"
-            fi
+          if [[ -z "${merge_base_commit_hash}" || "${merge_base_commit_hash}" == "null" ]]; then
+            echo "::warning::Could not determine bundle-size baseline merge base via GitHub API."
           else
-            echo "::warning::Could not fetch commits needed to determine bundle-size baseline."
+            if ! baseline_commit_hashes="$(
+              for page in 1 2; do
+                gh api \
+                  -H "Accept: application/vnd.github+json" \
+                  "/repos/${GITHUB_REPOSITORY}/commits?sha=${merge_base_commit_hash}&per_page=100&page=${page}" \
+                  --jq '.[].sha' || exit 1
+              done
+            )"; then
+              echo "::warning::Could not fetch bundle-size baseline commit history."
+              baseline_commit_hashes=""
+            fi
           fi
 
           {
