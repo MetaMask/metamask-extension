@@ -114,9 +114,15 @@ export function normalizeTransaction(
       vt.contractAddress,
   );
 
+  const hasOutgoingValueTransfer =
+    transaction.valueTransfers?.some(
+      (vt) => vt.from?.toLowerCase() === address.toLowerCase(),
+    ) ?? false;
+
   const isIncomingTokenTransfer =
     valueTransfer?.to?.toLowerCase() === address.toLowerCase() &&
-    from.toLowerCase() !== address.toLowerCase();
+    from.toLowerCase() !== address.toLowerCase() &&
+    !hasOutgoingValueTransfer;
 
   const amount = valueTransfer?.amount;
   const contractAddress = valueTransfer?.contractAddress as string;
@@ -176,7 +182,7 @@ export function normalizeTransaction(
 
 const INCLUDE_TOKEN_TRANSFERS = false;
 const INCLUDE_NATIVE_TRANSFERS = false;
-const EXCLUDED_TRANSACTION_TYPES = ['SPAM_TOKEN_TRANSFER'];
+const EXCLUDED_TRANSACTIONS = new Set(['SPAM_TOKEN']);
 
 // Transform and filter raw API response
 export function selectTransactions({
@@ -198,9 +204,6 @@ export function selectTransactions({
         // Filter out transactions not involving the current address
         const rawFrom = raw.from?.toLowerCase();
         const rawTo = raw.to?.toLowerCase();
-        if (rawFrom !== addr && rawTo !== addr) {
-          return result;
-        }
 
         // Filter out excluded transaction hashes (e.g. internal prerequisite transactions)
         if (raw.hash && excludedTxHashes?.has(raw.hash.toLowerCase())) {
@@ -208,7 +211,7 @@ export function selectTransactions({
         }
 
         // Filter out excluded transaction types
-        if (EXCLUDED_TRANSACTION_TYPES.includes(raw.transactionType ?? '')) {
+        if (EXCLUDED_TRANSACTIONS.has(raw.transactionProtocol ?? '')) {
           return result;
         }
 

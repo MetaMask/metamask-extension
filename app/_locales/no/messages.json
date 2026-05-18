@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Timer for automatisk utlogging (minutter) "
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Innstill hviletiden i minutter før MetaMask automatisk logger ut"
-  },
   "average": {
     "message": "Gjennomsnitt"
   },
@@ -177,12 +174,6 @@
   },
   "createPassword": {
     "message": "Opprett passord "
-  },
-  "currencyConversion": {
-    "message": "Valutakonvertering "
-  },
-  "currentLanguage": {
-    "message": "Nåværende språk "
   },
   "custom": {
     "message": "Avansert"
@@ -330,9 +321,6 @@
   "likeToImportTokens": {
     "message": "Ønsker du å legge til disse tokenene"
   },
-  "links": {
-    "message": "Lenker "
-  },
   "loading": {
     "message": "Laster inn ..."
   },
@@ -372,9 +360,6 @@
   },
   "nevermind": {
     "message": "Bare glem det"
-  },
-  "newAccount": {
-    "message": "Ny konto "
   },
   "newAccountNumberName": {
     "message": "Konto $1",
@@ -481,9 +466,6 @@
   "restore": {
     "message": "Gjenopprett"
   },
-  "revealSeedWords": {
-    "message": "Vis frøord"
-  },
   "revealSeedWordsWarning": {
     "message": "Disse ordene kan brukes for å stjele alle kontoene dine. ",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -527,9 +509,6 @@
   "showFiatConversionInTestnets": {
     "message": "Vis konvertering på Testnets "
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Velg dette for å vise fiat-konvertering på Testnets"
-  },
   "showHexData": {
     "message": "Vis hex data "
   },
@@ -559,9 +538,6 @@
   },
   "stateLogs": {
     "message": "Tilstandslogg"
-  },
-  "stateLogsDescription": {
-    "message": "Tilstandslogger inneholder de offentlige kontoadressene og sendte transaksjoner."
   },
   "submitted": {
     "message": "Sendt inn"

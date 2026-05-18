@@ -1,20 +1,14 @@
 import { createSelector } from 'reselect';
 import type { MetaMaskReduxState } from '../../store/store';
-import { getRemoteFeatureFlags } from '../../selectors/remote-feature-flags';
+import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feature-flags';
 import { getUseExternalServices } from '../../selectors/selectors';
 import {
   validatedVersionGatedFeatureFlag,
   type VersionGatedFeatureFlag,
 } from '../../../shared/lib/feature-flags/version-gating';
 
-export const selectOnboardingModalOpen = (state: MetaMaskReduxState) =>
-  state.rewards.onboardingModalOpen;
-
-export const selectOnboardingActiveStep = (state: MetaMaskReduxState) =>
-  state.rewards.onboardingActiveStep;
-
-export const selectOnboardingModalRendered = (state: MetaMaskReduxState) =>
-  state.rewards.onboardingModalRendered;
+export const selectRewardsModalOpen = (state: MetaMaskReduxState) =>
+  state.rewards.rewardsModalOpen;
 
 export const selectOnboardingReferralCode = (state: MetaMaskReduxState) =>
   state.rewards.onboardingReferralCode;
@@ -64,29 +58,6 @@ export const selectRewardsEnabled = createSelector(
   },
 );
 
-export const selectRewardsOnboardingEnabled = createSelector(
-  getRemoteFeatureFlags,
-  getUseExternalServices,
-  (remoteFeatureFlags, useExternalServices): boolean => {
-    const rewardsFeatureFlag = remoteFeatureFlags?.rewardsOnboardingEnabled as
-      | VersionGatedFeatureFlag
-      | boolean
-      | undefined;
-
-    const resolveFlag = (flag: unknown): boolean => {
-      if (typeof flag === 'boolean') {
-        return flag;
-      }
-      return Boolean(
-        validatedVersionGatedFeatureFlag(flag as VersionGatedFeatureFlag),
-      );
-    };
-
-    const featureFlagEnabled = resolveFlag(rewardsFeatureFlag);
-    return featureFlagEnabled && Boolean(useExternalServices);
-  },
-);
-
 export const selectErrorToast = (state: MetaMaskReduxState) =>
   state.rewards.errorToast;
 
@@ -96,3 +67,6 @@ export const selectRewardsBadgeHidden = (state: MetaMaskReduxState) =>
 export const selectRewardsAccountLinkedTimestamp = (
   state: MetaMaskReduxState,
 ) => state.rewards?.accountLinkedTimestamp ?? null;
+
+export const selectRewardsDeeplinkUrl = (state: MetaMaskReduxState) =>
+  state.rewards.rewardsDeeplinkUrl ?? null;

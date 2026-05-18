@@ -22,7 +22,7 @@ import {
   getLedgerWebHidConnectedStatus,
   setLedgerWebHidConnectedStatus,
 } from '../../../../../ducks/app/app';
-import { getLedgerTransportType } from '../../../../../ducks/metamask/metamask';
+import { getLedgerTransportType } from '../../../../../ducks/metamask/base-selectors';
 import {
   FontWeight,
   TextAlign,

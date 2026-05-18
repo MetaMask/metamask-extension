@@ -9,7 +9,7 @@ import {
   selectTransactions,
   type TransactionState,
 } from '../../../../selectors/transactionController';
-import type { RemoteFeatureFlagsState } from '../../../../selectors/remote-feature-flags';
+import type { RemoteFeatureFlagsState } from '../../../../../shared/lib/selectors/remote-feature-flags';
 import { hasTransactionType } from '../../../../../shared/lib/transactions.utils';
 import { selectPreferredPayToken } from '../../selectors/feature-flags';
 import { ARBITRUM_USDC } from '../../constants/perps';

@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
-import { getHardwareWalletType } from '../../../../selectors';
+import { getHardwareWalletType } from '../../../../../shared/lib/selectors/keyring';
 import { isPostQuoteWithdrawTransaction } from '../../../../../shared/lib/transactions.utils';
 import { Asset } from '../../types/send';
 import { useConfirmContext } from '../../context/confirm';

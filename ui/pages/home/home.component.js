@@ -60,7 +60,7 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { AccountOverview } from '../../components/multichain';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
-import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
+import RewardsModal from '../../components/app/rewards/onboarding/RewardsModal';
 import { Pna25Modal } from '../../components/app/modals/pna25-modal';
 import { isBeta, isFlask, isMain } from '../../../shared/lib/build-types';
 import BetaAndFlaskHomeFooter from './beta-and-flask-home-footer.component';
@@ -153,8 +153,7 @@ export default class Home extends PureComponent {
     setPendingShieldCohort: PropTypes.func,
     isSignedIn: PropTypes.bool,
     rewardsEnabled: PropTypes.bool,
-    rewardsOnboardingEnabled: PropTypes.bool,
-    rewardsOnboardingModalOpen: PropTypes.bool,
+    rewardsModalOpen: PropTypes.bool,
     showPna25Modal: PropTypes.bool.isRequired,
     envType: PropTypes.string,
     pendingRedirectRoute: PropTypes.object,
@@ -820,8 +819,7 @@ export default class Home extends PureComponent {
       showShieldEntryModal,
       isSocialLoginFlow,
       rewardsEnabled,
-      rewardsOnboardingEnabled,
-      rewardsOnboardingModalOpen,
+      rewardsModalOpen,
       showPna25Modal,
     } = this.props;
 
@@ -854,7 +852,6 @@ export default class Home extends PureComponent {
 
     const showRewardsModal =
       rewardsEnabled &&
-      rewardsOnboardingEnabled &&
       canSeeModals &&
       !showTermsOfUse &&
       !showMultiRpcEditModal &&
@@ -872,7 +869,7 @@ export default class Home extends PureComponent {
       !isSeedlessPasswordOutdated &&
       !showShieldEntryModal &&
       !showRecoveryPhrase &&
-      !rewardsOnboardingModalOpen;
+      !rewardsModalOpen;
 
     const { location } = this.props;
 
@@ -913,7 +910,7 @@ export default class Home extends PureComponent {
             <TermsOfUsePopup onAccept={this.onAcceptTermsOfUse} />
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
-          {showRewardsModal && <RewardsOnboardingModal />}
+          {showRewardsModal && <RewardsModal />}
           {showPna25ModalComponent && <Pna25Modal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()

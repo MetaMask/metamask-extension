@@ -17,9 +17,9 @@ import {
 import { Box, SensitiveText } from '../../../component-library';
 import {
   getEnabledNetworksByNamespace,
-  getPreferences,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { Skeleton } from '../../../component-library/skeleton';

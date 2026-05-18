@@ -680,12 +680,6 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
-      return {
-        ...appState,
-        showClaimSubmitToast: action.payload,
-      };
-
     case actionConstants.SET_SHOW_INFURA_SWITCH_TOAST:
       return {
         ...appState,
