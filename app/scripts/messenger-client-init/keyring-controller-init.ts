@@ -39,11 +39,13 @@ import {
  * Constructor signature shared by every V2 hardware-keyring wrapper.
  *
  * Each wrapper (`LatticeKeyringV2`, `LedgerKeyringV2`, etc.) takes a
- * `{ legacyKeyring, entropySource }` options object. Declared here so
- * `buildHardwareV2Builder` can construct any of them uniformly.
+ * `{ legacyKeyring, entropySource }` options object. The `Legacy` type
+ * parameter is inferred from each wrapper's declared `legacyKeyring`
+ * parameter at the call site, so the cast inside the factory targets
+ * the precise legacy keyring class instead of `never`.
  */
-type HardwareV2WrapperCtor<Wrapper> = new (options: {
-  legacyKeyring: never;
+type HardwareKeyringV2WrapperConstructor<Wrapper, Legacy> = new (options: {
+  legacyKeyring: Legacy;
   entropySource: string;
 }) => Wrapper;
 
@@ -60,14 +62,14 @@ type HardwareV2WrapperCtor<Wrapper> = new (options: {
  * keyring's `type`, so this must equal `LegacyKeyring.type`.
  * @returns A `KeyringV2Builder` ready for `keyringV2Builders`.
  */
-function buildHardwareV2Builder<Wrapper>(
-  WrapperCtor: HardwareV2WrapperCtor<Wrapper>,
+function buildHardwareV2Builder<Wrapper, Legacy>(
+  WrapperCtor: HardwareKeyringV2WrapperConstructor<Wrapper, Legacy>,
   legacyType: string,
 ): KeyringV2Builder {
   const builder = Object.assign(
     (keyring: unknown, metadata: { id: string }) =>
       new WrapperCtor({
-        legacyKeyring: keyring as never,
+        legacyKeyring: keyring as Legacy,
         entropySource: metadata.id,
       }),
     { type: legacyType },
