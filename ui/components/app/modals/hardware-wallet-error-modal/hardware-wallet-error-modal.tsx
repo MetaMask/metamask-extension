@@ -604,7 +604,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                       >
                         {standardErrorContent.recoveryInstructions.map(
                           (instruction, index) => (
-                            <li key={index}>
+                            <li key={`${instruction}-${index}`}>
                               <Text
                                 variant={TextVariant.BodyMd}
                                 color={TextColor.TextDefault}
