@@ -25,9 +25,7 @@ export default class MetaFoxLogo extends PureComponent {
   render() {
     const { onClick, unsetIconHeight, isOnboarding, src, theme } = this.props;
 
-    const iconProps = unsetIconHeight ? {} : { height: 42, width: 42 };
-
-    iconProps.src = './images/logo/metamask-fox.svg';
+    const imageDimensions = unsetIconHeight ? {} : { height: 42, width: 42 };
 
     let renderHorizontalLogo = () => (
       <MetaFoxHorizontalLogo
@@ -43,14 +41,20 @@ export default class MetaFoxLogo extends PureComponent {
 
     if (src) {
       renderHorizontalLogo = () => (
-        <img
-          {...iconProps}
-          src={src}
+        <span
+          style={{
+            backgroundImage: `url("${src}")`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'contain',
+            display: 'inline-block',
+            ...imageDimensions,
+          }}
           className={classnames({
             'app-header__metafox-logo--horizontal': !isOnboarding,
             'onboarding-app-header__metafox-logo--horizontal': isOnboarding,
           })}
-          alt=""
+          aria-hidden="true"
         />
       );
 
@@ -71,14 +75,20 @@ export default class MetaFoxLogo extends PureComponent {
       >
         {renderHorizontalLogo()}
 
-        <img
-          {...iconProps}
-          src={imageSrc}
+        <span
+          style={{
+            backgroundImage: `url("${imageSrc}")`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'contain',
+            display: 'inline-block',
+            ...imageDimensions,
+          }}
           className={classnames({
             'app-header__metafox-logo--icon': !isOnboarding,
             'onboarding-app-header__metafox-logo--icon': isOnboarding,
           })}
-          alt=""
+          aria-hidden="true"
         />
       </Box>
     );

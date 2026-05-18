@@ -36,17 +36,40 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
     }: AvatarNetworkProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const [showFallback, setShowFallback] = useState(false);
+    const [showFallback, setShowFallback] = useState(!src);
 
     useEffect(() => {
-      setShowFallback(!src);
+      if (!src) {
+        setShowFallback(true);
+        return undefined;
+      }
+
+      let isMounted = true;
+      const image = new Image();
+
+      image.onload = () => {
+        if (isMounted) {
+          setShowFallback(false);
+        }
+      };
+      image.onerror = () => {
+        if (isMounted) {
+          setShowFallback(true);
+        }
+      };
+      setShowFallback(false);
+      image.src = src;
+
+      return () => {
+        isMounted = false;
+        image.onload = null;
+        image.onerror = null;
+        image.removeAttribute('src');
+      };
     }, [src]);
 
     const fallbackString = name?.[0] ?? '?';
-
-    const handleOnError = () => {
-      setShowFallback(true);
-    };
+    const networkImageStyle = { backgroundImage: `url("${src}")` };
 
     return (
       <AvatarBase
@@ -74,23 +97,23 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
         ) : (
           <>
             {showHalo && (
-              <img
-                src={src}
+              <span
+                style={networkImageStyle}
                 className={
                   showHalo ? 'mm-avatar-network__network-image--blurred' : ''
                 }
                 aria-hidden="true"
               />
             )}
-            <img
+            <span
+              role="img"
               className={
                 showHalo
                   ? 'mm-avatar-network__network-image--size-reduced'
                   : 'mm-avatar-network__network-image'
               }
-              onError={handleOnError}
-              src={src}
-              alt={(name && `${name} logo`) || 'network logo'}
+              style={networkImageStyle}
+              aria-label={(name && `${name} logo`) || 'network logo'}
             />
           </>
         )}

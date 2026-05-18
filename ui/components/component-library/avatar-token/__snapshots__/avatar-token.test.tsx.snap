@@ -6,10 +6,11 @@ exports[`AvatarToken should render correctly 1`] = `
     class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
     data-testid="avatar-token"
   >
-    <img
-      alt="ast logo"
+    <span
+      aria-label="ast logo"
       class="mm-avatar-token__token-image"
-      src="./AST.png"
+      role="img"
+      style="background-image: url(./AST.png);"
     />
   </div>
 </div>

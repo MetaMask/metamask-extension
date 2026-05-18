@@ -34,17 +34,40 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
     }: AvatarTokenProps<C>,
     ref: PolymorphicRef<C>,
   ) => {
-    const [showFallback, setShowFallback] = useState(false);
+    const [showFallback, setShowFallback] = useState(!src);
 
     useEffect(() => {
-      setShowFallback(!src);
+      if (!src) {
+        setShowFallback(true);
+        return undefined;
+      }
+
+      let isMounted = true;
+      const image = new Image();
+
+      image.onload = () => {
+        if (isMounted) {
+          setShowFallback(false);
+        }
+      };
+      image.onerror = () => {
+        if (isMounted) {
+          setShowFallback(true);
+        }
+      };
+      setShowFallback(false);
+      image.src = src;
+
+      return () => {
+        isMounted = false;
+        image.onload = null;
+        image.onerror = null;
+        image.removeAttribute('src');
+      };
     }, [src]);
 
-    const handleOnError = () => {
-      setShowFallback(true);
-    };
-
     const fallbackString = name?.[0] ?? '?';
+    const tokenImageStyle = { backgroundImage: `url("${src}")` };
 
     return (
       <AvatarBase
@@ -70,23 +93,23 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
         ) : (
           <>
             {showHalo && (
-              <img
-                src={src}
+              <span
+                style={tokenImageStyle}
                 className={
                   showHalo ? 'mm-avatar-token__token-image--blurred' : ''
                 }
                 aria-hidden="true"
               />
             )}
-            <img
+            <span
+              role="img"
               className={
                 showHalo
                   ? 'mm-avatar-token__token-image--size-reduced'
                   : 'mm-avatar-token__token-image'
               }
-              onError={handleOnError}
-              src={src}
-              alt={`${name} logo`}
+              style={tokenImageStyle}
+              aria-label={`${name} logo`}
             />
           </>
         )}

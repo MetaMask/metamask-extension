@@ -10,6 +10,10 @@ import { AvatarToken } from './avatar-token';
 import { AvatarTokenSize } from './avatar-token.types';
 
 describe('AvatarToken', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   const args = {
     name: 'ast',
     src: './AST.png',
@@ -28,7 +32,39 @@ describe('AvatarToken', () => {
     render(<AvatarToken {...args} data-testid="avatar-token" />);
     const image = screen.getByRole('img');
     expect(image).toBeDefined();
-    expect(image).toHaveAttribute('src', args.src);
+    expect(image).toHaveStyle(`background-image: url("${args.src}")`);
+  });
+
+  it('should render the first letter of the name prop if the image fails to load', async () => {
+    jest.spyOn(window, 'Image').mockImplementation(() => {
+      const image: {
+        onerror: (() => void) | null;
+        onload: (() => void) | null;
+        removeAttribute: jest.Mock;
+        src?: string;
+      } = {
+        onerror: null,
+        onload: null,
+        removeAttribute: jest.fn(),
+      };
+
+      let imageSrc = '';
+      Object.defineProperty(image, 'src', {
+        get() {
+          return imageSrc;
+        },
+        set(src) {
+          imageSrc = src;
+          image.onerror?.();
+        },
+      });
+
+      return image as unknown as HTMLImageElement;
+    });
+
+    render(<AvatarToken {...args} data-testid="avatar-token" />);
+
+    expect(await screen.findByText('a')).toBeDefined();
   });
 
   it('should render the first letter of the name prop if no src is provided', () => {
@@ -39,9 +75,13 @@ describe('AvatarToken', () => {
   });
 
   it('should render halo effect if showHalo is true and image url is there', () => {
-    render(<AvatarToken {...args} data-testid="avatar-token" showHalo />);
-    const image = screen.getAllByRole('img', { hidden: true });
-    expect(image[1]).toHaveClass('mm-avatar-token__token-image--size-reduced');
+    const { container } = render(
+      <AvatarToken {...args} data-testid="avatar-token" showHalo />,
+    );
+    const image = container.querySelector(
+      '.mm-avatar-token__token-image--size-reduced',
+    );
+    expect(image).toBeDefined();
   });
 
   it('should render the first letter of the name prop when showHalo is true and no image url is provided', () => {

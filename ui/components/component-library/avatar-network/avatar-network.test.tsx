@@ -11,6 +11,10 @@ import { AvatarNetwork } from './avatar-network';
 import { AvatarNetworkSize } from './avatar-network.types';
 
 describe('AvatarNetwork', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
   const args = {
     name: 'ethereum',
     src: './images/eth_logo.svg',
@@ -29,7 +33,39 @@ describe('AvatarNetwork', () => {
     render(<AvatarNetwork data-testid="avatar-network" {...args} />);
     const image = screen.getByRole('img');
     expect(image).toBeDefined();
-    expect(image).toHaveAttribute('src', args.src);
+    expect(image).toHaveStyle(`background-image: url("${args.src}")`);
+  });
+
+  it('should render the first letter of the name prop if the image fails to load', async () => {
+    jest.spyOn(window, 'Image').mockImplementation(() => {
+      const image: {
+        onerror: (() => void) | null;
+        onload: (() => void) | null;
+        removeAttribute: jest.Mock;
+        src?: string;
+      } = {
+        onerror: null,
+        onload: null,
+        removeAttribute: jest.fn(),
+      };
+
+      let imageSrc = '';
+      Object.defineProperty(image, 'src', {
+        get() {
+          return imageSrc;
+        },
+        set(src) {
+          imageSrc = src;
+          image.onerror?.();
+        },
+      });
+
+      return image as unknown as HTMLImageElement;
+    });
+
+    render(<AvatarNetwork data-testid="avatar-network" {...args} />);
+
+    expect(await screen.findByText('e')).toBeDefined();
   });
 
   it('should render the first letter of the name prop if no src is provided', () => {
@@ -40,11 +76,13 @@ describe('AvatarNetwork', () => {
   });
 
   it('should render halo effect if showHalo is true and image url is there', () => {
-    render(<AvatarNetwork data-testid="avatar-network" {...args} showHalo />);
-    const image = screen.getAllByRole('img', { hidden: true });
-    expect(image[1]).toHaveClass(
-      'mm-avatar-network__network-image--size-reduced',
+    const { container } = render(
+      <AvatarNetwork data-testid="avatar-network" {...args} showHalo />,
     );
+    const image = container.querySelector(
+      '.mm-avatar-network__network-image--size-reduced',
+    );
+    expect(image).toBeDefined();
   });
 
   it('should render the first letter of the name prop when showHalo is true and no image url is provided', () => {

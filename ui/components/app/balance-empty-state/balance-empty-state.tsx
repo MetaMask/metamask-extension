@@ -116,11 +116,18 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
         >
-          <img
-            src="./images/bank-transfer.png"
-            alt={t('fundYourWallet')}
-            width="100"
-            height="100"
+          <span
+            role="img"
+            aria-label={t('fundYourWallet')}
+            style={{
+              backgroundImage: 'url("./images/bank-transfer.png")',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              backgroundSize: 'contain',
+              display: 'block',
+              height: 100,
+              width: 100,
+            }}
           />
         </Box>
         <Text

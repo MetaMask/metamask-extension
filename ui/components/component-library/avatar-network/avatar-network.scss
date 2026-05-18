@@ -4,9 +4,20 @@
   }
 
   &__network-image {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: block;
+    height: 100%;
     width: 100%;
 
     &--blurred {
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: contain;
+      display: block;
+      height: 100%;
+      width: 100%;
       filter: blur(8px);
       opacity: 0.5;
     }
