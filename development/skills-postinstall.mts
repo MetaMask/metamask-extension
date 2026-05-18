@@ -47,7 +47,15 @@ function isGitDir(dir: string): boolean {
 
 if (!isGitDir(CACHE_DIR)) {
   mkdirSync(path.dirname(CACHE_DIR), { recursive: true });
-  const clone = run('git', ['clone', '--depth', '1', PUBLIC_REPO, CACHE_DIR]);
+  const clone = run('git', [
+    'clone',
+    '--depth',
+    '1',
+    '--branch',
+    'main',
+    PUBLIC_REPO,
+    CACHE_DIR,
+  ]);
   if (clone.status !== 0) {
     warn('clone failed (offline?)');
     process.exit(0);
@@ -77,7 +85,7 @@ const args = [
   '--repo',
   REPO,
   '--target',
-  '.',
+  process.cwd(),
   '--source',
   path.join(process.cwd(), CACHE_DIR),
 ];

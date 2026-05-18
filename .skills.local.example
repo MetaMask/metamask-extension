@@ -1,12 +1,20 @@
 # Template for per-engineer skills config used by `yarn skills`.
-# Copy this file to `.skills.local` (gitignored) and set the domains
-# you want installed by default.
+# Copy this file to `.skills.local` (gitignored).
 #
-# Examples:
-#   SKILLS_DOMAINS=                          # interactive prompt each run
+# Skill source repos are configured via env vars (set in your shell rc):
+#   METAMASK_SKILLS_DIR   path to MetaMask/skills checkout (public, no auth)
+#   CONSENSYS_SKILLS_DIR  path to Consensys/skills checkout (private overlay)
+#
+# Example shell rc setup:
+#   export METAMASK_SKILLS_DIR=~/dev/metamask/skills
+#   export CONSENSYS_SKILLS_DIR=~/dev/Consensys/skills   # optional
+#
+# Default behavior installs ALL domains. Set SKILLS_DOMAINS to opt out of some:
+#   SKILLS_DOMAINS=                          # all (default)
 #   SKILLS_DOMAINS=perps                     # single domain
-#   SKILLS_DOMAINS=perps,testing,pr          # multiple domains
+#   SKILLS_DOMAINS=perps,testing,pr-workflow # multiple domains
 #
 # Override per-run with `SKILLS_DOMAINS=... yarn skills` or `--domain <list>`.
+# Pick interactively with `yarn skills --select`.
 # Use `yarn skills --reset` to wipe.
 SKILLS_DOMAINS=
