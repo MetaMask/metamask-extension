@@ -25,6 +25,7 @@ import {
 } from '@metamask/storage-service';
 import { TransactionControllerAddTransactionAction } from '@metamask/transaction-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller-method-action-types';
+import { RewardsControllerGetPerpsDiscountForAccountAction } from '../../controllers/rewards/rewards-controller-method-action-types';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
@@ -41,7 +42,8 @@ type AllowedActions =
   | MetaMetricsControllerTrackEventAction
   | StorageServiceGetItemAction
   | StorageServiceSetItemAction
-  | StorageServiceRemoveItemAction;
+  | StorageServiceRemoveItemAction
+  | RewardsControllerGetPerpsDiscountForAccountAction;
 
 type AllowedEvents =
   | RemoteFeatureFlagControllerStateChangeEvent
@@ -89,6 +91,7 @@ export function getPerpsControllerMessenger(
       'StorageService:getItem',
       'StorageService:setItem',
       'StorageService:removeItem',
+      'RewardsController:getPerpsDiscountForAccount',
     ],
     events: [
       'RemoteFeatureFlagController:stateChange',

@@ -90,6 +90,7 @@
   },
   "AuthenticationController": {
     "isSignedIn": "boolean",
+    "needsProfilePairing": "boolean",
     "srpSessionData": "object"
   },
   "BridgeController": {
@@ -337,7 +338,8 @@
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
     "rewardsSubscriptionTokens": "object",
-    "rewardsSubscriptions": "object"
+    "rewardsSubscriptions": "object",
+    "rewardsVipPerpsFees": "object"
   },
   "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",
