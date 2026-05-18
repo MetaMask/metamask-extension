@@ -12,6 +12,7 @@ import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
+import { mockEmptyPrices } from '../../tokens/utils/mocks';
 
 describe('Ledger Hardware', function (this: Suite) {
   const erc721 = SMART_CONTRACTS.NFTS;
@@ -127,6 +128,7 @@ describe('Ledger Hardware', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockEmptyPrices,
         smartContract: [
           {
             name: erc721,
