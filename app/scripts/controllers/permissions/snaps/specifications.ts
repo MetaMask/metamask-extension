@@ -21,8 +21,6 @@ import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerWithKeyringAction,
   KeyringControllerWithKeyringV2Action,
-  KeyringTypes,
-  KeyringMetadata,
   KeyringControllerAddNewKeyringAction,
 } from '@metamask/keyring-controller';
 import {
