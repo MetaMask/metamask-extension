@@ -9,6 +9,7 @@ import {
   BoxAlignItems,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
+import { PerpsFeesDisplay } from '../../../perps-fees-display';
 import type { OrderSummaryProps } from '../../order-entry.types';
 
 /**
@@ -18,11 +19,13 @@ import type { OrderSummaryProps } from '../../order-entry.types';
  * @param props.marginRequired - Margin required for the position
  * @param props.estimatedFees - Estimated trading fees
  * @param props.liquidationPrice - Estimated liquidation price
+ * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount percentage (whole numbers)
  */
 export const OrderSummary: React.FC<OrderSummaryProps> = ({
   marginRequired,
   estimatedFees,
   liquidationPrice,
+  metamaskFeeRateDiscountPercentage,
 }) => {
   const t = useI18nContext();
 
@@ -73,13 +76,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {t('perpsFees')}
         </Text>
-        <Text
-          variant={TextVariant.BodySm}
-          color={TextColor.TextDefault}
-          data-testid="perps-order-summary-estimated-fees"
-        >
-          {estimatedFees ?? '-'}
-        </Text>
+        <PerpsFeesDisplay
+          metamaskFeeRateDiscountPercentage={
+            estimatedFees ? metamaskFeeRateDiscountPercentage : undefined
+          }
+          formatFeeText={estimatedFees ?? '-'}
+          feeTextTestId="perps-order-summary-estimated-fees"
+        />
       </Box>
     </Box>
   );

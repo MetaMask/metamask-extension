@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import {
   EnforcedSimulationsState,
   isEnforcedSimulationsEligible,
+  isEnforcedSimulationsForceEnabled,
 } from '../../../../shared/lib/transaction/enforced-simulations';
 import { getEip7702SupportedChains } from '../../../../shared/lib/eip7702-support-utils';
 import { useConfirmContext } from '../context/confirm';
@@ -27,7 +28,10 @@ export function useIsEnforcedSimulationsEligible(): boolean {
 
   const enabled = useSelector(selectIsEnforcedSimulationsEnabled);
 
-  if (!enabled || !currentConfirmation) {
+  if (
+    (!enabled && !isEnforcedSimulationsForceEnabled()) ||
+    !currentConfirmation
+  ) {
     return false;
   }
 
