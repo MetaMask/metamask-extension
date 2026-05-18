@@ -100,7 +100,7 @@ describe('LatticeKeyringV2', () => {
       const { wrapper, inner } = createWrapper();
       jest.spyOn(inner, 'getAccounts').mockResolvedValue([TEST_ADDRESSES[0]]);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { registry } = (wrapper as any).registry;
+      const { registry } = wrapper as any;
       jest.spyOn(registry, 'getAccountId').mockReturnValue('ghost-id');
       jest.spyOn(registry, 'get').mockReturnValue(undefined);
 
