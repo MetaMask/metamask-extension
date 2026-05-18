@@ -1,15 +1,14 @@
 import * as React from 'react';
 import classnames from 'clsx';
 import {
-  Box,
   IconProps,
   IconSize,
   PolymorphicRef,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
-  Display,
 } from '../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 
 const HollowCircle = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -20,10 +19,8 @@ const HollowCircle = React.forwardRef(
   ) => {
     return (
       <Box
-        className={classnames(className, 'mm-icon', `mm-icon--size-${size}`)}
-        ref={ref}
-        as="span"
-        display={Display.InlineBlock}
+        asChild
+        className={classnames(className, 'mm-icon', `mm-icon--size-${size}`, 'inline-block')}
         style={{
           height: '12px',
           width: '12px',
@@ -33,7 +30,9 @@ const HollowCircle = React.forwardRef(
           zIndex: 1,
           ...style,
         }}
-      />
+      >
+        <span ref={ref} />
+      </Box>
     );
   },
 );

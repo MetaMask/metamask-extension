@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Box,
   Icon,
   IconName,
   IconSize,
@@ -12,13 +11,13 @@ import {
   Text,
 } from '../../../components/component-library';
 import {
-  Display,
   IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 import Column from './column';
 
 const Tooltip = React.forwardRef(
@@ -55,7 +54,7 @@ const Tooltip = React.forwardRef(
           ref={setBoxRef}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          display={Display.Flex}
+          className="flex"
         >
           {triggerElement ??
             (iconName && (

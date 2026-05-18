@@ -15,7 +15,6 @@ import {
   TextFieldType,
   BannerAlert,
   BannerAlertSeverity,
-  Box,
   TextFieldSize,
 } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -27,6 +26,7 @@ import {
   SEVERITIES,
   BorderRadius,
 } from '../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 import {
   getIsSolanaSwap,
   getIsRWASwap,

@@ -19,7 +19,6 @@ import {
   Tag,
   AvatarNetwork,
   AvatarNetworkSize,
-  Box,
 } from '../../../../components/component-library';
 import {
   AlignItems,
@@ -27,6 +26,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
+import { Box } from '@metamask/design-system-react';
 
 import {
   getShouldHideZeroBalanceTokens,

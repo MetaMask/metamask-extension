@@ -4,15 +4,12 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   TextVariant,
   AlignItems,
-  Display,
   Severity,
-  FlexDirection,
   BlockSize,
 } from '../../../helpers/constants/design-system';
 
 import {
   Text,
-  Box,
   BannerAlert,
   Button,
   BUTTON_VARIANT,
@@ -22,6 +19,10 @@ import {
   BUTTON_SIZES,
   ModalOverlay,
 } from '../../../components/component-library';
+import {
+  Box,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { FormTextField } from '../../../components/component-library/form-text-field/deprecated';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
@@ -72,10 +73,9 @@ export default function ImportToken({
           width={BlockSize.Full}
         />
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
+          className="flex w-full"
+          flexDirection={BoxFlexDirection.Row}
           gap={4}
-          width={BlockSize.Full}
         >
           <Button
             variant={BUTTON_VARIANT.SECONDARY}

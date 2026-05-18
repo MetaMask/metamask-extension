@@ -49,17 +49,19 @@ import {
 import {
   AvatarFavicon,
   AvatarFaviconSize,
-  Box,
   ButtonIcon,
   IconName,
 } from '../../../components/component-library';
 import {
   BackgroundColor,
   BlockSize,
-  Display,
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import {
+  Box,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';
@@ -397,9 +399,8 @@ const PrepareBridgePage = ({
           }}
         >
           <Box
-            className="prepare-bridge-page__switch-tokens"
-            display={Display.Flex}
-            backgroundColor={BackgroundColor.backgroundSection}
+            className="prepare-bridge-page__switch-tokens flex"
+            backgroundColor={BoxBackgroundColor.BackgroundSection}
             style={{
               position: 'absolute',
               top: '-20px',

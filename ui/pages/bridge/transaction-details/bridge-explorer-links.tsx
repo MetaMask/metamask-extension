@@ -6,16 +6,15 @@ import {
 } from '@metamask/bridge-controller';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
 import {
-  Box,
   IconName,
   ButtonSecondary,
 } from '../../../components/component-library';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
+  Box,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const getBlockExplorerName = (
@@ -70,7 +69,7 @@ export default function BridgeExplorerLinks({
     : undefined;
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+    <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={4}>
       {srcBlockExplorerUrl && (
         <ButtonSecondary
           endIconName={IconName.Export}

@@ -1,13 +1,14 @@
 import React from 'react';
-import { Box, IconSize } from '../../../components/component-library';
+import { IconSize } from '../../../components/component-library';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
-  Display,
   IconColor,
-  JustifyContent,
 } from '../../../helpers/constants/design-system';
+import {
+  Box,
+  BoxBackgroundColor,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import HollowCircle from './hollow-circle';
 
 /**
@@ -29,12 +30,10 @@ export default function PulsingCircle({
   return (
     <Box style={{ position: 'relative' }}>
       <Box
-        className="bridge-transaction-details__icon-loading" // Needed for animation
-        backgroundColor={BackgroundColor.primaryMuted}
-        display={Display.Flex}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
-        borderRadius={BorderRadius.full}
+        className="bridge-transaction-details__icon-loading flex rounded-full" // Needed for animation
+        backgroundColor={BoxBackgroundColor.PrimaryMuted}
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
         style={{ width: '2rem', height: '2rem' }}
       ></Box>
       <HollowCircle

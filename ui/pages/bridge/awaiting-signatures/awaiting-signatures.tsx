@@ -10,11 +10,7 @@ import {
 import PulseLoader from '../../../components/ui/pulse-loader';
 import {
   TextVariant,
-  JustifyContent,
   TextColor,
-  BlockSize,
-  Display,
-  FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -22,9 +18,13 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import {
   AvatarBase,
   AvatarBaseSize,
-  Box,
   Text,
 } from '../../../components/component-library';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   getBridgeQuotes,
   getFromChain,
@@ -89,10 +89,9 @@ export default function AwaitingSignatures() {
       <Box
         paddingLeft={6}
         paddingRight={6}
-        height={BlockSize.Full}
-        justifyContent={JustifyContent.center}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        className="h-full flex"
+        justifyContent={BoxJustifyContent.Center}
+        flexDirection={BoxFlexDirection.Column}
       >
         <Box marginTop={3} marginBottom={4}>
           <PulseLoader />

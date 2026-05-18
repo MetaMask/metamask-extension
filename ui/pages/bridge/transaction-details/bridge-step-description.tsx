@@ -10,13 +10,15 @@ import {
   ActionTypes,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
-import { Box, Text } from '../../../components/component-library';
+import { Text } from '../../../components/component-library';
 import {
-  AlignItems,
-  Display,
   FontWeight,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import {
+  Box,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 
@@ -156,10 +158,9 @@ export default function BridgeStepDescription({
   const t = useI18nContext() as I18nFunction;
   return (
     <Box
-      display={Display.Flex}
-      alignItems={AlignItems.center}
+      className="flex bridge-transaction-details__step-grid--desc"
+      alignItems={BoxAlignItems.Center}
       gap={2}
-      className="bridge-transaction-details__step-grid--desc"
     >
       {time && <Text color={TextColor.textDefault}>{time}</Text>}
       <Text
