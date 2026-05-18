@@ -104,7 +104,7 @@ class HomePage {
   private readonly srpAddedToast = '[data-testid="new-srp-added-toast"]';
 
   private readonly srpAddedToastCloseButton =
-    '[data-testid="new-srp-added-toast"] ~ button[aria-label="Close"]';
+    '.toast-container button[aria-label="Close"]';
 
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
@@ -564,7 +564,8 @@ class HomePage {
 
   async dismissSrpAddedToast(): Promise<void> {
     console.log('Dismiss SRP added toast');
-    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 3000);
+    // The toast can take some time to appear
+    await this.driver.clickElementSafe(this.srpAddedToastCloseButton, 15_000);
   }
 
   async checkNoSurveyToastIsDisplayed(): Promise<void> {

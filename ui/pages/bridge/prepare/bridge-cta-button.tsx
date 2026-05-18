@@ -28,6 +28,7 @@ import {
 } from '../../../contexts/hardware-wallets';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { trackHardwareWalletRecoveryConnectCtaClicked } from '../../../helpers/utils/track-hardware-wallet-recovery-connect-cta-clicked';
+import { isFirefoxBrowser } from '../../../../shared/lib/browser-runtime.utils';
 import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
 
 export const BridgeCTAButton = ({
@@ -60,6 +61,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientNativeReserve,
+    isNetworkFeeUnavailable,
     isStockMarketClosed: isMarketClosed,
     isQuoteExpired,
   } = useSelector(
@@ -89,6 +91,11 @@ export const BridgeCTAButton = ({
     // primary CTA. Submitting still runs ensureDeviceReady, which handles
     // camera permission before signing.
     if (walletType === HardwareWalletType.Qr) {
+      return true;
+    }
+    // Trezor on Firefox uses a different connection flow and does not require
+    // the "Connect Trezor" preflight step before the CTA.
+    if (walletType === HardwareWalletType.Trezor && isFirefoxBrowser()) {
       return true;
     }
     return [ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
@@ -129,6 +136,7 @@ export const BridgeCTAButton = ({
     }
 
     if (
+      isNetworkFeeUnavailable ||
       isInsufficientBalance ||
       isInsufficientGasForQuote ||
       isInsufficientGasBalance ||
@@ -185,6 +193,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isInsufficientNativeReserve,
+    isNetworkFeeUnavailable,
     isSubmitting,
     isTxSubmittable,
     onFetchNewQuotes,

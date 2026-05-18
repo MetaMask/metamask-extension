@@ -37,6 +37,7 @@ export const TOAST_EXCLUDED_TRANSACTION_TYPES = new Set([
   TransactionType.shieldSubscriptionApprove,
   TransactionType.musdConversion,
   TransactionType.musdClaim,
+  TransactionType.musdRelayDeposit,
   TransactionType.perpsDeposit,
   TransactionType.perpsDepositAndOrder,
   TransactionType.perpsWithdraw,

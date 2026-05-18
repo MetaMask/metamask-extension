@@ -1080,7 +1080,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
             </div>
           </header>
           <div
-            class="mm-box networks-tab__scrollable mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
+            class="mm-box networks-form__scrollable mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-space-between mm-box--align-items-center mm-box--height-full"
           >
             <div
               class="mm-box mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--width-full"
@@ -1247,7 +1247,7 @@ exports[`NetworkListMenu should match snapshot when adding a network 1`] = `
               </div>
             </div>
             <div
-              class="mm-box networks-tab__network-form__footer mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default"
+              class="mm-box networks-form__footer mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default"
             >
               <button
                 class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"

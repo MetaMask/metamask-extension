@@ -26,6 +26,8 @@ jest.mock('../../../shared/lib/selectors/networks', () => ({
   selectDefaultNetworkClientIdsByChainId: jest.fn(),
   getNetworksMetadata: jest.fn(),
   getProviderConfig: jest.fn(() => ({ chainId: '0x1' })),
+  selectNetworkConfigurationByChainId: jest.fn(),
+  selectDefaultRpcEndpointByChainId: jest.fn(),
 }));
 
 jest.mock('../../selectors', () => ({
@@ -49,6 +51,11 @@ describe('rampsSlice', () => {
         ramps: rampsReducer,
         metamask: (state = { completedOnboarding: true }) => state,
       },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          serializableCheck: false,
+          immutabilityCheck: false,
+        }),
     });
     mockedRampAPI.getNetworks.mockReset();
   });

@@ -45,13 +45,13 @@ import {
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { getEnabledNetworks } from '../../../shared/lib/selectors/multichain';
 import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
-import { type RemoteFeatureFlagsState } from '../remote-feature-flags';
+import type { RemoteFeatureFlagsState } from '../../../shared/lib/selectors/remote-feature-flags';
 import {
-  getInternalAccounts,
+  type AccountsState,
   getSelectedInternalAccount,
   getMaybeSelectedInternalAccount,
-  type AccountsState,
-} from '../accounts';
+} from '../../../shared/lib/selectors/accounts';
+import { getInternalAccounts } from '../accounts';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,

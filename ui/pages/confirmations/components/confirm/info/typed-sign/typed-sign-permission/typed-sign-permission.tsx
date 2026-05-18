@@ -31,6 +31,7 @@ const TypedSignPermissionInfo: React.FC = () => {
       origin={decodedPermission.origin}
       to={decodedPermission.to}
       ownerId={id}
+      rules={decodedPermission.rules}
     />
   );
 };
