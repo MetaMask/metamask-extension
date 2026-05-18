@@ -20,6 +20,7 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../../../hooks/perps', () => ({
   usePerpsMarketFills: jest.fn(),
+  usePerpsEventTracking: () => ({ track: jest.fn() }),
 }));
 
 jest.mock('../utils/transactionTransforms', () => ({

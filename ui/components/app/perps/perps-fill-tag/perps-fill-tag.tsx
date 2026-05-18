@@ -17,6 +17,7 @@ import { MetaMetricsEventName } from '../../../../../shared/constants/metametric
 import { getSelectedInternalAccount } from '../../../../../shared/lib/selectors/accounts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePerpsEventTracking } from '../../../../hooks/perps';
+import { isEqualCaseInsensitive } from '../../../../../shared/lib/string-utils';
 import { FillType } from '../types/transactionHistory';
 import type { PerpsTransaction } from '../types';
 
@@ -93,7 +94,10 @@ export const PerpsFillTag: React.FC<PerpsFillTagProps> = ({
           fill.liquidation?.liquidatedUser !== undefined &&
           selectedAccount?.address !== null &&
           selectedAccount?.address !== undefined &&
-          fill.liquidation.liquidatedUser === selectedAccount.address,
+          isEqualCaseInsensitive(
+            fill.liquidation.liquidatedUser,
+            selectedAccount.address,
+          ),
         label: t('perpsLiquidated'),
         textColor: TextColor.ErrorDefault,
         bgClass: 'bg-error-muted',

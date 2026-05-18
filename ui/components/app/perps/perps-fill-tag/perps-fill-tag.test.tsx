@@ -182,6 +182,40 @@ describe('PerpsFillTag', () => {
     expect(screen.getByTestId('perps-fill-tag-liquidated')).toBeInTheDocument();
   });
 
+  it('renders Liquidated badge with case-insensitive address comparison', () => {
+    const checksummedAddress = '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc';
+    const lowercaseAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+    const store = createMockStore(checksummedAddress);
+    const transaction = createMockTransaction(FillType.Liquidation, {
+      fill: {
+        shortTitle: 'Closed long',
+        amount: '-$100',
+        amountNumber: -100,
+        isPositive: false,
+        size: '1.5',
+        entryPrice: '2000',
+        points: '0',
+        pnl: '-100',
+        fee: '1',
+        action: 'Closed',
+        feeToken: 'USDC',
+        fillType: FillType.Liquidation,
+        liquidation: {
+          liquidatedUser: lowercaseAddress,
+          markPx: '1800',
+          method: 'market',
+        },
+      },
+    });
+
+    renderWithProvider(<PerpsFillTag transaction={transaction} />, store);
+
+    expect(
+      screen.getByText(messages.perpsLiquidated.message),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('perps-fill-tag-liquidated')).toBeInTheDocument();
+  });
+
   it('does not render Liquidated badge when user is not the liquidated user', () => {
     const store = createMockStore(MOCK_ADDRESS);
     const transaction = createMockTransaction(FillType.Liquidation, {
