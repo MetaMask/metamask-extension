@@ -83,7 +83,7 @@ index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063
              continue;
          }
 diff --git a/dist/data-sources/RpcDataSource.mjs b/dist/data-sources/RpcDataSource.mjs
-index 6fc556f592639593e9d6c60c61fd6fe107f6b134..18bda8502fe06eedb0fbcdc7d86ce25666e6852f 100644
+index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad9bce092f 100644
 --- a/dist/data-sources/RpcDataSource.mjs
 +++ b/dist/data-sources/RpcDataSource.mjs
 @@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -95,15 +95,6 @@ index 6fc556f592639593e9d6c60c61fd6fe107f6b134..18bda8502fe06eedb0fbcdc7d86ce256
  import { Web3Provider } from "@ethersproject/providers";
  import { toHex } from "@metamask/controller-utils";
  import { isStrictHexString, isCaipChainId, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
-@@ -241,7 +241,7 @@ export class RpcDataSource extends AbstractDataSource {
-                 // Build a single AssetFetchEntry[] for native + custom ERC-20s
-                 const nativeAssetId = __classPrivateFieldGet(this, _RpcDataSource_getNativeAssetForChain, "f").call(this, chainId);
-                 const assetsToFetch = [
--                    { assetId: nativeAssetId, address: ZERO_ADDRESS },
-+                    { assetId: nativeAssetId, address: constants_1.ZERO_ADDRESS },
-                 ];
-                 if (request.customAssets) {
-                     const existingMetadata = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getExistingAssetsMetadata).call(this);
 @@ -287,7 +287,7 @@ export class RpcDataSource extends AbstractDataSource {
                      for (const balance of normalizedBalances) {
                          const stateMetadata = existingMetadata[balance.assetId];
