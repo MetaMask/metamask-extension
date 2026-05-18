@@ -45,10 +45,11 @@ describe('SendAlerts', () => {
     );
 
   beforeEach(() => {
-    mockUseI18nContext.mockReturnValue((key: string, substitutions?: string[]) =>
-      substitutions?.length
-        ? `${key.toUpperCase()}::${substitutions.join(',')}`
-        : key.toUpperCase(),
+    mockUseI18nContext.mockReturnValue(
+      (key: string, substitutions?: string[]) =>
+        substitutions?.length
+          ? `${key.toUpperCase()}::${substitutions.join(',')}`
+          : key.toUpperCase(),
     );
     jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
       chainId: '0x1',

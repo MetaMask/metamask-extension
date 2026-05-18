@@ -49,8 +49,7 @@ export const AmountRecipient = () => {
       !recipientErrorAllowAcknowledge) ||
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError);
-  const isDisabled =
-    hasBlockingError || !toResolved || isNetworkUnreliable;
+  const isDisabled = hasBlockingError || !toResolved || isNetworkUnreliable;
 
   const proceedWithSubmit = useCallback(async () => {
     if (isNonEvmSendType) {

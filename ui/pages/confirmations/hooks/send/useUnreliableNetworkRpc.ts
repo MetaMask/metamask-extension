@@ -26,8 +26,7 @@ export const useUnreliableNetworkRpc = () => {
     if (!chainId || !isHexString(chainId)) {
       return { isUnreliable: false, networkName: undefined };
     }
-    const networkConfiguration =
-      networkConfigurationsByChainId[chainId as Hex];
+    const networkConfiguration = networkConfigurationsByChainId[chainId as Hex];
     if (!networkConfiguration) {
       return { isUnreliable: false, networkName: undefined };
     }
@@ -39,8 +38,7 @@ export const useUnreliableNetworkRpc = () => {
     }
     const status = networksMetadata[rpcEndpoint.networkClientId]?.status;
     return {
-      isUnreliable:
-        status !== undefined && status !== NetworkStatus.Available,
+      isUnreliable: status !== undefined && status !== NetworkStatus.Available,
       networkName: name,
     };
   }, [chainId, networkConfigurationsByChainId, networksMetadata]);

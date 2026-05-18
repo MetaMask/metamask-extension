@@ -97,8 +97,8 @@ describe('SendAlertModal', () => {
   it('uses the supplied acknowledgeLabel when provided', () => {
     const { getByTestId } = renderComponent({ acknowledgeLabel: 'Update' });
 
-    expect(getByTestId('send-alert-modal-acknowledge-button')).toHaveTextContent(
-      'Update',
-    );
+    expect(
+      getByTestId('send-alert-modal-acknowledge-button'),
+    ).toHaveTextContent('Update');
   });
 });

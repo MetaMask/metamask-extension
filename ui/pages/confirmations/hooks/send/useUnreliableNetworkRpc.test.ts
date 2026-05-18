@@ -33,9 +33,7 @@ const mockSendContext = (chainId: string | undefined) => {
   } as unknown as SendContext.SendContextType);
 };
 
-const buildState = (overrides: {
-  status?: NetworkStatus;
-}) => ({
+const buildState = (overrides: { status?: NetworkStatus }) => ({
   ...mockState,
   metamask: {
     ...mockState.metamask,
@@ -90,7 +88,10 @@ describe('useUnreliableNetworkRpc', () => {
 
   it('returns isUnreliable=false when the chain has no network configuration', () => {
     mockSendContext('0xdeadbeef');
-    const { result } = renderHookWithProvider(useUnreliableNetworkRpc, mockState);
+    const { result } = renderHookWithProvider(
+      useUnreliableNetworkRpc,
+      mockState,
+    );
 
     expect(result.current.isUnreliable).toBe(false);
     expect(result.current.networkName).toBeUndefined();
@@ -116,7 +117,10 @@ describe('useUnreliableNetworkRpc', () => {
 
   it('navigateToEditNetwork is a no-op for non-hex chainId', () => {
     mockSendContext('bip122:000000000019d6689c085ae165831e93');
-    const { result } = renderHookWithProvider(useUnreliableNetworkRpc, mockState);
+    const { result } = renderHookWithProvider(
+      useUnreliableNetworkRpc,
+      mockState,
+    );
 
     act(() => {
       result.current.navigateToEditNetwork();
