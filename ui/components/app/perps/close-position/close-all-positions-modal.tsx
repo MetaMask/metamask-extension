@@ -102,6 +102,8 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
       return;
     }
 
+    setEstimatedFees(0);
+
     const entries: [string, number][] = JSON.parse(symbolNotionalKey);
 
     feeRequestId.current += 1;
