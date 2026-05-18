@@ -17,16 +17,20 @@ import { useRecipientValidation } from '../../../hooks/send/useRecipientValidati
 import { useRecipientSelectionMetrics } from '../../../hooks/send/metrics/useRecipientSelectionMetrics';
 import { useAmountValidation } from '../../../hooks/send/useAmountValidation';
 import { useSendType } from '../../../hooks/send/useSendType';
+import { useUnreliableNetworkRpc } from '../../../hooks/send/useUnreliableNetworkRpc';
 import { SendHero } from '../../UI/send-hero';
 import { Amount } from '../amount/amount';
 import { Recipient } from '../recipient';
 import { HexData } from '../hex-data';
-import { SendAlertModal } from '../send-alert-modal';
+import { SendAlerts } from '../send-alerts';
 
 export const AmountRecipient = () => {
   const t = useI18nContext();
   const [hexDataError, setHexDataError] = useState<string>();
-  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [isSmartContractAlertOpen, setIsSmartContractAlertOpen] =
+    useState(false);
+  const [shouldSubmitOnAcknowledge, setShouldSubmitOnAcknowledge] =
+    useState(false);
   const { asset, toResolved, nonEVMSubmitError } = useSendContext();
   const { amountError, validateNonEvmAmountAsync } = useAmountValidation();
   const { isNonEvmSendType } = useSendType();
@@ -34,6 +38,7 @@ export const AmountRecipient = () => {
   const { captureAmountSelected } = useAmountSelectionMetrics();
   const { captureRecipientSelected } = useRecipientSelectionMetrics();
   const recipientValidationResult = useRecipientValidation();
+  const { isUnreliable: isNetworkUnreliable } = useUnreliableNetworkRpc();
 
   const { recipientErrorAllowAcknowledge, acknowledgeError } =
     recipientValidationResult;
@@ -44,19 +49,8 @@ export const AmountRecipient = () => {
       !recipientErrorAllowAcknowledge) ||
     Boolean(hexDataError) ||
     Boolean(nonEVMSubmitError);
-  const isDisabled = hasBlockingError || !toResolved;
-
-  const [shouldSubmitOnAcknowledge, setShouldSubmitOnAcknowledge] =
-    useState(false);
-
-  const openAlertModal = useCallback(() => {
-    setShouldSubmitOnAcknowledge(false);
-    setIsAlertModalOpen(true);
-  }, []);
-
-  const handleAlertModalClose = useCallback(() => {
-    setIsAlertModalOpen(false);
-  }, []);
+  const isDisabled =
+    hasBlockingError || !toResolved || isNetworkUnreliable;
 
   const proceedWithSubmit = useCallback(async () => {
     if (isNonEvmSendType) {
@@ -78,8 +72,17 @@ export const AmountRecipient = () => {
     validateNonEvmAmountAsync,
   ]);
 
-  const handleAlertModalAcknowledge = useCallback(async () => {
-    setIsAlertModalOpen(false);
+  const openSmartContractAlert = useCallback(() => {
+    setShouldSubmitOnAcknowledge(false);
+    setIsSmartContractAlertOpen(true);
+  }, []);
+
+  const handleSmartContractClose = useCallback(() => {
+    setIsSmartContractAlertOpen(false);
+  }, []);
+
+  const handleSmartContractAcknowledge = useCallback(async () => {
+    setIsSmartContractAlertOpen(false);
     acknowledgeError();
     if (shouldSubmitOnAcknowledge) {
       await proceedWithSubmit();
@@ -89,7 +92,7 @@ export const AmountRecipient = () => {
   const onClick = useCallback(async () => {
     if (recipientErrorAllowAcknowledge) {
       setShouldSubmitOnAcknowledge(true);
-      setIsAlertModalOpen(true);
+      setIsSmartContractAlertOpen(true);
       return;
     }
     await proceedWithSubmit();
@@ -110,7 +113,7 @@ export const AmountRecipient = () => {
         <SendHero asset={asset as Asset} />
         <Recipient
           recipientValidationResult={recipientValidationResult}
-          onAlertIconClick={openAlertModal}
+          onAlertIconClick={openSmartContractAlert}
         />
         <Amount amountError={amountError} />
         <HexData setHexDataError={setHexDataError} />
@@ -124,12 +127,10 @@ export const AmountRecipient = () => {
       >
         {amountError ?? hexDataError ?? nonEVMSubmitError ?? t('continue')}
       </Button>
-      <SendAlertModal
-        isOpen={isAlertModalOpen}
-        title={t('smartContractAddress')}
-        errorMessage={t('smartContractAddressWarning')}
-        onAcknowledge={handleAlertModalAcknowledge}
-        onClose={handleAlertModalClose}
+      <SendAlerts
+        isSmartContractAlertOpen={isSmartContractAlertOpen}
+        onSmartContractClose={handleSmartContractClose}
+        onSmartContractAcknowledge={handleSmartContractAcknowledge}
       />
     </Box>
   );
