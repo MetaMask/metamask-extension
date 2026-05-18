@@ -22,8 +22,15 @@ import {
 import { KeyringControllerInit } from './keyring-controller-init';
 
 jest.mock('@metamask/keyring-controller');
+
+// `isManifestV3` is read at call time inside `KeyringControllerInit`. Backing
+// the mocked export with a getter lets individual tests flip the flag without
+// re-importing the module under test.
+let mockIsManifestV3 = false;
 jest.mock('../../../shared/lib/mv3.utils', () => ({
-  isManifestV3: false,
+  get isManifestV3() {
+    return mockIsManifestV3;
+  },
 }));
 
 function getInitRequestMock({
@@ -117,41 +124,33 @@ describe('KeyringControllerInit', () => {
   });
 
   it('registers the MV3 hardware-keyring set when isManifestV3 is true', () => {
-    let mv3Builders: unknown[] = [];
-
-    jest.isolateModules(() => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
-      jest.doMock('../../../shared/lib/mv3.utils', () => ({
-        isManifestV3: true,
-      }));
-      // eslint-disable-next-line @typescript-eslint/no-require-imports, n/global-require
-      const {
-        KeyringControllerInit: KeyringControllerInitMv3,
-        // eslint-disable-next-line n/global-require
-      } = require('./keyring-controller-init');
-      KeyringControllerInitMv3(getInitRequestMock());
+    mockIsManifestV3 = true;
+    try {
+      KeyringControllerInit(getInitRequestMock());
 
       const args = jest.mocked(KeyringController).mock.calls.at(-1)?.[0];
-      mv3Builders = (args?.keyringBuilders ?? []) as unknown[];
-    });
+      const mv3Builders = (args?.keyringBuilders ?? []) as unknown[];
 
-    // Each builder factory marks its return value with a `type` matching the
-    // legacy keyring `type` constant. The Lattice offscreen builder uses
-    // `@metamask/keyring-controller`'s `keyringBuilderFactory` which is
-    // mocked at the top of this file (returns `undefined`); the snap
-    // keyring builder is `undefined` because `getMessengerClient` is
-    // unstubbed for `SnapKeyringBuilder`. Filter both before asserting.
-    const types = mv3Builders
-      .filter((b): b is { type: string } => Boolean(b))
-      .map((b) => b.type);
-    expect(types).toEqual(
-      expect.arrayContaining([
-        QrKeyring.type,
-        TrezorKeyring.type,
-        OneKeyKeyring.type,
-        LedgerKeyring.type,
-      ]),
-    );
+      // Each builder factory marks its return value with a `type` matching the
+      // legacy keyring `type` constant. The Lattice offscreen builder uses
+      // `@metamask/keyring-controller`'s `keyringBuilderFactory` which is
+      // mocked at the top of this file (returns `undefined`); the snap
+      // keyring builder is `undefined` because `getMessengerClient` is
+      // unstubbed for `SnapKeyringBuilder`. Filter both before asserting.
+      const types = mv3Builders
+        .filter((b): b is { type: string } => Boolean(b))
+        .map((b) => b.type);
+      expect(types).toEqual(
+        expect.arrayContaining([
+          QrKeyring.type,
+          TrezorKeyring.type,
+          OneKeyKeyring.type,
+          LedgerKeyring.type,
+        ]),
+      );
+    } finally {
+      mockIsManifestV3 = false;
+    }
   });
 
   describe('V2 builder closures', () => {
