@@ -72,10 +72,7 @@ describe('useTokenSearch', () => {
       () =>
         useTokenSearch({
           query: '   ',
-          networks: [
-            'eip155:59144',
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-          ],
+          networks: ['eip155:59144', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
           enableTokenBrowse: true,
         }),
       {
@@ -88,10 +85,7 @@ describe('useTokenSearch', () => {
     expect(searchSpy).not.toHaveBeenCalled();
     expect(browseSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        networks: [
-          'eip155:59144',
-          'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        ],
+        networks: ['eip155:59144', 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
       }),
     );
     expect(result.current.data?.data).toStrictEqual(payload.data);
@@ -198,8 +192,7 @@ describe('useTokenSearch', () => {
       ...emptyPage,
       data: [
         {
-          assetId:
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:AAA',
+          assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:AAA',
           symbol: 'AAA',
           decimals: 6,
           name: 'Alpha',
@@ -213,8 +206,7 @@ describe('useTokenSearch', () => {
       ...emptyPage,
       data: [
         {
-          assetId:
-            'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:BBB',
+          assetId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:BBB',
           symbol: 'BBB',
           decimals: 6,
           name: 'Beta',

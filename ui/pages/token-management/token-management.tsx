@@ -98,7 +98,6 @@ import {
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
-
 type EvmToken = {
   address: string;
   symbol?: string;
@@ -197,14 +196,12 @@ const getIgnoredTokenAddressesByChain = (
   return ignoredTokenAddressesByChain;
 };
 
-const toManagedEvmToken = (
-  token: EvmToken,
-  hexChainId: string,
-): ManagedAsset =>
+const toManagedEvmToken = (token: EvmToken, hexChainId: string): ManagedAsset =>
   ({
     accountId: '',
     accountType: 'eip155:eoa',
-    assetId: toAssetId(token.address as Hex, hexChainId as Hex) ?? token.address,
+    assetId:
+      toAssetId(token.address as Hex, hexChainId as Hex) ?? token.address,
     address: token.address,
     chainId: hexChainId,
     image: token.image ?? '',
