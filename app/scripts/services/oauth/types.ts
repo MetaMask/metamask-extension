@@ -102,7 +102,12 @@ export type WebAuthenticator = {
 };
 
 export type LoginHandlerOptions = {
-  oAuthClientId: string;
+  /**
+   * The OAuth Client ID for the OAuth login.
+   * This is optional for the Telegram login, since we don't need to load the oAuthClientId from the client side,
+   * we will load load the oAuthClientId from the server side and oidc server will perform the token exchange
+   */
+  oAuthClientId?: string;
   authServerUrl: string;
   web3AuthNetwork: Web3AuthNetwork;
   webAuthenticator: WebAuthenticator;

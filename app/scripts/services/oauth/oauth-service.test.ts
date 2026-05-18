@@ -33,8 +33,8 @@ const mockBrowserRuntime = browser.runtime as typeof browser.runtime & {
   lastError?: { message: string; stack?: string[] };
 };
 
-const DEFAULT_GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID as string;
-const DEFAULT_APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID as string;
+const MOCK_GOOGLE_CLIENT_ID = 'mock-google-client-id';
+const MOCK_APPLE_CLIENT_ID = 'mock-apple-client-id';
 const MOCK_USER_ID = 'user-id';
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
 const MOCK_PROFILE_SYNC_ENV = ProfileSyncEnv.DEV;
@@ -57,8 +57,8 @@ function getOAuthLoginEnvs(): {
   profileSyncEnv: ProfileSyncEnv;
 } {
   return {
-    googleClientId: DEFAULT_GOOGLE_CLIENT_ID,
-    appleClientId: DEFAULT_APPLE_CLIENT_ID,
+    googleClientId: MOCK_GOOGLE_CLIENT_ID,
+    appleClientId: MOCK_APPLE_CLIENT_ID,
     profileSyncEnv: MOCK_PROFILE_SYNC_ENV,
   };
 }
@@ -609,7 +609,7 @@ describe('OAuthService - getNewRefreshToken', () => {
         body: JSON.stringify({
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: DEFAULT_GOOGLE_CLIENT_ID,
+          client_id: MOCK_GOOGLE_CLIENT_ID,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           login_provider: AuthConnection.Google,

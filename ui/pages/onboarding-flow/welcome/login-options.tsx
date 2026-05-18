@@ -85,7 +85,9 @@ export default function LoginOptions({
       : 'var(--color-accent02-dark)';
   }, [theme]);
 
-  const isExisting = loginOption === LOGIN_OPTION.EXISTING;
+  const isExisting = useMemo(() => {
+    return loginOption === LOGIN_OPTION.EXISTING;
+  }, [loginOption]);
 
   const socialOptions: {
     name: string;

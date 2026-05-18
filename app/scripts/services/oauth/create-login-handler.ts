@@ -34,7 +34,6 @@ export function createLoginHandler(
     case AuthConnection.Telegram:
       return new TelegramLoginHandler({
         ...commonHandlerOptions,
-        oAuthClientId: '',
         profileSyncEnv: config.profileSyncEnv,
       });
     default:
