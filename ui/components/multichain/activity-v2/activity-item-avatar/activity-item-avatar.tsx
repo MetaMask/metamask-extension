@@ -54,9 +54,8 @@ const ActivityDualTokenAvatar = ({
 export const ActivityItemAvatar = ({
   config,
 }: Readonly<ActivityItemAvatarProps>) => {
-  if (config.variant === 'single') {
-    return <ActivityTokenAvatar token={config.token} />;
-  } else {
+  if (config.variant === 'dual') {
     return <ActivityDualTokenAvatar from={config.from} to={config.to} />;
   }
+  return <ActivityTokenAvatar token={config.token} />;
 };
