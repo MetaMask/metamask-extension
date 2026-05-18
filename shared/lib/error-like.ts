@@ -36,11 +36,12 @@ function serializeSentryTags(
   }
 
   return Object.fromEntries(
-    Object.entries(error.sentryTags)
-      .filter((entry): entry is [string, string] => {
+    Object.entries(error.sentryTags).filter(
+      (entry): entry is [string, string] => {
         const [, value] = entry;
         return typeof value === 'string';
-      }),
+      },
+    ),
   );
 }
 
