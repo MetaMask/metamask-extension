@@ -208,7 +208,10 @@ import {
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../shared/types';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { AuthConnection, OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import {
+  AuthConnection,
+  OAuthLoginResult,
+} from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';
@@ -2409,7 +2412,7 @@ export function deleteExpiredNotifications(): ThunkAction<
 
         return Boolean(
           notification.readDate &&
-          new Date(notification.readDate) < expirationTime,
+            new Date(notification.readDate) < expirationTime,
         );
       })
       .map(({ id }) => id);

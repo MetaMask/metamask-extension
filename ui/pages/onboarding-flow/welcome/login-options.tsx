@@ -25,6 +25,7 @@ import classnames from 'clsx';
 import { PolymorphicRef } from '../../../components/component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ThemeType } from '../../../../shared/constants/preferences';
+import { getIsTelegramLoginFeatureEnabled } from '../../../../shared/lib/environment';
 import { useTheme } from '../../../hooks/useTheme';
 import { LOGIN_TYPE, LoginType, LoginOptionType, LOGIN_OPTION } from './types';
 
@@ -76,6 +77,7 @@ export default function LoginOptions({
 }) {
   const t = useI18nContext();
   const theme = useTheme();
+  const isTelegramLoginFeatureEnabled = getIsTelegramLoginFeatureEnabled();
 
   const backgroundColorForLoginOptions = useMemo(() => {
     return theme === ThemeType.light
@@ -118,7 +120,10 @@ export default function LoginOptions({
       ),
       btnClass: 'mb-4',
     },
-    {
+  ];
+
+  if (isTelegramLoginFeatureEnabled) {
+    socialOptions.push({
       name: 'Telegram',
       loginType: LOGIN_TYPE.TELEGRAM,
       testIdSuffix: 'telegram',
@@ -130,8 +135,8 @@ export default function LoginOptions({
         />
       ),
       btnClass: 'mb-2',
-    },
-  ];
+    });
+  }
 
   return (
     <Box>

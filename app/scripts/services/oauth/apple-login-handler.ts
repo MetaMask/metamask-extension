@@ -1,5 +1,10 @@
 import { BaseLoginHandler } from './base-login-handler';
-import { AuthConnection, AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
+import {
+  AuthConnection,
+  AuthTokenResponse,
+  LoginHandlerOptions,
+  OAuthUserInfo,
+} from './types';
 import { decodeIdToken } from './utils';
 
 export class AppleLoginHandler extends BaseLoginHandler {

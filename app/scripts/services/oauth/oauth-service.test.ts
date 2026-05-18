@@ -13,7 +13,11 @@ import browser from 'webextension-polyfill';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import ExtensionPlatform from '../../platforms/extension';
-import { AuthConnection, OAuthServiceMessenger, WebAuthenticator } from './types';
+import {
+  AuthConnection,
+  OAuthServiceMessenger,
+  WebAuthenticator,
+} from './types';
 import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 import { loadOAuthConfig } from './config';

@@ -5,7 +5,12 @@ import {
   getOidcClientId,
 } from '@metamask/profile-sync-controller/sdk';
 import { BaseLoginHandler } from './base-login-handler';
-import { AuthConnection, AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
+import {
+  AuthConnection,
+  AuthTokenResponse,
+  LoginHandlerOptions,
+  OAuthUserInfo,
+} from './types';
 import { decodeIdToken } from './utils';
 
 export type TelegramLoginHandlerOptions = LoginHandlerOptions & {

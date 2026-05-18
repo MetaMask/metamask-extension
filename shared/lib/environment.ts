@@ -12,6 +12,10 @@ export const getIsSeedlessOnboardingFeatureEnabled = (): boolean => {
   return process.env.SEEDLESS_ONBOARDING_ENABLED?.toString() === 'true';
 };
 
+export const getIsTelegramLoginFeatureEnabled = (): boolean => {
+  return getIsSeedlessOnboardingFeatureEnabled() && process.env.TELEGRAM_LOGIN_ENABLED?.toString() === 'true';
+};
+
 export const getIsMetaMaskShieldFeatureEnabled = (): boolean => {
   return process.env.METAMASK_SHIELD_ENABLED?.toString() === 'true';
 };
