@@ -190,13 +190,19 @@ export function getPerpsConfigEligibleWithActivity(title?: string) {
       await server
         .forPost('https://api.hyperliquid.xyz/info')
         .withJsonBodyIncluding({ type: 'userFills' })
-        .thenCallback(() => ({ statusCode: 200, json: [MOCK_ETH_OPEN_LONG_FILL] }));
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: [MOCK_ETH_OPEN_LONG_FILL],
+        }));
 
       // Override openOrders — returns an ETH limit buy for the Orders filter
       await server
         .forPost('https://api.hyperliquid.xyz/info')
         .withJsonBodyIncluding({ type: 'openOrders' })
-        .thenCallback(() => ({ statusCode: 200, json: [MOCK_ETH_LIMIT_ORDER] }));
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: [MOCK_ETH_LIMIT_ORDER],
+        }));
 
       // Override userFunding — returns an ETH funding payment for the Funding filter
       await server
