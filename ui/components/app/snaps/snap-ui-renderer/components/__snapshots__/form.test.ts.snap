@@ -13,7 +13,7 @@ exports[`SnapUIForm will render 1`] = `
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
       >
         <form
-          class="flex flex-col gap-2 snap-ui-renderer__form"
+          class="flex-col gap-2 flex snap-ui-renderer__form"
           id="form"
         >
           <div
@@ -63,7 +63,7 @@ exports[`SnapUIForm will render with fields 1`] = `
         class="box snap-ui-renderer__panel box--display-flex box--flex-direction-column box--justify-content-flex-start box--color-text-default"
       >
         <form
-          class="flex flex-col gap-2 snap-ui-renderer__form"
+          class="flex-col gap-2 flex snap-ui-renderer__form"
           id="form"
         >
           <div

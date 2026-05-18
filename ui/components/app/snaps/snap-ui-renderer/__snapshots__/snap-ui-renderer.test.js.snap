@@ -278,7 +278,7 @@ exports[`SnapUIRenderer renders footers 1`] = `
 exports[`SnapUIRenderer renders loading state 1`] = `
 <div>
   <div
-    class="flex flex-row items-center justify-center h-full w-full"
+    class="flex-row items-center justify-center flex h-full w-full"
   >
     <div
       class="pulse-loader"

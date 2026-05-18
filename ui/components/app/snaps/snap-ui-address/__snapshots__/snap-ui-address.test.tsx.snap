@@ -3,7 +3,7 @@
 exports[`SnapUIAddress renders Bitcoin address 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -62,7 +62,7 @@ exports[`SnapUIAddress renders Bitcoin address 1`] = `
 exports[`SnapUIAddress renders Bitcoin address with blockie 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -88,7 +88,7 @@ exports[`SnapUIAddress renders Bitcoin address with blockie 1`] = `
 exports[`SnapUIAddress renders Cosmos address 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -147,7 +147,7 @@ exports[`SnapUIAddress renders Cosmos address 1`] = `
 exports[`SnapUIAddress renders Cosmos address with blockie 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -173,7 +173,7 @@ exports[`SnapUIAddress renders Cosmos address with blockie 1`] = `
 exports[`SnapUIAddress renders Ethereum address 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -232,7 +232,7 @@ exports[`SnapUIAddress renders Ethereum address 1`] = `
 exports[`SnapUIAddress renders Ethereum address with blockie 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -258,7 +258,7 @@ exports[`SnapUIAddress renders Ethereum address with blockie 1`] = `
 exports[`SnapUIAddress renders Hedera address 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -317,7 +317,7 @@ exports[`SnapUIAddress renders Hedera address 1`] = `
 exports[`SnapUIAddress renders Hedera address with blockie 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -343,7 +343,7 @@ exports[`SnapUIAddress renders Hedera address with blockie 1`] = `
 exports[`SnapUIAddress renders Polkadot address 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -402,7 +402,7 @@ exports[`SnapUIAddress renders Polkadot address 1`] = `
 exports[`SnapUIAddress renders Polkadot address with blockie 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -428,7 +428,7 @@ exports[`SnapUIAddress renders Polkadot address with blockie 1`] = `
 exports[`SnapUIAddress renders Starknet address 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -487,7 +487,7 @@ exports[`SnapUIAddress renders Starknet address 1`] = `
 exports[`SnapUIAddress renders Starknet address with blockie 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
@@ -513,7 +513,7 @@ exports[`SnapUIAddress renders Starknet address with blockie 1`] = `
 exports[`SnapUIAddress renders legacy Ethereum address 1`] = `
 <div>
   <div
-    class="flex flex-row gap-2 items-center snap-ui-renderer__address"
+    class="flex-row gap-2 items-center flex snap-ui-renderer__address"
     data-testid="snap-ui-address"
   >
     <div
