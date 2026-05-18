@@ -79,6 +79,16 @@ describe('getFirstPreferredLangCode', () => {
     });
   });
 
+  describe('Spanish locale handling', () => {
+    it('maps es to es_419 via the pre-seeded default', async () => {
+      mockGetAcceptLanguages.mockResolvedValue(['es']);
+
+      const result = await getFirstPreferredLangCode();
+
+      expect(result).toBe('es_419');
+    });
+  });
+
   describe('Chinese locale handling', () => {
     it('maps zh to zh_CN via the pre-seeded default', async () => {
       mockGetAcceptLanguages.mockResolvedValue(['zh']);

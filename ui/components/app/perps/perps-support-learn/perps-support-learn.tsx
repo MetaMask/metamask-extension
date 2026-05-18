@@ -21,10 +21,15 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../../../shared/constants/perps-events';
+import {
   FEEDBACK_CONFIG,
   SUPPORT_CONFIG,
 } from '../../../../../shared/constants/perps';
 import { setTutorialModalOpen } from '../../../../ducks/perps';
+import { usePerpsEventTracking } from '../../../../hooks/perps';
 
 const LIST_ITEM_BASE =
   'flex items-center gap-3 px-4 py-3 bg-background-muted cursor-pointer hover:bg-hover active:bg-pressed';
@@ -73,12 +78,29 @@ export const PerpsSupportLearn: React.FC = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
+  const { track } = usePerpsEventTracking();
 
   const handleLearnPerps = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.TUTORIAL,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
+    });
     dispatch(setTutorialModalOpen(true));
-  }, [dispatch]);
+  }, [dispatch, track]);
 
   const handleContactSupport = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.SUPPORT,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
+    });
     trackEvent(
       {
         category: MetaMetricsEventCategory.Settings,
@@ -93,9 +115,17 @@ export const PerpsSupportLearn: React.FC = () => {
       },
     );
     globalThis.platform.openTab({ url: SUPPORT_CONFIG.Url });
-  }, [trackEvent]);
+  }, [track, trackEvent]);
 
   const handleFeedback = useCallback(() => {
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.BUTTON_CLICKED,
+      [PERPS_EVENT_PROPERTY.BUTTON_TYPE]:
+        PERPS_EVENT_VALUE.BUTTON_CLICKED.FEEDBACK,
+      [PERPS_EVENT_PROPERTY.BUTTON_LOCATION]:
+        PERPS_EVENT_VALUE.BUTTON_LOCATION.WALLET_HOME_PERPS_TAB,
+    });
     trackEvent(
       {
         category: MetaMetricsEventCategory.Feedback,
@@ -111,7 +141,7 @@ export const PerpsSupportLearn: React.FC = () => {
       },
     );
     globalThis.platform.openTab({ url: FEEDBACK_CONFIG.Url });
-  }, [trackEvent]);
+  }, [track, trackEvent]);
 
   return (
     <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>

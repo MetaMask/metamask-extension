@@ -8,6 +8,8 @@ on:
 env:
   VERSION_BUMP_HEAD_BRANCH_PATTERN: '^version-bump/[0-9]+\.[0-9]+\.[0-9]+$'
   STABLE_MAIN_HEAD_BRANCH_PATTERN: '^stable-main-[0-9]+\.[0-9]+\.[0-9]+$'
+  STABLE_SYNC_HEAD_BRANCH_PATTERN: '^stable-sync-'
+  RELEASE_BASE_BRANCH_PATTERN: '^release/[0-9]+\.[0-9]+\.[0-9]+$'
 
 jobs:
   merge-my-pr:
@@ -41,8 +43,9 @@ jobs:
               pull_number: parseInt(process.env.PR_NUMBER, 10),
             });
 
-            // Export head ref for subsequent steps
+            // Export head/base refs for subsequent steps
             core.exportVariable('PR_HEAD_REF', pr.head.ref);
+            core.exportVariable('PR_BASE_REF', pr.base.ref);
 
       - name: Check the branch name against patterns
         id: check-branch
@@ -53,6 +56,9 @@ jobs:
           elif [[ "${PR_HEAD_REF}" =~ ${STABLE_MAIN_HEAD_BRANCH_PATTERN} ]]; then
             echo "Branch name matches stable main pattern"
             echo "stable-main=true" >> "$GITHUB_OUTPUT"
+          elif [[ "${PR_HEAD_REF}" =~ ${STABLE_SYNC_HEAD_BRANCH_PATTERN} ]] && [[ "${PR_BASE_REF}" =~ ${RELEASE_BASE_BRANCH_PATTERN} ]]; then
+            echo "Branch name matches stable-sync -> release pattern"
+            echo "stable-sync-release=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Merge approved version bump PR
@@ -75,5 +81,15 @@ jobs:
           # Merge PRs from stable-main-X.Y.Z into main
           required-base-branch: 'main'
           head-branch-pattern: '^stable-main-[0-9]+\.[0-9]+\.[0-9]+$'
+          merge-method: 'merge'
+          github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}
+
+      - name: Merge approved stable-sync to release PR
+        if: ${{ steps.check-branch.outputs.stable-sync-release == 'true' }}
+        uses: MetaMask/github-tools/.github/actions/merge-approved-pr@v1
+        with:
+          pr-number: ${{ github.event.issue.number }}
+          required-base-branch: ${{ env.PR_BASE_REF }}
+          head-branch-pattern: '^stable-sync-'
           merge-method: 'merge'
           github-token: ${{ secrets.METAMASK_EXTENSION_BRANCH_SYNC_TOKEN }}

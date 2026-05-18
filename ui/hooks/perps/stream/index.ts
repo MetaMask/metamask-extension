@@ -92,6 +92,11 @@ export {
   type UsePerpsLiveMarketDataOptions,
   type UsePerpsLiveMarketDataReturn,
 } from './usePerpsLiveMarketData';
+export {
+  usePerpsLiveMarketListData,
+  type UsePerpsLiveMarketListDataOptions,
+  type UsePerpsLiveMarketListDataReturn,
+} from './usePerpsLiveMarketListData';
 
 // Re-export types from @metamask/perps-controller for convenience
 export type {

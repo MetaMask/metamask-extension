@@ -2,6 +2,7 @@ export { PerpsBalanceDropdown } from './perps-balance-dropdown';
 export type { PerpsBalanceDropdownProps } from './perps-balance-dropdown';
 export { PerpsRecentActivity } from './perps-recent-activity';
 export type { PerpsRecentActivityProps } from './perps-recent-activity';
+export { PerpsTab } from './perps-tab';
 export { PerpsView } from './perps-view';
 export { PerpsViewStreamBoundary } from './perps-view-stream-boundary';
 export { PerpsToastProvider, usePerpsToast } from './perps-toast';
@@ -19,7 +20,8 @@ export {
   formatStatus,
   getStatusColor,
   getDisplaySymbol,
-  getAssetIconUrl,
+  getAssetIconUrls,
+  type AssetIconUrls,
   groupTransactionsByDate,
   filterTransactionsByType,
   getTransactionStatusColor,

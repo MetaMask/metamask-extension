@@ -16,9 +16,9 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import discardFonts from 'postcss-discard-font-face';
 import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
+import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
 import {
   getMinimizers,
@@ -120,6 +120,10 @@ const manifestPlugin = new ManifestPlugin({
       }
     : {}),
   buildType: args.type,
+  // We want to set a build ID for test builds to make it easier for tooling to
+  // know if the build contents have changed. Can be useful during testing or
+  // development.
+  setBuildId: args.test,
 });
 
 const plugins: WebpackPluginInstance[] = [
@@ -231,6 +235,13 @@ if (args.reactCompilerVerbose) {
   plugins.push(new ReactCompilerPlugin());
 }
 
+if (args.bundleAnalyzer) {
+  const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+  plugins.push(
+    new BundleAnalyzerPlugin({ analyzerMode: 'static', openAnalyzer: false }),
+  );
+}
+
 // #endregion plugins
 
 const swcConfig = { args, browsersListQuery, isDevelopment };
@@ -238,39 +249,14 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
-const threadLoaderConfig = getThreadLoader({
-  threads: args.resolvedThreads,
-  jobsPerThread: args.resolvedJobs,
-  watch: args.watch,
-});
-const reactCompilerConfig = getReactCompilerLoader({
+
+const threadLoader = getThreadLoader(args);
+const reactCompiler = getReactCompilerLoader({
   target: '17',
   verbose: args.reactCompilerVerbose,
   debug: args.reactCompilerDebug,
+  threadLoaderEnabled: threadLoader !== null,
 });
-
-const threadLoaderRule = threadLoaderConfig
-  ? [{ test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [threadLoaderConfig] }]
-  : [];
-const reactCompilerRule = [
-  { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: [reactCompilerConfig] },
-];
-
-const envValidationRule = args.validateEnv
-  ? [
-      {
-        test: /\.(?:[jt]s|m[jt]s|[jt]sx)$/u,
-        exclude: NODE_MODULES_RE,
-        enforce: 'pre' as const,
-        use: [
-          {
-            loader: require.resolve('./utils/loaders/envValidationLoader'),
-            options: { declarations: Array.from(buildEnvVarDeclarations) },
-          },
-        ],
-      },
-    ]
-  : [];
 
 const config = {
   // All entries are added dynamically by ManifestPlugin
@@ -387,9 +373,21 @@ const config = {
       },
       // Source preprocessing (enforce: 'pre' ensures these run before normal
       // loaders; options must be JSON-serializable for thread-loader compatibility)
-      ...envValidationRule,
+      args.validateEnv && {
+        test: /\.(?:[jt]s|m[jt]s|[jt]sx)$/u,
+        exclude: NODE_MODULES_RE,
+        enforce: 'pre' as const,
+        use: {
+          loader: require.resolve('./utils/loaders/envValidationLoader'),
+          options: { declarations: [...buildEnvVarDeclarations] },
+        },
+      },
       // thread-loader pool for UI component files (must appear before SWC rules)
-      ...threadLoaderRule,
+      threadLoader && {
+        test: UI_COMPONENT_RE,
+        include: UI_DIR_RE,
+        use: threadLoader,
+      },
       // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
@@ -403,7 +401,7 @@ const config = {
         use: jsxLoader,
       },
       // React Compiler for UI component files (must appear after SWC rules)
-      ...reactCompilerRule,
+      { test: UI_COMPONENT_RE, include: UI_DIR_RE, use: reactCompiler },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
       {
@@ -442,11 +440,12 @@ const config = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
+                config: false,
                 plugins: [
                   tailwindcss(),
                   autoprefixer({ overrideBrowserslist: browsersListQuery }),
                   rtlCss({ processEnv: false }),
-                  discardFonts(['woff2']), // keep woff2 fonts
+                  discardFontFace(['woff2']), // keep woff2 fonts
                 ],
               },
             },
@@ -559,9 +558,6 @@ const config = {
   },
   ignoreWarnings: [
     /the following module ids can't be controlled by policy and must be ignored at runtime/u,
-    // Optional perps-controller: dynamic optional provider not shipped in this build
-    // TODO: Remove this once the MYX provider is included in the published
-    /MYXProvider\.mjs/u,
   ],
 } as const satisfies Configuration;
 

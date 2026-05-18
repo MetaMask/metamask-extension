@@ -1,22 +1,58 @@
 import { CaipAccountId, CaipAssetType } from '@metamask/utils';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { ControllerGetStateAction } from '@metamask/base-controller';
+import type { SnapControllerHandleRequestAction } from '@metamask/snaps-controllers';
 import {
-  EstimatedPointsDto,
+  AccountsControllerGetSelectedMultichainAccountAction,
+  AccountsControllerListMultichainAccountsAction,
+} from '@metamask/accounts-controller';
+import {
+  AccountTreeControllerGetAccountsFromSelectedAccountGroupAction,
+  AccountTreeControllerSelectedAccountGroupChangeEvent,
+} from '@metamask/account-tree-controller';
+import {
+  KeyringControllerSignPersonalMessageAction,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
+import { Messenger } from '@metamask/messenger';
+import {
   EstimatePerpsContextDto,
-  EstimatePointsDto,
   EstimateShieldContextDto,
-  OptInStatusDto,
-  OptInStatusInputDto,
   PointsEventEarnType,
-  RewardsGeoMetadata,
   SeasonDtoState,
   SeasonRewardType,
   SeasonStatusState,
 } from '../../../../shared/types/rewards';
+import {
+  RewardsDataServiceGetOptInStatusAction,
+  RewardsDataServiceEstimatePointsAction,
+  RewardsDataServiceGetSeasonStatusAction,
+  RewardsDataServiceLoginAction,
+  RewardsDataServiceSiweLoginAction,
+  RewardsDataServiceMobileJoinAction,
+  RewardsDataServiceSiweJoinAction,
+  RewardsDataServiceMobileOptinAction,
+  RewardsDataServiceValidateReferralCodeAction,
+  RewardsDataServiceFetchGeoLocationAction,
+  RewardsDataServiceGetSeasonMetadataAction,
+  RewardsDataServiceGetDiscoverSeasonsAction,
+  RewardsDataServiceGenerateChallengeAction,
+  RewardsDataServiceGetVipFeesAction,
+} from './rewards-data-service-method-action-types';
+import { RewardsControllerMethodActions } from './rewards-controller-method-action-types';
 
 export type LoginResponseDto = {
   sessionId: string;
   subscription: SubscriptionDto;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type VipFeatureDto = {
+  enabled: boolean;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type SubscriptionFeaturesDto = {
+  vip: VipFeatureDto;
 };
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -29,6 +65,48 @@ export type SubscriptionDto = {
   }[];
   createdAt: string;
   candidateAt?: string;
+  /**
+   * Per-subscription feature flags (VIP, etc.). Optional for backward
+   * compatibility with subscriptions persisted before this field was added —
+   * callers must treat `features?.vip?.enabled !== true` as non-VIP.
+   */
+  features?: SubscriptionFeaturesDto;
+};
+
+// Backend wire format for GET /vip/fees — mirrors va-mmcx-rewards
+// src/main/vip/dto/vip-fees.dto.ts (PR #546). Fee bips are returned as
+// strings; the controller parses them as needed.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type HyperliquidVipFeesDto = {
+  builderCode: string;
+  builderFeeBips: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type SwapsVipFeesDto = {
+  feeBips: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type VipFeesGroupDto = {
+  hyperliquid: HyperliquidVipFeesDto;
+  swaps: SwapsVipFeesDto;
+};
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type VipFeesResponseDto = {
+  vipTier: number;
+  fees: VipFeesGroupDto | null;
+  updatedAt: string | null;
+};
+
+// Per-subscription cache for VIP perps builder fee.
+// We store the raw bips string from the backend rather than a derived
+// discount so the cache stays valid if the perps base fee constant changes.
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type VipPerpsFeesState = {
+  hyperliquidBuilderFeeBips: string;
+  lastFetched: number;
 };
 
 export type MobileLoginDto = {
@@ -368,6 +446,11 @@ export type SeasonMetadataDto = {
    * The tiers for the season
    */
   tiers: SeasonTierDto[];
+
+  /**
+   * The activity types that earn points in this season
+   */
+  activityTypes: string[];
 };
 
 /**
@@ -732,6 +815,12 @@ export type RewardsControllerState = {
   rewardsSeasonStatuses: { [compositeId: string]: SeasonStatusState };
   rewardsSubscriptionTokens: { [subscriptionId: string]: string };
   /**
+   * Per-subscription cache of the latest VIP fees response (raw bips string)
+   * with a `lastFetched` timestamp. The discount is re-derived at read time
+   * so callers can pass a different base fee without invalidating the cache.
+   */
+  rewardsVipPerpsFees: { [subscriptionId: string]: VipPerpsFeesState };
+  /**
    * History of points estimates for Customer Support diagnostics.
    * Stores the last N successful estimates to verify user-reported discrepancies.
    */
@@ -758,17 +847,6 @@ export type Patch = {
   op: 'replace' | 'add' | 'remove';
   path: string[];
   value?: unknown;
-};
-
-/**
- * Action for updating state with opt-in response
- */
-export type RewardsControllerOptInAction = {
-  type: 'RewardsController:optIn';
-  handler: (
-    accounts: InternalAccount[],
-    referralCode?: string,
-  ) => Promise<string | null>;
 };
 
 /**
@@ -800,117 +878,58 @@ export type PerpsDiscountData = {
 };
 
 /**
- * Action for getting opt-in status of multiple addresses with feature flag check
+ * Events that can be emitted by the RewardsController
  */
-export type RewardsControllerGetOptInStatusAction = {
-  type: 'RewardsController:getOptInStatus';
-  handler: (params: OptInStatusInputDto) => Promise<OptInStatusDto>;
-};
+export type RewardsControllerEvents =
+  | {
+      type: 'RewardsController:stateChange';
+      payload: [RewardsControllerState, Patch[]];
+    }
+  | RewardsControllerAccountLinkedEvent;
 
 /**
- * Action for estimating points for a given activity
+ * Action for getting the current state of the RewardsController
  */
-export type RewardsControllerEstimatePointsAction = {
-  type: 'RewardsController:estimatePoints';
-  handler: (request: EstimatePointsDto) => Promise<EstimatedPointsDto>;
-};
+export type RewardsControllerGetStateAction = ControllerGetStateAction<
+  'RewardsController',
+  RewardsControllerState
+>;
 
 /**
- * Action for checking if rewards feature is enabled via feature flag
+ * Actions that can be performed by the RewardsController
  */
-export type RewardsControllerIsRewardsFeatureEnabledAction = {
-  type: 'RewardsController:isRewardsFeatureEnabled';
-  handler: () => boolean;
-};
+export type RewardsControllerActions =
+  | RewardsControllerGetStateAction
+  | RewardsControllerMethodActions;
 
-/**
- * Action for validating referral codes
- */
-export type RewardsControllerValidateReferralCodeAction = {
-  type: 'RewardsController:validateReferralCode';
-  handler: (code: string) => Promise<boolean>;
-};
+// Don't reexport as per guidelines
+type AllowedActions =
+  | AccountsControllerGetSelectedMultichainAccountAction
+  | AccountsControllerListMultichainAccountsAction
+  | KeyringControllerSignPersonalMessageAction
+  | RewardsDataServiceLoginAction
+  | RewardsDataServiceSiweLoginAction
+  | RewardsDataServiceEstimatePointsAction
+  | RewardsDataServiceGetSeasonStatusAction
+  | RewardsDataServiceFetchGeoLocationAction
+  | RewardsDataServiceMobileOptinAction
+  | RewardsDataServiceValidateReferralCodeAction
+  | RewardsDataServiceMobileJoinAction
+  | RewardsDataServiceSiweJoinAction
+  | RewardsDataServiceGetOptInStatusAction
+  | RewardsDataServiceGetSeasonMetadataAction
+  | RewardsDataServiceGetDiscoverSeasonsAction
+  | RewardsDataServiceGenerateChallengeAction
+  | RewardsDataServiceGetVipFeesAction
+  | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
+  | SnapControllerHandleRequestAction;
 
-/**
- * Action for checking if an account supports opt-in
- */
-export type RewardsControllerIsOptInSupportedAction = {
-  type: 'RewardsController:isOptInSupported';
-  handler: (account: InternalAccount) => boolean;
-};
+type AllowedEvents =
+  | KeyringControllerUnlockEvent
+  | AccountTreeControllerSelectedAccountGroupChangeEvent;
 
-/**
- * Action for linking an account to a subscription
- */
-export type RewardsControllerLinkAccountToSubscriptionAction = {
-  type: 'RewardsController:linkAccountToSubscriptionCandidate';
-  handler: (
-    account: InternalAccount,
-    invalidateRelatedData?: boolean,
-    primaryWalletGroupAccounts?: InternalAccount[],
-  ) => Promise<boolean>;
-};
-
-/**
- * Action for linking multiple accounts to a subscription candidate
- */
-export type RewardsControllerLinkAccountsToSubscriptionCandidateAction = {
-  type: 'RewardsController:linkAccountsToSubscriptionCandidate';
-  handler: (
-    accounts: InternalAccount[],
-    primaryWalletGroupAccounts?: InternalAccount[],
-  ) => Promise<{ account: InternalAccount; success: boolean }[]>;
-};
-
-/**
- * Action for getting geo rewards metadata
- */
-export type RewardsControllerGetGeoRewardsMetadataAction = {
-  type: 'RewardsController:getGeoRewardsMetadata';
-  handler: () => Promise<RewardsGeoMetadata>;
-};
-
-/**
- * Action for getting candidate subscription ID
- */
-export type RewardsControllerGetCandidateSubscriptionIdAction = {
-  type: 'RewardsController:getCandidateSubscriptionId';
-  handler: (
-    primaryWalletGroupAccounts?: InternalAccount[],
-  ) => Promise<string | null>;
-};
-
-/**
- * Action for getting whether the account (caip-10 format) has opted in
- */
-export type RewardsControllerGetHasAccountOptedInAction = {
-  type: 'RewardsController:getHasAccountOptedIn';
-  handler: (account: CaipAccountId) => Promise<boolean>;
-};
-
-/**
- * Action for getting the actual subscription ID for an account
- */
-export type RewardsControllerGetActualSubscriptionIdAction = {
-  type: 'RewardsController:getActualSubscriptionId';
-  handler: (account: CaipAccountId) => string | null;
-};
-
-/**
- * Action for getting season metadata
- */
-export type RewardsControllerGetSeasonMetadataAction = {
-  type: 'RewardsController:getSeasonMetadata';
-  handler: (type?: 'current' | 'next') => Promise<SeasonDtoState>;
-};
-
-/**
- * Action for getting season status
- */
-export type RewardsControllerGetSeasonStatusAction = {
-  type: 'RewardsController:getSeasonStatus';
-  handler: (
-    subscriptionId: string,
-    seasonId: string,
-  ) => Promise<SeasonStatusState | null>;
-};
+export type RewardsControllerMessenger = Messenger<
+  'RewardsController',
+  RewardsControllerActions | AllowedActions,
+  RewardsControllerEvents | AllowedEvents
+>;

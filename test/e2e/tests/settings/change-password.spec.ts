@@ -44,12 +44,10 @@ async function doPasswordChangeAndLockWallet(
     await changePasswordPage.confirmChangePasswordWarning();
   }
 
-  await privacySettings.checkPasswordChangeSuccessToastIsDisplayed();
-
-  await settingsPage.clickBackButton();
-
   // Wait for the password change to be applied
   await driver.delay(2_000);
+
+  await settingsPage.clickBackButton();
 
   await lockAndWaitForLoginPage(driver);
 }

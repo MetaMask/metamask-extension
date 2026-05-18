@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '../../component-library';
+import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { AccountOverviewCommonProps } from './common';
 import { AccountOverviewLayout } from './account-overview-layout';

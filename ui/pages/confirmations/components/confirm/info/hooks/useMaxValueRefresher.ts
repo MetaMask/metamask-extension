@@ -85,13 +85,19 @@ export const useMaxValueRefresher = () => {
       return;
     }
 
-    let gasFeeInHex = multiplyHexes(
-      gas,
-      supportsEIP1559 ? maxFeePerGas : gasPrice,
-    );
+    let gasFeeInHex = HEX_ZERO;
 
-    if (layer1GasFee) {
-      gasFeeInHex = addHexes(gasFeeInHex, layer1GasFee) as Hex;
+    // Gas Sponsorship means the user has no native gas to pay at all.
+    // This will allow to send the full max value of the native balance.
+    if (!transactionMeta.isGasFeeSponsored) {
+      gasFeeInHex = multiplyHexes(
+        gas,
+        supportsEIP1559 ? maxFeePerGas : gasPrice,
+      );
+
+      if (layer1GasFee) {
+        gasFeeInHex = addHexes(gasFeeInHex, layer1GasFee) as Hex;
+      }
     }
 
     const remainingBalance = new Numeric(balance || HEX_ZERO, 16).minus(

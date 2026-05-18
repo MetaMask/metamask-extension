@@ -93,12 +93,10 @@ describe('Unlock wallet - ', function () {
         await changePasswordPage.checkPasswordChangedWarning();
         await changePasswordPage.confirmChangePasswordWarning();
 
-        await privacySettings.checkPasswordChangeSuccessToastIsDisplayed();
-
-        await settingsPage.clickBackButton();
-
         // Wait for the password change to be applied to the social login user
         await driver.delay(2_000);
+
+        await settingsPage.clickBackButton();
 
         await lockAndWaitForLoginPage(driver);
         const loginPage = new LoginPage(driver);

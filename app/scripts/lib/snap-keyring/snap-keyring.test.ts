@@ -432,4 +432,29 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
   });
+
+  describe('removeAccount', () => {
+    it('starts and ends an approval flow when the user accepts removal', async () => {
+      mockAddRequest.mockReturnValue(true);
+      const builder = createSnapKeyringBuilder();
+      const keyring = builder();
+      // Seed the keyring state so the account exists before removing it.
+      await keyring.deserialize({
+        accounts: {
+          [mockAccount.id]: { account: mockAccount, snapId: mockSnapId },
+        },
+      });
+
+      await keyring.handleKeyringSnapMessage(mockSnapId, {
+        method: 'notify:accountDeleted',
+        params: { id: mockAccount.id },
+      });
+
+      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      expect(mockEndFlow).toHaveBeenCalledTimes(1);
+      expect(mockRemoveAccountHelper).toHaveBeenCalledWith(
+        address.toLowerCase(),
+      );
+    });
+  });
 });

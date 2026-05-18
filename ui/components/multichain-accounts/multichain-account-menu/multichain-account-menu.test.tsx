@@ -1,6 +1,6 @@
 import React from 'react';
 import { AccountGroupId } from '@metamask/account-api';
-import { fireEvent, act, within } from '@testing-library/react';
+import { fireEvent, act, within, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
@@ -35,7 +35,6 @@ const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
 const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';
-const errorColorSelector = '.mm-box--color-error-default';
 
 const mockState = {
   metamask: {
@@ -198,8 +197,9 @@ describe('MultichainAccountMenu', () => {
     const menuItems = document.querySelectorAll(menuItemSelector);
     expect(menuItems.length).toBe(6);
 
-    const removeOption = document.querySelector(errorColorSelector);
-    expect(removeOption).toBeInTheDocument();
+    expect(
+      screen.getByTestId('multichain-account-menu-item-remove'),
+    ).toBeInTheDocument();
   });
 
   it('navigates to account details page when clicking the account details option', async () => {

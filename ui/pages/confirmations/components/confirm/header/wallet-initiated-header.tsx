@@ -48,7 +48,11 @@ export const WalletInitiatedHeader = () => {
       return;
     }
 
-    if (currentConfirmation.type === TransactionType.musdClaim) {
+    if (
+      currentConfirmation.type === TransactionType.musdClaim ||
+      currentConfirmation.type === TransactionType.perpsDeposit ||
+      currentConfirmation.type === TransactionType.perpsWithdraw
+    ) {
       onCancel({
         location: MetaMetricsEventLocation.Confirmation,
         navigateBackToPreviousPage: true,
@@ -83,6 +87,12 @@ export const WalletInitiatedHeader = () => {
     }
     if (currentConfirmation?.type === TransactionType.musdClaim) {
       return null;
+    }
+    if (currentConfirmation?.type === TransactionType.perpsDeposit) {
+      return t('perpsDepositFundsTitle');
+    }
+    if (currentConfirmation?.type === TransactionType.perpsWithdraw) {
+      return t('perpsWithdrawFundsTitle');
     }
     return t('review');
   };

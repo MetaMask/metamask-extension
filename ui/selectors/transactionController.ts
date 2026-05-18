@@ -1,11 +1,12 @@
 import { createSelector } from 'reselect';
-import type {
-  TransactionControllerState,
-  TransactionMeta,
+import {
+  TransactionStatus,
+  type TransactionControllerState,
+  type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { EMPTY_ARRAY } from './shared';
 
-type TransactionState = {
+export type TransactionState = {
   metamask: TransactionControllerState;
 };
 
@@ -39,4 +40,22 @@ export const selectRequiredTransactionHashes = createSelector(
         .map((tx) => tx.hash?.toLowerCase())
         .filter(Boolean) as string[],
     ),
+);
+
+export const selectTransactionById = createSelector(
+  selectTransactions,
+  (_state: TransactionState, id: string | undefined) => id,
+  (transactions, id) =>
+    id ? transactions.find((tx) => tx.id === id) : undefined,
+);
+
+export const selectUnapprovedTransactionById = createSelector(
+  selectTransactions,
+  (_state: TransactionState, id: string | undefined) => id,
+  (transactions, id) =>
+    id
+      ? transactions.find(
+          (tx) => tx.id === id && tx.status === TransactionStatus.unapproved,
+        )
+      : undefined,
 );

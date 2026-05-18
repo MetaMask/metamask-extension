@@ -42,7 +42,7 @@ import type {
 } from '@metamask/assets-controllers';
 import { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import { TEST_CHAINS } from '../../shared/constants/network';
-import { createDeepEqualSelector } from '../../shared/lib/selectors/util';
+import { createDeepEqualSelector } from '../../shared/lib/selectors/selector-creators';
 import { Token, TokenWithFiatAmount } from '../components/app/assets/types';
 import { calculateTokenBalance } from '../components/app/assets/util/calculateTokenBalance';
 import { calculateTokenFiatAmount } from '../components/app/assets/util/calculateTokenFiatAmount';
@@ -73,7 +73,10 @@ import {
   getTokensControllerAllIgnoredTokens,
   getTokensControllerAllTokens,
 } from '../../shared/lib/selectors/assets-migration';
-import { getSelectedInternalAccount, getAccountIdByAddress } from './accounts';
+import { traceAsControllerCallback } from '../../shared/lib/trace';
+import { getSelectedInternalAccount } from '../../shared/lib/selectors/accounts';
+import { getPreferences } from '../../shared/lib/selectors/preferences';
+import { getAccountIdByAddress } from './accounts';
 import { getMultichainBalances, RatesState } from './multichain';
 import { EMPTY_OBJECT } from './shared';
 import {
@@ -83,7 +86,6 @@ import {
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getMarketData,
   getNativeTokenCachedBalanceByChainIdSelector,
-  getPreferences,
   getSelectedAccountTokensAcrossChains,
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
@@ -126,6 +128,7 @@ export type BalanceCalculationState = {
     MultichainNetworkControllerState['metamask'] &
     RatesState['metamask'] & {
       networkConfigurationsByChainId: NetworkState['metamask']['networkConfigurationsByChainId'];
+      snaps: Record<string, { enabled: boolean }>;
     };
 };
 
@@ -287,6 +290,7 @@ export const selectAggregatedBalanceForSelectedAccount = createSelector(
       (accountsById ?? {}) as Parameters<
         typeof getAggregatedBalanceForAccount
       >[5],
+      traceAsControllerCallback,
     );
   },
 );
@@ -528,6 +532,10 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
             state,
             chainId as CaipChainId,
           ));
+
+    if (!accountToUse) {
+      return null;
+    }
 
     const assetsToSearch = isEvm
       ? (getSelectedAccountTokensAcrossChains(state) as Record<
@@ -886,14 +894,6 @@ const selectCurrencyRateStateForBalances = createSelector(
 );
 
 /**
- * Returns the enabled network map as-is for filtering and eligibility checks.
- */
-const selectEnabledNetworkMapForBalances = createSelector(
-  [getEnabledNetworks],
-  (map) => map,
-);
-
-/**
  * Aggregates balances for all wallets and groups using core pure function.
  * Only the minimal controller state is composed to keep this selector lean.
  *
@@ -911,7 +911,7 @@ export const selectBalanceForAllWallets = createSelector(
     selectMultichainAssetsStateForBalances,
     selectTokensStateForBalances,
     selectCurrencyRateStateForBalances,
-    selectEnabledNetworkMapForBalances,
+    getEnabledNetworks,
     getNetworkConfigurationsByChainId,
   ],
   (
@@ -962,7 +962,7 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
       selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
+      getEnabledNetworks,
     ],
     (
       accountTreeState,
@@ -1022,7 +1022,7 @@ export const selectBalanceChangeByAccountGroup = (
       selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
+      getEnabledNetworks,
     ],
     (
       accountTreeState,
@@ -1082,7 +1082,7 @@ export const selectBalanceChangeBySelectedAccountGroup = (
       selectMultichainAssetsStateForBalances,
       selectTokensStateForBalances,
       selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
+      getEnabledNetworks,
     ],
     (
       accountTreeState,

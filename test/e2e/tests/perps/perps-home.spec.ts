@@ -5,7 +5,7 @@ import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { PerpsMarketDetailPage } from '../../page-objects/pages/perps/perps-market-detail-page';
 import { PerpsMarketListPage } from '../../page-objects/pages/perps/perps-market-list-page';
-import { getConfig } from './helpers';
+import { getPerpsConfigEligible } from './perps-fixture-config';
 
 /**
  * Perps E2E tests.
@@ -21,7 +21,7 @@ describe('Perps', function (this: Suite) {
   it.skip('shows list of open positions', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -40,7 +40,7 @@ describe('Perps', function (this: Suite) {
   it.skip('opens order flow and submits a long market order', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -67,7 +67,7 @@ describe('Perps', function (this: Suite) {
   it.skip('opens add funds from Perps home', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -86,7 +86,7 @@ describe('Perps', function (this: Suite) {
   it.skip('opens withdraw from Perps home', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -105,7 +105,7 @@ describe('Perps', function (this: Suite) {
   it.skip('explore crypto: search by type and sort by volume, search field', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -128,7 +128,7 @@ describe('Perps', function (this: Suite) {
   it.skip('learn basics of perps tutorial (go through it)', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });
@@ -146,7 +146,7 @@ describe('Perps', function (this: Suite) {
   it.skip('Modify button visible on market with position (only checks button, like Close)', async function () {
     await withFixtures(
       {
-        ...getConfig(this.test?.fullTitle()),
+        ...getPerpsConfigEligible(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
         await login(driver, { validateBalance: false });

@@ -21,4 +21,21 @@ export {
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   isOrderAssociatedWithFullPosition,
+  formatOrderLabel,
 } from './orderUtils';
+
+export { formatPerpsPrice, type PerpsPriceRange } from './formatPerpsPrice';
+
+export {
+  parsePerpsDisplayPrice,
+  normalizePerpsDisplayPrice,
+  formatPerpsFiatMinimal,
+  formatPerpsFiatUniversal,
+} from './formatPerpsDisplayPrice';
+
+export {
+  isValidTakeProfitPrice,
+  isValidStopLossPrice,
+  getTakeProfitErrorDirection,
+  getStopLossErrorDirection,
+} from './tpslValidation';

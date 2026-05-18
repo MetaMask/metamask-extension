@@ -47,6 +47,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
   isGasFeeSponsored,
   simulationFails,
   userFeeLevel = UserFeeLevel.MEDIUM,
+  excludeNativeTokenForFee,
 }: {
   address?: Hex;
   authorizationList?: AuthorizationList;
@@ -63,6 +64,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
   isGasFeeSponsored?: boolean;
   simulationFails?: SimulationError;
   userFeeLevel?: UserFeeLevel;
+  excludeNativeTokenForFee?: boolean;
 } = {}): Confirmation => {
   const confirmation: Confirmation = {
     actionId: String(400855682),
@@ -210,6 +212,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
     verifiedOnBlockchain: false,
     isGasFeeSponsored,
     simulationFails,
+    excludeNativeTokenForFee,
   } as SignatureRequestType;
 
   // Overwrite simulation data if provided

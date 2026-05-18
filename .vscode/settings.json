@@ -1,5 +1,5 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   // Used for tailwind intellisense
   "editor.quickSuggestions": {
     "strings": true
@@ -26,6 +26,7 @@
       "url": "./.vscode/package.json-schema.json"
     }
   ],
+  "oxc.fmt.configPath": "oxfmt.config.mts",
   "tailwindCSS.classFunctions": ["classnames", "classNames"],
   "tailwindCSS.lint.cssConflict": "error",
   "tailwindCSS.validate": true

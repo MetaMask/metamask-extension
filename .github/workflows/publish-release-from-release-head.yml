@@ -121,6 +121,55 @@ jobs:
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
+  # Webpack production builds (4 variants) using yarn webpack:lavamoat:build.
+  build-dist-webpack:
+    name: Build prod webpack (Chrome MV3)
+    needs:
+      - validate-branch
+      - approve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-webpack
+      build-command: yarn webpack:lavamoat:build --zip --env production
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-dist-mv2-webpack:
+    name: Build prod webpack (Firefox MV2)
+    needs:
+      - validate-branch
+      - approve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-dist-mv2-webpack
+      build-command: yarn webpack:lavamoat:build:mv2 --zip --env production
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-flask-webpack:
+    name: Build Flask prod webpack (Chrome MV3)
+    needs:
+      - validate-branch
+      - approve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-webpack
+      build-command: yarn webpack:lavamoat:build --type flask --zip --env production
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
+  build-flask-mv2-webpack:
+    name: Build Flask prod webpack (Firefox MV2)
+    needs:
+      - validate-branch
+      - approve-release
+    uses: ./.github/workflows/run-build.yml
+    with:
+      build-name: build-flask-mv2-webpack
+      build-command: yarn webpack:lavamoat:build:mv2 --type flask --zip --env production
+      builds-from-run: ${{ github.run_id }}
+    secrets: inherit
+
   publish-release:
     name: Publish release
     needs:
@@ -130,6 +179,10 @@ jobs:
       - build-dist-mv2-browserify
       - build-flask-browserify
       - build-flask-mv2-browserify
+      - build-dist-webpack
+      - build-dist-mv2-webpack
+      - build-flask-webpack
+      - build-flask-mv2-webpack
     runs-on: ubuntu-latest
     environment: release-branch
     timeout-minutes: 30
@@ -232,6 +285,42 @@ jobs:
       - name: Publish Flask MV2 release to Sentry
         run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-browserify/dist
 
+      - name: Download artifact 'build-dist-webpack'
+        uses: actions/download-artifact@v7
+        with:
+          path: build-dist-webpack
+          name: build-dist-webpack
+
+      - name: Publish main webpack release to Sentry
+        run: yarn sentry:publish --dist-directory build-dist-webpack/dist
+
+      - name: Download artifact 'build-dist-mv2-webpack'
+        uses: actions/download-artifact@v7
+        with:
+          path: build-dist-mv2-webpack
+          name: build-dist-mv2-webpack
+
+      - name: Publish main MV2 webpack release to Sentry
+        run: yarn sentry:publish --dist mv2 --dist-directory build-dist-mv2-webpack/dist
+
+      - name: Download artifact 'build-flask-webpack'
+        uses: actions/download-artifact@v7
+        with:
+          path: build-flask-webpack
+          name: build-flask-webpack
+
+      - name: Publish Flask webpack release to Sentry
+        run: yarn sentry:publish --build-type flask --dist-directory build-flask-webpack/dist
+
+      - name: Download artifact 'build-flask-mv2-webpack'
+        uses: actions/download-artifact@v7
+        with:
+          path: build-flask-mv2-webpack
+          name: build-flask-mv2-webpack
+
+      - name: Publish Flask MV2 webpack release to Sentry
+        run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-webpack/dist
+
       - name: Create tags and GitHub release
         run: .github/scripts/release-create-gh-release.sh
 
@@ -251,6 +340,10 @@ jobs:
             echo "| Sentry (main MV2) | ✅ Published |"
             echo "| Sentry (Flask) | ✅ Published |"
             echo "| Sentry (Flask MV2) | ✅ Published |"
+            echo "| Sentry (main webpack) | ✅ Published |"
+            echo "| Sentry (main MV2 webpack) | ✅ Published |"
+            echo "| Sentry (Flask webpack) | ✅ Published |"
+            echo "| Sentry (Flask MV2 webpack) | ✅ Published |"
             echo "| GitHub Release | ✅ Created |"
             echo "| Firefox Bundle | ✅ Pushed |"
             echo ""

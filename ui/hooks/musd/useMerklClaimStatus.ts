@@ -18,21 +18,11 @@ import {
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import type { MusdClaimBonusStatusUpdatedEventProperties } from '../../components/app/musd/musd-events';
+import { MERKL_CLAIM_CHAIN_ID } from '../../components/app/musd/constants';
 import { getMultichainNetworkConfigurationsByChainId } from '../../selectors/multichain';
+import { isMerklClaimTransaction } from '../../components/app/musd/utils';
 import { resolveClaimAmount } from './transaction-amount-utils';
 import { IN_FLIGHT_STATUSES } from './transaction-status-constants';
-
-export const MERKL_DISTRIBUTOR_ADDRESS =
-  '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae' as const;
-
-/**
- * Check if a transaction is a Merkl claim by matching the distributor address.
- *
- * @param tx - The transaction metadata
- * @returns Whether the transaction is a Merkl claim
- */
-export const isMerklClaimTransaction = (tx: TransactionMeta): boolean =>
-  tx.txParams?.to?.toLowerCase() === MERKL_DISTRIBUTOR_ADDRESS.toLowerCase();
 
 export type MerklClaimToastState = 'in-progress' | 'success' | 'failed' | null;
 
@@ -81,10 +71,8 @@ export const useMerklClaimStatus = (): {
       tx: TransactionMeta,
       status: 'approved' | 'confirmed' | 'failed' | 'dropped',
     ) => {
-      const { chainId } = tx;
-      const networkConfig = chainId
-        ? networkConfigurationsByChainId[chainId]
-        : null;
+      const networkConfig =
+        networkConfigurationsByChainId[MERKL_CLAIM_CHAIN_ID];
       const networkName = networkConfig?.name ?? 'Unknown Network';
 
       // Resolve claim amount asynchronously by decoding the Merkl claim
@@ -102,18 +90,13 @@ export const useMerklClaimStatus = (): {
         transaction_id: tx.id,
         transaction_status: status,
         transaction_type: 'merklClaim',
-        network_chain_id: chainId ?? '',
+        network_chain_id: MERKL_CLAIM_CHAIN_ID,
         network_name: networkName,
-        ...(claimAmount ? { amount_claimed_decimal: claimAmount } : {}),
+        ...(claimAmount === undefined
+          ? {}
+          : { amount_claimed_decimal: claimAmount }),
       };
       /* eslint-enable @typescript-eslint/naming-convention */
-
-      console.log('[useMerklClaimStatus] Firing MusdClaimBonusStatusUpdated', {
-        txId: tx.id,
-        status,
-        claimAmount,
-        properties,
-      });
 
       trackEvent({
         event: MetaMetricsEventName.MusdClaimBonusStatusUpdated,

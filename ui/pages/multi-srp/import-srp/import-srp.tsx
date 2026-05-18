@@ -16,16 +16,23 @@ import {
   checkIsSeedlessPasswordOutdated,
   importMnemonicToVault,
 } from '../../../store/actions';
-import { setShowNewSrpAddedToast } from '../../../components/app/toast-master/utils';
+import { SECOND } from '../../../../shared/constants/time';
+import { toast, ToastContent } from '../../../components/ui/toast/toast';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { Header, Page } from '../../../components/multichain/pages/page';
-import { getIsSocialLoginFlow } from '../../../selectors';
+import {
+  getIsSocialLoginFlow,
+  getMetaMaskHdKeyrings,
+} from '../../../selectors';
 import { getIsSeedlessPasswordOutdated } from '../../../ducks/metamask/metamask';
 import PasswordOutdatedModal from '../../../components/app/password-outdated-modal';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import SrpInputForm from '../../srp-input-form';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+
+const toastId = 'new-srp-added-toast';
+const autoHideToastDelay = 5 * SECOND;
 
 export const ImportSrp = () => {
   const t = useI18nContext();
@@ -35,6 +42,7 @@ export const ImportSrp = () => {
   const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
   const isSocialLoginEnabled = useSelector(getIsSocialLoginFlow);
   const isSeedlessPasswordOutdated = useSelector(getIsSeedlessPasswordOutdated);
+  const hdKeyrings = useSelector(getMetaMaskHdKeyrings);
   const { trackEvent } = useContext(MetaMetricsContext);
 
   // Providing duplicate SRP throws an error in metamask-controller, which results in a warning in the UI
@@ -70,8 +78,17 @@ export const ImportSrp = () => {
 
       await dispatch(importMnemonicToVault(secretRecoveryPhrase));
 
+      toast.success(
+        <ToastContent
+          dataTestId={toastId}
+          title={t('importWalletSuccess', [hdKeyrings.length + 1])}
+        />,
+        {
+          id: toastId,
+          duration: autoHideToastDelay,
+        },
+      );
       navigate(DEFAULT_ROUTE);
-      dispatch(setShowNewSrpAddedToast(true));
     } catch (error) {
       switch ((error as Error)?.message) {
         case 'KeyringController - The account you are trying to import is a duplicate':
@@ -119,7 +136,7 @@ export const ImportSrp = () => {
         setSecretRecoveryPhrase={setSecretRecoveryPhrase}
         onClearCallback={() => setSrpError('')}
       />
-      <Box className="w-full">
+      <Box className="w-full cta-footer">
         <Button
           size={ButtonSize.Lg}
           data-testid="import-srp-confirm"

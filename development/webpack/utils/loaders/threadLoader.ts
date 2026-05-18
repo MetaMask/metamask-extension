@@ -37,8 +37,15 @@ export function getAvailableMemoryMB(): number {
   return freemem() / (1024 * 1024);
 }
 
-/** Default `workerParallelJobs` when `jobsPerThread` is `'auto'`. */
-export const DEFAULT_JOBS_PER_THREAD = 15;
+/**
+ * Resolves `workerParallelJobs` when `jobsPerThread` is set to `'auto'`.
+ *
+ * @param threads - The resolved thread count.
+ * @returns The number of parallel jobs per worker thread.
+ */
+export function resolveAutoJobs(threads: number): number {
+  return threads <= 1 ? 10 : 15;
+}
 
 /**
  * Get thread-loader configuration for parallelizing webpack loaders.
@@ -46,9 +53,7 @@ export const DEFAULT_JOBS_PER_THREAD = 15;
  * @param config - Thread-loader options including thread/job counts and watch mode.
  * @returns A thread-loader `RuleSetUseItem`, or `null` when disabled.
  */
-export function getThreadLoader(
-  config: ThreadLoaderConfig,
-): RuleSetUseItem | null {
+export function getThreadLoader(config: ThreadLoaderConfig) {
   const { threads, jobsPerThread, watch } = config;
 
   if (threads === 0) {
@@ -57,7 +62,7 @@ export function getThreadLoader(
 
   const resolvedThreads = threads === 'auto' ? resolveAutoThreads() : threads;
   const resolvedJobs =
-    jobsPerThread === 'auto' ? DEFAULT_JOBS_PER_THREAD : jobsPerThread;
+    jobsPerThread === 'auto' ? resolveAutoJobs(resolvedThreads) : jobsPerThread;
 
   return {
     loader: 'thread-loader',
@@ -66,5 +71,5 @@ export function getThreadLoader(
       workerParallelJobs: resolvedJobs,
       poolTimeout: watch ? Number(Infinity) : 2000,
     },
-  };
+  } satisfies RuleSetUseItem;
 }

@@ -9,7 +9,6 @@ import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { Anvil } from '../../seeder/anvil';
 
 import Homepage from '../../page-objects/pages/home/homepage';
 import NftListPage from '../../page-objects/pages/home/nft-list';
@@ -27,14 +26,20 @@ describe('Send NFT - Filtering', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await login(driver, { localNode: localNodes[0] });
+      async ({ driver }: { driver: Driver }) => {
+        await login(driver, {
+          // Skip balance validation — this test is about NFT filtering, and
+          // the balance check races against node RPC on slower CI runners.
+          validateBalance: false,
+        });
+
+        // At the default headless viewport (800×600), the NFT list on the
+        // send page is not fully rendered, causing selectNft to time out.
+        await driver.driver
+          .manage()
+          .window()
+          .setRect({ width: 1280, height: 960 });
+
         const homepage = new Homepage(driver);
         await homepage.goToNftTab();
         const nftListPage = new NftListPage(driver);

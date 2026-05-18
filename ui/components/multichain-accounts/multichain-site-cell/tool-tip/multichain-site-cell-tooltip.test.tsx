@@ -1,4 +1,5 @@
 import React from 'react';
+import { within } from '@testing-library/react';
 import { CaipChainId } from '@metamask/utils';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
@@ -284,8 +285,7 @@ describe('MultichainSiteCellTooltip', () => {
     expect(visibleAccountAvatars.length).toBe(4);
 
     // Should show overflow indicator (+4) since we have 8 groups but limit is 4
-    const overflowIndicator = container.querySelector('.mm-text--body-sm');
-    expect(overflowIndicator).toHaveTextContent('+4');
+    expect(within(avatarGroup).getByText('+4')).toBeInTheDocument();
   });
 
   it('shows overflow indicator for many networks in avatar group', () => {
@@ -315,8 +315,7 @@ describe('MultichainSiteCellTooltip', () => {
     expect(avatarGroup).toBeInTheDocument();
 
     // Should show overflow indicator (+6) since we have 10 networks but avatar limit is 4
-    const overflowIndicator = container.querySelector('.mm-text--body-sm');
-    expect(overflowIndicator).toHaveTextContent('+6');
+    expect(within(avatarGroup).getByText('+6')).toBeInTheDocument();
   });
 
   it('shows avatar group overflow indicator for many accounts', () => {
@@ -355,8 +354,7 @@ describe('MultichainSiteCellTooltip', () => {
     expect(visibleAccountAvatars.length).toBe(4);
 
     // Should show overflow indicator (+2) since we have 6 groups but limit is 4
-    const overflowIndicator = container.querySelector('.mm-text--body-sm');
-    expect(overflowIndicator).toHaveTextContent('+2');
+    expect(within(avatarGroup).getByText('+2')).toBeInTheDocument();
   });
 
   it('renders only account avatar group when no networks provided', () => {

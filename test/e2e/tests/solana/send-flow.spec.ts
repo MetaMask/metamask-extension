@@ -25,7 +25,6 @@ describe('Send flow', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         const sendPage = new SendPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
@@ -62,7 +61,6 @@ describe('Send flow', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         const sendPage = new SendPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
@@ -112,7 +110,6 @@ describe('Send flow', function (this: Suite) {
       async ({ driver }) => {
         await login(driver);
         const homePage = new NonEvmHomepage(driver);
-        await homePage.waitForNonEvmAccountsLoaded();
         const sendPage = new SendPage(driver);
 
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');

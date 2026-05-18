@@ -3,47 +3,48 @@ import type {
   JsonRpcEngineCallbackError,
   JsonRpcEngineEndCallback,
   JsonRpcEngineNextCallback,
+  MethodHandler,
 } from '@metamask/json-rpc-engine';
-import {
-  JsonRpcRequest,
-  JsonRpcParams,
-  PendingJsonRpcResponse,
-} from '@metamask/utils';
+import type { JsonRpcRequest, PendingJsonRpcResponse } from '@metamask/utils';
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
-import { HandlerWrapper } from './types';
 
-type HandleWatchAssetRequest = (
+export type HandleWatchAssetRequest = (
   options: Record<string, string | Record<string, string>>,
 ) => Promise<void>;
 
-type WatchAssetRequest<Params extends JsonRpcParams> = JsonRpcRequest<Params> &
-  Partial<{ origin: string; networkClientId: string }> & {
-    params: { options: { tokenId: string }; type: string };
-  };
+type WatchAssetParams = { options: { tokenId: string }; type: string };
 
-type WatchAssetOptions = {
+type RequestExtras = Partial<{ origin: string; networkClientId: string }>;
+
+export type WatchAssetRequest = JsonRpcRequest<WatchAssetParams> &
+  RequestExtras;
+
+export type WatchAssetHooks = {
   handleWatchAssetRequest: HandleWatchAssetRequest;
 };
-type WatchAssetConstraint<Params extends JsonRpcParams = JsonRpcParams> = {
-  implementation: (
-    req: WatchAssetRequest<Params>,
-    res: PendingJsonRpcResponse<true>,
-    _next: JsonRpcEngineNextCallback,
-    end: JsonRpcEngineEndCallback,
-    { handleWatchAssetRequest }: WatchAssetOptions,
-  ) => Promise<void>;
-} & HandlerWrapper;
 
-const watchAsset = {
-  methodNames: [MESSAGE_TYPE.WATCH_ASSET, MESSAGE_TYPE.WATCH_ASSET_LEGACY],
-  implementation: watchAssetHandler,
+type WatchAssetConstraint = MethodHandler<
+  WatchAssetHooks,
+  never,
+  WatchAssetParams,
+  true,
+  RequestExtras
+>;
+
+export const watchAssetHandler = {
+  implementation: watchAssetImplementation,
   hookNames: {
     handleWatchAssetRequest: true,
   },
 } satisfies WatchAssetConstraint;
 
-export default watchAsset;
+const watchAssetHandlers = {
+  [MESSAGE_TYPE.WATCH_ASSET]: watchAssetHandler,
+  [MESSAGE_TYPE.WATCH_ASSET_LEGACY]: watchAssetHandler,
+};
+
+export default watchAssetHandlers;
 
 /**
  * @param req - The JSON-RPC request object.
@@ -53,19 +54,19 @@ export default watchAsset;
  * @param options
  * @param options.handleWatchAssetRequest - The wallet_watchAsset method implementation.
  */
-async function watchAssetHandler<Params extends JsonRpcParams = JsonRpcParams>(
-  req: WatchAssetRequest<Params>,
+async function watchAssetImplementation(
+  req: WatchAssetRequest,
   res: PendingJsonRpcResponse<true>,
   _next: JsonRpcEngineNextCallback,
   end: JsonRpcEngineEndCallback,
-  { handleWatchAssetRequest }: WatchAssetOptions,
+  { handleWatchAssetRequest }: WatchAssetHooks,
 ): Promise<void> {
   try {
-    const {
-      params: { options: asset, type },
-      origin,
-      networkClientId,
-    } = req;
+    const { params, origin, networkClientId } = req;
+    if (!params) {
+      return end(rpcErrors.invalidParams());
+    }
+    const { options: asset, type } = params;
 
     const { tokenId } = asset;
 

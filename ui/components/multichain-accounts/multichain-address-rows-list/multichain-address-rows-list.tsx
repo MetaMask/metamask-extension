@@ -3,23 +3,21 @@ import { useSelector } from 'react-redux';
 import { type AccountGroupId } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
+import {
+  Box,
+  BoxFlexDirection,
+  Text,
+  TextAlign,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   BackgroundColor,
   BlockSize,
   BorderRadius,
-  Display,
-  FlexDirection,
-  TextAlign,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  Text,
-  TextFieldSearch,
-  TextFieldSearchSize,
-} from '../../component-library';
+import { TextFieldSearch, TextFieldSearchSize } from '../../component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MultichainAddressRow } from '../multichain-address-row/multichain-address-row';
 import { getInternalAccountListSpreadByScopesByGroupId } from '../../../selectors/multichain-accounts/account-tree';
@@ -162,8 +160,7 @@ export const MultichainAddressRowsList = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       data-testid="multichain-address-rows-list"
     >
       <Box paddingLeft={4} paddingRight={4}>
@@ -187,10 +184,10 @@ export const MultichainAddressRowsList = ({
           renderedRows
         ) : (
           <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
             textAlign={TextAlign.Center}
-            paddingTop={8}
+            className="pt-8"
             data-testid="multichain-address-rows-list-empty-message"
           >
             {searchPattern ? t('noNetworksFound') : t('noNetworksAvailable')}

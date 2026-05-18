@@ -11,9 +11,9 @@ import {
   setFeatureNotificationsEnabled,
   setWatchEthereumAccountEnabled,
 } from '../../../store/actions';
-import { SettingItemConfig } from '../../settings-v2/types';
-import { SettingsTab, createToggleItem } from '../../settings-v2/shared';
-import { EXPERIMENTAL_ITEMS } from '../../settings-v2/search-config';
+import { SettingItemConfig } from '../types';
+import { SettingsTab, createToggleItem } from '../shared';
+import { EXPERIMENTAL_ITEMS } from '../search-config';
 
 const NotificationsItem = createToggleItem({
   name: 'NotificationsItem',
@@ -79,7 +79,7 @@ const ExperimentalTab = () => {
     return result;
   }, []);
 
-  return <SettingsTab items={items} tabMessageKey="experimental" />;
+  return <SettingsTab items={items} />;
 };
 
 export default ExperimentalTab;

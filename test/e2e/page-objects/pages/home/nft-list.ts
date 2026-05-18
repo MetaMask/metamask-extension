@@ -27,20 +27,13 @@ class NftListPage {
 
   private readonly noNftInfo = '[data-testid="nft-tab-empty-state"]';
 
-  private readonly successImportNftMessage = {
-    text: 'NFT was successfully added!',
-    tag: 'h6',
-  };
+  private readonly successImportNftMessage =
+    '[data-testid="nft-import-success-toast"]';
 
-  private readonly successRemoveNftMessage = {
-    text: 'NFT was successfully removed!',
-    tag: 'h6',
-  };
+  private readonly successRemoveNftMessage =
+    '[data-testid="nft-remove-success-toast"]';
 
   private readonly nftListItem = '[data-testid="nft-wrapper"]';
-
-  private readonly toastCloseButton =
-    '.toasts-container__banner-base button[aria-label="Close"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -58,14 +51,7 @@ class NftListPage {
   }
 
   async clickNFTIconOnActivityList() {
-    try {
-      await this.driver.waitForSelector(this.toastCloseButton, {
-        timeout: 5000,
-      });
-      await this.driver.clickElement(this.toastCloseButton);
-    } catch {
-      // Toast not present, continue
-    }
+    console.log('Clicking NFT icon on activity list');
     await this.driver.clickElement(this.nftIconOnActivityList);
   }
 

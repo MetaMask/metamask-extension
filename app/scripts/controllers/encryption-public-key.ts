@@ -23,6 +23,7 @@ import {
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
+import type { EncryptionPublicKeyControllerMethodActions } from './encryption-public-key-method-action-types';
 
 const controllerName = 'EncryptionPublicKeyController';
 const methodNameGetEncryptionPublicKey = 'eth_getEncryptionPublicKey';
@@ -65,7 +66,7 @@ export type EncryptionPublicKeyControllerState = {
   unapprovedEncryptionPublicKeyMsgCount: number;
 };
 
-export type EncryptionPublicKeyControllerGetState = {
+export type EncryptionPublicKeyControllerGetStateAction = {
   type: `${typeof controllerName}:getState`;
   handler: () => EncryptionPublicKeyControllerState;
 };
@@ -76,7 +77,8 @@ export type EncryptionPublicKeyControllerStateChange = {
 };
 
 export type EncryptionPublicKeyControllerActions =
-  EncryptionPublicKeyControllerGetState;
+  | EncryptionPublicKeyControllerGetStateAction
+  | EncryptionPublicKeyControllerMethodActions;
 
 export type EncryptionPublicKeyControllerEvents =
   EncryptionPublicKeyControllerStateChange;
@@ -116,10 +118,19 @@ export type EncryptionPublicKeyControllerOptions = {
   manager: EncryptionPublicKeyManager;
 };
 
+const MESSENGER_EXPOSED_METHODS = [
+  'cancelEncryptionPublicKey',
+  'clearUnapproved',
+  'encryptionPublicKey',
+  'newRequestEncryptionPublicKey',
+  'rejectUnapproved',
+  'resetState',
+] as const;
+
 /**
  * Controller for requesting encryption public key requests requiring user approval.
  */
-export default class EncryptionPublicKeyController extends BaseController<
+export class EncryptionPublicKeyController extends BaseController<
   typeof controllerName,
   EncryptionPublicKeyControllerState,
   EncryptionPublicKeyControllerMessenger
@@ -181,6 +192,11 @@ export default class EncryptionPublicKeyController extends BaseController<
         state.unapprovedEncryptionPublicKeyMsgs = newMessages;
         state.unapprovedEncryptionPublicKeyMsgCount = messageCount;
       },
+    );
+
+    this.messenger.registerMethodActionHandlers(
+      this,
+      MESSENGER_EXPOSED_METHODS,
     );
   }
 

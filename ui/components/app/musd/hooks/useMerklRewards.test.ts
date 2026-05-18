@@ -28,9 +28,19 @@ jest.mock('../../../../hooks/musd/useMusdGeoBlocking', () => ({
   })),
 }));
 
+jest.mock(
+  '../../../../pages/confirmations/hooks/tokens/useTokenFiatRates',
+  () => ({
+    useTokenFiatRate: jest.fn(() => 1.0),
+  }),
+);
+
 const { useSelector } = jest.requireMock('react-redux');
 const { useMusdGeoBlocking } = jest.requireMock(
   '../../../../hooks/musd/useMusdGeoBlocking',
+);
+const { useTokenFiatRate } = jest.requireMock(
+  '../../../../pages/confirmations/hooks/tokens/useTokenFiatRates',
 );
 
 const MOCK_ADDRESS = '0x1234567890abcdef1234567890abcdef12345678';
@@ -135,6 +145,7 @@ describe('useMerklRewards', () => {
       userCountry: 'US',
       isLoading: false,
     });
+    useTokenFiatRate.mockReturnValue(1.0);
   });
 
   it('returns isEligible false and hasClaimableReward false for ineligible token', () => {
@@ -153,6 +164,8 @@ describe('useMerklRewards', () => {
     expect(result.current.rewardAmountFiat).toBeNull();
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBeNull();
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
+    expect(result.current.isLoading).toBe(false);
     expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
   });
 
@@ -221,6 +234,7 @@ describe('useMerklRewards', () => {
     expect(result.current.rewardAmountFiat).toBe(10.5);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBe('10.50');
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
   });
 
   it('uses on-chain claimed amount when available', async () => {
@@ -259,6 +273,7 @@ describe('useMerklRewards', () => {
     expect(result.current.rewardAmountFiat).toBe(5.0);
     expect(result.current.hasClaimedBefore).toBe(true);
     expect(result.current.claimableRewardDisplay).toBe('5.00');
+    expect(result.current.lifetimeClaimedFiat).toBe(5.5);
     expect(mockGetClaimedAmountFromContract).toHaveBeenCalledWith(
       MOCK_ADDRESS,
       MUSD_TOKEN_ADDRESS,
@@ -300,6 +315,7 @@ describe('useMerklRewards', () => {
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.rewardAmountFiat).toBeNull();
     expect(result.current.claimableRewardDisplay).toBeNull();
+    expect(result.current.lifetimeClaimedFiat).toBe(1.0);
   });
 
   it('returns false when API returns no matching reward', async () => {
@@ -323,6 +339,7 @@ describe('useMerklRewards', () => {
     expect(result.current.rewardAmountFiat).toBeNull();
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBeNull();
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
   });
 
   it('returns false when all rewards are claimed (API)', async () => {
@@ -357,6 +374,7 @@ describe('useMerklRewards', () => {
 
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.claimableRewardDisplay).toBeNull();
+    expect(result.current.lifetimeClaimedFiat).toBe(1.0);
   });
 
   it('handles API errors gracefully', async () => {
@@ -384,6 +402,7 @@ describe('useMerklRewards', () => {
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBeNull();
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
   });
 
   it('aborts fetch on unmount', () => {
@@ -439,6 +458,7 @@ describe('useMerklRewards', () => {
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBeNull();
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
   });
 
   it('returns true for exactly 1 cent unclaimed amount', async () => {
@@ -475,6 +495,7 @@ describe('useMerklRewards', () => {
     expect(result.current.rewardAmountFiat).toBe(0.01);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBe('0.01');
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
   });
 
   it('returns false and skips API call when user is geoblocked', () => {
@@ -499,6 +520,7 @@ describe('useMerklRewards', () => {
     expect(result.current.hasClaimableReward).toBe(false);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBeNull();
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
     expect(mockFetchMerklRewardsForAsset).not.toHaveBeenCalled();
   });
 
@@ -538,16 +560,19 @@ describe('useMerklRewards', () => {
     expect(result.current.rewardAmountFiat).toBe(10.5);
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBe('10.50');
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
   });
 
-  it('returns null rewardAmountFiat when token price is null', async () => {
+  it('returns null rewardAmountFiat when fiat rate is unavailable', async () => {
+    useTokenFiatRate.mockReturnValue(undefined);
+
     mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
       token: {
         address: MUSD_TOKEN_ADDRESS,
         chainId: 59144,
         symbol: 'MUSD',
         decimals: 6,
-        price: null,
+        price: 1.0,
       },
       pending: '0',
       proofs: [],
@@ -574,6 +599,46 @@ describe('useMerklRewards', () => {
     expect(result.current.rewardAmountFiat).toBeNull();
     expect(result.current.hasClaimedBefore).toBe(false);
     expect(result.current.claimableRewardDisplay).toBe('10.50');
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
+  });
+
+  it('converts decimal amounts to user fiat currency using fiat rate', async () => {
+    useTokenFiatRate.mockReturnValue(1.55);
+
+    mockFetchMerklRewardsForAsset.mockResolvedValueOnce({
+      token: {
+        address: MUSD_TOKEN_ADDRESS,
+        chainId: 59144,
+        symbol: 'MUSD',
+        decimals: 6,
+        price: 1.0,
+      },
+      pending: '0',
+      proofs: [],
+      amount: '10500000',
+      claimed: '0',
+      recipient: MOCK_ADDRESS,
+    });
+    mockGetClaimedAmountFromContract.mockResolvedValueOnce(null);
+
+    const { result, waitFor } = renderHook(
+      () =>
+        useMerklRewards({
+          tokenAddress: MUSD_TOKEN_ADDRESS,
+          chainId: '0x1' as `0x${string}`,
+          showMerklBadge: true,
+        }),
+      { wrapper: createWrapper() },
+    );
+
+    await waitFor(() => {
+      expect(result.current.hasClaimableReward).toBe(true);
+    });
+
+    // 10.5 mUSD × 1.55 AUD/token = 16.275 AUD
+    expect(result.current.rewardAmountFiat).toBeCloseTo(16.275);
+    expect(result.current.claimableRewardDisplay).toBe('10.50');
+    expect(result.current.lifetimeClaimedFiat).toBeNull();
   });
 
   it('returns cached data on remount without refetching', async () => {
@@ -613,6 +678,7 @@ describe('useMerklRewards', () => {
     });
 
     expect(firstResult.current.claimableRewardDisplay).toBe('10.50');
+    expect(firstResult.current.lifetimeClaimedFiat).toBeNull();
     expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
 
     // Unmount (simulates switching to another tab)
@@ -627,6 +693,7 @@ describe('useMerklRewards', () => {
     // Should immediately have the cached value, no additional fetch
     expect(secondResult.current.hasClaimableReward).toBe(true);
     expect(secondResult.current.claimableRewardDisplay).toBe('10.50');
+    expect(secondResult.current.lifetimeClaimedFiat).toBeNull();
     expect(mockFetchMerklRewardsForAsset).toHaveBeenCalledTimes(1);
   });
 
@@ -679,5 +746,6 @@ describe('useMerklRewards', () => {
     expect(secondResult.current.hasClaimableReward).toBe(false);
     expect(secondResult.current.hasClaimedBefore).toBe(false);
     expect(secondResult.current.claimableRewardDisplay).toBeNull();
+    expect(secondResult.current.lifetimeClaimedFiat).toBeNull();
   });
 });

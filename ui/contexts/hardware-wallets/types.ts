@@ -83,6 +83,13 @@ export type EnsureDeviceReadyOptions = {
    * that don't involve contract interactions.
    */
   requireBlindSigning?: boolean;
+
+  /**
+   * Optional preflight payload size for signature flows.
+   * Used by adapters that can detect payload size constraints before signing
+   * (e.g. Trezor Model One message size limits).
+   */
+  preflightMessageBytes?: number;
 };
 
 /**

@@ -3,17 +3,19 @@ import { Hex } from '@metamask/utils';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  FontWeight,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useEIP7702Account } from '../../../pages/confirmations/hooks/useEIP7702Account';
 import { useBatchAuthorizationRequests } from '../../../pages/confirmations/hooks/useBatchAuthorizationRequests';
 
 import ToggleButton from '../../ui/toggle-button';
-import { Box, Text } from '../../component-library';
-import {
-  Display,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
 import { EIP7702NetworkConfiguration } from '../../../pages/confirmations/hooks/useEIP7702Networks';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { unconfirmedTransactionsListSelector } from '../../../selectors';
@@ -220,13 +222,14 @@ export const SmartContractAccountToggle = ({
 
   return (
     <Box
-      display={Display.Flex}
-      justifyContent={JustifyContent.spaceBetween}
+      flexDirection={BoxFlexDirection.Row}
+      justifyContent={BoxJustifyContent.Between}
       marginTop={4}
     >
       <Text
-        variant={TextVariant.bodyMdMedium}
-        color={TextColor.textAlternative}
+        variant={TextVariant.BodyMd}
+        fontWeight={FontWeight.Medium}
+        color={TextColor.TextAlternative}
       >
         {name}
       </Text>

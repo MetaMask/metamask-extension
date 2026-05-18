@@ -73,7 +73,6 @@ const setupController = ({
     messenger: accountsControllerMessenger,
     events: [
       'KeyringController:stateChange',
-      'SnapController:stateChange',
       'SnapKeyring:accountAssetListUpdated',
       'SnapKeyring:accountBalancesUpdated',
       'SnapKeyring:accountTransactionsUpdated',
@@ -454,7 +453,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: false,
+        useSidePanelAsDefault: true,
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
@@ -485,7 +484,7 @@ describe('preferences controller', () => {
         smartTransactionsMigrationApplied: false,
         smartTransactionsOptInStatus: true,
         useNativeCurrencyAsPrimaryCurrency: true,
-        useSidePanelAsDefault: false,
+        useSidePanelAsDefault: true,
         showDefaultAddress: true,
         defaultAddressScope: 'eip155',
         hideZeroBalanceTokens: false,
@@ -503,6 +502,52 @@ describe('preferences controller', () => {
         },
         tokenNetworkFilter: {},
       });
+    });
+
+    it('disables side panel default when enabling full screen view', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        true,
+      );
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+    });
+
+    it('disables full screen default when enabling side panel default', () => {
+      const { controller } = setupController({});
+      controller.setPreference('showExtensionInFullSizeView', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(false);
+      controller.setPreference('useSidePanelAsDefault', true);
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(true);
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        false,
+      );
+    });
+
+    it('stores perpsSelectedCandlePeriod as a string preference', () => {
+      const { controller } = setupController({});
+      controller.setPreference('perpsSelectedCandlePeriod', '1h');
+      expect(controller.getPreferences().perpsSelectedCandlePeriod).toBe('1h');
+    });
+
+    it('enables side panel default when disabling full screen view', () => {
+      const { controller: defaultController } = setupController({});
+      const { controller } = setupController({
+        state: {
+          preferences: {
+            ...defaultController.getPreferences(),
+            showExtensionInFullSizeView: true,
+            useSidePanelAsDefault: false,
+          },
+        },
+      });
+
+      controller.setPreference('showExtensionInFullSizeView', false);
+
+      expect(controller.getPreferences().showExtensionInFullSizeView).toBe(
+        false,
+      );
+      expect(controller.getPreferences().useSidePanelAsDefault).toBe(true);
     });
   });
 
@@ -657,7 +702,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "theme": "os",
           "use4ByteResolution": true,
@@ -726,7 +771,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
@@ -808,7 +853,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
@@ -816,6 +861,7 @@ describe('preferences controller', () => {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",
@@ -890,7 +936,7 @@ describe('preferences controller', () => {
               "sortCallback": "stringNumeric",
             },
             "useNativeCurrencyAsPrimaryCurrency": true,
-            "useSidePanelAsDefault": false,
+            "useSidePanelAsDefault": true,
           },
           "referrals": {
             "asterdex": {},
@@ -898,6 +944,7 @@ describe('preferences controller', () => {
             "hyperliquid": {},
           },
           "securityAlertsEnabled": true,
+          "showSidePanelMigrationToast": false,
           "snapRegistryList": {},
           "snapsAddSnapAccountModalDismissed": false,
           "textDirection": "auto",

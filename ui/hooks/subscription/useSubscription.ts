@@ -29,9 +29,7 @@ import {
   addTransaction,
   cancelSubscription,
   estimateGas,
-  estimateRewardsPoints,
   getRewardsHasAccountOptedIn,
-  getRewardsSeasonMetadata,
   getSubscriptionBillingPortalUrl,
   getSubscriptions,
   getSubscriptionsEligibilities,
@@ -48,7 +46,7 @@ import {
   selectIsSignedIn,
   selectSessionData,
 } from '../../selectors/identity/authentication';
-import { getIsUnlocked } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import {
   getIsShieldSubscriptionActive,
   getSubscriptionDurationInDays,
@@ -89,7 +87,7 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
 import { useAccountTotalFiatBalance } from '../useAccountTotalFiatBalance';
 import { getNetworkConfigurationsByChainId } from '../../../shared/lib/selectors/networks';
-import { isCryptoPaymentMethod } from '../../pages/settings/transaction-shield-tab/types';
+import { isCryptoPaymentMethod } from '../../pages/shield/transaction-shield/types';
 import { isEqualCaseInsensitive } from '../../../shared/lib/string-utils';
 import {
   TokenWithApprovalAmount,
@@ -741,23 +739,19 @@ export const useHandleSubscriptionSupportAction = () => {
   const { customerId: shieldCustomerId } = useUserSubscriptions();
 
   const handleClickContactSupport = useCallback(() => {
-    let supportLinkWithUserId = SUPPORT_LINK as string;
-    const queryParams = new URLSearchParams();
-    queryParams.append('metamask_version', version);
+    const url = new URL(SUPPORT_LINK as string);
+    url.searchParams.append('metamask_version', version);
     if (profileId) {
-      queryParams.append('metamask_profile_id', profileId);
+      url.searchParams.append('metamask_profile_id', profileId);
     }
     if (metaMetricsId) {
-      queryParams.append('metamask_metametrics_id', metaMetricsId);
+      url.searchParams.append('metamask_metametrics_id', metaMetricsId);
     }
     if (shieldCustomerId) {
-      queryParams.append('shield_id', shieldCustomerId);
+      url.searchParams.append('shield_id', shieldCustomerId);
     }
 
-    const queryString = queryParams.toString();
-    if (queryString) {
-      supportLinkWithUserId += `?${queryString}`;
-    }
+    const supportLinkWithUserId = url.toString();
 
     openWindow(supportLinkWithUserId);
   }, [version, profileId, metaMetricsId, shieldCustomerId]);
@@ -906,78 +900,12 @@ export const useShieldRewards = (): {
     monthly: number | null;
     yearly: number | null;
   }>(async () => {
-    if (!caipAccountId) {
-      return { monthly: null, yearly: null };
-    }
+    return { monthly: null, yearly: null };
+  }, []);
 
-    try {
-      const [monthlyPointsData, yearlyPointsData] = await Promise.all([
-        dispatch(
-          estimateRewardsPoints({
-            activityType: 'SHIELD',
-            account: caipAccountId,
-            activityContext: {
-              shieldContext: {
-                recurringInterval: 'month',
-              },
-            },
-          }),
-        ),
-        dispatch(
-          estimateRewardsPoints({
-            activityType: 'SHIELD',
-            account: caipAccountId,
-            activityContext: {
-              shieldContext: {
-                recurringInterval: 'year',
-              },
-            },
-          }),
-        ),
-      ]);
-
-      return {
-        monthly: monthlyPointsData?.pointsEstimate ?? null,
-        yearly: yearlyPointsData?.pointsEstimate ?? null,
-      };
-    } catch {
-      // Points estimation may fail if no active rewards season - return null values gracefully
-      return { monthly: null, yearly: null };
-    }
-  }, [dispatch, caipAccountId]);
-
-  const {
-    value: isRewardsSeason,
-    pending: seasonPending,
-    error: seasonError,
-  } = useAsyncResult<boolean>(async () => {
-    try {
-      const seasonMetadata = await dispatch(
-        getRewardsSeasonMetadata('current'),
-      );
-
-      if (!seasonMetadata) {
-        return false;
-      }
-
-      const currentTimestamp = Date.now();
-      return (
-        currentTimestamp >= seasonMetadata.startDate &&
-        currentTimestamp <= seasonMetadata.endDate
-      );
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        // if the error is because the current season metadata is not found, return false
-        error.message.includes(
-          'No valid season metadata could be found for type',
-        )
-      ) {
-        return false;
-      }
-      throw error;
-    }
-  }, [dispatch]);
+  const isRewardsSeason = false;
+  const seasonPending = false;
+  const seasonError: Error | null = null;
 
   // if there is an error, return null values for points and season so it will not block the UI
   if (pointsError || seasonError || hasAccountOptedInResultError) {

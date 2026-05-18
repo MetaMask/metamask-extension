@@ -45,7 +45,8 @@ export const Toast = ({
   contentProps,
 }: {
   startAdornment: React.ReactNode | React.ReactNode[];
-  text: string;
+  /** Plain string or rich content (e.g. inline `TextButton` via `t(key, [nodes])`). */
+  text: React.ReactNode;
   description?: string;
   descriptionVariant?: TextVariant;
   actionText?: string;

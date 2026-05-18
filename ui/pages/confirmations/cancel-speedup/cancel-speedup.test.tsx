@@ -34,11 +34,14 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
   addPollingTokenToAppState: jest.fn(),
   removePollingTokenFromAppState: jest.fn(),
-  updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   updatePreviousGasParams: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
   createTransactionEventFragment: jest.fn(),
   createSpeedUpTransaction: jest.fn(() => ({ type: 'SPEED_UP_TRANSACTION' })),
   createCancelTransaction: jest.fn(() => ({ type: 'CANCEL_TRANSACTION' })),
+}));
+
+jest.mock('../../../store/actions/update-transaction-gas-fees', () => ({
+  updateTransactionGasFees: () => ({ type: 'UPDATE_TRANSACTION_PARAMS' }),
 }));
 
 jest.mock('../../../contexts/transaction-modal', () => ({
@@ -325,6 +328,77 @@ describe('CancelSpeedup Component', () => {
     await waitFor(() => {
       expect(createCancelTransaction).toHaveBeenCalledTimes(1);
       expect(mockCloseModal).toHaveBeenCalledWith(['cancelSpeedUpTransaction']);
+    });
+  });
+
+  it('renders error toast when cancelTransaction rejects', async () => {
+    (createCancelTransaction as jest.Mock).mockImplementation(
+      () => () =>
+        Promise.reject(new Error('Previous transaction is already confirmed')),
+    );
+
+    render({ editGasMode: EditGasModes.cancel });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
+
+    (useTransactionModalContext as jest.Mock).mockReturnValue({
+      currentModal: 'none',
+      closeModal: mockCloseModal,
+      openModal: mockOpenModal,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-error-toast'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('cancelTransactionFailed') as string),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          tEn('cancelSpeedupAlreadyConfirmedDescription') as string,
+        ),
+      ).toBeInTheDocument();
+    });
+  });
+
+  it('renders error toast when speedUpTransaction rejects', async () => {
+    (createSpeedUpTransaction as jest.Mock).mockImplementation(
+      () => () => Promise.reject(new Error('gas estimation failed')),
+    );
+
+    render({ editGasMode: EditGasModes.speedUp });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-confirm-button'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByTestId('cancel-speedup-confirm-button'));
+
+    (useTransactionModalContext as jest.Mock).mockReturnValue({
+      currentModal: 'none',
+      closeModal: mockCloseModal,
+      openModal: mockOpenModal,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('cancel-speedup-error-toast'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('speedUpTransactionFailed') as string),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText(tEn('cancelSpeedupFailedDescription') as string),
+      ).toBeInTheDocument();
     });
   });
 

@@ -20,6 +20,10 @@ export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
 export const ENVIRONMENT_TYPE_SIDEPANEL = 'sidepanel';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
+export const POPUP_FILE = 'popup.html';
+export const POPUP_INIT_FILE = 'popup-init.html';
+export const SIDEPANEL_FILE = 'sidepanel.html';
+
 export const PLATFORM_BRAVE = 'Brave';
 export const PLATFORM_CHROME = 'Chrome';
 export const PLATFORM_CHROMIUM = 'Chromium';
@@ -177,12 +181,12 @@ export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
   showSnapAccountRedirect: 'snap_manageAccounts:showSnapAccountRedirect',
-};
+} as const;
 
 export const SMART_TRANSACTION_CONFIRMATION_TYPES = {
   showSmartTransactionStatusPage:
     'smartTransaction:showSmartTransactionStatusPage',
-};
+} as const;
 
 export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',

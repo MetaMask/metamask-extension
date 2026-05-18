@@ -65,58 +65,6 @@ describe('useTransactionCustomAmountAlerts', () => {
     });
   });
 
-  it('returns alertMessage from first blocking alert message', () => {
-    useAlertsMock.mockReturnValue(
-      createMockUseAlertsReturnValue({
-        alerts: [
-          createMockAlert({
-            key: 'test-alert',
-            message: 'Test alert message',
-            isBlocking: true,
-            severity: Severity.Danger,
-          }),
-        ],
-        hasDangerAlerts: true,
-        hasAlerts: true,
-        hasUnconfirmedDangerAlerts: true,
-      }),
-    );
-
-    const { result } = runHook();
-
-    expect(result.current).toStrictEqual({
-      alertMessage: 'Test alert message',
-      disableUpdate: false,
-      hideResults: false,
-    });
-  });
-
-  it('returns alertMessage from first blocking alert reason when message is undefined', () => {
-    useAlertsMock.mockReturnValue(
-      createMockUseAlertsReturnValue({
-        alerts: [
-          createMockAlert({
-            key: 'test-alert',
-            reason: 'Test alert reason',
-            isBlocking: true,
-            severity: Severity.Danger,
-          }),
-        ],
-        hasDangerAlerts: true,
-        hasAlerts: true,
-        hasUnconfirmedDangerAlerts: true,
-      }),
-    );
-
-    const { result } = runHook();
-
-    expect(result.current).toStrictEqual({
-      alertMessage: 'Test alert reason',
-      disableUpdate: false,
-      hideResults: false,
-    });
-  });
-
   it('ignores non-blocking alerts', () => {
     useAlertsMock.mockReturnValue(
       createMockUseAlertsReturnValue({
@@ -135,44 +83,6 @@ describe('useTransactionCustomAmountAlerts', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual({
-      disableUpdate: false,
-      hideResults: false,
-    });
-  });
-
-  it('returns first blocking alert when multiple alerts exist', () => {
-    useAlertsMock.mockReturnValue(
-      createMockUseAlertsReturnValue({
-        alerts: [
-          createMockAlert({
-            key: 'non-blocking',
-            message: 'Non-blocking alert',
-            isBlocking: false,
-            severity: Severity.Warning,
-          }),
-          createMockAlert({
-            key: 'blocking-1',
-            message: 'First blocking alert',
-            isBlocking: true,
-            severity: Severity.Danger,
-          }),
-          createMockAlert({
-            key: 'blocking-2',
-            message: 'Second blocking alert',
-            isBlocking: true,
-            severity: Severity.Danger,
-          }),
-        ],
-        hasDangerAlerts: true,
-        hasAlerts: true,
-        hasUnconfirmedDangerAlerts: true,
-      }),
-    );
-
-    const { result } = runHook();
-
-    expect(result.current).toStrictEqual({
-      alertMessage: 'First blocking alert',
       disableUpdate: false,
       hideResults: false,
     });
@@ -198,7 +108,6 @@ describe('useTransactionCustomAmountAlerts', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual({
-      alertMessage: 'Insufficient funds',
       disableUpdate: false,
       hideResults: true,
     });
@@ -224,9 +133,61 @@ describe('useTransactionCustomAmountAlerts', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual({
-      alertMessage: 'Transaction in progress',
       disableUpdate: true,
       hideResults: true,
+    });
+  });
+
+  it('returns alertMessage when alert has both reason and different message', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: 'test-alert',
+            reason: 'No quotes',
+            message: 'This payment route is not available right now.',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: 'This payment route is not available right now.',
+      disableUpdate: false,
+      hideResults: false,
+    });
+  });
+
+  it('does not return alertMessage when reason and message are the same', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: 'test-alert',
+            reason: 'Insufficient funds',
+            message: 'Insufficient funds',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      disableUpdate: false,
+      hideResults: false,
     });
   });
 
@@ -250,7 +211,6 @@ describe('useTransactionCustomAmountAlerts', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual({
-      alertMessage: 'Hardware wallet not supported',
       disableUpdate: true,
       hideResults: true,
     });

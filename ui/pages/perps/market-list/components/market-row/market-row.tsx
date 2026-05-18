@@ -13,6 +13,7 @@ import { PerpsTokenLogo } from '../../../../../components/app/perps/perps-token-
 import {
   getDisplaySymbol,
   getChangeColor,
+  formatSignedChangePercent,
 } from '../../../../../components/app/perps/utils';
 import { useFormatters } from '../../../../../hooks/useFormatters';
 import type { PerpsMarketData } from '../../../../../components/app/perps/types';
@@ -44,7 +45,7 @@ const getMetricValue = (
     case 'volume':
       return `${market.volume} Vol`;
     case 'priceChange':
-      return market.change24hPercent;
+      return formatSignedChangePercent(market.change24hPercent);
     case 'fundingRate':
       if (market.fundingRate === undefined) {
         return 'N/A';
@@ -153,7 +154,7 @@ export const MarketRow: React.FC<MarketRowProps> = ({
           {market.price}
         </Text>
         <Text variant={TextVariant.BodySm} color={changeColor}>
-          {market.change24hPercent}
+          {formatSignedChangePercent(market.change24hPercent)}
         </Text>
       </Box>
     </Box>

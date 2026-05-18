@@ -6,7 +6,7 @@ import { isEqual } from 'lodash';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 
-import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates';
+import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates/approval-types';
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
@@ -39,7 +39,7 @@ const CONNECT_APPROVAL_TYPES = [
 
 export type ConfirmationNavigationOptions = {
   loader?: ConfirmationLoader;
-  returnTo?: string;
+  goBackTo?: string;
 };
 
 export function useConfirmationNavigation() {
@@ -105,8 +105,8 @@ export function useConfirmationNavigation() {
         params.set('loader', options.loader);
       }
 
-      if (options.returnTo) {
-        params.set('returnTo', options.returnTo);
+      if (options.goBackTo) {
+        params.set('goBackTo', options.goBackTo);
       }
 
       navigate({
@@ -154,7 +154,11 @@ export function getConfirmationRoute(
 
   const type = nextConfirmation.type as ApprovalType;
 
-  if (TEMPLATED_CONFIRMATION_APPROVAL_TYPES.includes(type)) {
+  if (
+    TEMPLATED_CONFIRMATION_APPROVAL_TYPES.find(
+      (approvalType) => approvalType === type,
+    ) !== undefined
+  ) {
     return `${CONFIRMATION_V_NEXT_ROUTE}/${confirmationId}`;
   }
 
@@ -207,10 +211,10 @@ export function useConfirmationNavigationOptions(): ConfirmationNavigationOption
     (searchParams.get('loader') as ConfirmationLoader) ??
     ConfirmationLoader.Default;
 
-  const returnTo = sanitizeRedirectUrl(searchParams.get('returnTo'));
+  const goBackTo = sanitizeRedirectUrl(searchParams.get('goBackTo'));
 
   return {
     loader,
-    returnTo,
+    goBackTo,
   };
 }

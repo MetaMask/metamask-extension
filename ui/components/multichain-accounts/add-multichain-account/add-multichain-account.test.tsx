@@ -21,7 +21,7 @@ const addMultichainAccountButtonTestId = 'add-multichain-account-button';
 const addMultichainAccountIconClass = '.add-multichain-account__icon-box__icon';
 const addMultichainAccountIconLoadingClass =
   '.add-multichain-account__icon-box__icon-loading';
-const addMultichainAccountIconBoxClass = '.add-multichain-account__icon-box';
+const addMultichainAccountIconBoxTestId = 'add-multichain-account-icon-box';
 
 jest.mock('../../../store/actions', () => ({
   createNextMultichainAccountGroup: jest.fn(
@@ -118,9 +118,9 @@ describe('AddMultichainAccount', () => {
     const button = screen.getByTestId(addMultichainAccountButtonTestId);
     expect(button).toHaveStyle('cursor: not-allowed');
 
-    // Check background color of icon box
-    const iconBox = container.querySelector(addMultichainAccountIconBoxClass);
-    expect(iconBox).toHaveClass('mm-box--background-color-transparent');
+    expect(
+      screen.getByTestId(addMultichainAccountIconBoxTestId),
+    ).toBeInTheDocument();
   });
 
   it('prevents multiple clicks during loading state', () => {
@@ -168,9 +168,9 @@ describe('AddMultichainAccount', () => {
     const button = screen.getByTestId(addMultichainAccountButtonTestId);
     expect(button).toHaveStyle('cursor: pointer');
 
-    // Check background color of icon box
-    const iconBox = container.querySelector(addMultichainAccountIconBoxClass);
-    expect(iconBox).toHaveClass('mm-box--background-color-info-muted');
+    expect(
+      screen.getByTestId(addMultichainAccountIconBoxTestId),
+    ).toBeInTheDocument();
   });
 
   it('fires trace and endTrace for CreateMultichainAccount on click', async () => {

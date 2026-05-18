@@ -133,4 +133,28 @@ describe('SearchInput', () => {
       expect(document.activeElement).toBe(input);
     });
   });
+
+  describe('input click', () => {
+    it('does not call onInputClick when autoFocus only focuses the input', () => {
+      const onInputClick = jest.fn();
+      renderWithProvider(
+        <SearchInput {...defaultProps} autoFocus onInputClick={onInputClick} />,
+        mockStore,
+      );
+
+      expect(onInputClick).not.toHaveBeenCalled();
+    });
+
+    it('calls onInputClick when the input is clicked', () => {
+      const onInputClick = jest.fn();
+      renderWithProvider(
+        <SearchInput {...defaultProps} onInputClick={onInputClick} />,
+        mockStore,
+      );
+
+      fireEvent.click(screen.getByTestId('search-input'));
+
+      expect(onInputClick).toHaveBeenCalledTimes(1);
+    });
+  });
 });

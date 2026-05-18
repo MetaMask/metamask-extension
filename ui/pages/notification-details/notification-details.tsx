@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   TRIGGER_TYPES,
@@ -21,6 +20,7 @@ import {
   hasNotificationComponents,
 } from '../notifications/notification-components';
 import { useSnapNotificationTimeouts } from '../../hooks/useNotificationTimeouts';
+import { useAppSelector } from '../../store/store';
 import { getExtractIdentifier } from './utils/utils';
 import { NotificationDetailsHeader } from './notification-details-header/notification-details-header';
 import { NotificationDetailsBody } from './notification-details-body/notification-details-body';
@@ -29,7 +29,9 @@ import { NotificationDetailsFooter } from './notification-details-footer/notific
 function useNotificationByPath() {
   const { pathname } = useLocation();
   const id = getExtractIdentifier(pathname);
-  const notification = useSelector(getMetamaskNotificationById(id));
+  const notification = useAppSelector((state) =>
+    getMetamaskNotificationById(state, id),
+  );
 
   return {
     notification,

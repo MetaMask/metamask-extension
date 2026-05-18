@@ -14,8 +14,12 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
+  ButtonIcon,
+  ButtonIconSize,
   ButtonSize,
   ButtonVariant,
+  IconColor,
+  IconName,
   Text,
   TextAlign,
   TextColor,
@@ -29,7 +33,7 @@ import {
 } from '@metamask/perps-controller';
 import { isValidPerpsWithdrawAmount } from '../../components/app/perps/constants';
 import { Content, Footer, Page } from '../../components/multichain/pages/page';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { FlexDirection } from '../../helpers/constants/design-system';
 import { getAvatarNetworkColor } from '../../helpers/utils/accounts';
 import {
@@ -41,15 +45,20 @@ import { ConfirmInfoRowSize } from '../../components/app/confirm/info/row/row';
 import { PerpsFiatHeroAmountInput } from '../../components/app/perps/perps-fiat-hero-amount-input';
 import { PerpsFiatSummaryRows } from '../../components/app/perps/perps-fiat-summary-rows';
 import { PerpsWithdrawPercentageButtons } from '../../components/app/perps/perps-withdraw-percentage-buttons';
-import { PerpsWalletAccountHeader } from '../../components/app/perps/perps-wallet-account-header';
 import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { selectPerpsIsTestnet } from '../../selectors/perps-controller';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useFormatters } from '../../hooks/useFormatters';
-import { usePerpsEligibility } from '../../hooks/perps';
+import { usePerpsEventTracking } from '../../hooks/perps';
 import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { submitRequestToBackground } from '../../store/background-connection';
+import { MetaMetricsEventName } from '../../../shared/constants/metametrics';
+import {
+  PERPS_EVENT_PROPERTY,
+  PERPS_EVENT_VALUE,
+} from '../../../shared/constants/perps-events';
+import { translatePerpsError } from '../../components/app/perps/utils/translate-perps-error';
 import { formatAmountInputFromNumber } from './perps-withdraw-amount-format';
 
 /** Arbitrum native USDC (matches `ARBITRUM_USDC_TOKEN_OBJECT` in swaps constants). */
@@ -66,8 +75,9 @@ function parsePerpsAmountInput(raw: string): number {
  * Perps withdraw screen: enter USDC amount, validate against routes and balance,
  * submit `perpsWithdraw` with HyperLiquid USDC CAIP asset id.
  *
- * Layout mirrors deposit confirmations (`CustomAmountInfo` + small summary rows)
- * while remaining a standalone multichain page (no `TransactionMeta` / pay flow).
+ * Layout mirrors deposit confirmations (`CustomAmountInfo` + small summary rows).
+ * The Perps tab opens this page by default; confirmations-backed withdraw remains
+ * gated by the Pay post-quote feature flag.
  */
 const PerpsWithdrawPage: React.FC = () => {
   const t = useI18nContext();
@@ -76,8 +86,8 @@ const PerpsWithdrawPage: React.FC = () => {
   const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const isTestnet = useSelector(selectPerpsIsTestnet);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { isEligible } = usePerpsEligibility();
   const { account } = usePerpsLiveAccount();
+  const { track } = usePerpsEventTracking();
 
   const [amount, setAmount] = useState('0');
   const [withdrawalRoutes, setWithdrawalRoutes] = useState<AssetRoute[]>([]);
@@ -85,7 +95,8 @@ const PerpsWithdrawPage: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const availableBalance = account?.availableBalance ?? '0';
+  const availableBalance =
+    account?.withdrawableBalance ?? account?.spendableBalance ?? '0';
   const availableNum = parseFloat(availableBalance) || 0;
 
   const usdcAssetId = useMemo(
@@ -173,8 +184,7 @@ const PerpsWithdrawPage: React.FC = () => {
     isValidPerpsWithdrawAmount(amount.trim().replace(/,/gu, '.')) &&
     Number.isFinite(amountNum) &&
     amountNum >= minWithdrawNum &&
-    amountNum <= availableNum &&
-    isEligible;
+    amountNum <= availableNum;
 
   const handleHeroAmountChange = useCallback((value: string) => {
     const next = value.replace(/,/gu, '.');
@@ -243,16 +253,51 @@ const PerpsWithdrawPage: React.FC = () => {
       );
 
       if (result?.success) {
+        track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
+        });
         navigate(DEFAULT_ROUTE);
         return;
       }
 
-      setSubmitError(result?.error ?? t('perpsWithdrawFailed'));
+      const failedMessage = result?.error ?? t('perpsWithdrawFailed');
+      track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failedMessage,
+      });
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: failedMessage,
+      });
+      setSubmitError(
+        result?.error
+          ? (translatePerpsError(
+              new Error(result.error),
+              t as (key: string) => string,
+            ) ?? t('perpsWithdrawFailed'))
+          : t('perpsWithdrawFailed'),
+      );
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
-    } catch {
-      setSubmitError(t('perpsWithdrawFailed'));
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'An unknown error occurred';
+      track(MetaMetricsEventName.PerpsWithdrawalTransaction, {
+        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+        [PERPS_EVENT_PROPERTY.SIZE]: cleanAmount,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+      track(MetaMetricsEventName.PerpsError, {
+        [PERPS_EVENT_PROPERTY.ERROR_TYPE]: PERPS_EVENT_VALUE.ERROR_TYPE.BACKEND,
+        [PERPS_EVENT_PROPERTY.ERROR_MESSAGE]: errorMessage,
+      });
+      setSubmitError(
+        translatePerpsError(error, t as (key: string) => string) ??
+          t('perpsWithdrawFailed'),
+      );
       submitRequestToBackground('perpsClearWithdrawResult', []).catch(() => {
         // Non-blocking cleanup of controller toast state
       });
@@ -266,6 +311,7 @@ const PerpsWithdrawPage: React.FC = () => {
     navigate,
     selectedAccount?.address,
     t,
+    track,
     usdcAssetId,
   ]);
 
@@ -333,7 +379,7 @@ const PerpsWithdrawPage: React.FC = () => {
       },
       {
         label: t('perpsWithdrawEstimatedTime'),
-        value: t('perpsWithdrawMinutesApprox', [String(estimatedMinutes)]),
+        value: t('perpsWithdrawMinutesApprox', [estimatedMinutes]),
         'data-testid': 'perps-withdraw-summary-time',
       },
       {
@@ -364,7 +410,32 @@ const PerpsWithdrawPage: React.FC = () => {
 
   return (
     <Page data-testid="perps-withdraw-page">
-      <PerpsWalletAccountHeader />
+      <Box
+        alignItems={BoxAlignItems.Center}
+        className="bg-background-default"
+        flexDirection={BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        paddingLeft={3}
+        paddingRight={3}
+        paddingTop={4}
+        paddingBottom={4}
+      >
+        <ButtonIcon
+          iconName={IconName.ArrowLeft}
+          ariaLabel={t('back')}
+          size={ButtonIconSize.Md}
+          onClick={handleCancel}
+          color={IconColor.IconDefault}
+          data-testid="perps-withdraw-back-button"
+        />
+        <Text
+          variant={TextVariant.HeadingSm}
+          data-testid="perps-withdraw-header-title"
+        >
+          {t('perpsWithdrawFundsTitle')}
+        </Text>
+        <Box style={{ width: 32 }} />
+      </Box>
       <Content className="min-h-0 flex-1">
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -381,9 +452,10 @@ const PerpsWithdrawPage: React.FC = () => {
             style={{ flex: 1, minHeight: 0 }}
           >
             <PerpsFiatHeroAmountInput
+              autoFocus
               value={amount}
               onChange={handleHeroAmountChange}
-              disabled={!isEligible || isSubmitting}
+              disabled={isSubmitting}
               hasAlert={amountHasAlert}
             />
 
@@ -396,12 +468,10 @@ const PerpsWithdrawPage: React.FC = () => {
               {formatCurrency(availableNum, 'USD')}
             </Text>
 
-            {isEligible ? (
-              <PerpsWithdrawPercentageButtons
-                disabled={isSubmitting}
-                onPercentageClick={handlePercentageClick}
-              />
-            ) : null}
+            <PerpsWithdrawPercentageButtons
+              disabled={isSubmitting}
+              onPercentageClick={handlePercentageClick}
+            />
           </Box>
 
           <Box
@@ -425,15 +495,6 @@ const PerpsWithdrawPage: React.FC = () => {
                 {submitError}
               </Text>
             ) : null}
-
-            {isEligible ? null : (
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {t('perpsGeoBlockedTooltip')}
-              </Text>
-            )}
           </Box>
         </Box>
       </Content>

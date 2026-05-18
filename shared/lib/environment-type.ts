@@ -5,6 +5,8 @@ import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
+  POPUP_FILE,
+  SIDEPANEL_FILE,
 } from '../constants/app';
 
 /**
@@ -12,13 +14,13 @@ import {
  */
 const getEnvironmentTypeMemo = memoize((url: string) => {
   const parsedUrl = new URL(url);
-  if (parsedUrl.pathname === '/popup.html') {
+  if (parsedUrl.pathname === `/${POPUP_FILE}`) {
     return ENVIRONMENT_TYPE_POPUP;
   } else if (['/home.html'].includes(parsedUrl.pathname)) {
     return ENVIRONMENT_TYPE_FULLSCREEN;
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;
-  } else if (parsedUrl.pathname === '/sidepanel.html') {
+  } else if (parsedUrl.pathname === `/${SIDEPANEL_FILE}`) {
     return ENVIRONMENT_TYPE_SIDEPANEL;
   }
   return ENVIRONMENT_TYPE_BACKGROUND;
@@ -31,6 +33,7 @@ const getEnvironmentTypeMemo = memoize((url: string) => {
  * - `fullscreen` refers to the main browser window
  * - `notification` refers to the popup that appears in its own window when taking action outside of metamask
  * - `background` refers to the background page
+ * - `sidepanel` refers to the side panel
  *
  * NOTE: This should only be called on internal URLs.
  *
@@ -47,5 +50,21 @@ export const isInteractiveUI = (url = globalThis.location.href) => {
     environmentType === ENVIRONMENT_TYPE_POPUP ||
     environmentType === ENVIRONMENT_TYPE_SIDEPANEL ||
     environmentType === ENVIRONMENT_TYPE_FULLSCREEN
+  );
+};
+
+/**
+ * Returns true if the current environment (view) is a popup or side panel
+ *
+ * @param url - the URL of the window (defaults to window.location.href)
+ * @returns true if the environment is a popup or side panel
+ */
+export const isPopupOrSidePanelEnvironment = (
+  url = globalThis.location.href,
+) => {
+  const environmentType = getEnvironmentType(url);
+  return (
+    environmentType === ENVIRONMENT_TYPE_POPUP ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL
   );
 };

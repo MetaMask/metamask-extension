@@ -30,19 +30,27 @@ import { mockNetworkState } from '../../test/stub/networks';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { stripWalletTypePrefixFromWalletId } from '../hooks/multichain-accounts/utils';
+import * as passkeyCapabilities from '../../shared/lib/passkey/passkey-capabilities';
 import * as actions from './actions';
 import * as actionConstants from './actionConstants';
 import { setBackgroundConnection } from './background-connection';
+import { getStatePatches } from './patch-store-substream-connection';
 
-jest.mock('../../app/scripts/controller-init/perps-controller-init', () => ({
-  PerpsControllerInit: jest.fn().mockReturnValue({
-    controller: {
-      state: {},
-      name: 'PerpsController',
-    },
-    api: {},
+jest.mock(
+  '../../app/scripts/messenger-client-init/perps-controller-init',
+  () => ({
+    PerpsControllerInit: jest.fn().mockReturnValue({
+      messengerClient: {
+        state: {},
+        name: 'PerpsController',
+      },
+      api: {},
+    }),
   }),
-}));
+);
+jest.mock('./patch-store-substream-connection');
+
+const getStatePatchesMock = jest.mocked(getStatePatches);
 
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
@@ -128,12 +136,16 @@ describe('Actions', () => {
     background.signTypedMessage = sinon.stub();
     background.abortTransactionSigning = sinon.stub();
     background.toggleExternalServices = sinon.stub();
-    background.getStatePatches = sinon.stub().resolves([]);
     background.removePermittedChain = sinon.stub();
     background.requestAccountsAndChainPermissionsWithId = sinon.stub();
     background.grantPermissions = sinon.stub();
     background.grantPermissionsIncremental = sinon.stub();
     background.changePassword = sinon.stub();
+    background.changePasswordWithPasskeyVerification = sinon.stub();
+    background.generatePasskeyRegistrationOptions = sinon.stub();
+    background.generatePasskeyAuthenticationOptions = sinon.stub();
+    background.generatePasskeyPostRegistrationAuthenticationOptions =
+      sinon.stub();
 
     // Make sure navigator.hid is defined for WebHID tests
     if (!global.navigator) {
@@ -222,7 +234,7 @@ describe('Actions', () => {
       expect(
         background.setDataCollectionForMarketing.calledOnceWith(true),
       ).toStrictEqual(true);
-      expect(background.getStatePatches.calledOnce).toStrictEqual(true);
+      expect(getStatePatchesMock).toHaveBeenCalled();
       expect(store.getActions()).toStrictEqual([
         {
           type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
@@ -302,6 +314,343 @@ describe('Actions', () => {
       expect(
         background.changePassword.calledOnceWith(newPassword, oldPassword),
       ).toStrictEqual(true);
+    });
+  });
+
+  describe('#changePasswordWithPasskeyVerification', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('submits passkey authentication response and new password to the background', async () => {
+      const store = mockStore();
+      const newPassword = 'new-password';
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      background.changePasswordWithPasskeyVerification.resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.changePasswordWithPasskeyVerification(
+          newPassword,
+          authenticationResponse,
+        ),
+      );
+
+      expect(
+        background.changePasswordWithPasskeyVerification.calledOnceWith(
+          newPassword,
+          authenticationResponse,
+          undefined,
+        ),
+      ).toStrictEqual(true);
+    });
+
+    it('forwards renewVaultKeyProtection option to the background', async () => {
+      const store = mockStore();
+      const newPassword = 'new-password';
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      background.changePasswordWithPasskeyVerification.resolves();
+      setBackgroundConnection(background);
+
+      await store.dispatch(
+        actions.changePasswordWithPasskeyVerification(
+          newPassword,
+          authenticationResponse,
+          { renewVaultKeyProtection: false },
+        ),
+      );
+
+      expect(
+        background.changePasswordWithPasskeyVerification.calledOnceWith(
+          newPassword,
+          authenticationResponse,
+          { renewVaultKeyProtection: false },
+        ),
+      ).toStrictEqual(true);
+    });
+
+    it('dispatches a warning and rethrows when the background rejects', async () => {
+      const store = mockStore();
+      const err = new Error('passkey verification failed');
+      background.changePasswordWithPasskeyVerification.rejects(err);
+      setBackgroundConnection(background);
+
+      await expect(
+        store.dispatch(
+          actions.changePasswordWithPasskeyVerification('pw', {
+            id: 'cred',
+            rawId: 'cred',
+            response: {
+              clientDataJSON: 'e30',
+              authenticatorData: 'AA',
+              signature: 'sig',
+            },
+            type: 'public-key',
+          }),
+        ),
+      ).rejects.toThrow('passkey verification failed');
+
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.DISPLAY_WARNING, payload: err.message },
+      ]);
+    });
+  });
+
+  describe('passkey background requests', () => {
+    afterEach(() => {
+      sinon.restore();
+      jest.restoreAllMocks();
+    });
+
+    it('#tryUnlockMetamaskWithPasskey dispatches success actions when unlock succeeds', async () => {
+      getStatePatchesMock.mockResolvedValue([]);
+      const store = mockStore();
+      background.unlockWithPasskey.resolves();
+      setBackgroundConnection(background);
+
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      await store.dispatch(
+        actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
+      );
+
+      expect(
+        background.unlockWithPasskey.calledOnceWith(authenticationResponse),
+      ).toBe(true);
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.SHOW_LOADING, payload: undefined },
+        { type: actionConstants.UNLOCK_IN_PROGRESS },
+        { type: actionConstants.UNLOCK_SUCCEEDED, value: undefined },
+        { type: actionConstants.HIDE_WARNING },
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('#tryUnlockMetamaskWithPasskey dispatches failure and rethrows when unlock fails', async () => {
+      getStatePatchesMock.mockResolvedValue([]);
+      const store = mockStore();
+      background.unlockWithPasskey.rejects(new Error('unlock failed'));
+      setBackgroundConnection(background);
+
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+
+      await expect(
+        store.dispatch(
+          actions.tryUnlockMetamaskWithPasskey(authenticationResponse),
+        ),
+      ).rejects.toThrow('unlock failed');
+
+      expect(store.getActions()).toStrictEqual([
+        { type: actionConstants.SHOW_LOADING, payload: undefined },
+        { type: actionConstants.UNLOCK_IN_PROGRESS },
+        { type: actionConstants.UNLOCK_FAILED, value: 'unlock failed' },
+        { type: actionConstants.HIDE_LOADING },
+      ]);
+    });
+
+    it('#generatePasskeyRegistrationOptions passes prfAvailable true when PRF support is true', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(true);
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
+      setBackgroundConnection(background);
+
+      await actions.generatePasskeyRegistrationOptions();
+
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: true,
+        }),
+      ).toBe(true);
+    });
+
+    it('#generatePasskeyRegistrationOptions passes prfAvailable false when PRF support is false', async () => {
+      jest
+        .spyOn(passkeyCapabilities, 'isPasskeyPRFSupported')
+        .mockResolvedValue(false);
+      background.generatePasskeyRegistrationOptions.resolves({
+        rp: { name: 'MM' },
+      });
+      setBackgroundConnection(background);
+
+      await actions.generatePasskeyRegistrationOptions();
+
+      expect(
+        background.generatePasskeyRegistrationOptions.calledOnceWith({
+          prfAvailable: false,
+        }),
+      ).toBe(true);
+    });
+
+    it('#generatePasskeyAuthenticationOptions forwards to the background', async () => {
+      const opts = { challenge: 'AQ', allowCredentials: [] };
+      background.generatePasskeyAuthenticationOptions.resolves(opts);
+      setBackgroundConnection(background);
+
+      const result = await actions.generatePasskeyAuthenticationOptions();
+
+      expect(result).toStrictEqual(opts);
+      expect(background.generatePasskeyAuthenticationOptions.calledOnce).toBe(
+        true,
+      );
+    });
+
+    it('#generatePasskeyPostRegistrationAuthenticationOptions forwards registration response', async () => {
+      const registrationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          attestationObject: 'e30',
+        },
+        type: 'public-key',
+      };
+      const opts = { challenge: 'post', allowCredentials: [] };
+      background.generatePasskeyPostRegistrationAuthenticationOptions.resolves(
+        opts,
+      );
+      setBackgroundConnection(background);
+
+      const result =
+        await actions.generatePasskeyPostRegistrationAuthenticationOptions(
+          registrationResponse,
+        );
+
+      expect(result).toStrictEqual(opts);
+      expect(
+        background.generatePasskeyPostRegistrationAuthenticationOptions.calledOnceWith(
+          registrationResponse,
+        ),
+      ).toBe(true);
+    });
+
+    it('#protectVaultKeyWithPasskey forwards registration and authentication responses and optional password', async () => {
+      const registrationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          attestationObject: 'e30',
+        },
+        type: 'public-key',
+      };
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'AA',
+        },
+        type: 'public-key',
+      };
+      background.protectVaultKeyWithPasskey.resolves();
+      setBackgroundConnection(background);
+
+      await actions.protectVaultKeyWithPasskey(
+        registrationResponse,
+        authenticationResponse,
+        'secret',
+      );
+
+      expect(
+        background.protectVaultKeyWithPasskey.calledOnceWith(
+          registrationResponse,
+          authenticationResponse,
+          'secret',
+        ),
+      ).toBe(true);
+
+      await actions.protectVaultKeyWithPasskey(
+        registrationResponse,
+        authenticationResponse,
+      );
+
+      expect(
+        background.protectVaultKeyWithPasskey.secondCall.args,
+      ).toStrictEqual([
+        registrationResponse,
+        authenticationResponse,
+        undefined,
+      ]);
+    });
+
+    it('#removePasskeyWithPasskeyVerification forwards the authentication response', async () => {
+      const authenticationResponse = {
+        id: 'cred',
+        rawId: 'cred',
+        response: {
+          clientDataJSON: 'e30',
+          authenticatorData: 'AA',
+          signature: 'sig',
+        },
+        type: 'public-key',
+      };
+      background.removePasskeyWithPasskeyVerification.resolves();
+      setBackgroundConnection(background);
+
+      await actions.removePasskeyWithPasskeyVerification(
+        authenticationResponse,
+      );
+
+      expect(
+        background.removePasskeyWithPasskeyVerification.calledOnceWith(
+          authenticationResponse,
+        ),
+      ).toBe(true);
+    });
+
+    it('#removePasskeyWithPasswordVerification forwards the password', async () => {
+      background.removePasskeyWithPasswordVerification.resolves();
+      setBackgroundConnection(background);
+
+      await actions.removePasskeyWithPasswordVerification('wallet-password');
+
+      expect(
+        background.removePasskeyWithPasswordVerification.calledOnceWith(
+          'wallet-password',
+        ),
+      ).toBe(true);
     });
   });
 
@@ -698,69 +1047,6 @@ describe('Actions', () => {
       );
 
       expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-  });
-
-  describe('#addNewAccount', () => {
-    it('adds a new account', async () => {
-      const store = mockStore({
-        metamask: { ...defaultState.metamask },
-      });
-
-      const addNewAccount = background.addNewAccount.resolves('0x123');
-
-      setBackgroundConnection(background);
-
-      await store.dispatch(actions.addNewAccount());
-      expect(addNewAccount.callCount).toStrictEqual(1);
-    });
-
-    it('displays warning error message when addNewAccount in background callback errors', async () => {
-      const store = mockStore();
-
-      background.addNewAccount.rejects(new Error('error'));
-
-      setBackgroundConnection(background);
-
-      const expectedActions = [
-        { type: 'SHOW_LOADING_INDICATION', payload: undefined },
-        { type: 'DISPLAY_WARNING', payload: 'error' },
-        { type: 'HIDE_LOADING_INDICATION' },
-      ];
-
-      await expect(store.dispatch(actions.addNewAccount())).rejects.toThrow(
-        'error',
-      );
-
-      expect(store.getActions()).toStrictEqual(expectedActions);
-    });
-
-    it('adds an account to a specific keyring by id', async () => {
-      const store = mockStore({
-        metamask: { ...defaultState.metamask },
-      });
-
-      const addNewAccount = background.addNewAccount.resolves('0x123');
-
-      setBackgroundConnection(background);
-
-      await store.dispatch(actions.addNewAccount(mockUlid));
-      expect(addNewAccount.callCount).toStrictEqual(1);
-    });
-
-    it('throws if an invalid keyring id is provided', async () => {
-      const store = mockStore({
-        metamask: { ...defaultState.metamask },
-      });
-
-      const addNewAccount = background.addNewAccount.resolves('0x123');
-
-      setBackgroundConnection(background);
-
-      await expect(
-        store.dispatch(actions.addNewAccount('invalidKeyringId')),
-      ).rejects.toThrow('Keyring not found');
-      expect(addNewAccount.callCount).toStrictEqual(0);
     });
   });
 
@@ -1411,7 +1697,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         updateTransaction: updateTransactionStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1434,7 +1719,6 @@ describe('Actions', () => {
         updateTransaction: () => {
           throw new Error('error');
         },
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1478,6 +1762,7 @@ describe('Actions', () => {
 
       await store.dispatch(actions.lockMetamask());
       expect(backgroundSetLocked.callCount).toStrictEqual(1);
+      expect(backgroundSetLocked.firstCall.args).toStrictEqual([]);
     });
 
     it('returns display warning error with value when setLocked in background callback errors', async () => {
@@ -1761,7 +2046,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1790,7 +2074,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addToken: addTokenStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1825,7 +2108,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: ignoreTokensStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1841,7 +2123,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         ignoreTokens: sinon.stub().rejects(new Error('error')),
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -1874,7 +2155,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: hideAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1893,7 +2173,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         hideAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1925,7 +2204,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: addCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1945,7 +2223,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         addCustomAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1972,7 +2249,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -1991,7 +2267,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2019,7 +2294,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: removeCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2041,7 +2315,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         removeCustomAsset: sinon.stub().rejects(error),
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2069,7 +2342,6 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: unhideAssetStub,
         addCustomAsset: addCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2115,7 +2387,6 @@ describe('Actions', () => {
       background.getApi.returns({
         unhideAsset: sinon.stub().rejects(new Error('unhide failed')),
         addCustomAsset: addCustomAssetStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
       setBackgroundConnection(background.getApi());
 
@@ -2495,7 +2766,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         setAddressBook: setAddressBookStub,
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3122,7 +3392,6 @@ describe('Actions', () => {
 
       background.getApi.returns({
         rejectPendingApproval: sinon.stub().resolves(),
-        getStatePatches: sinon.stub().resolves([]),
       });
 
       setBackgroundConnection(background.getApi());
@@ -3156,7 +3425,7 @@ describe('Actions', () => {
   });
 
   describe('#createCancelTransaction', () => {
-    it('shows TRANSACTION_ALREADY_CONFIRMED modal if createCancelTransaction throws with an error', async () => {
+    it('dispatches DISPLAY_WARNING and rethrows when createCancelTransaction fails', async () => {
       const store = mockStore();
 
       const createCancelTransactionStub = sinon
@@ -3168,20 +3437,19 @@ describe('Actions', () => {
 
       const txId = '123-456';
 
-      try {
-        await store.dispatch(actions.createCancelTransaction(txId));
-      } catch (error) {
-        /* eslint-disable-next-line jest/no-conditional-expect */
-        expect(error.message).toBe('Previous transaction is already confirmed');
-      }
+      await expect(
+        store.dispatch(actions.createCancelTransaction(txId)),
+      ).rejects.toThrow('Previous transaction is already confirmed');
 
       const resultantActions = store.getActions();
-      const expectedAction = resultantActions.find(
-        (action) => action.type === actionConstants.MODAL_OPEN,
+      const warningAction = resultantActions.find(
+        (action) => action.type === actionConstants.DISPLAY_WARNING,
       );
 
-      expect(expectedAction.payload.name).toBe('TRANSACTION_ALREADY_CONFIRMED');
-      expect(expectedAction.payload.originalTransactionId).toBe(txId);
+      expect(warningAction).toBeDefined();
+      expect(warningAction.payload).toBe(
+        'Previous transaction is already confirmed',
+      );
     });
   });
 
@@ -4615,7 +4883,6 @@ describe('Actions', () => {
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
         { type: 'HIDE_LOADING_INDICATION' },
         { type: 'HIDE_WARNING' },
-        { type: 'SET_SHOW_NEW_SRP_ADDED_TOAST', payload: true },
       ];
 
       await store.dispatch(actions.importMnemonicToVault(mnemonic));
@@ -4816,6 +5083,19 @@ describe('Actions', () => {
     });
   });
 
+  describe('#perpsToggleTestnet', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls perpsToggleTestnet in the background', async () => {
+      background.perpsToggleTestnet = sinon.stub().resolves();
+      setBackgroundConnection(background);
+      await actions.perpsToggleTestnet();
+      expect(background.perpsToggleTestnet.callCount).toStrictEqual(1);
+    });
+  });
+
   describe('#setPendingRedirectRoute', () => {
     afterEach(() => {
       sinon.restore();
@@ -4824,7 +5104,6 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with a route', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
-      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       const route = { path: '/shield-plan' };
@@ -4838,7 +5117,6 @@ describe('Actions', () => {
     it('calls background setPendingRedirectRoute with null', async () => {
       const store = mockStore();
       background.setPendingRedirectRoute = sinon.stub().resolves();
-      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       await store.dispatch(actions.setPendingRedirectRoute(null));
@@ -4853,7 +5131,6 @@ describe('Actions', () => {
       background.setPendingRedirectRoute = sinon
         .stub()
         .rejects(new Error('error'));
-      background.getStatePatches = sinon.stub().resolves([]);
       setBackgroundConnection(background);
 
       const expectedActions = [{ type: 'DISPLAY_WARNING', payload: 'error' }];

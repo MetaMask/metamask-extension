@@ -39,6 +39,7 @@ function createMockStreamManager(cachedMarkets?: PerpsMarketData[]) {
     getCachedData: jest.fn(() => cachedMarkets ?? []),
     hasCachedData: jest.fn(() => Boolean(cachedMarkets?.length)),
     clearCache: jest.fn(),
+    refresh: jest.fn(),
     subscribe: jest.fn((cb: SubscribeCallback) => {
       subscriber = cb;
       if (cachedMarkets?.length) {
@@ -190,7 +191,7 @@ describe('usePerpsLiveMarketData', () => {
     expect(result.current.markets).toEqual([]);
   });
 
-  it('refresh clears cache and resets loading state', () => {
+  it('refresh triggers a market refresh without resetting loading state', () => {
     const allMarkets = [createMockMarket({ symbol: 'BTC', volume: '$1.2B' })];
 
     const { streamManager } = createMockStreamManager(allMarkets);
@@ -211,10 +212,10 @@ describe('usePerpsLiveMarketData', () => {
     });
 
     expect(
-      (streamManager as unknown as { markets: { clearCache: jest.Mock } })
-        .markets.clearCache,
+      (streamManager as unknown as { markets: { refresh: jest.Mock } }).markets
+        .refresh,
     ).toHaveBeenCalled();
-    expect(result.current.isInitialLoading).toBe(true);
+    expect(result.current.isInitialLoading).toBe(false);
   });
 
   it('excludes zero-volume HIP-3 markets from hip3Markets', () => {
@@ -244,5 +245,50 @@ describe('usePerpsLiveMarketData', () => {
 
     expect(result.current.hip3Markets).toHaveLength(1);
     expect(result.current.hip3Markets[0].symbol).toBe('xyz:TSLA');
+  });
+
+  it('sorts cryptoMarkets and hip3Markets by 24h volume descending', () => {
+    const allMarkets = [
+      createMockMarket({ symbol: 'DOGE', volume: '$50M' }),
+      createMockMarket({ symbol: 'BTC', volume: '$1.2B' }),
+      createMockMarket({ symbol: 'ETH', volume: '$850M' }),
+      createMockMarket({
+        symbol: 'xyz:GOOG',
+        volume: '$80M',
+        marketSource: 'xyz',
+      }),
+      createMockMarket({
+        symbol: 'xyz:TSLA',
+        volume: '$30M',
+        marketSource: 'xyz',
+      }),
+      createMockMarket({
+        symbol: 'xyz:NVDA',
+        volume: '$200M',
+        marketSource: 'xyz',
+      }),
+    ];
+
+    const { streamManager } = createMockStreamManager(allMarkets);
+
+    usePerpsStreamManagerMock.mockReturnValue({
+      streamManager,
+      isInitializing: false,
+      error: null,
+      selectedAddress: '0x123',
+    });
+
+    const { result } = renderHook(() => usePerpsLiveMarketData());
+
+    expect(result.current.cryptoMarkets.map((m) => m.symbol)).toEqual([
+      'BTC',
+      'ETH',
+      'DOGE',
+    ]);
+    expect(result.current.hip3Markets.map((m) => m.symbol)).toEqual([
+      'xyz:NVDA',
+      'xyz:GOOG',
+      'xyz:TSLA',
+    ]);
   });
 });

@@ -2,30 +2,27 @@ import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
+  FontWeight,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapName, shortenAddress } from '../../../helpers/utils/util';
 
 import { AccountListItemMenu } from '../account-list-item-menu';
-import {
-  Box,
-  ButtonIcon,
-  Icon,
-  IconName,
-  IconSize,
-  Tag,
-  Text,
-} from '../../component-library';
-import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  Color,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { Tag } from '../../component-library';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
@@ -198,16 +195,17 @@ const AccountListItem = ({
 
   return (
     <Box
-      display={Display.Flex}
-      padding={4}
-      backgroundColor={
-        selected ? BackgroundColor.backgroundMuted : BackgroundColor.transparent
-      }
-      className={classnames('multichain-account-list-item items-center', {
+      className={classnames('multichain-account-list-item flex items-center', {
         'multichain-account-list-item--selected': selected,
         'multichain-account-list-item--connected': Boolean(connectedAvatar),
         'multichain-account-list-item--clickable': Boolean(onClick),
       })}
+      padding={4}
+      backgroundColor={
+        selected
+          ? BoxBackgroundColor.BackgroundMuted
+          : BoxBackgroundColor.Transparent
+      }
       data-testid="account-item"
       ref={itemRef}
       onClick={() => {
@@ -219,41 +217,30 @@ const AccountListItem = ({
       }}
     >
       {startAccessory ? (
-        <Box marginInlineEnd={2} marginTop={1}>
-          {startAccessory}
-        </Box>
+        <Box className="me-2 mt-1">{startAccessory}</Box>
       ) : null}
 
       <Box className="flex w-full gap-2 items-center">
-        <Box
-          display={[Display.Flex, Display.None]}
-          data-testid="account-list-item-badge"
-        >
+        <Box className="flex sm:hidden" data-testid="account-list-item-badge">
           <ConnectedStatus
             address={account.address}
             isActive={isActive}
             showConnectedStatus={shouldShowConnectedStatusBadge}
           />
         </Box>
-        <Box display={[Display.None, Display.Flex]}>
+        <Box className="hidden sm:flex">
           <PreferredAvatar address={account.address} />
         </Box>
 
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          className="multichain-account-list-item__content"
+          flexDirection={BoxFlexDirection.Column}
+          className="multichain-account-list-item__content flex"
         >
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
+          <Box flexDirection={BoxFlexDirection.Column} className="flex">
+            <Box className="flex" justifyContent={BoxJustifyContent.Between}>
               <Box
-                className="multichain-account-list-item__account-name"
-                marginInlineEnd={2}
-                display={Display.Flex}
-                alignItems={AlignItems.center}
+                className="multichain-account-list-item__account-name flex me-2"
+                alignItems={BoxAlignItems.Center}
                 gap={2}
               >
                 {isPinned ? (
@@ -272,44 +259,41 @@ const AccountListItem = ({
                   />
                 ) : null}
                 <Text
-                  as="button"
-                  onClick={(e) => {
-                    if (onClick) {
-                      e.stopPropagation();
-                      onClick(account);
-                    }
-                  }}
-                  variant={TextVariant.bodyMdMedium}
-                  className="multichain-account-list-item__account-name__button"
-                  padding={0}
-                  backgroundColor={BackgroundColor.transparent}
-                  width={BlockSize.Full}
-                  textAlign={TextAlign.Left}
+                  asChild
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                  className="multichain-account-list-item__account-name__button p-0 bg-transparent w-full text-left"
                   ellipsis
                 >
-                  {account.metadata.name.length >
-                  MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-                    <Tooltip
-                      title={account.metadata.name}
-                      position="bottom"
-                      wrapperClassName="multichain-account-list-item__tooltip"
-                    >
-                      {account.metadata.name}
-                    </Tooltip>
-                  ) : (
-                    account.metadata.name
-                  )}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      if (onClick) {
+                        e.stopPropagation();
+                        onClick(account);
+                      }
+                    }}
+                  >
+                    {account.metadata.name.length >
+                    MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                      <Tooltip
+                        title={account.metadata.name}
+                        position="bottom"
+                        wrapperClassName="multichain-account-list-item__tooltip"
+                      >
+                        {account.metadata.name}
+                      </Tooltip>
+                    ) : (
+                      account.metadata.name
+                    )}
+                  </button>
                 </Text>
               </Box>
-              <Text
-                as="div"
-                className="multichain-account-list-item__asset"
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.flexEnd}
-                ellipsis
-                textAlign={TextAlign.End}
+              <Box
+                className="multichain-account-list-item__asset flex overflow-hidden"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
+                justifyContent={BoxJustifyContent.End}
               >
                 <UserPreferencedCurrencyDisplay
                   account={account}
@@ -321,17 +305,14 @@ const AccountListItem = ({
                   data-testid="first-currency-display"
                   privacyMode={privacyMode}
                 />
-              </Text>
+              </Box>
             </Box>
           </Box>
-          <Box
-            display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Box className="flex" justifyContent={BoxJustifyContent.Between}>
+            <Box className="flex" alignItems={BoxAlignItems.Center}>
               <Text
-                variant={TextVariant.bodySm}
-                color={Color.textAlternative}
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
                 data-testid="account-list-address"
               >
                 {shortenAddress(normalizeSafeAddress(account.address))}
@@ -342,17 +323,14 @@ const AccountListItem = ({
             </Box>
           </Box>
           {showAccountLabels && accountLabels.length > 0 ? (
-            <Box flexDirection={FlexDirection.Row}>
+            <Box flexDirection={BoxFlexDirection.Row} className="flex">
               {accountLabels.map(({ label, icon }) => {
                 return (
                   <Tag
                     data-testid={`account-list-item-tag-${account.id}-${label}`}
                     key={label}
                     label={label}
-                    labelProps={{
-                      variant: TextVariant.bodyXs,
-                      color: Color.textAlternative,
-                    }}
+                    textVariant={TextVariant.BodyXs}
                     startIconName={icon}
                   />
                 );
@@ -363,15 +341,15 @@ const AccountListItem = ({
       </Box>
 
       <Box
-        display={Display.Flex}
-        justifyContent={JustifyContent.center}
-        alignItems={AlignItems.center}
+        className="flex"
+        justifyContent={BoxJustifyContent.Center}
+        alignItems={BoxAlignItems.Center}
       >
         {menuType === AccountListItemMenuTypes.None ? null : (
           <ButtonIcon
             ariaLabel={`${account.metadata.name} ${t('options')}`}
             iconName={IconName.MoreVertical}
-            size={IconSize.Sm}
+            size={ButtonIconSize.Sm}
             ref={setAccountListItemMenuRef}
             onClick={(e) => {
               e.stopPropagation();

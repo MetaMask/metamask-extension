@@ -1,19 +1,19 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 import { toast, ToastBar, Toaster as ToasterBase } from 'react-hot-toast';
 import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  TextVariant,
 } from '@metamask/design-system-react';
 import { isInteractiveUI } from '../../../../shared/lib/environment-type';
-import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import {
-  useTransactionDisplay,
-  type TransactionStatus,
-} from '../../../helpers/utils/transaction-display';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { StatusIcon } from '../icon/status-icon';
+
+export { toast } from 'react-hot-toast';
 
 const statusMap = {
   loading: 'loading',
@@ -23,20 +23,19 @@ const statusMap = {
 
 export function Toaster() {
   const t = useI18nContext();
-  const { pathname } = useLocation();
 
-  if (!isInteractiveUI() || process.env.IN_TEST) {
+  if (!isInteractiveUI()) {
     return null;
   }
-
-  // Only show toast on the default (home) route
-  const style = pathname === DEFAULT_ROUTE ? undefined : { display: 'none' };
 
   return (
     <ToasterBase
       position="bottom-center"
       containerClassName="toast-container"
-      containerStyle={style}
+      containerStyle={{
+        display: 'var(--toast-display, flex)',
+        bottom: 'var(--toaster-bottom-offset, 16px)',
+      }}
       toastOptions={{
         className: 'w-[360px] max-w-[360px] border border-border-muted',
         style: {
@@ -52,6 +51,7 @@ export function Toaster() {
           {({ message }) => (
             <>
               <StatusIcon
+                className="shrink-0"
                 state={
                   statusMap[item.type as keyof typeof statusMap] ??
                   statusMap.loading
@@ -74,12 +74,44 @@ export function Toaster() {
   );
 }
 
-export const ToastContent = ({ status }: { status: TransactionStatus }) => {
-  const { title } = useTransactionDisplay(status);
-
+export const ToastContent = ({
+  title,
+  description,
+  actionText,
+  onActionClick,
+  dataTestId,
+}: {
+  title: string;
+  description?: string;
+  actionText?: string;
+  dataTestId?: string;
+  onActionClick?: () => void;
+}) => {
   return (
-    <div>
-      <p className="text-m-body-md">{title}</p>
+    <div data-testid={dataTestId}>
+      <div className="flex min-w-0 flex-col">
+        <p className="text-m-body-md font-bold">{title}</p>
+
+        {description && (
+          <p className="mt-1 text-s-body-sm text-text-alternative">
+            {description}
+          </p>
+        )}
+      </div>
+
+      {onActionClick && (
+        <Button
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Sm}
+          className="mt-2 rounded-lg"
+          textProps={{
+            variant: TextVariant.BodySm,
+          }}
+          onClick={onActionClick}
+        >
+          {actionText}
+        </Button>
+      )}
     </div>
   );
 };

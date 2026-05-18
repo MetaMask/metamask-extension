@@ -54,16 +54,17 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
     <Box
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
-      className="flex-1 min-w-0 h-10 bg-transparent border border-border-muted rounded-lg py-0 px-1 gap-1"
+      className="flex-1 min-w-0 h-10 bg-transparent border border-border-muted rounded-lg p-1 gap-0"
       data-testid="direction-tabs"
     >
       <ButtonBase
+        type="button"
         className={longTabStyles}
         onClick={() => handleDirectionClick('long')}
         data-testid="direction-tab-long"
       >
         <Text
-          variant={TextVariant.BodySm}
+          variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           className={twMerge(
             'w-full',
@@ -75,12 +76,13 @@ export const DirectionTabs: React.FC<DirectionTabsProps> = ({
       </ButtonBase>
 
       <ButtonBase
+        type="button"
         className={shortTabStyles}
         onClick={() => handleDirectionClick('short')}
         data-testid="direction-tab-short"
       >
         <Text
-          variant={TextVariant.BodySm}
+          variant={TextVariant.BodyMd}
           fontWeight={FontWeight.Medium}
           className={twMerge(
             'w-full',
