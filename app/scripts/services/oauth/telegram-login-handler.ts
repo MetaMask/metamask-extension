@@ -4,9 +4,8 @@ import {
   getEnvUrls,
   getOidcClientId,
 } from '@metamask/profile-sync-controller/sdk';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { BaseLoginHandler } from './base-login-handler';
-import { AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
+import { AuthConnection, AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
 import { decodeIdToken } from './utils';
 
 export type TelegramLoginHandlerOptions = LoginHandlerOptions & {

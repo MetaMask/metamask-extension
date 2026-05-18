@@ -1,6 +1,5 @@
 import {
   Web3AuthNetwork,
-  AuthConnection,
   SeedlessOnboardingControllerGetStateAction,
   SeedlessOnboardingControllerGetAccessTokenAction,
 } from '@metamask/seedless-onboarding-controller';
@@ -21,6 +20,12 @@ import { OAuthServiceMethodActions } from './oauth-service-method-action-types';
 export const SERVICE_NAME = 'OAuthService';
 
 export type ServiceName = typeof SERVICE_NAME;
+
+export enum AuthConnection {
+  Google = 'google',
+  Apple = 'apple',
+  Telegram = 'telegram',
+}
 
 export type {
   OAuthServiceStartOAuthLoginAction,

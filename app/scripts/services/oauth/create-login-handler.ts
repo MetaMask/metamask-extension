@@ -1,12 +1,12 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AppleLoginHandler } from './apple-login-handler';
 import { GoogleLoginHandler } from './google-login-handler';
 import { TelegramLoginHandler } from './telegram-login-handler';
-import type {
-  LoginHandlerOptions,
-  OAuthConfig,
-  OAuthLoginEnv,
-  WebAuthenticator,
+import {
+  AuthConnection,
+  type LoginHandlerOptions,
+  type OAuthConfig,
+  type OAuthLoginEnv,
+  type WebAuthenticator,
 } from './types';
 
 export function createLoginHandler(

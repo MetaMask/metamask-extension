@@ -2,7 +2,6 @@ import {
   Env as ProfileSyncEnv,
   getEnvUrls,
 } from '@metamask/profile-sync-controller/sdk';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
@@ -14,7 +13,7 @@ import browser from 'webextension-polyfill';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import ExtensionPlatform from '../../platforms/extension';
-import { OAuthServiceMessenger, WebAuthenticator } from './types';
+import { AuthConnection, OAuthServiceMessenger, WebAuthenticator } from './types';
 import { OAuthService } from './oauth-service';
 import { createLoginHandler } from './create-login-handler';
 import { loadOAuthConfig } from './config';

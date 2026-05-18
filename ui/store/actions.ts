@@ -64,7 +64,6 @@ import {
 } from '@metamask/account-tree-controller';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { SerializedUR } from '@metamask/eth-qr-keyring';
 import {
@@ -209,7 +208,7 @@ import {
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../shared/types';
 // eslint-disable-next-line import-x/no-restricted-paths
-import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { AuthConnection, OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount } from '../../shared/lib/accounts';
 import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import { getIsSidePanelFeatureEnabled } from '../../shared/lib/environment';

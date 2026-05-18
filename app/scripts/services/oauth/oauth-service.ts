@@ -1,4 +1,3 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import log from 'loglevel';
 import {
   createSentryError,
@@ -19,6 +18,7 @@ import ExtensionPlatform from '../../platforms/extension';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
+  AuthConnection,
   OAuthConfig,
   OAuthLoginEnv,
   OAuthLoginResult,

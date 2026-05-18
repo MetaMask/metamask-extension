@@ -1,6 +1,5 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { BaseLoginHandler } from './base-login-handler';
-import { AuthTokenResponse, OAuthUserInfo } from './types';
+import { AuthConnection, AuthTokenResponse, OAuthUserInfo } from './types';
 import { decodeIdToken } from './utils';
 
 export class GoogleLoginHandler extends BaseLoginHandler {

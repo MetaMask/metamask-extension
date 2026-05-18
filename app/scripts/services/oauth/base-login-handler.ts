@@ -1,9 +1,13 @@
-import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import {
   createErrorFromNetworkRequest,
   OAuthErrorMessages,
 } from '../../../../shared/lib/error';
-import { LoginHandlerOptions, AuthTokenResponse, OAuthUserInfo } from './types';
+import {
+  AuthConnection,
+  type LoginHandlerOptions,
+  type AuthTokenResponse,
+  type OAuthUserInfo,
+} from './types';
 
 export abstract class BaseLoginHandler {
   public options: LoginHandlerOptions;
