@@ -95,7 +95,9 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   );
 
   const [estimatedFees, setEstimatedFees] = useState(0);
-  const [isLoadingFees, setIsLoadingFees] = useState(false);
+  const [isLoadingFees, setIsLoadingFees] = useState(
+    isOpen && positions.length > 0,
+  );
   const feeRequestId = useRef(0);
 
   useEffect(() => {
