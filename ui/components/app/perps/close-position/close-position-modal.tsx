@@ -49,6 +49,7 @@ import {
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { CloseAmountSection } from '../order-entry';
 import {
   PERPS_TOAST_KEYS,
@@ -307,7 +308,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [closeSize, currentPrice],
   );
 
-  const { feeRate } = usePerpsOrderFees({
+  const { feeRate, metamaskFeeRateDiscountPercentage } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
   });
@@ -616,13 +617,16 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                   >
                     {t('perpsFees')}
                   </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                    data-testid="perps-close-summary-fees-value"
-                  >
-                    -{formatFiat(roundedFees)}
-                  </Text>
+                  <PerpsFeesDisplay
+                    metamaskFeeRateDiscountPercentage={
+                      feeRate === undefined
+                        ? undefined
+                        : metamaskFeeRateDiscountPercentage
+                    }
+                    formatFeeText={`-${formatFiat(roundedFees)}`}
+                    feeTextFontWeight={FontWeight.Medium}
+                    feeTextTestId="perps-close-summary-fees-value"
+                  />
                 </Box>
 
                 {/* You'll receive */}

@@ -445,10 +445,15 @@ export async function publishHook({
     transactionMeta.txParams?.from,
     keyringController,
   );
+
+  const isRevokeDelegation =
+    transactionMeta.type === TransactionType.revokeDelegation;
+
   let attemptedHook = false;
 
   if (
     keyringSupports7702 &&
+    !isRevokeDelegation &&
     (!isSmartTransaction || !sendBundleSupport || isExternalSign)
   ) {
     attemptedHook = true;
