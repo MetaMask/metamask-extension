@@ -109,8 +109,16 @@ const mockGetParticipateInMetaMetrics = jest.fn().mockReturnValue(true);
 const mockPlatform = new ExtensionPlatform();
 
 describe('OAuthService - startOAuthLogin', () => {
+  let originalTelegramLoginEnabled: string | undefined;
+
   beforeAll(() => {
     process.env.METAMASK_ENVIRONMENT = ENVIRONMENT.TESTING;
+    originalTelegramLoginEnabled = process.env.TELEGRAM_LOGIN_ENABLED;
+    process.env.TELEGRAM_LOGIN_ENABLED = 'true';
+  });
+
+  afterAll(() => {
+    process.env.TELEGRAM_LOGIN_ENABLED = originalTelegramLoginEnabled;
   });
 
   beforeEach(() => {
