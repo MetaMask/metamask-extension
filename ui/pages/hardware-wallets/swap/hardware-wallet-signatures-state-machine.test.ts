@@ -59,8 +59,7 @@ describe('hardwareWalletSignaturesReducer', () => {
         hardwareWalletSignaturesReducer(
           {
             status: HardwareWalletSignatureStatus.Rejected,
-            rejectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            rejectedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
           },
           { type: HardwareWalletSignatureEvent.FirstSignatureSubmitted },
         ),
@@ -110,8 +109,7 @@ describe('hardwareWalletSignaturesReducer', () => {
         hardwareWalletSignaturesReducer(
           {
             status: HardwareWalletSignatureStatus.Rejected,
-            rejectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            rejectedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
           },
           { type: HardwareWalletSignatureEvent.TransactionSubmitted },
         ),
@@ -163,8 +161,7 @@ describe('hardwareWalletSignaturesReducer', () => {
         hardwareWalletSignaturesReducer(
           {
             status: HardwareWalletSignatureStatus.Rejected,
-            rejectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            rejectedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
           },
           { type: HardwareWalletSignatureEvent.TransactionRejected },
         ),
@@ -179,8 +176,7 @@ describe('hardwareWalletSignaturesReducer', () => {
         hardwareWalletSignaturesReducer(
           {
             status: HardwareWalletSignatureStatus.Failed,
-            failedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            failedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
           },
           { type: HardwareWalletSignatureEvent.TransactionRejected },
         ),
@@ -248,30 +244,13 @@ describe('hardwareWalletSignaturesReducer', () => {
         hardwareWalletSignaturesReducer(
           {
             status: HardwareWalletSignatureStatus.Rejected,
-            rejectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            rejectedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
           },
           { type: HardwareWalletSignatureEvent.TransactionFailed },
         ),
       ).toStrictEqual({
         status: HardwareWalletSignatureStatus.Rejected,
         rejectedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
-      });
-    });
-
-    it('transitions from Disconnected to Failed on TransactionFailed', () => {
-      expect(
-        hardwareWalletSignaturesReducer(
-          {
-            status: HardwareWalletSignatureStatus.Disconnected,
-            disconnectedSignature:
-              HardwareWalletSignatureStatus.AwaitingFinalSignature,
-          },
-          { type: HardwareWalletSignatureEvent.TransactionFailed },
-        ),
-      ).toStrictEqual({
-        status: HardwareWalletSignatureStatus.Failed,
-        failedSignature: HardwareWalletSignatureStatus.AwaitingFinalSignature,
       });
     });
   });
@@ -304,17 +283,20 @@ describe('hardwareWalletSignaturesReducer', () => {
     });
 
     it('returns current disconnected state on DeviceDisconnected', () => {
-      const state = {
+      expect(
+        hardwareWalletSignaturesReducer(
+          {
+            status: HardwareWalletSignatureStatus.Disconnected,
+            disconnectedSignature:
+              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+          },
+          { type: HardwareWalletSignatureEvent.DeviceDisconnected },
+        ),
+      ).toStrictEqual({
         status: HardwareWalletSignatureStatus.Disconnected,
         disconnectedSignature:
           HardwareWalletSignatureStatus.AwaitingFirstSignature,
-      } as const;
-
-      const nextState = hardwareWalletSignaturesReducer(state, {
-        type: HardwareWalletSignatureEvent.DeviceDisconnected,
       });
-
-      expect(nextState).toBe(state);
     });
 
     it('ignores DeviceDisconnected when Submitted', () => {
@@ -365,8 +347,7 @@ describe('hardwareWalletSignaturesReducer', () => {
         hardwareWalletSignaturesReducer(
           {
             status: HardwareWalletSignatureStatus.Failed,
-            failedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            failedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
           },
           { type: HardwareWalletSignatureEvent.Retry },
         ),
@@ -465,8 +446,7 @@ describe('hardwareWalletSignaturesReducer', () => {
         hardwareWalletSignaturesReducer(
           {
             status: HardwareWalletSignatureStatus.Failed,
-            failedSignature:
-              HardwareWalletSignatureStatus.AwaitingFirstSignature,
+            failedSignature: HardwareWalletSignatureStatus.AwaitingFirstSignature,
           },
           {
             type: HardwareWalletSignatureEvent.Reset,

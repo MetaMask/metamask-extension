@@ -18,32 +18,32 @@ import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-stat
 const GENERIC_HARDWARE_WALLET_RIVE_URL =
   './images/riv_animations/generic_hardware_wallet.riv';
 const GENERIC_HARDWARE_WALLET_STATE_MACHINE = 'wallet_states';
-const GenericHardwareWalletStateInputs = {
-  Reset: 'reset',
-  WalletLocked: 'wallet_locked',
-  Error: 'error',
-  Found: 'found',
+const GENERIC_HARDWARE_WALLET_STATE_INPUTS = {
+  RESET: 'reset',
+  WALLET_LOCKED: 'wallet_locked',
+  ERROR: 'error',
+  FOUND: 'found',
 } as const;
 
 type GenericHardwareWalletAnimationInput =
-  (typeof GenericHardwareWalletStateInputs)[keyof typeof GenericHardwareWalletStateInputs];
+  (typeof GENERIC_HARDWARE_WALLET_STATE_INPUTS)[keyof typeof GENERIC_HARDWARE_WALLET_STATE_INPUTS];
 
 const GENERIC_HARDWARE_WALLET_INPUT_BY_STATUS: Record<
   HardwareWalletSignatureStatus,
   GenericHardwareWalletAnimationInput
 > = {
   [HardwareWalletSignatureStatus.AwaitingFirstSignature]:
-    GenericHardwareWalletStateInputs.Reset,
+    GENERIC_HARDWARE_WALLET_STATE_INPUTS.RESET,
   [HardwareWalletSignatureStatus.AwaitingFinalSignature]:
-    GenericHardwareWalletStateInputs.Reset,
+    GENERIC_HARDWARE_WALLET_STATE_INPUTS.RESET,
   [HardwareWalletSignatureStatus.Submitted]:
-    GenericHardwareWalletStateInputs.Found,
+    GENERIC_HARDWARE_WALLET_STATE_INPUTS.FOUND,
   [HardwareWalletSignatureStatus.Rejected]:
-    GenericHardwareWalletStateInputs.WalletLocked,
+    GENERIC_HARDWARE_WALLET_STATE_INPUTS.WALLET_LOCKED,
   [HardwareWalletSignatureStatus.Failed]:
-    GenericHardwareWalletStateInputs.Error,
+    GENERIC_HARDWARE_WALLET_STATE_INPUTS.ERROR,
   [HardwareWalletSignatureStatus.Disconnected]:
-    GenericHardwareWalletStateInputs.WalletLocked,
+    GENERIC_HARDWARE_WALLET_STATE_INPUTS.WALLET_LOCKED,
 };
 
 const GENERIC_HARDWARE_WALLET_LAYOUT = new Layout({
@@ -98,9 +98,9 @@ const GenericHardwareWalletAnimation = ({
       return false;
     }
 
-    inputsRef.current = Object.values(GenericHardwareWalletStateInputs).reduce<
-      Record<string, StateMachineInput | undefined>
-    >(
+    inputsRef.current = Object.values(
+      GENERIC_HARDWARE_WALLET_STATE_INPUTS,
+    ).reduce<Record<string, StateMachineInput | undefined>>(
       (cachedInputs, inputName) => ({
         ...cachedInputs,
         [inputName]: inputs.find((input) => input.name === inputName),
