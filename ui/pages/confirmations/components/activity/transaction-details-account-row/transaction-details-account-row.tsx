@@ -6,7 +6,12 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getAccountName, getInternalAccounts } from '../../../../../selectors';
+import {
+  getAllAccountGroups,
+  getMultichainAccountGroupById,
+  getSelectedAccountGroup,
+  selectAccountGroupNameByAddress,
+} from '../../../../../selectors/multichain-accounts/account-tree';
 import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
 
@@ -15,17 +20,30 @@ export function TransactionDetailsAccountRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();
   const hasPaymentDetails = Boolean(transactionMeta.metamaskPay);
-  const internalAccounts = useSelector(getInternalAccounts);
+  const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
 
   const {
     txParams: { from },
   } = transactionMeta;
 
-  const accountName = getAccountName(internalAccounts, from);
+  const accountName = useSelector((state) =>
+    selectAccountGroupNameByAddress(state, from),
+  );
+  const selectedAccountGroupName = useSelector(
+    (state) =>
+      getMultichainAccountGroupById(state, selectedAccountGroupId)?.metadata
+        .name,
+  );
+  const firstAccountGroupName = useSelector(
+    (state) =>
+      getAllAccountGroups(state).find((group) => group.metadata.name)?.metadata
+        .name,
+  );
 
-  const displayName = accountName ?? from;
+  const displayName =
+    accountName || selectedAccountGroupName || firstAccountGroupName;
 
-  if (!hasPaymentDetails) {
+  if (!hasPaymentDetails || !displayName) {
     return null;
   }
 
