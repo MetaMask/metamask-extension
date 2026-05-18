@@ -237,6 +237,36 @@ describe('ReversePositionModal', () => {
         '--',
       );
     });
+
+    it('does not render the discount badge while the fee placeholder is shown', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: undefined,
+        isLoading: true,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(
+        screen.queryByTestId('perps-fees-display-discount'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders the discount badge alongside the fee value when fees are available', () => {
+      mockUsePerpsOrderFees.mockReturnValue({
+        feeRate: 0.0001,
+        isLoading: false,
+        hasError: false,
+        metamaskFeeRateDiscountPercentage: 50,
+      });
+
+      renderWithProvider(<ReversePositionModal {...defaultProps} />, mockStore);
+
+      expect(
+        screen.getByTestId('perps-fees-display-discount'),
+      ).toBeInTheDocument();
+    });
   });
 
   describe('long position', () => {
