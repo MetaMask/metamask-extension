@@ -19,9 +19,9 @@ import {
 import type { FeeCalculationResult } from '@metamask/perps-controller';
 import {
   formatPerpsFiat,
-  formatPnl,
   PRICE_RANGES_UNIVERSAL,
 } from '../../../../../shared/lib/perps-formatters';
+import { formatPerpsFiatUniversal } from '../utils/formatPerpsDisplayPrice';
 import { PERPS_FALLBACK_FEE_RATES } from '../../../../../shared/constants/perps';
 import {
   Modal,
@@ -223,7 +223,12 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                         }
                         asChild
                       >
-                        <span>{formatPnl(totalUnrealizedPnl)}</span>
+                        <span>
+                          {totalUnrealizedPnl >= 0 ? '+' : '-'}
+                          {formatPerpsFiatUniversal(
+                            Math.abs(totalUnrealizedPnl),
+                          )}
+                        </span>
                       </Text>,
                     ])}
                   </Text>

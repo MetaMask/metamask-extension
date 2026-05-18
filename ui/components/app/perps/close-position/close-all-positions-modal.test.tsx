@@ -24,13 +24,18 @@ jest.mock('../../../../../shared/lib/perps-formatters', () => ({
       .replace(/(\.\d*?[1-9])0+$/u, '$1')
       .replace(/\.0+$/u, '')}`;
   },
-  formatPnl: (value: number | string) => {
+}));
+
+jest.mock('../utils/formatPerpsDisplayPrice', () => ({
+  formatPerpsFiatUniversal: (value: number | string) => {
     const amount = Number(value);
-    const abs = Math.abs(amount).toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-    return amount >= 0 ? `+$${abs}` : `-$${abs}`;
+    return `$${amount
+      .toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 6,
+      })
+      .replace(/(\.\d*?[1-9])0+$/u, '$1')
+      .replace(/\.0+$/u, '')}`;
   },
 }));
 
