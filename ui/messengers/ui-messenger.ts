@@ -168,7 +168,6 @@ export class UIMessenger {
         MessengerActions<Delegatee> & UIMessengerActions,
         typeof actionType
       > => {
-        // This action handler needs to change to call the root messenger.
         if (EXCLUDED_ACTIONS.includes(actionType)) {
           throw new Error(
             `The action "${actionType}" has not been exposed to the UI.`,
