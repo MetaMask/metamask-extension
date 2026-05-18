@@ -347,6 +347,7 @@
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
     "rewardsSubscriptions": "object",
+    "rewardsVipPerpsFees": "object",
     "securityAlertsEnabled": "boolean",
     "seedPhraseBackedUp": null,
     "segmentApiCalls": "object",

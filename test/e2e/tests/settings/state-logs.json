@@ -1162,6 +1162,7 @@
       "ethereumAddress": {}
     },
     "nameSources": {},
+    "needsProfilePairing": "boolean",
     "networkConfigurations": {},
     "networkConfigurationsByChainId": {},
     "networkConnectionBanner": {
@@ -1380,6 +1381,7 @@
     "srpSessionData": {
       "01KA0MT07W98B2G9474CFDC6VM": {
         "profile": {
+          "canonicalProfileId": "string",
           "identifierId": "string",
           "metaMetricsId": "string",
           "profileId": "string"
