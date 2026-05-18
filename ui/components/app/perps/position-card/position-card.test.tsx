@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import type { Position } from '@metamask/perps-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
@@ -184,5 +184,86 @@ describe('PositionCard', () => {
     expect(
       screen.queryByTestId('position-card-roe-ETH'),
     ).not.toBeInTheDocument();
+  });
+
+  it('renders the expanded row variant with contextual metrics and action callbacks', () => {
+    const position = createMockPosition({
+      symbol: 'BTC',
+      unrealizedPnl: '125.50',
+      returnOnEquity: '0.015',
+    });
+    const onOpenTPSL = jest.fn();
+    const onAddMargin = jest.fn();
+    const onReverse = jest.fn();
+    const onClose = jest.fn();
+
+    renderWithProvider(
+      <PositionCard
+        position={position}
+        variant="expanded"
+        onOpenTPSL={onOpenTPSL}
+        onAddMargin={onAddMargin}
+        onReverse={onReverse}
+        onClose={onClose}
+      />,
+      mockStore,
+    );
+
+    expect(
+      screen.getByTestId('perps-expanded-position-row-BTC'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('P&L')).toBeInTheDocument();
+    expect(screen.getByText('Auto close')).toBeInTheDocument();
+    expect(screen.getByText('Margin')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-expanded-position-pnl-BTC'),
+    ).toHaveTextContent('+$125.50 (1.50%)');
+    expect(
+      screen.getByTestId('perps-expanded-position-tpsl-value-BTC'),
+    ).toHaveTextContent('TP $3,200, SL $2,600');
+    expect(
+      screen.getByTestId('perps-expanded-position-tpsl-edit-BTC'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('perps-expanded-position-margin-value-BTC'),
+    ).toHaveTextContent('$2,375');
+    expect(
+      screen.getByTestId('perps-expanded-position-margin-edit-BTC'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Reverse position')).toBeInTheDocument();
+    expect(screen.getByText('Close long')).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByTestId('perps-expanded-position-tpsl-edit-BTC'),
+    );
+    fireEvent.click(screen.getByTestId('perps-expanded-position-row-BTC'));
+    expect(onAddMargin).not.toHaveBeenCalled();
+    fireEvent.click(
+      screen.getByTestId('perps-expanded-position-margin-edit-BTC'),
+    );
+    fireEvent.click(screen.getByTestId('perps-expanded-position-reverse-BTC'));
+    fireEvent.click(screen.getByTestId('perps-expanded-position-close-BTC'));
+
+    expect(onOpenTPSL).toHaveBeenCalledWith(position);
+    expect(onAddMargin).toHaveBeenCalledWith(position);
+    expect(onReverse).toHaveBeenCalledWith(position);
+    expect(onClose).toHaveBeenCalledWith(position);
+  });
+
+  it('renders auto close fallbacks in the expanded row variant', () => {
+    const position = createMockPosition({
+      symbol: 'SOL',
+      takeProfitPrice: undefined,
+      stopLossPrice: undefined,
+    });
+
+    renderWithProvider(
+      <PositionCard position={position} variant="expanded" />,
+      mockStore,
+    );
+
+    expect(
+      screen.getByTestId('perps-expanded-position-tpsl-value-SOL'),
+    ).toHaveTextContent('TP -, SL -');
   });
 });

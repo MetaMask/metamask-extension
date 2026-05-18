@@ -170,6 +170,7 @@ export const DEFI_ROUTE = '/defi';
 // Perps routes
 export const PERPS_ROUTE = '/perps';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
+export const PERPS_MARKET_EXPANDED_ROUTE = '/perps/market-expanded';
 export const PERPS_ORDER_ENTRY_ROUTE = '/perps/trade';
 export const PERPS_ACTIVITY_ROUTE = '/perps/activity';
 export const PERPS_WITHDRAW_ROUTE = '/perps/withdraw';

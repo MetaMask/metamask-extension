@@ -25,3 +25,4 @@ export { LeverageSlider } from './components/leverage-slider';
 export { OrderSummary } from './components/order-summary';
 export { AutoCloseSection } from './components/auto-close-section';
 export { CloseAmountSection } from './components/close-amount-section';
+export { formStateToOrderParams } from './order-params';

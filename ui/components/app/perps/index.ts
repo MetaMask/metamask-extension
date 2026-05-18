@@ -1,3 +1,7 @@
+export { PerpsOrderBook } from './perps-order-book';
+export type { PerpsOrderBookProps } from './perps-order-book';
+export { PerpsMarketSelector } from './perps-market-selector';
+export type { PerpsMarketSelectorProps } from './perps-market-selector';
 export { PerpsBalanceDropdown } from './perps-balance-dropdown';
 export type { PerpsBalanceDropdownProps } from './perps-balance-dropdown';
 export { PerpsRecentActivity } from './perps-recent-activity';

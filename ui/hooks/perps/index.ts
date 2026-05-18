@@ -4,6 +4,10 @@ export { usePerpsMeasurement } from './usePerpsMeasurement';
 export { usePerpsLifecycleBreadcrumbs } from './usePerpsLifecycleBreadcrumbs';
 export { usePerpsMarketInfo } from './usePerpsMarketInfo';
 export { usePerpsOrderFees } from './usePerpsOrderFees';
+export {
+  calculateFundingCountdown,
+  useFundingCountdown,
+} from './useFundingCountdown';
 export type {
   UsePerpsOrderFormOptions,
   UsePerpsOrderFormReturn,

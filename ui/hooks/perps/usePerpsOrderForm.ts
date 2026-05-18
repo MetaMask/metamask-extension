@@ -73,6 +73,11 @@ export type UsePerpsOrderFormOptions = {
   onSubmit?: (formState: OrderFormState) => void;
   /** Order type: 'market' or 'limit' (defaults to 'market') */
   orderType?: OrderType;
+  /**
+   * External request to prefill the limit price. The id lets parents trigger
+   * another prefill even when the clicked price string is unchanged.
+   */
+  prefillLimitPrice?: { price: string; id: number };
   /** Initial leverage for new orders (e.g. last used leverage for this market) */
   initialLeverage?: number;
   /** Market size decimals for controller-backed size formatting */
@@ -161,6 +166,7 @@ export type UsePerpsOrderFormReturn = {
  * @param options.onFormStateChange - Callback when form state changes
  * @param options.onSubmit - Callback when order is submitted
  * @param options.orderType - Order type: 'market' or 'limit'
+ * @param options.prefillLimitPrice - External request to prefill limit price
  * @param options.initialLeverage
  * @param options.sizeDecimals - Market size decimals for controller-backed size formatting
  * @param options.maxLeverage - Maximum leverage for the asset, used by the local liquidation fallback
@@ -179,6 +185,7 @@ export function usePerpsOrderForm({
   onFormStateChange,
   onSubmit,
   orderType = 'market',
+  prefillLimitPrice,
   initialLeverage,
   sizeDecimals,
   szDecimals,
@@ -232,6 +239,17 @@ export function usePerpsOrderForm({
   useEffect(() => {
     setFormState((prev) => ({ ...prev, type: orderType }));
   }, [orderType]);
+
+  useEffect(() => {
+    if (!prefillLimitPrice) {
+      return;
+    }
+
+    setFormState((prev) => ({
+      ...prev,
+      limitPrice: prefillLimitPrice.price,
+    }));
+  }, [prefillLimitPrice]);
 
   // Refs so the reset effect can read latest values without depending on them,
   // preventing stream updates (new object refs) from wiping user edits.
