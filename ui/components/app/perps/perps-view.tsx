@@ -195,7 +195,8 @@ export const PerpsView: React.FC = () => {
         setBatchActionError(t('somethingWentWrong'));
         track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
           [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: positionCount,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
+            result?.successCount ?? 0,
         });
         replacePerpsToastByKey({
           key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
@@ -204,7 +205,8 @@ export const PerpsView: React.FC = () => {
       }
       track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: positionCount,
+        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
+          result?.successCount ?? positionCount,
       });
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
@@ -223,7 +225,7 @@ export const PerpsView: React.FC = () => {
       setBatchActionError(t('somethingWentWrong'));
       track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
         [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
-        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: positionCount,
+        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: 0,
       });
       replacePerpsToastByKey({
         key: PERPS_TOAST_KEYS.CLOSE_ALL_FAILED,
