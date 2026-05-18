@@ -22,7 +22,12 @@ export const SnapUIForm: FunctionComponent<SnapUIFormProps> = ({
   };
 
   return (
-    <Box asChild flexDirection={BoxFlexDirection.Column} gap={2} className="flex">
+    <Box
+      asChild
+      flexDirection={BoxFlexDirection.Column}
+      gap={2}
+      className="flex"
+    >
       <form
         className="snap-ui-renderer__form"
         onSubmit={handleSubmit}

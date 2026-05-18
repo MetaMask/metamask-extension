@@ -33,7 +33,11 @@ export const KeyringAccountListItem = ({
       data-testid="keyring-account-list-item"
     >
       <Box flexDirection={BoxFlexDirection.Column} className="flex w-10/12">
-        <Box flexDirection={BoxFlexDirection.Column} marginBottom={2} className="flex">
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          marginBottom={2}
+          className="flex"
+        >
           <Text color={TextColor.textMuted}>{t('keyringAccountName')}</Text>
           <Text>{account.name}</Text>
         </Box>
