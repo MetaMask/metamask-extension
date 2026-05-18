@@ -4,16 +4,10 @@ import {
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
 import { EncryptionKey } from '@metamask/browser-passworder';
-import { getEnvUrls } from '@metamask/profile-sync-controller/sdk';
 import { MessengerClientInitFunction } from '../types';
 import { encryptorFactory } from '../../lib/encryptor-factory';
-import {
-  getProfilePairingEnv,
-  isDevOrTestBuild,
-} from '../../services/oauth/config';
+import { isDevOrTestBuild } from '../../services/oauth/config';
 import { SeedlessOnboardingControllerInitMessenger } from '../messengers/seedless-onboarding';
-
-const AUTH_SERVER_PROFILE_PAIR_PATH = '/api/v2/profile/pair';
 
 const loadWeb3AuthNetwork = (): Web3AuthNetwork => {
   return isDevOrTestBuild() ? Web3AuthNetwork.Devnet : Web3AuthNetwork.Mainnet;
@@ -30,8 +24,6 @@ export const SeedlessOnboardingControllerInit: MessengerClientInitFunction<
 
   const network = loadWeb3AuthNetwork();
 
-  const profileSyncEnv = getProfilePairingEnv();
-
   const messengerClient = new SeedlessOnboardingController<
     CryptoKey | EncryptionKey
   >({
@@ -39,8 +31,6 @@ export const SeedlessOnboardingControllerInit: MessengerClientInitFunction<
     state: persistedState.SeedlessOnboardingController,
     network,
     passwordOutdatedCacheTTL: 15_000, // 15 seconds
-    profilePairingEndpoint: `${getEnvUrls(profileSyncEnv).authApiUrl}${AUTH_SERVER_PROFILE_PAIR_PATH}`,
-    fetchFunction: fetch.bind(globalThis),
 
     // This is a temporary workaround to allow the OAuthService to be used
     // in the seedless onboarding controller. Ideally the controller calls the

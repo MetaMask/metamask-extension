@@ -71,16 +71,6 @@ function padHex(hex: string, length: number = 64) {
   return hex;
 }
 
-const PRIMARY_SRP_CREATED_AT = '2f6fbc40-37f4-11ef-8000-000000000000';
-const PRIMARY_SRP_DATA_TYPE = 1;
-const MOCK_NODE_INDEXES = [1, 2, 3, 4, 5];
-const MOCK_NODE_ENDPOINTS = Object.fromEntries(
-  MOCK_NODE_INDEXES.map((index) => [
-    String(index),
-    `https://node-${index}.dev-node.web3auth.io/sss/jrpc`,
-  ]),
-);
-
 /**
  * Generate a mock blinded output for TOPRF Eval response.
  *
@@ -263,8 +253,6 @@ export class OAuthMockttpService {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         metadata_access_token: idToken,
-        indexes: MOCK_NODE_INDEXES,
-        endpoints: MOCK_NODE_ENDPOINTS,
       },
     };
   }
@@ -409,11 +397,7 @@ export class OAuthMockttpService {
     };
   }
 
-  async onPostMetadataGet(request: CompletedRequest) {
-    const jsonRequestBody = (await request.body.getJson()) as {
-      itemId?: string;
-    };
-    const requestedItemId = jsonRequestBody.itemId;
+  async onPostMetadataGet() {
     const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
       .toString()
@@ -431,35 +415,14 @@ export class OAuthMockttpService {
 
     const encryptedSecretData = await generateEncryptedSecretData(secretData);
     const encryptedPwdChangeItem = await generateEncryptedPasswordChangeItem();
-    const metadataItems = [
-      {
-        createdAt: PRIMARY_SRP_CREATED_AT,
-        data: encryptedSecretData[0],
-        dataType: PRIMARY_SRP_DATA_TYPE,
-        id: '',
-        version: 'v2',
-      },
-      {
-        createdAt: undefined,
-        data: encryptedPwdChangeItem,
-        dataType: undefined,
-        id: PasswordChangeItemId,
-        version: 'v1',
-      },
-    ];
-    const filteredMetadataItems = requestedItemId
-      ? metadataItems.filter(({ id }) => id === requestedItemId)
-      : metadataItems;
+    encryptedSecretData.push(encryptedPwdChangeItem);
 
     return {
       statusCode: 200,
       json: {
         success: true,
-        data: filteredMetadataItems.map(({ data }) => data),
-        ids: filteredMetadataItems.map(({ id }) => id),
-        versions: filteredMetadataItems.map(({ version }) => version),
-        dataTypes: filteredMetadataItems.map(({ dataType }) => dataType),
-        createdAt: filteredMetadataItems.map(({ createdAt }) => createdAt),
+        data: encryptedSecretData,
+        ids: ['', PasswordChangeItemId],
       },
     };
   }
@@ -640,8 +603,8 @@ export class OAuthMockttpService {
       await server
         .forPost(MetadataService.Get)
         .always()
-        .thenCallback(async (request) => {
-          return this.onPostMetadataGet(request);
+        .thenCallback(async (_request) => {
+          return this.onPostMetadataGet();
         }),
       await server
         .forPost(MetadataService.AcquireLock)
