@@ -32,9 +32,7 @@ export const ActivityListItem = ({
   'data-testid': dataTestId,
 }) => {
   const hasFooterActions = Boolean(children);
-  const primaryClassName = classnames('activity-list-item', className, {
-    'activity-list-item--single-content-row': !(subtitle || children),
-  });
+  const primaryClassName = classnames('activity-list-item', className);
 
   return (
     <Box
