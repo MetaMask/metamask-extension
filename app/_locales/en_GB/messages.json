@@ -4650,6 +4650,9 @@
   "newContract": {
     "message": "New contract"
   },
+  "newCustomTokenAdded": {
+    "message": "“$1” was successfully added!"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Security and privacy"
   },
@@ -9483,6 +9486,10 @@
   },
   "transactionIncludesTypes": {
     "message": "This transaction includes: $1."
+  },
+  "transactionProtectedByEnforcedSimulations": {
+    "message": "This transaction was protected. We canceled it to prevent unexpected fund loss.",
+    "description": "Banner shown in the transaction details view when a failed transaction reverted because an enforced-simulations caveat enforcer rejected it."
   },
   "transactionSettings": {
     "message": "Transaction settings"
