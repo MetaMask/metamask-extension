@@ -36,12 +36,6 @@ const singleConfig: ActivityAvatarConfig = {
   token: usdcToken,
 };
 
-const chainOnlyConfig: ActivityAvatarConfig = {
-  variant: 'chain-only',
-  chainId: '0x1',
-  fallbackName: 'Ethereum',
-};
-
 export default {
   title: 'Components/Multichain/ActivityV2/ActivityItemAvatar',
   component: ActivityItemAvatar,
