@@ -58,10 +58,7 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  BoxBackgroundColor,
-} from '@metamask/design-system-react';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';

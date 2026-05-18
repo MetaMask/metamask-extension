@@ -4,10 +4,7 @@ import {
   TextVariant,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 
 type TransactionDetailRowProps = {
   title: string;

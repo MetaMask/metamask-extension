@@ -1,10 +1,7 @@
 import React, { useEffect } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
 import Segment from './segment';
-import {
-  Box,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { StatusTypes } from '@metamask/bridge-controller';
 
 export default {

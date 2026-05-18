@@ -11,10 +11,7 @@ import {
 } from '../../../components/component-library';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  Box,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const getBlockExplorerName = (

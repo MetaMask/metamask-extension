@@ -326,11 +326,7 @@ const CrossChainSwapTxDetails = () => {
           <Divider />
 
           {/* Bridge tx details */}
-          <Box
-            className="flex"
-            flexDirection={BoxFlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             <TransactionDetailRow
               title={t('bridgeTxDetailsStatus')}
               value={
@@ -413,11 +409,7 @@ const CrossChainSwapTxDetails = () => {
           <Divider />
 
           {/* Bridge tx details 2 */}
-          <Box
-            className="flex"
-            flexDirection={BoxFlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             <TransactionDetailRow
               title={t('bridgeTxDetailsYouSent')}
               value={
@@ -483,11 +475,7 @@ const CrossChainSwapTxDetails = () => {
           <Divider />
 
           {/* Generic tx details */}
-          <Box
-            className="flex"
-            flexDirection={BoxFlexDirection.Column}
-            gap={2}
-          >
+          <Box className="flex" flexDirection={BoxFlexDirection.Column} gap={2}>
             {srcChainTxMeta?.txParams.nonce ? (
               <TransactionDetailRow
                 title={t('bridgeTxDetailsNonce')}

@@ -1,8 +1,6 @@
 import React from 'react';
 import { IconSize } from '../../../components/component-library';
-import {
-  IconColor,
-} from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
 import {
   Box,
   BoxBackgroundColor,

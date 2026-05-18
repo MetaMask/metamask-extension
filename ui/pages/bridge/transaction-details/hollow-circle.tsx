@@ -5,9 +5,7 @@ import {
   IconSize,
   PolymorphicRef,
 } from '../../../components/component-library';
-import {
-  BackgroundColor,
-} from '../../../helpers/constants/design-system';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Box } from '@metamask/design-system-react';
 
 const HollowCircle = React.forwardRef(
@@ -20,7 +18,12 @@ const HollowCircle = React.forwardRef(
     return (
       <Box
         asChild
-        className={classnames(className, 'mm-icon', `mm-icon--size-${size}`, 'inline-block')}
+        className={classnames(
+          className,
+          'mm-icon',
+          `mm-icon--size-${size}`,
+          'inline-block',
+        )}
         style={{
           height: '12px',
           width: '12px',
