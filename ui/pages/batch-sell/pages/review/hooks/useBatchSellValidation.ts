@@ -2,7 +2,9 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import BigNumber from 'bignumber.js';
 import { CaipChainId } from '@metamask/utils';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { getNativeAssetForChain } from '../../../../../ducks/batch-sell/selectors';
+import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 
 type Args = {
@@ -30,7 +32,7 @@ export const useBatchSellValidation = ({
   const sourceChainId: CaipChainId | undefined =
     sendAssetEntries[0]?.asset.chainId;
 
-  const nativeAsset = useSelector((state) =>
+  const nativeAsset = useSelector((state: BridgeAppState) =>
     getNativeAssetForChain(state, sourceChainId ?? null),
   );
 
@@ -55,7 +57,9 @@ export const useBatchSellValidation = ({
     // Note: BigNumber rejects raw numbers with > 15 significant digits, so all
     // numeric inputs are stringified before being passed in.
     const nativeBeingSentEntry = sendAssetEntries.find(
-      ({ asset }) => asset.isNative,
+      ({ asset }) =>
+        getNativeAssetForChainId(asset.chainId)?.assetId.toLowerCase() ===
+        asset.assetId.toLowerCase(),
     );
     const nativeBeingSent = nativeBeingSentEntry
       ? new BigNumber(nativeBeingSentEntry.asset.balance || '0').times(

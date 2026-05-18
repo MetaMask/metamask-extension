@@ -24,6 +24,7 @@ import { Footer } from './components/footer';
 import { AssetList } from './components/asset-list';
 import { BatchSellEmptySelectTokens } from './components/batch-sell-empty-select-tokens';
 import { useInitialStateFromLocation } from './hooks/useInitialStateFromLocation';
+import { getSourceTokenAddress } from './utils';
 
 export const BatchSellSelectPage = () => {
   const t = useI18nContext();
@@ -46,7 +47,7 @@ export const BatchSellSelectPage = () => {
 
   // Need a stable getter for assets at init time (before selectedNetworkChainId state exists)
   // We use a selector directly for each candidate chainId
-  const allAssetsByNetwork = useSelector((state) => {
+  const allAssetsByNetwork = useSelector((state: BridgeAppState) => {
     const result: Record<string, string[]> = {};
     for (const chainId of availableNetworkChainIds) {
       result[chainId] = getAvailableBatchSellSwapAssetsForNetwork(
@@ -72,8 +73,9 @@ export const BatchSellSelectPage = () => {
   const [selectedAssetsId, setSelectedAssetsId] =
     useState<string[]>(initialAssetsId);
 
-  const availableBatchSellAssetsForNetworkList = useSelector((state) =>
-    getAvailableBatchSellSwapAssetsForNetwork(state, selectedNetworkChainId),
+  const availableBatchSellAssetsForNetworkList = useSelector(
+    (state: BridgeAppState) =>
+      getAvailableBatchSellSwapAssetsForNetwork(state, selectedNetworkChainId),
   );
 
   const batchSellDestStablecoins = useSelector((state: BridgeAppState) =>
@@ -113,15 +115,14 @@ export const BatchSellSelectPage = () => {
     const selectedAsset = availableBatchSellAssetsForNetworkList.find(
       (asset) => asset.assetId === selectedAssetsId[0],
     );
-    const sourceToken =
-      selectedAsset?.address === undefined
-        ? undefined
-        : {
-            symbol: selectedAsset.symbol,
-            address: selectedAsset.address,
-            name: selectedAsset.name,
-            chainId: selectedAsset.chainId,
-          };
+    const sourceToken = selectedAsset
+      ? {
+          symbol: selectedAsset.symbol,
+          address: getSourceTokenAddress(selectedAsset),
+          name: selectedAsset.name,
+          chainId: selectedAsset.chainId,
+        }
+      : undefined;
 
     const destTokenAssetId = batchSellDestStablecoins[0];
 

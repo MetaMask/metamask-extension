@@ -33,11 +33,12 @@ export const useBatchSellQuotesConfig = () => {
     })),
   );
 
-  const availableBatchSellAssetsForNetworkList = useSelector((_state) =>
-    getAvailableBatchSellSwapAssetsForNetwork(
-      _state,
-      selectedNetworkChainId ?? null,
-    ).filter((asset) => selectedAssetsId?.includes(asset.assetId)),
+  const availableBatchSellAssetsForNetworkList = useSelector(
+    (_state: BridgeAppState) =>
+      getAvailableBatchSellSwapAssetsForNetwork(
+        _state,
+        selectedNetworkChainId ?? null,
+      ).filter((asset) => selectedAssetsId?.includes(asset.assetId)),
   );
 
   const hasInitialSelection =

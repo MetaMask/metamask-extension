@@ -39,9 +39,9 @@ const makeAsset = (
   assetId: 'eip155:1/erc20:0xToken',
   name: 'Ether',
   symbol: 'ETH',
-  image: 'https://example.com/eth.png',
+  iconUrl: 'https://example.com/eth.png',
   balance: '1.5',
-  isNative: true,
+  decimals: 18,
   chainId: 'eip155:1',
   ...overrides,
 });
@@ -96,7 +96,7 @@ describe('AssetListItem', () => {
     it('renders formatted fiat balance when provided', () => {
       render(
         <AssetListItem
-          asset={makeAsset({ fiatBalance: 3000 })}
+          asset={makeAsset({ tokenFiatAmount: 3000 })}
           selected={false}
           onSelect={jest.fn()}
           onDeselect={jest.fn()}
@@ -109,7 +109,7 @@ describe('AssetListItem', () => {
     it('does not render fiat balance section when not provided', () => {
       const { container } = render(
         <AssetListItem
-          asset={makeAsset({ fiatBalance: undefined })}
+          asset={makeAsset({ tokenFiatAmount: undefined })}
           selected={false}
           onSelect={jest.fn()}
           onDeselect={jest.fn()}

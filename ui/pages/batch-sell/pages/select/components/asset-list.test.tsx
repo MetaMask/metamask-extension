@@ -29,9 +29,9 @@ const makeAsset = (symbol: string): BatchSellAsset => ({
   assetId: `eip155:1/erc20:0x${symbol}`,
   name: symbol,
   symbol,
-  image: '',
+  iconUrl: '',
   balance: '1',
-  isNative: false,
+  decimals: 18,
   chainId: 'eip155:1',
 });
 

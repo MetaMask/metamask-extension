@@ -1,20 +1,6 @@
-import { CaipAssetType, CaipChainId } from '@metamask/utils';
-import { getAssetsBySelectedAccountGroup } from '../../selectors/assets';
+import type { BridgeToken } from '../bridge/types';
 
-export type BatchSellAsset = {
-  assetId: CaipAssetType;
-  name: string;
-  symbol: string;
-  image: string | undefined;
-  balance: string;
-  fiatBalance?: number;
+export type BatchSellAsset = BridgeToken & {
   tokenFiatPrice?: number;
   percentageChange?: number;
-  isNative: boolean;
-  chainId: CaipChainId;
-  address?: string;
 };
-
-export type ChainAsset = ReturnType<
-  typeof getAssetsBySelectedAccountGroup
->[string][number];

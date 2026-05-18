@@ -4,15 +4,15 @@ import { useSortBatchSellAssetsByBalance } from './useSortBatchSellAssetsByBalan
 
 const makeAsset = (
   symbol: string,
-  fiatBalance: number | undefined,
+  tokenFiatAmount: number | undefined,
 ): BatchSellAsset => ({
   assetId: `eip155:1/erc20:0x${symbol}`,
   name: symbol,
   symbol,
-  image: '',
+  iconUrl: '',
   balance: '1',
-  fiatBalance,
-  isNative: false,
+  decimals: 18,
+  tokenFiatAmount,
   chainId: 'eip155:1',
 });
 
@@ -35,7 +35,7 @@ describe('useSortBatchSellAssetsByBalance', () => {
       ]);
     });
 
-    it('treats undefined fiatBalance as 0', () => {
+    it('treats undefined tokenFiatAmount as 0', () => {
       const { result } = renderHook(() =>
         useSortBatchSellAssetsByBalance([NO_FIAT, DAI], 'desc'),
       );
@@ -60,7 +60,7 @@ describe('useSortBatchSellAssetsByBalance', () => {
       ]);
     });
 
-    it('treats undefined fiatBalance as 0', () => {
+    it('treats undefined tokenFiatAmount as 0', () => {
       const { result } = renderHook(() =>
         useSortBatchSellAssetsByBalance([DAI, NO_FIAT], 'asc'),
       );

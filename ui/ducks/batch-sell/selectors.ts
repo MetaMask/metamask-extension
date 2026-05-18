@@ -15,6 +15,7 @@ import { isEvmAccountType } from '@metamask/keyring-api';
 import {
   formatChainIdToCaip,
   formatChainIdToHex,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -42,13 +43,7 @@ import {
 import { getBridgeAssetsByAssetId } from '../bridge/asset-selectors';
 import { getSelectedAccountGroup } from '../../selectors/multichain-accounts/account-tree';
 import { type BridgeToken } from '../bridge/types';
-import { BatchSellAsset, ChainAsset } from './types';
-import {
-  getChecksummedEvmAssetId,
-  resolveAssetImage,
-  resolveEvmTokenAddress,
-  resolvePricingData,
-} from './utils';
+import { BatchSellAsset } from './types';
 
 /**
  * V1 of batch sell functionality relies on a hardcoded list
@@ -183,28 +178,57 @@ export const getBatchSellDestStablecoinsForNetwork = createSelector(
         }
       )?.batchSellDestStablecoins ?? [];
 
-    // Note: this seletor works for EVM asset ids at the time of this
-    // writing. If we need to support non-evm assets in the future
-    // inside the `batchSellDestStablecoins` feature flag, then we
-    // will have to revise it as conversion to getChecksummedEvmAssetId
-    // will fail.
-    const checksummedStablecoinAssetIds = batchSellDestStablecoins.map(
-      getChecksummedEvmAssetId,
+    return batchSellDestStablecoins.map(
+      (assetId) => toAssetId(assetId) ?? assetId,
     );
-
-    return checksummedStablecoinAssetIds;
   },
 );
 
+const resolveTokenFiatPriceAndChange = (
+  asset: BridgeToken,
+  marketData: ReturnType<typeof getMarketData>,
+  assetsRates: ReturnType<typeof getAssetsRates>,
+): { tokenFiatPrice?: number; percentageChange?: number } => {
+  const { chainId, assetReference } = parseCaipAssetType(asset.assetId);
+
+  if (isEvmChainId(chainId as Hex | CaipChainId)) {
+    const hexChainId = formatChainIdToHex(chainId);
+    const isNative =
+      getNativeAssetForChainId(chainId)?.assetId.toLowerCase() ===
+      asset.assetId.toLowerCase();
+    // EVM native price lives under the zero-address key.
+    const evmTokenAddress = (
+      isNative ? '0x0000000000000000000000000000000000000000' : assetReference
+    ) as Hex;
+    const tokenMarketData =
+      marketData?.[hexChainId]?.[evmTokenAddress] ??
+      marketData?.[hexChainId]?.[evmTokenAddress.toLowerCase() as Hex];
+    return {
+      tokenFiatPrice: tokenMarketData?.price,
+      percentageChange: tokenMarketData?.pricePercentChange1d,
+    };
+  }
+
+  const assetRateData = assetsRates?.[asset.assetId];
+  return {
+    tokenFiatPrice:
+      assetRateData?.rate === undefined
+        ? undefined
+        : Number(assetRateData.rate),
+    percentageChange: assetRateData?.marketData?.pricePercentChange?.P1D,
+  };
+};
+
 export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
-  getAssetsBySelectedAccountGroup,
+  (state: BridgeAppState) =>
+    getBridgeAssetsByAssetId(state, getSelectedAccountGroup(state)),
   getMarketData,
   getAssetsRates,
   (_state: unknown, selectedChainId: CaipChainId | null) => selectedChainId,
   (state: BridgeAppState, selectedChainId: CaipChainId | null) =>
     getBatchSellDestStablecoinsForNetwork(state, selectedChainId ?? undefined),
   (
-    assetsByChain,
+    assetsByAssetId,
     marketData,
     assetsRates,
     selectedChainId,
@@ -213,84 +237,55 @@ export const getAvailableBatchSellSwapAssetsForNetwork = createSelector(
     if (!selectedChainId) {
       return [];
     }
-    const isEvm = isEvmChainId(selectedChainId as Hex | CaipChainId);
-    // getAssetsBySelectedAccountGroup keys EVM chains by hex (e.g. "0x1")
-    // but the toolbar passes CAIP (e.g. "eip155:1"), so convert
-    const lookupKey = isEvm
-      ? convertCaipToHexChainId(selectedChainId)
-      : selectedChainId;
-    const assets = assetsByChain[lookupKey] ?? [];
-    const hexChainId = isEvm
-      ? convertCaipToHexChainId(selectedChainId)
-      : ('' as Hex);
 
-    const isStablecoin = (asset: ChainAsset): boolean => {
-      if (!stablecoins.length || asset.isNative) {
-        return false;
-      }
-      const address = 'address' in asset ? asset.address : asset.assetId;
-      const caipAssetId = toAssetId(address, selectedChainId);
-      return caipAssetId !== undefined && stablecoins.includes(caipAssetId);
-    };
+    const stablecoinSet = new Set(stablecoins.map((id) => id.toLowerCase()));
 
-    return assets
-      .filter(
-        (asset) => hexToBigInt(asset.rawBalance) > 0n && !isStablecoin(asset),
-      )
-      .map((asset): BatchSellAsset | undefined => {
-        const tokenAddress = isEvm
-          ? resolveEvmTokenAddress(asset, hexChainId)
-          : undefined;
-        const { tokenFiatPrice, percentageChange } = resolvePricingData(
-          asset,
-          isEvm,
-          hexChainId,
-          tokenAddress,
-          marketData,
-          assetsRates,
-        );
-
-        // For EVM, `asset.assetId` is the raw token address (or native
-        // address), not a CAIP asset id. Build one so downstream consumers
-        // can rely on `BatchSellAsset.assetId` always being a CaipAssetType.
-        // For non-EVM, `asset.assetId` is already a CAIP asset type.
-        const caipAssetId: CaipAssetType | undefined = isEvm
-          ? toAssetId(tokenAddress ?? asset.assetId, selectedChainId)
-          : (asset.assetId as CaipAssetType);
-        if (!caipAssetId) {
-          return undefined;
+    return Object.values(assetsByAssetId)
+      .filter((asset) => {
+        if (asset.chainId !== selectedChainId) {
+          return false;
         }
-
+        if (
+          !asset.balance ||
+          Number.isNaN(Number(asset.balance)) ||
+          Number(asset.balance) <= 0
+        ) {
+          return false;
+        }
+        if (stablecoinSet.has(asset.assetId.toLowerCase())) {
+          return false;
+        }
+        return true;
+      })
+      .map((asset): BatchSellAsset => {
+        const { tokenFiatPrice, percentageChange } =
+          resolveTokenFiatPriceAndChange(asset, marketData, assetsRates);
         return {
-          assetId: caipAssetId,
-          name: asset.name,
-          symbol: asset.symbol,
-          image: resolveAssetImage(asset, isEvm, selectedChainId),
-          balance: asset.balance,
-          fiatBalance: asset.fiat?.balance,
+          ...asset,
+          // The bridge selector leaves `iconUrl` empty for some tokens; fall
+          // back to the asset image registry so the picker always renders one.
+          iconUrl:
+            asset.iconUrl ?? getAssetImageUrl(asset.assetId, asset.chainId),
           tokenFiatPrice,
           percentageChange,
-          isNative: asset.isNative,
-          chainId: selectedChainId,
-          // For non-EVM there is no address concept
-          address: isEvm ? tokenAddress : undefined,
         };
-      })
-      .filter((asset): asset is BatchSellAsset => asset !== undefined);
+      });
   },
 );
 
 export const getNativeAssetForChain = createSelector(
-  getAssetsBySelectedAccountGroup,
+  (state: BridgeAppState) =>
+    getBridgeAssetsByAssetId(state, getSelectedAccountGroup(state)),
   (_state: unknown, chainId: CaipChainId | null | undefined) => chainId,
-  (assetsByChain, chainId) => {
+  (assetsByAssetId, chainId): BridgeToken | undefined => {
     if (!chainId) {
       return undefined;
     }
-    const isEvm = isEvmChainId(chainId as Hex | CaipChainId);
-    const lookupKey = isEvm ? convertCaipToHexChainId(chainId) : chainId;
-    const assets = assetsByChain[lookupKey] ?? [];
-    return assets.find((asset) => asset.isNative);
+    const nativeAssetId = getNativeAssetForChainId(chainId)?.assetId;
+    if (!nativeAssetId) {
+      return undefined;
+    }
+    return assetsByAssetId[nativeAssetId.toLowerCase() as CaipAssetType];
   },
 );
 

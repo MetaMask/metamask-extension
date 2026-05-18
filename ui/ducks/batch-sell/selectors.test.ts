@@ -13,6 +13,7 @@ import {
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getBridgeFeatureFlags } from '../bridge/selectors';
 import { CHAIN_IDS } from '../../../shared/constants/network';
+import { getBridgeAssetsByAssetId } from '../bridge/asset-selectors';
 import {
   getNetworksForSelectedAccount,
   getNetworksWithPositiveBalanceForSelectedAccount,
@@ -40,7 +41,7 @@ jest.mock('../bridge/selectors', () => ({
 }));
 
 jest.mock('../bridge/asset-selectors', () => ({
-  getBridgeAssetsByAssetId: jest.fn().mockReturnValue({}),
+  getBridgeAssetsByAssetId: jest.fn(),
 }));
 
 jest.mock('../../selectors/multichain-accounts/account-tree', () => ({
@@ -57,6 +58,7 @@ const mockGetAssetsBySelectedAccountGroup = jest.mocked(
 const mockGetAssetsRates = jest.mocked(getAssetsRates);
 const mockGetMarketData = jest.mocked(getMarketData);
 const mockGetBridgeFeatureFlags = jest.mocked(getBridgeFeatureFlags);
+const mockGetBridgeAssetsByAssetId = jest.mocked(getBridgeAssetsByAssetId);
 
 const CAIP_MAINNET = toEvmCaipChainId(CHAIN_IDS.MAINNET) as CaipChainId;
 const CAIP_BASE = toEvmCaipChainId(CHAIN_IDS.BASE) as CaipChainId;
@@ -391,27 +393,28 @@ describe('batch-sell selectors', () => {
   });
 
   describe('getAvailableBatchSellAssetsForNetworkSelector', () => {
-    const ETH_ASSET = {
-      assetId: `${CAIP_MAINNET}/slip44:60`,
-      name: 'Ether',
+    const ETH_ASSET_ID = `${CAIP_MAINNET}/slip44:60` as CaipChainId;
+    const USDT_ASSET_ID =
+      `${CAIP_MAINNET}/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7` as CaipChainId;
+    const ETH_BRIDGE_TOKEN = {
+      assetId: ETH_ASSET_ID,
+      chainId: CAIP_MAINNET,
       symbol: 'ETH',
-      image: undefined,
+      name: 'Ether',
+      decimals: 18,
       balance: '1.5',
-      fiat: { balance: 3000 },
-      rawBalance: '0x14D1120D7B16000',
-      isNative: true,
+      tokenFiatAmount: 3000,
+      iconUrl: undefined,
     };
-
-    const ERC20_ASSET = {
-      assetId: `${CAIP_MAINNET}/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7`,
-      name: 'Tether USD',
+    const USDT_BRIDGE_TOKEN = {
+      assetId: USDT_ASSET_ID,
+      chainId: CAIP_MAINNET,
       symbol: 'USDT',
-      image: 'https://example.com/usdt.png',
-      address: '0xdAC17F958D2ee523a2206206994597C13D831ec7' as `0x${string}`,
+      name: 'Tether USD',
+      decimals: 6,
       balance: '100',
-      fiat: { balance: 100 },
-      rawBalance: '0x5F5E100',
-      isNative: false,
+      tokenFiatAmount: 100,
+      iconUrl: 'https://example.com/usdt.png',
     };
 
     beforeEach(() => {
@@ -431,11 +434,10 @@ describe('batch-sell selectors', () => {
       mockGetBridgeFeatureFlags.mockReturnValue({
         chains: {},
       } as never);
+      mockGetBridgeAssetsByAssetId.mockReturnValue({});
     });
 
     it('returns empty array when selectedChainId is null', () => {
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({} as never);
-
       const result = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         null,
@@ -445,8 +447,9 @@ describe('batch-sell selectors', () => {
     });
 
     it('returns mapped assets for the selected EVM chain', () => {
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [ETH_ASSET, ERC20_ASSET],
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
+        [USDT_ASSET_ID.toLowerCase()]: USDT_BRIDGE_TOKEN,
       } as never);
 
       const result = getAvailableBatchSellSwapAssetsForNetwork(
@@ -455,26 +458,28 @@ describe('batch-sell selectors', () => {
       );
 
       expect(result).toHaveLength(2);
-      expect(result[0]).toMatchObject({
-        assetId: ETH_ASSET.assetId,
-        name: 'Ether',
-        symbol: 'ETH',
-        isNative: true,
-        chainId: CAIP_MAINNET,
-      });
-      expect(result[1]).toMatchObject({
-        assetId: ERC20_ASSET.assetId,
-        name: 'Tether USD',
-        symbol: 'USDT',
-        isNative: false,
-        chainId: CAIP_MAINNET,
-        address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-      });
+      expect(result).toContainEqual(
+        expect.objectContaining({
+          assetId: ETH_ASSET_ID,
+          name: 'Ether',
+          symbol: 'ETH',
+          chainId: CAIP_MAINNET,
+        }),
+      );
+      expect(result).toContainEqual(
+        expect.objectContaining({
+          assetId: USDT_ASSET_ID,
+          name: 'Tether USD',
+          symbol: 'USDT',
+          chainId: CAIP_MAINNET,
+        }),
+      );
     });
 
     it('filters out assets with zero balance', () => {
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [{ ...ETH_ASSET, rawBalance: '0x0' }, ERC20_ASSET],
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: { ...ETH_BRIDGE_TOKEN, balance: '0' },
+        [USDT_ASSET_ID.toLowerCase()]: USDT_BRIDGE_TOKEN,
       } as never);
 
       const result = getAvailableBatchSellSwapAssetsForNetwork(
@@ -487,17 +492,16 @@ describe('batch-sell selectors', () => {
     });
 
     it('filters out stablecoin assets', () => {
-      const USDT_CAIP =
-        `${CAIP_MAINNET}/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7` as CaipChainId;
       mockGetBridgeFeatureFlags.mockReturnValue({
         chains: {
           [CAIP_MAINNET]: {
-            batchSellDestStablecoins: [USDT_CAIP],
+            batchSellDestStablecoins: [USDT_ASSET_ID],
           },
         },
       } as never);
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [ETH_ASSET, ERC20_ASSET],
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
+        [USDT_ASSET_ID.toLowerCase()]: USDT_BRIDGE_TOKEN,
       } as never);
 
       const result = getAvailableBatchSellSwapAssetsForNetwork(
@@ -509,9 +513,9 @@ describe('batch-sell selectors', () => {
       expect(result[0].symbol).toBe('ETH');
     });
 
-    it('populates tokenFiatPrice and percentageChange from marketData for EVM assets', () => {
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [ETH_ASSET],
+    it('populates tokenFiatPrice and percentageChange from marketData for EVM native asset', () => {
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
       } as never);
 
       const [ethResult] = getAvailableBatchSellSwapAssetsForNetwork(
@@ -523,9 +527,21 @@ describe('batch-sell selectors', () => {
       expect(ethResult.percentageChange).toBe(1.5);
     });
 
-    it('returns empty array when chain has no assets', () => {
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({} as never);
+    it('populates tokenFiatPrice and percentageChange from marketData for EVM ERC-20 assets', () => {
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [USDT_ASSET_ID.toLowerCase()]: USDT_BRIDGE_TOKEN,
+      } as never);
 
+      const [usdtResult] = getAvailableBatchSellSwapAssetsForNetwork(
+        buildState(),
+        CAIP_MAINNET,
+      );
+
+      expect(usdtResult.tokenFiatPrice).toBe(1);
+      expect(usdtResult.percentageChange).toBe(0.01);
+    });
+
+    it('returns empty array when chain has no assets', () => {
       const result = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
@@ -534,9 +550,9 @@ describe('batch-sell selectors', () => {
       expect(result).toStrictEqual([]);
     });
 
-    it('uses CHAIN_ID_TOKEN_IMAGE_MAP for EVM native token image', () => {
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [ETH_ASSET],
+    it('falls back to a chain-derived icon url when the bridge token has no iconUrl', () => {
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [ETH_ASSET_ID.toLowerCase()]: ETH_BRIDGE_TOKEN,
       } as never);
 
       const [ethResult] = getAvailableBatchSellSwapAssetsForNetwork(
@@ -544,40 +560,39 @@ describe('batch-sell selectors', () => {
         CAIP_MAINNET,
       );
 
-      // ETH on mainnet should have a defined image from CHAIN_ID_TOKEN_IMAGE_MAP
-      expect(ethResult.image).toBeDefined();
+      expect(ethResult.iconUrl).toBeDefined();
     });
 
-    it('uses asset image for ERC-20 tokens', () => {
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [ERC20_ASSET],
+    it('preserves the bridge token iconUrl for ERC-20 tokens', () => {
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [USDT_ASSET_ID.toLowerCase()]: USDT_BRIDGE_TOKEN,
       } as never);
 
-      const [erc20Result] = getAvailableBatchSellSwapAssetsForNetwork(
+      const [usdtResult] = getAvailableBatchSellSwapAssetsForNetwork(
         buildState(),
         CAIP_MAINNET,
       );
 
-      expect(erc20Result.image).toBe('https://example.com/usdt.png');
+      expect(usdtResult.iconUrl).toBe('https://example.com/usdt.png');
     });
 
     it('uses assetsRates for non-EVM chain assets', () => {
       const SOLANA_CHAIN_ID =
         'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp' as CaipChainId;
       const SOL_ASSET_ID = `${SOLANA_CHAIN_ID}/slip44:501` as CaipChainId;
-      const SOL_ASSET = {
+      const SOL_BRIDGE_TOKEN = {
         assetId: SOL_ASSET_ID,
-        name: 'Solana',
+        chainId: SOLANA_CHAIN_ID,
         symbol: 'SOL',
-        image: undefined,
+        name: 'Solana',
+        decimals: 9,
         balance: '2',
-        fiat: { balance: 300 },
-        rawBalance: '0x1',
-        isNative: true,
+        tokenFiatAmount: 300,
+        iconUrl: undefined,
       };
 
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [SOLANA_CHAIN_ID]: [SOL_ASSET],
+      mockGetBridgeAssetsByAssetId.mockReturnValue({
+        [SOL_ASSET_ID.toLowerCase()]: SOL_BRIDGE_TOKEN,
       } as never);
       mockGetAssetsRates.mockReturnValue({
         [SOL_ASSET_ID]: {
@@ -594,43 +609,6 @@ describe('batch-sell selectors', () => {
       expect(result).toHaveLength(1);
       expect(result[0].tokenFiatPrice).toBe(150);
       expect(result[0].percentageChange).toBe(3.5);
-      expect(result[0].address).toBeUndefined();
-    });
-
-    it('does not filter out a stablecoin-listed ERC-20 asset that has no address property (isStablecoin address fallback)', () => {
-      // ERC-20 asset without `address` property falls back to assetId in
-      // isStablecoin; if the assetId happens to match a stablecoin it is filtered.
-      const USDT_ASSET_ID =
-        `${CAIP_MAINNET}/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7` as CaipChainId;
-      mockGetBridgeFeatureFlags.mockReturnValue({
-        chains: {
-          [CAIP_MAINNET]: { batchSellDestStablecoins: [USDT_ASSET_ID] },
-        },
-      } as never);
-      // Asset has no `address` property – isStablecoin must still work via assetId
-      const ERC20_WITHOUT_ADDRESS = {
-        assetId: USDT_ASSET_ID,
-        name: 'Tether USD',
-        symbol: 'USDT',
-        image: 'usdt.png',
-        balance: '100',
-        fiat: { balance: 100 },
-        rawBalance: '0x5F5E100',
-        isNative: false,
-        // no `address` property
-      };
-      mockGetAssetsBySelectedAccountGroup.mockReturnValue({
-        [CHAIN_IDS.MAINNET]: [ETH_ASSET, ERC20_WITHOUT_ADDRESS],
-      } as never);
-
-      const result = getAvailableBatchSellSwapAssetsForNetwork(
-        buildState(),
-        CAIP_MAINNET,
-      );
-
-      // USDT (matched via assetId fallback) should be filtered out
-      expect(result).toHaveLength(1);
-      expect(result[0].symbol).toBe('ETH');
     });
   });
 

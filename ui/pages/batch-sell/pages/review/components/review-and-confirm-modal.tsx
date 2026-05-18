@@ -78,7 +78,7 @@ const YouSellRow = ({
   const members = useMemo(
     () =>
       Object.values(sendAssetsConfig).map(({ asset }) => ({
-        avatarValue: asset.image ?? '',
+        avatarValue: asset.iconUrl ?? '',
         symbol: asset.symbol,
       })),
     [sendAssetsConfig],

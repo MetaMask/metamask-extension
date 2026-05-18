@@ -61,7 +61,7 @@ export const AssetListItem = ({
       <AvatarToken
         size={AvatarTokenSize.Md}
         name={asset.name}
-        src={asset.image}
+        src={asset.iconUrl ?? undefined}
       />
       <Box gap={1} className="flex-1">
         <Box>
@@ -97,17 +97,22 @@ export const AssetListItem = ({
         </Box>
       </Box>
       <Box gap={1} className="text-right">
-        {asset.fiatBalance !== undefined && (
-          <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {formatCurrencyAmount(asset.fiatBalance.toString(), currency, 2)}
-          </Text>
-        )}
+        {asset.tokenFiatAmount !== undefined &&
+          asset.tokenFiatAmount !== null && (
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+              {formatCurrencyAmount(
+                asset.tokenFiatAmount.toString(),
+                currency,
+                2,
+              )}
+            </Text>
+          )}
         <Text
           variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           color={TextColor.TextAlternative}
         >
-          {formatTokenAmount(locale, asset.balance, asset.symbol)}
+          {formatTokenAmount(locale, asset.balance ?? '0', asset.symbol)}
         </Text>
       </Box>
       <Box>

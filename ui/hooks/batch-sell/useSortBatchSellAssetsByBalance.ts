@@ -8,8 +8,8 @@ export const useSortBatchSellAssetsByBalance = (
   return useMemo(
     () =>
       assets.toSorted((a, b) => {
-        const aBalance = a.fiatBalance ?? 0;
-        const bBalance = b.fiatBalance ?? 0;
+        const aBalance = a.tokenFiatAmount ?? 0;
+        const bBalance = b.tokenFiatAmount ?? 0;
         return order === 'desc' ? bBalance - aBalance : aBalance - bBalance;
       }),
     [assets, order],

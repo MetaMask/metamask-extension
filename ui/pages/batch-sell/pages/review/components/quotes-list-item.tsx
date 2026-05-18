@@ -74,7 +74,9 @@ export const QuotesListItem = ({
   );
 
   const selectedNativeAmount = useMemo(() => {
-    const amount = new BigNumber(asset.balance).mul(sendAmountPercent / 100);
+    const amount = new BigNumber(asset.balance ?? '0').mul(
+      sendAmountPercent / 100,
+    );
     return formatTokenAmount(locale, amount.toString(), asset.symbol);
   }, [asset.balance, locale, sendAmountPercent, asset.symbol]);
 
@@ -92,7 +94,7 @@ export const QuotesListItem = ({
       >
         <AvatarToken
           name={asset.symbol}
-          src={asset.image}
+          src={asset.iconUrl ?? undefined}
           size={AvatarTokenSize.Lg}
         />
         <Box gap={1} className="flex-1">

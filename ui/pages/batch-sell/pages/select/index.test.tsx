@@ -78,7 +78,12 @@ jest.mock('./hooks/useInitialStateFromLocation', () => ({
 }));
 
 const CHAIN_ID = 'eip155:1' as CaipChainId;
-const ASSET_ID = 'eip155:1/erc20:0xTokenAddress';
+// Native asset id (slip44:60) -> source token address derived as 0x0000…0000
+const NATIVE_ASSET_ID = 'eip155:1/slip44:60' as CaipAssetType;
+const ERC20_TOKEN_ADDRESS =
+  '0xdAC17F958D2ee523a2206206994597C13D831ec7' as `0x${string}`;
+const ERC20_ASSET_ID =
+  `eip155:1/erc20:${ERC20_TOKEN_ADDRESS}` as CaipAssetType;
 const STABLECOIN_ASSET_ID =
   'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;
 
@@ -87,23 +92,19 @@ const mockNetworks = [
 ];
 
 const mockAsset = {
-  assetId: ASSET_ID,
+  assetId: NATIVE_ASSET_ID,
   name: 'Ether',
   symbol: 'ETH',
-  image: '',
+  iconUrl: '',
   balance: '1.0',
-  fiatBalance: '2000',
-  isNative: true,
+  decimals: 18,
+  tokenFiatAmount: 2000,
   chainId: CHAIN_ID,
-  address: '0x0000000000000000000000000000000000000000' as `0x${string}`,
 };
 
 let mockDestStablecoins: CaipAssetType[] = [STABLECOIN_ASSET_ID];
 // Mutated per-test to control the asset list returned by the selector
-const mockAssetList: (
-  | typeof mockAsset
-  | ({ address: undefined } & Omit<typeof mockAsset, 'address'>)
-)[] = [mockAsset];
+const mockAssetList: typeof mockAsset[] = [mockAsset];
 
 jest.mock('../../../../ducks/batch-sell/selectors', () => ({
   getAvailableBatchSellNetworks: () => mockNetworks,
@@ -179,7 +180,7 @@ describe('BatchSellSelectPage – navigateToBridgePageAndPreselect', () => {
     expect(closeOrder).toBeLessThan(openOrder);
   });
 
-  it('passes the source token from the selected asset when address is defined', () => {
+  it('passes the source token derived from the selected native asset', () => {
     // Pre-select the asset so the find() in navigateToBridgePageAndPreselect resolves it
     mockInitialAssetsId.push(mockAsset.assetId);
 
@@ -189,7 +190,8 @@ describe('BatchSellSelectPage – navigateToBridgePageAndPreselect', () => {
       expect.any(String),
       expect.objectContaining({
         symbol: mockAsset.symbol,
-        address: mockAsset.address,
+        // Native EVM assets resolve to the canonical zero address.
+        address: '0x0000000000000000000000000000000000000000',
         name: mockAsset.name,
         chainId: mockAsset.chainId,
       }),
@@ -197,15 +199,38 @@ describe('BatchSellSelectPage – navigateToBridgePageAndPreselect', () => {
     );
   });
 
-  it('passes undefined as source token when selected asset has no address', () => {
-    // Swap the asset list for one whose address is undefined
+  it('passes the contract address as source token address for an ERC-20 asset', () => {
+    const erc20Asset = {
+      ...mockAsset,
+      assetId: ERC20_ASSET_ID,
+      symbol: 'USDT',
+      name: 'Tether USD',
+    };
     mockAssetList.length = 0;
-    mockAssetList.push({ ...mockAsset, address: undefined });
-    mockInitialAssetsId.push(mockAsset.assetId);
+    mockAssetList.push(erc20Asset);
+    mockInitialAssetsId.push(erc20Asset.assetId);
 
     renderAndTriggerBridgeNavigation();
 
-    // Second arg (sourceToken) should be undefined when no address
+    expect(mockOpenBridgeExperience).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        symbol: erc20Asset.symbol,
+        address: ERC20_TOKEN_ADDRESS,
+        name: erc20Asset.name,
+        chainId: erc20Asset.chainId,
+      }),
+      expect.anything(),
+    );
+  });
+
+  it('passes undefined as source token when no asset is selected', () => {
+    // No initial assets selected -> selectedAsset resolves to undefined
+    mockInitialAssetsId.length = 0;
+
+    renderAndTriggerBridgeNavigation();
+
+    // Second arg (sourceToken) should be undefined when no asset is found
     expect(mockOpenBridgeExperience.mock.calls[0][1]).toBeUndefined();
   });
 });
