@@ -56,13 +56,15 @@ export default function TransactionStatusLabel({
   isEarliestNonce,
   className,
   statusOnly,
+  label,
+  tooltip,
 }) {
   const t = useI18nContext();
   const statusKey = getStatusKey(status, isEarliestNonce);
-  const tooltipText = error?.rpc?.message || error?.message;
-  let statusText = statusKey && t(statusKey);
+  const tooltipText = tooltip || error?.rpc?.message || error?.message;
+  let statusText = label ?? (statusKey && t(statusKey));
 
-  if (statusKey === TransactionStatus.confirmed && !statusOnly) {
+  if (!label && statusKey === TransactionStatus.confirmed && !statusOnly) {
     statusText = date;
   }
 
@@ -72,9 +74,10 @@ export default function TransactionStatusLabel({
       title={tooltipText}
       wrapperClassName={classnames(
         'transaction-status-label',
-        `transaction-status-label--${statusKey}`,
+        label ? 'transaction-status-label--confirmed' : undefined,
+        !label && `transaction-status-label--${statusKey}`,
         className,
-        statusToClassNameHash[statusKey],
+        !label && statusToClassNameHash[statusKey],
       )}
     >
       {statusText}
@@ -89,4 +92,6 @@ TransactionStatusLabel.propTypes = {
   error: PropTypes.object,
   isEarliestNonce: PropTypes.bool,
   statusOnly: PropTypes.bool,
+  label: PropTypes.string,
+  tooltip: PropTypes.string,
 };

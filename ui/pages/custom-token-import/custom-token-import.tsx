@@ -366,7 +366,14 @@ export const CustomTokenImportPage = () => {
           networkClientId,
         ),
       );
-      navigate(TOKEN_MANAGEMENT_ROUTE);
+      navigate(TOKEN_MANAGEMENT_ROUTE, {
+        state: {
+          tokenManagementToast: {
+            type: 'customTokenAdded',
+            symbol,
+          },
+        },
+      });
     } finally {
       setIsSubmitting(false);
     }
