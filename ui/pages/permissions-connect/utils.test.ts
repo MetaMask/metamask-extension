@@ -4,7 +4,12 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { getCaip25PermissionsResponse } from './utils';
+import { MergedInternalAccountWithCaipAccountId } from '../../selectors/selectors.types';
+import {
+  getCaip25CaveatValueFromPermissions,
+  getCaip25PermissionsResponse,
+  getDefaultAccounts,
+} from './utils';
 
 const baseCaip25CaveatValue = {
   requiredScopes: {},
@@ -210,5 +215,117 @@ describe('getCaip25PermissionsResponse', () => {
         },
       });
     });
+  });
+});
+
+describe('getCaip25CaveatValueFromPermissions', () => {
+  it('returns the caveat value when a matching caveat is present', () => {
+    const caveatValue = {
+      optionalScopes: {
+        'eip155:1': {
+          accounts: ['eip155:1:0xabc' as const],
+        },
+      },
+      requiredScopes: {},
+      sessionProperties: {},
+      isMultichainOrigin: true,
+    };
+
+    const result = getCaip25CaveatValueFromPermissions({
+      [Caip25EndowmentPermissionName]: {
+        caveats: [{ type: Caip25CaveatType, value: caveatValue }],
+      },
+    });
+
+    expect(result).toBe(caveatValue);
+  });
+
+  it('falls back to an empty caveat value when permissions is undefined', () => {
+    expect(getCaip25CaveatValueFromPermissions(undefined)).toEqual({
+      optionalScopes: {},
+      requiredScopes: {},
+      sessionProperties: {},
+      isMultichainOrigin: false,
+    });
+  });
+
+  it('falls back to an empty caveat value when the endowment is missing', () => {
+    expect(getCaip25CaveatValueFromPermissions({})).toEqual({
+      optionalScopes: {},
+      requiredScopes: {},
+      sessionProperties: {},
+      isMultichainOrigin: false,
+    });
+  });
+
+  it('falls back when no caveat matches the Caip25 type', () => {
+    const result = getCaip25CaveatValueFromPermissions({
+      [Caip25EndowmentPermissionName]: {
+        caveats: [
+          {
+            type: 'someOtherCaveatType',
+            value: {
+              optionalScopes: {},
+              requiredScopes: {},
+              sessionProperties: {},
+              isMultichainOrigin: false,
+            },
+          },
+        ],
+      },
+    });
+
+    expect(result).toEqual({
+      optionalScopes: {},
+      requiredScopes: {},
+      sessionProperties: {},
+      isMultichainOrigin: false,
+    });
+  });
+});
+
+describe('getDefaultAccounts', () => {
+  const buildAccount = (
+    caipAccountId: string,
+    lastSelected = 0,
+  ): MergedInternalAccountWithCaipAccountId =>
+    ({
+      caipAccountId,
+      metadata: { lastSelected },
+    }) as unknown as MergedInternalAccountWithCaipAccountId;
+
+  it('returns the supported requested accounts that match a requested namespace', () => {
+    const eth = buildAccount('eip155:1:0xaaa');
+    const sol = buildAccount('solana:101:abc');
+    const result = getDefaultAccounts(['eip155'], [eth, sol], []);
+
+    expect(result).toEqual([eth]);
+  });
+
+  it('fills unsatisfied namespaces from allAccounts sorted by lastSelected', () => {
+    const recentSol = buildAccount('solana:101:recent', 10);
+    const olderSol = buildAccount('solana:101:older', 1);
+    const eth = buildAccount('eip155:1:0xaaa');
+
+    const result = getDefaultAccounts(
+      ['eip155', 'solana'],
+      [eth],
+      [olderSol, recentSol, eth],
+    );
+
+    // eip155 satisfied by `eth`; solana picked from allAccounts ordered by
+    // lastSelected, so `recentSol` wins over `olderSol`.
+    expect(result).toEqual([eth, recentSol]);
+  });
+
+  it('skips namespaces with no available account in allAccounts', () => {
+    const eth = buildAccount('eip155:1:0xaaa');
+    const result = getDefaultAccounts(['eip155', 'solana'], [eth], [eth]);
+
+    expect(result).toEqual([eth]);
+  });
+
+  it('returns an empty array when no requested namespaces have any candidate', () => {
+    expect(getDefaultAccounts(['solana'], [], [])).toEqual([]);
   });
 });

@@ -91,6 +91,24 @@ describe('LatticeKeyringV2', () => {
 
       expect(first[0]?.id).toBe(second[0]?.id);
     });
+
+    it('rebuilds the account when the registry has an id but no cached entry', async () => {
+      // Models the gap between `registry.getAccountId(hex)` (which returns an
+      // id) and `registry.get(id)` (which returns nothing). Use spies to
+      // force the asymmetry directly since the public registry API removes
+      // both indexes together via `delete`.
+      const { wrapper, inner } = createWrapper();
+      jest.spyOn(inner, 'getAccounts').mockResolvedValue([TEST_ADDRESSES[0]]);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const registry = (wrapper as any).registry;
+      jest.spyOn(registry, 'getAccountId').mockReturnValue('ghost-id');
+      jest.spyOn(registry, 'get').mockReturnValue(undefined);
+
+      const accounts = await wrapper.getAccounts();
+
+      expect(accounts).toHaveLength(1);
+      expect(accounts[0]?.address).toBe(TEST_ADDRESSES[0]);
+    });
   });
 
   describe('createAccounts', () => {
@@ -235,6 +253,17 @@ describe('LatticeKeyringV2', () => {
 
       expect(setSpy).toHaveBeenCalledWith(7);
       expect(added).toStrictEqual([TEST_ADDRESSES[0]]);
+    });
+
+    it('defaults addAccounts to 1 when called with no argument', async () => {
+      const { wrapper, inner } = createWrapper();
+      const addSpy = jest
+        .spyOn(inner, 'addAccounts')
+        .mockResolvedValue([TEST_ADDRESSES[0]]);
+
+      await wrapper.addAccounts();
+
+      expect(addSpy).toHaveBeenCalledWith(1);
     });
 
     it('forwards page navigation methods', async () => {
