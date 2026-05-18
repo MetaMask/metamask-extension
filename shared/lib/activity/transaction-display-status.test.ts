@@ -37,9 +37,9 @@ describe('shouldShowActivityListStatusSubtitle', () => {
   it('returns true for keys that render a status subtitle', () => {
     expect(shouldShowActivityListStatusSubtitle('queued')).toBe(true);
     expect(shouldShowActivityListStatusSubtitle('signing')).toBe(true);
-    expect(
-      shouldShowActivityListStatusSubtitle(TransactionStatus.failed),
-    ).toBe(true);
+    expect(shouldShowActivityListStatusSubtitle(TransactionStatus.failed)).toBe(
+      true,
+    );
     expect(
       shouldShowActivityListStatusSubtitle(TransactionGroupStatus.cancelled),
     ).toBe(true);

@@ -9,11 +9,9 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 }));
 
 jest.mock('../../ui/tooltip', () => {
-  const MockTooltip = ({
-    children,
-  }: {
-    children?: React.ReactNode;
-  }) => <div data-testid="tooltip">{children}</div>;
+  const MockTooltip = ({ children }: { children?: React.ReactNode }) => (
+    <div data-testid="tooltip">{children}</div>
+  );
 
   return {
     __esModule: true,
@@ -23,9 +21,7 @@ jest.mock('../../ui/tooltip', () => {
 
 describe('ActivityListStatusSubtitle', () => {
   it('renders signing status text', () => {
-    render(
-      <ActivityListStatusSubtitle status={TransactionStatus.approved} />,
-    );
+    render(<ActivityListStatusSubtitle status={TransactionStatus.approved} />);
     expect(screen.getByText('signing')).toBeInTheDocument();
   });
 
@@ -38,9 +34,7 @@ describe('ActivityListStatusSubtitle', () => {
 
   it('renders cancelled status text', () => {
     render(
-      <ActivityListStatusSubtitle
-        status={TransactionGroupStatus.cancelled}
-      />,
+      <ActivityListStatusSubtitle status={TransactionGroupStatus.cancelled} />,
     );
     expect(
       screen.getByText(TransactionGroupStatus.cancelled),
