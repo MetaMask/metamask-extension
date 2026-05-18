@@ -29,7 +29,7 @@ import { GasPriceInput } from '../../gas-price-input/gas-price-input';
 import { GasInput } from '../../gas-input/gas-input';
 import { useConfirmContext } from '../../../context/confirm';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { updateTransactionGasFees } from '../../../../../store/actions';
+import { updateTransactionGasFees } from '../../../../../store/actions/update-transaction-gas-fees';
 
 export const AdvancedGasPriceModal = ({
   setActiveModal,

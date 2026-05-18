@@ -750,6 +750,19 @@ class Driver {
               error.name
             }`,
           );
+
+          // When another element (e.g. a toast banner) overlaps the target,
+          // scrolling it to the viewport center usually moves it clear of the
+          // obstruction so the next attempt can succeed.
+          if (error.name === 'ElementClickInterceptedError') {
+            try {
+              const el = await this.findElement(rawLocator);
+              await this.scrollToElement(el);
+            } catch {
+              // Element may have gone stale; the next iteration will re-find it.
+            }
+          }
+
           await this.delay(1000);
         } else {
           throw error;
@@ -949,7 +962,7 @@ class Driver {
    */
   async scrollToElement(element) {
     await this.driver.executeScript(
-      'arguments[0].scrollIntoView(true)',
+      'arguments[0].scrollIntoView({block:"center"})',
       element,
     );
   }

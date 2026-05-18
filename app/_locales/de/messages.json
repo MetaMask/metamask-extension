@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Konto hinzufügen"
   },
-  "addAccountFromNetwork": {
-    "message": "$1-Konto hinzufügen",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Konto oder Wallet hinzufügen"
-  },
   "addAcquiredTokens": {
     "message": "Fügen Sie die Tokens hinzu, die Sie mittels MetaMask erlangt haben."
   },
   "addAlias": {
     "message": "Alias hinzufügen"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Bitcoin-Konto"
   },
   "addBlockExplorer": {
     "message": "Einen Block-Explorer hinzufügen"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Tokens tauschen"
   },
-  "addHardwareWalletLabel": {
-    "message": "Hardware-Wallet"
-  },
   "addMemo": {
     "message": "Notiz hinzufügen"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "Eine Website schlägt zusätzliche Netzwerkdetails vor."
   },
-  "addNewAccount": {
-    "message": "Ein neues Konto hinzufügen"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Ethereum-Konto"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana-Konto"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tron-Konto"
-  },
   "addNft": {
     "message": "NFT hinzufügen"
   },
   "addNfts": {
     "message": "NFTs hinzufügen"
-  },
-  "addNonEvmAccount": {
-    "message": "$1-Konto hinzufügen",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Um das $1-Netzwerk zu aktivieren, müssen Sie ein $2-Konto erstellen.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC-URL hinzufügen"
@@ -558,9 +525,6 @@
   "alertReasonGasFeeLow": {
     "message": "Langsame Geschwindigkeit"
   },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Gas-Sponsoring nicht verfügbar"
-  },
   "alertReasonGasTooLow": {
     "message": "Niedriges Gas-Limit"
   },
@@ -723,9 +687,21 @@
   "assetsDescription": {
     "message": "Automatische Erkennung von Tokens in Ihrer Wallet, Anzeige von NFTs und stapelweise Aktualisierung des Kontostands"
   },
+  "asterdexReferralConfirmText": {
+    "message": "Ja, 4 % zurückerhalten",
+    "description": "Primary button label on the AsterDEX referral confirmation screen"
+  },
   "asterdexReferralSubtitle": {
     "message": "Erhalten Sie 4 % zurück auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the AsterDEX referral confirmation screen"
+  },
+  "asterdexReferralSubtitle2": {
+    "message": "Erhalten Sie 4 % auf Trades mit einem MetaMask-Empfehlungscode zurück. Dieser Rabatt gilt für alle zukünftigen Trades, gemäß $1 von AsterDEX. MetaMask erhält eine Gebühr.",
+    "description": "Subtitle on the AsterDEX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "asterdexReferralTitle": {
+    "message": "4 % bei AsterDEX zurückerhalten",
+    "description": "Title of the AsterDEX referral confirmation screen"
   },
   "attemptToCancelSwapForFree": {
     "message": "Versuch, den Swap kostenlos zu stornieren"
@@ -741,10 +717,6 @@
   },
   "autoDetectTokens": {
     "message": "Tokens automatisch erkennen"
-  },
-  "autoDetectTokensDescription": {
-    "message": "Wir verwenden APIs von Drittanbietern, um neue Token zu erkennen und anzuzeigen, die in Ihrer Wallet gesendet werden. Deaktivieren Sie dies, wenn Sie keine Daten von diesen Diensten beziehen möchten. $1",
-    "description": "$1 is a link to a support article"
   },
   "autoDetectTokensDescriptionV2": {
     "message": "Zeigt neue, an Ihre Wallet gesendete Token an."
@@ -772,9 +744,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Auto-Lock-Timer (Minuten)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Stellen Sie die inaktive Zeit in Minuten ein, nach der sich MetaMask automatisch ausloggen soll."
   },
   "available": {
     "message": "verfügbar"
@@ -892,9 +861,6 @@
   "basicFunctionalityRequired_goToHome": {
     "message": "Zur Startseite gehen"
   },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Öffnen Sie die Seite „Konto erstellen“"
-  },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Öffnen Sie die Seite „DeFi“"
   },
@@ -1006,9 +972,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "Wenn Sie diese Anfrage genehmigen, wird eine dritte Partei, die für Betrügereien bekannt ist, alle Ihre Assets an sich reißen."
-  },
-  "blockaidMessage": {
-    "message": "Wahrung der Privatsphäre – keine Daten werden an Dritte weitergegeben. Verfügbar auf Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base und Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "Dies ist eine betrügerische Anfrage."
@@ -1143,6 +1106,9 @@
   "bridgePoints_tooltip_content_2": {
     "message": "Beachten Sie bitte, dass es sich bei diesem Wert um einen Schätzwert handelt, der erst bei Abschluss der Transaktion endgültig festgelegt wird. Es kann bis zu 1 Stunde dauern, bis die Punkte in Ihrem Belohnungsguthaben bestätigt werden.",
     "description": "Second part of tooltip content explaining how points are calculated"
+  },
+  "bridgePriceDataUnavailableError": {
+    "message": "Wir konnten keine Preisinformationen für diesen Token erhalten. Stellen Sie sicher, dass der erhaltene Betrag Ihren Erwartungen entspricht, bevor Sie fortfahren."
   },
   "bridgePriceImpact": {
     "message": "Preiseinfluss"
@@ -1372,6 +1338,18 @@
   "bridgeTo": {
     "message": "Bridge zu"
   },
+  "bridgeTokenIsMaliciousBanner": {
+    "message": "$1 ist ein bösartiges Token."
+  },
+  "bridgeTokenIsMaliciousModalDescription": {
+    "message": "$1 wurde als bösartig eingestuft. Es ist wahrscheinlich, dass es Gelder von jedem stiehlt, der mit ihm interagiert."
+  },
+  "bridgeTokenIsSuspiciousBanner": {
+    "message": "$1 ist ein verdächtiges Token."
+  },
+  "bridgeTokenIsSuspiciousModalDescription": {
+    "message": "$1 wurde als verdächtig eingestuft. Sehen Sie sich die möglichen Risiken an, bevor Sie fortfahren."
+  },
   "bridgeTokenNotFound": {
     "message": "Keine Tokens stimmen mit „$1“ überein"
   },
@@ -1425,11 +1403,22 @@
   "bridgeTxDetailsYouSent": {
     "message": "Sie sandten"
   },
+  "bridgeUseMaxAmountAllowedWithReserve": {
+    "message": "Maximal zulässigen verwenden"
+  },
   "bridgeValidationInsufficientGasMessage": {
     "message": "Sie haben nicht genug $1, um die Gasgebühr für diese Bridge zu entrichten. Geben Sie einen kleineren Betrag ein oder kaufen Sie weitere $1."
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Mehr $1 für Gas benötigt"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "Dieses spezifische Netzwerk erfordert, dass Sie eine Reserve von $1 $3 auf Ihrem Konto vorhalten. Mit Ihrem aktuellen Saldo können Sie maximal $2 $3 verwenden.",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
+  },
+  "bridgeValidationInsufficientNativeReserveTitle": {
+    "message": "Mindest-$1-Reservesaldo ist erforderlich",
+    "description": "$1 is the ticker symbol of the token"
   },
   "bridged": {
     "message": "Bridged"
@@ -1442,9 +1431,6 @@
   },
   "browserNotSupported": {
     "message": "Ihr Browser wird nicht unterstützt …"
-  },
-  "builtAroundTheWorld": {
-    "message": "MetaMask ist weltweit konzipiert und aufgebaut."
   },
   "busy": {
     "message": "Ausgelastet"
@@ -1534,13 +1520,6 @@
   "checkNetworkConnectivityOr": {
     "message": "Überprüfen Sie die Netzwerkverbindung oder $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "Wählen Sie Ihr Netzwerk"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "Wenn Sie unsere Standardeinstellungen und -konfigurationen verwenden, nutzen wir Infura als Standard-RPC-Anbieter (Remote Procedure Call), um einen möglichst zuverlässigen und privaten Zugriff auf Ethereum-Daten zu gewährleisten. In Ausnahmefällen können wir auch andere RPC-Anbieter einsetzen, um unseren Nutzern das bestmögliche Erlebnis zu bieten. Sie können Ihren eigenen RPC wählen, doch bedenken Sie dabei, dass jeder RPC Ihre IP-Adresse und Ihr Ethereum-Wallet zur Durchführung von Transaktionen erhalten wird. Weitere Informationen darüber, wie Infura Daten für EVM-Konten verarbeitet, finden Sie in unserer $1 und für Solana-Konten in der $2.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Sie müssen MetaMask unter Google Chrome nutzen, um sich mit Ihrer Hardware-Wallet zu verbinden."
@@ -1838,10 +1817,10 @@
   "connectAHardwareWallet": {
     "message": "Verbinden Sie eine Hardware-Wallet"
   },
-  "connectAccounts": {
-    "message": "Konten verbinden"
+  "connectAHardwareWalletDescription": {
+    "message": "Verwendung von USB oder einem QR-Code"
   },
-  "connectAnAccountHeader": {
+  "connectAccounts": {
     "message": "Konten verbinden"
   },
   "connectHardwareDevice": {
@@ -1850,9 +1829,6 @@
   },
   "connectManually": {
     "message": "Manuelle Verbindung zur aktuellen Seite"
-  },
-  "connectMoreAccounts": {
-    "message": "Mehr Konten verbinden"
   },
   "connectSnap": {
     "message": "Mit $1 verbinden",
@@ -1870,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask ist nicht mit dieser Seite verbunden. Um sich mit einer Web3-Seite zu verbinden, finden und klicken Sie auf die Schaltfläche „Verbinden“."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 kann den Kontostand, die Adresse und die Aktivitäten einsehen und Transaktionen vorschlagen, um für verbundene Konten zu genehmigen.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Verbundene Seiten"
@@ -1906,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "$1 Netzwerke verbunden",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Verbunden mit $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Verbinden"
@@ -1944,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "Abrufen von $1 fehlgeschlagen. Netzwerkverbindung überprüfen und erneut versuchen.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Um eine Verbindung zu einer Website herzustellen, klicken Sie auf die Schaltfläche „Verbinden“. MetaMask kann sich nur mit web3-Websites verbinden."
   },
   "connectionRequest": {
     "message": "Verbindungsanfrage"
@@ -2038,9 +2003,6 @@
     "message": "Konto wird hinzugefügt ...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Neues Konto erstellen"
-  },
   "createPassword": {
     "message": "MetaMask-Passwort"
   },
@@ -2066,20 +2028,27 @@
   "createSnapAccountTitle": {
     "message": "Konto erstellen"
   },
-  "createSolanaAccount": {
-    "message": "Solana-Konto erstellen"
-  },
   "creatorAddress": {
     "message": "Adresse des Erstellers"
+  },
+  "criticalErrorAttemptRecovery": {
+    "message": "Wiederherstellung versuchen"
+  },
+  "criticalErrorFooterContactSupport": {
+    "message": "Falls nichts vom oben Genannten funktioniert, $1",
+    "description": "Footer on the critical error screen. $1 is the 'contact support' link."
+  },
+  "criticalErrorReinstallMetamask": {
+    "message": "MetaMask neu installieren"
   },
   "criticalErrorResetMetaMaskState": {
     "message": "MetaMask-Status zurücksetzen"
   },
+  "criticalErrorStillHavingIssues": {
+    "message": "Haben Sie immer noch Probleme?"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
-  },
-  "currencyConversion": {
-    "message": "Währung"
   },
   "currencyRateCheckToggle": {
     "message": "Guthaben und Token-Preisprüfer anzeigen"
@@ -2114,9 +2083,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 Std.: $1 bis $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "Aktuelle Sprache"
   },
   "currentNetwork": {
     "message": "Aktuelles Netzwerk",
@@ -2346,9 +2312,6 @@
   "deepLink_theSwapsPage": {
     "message": "die Swaps-Seite"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "die Swaps-/Ramps-Seite"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "die Seite für den Transaktionsschutz"
   },
@@ -2373,6 +2336,14 @@
   "defiReferralCheckboxLabel": {
     "message": "Erlauben Sie MetaMask, einen Empfehlungscode hinzuzufügen. Dieser ist dauerhaft. Die Website gewährt Rabatte gemäß ihren Bedingungen. MetaMask erhält eine Gebühr.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralNoThanks": {
+    "message": "Nein, danke",
+    "description": "Secondary button label to decline on the DeFi referral confirmation screen"
+  },
+  "defiReferralTerms": {
+    "message": "geschäftsbedingungen",
+    "description": "Accessible label for the partner terms link within the DeFi referral consent subtitle"
   },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
@@ -2468,9 +2439,6 @@
   "details": {
     "message": "Details"
   },
-  "developerOptions": {
-    "message": "Entwickler-Optionen"
-  },
   "developerTools": {
     "message": "Entwicklertools"
   },
@@ -2487,9 +2455,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Sind Sie sicher, dass Sie die Verbindung trennen möchten? Sie könnten die Seitenfunktionalität verlieren."
   },
-  "disconnectAllAccountsText": {
-    "message": "Konten"
-  },
   "disconnectAllDescriptionText": {
     "message": "Falls Sie die Verbindung zu dieser Seite trennen, müssen Sie Ihre Konten und Netzwerke bei einer weiteren Nutzung dieser Website erneut verbinden."
   },
@@ -2504,9 +2469,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Alle dApps wurden erfolgreich getrennt."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Dadurch wird die Verbindung zu dieser Seite getrennt"
@@ -2527,17 +2489,8 @@
   "dismiss": {
     "message": "Verwerfen"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Aktivieren Sie diese Option, um die Erinnerungsmeldung zur Sicherung der geheimen Wiederherstellungsphrase zu deaktivieren. Wir empfehlen Ihnen dringend, eine Sicherungskopie Ihrer geheimen Wiederherstellungsphrase zu erstellen, um den Verlust von Geldern zu vermeiden"
-  },
-  "dismissReminderField": {
-    "message": "Erinnerung an die Sicherung der geheimen Wiederherstellungsphrase ignorieren"
-  },
   "displayNftMedia": {
     "message": "NFT-Medien anzeigen"
-  },
-  "displayNftMediaDescription": {
-    "message": "Das Anzeigen von NFT-Medien und Daten gibt legt IP-Adresse OpenSea oder andere Drittanbieter gegenüber offen. Dies kann es Angreifern gestatten, Ihre IP-Adresse mit Ihrer Etherum-Adresse in Verbindung zu bringen. Die automatische NFT-Erkennung benötigt diese Einstellung und wird nicht zur Verfügung stehen, wenn diese deaktiviert ist."
   },
   "displayNftMediaDescriptionV2": {
     "message": "Die automatische NFT-Erkennung beruht auf dieser Funktion."
@@ -3225,9 +3178,21 @@
     "message": "Bereiten Sie Ihre Wallet für die Nutzung von web3 vor",
     "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
+  "gmxReferralConfirmText": {
+    "message": "Ja, 5 % sparen",
+    "description": "Primary button label on the GMX referral confirmation screen"
+  },
   "gmxReferralSubtitle": {
     "message": "Sparen Sie bis zu 5 % auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the GMX referral confirmation screen"
+  },
+  "gmxReferralSubtitle2": {
+    "message": "Sparen Sie 5 % auf Trades mit einem MetaMask-Empfehlungscode. Dieser Rabatt gilt für alle zukünftigen Trades, gemäß $1 von GMX. MetaMask erhält eine Gebühr.",
+    "description": "Subtitle on the GMX referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "gmxReferralTitle": {
+    "message": "5 % bei GMX sparen",
+    "description": "Title of the GMX referral confirmation screen"
   },
   "goToSite": {
     "message": "Zur Seite gehen"
@@ -3451,9 +3416,21 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
+  "hyperliquidReferralConfirmText": {
+    "message": "Ja, 4 % sparen",
+    "description": "Primary button label on the Hyperliquid referral confirmation screen"
+  },
   "hyperliquidReferralSubtitle": {
     "message": "Sparen Sie bis zu 4 % auf Trades mit einem MetaMask-Empfehlungscode.",
     "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle2": {
+    "message": "Sparen Sie 4 % auf Trades mit einem MetaMask-Empfehlungscode. Gilt für alle zukünftigen Trades, gemäß $1 von Hyperliquid. MetaMask erhält eine Gebühr.",
+    "description": "Subtitle on the Hyperliquid referral confirmation screen. $1 is a link to the partner's terms."
+  },
+  "hyperliquidReferralTitle": {
+    "message": "4 % bei Hyperliquid sparen",
+    "description": "Title of the Hyperliquid referral confirmation screen"
   },
   "iUnderstand": {
     "message": "Ich verstehe"
@@ -3520,9 +3497,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Die ID eines NFTs ist eine eindeutige Kennung, da keine zwei NFTs gleich sind. Auch diese Nummer finden Sie in OpenSea unter „Details“. Notieren Sie diese oder kopieren Sie sie in Ihre Zwischenablage."
   },
-  "importPrivateKey": {
-    "message": "Privater Schlüssel"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase importieren"
   },
@@ -3537,9 +3511,6 @@
   },
   "importTokensError": {
     "message": "Wir konnten die Tokens nicht importieren. Bitte versuchen Sie es später erneut."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Wallet oder Konto importieren"
   },
   "importWalletSuccess": {
     "message": "Wallet $1 importiert",
@@ -3673,9 +3644,6 @@
   },
   "ipfsGateway": {
     "message": "IPFS-Gateway"
-  },
-  "ipfsGatewayDescription": {
-    "message": "MetaMask verwendet Dienste von Drittanbietern, um Bilder Ihrer auf IPFS gespeicherten NFTs wiederzugeben, Informationen zu ENS-Adressen anzuzeigen, die Sie in die Adressleiste Ihres Browsers eingeben, und Symbole für verschiedene Tokens abzurufen. Ihre IP-Adresse kann diesen Diensten offengelegt werden, wenn Sie diese nutzen."
   },
   "ipfsGatewayDescriptionV2": {
     "message": "Verwendet Dienste von Drittanbietern, um Bilder Ihrer auf IPFS gespeicherten NFTs, Informationen zu den in der Adressleiste Ihres Browsers eingegebenen ENS-Adressen und Symbole für verschiedene Token anzuzeigen. Wählen Sie unten Ihren bevorzugten IPFS-Gateway aus."
@@ -3857,9 +3825,6 @@
   "likeToImportTokens": {
     "message": "Möchten Sie diese Token hinzufügen?"
   },
-  "lineaGoerli": {
-    "message": "Linea-Testnetzwerk"
-  },
   "lineaMainnet": {
     "message": "Linea"
   },
@@ -3871,9 +3836,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Verlinken Sie Ihre Coinbase- oder Binance-Konten, um Kryptos kostenfrei an MetaMask zu übweisen."
-  },
-  "links": {
-    "message": "Links"
   },
   "loading": {
     "message": "Wird geladen ..."
@@ -3895,9 +3857,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask wird gesperrt ..."
-  },
-  "logOut": {
-    "message": "Abmelden"
   },
   "loginErrorConnectButton": {
     "message": "Erneut versuchen"
@@ -4013,6 +3972,9 @@
   },
   "maxFeeTooltip": {
     "message": "Eine maximale Gebühr, die für die Bezahlung der Transaktion vorgesehen ist."
+  },
+  "maybeLater": {
+    "message": "Vielleicht später"
   },
   "medium": {
     "message": "Markt"
@@ -4614,9 +4576,6 @@
   "networkPermissionToast": {
     "message": "Netzwerkgenehmigungen aktualisiert"
   },
-  "networkProvider": {
-    "message": "Netzwerkanbieter"
-  },
   "networkStatus": {
     "message": "Netzwerkstatus"
   },
@@ -4661,9 +4620,6 @@
   },
   "new": {
     "message": "Neu!"
-  },
-  "newAccount": {
-    "message": "Neues Konto"
   },
   "newAccountIconMessage": {
     "message": "Wir haben die Kontosymbole überarbeitet, damit Sie Ihre Konten leichter voneinander unterscheiden können. Den Stil können Sie unter $1 > $2 > $3 ändern.",
@@ -5225,9 +5181,6 @@
   "overrideContentSecurityPolicyHeader": {
     "message": "Content-Security-Policy-Header aufheben"
   },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "Diese Option dient als Behelfslösung für ein bekanntes Problem in Firefox, bei dem der Content-Security-Policy-Header einer dApp verhindern kann, dass die Erweiterung ordnungsgemäß geladen wird. Die Deaktivierung dieser Option wird nicht empfohlen, es sei denn, sie ist für die Kompatibilität bestimmter Webseiten erforderlich."
-  },
   "padlock": {
     "message": "Padlock"
   },
@@ -5242,6 +5195,126 @@
   },
   "participateInMetaMetricsDescription": {
     "message": "Nehmen Sie an MetaMetric teil, um uns dabei zu helfen, MetaMask zu verbessern"
+  },
+  "passkeyAuthMethodBiometrics": {
+    "message": "Biometrisch",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch-ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
+  "passkeyDescription": {
+    "message": "Verwenden Sie $1, um MetaMask zu entsperren, anstatt Ihr Passwort einzugeben. Dies erstellt einen Passkey, der nur auf diesem Gerät gültig ist.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
+  },
+  "passkeyErrorAlreadyEnrolled": {
+    "message": "$1 ist bereits für diese Wallet eingerichtet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorAuthenticationVerificationFailed": {
+    "message": "Wir konnten Ihr $1 nicht verifizieren. Versuchen Sie es erneut.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorMissingKeyMaterial": {
+    "message": "Ihre $1-Antwort war unvollständig. Versuchen Sie es erneut.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoAuthenticationCeremony": {
+    "message": "$1-Anmeldesitzung ist abgelaufen. Bitte versuchen Sie es erneut.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNoRegistrationCeremony": {
+    "message": "$1-Einrichtungssitzung ist abgelaufen. Bitte versuchen Sie es erneut von Anfang an.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorNotEnrolled": {
+    "message": "$1 ist für diese Wallet nicht eingerichtet. Schalten Sie $1 in den Einstellungen ein.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationFailed": {
+    "message": "$1-Einrichtung fehlgeschlagen. Versuchen Sie es erneut.",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorRegistrationVerificationFailed": {
+    "message": "Wir konnten Ihr $1-Einrichtung nicht verifizieren. Versuchen Sie es erneut.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyDecryptionFailed": {
+    "message": "Wir konnten mit $1 nicht entsperren. Versuchen Sie es erneut oder richten Sie die $1 in den Einstellungen erneut ein.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyMismatch": {
+    "message": "$1 stimmt nicht mit Ihrer aktuellen Wallet-Sperre überein. Richten Sie $1 in den Einstellungen erneut ein.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVaultKeyRenewalFailed": {
+    "message": "Ihr Passwort wurde aktualisiert, aber die $1-Entsperrung konnte nicht eingeschaltet werden.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyErrorVerificationFailed": {
+    "message": "Wir konnten Ihr $1 nicht verifizieren. Versuchen Sie es erneut oder verwenden Sie Ihr Passwort.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepRegister": {
+    "message": "$1 registrieren",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeySetupStepVerify": {
+    "message": "$1 validieren",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTroubleshootModalDescription": {
+    "message": "Versuchen Sie, die Erweiterung in einem Vollbildfenster zu öffnen, und versuchen Sie es erneut.",
+    "description": "Explains that unlocking with a passkey may work better in a full screen MetaMask window."
+  },
+  "passkeyTroubleshootModalOpenFullScreen": {
+    "message": "Vollbildfenster öffnen",
+    "description": "Button that opens MetaMask unlock in a full browser tab."
+  },
+  "passkeyTroubleshootModalStillHavingTrouble": {
+    "message": "Haben Sie immer noch Schwierigkeiten?",
+    "description": "Link text to open MetaMask support when passkey unlock troubleshooting did not help."
+  },
+  "passkeyTroubleshootUnlock": {
+    "message": "Schwierigkeiten beim Entsperren?",
+    "description": "Opens MetaMask in a full browser tab when passkey is unreliable in the side panel."
+  },
+  "passkeyTroubleshootUnlockModalTitle": {
+    "message": "Schwierigkeiten beim Entsperren",
+    "description": "Title for the modal shown when the user needs help unlocking with a passkey from the side panel."
+  },
+  "passkeyTroubleshootVerify": {
+    "message": "Schwierigkeiten beim Verifizieren?",
+    "description": "Link to open passkey troubleshooting when verifying identity (not unlock), e.g. change password or security settings in the side panel."
+  },
+  "passkeyTroubleshootVerifyModalTitle": {
+    "message": "Schwierigkeiten beim Verifizieren?",
+    "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
+  },
+  "passkeyTurnedOff": {
+    "message": "$1 ausgeschaltet",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyTurnedOn": {
+    "message": "$1 eingeschaltet",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyUnlockFailed": {
+    "message": "$1-Entsperrung fehlgeschlagen. Versuchen Sie es mit dem Passwort.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "Verwenden Sie $1 zur Verifizierung, anstatt Ihr Passwort einzugeben.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "Mit $1 bestätigen",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "Passwort"
@@ -5655,6 +5728,9 @@
     "message": "Zum Handeln verfügbar",
     "description": "Label for the available balance that can be used for trading"
   },
+  "perpsBasicFunctionalityOff": {
+    "message": "Diese Funktion ist nicht verfügbar, solange die Basisfunktionalität ausgeschaltet ist."
+  },
   "perpsBatchCancelFailed": {
     "message": "Eine oder mehrere Orders konnten nicht storniert werden. Versuchen Sie es erneut."
   },
@@ -5667,6 +5743,9 @@
   "perpsCancelOrder": {
     "message": "Order stornieren"
   },
+  "perpsCandleIntervals": {
+    "message": "Kerzenintervall festlegen"
+  },
   "perpsCandlePeriodDays": {
     "message": "Tage"
   },
@@ -5678,6 +5757,9 @@
   },
   "perpsCloseAll": {
     "message": "Alle schließen"
+  },
+  "perpsCloseAmount": {
+    "message": "Schlussbetrag"
   },
   "perpsCloseLong": {
     "message": "Long-Position schließen"
@@ -5880,6 +5962,10 @@
   "perpsMid": {
     "message": "Mittelkurs"
   },
+  "perpsMinOrderSize": {
+    "message": "Order-Größe muss mindestens $1 betragen",
+    "description": "$1 is the minimum order size with currency symbol (e.g., '$10'). Shown as submit-button copy when the size input is empty or below the minimum."
+  },
   "perpsModify": {
     "message": "Ändern"
   },
@@ -5990,6 +6076,10 @@
   "perpsReversePositionDescriptionShort": {
     "message": "Wandeln Sie Ihre Short-Position in eine Long-Position um"
   },
+  "perpsSaveChanges": {
+    "message": "Änderungen speichern",
+    "description": "Button text for saving TP/SL changes"
+  },
   "perpsSearchMarkets": {
     "message": "Märkte durchsuchen"
   },
@@ -6066,6 +6156,10 @@
   "perpsStopLoss": {
     "message": "Stop-Loss",
     "description": "Label for stop loss price input"
+  },
+  "perpsStopLossInvalidLiquidationPrice": {
+    "message": "Stop-Loss muss $1-Liquidationspreis sein",
+    "description": "Validation error when stop loss price is on the wrong side of the liquidation price. $1 is above/below."
   },
   "perpsStopLossInvalidPrice": {
     "message": "Stop-Loss muss $1 $2 Preis sein",
@@ -6780,14 +6874,6 @@
   "requestingFor": {
     "message": "Anforderung von"
   },
-  "requestingForAccount": {
-    "message": "Anforderung von $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Anfordern für $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Erforderlich"
   },
@@ -6868,9 +6954,6 @@
   },
   "revealSecretRecoveryPhraseSettings": {
     "message": "Geheime Wiederherstellungsphrase offenlegen"
-  },
-  "revealSeedWords": {
-    "message": "Geheime Wiederherstellungsphrase anzeigen"
   },
   "revealSeedWordsDescription1": {
     "message": "Ihr $1 gewährt Ihnen vollen Zugriff auf Ihre Wallet, Ihre Gelder und Ihre Konten.",
@@ -6967,27 +7050,6 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Region wird nicht unterstützt"
   },
-  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
-    "message": "Mehr erfahren"
-  },
-  "rewardsOnboardingLegalDisclaimerTermsLink": {
-    "message": "Nutzungsbedingungen und Datenschutzerklärung"
-  },
-  "rewardsOnboardingOptInError": {
-    "message": "Anmeldung fehlgeschlagen"
-  },
-  "rewardsOnboardingReferralCodeError": {
-    "message": "Ungültiger Empfehlungscode"
-  },
-  "rewardsOnboardingReferralCodePlaceholder": {
-    "message": "Empfehlungscode (optional)"
-  },
-  "rewardsOnboardingReferralCodeUnknownError": {
-    "message": "Empfehlungscode konnte nicht validiert werden."
-  },
-  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
-    "message": "Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
-  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Verifizierung des Empfehlungscodes läuft ...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7003,12 +7065,6 @@
   "rewardsPointsIcon": {
     "message": "Belohnungspunkte",
     "description": "Alt text for the rewards points icon"
-  },
-  "rewardsQRCodeDescription": {
-    "message": "Sie benötigen die App, um Ihre Fortschritte zu verfolgen und Belohnungen einzulösen. Scannen Sie diesen QR-Code und wir helfen Ihnen beim Importieren Ihrer Konten."
-  },
-  "rewardsQRCodeTitle": {
-    "message": "Holen Sie sich die mobile App"
   },
   "rewardsSignInFailed": {
     "message": "Anmeldung ist fehlgeschlagen",
@@ -7077,10 +7133,6 @@
   "secretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase"
   },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Geheime Wiederherstellungsphrase $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
-  },
   "secureWallet": {
     "message": "Wallet sichern"
   },
@@ -7096,10 +7148,6 @@
   "securityAlerts": {
     "message": "Sicherheitsbenachrichtigungen"
   },
-  "securityAlertsDescription": {
-    "message": "Diese Funktion warnt Sie vor bösartigen Aktivitäten, indem sie aktiv Transaktionen und Signaturanfragen überprüft. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "Diese Funktion warnt Sie vor bösartigen Aktivitäten, indem sie aktiv Transaktionen und Signaturanfragen überprüft. $1"
   },
@@ -7109,11 +7157,12 @@
   "securityAndPrivacy": {
     "message": "Sicherheit und Datenschutz"
   },
-  "securityChangePassword": {
-    "message": "Passwort ändern"
-  },
   "securityChangePasswordToastError": {
     "message": "Passwort konnte nicht geändert werden. Bitte versuchen Sie es erneut."
+  },
+  "securityChangePasswordToastPasskeyRenewalFailed": {
+    "message": "Neues Passwort gespeichert, aber die $1-Entsperrung konnte nicht eingeschaltet werden.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "Neues Passwort gespeichert"
@@ -7260,8 +7309,16 @@
     "message": "Einrichten",
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
+  "setUpPasskey": {
+    "message": "$1 einrichten",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "settingAddSnapAccount": {
     "message": "Konto-Snap hinzufügen"
+  },
+  "settingUpPasskey": {
+    "message": "Einrichtung von $1",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "Einstellungen"
@@ -7909,9 +7966,6 @@
   "showFiatConversionInTestnets": {
     "message": "Umrechnung auf Testnetzwerk anzeigen"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Wählen Sie dies aus, um die Fiat-Umrechnung in Testnetzwerken anzuzeigen."
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "Zeigt Netzwerk-Token als lokale Währung in Testnetzwerken an. Falls Sie aufgefordert werden, diese Funktion zu aktivieren, handelt es sich möglicherweise um Betrug. Nur zu Testzwecken. $1",
     "description": "$1 is the 'Learn more' link"
@@ -7945,9 +7999,6 @@
   },
   "showTestnetNetworks": {
     "message": "Testnetzwerke anzeigen"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Wählen Sie dies, um Testnetzwerke in der Netzwerkliste anzuzeigen."
   },
   "sidePanelMigrationToast": {
     "message": "MetaMask wird nun standardmäßig in der Seitenleiste geöffnet. $1 jederzeit über das Menü.",
@@ -8077,9 +8128,6 @@
   "skipDeepLinkInterstitial": {
     "message": "Beim Öffnen von Deeplinks keinen Zwischenbildschirm anzeigen"
   },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Wenn Sie diese Option aktivieren, wird der Zwischenbildschirm übersprungen, der beim Öffnen von Deeplinks in MetaMask angezeigt wird. Ein „Deeplink“ ist ein Link wie https://link.metamask.io/home, der MetaMask öffnet; diese Links können von anderen verschleiert werden. Der Zwischenbildschirm soll Sie davor schützen, versehentlich Seiten in MetaMask zu öffnen, die Ihre Konten, Token, Ihren Verlauf, Kontostände, Einstellungen oder andere potenziell sensible Daten anzeigen könnten. Diese Einstellung gilt nur für von MetaMask signierte Links."
-  },
   "skipLinkConfirmationScreens": {
     "message": "Link zu Bestätigungsbildschirmen überspringen"
   },
@@ -8106,6 +8154,9 @@
   },
   "smartAccountRequestsFromDapps": {
     "message": "Anfragen für Smart-Konten von Dapps"
+  },
+  "smartAccountRequestsFromDappsDescriptionV2": {
+    "message": "Ermöglichen Sie es DApps, Smart-Konto-Funktionen für Standardkonten anzufordern. MetaMask wird dabei ausschließlich auf unserem auditierten Smart-Konto upgraden."
   },
   "smartAccountUpgradeBannerDescription": {
     "message": "Dieselbe Adresse. Intelligentere Funktionen."
@@ -8316,12 +8367,6 @@
   "snapsUIError": {
     "message": "Kontaktieren Sie die Ersteller von $1 für weitere Unterstützung.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
-  },
-  "solanaAccountRequested": {
-    "message": "Diese Website fordert ein Solana-Konto."
-  },
-  "solanaAccountRequired": {
-    "message": "Für die Verbindung mit dieser Website ist ein Solana-Konto erforderlich."
   },
   "someNetworks": {
     "message": "$1 Netzwerke"
@@ -8553,9 +8598,6 @@
   "stateLogs": {
     "message": "Statusprotokolle"
   },
-  "stateLogsDescription": {
-    "message": "Statelogs zeigen die Public Adresse und die gesendeten Transaktionen Ihres Kontos."
-  },
   "stateLogsModalDescription": {
     "message": "Statusprotokolle unterstützen uns bei der Fehlerbehebung von Problemen, die Sie möglicherweise haben. Senden Sie diese nur für Supportzwecke an MetaMask, da die Statusprotokolle Ihre öffentliche Kontoadresse und Transaktionen enthalten."
   },
@@ -8630,9 +8672,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "Schalten Sie Smart Transactions für zuverlässigere und sicherere Transaktionen ein. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Schalten Sie Smart Transactions für zuverlässigere und sicherere Transaktionen in unterstützten Netzwerken ein. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Ihr Swap wird privat abgesendet ..."
@@ -9063,9 +9102,6 @@
   "theme": {
     "message": "Design"
   },
-  "themeDescription": {
-    "message": "Wählen Sie Ihr bevorzugtes MetaMask-Design."
-  },
   "thirdPartyApis": {
     "message": "Drittanbieter-APIs"
   },
@@ -9334,6 +9370,14 @@
   "turnOffMetamaskNotificationsError": {
     "message": "Beim Deaktivieren der Benachrichtigungen ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
   },
+  "turnOffPasskey": {
+    "message": "$1 ausschalten",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "turnOffPasskeyFailed": {
+    "message": "Wir konnten $1 nicht ausschalten. Versuchen Sie es erneut.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "turnOn": {
     "message": "Einschalten"
   },
@@ -9433,6 +9477,10 @@
     "message": "Entsperren zum Offenlegen",
     "description": "Label used for Private Keys row on multichain account details page."
   },
+  "unlockWithPasskey": {
+    "message": "Mit $1 freischalten",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
   "unpin": {
     "message": "Lösen"
   },
@@ -9492,9 +9540,6 @@
   "urlErrorMsg": {
     "message": "URIs benötigen die korrekten HTTP/HTTPS Präfixe."
   },
-  "urlUnknown": {
-    "message": "URL unbekannt"
-  },
   "use4ByteResolution": {
     "message": "Smart Contracts dekodieren"
   },
@@ -9516,8 +9561,8 @@
   "useNftDetectionDescription": {
     "message": "Zeigt alle NFTs an, einschließlich der von Betrügern abgeworfenen gefälschten NFTs."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Lassen Sie MetaMask NFTs, die Sie besitzen, anhand von Drittanbieterdiensten hinzufügen. Durch die automatische Erkennung von NFTs werden Ihre IP- und Kontoadresse für diese Dienste offengelegt. Durch die Aktivierung dieser Funktion können eventuell Ihre IP- und Ethereum-Adresse miteinander in Verbindung gebracht und gefälschte, von Betrügern per Airdropping abgesetzte NFTs anzeigt werden. Es ist möglich, Tokens manuell hinzufügen, um dieses Risiko zu vermeiden."
+  "usePassword": {
+    "message": "Passwort verwenden"
   },
   "usePhishingDetection": {
     "message": "Phishing-Erkennung verwenden"
@@ -9527,9 +9572,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Überprüfung der Netzwerkangaben"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask verwendet einen Drittanbieter-Service namens $1, um genaue und standardisierte Netzwerkangaben anzuzeigen. Dies verringert die Wahrscheinlichkeit, dass Sie mit einem bösartigen oder falschen Netzwerk in Verbindungen treten. Wenn Sie diese Funktion benutzen, wird Ihre IP-Adresse chainid.network gegenüber offengelegt."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "Verringert Ihr Risiko, sich mit einem bösartigen oder falschen Netzwerk zu verbinden. MetaMask verwendet $1 zur Anzeige genauer und standardisierter Netzwerkdetails."
