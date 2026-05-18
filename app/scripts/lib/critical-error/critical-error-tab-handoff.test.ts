@@ -60,12 +60,11 @@ describe('critical-error-repair session', () => {
       await expect(readCriticalErrorRepairSession(browser)).resolves.toBeNull();
     });
 
-    it.each([
+    for (const repairAction of [
       CriticalErrorRepairAction.Recover,
       CriticalErrorRepairAction.Reset,
-    ])(
-      'returns payload with stored %s repairAction when repair session data is valid',
-      async (repairAction) => {
+    ]) {
+      it(`returns payload with stored ${repairAction} repairAction when repair session data is valid`, async () => {
         const tabUrl = 'https://metamask.io/restoring#abc';
         (browser.storage.local.get as jest.Mock).mockResolvedValueOnce({
           [CRITICAL_ERROR_REPAIR_KEY]: {
@@ -82,8 +81,8 @@ describe('critical-error-repair session', () => {
           tabId: 42,
           tabUrl,
         });
-      },
-    );
+      });
+    }
 
     it('defaults to recover when repairAction is missing', async () => {
       const tabUrl = 'https://metamask.io/restoring#abc';
@@ -170,7 +169,7 @@ describe('openRestoringTabAndReload', () => {
     (browser.storage.local.set as jest.Mock).mockResolvedValue(undefined);
   });
 
-  it.each([
+  for (const { expectedRepairAction, repairAction } of [
     {
       expectedRepairAction: CriticalErrorRepairAction.Recover,
       repairAction: undefined,
@@ -179,9 +178,8 @@ describe('openRestoringTabAndReload', () => {
       expectedRepairAction: CriticalErrorRepairAction.Reset,
       repairAction: CriticalErrorRepairAction.Reset,
     },
-  ])(
-    'creates restoring tab, persists $expectedRepairAction repairAction, and calls requestSafeReload',
-    async ({ expectedRepairAction, repairAction }) => {
+  ]) {
+    it(`creates restoring tab, persists ${expectedRepairAction} repairAction, and calls requestSafeReload`, async () => {
       await openRestoringTabAndReload(requestSafeReload, repairAction);
 
       expect(browser.tabs.create).toHaveBeenCalledWith(
@@ -199,8 +197,8 @@ describe('openRestoringTabAndReload', () => {
         }),
       });
       expect(requestSafeReload).toHaveBeenCalledTimes(1);
-    },
-  );
+    });
+  }
 
   it('omits tabId when tabs.create fails', async () => {
     const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();

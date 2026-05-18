@@ -68,12 +68,7 @@ export function getErrorLike(error: unknown): ErrorLike {
     message: getStringProperty(error, 'message') ?? 'Unknown error',
     name: getStringProperty(error, 'name') ?? 'UnknownError',
     stack: getStringProperty(error, 'stack'),
-    ...(cause && {
-      cause,
-    }),
-    ...(sentryTags &&
-      Object.keys(sentryTags).length > 0 && {
-        sentryTags,
-      }),
+    ...(cause ? { cause } : {}),
+    ...(sentryTags && Object.keys(sentryTags).length > 0 ? { sentryTags } : {}),
   };
 }

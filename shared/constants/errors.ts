@@ -1,12 +1,8 @@
 export type ErrorLike = {
   message: string;
-  name: string;
+  name?: string;
   stack?: string;
-  cause?: {
-    message: string;
-    name?: string;
-    stack?: string;
-  };
+  cause?: unknown;
   sentryTags?: Record<string, string>;
 };
 
