@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "Oluşturucu adresi"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask Durumunu Sıfırla"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7217,9 +7220,6 @@
   "send": {
     "message": "Gönder"
   },
-  "sendBugReport": {
-    "message": "Bize bir hata raporu gönderin."
-  },
   "sendSelectReceiveAsset": {
     "message": "Alınacak varlıkları seçin"
   },
@@ -8548,42 +8548,6 @@
   "stateCorruptionAreYouSure": {
     "message": "İlerlemek istediğinizden emin misiniz?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "$1 izleyerek kasanızı geri yüklemeye karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "$1 izleyerek MetaMask'i sıfırlamaya karar vermeden önce durum dosyanızı manuel olarak kopyalayıp geri yüklemeye çalışabilirsiniz.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Kasanız otomatik olarak kurtarılamaz."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Kasanız otomatik bir yedeklemeden kurtarılabilir. Otomatik kurtarma, mevcut ayar ve tercihlerinizi silerek yalnızca kasanızı geri yükleyecektir."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Dahili hata: Veri tabanına erişim sağlanamıyor"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask Durumunu Sıfırla"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Veri tabanı sıfırlanıyor…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Hesapları geri yükle"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Veri tabanı geri yükleniyor…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "bu talimatları",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Gizli Kurtarma İfadeniz nasıl kurtarılır"
-  },
   "stateLogError": {
     "message": "Durum günlükleri alınırken hata oluştu, lütfen daha sonra tekrar deneyin."
   },
@@ -9429,9 +9393,6 @@
   },
   "unavailable": {
     "message": "Mevcut değil"
-  },
-  "unexpectedBehavior": {
-    "message": "Bu davranış beklenmedik bir durumdur ve hesaplarınız geri yüklense bile hata olarak bildirilmelidir."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "$3 üzerinde takas işlemi yapmak için $1 $2 varlıklarına tam erişim izni ver"

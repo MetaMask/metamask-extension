@@ -1,5 +1,8 @@
 import { segment } from '../segment';
-import { CriticalErrorType } from '../../../../shared/constants/state-corruption';
+import {
+  CriticalErrorRepairAction,
+  CriticalErrorType,
+} from '../../../../shared/constants/state-corruption';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -70,7 +73,7 @@ describe('trackCriticalErrorEvent', () => {
       MetaMetricsEventName.CriticalErrorRestoreWalletButtonPressed,
       CriticalErrorType.BackgroundStateSyncTimeout,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      { restore_accounts_enabled: true },
+      { repair_action: CriticalErrorRepairAction.Recover },
     );
 
     expect(mockSegment.track).toHaveBeenCalledWith({
@@ -80,7 +83,7 @@ describe('trackCriticalErrorEvent', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_type: CriticalErrorType.BackgroundStateSyncTimeout,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        restore_accounts_enabled: true,
+        repair_action: CriticalErrorRepairAction.Recover,
         category: MetaMetricsEventCategory.Error,
       },
       context: {

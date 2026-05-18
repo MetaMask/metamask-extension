@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "Địa chỉ của người tạo"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Đặt lại trạng thái MetaMask"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7217,9 +7220,6 @@
   "send": {
     "message": "Gửi"
   },
-  "sendBugReport": {
-    "message": "Gửi báo cáo lỗi."
-  },
   "sendSelectReceiveAsset": {
     "message": "Chọn tài sản để nhận"
   },
@@ -8548,42 +8548,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Bạn có chắc chắn muốn tiếp tục không?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định khôi phục két an toàn bằng cách làm theo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Bạn có thể thử sao chép và khôi phục tệp trạng thái của mình theo cách thủ công trước khi quyết định đặt lại MetaMask bằng cách làm theo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Không thể tự động khôi phục két an toàn."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Két an toàn có thể được khôi phục từ bản sao lưu tự động. Việc khôi phục tự động sẽ xóa chế độ cài đặt và tùy chọn hiện tại của bạn và chỉ khôi phục két an toàn."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Lỗi nội bộ: không thể truy cập cơ sở dữ liệu"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Đặt lại trạng thái MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Đang đặt lại cơ sở dữ liệu…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Khôi phục tài khoản"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Đang khôi phục cơ sở dữ liệu…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "các hướng dẫn này",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Cách khôi phục Cụm từ khôi phục bí mật của bạn"
-  },
   "stateLogError": {
     "message": "Lỗi khi truy xuất nhật ký trạng thái, vui lòng thử lại sau."
   },
@@ -9429,9 +9393,6 @@
   },
   "unavailable": {
     "message": "Không khả dụng"
-  },
-  "unexpectedBehavior": {
-    "message": "Đây là hành vi bất thường và cần được báo cáo như một lỗi, ngay cả khi tài khoản của bạn đã được khôi phục."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Cho phép truy cập chính xác vào $1 $2 trên $3 để thực hiện hoán đổi"

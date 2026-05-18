@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "Διεύθυνση δημιουργού"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Επαναφορά κατάστασης του MetaMask"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7213,9 +7216,6 @@
   "send": {
     "message": "Αποστολή"
   },
-  "sendBugReport": {
-    "message": "Στείλτε μας μια αναφορά σφαλμάτων."
-  },
   "sendSelectReceiveAsset": {
     "message": "Επιλέξτε περιουσιακό στοιχείο για λήψη"
   },
@@ -8544,42 +8544,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Είστε σίγουροι ότι θέλετε να συνεχίσετε;"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Μπορείτε να δοκιμάσετε να αντιγράψετε και να επαναφέρετε το αρχείο κατάστασής σας χειροκίνητα, πριν αποφασίσετε να επαναφέρετε το εικονικό σας \"θησαυροφυλάκιο\", ακολουθώντας $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Μπορείτε να δοκιμάσετε να αντιγράψετε και να επαναφέρετε το αρχείο κατάστασής σας χειροκίνητα, πριν αποφασίσετε να επαναφέρετε το MetaMask, ακολουθώντας $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Δεν είναι δυνατή η αυτόματη επαναφορά του εικονικού σας \"θησαυροφυλακίου\"."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Δεν είναι δυνατή η επαναφορά του εικονικού σας \"θησαυροφυλακίου\" από ένα αυτόματο αντίγραφο ασφαλείας. Η αυτόματη ανάκτηση θα διαγράψει τις τρέχουσες ρυθμίσεις και προτιμήσεις σας, επαναφέροντας μόνο το εικονικό σας \"θησαυροφυλάκιο\"."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Εσωτερικό σφάλμα: δεν είναι δυνατή η πρόσβαση στη βάση δεδομένων"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Επαναφορά κατάστασης του MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Γίνεται επαναφορά της βάσης δεδομένων…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Επαναφορά λογαριασμών"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Γίνεται ανάκτηση της βάσης δεδομένων…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "αυτές τις οδηγίες",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Πώς να ανακτήσετε τη Μυστική Φράση Ανάκτησής σας"
-  },
   "stateLogError": {
     "message": "Σφάλμα κατά την ανάκτηση των αρχείων καταγραφών κατάστασης, προσπαθήστε ξανά αργότερα."
   },
@@ -9425,9 +9389,6 @@
   },
   "unavailable": {
     "message": "Μη διαθέσιμο"
-  },
-  "unexpectedBehavior": {
-    "message": "Αυτή η συμπεριφορά είναι απρόβλεπτη και πρέπει να αναφερθεί ως σφάλμα, ακόμη κι αν οι λογαριασμοί σας έχουν αποκατασταθεί."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Επιτρέψτε την ακριβή πρόσβαση των $1 $2 στο $3 για ανταλλαγή"

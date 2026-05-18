@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "Address ng creator"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "I-reset ang Estado ng MetaMask"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7213,9 +7216,6 @@
   "send": {
     "message": "Ipadala"
   },
-  "sendBugReport": {
-    "message": "Padalhan kami ng ulat ng bug."
-  },
   "sendSelectReceiveAsset": {
     "message": "Piliin ang asset na tatanggapin"
   },
@@ -8544,42 +8544,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Sigurado ka bang gusto mong magpatuloy?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Puwede mong subukang kopyahin at ibalik ang iyong file ng estado nang manu-mano bago ka magpasyang ibalik ang iyong vault sa pamamagitan ng pagsunod sa $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Puwede mong subukang kopyahin at ibalik ang iyong file ng estado nang manu-mano bago ka magpasyang i-reset ang MetaMask sa pamamagitan ng pagsunod sa $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Hindi awtomatikong mababawi ang iyong vault."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Puwedeng mabawi ang iyong vault mula sa isang naka-automate na backup. Tatanggalin ng awtomatikong pagbawi ang iyong mga kasalukuyang setting at kagustuhan, at ibabalik lang ang vault mo."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Panloob na error: hindi ma-access ang database"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "I-reset ang Estado ng MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Nire-reset ang database…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Ibalik ang mga account"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Ibinabalik ang database…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "ang mga tagubiling ito",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Paano makuha ulit ang iyong Lihim na Parirala sa Pagbawi"
-  },
   "stateLogError": {
     "message": "Error sa pagbabalik ng mga state log, pakisubukan muli mamaya."
   },
@@ -9425,9 +9389,6 @@
   },
   "unavailable": {
     "message": "Hindi available"
-  },
-  "unexpectedBehavior": {
-    "message": "Hindi inaasahan ang pangyayaring ito at dapat itong iulat bilang bug, kahit na maibalik ang iyong mga account."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Pahintulutan ang eksaktong access sa $1 $2 sa $3 para sa pag-swap"

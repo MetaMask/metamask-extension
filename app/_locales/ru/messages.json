@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "Адрес создателя"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Сброс состояния MetaMask"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7213,9 +7216,6 @@
   "send": {
     "message": "Отправить"
   },
-  "sendBugReport": {
-    "message": "Отправьте нам отчет об ошибке."
-  },
   "sendSelectReceiveAsset": {
     "message": "Выберите актив для получения"
   },
@@ -8544,42 +8544,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Уверены, что хотите продолжить?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Прежде чем вы решите восстановить свое хранилище, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Прежде чем вы решите сбросить MetaMask, вы можете попробовать скопировать и восстановить файл состояния вручную, следуя $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ваше хранилище нельзя восстановить автоматически."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Ваше хранилище можно восстановить из автоматизированной резервной копии. Автоматическое восстановление удалит ваши текущие настройки и предпочтения и восстановит только ваше хранилище."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Внутренняя ошибка: невозможно получить доступ к базе данных"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Сброс состояния MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Сброс базы данных…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Восстановить счета"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Восстановление базы данных…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "этим инструкциям",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Как восстановить вашу секретную фразу для восстановления"
-  },
   "stateLogError": {
     "message": "Ошибка при получении журналов состояния, повторите попытку позже."
   },
@@ -9425,9 +9389,6 @@
   },
   "unavailable": {
     "message": "Недоступно"
-  },
-  "unexpectedBehavior": {
-    "message": "Такое поведение является неожиданным, и о нем следует сообщить как об ошибке, даже если ваши счета восстановлены."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Разрешите точный доступ к $1 $2 на $3 для обмена"

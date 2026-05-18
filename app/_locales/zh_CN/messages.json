@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "创建者地址"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "重设 MetaMask 状态"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7209,9 +7212,6 @@
   "send": {
     "message": "发送"
   },
-  "sendBugReport": {
-    "message": "向我们发送错误报告."
-  },
   "sendSelectReceiveAsset": {
     "message": "选择要接收的资产"
   },
@@ -8540,42 +8540,6 @@
   "stateCorruptionAreYouSure": {
     "message": "您确定要继续吗？"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "在决定恢复您的保管库之前，您可根据以下 $1 先尝试手动复制并恢复状态文件。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "在决定重设 MetaMask 之前，您可根据以下 $1 先尝试手动复制并恢复状态文件。",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "您的保管库无法自动恢复。"
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "您的保管库可通过自动备份恢复。自动恢复将删除当前设置和偏好，仅恢复保管库内容。​"
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "内部错误：无法访问数据库"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "重设 MetaMask 状态"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "正在重设数据库…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "恢复账户"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "正在恢复数据库…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "这些说明",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "如何恢复私钥助记词"
-  },
   "stateLogError": {
     "message": "获取状态记录时出错，请稍后重试。"
   },
@@ -9421,9 +9385,6 @@
   },
   "unavailable": {
     "message": "不可用"
-  },
-  "unexpectedBehavior": {
-    "message": "该行为属异常行为，即使账户已成功恢复，仍须作为漏洞提交报告。"
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "允许在 $3 上精准授权 $1 $2 用于兑换"

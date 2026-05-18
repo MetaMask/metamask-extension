@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "Adresse du créateur"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Réinitialiser l’état de MetaMask"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7213,9 +7216,6 @@
   "send": {
     "message": "Envoyer"
   },
-  "sendBugReport": {
-    "message": "Envoyez-nous un rapport de bogue."
-  },
   "sendSelectReceiveAsset": {
     "message": "Sélectionnez l’actif que vous recevrez"
   },
@@ -8544,42 +8544,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Voulez-vous vraiment continuer ?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Vous pouvez essayer de copier et de restaurer votre fichier d’état manuellement avant de restaurer votre coffre-fort en suivant $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Vous pouvez essayer de copier et de restaurer votre fichier d’état manuellement avant de réinitialiser MetaMask en suivant $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Votre coffre-fort ne peut pas être restauré automatiquement."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Votre coffre-fort peut être restauré à partir d’une sauvegarde automatique. La restauration automatique supprimera vos paramètres et préférences actuels et ne restaurera que votre coffre-fort."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Erreur interne : impossible d’accéder à la base de données"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Réinitialiser l’état de MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Réinitialisation de la base de données…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restaurer les comptes"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Restauration de la base de données…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "ces instructions ",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Comment récupérer votre phrase secrète de récupération ?"
-  },
   "stateLogError": {
     "message": "Une erreur est survenue lors de la récupération des journaux d’état, veuillez réessayer plus tard."
   },
@@ -9425,9 +9389,6 @@
   },
   "unavailable": {
     "message": "Non disponible"
-  },
-  "unexpectedBehavior": {
-    "message": "Ce comportement est inattendu et doit être signalé comme un bogue, même si vos comptes ont été restaurés."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Autoriser l’accès uniquement à $1 $2 sur $3 pour l’échange"

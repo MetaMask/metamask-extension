@@ -12,10 +12,10 @@ import {
   CriticalErrorType,
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
 } from '../../../shared/constants/state-corruption';
+import { INACCESSIBLE_DATABASE_ERROR } from '../../../shared/constants/errors';
 import { CriticalStartupErrorHandler } from './critical-startup-error-handler';
 
 const mockDisplayCriticalErrorMessage = jest.fn();
-const mockDisplayStateCorruptionError = jest.fn();
 
 jest.mock('./display-critical-error', () => ({
   displayCriticalErrorMessage: (...args: unknown[]) =>
@@ -24,11 +24,6 @@ jest.mock('./display-critical-error', () => ({
     TroubleStarting: 'troubleStarting',
     SomethingIsWrong: 'somethingIsWrong',
   },
-}));
-
-jest.mock('./state-corruption-html', () => ({
-  displayStateCorruptionError: (...args: unknown[]) =>
-    mockDisplayStateCorruptionError(...args),
 }));
 
 type MessageListener = (message: unknown) => void;
@@ -360,28 +355,37 @@ describe('CriticalStartupErrorHandler', () => {
       handler.uninstall();
     });
 
-    it('handles METHOD_DISPLAY_STATE_CORRUPTION_ERROR', async () => {
+    it('handles METHOD_DISPLAY_STATE_CORRUPTION_ERROR with the critical error screen', async () => {
       const handler = new CriticalStartupErrorHandler(port, container);
       handler.install();
+      const error = {
+        message: INACCESSIBLE_DATABASE_ERROR,
+        name: 'PersistenceError',
+        stack: '',
+        cause: {
+          message: 'Error: An unexpected error occurred',
+          name: 'Error',
+        },
+      };
 
       port.simulateMessage({
         data: {
           method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
           params: {
-            error: { message: 'corruption', name: 'Error', stack: '' },
-            hasBackup: true,
+            error,
             currentLocale: 'en',
           },
         },
       });
       await flushMicrotasks();
 
-      expect(mockDisplayStateCorruptionError).toHaveBeenCalledWith(
+      expect(mockDisplayCriticalErrorMessage).toHaveBeenCalledWith(
         container,
-        port,
-        { message: 'corruption', name: 'Error', stack: '' },
-        true,
+        'troubleStarting',
+        error,
         'en',
+        port,
+        CriticalErrorType.InaccessibleDatabase,
       );
 
       handler.uninstall();
@@ -438,25 +442,25 @@ describe('CriticalStartupErrorHandler', () => {
       expect(mockDisplayCriticalErrorMessage).not.toHaveBeenCalled();
     });
 
-    it('does not call displayStateCorruptionError when METHOD_DISPLAY_STATE_CORRUPTION_ERROR has no valid params', async () => {
-      const handler = new CriticalStartupErrorHandler(port, container);
-      handler.install();
-
-      port.simulateMessage({
-        data: { method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR },
-      });
-      await flushMicrotasks();
-
-      expect(mockDisplayStateCorruptionError).not.toHaveBeenCalled();
-      handler.uninstall();
-    });
-
     it('does not call displayCriticalErrorMessage when DISPLAY_GENERAL_STARTUP_ERROR has no valid params', async () => {
       const handler = new CriticalStartupErrorHandler(port, container);
       handler.install();
 
       port.simulateMessage({
         data: { method: DISPLAY_GENERAL_STARTUP_ERROR },
+      });
+      await flushMicrotasks();
+
+      expect(mockDisplayCriticalErrorMessage).not.toHaveBeenCalled();
+      handler.uninstall();
+    });
+
+    it('does not call displayCriticalErrorMessage when METHOD_DISPLAY_STATE_CORRUPTION_ERROR has no valid params', async () => {
+      const handler = new CriticalStartupErrorHandler(port, container);
+      handler.install();
+
+      port.simulateMessage({
+        data: { method: METHOD_DISPLAY_STATE_CORRUPTION_ERROR },
       });
       await flushMicrotasks();
 

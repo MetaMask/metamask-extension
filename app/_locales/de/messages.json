@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "Adresse des Erstellers"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "MetaMask-Status zurücksetzen"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7213,9 +7216,6 @@
   "send": {
     "message": "Senden"
   },
-  "sendBugReport": {
-    "message": "Übermitteln Sie uns einen Fehlerbericht."
-  },
   "sendSelectReceiveAsset": {
     "message": "Wählen Sie das zu empfangende Asset"
   },
@@ -8544,42 +8544,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Möchten Sie wirklich fortfahren?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Sie können versuchen, Ihre Statusdatei manuell zu kopieren und wiederherzustellen, bevor Sie sich entscheiden, Ihren Tresor wiederherzustellen, indem Sie $1 befolgen.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Sie können versuchen, Ihre Statusdatei manuell zu kopieren und wiederherzustellen, bevor Sie sich entscheiden, MetaMask zurückzusetzen, indem Sie $1 befolgen.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Ihr Tresor kann nicht automatisch wiederhergestellt werden."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Ihr Tresor kann aus einer automatischen Sicherung wiederhergestellt werden. Bei der automatischen Wiederherstellung werden Ihre aktuellen Einstellungen und Präferenzen gelöscht und nur Ihr Tresor wiederhergestellt."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Interner Fehler: Auf die Datenbank kann nicht zugegriffen werden"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "MetaMask-Status zurücksetzen"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Datenbank wird zurückgesetzt …"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Konten wiederherstellen"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Datenbank wird wiederhergestellt …"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "diese Anweisungen",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "So stellen Sie Ihre geheime Wiederherstellungsphrase wieder her"
-  },
   "stateLogError": {
     "message": "Fehler beim Abrufen der Statusprotokolle. Bitte versuchen Sie es später erneut."
   },
@@ -9425,9 +9389,6 @@
   },
   "unavailable": {
     "message": "Nicht verfügbar"
-  },
-  "unexpectedBehavior": {
-    "message": "Dieses Verhalten ist unerwartet und sollte als Fehler gemeldet werden, auch wenn Ihre Konten wiederhergestellt werden."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Genehmigen Sie für das Swappen genauen Zugriff auf $1 $2 für $3"

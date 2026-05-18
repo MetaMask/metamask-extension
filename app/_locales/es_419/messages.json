@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "Dirección del creador"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Restablecer el estado de MetaMask"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7217,9 +7220,6 @@
   "send": {
     "message": "Enviar"
   },
-  "sendBugReport": {
-    "message": "Envíenos un informe de error."
-  },
   "sendSelectReceiveAsset": {
     "message": "Seleccione el activo a recibir"
   },
@@ -8548,42 +8548,6 @@
   "stateCorruptionAreYouSure": {
     "message": "¿Estás seguro de que deseas continuar?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Puedes intentar copiar y restaurar tu archivo de estado manualmente antes de decidir restaurar tu bóveda siguiendo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Puedes intentar copiar y restaurar tu archivo de estado manualmente antes de decidir restablecer MetaMask siguiendo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Tu bóveda no se puede recuperar automáticamente."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Puedes recuperar tu bóveda desde una copia de respaldo automática. La recuperación automática eliminará tu configuración y preferencias actuales y restaurará solo tu bóveda."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Error interno: no se puede acceder a la base de datos"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Restablecer el estado de MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Restableciendo la base de datos…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restaurar cuentas"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Restaurando la base de datos…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "estas instrucciones",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Cómo recuperar tu frase secreta de recuperación"
-  },
   "stateLogError": {
     "message": "Error al recuperar los registros de estado, inténtalo de nuevo más tarde."
   },
@@ -9429,9 +9393,6 @@
   },
   "unavailable": {
     "message": "No disponible"
-  },
-  "unexpectedBehavior": {
-    "message": "Este comportamiento es inesperado y debe informarse como un error, incluso si se restauran tus cuentas."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Permitir acceso exacto a $1 $2 en $3 para canjear"

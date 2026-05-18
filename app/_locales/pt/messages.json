@@ -2072,6 +2072,9 @@
   "creatorAddress": {
     "message": "Endereço do criador"
   },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Redefinir estado da MetaMask"
+  },
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
@@ -7213,9 +7216,6 @@
   "send": {
     "message": "Enviar"
   },
-  "sendBugReport": {
-    "message": "Envie-nos um relatório de bugs."
-  },
   "sendSelectReceiveAsset": {
     "message": "Selecionar ativo para receber"
   },
@@ -8544,42 +8544,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Tem certeza de que deseja prosseguir?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "Você pode tentar copiar e restaurar seu arquivo de estado manualmente antes de decidir restaurar seu cofre seguindo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "Você pode tentar copiar e restaurar seu arquivo de estado manualmente antes de decidir redinifir a MetaMask seguindo $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Seu cofre não pode ser recuperado automaticamente."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Seu cofre pode ser recuperado a partir de um backup automatizado. A recuperação automática excluirá suas configurações e preferências atuais e restaurará apenas o seu cofre."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Erro interno: não foi possível acessar banco de dados"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Redefinir estado da MetaMask"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Redefinindo banco de dados…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restaurar contas"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Restaurando banco de dados…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "essas instruções",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "Como recuperar sua Frase de Recuperação Secreta"
-  },
   "stateLogError": {
     "message": "Erro ao recuperar registros de estado. Tente novamente mais tarde."
   },
@@ -9425,9 +9389,6 @@
   },
   "unavailable": {
     "message": "Indisponível"
-  },
-  "unexpectedBehavior": {
-    "message": "Esse comportamento é inesperado e deve ser relatado como um bug, mesmo que suas contas sejam restauradas."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Permitir acesso exato a $1 $2 em $3 para realizar troca"

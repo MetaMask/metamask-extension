@@ -2126,8 +2126,20 @@
     "message": "If none of the above works, $1",
     "description": "Footer on the critical error screen. $1 is the 'contact support' link."
   },
+  "criticalErrorRecoverAccounts": {
+    "message": "Recover accounts"
+  },
   "criticalErrorReinstallMetamask": {
     "message": "Reinstall MetaMask"
+  },
+  "criticalErrorResetMetaMaskState": {
+    "message": "Reset MetaMask State"
+  },
+  "criticalErrorStateCorruptionRecoverMessage": {
+    "message": "Recovering accounts will delete your current settings and preferences."
+  },
+  "criticalErrorStateCorruptionResetMessage": {
+    "message": "Resetting MetaMask state will delete your current accounts, settings and preferences."
   },
   "criticalErrorStillHavingIssues": {
     "message": "Still having issues?"
@@ -7503,9 +7515,6 @@
   "send": {
     "message": "Send"
   },
-  "sendBugReport": {
-    "message": "Send us a bug report."
-  },
   "sendSelectReceiveAsset": {
     "message": "Select asset to receive"
   },
@@ -8845,42 +8854,6 @@
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
   },
-  "stateCorruptionCopyAndRestoreBeforeRecovery": {
-    "message": "You can try to copy and restore your state file manually before you decide to restore your vault by following $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionCopyAndRestoreBeforeReset": {
-    "message": "You can try to copy and restore your state file manually before you decide to reset MetaMask by following $1.",
-    "description": "$1 represents the `stateCorruptionTheseInstructions` localization key"
-  },
-  "stateCorruptionDetectedNoBackup": {
-    "message": "Your vault cannot be automatically recovered."
-  },
-  "stateCorruptionDetectedWithBackup": {
-    "message": "Your vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
-  },
-  "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Internal error: database cannot be accessed"
-  },
-  "stateCorruptionResetMetaMaskState": {
-    "message": "Reset MetaMask State"
-  },
-  "stateCorruptionResettingDatabase": {
-    "message": "Resetting database…"
-  },
-  "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restore accounts"
-  },
-  "stateCorruptionRestoringDatabase": {
-    "message": "Restoring database…"
-  },
-  "stateCorruptionTheseInstructions": {
-    "message": "these instructions",
-    "description": "This is a link to instructions on how to recover your Secret Recovery Phrase manually. It is used in the `stateCorruptionCopyAndRestoreBeforeRecovery` and `stateCorruptionCopyAndRestoreBeforeReset` localization keys."
-  },
-  "stateCorruptionTheseInstructionsLinkTitle": {
-    "message": "How to recover your Secret Recovery Phrase"
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs, please try again later."
   },
@@ -9734,9 +9707,6 @@
   },
   "unavailable": {
     "message": "Unavailable"
-  },
-  "unexpectedBehavior": {
-    "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
   "unifiedSwapAllowSwappingOf": {
     "message": "Allow exact access to $1 $2 on $3 for swapping"
