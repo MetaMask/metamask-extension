@@ -168,7 +168,7 @@ const TransactionDetailsWrapper = ({
       transactionStatus={() => (
         <TransactionStatusLabel
           isEarliestNonce={false}
-          error={undefined}
+          error={syntheticGroup.primaryTransaction.error}
           date={date}
           status={displayedStatusKey}
           statusOnly

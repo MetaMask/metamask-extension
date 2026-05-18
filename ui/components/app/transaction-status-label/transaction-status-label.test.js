@@ -12,7 +12,11 @@ jest.mock('../../../hooks/useI18nContext', () => ({
 // Mock the Tooltip component
 jest.mock('../../ui/tooltip', () => ({
   __esModule: true,
-  default: ({ children }) => <div data-testid="tooltip">{children}</div>,
+  default: ({ children, title, wrapperClassName }) => (
+    <div data-testid="tooltip" data-title={title} className={wrapperClassName}>
+      {children}
+    </div>
+  ),
 }));
 
 describe('TransactionStatusLabel Component', () => {
@@ -152,5 +156,41 @@ describe('TransactionStatusLabel Component', () => {
 
     render(<TransactionStatusLabel {...props} />);
     expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
+  });
+
+  it('label overrides the displayed text', () => {
+    render(
+      <TransactionStatusLabel
+        status={TransactionStatus.confirmed}
+        label="cancelled"
+      />,
+    );
+    expect(screen.getByText('cancelled')).toBeInTheDocument();
+  });
+
+  it('label applies confirmed class regardless of status', () => {
+    render(
+      <TransactionStatusLabel
+        status={TransactionStatus.failed}
+        label="cancelled"
+      />,
+    );
+    expect(screen.getByTestId('tooltip').className).toContain(
+      'transaction-status-label--confirmed',
+    );
+    expect(screen.getByTestId('tooltip').className).not.toContain(
+      'transaction-status-label--failed',
+    );
+  });
+
+  it('tooltip prop overrides the tooltip text', () => {
+    render(
+      <TransactionStatusLabel
+        status={TransactionStatus.failed}
+        error={{ message: 'original error' }}
+        tooltip="custom tooltip"
+      />,
+    );
+    expect(screen.getByTestId('tooltip').dataset.title).toBe('custom tooltip');
   });
 });
