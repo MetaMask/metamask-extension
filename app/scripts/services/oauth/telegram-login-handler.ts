@@ -193,11 +193,6 @@ export class TelegramLoginHandler extends BaseLoginHandler {
         break;
       }
     }
-    // TODO: debug only, remove after review
-    const debug = true;
-    if (!profileSynced || debug) {
-      mintData.profile_pairing_token = hydraIdToken;
-    }
 
     return mintData;
   }
