@@ -161,9 +161,13 @@ export const AccountGroupBalance: React.FC<AccountGroupBalanceProps> = ({
       data-testid="account-group-balance-skeleton"
     >
       <Box
-        className={classnames('flex', `${classPrefix}-overview__primary-balance`, {
-          [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
-        })}
+        className={classnames(
+          'flex',
+          `${classPrefix}-overview__primary-balance`,
+          {
+            [`${classPrefix}-overview__cached-balance`]: balanceIsCached,
+          },
+        )}
         data-testid={`${classPrefix}-overview__primary-currency`}
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
