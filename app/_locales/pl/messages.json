@@ -367,9 +367,6 @@
   "nevermind": {
     "message": "Nie ważne"
   },
-  "newAccount": {
-    "message": "Nowe konto"
-  },
   "newAccountNumberName": {
     "message": "Konto $1",
     "description": "Default name of next account to be created on create account screen"

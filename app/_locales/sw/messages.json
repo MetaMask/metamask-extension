@@ -352,9 +352,6 @@
   "nevermind": {
     "message": "Usijali"
   },
-  "newAccount": {
-    "message": "Akaunti Mpya"
-  },
   "newAccountNumberName": {
     "message": "Akaunti $1",
     "description": "Default name of next account to be created on create account screen"

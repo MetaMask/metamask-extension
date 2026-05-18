@@ -14,6 +14,7 @@ describe('Authentication Selectors', () => {
           profile: {
             identifierId: 'identifierId',
             profileId: 'profileId',
+            canonicalProfileId: 'profileId',
             metaMetricsId: 'metaMetricsId',
             canonicalProfileId: 'profileId',
           },
@@ -27,6 +28,7 @@ describe('Authentication Selectors', () => {
           profile: {
             identifierId: 'identifierId2',
             profileId: 'profileId2',
+            canonicalProfileId: 'profileId2',
             metaMetricsId: 'metaMetricsId2',
             canonicalProfileId: 'profileId2',
           },
