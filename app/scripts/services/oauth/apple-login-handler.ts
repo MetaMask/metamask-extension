@@ -1,6 +1,6 @@
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { BaseLoginHandler } from './base-login-handler';
 import {
-  AuthConnection,
   AuthTokenResponse,
   LoginHandlerOptions,
   OAuthUserInfo,

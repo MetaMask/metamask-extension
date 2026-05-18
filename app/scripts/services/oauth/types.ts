@@ -15,17 +15,12 @@ import type {
 } from '../../../../shared/lib/trace';
 import type { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 import ExtensionPlatform from '../../platforms/extension';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { OAuthServiceMethodActions } from './oauth-service-method-action-types';
 
 export const SERVICE_NAME = 'OAuthService';
 
 export type ServiceName = typeof SERVICE_NAME;
-
-export enum AuthConnection {
-  Google = 'google',
-  Apple = 'apple',
-  Telegram = 'telegram',
-}
 
 export type {
   OAuthServiceStartOAuthLoginAction,

@@ -12,9 +12,9 @@ import {
 import browser from 'webextension-polyfill';
 import { OAuthErrorMessages } from '../../../../shared/lib/error';
 import { ENVIRONMENT } from '../../../../development/build/constants';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import ExtensionPlatform from '../../platforms/extension';
 import {
-  AuthConnection,
   OAuthServiceMessenger,
   WebAuthenticator,
 } from './types';

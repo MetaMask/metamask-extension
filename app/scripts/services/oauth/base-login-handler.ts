@@ -2,8 +2,8 @@ import {
   createErrorFromNetworkRequest,
   OAuthErrorMessages,
 } from '../../../../shared/lib/error';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import {
-  AuthConnection,
   type LoginHandlerOptions,
   type AuthTokenResponse,
   type OAuthUserInfo,

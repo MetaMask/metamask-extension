@@ -4,9 +4,9 @@ import {
   getEnvUrls,
   getOidcClientId,
 } from '@metamask/profile-sync-controller/sdk';
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { BaseLoginHandler } from './base-login-handler';
 import {
-  AuthConnection,
   AuthTokenResponse,
   LoginHandlerOptions,
   OAuthUserInfo,

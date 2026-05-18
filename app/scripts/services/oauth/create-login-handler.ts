@@ -1,8 +1,8 @@
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { AppleLoginHandler } from './apple-login-handler';
 import { GoogleLoginHandler } from './google-login-handler';
 import { TelegramLoginHandler } from './telegram-login-handler';
 import {
-  AuthConnection,
   type LoginHandlerOptions,
   type OAuthConfig,
   type OAuthLoginEnv,

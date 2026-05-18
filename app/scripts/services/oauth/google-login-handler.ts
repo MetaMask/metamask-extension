@@ -1,5 +1,6 @@
+import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { BaseLoginHandler } from './base-login-handler';
-import { AuthConnection, AuthTokenResponse, OAuthUserInfo } from './types';
+import { AuthTokenResponse, OAuthUserInfo } from './types';
 import { decodeIdToken } from './utils';
 
 export class GoogleLoginHandler extends BaseLoginHandler {
