@@ -22,6 +22,7 @@ export type TransactionCardProps = {
   onClick?: (transaction: PerpsTransaction) => void;
   variant?: 'default' | 'muted';
   showTopBorder?: boolean;
+  screenName?: string;
 };
 
 const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
@@ -42,12 +43,14 @@ const ORDER_STATUS_TO_I18N_KEY: Record<string, string> = {
  * @param options0.onClick - Optional click handler
  * @param options0.variant - Visual variant - 'default' for normal, 'muted' for subdued
  * @param options0.showTopBorder
+ * @param options0.screenName - Forwarded to PerpsFillTag for analytics attribution
  */
 export const TransactionCard: React.FC<TransactionCardProps> = ({
   transaction,
   onClick,
   variant = 'default',
   showTopBorder = false,
+  screenName,
 }) => {
   const t = useI18nContext();
   const displayName = getDisplayName(transaction.symbol);
@@ -154,7 +157,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
           gap={2}
         >
           <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
-          <PerpsFillTag transaction={transaction} />
+          <PerpsFillTag transaction={transaction} screenName={screenName} />
         </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {getSubtitleDisplay()}

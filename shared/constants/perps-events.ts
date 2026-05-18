@@ -130,6 +130,8 @@ export const PERPS_EVENT_VALUE = {
   },
   SCREEN_NAME: {
     PERPS_ACTIVITY_HISTORY: 'perps_activity_history',
+    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
+    MARKET_DETAIL: 'market_detail',
   },
   ACTION_TYPE: {
     ADL_LEARN_MORE: 'adl_learn_more',
