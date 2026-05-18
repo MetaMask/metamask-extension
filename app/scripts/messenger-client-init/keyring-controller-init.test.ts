@@ -7,10 +7,7 @@ import {
 import { NetworkControllerGetSelectedNetworkClientAction } from '@metamask/network-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
-import {
-  OneKeyKeyring,
-  TrezorKeyring,
-} from '@metamask/eth-trezor-keyring';
+import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MessengerClientInitRequest } from './types';
@@ -98,7 +95,9 @@ describe('KeyringControllerInit', () => {
     const request = getInitRequestMock({ qrScanHandler });
     KeyringControllerInit(request);
 
-    const controllerArgs = jest.mocked(KeyringController).mock.calls.at(-1)?.[0];
+    const controllerArgs = jest
+      .mocked(KeyringController)
+      .mock.calls.at(-1)?.[0];
     const qrBuilder = controllerArgs?.keyringBuilders?.[0] as {
       type: string;
     };
@@ -106,9 +105,11 @@ describe('KeyringControllerInit', () => {
 
     // Build a QR keyring via the registered builder to exercise the
     // `requestScan` closure that lives in its options.
-    const qrKeyring = (qrBuilder as unknown as () => {
-      bridge: { requestScan: (req: unknown) => Promise<unknown> };
-    })();
+    const qrKeyring = (
+      qrBuilder as unknown as () => {
+        bridge: { requestScan: (req: unknown) => Promise<unknown> };
+      }
+    )();
     const scanResult = await qrKeyring.bridge.requestScan({ payload: 'abc' });
 
     expect(qrScanHandler).toHaveBeenCalledWith({ payload: 'abc' });
@@ -161,10 +162,10 @@ describe('KeyringControllerInit', () => {
     }
 
     it('produces a V2 wrapper for each hardware keyring type', () => {
-      const builders = invokeV2Builders() as ({
+      const builders = invokeV2Builders() as {
         (legacy: unknown, metadata: { id: string }): unknown;
         type: string;
-      })[];
+      }[];
 
       const byType = Object.fromEntries(builders.map((b) => [b.type, b]));
 
