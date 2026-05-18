@@ -246,6 +246,8 @@ export class PerpsHomePage extends PerpsPositionsBase {
    * The section renders null when there are no watched markets.
    */
   async checkWatchlistSectionGone(): Promise<void> {
-    await this.driver.assertElementNotPresent(this.perpsWatchlist);
+    await this.driver.assertElementNotPresent(this.perpsWatchlist, {
+      waitAtLeastGuard: 1000,
+    });
   }
 }

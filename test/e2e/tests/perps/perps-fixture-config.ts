@@ -4,6 +4,12 @@ import {
   getProductionRemoteFlagApiResponse,
   getProductionRemoteFlagDefaults,
 } from '../../feature-flags/feature-flag-registry';
+import {
+  MOCK_ETH_OPEN_LONG_FILL,
+  MOCK_ETH_LIMIT_ORDER,
+  MOCK_ETH_FUNDING,
+  MOCK_USDC_DEPOSIT,
+} from './mocks/websocketActivityMocks';
 
 /**
  * Production remote flag defaults used as the base for all perps manifest flag
@@ -153,71 +159,6 @@ export function getPerpsConfigEligible(title?: string) {
  * @returns Partial withFixtures config to spread into withFixtures().
  */
 export function getPerpsConfigEligibleWithActivity(title?: string) {
-  const now = Date.now();
-
-  const mockFill = {
-    coin: 'ETH',
-    px: '3000.00',
-    sz: '2.5',
-    side: 'B',
-    time: now - 3600000,
-    startPosition: '0.0',
-    dir: 'Open Long',
-    closedPnl: '0.0',
-    hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
-    oid: 88810,
-    crossed: true,
-    fee: '7.50',
-    tid: 88811,
-    feeToken: 'USDC',
-    liquidation: false,
-    builderFee: '0',
-    twapId: null,
-  };
-
-  const mockOrder = {
-    coin: 'ETH',
-    side: 'B',
-    limitPx: '3100.00',
-    sz: '1.0',
-    oid: 99901,
-    timestamp: now - 1800000,
-    origSz: '1.0',
-    orderType: 'Limit',
-    triggerCondition: 'N/A',
-    isTrigger: false,
-    triggerPx: '0',
-    children: [],
-    isPositionTpsl: false,
-    reduceOnly: false,
-    limitPxHex: null,
-    cloid: null,
-  };
-
-  const mockFunding = {
-    time: now - 7200000,
-    hash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
-    delta: {
-      type: 'funding',
-      coin: 'ETH',
-      usdc: '-2.50',
-      szi: '2.5',
-      fundingRate: '0.0001',
-      nSamples: 1,
-    },
-  };
-
-  const mockDeposit = {
-    time: now - 86400000,
-    hash: '0xdeadbeef1234567890abcdef1234567890abcdef1234567890abcdef12345678',
-    delta: {
-      type: 'deposit',
-      amount: '1000.0',
-      nonce: 1,
-      usdc: '1000.0',
-    },
-  };
-
   return {
     fixtures: new FixtureBuilderV2()
       .withPerpsController({
@@ -249,25 +190,25 @@ export function getPerpsConfigEligibleWithActivity(title?: string) {
       await server
         .forPost('https://api.hyperliquid.xyz/info')
         .withJsonBodyIncluding({ type: 'userFills' })
-        .thenCallback(() => ({ statusCode: 200, json: [mockFill] }));
+        .thenCallback(() => ({ statusCode: 200, json: [MOCK_ETH_OPEN_LONG_FILL] }));
 
       // Override openOrders — returns an ETH limit buy for the Orders filter
       await server
         .forPost('https://api.hyperliquid.xyz/info')
         .withJsonBodyIncluding({ type: 'openOrders' })
-        .thenCallback(() => ({ statusCode: 200, json: [mockOrder] }));
+        .thenCallback(() => ({ statusCode: 200, json: [MOCK_ETH_LIMIT_ORDER] }));
 
       // Override userFunding — returns an ETH funding payment for the Funding filter
       await server
         .forPost('https://api.hyperliquid.xyz/info')
         .withJsonBodyIncluding({ type: 'userFunding' })
-        .thenCallback(() => ({ statusCode: 200, json: [mockFunding] }));
+        .thenCallback(() => ({ statusCode: 200, json: [MOCK_ETH_FUNDING] }));
 
       // Override userNonFundingLedgerUpdates — returns a USDC deposit for the Deposits filter
       await server
         .forPost('https://api.hyperliquid.xyz/info')
         .withJsonBodyIncluding({ type: 'userNonFundingLedgerUpdates' })
-        .thenCallback(() => ({ statusCode: 200, json: [mockDeposit] }));
+        .thenCallback(() => ({ statusCode: 200, json: [MOCK_USDC_DEPOSIT] }));
     },
   };
 }

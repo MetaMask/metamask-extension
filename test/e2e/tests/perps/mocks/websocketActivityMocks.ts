@@ -39,7 +39,7 @@ const NOW = Date.now();
  * A single ETH "Open Long" fill at $3,000.
  * Produces a 'trade' transaction on the activity page.
  */
-const MOCK_ETH_OPEN_LONG_FILL = {
+export const MOCK_ETH_OPEN_LONG_FILL = {
   coin: 'ETH',
   px: '3000.00',
   sz: '2.5',
@@ -63,7 +63,7 @@ const MOCK_ETH_OPEN_LONG_FILL = {
  * A single open ETH limit-buy order at $3,100.
  * Produces an 'order' transaction on the activity page.
  */
-const MOCK_ETH_LIMIT_ORDER = {
+export const MOCK_ETH_LIMIT_ORDER = {
   coin: 'ETH',
   side: 'B',
   limitPx: '3100.00',
@@ -89,7 +89,7 @@ const MOCK_ETH_LIMIT_ORDER = {
  * Format matches the HyperLiquid `userFunding` API response:
  * the funding data is nested inside a `delta` object.
  */
-const MOCK_ETH_FUNDING = {
+export const MOCK_ETH_FUNDING = {
   time: NOW - 7200000, // 2 hours ago
   hash: MOCK_ORDER_HASH,
   delta: {
@@ -106,7 +106,7 @@ const MOCK_ETH_FUNDING = {
  * A single USDC deposit ledger update.
  * Produces a 'deposit' transaction on the activity page.
  */
-const MOCK_USDC_DEPOSIT = {
+export const MOCK_USDC_DEPOSIT = {
   time: NOW - 86400000, // 1 day ago
   hash: MOCK_DEPOSIT_HASH,
   delta: {
