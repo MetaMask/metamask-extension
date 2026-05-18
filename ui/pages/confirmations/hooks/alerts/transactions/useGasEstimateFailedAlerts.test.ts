@@ -17,11 +17,10 @@ import {
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
+import { useIsGasSponsored } from '../../gas/useIsGasSponsored';
 import { useGasEstimateFailedAlerts } from './useGasEstimateFailedAlerts';
-import { useIsCurrentTransactionGasSponsored } from './useIsCurrentTransactionGasSponsored';
 
-jest.mock('../../../../../hooks/useIsNetworkGasSponsored');
-jest.mock('./useIsCurrentTransactionGasSponsored');
+jest.mock('../../gas/useIsGasSponsored');
 
 const CONFIRMATION_MOCK = genUnapprovedContractInteractionConfirmation({
   chainId: '0x5',
@@ -50,16 +49,12 @@ function runHook(state: Record<string, unknown>) {
 }
 
 describe('useGasEstimateFailedAlerts', () => {
-  const useIsCurrentTransactionGasSponsoredMock = jest.mocked(
-    useIsCurrentTransactionGasSponsored,
-  );
+  const useIsGasSponsoredMock = jest.mocked(useIsGasSponsored);
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    useIsCurrentTransactionGasSponsoredMock.mockReturnValue({
-      isCurrentTransactionGasSponsored: false,
-    });
+    useIsGasSponsoredMock.mockReturnValue(false);
   });
 
   it('returns no alerts if no confirmation', () => {
@@ -125,9 +120,7 @@ describe('useGasEstimateFailedAlerts', () => {
   });
 
   it('returns no alerts if simulation fails but network is sponsored', () => {
-    useIsCurrentTransactionGasSponsoredMock.mockReturnValue({
-      isCurrentTransactionGasSponsored: true,
-    });
+    useIsGasSponsoredMock.mockReturnValue(true);
     expect(
       runHook(
         getMockConfirmStateForTransaction({

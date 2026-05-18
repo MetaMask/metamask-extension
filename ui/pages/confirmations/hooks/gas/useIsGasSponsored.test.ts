@@ -3,15 +3,14 @@ import {
   TransactionType,
   TransactionMeta,
 } from '@metamask/transaction-controller';
-import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
-import { useIsNetworkGasSponsored } from '../../../../../hooks/useIsNetworkGasSponsored';
-import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
-import { getMockConfirmStateForTransaction } from '../../../../../../test/data/confirmations/helper';
-import { useIsCurrentTransactionGasSponsored } from './useIsCurrentTransactionGasSponsored';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
+import { useIsNetworkGasSponsored } from '../../../../hooks/useIsNetworkGasSponsored';
+import { getMockConfirmStateForTransaction } from '../../../../../test/data/confirmations/helper';
+import { useIsGaslessSupported } from './useIsGaslessSupported';
+import { useIsGasSponsored } from './useIsGasSponsored';
 
-jest.mock('../../transactions/useTransactionMetadataRequest');
-jest.mock('../../gas/useIsGaslessSupported');
-jest.mock('../../../../../hooks/useIsNetworkGasSponsored');
+jest.mock('./useIsGaslessSupported');
+jest.mock('../../../../hooks/useIsNetworkGasSponsored');
 
 const MOCK_TRANSACTION_META = {
   id: '1',
@@ -26,14 +25,14 @@ const useIsGaslessSupportedMock = jest.mocked(useIsGaslessSupported);
 
 function runHook(state: Record<string, unknown>) {
   const response = renderHookWithConfirmContextProvider(
-    useIsCurrentTransactionGasSponsored,
+    useIsGasSponsored,
     state,
   );
 
   return response.result.current;
 }
 
-describe('useIsCurrentTransactionGasSponsored', () => {
+describe('useIsGasSponsored', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseIsNetworkGasSponsored.mockReturnValue({
@@ -61,9 +60,7 @@ describe('useIsCurrentTransactionGasSponsored', () => {
           ...MOCK_TRANSACTION_META,
         }),
       ),
-    ).toEqual({
-      isCurrentTransactionGasSponsored: true,
-    });
+    ).toBe(true);
   });
 
   it('returns false when network is gas sponsored and gasless disabled', () => {
@@ -81,9 +78,7 @@ describe('useIsCurrentTransactionGasSponsored', () => {
           ...MOCK_TRANSACTION_META,
         }),
       ),
-    ).toEqual({
-      isCurrentTransactionGasSponsored: false,
-    });
+    ).toBe(false);
   });
 
   it('returns false when network is NOT gas sponsored and gasless enabled', () => {
@@ -101,9 +96,7 @@ describe('useIsCurrentTransactionGasSponsored', () => {
           ...MOCK_TRANSACTION_META,
         }),
       ),
-    ).toEqual({
-      isCurrentTransactionGasSponsored: false,
-    });
+    ).toBe(false);
   });
 
   it('returns false when transaction metadata is empty', () => {
@@ -111,8 +104,6 @@ describe('useIsCurrentTransactionGasSponsored', () => {
       runHook(
         getMockConfirmStateForTransaction({} as unknown as TransactionMeta),
       ),
-    ).toEqual({
-      isCurrentTransactionGasSponsored: false,
-    });
+    ).toBe(false);
   });
 });
