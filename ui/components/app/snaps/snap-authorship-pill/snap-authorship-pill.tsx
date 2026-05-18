@@ -28,7 +28,7 @@ const SnapAuthorshipPill: React.FC<SnapAuthorshipPillProps> = ({
 
   return (
     <Box
-      className="snap-authorship-pill rounded-full"
+      className="flex snap-authorship-pill rounded-full"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       paddingTop={1}

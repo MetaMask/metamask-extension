@@ -66,7 +66,7 @@ export const SnapUIAddress: React.FunctionComponent<SnapUIAddressProps> = ({
 
   return (
     <Box
-      className="snap-ui-renderer__address"
+      className="flex snap-ui-renderer__address"
       data-testid="snap-ui-address"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}

@@ -85,7 +85,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
         paddingTop={4}
         paddingBottom={4}
         borderColor={BoxBorderColor.BorderDefault}
-        className="w-full"
+        className="flex w-full"
         style={{
           borderLeft: BorderStyle.none,
           borderRight: BorderStyle.none,
@@ -107,7 +107,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             marginBottom={4}
-            className="w-full"
+            className="flex w-full"
           >
             <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
               {t('snapDetailWebsite')}
@@ -116,6 +116,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
               paddingLeft={8}
               flexDirection={BoxFlexDirection.Column}
               alignItems={BoxAlignItems.End}
+              className="flex"
             >
               <ButtonLink
                 href={safeWebsite.toString()}
@@ -131,7 +132,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           <Box
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
-            className="w-full"
+            className="flex w-full"
           >
             <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
               {t('installOrigin')}
@@ -139,6 +140,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
             <Box
               flexDirection={BoxFlexDirection.Column}
               alignItems={BoxAlignItems.End}
+              className="flex"
             >
               <Text textAlign={TextAlign.End}>{installOrigin.host}</Text>
               <Text color={Color.textMuted}>
@@ -154,6 +156,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           justifyContent={BoxJustifyContent.Between}
           alignItems={BoxAlignItems.Center}
           marginTop={4}
+          className="flex"
         >
           <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
             {t('version')}

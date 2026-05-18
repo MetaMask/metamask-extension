@@ -24,7 +24,7 @@ const SnapListItem = ({
 }) => {
   return (
     <Box
-      className="snap-list-item w-full"
+      className="flex snap-list-item w-full"
       data-testid={snapId}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
@@ -33,7 +33,7 @@ const SnapListItem = ({
       onClick={onClick}
     >
       <Box
-        className="snap-list-item__inner-wrapper w-full"
+        className="flex snap-list-item__inner-wrapper w-full"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Start}

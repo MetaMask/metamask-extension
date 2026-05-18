@@ -139,7 +139,7 @@ const SnapUIRendererComponent = ({
         flexDirection={BoxFlexDirection.Row}
         justifyContent={BoxJustifyContent.Center}
         alignItems={BoxAlignItems.Center}
-        className="h-full w-full"
+        className="flex h-full w-full"
       >
         <PulseLoader />
       </Box>

@@ -70,7 +70,7 @@ export default function SnapPermissionsList({
   };
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} className="w-full">
+    <Box flexDirection={BoxFlexDirection.Column} className="flex w-full">
       <Box className="snap-permissions-list w-full">
         <SnapPermissionAdapter
           permissions={showAll ? weightedPermissions : filteredPermissions}
@@ -86,6 +86,7 @@ export default function SnapPermissionsList({
           justifyContent={BoxJustifyContent.Center}
           paddingTop={2}
           paddingBottom={2}
+          className="flex"
         >
           <ButtonLink onClick={onShowAllPermissionsHandler}>
             {t('seeAllPermissions')}

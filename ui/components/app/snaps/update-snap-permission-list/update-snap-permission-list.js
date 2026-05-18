@@ -144,6 +144,7 @@ export default function UpdateSnapPermissionList({
           justifyContent={BoxJustifyContent.Center}
           paddingTop={2}
           paddingBottom={2}
+          className="flex"
         >
           <ButtonLink onClick={() => onShowAllPermissions()}>
             {t('seeAllPermissions')}

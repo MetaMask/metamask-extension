@@ -29,7 +29,7 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
 }) => {
   return (
     <Box
-      className="snap-ui-renderer__card"
+      className="flex snap-ui-renderer__card"
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}
       alignItems={BoxAlignItems.Center}
@@ -39,6 +39,7 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
         flexDirection={BoxFlexDirection.Row}
         gap={4}
         alignItems={BoxAlignItems.Center}
+        className="flex"
         style={{ overflow: 'hidden' }}
       >
         {image && (
@@ -51,6 +52,7 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
         )}
         <Box
           flexDirection={BoxFlexDirection.Column}
+          className="flex"
           style={{ overflow: 'hidden' }}
         >
           <Text variant={TextVariant.bodyMdMedium} ellipsis>
@@ -65,7 +67,7 @@ export const SnapUICard: FunctionComponent<SnapUICardProps> = ({
       </Box>
       <Box
         flexDirection={BoxFlexDirection.Column}
-        className="text-right"
+        className="flex text-right"
         style={{ overflow: 'hidden' }}
       >
         <Text variant={TextVariant.bodyMdMedium} ellipsis>

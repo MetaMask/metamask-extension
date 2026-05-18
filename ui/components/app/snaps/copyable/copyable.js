@@ -56,7 +56,7 @@ export const Copyable = ({
       onClick={
         sensitive && !isVisible ? handleVisibilityClick : handleCopyClick
       }
-      className={classnames('copyable rounded-lg', {
+      className={classnames('flex copyable rounded-lg', {
         sensitive,
         clicked: isClicked,
         visible: isVisible,

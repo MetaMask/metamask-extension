@@ -66,14 +66,15 @@ AdvancedStory.args = {
       key="account1"
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}
+      className="flex"
     >
-      <Box flexDirection={BoxFlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column} className="flex">
         <Text>Account 1</Text>
         <Text>
           {shortenAddress('0xc0ffee254729296a45a3885639AC7E10F9d54979')}
         </Text>
       </Box>
-      <Box flexDirection={BoxFlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column} className="flex">
         <Text>3000 USD</Text>
         <Text>1 ETH</Text>
       </Box>
@@ -82,14 +83,15 @@ AdvancedStory.args = {
       key="account2"
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}
+      className="flex"
     >
-      <Box flexDirection={BoxFlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column} className="flex">
         <Text>Account 2</Text>
         <Text>
           {shortenAddress('0xc0ffee254729296a45a3885639AC7E10F9d54979')}
         </Text>
       </Box>
-      <Box flexDirection={BoxFlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column} className="flex">
         <Text>0 USD</Text>
         <Text>0 ETH</Text>
       </Box>

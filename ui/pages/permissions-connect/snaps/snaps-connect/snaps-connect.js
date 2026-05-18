@@ -88,7 +88,7 @@ export default function SnapsConnect({
           flexDirection={BoxFlexDirection.Column}
           alignItems={BoxAlignItems.Center}
           justifyContent={BoxJustifyContent.Center}
-          className="h-full w-full"
+          className="flex h-full w-full"
         >
           <PulseLoader />
         </Box>
@@ -102,7 +102,7 @@ export default function SnapsConnect({
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Center}
           paddingTop={4}
-          className="w-full"
+          className="flex w-full"
           style={{ overflowY: 'hidden' }}
           backgroundColor={BoxBackgroundColor.BackgroundAlternative}
         >
@@ -136,7 +136,7 @@ export default function SnapsConnect({
           <Box
             flexDirection={BoxFlexDirection.Column}
             marginTop={4}
-            className="w-full"
+            className="flex w-full"
             style={{ overflowY: 'auto', flex: 1 }}
           >
             {snaps.map((snap) => (
@@ -158,7 +158,7 @@ export default function SnapsConnect({
           alignItems={BoxAlignItems.Center}
           paddingLeft={4}
           paddingRight={4}
-          className="h-full w-full"
+          className="flex h-full w-full"
           backgroundColor={BoxBackgroundColor.BackgroundAlternative}
         >
           <Box paddingBottom={2}>
@@ -204,7 +204,7 @@ export default function SnapsConnect({
 
   return (
     <Box
-      className="snaps-connect h-full w-full"
+      className="flex snaps-connect h-full w-full"
       flexDirection={BoxFlexDirection.Column}
       alignItems={BoxAlignItems.Center}
       backgroundColor={BoxBackgroundColor.BackgroundAlternative}
@@ -222,7 +222,7 @@ export default function SnapsConnect({
         flexDirection={BoxFlexDirection.Row}
         paddingLeft={4}
         paddingRight={4}
-        className="h-full w-full"
+        className="flex h-full w-full"
       >
         <SnapsConnectContent />
       </Box>
