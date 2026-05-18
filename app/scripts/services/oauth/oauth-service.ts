@@ -13,7 +13,10 @@ import {
   MetaMetricsEventPayload,
   MetaMetricsEventOptions,
 } from '../../../../shared/constants/metametrics';
-import { AuthConnection, FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../../../shared/constants/onboarding';
 import ExtensionPlatform from '../../platforms/extension';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';

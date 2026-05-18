@@ -6,11 +6,7 @@ import {
 } from '@metamask/profile-sync-controller/sdk';
 import { AuthConnection } from '../../../../shared/constants/onboarding';
 import { BaseLoginHandler } from './base-login-handler';
-import {
-  AuthTokenResponse,
-  LoginHandlerOptions,
-  OAuthUserInfo,
-} from './types';
+import { AuthTokenResponse, LoginHandlerOptions, OAuthUserInfo } from './types';
 import { decodeIdToken } from './utils';
 
 export type TelegramLoginHandlerOptions = LoginHandlerOptions & {
