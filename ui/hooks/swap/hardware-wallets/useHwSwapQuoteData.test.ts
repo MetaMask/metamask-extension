@@ -7,7 +7,7 @@ jest.mock('../../../ducks/bridge/selectors', () => ({
   getToToken: jest.fn(),
 }));
 
-jest.mock('../../../selectors/selectors', () => ({
+jest.mock('../../../../shared/lib/selectors/keyring', () => ({
   getHardwareWalletType: jest.fn(),
   isHardwareWallet: jest.fn(),
 }));
@@ -32,7 +32,7 @@ const mockGetToToken = jest.requireMock(
 ).getToToken;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetHardwareWalletType = jest.requireMock(
-  '../../../selectors/selectors',
+  '../../../../shared/lib/selectors/keyring',
 ).getHardwareWalletType;
 
 const mockFromToken = {

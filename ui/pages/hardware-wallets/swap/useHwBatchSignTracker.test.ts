@@ -1339,7 +1339,7 @@ describe('useHwBatchSignTracker', () => {
   });
 
   describe('cancelCurrentBatch', () => {
-    it('calls cancelTransactionBatch and abortTransactionSigning for tracked batch transactions', async () => {
+    it('calls abortTransactionSigning for tracked batch transactions', async () => {
       const callbacks = setupAndReturnCallbacks();
 
       const { result } = renderHook(() =>
@@ -1380,14 +1380,15 @@ describe('useHwBatchSignTracker', () => {
 
       mockSubmitRequestToBackground.mockClear();
 
-      await act(async () => {
+      const cancelPromise = act(async () => {
         await result.current.cancelCurrentBatch();
       });
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'cancelTransactionBatch',
-        ['batch-1'],
-      );
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+
+      await cancelPromise;
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'abortTransactionSigning',
@@ -1400,7 +1401,7 @@ describe('useHwBatchSignTracker', () => {
       );
     });
 
-    it('continues cleanup even when cancelTransactionBatch throws for completed batch', async () => {
+    it('continues cleanup even when abortTransactionSigning throws', async () => {
       const callbacks = setupAndReturnCallbacks();
 
       const { result } = renderHook(() =>
@@ -1428,17 +1429,18 @@ describe('useHwBatchSignTracker', () => {
 
       mockSubmitRequestToBackground.mockClear();
       mockSubmitRequestToBackground.mockRejectedValueOnce(
-        new Error('Cannot cancel batch as it is not currently being processed'),
+        new Error('abort failed'),
       );
 
-      await act(async () => {
+      const cancelPromise = act(async () => {
         await result.current.cancelCurrentBatch();
       });
 
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'cancelTransactionBatch',
-        ['batch-1'],
-      );
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+
+      await cancelPromise;
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'abortTransactionSigning',
@@ -1464,7 +1466,7 @@ describe('useHwBatchSignTracker', () => {
       expect(mockSubmitRequestToBackground).not.toHaveBeenCalled();
     });
 
-    it('aborts all tracked tx ids and cancels the current batch after retry', async () => {
+    it('aborts all tracked tx ids after retry', async () => {
       const callbacks = setupAndReturnCallbacks();
       const retryGenerationRef: React.MutableRefObject<number> = { current: 0 };
 
@@ -1514,9 +1516,15 @@ describe('useHwBatchSignTracker', () => {
 
       mockSubmitRequestToBackground.mockClear();
 
-      await act(async () => {
+      const cancelPromise = act(async () => {
         await result.current.cancelCurrentBatch();
       });
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+
+      await cancelPromise;
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'abortTransactionSigning',
@@ -1525,14 +1533,6 @@ describe('useHwBatchSignTracker', () => {
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'abortTransactionSigning',
         ['tx-2a'],
-      );
-      expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
-        'cancelTransactionBatch',
-        ['batch-2'],
-      );
-      expect(mockSubmitRequestToBackground).not.toHaveBeenCalledWith(
-        'cancelTransactionBatch',
-        ['batch-1'],
       );
     });
 
@@ -1564,9 +1564,15 @@ describe('useHwBatchSignTracker', () => {
 
       mockSubmitRequestToBackground.mockClear();
 
-      await act(async () => {
+      const cancelPromise = act(async () => {
         await result.current.cancelCurrentBatch();
       });
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+
+      await cancelPromise;
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'abortTransactionSigning',
@@ -1603,9 +1609,15 @@ describe('useHwBatchSignTracker', () => {
 
       mockSubmitRequestToBackground.mockClear();
 
-      await act(async () => {
+      const cancelPromise = act(async () => {
         await result.current.cancelCurrentBatch();
       });
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(6_000);
+      });
+
+      await cancelPromise;
 
       expect(mockSubmitRequestToBackground).toHaveBeenCalledWith(
         'abortTransactionSigning',

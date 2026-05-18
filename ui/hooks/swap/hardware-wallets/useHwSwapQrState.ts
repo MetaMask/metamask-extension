@@ -4,7 +4,7 @@ import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import { getHardwareWalletType } from '../../../selectors/selectors';
+import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
 import { getActiveQrCodeScanRequest } from '../../../selectors';
 import {
   cancelQrCodeScan,
@@ -13,9 +13,9 @@ import {
   rejectPendingApproval,
 } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
-import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
-import { isQrHardwareSignRequest } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures.utils';
+import { HardwareWalletSignatureStatus } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { isQrHardwareSignRequest } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletQrStateOptions = {
   signatureState: HardwareWalletSignaturesState;

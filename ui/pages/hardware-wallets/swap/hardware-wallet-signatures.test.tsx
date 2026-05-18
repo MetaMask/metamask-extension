@@ -3,7 +3,6 @@ import { act, fireEvent } from '@testing-library/react';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { TransactionType } from '@metamask/transaction-controller';
-import { Box } from '@metamask/design-system-react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
@@ -21,18 +20,18 @@ import {
 } from '../../../contexts/hardware-wallets';
 import { createHardwareWalletError } from '../../../contexts/hardware-wallets/errors';
 import * as backgroundConnection from '../../../store/background-connection';
-import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
+import useSubmitBridgeTransaction from '../../bridge/hooks/useSubmitBridgeTransaction';
 import { HardwareWalletSignatureEvent } from './hardware-wallet-signatures-state-machine';
 import HardwareWalletSignatures from '.';
 
-jest.mock('../hooks/useSubmitBridgeTransaction');
-jest.mock('../../../app/toast-listener/shared', () => ({
+jest.mock('../../bridge/hooks/useSubmitBridgeTransaction');
+jest.mock('../../../components/app/toast-listener/shared', () => ({
   showSuccessToast: jest.fn(),
 }));
 jest.mock('./generic-hardware-wallet-animation', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
-  default: () => <Box data-testid="generic-hardware-wallet-animation" />,
+  default: () => <div data-testid="generic-hardware-wallet-animation" />,
 }));
 
 const mockUseHardwareWalletState = jest.fn();
@@ -43,6 +42,7 @@ jest.mock('../../../contexts/hardware-wallets', () => ({
   useHardwareWalletState: () => mockUseHardwareWalletState(),
   useHardwareWalletActions: () => ({
     ensureDeviceReady: mockEnsureDeviceReady,
+    setSigningInProgress: jest.fn(),
   }),
 }));
 
@@ -805,7 +805,7 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(getByRole('button', { name: 'Try again' }));
-        await jest.advanceTimersByTimeAsync(1_000);
+        await jest.advanceTimersByTimeAsync(6_000);
       });
 
       expect(getByText('Confirm with your hardware wallet')).toBeDefined();
@@ -857,7 +857,7 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(getByRole('button', { name: 'Try again' }));
-        await jest.advanceTimersByTimeAsync(1_000);
+        await jest.advanceTimersByTimeAsync(6_000);
       });
 
       expect(mockSubmit).toHaveBeenCalledTimes(2);
@@ -1200,7 +1200,7 @@ describe('HardwareWalletSignatures', () => {
 
       await act(async () => {
         fireEvent.click(getByRole('button', { name: 'Try again' }));
-        await jest.advanceTimersByTimeAsync(1_000);
+        await jest.advanceTimersByTimeAsync(6_000);
       });
 
       expect(mockSubmit).toHaveBeenCalledTimes(submitCountBeforeRetry + 1);

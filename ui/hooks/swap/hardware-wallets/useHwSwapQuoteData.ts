@@ -7,7 +7,7 @@ import {
   getFromToken,
   getToToken,
 } from '../../../ducks/bridge/selectors';
-import { getHardwareWalletType } from '../../../selectors/selectors';
+import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
 
 /**
  * Provides quote and token data for hardware wallet swap/bridge flows.

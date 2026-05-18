@@ -38,7 +38,7 @@ import {
   useHardwareWalletActions,
   useHardwareWalletState,
 } from '../../../contexts/hardware-wallets';
-import useSubmitBridgeTransaction from '../hooks/useSubmitBridgeTransaction';
+import useSubmitBridgeTransaction from '../../bridge/hooks/useSubmitBridgeTransaction';
 import SignatureStatusIcon from './signature-status-icon';
 import QrSignatureCode from './qr-signature-code';
 import GenericHardwareWalletAnimation from './generic-hardware-wallet-animation';
@@ -59,7 +59,7 @@ import {
 } from './hardware-wallet-signatures-state-machine';
 import { useHwBatchSignTracker } from './useHwBatchSignTracker';
 import { useHwSequentialSignTracker } from './useHwSequentialSignTracker';
-import { isHardwareWallet } from 'shared/lib/selectors/keyring';
+import { isHardwareWallet } from '../../../../shared/lib/selectors/keyring';
 
 const SIGNATURE_STUCK_TIMEOUT_MS = 5_000;
 

@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
-import type { BridgeStatusState } from '../../../pages/bridge/hardware-wallets/types';
+} from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { BridgeStatusState } from '../../../pages/hardware-wallets/swap/types';
 
 type UseHardwareWalletConfirmationMonitoringOptions = {
   hardwareWalletUsed: boolean;
