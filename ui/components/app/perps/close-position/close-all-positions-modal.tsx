@@ -95,6 +95,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
   );
 
   const [estimatedFees, setEstimatedFees] = useState(0);
+  const [isLoadingFees, setIsLoadingFees] = useState(false);
   const feeRequestId = useRef(0);
 
   useEffect(() => {
@@ -110,9 +111,11 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     const currentId = feeRequestId.current;
 
     if (entries.length === 0) {
-      setEstimatedFees(0);
+      setIsLoadingFees(false);
       return;
     }
+
+    setIsLoadingFees(true);
 
     Promise.all(
       entries.map(([symbol, notional]) =>
@@ -128,6 +131,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     ).then((perSymbolFees) => {
       if (currentId === feeRequestId.current) {
         setEstimatedFees(perSymbolFees.reduce((sum, fee) => sum + fee, 0));
+        setIsLoadingFees(false);
       }
     });
   }, [isOpen, symbolNotionalKey]);
@@ -243,7 +247,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-fees-value"
                 >
-                  -{formatFiat(roundedFees)}
+                  {isLoadingFees ? '--' : `-${formatFiat(roundedFees)}`}
                 </Text>
               </Box>
 
@@ -265,7 +269,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                   variant={TextVariant.BodySm}
                   data-testid="perps-close-all-receive-value"
                 >
-                  {formatFiat(Math.max(youWillReceive, 0))}
+                  {isLoadingFees ? '--' : formatFiat(Math.max(youWillReceive, 0))}
                 </Text>
               </Box>
             </Box>
