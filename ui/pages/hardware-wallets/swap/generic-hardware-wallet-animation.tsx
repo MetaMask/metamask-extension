@@ -18,35 +18,35 @@ import { HardwareWalletSignatureStatus } from './hardware-wallet-signatures-stat
 const GENERIC_HARDWARE_WALLET_RIVE_URL =
   './images/riv_animations/generic_hardware_wallet.riv';
 const GENERIC_HARDWARE_WALLET_STATE_MACHINE = 'wallet_states';
-const GENERIC_HARDWARE_WALLET_STATE_INPUTS = {
-  RESET: 'reset',
-  WALLET_LOCKED: 'wallet_locked',
-  ERROR: 'error',
-  FOUND: 'found',
+const GenericHardwareWalletStateInputs = {
+  Reset: 'reset',
+  WalletLocked: 'wallet_locked',
+  Error: 'error',
+  Found: 'found',
 } as const;
 
 type GenericHardwareWalletAnimationInput =
-  (typeof GENERIC_HARDWARE_WALLET_STATE_INPUTS)[keyof typeof GENERIC_HARDWARE_WALLET_STATE_INPUTS];
+  (typeof GenericHardwareWalletStateInputs)[keyof typeof GenericHardwareWalletStateInputs];
 
-const GENERIC_HARDWARE_WALLET_INPUT_BY_STATUS: Record<
+const GenericHardwareWalletInputByStatus: Record<
   HardwareWalletSignatureStatus,
   GenericHardwareWalletAnimationInput
 > = {
   [HardwareWalletSignatureStatus.AwaitingFirstSignature]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.RESET,
+    GenericHardwareWalletStateInputs.Reset,
   [HardwareWalletSignatureStatus.AwaitingFinalSignature]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.RESET,
+    GenericHardwareWalletStateInputs.Reset,
   [HardwareWalletSignatureStatus.Submitted]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.FOUND,
+    GenericHardwareWalletStateInputs.Found,
   [HardwareWalletSignatureStatus.Rejected]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.WALLET_LOCKED,
+    GenericHardwareWalletStateInputs.WalletLocked,
   [HardwareWalletSignatureStatus.Failed]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.ERROR,
+    GenericHardwareWalletStateInputs.Error,
   [HardwareWalletSignatureStatus.Disconnected]:
-    GENERIC_HARDWARE_WALLET_STATE_INPUTS.WALLET_LOCKED,
+    GenericHardwareWalletStateInputs.WalletLocked,
 };
 
-const GENERIC_HARDWARE_WALLET_LAYOUT = new Layout({
+const GenericHardwareWalletLayout = new Layout({
   fit: Fit.Contain,
   alignment: Alignment.Center,
 });
@@ -83,7 +83,7 @@ const GenericHardwareWalletAnimation = ({
     riveFile: riveFile ?? undefined,
     stateMachines: riveFile ? GENERIC_HARDWARE_WALLET_STATE_MACHINE : undefined,
     autoplay: false,
-    layout: GENERIC_HARDWARE_WALLET_LAYOUT,
+    layout: GenericHardwareWalletLayout,
   });
 
   const cacheInputs = useCallback(() => {
@@ -99,7 +99,7 @@ const GenericHardwareWalletAnimation = ({
     }
 
     inputsRef.current = Object.values(
-      GENERIC_HARDWARE_WALLET_STATE_INPUTS,
+      GenericHardwareWalletStateInputs,
     ).reduce<Record<string, StateMachineInput | undefined>>(
       (cachedInputs, inputName) => ({
         ...cachedInputs,
@@ -120,7 +120,7 @@ const GenericHardwareWalletAnimation = ({
       !isInitializedRef.current;
 
     if (shouldInitialize && cacheInputs()) {
-      const inputName = GENERIC_HARDWARE_WALLET_INPUT_BY_STATUS[status];
+      const inputName = GenericHardwareWalletInputByStatus[status];
       inputsRef.current[inputName]?.fire();
       lastInputNameRef.current = inputName;
       rive.play();
@@ -133,7 +133,7 @@ const GenericHardwareWalletAnimation = ({
       return;
     }
 
-    const inputName = GENERIC_HARDWARE_WALLET_INPUT_BY_STATUS[status];
+    const inputName = GenericHardwareWalletInputByStatus[status];
     if (lastInputNameRef.current === inputName) {
       return;
     }
