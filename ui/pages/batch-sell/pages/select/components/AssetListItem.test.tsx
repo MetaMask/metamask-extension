@@ -124,10 +124,10 @@ describe('AssetListItem', () => {
   });
 
   describe('token fiat price', () => {
-    it('renders bullet separator when tokenFiatPrice is provided', () => {
+    it('renders bullet separator when percentageChange is provided alongside tokenFiatPrice', () => {
       render(
         <AssetListItem
-          asset={makeAsset({ tokenFiatPrice: 2000 })}
+          asset={makeAsset({ tokenFiatPrice: 2000, percentageChange: 1.5 })}
           selected={false}
           onSelect={jest.fn()}
           onDeselect={jest.fn()}
@@ -137,10 +137,10 @@ describe('AssetListItem', () => {
       expect(screen.getByText(/•/u)).toBeInTheDocument();
     });
 
-    it('does not render bullet separator when tokenFiatPrice is not provided', () => {
+    it('does not render bullet separator when percentageChange is not provided', () => {
       render(
         <AssetListItem
-          asset={makeAsset({ tokenFiatPrice: undefined })}
+          asset={makeAsset({ tokenFiatPrice: 2000, percentageChange: undefined })}
           selected={false}
           onSelect={jest.fn()}
           onDeselect={jest.fn()}

@@ -9,8 +9,8 @@ import {
 import {
   getAllMultichainNetworkConfigurations,
   getMarketData,
-  getSelectedInternalAccount,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getBridgeFeatureFlags } from '../bridge/selectors';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
@@ -29,6 +29,9 @@ jest.mock('../../selectors/assets', () => ({
 jest.mock('../../selectors', () => ({
   getAllMultichainNetworkConfigurations: jest.fn(),
   getMarketData: jest.fn(),
+}));
+
+jest.mock('../../../shared/lib/selectors/accounts', () => ({
   getSelectedInternalAccount: jest.fn(),
 }));
 

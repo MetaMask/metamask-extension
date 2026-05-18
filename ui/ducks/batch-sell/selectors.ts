@@ -28,8 +28,8 @@ import {
 import {
   getAllMultichainNetworkConfigurations,
   getMarketData,
-  getSelectedInternalAccount,
 } from '../../selectors';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import {
   getAssetImageUrl,
   isEvmChainId,
