@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
+  type Chunk,
   type Configuration,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
@@ -249,6 +250,10 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+const isChunkableInitial = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
+const isChunkableAsync = (chunk: Chunk) =>
+  manifestPlugin.canBeChunked(chunk) && !chunk.canBeInitial();
 
 const threadLoader = getThreadLoader(args);
 const reactCompiler = getReactCompilerLoader({
@@ -538,13 +543,25 @@ const config = {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
           test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
-          chunks: manifestPlugin.canBeChunked,
+          chunks: isChunkableInitial,
         },
         vendor: {
           // js/mjs files in node_modules or subdirectories of node_modules
           test: /[\\/]node_modules[\\/].*?\.m?js$/u,
           name: 'vendor',
-          chunks: manifestPlugin.canBeChunked,
+          chunks: isChunkableInitial,
+        },
+        asyncJs: {
+          // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
+          test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          chunks: isChunkableAsync,
+          minChunks: 2,
+        },
+        asyncVendor: {
+          // js/mjs files in node_modules or subdirectories of node_modules
+          test: /[\\/]node_modules[\\/].*?\.m?js$/u,
+          chunks: isChunkableAsync,
+          minChunks: 2,
         },
       },
     },
