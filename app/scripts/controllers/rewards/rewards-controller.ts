@@ -647,22 +647,8 @@ export class RewardsController extends BaseController<
   }
 
   async #getVipFeesForAccount(
-    account: CaipAccountId,
-    subscriptionIdOverride?: string,
+    subscriptionId: string,
   ): Promise<VipFeesResponseDto | 0 | null> {
-    const subscriptionId =
-      subscriptionIdOverride || this.#getAccountState(account)?.subscriptionId;
-    if (!subscriptionId) {
-      return 0;
-    }
-
-    const subscription = this.state.rewardsSubscriptions[subscriptionId];
-    if (!subscription) {
-      // Subscription record missing from state — treat as unhydrated so the
-      // caller can retry once the subscription is loaded.
-      return null;
-    }
-
     // Deduplicate concurrent fetches: if there's already an in-flight
     // request for this subscriptionId, await it instead of firing another.
     let inFlight = this.#vipFeesFetchInFlight.get(subscriptionId);
@@ -699,7 +685,17 @@ export class RewardsController extends BaseController<
       return null;
     }
 
-    const vipFeeResponse = await this.#getVipFeesForAccount(account);
+    const subscriptionId = this.getActualSubscriptionId(account);
+    if (!subscriptionId) {
+      return null;
+    }
+    if (!this.state.rewardsSubscriptions[subscriptionId]) {
+      // Subscription record missing from state — treat as unhydrated so the
+      // caller can retry once the subscription is loaded.
+      return null;
+    }
+
+    const vipFeeResponse = await this.#getVipFeesForAccount(subscriptionId);
     if (!vipFeeResponse) {
       return null;
     }
@@ -720,9 +716,15 @@ export class RewardsController extends BaseController<
       return null;
     }
 
-    const accountState = this.#getAccountState(account);
-    const subscriptionId = accountState?.subscriptionId;
+    const subscriptionId = this.getActualSubscriptionId(account);
     if (!subscriptionId) {
+      return null;
+    }
+
+    const subscription = this.state.rewardsSubscriptions[subscriptionId];
+    if (!subscription) {
+      // Subscription record missing from state — treat as unhydrated so the
+      // caller can retry once the subscription is loaded.
       return null;
     }
 
@@ -736,34 +738,32 @@ export class RewardsController extends BaseController<
     ) {
       builderFeeBipsRaw = cached.hyperliquidBuilderFeeBips;
     } else {
-      const feeResponse = this.#getVipFeesForAccount(
-        account,
-        subscriptionId,
-      ).then((vipFeeResponse): VipFeesResponseDto | 0 | null => {
-        if (
-          !vipFeeResponse ||
-          !vipFeeResponse?.fees?.hyperliquid?.builderFeeBips
-        ) {
-          return vipFeeResponse;
-        }
-
-        const rawBips = vipFeeResponse.fees.hyperliquid.builderFeeBips;
-        const next: VipPerpsFeesState = {
-          hyperliquidBuilderFeeBips: rawBips,
-          lastFetched: Date.now(),
-        };
-        this.update((state) => {
-          state.rewardsVipPerpsFees[subscriptionId] = next;
-          const subState = state.rewardsSubscriptions[subscriptionId];
-          if (subState) {
-            subState.features = {
-              ...subState.features,
-              vip: { enabled: true },
-            };
+      const feeResponse = this.#getVipFeesForAccount(subscriptionId).then(
+        (vipFeeResponse): VipFeesResponseDto | 0 | null => {
+          if (
+            !vipFeeResponse ||
+            !vipFeeResponse?.fees?.hyperliquid?.builderFeeBips
+          ) {
+            return vipFeeResponse;
           }
-        });
-        return vipFeeResponse;
-      });
+          const rawBips = vipFeeResponse.fees.hyperliquid.builderFeeBips;
+          const next: VipPerpsFeesState = {
+            hyperliquidBuilderFeeBips: rawBips,
+            lastFetched: Date.now(),
+          };
+          this.update((state) => {
+            state.rewardsVipPerpsFees[subscriptionId] = next;
+            const subState = state.rewardsSubscriptions[subscriptionId];
+            if (subState) {
+              subState.features = {
+                ...subState.features,
+                vip: { enabled: true },
+              };
+            }
+          });
+          return vipFeeResponse;
+        },
+      );
       try {
         const result = await feeResponse;
         if (!result) {

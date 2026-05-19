@@ -857,6 +857,36 @@ describe('RewardsController', () => {
       );
     });
 
+    it('returns null when the subscription record is missing even if a VIP fees cache entry exists', async () => {
+      await withController(
+        {
+          state: {
+            rewardsAccounts: {
+              [VIP_ACCOUNT]: vipAccountState({
+                subscriptionId: NON_VIP_SUB_ID,
+              }),
+            },
+            rewardsVipPerpsFees: {
+              [NON_VIP_SUB_ID]: {
+                hyperliquidBuilderFeeBips: '5',
+                lastFetched: Date.now(),
+              },
+            },
+          },
+          isDisabled: false,
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const result = await controller.getPerpsDiscountForAccount(
+            VIP_ACCOUNT,
+            BASE_FEE_BIPS,
+          );
+
+          expect(result).toBeNull();
+          expect(mockMessengerCall).not.toHaveBeenCalled();
+        },
+      );
+    });
+
     it('calls /vip/fees even when the subscription is flagged as not VIP, and promotes the subscription on a valid response', async () => {
       await withController(
         {
