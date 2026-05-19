@@ -9,12 +9,15 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import ToggleButton from '../../ui/toggle-button';
-import Preloader from '../../ui/icon/preloader';
 import { ASSET_CELL_HEIGHT } from '../../app/assets/constants';
 import { AssetCellBadge } from '../../app/assets/asset-list/cells/asset-cell-badge';
 
@@ -176,7 +179,12 @@ export const TokenManagementCell = ({
                 className="pointer-events-none absolute inset-0 flex items-center justify-center"
                 data-testid={`${dataTestId}-toggle-loading`}
               >
-                <Preloader size={16} />
+                <Icon
+                  className="animate-spin"
+                  name={IconName.Loading}
+                  color={IconColor.IconMuted}
+                  size={IconSize.Sm}
+                />
               </span>
             ) : null}
           </span>

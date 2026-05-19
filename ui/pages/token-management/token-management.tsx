@@ -95,7 +95,6 @@ import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../components/component-library';
-import Preloader from '../../components/ui/icon/preloader';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -1278,7 +1277,12 @@ export const TokenManagementPage = () => {
       aria-label={t('loading')}
       data-testid="token-management-search-loading"
     >
-      <Preloader size={24} />
+      <Icon
+        className="animate-spin"
+        name={IconName.Loading}
+        color={IconColor.IconMuted}
+        size={IconSize.Lg}
+      />
     </Box>
   );
 
@@ -1291,7 +1295,12 @@ export const TokenManagementPage = () => {
       aria-label={t('loading')}
       data-testid="token-management-pagination-loading"
     >
-      <Preloader size={16} />
+      <Icon
+        className="animate-spin"
+        name={IconName.Loading}
+        color={IconColor.IconMuted}
+        size={IconSize.Sm}
+      />
     </Box>
   ) : null;
 
