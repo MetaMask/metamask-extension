@@ -9,7 +9,6 @@ import {
   ProvidePlugin,
   type Chunk,
   type Configuration,
-  type Module,
   type WebpackPluginInstance,
   type MemoryCacheOptions,
   type FileCacheOptions,
@@ -251,26 +250,6 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
-const javascriptModuleExtensions = [
-  '.js',
-  '.jsx',
-  '.mjs',
-  '.ts',
-  '.tsx',
-  '.mts',
-] as const;
-const nodeModulesPathSegments = ['/node_modules/', '\\node_modules\\'] as const;
-const getModuleResource = (module: Module) => {
-  const { resource } = module as Module & { resource?: unknown };
-  return typeof resource === 'string' ? resource : module.identifier();
-};
-const isApplicationJavaScriptModule = (module: Module) => {
-  const resource = getModuleResource(module);
-  return (
-    nodeModulesPathSegments.every((segment) => !resource.includes(segment)) &&
-    javascriptModuleExtensions.some((extension) => resource.endsWith(extension))
-  );
-};
 const isChunkableInitial = (chunk: Chunk) =>
   manifestPlugin.canBeChunked(chunk) && chunk.canBeInitial();
 const isChunkableAsync = (chunk: Chunk) =>
@@ -562,7 +541,7 @@ const config = {
       cacheGroups: {
         js: {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
-          test: isApplicationJavaScriptModule,
+          test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
           chunks: isChunkableInitial,
         },
@@ -574,7 +553,7 @@ const config = {
         },
         asyncJs: {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
-          test: isApplicationJavaScriptModule,
+          test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           chunks: isChunkableAsync,
           minChunks: 2,
         },
