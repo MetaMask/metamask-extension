@@ -65,9 +65,11 @@ function createMockState({
   selectedAccount = 'account-1',
   selectedAccountGroup = ACCOUNT_GROUP_ID,
   groups = {
-    [ACCOUNT_GROUP_ID]: createAccountGroup(ACCOUNT_GROUP_ID, ACCOUNT_GROUP_NAME, [
-      'account-1',
-    ]),
+    [ACCOUNT_GROUP_ID]: createAccountGroup(
+      ACCOUNT_GROUP_ID,
+      ACCOUNT_GROUP_NAME,
+      ['account-1'],
+    ),
   },
 }: {
   accounts?: Record<string, unknown>;
@@ -150,11 +152,7 @@ describe('TransactionDetailsAccountRow', () => {
         },
       };
 
-      const { getByText, queryByText } = render(
-        state,
-        true,
-        transactionMeta,
-      );
+      const { getByText, queryByText } = render(state, true, transactionMeta);
 
       expect(getByText(SELECTED_ACCOUNT_GROUP_NAME)).toBeInTheDocument();
       expect(queryByText(FROM_ADDRESS)).not.toBeInTheDocument();
