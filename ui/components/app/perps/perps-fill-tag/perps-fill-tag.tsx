@@ -52,26 +52,22 @@ export const PerpsFillTag: React.FC<PerpsFillTagProps> = ({
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const { track } = usePerpsEventTracking();
 
-  const handleAdlClick = useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      globalThis.platform.openTab({
-        url: PERPS_SUPPORT_ARTICLES_URLS.AdlUrl,
-      });
-      track(MetaMetricsEventName.PerpsUiInteraction, {
-        [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
-          PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
-        [PERPS_EVENT_PROPERTY.SCREEN_NAME]: screenName,
-        [PERPS_EVENT_PROPERTY.TAB_NAME]:
-          PERPS_EVENT_VALUE.PERPS_HISTORY_TABS.TRADES,
-        [PERPS_EVENT_PROPERTY.ACTION_TYPE]:
-          PERPS_EVENT_VALUE.ACTION_TYPE.ADL_LEARN_MORE,
-        [PERPS_EVENT_PROPERTY.ASSET]: transaction.symbol,
-        [PERPS_EVENT_PROPERTY.ORDER_TIMESTAMP]: transaction.timestamp,
-      });
-    },
-    [track, screenName, transaction.symbol, transaction.timestamp],
-  );
+  const handleAdlClick = useCallback(() => {
+    globalThis.platform.openTab({
+      url: PERPS_SUPPORT_ARTICLES_URLS.AdlUrl,
+    });
+    track(MetaMetricsEventName.PerpsUiInteraction, {
+      [PERPS_EVENT_PROPERTY.INTERACTION_TYPE]:
+        PERPS_EVENT_VALUE.INTERACTION_TYPE.TAP,
+      [PERPS_EVENT_PROPERTY.SCREEN_NAME]: screenName,
+      [PERPS_EVENT_PROPERTY.TAB_NAME]:
+        PERPS_EVENT_VALUE.PERPS_HISTORY_TABS.TRADES,
+      [PERPS_EVENT_PROPERTY.ACTION_TYPE]:
+        PERPS_EVENT_VALUE.ACTION_TYPE.ADL_LEARN_MORE,
+      [PERPS_EVENT_PROPERTY.ASSET]: transaction.symbol,
+      [PERPS_EVENT_PROPERTY.ORDER_TIMESTAMP]: transaction.timestamp,
+    });
+  }, [track, screenName, transaction.symbol, transaction.timestamp]);
 
   const tagConfig = useMemo((): FillTagConfig | null => {
     const { fill } = transaction;
@@ -89,15 +85,10 @@ export const PerpsFillTag: React.FC<PerpsFillTagProps> = ({
         testId: 'perps-fill-tag-adl',
       },
       [FillType.Liquidation]: {
-        condition:
-          fill.liquidation?.liquidatedUser !== null &&
-          fill.liquidation?.liquidatedUser !== undefined &&
-          selectedAccount?.address !== null &&
-          selectedAccount?.address !== undefined &&
-          isEqualCaseInsensitive(
-            fill.liquidation.liquidatedUser,
-            selectedAccount.address,
-          ),
+        condition: isEqualCaseInsensitive(
+          fill.liquidation?.liquidatedUser ?? '',
+          selectedAccount?.address ?? '',
+        ),
         label: t('perpsLiquidated'),
         textColor: TextColor.ErrorDefault,
         bgClass: 'bg-error-muted',

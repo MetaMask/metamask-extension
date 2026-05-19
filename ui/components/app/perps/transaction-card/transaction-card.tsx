@@ -202,7 +202,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
         data-testid={`transaction-card-${transaction.id}`}
       >
         <ButtonBase
-          className="flex-1 justify-start rounded-none min-w-0 h-auto text-left cursor-pointer gap-4 px-4 py-3"
+          className="flex-1 justify-start rounded-none min-w-0 h-auto text-left cursor-pointer gap-4 px-4 py-3 bg-transparent"
           onClick={handleClick}
         >
           {content}
