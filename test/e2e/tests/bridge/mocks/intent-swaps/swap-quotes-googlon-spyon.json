@@ -1,7 +1,7 @@
 [
   {
     "quote": {
-      "requestId": "1168279840",
+      "requestId": "1168270133",
       "bridgeId": "cowswap",
       "srcChainId": 1,
       "srcAsset": {
@@ -33,32 +33,33 @@
       "srcTokenAmount": "1000000000000000000",
       "destChainId": 1,
       "destAsset": {
-        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "address": "0xfedc5f4a6c38211c1338aa411018dfaf26612c08",
         "chainId": 1,
-        "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-        "symbol": "USDC",
-        "decimals": 6,
-        "name": "USDC",
-        "coingeckoId": "usd-coin",
-        "aggregators": [
-          "metamask",
-          "oneInch",
-          "liFi",
-          "trustWallet",
-          "socket",
-          "rubic",
-          "squid",
-          "rango",
-          "sonarwatch",
-          "sushiSwap",
-          "bancor"
-        ],
-        "occurrences": 13,
-        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
-        "metadata": { "storage": { "balance": 9, "approval": 10 } }
+        "assetId": "eip155:1/erc20:0xfedc5f4a6c38211c1338aa411018dfaf26612c08",
+        "symbol": "SPYON",
+        "decimals": 18,
+        "name": "SPDR S&P 500 ETF (Ondo Tokenized)",
+        "coingeckoId": "spdr-s-p-500-etf-ondo-tokenized-etf",
+        "aggregators": ["coinGecko", "liFi", "rubic", "rango", "ondo"],
+        "occurrences": 5,
+        "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xfedc5f4a6c38211c1338aa411018dfaf26612c08.png",
+        "metadata": {},
+        "rwaData": {
+          "market": {
+            "nextOpen": "2026-05-14T20:01:00.000Z",
+            "nextClose": "2026-05-14T19:59:00.000Z"
+          },
+          "nextPause": {
+            "start": "2026-06-07T23:52:00.000Z",
+            "end": "2026-06-08T00:12:00.000Z"
+          },
+          "ticker": "SPY",
+          "instrumentType": "etf",
+          "isOpen": true
+        }
       },
-      "destTokenAmount": "395708976",
-      "minDestTokenAmount": "393967856",
+      "destTokenAmount": "491244634140596540",
+      "minDestTokenAmount": "489820024701588800",
       "feeData": {
         "metabridge": {
           "amount": "8750000000000000",
@@ -77,7 +78,7 @@
           },
           "quoteBpsFee": 87.5,
           "baseBpsFee": 87.5,
-          "usd": "3.5235574654276505"
+          "usd": "3.2427598574067970"
         }
       },
       "aggregator": "cowswap",
@@ -115,65 +116,66 @@
             }
           },
           "destAsset": {
-            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "address": "0xfedc5f4a6c38211c1338aa411018dfaf26612c08",
             "chainId": 1,
-            "assetId": "eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-            "symbol": "USDC",
-            "decimals": 6,
-            "name": "USDC",
-            "coingeckoId": "usd-coin",
-            "aggregators": [
-              "metamask",
-              "oneInch",
-              "liFi",
-              "trustWallet",
-              "socket",
-              "rubic",
-              "squid",
-              "rango",
-              "sonarwatch",
-              "sushiSwap",
-              "bancor"
-            ],
-            "occurrences": 13,
-            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
-            "metadata": { "storage": { "balance": 9, "approval": 10 } }
+            "assetId": "eip155:1/erc20:0xfedc5f4a6c38211c1338aa411018dfaf26612c08",
+            "symbol": "SPYON",
+            "decimals": 18,
+            "name": "SPDR S&P 500 ETF (Ondo Tokenized)",
+            "coingeckoId": "spdr-s-p-500-etf-ondo-tokenized-etf",
+            "aggregators": ["coinGecko", "liFi", "rubic", "rango", "ondo"],
+            "occurrences": 5,
+            "iconUrl": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xfedc5f4a6c38211c1338aa411018dfaf26612c08.png",
+            "metadata": {},
+            "rwaData": {
+              "market": {
+                "nextOpen": "2026-05-14T20:01:00.000Z",
+                "nextClose": "2026-05-14T19:59:00.000Z"
+              },
+              "nextPause": {
+                "start": "2026-06-07T23:52:00.000Z",
+                "end": "2026-06-08T00:12:00.000Z"
+              },
+              "ticker": "SPY",
+              "instrumentType": "etf",
+              "isOpen": true
+            }
           },
           "srcAmount": "1000000000000000000",
-          "destAmount": "395708976",
+          "destAmount": "491244634140596540",
           "protocol": { "name": "cowswap", "displayName": "CowSwap" }
         }
       ],
       "priceData": {
-        "totalFromAmountUsd": "401.0488843088351",
-        "totalToAmountUsd": "400.596857208862",
-        "priceImpact": "0.0011271122241173735"
+        "totalFromAmountUsd": "367.17335811171928",
+        "totalToAmountUsd": "366.9690149752742",
+        "priceImpact": "0.0005565304015954781"
       },
       "aggregatorType": "AGG",
       "walletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
       "destWalletAddress": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
       "gasIncluded": false,
-      "slippage": 0.44,
+      "slippage": 0.29,
       "intent": {
         "protocol": "cowswap",
         "order": {
           "kind": "sell",
           "sellToken": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
-          "buyToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "buyToken": "0xfedc5f4a6c38211c1338aa411018dfaf26612c08",
           "from": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
           "receiver": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
           "sellAmount": "1000000000000000000",
-          "buyAmount": "393967856",
+          "buyAmount": "489820024701588800",
           "feeAmount": "0",
-          "validTo": 1778149133,
-          "appData": "{\"appCode\":\"metamask\",\"metadata\":{\"orderClass\":{\"orderClass\":\"market\"},\"partnerFee\":[{\"recipient\":\"0x28c716bC23ed77CAEc27f476A366318ad5F12d58\",\"volumeBps\":100},{\"maxVolumeBps\":100,\"priceImprovementBps\":9900,\"recipient\":\"0x28c716bC23ed77CAEc27f476A366318ad5F12d58\"}],\"quote\":{\"slippageBips\":44}},\"version\":\"1.14.0\"}",
-          "appDataHash": "0x17abf568dd6bb8707a202889895478e0e51a89c8835dfc7c51a06567c17fc618",
+          "validTo": 1778782716,
+          "appData": "{\"appCode\":\"metamask\",\"metadata\":{\"orderClass\":{\"orderClass\":\"market\"},\"partnerFee\":[{\"recipient\":\"0x28c716bC23ed77CAEc27f476A366318ad5F12d58\",\"volumeBps\":100},{\"maxVolumeBps\":100,\"priceImprovementBps\":9900,\"recipient\":\"0x28c716bC23ed77CAEc27f476A366318ad5F12d58\"}],\"quote\":{\"slippageBips\":29}},\"version\":\"1.14.0\"}",
+          "appDataHash": "0x7aee3bb9c79529bca15554d57b37d8b969b6be5e688489b8990cb14f8f6dd892",
           "partiallyFillable": false,
           "sellTokenBalance": "erc20",
           "buyTokenBalance": "erc20",
           "signingScheme": "eip712",
           "priceQuality": "optimal",
-          "quoteId": 1168279840
+          "quoteId": 1168270133
         },
         "relayer": "0x9008D19f58AAbD9eD0D60971565AA8510560ab41",
         "typedData": {
@@ -208,12 +210,12 @@
           },
           "message": {
             "sellToken": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
-            "buyToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "buyToken": "0xfedc5f4a6c38211c1338aa411018dfaf26612c08",
             "receiver": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
             "sellAmount": "1000000000000000000",
-            "buyAmount": "393967856",
-            "validTo": 1778149133,
-            "appData": "0x17abf568dd6bb8707a202889895478e0e51a89c8835dfc7c51a06567c17fc618",
+            "buyAmount": "489820024701588800",
+            "validTo": 1778782716,
+            "appData": "0x7aee3bb9c79529bca15554d57b37d8b969b6be5e688489b8990cb14f8f6dd892",
             "feeAmount": "0",
             "kind": "sell",
             "partiallyFillable": false,
@@ -240,6 +242,6 @@
       "gasLimit": null
     },
     "estimatedProcessingTimeInSeconds": 1800,
-    "quoteId": "047dd2cc-1bb1-41fa-9633-2db5ca596cd2"
+    "quoteId": "5ddd623e-d88c-4c44-96b0-079e3105da38"
   }
 ]

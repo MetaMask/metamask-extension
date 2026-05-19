@@ -1,0 +1,64 @@
+{
+  "id": "0x1168279840a9a7e38933402f2d29d1e7aae46f1535808e9991bf769b1e18ff876912cfece0050ba024eb6398af04ee88d36bfe646efcac667ff1b0f13b3420cafa",
+  "status": "fulfilled",
+  "txHash": "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567891cd",
+  "createdAt": 1778149133000,
+  "updatedAt": 1778149157000,
+  "metadata": {
+    "chainId": 1,
+    "networkPath": "ethereum",
+    "creationDate": "2026-05-15T06:14:01.632234Z",
+    "owner": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+    "uid": "0x1168279840a9a7e38933402f2d29d1e7aae46f1535808e9991bf769b1e18ff876912cfece0050ba024eb6398af04ee88d36bfe646efcac667ff1b0f13b3420cafa",
+    "availableBalance": null,
+    "executedBuyAmount": "393967856",
+    "executedSellAmount": "1000000000000000000",
+    "executedSellAmountBeforeFees": "1000000000000000000",
+    "executedFeeAmount": "0",
+    "executedFee": "0",
+    "executedFeeToken": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+    "invalidated": false,
+    "status": "fulfilled",
+    "class": "limit",
+    "settlementContract": "0x9008d19f58aabd9ed0d60971565aa8510560ab41",
+    "isLiquidityOrder": false,
+    "fullAppData": "{\"appCode\":\"metamask\",\"metadata\":{\"orderClass\":{\"orderClass\":\"market\"},\"partnerFee\":[{\"recipient\":\"0x28c716bC23ed77CAEc27f476A366318ad5F12d58\",\"volumeBps\":100},{\"maxVolumeBps\":100,\"priceImprovementBps\":9900,\"recipient\":\"0x28c716bC23ed77CAEc27f476A366318ad5F12d58\"}],\"quote\":{\"slippageBips\":44}},\"version\":\"1.14.0\"}",
+    "kind": "sell",
+    "sellToken": "0xba47214edd2bb43099611b208f75e4b42fdcfedc",
+    "buyToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "receiver": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
+    "sellAmount": "1000000000000000000",
+    "buyAmount": "393967856",
+    "validTo": 1778149133,
+    "appData": "0x17abf568dd6bb8707a202889895478e0e51a89c8835dfc7c51a06567c17fc618",
+    "feeAmount": "0",
+    "partiallyFillable": false,
+    "sellTokenBalance": "erc20",
+    "buyTokenBalance": "erc20",
+    "signingScheme": "eip712",
+    "signature": "0xa9a7e38933402f2d29d1e7aae46f1535808e9991bf769b1e18ff876912cfece0050ba024eb6398af04ee88d36bfe646efcac667ff1b0f13b3420cafa1b33cffd1b",
+    "allHashes": [
+      "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567891cd"
+    ],
+    "interactions": {
+      "pre": [],
+      "post": []
+    },
+    "quote": {
+      "gasAmount": "500000",
+      "gasPrice": "52500000",
+      "sellTokenPrice": "0.002487220168908819762370841793426734511740505695343017578125",
+      "sellAmount": "1000000000000000000",
+      "buyAmount": "393967856",
+      "feeAmount": "0",
+      "solver": "0x3980daa7eaad0b7e0c53cfc5c2760037270da54d",
+      "verified": false,
+      "metadata": {
+        "interactions": [],
+        "jitOrders": [],
+        "preInteractions": [],
+        "version": "1.0"
+      }
+    }
+  }
+}

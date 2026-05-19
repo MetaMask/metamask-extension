@@ -4,43 +4,46 @@ import { bridgeTransaction } from '../../page-objects/flows/bridge.flow';
 import { getBridgeFixtures } from '../bridge/bridge-test-utils';
 import { BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED } from '../bridge/constants';
 
-describe('Swap RWA', function () {
+describe('Swap RWA - ', function () {
   const swapTestCases = [
     {
-      name: 'should swap USDC to GOOGLon',
+      name: 'should swap USDC to GOOGLON',
       quote: {
         amount: '25',
         tokenFrom: 'USDC',
-        tokenTo: 'GOOGLon',
+        tokenTo: 'GOOGLON',
         fromChain: 'Ethereum',
         toChain: 'Ethereum',
         unapproved: true,
       },
-      expectedTransactionsCount: 2,
+      expectedTransactionsCount: 1,
+      expectedDestAmount: '0.0572'
     },
     {
-      name: 'should swap GOOGLon to USDC',
+      name: 'should swap GOOGLON to USDC',
       quote: {
         amount: '1',
-        tokenFrom: 'GOOGLon',
+        tokenFrom: 'GOOGLON',
         tokenTo: 'USDC',
         fromChain: 'Ethereum',
         toChain: 'Ethereum',
         unapproved: true,
       },
-      expectedTransactionsCount: 2,
+      expectedTransactionsCount: 1,
+      expectedDestAmount: '395.7'
     },
     {
-      name: 'should swap GOOGLon to SPYon',
+      name: 'should swap GOOGLON to SPYON',
       quote: {
-        amount: '0.05',
-        tokenFrom: 'GOOGLon',
-        tokenTo: 'SPYon',
+        amount: '1',
+        tokenFrom: 'GOOGLON',
+        tokenTo: 'SPYON',
         fromChain: 'Ethereum',
         toChain: 'Ethereum',
         unapproved: true,
       },
-      expectedTransactionsCount: 2,
+      expectedTransactionsCount: 1,
+      expectedDestAmount: '0.491'
     },
   ];
 
@@ -58,7 +61,8 @@ describe('Swap RWA', function () {
             driver,
             quote: testCase.quote,
             expectedTransactionsCount: testCase.expectedTransactionsCount,
-            expectedDestAmount: ''
+            expectedDestAmount: testCase.expectedDestAmount,
+            skipStatusPage: true,
           });
         },
       );

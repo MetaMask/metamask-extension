@@ -346,7 +346,7 @@ export const MOCK_TOKENS_ETHEREUM = [
     name: 'MetaMask USD',
   },
   {
-    symbol: 'GOOGLon',
+    symbol: 'GOOGLON',
     decimals: 18,
     aggregators: ['cowswap'],
     occurrences: 1,
@@ -356,7 +356,7 @@ export const MOCK_TOKENS_ETHEREUM = [
     name: 'Alphabet Class A (Ondo Tokenized)',
   },
   {
-    symbol: 'SPYon',
+    symbol: 'SPYON',
     decimals: 18,
     aggregators: ['cowswap'],
     occurrences: 1,

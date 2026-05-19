@@ -46,9 +46,15 @@ import MOCK_SWAP_QUOTES_ETH_MUSD from './mocks/swap-quotes-eth-musd.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_INCLUDED from './mocks/swap-quotes-eth-usdc-gas-included.json';
 import MOCK_SWAP_QUOTES_USDC_DAI_GAS_INCLUDED from './mocks/swap-quotes-usdc-dai-gas-included.json';
 import MOCK_SWAP_QUOTES_ETH_USDC_GAS_SPONSORED from './mocks/swap-quotes-eth-usdc-gas-sponsored.json';
-import MOCK_SWAP_QUOTES_USDC_GOOGLON from './mocks/swap-quotes-usdc-googlon.json';
-import MOCK_SWAP_QUOTES_GOOGLON_USDC from './mocks/swap-quotes-googlon-usdc.json';
-import MOCK_SWAP_QUOTES_GOOGLON_SPYON from './mocks/swap-quotes-googlon-spyon.json';
+import MOCK_SWAP_QUOTES_USDC_GOOGLON from './mocks/intent-swaps/swap-quotes-usdc-googlon.json';
+import MOCK_SUBMIT_ORDER_USDC_GOOGLON from './mocks/intent-swaps/submit-order-usdc-googlon.json';
+import MOCK_GET_ORDER_STATUS_USDC_GOOGLON from './mocks/intent-swaps/get-order-status-usdc-googlon.json';
+import MOCK_SWAP_QUOTES_GOOGLON_USDC from './mocks/intent-swaps/swap-quotes-googlon-usdc.json';
+import MOCK_SUBMIT_ORDER_GOOGLON_USDC from './mocks/intent-swaps/submit-order-googlon-usdc.json';
+import MOCK_GET_ORDER_STATUS_GOOGLON_USDC from './mocks/intent-swaps/get-order-status-googlon-usdc.json';
+import MOCK_SWAP_QUOTES_GOOGLON_SPYON from './mocks/intent-swaps/swap-quotes-googlon-spyon.json';
+import MOCK_SUBMIT_ORDER_GOOGLON_SPYON from './mocks/intent-swaps/submit-order-googlon-spyon.json';
+import MOCK_GET_ORDER_STATUS_GOOGLON_SPYON from './mocks/intent-swaps/get-order-status-googlon-spyon.json';
 
 export class BridgePage {
   driver: Driver;
@@ -901,6 +907,17 @@ async function mockPriceSpotPricesV3(mockServer: Mockttp) {
           'musd',
           0.9999,
         ),
+        // RWA tokens
+        'eip155:1/erc20:0xba47214edd2bb43099611b208f75e4b42fdcfedc': tokenEntry(
+          'googlon',
+          401.05,
+          0.5,
+        ),
+        'eip155:1/erc20:0xfedc5f4a6c38211c1338aa411018dfaf26612c08': tokenEntry(
+          'spyon',
+          747.82,
+          0.3,
+        ),
       };
 
       const json =
@@ -1371,6 +1388,12 @@ export const getBridgeFixtures = ({
         await mockSwapUSDCtoGOOGLON(mockServer, featureFlags.sse?.enabled),
         await mockSwapGOOGLONtoUSDC(mockServer, featureFlags.sse?.enabled),
         await mockSwapGOOGLONtoSPYON(mockServer, featureFlags.sse?.enabled),
+        await mockSubmitOrderUSDCtoGOOGLON(mockServer),
+        await mockGetOrderStatusUSDCtoGOOGLON(mockServer),
+        await mockSubmitOrderGOOGLONtoUSDC(mockServer),
+        await mockGetOrderStatusGOOGLONtoUSDC(mockServer),
+        await mockSubmitOrderGOOGLONtoSPYON(mockServer),
+        await mockGetOrderStatusGOOGLONtoSPYON(mockServer),
         await mockFeatureFlags(
           mockServer,
           featureFlags,
@@ -1948,6 +1971,7 @@ async function mockSwapUSDCtoGOOGLON(
   if (sseEnabled) {
     return await mockServer
       .forGet(/getQuoteStream/u)
+      .once()
       .withQuery({
         srcTokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         destTokenAddress: '0xbA47214eDd2bb43099611b208f75E4b42FDcfEDc',
@@ -1971,6 +1995,28 @@ async function mockSwapUSDCtoGOOGLON(
         json: MOCK_SWAP_QUOTES_USDC_GOOGLON,
       };
     });
+}
+
+async function mockSubmitOrderUSDCtoGOOGLON(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(/bridge\.(dev-api|api|uat-api)\.cx\.metamask\.io\/submitOrder/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: JSON.stringify(MOCK_SUBMIT_ORDER_USDC_GOOGLON),
+      headers: { 'Content-Type': 'application/json' },
+    }));
+}
+
+async function mockGetOrderStatusUSDCtoGOOGLON(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/bridge\.(dev-api|api|uat-api)\.cx\.metamask\.io\/getOrderStatus/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: JSON.stringify(MOCK_GET_ORDER_STATUS_USDC_GOOGLON),
+      headers: { 'Content-Type': 'application/json' },
+    }));
 }
 
 async function mockSwapGOOGLONtoUSDC(
@@ -2005,6 +2051,28 @@ async function mockSwapGOOGLONtoUSDC(
     });
 }
 
+async function mockSubmitOrderGOOGLONtoUSDC(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(/bridge\.(dev-api|api|uat-api)\.cx\.metamask\.io\/submitOrder/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: JSON.stringify(MOCK_SUBMIT_ORDER_GOOGLON_USDC),
+      headers: { 'Content-Type': 'application/json' },
+    }));
+}
+
+async function mockGetOrderStatusGOOGLONtoUSDC(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(/bridge\.(dev-api|api|uat-api)\.cx\.metamask\.io\/getOrderStatus/u)
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: JSON.stringify(MOCK_GET_ORDER_STATUS_GOOGLON_USDC),
+      headers: { 'Content-Type': 'application/json' },
+    }));
+}
+
 async function mockSwapGOOGLONtoSPYON(
   mockServer: Mockttp,
   sseEnabled?: boolean,
@@ -2035,6 +2103,32 @@ async function mockSwapGOOGLONtoSPYON(
         json: MOCK_SWAP_QUOTES_GOOGLON_SPYON,
       };
     });
+}
+
+async function mockSubmitOrderGOOGLONtoSPYON(mockServer: Mockttp) {
+  return await mockServer
+    .forPost(
+      /bridge\.(dev-api|api|uat-api)\.cx\.metamask\.io\/submitOrder/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: JSON.stringify(MOCK_SUBMIT_ORDER_GOOGLON_SPYON),
+      headers: { 'Content-Type': 'application/json' },
+    }));
+}
+
+async function mockGetOrderStatusGOOGLONtoSPYON(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(
+      /bridge\.(dev-api|api|uat-api)\.cx\.metamask\.io\/getOrderStatus/u,
+    )
+    .always()
+    .thenCallback(() => ({
+      statusCode: 200,
+      body: JSON.stringify(MOCK_GET_ORDER_STATUS_GOOGLON_SPYON),
+      headers: { 'Content-Type': 'application/json' },
+    }));
 }
 
 async function mockSentinelNetworksRelayOnly(mockServer: Mockttp) {
