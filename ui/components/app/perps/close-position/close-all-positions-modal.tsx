@@ -101,9 +101,7 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
 
   const [rawProtocolFees, setRawProtocolFees] = useState(0);
   const [rawMetamaskFees, setRawMetamaskFees] = useState(0);
-  const [isLoadingFees, setIsLoadingFees] = useState(
-    isOpen && positions.length > 0,
-  );
+  const [isLoadingFees, setIsLoadingFees] = useState(false);
   const feeRequestId = useRef(0);
 
   const metamaskFeeDiscountBips = usePerpsMetamaskFeeDiscountBips(
