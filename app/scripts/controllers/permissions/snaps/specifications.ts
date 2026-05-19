@@ -17,7 +17,10 @@ import {
   SnapInterfaceControllerGetInterfaceAction,
   SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
-import { KeyringControllerWithKeyringV2UnsafeAction } from '@metamask/keyring-controller';
+import {
+  KeyringControllerWithKeyringAction,
+  KeyringControllerWithKeyringV2UnsafeAction,
+} from '@metamask/keyring-controller';
 import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import {
   RateLimitControllerCallApiAction,
@@ -54,6 +57,7 @@ export type SnapPermissionSpecificationsActions =
   | SnapControllerGetSnapStateAction
   | SnapControllerHandleRequestAction
   | SnapAccountServiceGetLegacySnapKeyringAction
+  | KeyringControllerWithKeyringAction
   | KeyringControllerWithKeyringV2UnsafeAction
   | MaybeUpdateState
   | PreferencesControllerGetStateAction
