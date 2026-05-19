@@ -44,6 +44,7 @@ import { getPositionDirection } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
 
@@ -110,6 +111,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     feeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
+    metamaskFeeRateDiscountPercentage,
   } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
@@ -259,17 +261,22 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 >
                   {t('perpsFees')}
                 </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  data-testid="perps-reverse-fee-value"
-                >
-                  {shouldShowFeePlaceholder
-                    ? '--'
-                    : formatPerpsFiat(estimatedFees, {
-                        ranges: PRICE_RANGES_MINIMAL_VIEW,
-                      })}
-                </Text>
+                <PerpsFeesDisplay
+                  metamaskFeeRateDiscountPercentage={
+                    shouldShowFeePlaceholder
+                      ? undefined
+                      : metamaskFeeRateDiscountPercentage
+                  }
+                  formatFeeText={
+                    shouldShowFeePlaceholder
+                      ? '--'
+                      : formatPerpsFiat(estimatedFees, {
+                          ranges: PRICE_RANGES_MINIMAL_VIEW,
+                        })
+                  }
+                  feeTextFontWeight={FontWeight.Medium}
+                  feeTextTestId="perps-reverse-fee-value"
+                />
               </Box>
               {error && (
                 <Box

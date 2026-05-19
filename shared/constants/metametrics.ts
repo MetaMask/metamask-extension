@@ -990,6 +990,7 @@ export enum MetaMetricsEventName {
   OnboardingCompleted = 'Onboarding Completed',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PasswordChanged = 'Password Changed',
+  PasswordChangeWithPasskey = 'Password Change With Passkey',
   ForgotPasswordClicked = 'Forgot Password Clicked',
   ReferralViewed = 'Referral Viewed',
   ReferralConfirmButtonClicked = 'Referral Confirm Button Clicked',
@@ -1047,6 +1048,8 @@ export enum MetaMetricsEventName {
   TermsOfUseAccepted = 'Terms of Use Accepted',
   ThemeChanged = 'Theme Changed',
   TokenImportButtonClicked = 'Import Token Button Clicked',
+  ImportCustomTokenViewed = 'Import Custom Token Viewed',
+  ImportCustomTokenInteracted = 'Import Custom Token Interacted',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
   TokenSortPreference = 'Token Sort Preference Updated',
@@ -1075,6 +1078,11 @@ export enum MetaMetricsEventName {
   RehydrationPasswordFailed = 'Rehydration Password Failed',
   UseDifferentLoginMethodClicked = 'Use Different Login Method Clicked',
   PasswordOutdatedModalViewed = 'Password Outdated Modal Viewed',
+  PasskeyOnboardingSetup = 'Passkey Onboarding Setup',
+  PasskeyTroubleshoot = 'Passkey Troubleshoot',
+  PasskeyTurnOff = 'Passkey Turn Off',
+  PasskeySetup = 'Passkey Setup',
+  PasskeyUnlockInteracted = 'Passkey Unlock Interacted',
   WatchEthereumAccountsToggled = 'Watch Ethereum Accounts Toggled',
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
@@ -1372,6 +1380,7 @@ export enum MetaMetricsTokenEventSource {
   Dapp = 'dapp',
   Detected = 'detected',
   List = 'list',
+  ManageTokens = 'manage_tokens',
 }
 
 export enum MetaMetricsTransactionEventSource {

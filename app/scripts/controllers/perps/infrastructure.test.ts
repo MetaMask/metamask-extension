@@ -46,6 +46,7 @@ describe('createPerpsInfrastructure', () => {
   const mockGetStorageItem = jest.fn();
   const mockSetStorageItem = jest.fn();
   const mockRemoveStorageItem = jest.fn();
+  const mockGetPerpsDiscountForAccount = jest.fn();
 
   function getDeps(
     overrides?: Partial<InfrastructureDeps>,
@@ -55,6 +56,7 @@ describe('createPerpsInfrastructure', () => {
       getStorageItem: mockGetStorageItem,
       setStorageItem: mockSetStorageItem,
       removeStorageItem: mockRemoveStorageItem,
+      getPerpsDiscountForAccount: mockGetPerpsDiscountForAccount,
       ...overrides,
     };
   }
@@ -64,6 +66,7 @@ describe('createPerpsInfrastructure', () => {
     mockGetStorageItem.mockReset().mockResolvedValue({});
     mockSetStorageItem.mockReset().mockResolvedValue(undefined);
     mockRemoveStorageItem.mockReset().mockResolvedValue(undefined);
+    mockGetPerpsDiscountForAccount.mockReset().mockResolvedValue(0);
   });
 
   afterEach(() => {
@@ -728,10 +731,39 @@ describe('createPerpsInfrastructure', () => {
   });
 
   describe('rewards', () => {
-    it('returns 0 discount as default stub', async () => {
+    it('delegates to the injected getPerpsDiscountForAccount with the perps base fee', async () => {
+      mockGetPerpsDiscountForAccount.mockResolvedValueOnce(5000);
       const infrastructure = createPerpsInfrastructure(getDeps());
       const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
         'eip155:42161:0x1234',
+        10,
+      );
+
+      expect(discount).toBe(5000);
+      // Base fee bips comes from the perps package constants
+      // (BUILDER_FEE_CONFIG.MaxFeeDecimal * BASIS_POINTS_DIVISOR = 0.001 * 10000 = 10).
+      expect(mockGetPerpsDiscountForAccount).toHaveBeenCalledWith(
+        'eip155:42161:0x1234',
+        10,
+      );
+    });
+
+    it('returns 0 when the injected getPerpsDiscountForAccount throws', async () => {
+      mockGetPerpsDiscountForAccount.mockRejectedValueOnce(new Error('boom'));
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
+        'eip155:42161:0x1234',
+        10,
+      );
+      expect(discount).toBe(0);
+    });
+
+    it('collapses a null discount to 0 so the core perps-controller never sees null', async () => {
+      mockGetPerpsDiscountForAccount.mockResolvedValueOnce(null);
+      const infrastructure = createPerpsInfrastructure(getDeps());
+      const discount = await infrastructure.rewards.getPerpsDiscountForAccount(
+        'eip155:42161:0x1234',
+        0,
       );
       expect(discount).toBe(0);
     });
