@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { getTransactionDisplayStatusKey } from '../../app/transaction-status-label';
+import { getTransactionDisplayStatusKey } from '../../../../shared/lib/activity/transaction-display-status';
 import { ActivityListStatusSubtitle } from '../../app/activity-list-status';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';

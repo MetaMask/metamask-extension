@@ -17,9 +17,8 @@ import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
-import TransactionStatusLabel, {
-  getTransactionDisplayStatusKey,
-} from '../transaction-status-label';
+import { getTransactionDisplayStatusKey } from '../../../../shared/lib/activity/transaction-display-status';
+import TransactionStatusLabel from '../transaction-status-label';
 import { ActivityListStatusSubtitle } from '../activity-list-status';
 import TransactionIcon from '../transaction-icon';
 import {

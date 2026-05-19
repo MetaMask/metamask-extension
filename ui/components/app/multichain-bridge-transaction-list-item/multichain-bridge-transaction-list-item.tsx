@@ -11,9 +11,8 @@ import {
 } from '../../../../shared/lib/bridge-status/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
-import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 import TransactionIcon from '../transaction-icon';
-import { getTransactionDisplayStatusKey } from '../transaction-status-label';
+import { getTransactionDisplayStatusKey } from '../../../../shared/lib/activity/transaction-display-status';
 import { ActivityListStatusSubtitle } from '../activity-list-status';
 import { ActivityListItem } from '../../multichain/activity-list-item/activity-list-item';
 import Segment from '../../../pages/bridge/transaction-details/segment';

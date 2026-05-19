@@ -10,7 +10,7 @@ import {
 } from '../../../hooks/useMultichainTransactionDisplay';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
-import { getTransactionDisplayStatusKey } from '../../app/transaction-status-label';
+import { getTransactionDisplayStatusKey } from '../../../../shared/lib/activity/transaction-display-status';
 import { ActivityListStatusSubtitle } from '../../app/activity-list-status';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';

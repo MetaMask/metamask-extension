@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { ButtonSize } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import TransactionStatusLabel, {
-  getTransactionDisplayStatusKey,
-} from '../transaction-status-label';
+import { getTransactionDisplayStatusKey } from '../../../../shared/lib/activity/transaction-display-status';
+import TransactionStatusLabel from '../transaction-status-label';
 import { ActivityListStatusSubtitle } from '../activity-list-status';
 import TransactionIcon from '../transaction-icon';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
