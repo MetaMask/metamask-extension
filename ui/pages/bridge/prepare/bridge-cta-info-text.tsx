@@ -42,37 +42,38 @@ export const BridgeCTAInfoText = () => {
     return null;
   }
 
-  if (!hasMMFee && !hasApproval) {
-    return null;
-  }
-
   if (isQuoteExpired) {
     return null;
   }
 
   const { isDiscounted, quoteFeePercentage } = readMmFee(activeQuote);
+  const showMmFeeText = hasMMFee && !isDiscounted;
+  const showApprovalText = Boolean(hasApproval);
 
-  return hasMMFee || hasApproval ? (
+  const infoText = [
+    showMmFeeText
+      ? t('rateIncludesMMFee', [quoteFeePercentage ?? BRIDGE_MM_FEE_RATE])
+      : null,
+    showApprovalText &&
+      (isCrossChain(activeQuote.quote.srcChainId, activeQuote.quote.destChainId)
+        ? t('willApproveAmountForBridging')
+        : t('willApproveAmountForSwapping')),
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  if (!infoText) {
+    return null;
+  }
+
+  return (
     <Row
       gap={1}
       justifyContent={JustifyContent.center}
       data-testid="bridge-cta-info-text"
     >
       <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
-        {[
-          hasMMFee && !isDiscounted
-            ? t('rateIncludesMMFee', [quoteFeePercentage ?? BRIDGE_MM_FEE_RATE])
-            : null,
-          hasApproval &&
-            (isCrossChain(
-              activeQuote.quote.srcChainId,
-              activeQuote.quote.destChainId,
-            )
-              ? t('willApproveAmountForBridging')
-              : t('willApproveAmountForSwapping')),
-        ]
-          .filter(Boolean)
-          .join(' ')}
+        {infoText}
       </Text>
 
       {hasApproval ? (
@@ -95,5 +96,5 @@ export const BridgeCTAInfoText = () => {
         </Tooltip>
       ) : null}
     </Row>
-  ) : null;
+  );
 };
