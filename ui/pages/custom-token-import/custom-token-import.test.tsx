@@ -10,7 +10,23 @@ import {
   CUSTOM_TOKEN_IMPORT_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
 } from '../../helpers/constants/routes';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { AssetType } from '../../../shared/constants/transaction';
 import { CustomTokenImportPage } from './custom-token-import';
+
+const METRICS_PROPERTIES = {
+  addedToken: 'added_token',
+  assetType: 'asset_type',
+  chainId: 'chain_id',
+  clickedSecurityLink: 'clicked_security_link',
+  tokenContractAddress: 'token_contract_address',
+  tokenStandard: 'token_standard',
+  tokenSymbol: 'token_symbol',
+  viewState: 'view_state',
+} as const;
 
 const mockNavigate = jest.fn();
 
@@ -85,7 +101,7 @@ describe('CustomTokenImportPage', () => {
     },
   });
 
-  const renderPage = () => {
+  const renderPage = (trackEvent = jest.fn()) => {
     const store = configureStore(buildState());
     return {
       store,
@@ -93,6 +109,8 @@ describe('CustomTokenImportPage', () => {
         <CustomTokenImportPage />,
         store,
         CUSTOM_TOKEN_IMPORT_ROUTE,
+        undefined,
+        () => trackEvent,
       ),
     };
   };
@@ -111,6 +129,21 @@ describe('CustomTokenImportPage', () => {
     expect(
       screen.queryByTestId('custom-token-import-decimal-input'),
     ).not.toBeInTheDocument();
+  });
+
+  it('tracks the custom token import default view state on page open', async () => {
+    const trackEvent = jest.fn();
+    renderPage(trackEvent);
+
+    await waitFor(() =>
+      expect(trackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Wallet,
+        event: MetaMetricsEventName.ImportCustomTokenViewed,
+        properties: {
+          [METRICS_PROPERTIES.viewState]: 'default',
+        },
+      }),
+    );
   });
 
   it('keeps the submit button disabled while the address field is empty', () => {
@@ -152,7 +185,8 @@ describe('CustomTokenImportPage', () => {
 
   it('returns to token management with success toast state after submitting a custom token', async () => {
     const actions = getMockedActions();
-    renderPage();
+    const trackEvent = jest.fn();
+    renderPage(trackEvent);
 
     fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
       target: { value: '0x1111111111111111111111111111111111111111' },
@@ -187,6 +221,22 @@ describe('CustomTokenImportPage', () => {
             type: 'customTokenAdded',
             symbol: 'APE',
           },
+        },
+      }),
+    );
+    await waitFor(() =>
+      expect(trackEvent).toHaveBeenCalledWith({
+        category: MetaMetricsEventCategory.Wallet,
+        event: MetaMetricsEventName.ImportCustomTokenInteracted,
+        sensitiveProperties: {
+          [METRICS_PROPERTIES.addedToken]: 1,
+          [METRICS_PROPERTIES.assetType]: AssetType.token,
+          [METRICS_PROPERTIES.chainId]: '0x1',
+          [METRICS_PROPERTIES.clickedSecurityLink]: false,
+          [METRICS_PROPERTIES.tokenContractAddress]:
+            '0x1111111111111111111111111111111111111111',
+          [METRICS_PROPERTIES.tokenStandard]: 'ERC20',
+          [METRICS_PROPERTIES.tokenSymbol]: 'APE',
         },
       }),
     );
