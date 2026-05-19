@@ -4,10 +4,8 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import {
-  RemoteFeatureFlagControllerStateChangeEvent,
   RemoteFeatureFlagControllerGetStateAction,
 } from '@metamask/remote-feature-flag-controller';
-import { SnapAccountServiceEnsureReadyAction } from '@metamask/snap-account-service';
 import { MultichainAccountServiceMessenger as ServiceMessenger } from '@metamask/multichain-account-service';
 import {
   PreferencesControllerGetStateAction,
@@ -46,7 +44,6 @@ export function getMultichainAccountServiceMessenger(
     events: [
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
-      'KeyringController:stateChange',
     ],
     actions: [
       'AccountsController:listMultichainAccounts',
