@@ -6,7 +6,6 @@ import {
   UnifiedSwapBridgeEventName,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { bpsToPercentage } from '../../../ducks/bridge/utils';
 import {
   SuccessPill,
   Text,
@@ -30,7 +29,11 @@ import {
   getPriceImpact,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
+import {
+  bpsToPercentage,
+  formatNetworkFee,
+  formatTokenAmount,
+} from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
