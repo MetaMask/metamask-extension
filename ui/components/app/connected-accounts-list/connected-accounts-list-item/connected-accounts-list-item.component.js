@@ -3,7 +3,13 @@ import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
-import { Box, BoxAlignItems, BoxBackgroundColor, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { Text } from '../../../component-library';
 import { PreferredAvatar } from '../../preferred-avatar';
 import {

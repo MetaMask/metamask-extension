@@ -8,7 +8,11 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Box, BoxAlignItems, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   BlockSize,

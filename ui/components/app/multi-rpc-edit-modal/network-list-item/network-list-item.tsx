@@ -4,7 +4,12 @@ import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Box, BoxAlignItems, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   Text,
   AvatarNetwork,
@@ -61,10 +66,7 @@ const NetworkListItem = ({
       paddingBottom={4}
       paddingTop={4}
     >
-      <Box
-        className="flex w-8/12"
-        alignItems={BoxAlignItems.Center}
-      >
+      <Box className="flex w-8/12" alignItems={BoxAlignItems.Center}>
         <AvatarNetwork
           size={AvatarNetworkSize.Md}
           src={
@@ -74,10 +76,7 @@ const NetworkListItem = ({
           }
           name={networkConfiguration.name}
         />
-        <Box
-          className="flex w-11/12"
-          flexDirection={BoxFlexDirection.Column}
-        >
+        <Box className="flex w-11/12" flexDirection={BoxFlexDirection.Column}>
           <Box marginLeft={4}>
             <Text
               color={TextColor.textDefault}

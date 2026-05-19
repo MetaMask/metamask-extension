@@ -6,7 +6,12 @@ import {
   formatChainIdToHex,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { Box, BoxAlignItems, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   AlignItems,
   BorderColor,
@@ -226,10 +231,7 @@ const MultichainBridgeTransactionDetailsModal = ({
               flexDirection={BoxFlexDirection.Column}
               gap={4}
             >
-              <Box
-                className="flex"
-                justifyContent={BoxJustifyContent.Between}
-              >
+              <Box className="flex" justifyContent={BoxJustifyContent.Between}>
                 <Text
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
@@ -242,21 +244,14 @@ const MultichainBridgeTransactionDetailsModal = ({
               </Box>
 
               {/* Transaction ID */}
-              <Box
-                className="flex"
-                justifyContent={BoxJustifyContent.Between}
-              >
+              <Box className="flex" justifyContent={BoxJustifyContent.Between}>
                 <Text
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}
                 >
                   {t('transactionIdLabel')}
                 </Text>
-                <Box
-                  className="flex"
-                  alignItems={BoxAlignItems.Center}
-                  gap={1}
-                >
+                <Box className="flex" alignItems={BoxAlignItems.Center} gap={1}>
                   <ButtonLink
                     size={ButtonLinkSize.Inherit}
                     textProps={{
@@ -351,11 +346,7 @@ const MultichainBridgeTransactionDetailsModal = ({
                 >
                   {t('from')}
                 </Text>
-                <Box
-                  className="flex"
-                  gap={2}
-                  alignItems={BoxAlignItems.Center}
-                >
+                <Box className="flex" gap={2} alignItems={BoxAlignItems.Center}>
                   <AvatarNetwork
                     size={AvatarNetworkSize.Sm}
                     className="multichain-bridge-transaction-details-modal__network-badge"
@@ -381,11 +372,7 @@ const MultichainBridgeTransactionDetailsModal = ({
                 >
                   {t('to')}
                 </Text>
-                <Box
-                  className="flex"
-                  gap={2}
-                  alignItems={BoxAlignItems.Center}
-                >
+                <Box className="flex" gap={2} alignItems={BoxAlignItems.Center}>
                   <AvatarNetwork
                     size={AvatarNetworkSize.Sm}
                     className="multichain-bridge-transaction-details-modal__network-badge"
@@ -422,10 +409,7 @@ const MultichainBridgeTransactionDetailsModal = ({
               gap={4}
             >
               {/* Source Amount */}
-              <Box
-                className="flex"
-                justifyContent={BoxJustifyContent.Between}
-              >
+              <Box className="flex" justifyContent={BoxJustifyContent.Between}>
                 <Text
                   variant={TextVariant.bodyMd}
                   fontWeight={FontWeight.Medium}

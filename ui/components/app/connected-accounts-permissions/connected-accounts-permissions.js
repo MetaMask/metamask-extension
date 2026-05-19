@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { flatten } from 'lodash';
 import { useSelector } from 'react-redux';
-import { Box, BoxBackgroundColor, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  Box,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -56,10 +61,7 @@ const ConnectedAccountsPermissions = ({ permissions }) => {
         backgroundColor={BoxBackgroundColor.BackgroundDefault}
       >
         <button onClick={toggleExpanded}>
-          <Text
-            as="h6"
-            variant={TextVariant.bodyMdMedium}
-          >
+          <Text as="h6" variant={TextVariant.bodyMdMedium}>
             {t('permissions')}
           </Text>
 

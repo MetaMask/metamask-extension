@@ -5,7 +5,13 @@ import {
   formatChainIdToCaip,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { AvatarToken, AvatarTokenSize, Box, BoxAlignItems, BoxJustifyContent } from '@metamask/design-system-react';
+import {
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import * as actions from '../../../../store/actions';
 import { Button, ButtonVariant } from '../../../component-library';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
