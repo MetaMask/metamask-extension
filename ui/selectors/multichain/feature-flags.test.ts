@@ -27,12 +27,27 @@ describe('getIsTokenManagementFilterEnabled', () => {
     ).toBe(false);
   });
 
-  it('returns false when the flag object is disabled', () => {
+  it('returns true for a version-gated flag whose minimumVersion is satisfied', () => {
     expect(
       getIsTokenManagementFilterEnabled(
         buildState({
           extensionUxTokenManagementFilter: {
-            enabled: false,
+            enabled: true,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(true);
+  });
+
+  it('returns false for a version-gated flag whose minimumVersion is in the future', () => {
+    expect(
+      getIsTokenManagementFilterEnabled(
+        buildState({
+          extensionUxTokenManagementFilter: {
+            enabled: true,
+            minimumVersion: '999.0.0',
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }) as any,
@@ -40,7 +55,21 @@ describe('getIsTokenManagementFilterEnabled', () => {
     ).toBe(false);
   });
 
-  it('returns true when the flag object is enabled', () => {
+  it('returns false when the version-gated flag is explicitly disabled', () => {
+    expect(
+      getIsTokenManagementFilterEnabled(
+        buildState({
+          extensionUxTokenManagementFilter: {
+            enabled: false,
+            minimumVersion: '0.0.0',
+          },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        }) as any,
+      ),
+    ).toBe(false);
+  });
+
+  it('returns false for malformed objects missing the minimumVersion field', () => {
     expect(
       getIsTokenManagementFilterEnabled(
         buildState({
@@ -50,7 +79,7 @@ describe('getIsTokenManagementFilterEnabled', () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }) as any,
       ),
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it('returns false when the flag is missing', () => {

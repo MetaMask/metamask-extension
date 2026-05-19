@@ -220,10 +220,10 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
   getIsSeedlessOnboardingFeatureEnabled,
-  getEnabledAdvancedPermissions,
   getIsPerpsIncludedInBuild,
   getIsAssetsUnifiedStateIncludedInBuild,
 } from '../../shared/lib/environment';
+import { getEnabledAdvancedPermissions } from '../../shared/lib/gator-permissions/feature-flags';
 import { isSnapPreinstalled } from '../../shared/lib/snaps/snaps';
 import { toChecksumHexAddress } from '../../shared/lib/hexstring-utils';
 import {
@@ -884,8 +884,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.provider =
       this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
 
     this.on('update', (update) => {
       this.metaMetricsController.handleMetaMaskStateUpdate(update);
@@ -1251,7 +1249,9 @@ export default class MetamaskController extends EventEmitter {
             meta.hash === hash && meta.status === TransactionStatus.submitted,
         ),
       processRequestExecutionPermissions: async (params, req, context) => {
-        const enabledTypes = getEnabledAdvancedPermissions();
+        const enabledTypes = getEnabledAdvancedPermissions(
+          this.remoteFeatureFlagController.state,
+        );
 
         if (!params || params.length === 0) {
           throw rpcErrors.methodNotSupported('No permission type provided');
@@ -1300,7 +1300,9 @@ export default class MetamaskController extends EventEmitter {
         );
       },
       processGetSupportedExecutionPermissions: async (req, context) => {
-        const enabledTypes = getEnabledAdvancedPermissions();
+        const enabledTypes = getEnabledAdvancedPermissions(
+          this.remoteFeatureFlagController.state,
+        );
         const supportedChains = getEip7702SupportedChains(
           this.remoteFeatureFlagController.state,
         ).map((chainId) => chainId.toLowerCase());
@@ -2810,7 +2812,6 @@ export default class MetamaskController extends EventEmitter {
       getCode: this.getCode.bind(this),
 
       // primary keyring management
-      addNewAccount: this.addNewAccount.bind(this),
       getSeedPhrase: this.getSeedPhrase.bind(this),
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
@@ -2912,6 +2913,10 @@ export default class MetamaskController extends EventEmitter {
       ),
       rewardsLinkAccountsToSubscriptionCandidate:
         this.rewardsController.linkAccountsToSubscriptionCandidate.bind(
+          this.rewardsController,
+        ),
+      rewardsGetPerpsDiscountForAccount:
+        this.rewardsController.getPerpsDiscountForAccount.bind(
           this.rewardsController,
         ),
 
@@ -3725,6 +3730,10 @@ export default class MetamaskController extends EventEmitter {
       getBearerToken: authenticationController.getBearerToken.bind(
         authenticationController,
       ),
+      requestProfilePairing:
+        authenticationController.requestProfilePairing.bind(
+          authenticationController,
+        ),
 
       // UserStorageController
       setIsBackupAndSyncFeatureEnabled:
@@ -4461,7 +4470,10 @@ export default class MetamaskController extends EventEmitter {
       authenticationResponse,
     );
     if (!verified) {
-      throw new Error('Passkey authentication verification failed');
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
+        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
+      );
     }
 
     this.passkeyController.removePasskey();
@@ -4512,7 +4524,10 @@ export default class MetamaskController extends EventEmitter {
       authenticationResponse,
     );
     if (!isVerified) {
-      throw new Error('Passkey authentication verification failed');
+      throw new PasskeyControllerError(
+        PasskeyControllerErrorMessage.AuthenticationVerificationFailed,
+        { code: PasskeyControllerErrorCode.AuthenticationVerificationFailed },
+      );
     }
 
     const releaseLock = await this.seedlessOperationMutex.acquire();
@@ -5413,12 +5428,6 @@ export default class MetamaskController extends EventEmitter {
       }
     }
 
-    try {
-      await this.blockTracker.checkForLatestBlock();
-    } catch (error) {
-      log.error('Error while unlocking extension.', error);
-    }
-
     // Initialize the legacy Snap keyring so the accounts-controller will be able to
     // fetch Snap accounts.
     await this.getSnapKeyring();
@@ -5769,65 +5778,6 @@ export default class MetamaskController extends EventEmitter {
   //
   // Account Management
   //
-
-  /**
-   * Adds a new account to the keyring corresponding to the given `keyringId`,
-   * or to the default (first) HD keyring if no `keyringId` is provided.
-   *
-   * @param {number} accountCount - The number of accounts to create
-   * @param {string} _keyringId - The keyring identifier.
-   * @returns {Promise<string>} The address of the newly-created account.
-   */
-  async addNewAccount(accountCount, _keyringId) {
-    const oldAccounts = await this.keyringController.getAccounts();
-    const keyringSelector = _keyringId
-      ? { id: _keyringId }
-      : { type: KeyringTypes.hd };
-
-    const addedAccountAddress = await this.keyringController.withKeyring(
-      keyringSelector,
-      async ({ keyring }) => {
-        if (keyring.type !== KeyringTypes.hd) {
-          throw new Error('Cannot add account to non-HD keyring');
-        }
-        const accountsInKeyring = await keyring.getAccounts();
-
-        // Only add an account if the accountCount matches the accounts in the keyring.
-        if (accountCount && accountCount !== accountsInKeyring.length) {
-          if (accountCount > accountsInKeyring.length) {
-            throw new Error('Account out of sequence');
-          }
-
-          const existingAccount = accountsInKeyring[accountCount];
-
-          if (!existingAccount) {
-            throw new Error(`Can't find account at index ${accountCount}`);
-          }
-
-          return existingAccount;
-        }
-
-        const [newAddress] = await keyring.addAccounts(1);
-        if (oldAccounts.includes(newAddress)) {
-          await keyring.removeAccount(newAddress);
-          throw new Error(`Cannot add duplicate ${newAddress} account`);
-        }
-        return newAddress;
-      },
-    );
-
-    if (!oldAccounts.includes(addedAccountAddress)) {
-      const internalAccount =
-        this.accountsController.getAccountByAddress(addedAccountAddress);
-      if (internalAccount) {
-        this.accountsController.setSelectedAccount(internalAccount.id);
-      } else {
-        throw new Error(`No account found for address: ${addedAccountAddress}`);
-      }
-    }
-
-    return addedAccountAddress;
-  }
 
   /**
    * Verifies the validity of the current vault's seed phrase.

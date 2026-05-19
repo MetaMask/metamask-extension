@@ -90,6 +90,7 @@
   },
   "AuthenticationController": {
     "isSignedIn": "boolean",
+    "needsProfilePairing": "boolean",
     "srpSessionData": "object"
   },
   "BridgeController": {
@@ -123,6 +124,11 @@
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
+      },
+      "MON": {
+        "conversionDate": "object",
+        "conversionRate": null,
+        "usdConversionRate": null
       },
       "POL": {
         "conversionDate": null,
@@ -332,7 +338,8 @@
     "rewardsSeasonStatuses": "object",
     "rewardsSeasons": "object",
     "rewardsSubscriptionTokens": "object",
-    "rewardsSubscriptions": "object"
+    "rewardsSubscriptions": "object",
+    "rewardsVipPerpsFees": "object"
   },
   "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",

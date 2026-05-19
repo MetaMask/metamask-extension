@@ -57,7 +57,6 @@ import {
   MULTICHAIN_ACCOUNT_DETAILS_PAGE_ROUTE,
   MULTICHAIN_WALLET_DETAILS_PAGE_ROUTE,
   MULTICHAIN_SMART_ACCOUNT_PAGE_ROUTE,
-  NONEVM_BALANCE_CHECK_ROUTE,
   NETWORKS_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
   CUSTOM_TOKEN_IMPORT_ROUTE,
@@ -96,10 +95,8 @@ import {
   hideKeyringRemovalResultModal,
 } from '../../store/actions';
 import { pageChanged } from '../../ducks/history/history';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../ducks/metamask/metamask';
+import { getCompletedOnboarding } from '../../ducks/metamask/metamask';
+import { getIsUnlocked } from '../../ducks/metamask/base-selectors';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
@@ -227,9 +224,6 @@ const MultichainAccountDetailsPage = mmLazy(
 );
 const SmartAccountPage = mmLazy(
   () => import('../multichain-accounts/smart-account-page/index.ts'),
-);
-const NonEvmBalanceCheck = mmLazy(
-  () => import('../nonevm-balance-check/index.tsx'),
 );
 const ShieldPlan = mmLazy(() => import('../shield/plan/index.ts'));
 const PerpsMarketDetailPage = mmLazy(
@@ -492,10 +486,6 @@ export const routeConfig = [
           {
             path: `${MUSD_CONVERSION_ROUTE}/*`,
             element: <MusdConversionPage />,
-          },
-          {
-            path: NONEVM_BALANCE_CHECK_ROUTE,
-            element: <NonEvmBalanceCheck />,
           },
           {
             path: SHIELD_PLAN_ROUTE,

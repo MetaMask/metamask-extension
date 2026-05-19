@@ -4,6 +4,7 @@ import { ToastListener } from './toast-listener';
 
 const mockUseSelector = jest.fn();
 const mockUseSmartTransactionToasts = jest.fn();
+const mockPerpsDepositToast = jest.fn(() => null);
 const mockUsePerpsWithdrawTransactionToasts = jest.fn();
 const mockIsInteractiveUI = jest.fn();
 
@@ -15,12 +16,20 @@ jest.mock('../../../../shared/lib/selectors/smart-transactions', () => ({
   getExtensionSkipTransactionStatusPage: jest.fn(),
 }));
 
+jest.mock('../../../ducks/metamask/metamask', () => ({
+  getIsUnlocked: jest.fn(),
+}));
+
 jest.mock('../../../../shared/lib/environment-type', () => ({
   isInteractiveUI: () => mockIsInteractiveUI(),
 }));
 
 jest.mock('./useSmartTransactionToasts', () => ({
   useSmartTransactionToasts: () => mockUseSmartTransactionToasts(),
+}));
+
+jest.mock('../perps/perps-deposit-toast', () => ({
+  PerpsDepositToast: () => mockPerpsDepositToast(),
 }));
 
 jest.mock('./usePerpsWithdrawTransactionToasts', () => ({
@@ -36,11 +45,15 @@ describe('ToastListener', () => {
   function renderToastListener({
     transactionToastEnabled,
     isInteractive,
+    isUnlocked = true,
   }: {
     transactionToastEnabled: boolean;
     isInteractive: boolean;
+    isUnlocked?: boolean;
   }) {
-    mockUseSelector.mockReturnValue(transactionToastEnabled);
+    mockUseSelector
+      .mockReturnValueOnce(transactionToastEnabled)
+      .mockReturnValueOnce(isUnlocked);
     mockIsInteractiveUI.mockReturnValue(isInteractive);
     render(<ToastListener />);
   }
@@ -65,13 +78,14 @@ describe('ToastListener', () => {
     expect(mockUsePerpsWithdrawTransactionToasts).toHaveBeenCalledTimes(1);
   });
 
-  it('does not mount toast hooks in non-interactive UI', () => {
+  it('does not mount toast listeners in non-interactive UI', () => {
     renderToastListener({
       transactionToastEnabled: true,
       isInteractive: false,
     });
 
     expect(mockUseSmartTransactionToasts).not.toHaveBeenCalled();
+    expect(mockPerpsDepositToast).not.toHaveBeenCalled();
     expect(mockUsePerpsWithdrawTransactionToasts).not.toHaveBeenCalled();
   });
 });
