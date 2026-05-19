@@ -7,7 +7,9 @@ import {
   Text,
 } from '../../../../component-library';
 import {
+  AlignItems,
   BorderRadius,
+  Display,
   IconColor,
   TextColor,
   TextVariant,
