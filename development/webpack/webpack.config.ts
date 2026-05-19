@@ -16,7 +16,6 @@ import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import rtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import tailwindcss from 'tailwindcss';
 import { discardFontFace } from '../postcss-plugins/discard-font-face';
 import { loadBuildTypesConfig } from '../lib/build-type';
@@ -24,7 +23,6 @@ import {
   getMinimizers,
   NODE_MODULES_RE,
   UI_COMPONENT_RE,
-  __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
   UI_DIR_RE,
@@ -219,11 +217,6 @@ if (args.lavamoat) {
   } = require('./utils/plugins/LavamoatPlugin');
   plugins.push(lavamoatPlugin(args), lavamoatUnsafeLayerPlugin);
 }
-// enable React Refresh in 'development' mode when `watch` is enabled
-if (__HMR_READY__ && isDevelopment && args.watch) {
-  const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
-  plugins.push(new ReactRefreshWebpackPlugin());
-}
 if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
@@ -244,7 +237,7 @@ if (args.bundleAnalyzer) {
 
 // #endregion plugins
 
-const swcConfig = { args, browsersListQuery, isDevelopment };
+const swcConfig = { browsersListQuery, isDevelopment };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);

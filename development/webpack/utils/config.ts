@@ -141,6 +141,13 @@ export function getVariables(
   variables.set('ENABLE_SENTRY', args.sentry.toString());
   variables.set('ENABLE_SNOW', args.snow.toString());
   variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
+  // `ENABLE_DEV_SERVER` is true when the build runs under
+  // `yarn webpack --watch` in development mode. `bootstrap.ts` uses this
+  // to conditionally connect to webpack-dev-server.
+  variables.set(
+    'ENABLE_DEV_SERVER',
+    (isDevBuild && args.watch === true).toString(),
+  );
 
   // Validate required production variables
   if (args.validateEnv && env === ENVIRONMENTS.PRODUCTION) {

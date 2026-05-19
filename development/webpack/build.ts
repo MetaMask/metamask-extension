@@ -1,6 +1,6 @@
 import { webpack } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
-import { noop, logStats, __HMR_READY__ } from './utils/helpers';
+import { noop, logStats } from './utils/helpers';
 import config from './webpack.config';
 import { MODES } from './utils/constants';
 
@@ -18,21 +18,22 @@ export function build(onComplete: () => void = noop) {
 
   const { watch, ...options } = config;
   const compiler = webpack(options);
-  if (__HMR_READY__ && watch) {
-    // DISABLED BECAUSE WE AREN'T `__HMR_READY__` YET
-    // Use `webpack-dev-server` to enable HMR
+  if (isDevelopment && watch) {
     const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
     const serverOptions = {
-      hot: isDevelopment,
-      liveReload: isDevelopment,
-      server: {
-        // TODO: is there any benefit to using https?
-        type: 'https',
-      },
+      hot: false,
+      liveReload: true,
       // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
       host: 'localhost',
+      // if you change the port here, also update the matching value in
+      // `app/scripts/load/bootstrap.ts` — the bootstrap import URL hardcodes it
+      port: 8080,
+      // client injection is disabled because the live-reload client is wired up
+      // explicitly from `app/scripts/load/bootstrap.ts` only for UI entries.
+      client: false,
       devMiddleware: {
-        // browsers need actual files on disk
+        // browsers need actual files on disk; extension pages are loaded via
+        // `chrome-extension://`, not from the dev-server HTTP origin.
         writeToDisk: true,
       },
       // we don't need/have a "static" directory, so disable it
@@ -45,7 +46,8 @@ export function build(onComplete: () => void = noop) {
   } else {
     console.error(`🦊 Running ${options.mode} build…`);
     if (watch) {
-      // once HMR is ready (__HMR_READY__ variable), this section should be removed.
+      // `--mode production --watch` falls through here: rebuild on change,
+      // no dev server, no HMR.
       compiler.watch(options.watchOptions, (err, stats) => {
         logStats(err ?? undefined, stats);
         console.error('🦊 Watching for changes…');
