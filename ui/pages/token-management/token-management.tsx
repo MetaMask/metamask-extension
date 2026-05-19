@@ -95,6 +95,7 @@ import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../components/component-library';
+import Preloader from '../../components/ui/icon/preloader';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -1065,6 +1066,7 @@ export const TokenManagementPage = () => {
         ignoredEvmAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? ignoredEvmAssetIds.has(evmImportedKey) : false) ||
         isIgnoredMultichainAsset;
+      const isPending = pendingKeys.has(lowerAssetId);
 
       return (
         <TokenManagementCell
@@ -1081,8 +1083,9 @@ export const TokenManagementPage = () => {
             allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
             payload.caipChainId
           }
-          isOn={(isImported && !isHidden) || payload.isNative}
-          disabled={payload.isNative || pendingKeys.has(lowerAssetId)}
+          isOn={isPending || (isImported && !isHidden) || payload.isNative}
+          disabled={payload.isNative || isPending}
+          isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
           showToggle={!payload.isNative}
           testIdSuffix={`search-${lowerAssetId}`}
@@ -1272,15 +1275,10 @@ export const TokenManagementPage = () => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={6}
+      aria-label={t('loading')}
       data-testid="token-management-search-loading"
     >
-      <Text
-        variant={TextVariant.BodyMd}
-        textAlign={TextAlign.Center}
-        color={TextColor.TextAlternative}
-      >
-        {t('loading')}
-      </Text>
+      <Preloader size={24} />
     </Box>
   );
 
@@ -1290,15 +1288,10 @@ export const TokenManagementPage = () => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={4}
+      aria-label={t('loading')}
       data-testid="token-management-pagination-loading"
     >
-      <Text
-        variant={TextVariant.BodySm}
-        textAlign={TextAlign.Center}
-        color={TextColor.TextAlternative}
-      >
-        {t('loading')}
-      </Text>
+      <Preloader size={16} />
     </Box>
   ) : null;
 
