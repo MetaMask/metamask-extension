@@ -38,20 +38,40 @@ jobs:
       VERSION: ${{ inputs.version }}
       RELEASE_TAG: v${{ inputs.version }}
       ZIP_NAME: metamask-chrome-${{ inputs.version }}.zip
-      WIF_PROVIDER: ${{ inputs.target == 'beta' && vars.WIF_PROVIDER_BETA || vars.WIF_PROVIDER }}
-      WIF_SERVICE_ACCOUNT: ${{ inputs.target == 'beta' && vars.WIF_SERVICE_ACCOUNT_BETA || vars.WIF_SERVICE_ACCOUNT }}
-      EXTENSION_ID: ${{ inputs.target == 'beta' && vars.EXTENSION_ID_BETA || vars.EXTENSION_ID }}
-      PUBLISHER_EMAIL: ${{ inputs.target == 'beta' && vars.PUBLISHER_EMAIL_BETA || vars.PUBLISHER_EMAIL }}
     steps:
       - name: Validate inputs and configuration
+        env:
+          TARGET: ${{ inputs.target }}
+          WIF_PROVIDER_BETA: ${{ vars.WIF_PROVIDER_BETA }}
+          WIF_SERVICE_ACCOUNT_BETA: ${{ vars.WIF_SERVICE_ACCOUNT_BETA }}
+          EXTENSION_ID_BETA: ${{ vars.EXTENSION_ID_BETA }}
+          PUBLISHER_EMAIL_BETA: ${{ vars.PUBLISHER_EMAIL_BETA }}
+          WIF_PROVIDER_PROD: ${{ vars.WIF_PROVIDER }}
+          WIF_SERVICE_ACCOUNT_PROD: ${{ vars.WIF_SERVICE_ACCOUNT }}
+          EXTENSION_ID_PROD: ${{ vars.EXTENSION_ID }}
+          PUBLISHER_EMAIL_PROD: ${{ vars.PUBLISHER_EMAIL }}
         run: |
           set -euo pipefail
           if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
             echo "::error::Invalid version format: ${VERSION}"
             exit 1
           fi
-          if [[ "${{ inputs.target }}" == "production" && "${{ github.ref }}" != "refs/heads/main" ]]; then
+          if [[ "${TARGET}" == "production" && "${{ github.ref }}" != "refs/heads/main" ]]; then
             echo "::error::Production uploads must run from the main branch (current: ${{ github.ref }})"
+            exit 1
+          fi
+          if [[ "${TARGET}" == "beta" ]]; then
+            WIF_PROVIDER="${WIF_PROVIDER_BETA}"
+            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_BETA}"
+            EXTENSION_ID="${EXTENSION_ID_BETA}"
+            PUBLISHER_EMAIL="${PUBLISHER_EMAIL_BETA}"
+          elif [[ "${TARGET}" == "production" ]]; then
+            WIF_PROVIDER="${WIF_PROVIDER_PROD}"
+            WIF_SERVICE_ACCOUNT="${WIF_SERVICE_ACCOUNT_PROD}"
+            EXTENSION_ID="${EXTENSION_ID_PROD}"
+            PUBLISHER_EMAIL="${PUBLISHER_EMAIL_PROD}"
+          else
+            echo "::error::Invalid target: ${TARGET}"
             exit 1
           fi
           missing=""
@@ -61,15 +81,21 @@ jobs:
             fi
           done
           if [[ -n "${missing}" ]]; then
-            echo "::error::Missing repository variables for target '${{ inputs.target }}':${missing}"
+            echo "::error::Missing repository variables for target '${TARGET}':${missing}"
             exit 1
           fi
+          {
+            echo "WIF_PROVIDER=${WIF_PROVIDER}"
+            echo "WIF_SERVICE_ACCOUNT=${WIF_SERVICE_ACCOUNT}"
+            echo "EXTENSION_ID=${EXTENSION_ID}"
+            echo "PUBLISHER_EMAIL=${PUBLISHER_EMAIL}"
+          } >> "${GITHUB_ENV}"
           {
             echo "## CWS upload"
             echo ""
             echo "| Field | Value |"
             echo "|-------|-------|"
-            echo "| Target | \`${{ inputs.target }}\` |"
+            echo "| Target | \`${TARGET}\` |"
             echo "| Version | \`${VERSION}\` |"
             echo "| Release tag | \`${RELEASE_TAG}\` |"
             echo "| Asset | \`${ZIP_NAME}\` |"
@@ -139,6 +165,17 @@ jobs:
             exit 1
           fi
 
+          UPLOAD_STATE=$(jq -r '.uploadState // empty' /tmp/response.json)
+          echo "upload_state=${UPLOAD_STATE}" >> "${GITHUB_OUTPUT}"
+          if [[ "${UPLOAD_STATE}" != "SUCCESS" ]]; then
+            echo "::error::CWS upload failed: uploadState=${UPLOAD_STATE:-<missing>}"
+            if jq -e '.itemError | length > 0' /tmp/response.json >/dev/null 2>&1; then
+              echo "::error::itemError:"
+              jq -c '.itemError[]' /tmp/response.json
+            fi
+            exit 1
+          fi
+
           echo "Package uploaded (draft/pending review). Not published to users."
 
       - name: Summary
@@ -151,6 +188,7 @@ jobs:
             echo "| Field | Value |"
             echo "|-------|-------|"
             echo "| HTTP status | \`${{ steps.cws-upload.outputs.http_code || 'n/a' }}\` |"
+            echo "| CWS uploadState | \`${{ steps.cws-upload.outputs.upload_state || 'n/a' }}\` |"
             echo "| Published to users | no (upload only) |"
             echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
           } >> "${GITHUB_STEP_SUMMARY}"
