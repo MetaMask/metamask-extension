@@ -8,6 +8,7 @@ import type {
 } from '@metamask/approval-controller';
 import type { GetSubjectMetadata } from '@metamask/permission-controller';
 import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
+import type { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import {
   SnapControllerGetPermittedSnapsAction,
   SnapControllerInstallSnapsAction,
@@ -70,6 +71,7 @@ type AllowedInitializationActions =
   | MultichainRoutingServiceIsSupportedScopeAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | SnapPermissionSpecificationsActions
+  | SnapAccountServiceGetLegacySnapKeyringAction
   | ApprovalControllerAddRequestAction;
 
 export type PermissionControllerInitMessenger = ReturnType<
@@ -101,10 +103,7 @@ export function getPermissionControllerInitMessenger(
       'AppStateController:getUnlockPromise',
       'AccountsController:listAccounts',
       'CurrencyRateController:getState',
-      'KeyringController:getKeyringsByType',
       'KeyringController:withKeyringV2Unsafe',
-      'KeyringController:withKeyring',
-      'KeyringController:addNewKeyring',
       'MultichainRoutingService:isSupportedScope',
       'MultichainRoutingService:getSupportedAccounts',
       'NetworkController:findNetworkClientIdByChainId',
@@ -120,6 +119,7 @@ export function getPermissionControllerInitMessenger(
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
       'SnapInterfaceController:setInterfaceDisplayed',
+      'SnapAccountService:getLegacySnapKeyring',
       'ApprovalController:addRequest',
     ],
   });
