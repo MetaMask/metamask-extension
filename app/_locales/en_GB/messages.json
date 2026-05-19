@@ -22,6 +22,12 @@
   "QRHardwareSignRequestCancel": {
     "message": "Reject"
   },
+  "percent": {
+    "message": "$1%"
+  },
+  "percentFee": {
+    "message": "$1% fee"
+  },
   "QRHardwareSignRequestDescription": {
     "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature"
   },

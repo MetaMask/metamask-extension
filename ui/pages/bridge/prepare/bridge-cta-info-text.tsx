@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BRIDGE_MM_FEE_RATE, isCrossChain } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
 import { PopoverPosition, Text } from '../../../components/component-library';
 import {
   getBridgeQuotes,
   BridgeAppState,
   getValidationErrors,
+  getFromAccount,
+  getFromChain,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -19,11 +20,16 @@ import { Row, Tooltip } from '../layout';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { bpsToPercentage } from '../../../ducks/bridge/utils';
+import { RewardsVipTag } from '../../../components/app/rewards/RewardsVipTag';
+import { formatAccountToCaipAccountId } from '../../../helpers/utils/rewards-utils';
+import { BRIDGE_MM_FEE_RATE, isCrossChain } from '@metamask/bridge-controller';
 
 export const BridgeCTAInfoText = () => {
   const t = useI18nContext();
 
   const { activeQuote } = useSelector(getBridgeQuotes);
+  const fromAccount = useSelector(getFromAccount);
+  const fromChain = useSelector(getFromChain);
 
   const { isQuoteExpired } = useSelector((state) =>
     getValidationErrors(state as BridgeAppState, Date.now()),
@@ -53,7 +59,22 @@ export const BridgeCTAInfoText = () => {
   // Get the fee percentage from the quote or fallback to default
   // @ts-expect-error: controller types are not up to date yet
   const quoteBpsFee = activeQuote.quote.feeData?.metabridge?.quoteBpsFee;
-  const feePercentage = bpsToPercentage(quoteBpsFee) ?? BRIDGE_MM_FEE_RATE;
+  // @ts-expect-error: controller types are not up to date yet
+  const baseBpsFee = activeQuote.quote.feeData?.metabridge?.baseBpsFee;
+  const quoteFeePercentage = bpsToPercentage(quoteBpsFee) ?? BRIDGE_MM_FEE_RATE;
+  const baseFeePercentage = bpsToPercentage(baseBpsFee) ?? BRIDGE_MM_FEE_RATE;
+
+  const caipAccountId = formatAccountToCaipAccountId(fromAccount.address, fromChain?.chainId);
+  // Render VIP tag and fees
+if (caipAccountId && baseFeePercentage && quoteFeePercentage && baseFeePercentage !== quoteFeePercentage) {
+  return (
+    <Row gap={1} justifyContent={JustifyContent.center}>
+      <RewardsVipTag accountId={caipAccountId} />
+      <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative} style={{ textDecoration: 'line-through' }}>{t('percent', [baseFeePercentage])}</Text>
+      <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>{t('percentFee', [quoteFeePercentage])}</Text>
+    </Row>
+  );
+}
 
   return hasMMFee || hasApproval ? (
     <Row
@@ -63,7 +84,7 @@ export const BridgeCTAInfoText = () => {
     >
       <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
         {[
-          hasMMFee ? t('rateIncludesMMFee', [feePercentage]) : null,
+          hasMMFee ? t('rateIncludesMMFee', [quoteFeePercentage]) : null,
           hasApproval &&
             (isCrossChain(
               activeQuote.quote.srcChainId,
