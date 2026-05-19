@@ -352,7 +352,12 @@ function RevealSeedPage() {
     }
     if (screen === PASSWORD_PROMPT_SCREEN) {
       if (isMalicious) {
-        return <RevealSeedMaliciousBlock onDismiss={handleBack} />;
+        return (
+          <RevealSeedMaliciousBlock
+            onDismiss={handleBack}
+            hostname={scanResult?.hostname ?? undefined}
+          />
+        );
       }
       return (
         <PasswordPrompt

@@ -18,10 +18,12 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 
 type RevealSeedMaliciousBlockProps = {
   onDismiss: () => void;
+  hostname?: string;
 };
 
 export function RevealSeedMaliciousBlock({
   onDismiss,
+  hostname,
 }: Readonly<RevealSeedMaliciousBlockProps>) {
   const t = useI18nContext();
 
@@ -38,7 +40,7 @@ export function RevealSeedMaliciousBlock({
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
         gap={4}
-        className="w-full"
+        className="w-full pt-10"
       >
         <Icon
           name={IconName.Danger}
@@ -61,7 +63,9 @@ export function RevealSeedMaliciousBlock({
           textAlign={TextAlign.Center}
           data-testid="reveal-seed-malicious-block-body"
         >
-          {t('srpRevealMaliciousBlockBody')}
+          {t('srpRevealMaliciousBlockBody', [
+            <strong key="hostname">{hostname ?? ''}</strong>,
+          ])}
         </Text>
       </Box>
       <Box className="w-full mt-auto cta-footer">
