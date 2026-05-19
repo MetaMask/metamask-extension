@@ -3,19 +3,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 
-import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
-import { getActiveQrCodeScanRequest } from '../../../selectors';
+import { HardwareKeyringType } from '../../../shared/constants/hardware-wallets';
+import { getHardwareWalletType } from '../../../shared/lib/selectors/keyring';
+import { getActiveQrCodeScanRequest } from '../../selectors';
 import {
   cancelQrCodeScan,
   cancelTx,
   completeQrCodeScan,
   rejectPendingApproval,
-} from '../../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../../store/store';
-import { HardwareWalletSignatureStatus } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import { isQrHardwareSignRequest } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
+} from '../../store/actions';
+import type { MetaMaskReduxDispatch } from '../../store/store';
+import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { isQrHardwareSignRequest } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletQrStateOptions = {
   signatureState: HardwareWalletSignaturesState;
