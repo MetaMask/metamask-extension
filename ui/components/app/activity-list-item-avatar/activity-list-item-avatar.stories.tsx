@@ -62,7 +62,9 @@ DualTokenStory.args = {
   config: dualConfig,
 };
 
-export const WithChainBadgeStory: StoryFn<typeof ActivityListItemAvatar> = () => (
+export const WithChainBadgeStory: StoryFn<
+  typeof ActivityListItemAvatar
+> = () => (
   <ChainBadge chainId="0x1">
     <ActivityListItemAvatar config={dualConfig} />
   </ChainBadge>
