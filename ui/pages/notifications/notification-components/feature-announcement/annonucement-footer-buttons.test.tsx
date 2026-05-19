@@ -6,10 +6,12 @@ import {
   MetaMetricsContext,
   type MetaMetricsContextValue,
 } from '../../../../contexts/metametrics';
+import { enLocale as messages } from '../../../../../test/lib/i18n-helpers';
 import { ExternalLinkButton } from './annonucement-footer-buttons';
 import type { FeatureAnnouncementNotification } from './types';
 
 const mockTrackEvent = jest.fn();
+const linkText = messages.bridgeMarketClosedModalLearnMore.message;
 
 const metametricsContext = {
   trackEvent: mockTrackEvent,
@@ -28,7 +30,7 @@ function createFeatureAnnouncementNotification(
     data: {
       ...rawNotification.data,
       externalLink: {
-        externalLinkText: 'Learn more',
+        externalLinkText: linkText,
         externalLinkUrl,
       },
     },
@@ -57,7 +59,7 @@ describe('Feature announcement footer buttons', () => {
   it('opens a non-deep-link external URL in a new tab', async () => {
     renderExternalLinkButton('https://example.com');
 
-    fireEvent.click(screen.getByRole('link', { name: 'Learn more' }));
+    fireEvent.click(screen.getByRole('link', { name: linkText }));
 
     await waitFor(() =>
       expect(global.platform.openTab).toHaveBeenCalledWith({
@@ -72,7 +74,7 @@ describe('Feature announcement footer buttons', () => {
       'https://link.metamask.io/shield?showShieldEntryModal=true&utm_source=contentful',
     );
 
-    fireEvent.click(screen.getByRole('link', { name: 'Learn more' }));
+    fireEvent.click(screen.getByRole('link', { name: linkText }));
 
     await waitFor(() =>
       expect(global.platform.openExtensionInBrowser).toHaveBeenCalledWith(
@@ -87,7 +89,7 @@ describe('Feature announcement footer buttons', () => {
   it('opens a deep link redirect URL in a new tab', async () => {
     renderExternalLinkButton('https://link.metamask.io/buy?amount=100');
 
-    fireEvent.click(screen.getByRole('link', { name: 'Learn more' }));
+    fireEvent.click(screen.getByRole('link', { name: linkText }));
 
     await waitFor(() =>
       expect(global.platform.openTab).toHaveBeenCalledWith({
