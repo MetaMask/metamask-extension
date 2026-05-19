@@ -6235,6 +6235,10 @@
     "message": "Closing all positions",
     "description": "In-progress toast text shown while batch closing all perps positions"
   },
+  "perpsToastCloseAllPartial": {
+    "message": "Closed $1 of $2 positions",
+    "description": "Warning toast text shown when only some perps positions were successfully closed. $1 is success count, $2 is total attempted count."
+  },
   "perpsToastCloseAllSuccess": {
     "message": "All positions closed",
     "description": "Success toast text shown when all perps positions are successfully closed"

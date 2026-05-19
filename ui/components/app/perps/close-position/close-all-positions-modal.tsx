@@ -34,7 +34,12 @@ import {
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
+import { usePerpsMetamaskFeeDiscountBips } from '../../../../hooks/perps/usePerpsMetamaskFeeDiscountBips';
 import type { Position } from '../types';
+
+const BASIS_POINTS_DIVISOR = 10000;
+const ORIGINAL_METAMASK_FEE_BIPS =
+  PERPS_FALLBACK_FEE_RATES.metamaskFeeRate * BASIS_POINTS_DIVISOR;
 
 export type CloseAllPositionsModalProps = {
   isOpen: boolean;
@@ -94,18 +99,24 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
     [symbolNotionalPairs],
   );
 
-  const [estimatedFees, setEstimatedFees] = useState(0);
+  const [rawProtocolFees, setRawProtocolFees] = useState(0);
+  const [rawMetamaskFees, setRawMetamaskFees] = useState(0);
   const [isLoadingFees, setIsLoadingFees] = useState(
     isOpen && positions.length > 0,
   );
   const feeRequestId = useRef(0);
+
+  const metamaskFeeDiscountBips = usePerpsMetamaskFeeDiscountBips(
+    ORIGINAL_METAMASK_FEE_BIPS,
+  );
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
 
-    setEstimatedFees(0);
+    setRawProtocolFees(0);
+    setRawMetamaskFees(0);
 
     const entries: [string, number][] = JSON.parse(symbolNotionalKey);
 
@@ -124,19 +135,43 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
         submitRequestToBackground<FeeCalculationResult>('perpsCalculateFees', [
           { orderType: 'market' as const, isMaker: false, symbol },
         ])
-          .then(
-            (result) =>
-              notional * (result?.feeRate ?? PERPS_FALLBACK_FEE_RATES.feeRate),
-          )
-          .catch(() => notional * PERPS_FALLBACK_FEE_RATES.feeRate),
+          .then((result) => ({
+            protocolFee:
+              notional *
+              (result?.protocolFeeRate ??
+                PERPS_FALLBACK_FEE_RATES.protocolFeeRate),
+            metamaskFee:
+              notional *
+              (result?.metamaskFeeRate ??
+                PERPS_FALLBACK_FEE_RATES.metamaskFeeRate),
+          }))
+          .catch(() => ({
+            protocolFee:
+              notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
+            metamaskFee:
+              notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
+          })),
       ),
     ).then((perSymbolFees) => {
       if (currentId === feeRequestId.current) {
-        setEstimatedFees(perSymbolFees.reduce((sum, fee) => sum + fee, 0));
+        setRawProtocolFees(
+          perSymbolFees.reduce((sum, f) => sum + f.protocolFee, 0),
+        );
+        setRawMetamaskFees(
+          perSymbolFees.reduce((sum, f) => sum + f.metamaskFee, 0),
+        );
         setIsLoadingFees(false);
       }
     });
   }, [isOpen, symbolNotionalKey]);
+
+  const estimatedFees = useMemo(() => {
+    const discountFactor =
+      metamaskFeeDiscountBips !== undefined && metamaskFeeDiscountBips > 0
+        ? 1 - metamaskFeeDiscountBips / BASIS_POINTS_DIVISOR
+        : 1;
+    return rawProtocolFees + rawMetamaskFees * discountFactor;
+  }, [rawProtocolFees, rawMetamaskFees, metamaskFeeDiscountBips]);
 
   const roundedMargin = useMemo(
     () => Math.round(totalMargin * 100) / 100,

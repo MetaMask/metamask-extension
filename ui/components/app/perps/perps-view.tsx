@@ -203,14 +203,29 @@ export const PerpsView: React.FC = () => {
         });
         return;
       }
-      track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
-        [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
-        [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]:
-          result?.successCount ?? positionCount,
-      });
-      replacePerpsToastByKey({
-        key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
-      });
+
+      const successCount = result?.successCount ?? positionCount;
+      const failureCount = result?.failureCount ?? 0;
+
+      if (failureCount > 0) {
+        setBatchActionError(t('somethingWentWrong'));
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.FAILED,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_ALL_PARTIAL,
+          messageParams: [successCount, positionCount],
+        });
+      } else {
+        track(MetaMetricsEventName.PerpsPositionCloseTransaction, {
+          [PERPS_EVENT_PROPERTY.STATUS]: PERPS_EVENT_VALUE.STATUS.SUCCESS,
+          [PERPS_EVENT_PROPERTY.NUMBER_POSITIONS_CLOSED]: successCount,
+        });
+        replacePerpsToastByKey({
+          key: PERPS_TOAST_KEYS.CLOSE_ALL_SUCCESS,
+        });
+      }
 
       try {
         const fresh = await submitRequestToBackground<Position[]>(
