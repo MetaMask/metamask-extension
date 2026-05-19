@@ -25,7 +25,11 @@ import {
   type BundleSizeDebugEntrypoint,
 } from './stats';
 import { schema } from './schema';
-import type { ManifestPluginOptions } from './types';
+import type {
+  BundleSizeCategory,
+  BundleSizeEntrypoint,
+  ManifestPluginOptions,
+} from './types';
 import { createBrowserZipBuilder, type ZipCompressionOptions } from './zip';
 
 const { CachedSource, RawSource } = sources;
@@ -44,6 +48,15 @@ type CollectedBundleSizeStats = {
 
 const NAME = 'ManifestPlugin';
 const SOURCEMAPS_DIRECTORY = 'sourcemaps';
+const HTML_ENTRYPOINT_DIRECTORIES = [
+  path.join('html', 'ui'),
+  path.join('html', 'app'),
+] as const;
+const HTML_SCRIPT_SRC_PATTERN =
+  /<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/giu;
+const HTML_INCLUDE_PATTERN =
+  /<%~?\s*include\(\s*["']([^"']+)["']/gu;
+const NUMERIC_ENTRYPOINT_SUFFIX_PATTERN = /^(?<baseName>.+)\.\d+$/u;
 
 function isJavaScriptAsset(assetName: string): boolean {
   return (
@@ -75,6 +88,20 @@ function emitJsonAsset(
   });
 }
 
+function addToSetMap<TKey, TValue>(
+  map: Map<TKey, Set<TValue>>,
+  key: TKey,
+  value: TValue,
+): void {
+  const values = map.get(key) ?? new Set<TValue>();
+  values.add(value);
+  map.set(key, values);
+}
+
+function isLocalScriptReference(scriptPath: string): boolean {
+  return scriptPath.startsWith('.') || scriptPath.startsWith('/');
+}
+
 /**
  * A webpack plugin that generates extension manifests for browsers and organizes
  * assets into browser-specific directories and optionally zips them.
@@ -96,6 +123,22 @@ export class ManifestPlugin<Z extends boolean> {
     'use-snow',
     'bootstrap',
   ]);
+
+  private bundleSizeCategories: Map<string, Set<BundleSizeCategory>> =
+    new Map();
+
+  private bundleSizeSourcePaths: Map<string, Set<string>> = new Map();
+
+  private bundleSizeOwnerPaths: Map<string, Set<string>> = new Map();
+
+  private bundleSizeOwnerCategories: Map<string, Set<BundleSizeCategory>> =
+    new Map();
+
+  private htmlScriptSourcePaths: Map<string, Set<string>> = new Map();
+
+  private htmlScriptOwnerPaths: Map<string, Set<string>> = new Map();
+
+  private backgroundHtmlFiles: Set<string> = new Set();
 
   /**
    * Returns `true` if the given entrypoint can be split into chunks.
@@ -183,6 +226,93 @@ export class ManifestPlugin<Z extends boolean> {
     return compilation.getAsset(zipAssetPath)!.source.size();
   }
 
+  private getHtmlScriptEntrypointName(entrypointName: string) {
+    if (this.htmlScriptOwnerPaths.has(entrypointName)) {
+      return entrypointName;
+    }
+
+    const baseName = entrypointName.match(NUMERIC_ENTRYPOINT_SUFFIX_PATTERN)
+      ?.groups?.baseName;
+    if (baseName && this.htmlScriptOwnerPaths.has(baseName)) {
+      return baseName;
+    }
+
+    return undefined;
+  }
+
+  private getBundleSizeEntrypointInfo(
+    name: string,
+    ownerPath?: string,
+  ): BundleSizeEntrypoint {
+    const sourcePaths = new Set(this.bundleSizeSourcePaths.get(name));
+    const htmlScriptEntrypointName = this.getHtmlScriptEntrypointName(name);
+
+    if (htmlScriptEntrypointName) {
+      for (const sourcePath of this.htmlScriptSourcePaths.get(
+        htmlScriptEntrypointName,
+      ) ?? []) {
+        sourcePaths.add(sourcePath);
+      }
+    }
+
+    return {
+      name,
+      sourcePaths: [...sourcePaths],
+      ...(ownerPath ? { ownerPath } : {}),
+    };
+  }
+
+  private getBundleSizeCategories(
+    statsOptions: Exclude<ManifestPluginOptions<Z>['stats'], false | undefined>,
+    name: string,
+  ): Set<BundleSizeCategory> {
+    const categories = new Set(this.bundleSizeCategories.get(name));
+
+    if (categories.size > 0) {
+      return categories;
+    }
+
+    const ownerPaths = new Set(this.bundleSizeOwnerPaths.get(name));
+    const htmlScriptEntrypointName = this.getHtmlScriptEntrypointName(name);
+
+    if (htmlScriptEntrypointName) {
+      for (const ownerPath of this.htmlScriptOwnerPaths.get(
+        htmlScriptEntrypointName,
+      ) ?? []) {
+        ownerPaths.add(ownerPath);
+      }
+    }
+
+    if (ownerPaths.size === 0) {
+      const category = statsOptions.classifyEntrypoint(
+        this.getBundleSizeEntrypointInfo(name),
+      );
+      if (category) {
+        categories.add(category);
+      }
+      return categories;
+    }
+
+    for (const ownerPath of ownerPaths) {
+      const ownerCategories = this.bundleSizeOwnerCategories.get(ownerPath);
+      if (ownerCategories) {
+        for (const category of ownerCategories) {
+          categories.add(category);
+        }
+        continue;
+      }
+
+      const category = statsOptions.classifyEntrypoint(
+        this.getBundleSizeEntrypointInfo(name, ownerPath),
+      );
+      if (category) {
+        categories.add(category);
+      }
+    }
+
+    return categories;
+  }
+
   /**
    * Collects bundle-size stats from the pre-fanout compilation assets.
    *
@@ -205,9 +335,9 @@ export class ManifestPlugin<Z extends boolean> {
       | undefined = statsOptions.debug ? {} : undefined;
 
     for (const [name, entry] of compilation.entrypoints) {
-      const category = statsOptions.classifyEntrypoint(name);
+      const categories = this.getBundleSizeCategories(statsOptions, name);
 
-      if (!category) {
+      if (categories.size === 0) {
         continue;
       }
 
@@ -217,12 +347,18 @@ export class ManifestPlugin<Z extends boolean> {
       ].flatMap((chunk) => getAssetStats(compilation, chunk.files));
 
       if (debugEntrypoints) {
-        debugEntrypoints[name] = { category, initialFiles, asyncFiles };
+        debugEntrypoints[name] = {
+          categories: [...categories],
+          initialFiles,
+          asyncFiles,
+        };
       }
 
       for (const file of [...initialFiles, ...asyncFiles]) {
-        categoryAssets[category].add(file.name);
-        assetSizes.set(file.name, file.size);
+        for (const category of categories) {
+          categoryAssets[category].add(file.name);
+          assetSizes.set(file.name, file.size);
+        }
       }
     }
 
@@ -590,21 +726,77 @@ export class ManifestPlugin<Z extends boolean> {
     });
   }
 
+  private resetBundleSizeEntrypointMetadata(): void {
+    this.bundleSizeCategories = new Map();
+    this.bundleSizeSourcePaths = new Map();
+    this.bundleSizeOwnerPaths = new Map();
+    this.bundleSizeOwnerCategories = new Map();
+    this.htmlScriptSourcePaths = new Map();
+    this.htmlScriptOwnerPaths = new Map();
+    this.backgroundHtmlFiles = new Set();
+  }
+
+  private collectHtmlOwnedScripts({
+    context,
+    filePath,
+    ownerPath,
+    visitedFiles = new Set<string>(),
+  }: {
+    context: string;
+    filePath: string;
+    ownerPath: string;
+    visitedFiles?: Set<string>;
+  }): void {
+    if (visitedFiles.has(filePath)) {
+      return;
+    }
+    visitedFiles.add(filePath);
+    this.watchedFiles.push(filePath);
+
+    const html = readFileSync(filePath, 'utf8');
+
+    for (const [, scriptPath] of html.matchAll(HTML_SCRIPT_SRC_PATTERN)) {
+      if (!isLocalScriptReference(scriptPath)) {
+        continue;
+      }
+
+      const sourcePath = path.resolve(path.dirname(filePath), scriptPath);
+      const entrypointName = path.parse(sourcePath).name;
+      addToSetMap(this.htmlScriptSourcePaths, entrypointName, sourcePath);
+      addToSetMap(this.htmlScriptOwnerPaths, entrypointName, ownerPath);
+    }
+
+    for (const [, includePath] of html.matchAll(HTML_INCLUDE_PATTERN)) {
+      this.collectHtmlOwnedScripts({
+        context,
+        filePath: path.resolve(context, includePath),
+        ownerPath,
+        visitedFiles,
+      });
+    }
+  }
+
   private addManifestScript = ({
     compiler,
     entries,
     filename,
     opts,
+    category,
   }: {
     compiler: Compiler;
     entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
     opts?: EntryDescriptionNormalized;
+    category?: BundleSizeCategory;
   }) => {
+    if (category) {
+      addToSetMap(this.bundleSizeCategories, filename, category);
+    }
     if (this.addedScripts.has(filename)) return;
     this.addedScripts.add(filename);
     this.selfContainedScripts.add(filename);
     const filePath = path.resolve(compiler.context, filename);
+    addToSetMap(this.bundleSizeSourcePaths, filename, filePath);
     entries[filename] = {
       import: [filePath],
       chunkLoading: false,
@@ -617,15 +809,28 @@ export class ManifestPlugin<Z extends boolean> {
     compiler,
     entries,
     filename,
+    directory,
     opts,
   }: {
     compiler: Compiler;
     entries: Record<string, EntryDescriptionNormalized>;
     filename: string;
+    directory: string;
     opts?: EntryDescriptionNormalized;
   }) => {
     const parsedFileName = path.parse(filename).name;
-    const filePath = path.join(compiler.context, 'html', 'pages', filename);
+    const filePath = path.join(compiler.context, directory, filename);
+    addToSetMap(this.bundleSizeSourcePaths, parsedFileName, filePath);
+    addToSetMap(this.bundleSizeOwnerPaths, parsedFileName, filePath);
+    if (this.backgroundHtmlFiles.has(filename)) {
+      addToSetMap(this.bundleSizeCategories, parsedFileName, 'background');
+      addToSetMap(this.bundleSizeOwnerCategories, filePath, 'background');
+    }
+    this.collectHtmlOwnedScripts({
+      context: compiler.context,
+      filePath,
+      ownerPath: filePath,
+    });
     entries[parsedFileName] = { import: [filePath], ...opts };
   };
 
@@ -633,18 +838,33 @@ export class ManifestPlugin<Z extends boolean> {
     compiler: Compiler,
     entries: Record<string, EntryDescriptionNormalized>,
   ): void {
+    this.resetBundleSizeEntrypointMetadata();
+
     for (const manifest of this.manifests.values()) {
       // collect content_scripts (MV2 + MV3)
       for (const contentScript of manifest.content_scripts ?? []) {
         for (const script of contentScript.js ?? []) {
-          this.addManifestScript({ compiler, entries, filename: script });
+          this.addManifestScript({
+            compiler,
+            entries,
+            filename: script,
+            category: 'contentScripts',
+          });
         }
       }
 
       if (manifest.manifest_version === 2) {
+        if (manifest.background?.page) {
+          this.backgroundHtmlFiles.add(path.basename(manifest.background.page));
+        }
         // collect MV2 background scripts
         for (const script of manifest.background?.scripts ?? []) {
-          this.addManifestScript({ compiler, entries, filename: script });
+          this.addManifestScript({
+            compiler,
+            entries,
+            filename: script,
+            category: 'background',
+          });
         }
         // collect MV2 web accessible resources
         for (const resource of manifest.web_accessible_resources ?? []) {
@@ -660,6 +880,7 @@ export class ManifestPlugin<Z extends boolean> {
             entries,
             filename: manifest.background.service_worker,
             opts: { chunkLoading: 'import-scripts' },
+            category: 'background',
           });
         }
         // collect MV3 web accessible resources
@@ -673,31 +894,34 @@ export class ManifestPlugin<Z extends boolean> {
       }
     }
 
-    let htmlFiles: string[] = [];
-    try {
-      htmlFiles = readdirSync(path.join(compiler.context, 'html', 'pages'));
-    } catch {
-      // directory doesn't exist, no HTML pages to add
-    }
+    for (const directory of HTML_ENTRYPOINT_DIRECTORIES) {
+      let htmlFiles: string[] = [];
+      try {
+        htmlFiles = readdirSync(path.join(compiler.context, directory));
+      } catch {
+        // directory doesn't exist, no HTML pages to add
+      }
 
-    for (const filename of htmlFiles) {
-      // ignore non-htm/html files
-      if (/\.html?$/iu.test(filename)) {
-        // ignore background.html for MV3 extensions.
-        if (
-          this.options.manifest_version === 3 &&
-          filename === 'background.html'
-        ) {
-          continue;
+      for (const filename of htmlFiles) {
+        // ignore non-htm/html files
+        if (/\.html?$/iu.test(filename)) {
+          // ignore background.html for MV3 extensions.
+          if (
+            this.options.manifest_version === 3 &&
+            (filename === 'background.html' ||
+              this.backgroundHtmlFiles.has(filename))
+          ) {
+            continue;
+          }
+          // ignore offscreen.html for MV2 extensions.
+          if (
+            this.options.manifest_version === 2 &&
+            filename === 'offscreen.html'
+          ) {
+            continue;
+          }
+          this.addHtml({ compiler, entries, directory, filename });
         }
-        // ignore offscreen.html for MV2 extensions.
-        if (
-          this.options.manifest_version === 2 &&
-          filename === 'offscreen.html'
-        ) {
-          continue;
-        }
-        this.addHtml({ compiler, entries, filename });
       }
     }
   }

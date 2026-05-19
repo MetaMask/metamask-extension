@@ -139,7 +139,7 @@ export const schema = {
                 'Classifies a webpack entrypoint by runtime surface for bundle-size reporting.',
               instanceof: 'Function',
               tsType:
-                "((name: string) => 'background' | 'ui' | 'other' | 'contentScripts' | null)",
+                "((entrypoint: { name: string; sourcePaths: readonly string[]; ownerPath?: string }) => 'background' | 'ui' | 'other' | 'contentScripts' | null)",
             },
           },
           additionalProperties: false,

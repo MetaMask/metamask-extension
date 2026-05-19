@@ -3,7 +3,7 @@
  */
 
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, sep } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
   ProvidePlugin,
@@ -37,7 +37,10 @@ import { getVariables } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
-import type { BundleSizeCategory } from './utils/plugins/ManifestPlugin/types';
+import type {
+  BundleSizeCategory,
+  BundleSizeEntrypoint,
+} from './utils/plugins/ManifestPlugin/types';
 import { getLatestCommit } from './utils/git';
 import { MODES } from './utils/constants';
 import { BUNDLE_SIZE_SUMMARY_FILE } from './utils/plugins/ManifestPlugin/stats';
@@ -63,53 +66,17 @@ const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
     : [];
-const bundleSizeUiEntrypoints = new Set([
-  'home',
-  'loading',
-  'notification',
-  'popup-init',
-  'popup',
-  'sidepanel',
-]);
-const bundleSizeOtherEntrypoints = new Set([
-  'offscreen',
-  'trezor-usb-permissions',
-  'usb-permissions',
-]);
-const bundleSizeOtherEntrypointPattern = /^offscreen\.\d+$/u;
-const bundleSizeContentScriptEntrypoints = new Set([
-  'scripts/contentscript.js',
-  'scripts/inpage.js',
-  'vendor/trezor/content-script.js',
-]);
-
-// TODO(#41847): Move HTML entrypoints into ownership-specific locations so
-// this classifier no longer needs to know about the current mixed page layout.
+const bundleSizeUiEntrypointPath = `${join(context, 'html', 'ui')}${sep}`;
+const bundleSizeOtherEntrypointPath = `${join(context, 'html', 'app')}${sep}`;
 const classifyBundleSizeEntrypoint = (
-  entrypointName: string,
+  entrypoint: BundleSizeEntrypoint,
 ): BundleSizeCategory | null => {
-  if (
-    // MV3 uses the service-worker.ts entry point for the background script,
-    // while MV2 uses background
-    entrypointName === 'service-worker.ts' ||
-    entrypointName === 'background'
-  ) {
-    return 'background';
-  }
-
-  if (bundleSizeUiEntrypoints.has(entrypointName)) {
+  if (entrypoint.ownerPath?.startsWith(bundleSizeUiEntrypointPath)) {
     return 'ui';
   }
 
-  if (
-    bundleSizeOtherEntrypoints.has(entrypointName) ||
-    bundleSizeOtherEntrypointPattern.test(entrypointName)
-  ) {
+  if (entrypoint.ownerPath?.startsWith(bundleSizeOtherEntrypointPath)) {
     return 'other';
-  }
-
-  if (bundleSizeContentScriptEntrypoints.has(entrypointName)) {
-    return 'contentScripts';
   }
 
   return null;

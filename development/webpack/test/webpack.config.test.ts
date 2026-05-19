@@ -449,33 +449,41 @@ inquire('long');
     );
     assert.strictEqual(manifestPlugin.options.stats.debug, true);
     assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('service-worker.ts'),
-      'background',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('background'),
-      'background',
-    );
-    assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('home'),
+      manifestPlugin.options.stats.classifyEntrypoint({
+        name: 'home',
+        sourcePaths: [],
+        ownerPath: resolve(__dirname, '../../../app/html/ui/home.html'),
+      }),
       'ui',
     );
     assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('offscreen'),
+      manifestPlugin.options.stats.classifyEntrypoint({
+        name: 'offscreen',
+        sourcePaths: [],
+        ownerPath: resolve(__dirname, '../../../app/html/app/offscreen.html'),
+      }),
       'other',
     );
     assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('offscreen.1'),
+      manifestPlugin.options.stats.classifyEntrypoint({
+        name: 'offscreen.1',
+        sourcePaths: [],
+        ownerPath: resolve(__dirname, '../../../app/html/app/offscreen.html'),
+      }),
       'other',
     );
     assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint(
-        'scripts/contentscript.js',
-      ),
-      'contentScripts',
+      manifestPlugin.options.stats.classifyEntrypoint({
+        name: 'service-worker.ts',
+        sourcePaths: [],
+      }),
+      null,
     );
     assert.strictEqual(
-      manifestPlugin.options.stats.classifyEntrypoint('unknown'),
+      manifestPlugin.options.stats.classifyEntrypoint({
+        name: 'unknown',
+        sourcePaths: [],
+      }),
       null,
     );
 

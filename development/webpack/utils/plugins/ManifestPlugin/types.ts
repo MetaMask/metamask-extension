@@ -6,6 +6,12 @@ export type BundleSizeCategory =
   | 'other'
   | 'contentScripts';
 
+export type BundleSizeEntrypoint = {
+  name: string;
+  sourcePaths: readonly string[];
+  ownerPath?: string;
+};
+
 export type BundleSizeStatsOptions = {
   /**
    * Output file path template for the emitted summary, relative to webpack's
@@ -24,7 +30,9 @@ export type BundleSizeStatsOptions = {
    *
    * Return `null` to omit.
    */
-  classifyEntrypoint: (name: string) => BundleSizeCategory | null;
+  classifyEntrypoint: (
+    entrypoint: BundleSizeEntrypoint,
+  ) => BundleSizeCategory | null;
 };
 
 export type BaseManifestPluginOptions<Zip extends boolean> = {
