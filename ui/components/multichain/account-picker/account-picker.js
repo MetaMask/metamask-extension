@@ -117,12 +117,12 @@ export const AccountPicker = ({
   className = '',
   showAvatarAccount = true,
   block = false,
-  paddingLeft,
-  paddingRight,
-  paddingTop,
-  paddingBottom,
-  borderRadius,
-  borderColor,
+  paddingLeft = /** @type {number | undefined} */ (undefined),
+  paddingRight = /** @type {number | undefined} */ (undefined),
+  paddingTop = /** @type {number | undefined} */ (undefined),
+  paddingBottom = /** @type {number | undefined} */ (undefined),
+  borderRadius = /** @type {string | undefined} */ (undefined),
+  borderColor = /** @type {string | undefined} */ (undefined),
   endIconProps = {},
   ...props
 }) => {
@@ -140,8 +140,11 @@ export const AccountPicker = ({
 
   const { className: textPropsClassName, style: textPropsStyle } = textProps;
   const { className: addressPropsClassName } = addressProps;
-  const { className: endIconPropsClassName, marginLeft, ...restEndIconProps } =
-    endIconProps;
+  const {
+    className: endIconPropsClassName,
+    marginLeft,
+    ...restEndIconProps
+  } = endIconProps;
   const translatedEndIconProps = {
     color: IconColor.IconDefault,
     size: IconSize.Sm,
