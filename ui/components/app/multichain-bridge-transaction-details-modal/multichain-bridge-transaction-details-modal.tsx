@@ -6,17 +6,15 @@ import {
   formatChainIdToHex,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
+import { Box, BoxAlignItems, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
 import {
-  Display,
-  FlexDirection,
   AlignItems,
-  JustifyContent,
+  BorderColor,
   TextVariant,
   IconColor,
   FontWeight,
   TextColor,
   TextAlign,
-  BorderColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -24,7 +22,6 @@ import {
   ModalContent,
   ModalHeader,
   Modal,
-  Box,
   Text,
   ModalFooter,
   Button,
@@ -197,8 +194,8 @@ const MultichainBridgeTransactionDetailsModal = ({
       <ModalContent
         className="multichain-bridge-transaction-details-modal"
         modalDialogProps={{
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
+          display: 'flex',
+          flexDirection: 'column',
           padding: 4,
         }}
       >
@@ -225,13 +222,13 @@ const MultichainBridgeTransactionDetailsModal = ({
           {/* Status Section */}
           <Box>
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
+              className="flex"
+              flexDirection={BoxFlexDirection.Column}
               gap={4}
             >
               <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
+                className="flex"
+                justifyContent={BoxJustifyContent.Between}
               >
                 <Text
                   variant={TextVariant.bodyMd}
@@ -246,8 +243,8 @@ const MultichainBridgeTransactionDetailsModal = ({
 
               {/* Transaction ID */}
               <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
+                className="flex"
+                justifyContent={BoxJustifyContent.Between}
               >
                 <Text
                   variant={TextVariant.bodyMd}
@@ -256,8 +253,8 @@ const MultichainBridgeTransactionDetailsModal = ({
                   {t('transactionIdLabel')}
                 </Text>
                 <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
+                  className="flex"
+                  alignItems={BoxAlignItems.Center}
                   gap={1}
                 >
                   <ButtonLink
@@ -287,8 +284,8 @@ const MultichainBridgeTransactionDetailsModal = ({
               {/* If destination transaction exists, show it */}
               {status.destChain?.txHash && (
                 <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.spaceBetween}
+                  className="flex"
+                  justifyContent={BoxJustifyContent.Between}
                 >
                   <Text
                     variant={TextVariant.bodyMd}
@@ -297,8 +294,8 @@ const MultichainBridgeTransactionDetailsModal = ({
                     {t('destinationTransactionIdLabel')}
                   </Text>
                   <Box
-                    display={Display.Flex}
-                    alignItems={AlignItems.center}
+                    className="flex"
+                    alignItems={BoxAlignItems.Center}
                     gap={1}
                   >
                     <ButtonLink
@@ -343,9 +340,9 @@ const MultichainBridgeTransactionDetailsModal = ({
 
               {/* From section with source chain details */}
               <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-                alignItems={AlignItems.center}
+                className="flex"
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
                 marginBottom={2}
               >
                 <Text
@@ -355,9 +352,9 @@ const MultichainBridgeTransactionDetailsModal = ({
                   {t('from')}
                 </Text>
                 <Box
-                  display={Display.Flex}
+                  className="flex"
                   gap={2}
-                  alignItems={AlignItems.center}
+                  alignItems={BoxAlignItems.Center}
                 >
                   <AvatarNetwork
                     size={AvatarNetworkSize.Sm}
@@ -374,9 +371,9 @@ const MultichainBridgeTransactionDetailsModal = ({
 
               {/* To section with destination chain details */}
               <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
-                alignItems={AlignItems.center}
+                className="flex"
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
               >
                 <Text
                   variant={TextVariant.bodyMd}
@@ -385,9 +382,9 @@ const MultichainBridgeTransactionDetailsModal = ({
                   {t('to')}
                 </Text>
                 <Box
-                  display={Display.Flex}
+                  className="flex"
                   gap={2}
-                  alignItems={AlignItems.center}
+                  alignItems={BoxAlignItems.Center}
                 >
                   <AvatarNetwork
                     size={AvatarNetworkSize.Sm}
@@ -420,14 +417,14 @@ const MultichainBridgeTransactionDetailsModal = ({
             </Box>
 
             <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
+              className="flex"
+              flexDirection={BoxFlexDirection.Column}
               gap={4}
             >
               {/* Source Amount */}
               <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.spaceBetween}
+                className="flex"
+                justifyContent={BoxJustifyContent.Between}
               >
                 <Text
                   variant={TextVariant.bodyMd}
@@ -436,9 +433,9 @@ const MultichainBridgeTransactionDetailsModal = ({
                   {t('youSent')}
                 </Text>
                 <Box
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Column}
-                  alignItems={AlignItems.flexEnd}
+                  className="flex"
+                  flexDirection={BoxFlexDirection.Column}
+                  alignItems={BoxAlignItems.End}
                 >
                   <Text
                     variant={TextVariant.bodyMd}
@@ -472,8 +469,8 @@ const MultichainBridgeTransactionDetailsModal = ({
                 (status.destChain?.amount ?? quote.destTokenAmount) &&
                 quote.destAsset.symbol && (
                   <Box
-                    display={Display.Flex}
-                    justifyContent={JustifyContent.spaceBetween}
+                    className="flex"
+                    justifyContent={BoxJustifyContent.Between}
                   >
                     <Text
                       variant={TextVariant.bodyMd}
@@ -482,9 +479,9 @@ const MultichainBridgeTransactionDetailsModal = ({
                       {t('youReceived')}
                     </Text>
                     <Box
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Column}
-                      alignItems={AlignItems.flexEnd}
+                      className="flex"
+                      flexDirection={BoxFlexDirection.Column}
+                      alignItems={BoxAlignItems.End}
                     >
                       <Text
                         variant={TextVariant.bodyMd}
@@ -503,8 +500,8 @@ const MultichainBridgeTransactionDetailsModal = ({
               {/* Gas Fee */}
               {baseFeeAsset && baseFeeAsset.fungible && (
                 <Box
-                  display={Display.Flex}
-                  justifyContent={JustifyContent.spaceBetween}
+                  className="flex"
+                  justifyContent={BoxJustifyContent.Between}
                 >
                   <Text
                     variant={TextVariant.bodyMd}
@@ -513,9 +510,9 @@ const MultichainBridgeTransactionDetailsModal = ({
                     {t('transactionTotalGasFee')}
                   </Text>
                   <Box
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Column}
-                    alignItems={AlignItems.flexEnd}
+                    className="flex"
+                    flexDirection={BoxFlexDirection.Column}
+                    alignItems={BoxAlignItems.End}
                   >
                     <Text
                       variant={TextVariant.bodyMd}

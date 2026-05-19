@@ -2,8 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
 import ClearMetametricsData from '../clear-metametrics-data';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
-  Box,
   ButtonPrimary,
   Icon,
   IconName,
@@ -14,8 +14,6 @@ import {
 } from '../../component-library';
 import {
   BlockSize,
-  Display,
-  FlexDirection,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -106,9 +104,8 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
         <>
           <Box
             ref={ref}
-            className="settings-page__content-row"
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            className="flex settings-page__content-row"
+            flexDirection={BoxFlexDirection.Column}
             gap={4}
           >
             <div className="settings-page__content-item">
@@ -126,7 +123,7 @@ const DeleteMetaMetricsDataButton: DeleteMetaMetricsDataButtonComponent =
               className={`settings-page__content-item-col ${defaultPrivacySettings ? 'settings-page__button-defaut-settings' : ''}`}
             >
               {Boolean(!metaMetricsId) && (
-                <Box display={Display.InlineFlex}>
+                <Box className="inline-flex">
                   <Icon name={IconName.Info} size={IconSize.Sm} />
                   <Text
                     variant={TextVariant.bodyXs}

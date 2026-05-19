@@ -1,16 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Box, BoxAlignItems, BoxFlexDirection, BoxJustifyContent } from '@metamask/design-system-react';
 import {
-  FlexDirection,
-  AlignItems,
-  Display,
-  JustifyContent,
   IconColor,
   TextVariant,
   TextAlign,
 } from '../../../../helpers/constants/design-system';
 import {
-  Box,
   Icon,
   IconName,
   IconSize,
@@ -39,17 +35,17 @@ const KeyringSnapRemovalResult = ({
         <ModalOverlay />
         <ModalContent
           modalDialogProps={{
-            display: Display.Flex,
-            flexDirection: FlexDirection.Column,
+            display: 'flex',
+            flexDirection: 'column',
             gap: 4,
           }}
         >
           <ModalHeader onClose={onClose}>{''}</ModalHeader>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
+            className="flex"
+            flexDirection={BoxFlexDirection.Column}
+            justifyContent={BoxJustifyContent.Center}
+            alignItems={BoxAlignItems.Center}
           >
             <Icon
               name={

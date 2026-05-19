@@ -5,15 +5,9 @@ import {
   formatChainIdToCaip,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
+import { AvatarToken, AvatarTokenSize, Box, BoxAlignItems, BoxJustifyContent } from '@metamask/design-system-react';
 import * as actions from '../../../../store/actions';
-import { Button, ButtonVariant, Box } from '../../../component-library';
-import {
-  Display,
-  JustifyContent,
-  AlignItems,
-  BlockSize,
-} from '../../../../helpers/constants/design-system';
+import { Button, ButtonVariant } from '../../../component-library';
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import {
   getCurrentChainId,
@@ -164,12 +158,11 @@ class HideTokenConfirmationModal extends Component {
           {this.context.t('readdToken')}
         </div>
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.Center}
-          alignItems={AlignItems.Center}
+          className="flex w-full"
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
           gap={4}
           marginTop={4}
-          width={BlockSize.Full}
         >
           <Button
             variant={ButtonVariant.Secondary}

@@ -4,12 +4,12 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
 import { getMetaMetricsId } from '../../../../selectors/selectors';
 import { openWindow } from '../../../../helpers/utils/window';
+import { Box } from '@metamask/design-system-react';
 import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  Box,
   ModalFooter,
   ButtonPrimary,
   ButtonPrimarySize,
@@ -19,7 +19,6 @@ import {
   ButtonSecondarySize,
 } from '../../../component-library';
 import {
-  Display,
   TextVariant,
   BlockSize,
 } from '../../../../helpers/constants/design-system';
@@ -129,7 +128,7 @@ const VisitSupportDataConsentModal: React.FC<
         </ModalBody>
 
         <ModalFooter>
-          <Box display={Display.Flex} gap={4}>
+          <Box className="flex" gap={4}>
             <ButtonSecondary
               size={ButtonSecondarySize.Lg}
               width={BlockSize.Half}

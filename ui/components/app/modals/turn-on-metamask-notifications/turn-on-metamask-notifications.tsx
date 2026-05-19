@@ -21,8 +21,8 @@ import {
 import { NOTIFICATIONS_ROUTE } from '../../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
 
+import { Box } from '@metamask/design-system-react';
 import {
-  Box,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -33,8 +33,6 @@ import {
 } from '../../../component-library';
 import {
   AlignItems,
-  BlockSize,
-  BorderRadius,
   FlexDirection,
   FontWeight,
   TextColor,
@@ -133,13 +131,9 @@ export default function TurnOnMetamaskNotifications() {
           {t('turnOnMetamaskNotifications')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            as="img"
-            src="./images/turn-on-metamask-notifications.png"
-            width={BlockSize.Full}
-            borderRadius={BorderRadius.MD}
-            marginBottom={4}
-          />
+          <Box asChild className="w-full rounded-md" marginBottom={4}>
+            <img src="./images/turn-on-metamask-notifications.png" />
+          </Box>
           <Text as="p">{t('turnOnMetamaskNotificationsMessageFirst')}</Text>
           <Text as="p" paddingTop={4}>
             {
