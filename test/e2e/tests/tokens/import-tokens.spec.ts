@@ -6,7 +6,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { Mockttp } from '../../mock-e2e';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 async function mockPriceFetch(mockServer: Mockttp) {
   return [
@@ -229,12 +229,7 @@ describe('Import flow', function () {
         testSpecificMock: mockTokensAndPrices,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$85,000.00',
-        );
+        await login(driver, { expectedBalance: '$85,000.00' });
 
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
@@ -311,12 +306,7 @@ describe('Import flow', function () {
         testSpecificMock: mockTokensAndPrices,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$85,000.00',
-        );
+        await login(driver, { expectedBalance: '$85,000.00' });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

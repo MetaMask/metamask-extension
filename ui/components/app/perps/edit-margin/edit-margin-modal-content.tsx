@@ -16,14 +16,15 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import { getPerpsController } from '../../../../providers/perps';
-import { getPerpsStreamManager } from '../../../../providers/perps/PerpsStreamManager';
+import { submitRequestToBackground } from '../../../../store/background-connection';
+import { getPerpsStreamManager } from '../../../../providers/perps';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
 import { usePerpsMarginCalculations } from '../../../../hooks/perps/usePerpsMarginCalculations';
@@ -35,7 +36,6 @@ export type EditMarginModalContentProps = {
   position: Position;
   account: AccountState | null;
   currentPrice: number;
-  selectedAddress: string;
   /** When used in modal: 'add' or 'remove' for single-purpose modal. No in-content toggle. */
   mode: 'add' | 'remove';
   onClose: () => void;
@@ -56,7 +56,6 @@ export type EditMarginModalContentProps = {
  * @param options0.position
  * @param options0.account
  * @param options0.currentPrice
- * @param options0.selectedAddress
  * @param options0.mode
  * @param options0.onClose
  * @param options0.externalSave
@@ -68,7 +67,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   position,
   account,
   currentPrice,
-  selectedAddress,
   mode: marginMode,
   onClose,
   externalSave = false,
@@ -130,7 +128,7 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
   );
 
   const handleSaveMargin = useCallback(async () => {
-    if (!isEligible || !selectedAddress || !isValid) {
+    if (!isEligible || !isValid) {
       return;
     }
 
@@ -144,23 +142,28 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     setMarginError(null);
 
     try {
-      const controller = await getPerpsController(selectedAddress);
       const signedAmount =
         marginMode === 'add' ? marginAmount : `-${marginAmount}`;
 
-      const result = await controller.updateMargin({
-        symbol: position.symbol,
-        amount: signedAmount,
-      });
+      const result = await submitRequestToBackground<{
+        success: boolean;
+        error?: string;
+      }>('perpsUpdateMargin', [
+        {
+          symbol: position.symbol,
+          amount: signedAmount,
+        },
+      ]);
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to update margin');
       }
 
       const streamManager = getPerpsStreamManager();
-      const freshPositions = await controller.getPositions({
-        skipCache: true,
-      });
+      const freshPositions = await submitRequestToBackground<PerpsPosition[]>(
+        'perpsGetPositions',
+        [{ skipCache: true }],
+      );
       streamManager.pushPositionsWithOverrides(freshPositions);
 
       setMarginAmount('');
@@ -175,7 +178,6 @@ export const EditMarginModalContent: React.FC<EditMarginModalContentProps> = ({
     }
   }, [
     isEligible,
-    selectedAddress,
     marginMode,
     marginAmount,
     isValid,

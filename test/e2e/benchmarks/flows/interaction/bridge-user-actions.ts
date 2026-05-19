@@ -6,7 +6,7 @@
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import BridgeQuotePage from '../../../page-objects/pages/bridge/quote-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import {
@@ -63,7 +63,7 @@ export async function run(): Promise<BenchmarkRunResult> {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new HomePage(driver);
         const quotePage = new BridgeQuotePage(driver);
 

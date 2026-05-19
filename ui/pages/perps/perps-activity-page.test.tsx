@@ -4,7 +4,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import configureStore from '../../store/store';
 import mockState from '../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { enLocale as messages } from '../../../test/lib/i18n-helpers';
 import { mockTransactions } from '../../components/app/perps/mocks';
 import PerpsActivityPage from './perps-activity-page';
@@ -21,7 +21,7 @@ jest.mock('react-router-dom', () => ({
 
 // Mock the perps feature flag selector
 jest.mock('../../selectors/perps/feature-flags', () => ({
-  getIsPerpsEnabled: jest.fn(),
+  getIsPerpsExperienceAvailable: jest.fn(),
 }));
 
 // Mock usePerpsTransactionHistory hook to avoid controller dependency
@@ -34,9 +34,10 @@ jest.mock('../../hooks/perps/usePerpsTransactionHistory', () => ({
   }),
 }));
 
-const mockGetIsPerpsEnabled = getIsPerpsEnabled as jest.MockedFunction<
-  typeof getIsPerpsEnabled
->;
+const mockGetIsPerpsExperienceAvailable =
+  getIsPerpsExperienceAvailable as jest.MockedFunction<
+    typeof getIsPerpsExperienceAvailable
+  >;
 
 const createMockStore = () =>
   configureStore({
@@ -48,7 +49,7 @@ const createMockStore = () =>
 describe('PerpsActivityPage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetIsPerpsEnabled.mockReturnValue(true);
+    mockGetIsPerpsExperienceAvailable.mockReturnValue(true);
   });
 
   it('renders with correct data-testid', () => {
@@ -131,8 +132,8 @@ describe('PerpsActivityPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
 
-  it('redirects when isPerpsEnabled is false', () => {
-    mockGetIsPerpsEnabled.mockReturnValue(false);
+  it('redirects when perps experience is unavailable', () => {
+    mockGetIsPerpsExperienceAvailable.mockReturnValue(false);
 
     renderWithProvider(<PerpsActivityPage />, createMockStore());
 

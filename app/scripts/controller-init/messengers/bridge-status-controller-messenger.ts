@@ -10,6 +10,7 @@ import type {
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import {
   type TransactionControllerGetStateAction,
+  type TransactionControllerIsAtomicBatchSupportedAction,
   TransactionControllerTransactionConfirmedEvent,
   TransactionControllerTransactionFailedEvent,
 } from '@metamask/transaction-controller';
@@ -19,7 +20,6 @@ import type {
 } from '@metamask/bridge-controller';
 import type { GetGasFeeState } from '@metamask/gas-fee-controller';
 import type { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
-import { MultichainTransactionsControllerTransactionConfirmedEvent } from '@metamask/multichain-transactions-controller';
 import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
@@ -28,6 +28,7 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | HandleSnapRequest
   | TransactionControllerGetStateAction
+  | TransactionControllerIsAtomicBatchSupportedAction
   | BridgeControllerAction<BridgeBackgroundAction.TRACK_METAMETRICS_EVENT>
   | BridgeControllerAction<BridgeBackgroundAction.STOP_POLLING_FOR_QUOTES>
   | GetGasFeeState
@@ -37,7 +38,6 @@ type AllowedActions =
   | AuthenticationControllerGetBearerTokenAction;
 
 type AllowedEvents =
-  | MultichainTransactionsControllerTransactionConfirmedEvent
   | TransactionControllerTransactionFailedEvent
   | TransactionControllerTransactionConfirmedEvent;
 
@@ -77,11 +77,11 @@ export function getBridgeStatusControllerMessenger(
       'GasFeeController:getState',
       'SnapController:handleRequest',
       'TransactionController:getState',
+      'TransactionController:isAtomicBatchSupported',
       'RemoteFeatureFlagController:getState',
       'AuthenticationController:getBearerToken',
     ],
     events: [
-      'MultichainTransactionsController:transactionConfirmed',
       'TransactionController:transactionFailed',
       'TransactionController:transactionConfirmed',
     ],

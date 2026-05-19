@@ -4,7 +4,7 @@ import { PerpsPositionsBase } from './perps-positions-base';
  * Page object for the Perps tab on the account overview (wallet home).
  * Use this to open the Perps tab from the account overview; then use PerpsHomePage to interact with the tab content (balance, positions, explore, etc.).
  *
- * @see ui/components/app/perps/perps-tab-view.tsx
+ * @see ui/components/app/perps/perps-view.tsx
  */
 export class PerpsTabPage extends PerpsPositionsBase {
   private readonly accountOverviewAssetTab = {

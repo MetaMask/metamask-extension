@@ -1,6 +1,6 @@
 import { mockBackgroundEventsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
@@ -21,7 +21,7 @@ describe('Test Snap Background Events', function () {
         testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const testSnaps = new TestSnaps(driver);
 
@@ -89,7 +89,7 @@ describe('Test Snap Background Events', function () {
         testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const testSnaps = new TestSnaps(driver);
 
@@ -163,7 +163,7 @@ describe('Test Snap Background Events', function () {
         testSpecificMock: mockBackgroundEventsSnap,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const testSnaps = new TestSnaps(driver);
 

@@ -10,7 +10,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
@@ -43,7 +43,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         const confirmation = new Confirmation(driver);
         const accountDetailsModal = new AccountDetailsModal(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.PersonalSign,
         );
@@ -91,7 +91,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
         const confirmation = new PersonalSignConfirmation(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.PersonalSign,
         );
@@ -126,7 +126,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
       async ({ driver }) => {
         const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
         const confirmation = new PersonalSignConfirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

@@ -10,7 +10,7 @@ import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import {
   personalSignWithSnapAccount,
@@ -50,7 +50,7 @@ describe('Snap Account Signatures', function (this: Suite) {
         async ({ driver }: { driver: Driver }) => {
           const isSyncFlow = flowType === 'sync';
           const approveTransaction = flowType === 'approve';
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           await installSnapSimpleKeyring(driver, isSyncFlow);
           const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
           const newPublicKey = await snapSimpleKeyringPage.createNewAccount();

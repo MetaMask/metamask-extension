@@ -1,5 +1,3 @@
-import { hasMinimumRequiredVersion } from '../feature-flags/version-gating';
-
 export const ASSETS_UNIFY_STATE_FLAG = 'assetsUnifyState';
 
 export const ASSETS_UNIFY_STATE_VERSION_1 = '1';
@@ -7,7 +5,6 @@ export const ASSETS_UNIFY_STATE_VERSION_1 = '1';
 export type AssetsUnifyStateFeatureFlag = {
   enabled: boolean;
   featureVersion: string | null;
-  minimumVersion: string | null;
 };
 
 /**
@@ -21,27 +18,6 @@ export type AssetsUnifyStateFeatureFlag = {
 export const isAssetsUnifyStateFeatureEnabled = (
   featureFlag: AssetsUnifyStateFeatureFlag | undefined | null,
   featureVersion: string,
-): boolean => {
-  if (!featureFlag) {
-    return false;
-  }
-
-  if (!featureFlag.enabled) {
-    return false;
-  }
-
-  // Check if the feature version matches
-  if (featureFlag.featureVersion !== featureVersion) {
-    return false;
-  }
-
-  // Check if the app version meets the minimum required version
-  if (
-    featureFlag.minimumVersion &&
-    !hasMinimumRequiredVersion(featureFlag.minimumVersion)
-  ) {
-    return false;
-  }
-
-  return true;
-};
+): boolean =>
+  Boolean(featureFlag?.enabled) &&
+  featureFlag?.featureVersion === featureVersion;

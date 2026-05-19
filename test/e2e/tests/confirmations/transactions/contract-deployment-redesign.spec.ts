@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { WINDOW_TITLES } from '../../../constants';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/deploy-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -20,7 +20,7 @@ describe('Confirmation Redesign Contract Deployment Component', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // deploy contract
         const testDapp = new TestDapp(driver);

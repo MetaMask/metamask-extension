@@ -6,7 +6,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { Mockttp } from '../../mock-e2e';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
@@ -142,7 +142,7 @@ describe('Account Tracker API Usage', function () {
           )} request has been made to infura before opening the UI`,
         );
 
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);
@@ -178,7 +178,7 @@ describe('Account Tracker API Usage', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
         await homepage.checkPageIsLoaded();
         await driver.delay(veryLargeDelayMs);

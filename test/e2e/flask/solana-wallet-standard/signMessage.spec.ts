@@ -2,7 +2,7 @@ import SnapSignMessageConfirmation from '../../page-objects/pages/confirmations/
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import {
   account1,
@@ -22,7 +22,7 @@ describe('Solana Wallet Standard - Sign Message', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const messageToSign = 'Hello, world!';
           const testDapp = new TestDappSolana(driver);
           await testDapp.openTestDappPage();

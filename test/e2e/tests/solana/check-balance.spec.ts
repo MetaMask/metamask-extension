@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { buildSolanaTestSpecificMock } from './common-solana';
 
@@ -16,7 +16,7 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock({ balance: 0 }),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
@@ -35,7 +35,7 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }) => {
         // Balance is $0 as conversion on testnets is disabled
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0.00');
+        await login(driver, { expectedBalance: '$0.00' });
         const homePage = new NonEvmHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
@@ -54,7 +54,7 @@ describe('Check balance', function (this: Suite) {
       },
       async ({ driver }) => {
         // Balance is $0 as conversion on testnets is disabled
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0.00');
+        await login(driver, { expectedBalance: '$0.00' });
         const homePage = new NonEvmHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
@@ -70,7 +70,7 @@ describe('Check balance', function (this: Suite) {
         testSpecificMock: buildSolanaTestSpecificMock(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new NonEvmHomepage(driver);
         await homePage.waitForNonEvmAccountsLoaded();
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');

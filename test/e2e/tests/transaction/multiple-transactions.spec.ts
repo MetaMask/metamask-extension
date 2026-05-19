@@ -4,7 +4,7 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 
@@ -19,7 +19,7 @@ describe('Multiple transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // initiates a transaction from the dapp
         const testDapp = new TestDapp(driver);
@@ -68,7 +68,7 @@ describe('Multiple transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // initiates a transaction from the dapp
         const testDapp = new TestDapp(driver);

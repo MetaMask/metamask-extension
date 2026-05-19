@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import { getCleanAppState, withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import DevelopOptions from '../../page-objects/pages/developer-options-page';
@@ -68,7 +68,7 @@ describe('Remote feature flag', function (this: Suite) {
         testSpecificMock: mockRemoteFeatureFlags,
       },
       async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const uiState = await getCleanAppState(driver);
         assert.deepStrictEqual(
           uiState.metamask.remoteFeatureFlags,
@@ -89,7 +89,7 @@ describe('Remote feature flag', function (this: Suite) {
       },
 
       async ({ driver, mockedEndpoint }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Intended delay to wait for any potential requests to be made
         await driver.delay(5_000);
@@ -121,7 +121,7 @@ describe('Remote feature flag', function (this: Suite) {
         testSpecificMock: mockRemoteFeatureFlags,
       },
       async ({ driver }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);

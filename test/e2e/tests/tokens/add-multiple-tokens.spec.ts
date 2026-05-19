@@ -4,7 +4,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 
 describe('Multiple ERC20 Watch Asset', function () {
@@ -21,7 +21,7 @@ describe('Multiple ERC20 Watch Asset', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes, contractRegistry }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         const contracts = contractRegistry.getAllDeployedContractAddresses();
 
         const testDapp = new TestDapp(driver);

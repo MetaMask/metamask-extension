@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
@@ -55,7 +55,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -90,7 +90,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -125,7 +125,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -163,7 +163,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -199,7 +199,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -236,7 +236,7 @@ describe('Shield Ruleset Engine Tests', function () {
           dappOptions: { numberOfTestDapps: 1 },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();

@@ -6,6 +6,7 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { PRIVACY_ITEMS } from '../search-config';
 import { Toast, ToastContainer } from '../../../components/multichain/toast';
 import { BorderRadius } from '../../../helpers/constants/design-system';
 import DownloadStateLogsModal from './download-state-logs-modal';
@@ -22,7 +23,7 @@ export const DownloadStateLogsItem = () => {
         onClick={() => setShowModal(true)}
         className="text-text-default !bg-transparent p-0 text-left"
       >
-        {t('downloadStateLogs')}
+        {t(PRIVACY_ITEMS['download-state-logs'])}
       </Button>
       {showModal && (
         <DownloadStateLogsModal

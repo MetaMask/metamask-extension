@@ -1,5 +1,5 @@
 import { MockttpServer } from 'mockttp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import {
   createInternalTransaction,
   createDappTransaction,
@@ -30,7 +30,7 @@ describe('Editing Confirm Transaction', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createInternalTransaction({ driver });
 
@@ -94,7 +94,7 @@ describe('Editing Confirm Transaction', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await createInternalTransaction({ driver });
 
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
@@ -152,7 +152,7 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         // login to extension
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await createDappTransaction(driver, {
           maxFeePerGas: '0x2000000000',

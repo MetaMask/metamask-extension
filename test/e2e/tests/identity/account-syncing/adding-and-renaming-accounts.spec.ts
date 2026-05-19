@@ -8,7 +8,7 @@ import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WALLET_PASSWORD } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -61,7 +61,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Wait for the initial account sync to complete before adding new accounts
         const homePage = new HomePage(driver);
@@ -116,7 +116,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Wait for the initial account sync to complete before interacting with accounts
         const homePage = new HomePage(driver);

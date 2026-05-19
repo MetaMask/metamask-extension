@@ -2,7 +2,7 @@ import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { withFixtures } from '../helpers';
 import { mockDialogSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -22,7 +22,7 @@ describe('Test Snap Dialog', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);

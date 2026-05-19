@@ -119,6 +119,58 @@ describe('FixtureExtensionStore', () => {
     });
   });
 
+  describe('storageServiceData', () => {
+    it('writes storageServiceData to browser.storage.local when present', async () => {
+      const storageServiceEntries = {
+        'storageService:TokenListController:tokensChainsCache:0x1': {
+          timestamp: 1000,
+          data: { '0xabc': { symbol: 'TKN' } },
+        },
+      };
+      setMockFixtureServerReply({
+        ...MOCK_STATE,
+        storageServiceData: storageServiceEntries,
+      });
+      const setSpy = jest.spyOn(browser.storage.local, 'set');
+      const store = new FixtureExtensionStore({ initialize: true });
+
+      await store.get();
+
+      expect(setSpy).toHaveBeenCalledWith(storageServiceEntries);
+    });
+
+    it('does not write storageServiceData when it is empty', async () => {
+      setMockFixtureServerReply({
+        ...MOCK_STATE,
+        storageServiceData: {},
+      });
+      const setSpy = jest.spyOn(browser.storage.local, 'set');
+      const store = new FixtureExtensionStore({ initialize: true });
+
+      await store.get();
+
+      expect(setSpy).not.toHaveBeenCalledWith({});
+    });
+
+    it('does not write storageServiceData when it is absent', async () => {
+      setMockFixtureServerReply(MOCK_STATE);
+      const setSpy = jest.spyOn(browser.storage.local, 'set');
+      const store = new FixtureExtensionStore({ initialize: true });
+
+      await store.get();
+
+      const storageServiceCalls = setSpy.mock.calls.filter(
+        (call) =>
+          call[0] !== null &&
+          typeof call[0] === 'object' &&
+          Object.keys(call[0] as object).some((k) =>
+            k.startsWith('storageService:'),
+          ),
+      );
+      expect(storageServiceCalls).toHaveLength(0);
+    });
+  });
+
   describe('get', () => {
     it('returns fixture state after waiting for init', async () => {
       setMockFixtureServerReply(MOCK_STATE);

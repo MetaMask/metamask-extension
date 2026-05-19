@@ -1,7 +1,7 @@
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { Driver } from '../../webdriver/driver';
@@ -26,7 +26,7 @@ describe('Petnames - Transactions', function () {
       async ({ driver }) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -71,7 +71,7 @@ describe('Petnames - Transactions', function () {
       },
       async ({ driver }) => {
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await createWalletSendTransaction(ADDRESS_MOCK, driver);
         await confirmation.checkAddressIsDisplayed(ADDRESS_MOCK_RENDERED);
 

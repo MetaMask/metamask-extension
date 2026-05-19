@@ -8,7 +8,7 @@ import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   WINDOW_TITLES,
 } from '../../../constants';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 
 const signatureRequestType = {
   signTypedData: 'Sign Typed Data',
@@ -42,7 +42,7 @@ describe('Sign Typed Data Signature Request', function () {
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
           const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
@@ -89,7 +89,7 @@ describe('Sign Typed Data Signature Request', function () {
         },
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();

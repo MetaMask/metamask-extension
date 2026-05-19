@@ -186,7 +186,7 @@ async function mockPortfolioPage(mockServer: Mockttp) {
     });
 }
 
-async function mockGetTxStatus(mockServer: Mockttp) {
+export async function mockGetTxStatus(mockServer: Mockttp) {
   return await mockServer.forGet(/getTxStatus/u).thenCallback(async (req) => {
     const urlObj = new URL(req.url);
     const txHash = urlObj.searchParams.get('srcTxHash');

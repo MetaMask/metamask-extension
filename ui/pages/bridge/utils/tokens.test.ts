@@ -281,6 +281,71 @@ describe('Bridge token utils', () => {
     });
   });
 
+  describe('fetchPopularTokens - isVerified', () => {
+    it('passes through isVerified from the API response', async () => {
+      const verifiedEthAsset = { ...ETH_ASSET, isVerified: true };
+      const unverifiedMusdAsset = { ...MUSD_ASSET, isVerified: false };
+
+      nock(BRIDGE_API_BASE_URL)
+        .post('/getTokens/popular')
+        .reply(200, [verifiedEthAsset, unverifiedMusdAsset, INVALID_ASSET]);
+
+      const tokens = await fetchPopularTokens({
+        chainIds: ['eip155:1'] as CaipChainId[],
+        signal: new AbortController().signal,
+        clientId: 'test',
+        bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      });
+
+      expect(tokens).toHaveLength(2);
+      expect(tokens[0]).toMatchObject({ symbol: 'ETH', isVerified: true });
+      expect(tokens[1]).toMatchObject({ symbol: 'mUSD', isVerified: false });
+    });
+
+    it('treats isVerified as optional — tokens without it still pass validation', async () => {
+      nock(BRIDGE_API_BASE_URL)
+        .post('/getTokens/popular')
+        .reply(200, [ETH_ASSET]);
+
+      const tokens = await fetchPopularTokens({
+        chainIds: ['eip155:1'] as CaipChainId[],
+        signal: new AbortController().signal,
+        clientId: 'test',
+        bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      });
+
+      expect(tokens).toHaveLength(1);
+      expect(tokens[0]).toMatchObject({ symbol: 'ETH' });
+      expect(tokens[0]).not.toHaveProperty('isVerified');
+    });
+  });
+
+  describe('fetchTokensBySearchQuery - isVerified', () => {
+    it('passes through isVerified from the search API response', async () => {
+      nock(BRIDGE_API_BASE_URL)
+        .post('/getTokens/search')
+        .reply(200, {
+          data: [
+            { ...ETH_ASSET, isVerified: true },
+            { ...MUSD_ASSET, isVerified: false },
+          ],
+          pageInfo: { hasNextPage: false, endCursor: undefined },
+        });
+
+      const { tokens } = await fetchTokensBySearchQuery({
+        chainIds: ['eip155:1'] as CaipChainId[],
+        query: 'ETH',
+        signal: new AbortController().signal,
+        clientId: 'test',
+        bridgeApiBaseUrl: BRIDGE_API_BASE_URL,
+      });
+
+      expect(tokens).toHaveLength(2);
+      expect(tokens[0]).toMatchObject({ symbol: 'ETH', isVerified: true });
+      expect(tokens[1]).toMatchObject({ symbol: 'mUSD', isVerified: false });
+    });
+  });
+
   describe('fetchTokensBySearchQuery', () => {
     it('should add pages to cache when fetching tokens by search query', async () => {
       nock(BRIDGE_API_BASE_URL)

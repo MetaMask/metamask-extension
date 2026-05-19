@@ -28,7 +28,6 @@ import type {
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
 import { AuthenticationControllerGetBearerTokenAction } from '@metamask/profile-sync-controller/auth';
-import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -264,7 +263,6 @@ type PreferencesControllerGetStateAction = {
 type AllowedInitializationActions =
   | AuthenticationControllerGetBearerTokenAction
   | HandleSnapRequest
-  | MetaMetricsControllerTrackEventAction
   | PreferencesControllerGetStateAction;
 
 /**
@@ -292,7 +290,6 @@ export function getAssetsControllerInitMessenger(
     actions: [
       'AuthenticationController:getBearerToken',
       'SnapController:handleRequest',
-      'MetaMetricsController:trackEvent',
       'PreferencesController:getState',
     ],
   });

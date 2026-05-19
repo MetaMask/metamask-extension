@@ -3,7 +3,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import SelectNetwork from '../../page-objects/pages/dialog/select-network';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Deprecated networks', function (this: Suite) {
   it('User should not find goerli network when clicking on the network selector', async function () {
@@ -15,7 +15,7 @@ describe('Deprecated networks', function (this: Suite) {
       },
       async ({ driver }) => {
         // Navigate to extension home screen
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         // Open the first dapp which starts on chain '0x539
         await driver.openNewPage(DAPP_URL);
         await driver.clickElement({

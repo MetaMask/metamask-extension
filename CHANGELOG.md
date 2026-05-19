@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.23.0]
+
+### Added
+
+- Add support for additional icon colors in Snaps `Icon` component (#40790)
+- Enables token permissions via EIP-7715 (#40813)
+- Prevent MUSD reward claiming in geoblocked regions (#40634)
+- Improves the loading experience during quote fetching (#40702)
+- Link asset details page from bridge asset list (#40356)
+- Update the bridge quotes list modal UI (#40720)
+- Replaced the Settings contacts tab with a standalone Contacts page accessible from the global menu (#40714)
+- Added CowSwap intent submission through the bridge status controller (#40483)
+- Added market-closed handling and stock badges for Ondo RWA tokens in token details and token selection views (#40493)
+- When no expiry is specified for an EIP-7715 `wallet_requestExecutionPermissions` permission, show "Never expires" (#40703)
+- Increase swap submission friction when price impact is high (#40586)
+- Trigger malicious website scanning when any EIP-7715 RPC method is executed (#40587)
+- Tab transitions (#40611)
+- Added confirmation modals for `block` trust signals on the connect page (#40348)
+
+### Changed
+
+- UI transitions (#40588)
+- Replace deprecated identicon in suggested token page (#40687)
+
+### Fixed
+
+- Fix 'claim bonus' transactions being displayed as 'contract interaction' after reload (#40834)
+- Disable closing price impact modal while submitting a trade (#40811)
+- Fix memoization issue in top-level context provider that was causing cascading re-renders (#39309)
+- Fixed background-to-UI state sync starvation that caused UI to become stuck indefinitely during large account syncs (#40331)
+- Remove thrown exceptions in migration 196 when `NetworkEnablementController` is absent or `NetworkEnablementController.nativeAssetIdentifiers` is missing (#40764)
+- Maintain activity tab scroll position (#40681)
+- NFT tab scroll position (#40643)
+- Network list migration (#40579)
+
 ## [13.22.0]
 
 ### Added
@@ -1918,7 +1953,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.23.0...HEAD
+[13.23.0]: https://github.com/MetaMask/metamask-extension/compare/v13.22.0...v13.23.0
 [13.22.0]: https://github.com/MetaMask/metamask-extension/compare/v13.21.0...v13.22.0
 [13.21.0]: https://github.com/MetaMask/metamask-extension/compare/v13.20.1...v13.21.0
 [13.20.1]: https://github.com/MetaMask/metamask-extension/compare/v13.20.0...v13.20.1

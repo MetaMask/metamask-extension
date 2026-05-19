@@ -17,6 +17,7 @@ import { ACCOUNT_IDENTICON_ROUTE } from '../../../helpers/constants/routes';
 import { getPreferences } from '../../../selectors';
 import { getSelectedInternalAccount } from '../../../selectors/accounts';
 import { SettingsSelectItem } from '../shared';
+import { PREFERENCES_ITEMS } from '../search-config';
 import { AVATAR_LABEL_MAP } from './account-identicon-utils';
 
 export const AccountIdenticonItem = () => {
@@ -30,7 +31,7 @@ export const AccountIdenticonItem = () => {
 
   return (
     <SettingsSelectItem
-      label={t('accountIdenticon')}
+      label={t(PREFERENCES_ITEMS['account-identicon'])}
       to={ACCOUNT_IDENTICON_ROUTE}
       value={
         <Box

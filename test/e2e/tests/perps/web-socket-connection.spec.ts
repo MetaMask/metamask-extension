@@ -3,7 +3,7 @@ import { Driver } from '../../webdriver/driver';
 import { WEBSOCKET_SERVICES } from '../../websocket/constants';
 import WebSocketRegistry from '../../websocket/registry';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { PerpsHomePage } from '../../page-objects/pages/perps/perps-home-page';
 import { getConfig } from './helpers';
 
@@ -45,7 +45,7 @@ describe.skip('Perps Web Socket', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -62,7 +62,7 @@ describe.skip('Perps Web Socket', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();
@@ -86,7 +86,7 @@ describe.skip('Perps Web Socket', function (this: Suite) {
         ...getConfig(this.test?.fullTitle()),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const perpsHomePage = new PerpsHomePage(driver);
         await perpsHomePage.navigateToPerpsHome();

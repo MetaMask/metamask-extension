@@ -4,7 +4,7 @@ import { MOCK_META_METRICS_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import Homepage from '../../page-objects/pages/home/homepage';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 async function mockSurveys(mockServer: MockttpServer) {
   await mockServer
@@ -63,7 +63,7 @@ describe('Test Survey', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const homePage = new Homepage(driver);
         await homePage.closeSurveyToast('Test survey 1');
         await homePage.closeSurveyToast('Test survey 2');

@@ -10,7 +10,7 @@ import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/multichain-account-details-page';
 import { Driver } from '../../webdriver/driver';
 import {
-  loginWithoutBalanceValidation,
+  login,
   lockAndWaitForLoginPage,
 } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
@@ -219,7 +219,7 @@ describe('Add account', function () {
 
         // Lock and unlock wallet
         await lockAndWaitForLoginPage(driver);
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Verify both account labels persist after unlock
         await headerNavbar.checkAccountLabel(CUSTOM_ACCOUNT_NAME);

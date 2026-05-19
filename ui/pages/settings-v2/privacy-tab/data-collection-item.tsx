@@ -14,6 +14,7 @@ import {
   setMarketingConsent,
 } from '../../../store/actions';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { PRIVACY_ITEMS } from '../search-config';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -60,7 +61,7 @@ export const DataCollectionToggleItem = () => {
 
   return (
     <SettingsToggleItem
-      title={t('dataCollectionForMarketing')}
+      title={t(PRIVACY_ITEMS['data-collection'])}
       description={description}
       value={dataCollectionForMarketing}
       onToggle={handleToggle}

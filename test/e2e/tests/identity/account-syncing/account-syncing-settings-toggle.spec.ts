@@ -6,7 +6,7 @@ import {
 import { PAGES } from '../../../webdriver/driver';
 import { withFixtures } from '../../../helpers';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -58,7 +58,7 @@ describe('Account syncing - Settings Toggle', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Wait for the initial account sync to complete before adding new accounts
         const homePage = new HomePage(driver);
@@ -137,7 +137,7 @@ describe('Account syncing - Settings Toggle', function () {
       },
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Wait for the account sync to complete before verifying accounts
         const homePage = new HomePage(driver);

@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -32,7 +32,7 @@ describe('Ledger Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         )) ?? console.error('localNodes is undefined or empty');
-        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
+        await login(driver, { expectedBalance: '1.21M' });
 
         // deploy action
         const testDappPage = new TestDappPage(driver);
@@ -80,12 +80,10 @@ describe('Ledger Hardware', function (this: Suite) {
         const balance = await localNodes?.[0]?.getBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        );
+        await login(driver, {
+          expectedBalance:
+            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+        });
 
         const contractAddress =
           await contractRegistry.getContractAddress(erc721);
@@ -144,12 +142,10 @@ describe('Ledger Hardware', function (this: Suite) {
         const balance = await localNodes?.[0]?.getBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        );
+        await login(driver, {
+          expectedBalance:
+            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+        });
 
         const contractAddress =
           await contractRegistry.getContractAddress(erc721);
@@ -205,12 +201,10 @@ describe('Ledger Hardware', function (this: Suite) {
         const balance = await localNodes?.[0]?.getBalance(
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
         );
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
-        );
+        await login(driver, {
+          expectedBalance:
+            `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
+        });
 
         const contractAddress =
           await contractRegistry.getContractAddress(erc721);

@@ -369,4 +369,162 @@ describe('AmountRecipient', () => {
     expect(mockCaptureAmountSelected).not.toHaveBeenCalled();
     expect(mockCaptureRecipientSelected).not.toHaveBeenCalled();
   });
+
+  describe('token contract address alert modal', () => {
+    it('shows alert modal instead of submitting when recipient is acknowledgeable', () => {
+      const mockHandleSubmit = jest.fn();
+      jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+        handleSubmit: mockHandleSubmit,
+      } as unknown as ReturnType<typeof SendActions.useSendActions>);
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        toResolved: MOCK_ADDRESS,
+        asset: EVM_ASSET,
+        chainId: '0x1',
+        from: 'from-address',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateToResolved: jest.fn(),
+        updateValue: jest.fn(),
+        value: '1',
+      } as unknown as ReturnType<typeof SendContext.useSendContext>);
+      jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+        amountError: undefined,
+      } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+      jest
+        .spyOn(RecipientValidation, 'useRecipientValidation')
+        .mockReturnValue({
+          recipientError: 'tokenContractError',
+          recipientErrorAllowAcknowledge: true,
+
+          acknowledgeError: jest.fn(),
+          recipientWarning: null,
+          recipientResolvedLookup: null,
+          recipientConfusableCharacters: [],
+        } as unknown as ReturnType<
+          typeof RecipientValidation.useRecipientValidation
+        >);
+
+      const { getByText, getByTestId } = render();
+
+      const continueButton = getByText(messages.continue.message);
+      expect(continueButton).not.toBeDisabled();
+
+      fireEvent.click(continueButton);
+
+      expect(mockHandleSubmit).not.toHaveBeenCalled();
+      expect(
+        getByTestId('send-alert-modal-acknowledge-button'),
+      ).toBeInTheDocument();
+    });
+
+    it('proceeds with submit after acknowledging in modal', async () => {
+      const mockHandleSubmit = jest.fn();
+      const mockAcknowledgeError = jest.fn();
+      jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+        handleSubmit: mockHandleSubmit,
+      } as unknown as ReturnType<typeof SendActions.useSendActions>);
+      const mockCaptureAmountSelected = jest.fn();
+      const mockCaptureRecipientSelected = jest.fn();
+      jest
+        .spyOn(AmountSelectionMetrics, 'useAmountSelectionMetrics')
+        .mockReturnValue({
+          captureAmountSelected: mockCaptureAmountSelected,
+        } as unknown as ReturnType<
+          typeof AmountSelectionMetrics.useAmountSelectionMetrics
+        >);
+      jest
+        .spyOn(RecipientSelectionMetrics, 'useRecipientSelectionMetrics')
+        .mockReturnValue({
+          captureRecipientSelected: mockCaptureRecipientSelected,
+          setRecipientInputMethodManual: jest.fn(),
+        } as unknown as ReturnType<
+          typeof RecipientSelectionMetrics.useRecipientSelectionMetrics
+        >);
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        toResolved: MOCK_ADDRESS,
+        asset: EVM_ASSET,
+        chainId: '0x1',
+        from: 'from-address',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateToResolved: jest.fn(),
+        updateValue: jest.fn(),
+        value: '1',
+      } as unknown as ReturnType<typeof SendContext.useSendContext>);
+      jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+        amountError: undefined,
+      } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+      jest
+        .spyOn(RecipientValidation, 'useRecipientValidation')
+        .mockReturnValue({
+          recipientError: 'tokenContractError',
+          recipientErrorAllowAcknowledge: true,
+
+          acknowledgeError: mockAcknowledgeError,
+          recipientWarning: null,
+          recipientResolvedLookup: null,
+          recipientConfusableCharacters: [],
+        } as unknown as ReturnType<
+          typeof RecipientValidation.useRecipientValidation
+        >);
+
+      const { getByText, getByTestId } = render();
+
+      fireEvent.click(getByText(messages.continue.message));
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+
+      await new Promise(process.nextTick);
+
+      expect(mockAcknowledgeError).toHaveBeenCalled();
+      expect(mockHandleSubmit).toHaveBeenCalled();
+    });
+
+    it('does not submit when acknowledging from icon-triggered modal', async () => {
+      const mockHandleSubmit = jest.fn();
+      const mockAcknowledgeError = jest.fn();
+      jest.spyOn(SendActions, 'useSendActions').mockReturnValue({
+        handleSubmit: mockHandleSubmit,
+      } as unknown as ReturnType<typeof SendActions.useSendActions>);
+      jest.spyOn(SendContext, 'useSendContext').mockReturnValue({
+        toResolved: MOCK_ADDRESS,
+        asset: EVM_ASSET,
+        chainId: '0x1',
+        from: 'from-address',
+        updateAsset: jest.fn(),
+        updateCurrentPage: jest.fn(),
+        updateTo: jest.fn(),
+        updateToResolved: jest.fn(),
+        updateValue: jest.fn(),
+        value: '1',
+      } as unknown as ReturnType<typeof SendContext.useSendContext>);
+      jest.spyOn(AmountValidation, 'useAmountValidation').mockReturnValue({
+        amountError: undefined,
+      } as unknown as ReturnType<typeof AmountValidation.useAmountValidation>);
+      jest
+        .spyOn(RecipientValidation, 'useRecipientValidation')
+        .mockReturnValue({
+          recipientError: 'tokenContractError',
+          recipientErrorAllowAcknowledge: true,
+
+          acknowledgeError: mockAcknowledgeError,
+          recipientWarning: null,
+          recipientResolvedLookup: null,
+          recipientConfusableCharacters: [],
+        } as unknown as ReturnType<
+          typeof RecipientValidation.useRecipientValidation
+        >);
+
+      const { getByTestId } = render();
+
+      fireEvent.click(getByTestId('recipient-alert-icon'));
+      fireEvent.click(getByTestId('send-alert-modal-acknowledge-button'));
+
+      await new Promise(process.nextTick);
+
+      expect(mockAcknowledgeError).toHaveBeenCalled();
+      expect(mockHandleSubmit).not.toHaveBeenCalled();
+    });
+  });
 });

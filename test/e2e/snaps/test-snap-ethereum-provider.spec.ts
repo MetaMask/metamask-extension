@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -29,7 +29,7 @@ describe('Test Snap ethereum_provider', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Navigate to test snaps page, connect Ethereum provider example Snap, complete installation and validate
         const testSnaps = new TestSnaps(driver);

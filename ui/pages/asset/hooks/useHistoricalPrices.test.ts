@@ -1,142 +1,160 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { EthScope, SolScope } from '@metamask/keyring-api';
+import { SolScope } from '@metamask/keyring-api';
 import { waitFor } from '@testing-library/react';
-import { cloneDeep } from 'lodash';
 import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { apiClient } from '../../../helpers/api-client';
 import {
   DEFAULT_USE_HISTORICAL_PRICES_METADATA,
   useHistoricalPrices,
 } from './useHistoricalPrices';
 
-// Mock the apiClient since fetch is abstracted
-const mockQueryFn = jest.fn();
 jest.mock('../../../helpers/api-client', () => ({
   apiClient: {
     prices: {
-      getV1HistoricalPricesQueryOptions: jest.fn(() => ({
-        queryKey: ['prices', 'v1', 'historical'],
-        queryFn: mockQueryFn,
-      })),
+      fetch: jest.fn(),
     },
   },
 }));
 
+const mockPricesFetch = jest.mocked(
+  (apiClient.prices as unknown as { fetch: jest.Mock }).fetch,
+);
+
 /**
- * In these tests, we represent the price data with 1 point per day, to simplify the mocks.
- * For instance:
- * - P1D: [1, 100]
- * - P7D: [1, 100], [2, 102], [3, 102], [4, 105], [5, 99], [6, 102], [7, 100]
+ * In these tests, we represent the price data with 1 point per day.
+ * For instance P7D: [1, 100], [2, 102], [3, 102], [4, 105], [5, 99], [6, 102], [7, 100]
  */
 
-describe('useHistoricalPrices', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+const SEVEN_DAY_PRICES: [number, number][] = [
+  [1, 100],
+  [2, 102],
+  [3, 102],
+  [4, 105],
+  [5, 99],
+  [6, 102],
+  [7, 100],
+];
 
-  // Base state with generic data. We will extend / override this for each test.
-  const mockBaseState = {
-    metamask: {
-      isUnlocked: true,
-      completedOnboarding: true,
-      selectedNetworkClientId: 'selectedNetworkClientId',
-      networkConfigurationsByChainId: {
-        '0x1': {
-          chainId: '0x1',
-          name: 'Ethereum',
-          nativeCurrency: 'ETH',
-          isEvm: true,
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'selectedNetworkClientId',
-            },
-          ],
+const SEVEN_DAY_POINTS = [
+  { x: 1, y: 100 },
+  { x: 2, y: 102 },
+  { x: 3, y: 102 },
+  { x: 4, y: 105 },
+  { x: 5, y: 99 },
+  { x: 6, y: 102 },
+  { x: 7, y: 100 },
+];
+
+const SEVEN_DAY_METADATA = {
+  minPricePoint: { x: 5, y: 99 },
+  maxPricePoint: { x: 4, y: 105 },
+  xMin: 1,
+  xMax: 7,
+  yMin: 99,
+  yMax: 105,
+};
+
+const mockBaseState = {
+  metamask: {
+    isUnlocked: true,
+    completedOnboarding: true,
+    selectedNetworkClientId: 'selectedNetworkClientId',
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        name: 'Ethereum',
+        nativeCurrency: 'ETH',
+        isEvm: true,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'selectedNetworkClientId' }],
+      },
+      [SolScope.Mainnet]: {
+        chainId: SolScope.Mainnet,
+        name: 'Solana',
+        nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
+        isEvm: false,
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [{ networkClientId: 'selectedNetworkClientId2' }],
+      },
+    },
+    currencyRates: { ETH: { conversionRate: 1 } },
+    remoteFeatureFlags: {},
+    useCurrencyRateCheck: true,
+    internalAccounts: {
+      accounts: {
+        '81b1ead4-334c-4921-9adf-282fde539752': {
+          id: '81b1ead4-334c-4921-9adf-282fde539752',
+          address: '0x458036e7bc0612e9b207640dc07ca7711346aae5',
+          type: 'eip155:eoa',
+          scopes: ['eip155'],
         },
-        [SolScope.Mainnet]: {
-          chainId: SolScope.Mainnet,
-          name: 'Solana',
-          nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
-          isEvm: false,
-          defaultRpcEndpointIndex: 0,
-          rpcEndpoints: [
-            {
-              networkClientId: 'selectedNetworkClientId2',
-            },
-          ],
+        '5132883f-598e-482c-a02b-84eeaa352f5b': {
+          id: '5132883f-598e-482c-a02b-84eeaa352f5b',
+          address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
+          type: 'solana:data-account',
+          scopes: [SolScope.Mainnet],
         },
       },
-      currencyRates: {
-        ETH: {
-          conversionRate: 1,
-        },
-      },
-      useCurrencyRateCheck: true,
-      internalAccounts: {
-        accounts: {
-          '81b1ead4-334c-4921-9adf-282fde539752': {
-            id: '81b1ead4-334c-4921-9adf-282fde539752',
-            address: '0x458036e7bc0612e9b207640dc07ca7711346aae5',
-            type: 'eip155:eoa',
-            scopes: [EthScope.Eoa],
-          },
-          '5132883f-598e-482c-a02b-84eeaa352f5b': {
-            id: '5132883f-598e-482c-a02b-84eeaa352f5b',
-            address: '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC',
-            type: 'solana:data-account',
-            scopes: [SolScope.Mainnet],
-          },
-        },
-        selectedAccount: '', // To be set in each test
-      },
-      accountTree: {
-        selectedAccountGroup: 'entropy:wallet1/0',
-        wallets: {
-          'entropy:wallet1': {
-            id: 'entropy:wallet1',
-            type: 'entropy',
-            status: 'ready',
-            groups: {
-              'entropy:wallet1/0': {
-                id: 'entropy:wallet1/0',
-                type: 'multichainAccount',
-                accounts: [
-                  '81b1ead4-334c-4921-9adf-282fde539752',
-                  '5132883f-598e-482c-a02b-84eeaa352f5b',
-                ],
-                metadata: {
-                  name: 'Wallet 1',
-                  entropy: { groupIndex: 0 },
-                  pinned: false,
-                  hidden: false,
-                },
+      selectedAccount: '',
+    },
+    accountTree: {
+      selectedAccountGroup: 'entropy:wallet1/0',
+      wallets: {
+        'entropy:wallet1': {
+          id: 'entropy:wallet1',
+          type: 'entropy',
+          status: 'ready',
+          groups: {
+            'entropy:wallet1/0': {
+              id: 'entropy:wallet1/0',
+              type: 'multichainAccount',
+              accounts: [
+                '81b1ead4-334c-4921-9adf-282fde539752',
+                '5132883f-598e-482c-a02b-84eeaa352f5b',
+              ],
+              metadata: {
+                name: 'Wallet 1',
+                entropy: { groupIndex: 0 },
+                pinned: false,
+                hidden: false,
               },
             },
-            metadata: {
-              name: 'Wallet 1',
-              entropy: { id: 'wallet1' },
-            },
+          },
+          metadata: {
+            name: 'Wallet 1',
+            entropy: { id: 'wallet1' },
           },
         },
       },
     },
-  };
+  },
+};
 
-  describe('when the chain is EVM', () => {
-    const mockStateIsEvm = cloneDeep(mockBaseState);
-    mockStateIsEvm.metamask.internalAccounts.selectedAccount =
-      '81b1ead4-334c-4921-9adf-282fde539752';
+describe('useHistoricalPrices', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockPricesFetch.mockResolvedValue({ prices: [] });
+  });
 
+  describe('EVM chain', () => {
     const chainId = '0x1';
     const address = '0x458036e7bc0612e9b207640dc07ca7711346aae5';
     const currency = 'usd';
     const timeRange = 'P7D';
+    const state = {
+      ...mockBaseState,
+      metamask: {
+        ...mockBaseState.metamask,
+        internalAccounts: {
+          ...mockBaseState.metamask.internalAccounts,
+          selectedAccount: '81b1ead4-334c-4921-9adf-282fde539752',
+        },
+      },
+    };
 
     it('returns loading true and default data initially', () => {
-      mockQueryFn.mockResolvedValue({ prices: [] });
-
       const { result, unmount } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
-        mockStateIsEvm,
+        state,
       );
 
       expect(result.current).toEqual({
@@ -150,53 +168,52 @@ describe('useHistoricalPrices', () => {
       unmount();
     });
 
-    it('returns the historical prices when the prices are fetched successfully', async () => {
-      mockQueryFn.mockResolvedValue({
-        prices: [
-          [1, 100],
-          [2, 102],
-          [3, 102],
-          [4, 105],
-          [5, 99],
-          [6, 102],
-          [7, 100],
-        ],
-      });
+    it('returns historical prices on successful fetch', async () => {
+      mockPricesFetch.mockResolvedValue({ prices: SEVEN_DAY_PRICES });
 
       const { result } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
-        mockStateIsEvm,
+        state,
       );
+
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       expect(result.current).toEqual({
         loading: false,
-        data: {
-          prices: [
-            { x: 1, y: 100 },
-            { x: 2, y: 102 },
-            { x: 3, y: 102 },
-            { x: 4, y: 105 },
-            { x: 5, y: 99 },
-            { x: 6, y: 102 },
-            { x: 7, y: 100 },
-          ],
-          metadata: {
-            minPricePoint: { x: 5, y: 99 },
-            maxPricePoint: { x: 4, y: 105 },
-            xMin: 1,
-            xMax: 7,
-            yMin: 99,
-            yMax: 105,
-          },
-        },
+        data: { prices: SEVEN_DAY_POINTS, metadata: SEVEN_DAY_METADATA },
       });
     });
 
-    it('returns default data when the prices are not fetched successfully', async () => {
-      mockQueryFn.mockRejectedValue(new Error('Error'));
+    it('calls v3 endpoint with correct CAIP params', async () => {
+      mockPricesFetch.mockResolvedValue({ prices: SEVEN_DAY_PRICES });
+
+      const { result } = renderHookWithProvider(
+        () => useHistoricalPrices({ chainId, address, currency, timeRange }),
+        state,
+      );
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(mockPricesFetch).toHaveBeenCalledWith(
+        'https://price.api.cx.metamask.io',
+        expect.stringMatching(
+          /\/v3\/historical-prices\/eip155:1\/erc20:0x[0-9a-fA-F]{40}/u,
+        ),
+        expect.objectContaining({
+          params: expect.objectContaining({
+            vsCurrency: 'usd',
+            timePeriod: '7D',
+          }),
+        }),
+      );
+    });
+
+    it('returns default data on fetch error', async () => {
+      mockPricesFetch.mockRejectedValue(new Error('Network error'));
 
       const consoleSpy = jest
         .spyOn(console, 'error')
@@ -204,8 +221,9 @@ describe('useHistoricalPrices', () => {
 
       const { result } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
-        mockStateIsEvm,
+        state,
       );
+
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
@@ -220,62 +238,28 @@ describe('useHistoricalPrices', () => {
 
       consoleSpy.mockRestore();
     });
-
-    it('returns default data when the chain does not support pricing', async () => {
-      const _chainId = '0x9999';
-      mockQueryFn.mockResolvedValue({ prices: [] });
-      // Replace mainnet with a new chain id that does not support pricing
-      const mockState = cloneDeep(mockStateIsEvm) as any;
-      mockState.metamask.networkConfigurationsByChainId = {
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        _chainId: {
-          ...mockState.metamask.networkConfigurationsByChainId['0x1'],
-          chainId: _chainId,
-        },
-      };
-
-      const { result } = renderHookWithProvider(
-        () =>
-          useHistoricalPrices({
-            chainId: _chainId,
-            address,
-            currency,
-            timeRange,
-          }),
-        mockState,
-      );
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      expect(result.current).toEqual({
-        loading: false,
-        data: {
-          prices: [],
-          metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
-        },
-      });
-    });
   });
 
-  describe('when the chain is non-EVM', () => {
-    const mockStateIsNonEvm = cloneDeep(mockBaseState);
-    mockStateIsNonEvm.metamask.internalAccounts.selectedAccount =
-      '5132883f-598e-482c-a02b-84eeaa352f5b';
-
+  describe('non-EVM chain (Solana)', () => {
     const chainId = SolScope.Mainnet;
     const address = '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC';
     const currency = 'usd';
     const timeRange = 'P7D';
+    const state = {
+      ...mockBaseState,
+      metamask: {
+        ...mockBaseState.metamask,
+        internalAccounts: {
+          ...mockBaseState.metamask.internalAccounts,
+          selectedAccount: '5132883f-598e-482c-a02b-84eeaa352f5b',
+        },
+      },
+    };
 
     it('returns loading true and default data initially', () => {
-      const mockState = cloneDeep(mockStateIsNonEvm) as any;
-      mockState.metamask.historicalPrices = {};
-
-      const { result } = renderHookWithProvider(
+      const { result, unmount } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
-        mockStateIsNonEvm,
+        state,
       );
 
       expect(result.current).toEqual({
@@ -285,32 +269,60 @@ describe('useHistoricalPrices', () => {
           metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
         },
       });
+
+      unmount();
     });
 
-    it('returns the historical prices when the state is populated', async () => {
-      const mockState = cloneDeep(mockStateIsNonEvm) as any;
-      mockState.metamask.historicalPrices = {
-        '8A4AptCThfbuknsbteHgGKXczfJpfjuVA9SLTSGaaLGC': {
-          usd: {
-            intervals: {
-              P1D: [[1, 100]],
-              P7D: [
-                [1, 100],
-                [2, 102],
-                [3, 102],
-                [4, 105],
-                [5, 99],
-                [6, 102],
-                [7, 100],
-              ],
-            },
-          },
-        },
-      };
+    it('returns historical prices on successful fetch', async () => {
+      mockPricesFetch.mockResolvedValue({ prices: SEVEN_DAY_PRICES });
 
       const { result } = renderHookWithProvider(
         () => useHistoricalPrices({ chainId, address, currency, timeRange }),
-        mockState,
+        state,
+      );
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(result.current).toEqual({
+        loading: false,
+        data: { prices: SEVEN_DAY_POINTS, metadata: SEVEN_DAY_METADATA },
+      });
+    });
+
+    it('calls v3 endpoint with correct Solana CAIP params', async () => {
+      mockPricesFetch.mockResolvedValue({ prices: SEVEN_DAY_PRICES });
+
+      const { result } = renderHookWithProvider(
+        () => useHistoricalPrices({ chainId, address, currency, timeRange }),
+        state,
+      );
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      expect(mockPricesFetch).toHaveBeenCalledWith(
+        'https://price.api.cx.metamask.io',
+        expect.stringContaining(
+          `/v3/historical-prices/${SolScope.Mainnet}/token:`,
+        ),
+        expect.objectContaining({
+          params: expect.objectContaining({
+            vsCurrency: 'usd',
+            timePeriod: '7D',
+          }),
+        }),
+      );
+    });
+
+    it('returns default data when fetch returns empty', async () => {
+      mockPricesFetch.mockResolvedValue({ prices: [] });
+
+      const { result } = renderHookWithProvider(
+        () => useHistoricalPrices({ chainId, address, currency, timeRange }),
+        state,
       );
 
       await waitFor(() => {
@@ -320,43 +332,9 @@ describe('useHistoricalPrices', () => {
       expect(result.current).toEqual({
         loading: false,
         data: {
-          prices: [
-            { x: 1, y: 100 },
-            { x: 2, y: 102 },
-            { x: 3, y: 102 },
-            { x: 4, y: 105 },
-            { x: 5, y: 99 },
-            { x: 6, y: 102 },
-            { x: 7, y: 100 },
-          ],
-          metadata: {
-            minPricePoint: { x: 5, y: 99 },
-            maxPricePoint: { x: 4, y: 105 },
-            xMin: 1,
-            xMax: 7,
-            yMin: 99,
-            yMax: 105,
-          },
+          prices: [],
+          metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA,
         },
-      });
-    });
-
-    it('returns default data when the state is not populated', async () => {
-      const mockState = cloneDeep(mockStateIsNonEvm) as any;
-      mockState.metamask.historicalPrices = {};
-
-      const { result } = renderHookWithProvider(
-        () => useHistoricalPrices({ chainId, address, currency, timeRange }),
-        mockState,
-      );
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      expect(result.current).toEqual({
-        loading: false,
-        data: { prices: [], metadata: DEFAULT_USE_HISTORICAL_PRICES_METADATA },
       });
     });
   });

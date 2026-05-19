@@ -5,7 +5,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
 describe('Multichain Accounts - Wallet Details', function (this: Suite) {
@@ -23,12 +23,7 @@ describe('Multichain Accounts - Wallet Details', function (this: Suite) {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '$85,025.00',
-        );
+        await login(driver, { expectedBalance: '$85,025.00' });
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 

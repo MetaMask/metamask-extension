@@ -6,7 +6,7 @@
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
@@ -59,7 +59,7 @@ export async function runSendTransactionsBenchmark(): Promise<BenchmarkRunResult
         );
 
         // Login flow
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();

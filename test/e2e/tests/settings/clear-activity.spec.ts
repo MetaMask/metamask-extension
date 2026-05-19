@@ -5,7 +5,7 @@ import ActivityList from '../../page-objects/pages/home/activity-list';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Clear account activity', function (this: Suite) {
   // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ describe('Clear account activity', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         // Check local "Sent" transaction history is displayed
         const homePage = new HomePage(driver);

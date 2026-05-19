@@ -17,7 +17,7 @@ import TestDapp from '../../page-objects/pages/test-dapp';
 import { Driver } from '../../webdriver/driver';
 import {
   lockAndWaitForLoginPage,
-  loginWithBalanceValidation,
+  login,
 } from '../../page-objects/flows/login.flow';
 import { openPermissionsPageFlow } from '../../page-objects/flows/permissions.flow';
 
@@ -158,7 +158,7 @@ describe('Dapp interactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
 

@@ -3,7 +3,7 @@ import type { Mockttp } from 'mockttp';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { Driver } from '../webdriver/driver';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../constants';
 import TestDapp from '../page-objects/pages/test-dapp';
 import AdvancedPermissionsIntroduction from '../page-objects/pages/confirmations/advanced-permissions-introduction';
@@ -52,7 +52,7 @@ describe('wallet_requestExecutionPermissions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();

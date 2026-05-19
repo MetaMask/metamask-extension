@@ -2,7 +2,7 @@ import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
 import { withFixtures, getCleanAppState } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { mockIdentityServices } from '../mocks';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
@@ -55,7 +55,7 @@ describe('Contact syncing - New User', function () {
       },
       async ({ driver }) => {
         // Unlock wallet with backup and sync already enabled
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Wait for the UI to be ready before opening settings
         await driver.wait(async () => {
@@ -140,7 +140,7 @@ describe('Contact syncing - New User', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Wait for contact syncing to initialize
         await driver.wait(async () => {

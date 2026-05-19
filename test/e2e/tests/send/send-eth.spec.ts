@@ -26,7 +26,7 @@ import { Driver } from '../../webdriver/driver';
 import { Anvil } from '../../seeder/anvil';
 import { DAPP_PATH, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { veryLargeDelayMs, withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
@@ -47,7 +47,7 @@ describe('Send ETH', function () {
           driver: Driver;
           localNodes?: Anvil[];
         }) => {
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
 
           const homePage = new HomePage(driver);
           const sendPage = new SendPage(driver);
@@ -82,7 +82,7 @@ describe('Send ETH', function () {
           driver: Driver;
           localNodes?: Anvil[];
         }) => {
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
 
           const testDapp = new TestDapp(driver);
           const homePage = new HomePage(driver);
@@ -136,7 +136,7 @@ describe('Send ETH', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
           const activityListPage = new ActivityListPage(driver);
@@ -174,7 +174,7 @@ describe('Send ETH', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           await openTestSnapClickButtonAndInstall(
             driver,

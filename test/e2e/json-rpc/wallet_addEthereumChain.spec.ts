@@ -15,7 +15,7 @@ import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/update-network-confirmation';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 
 const getPermittedChains = async (driver: Driver) => {
   const getPermissionsRequest = JSON.stringify({
@@ -61,7 +61,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -128,7 +128,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -198,7 +198,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -258,7 +258,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -316,7 +316,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -394,7 +394,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -472,7 +472,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -527,7 +527,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
@@ -603,7 +603,7 @@ describe('Add Ethereum Chain', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();

@@ -6,7 +6,7 @@
 import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { withFixtures } from '../../../helpers';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
@@ -45,7 +45,7 @@ async function measurePagePowerUser(
       },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
-      await loginWithoutBalanceValidation(driver);
+      await login(driver, { validateBalance: false });
 
       for (let i = 0; i < pageLoads; i++) {
         clearNetworkReport();

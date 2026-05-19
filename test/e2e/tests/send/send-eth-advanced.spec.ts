@@ -9,7 +9,7 @@
 
 import { MockttpServer } from 'mockttp';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
@@ -56,7 +56,7 @@ describe('Send ETH - Advanced', function () {
         }) => {
           const contractAddress =
             await contractRegistry.getContractAddress(smartContract);
-          await loginWithBalanceValidation(driver, localNodes[0]);
+          await login(driver, { localNode: localNodes[0] });
 
           const homePage = new HomePage(driver);
           const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
@@ -104,7 +104,7 @@ describe('Send ETH - Advanced', function () {
           },
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
@@ -163,7 +163,7 @@ describe('Send ETH - Advanced', function () {
           },
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const testDapp = new TestDapp(driver);
           const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
@@ -222,7 +222,7 @@ describe('Send ETH - Advanced', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           const sendPage = new SendPage(driver);

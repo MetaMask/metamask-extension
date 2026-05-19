@@ -55,6 +55,7 @@ export type ControllersToInitialize =
   | 'SnapController'
   | 'SnapInsightsController'
   | 'SnapInterfaceController'
+  | 'PerpsController'
   | 'PPOMController'
   | 'TransactionController'
   | 'TransactionPayController'

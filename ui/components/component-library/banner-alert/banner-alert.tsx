@@ -14,6 +14,11 @@ import {
   BannerAlertSeverity,
 } from './banner-alert.types';
 
+/**
+ * @deprecated This component is deprecated and will be removed in a future release.
+ * Please use the BannerAlert component from @metamask/design-system-react instead.
+ * @see {@link https://github.com/MetaMask/metamask-design-system/blob/main/packages/design-system-react/MIGRATION.md#banneralert-component | Migration Guide}
+ */
 export const BannerAlert: BannerAlertComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -3,7 +3,7 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import SnapInstallWarning from '../page-objects/pages/dialog/snap-install-warning';
 import { Driver } from '../webdriver/driver';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
@@ -33,7 +33,7 @@ describe('Test Snap Multi Install', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);

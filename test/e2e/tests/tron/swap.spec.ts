@@ -1,8 +1,8 @@
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
@@ -12,50 +12,19 @@ import {
   TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE,
 } from './mocks/common-tron';
 
-// Tron chainId for bridge/swap config
-const TRON_BRIDGE_CHAIN_ID = '728126428';
-
-const bridgeConfig = {
-  refreshRate: 30000,
-  maxRefreshCount: 5,
-  support: true,
-  minimumVersion: '0.0.0',
-  chains: {
-    '1': { isActiveSrc: true, isActiveDest: true },
-    '42161': { isActiveSrc: true, isActiveDest: true },
-    '59144': { isActiveSrc: true, isActiveDest: true },
-    [TRON_BRIDGE_CHAIN_ID]: {
-      isActiveSrc: true,
-      isActiveDest: true,
-    },
-  },
-  chainRanking: [
-    { chainId: 'eip155:1', name: 'Ethereum' },
-    { chainId: 'eip155:42161', name: 'Arbitrum' },
-    { chainId: 'eip155:59144', name: 'Linea' },
-    { chainId: formatChainIdToCaip(TRON_BRIDGE_CHAIN_ID), name: 'Tron' },
-  ],
-};
-
 describe('Swap on Tron', function () {
   it('Quote displayed between TRX and TRC20', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApis,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            bridgeConfig,
-          },
-        },
         ignoredConsoleErrors: [
           `Failed to send transaction: ${TRON_MOCK_TRANSACTION_EXPIRATION_MESSAGE}`,
         ],
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
@@ -88,18 +57,12 @@ describe('Swap on Tron', function () {
   it('No quotes available for the pair', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilderV2().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTronSwapApisNoQuotes,
-        manifestFlags: {
-          remoteFeatureFlags: {
-            tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            bridgeConfig,
-          },
-        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();

@@ -15,7 +15,7 @@ import {
   mockWebpackPluginOldSnap,
   mockWebpackPluginSnap,
 } from '../mock-response-data/snaps/snap-binary-mocks';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
@@ -163,7 +163,7 @@ describe('Test Snap Metrics', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.openNewPage(DAPP_URL);
 
@@ -245,7 +245,7 @@ describe('Test Snap Metrics', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         await testSnaps.openPage(DAPP_URL);
@@ -319,7 +319,7 @@ describe('Test Snap Metrics', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         await testSnaps.openPage(DAPP_URL);
@@ -390,7 +390,7 @@ describe('Test Snap Metrics', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         await driver.openNewPage(DAPP_URL);
 
@@ -459,7 +459,7 @@ describe('Test Snap Metrics', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
@@ -544,7 +544,7 @@ describe('Test Snap Metrics', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
 
@@ -629,7 +629,7 @@ describe('Test Snap Metrics', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint | MockedEndpoint[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);

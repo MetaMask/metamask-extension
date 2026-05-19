@@ -17,7 +17,7 @@ import {
   IconName,
 } from '../../components/component-library';
 import { Content, Header, Page } from '../../components/multichain/pages/page';
-import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
+import { getIsPerpsExperienceAvailable } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { TransactionCard } from '../../components/app/perps/transaction-card';
@@ -41,7 +41,7 @@ import {
 const PerpsActivityPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const [activeFilter, setActiveFilter] =
     useState<PerpsTransactionFilter>('trade');
 
@@ -86,7 +86,7 @@ const PerpsActivityPage: React.FC = () => {
   }, [navigate]);
 
   // Guard: redirect if perps feature is disabled
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 

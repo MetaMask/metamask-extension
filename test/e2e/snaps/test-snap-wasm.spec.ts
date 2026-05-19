@@ -1,5 +1,5 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
-import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { withFixtures } from '../helpers';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
@@ -20,7 +20,7 @@ describe('Test Snap WASM', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         const testSnaps = new TestSnaps(driver);
         // Navigate to test snaps page and connect to wasm snap

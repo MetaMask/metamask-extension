@@ -17,6 +17,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { showModal } from '../../../store/actions';
+import { DEVELOPER_OPTIONS_ITEMS } from '../search-config';
 
 export const AutoResetAccountItem = () => {
   const t = useI18nContext();
@@ -40,7 +41,7 @@ export const AutoResetAccountItem = () => {
       data-testid="developer-options-auto-reset-account"
     >
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-        {t('clearActivity')}
+        {t(DEVELOPER_OPTIONS_ITEMS['auto-reset-account'])}
       </Text>
       <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
         {t('clearActivityDescription')}

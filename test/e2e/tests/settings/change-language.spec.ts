@@ -8,7 +8,7 @@ import GeneralSettings from '../../page-objects/pages/settings/general-settings'
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import ar from '../../../../app/_locales/ar/messages.json';
 import da from '../../../../app/_locales/da/messages.json';
 import de from '../../../../app/_locales/de/messages.json';
@@ -45,7 +45,7 @@ describe('Settings - general tab', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.checkPageIsLoaded();
@@ -83,7 +83,7 @@ describe('Settings - general tab', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.checkPageIsLoaded();
@@ -139,7 +139,7 @@ describe('Settings - general tab', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.checkPageIsLoaded();
@@ -183,7 +183,7 @@ describe('Settings - general tab', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.checkPageIsLoaded();
@@ -219,7 +219,7 @@ describe('Settings - general tab', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await new HeaderNavbar(driver).openSettingsPage();
         const generalSettings = new GeneralSettings(driver);
         await generalSettings.checkPageIsLoaded();

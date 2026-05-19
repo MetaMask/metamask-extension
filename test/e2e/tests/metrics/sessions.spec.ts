@@ -5,7 +5,7 @@ import {
   expectMockRequest,
   expectNoMockRequest,
 } from '../../helpers/mock-server';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 async function mockSentrySession(mockServer: MockttpServer) {
   return [
@@ -38,7 +38,7 @@ describe('Sessions', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );
@@ -59,7 +59,7 @@ describe('Sessions', function () {
         },
       },
       async ({ driver, mockedEndpoint }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
       },
     );

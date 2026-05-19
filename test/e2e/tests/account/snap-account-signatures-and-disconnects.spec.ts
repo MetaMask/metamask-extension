@@ -8,7 +8,7 @@ import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import {
   signTypedDataV3WithSnapAccount,
@@ -35,7 +35,7 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await installSnapSimpleKeyring(driver, false);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
         const newPublicKey = await snapSimpleKeyringPage.createNewAccount();

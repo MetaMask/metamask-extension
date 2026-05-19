@@ -6,7 +6,7 @@
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import { Driver } from '../../../webdriver/driver';
 import { performanceTracker } from '../../utils/performance-tracker';
@@ -50,7 +50,7 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         const timer = new TimerHelper('assetClickToPriceChart');
 
         // Login flow
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
 

@@ -12,7 +12,7 @@ import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
@@ -36,7 +36,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         const accountDetailsModal = new AccountDetailsModal(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedData,
         );
@@ -78,7 +78,7 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
         const confirmation = new SignTypedData(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(
           SignatureType.SignTypedData,
         );

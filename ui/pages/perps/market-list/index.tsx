@@ -30,7 +30,7 @@ import {
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
-  getIsPerpsEnabled,
+  getIsPerpsExperienceAvailable,
   getHip3AllowedSourcesSet,
 } from '../../../selectors/perps/feature-flags';
 import {
@@ -140,7 +140,7 @@ const filterByType = (
 export const MarketListView: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  const isPerpsExperienceAvailable = useSelector(getIsPerpsExperienceAvailable);
   const allowedHip3Sources = useSelector(getHip3AllowedSourcesSet);
 
   // Use stream hooks for real-time market data
@@ -232,7 +232,7 @@ export const MarketListView: React.FC = () => {
   );
 
   // Guard: redirect if perps feature is disabled
-  if (!isPerpsEnabled) {
+  if (!isPerpsExperienceAvailable) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
   }
 

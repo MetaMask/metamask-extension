@@ -6,10 +6,10 @@ import { sumHexes } from '../../../../shared/lib/conversion.utils';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getNativeTokenCachedBalanceByChainIdSelector,
-  selectTransactionFeeById,
 } from '../../../selectors';
 import { useConfirmContext } from '../context/confirm';
 import { isBalanceSufficient } from '../send-utils/send.utils';
+import { useFeeCalculations } from '../components/confirm/info/hooks/useFeeCalculations';
 
 const ZERO_HEX_FALLBACK = '0x0';
 
@@ -19,7 +19,6 @@ export function useHasInsufficientBalance(): {
 } {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const {
-    id: transactionId,
     chainId,
     txParams: { value = ZERO_HEX_FALLBACK, from: fromAddress = '' } = {},
   } = currentConfirmation ?? {};
@@ -37,8 +36,10 @@ export function useHasInsufficientBalance(): {
 
   const totalValue = sumHexes(value, ...batchTransactionValues);
 
-  const { hexMaximumTransactionFee } = useSelector((state) =>
-    selectTransactionFeeById(state, transactionId),
+  const { maxFeeHex } = useFeeCalculations(
+    currentConfirmation?.txParams
+      ? currentConfirmation
+      : ({ txParams: {} } as TransactionMeta),
   );
 
   const [multichainNetworks, evmNetworks] = useSelector(
@@ -51,7 +52,7 @@ export function useHasInsufficientBalance(): {
 
   const insufficientBalance = !isBalanceSufficient({
     amount: totalValue,
-    gasTotal: hexMaximumTransactionFee,
+    gasTotal: maxFeeHex,
     balance,
   });
 

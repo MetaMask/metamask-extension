@@ -4,7 +4,7 @@ import HomePage from '../page-objects/pages/home/homepage';
 import SettingsPage from '../page-objects/pages/settings/settings-page';
 import GeneralSettings from '../page-objects/pages/settings/general-settings';
 import FixtureBuilderV2 from '../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { login } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { withFixtures } from '../helpers';
 import { mockLocalizationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -24,7 +24,7 @@ describe('Test Snap Get Locale', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testSnaps = new TestSnaps(driver);
 

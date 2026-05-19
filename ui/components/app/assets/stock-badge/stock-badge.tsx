@@ -1,5 +1,6 @@
 import React from 'react';
-import { IconName, Tag } from '../../../component-library';
+import { IconName, IconSize } from '@metamask/design-system-react';
+import { Tag } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 type StockBadgeProps = {
@@ -12,7 +13,9 @@ export const StockBadge = ({ isMarketClosed }: StockBadgeProps) => {
   return (
     <Tag
       label={t('tokenStock')}
-      {...(isMarketClosed ? { startIconName: IconName.Clock } : {})}
+      {...(isMarketClosed
+        ? { iconName: IconName.AfterHours, iconSize: IconSize.Xs }
+        : {})}
     />
   );
 };

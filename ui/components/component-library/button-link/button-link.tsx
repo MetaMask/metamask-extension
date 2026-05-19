@@ -11,7 +11,16 @@ import type { ButtonLinkProps } from './button-link.types';
 import { ButtonLinkSize, ButtonLinkComponent } from './button-link.types';
 
 /**
- * @deprecated Please update your code to use `TextButton` from `@metamask/design-system-react`
+ * @deprecated ButtonLink is deprecated.
+ * - Use `TextButton` from `@metamask/design-system-react` for inline links within text.
+ * - For standalone link-style actions, use `Button` from `@metamask/design-system-react`
+ * with `variant={ButtonVariant.Tertiary}` (e.g., for "Forgot password?" on unlock).
+ *
+ * Examples:
+ * Inline: `<TextButton>Learn more</TextButton>`
+ * Standalone: `<Button variant={ButtonVariant.Tertiary}>Forgot password?</Button>`
+ *
+ * This component will be removed in a future release.
  */
 export const ButtonLink: ButtonLinkComponent = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

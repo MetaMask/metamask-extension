@@ -43,6 +43,7 @@ const BridgeAssetV2Schema = intersection([
         isSource: nullable(optional(boolean())),
       }),
     ),
+    isVerified: optional(boolean()),
   }),
 ]);
 

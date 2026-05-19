@@ -3242,7 +3242,9 @@ export async function getBalancesInSingleCall(
  *
  * @param chainId - chainId of the network
  */
-export async function findNetworkClientIdByChainId(chainId: string): string {
+export async function findNetworkClientIdByChainId(
+  chainId: string,
+): Promise<string> {
   return await submitRequestToBackground('findNetworkClientIdByChainId', [
     chainId,
   ]);
@@ -4617,13 +4619,13 @@ export function setDataCollectionForMarketing(
 
 export function setPna25Acknowledged(
   acknowledged: boolean,
-  delayCollection = false,
+  disableDelay: boolean = false,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     log.debug(`background.setPna25Acknowledged`);
     await submitRequestToBackground('setPna25Acknowledged', [
       acknowledged,
-      delayCollection,
+      disableDelay,
     ]);
   };
 }

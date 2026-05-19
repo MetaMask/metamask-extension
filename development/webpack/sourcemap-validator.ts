@@ -29,6 +29,17 @@ const CONTENTSCRIPT_SOURCEMAP_REFERENCE =
 
 const TARGET_STRING = 'new Error';
 
+// The perps controller uses a dynamic import() for the MYX provider that is
+// intentionally stripped from the published package. Webpack emits `new Error`
+// chunk-loading stubs for that import, and their source maps point back to the
+// `import()` expression rather than a real `new Error`, causing a false
+// validation failure. We scope the skip to the perps controller source path
+// and only when the mapped line contains a dynamic import() call.
+// TODO: Remove this once the MYX provider is included in the published
+// @metamask/perps-controller package.
+const PERPS_CONTROLLER_SOURCE = 'node_modules/@metamask/perps-controller/';
+const DYNAMIC_IMPORT_PATTERN = /\bimport\s*\(/u;
+
 function toPosixPath(pathValue: string): string {
   return pathValue.replace(/\\/gu, '/');
 }
@@ -433,6 +444,14 @@ export async function validateBundle({
         const column = origColumn;
         const portion = sourceLine ? sourceLine.slice(column) : '';
         const foundValidSource = portion.includes(TARGET_STRING);
+
+        if (
+          !foundValidSource &&
+          origSource.includes(PERPS_CONTROLLER_SOURCE) &&
+          DYNAMIC_IMPORT_PATTERN.test(sourceLine)
+        ) {
+          continue;
+        }
 
         if (!foundValidSource) {
           valid = false;

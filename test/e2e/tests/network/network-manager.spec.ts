@@ -3,7 +3,7 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
@@ -22,7 +22,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.checkNetworkIsSelected(NetworkId.ETHEREUM);
@@ -41,7 +41,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
 
@@ -61,7 +61,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
 
@@ -94,7 +94,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.checkTabIsSelected('Custom');
@@ -112,7 +112,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const networkManager = new NetworkManager(driver);
         await networkManager.openNetworkManager();
         await networkManager.checkTabIsSelected('Popular');
@@ -130,7 +130,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
         const networkManager = new NetworkManager(driver);
 
@@ -180,7 +180,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         await driver.delay(1000);
 
@@ -265,7 +265,7 @@ describe('Network Manager', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         await driver.delay(1000);
 

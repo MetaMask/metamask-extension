@@ -1,6 +1,6 @@
 import { UpdateNetworkFields } from '@metamask/network-controller';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { NetworksForm } from '../../../../../pages/settings/networks-tab/networks-form/networks-form';
 import { useNetworkFormState } from '../../../../../pages/settings/networks-tab/networks-form/networks-form-state';
 
@@ -15,24 +15,25 @@ export const AddNetwork: React.FC<AddNetworkProps> = ({
   network,
   isEdit = false,
 }) => {
-  const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
   return (
     <NetworksForm
       toggleNetworkMenuAfterSubmit={false}
       onComplete={() => {
-        console.log(`onComplete pushing to /?tab=custom-networks`);
-        navigate('/?tab=custom-networks');
+        setSearchParams({});
       }}
       onEdit={() => {
-        navigate('/edit');
+        setSearchParams({ view: 'edit' });
       }}
       networkFormState={networkFormState}
       existingNetwork={network}
       onRpcAdd={() => {
-        navigate(isEdit ? '/edit-rpc' : '/add-rpc');
+        setSearchParams({ view: isEdit ? 'edit-rpc' : 'add-rpc' });
       }}
       onBlockExplorerAdd={() => {
-        navigate(isEdit ? '/edit-explorer-url' : '/add-explorer-url');
+        setSearchParams({
+          view: isEdit ? 'edit-explorer-url' : 'add-explorer-url',
+        });
       }}
     />
   );

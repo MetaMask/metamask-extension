@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import getFetchWithTimeout from '../../../../shared/lib/fetch-with-timeout';
 import ExtensionStore from './extension-store';
@@ -63,6 +64,13 @@ export class FixtureExtensionStore extends ExtensionStore {
 
       if (response.ok) {
         const state = await response.json();
+
+        // Write StorageService entries directly to browser.storage.local
+        // so controllers can read them outside the main extension state.
+        if (Object.keys(state.storageServiceData ?? {}).length > 0) {
+          await browser.storage.local.set(state.storageServiceData);
+        }
+
         if (state.meta?.storageKind === 'split') {
           // If fixture is already in split state format, convert it properly
           const kvs = new Map(Object.entries(state.data));

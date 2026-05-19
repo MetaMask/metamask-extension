@@ -17,13 +17,13 @@ import {
   AssetsContractControllerGetERC721OwnerOfAction,
   AssetsContractControllerGetERC721TokenURIAction,
 } from '@metamask/assets-controllers';
-import { AddApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
 import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
-  | AddApprovalRequest
+  | ApprovalControllerAddRequestAction
   | AccountsControllerGetAccountAction
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerGetNetworkClientByIdAction

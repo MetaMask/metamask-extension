@@ -1,33 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import { HistoricalPriceValue } from '@metamask/snaps-sdk';
-import {
-  CaipAssetType,
-  CaipChainId,
-  Hex,
-  isCaipChainId,
-} from '@metamask/utils';
+import { CaipChainId, Hex, parseCaipAssetType } from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
-import { useDispatch, useSelector } from 'react-redux';
-import type { SupportedCurrency } from '@metamask/core-backend';
-import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
-import { getShouldShowFiat } from '../../../selectors';
-import { getHistoricalPrices } from '../../../selectors/assets';
-import {
-  chainSupportsPricing,
-  fromIso8601DurationToPriceApiTimePeriod,
-} from '../util';
-import { fetchHistoricalPricesForAsset } from '../../../store/actions';
-import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
+import { API_URLS, GC_TIMES, STALE_TIMES } from '@metamask/core-backend';
+import { fromIso8601DurationToPriceApiTimePeriod } from '../util';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { apiClient } from '../../../helpers/api-client';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
   prices: Point[];
-  /** Metadata derived from the prices array, computed here to encaspulate logic and leverage memoization. */
+  /** Metadata derived from the prices array, computed here to encapsulate logic and leverage memoization. */
   metadata: {
     /** Data point from the prices array with the lowest price. Is `{ x: -Infinity, y: -Infinity }` if the prices array is empty. */
     minPricePoint: Point;
@@ -54,21 +38,6 @@ export const DEFAULT_USE_HISTORICAL_PRICES_METADATA: HistoricalPrices['metadata'
     yMax: -Infinity,
   };
 
-/**
- * Converts a chain ID to hex format. If the chain ID is already in hex format, returns it as-is.
- * If it's a CAIP chain ID, converts it to hex. Returns null if conversion fails.
- *
- * @param chainId - The chain ID to convert (Hex or CaipChainId).
- * @returns The hex chain ID, or null if conversion fails.
- */
-const toHexChainId = (chainId: Hex | CaipChainId): Hex | null => {
-  try {
-    return isCaipChainId(chainId) ? convertCaipToHexChainId(chainId) : chainId;
-  } catch (e) {
-    return null;
-  }
-};
-
 type UseHistoricalPricesParams = {
   chainId: Hex | CaipChainId;
   address: string;
@@ -77,187 +46,97 @@ type UseHistoricalPricesParams = {
 };
 
 /**
- * Derives some metadata from the prices.
+ * Derives metadata from the prices in a single pass (safe for large arrays).
  *
  * @param prices - The prices to derive the metadata from.
  * @returns The metadata derived from the prices.
  */
-const deriveMetadata = (prices: Point[]) => {
-  const xMin = Math.min(...prices.map((p) => p.x));
-  const xMax = Math.max(...prices.map((p) => p.x));
-  const yMin = Math.min(...prices.map((p) => p.y));
-  const yMax = Math.max(...prices.map((p) => p.y));
+const deriveMetadata = (prices: Point[]): HistoricalPrices['metadata'] => {
+  if (prices.length === 0) {
+    return DEFAULT_USE_HISTORICAL_PRICES_METADATA;
+  }
 
-  const minPricePoint =
-    prices.find((p) => p.y === yMin) ??
-    DEFAULT_USE_HISTORICAL_PRICES_METADATA.minPricePoint;
-  const maxPricePoint =
-    prices.find((p) => p.y === yMax) ??
-    DEFAULT_USE_HISTORICAL_PRICES_METADATA.maxPricePoint;
+  let xMin = Infinity;
+  let xMax = -Infinity;
+  let minPricePoint = prices[0];
+  let maxPricePoint = prices[0];
 
-  return { minPricePoint, maxPricePoint, xMin, xMax, yMin, yMax };
+  for (const p of prices) {
+    if (p.x < xMin) {
+      xMin = p.x;
+    }
+    if (p.x > xMax) {
+      xMax = p.x;
+    }
+    if (p.y < minPricePoint.y) {
+      minPricePoint = p;
+    }
+    if (p.y > maxPricePoint.y) {
+      maxPricePoint = p;
+    }
+  }
+
+  return {
+    minPricePoint,
+    maxPricePoint,
+    xMin,
+    xMax,
+    yMin: minPricePoint.y,
+    yMax: maxPricePoint.y,
+  };
 };
 
 const transformPricesToPoints = (
   data: { prices?: number[][] } | undefined,
 ): Point[] => data?.prices?.map((p) => ({ x: p?.[0], y: p?.[1] })) ?? [];
 
-/**
- * Internal hook that fetches the historical prices for EVM chains. Returns default values otherwise.
- *
- * @param param0 - The parameters for the useHistoricalPrices hook.
- * @param param0.chainId - The chain ID of the asset.
- * @param param0.address - The address of the asset.
- * @param param0.currency - The currency of the asset.
- * @param param0.timeRange - The chart time range, as an ISO 8601 duration string ("P1D", "P1M", "P1Y", "P3YT45S", ...)
- * @returns The historical prices for the given asset and time range.
- */
-const useHistoricalPricesEvm = ({
-  chainId,
-  address,
-  currency,
-  timeRange,
-}: UseHistoricalPricesParams) => {
-  const isEvm = isEvmChainId(chainId);
-  const hexChainId = toHexChainId(chainId);
-  const showFiat: boolean = useSelector((state) =>
-    getShouldShowFiat(state, hexChainId),
-  );
-
-  const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
-  const chainSupported =
-    isEvm && showFiat && chainSupportsPricing(chainId as Hex);
-
-  const { queryKey, queryFn } =
-    apiClient.prices.getV1HistoricalPricesQueryOptions(chainId, address, {
-      currency: currency as SupportedCurrency,
-      timeRange: timePeriod,
-    });
-
-  // Fetch the prices, and set them locally as a result of the fetch
-  const { data: prices = [], isFetching } = useQuery({
-    // @ts-expect-error - fix once extension in react-query v5
-    queryKey,
-    queryFn,
-    enabled: chainSupported,
-    keepPreviousData: true,
-    retry: false,
-    select: transformPricesToPoints,
-  });
-
-  // Compute the metadata
-  const metadata =
-    prices.length > 0
-      ? deriveMetadata(prices)
-      : DEFAULT_USE_HISTORICAL_PRICES_METADATA;
-
-  return { loading: isFetching, data: { prices, metadata } };
+type PricesClientFetch = {
+  fetch: (
+    baseUrl: string,
+    path: string,
+    options?: {
+      signal?: AbortSignal;
+      params?: Record<string, string | undefined>;
+    },
+  ) => Promise<{ prices?: [number, number][] }>;
 };
 
+/** TanStack Query key prefix — distinct from `@metamask/core-backend` `['prices', ...]` keys to avoid cache/queryFn mismatches. */
+const V3_HISTORICAL_PRICES_QUERY_KEY_ROOT = [
+  'metamask-extension',
+  'assetHistoricalPrices',
+  'v3',
+] as const;
+
 /**
- * Internal hook that fetches the historical prices for non-EVM chains. Returns default values otherwise.
+ * CAIP-2 chain id and asset-type segment for `/v3/historical-prices/{chainId}/{assetId}`.
  *
- * @param param0 - The parameters for the useHistoricalPrices hook.
- * @param param0.chainId - The chain ID of the asset.
- * @param param0.address - The address of the asset.
- * @param param0.currency - The currency of the asset.
- * @param param0.timeRange - The chart time range, as an ISO 8601 duration string ("P1D", "P1M", "P1Y", "P3YT45S", ...)
- * @returns The historical prices for the given asset and time range.
+ * @param chainId - Chain id (hex or CAIP-2).
+ * @param address - Token address or CAIP-19 asset type.
+ * @returns Parsed segments, or null if a CAIP asset id cannot be derived.
  */
-const useHistoricalPricesNonEvm = ({
-  chainId,
-  address,
-  currency,
-  timeRange,
-}: UseHistoricalPricesParams) => {
-  const isEvm = isEvmChainId(chainId);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [prices, setPrices] = useState<Point[]>([]);
-  const [metadata, setMetadata] = useState<HistoricalPrices['metadata']>(
-    DEFAULT_USE_HISTORICAL_PRICES_METADATA,
-  );
-
-  const historicalPricesNonEvm = useSelector(getHistoricalPrices);
-
-  const dispatch = useDispatch();
-
-  const internalAccount = useSelector((state) =>
-    getInternalAccountBySelectedAccountGroupAndCaip(
-      state,
-      isCaipChainId(chainId) ? chainId : toEvmCaipChainId(chainId),
-    ),
-  );
-
-  /**
-   * Fetch the prices by dispatching an action and then updating the redux state.
-   * So we follow up with an other effect that will respond on the redux state update and set the prices locally in this hook.
-   */
-  useEffect(() => {
-    if (isEvm || !internalAccount) {
-      return;
-    }
-
-    // On non-EVM, we fetch the prices from the snap, then store them in the redux state, and grab them from the redux state
-    const fetchPrices = async () => {
-      setLoading(true);
-      try {
-        await dispatch(
-          fetchHistoricalPricesForAsset(
-            address as CaipAssetType,
-            internalAccount,
-          ),
-        );
-      } catch (error) {
-        console.error(
-          'Error fetching historical prices for %s on %s',
-          address,
-          chainId,
-          error,
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPrices();
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    const intervalId = setInterval(fetchPrices, 60000); // Refresh every minute
-    return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [isEvm, chainId, address, internalAccount, dispatch]);
-
-  // Retrieve the prices from the state
-  useEffect(() => {
-    if (isEvm) {
-      return;
-    }
-
-    const historicalPricesNonEvmThisTokenAndPeriod =
-      historicalPricesNonEvm?.[address as CaipAssetType]?.[currency]?.intervals[
-        timeRange
-      ] ?? [];
-    const pricesToSet = historicalPricesNonEvmThisTokenAndPeriod.map(
-      ([x, y]: HistoricalPriceValue) => ({ x, y: Number(y) }),
-    );
-    setPrices(pricesToSet);
-  }, [isEvm, historicalPricesNonEvm, address, currency, timeRange]);
-
-  // Compute the metadata
-  useEffect(() => {
-    if (isEvm) {
-      return;
-    }
-
-    const metadataToSet = deriveMetadata(prices);
-    setMetadata(metadataToSet);
-  }, [isEvm, prices]);
-
-  return { loading, data: { prices, metadata } };
-};
+function getV3HistoricalPricesCaipParams(
+  chainId: Hex | CaipChainId,
+  address: string,
+): { caipChainId: CaipChainId; assetType: string } | null {
+  const caipAssetType = toAssetId(address, chainId);
+  if (!caipAssetType) {
+    return null;
+  }
+  const {
+    chainId: caipChainId,
+    assetNamespace,
+    assetReference,
+  } = parseCaipAssetType(caipAssetType);
+  return {
+    caipChainId,
+    assetType: `${assetNamespace}:${assetReference}`,
+  };
+}
 
 /**
- * Exposed hook that fetches the historical prices for a given asset and over a given duration.
- * Uses the correct internal hook based on the chain type.
+ * Fetches the historical prices for a given asset over a given duration
+ * using the price API v3 endpoint for both EVM and non-EVM chains.
  *
  * @param param0 - The parameters for the useHistoricalPrices hook.
  * @param param0.chainId - The chain ID of the asset.
@@ -272,25 +151,64 @@ export const useHistoricalPrices = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = isEvmChainId(chainId);
+  const v3Params = useMemo(
+    () => getV3HistoricalPricesCaipParams(chainId, address),
+    [chainId, address],
+  );
 
-  const historicalPricesEvm = useHistoricalPricesEvm({
-    chainId,
-    address,
-    currency,
-    timeRange,
+  const timePeriod = useMemo(
+    () => fromIso8601DurationToPriceApiTimePeriod(timeRange),
+    [timeRange],
+  );
+
+  const queryKey = useMemo(() => {
+    if (!v3Params) {
+      return [...V3_HISTORICAL_PRICES_QUERY_KEY_ROOT, 'disabled'] as const;
+    }
+    return [
+      ...V3_HISTORICAL_PRICES_QUERY_KEY_ROOT,
+      v3Params.caipChainId,
+      v3Params.assetType,
+      currency,
+      timePeriod,
+    ] as const;
+  }, [v3Params, currency, timePeriod]);
+
+  const { data: prices = [], isFetching } = useQuery({
+    // @ts-expect-error - fix once extension in react-query v5
+    queryKey,
+    queryFn: async ({ queryKey: qk, signal }) => {
+      if (qk[3] === 'disabled') {
+        return { prices: [] as [number, number][] };
+      }
+      const caipChainId = qk[3] as CaipChainId;
+      const assetType = qk[4] as string;
+      const curr = qk[5] as string;
+      const period = qk[6] as string;
+      return (apiClient.prices as unknown as PricesClientFetch).fetch(
+        API_URLS.PRICES,
+        `/v3/historical-prices/${caipChainId}/${assetType}`,
+        {
+          signal,
+          params: {
+            vsCurrency: curr,
+            timePeriod: period,
+          },
+        },
+      );
+    },
+    enabled: Boolean(v3Params),
+    keepPreviousData: true,
+    retry: false,
+    staleTime: STALE_TIMES.PRICES,
+    gcTime: GC_TIMES.DEFAULT,
+    select: transformPricesToPoints,
   });
 
-  const historicalPricesNonEvm = useHistoricalPricesNonEvm({
-    chainId,
-    address,
-    currency,
-    timeRange,
-  });
+  const metadata = useMemo(() => deriveMetadata(prices), [prices]);
 
-  if (isEvm) {
-    return historicalPricesEvm;
-  }
-
-  return historicalPricesNonEvm;
+  return {
+    loading: isFetching,
+    data: { prices, metadata },
+  };
 };

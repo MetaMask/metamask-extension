@@ -1,6 +1,7 @@
 import { ENVIRONMENT } from '../../development/build/constants';
 import {
   getEnabledAdvancedPermissions,
+  getIsPerpsIncludedInBuild,
   isProduction,
   isGatorPermissionsRevocationFeatureEnabled,
 } from './environment';
@@ -96,5 +97,32 @@ describe('isGatorPermissionsRevocationFeatureEnabled', () => {
   it('should return false when GATOR_PERMISSIONS_REVOCATION_ENABLED is undefined', () => {
     delete process.env.GATOR_PERMISSIONS_REVOCATION_ENABLED;
     expect(isGatorPermissionsRevocationFeatureEnabled()).toBe(false);
+  });
+});
+
+describe('getIsPerpsIncludedInBuild', () => {
+  let originalPerpsEnabled: string | undefined;
+
+  beforeAll(() => {
+    originalPerpsEnabled = process.env.PERPS_ENABLED;
+  });
+
+  afterAll(() => {
+    process.env.PERPS_ENABLED = originalPerpsEnabled;
+  });
+
+  it('returns true when PERPS_ENABLED is "true"', () => {
+    process.env.PERPS_ENABLED = 'true';
+    expect(getIsPerpsIncludedInBuild()).toBe(true);
+  });
+
+  it('returns false when PERPS_ENABLED is "false"', () => {
+    process.env.PERPS_ENABLED = 'false';
+    expect(getIsPerpsIncludedInBuild()).toBe(false);
+  });
+
+  it('returns false when PERPS_ENABLED is undefined', () => {
+    delete process.env.PERPS_ENABLED;
+    expect(getIsPerpsIncludedInBuild()).toBe(false);
   });
 });

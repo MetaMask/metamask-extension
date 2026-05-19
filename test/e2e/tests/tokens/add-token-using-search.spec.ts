@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { NETWORK_CLIENT_ID } from '../../constants';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 describe('Add existing token using search', function () {
   // Mock call to core to fetch BAT token price
@@ -112,7 +112,7 @@ describe('Add existing token using search', function () {
         testSpecificMock: mockBscApis,
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenAmountIsDisplayed('25 BNB');
         await assetListPage.importTokenBySearch('BAT');

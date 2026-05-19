@@ -4,7 +4,7 @@ import { getEventPayloads, withFixtures } from '../../helpers';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 /**
  * Mocks the segment API for the App Opened event that we expect to see when
@@ -42,7 +42,7 @@ describe('App Opened metric', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 1);
@@ -64,7 +64,7 @@ describe('App Opened metric', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
@@ -87,7 +87,7 @@ describe('App Opened metric', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Go to dapp which will trigger MetaMask to open
         const testDapp = new TestDapp(driver);

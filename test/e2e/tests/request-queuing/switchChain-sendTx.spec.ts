@@ -3,7 +3,7 @@ import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 
 describe('Request Queuing SwitchChain -> SendTx', function () {
@@ -32,7 +32,7 @@ describe('Request Queuing SwitchChain -> SendTx', function () {
       },
 
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

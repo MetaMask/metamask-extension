@@ -15,6 +15,7 @@ import {
   IconSize,
   IconColor,
 } from '@metamask/design-system-react';
+import type { Position as PerpsPosition } from '@metamask/perps-controller';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TextField, TextFieldSize } from '../../../component-library';
 import {
@@ -23,8 +24,8 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { usePerpsEligibility } from '../../../../hooks/perps';
-import { getPerpsController } from '../../../../providers/perps';
-import { getPerpsStreamManager } from '../../../../providers/perps/PerpsStreamManager';
+import { submitRequestToBackground } from '../../../../store/background-connection';
+import { getPerpsStreamManager } from '../../../../providers/perps';
 import type { Position } from '../types';
 
 const TP_PRESETS = [10, 25, 50, 100];
@@ -33,7 +34,6 @@ const SL_PRESETS = [10, 25, 50, 75];
 export type UpdateTPSLModalContentProps = {
   position: Position;
   currentPrice: number;
-  selectedAddress: string;
   onClose: () => void;
 };
 
@@ -43,13 +43,11 @@ export type UpdateTPSLModalContentProps = {
  * @param options0
  * @param options0.position
  * @param options0.currentPrice
- * @param options0.selectedAddress
  * @param options0.onClose
  */
 export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   position,
   currentPrice,
-  selectedAddress,
   onClose,
 }) => {
   const t = useI18nContext();
@@ -215,20 +213,24 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
   }, [editingSlPrice, formatEditPrice]);
 
   const handleSave = useCallback(async () => {
-    if (!isEligible || !selectedAddress || !position) {
+    if (!isEligible || !position) {
       return;
     }
     setIsSaving(true);
     setTpslError(null);
     try {
-      const controller = await getPerpsController(selectedAddress);
       const cleanTpPrice = editingTpPrice.replace(/,/gu, '').trim();
       const cleanSlPrice = editingSlPrice.replace(/,/gu, '').trim();
-      const result = await controller.updatePositionTPSL({
-        symbol: position.symbol,
-        takeProfitPrice: cleanTpPrice || undefined,
-        stopLossPrice: cleanSlPrice || undefined,
-      });
+      const result = await submitRequestToBackground<{
+        success: boolean;
+        error?: string;
+      }>('perpsUpdatePositionTPSL', [
+        {
+          symbol: position.symbol,
+          takeProfitPrice: cleanTpPrice || undefined,
+          stopLossPrice: cleanSlPrice || undefined,
+        },
+      ]);
       if (!result.success) {
         throw new Error(result.error || 'Failed to update TP/SL');
       }
@@ -251,9 +253,9 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
       streamManager.positions.pushData(optimisticallyUpdatedPositions);
       setTimeout(async () => {
         try {
-          const freshPositions = await controller.getPositions({
-            skipCache: true,
-          });
+          const freshPositions = await submitRequestToBackground<
+            PerpsPosition[]
+          >('perpsGetPositions', [{ skipCache: true }]);
           streamManager.pushPositionsWithOverrides(freshPositions);
         } catch (e) {
           console.warn('[Perps] Delayed TP/SL refetch failed:', e);
@@ -267,14 +269,7 @@ export const UpdateTPSLModalContent: React.FC<UpdateTPSLModalContentProps> = ({
     } finally {
       setIsSaving(false);
     }
-  }, [
-    isEligible,
-    selectedAddress,
-    position,
-    editingTpPrice,
-    editingSlPrice,
-    onClose,
-  ]);
+  }, [isEligible, position, editingTpPrice, editingSlPrice, onClose]);
 
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={4}>

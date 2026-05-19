@@ -75,3 +75,11 @@ export const useDappSwapContext = () => {
   }
   return context as DappSwapContextType;
 };
+
+/**
+ * Optional version of useDappSwapContext. Returns undefined when used outside
+ * DappSwapContextProvider. Use when a component can be rendered in both confirm
+ * flow and outside it (e.g. cancel-speedup gas fee display).
+ */
+export const useDappSwapContextOptional = (): DappSwapContextType | undefined =>
+  useContext(DappSwapContext) as DappSwapContextType | undefined;

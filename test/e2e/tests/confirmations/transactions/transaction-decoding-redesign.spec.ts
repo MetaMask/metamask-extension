@@ -5,7 +5,7 @@ import { DAPP_URL, NETWORK_CLIENT_ID, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
@@ -32,7 +32,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
           contractRegistry,
           localNodes,
         }: TestSuiteArguments) => {
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await login(driver, { localNode: localNodes?.[0] });
           const contractAddress = await (
             contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
@@ -66,7 +66,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
@@ -98,7 +98,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         title: this.test?.fullTitle(),
       },
       async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
         ).getContractAddress(smartContract);
@@ -141,7 +141,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         const addresses = await localNodes?.[0]?.getAccounts();
         const publicAddress = addresses?.[0] as string;
 
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
         const contractAddress = '0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B';
 
         const confirmation = new TransactionConfirmation(driver);

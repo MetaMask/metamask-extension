@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef } from 'react';
 import type { OrderFill } from '@metamask/perps-controller';
-import { usePerpsController } from '../../../providers/perps';
+import type { PerpsStreamManager } from '../../../providers/perps';
+import { usePerpsChannel } from './usePerpsChannel';
 
 /**
  * Options for usePerpsLiveFills hook
@@ -20,13 +20,13 @@ export type UsePerpsLiveFillsReturn = {
   isInitialLoading: boolean;
 };
 
-// Stable empty array reference to prevent re-renders
-const EMPTY_FILLS: OrderFill[] = [];
+const selectFills = (manager: PerpsStreamManager) => manager.fills;
 
 /**
- * Hook for real-time order fill updates via stream subscription
+ * Hook for real-time order fill updates via the PerpsStreamManager fills channel.
  *
- * Uses the PerpsController directly for WebSocket subscriptions.
+ * Fills arrive from the background via subscribeToOrderFills routed through
+ * PerpsStreamBridge and pushed to the fills channel.
  *
  * @param _options - Configuration options (unused, for API compatibility)
  * @returns Object containing fills array and loading state
@@ -53,32 +53,7 @@ export function usePerpsLiveFills(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: UsePerpsLiveFillsOptions = {},
 ): UsePerpsLiveFillsReturn {
-  const controller = usePerpsController();
-  const [fills, setFills] = useState<OrderFill[]>(EMPTY_FILLS);
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const hasReceivedFirstUpdate = useRef(false);
-
-  useEffect(() => {
-    // Reset state when controller changes (account switch)
-    setFills(EMPTY_FILLS);
-    setIsInitialLoading(true);
-    hasReceivedFirstUpdate.current = false;
-
-    const unsubscribe = controller.subscribeToOrderFills({
-      callback: (newFills: OrderFill[]) => {
-        if (!hasReceivedFirstUpdate.current) {
-          hasReceivedFirstUpdate.current = true;
-          setIsInitialLoading(false);
-        }
-
-        setFills(newFills);
-      },
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [controller]);
+  const { data: fills, isInitialLoading } = usePerpsChannel(selectFills, []);
 
   return { fills, isInitialLoading };
 }

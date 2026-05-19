@@ -1,4 +1,8 @@
-import { ApprovalType, toHex } from '@metamask/controller-utils';
+import {
+  ApprovalType,
+  toChecksumHexAddress,
+  toHex,
+} from '@metamask/controller-utils';
 import {
   GasFeeToken,
   TransactionMeta,
@@ -36,6 +40,7 @@ const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
 
 const TRANSACTION_ID_MOCK = '123-456';
 const TRANSACTION_ID_MOCK_2 = '456-789';
+const ACCOUNT_ADDRESS = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
 const TRANSACTION_MOCK = {
   ...genUnapprovedContractInteractionConfirmation({
@@ -43,7 +48,7 @@ const TRANSACTION_MOCK = {
   }),
   id: TRANSACTION_ID_MOCK,
   txParams: {
-    from: '0x123',
+    from: ACCOUNT_ADDRESS,
     value: '0x2',
     maxFeePerGas: '0x2',
     gas: '0x3',
@@ -99,7 +104,9 @@ function buildState({
       pendingApprovals,
       accountsByChainId: {
         [chainId ?? '0x5']: {
-          [accountAddress]: { balance: toHex(balance ?? 0) },
+          [toChecksumHexAddress(accountAddress)]: {
+            balance: toHex(balance ?? 0),
+          },
         },
       },
       transactions: transaction ? [transaction] : [],
@@ -263,16 +270,18 @@ describe('useInsufficientBalanceAlerts', () => {
         },
       ],
     };
+    // Balance of 1500000005 is sufficient for a single send (value=0x2, gas=0x6)
+    // but insufficient for the batch total (value + nested values + gas = 1500000008)
     expect(
       runHook({
-        balance: 210000000002,
+        balance: 1500000005,
         currentConfirmation: TRANSACTION_MOCK as Partial<TransactionMeta>,
         transaction: TRANSACTION_MOCK as Partial<TransactionMeta>,
       }),
     ).toEqual([]);
     expect(
       runHook({
-        balance: 210000000002,
+        balance: 1500000005,
         currentConfirmation: BATCH_TRANSACTION_MOCK as Partial<TransactionMeta>,
         transaction: BATCH_TRANSACTION_MOCK as Partial<TransactionMeta>,
       }),

@@ -2,9 +2,7 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
 
 const { withFixtures } = require('../../helpers');
-const {
-  loginWithBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
+const { login } = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -225,7 +223,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval', function () {
       },
 
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await driver.openNewPage(DAPP_URL);
 
         const expectedTitle = 'This is a deceptive request';

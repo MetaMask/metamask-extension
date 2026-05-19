@@ -7,7 +7,7 @@ import type {
   NetworkControllerNetworkDidChangeEvent,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
-import { AddApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
 import {
   AccountsControllerGetAccountAction,
   AccountsControllerGetSelectedAccountAction,
@@ -29,7 +29,7 @@ type AllowedActions =
   | AccountsControllerGetAccountAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerListAccountsAction
-  | AddApprovalRequest
+  | ApprovalControllerAddRequestAction
   | NetworkControllerGetNetworkClientByIdAction;
 
 type AllowedEvents =

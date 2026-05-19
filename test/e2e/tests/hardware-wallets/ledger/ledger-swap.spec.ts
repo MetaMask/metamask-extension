@@ -2,7 +2,7 @@ import { Browser } from 'selenium-webdriver';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import { checkActivityTransaction } from '../../swaps/shared';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
@@ -36,7 +36,7 @@ describe.skip('Ledger Swap', function () {
           '0x1158e460913d00000',
         )) ?? console.error('localNodes is undefined or empty');
 
-        await loginWithBalanceValidation(driver, undefined, undefined, '20');
+        await login(driver, { expectedBalance: '20' });
 
         const homePage = new HomePage(driver);
         await homePage.checkIfSwapButtonIsClickable();

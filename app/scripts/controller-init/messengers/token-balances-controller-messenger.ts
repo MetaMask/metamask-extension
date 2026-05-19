@@ -15,8 +15,8 @@ import {
   AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import {
-  AccountTrackerUpdateNativeBalancesAction,
-  AccountTrackerUpdateStakedBalancesAction,
+  AccountTrackerControllerUpdateNativeBalancesAction,
+  AccountTrackerControllerUpdateStakedBalancesAction,
   AccountTrackerControllerGetStateAction,
   TokensControllerState,
   type TokenDetectionControllerAddDetectedTokensViaWsAction,
@@ -67,8 +67,8 @@ type AllowedActions =
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerListAccountsAction
   | AccountTrackerControllerGetStateAction
-  | AccountTrackerUpdateNativeBalancesAction
-  | AccountTrackerUpdateStakedBalancesAction
+  | AccountTrackerControllerUpdateNativeBalancesAction
+  | AccountTrackerControllerUpdateStakedBalancesAction
   | KeyringControllerGetStateAction
   | AuthenticationController.AuthenticationControllerGetBearerTokenAction;
 

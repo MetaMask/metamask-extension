@@ -14,7 +14,7 @@ import {
   EXPECTED_EVENT_TYPES,
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 const quote = {
   amount: '25',
@@ -35,7 +35,7 @@ describe('Bridge tests', function (this: Suite) {
         true,
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await login(driver, { expectedBalance: '0' });
 
         const homePage = new HomePage(driver);
 

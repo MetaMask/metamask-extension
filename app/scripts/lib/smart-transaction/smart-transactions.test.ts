@@ -133,12 +133,6 @@ function withRequest<ReturnValue>(
     }),
   );
 
-  // Register ErrorReportingService:captureException handler
-  messenger.registerActionHandler(
-    'ErrorReportingService:captureException',
-    jest.fn(),
-  );
-
   const smartTransactionsControllerMessenger = new Messenger<
     'SmartTransactionsController',
     MessengerActions<SmartTransactionsControllerMessenger>,
@@ -155,7 +149,6 @@ function withRequest<ReturnValue>(
       'TransactionController:getTransactions',
       'TransactionController:updateTransaction',
       'RemoteFeatureFlagController:getState',
-      'ErrorReportingService:captureException',
     ],
     events: [
       'NetworkController:stateChange',

@@ -23,10 +23,7 @@ import PermissionListPage from '../../page-objects/pages/permission/permission-l
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import {
-  loginWithBalanceValidation,
-  loginWithoutBalanceValidation,
-} from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { connectAccountToTestDapp } from '../../page-objects/flows/test-dapp.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
@@ -192,7 +189,7 @@ describe('Multiple Standard Dapp Connections', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
 
         const connectAccountConfirmation = new ConnectAccountConfirmation(
@@ -242,7 +239,7 @@ describe('Multiple Standard Dapp Connections', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const testDapp = new TestDapp(driver);
         const connectAccountConfirmation = new ConnectAccountConfirmation(
           driver,
@@ -294,7 +291,7 @@ describe('Multiple Standard Dapp Connections', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDappSolana(driver);
 
@@ -350,7 +347,7 @@ describe('Multiple Standard Dapp Connections', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
@@ -410,7 +407,7 @@ describe('Multiple Standard Dapp Connections', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Solana');
         const testDapp = new TestDapp(driver);
 
@@ -484,7 +481,7 @@ describe('Multiple Standard Dapp Connections', function () {
         dappOptions: { numberOfTestDapps: 1 },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         const testDapp = new TestDapp(driver);
 
         await testDapp.openTestDappPage();

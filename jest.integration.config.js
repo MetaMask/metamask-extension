@@ -34,6 +34,7 @@ module.exports = {
       {
         outputDirectory: 'test/test-results/integration',
         outputName: 'junit.xml',
+        addFileAttribute: 'true',
       },
     ],
   ],

@@ -8,7 +8,7 @@ import { generateWalletState } from '../../../../../app/scripts/fixtures/generat
 import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
 import { withFixtures } from '../../../helpers';
 import type { MockedEndpoint } from '../../../mock-e2e';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SwapPage from '../../../page-objects/pages/swap/swap-page';
@@ -69,7 +69,7 @@ export async function runSwapBenchmark(): Promise<BenchmarkRunResult> {
         const timerQuoteFetching = new TimerHelper('fetchAndDisplaySwapQuotes');
 
         // Login flow
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homePage = new HomePage(driver);
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();

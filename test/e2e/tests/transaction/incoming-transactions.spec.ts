@@ -1,5 +1,5 @@
 import { Mockttp } from 'mockttp';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -133,7 +133,7 @@ describe('Incoming Transactions', function () {
         testSpecificMock: mockAccountsApi,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
         const homepage = new HomePage(driver);
         await homepage.goToActivityList();
 
@@ -239,7 +239,7 @@ describe('Incoming Transactions', function () {
 });
 
 async function changeNetworkAndGoToActivity(driver: Driver) {
-  await loginWithoutBalanceValidation(driver);
+  await login(driver, { validateBalance: false });
 
   const homepage = new HomePage(driver);
   await homepage.goToActivityList();

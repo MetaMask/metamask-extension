@@ -16,9 +16,9 @@ import { BaseController, StateMetadata } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
 import { Patch } from 'immer';
 import {
-  AcceptRequest,
-  AddApprovalRequest,
-  RejectRequest,
+  ApprovalControllerAcceptRequestAction,
+  ApprovalControllerAddRequestAction,
+  ApprovalControllerRejectRequestAction,
 } from '@metamask/approval-controller';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { KeyringType } from '../../../shared/constants/keyring';
@@ -86,7 +86,10 @@ type EncryptionPublicKeyManagerStateChange = {
   payload: [EncryptionPublicKeyManagerState, Patch[]];
 };
 
-export type AllowedActions = AddApprovalRequest | AcceptRequest | RejectRequest;
+export type AllowedActions =
+  | ApprovalControllerAddRequestAction
+  | ApprovalControllerAcceptRequestAction
+  | ApprovalControllerRejectRequestAction;
 
 export type AllowedEvents =
   | EncryptionPublicKeyManagerStateChange

@@ -4,7 +4,7 @@ import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { Mockttp } from '../../../mock-e2e';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments, mocked4BytesSetApprovalForAll } from './shared';
@@ -17,7 +17,7 @@ describe('Confirmation Redesign ERC1155 Revoke setApprovalForAll submit an revok
       this.test?.fullTitle(),
       TransactionEnvelopeType.legacy,
       async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
 
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
@@ -49,7 +49,7 @@ describe('Confirmation Redesign ERC1155 Revoke setApprovalForAll submit an revok
       this.test?.fullTitle(),
       TransactionEnvelopeType.feeMarket,
       async ({ driver, contractRegistry, localNodes }: TestSuiteArguments) => {
-        await loginWithBalanceValidation(driver, localNodes?.[0]);
+        await login(driver, { localNode: localNodes?.[0] });
 
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry

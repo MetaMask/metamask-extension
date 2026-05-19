@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -150,7 +150,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -218,7 +218,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -310,7 +310,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -383,7 +383,7 @@ describe('Shield Plan Stripe Integration', function () {
           ],
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -443,7 +443,7 @@ describe('Shield Plan Stripe Integration', function () {
           ],
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -499,7 +499,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -540,7 +540,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -603,7 +603,7 @@ describe('Shield Plan Stripe Integration', function () {
           },
         },
         async ({ driver }) => {
-          await loginWithBalanceValidation(driver);
+          await login(driver);
 
           const homePage = new HomePage(driver);
           await homePage.checkPageIsLoaded();
@@ -646,7 +646,7 @@ describe('Shield Plan Stripe Integration', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -713,7 +713,7 @@ describe('Shield Plan Stripe Integration', function () {
         ],
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -766,7 +766,7 @@ describe('Shield Plan Stripe Integration', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

@@ -5,7 +5,7 @@ import { Driver } from '../../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures } from '../../../helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/batch-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
@@ -42,7 +42,7 @@ describe.skip('Upgrade Account', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // We check that we have an EOA account
         let accountBytecode = await localNodes[0].getCode(
@@ -122,7 +122,7 @@ describe.skip('Upgrade Account', function (this: Suite) {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // We check that we have an EOA account
         let accountBytecode = await localNodes[0].getCode(

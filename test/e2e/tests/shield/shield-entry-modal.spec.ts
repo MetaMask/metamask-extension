@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 import ShieldPlanPage from '../../page-objects/pages/settings/shield/shield-plan-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
@@ -43,7 +43,7 @@ describe('Shield Entry Modal', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
 
@@ -77,7 +77,7 @@ describe('Shield Entry Modal', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
@@ -124,7 +124,7 @@ describe('Shield Entry Modal', function () {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();

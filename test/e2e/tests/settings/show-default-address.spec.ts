@@ -4,7 +4,7 @@ import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 const SHOW_DEFAULT_ADDRESS_FLAG = {
   remoteFeatureFlags: { extensionUxDefaultAddress: true },
@@ -19,7 +19,7 @@ describe('Show default address', function (this: Suite) {
         manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Navigate to settings and check "show default address" section is displayed
         const homePage = new HomePage(driver);
@@ -39,7 +39,7 @@ describe('Show default address', function (this: Suite) {
         manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Check on home page that default address is not present
         const homePage = new HomePage(driver);
@@ -57,7 +57,7 @@ describe('Show default address', function (this: Suite) {
         manifestFlags: SHOW_DEFAULT_ADDRESS_FLAG,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Navigate to settings and toggle on "show default address" feature
         const homePage = new HomePage(driver);
@@ -84,7 +84,7 @@ describe('Show default address', function (this: Suite) {
         },
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // Navigate to settings and check "show default address" section is not displayed
         const homePage = new HomePage(driver);

@@ -43,14 +43,12 @@ export const AdvancedGasPriceModal = ({
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const { gas, gasPrice } = transactionMeta?.txParams || {};
-
   const [gasParams, setGasParams] = useState<{
     gas: Hex;
     gasPrice: Hex;
   }>({
-    gas: gas as Hex,
-    gasPrice: gasPrice as Hex,
+    gas: (transactionMeta?.txParams?.gas as Hex) ?? ('0x5208' as Hex),
+    gasPrice: (transactionMeta?.txParams?.gasPrice as Hex) ?? ('0x0' as Hex),
   });
 
   const [errors, setErrors] = useState<{
@@ -63,6 +61,9 @@ export const AdvancedGasPriceModal = ({
   const hasError = Boolean(errors.gas || errors.gasPrice);
 
   const handleSaveClick = useCallback(() => {
+    if (!transactionMeta?.id) {
+      return;
+    }
     dispatch(
       updateTransactionGasFees(transactionMeta.id, {
         userFeeLevel: UserFeeLevel.CUSTOM,
@@ -70,7 +71,7 @@ export const AdvancedGasPriceModal = ({
       }),
     );
     handleCloseModals();
-  }, [transactionMeta.id, gasParams, handleCloseModals]);
+  }, [transactionMeta?.id, gasParams, handleCloseModals, dispatch]);
 
   const navigateToEstimatesModal = useCallback(() => {
     setActiveModal(GasModalType.EstimatesModal);
@@ -103,6 +104,10 @@ export const AdvancedGasPriceModal = ({
     () => createErrorHandler('gasPrice'),
     [createErrorHandler],
   );
+
+  if (!transactionMeta?.txParams) {
+    return null;
+  }
 
   return (
     <Modal isOpen={true} onClose={handleCloseModals}>

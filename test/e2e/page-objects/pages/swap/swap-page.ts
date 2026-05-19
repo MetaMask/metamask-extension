@@ -59,8 +59,8 @@ class SwapPage {
   };
 
   private readonly gasIncludedLabel = {
-    text: 'included',
-    tag: 'h6',
+    text: 'Included',
+    tag: 'p',
   };
 
   private readonly rateMessage = {
@@ -112,6 +112,16 @@ class SwapPage {
 
   private readonly quotesModalRow =
     '.quotes-modal [style*="position: relative"]';
+
+  private readonly viewActivityButton = {
+    tag: 'button',
+    text: 'View activity',
+  };
+
+  private readonly transactionCompleteHeader = {
+    tag: 'h4',
+    text: 'Your transaction is complete',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -165,6 +175,11 @@ class SwapPage {
     console.log('Entering swap amount');
     const stxToggle = await this.driver.findElement(this.reviewFromAmount);
     stxToggle.sendKeys(amount);
+  }
+
+  async waitForQuote(): Promise<void> {
+    console.log('Wait for quote to be displayed');
+    await this.driver.waitForSelector(this.swapButton, { timeout: 30000 });
   }
 
   async selectSourceToken(sourceToken: string): Promise<void> {
@@ -246,27 +261,15 @@ class SwapPage {
     await this.driver.clickElement(this.closeButton);
   }
 
-  async waitForSmartTransactionToComplete(tokenName: string): Promise<void> {
+  async clickViewActivity(): Promise<void> {
+    await this.driver.clickElement(this.viewActivityButton);
+  }
+
+  async waitForSmartTransactionToComplete(): Promise<void> {
     console.log('Wait for Smart Transaction to complete');
-
-    await this.driver.waitForSelector({
-      css: this.transactionStatusHeader,
-      text: 'Privately submitting your Swap',
+    await this.driver.waitForSelector(this.transactionCompleteHeader, {
+      timeout: 30000,
     });
-
-    await this.driver.waitForSelector(
-      {
-        css: this.transactionStatusHeader,
-        text: 'Swap complete!',
-      },
-      { timeout: 30000 },
-    );
-
-    await this.driver.findElement({
-      css: this.transactionStatusDescription,
-      text: `${tokenName}`,
-    });
-    await this.driver.clickElement(this.closeButton);
   }
 
   async fillSwapAmount(amount: string): Promise<void> {

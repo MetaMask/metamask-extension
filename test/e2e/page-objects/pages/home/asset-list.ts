@@ -245,17 +245,6 @@ class AssetListPage {
     return assets.length;
   }
 
-  async getTokenListNames(): Promise<string[]> {
-    console.log(`Retrieving the list of token names`);
-    const tokenElements = await this.driver.findElements(this.tokenListItem);
-    const tokenNames = await Promise.all(
-      tokenElements.map(async (element) => {
-        return await element.getText();
-      }),
-    );
-    return tokenNames;
-  }
-
   async sortTokenList(
     sortBy: 'alphabetically' | 'decliningBalance',
   ): Promise<void> {
@@ -598,25 +587,54 @@ class AssetListPage {
    *
    * @param tokenName - The name of the token to check in the list.
    * @param amount - (Optional) The amount of the token to verify if it is displayed.
-   * @returns A promise that resolves if the token exists and the amount is displayed (if provided), otherwise it throws an error.
-   * @throws Will throw an error if the token is not found in the token list.
    */
   async checkTokenExistsInList(
     tokenName: string,
     amount?: string,
   ): Promise<void> {
     console.log(`Checking if token ${tokenName} exists in token list`);
-    const tokenList = await this.getTokenListNames();
-    const isTokenPresent = tokenList.some((token) => token.includes(tokenName));
-    if (!isTokenPresent) {
-      throw new Error(`Token "${tokenName}" was not found in the token list`);
-    }
-
+    await this.driver.waitForSelector({
+      css: this.tokenListItem,
+      text: tokenName,
+    });
     console.log(`Token "${tokenName}" was found in the token list`);
 
     if (amount) {
       await this.checkTokenAmountIsDisplayed(amount);
     }
+  }
+
+  /**
+   * Waits until the token at the given 1-based position matches the expected
+   * name. Uses findElements + index because each token-list-button lives in
+   * its own wrapper, so :nth-child cannot address position across siblings.
+   *
+   * @param options - The options object.
+   * @param options.position - 1-based position in the token list.
+   * @param options.tokenName - The expected name of the token at that position.
+   */
+  async checkTokenPositionInList({
+    position,
+    tokenName,
+  }: {
+    position: number;
+    tokenName: string;
+  }): Promise<void> {
+    console.log(
+      `Waiting for token at position ${position} to be "${tokenName}"`,
+    );
+    const index = position - 1;
+    await this.driver.waitUntil(
+      async () => {
+        const elements = await this.driver.findElements(this.tokenListItem);
+        if (elements.length <= index) {
+          return false;
+        }
+        const text = await elements[index].getText();
+        return text.includes(tokenName);
+      },
+      { timeout: this.driver.timeout, interval: 100 },
+    );
   }
 
   /**

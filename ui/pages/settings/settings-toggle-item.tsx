@@ -18,7 +18,6 @@ export type SettingsToggleItemProps = {
   onToggle: (value: boolean) => void;
   containerDataTestId?: string;
   dataTestId: string;
-  sectionRef?: React.RefObject<HTMLDivElement>;
   disabled?: boolean;
 };
 
@@ -29,15 +28,9 @@ export const SettingsToggleItem = ({
   onToggle,
   containerDataTestId,
   dataTestId,
-  sectionRef,
   disabled,
 }: SettingsToggleItemProps) => (
-  <Box
-    ref={sectionRef}
-    flexDirection={BoxFlexDirection.Column}
-    gap={1}
-    paddingVertical={3}
-  >
+  <Box flexDirection={BoxFlexDirection.Column} gap={1} paddingVertical={3}>
     <Box
       flexDirection={BoxFlexDirection.Row}
       justifyContent={BoxJustifyContent.Between}

@@ -4,7 +4,7 @@ import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { Mockttp } from '../../../mock-e2e';
 import { Anvil } from '../../../seeder/anvil';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -66,7 +66,7 @@ async function createTransactionAssertDetailsAndConfirm(
   contractRegistry?: ContractAddressRegistry,
   localNode?: Anvil,
 ) {
-  await loginWithBalanceValidation(driver, localNode);
+  await login(driver, { localNode });
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry

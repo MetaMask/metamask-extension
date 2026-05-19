@@ -9,7 +9,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import {
   lockAndWaitForLoginPage,
-  loginWithBalanceValidation,
+  login,
 } from '../../page-objects/flows/login.flow';
 import { MOCK_GOOGLE_ACCOUNT, WALLET_PASSWORD } from '../../constants';
 import { OAuthMockttpService } from '../../helpers/seedless-onboarding/mocks';
@@ -38,7 +38,7 @@ describe('Unlock wallet - ', function () {
         driver: Driver;
         localNodes: Anvil[] | Ganache[] | undefined[];
       }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
         // Lock Wallet
         await lockAndWaitForLoginPage(driver);
         const homePage = new HomePage(driver);

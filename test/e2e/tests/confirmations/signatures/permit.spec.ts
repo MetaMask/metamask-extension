@@ -12,7 +12,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp, { SignatureType } from '../../../page-objects/pages/test-dapp';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
@@ -39,7 +39,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
         const accountDetailsModal = new AccountDetailsModal(driver);
         const testDapp = new TestDapp(driver);
 
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(SignatureType.Permit);
 
         await confirmation.clickHeaderAccountDetailsButton();
@@ -83,7 +83,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickPermit();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
@@ -116,7 +116,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
-        await loginWithBalanceValidation(driver);
+        await login(driver);
         await testDapp.openTestDappAndTriggerSignature(SignatureType.Permit);
 
         const simulationSection = driver.findElement({

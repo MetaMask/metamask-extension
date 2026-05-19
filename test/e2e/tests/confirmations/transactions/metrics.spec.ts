@@ -11,7 +11,7 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import { withFixtures, getEventPayloads } from '../../../helpers';
 import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/deploy-confirmation';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { login } from '../../../page-objects/flows/login.flow';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -45,7 +45,7 @@ describe('Metrics', function () {
         driver: Driver;
         mockedEndpoint: MockedEndpoint[];
       }) => {
-        await loginWithBalanceValidation(driver);
+        await login(driver);
 
         // deploy contract
         const testDapp = new TestDapp(driver);

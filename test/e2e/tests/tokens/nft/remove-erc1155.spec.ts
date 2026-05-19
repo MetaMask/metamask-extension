@@ -1,14 +1,12 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../../fixtures/fixture-builder-v2';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import PrivacySettings from '../../../page-objects/pages/settings/privacy-settings';
+import { login } from '../../../page-objects/flows/login.flow';
+import { NETWORK_CLIENT_ID } from '../../../constants';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { setupAutoDetectMocking } from './mocks';
 
@@ -29,20 +27,13 @@ describe('Remove ERC1155 NFT', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withNftControllerERC1155()
-          .withEnabledNetworks({
-            eip155: {
-              [CHAIN_IDS.LOCALHOST]: true,
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilderV2().withNftControllerERC1155().build(),
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },
       async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await login(driver, { localNode: localNodes[0] });
 
         // Open the NFT details page and click to remove NFT
         await new Homepage(driver).goToNftTab();
@@ -64,8 +55,8 @@ describe('Remove ERC1155 NFT', function () {
     const driverOptions = { mock: true };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkControllerOnMainnet()
+        fixtures: new FixtureBuilderV2()
+          .withSelectedNetwork(NETWORK_CLIENT_ID.MAINNET)
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.MAINNET]: true,
@@ -77,18 +68,7 @@ describe('Remove ERC1155 NFT', function () {
         testSpecificMock: setupAutoDetectMocking,
       },
       async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
-
-        // navigate to security & privacy settings and toggle on NFT autodetection
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-        await privacySettings.toggleAutodetectNft();
-        await settingsPage.closeSettingsPage();
+        await login(driver);
 
         // check that nft is displayed
         const homepage = new Homepage(driver);

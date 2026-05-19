@@ -1,27 +1,26 @@
 import React from 'react';
 import {
   Box,
+  BoxFlexDirection,
   Button,
-  ButtonLink,
-  ButtonLinkSize,
+  TextButton,
   ButtonVariant,
+  Text,
+  TextAlign,
+  TextVariant,
+  TextColor,
+} from '@metamask/design-system-react';
+
+import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
 } from '../../component-library';
-import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexDirection,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+
+import { AlignItems } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const MARKET_CLOSED_LEARN_MORE_URL = 'https://status.ondo.finance/market';
@@ -45,37 +44,37 @@ export const MarketClosedModal = ({
           {t('bridgeMarketClosedModalTitle')}
         </ModalHeader>
         <ModalBody>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            gap={4}
-          >
+          <Box flexDirection={BoxFlexDirection.Column} gap={4}>
             <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textDefault}
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextDefault}
               textAlign={TextAlign.Left}
             >
               {t('bridgeMarketClosedModalDescription')}&nbsp;
-              <ButtonLink
+              <TextButton
+                asChild
                 data-testid="market-closed-modal-learn-more"
-                size={ButtonLinkSize.Inherit}
-                href={MARKET_CLOSED_LEARN_MORE_URL}
                 textProps={{
-                  variant: TextVariant.bodyMd,
+                  variant: TextVariant.BodyMd,
+                }}
+                style={{
                   alignItems: AlignItems.flexStart,
                 }}
-                target="_blank"
-                as="a"
-                rel="noopener noreferrer"
               >
-                {t('bridgeMarketClosedModalLearnMore')}
-              </ButtonLink>
+                <a
+                  href={MARKET_CLOSED_LEARN_MORE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t('bridgeMarketClosedModalLearnMore')}
+                </a>
+              </TextButton>
             </Text>
           </Box>
         </ModalBody>
         <ModalFooter>
           <Button
-            width={BlockSize.Full}
+            isFullWidth
             variant={ButtonVariant.Secondary}
             onClick={onClose}
             data-testid="market-closed-modal-close"

@@ -1,6 +1,6 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixtures/fixture-builder';
+import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -8,7 +8,7 @@ import NFTDetailsPage from '../../page-objects/pages/nft-details-page';
 import NftListPage from '../../page-objects/pages/home/nft-list';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { login } from '../../page-objects/flows/login.flow';
 
 async function mockIPFSRequest(mockServer: MockttpServer) {
   return [
@@ -26,13 +26,13 @@ describe('Settings', function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
+        fixtures: new FixtureBuilderV2().withNftControllerERC1155().build(),
         smartContract,
         title: this.test?.fullTitle(),
         testSpecificMock: mockIPFSRequest,
       },
       async ({ driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await login(driver, { validateBalance: false });
 
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);

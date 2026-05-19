@@ -22,6 +22,7 @@ import {
   type DefaultAddressScope,
 } from '../../../../shared/constants/default-address';
 import { SettingsToggleItem } from '../../settings/settings-toggle-item';
+import { PREFERENCES_ITEMS } from '../search-config';
 
 export const ShowDefaultAddressItem = () => {
   const t = useI18nContext();
@@ -77,7 +78,7 @@ export const ShowDefaultAddressItem = () => {
   return (
     <Box flexDirection={BoxFlexDirection.Column} gap={1} marginBottom={3}>
       <SettingsToggleItem
-        title={t('showDefaultAddress')}
+        title={t(PREFERENCES_ITEMS['show-default-address'])}
         description={t('showDefaultAddressDescription')}
         value={showDefaultAddress}
         onToggle={handleToggle}
