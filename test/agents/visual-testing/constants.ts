@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-export const DEFAULT_TRIALS = 3;
+export const DEFAULT_TRIALS = 5;
 export const DEFAULT_MODEL = 'claude-sonnet-4-6';
 export const DEFAULT_MAX_TURNS = 50;
 export const DEFAULT_MAX_WALLCLOCK_MS = 10 * 60 * 1000;

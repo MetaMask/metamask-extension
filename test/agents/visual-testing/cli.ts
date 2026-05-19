@@ -163,7 +163,7 @@ Commands:
 Run options:
   -s, --scenario <name>       Single scenario name (default: rename-happy-path)
       --scenarios <list>      Comma-separated scenario names, or "all"
-  -n, --trials <count>        Number of trials per scenario (default: 3)
+  -n, --trials <count>        Number of trials per scenario (default: 5)
   -m, --model <model>         Model to use (default: claude-sonnet-4-6)
       --telemetry             Enable Langfuse telemetry
       --judge                 Enable LLM-as-judge scoring (agent performance)

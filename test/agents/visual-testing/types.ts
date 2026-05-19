@@ -1,4 +1,5 @@
 import type { AgentRunResult } from '@metamask/agent-runner';
+import type { ConfidenceInterval } from './scoring/statistics';
 
 /**
  * Terminal status of a single trial run.
@@ -89,6 +90,11 @@ export type BatchSummary = {
   avgMmCommands: number;
   avgJudgeScores: Partial<Omit<JudgeScores, 'reasoning'>> | null;
   avgToolJudgeScores: Partial<Omit<ToolJudgeScores, 'reasoning'>> | null;
+  successRateCI: ConfidenceInterval;
+  judgeScoreSEM: Partial<Omit<JudgeScores, 'reasoning'>> | null;
+  toolJudgeScoreSEM: Partial<Omit<ToolJudgeScores, 'reasoning'>> | null;
+  passAt1: number;
+  passAt3: number;
   trials: TrialResult[];
 };
 
@@ -110,9 +116,15 @@ export type MultiBatchSummary = {
   aggregate: {
     totalTrials: number;
     overallSuccessRate: number;
+    overallSuccessRateCI: ConfidenceInterval;
     successRateByDifficulty: Record<string, number>;
+    successRateCIByDifficulty: Record<string, ConfidenceInterval>;
     avgJudgeScores: Partial<Omit<JudgeScores, 'reasoning'>> | null;
     avgToolJudgeScores: Partial<Omit<ToolJudgeScores, 'reasoning'>> | null;
+    judgeScoreSEM: Partial<Omit<JudgeScores, 'reasoning'>> | null;
+    toolJudgeScoreSEM: Partial<Omit<ToolJudgeScores, 'reasoning'>> | null;
+    passAt1: number;
+    passAt3: number;
   };
 };
 
