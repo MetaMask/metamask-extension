@@ -38,6 +38,8 @@ jest.mock('../../../shared/lib/selectors/accounts', () => ({
 
 jest.mock('../bridge/selectors', () => ({
   getBridgeFeatureFlags: jest.fn(),
+  getPriceImpactThresholds: jest.fn(),
+  computeQuoteValidationErrors: jest.fn(),
 }));
 
 jest.mock('../bridge/asset-selectors', () => ({

@@ -24,6 +24,8 @@ import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateVa
 // TODO: migrate hook tests to components
 // TODO: try to extract test configurations
 // TODO: add security warnings array
+// TODO: disable submission for asset with zero selected balance
+// TODO: add batch sell behind a feature flag - we will have to update coins buttons as well
 
 export const BatchSellReviewPage = () => {
   const [selectReceivedAssetModalIsOpen, setSelectReceivedAssetModalIsOpen] =
@@ -32,8 +34,6 @@ export const BatchSellReviewPage = () => {
     useState(false);
   const [totalReceivedModalIsOpen, setTotalReceivedAssetModalIsOpen] =
     useState(false);
-  // call debounce from use query
-  // read getBatchSellQuotesSelectors
   // read network fees from getNetwork fees once micaela integrtes controller
 
   const {

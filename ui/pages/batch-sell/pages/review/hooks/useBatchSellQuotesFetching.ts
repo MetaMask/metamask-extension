@@ -9,8 +9,6 @@ import {
 } from '../../../../../ducks/bridge/actions';
 import {
   type BridgeAppState,
-  getBatchSellQuotes,
-  getBatchSellQuotesValidationErrors,
   getFromAccount,
   getIsStxEnabled,
 } from '../../../../../ducks/bridge/selectors';
@@ -28,6 +26,10 @@ import {
   buildQuoteRequestForEntry,
   buildResults,
 } from '../utils';
+import {
+  getBatchSellQuotes,
+  getBatchSellQuotesValidationErrors,
+} from '../../../../../ducks/batch-sell/selectors';
 
 type Options = {
   enabled: boolean;

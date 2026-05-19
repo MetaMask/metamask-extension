@@ -1,5 +1,5 @@
 import { toFinite } from 'lodash';
-import { getBatchSellQuotes } from '../../../../../ducks/bridge/selectors';
+import { getBatchSellQuotes } from '../../../../../ducks/batch-sell/selectors';
 import { QuoteValidationErrors } from '../../../../../ducks/bridge/types';
 import {
   BatchSellQuotesConfig,

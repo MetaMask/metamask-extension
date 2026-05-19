@@ -11,7 +11,6 @@ import {
   selectBridgeQuotes,
   selectIsQuoteExpired,
   selectBridgeFeatureFlags,
-  selectBatchSellQuotes,
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteMetadata,
@@ -733,22 +732,6 @@ export const getBridgeQuotes = createSelector(
   },
 );
 
-export const getBatchSellQuotes = createSelector(
-  [
-    ({ metamask }: BridgeAppState) => metamask,
-    ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
-    ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
-    (_, { requestCount }: { requestCount: number }) => requestCount,
-  ],
-  (controllerStates, sortOrder, selectedQuote, requestCount) => {
-    return selectBatchSellQuotes(controllerStates, {
-      sortOrder,
-      requestCount,
-      selectedQuote,
-    });
-  },
-);
-
 export const getValidatedFromValue = createSelector(
   [getFromToken, getFromAmount],
   (fromToken, unvalidatedInputValue) =>
@@ -977,7 +960,7 @@ export const getQuoteRequestInsufficientBal = createSelector(
 const getQuoteStreamComplete = (state: BridgeAppState) =>
   state.metamask.quoteStreamComplete;
 
-const computeQuoteValidationErrors = (
+export const computeQuoteValidationErrors = (
   quote: (QuoteMetadata & QuoteResponse) | undefined | null,
   {
     priceImpactThresholds: { warning, error },
@@ -1155,33 +1138,6 @@ const _getBaseValidationErrors = createDeepEqualSelector(
         ),
     };
   },
-);
-
-// Per-quote validation errors for batch-sell. Returns an array of length
-// `requestCount`, one entry per slot in `recommendedQuotes`. Slots without a
-// quote get the default (all flags `false`).
-export const getBatchSellQuotesValidationErrors = createDeepEqualSelector(
-  [
-    (state: BridgeAppState, params: { requestCount: number }) =>
-      getBatchSellQuotes(state, params),
-    getPriceImpactThresholds,
-    (state: BridgeAppState) => isHardwareWallet(state as never),
-    ({ metamask }: BridgeAppState) =>
-      selectMinimumBalanceForRentExemptionInSOL(metamask),
-  ],
-  (
-    { recommendedQuotes },
-    priceImpactThresholds,
-    isHardwareWalletAccount,
-    minimumBalanceForRentExemptionInSOL,
-  ): QuoteValidationErrors[] =>
-    recommendedQuotes.map((quote) =>
-      computeQuoteValidationErrors(quote, {
-        priceImpactThresholds,
-        isHardwareWalletAccount,
-        minimumBalanceForRentExemptionInSOL,
-      }),
-    ),
 );
 
 /**

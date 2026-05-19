@@ -16,6 +16,8 @@ import {
   formatChainIdToCaip,
   formatChainIdToHex,
   getNativeAssetForChainId,
+  selectBatchSellQuotes,
+  selectMinimumBalanceForRentExemptionInSOL,
 } from '@metamask/bridge-controller';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -37,12 +39,16 @@ import {
   toAssetId,
 } from '../../../shared/lib/asset-utils';
 import {
+  computeQuoteValidationErrors,
   getBridgeFeatureFlags,
+  getPriceImpactThresholds,
   type BridgeAppState,
 } from '../bridge/selectors';
 import { getBridgeAssetsByAssetId } from '../bridge/asset-selectors';
 import { getSelectedAccountGroup } from '../../selectors/multichain-accounts/account-tree';
-import { type BridgeToken } from '../bridge/types';
+import { QuoteValidationErrors, type BridgeToken } from '../bridge/types';
+import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
+import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
 import { BatchSellAsset } from './types';
 
 /**
@@ -349,4 +355,47 @@ export const getAvailableBatchSellReceiveAssetsForNetwork = createSelector(
         iconUrl:
           asset.iconUrl ?? getAssetImageUrl(asset.assetId, asset.chainId),
       })),
+);
+
+export const getBatchSellQuotes = createSelector(
+  [
+    ({ metamask }: BridgeAppState) => metamask,
+    ({ bridge: { sortOrder } }: BridgeAppState) => sortOrder,
+    ({ bridge: { selectedQuote } }: BridgeAppState) => selectedQuote,
+    (_, { requestCount }: { requestCount: number }) => requestCount,
+  ],
+  (controllerStates, sortOrder, selectedQuote, requestCount) => {
+    return selectBatchSellQuotes(controllerStates, {
+      sortOrder,
+      requestCount,
+      selectedQuote,
+    });
+  },
+);
+
+// Per-quote validation errors for batch-sell. Returns an array of length
+// `requestCount`, one entry per slot in `recommendedQuotes`. Slots without a
+// quote get the default (all flags `false`).
+export const getBatchSellQuotesValidationErrors = createDeepEqualSelector(
+  [
+    (state: BridgeAppState, params: { requestCount: number }) =>
+      getBatchSellQuotes(state, params),
+    getPriceImpactThresholds,
+    (state: BridgeAppState) => isHardwareWallet(state as never),
+    ({ metamask }: BridgeAppState) =>
+      selectMinimumBalanceForRentExemptionInSOL(metamask),
+  ],
+  (
+    { recommendedQuotes },
+    priceImpactThresholds,
+    isHardwareWalletAccount,
+    minimumBalanceForRentExemptionInSOL,
+  ): QuoteValidationErrors[] =>
+    recommendedQuotes.map((quote) =>
+      computeQuoteValidationErrors(quote, {
+        priceImpactThresholds,
+        isHardwareWalletAccount,
+        minimumBalanceForRentExemptionInSOL,
+      }),
+    ),
 );

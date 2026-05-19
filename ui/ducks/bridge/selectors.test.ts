@@ -28,6 +28,7 @@ import mockBridgeQuotesNativeErc20 from '../../../test/data/bridge/mock-quotes-n
 import { DummyQuotesNoApproval } from '../../../test/data/bridge/dummy-quotes';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
+import { getBatchSellQuotes } from '../batch-sell/selectors';
 import {
   getBridgeQuotes,
   getFromAmount,
@@ -72,7 +73,6 @@ import {
   getIsStockMarketClosed,
   getWarningLabels,
   getBridgeUnavailableQuoteReason,
-  getBatchSellQuotes,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
