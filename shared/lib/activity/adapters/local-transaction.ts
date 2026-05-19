@@ -47,19 +47,15 @@ function getSwapMetaDataTokenSymbol(
 }
 
 function hasNativeValue(transaction: TransactionGroup['initialTransaction']) {
-  const value = transaction.txParams.value;
+  const { value } = transaction.txParams;
   return Boolean(value && value !== '0' && value !== '0x0');
 }
 
 // Converts local TransactionController groups into activity items
 export function mapLocalTransaction({
   transactionGroup,
-  sourceTokenSymbol: fallbackSourceTokenSymbol,
-  destinationTokenSymbol: fallbackDestinationTokenSymbol,
 }: {
   transactionGroup: TransactionGroup;
-  sourceTokenSymbol?: string;
-  destinationTokenSymbol?: string;
 }): ActivityListItem {
   const { initialTransaction, primaryTransaction } = transactionGroup;
   const chainId = toCaipChainId(
@@ -106,13 +102,12 @@ export function mapLocalTransaction({
       };
 
     case TransactionType.swap:
-    case TransactionType.swapAndSend:
+    case TransactionType.swapAndSend: {
       const sourceTokenSymbol =
         initialTransaction.sourceTokenSymbol ??
         primaryTransaction.sourceTokenSymbol ??
         getSwapMetaDataTokenSymbol(initialTransaction, 'token_from') ??
         getSwapMetaDataTokenSymbol(primaryTransaction, 'token_from') ??
-        fallbackSourceTokenSymbol ??
         (hasNativeValue(initialTransaction)
           ? getNativeTokenSymbol(initialTransaction.chainId)
           : undefined);
@@ -120,8 +115,7 @@ export function mapLocalTransaction({
         initialTransaction.destinationTokenSymbol ??
         primaryTransaction.destinationTokenSymbol ??
         getSwapMetaDataTokenSymbol(initialTransaction, 'token_to') ??
-        getSwapMetaDataTokenSymbol(primaryTransaction, 'token_to') ??
-        fallbackDestinationTokenSymbol;
+        getSwapMetaDataTokenSymbol(primaryTransaction, 'token_to');
 
       if (!destinationTokenSymbol) {
         return {
@@ -147,6 +141,7 @@ export function mapLocalTransaction({
           destinationTokenSymbol,
         },
       };
+    }
 
     case TransactionType.bridgeApproval:
     case TransactionType.shieldSubscriptionApprove:

@@ -37,7 +37,7 @@ describe('mapLocalTransaction', () => {
           transactions: [transaction],
         } as unknown as TransactionGroup,
       }),
-    ).toEqual({
+    ).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'pending',
@@ -91,7 +91,7 @@ describe('mapLocalTransaction', () => {
           transactions: [initialTransaction, primaryTransaction],
         } as unknown as TransactionGroup,
       }),
-    ).toEqual({
+    ).toStrictEqual({
       type: 'approveSpendingCap',
       chainId: 'eip155:59144',
       status: 'pending',
@@ -112,7 +112,9 @@ describe('mapLocalTransaction', () => {
       status: TransactionStatus.confirmed,
       time: 1716367781000,
       swapMetaData: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_from: 'ETH',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_to: 'USDC',
       },
       type: TransactionType.swap,
@@ -134,7 +136,7 @@ describe('mapLocalTransaction', () => {
           transactions: [transaction],
         } as unknown as TransactionGroup,
       }),
-    ).toEqual({
+    ).toStrictEqual({
       type: 'swap',
       chainId: 'eip155:8453',
       status: 'success',
@@ -146,5 +148,4 @@ describe('mapLocalTransaction', () => {
       },
     });
   });
-
 });
