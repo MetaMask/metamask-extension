@@ -3,11 +3,6 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigat
 import { setBackgroundConnection } from '../../store/background-connection';
 import { useVipTier } from './useVipTier';
 
-jest.mock('../../store/actions', () => ({
-  ...jest.requireActual('../../store/actions'),
-  forceUpdateMetamaskState: () => Promise.resolve(),
-}));
-
 jest.mock('../../helpers/utils/rewards-utils', () => ({
   formatAccountToCaipAccountId: (address: string, chainId: string) =>
     `eip155:${chainId}:${address}`,
@@ -118,7 +113,6 @@ describe('useVipTier', () => {
   });
 
   it('returns null on error', async () => {
-    jest.spyOn(console, 'warn').mockImplementation(() => undefined);
     mockGetVipTierForAccount.mockRejectedValue(new Error('fail'));
 
     const { result } = renderHookWithProvider(
@@ -131,11 +125,5 @@ describe('useVipTier', () => {
     });
 
     expect(result.current).toBeNull();
-    expect(console.warn).toHaveBeenCalledWith(
-      'Error fetching vip tier:',
-      expect.any(Error),
-    );
-
-    (console.warn as jest.Mock).mockRestore();
   });
 });

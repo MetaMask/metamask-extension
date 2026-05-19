@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../store/background-connection';
-import { forceUpdateMetamaskState } from '../../store/actions';
-import type { MetaMaskReduxDispatch } from '../../store/store';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
 import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
@@ -15,7 +14,6 @@ import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils'
  * account has no VIP tier).
  */
 export function useVipTier(): number | null {
-  const dispatch = useDispatch();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
 
@@ -27,28 +25,15 @@ export function useVipTier(): number | null {
     [selectedAccount?.address, chainId],
   );
 
-  const [vipTier, setVipTier] = useState<number | null>(null);
+  const { data } = useQuery({
+    queryKey: ['rewardsVipTier', accountId],
+    queryFn: () =>
+      submitRequestToBackground<number | null>(
+        'rewardsGetVipTierForAccount',
+        [accountId as NonNullable<typeof accountId>],
+      ),
+    enabled: accountId !== null,
+  });
 
-  useEffect(() => {
-    if (!accountId) {
-      setVipTier(null);
-      return;
-    }
-
-    dispatch(async (d: MetaMaskReduxDispatch) => {
-      try {
-        const vipTierResponse = await submitRequestToBackground<number | null>(
-          'rewardsGetVipTierForAccount',
-          [accountId],
-        );
-        await forceUpdateMetamaskState(d);
-        setVipTier(vipTierResponse);
-      } catch (error) {
-        console.warn('Error fetching vip tier:', error);
-        setVipTier(null);
-      }
-    });
-  }, [accountId, dispatch]);
-
-  return vipTier;
+  return data ?? null;
 }
