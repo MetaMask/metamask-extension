@@ -64,9 +64,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
           </ChainBadge>
         }
         title="Redeposit"
-        subtitle={
-          <ActivityListStatusSubtitle error={{}} status={statusKey} />
-        }
+        subtitle={<ActivityListStatusSubtitle error={{}} status={statusKey} />}
       />
     );
   }
@@ -102,9 +100,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
         </Text>
       }
       title={title}
-      subtitle={
-        <ActivityListStatusSubtitle error={{}} status={statusKey} />
-      }
+      subtitle={<ActivityListStatusSubtitle error={{}} status={statusKey} />}
     />
   );
 };

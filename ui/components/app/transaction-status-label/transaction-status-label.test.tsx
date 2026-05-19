@@ -194,9 +194,7 @@ describe('TransactionStatusLabel Component', () => {
   });
 
   it('displays confirmed status text', () => {
-    render(
-      <TransactionStatusLabel status={TransactionStatus.confirmed} />,
-    );
+    render(<TransactionStatusLabel status={TransactionStatus.confirmed} />);
     expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
   });
 
