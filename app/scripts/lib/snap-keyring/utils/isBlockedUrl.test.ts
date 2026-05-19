@@ -4,8 +4,7 @@ import {
   AllowedEvents,
   PhishingControllerActions,
 } from '@metamask/phishing-controller';
-import { Messenger } from '@metamask/messenger';
-import { getRootMessenger } from '../../messenger';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 import { isBlockedUrl } from './isBlockedUrl';
 
 // Run these tests as if we were in a Flask build
@@ -15,10 +14,22 @@ jest.mock('../../../../../shared/lib/build-types', () => ({
 }));
 
 describe('isBlockedUrl', () => {
-  const messenger = getRootMessenger<
+  const messenger = new Messenger<
+    typeof MOCK_ANY_NAMESPACE,
     PhishingControllerActions,
     AllowedEvents
-  >();
+  >({ namespace: MOCK_ANY_NAMESPACE });
+  // Register no-op handlers for the external actions PhishingController calls
+  // during construction (address-poisoning hydration). Without these the
+  // controller logs a console.error which trips the test baseline.
+  messenger.registerActionHandler(
+    'TransactionController:getState' as never,
+    (() => ({ transactions: [] })) as never,
+  );
+  messenger.registerActionHandler(
+    'AddressBookController:getState' as never,
+    (() => ({ addressBook: {} })) as never,
+  );
   const phishingControllerMessenger = new Messenger<
     'PhishingController',
     PhishingControllerActions,
@@ -30,7 +41,14 @@ describe('isBlockedUrl', () => {
   });
   messenger.delegate({
     messenger: phishingControllerMessenger,
-    events: ['TransactionController:stateChange'],
+    actions: [
+      'AddressBookController:getState' as never,
+      'TransactionController:getState' as never,
+    ],
+    events: [
+      'AddressBookController:stateChange',
+      'TransactionController:stateChange',
+    ],
   });
   const phishingController = new PhishingController({
     messenger: phishingControllerMessenger,
