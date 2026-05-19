@@ -324,6 +324,7 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
+  - SENTRY_DISTRIBUTED_TRACING_DISABLED: false
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
@@ -428,7 +429,7 @@ env:
   # Force enforced simulations to apply whenever a transaction has balance
   # changes, bypassing the trust signal check. Intended for local
   # development and QA only; must remain false for production builds.
-  - FORCE_ENABLE_SIMULATIONS: false
+  - FORCE_ENFORCED_SIMULATIONS: false
 
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF

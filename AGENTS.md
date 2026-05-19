@@ -1672,6 +1672,7 @@ Performance Checks (React Components):
 - **Controller Patterns:** [.cursor/rules/controller-guidelines/RULE.md](./.cursor/rules/controller-guidelines/RULE.md)
 - **Unit Testing:** [.cursor/rules/unit-testing-guidelines/RULE.md](./.cursor/rules/unit-testing-guidelines/RULE.md)
 - **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
+- **E2E CI Decision Tree:** [.github/guidelines/E2E_DECISION_TREE.md](./.github/guidelines/E2E_DECISION_TREE.md)
 - **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **CI Workflows:** [.github/AGENTS.md](./.github/AGENTS.md)
 - **Front-End Performance:**

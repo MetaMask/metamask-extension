@@ -1,0 +1,64 @@
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import {
+  Box,
+  FontWeight,
+  Text,
+  TextVariant,
+} from '@metamask/design-system-react';
+import { CaipAccountId } from '@metamask/utils';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { submitRequestToBackground } from '../../../store/background-connection';
+import { forceUpdateMetamaskState } from '../../../store/actions';
+import { MetaMaskReduxDispatch } from '../../../store/store';
+import { RewardsIcon, RewardsIconVariant } from './RewardsIcon';
+
+export const RewardsVipBadge = ({
+  accountId,
+}: {
+  accountId: CaipAccountId;
+}) => {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+  const [vipTier, setVipTier] = useState<number | null>(null);
+
+  useEffect(() => {
+    dispatch(async (d: MetaMaskReduxDispatch) => {
+      try {
+        const vipTierResponse = (await submitRequestToBackground(
+          'rewardsGetVipTierForAccount',
+          [accountId],
+        )) as number | null;
+        await forceUpdateMetamaskState(d);
+        setVipTier(vipTierResponse);
+      } catch (error) {
+        console.warn('Error fetching vip tier:', error);
+        setVipTier(null);
+      }
+    });
+  }, [accountId, dispatch]);
+
+  if (!vipTier) {
+    return null;
+  }
+
+  return (
+    <Box
+      className={
+        // eslint-disable-next-line @metamask/design-tokens/color-no-hex
+        'w-max rounded-md bg-gradient-to-r from-[#ECB920] to-[65%] to-[#ECBC2D]/[11%] p-[1px] border-1'
+      }
+      data-testid="rewards-vip-badge"
+    >
+      <Box className="w-max flex flex-row rounded-md bg-warning-inverse">
+        {/* eslint-disable-next-line @metamask/design-tokens/color-no-hex */}
+        <Box className="w-max flex flex-row rounded-md whitespace-nowrap px-2 py-0 gap-1 bg-[#ECBC2D]/[11%]">
+          <RewardsIcon variant={RewardsIconVariant.Vip} size={14} />
+          <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+            {t('vip', [vipTier])}
+          </Text>
+        </Box>
+      </Box>
+    </Box>
+  );
+};

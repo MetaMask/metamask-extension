@@ -30,6 +30,7 @@ import { noAdjustmentsScroll } from '../../ui/virtualized-list/virtualized-list'
 import {
   mergeAllTransactionsByTime,
   groupAndFlattenMergedTransactions,
+  enrichApiWithLocal,
   filterLocalNotInApi,
   matchesApiTransaction,
   matchesLocalTransaction,
@@ -91,7 +92,10 @@ export const ActivityList = ({ filter }: Props) => {
 
   // Prepare the filtered transaction sources before merging them for rendering.
   const transactionSources = useMemo(() => {
-    let evmTransactions = data?.pages?.flatMap((page) => page.data ?? []) ?? [];
+    let evmTransactions = enrichApiWithLocal(
+      data?.pages?.flatMap((page) => page.data ?? []) ?? [],
+      localTransactions,
+    );
 
     // Filter local transactions by converting hex chainId to CAIP-2
     let filteredLocalTransactions = filterLocalNotInApi(
