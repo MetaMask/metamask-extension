@@ -5,18 +5,13 @@ import {
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import type { CaipAccountId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useVipTier } from '../../../hooks/rewards/useVipTier';
 import { RewardsIcon, RewardsIconVariant } from './RewardsIcon';
 
-export const RewardsVipBadge = ({
-  accountId,
-}: {
-  accountId: CaipAccountId;
-}) => {
+export const RewardsVipBadge = () => {
   const t = useI18nContext();
-  const vipTier = useVipTier(accountId);
+  const vipTier = useVipTier();
 
   if (!vipTier) {
     return null;

@@ -3,13 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { PerpsFeesDisplay } from './perps-fees-display';
 
 jest.mock('../../rewards/RewardsVipBadge', () => ({
-  RewardsVipBadge: ({ accountId }: { accountId: string }) => (
-    <span data-testid="rewards-vip-badge">{accountId}</span>
-  ),
-}));
-
-jest.mock('../../../../hooks/rewards/useVipTierAccountId', () => ({
-  useVipTierAccountId: () => 'eip155:1:0xabc123',
+  RewardsVipBadge: () => <span data-testid="rewards-vip-badge" />,
 }));
 
 describe('PerpsFeesDisplay', () => {

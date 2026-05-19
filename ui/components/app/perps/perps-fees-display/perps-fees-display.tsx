@@ -14,7 +14,6 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { RewardsVipBadge } from '../../rewards/RewardsVipBadge';
-import { useVipTierAccountId } from '../../../../hooks/rewards/useVipTierAccountId';
 
 export type PerpsFeesDisplayProps = {
   /**
@@ -74,50 +73,44 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   feeTextFontWeight,
   feeTextTestId,
   showVipBadge = false,
-}) => {
-  const vipAccountId = useVipTierAccountId();
-
-  return (
-    <Box
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={1}
-    >
-      {showVipBadge && vipAccountId ? (
-        <RewardsVipBadge accountId={vipAccountId} />
-      ) : null}
-      {metamaskFeeRateDiscountPercentage !== undefined &&
-        metamaskFeeRateDiscountPercentage > 0 ? (
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={1}
-          backgroundColor={BoxBackgroundColor.WarningMuted}
-          paddingLeft={1}
-          paddingRight={1}
-          className="rounded"
-          data-testid="perps-fees-display-discount"
-        >
-          <Icon
-            name={IconName.MetamaskFoxOutline}
-            size={IconSize.Sm}
-            color={IconColor.WarningDefault}
-          />
-          <Text variant={TextVariant.BodyXs} color={TextColor.WarningDefault}>
-            {`-${metamaskFeeRateDiscountPercentage}%`}
-          </Text>
-        </Box>
-      ) : null}
-      <Text
-        variant={variant}
-        color={feeTextColor}
-        fontWeight={feeTextFontWeight}
-        data-testid={feeTextTestId}
+}) => (
+  <Box
+    flexDirection={BoxFlexDirection.Row}
+    alignItems={BoxAlignItems.Center}
+    gap={1}
+  >
+    {showVipBadge ? <RewardsVipBadge /> : null}
+    {metamaskFeeRateDiscountPercentage !== undefined &&
+    metamaskFeeRateDiscountPercentage > 0 ? (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        gap={1}
+        backgroundColor={BoxBackgroundColor.WarningMuted}
+        paddingLeft={1}
+        paddingRight={1}
+        className="rounded"
+        data-testid="perps-fees-display-discount"
       >
-        {formatFeeText}
-      </Text>
-    </Box>
-  );
-};
+        <Icon
+          name={IconName.MetamaskFoxOutline}
+          size={IconSize.Sm}
+          color={IconColor.WarningDefault}
+        />
+        <Text variant={TextVariant.BodyXs} color={TextColor.WarningDefault}>
+          {`-${metamaskFeeRateDiscountPercentage}%`}
+        </Text>
+      </Box>
+    ) : null}
+    <Text
+      variant={variant}
+      color={feeTextColor}
+      fontWeight={feeTextFontWeight}
+      data-testid={feeTextTestId}
+    >
+      {formatFeeText}
+    </Text>
+  </Box>
+);
 
 export default PerpsFeesDisplay;

@@ -1,23 +1,40 @@
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import type { CaipAccountId } from '@metamask/utils';
+import { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../store/store';
+import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
+import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
+import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils';
 
 /**
- * Fetches the VIP tier for the given CAIP-10 account from the background's
- * `rewardsGetVipTierForAccount` handler.
+ * Derives the selected account's CAIP-10 ID and fetches its VIP tier from the
+ * background's `rewardsGetVipTierForAccount` handler.
  *
- * @param accountId - CAIP-10 account identifier to look up.
  * @returns The numeric VIP tier (`null` while loading, on error, or when the
  * account has no VIP tier).
  */
-export function useVipTier(accountId: CaipAccountId): number | null {
+export function useVipTier(): number | null {
   const dispatch = useDispatch();
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const chainId = useSelector(getCurrentChainId);
+
+  const accountId = useMemo(
+    () =>
+      selectedAccount?.address
+        ? formatAccountToCaipAccountId(selectedAccount.address, chainId)
+        : null,
+    [selectedAccount?.address, chainId],
+  );
+
   const [vipTier, setVipTier] = useState<number | null>(null);
 
   useEffect(() => {
+    if (!accountId) {
+      setVipTier(null);
+      return;
+    }
+
     dispatch(async (d: MetaMaskReduxDispatch) => {
       try {
         const vipTierResponse = await submitRequestToBackground<number | null>(
