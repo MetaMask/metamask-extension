@@ -54,8 +54,7 @@ const HTML_ENTRYPOINT_DIRECTORIES = [
 ] as const;
 const HTML_SCRIPT_SRC_PATTERN =
   /<script\b[^>]*\bsrc\s*=\s*["']([^"']+)["'][^>]*>/giu;
-const HTML_INCLUDE_PATTERN =
-  /<%~?\s*include\(\s*["']([^"']+)["']/gu;
+const HTML_INCLUDE_PATTERN = /<%~?\s*include\(\s*["']([^"']+)["']/gu;
 const NUMERIC_ENTRYPOINT_SUFFIX_PATTERN = /^(?<baseName>.+)\.\d+$/u;
 
 function isJavaScriptAsset(assetName: string): boolean {

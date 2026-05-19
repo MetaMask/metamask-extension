@@ -1,12 +1,7 @@
 // TODO(ritave): Remove switches on hardcoded build types
 const { callbackify } = require('util');
 const path = require('path');
-const {
-  writeFileSync,
-  readFileSync,
-  unlinkSync,
-  existsSync,
-} = require('fs');
+const { writeFileSync, readFileSync, unlinkSync, existsSync } = require('fs');
 const EventEmitter = require('events');
 const gulp = require('gulp');
 const watch = require('gulp-watch');
@@ -1258,9 +1253,10 @@ function renderHtmlFile({
 
   const scriptTags = scripts.join('\n    ');
 
-  const htmlFilePath = [`./app/html/ui/${htmlName}.html`, `./app/html/app/${htmlName}.html`].find(
-    (filePath) => existsSync(filePath),
-  );
+  const htmlFilePath = [
+    `./app/html/ui/${htmlName}.html`,
+    `./app/html/app/${htmlName}.html`,
+  ].find((filePath) => existsSync(filePath));
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
   const eta = new Eta({ views: './app/' });

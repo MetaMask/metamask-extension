@@ -645,11 +645,7 @@ describe('ManifestPlugin', () => {
     });
 
     it('classifies manifest and HTML-owned entrypoints before config fallback', async () => {
-      const classifyByOwnerPath = ({
-        ownerPath,
-      }: {
-        ownerPath?: string;
-      }) => {
+      const classifyByOwnerPath = ({ ownerPath }: { ownerPath?: string }) => {
         if (ownerPath?.includes(join('html', 'ui'))) {
           return 'ui';
         }
