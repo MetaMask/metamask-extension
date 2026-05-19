@@ -14,6 +14,7 @@ export const createRenameHappyPath: ScenarioFactory = (
     name: 'rename_happy_path',
     description:
       'Rename the default account to a generated name via the account settings UI.',
+    difficulty: 'easy',
     stateMode: 'default',
     taskPrompt: [
       `Verify visually test MetaMask Extension. Rename the currently selected account to exactly: "${targetName}"`,

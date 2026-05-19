@@ -82,13 +82,34 @@ export async function runTrial(
       config.coldStart,
     );
 
+    let activeTaskPrompt = scenario.taskPrompt;
+    let activeAssertion = scenario.assertion;
+
+    if (scenario.beforeAgent) {
+      const setupResult = await scenario.beforeAgent(config.extensionCwd);
+      if (setupResult) {
+        if (setupResult.taskPromptOverride) {
+          activeTaskPrompt = setupResult.taskPromptOverride;
+        }
+        if (setupResult.assertionOverride) {
+          activeAssertion = setupResult.assertionOverride;
+        }
+      }
+    }
+
+    const activeScenario = {
+      ...scenario,
+      taskPrompt: activeTaskPrompt,
+      assertion: activeAssertion,
+    };
+
     takeScreenshot(config.extensionCwd, 'start', ssDir);
 
-    const runResult = await executeAgent(scenario, config, batchTimestamp, trialId);
+    const runResult = await executeAgent(activeScenario, config, batchTimestamp, trialId);
 
     takeScreenshot(config.extensionCwd, 'end', ssDir);
 
-    const assertion = checkAssertion(scenario.assertion, config.extensionCwd);
+    const assertion = checkAssertion(activeScenario.assertion, config.extensionCwd);
     const status = determineStatus(runResult.result, assertion);
 
     let judgeScores: JudgeScores | null = null;

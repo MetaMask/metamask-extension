@@ -1,5 +1,6 @@
 export type EvalConfig = {
   scenario: string;
+  scenarios: string[];
   trials: number;
   model: string;
   telemetry: { enabled: boolean; serviceName: string };
@@ -28,8 +29,8 @@ export function validateConfig(config: EvalConfig): string[] {
   if (!config.model) {
     errors.push('model must be specified');
   }
-  if (!config.scenario) {
-    errors.push('scenario must be specified');
+  if (config.scenarios.length === 0 && !config.scenario) {
+    errors.push('at least one scenario must be specified');
   }
 
   return errors;

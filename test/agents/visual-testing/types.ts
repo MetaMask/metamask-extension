@@ -74,7 +74,7 @@ export type TrialResult = {
 };
 
 /**
- * Aggregated summary of a batch of trials.
+ * Aggregated summary of a batch of trials for a single scenario.
  */
 export type BatchSummary = {
   batchTimestamp: string;
@@ -90,6 +90,30 @@ export type BatchSummary = {
   avgJudgeScores: Partial<Omit<JudgeScores, 'reasoning'>> | null;
   avgToolJudgeScores: Partial<Omit<ToolJudgeScores, 'reasoning'>> | null;
   trials: TrialResult[];
+};
+
+/**
+ * Summary for a single scenario within a multi-scenario batch.
+ * Extends BatchSummary with difficulty metadata.
+ */
+export type ScenarioSummary = BatchSummary & {
+  difficulty: import('./scenarios/types').ScenarioDifficulty;
+};
+
+/**
+ * Aggregated summary across multiple scenarios in a single batch run.
+ */
+export type MultiBatchSummary = {
+  batchTimestamp: string;
+  model: string;
+  scenarios: ScenarioSummary[];
+  aggregate: {
+    totalTrials: number;
+    overallSuccessRate: number;
+    successRateByDifficulty: Record<string, number>;
+    avgJudgeScores: Partial<Omit<JudgeScores, 'reasoning'>> | null;
+    avgToolJudgeScores: Partial<Omit<ToolJudgeScores, 'reasoning'>> | null;
+  };
 };
 
 /**

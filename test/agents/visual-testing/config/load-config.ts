@@ -16,6 +16,7 @@ import { validateConfig } from './schema';
 
 type CliArgs = {
   scenario?: string;
+  scenarios?: string[];
   trials?: number;
   model?: string;
   telemetry?: boolean;
@@ -31,8 +32,12 @@ type CliArgs = {
 export function loadConfig(args: CliArgs): EvalConfig {
   const extensionCwd = findExtensionRoot();
 
+  const scenario = args.scenario ?? env('EVAL_SCENARIO') ?? DEFAULT_SCENARIO;
+  const scenarios = args.scenarios ?? envList('EVAL_SCENARIOS') ?? [];
+
   const config: EvalConfig = {
-    scenario: args.scenario ?? env('EVAL_SCENARIO') ?? DEFAULT_SCENARIO,
+    scenario,
+    scenarios,
     trials: args.trials ?? envInt('EVAL_TRIALS') ?? DEFAULT_TRIALS,
     model: args.model ?? env('EVAL_MODEL') ?? DEFAULT_MODEL,
     telemetry: {
@@ -94,4 +99,15 @@ function envBool(key: string): boolean | undefined {
     return undefined;
   }
   return val === 'true' || val === '1';
+}
+
+function envList(key: string): string[] | undefined {
+  const val = process.env[key];
+  if (val === undefined) {
+    return undefined;
+  }
+  return val
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
