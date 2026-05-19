@@ -111,12 +111,6 @@ describe('PerpsFeesDisplay', () => {
       expect(screen.getByText('--')).toBeInTheDocument();
     });
 
-    it('prefixes with minus sign when negated is true', () => {
-      render(<PerpsFeesDisplay fee={100} negated />);
-
-      expect(screen.getByText('-$100.00')).toBeInTheDocument();
-    });
-
     it('renders both original and discounted fee when discount is present', () => {
       render(
         <PerpsFeesDisplay fee={100} metamaskFeeRateDiscountPercentage={20} />,
@@ -124,19 +118,6 @@ describe('PerpsFeesDisplay', () => {
 
       expect(screen.getByText('$100.00')).toBeInTheDocument();
       expect(screen.getByText('$80.00')).toBeInTheDocument();
-    });
-
-    it('applies negated prefix to both original and discounted fees', () => {
-      render(
-        <PerpsFeesDisplay
-          fee={100}
-          metamaskFeeRateDiscountPercentage={50}
-          negated
-        />,
-      );
-
-      expect(screen.getByText('-$100.00')).toBeInTheDocument();
-      expect(screen.getByText('-$50.00')).toBeInTheDocument();
     });
 
     it('forwards the optional feeTextTestId to the fee text node', () => {

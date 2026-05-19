@@ -23,8 +23,6 @@ export type PerpsFeesDisplayProps = {
   metamaskFeeRateDiscountPercentage?: number;
   /** Raw fee amount in USD. When `undefined`, a placeholder is rendered. */
   fee: number | undefined;
-  /** When true, the formatted fee is prefixed with `-` (e.g. for deductions). */
-  negated?: boolean;
   /** Text shown when `fee` is `undefined` (defaults to `"-"`). */
   placeholder?: string;
   /** Optional override for the fee text variant (defaults to BodySm). */
@@ -51,7 +49,6 @@ export type PerpsFeesDisplayProps = {
  * @param props - Component props.
  * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount in whole percentage points. When positive, the original fee is struck through and the discounted fee appears next to it.
  * @param props.fee - Raw fee amount in USD.
- * @param props.negated - When true, the formatted fee is prefixed with `-`.
  * @param props.placeholder - Text shown when `fee` is `undefined` (defaults to `"-"`).
  * @param props.variant - Text variant for the fee value (defaults to BodySm).
  * @param props.feeTextColor - Text color for the fee value (defaults to TextDefault).
@@ -62,7 +59,6 @@ export type PerpsFeesDisplayProps = {
 export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   metamaskFeeRateDiscountPercentage,
   fee,
-  negated = false,
   placeholder = '-',
   variant = TextVariant.BodySm,
   feeTextColor = TextColor.TextDefault,
@@ -71,13 +67,9 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   showVipBadge = false,
 }) => {
   const formatFee = useCallback(
-    (amount: number): string => {
-      const formatted = formatPerpsFiat(amount, {
-        ranges: PRICE_RANGES_MINIMAL_VIEW,
-      });
-      return negated ? `-${formatted}` : formatted;
-    },
-    [negated],
+    (amount: number): string =>
+      formatPerpsFiat(amount, { ranges: PRICE_RANGES_MINIMAL_VIEW }),
+    [],
   );
 
   const { feeText, discountedFeeText } = useMemo(() => {
