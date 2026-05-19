@@ -57,6 +57,7 @@ export const useBatchSellQuotesConfig = () => {
             asset,
             sendAmountPercent: DEFAULT_SEND_AMOUNT_PERCENT,
             slippagePercent: DEFAULT_SLIPPAGE_PERCENT,
+            enabled: true,
           },
         ]),
       ),
@@ -67,11 +68,24 @@ export const useBatchSellQuotesConfig = () => {
 
   const canDeleteAssets = Object.values(state.sendAssetsConfig).length > 2;
 
-  const setSendAmountPercent = (asset: BatchSellAsset, percent: number) =>
+  const setSendAmountPercent = (asset: BatchSellAsset, percent: number) => {
     dispatch({
       type: BatchSellReviewStateActionType.SetSendAmountPercent,
       assetId: asset.assetId,
       percent,
+    });
+    dispatch({
+      type: BatchSellReviewStateActionType.SetEnabled,
+      assetId: asset.assetId,
+      enabled: percent > 0,
+    });
+  };
+
+  const setEnabled = (asset: BatchSellAsset, enabled: boolean) =>
+    dispatch({
+      type: BatchSellReviewStateActionType.SetEnabled,
+      assetId: asset.assetId,
+      enabled,
     });
 
   const setSlippagePercent = (percent: number) => {
@@ -115,6 +129,7 @@ export const useBatchSellQuotesConfig = () => {
     receivedAssets,
     hasInitialSelection,
     setSendAmountPercent,
+    setEnabled,
     setSlippagePercent,
     setEditingSlippageAssetId,
     selectReceivedAsset,

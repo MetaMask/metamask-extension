@@ -50,11 +50,15 @@ export const useBatchSellQuotesFetching = (
   const entries = useMemo<SendAssetEntry[]>(
     () =>
       Object.entries(sendAssetsConfig).map(
-        ([assetId, { asset, sendAmountPercent, slippagePercent }]) => ({
+        ([
+          assetId,
+          { asset, sendAmountPercent, slippagePercent, enabled: entryEnabled },
+        ]) => ({
           assetId: assetId as CaipAssetType,
           asset,
           sendAmountPercent,
           slippagePercent,
+          enabled: entryEnabled,
         }),
       ),
     [sendAssetsConfig],

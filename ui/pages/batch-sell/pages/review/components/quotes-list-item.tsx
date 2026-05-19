@@ -52,6 +52,7 @@ type QuotesListItemProps = {
     newSendAmountPercent: number,
   ) => void;
   onAssetDeleteClick: (asset: BatchSellAsset) => void;
+  enabled: boolean;
 };
 
 export const QuotesListItem = ({
@@ -63,6 +64,7 @@ export const QuotesListItem = ({
   canDeleteAssets,
   quote,
   isLoading,
+  enabled,
 }: QuotesListItemProps) => {
   const t = useI18nContext();
   const currency = useSelector(getCurrentCurrency);
@@ -71,8 +73,9 @@ export const QuotesListItem = ({
   // Show skeleton while quotes are being (re)fetched or before the first
   // result lands. Only surface "no quote available" once we have a settled
   // result with `hasQuote: false`.
-  const showSkeleton = isLoading || !quote;
-  const showNoQuoteAvailable = !isLoading && quote && !quote.hasQuote;
+  const showSkeleton = (isLoading || !quote) && enabled;
+  const showNoQuoteAvailable =
+    (!isLoading && quote && !quote.hasQuote) || !enabled;
 
   const quoteFiatAmount = useMemo(
     () =>

@@ -28,19 +28,22 @@ export const QuotesList = ({
 }: QuotesListProps) => {
   return (
     <Box className="flex-1">
-      {Object.values(sendAssetsConfig).map(({ asset, sendAmountPercent }) => (
-        <QuotesListItem
-          key={asset.assetId}
-          asset={asset}
-          quote={quotes?.[asset.assetId]}
-          isLoading={isLoading}
-          canDeleteAssets={canDeleteAssets}
-          sendAmountPercent={sendAmountPercent}
-          onSlippagePercentChangeClick={onSlippagePercentChangeClick}
-          onSendAmountPercentChange={onSendAmountPercentChange}
-          onAssetDeleteClick={onAssetDeleteClick}
-        />
-      ))}
+      {Object.values(sendAssetsConfig).map(
+        ({ asset, sendAmountPercent, enabled }) => (
+          <QuotesListItem
+            key={asset.assetId}
+            enabled={enabled}
+            asset={asset}
+            quote={quotes?.[asset.assetId]}
+            isLoading={isLoading}
+            canDeleteAssets={canDeleteAssets}
+            sendAmountPercent={sendAmountPercent}
+            onSlippagePercentChangeClick={onSlippagePercentChangeClick}
+            onSendAmountPercentChange={onSendAmountPercentChange}
+            onAssetDeleteClick={onAssetDeleteClick}
+          />
+        ),
+      )}
     </Box>
   );
 };

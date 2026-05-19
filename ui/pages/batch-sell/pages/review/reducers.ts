@@ -21,6 +21,18 @@ export const batchSellReviewStateReducer = (
         },
       };
 
+    case BatchSellReviewStateActionType.SetEnabled:
+      return {
+        ...state,
+        sendAssetsConfig: {
+          ...state.sendAssetsConfig,
+          [action.assetId]: {
+            ...state.sendAssetsConfig[action.assetId],
+            enabled: action.enabled,
+          },
+        },
+      };
+
     case BatchSellReviewStateActionType.SetSlippagePercent:
       return {
         ...state,

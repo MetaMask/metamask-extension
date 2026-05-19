@@ -21,13 +21,12 @@ export const buildResults = ({
   receivedAsset: BatchSellQuotesConfig['receivedAsset'];
   validationErrorsByIndex: QuoteValidationErrors[];
 }): BatchSellQuotesResults => {
-  const { recommendedQuotes, totalReceived, minimumReceived, totalNetworkFee } =
-    controllerResult;
+  const { recommendedQuotes } = controllerResult;
 
   const quotes: BatchSellQuotesResults['quotes'] = Object.fromEntries(
     entries.map((entry, index) => {
       const recommendedQuote = recommendedQuotes[index];
-      if (!recommendedQuote) {
+      if (!entry.enabled || !recommendedQuote) {
         return [entry.assetId, { asset: entry.asset, hasQuote: false }];
       }
       const validation = validationErrorsByIndex[index];
@@ -55,13 +54,39 @@ export const buildResults = ({
     }),
   );
 
+  // Recompute totals from only the enabled slots' quotes so the bridge
+  // controller's pre-aggregated sums (which include disabled slots) don't
+  // leak into the UI.
+  const enabledRecommendedQuotes = entries
+    .map((entry, index) => (entry.enabled ? recommendedQuotes[index] : null))
+    .filter((quote): quote is NonNullable<typeof quote> => Boolean(quote));
+
+  const sum = (values: (number | string | null | undefined)[]): number =>
+    values.reduce<number>((acc, v) => acc + toFinite(v), 0);
+
+  const totalReceivedAmount = sum(
+    enabledRecommendedQuotes.map((q) => q.toTokenAmount?.amount),
+  );
+  const totalReceivedAmountFiat = sum(
+    enabledRecommendedQuotes.map((q) => q.toTokenAmount?.valueInCurrency),
+  );
+  const minimumReceivedAmount = sum(
+    enabledRecommendedQuotes.map((q) => q.minToTokenAmount?.amount),
+  );
+  const totalNetworkFee = sum(
+    enabledRecommendedQuotes.map((q) => q.totalNetworkFee?.amount),
+  );
+  const totalNetworkFeeFiat = sum(
+    enabledRecommendedQuotes.map((q) => q.totalNetworkFee?.valueInCurrency),
+  );
+
   return {
     quotes,
     receivedAsset,
-    totalReceivedAmount: toFinite(totalReceived?.amount),
-    totalReceivedAmountFiat: toFinite(totalReceived?.valueInCurrency),
-    minimumReceivedAmount: toFinite(minimumReceived?.amount),
-    totalNetworkFee: toFinite(totalNetworkFee?.amount),
-    totalNetworkFeeFiat: toFinite(totalNetworkFee?.valueInCurrency),
+    totalReceivedAmount,
+    totalReceivedAmountFiat,
+    minimumReceivedAmount,
+    totalNetworkFee,
+    totalNetworkFeeFiat,
   };
 };

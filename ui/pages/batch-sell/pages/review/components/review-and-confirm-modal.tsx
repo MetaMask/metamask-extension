@@ -44,7 +44,7 @@ import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
 import { IconColor } from '../../../../../helpers/constants/design-system';
-import { AssetsReceivedSummaryList } from './assets-received-list-item';
+import { AssetsReceivedSummaryList } from './assets-received-summary-list';
 import { AssetsReceivedTotalAmountsSummary } from './assets-received-total-amounts-summary';
 
 type ReviewAndConfirmModalProps = {
@@ -77,10 +77,12 @@ const YouSellRow = ({
 
   const members = useMemo(
     () =>
-      Object.values(sendAssetsConfig).map(({ asset }) => ({
-        avatarValue: asset.iconUrl ?? '',
-        symbol: asset.symbol,
-      })),
+      Object.values(sendAssetsConfig)
+        .filter(({ enabled }) => enabled)
+        .map(({ asset }) => ({
+          avatarValue: asset.iconUrl ?? '',
+          symbol: asset.symbol,
+        })),
     [sendAssetsConfig],
   );
 
@@ -267,7 +269,10 @@ export const ReviewAndConfirmModal = ({
       isOpen={open}
       isClosedOnEscapeKey
       isClosedOnOutsideClick
-      onClose={onClose}
+      onClose={() => {
+        setIsYouSellExpanded(false)
+        onClose()
+      }}
     >
       <ModalOverlay />
       <ModalContent>

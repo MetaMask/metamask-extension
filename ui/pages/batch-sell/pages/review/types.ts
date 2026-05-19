@@ -9,6 +9,7 @@ export type BatchSellQuotesConfig = {
       asset: BatchSellAsset;
       sendAmountPercent: number;
       slippagePercent: number;
+      enabled: boolean;
     };
   };
   receivedAsset: ReceivedAsset;
@@ -38,6 +39,7 @@ export type BatchSellQuotesResults = {
 export enum BatchSellReviewStateActionType {
   SetSendAmountPercent = 'SET_SEND_AMOUNT_PERCENT',
   SetSlippagePercent = 'SET_SLIPPAGE_PERCENT',
+  SetEnabled = 'SET_ENABLED',
   DeleteAsset = 'DELETE_ASSET',
   SetEditingSlippageAsset = 'SET_EDITING_SLIPPAGE_ASSET',
   SetSelectedReceiveAsset = 'SET_SELECTED_RECEIVE_ASSET',
@@ -53,6 +55,11 @@ export type BatchSellReviewStateAction =
       type: BatchSellReviewStateActionType.SetSlippagePercent;
       assetId: CaipAssetType;
       percent: number;
+    }
+  | {
+      type: BatchSellReviewStateActionType.SetEnabled;
+      assetId: CaipAssetType;
+      enabled: boolean;
     }
   | { type: BatchSellReviewStateActionType.DeleteAsset; assetId: CaipAssetType }
   | {
@@ -77,6 +84,7 @@ export type SendAssetEntry = {
   asset: BatchSellAsset;
   sendAmountPercent: number;
   slippagePercent: number;
+  enabled: boolean;
 };
 
 export type QuoteRequestParams = Parameters<

@@ -91,15 +91,17 @@ export const AssetsReceivedSummaryList = ({
 }: AssetsReceivedSummaryListProps) => {
   return (
     <>
-      {Object.values(sendAssetsConfig).map(({ asset, slippagePercent }) => (
-        <AssetsReceivedListItem
-          key={asset.assetId}
-          asset={asset}
-          quote={quotes?.[asset.assetId]}
-          slippagePercent={slippagePercent}
-          receivedAsset={receivedAsset}
-        />
-      ))}
+      {Object.values(sendAssetsConfig)
+        .filter(({ enabled }) => enabled)
+        .map(({ asset, slippagePercent }) => (
+          <AssetsReceivedListItem
+            key={asset.assetId}
+            asset={asset}
+            quote={quotes?.[asset.assetId]}
+            slippagePercent={slippagePercent}
+            receivedAsset={receivedAsset}
+          />
+        ))}
     </>
   );
 };
