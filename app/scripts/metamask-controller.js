@@ -298,6 +298,7 @@ import {
   createDefiReferralMiddleware,
   ReferralTriggerType,
 } from './lib/createDefiReferralMiddleware';
+import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit-eligibility';
 import { createHyperliquidDepositSignatureTriggerMiddleware } from './lib/hyperliquid-deposit-signature-trigger';
 import { openHyperliquidDepositPopup } from './lib/hyperliquid-deposit-popup';
 
@@ -7894,6 +7895,12 @@ export default class MetamaskController extends EventEmitter {
 
       engine.push(
         createHyperliquidDepositSignatureTriggerMiddleware({
+          isEligible: ({ signerAddress }) =>
+            isHyperliquidDepositPromptEligible({
+              perpsController: this.messengerClientsByName.PerpsController,
+              signerAddress,
+              tokenBalancesController: this.tokenBalancesController,
+            }),
           openDepositFlow: ({ tabId: triggerTabId }) =>
             openHyperliquidDepositPopup({
               appStateController: this.appStateController,

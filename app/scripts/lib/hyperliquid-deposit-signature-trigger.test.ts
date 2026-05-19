@@ -107,12 +107,14 @@ describe('createHyperliquidDepositSignatureTriggerMiddleware', () => {
     expect(mockNext).toHaveBeenCalledTimes(1);
     expect(isEligible).toHaveBeenCalledWith({
       origin: HYPERLIQUID_ORIGIN,
+      signerAddress: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       tabId: 123,
       typedData: APPROVE_AGENT_TYPED_DATA,
     });
     expect(openDepositFlow).toHaveBeenCalledTimes(1);
     expect(openDepositFlow).toHaveBeenCalledWith({
       origin: HYPERLIQUID_ORIGIN,
+      signerAddress: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
       tabId: 123,
       typedData: APPROVE_AGENT_TYPED_DATA,
     });

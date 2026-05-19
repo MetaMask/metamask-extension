@@ -27,6 +27,7 @@ type RecordLike = Record<string, unknown>;
 
 export type HyperliquidDepositSignatureTriggerContext = {
   origin: string;
+  signerAddress?: string;
   tabId: number;
   typedData: RecordLike;
 };
@@ -72,6 +73,7 @@ export function createHyperliquidDepositSignatureTriggerMiddleware({
 
       const context = {
         origin: req.origin,
+        signerAddress: getSignerAddressFromRequest(req),
         tabId: req.tabId,
         typedData,
       };
@@ -97,6 +99,13 @@ function isExtendedJSONRPCRequest(
     typeof (req as Partial<ExtendedJSONRPCRequest>).origin === 'string' &&
     typeof (req as Partial<ExtendedJSONRPCRequest>).tabId === 'number'
   );
+}
+
+function getSignerAddressFromRequest(req: JsonRpcRequest): string | undefined {
+  const params = Array.isArray(req.params) ? req.params : [];
+  const signerAddress = params[0];
+
+  return typeof signerAddress === 'string' ? signerAddress : undefined;
 }
 
 function getTypedDataFromRequest(
