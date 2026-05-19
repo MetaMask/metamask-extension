@@ -97,7 +97,7 @@ jest.mock('./perps-tutorial-modal', () => ({
   PerpsTutorialModal: () => null,
 }));
 
-jest.mock('./close-position', () => ({
+jest.mock('./close-position/close-all-positions-modal', () => ({
   CloseAllPositionsModal: ({
     isOpen,
     onClose,
