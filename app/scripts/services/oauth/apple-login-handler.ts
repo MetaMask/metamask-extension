@@ -36,10 +36,6 @@ export class AppleLoginHandler extends BaseLoginHandler {
    * @returns The URL to initiate the OAuth login.
    */
   async getAuthUrl(): Promise<string> {
-    if (!this.options.oAuthClientId) {
-      throw new Error('oAuthClientId is required for Apple login');
-    }
-
     const authUrl = new URL(this.OAUTH_SERVER_URL);
 
     const redirectUri = this.options.webAuthenticator.getRedirectURL();

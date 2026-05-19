@@ -35,6 +35,7 @@ const mockBrowserRuntime = browser.runtime as typeof browser.runtime & {
 
 const MOCK_GOOGLE_CLIENT_ID = 'mock-google-client-id';
 const MOCK_APPLE_CLIENT_ID = 'mock-apple-client-id';
+const MOCK_TELEGRAM_CLIENT_ID = 'mock-telegram-client-id';
 const MOCK_USER_ID = 'user-id';
 const MOCK_REDIRECT_URI = 'https://mocked-redirect-uri';
 const MOCK_PROFILE_SYNC_ENV = ProfileSyncEnv.DEV;
@@ -54,11 +55,13 @@ jest.mock('../../platforms/extension');
 function getOAuthLoginEnvs(): {
   googleClientId: string;
   appleClientId: string;
+  telegramClientId: string;
   profileSyncEnv: ProfileSyncEnv;
 } {
   return {
     googleClientId: MOCK_GOOGLE_CLIENT_ID,
     appleClientId: MOCK_APPLE_CLIENT_ID,
+    telegramClientId: MOCK_TELEGRAM_CLIENT_ID,
     profileSyncEnv: MOCK_PROFILE_SYNC_ENV,
   };
 }

@@ -23,6 +23,7 @@ export const OAuthServiceInit: MessengerClientInitFunction<
     env: {
       googleClientId: process.env.GOOGLE_CLIENT_ID ?? '',
       appleClientId: process.env.APPLE_CLIENT_ID ?? '',
+      telegramClientId: process.env.TELEGRAM_CLIENT_ID ?? '',
       profileSyncEnv,
     },
     webAuthenticator: webAuthenticatorFactory(),

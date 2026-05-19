@@ -34,8 +34,10 @@ buildTypes:
       # for seedless onboarding (social login)
       - GOOGLE_PROD_CLIENT_ID
       - APPLE_PROD_CLIENT_ID
+      - TELEGRAM_PROD_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_PROD_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_PROD_CLIENT_ID
+      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_PROD_CLIENT_ID
       - PERPS_ENABLED: true
     # Main build uses the default browser manifest
     manifestOverrides: false
@@ -65,8 +67,10 @@ buildTypes:
       # for seedless onboarding (social login)
       - GOOGLE_BETA_CLIENT_ID
       - APPLE_BETA_CLIENT_ID
+      - TELEGRAM_BETA_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_BETA_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_BETA_CLIENT_ID
+      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_BETA_CLIENT_ID
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -95,8 +99,10 @@ buildTypes:
       # for seedless onboarding (social login)
       - GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_EXPERIMENTAL_CLIENT_ID
+      - TELEGRAM_EXPERIMENTAL_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
+      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_EXPERIMENTAL_CLIENT_ID
       - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
       - PERPS_ENABLED: true
     isPrerelease: true
@@ -128,8 +134,10 @@ buildTypes:
       # for seedless onboarding (social login)
       - GOOGLE_FLASK_CLIENT_ID
       - APPLE_FLASK_CLIENT_ID
+      - TELEGRAM_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
+      - TELEGRAM_CLIENT_ID_REF: TELEGRAM_FLASK_CLIENT_ID
       - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
@@ -434,14 +442,18 @@ env:
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF
   - APPLE_CLIENT_ID_REF
+  - TELEGRAM_CLIENT_ID_REF
   - SEEDLESS_ONBOARDING_ENABLED: 'true'
   - GOOGLE_CLIENT_ID: ''
   - APPLE_CLIENT_ID: ''
+  - TELEGRAM_CLIENT_ID: ''
   # OAuth (Social login) for UAT(QA) builds
   - GOOGLE_CLIENT_ID_FLASK_UAT: ''
   - APPLE_CLIENT_ID_FLASK_UAT: ''
+  - TELEGRAM_CLIENT_ID_FLASK_UAT: ''
   - GOOGLE_CLIENT_ID_UAT: ''
   - APPLE_CLIENT_ID_UAT: ''
+  - TELEGRAM_CLIENT_ID_UAT: ''
   - TELEGRAM_LOGIN_ENABLED: 'false'
 
   # Metamask Shield
