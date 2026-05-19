@@ -136,7 +136,7 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
         className="w-full flex flex-row justify-between items-center px-4 pt-4 mb-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
         onClick={handleSeeAll}
         data-testid="perps-recent-activity-see-all"
-        aria-label={t('perpsSeeAll')}
+        aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}
       >
         <Text fontWeight={FontWeight.Medium}>{t('perpsRecentActivity')}</Text>
         <Icon
