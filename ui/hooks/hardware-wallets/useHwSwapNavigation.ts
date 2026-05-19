@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react';
 
-import { showSuccessToast } from '../../../components/app/toast-listener/shared';
-import { useBridgeNavigation } from '../../bridge/useBridgeNavigation';
-import { HardwareWalletSignatureStatus } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { showSuccessToast } from '../../components/app/toast-listener/shared';
+import { useBridgeNavigation } from '../bridge/useBridgeNavigation';
+import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 
 type UseHardwareWalletNavigationOptions = {
   signatureState: HardwareWalletSignaturesState;
