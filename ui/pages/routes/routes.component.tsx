@@ -247,6 +247,22 @@ const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 // End Lazy Routes
 
+const RIVE_PRELOAD_EXACT_ROUTES = [
+  ONBOARDING_WELCOME_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+] as const;
+
+const RIVE_PRELOAD_PREFIX_ROUTES = [
+  CONFIRM_TRANSACTION_ROUTE,
+  CONFIRMATION_V_NEXT_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_ORDER_ENTRY_ROUTE,
+  PERPS_ACTIVITY_ROUTE,
+  PERPS_WITHDRAW_ROUTE,
+] as const;
+
 /**
  * Returns whether a route should kick off Rive preload as soon as it matches.
  *
@@ -260,16 +276,12 @@ const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
  * @returns True when the route is a known Rive consumer surface.
  */
 export const shouldPreloadRiveForPath = (pathname: string) =>
-  pathname === ONBOARDING_WELCOME_ROUTE ||
-  pathname === ONBOARDING_COMPLETION_ROUTE ||
-  pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
-  pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
-  pathname.startsWith(TRANSACTION_SHIELD_ROUTE) ||
-  pathname.startsWith(PERPS_MARKET_LIST_ROUTE) ||
-  pathname.startsWith(PERPS_MARKET_DETAIL_ROUTE) ||
-  pathname.startsWith(PERPS_ORDER_ENTRY_ROUTE) ||
-  pathname.startsWith(PERPS_ACTIVITY_ROUTE) ||
-  pathname.startsWith(PERPS_WITHDRAW_ROUTE);
+  RIVE_PRELOAD_EXACT_ROUTES.includes(
+    pathname as (typeof RIVE_PRELOAD_EXACT_ROUTES)[number],
+  ) ||
+  RIVE_PRELOAD_PREFIX_ROUTES.some((routePrefix) =>
+    pathname.startsWith(routePrefix),
+  );
 
 const SettingsV2LegacyRedirect = () => {
   const { pathname, search, hash } = useLocation();
@@ -654,7 +666,11 @@ export default function Routes() {
   useEffect(() => {
     if (shouldPreloadRiveForPath(location.pathname)) {
       preloadRiveWasm().catch((error) => {
-        console.error('[Rive] Failed to preload WASM for route:', error);
+        console.error(
+          '[Rive] Failed to preload WASM for route:',
+          location.pathname,
+          error,
+        );
       });
     }
   }, [location.pathname]);

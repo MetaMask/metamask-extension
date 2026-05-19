@@ -55,7 +55,10 @@ const setRiveWasmReadyState = (nextState: Partial<RiveWasmReadyState>) => {
  */
 const loadRiveRuntime = () => {
   if (!runtimeLoaderPromise) {
-    runtimeLoaderPromise = import('@rive-app/react-canvas');
+    runtimeLoaderPromise = import('@rive-app/react-canvas').catch((error) => {
+      runtimeLoaderPromise = undefined;
+      throw error;
+    });
   }
 
   return runtimeLoaderPromise;
@@ -91,8 +94,11 @@ export const preloadRiveWasm = async () => {
       }
 
       const arrayBuffer = await response.arrayBuffer();
-      (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
-        arrayBuffer;
+      // Rive expects `wasmBinary` to be assigned before `awaitInstance()`, but
+      // that field is not exposed in the public type definitions.
+      (
+        RuntimeLoader as typeof RuntimeLoader & { wasmBinary: ArrayBuffer }
+      ).wasmBinary = arrayBuffer;
       RuntimeLoader.setWasmUrl('should not fetch wasm');
 
       await RuntimeLoader.awaitInstance();
