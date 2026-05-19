@@ -174,6 +174,7 @@ describe('TransactionDetailsAccountRow', () => {
       const transactionMeta = {
         ...createMockTransactionMeta(true),
         txParams: {
+          from: '',
           to: '0x456',
         },
       };
@@ -191,6 +192,7 @@ describe('TransactionDetailsAccountRow', () => {
       const transactionMeta = {
         ...createMockTransactionMeta(true),
         txParams: {
+          from: '',
           to: '0x456',
         },
       };
@@ -210,6 +212,7 @@ describe('TransactionDetailsAccountRow', () => {
       const transactionMeta = {
         ...createMockTransactionMeta(true),
         txParams: {
+          from: '',
           to: '0x456',
         },
       };

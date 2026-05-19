@@ -12,6 +12,7 @@ import {
   getSelectedAccountGroup,
   selectAccountGroupNameByAddress,
 } from '../../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
 import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
 
@@ -20,7 +21,9 @@ export function TransactionDetailsAccountRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();
   const hasPaymentDetails = Boolean(transactionMeta.metamaskPay);
-  const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
+  const selectedAccountGroupId = useSelector((state) =>
+    getSelectedAccountGroup(state as MultichainAccountsState),
+  );
 
   const {
     txParams: { from },
@@ -31,13 +34,16 @@ export function TransactionDetailsAccountRow() {
   );
   const selectedAccountGroupName = useSelector(
     (state) =>
-      getMultichainAccountGroupById(state, selectedAccountGroupId)?.metadata
-        .name,
+      getMultichainAccountGroupById(
+        state as MultichainAccountsState,
+        selectedAccountGroupId,
+      )?.metadata.name,
   );
   const firstAccountGroupName = useSelector(
     (state) =>
-      getAllAccountGroups(state).find((group) => group.metadata.name)?.metadata
-        .name,
+      getAllAccountGroups(state as MultichainAccountsState).find(
+        (group) => group.metadata.name,
+      )?.metadata.name,
   );
 
   const displayName =
