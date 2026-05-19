@@ -7,7 +7,7 @@ export const REFERRAL_CODE_MIN_LENGTH = 3;
 export const REFERRAL_CODE_MAX_LENGTH = 12;
 const REFERRAL_CODE_INVALID_ERROR = 'Invalid code';
 const REFERRAL_CODE_UNKNOWN_ERROR = 'Unknown error';
-const REFERRAL_CODE_PATTERN = /^[A-Z0-9-]+$/;
+const REFERRAL_CODE_PATTERN = /^[A-Z0-9-]+$/u;
 
 const normalizeReferralCode = (code: string) => code.trim().toUpperCase();
 const isReferralCodeFormatValid = (code: string) =>
