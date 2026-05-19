@@ -7905,6 +7905,7 @@ export default class MetamaskController extends EventEmitter {
             openHyperliquidDepositPopup({
               appStateController: this.appStateController,
               notificationManager: this.notificationManager,
+              preferExistingSidePanel: true,
               tabId: triggerTabId,
               waitForCurrentPopupClose: true,
             }),

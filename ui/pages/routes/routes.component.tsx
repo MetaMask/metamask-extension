@@ -139,7 +139,11 @@ import { RequireOnboarded } from '../../layouts/require-onboarded';
 import { contactsRoutes } from '../contacts';
 import RequireBasicFunctionality from '../../helpers/higher-order-components/require-basic-functionality/require-basic-functionality';
 import { getCurrencyRateControllerCurrentCurrency } from '../../../shared/lib/selectors/assets-migration';
-import { isHyperliquidDepositPopupRouteMessage } from '../../../shared/lib/hyperliquid-deposit-transaction';
+import {
+  HYPERLIQUID_DEPOSIT_ROUTE_ACK_MESSAGE,
+  HYPERLIQUID_DEPOSIT_ROUTE_TARGET_SIDEPANEL,
+  isHyperliquidDepositPopupRouteMessage,
+} from '../../../shared/lib/hyperliquid-deposit-transaction';
 import { Toaster } from '../../components/ui/toast/toast';
 import { ToastListener } from '../../app/toast-listener/toast-listener';
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
@@ -247,6 +251,45 @@ const HyperliquidDepositPage = mmLazy(
   () => import('../hyperliquid-deposit/index.ts'),
 );
 // End Lazy Routes
+
+export function handleHyperliquidDepositRouteMessage({
+  message,
+  navigate,
+  runtime,
+  windowType,
+}: {
+  message: unknown;
+  navigate: (path: string) => void;
+  runtime: Pick<typeof extensionBrowser.runtime, 'sendMessage'>;
+  windowType: string;
+}) {
+  if (!isHyperliquidDepositPopupRouteMessage(message)) {
+    return;
+  }
+
+  if (
+    message.payload.target === HYPERLIQUID_DEPOSIT_ROUTE_TARGET_SIDEPANEL &&
+    windowType !== ENVIRONMENT_TYPE_SIDEPANEL
+  ) {
+    return;
+  }
+
+  navigate(
+    `${HYPERLIQUID_DEPOSIT_ROUTE}?trigger=${encodeURIComponent(
+      message.payload.triggerId,
+    )}`,
+  );
+
+  runtime
+    .sendMessage({
+      type: HYPERLIQUID_DEPOSIT_ROUTE_ACK_MESSAGE,
+      payload: {
+        triggerId: message.payload.triggerId,
+        environmentType: windowType,
+      },
+    })
+    .catch(() => undefined);
+}
 
 const SettingsV2LegacyRedirect = () => {
   const { pathname, search, hash } = useLocation();
@@ -641,32 +684,30 @@ export default function Routes() {
     const windowType = getEnvironmentType();
     if (
       windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
-      windowType !== ENVIRONMENT_TYPE_POPUP
+      windowType !== ENVIRONMENT_TYPE_POPUP &&
+      windowType !== ENVIRONMENT_TYPE_SIDEPANEL
     ) {
       return undefined;
     }
 
-    const handleHyperliquidDepositRouteMessage = (message: unknown) => {
-      if (!isHyperliquidDepositPopupRouteMessage(message)) {
-        return undefined;
-      }
-
-      navigate(
-        `${HYPERLIQUID_DEPOSIT_ROUTE}?trigger=${encodeURIComponent(
-          message.payload.triggerId,
-        )}`,
-      );
+    const handleRuntimeHyperliquidDepositRouteMessage = (message: unknown) => {
+      handleHyperliquidDepositRouteMessage({
+        message,
+        navigate,
+        runtime: extensionBrowser.runtime,
+        windowType,
+      });
 
       return undefined;
     };
 
     extensionBrowser.runtime.onMessage.addListener(
-      handleHyperliquidDepositRouteMessage,
+      handleRuntimeHyperliquidDepositRouteMessage,
     );
 
     return () => {
       extensionBrowser.runtime.onMessage.removeListener(
-        handleHyperliquidDepositRouteMessage,
+        handleRuntimeHyperliquidDepositRouteMessage,
       );
     };
   }, [navigate]);

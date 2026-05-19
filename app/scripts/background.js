@@ -115,8 +115,6 @@ import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
-import { registerHyperliquidDepositModalListener } from './lib/hyperliquid-deposit-modal-background';
-import { openHyperliquidDepositPopup } from './lib/hyperliquid-deposit-popup';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -2143,20 +2141,6 @@ async function triggerUi() {
     }
   }
 }
-
-async function openHyperliquidDepositModalPopup({ tabId, windowId }) {
-  await openHyperliquidDepositPopup({
-    appStateController: controller.appStateController,
-    notificationManager,
-    tabId,
-    windowId,
-  });
-}
-
-registerHyperliquidDepositModalListener({
-  runtime: browser.runtime,
-  openDepositFlow: openHyperliquidDepositModalPopup,
-});
 
 // It adds the "App Installed" event into a queue of events, which will be tracked only after a user opts into metrics.
 const addAppInstalledEvent = async () => {

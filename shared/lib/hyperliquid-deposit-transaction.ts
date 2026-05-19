@@ -5,10 +5,12 @@ import {
 import { encode } from '@metamask/abi-utils';
 import { bytesToHex, type Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../constants/network';
+import type { EnvironmentType } from '../constants/app';
 
 const ERC20_TRANSFER_FUNCTION_SIGNATURE = '0xa9059cbb';
 const USDC_DECIMALS = 6;
 const USDC_ATOMIC_UNITS_PER_TOKEN = 10n ** BigInt(USDC_DECIMALS);
+export const HYPERLIQUID_DEPOSIT_ROUTE_TARGET_SIDEPANEL = 'sidepanel';
 
 export const HYPERLIQUID_DEPOSIT_CHAIN_ID = CHAIN_IDS.ARBITRUM;
 export const HYPERLIQUID_DEPOSIT_USDC_ADDRESS =
@@ -21,6 +23,11 @@ export const HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID =
   'metamask:hyperliquidDeposit';
 export const HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE =
   'metamask:hyperliquidDepositPopupRouteRequested';
+export const HYPERLIQUID_DEPOSIT_ROUTE_ACK_MESSAGE =
+  'metamask:hyperliquidDepositRouteHandled';
+
+export type HyperliquidDepositRouteTarget =
+  typeof HYPERLIQUID_DEPOSIT_ROUTE_TARGET_SIDEPANEL;
 
 export type HyperliquidDepositTransactionParams = {
   from: Hex;
@@ -34,8 +41,17 @@ export type HyperliquidDepositPopupRouteMessage = {
   type: typeof HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE;
   payload: {
     triggerId: string;
+    target?: HyperliquidDepositRouteTarget;
     tabId?: number;
     windowId?: number;
+  };
+};
+
+export type HyperliquidDepositRouteAckMessage = {
+  type: typeof HYPERLIQUID_DEPOSIT_ROUTE_ACK_MESSAGE;
+  payload: {
+    triggerId: string;
+    environmentType: EnvironmentType;
   };
 };
 
@@ -113,6 +129,24 @@ export function isHyperliquidDepositPopupRouteMessage(
     typeof message.payload === 'object' &&
     'triggerId' in message.payload &&
     typeof message.payload.triggerId === 'string'
+  );
+}
+
+export function isHyperliquidDepositRouteAckMessage(
+  message: unknown,
+): message is HyperliquidDepositRouteAckMessage {
+  return (
+    message !== null &&
+    typeof message === 'object' &&
+    'type' in message &&
+    message.type === HYPERLIQUID_DEPOSIT_ROUTE_ACK_MESSAGE &&
+    'payload' in message &&
+    message.payload !== null &&
+    typeof message.payload === 'object' &&
+    'triggerId' in message.payload &&
+    typeof message.payload.triggerId === 'string' &&
+    'environmentType' in message.payload &&
+    typeof message.payload.environmentType === 'string'
   );
 }
 
