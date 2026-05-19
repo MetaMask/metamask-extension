@@ -6,16 +6,16 @@ exports[`DataTree correctly renders reverse strings 1`] = `
     class="mm-box mm-box--width-full"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-Sign into ‮ EVIL-index-0"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -26,7 +26,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -37,16 +37,16 @@ exports[`DataTree correctly renders reverse strings 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-A number-index-1"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -57,7 +57,7 @@ exports[`DataTree correctly renders reverse strings 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -77,16 +77,16 @@ exports[`DataTree should match snapshot 1`] = `
     class="mm-box mm-box--width-full"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-contents-index-0"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -97,7 +97,7 @@ exports[`DataTree should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -108,16 +108,16 @@ exports[`DataTree should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-from-index-1"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -131,16 +131,16 @@ exports[`DataTree should match snapshot 1`] = `
         class="mm-box mm-box--width-full"
       >
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
           data-testid="confirmation_data-name-index-0"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+            class="flex-row items-start justify-start flex text-alternative"
             style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--align-items-center"
+              class="items-center flex"
               style="flex-shrink: 0;"
             >
               <p
@@ -151,7 +151,7 @@ exports[`DataTree should match snapshot 1`] = `
             </div>
           </div>
           <div
-            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+            class="flex-wrap gap-2 items-center flex min-w-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -162,16 +162,16 @@ exports[`DataTree should match snapshot 1`] = `
           </div>
         </div>
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
           data-testid="confirmation_data-wallets-index-1"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+            class="flex-row items-start justify-start flex text-alternative"
             style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--align-items-center"
+              class="items-center flex"
               style="flex-shrink: 0;"
             >
               <p
@@ -185,16 +185,16 @@ exports[`DataTree should match snapshot 1`] = `
             class="mm-box mm-box--width-full"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
               data-testid="confirmation_data-0-index-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="flex-row items-start justify-start flex text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  class="items-center flex"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -205,7 +205,7 @@ exports[`DataTree should match snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="flex-row items-center flex"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -227,16 +227,16 @@ exports[`DataTree should match snapshot 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
               data-testid="confirmation_data-1-index-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="flex-row items-start justify-start flex text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  class="items-center flex"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -247,7 +247,7 @@ exports[`DataTree should match snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                class="flex-row items-center flex"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -273,16 +273,16 @@ exports[`DataTree should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-to-index-2"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -296,16 +296,16 @@ exports[`DataTree should match snapshot 1`] = `
         class="mm-box mm-box--width-full"
       >
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+          class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
           data-testid="confirmation_data-0-index-0"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+            class="flex-row items-start justify-start flex text-alternative"
             style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--align-items-center"
+              class="items-center flex"
               style="flex-shrink: 0;"
             >
               <p
@@ -319,16 +319,16 @@ exports[`DataTree should match snapshot 1`] = `
             class="mm-box mm-box--width-full"
           >
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
               data-testid="confirmation_data-name-index-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="flex-row items-start justify-start flex text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  class="items-center flex"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -339,7 +339,7 @@ exports[`DataTree should match snapshot 1`] = `
                 </div>
               </div>
               <div
-                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+                class="flex-wrap gap-2 items-center flex min-w-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -350,16 +350,16 @@ exports[`DataTree should match snapshot 1`] = `
               </div>
             </div>
             <div
-              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
               data-testid="confirmation_data-wallets-index-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                class="flex-row items-start justify-start flex text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  class="items-center flex"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -373,16 +373,16 @@ exports[`DataTree should match snapshot 1`] = `
                 class="mm-box mm-box--width-full"
               >
                 <div
-                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
                   data-testid="confirmation_data-0-index-0"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    class="flex-row items-start justify-start flex text-alternative"
                     style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                      class="items-center flex"
                       style="flex-shrink: 0;"
                     >
                       <p
@@ -393,7 +393,7 @@ exports[`DataTree should match snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    class="flex-row items-center flex"
                   >
                     <div
                       class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -415,16 +415,16 @@ exports[`DataTree should match snapshot 1`] = `
                   </div>
                 </div>
                 <div
-                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
                   data-testid="confirmation_data-1-index-1"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    class="flex-row items-start justify-start flex text-alternative"
                     style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                      class="items-center flex"
                       style="flex-shrink: 0;"
                     >
                       <p
@@ -435,7 +435,7 @@ exports[`DataTree should match snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    class="flex-row items-center flex"
                   >
                     <div
                       class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -457,16 +457,16 @@ exports[`DataTree should match snapshot 1`] = `
                   </div>
                 </div>
                 <div
-                  class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+                  class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
                   data-testid="confirmation_data-2-index-2"
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    class="flex-row items-start justify-start flex text-alternative"
                     style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                   >
                     <div
-                      class="mm-box mm-box--display-flex mm-box--align-items-center"
+                      class="items-center flex"
                       style="flex-shrink: 0;"
                     >
                       <p
@@ -477,7 +477,7 @@ exports[`DataTree should match snapshot 1`] = `
                     </div>
                   </div>
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+                    class="flex-row items-center flex"
                   >
                     <div
                       class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -505,16 +505,16 @@ exports[`DataTree should match snapshot 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-attachment-index-3"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -525,7 +525,7 @@ exports[`DataTree should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -545,16 +545,16 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
     class="mm-box mm-box--width-full"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-types-index-0"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -565,7 +565,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -574,16 +574,16 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-domain-index-1"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -594,7 +594,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -603,16 +603,16 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-primaryType-index-2"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -623,7 +623,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -632,16 +632,16 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-message-index-3"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -652,7 +652,7 @@ exports[`DataTree should match snapshot for order signature type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -670,16 +670,16 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
     class="mm-box mm-box--width-full"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-types-index-0"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -690,7 +690,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -699,16 +699,16 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-primaryType-index-1"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -719,7 +719,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -728,16 +728,16 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-domain-index-2"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -748,7 +748,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -757,16 +757,16 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-message-index-3"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -777,7 +777,7 @@ exports[`DataTree should match snapshot for permit signature type 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -797,16 +797,16 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
     class="mm-box mm-box--width-full"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-types-index-0"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -817,7 +817,7 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -826,16 +826,16 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-primaryType-index-1"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -846,7 +846,7 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -855,16 +855,16 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-domain-index-2"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -875,7 +875,7 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -884,16 +884,16 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
       </div>
     </div>
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
       data-testid="confirmation_data-message-index-3"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        class="flex-row items-start justify-start flex text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          class="items-center flex"
           style="flex-shrink: 0;"
         >
           <p
@@ -904,7 +904,7 @@ exports[`DataTree should match snapshot for permit signature type and deadline i
         </div>
       </div>
       <div
-        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        class="flex-wrap gap-2 items-center flex min-w-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
