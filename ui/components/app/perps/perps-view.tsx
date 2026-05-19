@@ -399,13 +399,15 @@ export const PerpsView: React.FC = () => {
       <PerpsSupportLearn />
       {/* Tutorial Modal */}
       <PerpsTutorialModal />
-      <CloseAllPositionsModal
-        isOpen={isCloseAllModalOpen}
-        onClose={handleCloseAllCancel}
-        onConfirm={handleCloseAllConfirm}
-        positions={positions}
-        isSubmitting={isCloseAllPending}
-      />
+      {isCloseAllModalOpen && (
+        <CloseAllPositionsModal
+          isOpen={isCloseAllModalOpen}
+          onClose={handleCloseAllCancel}
+          onConfirm={handleCloseAllConfirm}
+          positions={positions}
+          isSubmitting={isCloseAllPending}
+        />
+      )}
       <PerpsGeoBlockModal
         isOpen={isGeoBlockModalOpen}
         onClose={() => setIsGeoBlockModalOpen(false)}
