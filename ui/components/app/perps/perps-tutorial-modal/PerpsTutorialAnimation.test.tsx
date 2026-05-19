@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import * as riveReactCanvas from '@rive-app/react-canvas';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -98,27 +98,29 @@ describe('PerpsTutorialAnimation', () => {
   });
 
   describe('rendering', () => {
-    it('renders the animation container', () => {
+    it('renders the animation container', async () => {
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
       expect(
-        screen.getByTestId('perps-tutorial-animation'),
+        await screen.findByTestId('perps-tutorial-animation'),
       ).toBeInTheDocument();
     });
 
-    it('renders the Rive component', () => {
+    it('renders the Rive component', async () => {
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(screen.getByTestId('rive-component')).toBeInTheDocument();
+      expect(await screen.findByTestId('rive-component')).toBeInTheDocument();
     });
 
-    it('passes the correct artboard name to useRive', () => {
+    it('passes the correct artboard name to useRive', async () => {
       render(<PerpsTutorialAnimation artboardName="02_Leverage" />);
 
-      expect(mockedRiveReactCanvas.useRive).toHaveBeenCalledWith(
-        expect.objectContaining({
-          artboard: '02_Leverage',
-        }),
+      await waitFor(() =>
+        expect(mockedRiveReactCanvas.useRive).toHaveBeenCalledWith(
+          expect.objectContaining({
+            artboard: '02_Leverage',
+          }),
+        ),
       );
     });
   });
@@ -171,61 +173,71 @@ describe('PerpsTutorialAnimation', () => {
   });
 
   describe('viewport-specific sizing', () => {
-    it('uses Fit.Contain for side panel environment', () => {
+    it('uses Fit.Contain for side panel environment', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(mockedRiveReactCanvas.Layout).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fit: 'contain',
-        }),
+      await waitFor(() =>
+        expect(mockedRiveReactCanvas.Layout).toHaveBeenCalledWith(
+          expect.objectContaining({
+            fit: 'contain',
+          }),
+        ),
       );
     });
 
-    it('uses Fit.Contain for popup environment', () => {
+    it('uses Fit.Contain for popup environment', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(mockedRiveReactCanvas.Layout).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fit: 'contain',
-        }),
+      await waitFor(() =>
+        expect(mockedRiveReactCanvas.Layout).toHaveBeenCalledWith(
+          expect.objectContaining({
+            fit: 'contain',
+          }),
+        ),
       );
     });
 
-    it('uses Fit.Cover for fullscreen environment', () => {
+    it('uses Fit.Cover for fullscreen environment', async () => {
       mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(mockedRiveReactCanvas.Layout).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fit: 'cover',
-        }),
+      await waitFor(() =>
+        expect(mockedRiveReactCanvas.Layout).toHaveBeenCalledWith(
+          expect.objectContaining({
+            fit: 'cover',
+          }),
+        ),
       );
     });
   });
 
   describe('theme support', () => {
-    it('uses light theme animation file when theme is light', () => {
+    it('uses light theme animation file when theme is light', async () => {
       mockedUseTheme.useTheme.mockReturnValue(ThemeType.light);
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(mockedRiveWasmContext.useRiveWasmFile).toHaveBeenCalledWith(
-        './images/riv_animations/perps-onboarding-carousel-light.riv',
+      await waitFor(() =>
+        expect(mockedRiveWasmContext.useRiveWasmFile).toHaveBeenCalledWith(
+          './images/riv_animations/perps-onboarding-carousel-light.riv',
+        ),
       );
     });
 
-    it('uses dark theme animation file when theme is dark', () => {
+    it('uses dark theme animation file when theme is dark', async () => {
       mockedUseTheme.useTheme.mockReturnValue(ThemeType.dark);
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(mockedRiveWasmContext.useRiveWasmFile).toHaveBeenCalledWith(
-        './images/riv_animations/perps-onboarding-carousel-dark.riv',
+      await waitFor(() =>
+        expect(mockedRiveWasmContext.useRiveWasmFile).toHaveBeenCalledWith(
+          './images/riv_animations/perps-onboarding-carousel-dark.riv',
+        ),
       );
     });
   });

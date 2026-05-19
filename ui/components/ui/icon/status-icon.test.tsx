@@ -22,9 +22,9 @@ const states = ['loading', 'success', 'fail'] as const;
 
 describe('StatusIcon', () => {
   for (const state of states) {
-    it(`renders for ${state} status`, () => {
+    it(`renders for ${state} status`, async () => {
       render(<StatusIcon state={state} />);
-      expect(screen.getByTestId('rive-component')).toBeInTheDocument();
+      expect(await screen.findByTestId('rive-component')).toBeInTheDocument();
     });
   }
 });

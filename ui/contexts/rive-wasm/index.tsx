@@ -2,8 +2,13 @@
  * Shared Rive WASM initialization module
  * This module ensures WASM is loaded once and can be used by multiple animation components
  */
-import { RuntimeLoader } from '@rive-app/react-canvas';
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { useAsyncResult } from '../../hooks/useAsync';
 
 const RIVE_WASM_URL = new URL(
@@ -12,40 +17,113 @@ const RIVE_WASM_URL = new URL(
   import.meta.url,
 );
 
+type RiveWasmReadyState = {
+  isWasmReady: boolean;
+  loading: boolean;
+  error: Error | undefined;
+};
+
+let riveWasmReadyState: RiveWasmReadyState = {
+  isWasmReady: false,
+  loading: false,
+  error: undefined,
+};
+
+let runtimeLoaderPromise:
+  | Promise<typeof import('@rive-app/react-canvas')>
+  | undefined;
+let wasmPreloadPromise: Promise<void> | undefined;
+
+const riveWasmListeners = new Set<(state: RiveWasmReadyState) => void>();
+
+const notifyRiveWasmListeners = () => {
+  const nextState = { ...riveWasmReadyState };
+  riveWasmListeners.forEach((listener) => listener(nextState));
+};
+
+const setRiveWasmReadyState = (nextState: Partial<RiveWasmReadyState>) => {
+  riveWasmReadyState = { ...riveWasmReadyState, ...nextState };
+  notifyRiveWasmListeners();
+};
+
+const loadRiveRuntime = () => {
+  if (!runtimeLoaderPromise) {
+    runtimeLoaderPromise = import('@rive-app/react-canvas');
+  }
+
+  return runtimeLoaderPromise;
+};
+
+export const preloadRiveWasm = async () => {
+  if (riveWasmReadyState.isWasmReady) {
+    return;
+  }
+
+  if (!wasmPreloadPromise) {
+    setRiveWasmReadyState({
+      loading: true,
+      error: undefined,
+    });
+
+    wasmPreloadPromise = (async () => {
+      const { RuntimeLoader } = await loadRiveRuntime();
+
+      if (typeof RuntimeLoader === 'undefined') {
+        setRiveWasmReadyState({
+          isWasmReady: true,
+          loading: false,
+        });
+        return;
+      }
+
+      const response = await fetch(RIVE_WASM_URL);
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error! status while fetching rive.wasm: ${response.status}`,
+        );
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
+        arrayBuffer;
+      RuntimeLoader.setWasmUrl('should not fetch wasm');
+
+      await RuntimeLoader.awaitInstance();
+
+      setRiveWasmReadyState({
+        isWasmReady: true,
+        loading: false,
+        error: undefined,
+      });
+    })().catch((error: Error) => {
+      wasmPreloadPromise = undefined;
+      setRiveWasmReadyState({
+        loading: false,
+        error,
+      });
+      throw error;
+    });
+  }
+
+  return wasmPreloadPromise;
+};
+
 export const useRiveWasmReady = () => {
-  const [isWasmReady, setIsWasmReady] = useState(false);
+  const [state, setState] = useState<RiveWasmReadyState>(riveWasmReadyState);
 
-  const result = useAsyncResult(async () => {
-    if (isWasmReady) {
-      return true;
-    }
+  useEffect(() => {
+    const listener = (nextState: RiveWasmReadyState) => {
+      setState(nextState);
+    };
 
-    if (typeof RuntimeLoader === 'undefined') {
-      setIsWasmReady(true);
-      return true;
-    }
-    const response = await fetch(RIVE_WASM_URL);
-    if (!response.ok) {
-      throw new Error(
-        `HTTP error! status while fetching rive.wasm: ${response.status}`,
-      );
-    }
-    const arrayBuffer = await response.arrayBuffer();
-    (RuntimeLoader as unknown as { wasmBinary: ArrayBuffer }).wasmBinary =
-      arrayBuffer;
-    RuntimeLoader.setWasmUrl('should not fetch wasm'); // easier to debug if something goes wrong
+    riveWasmListeners.add(listener);
 
-    // Preload the WASM
-    await RuntimeLoader.awaitInstance();
-    setIsWasmReady(true);
-    return true;
-  }, [isWasmReady, setIsWasmReady]);
+    return () => {
+      riveWasmListeners.delete(listener);
+    };
+  }, []);
 
-  return {
-    isWasmReady,
-    loading: result.pending,
-    error: result.error,
-  };
+  return state;
 };
 
 // create a context only for the wasm ready state
@@ -134,6 +212,10 @@ export const useRiveWasmFile = (url: string) => {
   const { isWasmReady, urlBufferMap, setUrlBufferCache } = useRiveWasmContext();
 
   const cachedBuffer = urlBufferMap[url];
+
+  useEffect(() => {
+    preloadRiveWasm().catch(() => undefined);
+  }, [url]);
 
   const result = useAsyncResult(async () => {
     if (!isWasmReady) {

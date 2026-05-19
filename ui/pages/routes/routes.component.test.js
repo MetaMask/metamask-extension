@@ -7,7 +7,10 @@ import thunk from 'redux-thunk';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
   TOKEN_MANAGEMENT_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockSendState from '../../../test/data/mock-send-state.json';
@@ -16,7 +19,10 @@ import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeT
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
-import Routes, { TokenManagementFeatureRoute } from '.';
+import Routes, {
+  TokenManagementFeatureRoute,
+  shouldPreloadRiveForPath,
+} from '.';
 
 const middlewares = [thunk];
 
@@ -198,6 +204,21 @@ describe('Routes Component', () => {
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
+  });
+
+  describe('shouldPreloadRiveForPath', () => {
+    it('returns true for Rive-enabled routes', () => {
+      expect(shouldPreloadRiveForPath(ONBOARDING_WELCOME_ROUTE)).toBe(true);
+      expect(shouldPreloadRiveForPath(CONFIRMATION_V_NEXT_ROUTE)).toBe(true);
+      expect(shouldPreloadRiveForPath(TRANSACTION_SHIELD_ROUTE)).toBe(true);
+      expect(shouldPreloadRiveForPath(PERPS_MARKET_LIST_ROUTE)).toBe(true);
+    });
+
+    it('returns false for unrelated routes', () => {
+      expect(shouldPreloadRiveForPath(DEFAULT_ROUTE)).toBe(false);
+      expect(shouldPreloadRiveForPath('/unlock')).toBe(false);
+      expect(shouldPreloadRiveForPath('/settings')).toBe(false);
+    });
   });
 
   describe('render during send flow', () => {

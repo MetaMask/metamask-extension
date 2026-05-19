@@ -70,10 +70,10 @@ describe('FoxAppearAnimation', () => {
     setDefaultMocks();
   });
 
-  it('renders the Rive component when all resources are ready', () => {
+  it('renders the Rive component when all resources are ready', async () => {
     render(<FoxAppearAnimation />);
 
-    expect(screen.getByTestId('rive-component')).toBeInTheDocument();
+    expect(await screen.findByTestId('rive-component')).toBeInTheDocument();
   });
 
   it('renders a placeholder with spinner when resources are not ready and isLoader is true', () => {
@@ -93,34 +93,40 @@ describe('FoxAppearAnimation', () => {
     expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
   });
 
-  it('fires Start trigger and plays the animation on mount', () => {
+  it('fires Start trigger and plays the animation on mount', async () => {
     const riveInstance = createRiveInstance();
     setDefaultMocks(riveInstance);
 
     render(<FoxAppearAnimation />);
 
+    await screen.findByTestId('rive-component');
+
     expect(mockStartFire).toHaveBeenCalled();
     expect(riveInstance.play).toHaveBeenCalled();
   });
 
-  it('fires Wiggle and Loader2 triggers when skipTransition and isLoader are true', () => {
+  it('fires Wiggle and Loader2 triggers when skipTransition and isLoader are true', async () => {
     const riveInstance = createRiveInstance();
     setDefaultMocks(riveInstance);
 
     render(<FoxAppearAnimation skipTransition isLoader />);
+
+    await screen.findByTestId('rive-component');
 
     expect(mockWiggleFire).toHaveBeenCalled();
     expect(mockStartFire).not.toHaveBeenCalled();
     expect(mockLoaderFire).toHaveBeenCalled();
   });
 
-  it('syncs canvas size on window resize and cleans up the listener on unmount', () => {
+  it('syncs canvas size on window resize and cleans up the listener on unmount', async () => {
     const riveInstance = createRiveInstance();
     setDefaultMocks(riveInstance);
     const addSpy = jest.spyOn(window, 'addEventListener');
     const removeSpy = jest.spyOn(window, 'removeEventListener');
 
     const { unmount } = render(<FoxAppearAnimation />);
+
+    await screen.findByTestId('rive-component');
 
     expect(addSpy).toHaveBeenCalledWith('resize', expect.any(Function));
 

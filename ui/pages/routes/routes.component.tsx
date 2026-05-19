@@ -73,6 +73,9 @@ import {
   PERPS_ACTIVITY_ROUTE,
   PERPS_WITHDRAW_ROUTE,
   CONTACTS_ROUTE,
+  ONBOARDING_COMPLETION_ROUTE,
+  ONBOARDING_WELCOME_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
 } from '../../helpers/constants/routes';
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
@@ -138,6 +141,7 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
+import { preloadRiveWasm } from '../../contexts/rive-wasm';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -242,6 +246,18 @@ const PerpsOrderEntryPage = mmLazy(
 const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 // End Lazy Routes
+
+export const shouldPreloadRiveForPath = (pathname: string) =>
+  pathname === ONBOARDING_WELCOME_ROUTE ||
+  pathname === ONBOARDING_COMPLETION_ROUTE ||
+  pathname.startsWith(CONFIRM_TRANSACTION_ROUTE) ||
+  pathname.startsWith(CONFIRMATION_V_NEXT_ROUTE) ||
+  pathname.startsWith(TRANSACTION_SHIELD_ROUTE) ||
+  pathname.startsWith(PERPS_MARKET_LIST_ROUTE) ||
+  pathname.startsWith(PERPS_MARKET_DETAIL_ROUTE) ||
+  pathname.startsWith(PERPS_ORDER_ENTRY_ROUTE) ||
+  pathname.startsWith(PERPS_ACTIVITY_ROUTE) ||
+  pathname.startsWith(PERPS_WITHDRAW_ROUTE);
 
 const SettingsV2LegacyRedirect = () => {
   const { pathname, search, hash } = useLocation();
@@ -622,6 +638,12 @@ export default function Routes() {
   useEffect(() => {
     dispatch(pageChanged(location.pathname));
   }, [location.pathname, dispatch]);
+
+  useEffect(() => {
+    if (shouldPreloadRiveForPath(location.pathname)) {
+      preloadRiveWasm().catch(() => undefined);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     setTheme(theme);
