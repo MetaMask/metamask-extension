@@ -144,10 +144,8 @@ export const CloseAllPositionsModal: React.FC<CloseAllPositionsModalProps> = ({
                 PERPS_FALLBACK_FEE_RATES.metamaskFeeRate),
           }))
           .catch(() => ({
-            protocolFee:
-              notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
-            metamaskFee:
-              notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
+            protocolFee: notional * PERPS_FALLBACK_FEE_RATES.protocolFeeRate,
+            metamaskFee: notional * PERPS_FALLBACK_FEE_RATES.metamaskFeeRate,
           })),
       ),
     ).then((perSymbolFees) => {
