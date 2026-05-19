@@ -562,7 +562,9 @@ describe('Reveal Seed Page', () => {
       ).toHaveTextContent(messages.srpRevealMaliciousBlockHeading.message);
       expect(
         queryByTestId('reveal-seed-malicious-block-body'),
-      ).toHaveTextContent(messages.srpRevealMaliciousBlockBody.message);
+      ).toHaveTextContent(
+        messages.srpRevealMaliciousBlockBody.message.replace('$1', 'evil.com'),
+      );
       expect(
         queryByTestId('reveal-seed-malicious-block-dismiss'),
       ).toHaveTextContent(messages.gotIt.message);
