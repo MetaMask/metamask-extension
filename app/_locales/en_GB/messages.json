@@ -1058,21 +1058,11 @@
   "addAccount": {
     "message": "Add account"
   },
-  "addAccountFromNetwork": {
-    "message": "Add $1 account",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Add account or wallet"
-  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
   "addAlias": {
     "message": "Add alias"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Bitcoin account"
   },
   "addBlockExplorer": {
     "message": "Add a block explorer"
@@ -1129,9 +1119,6 @@
   "addFundsModalSwapTokens": {
     "message": "Swap tokens"
   },
-  "addHardwareWalletLabel": {
-    "message": "Hardware wallet"
-  },
   "addMemo": {
     "message": "Add memo"
   },
@@ -1145,31 +1132,11 @@
   "addNetworkDescription": {
     "message": "A site is suggesting additional network details."
   },
-  "addNewAccount": {
-    "message": "Add a new Ethereum account"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Ethereum account"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana account"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tron account"
-  },
   "addNft": {
     "message": "Add NFT"
   },
   "addNfts": {
     "message": "Add NFTs"
-  },
-  "addNonEvmAccount": {
-    "message": "Add $1 account",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "To enable the $1 network, you need to create a $2 account.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Add RPC URL"
@@ -1761,9 +1728,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "Go to the home page"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Open the Create Account page"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Open the DeFi page"
@@ -2727,18 +2691,12 @@
   "connectAccounts": {
     "message": "Connect accounts"
   },
-  "connectAnAccountHeader": {
-    "message": "Connect an account"
-  },
   "connectHardwareDevice": {
     "message": "Connect $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Manually connect to current site"
-  },
-  "connectMoreAccounts": {
-    "message": "Connect more accounts"
   },
   "connectSnap": {
     "message": "Connect $1",
@@ -2756,10 +2714,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask is not connected to this site. To connect to a web3 site, find and click the connect button."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 can see the account balance, address, activity, and suggest transactions to approve for connected accounts.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Connected sites"
@@ -2792,10 +2746,6 @@
   "connectedWithNetwork": {
     "message": "$1 networks connected",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Connected with $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Connecting"
@@ -2830,9 +2780,6 @@
   "connectionFailedDescription": {
     "message": "Fetching of $1 failed, check your network and try again.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "To connect to a site, select the connect button. MetaMask can only connect to web3 sites."
   },
   "connectionRequest": {
     "message": "Connection request"
@@ -2924,9 +2871,6 @@
     "message": "Adding account...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Create a new account"
-  },
   "createPassword": {
     "message": "MetaMask password"
   },
@@ -2951,9 +2895,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Create account"
-  },
-  "createSolanaAccount": {
-    "message": "Create Solana account"
   },
   "creatorAddress": {
     "message": "Creator address"
@@ -3236,9 +3177,6 @@
   "deepLink_theSwapsPage": {
     "message": "the swaps page"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "the Swaps/Ramps page"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "the transaction shield page"
   },
@@ -3382,9 +3320,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Are you sure you want to disconnect? You may lose site functionality."
   },
-  "disconnectAllAccountsText": {
-    "message": "accounts"
-  },
   "disconnectAllDescriptionText": {
     "message": "If you disconnect from this site, you’ll need to reconnect your accounts and networks to use this site again."
   },
@@ -3399,9 +3334,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "All dapps successfully disconnected."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "This will disconnect you from this site"
@@ -4436,9 +4368,6 @@
   "importNFTTokenIdToolTip": {
     "message": "An NFT's ID is a unique identifier since no two NFTs are alike. Again, on OpenSea this number is under 'Details'. Make a note of it, or copy it onto your clipboard."
   },
-  "importPrivateKey": {
-    "message": "Private Key"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Import Secret Recovery Phrase"
   },
@@ -4453,9 +4382,6 @@
   },
   "importTokensError": {
     "message": "We could not import the tokens. Please try again later."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Import a wallet or account"
   },
   "importWalletSuccess": {
     "message": "Wallet $1 imported",
@@ -5568,9 +5494,6 @@
   },
   "new": {
     "message": "New!"
-  },
-  "newAccount": {
-    "message": "New account"
   },
   "newAccountIconMessage": {
     "message": "Weʼve refreshed account icons to help you tell your accounts apart more easily. You can change the style in $1 > $2 > $3.",
@@ -7715,6 +7638,46 @@
     "message": "Camera access needed",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Go back to your hardware wallet and find the option to share or export your accounts, choose MetaMask, then scan the QR code.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Scan wallet sync QR code",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Go back to your hardware wallet and approve the transaction, then scan the QR code it shows.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Scan signature QR code",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Make sure the QR code is fully visible and well-lit, and try again. If the issue continues, you may need to update your hardware wallet's firmware.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Couldn't read QR code",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Go back to your hardware wallet, choose MetaMask as the wallet type, then generate and scan a new QR code.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Wrong QR code",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Go back to your hardware wallet and approve the transaction, then scan the QR code it shows.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Wrong QR code",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Queued"
   },
@@ -7871,14 +7834,6 @@
   },
   "requestingFor": {
     "message": "Requesting for"
-  },
-  "requestingForAccount": {
-    "message": "Requesting for $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Requesting for $1",
-    "description": "Name of Network"
   },
   "required": {
     "message": "Required"
@@ -8190,10 +8145,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Secret Recovery Phrase $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Secure wallet"
@@ -9433,12 +9384,6 @@
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "This site is requesting a Solana account."
-  },
-  "solanaAccountRequired": {
-    "message": "A Solana account is required to connect to this site."
-  },
   "someNetworks": {
     "message": "$1 networks"
   },
@@ -10655,9 +10600,6 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
-  },
-  "urlUnknown": {
-    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"

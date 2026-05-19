@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Ajouter un compte"
   },
-  "addAccountFromNetwork": {
-    "message": "Ajouter un compte $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Ajouter un compte ou un portefeuille"
-  },
   "addAcquiredTokens": {
     "message": "Ajouter les jetons que vous avez acquis par l’intermédiaire de MetaMask"
   },
   "addAlias": {
     "message": "Ajouter un alias"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Compte Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Ajouter un explorateur de blocs"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Échanger des jetons"
   },
-  "addHardwareWalletLabel": {
-    "message": "Portefeuille matériel"
-  },
   "addMemo": {
     "message": "Ajouter un mémo"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "Un site propose des informations supplémentaires sur le réseau."
   },
-  "addNewAccount": {
-    "message": "Ajouter un nouveau compte Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Compte Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Compte Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Compte Tron"
-  },
   "addNft": {
     "message": "Ajouter un NFT"
   },
   "addNfts": {
     "message": "Ajouter des NFT"
-  },
-  "addNonEvmAccount": {
-    "message": "Ajouter un compte $1",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Pour activer le réseau $1, vous devez créer un compte $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Ajouter l’URL de l’appel de procédure à distance (RPC)"
@@ -893,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "Accéder à la page d’accueil"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Ouvrez la page « Créer un compte »"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Ouvrez la page « DeFi »"
@@ -1859,18 +1823,12 @@
   "connectAccounts": {
     "message": "Connecter les comptes"
   },
-  "connectAnAccountHeader": {
-    "message": "Connecter un compte"
-  },
   "connectHardwareDevice": {
     "message": "Connecter $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Se connecter manuellement au site actuel"
-  },
-  "connectMoreAccounts": {
-    "message": "Connecter plus de comptes"
   },
   "connectSnap": {
     "message": "Connecter $1",
@@ -1888,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask n’est pas connecté à ce site. Pour vous connecter à un site web3, cliquez sur le bouton de connexion."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 peut voir le solde, l’adresse et l’activité du compte, et suggérer des transactions à approuver pour les comptes connectés.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Sites connectés"
@@ -1924,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "$1 réseaux connectés",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Connecté avec $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Connexion…"
@@ -1962,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "L’extraction de $1 a échoué, vérifiez votre connexion réseau et réessayez.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Pour vous connecter à un site, sélectionnez le bouton de connexion. MetaMask ne peut se connecter qu’à des sites Web3."
   },
   "connectionRequest": {
     "message": "Demande de connexion"
@@ -2056,9 +2003,6 @@
     "message": "Ajout d’un compte…",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Créer un nouveau compte"
-  },
   "createPassword": {
     "message": "Créer un mot de passe"
   },
@@ -2083,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Créer un compte"
-  },
-  "createSolanaAccount": {
-    "message": "Créer un compte Solana"
   },
   "creatorAddress": {
     "message": "Adresse du créateur"
@@ -2368,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "la page de swaps"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "la page des Swaps/Ramps"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "la page de protection des transactions"
   },
@@ -2514,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Souhaitez-vous vraiment vous déconnecter ? Vous risquez de perdre certaines fonctionnalités du site."
   },
-  "disconnectAllAccountsText": {
-    "message": "comptes"
-  },
   "disconnectAllDescriptionText": {
     "message": "Si vous vous déconnectez de ce site, vous devrez reconnecter vos comptes et réseaux pour pouvoir l’utiliser à nouveau."
   },
@@ -2531,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Toutes les dapps ont été déconnectées avec succès."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Cela vous déconnectera de ce site"
@@ -3562,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "L’ID d’un NFT est un identifiant unique puisqu’il n’y a pas deux NFT identiques. Encore une fois, sur OpenSea, ce numéro se trouve dans la section « Détails ». Prenez-en note ou copiez-le dans votre presse-papiers."
   },
-  "importPrivateKey": {
-    "message": "Clé privée"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Importer la phrase secrète de récupération"
   },
@@ -3579,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "Impossible d’importer les jetons. Veuillez ressayer plus tard."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Importer un portefeuille ou un compte"
   },
   "importWalletSuccess": {
     "message": "Portefeuille $1 importé",
@@ -4691,9 +4617,6 @@
   },
   "new": {
     "message": "Nouveau!"
-  },
-  "newAccount": {
-    "message": "Nouveau compte"
   },
   "newAccountIconMessage": {
     "message": "Nous avons actualisé les icônes des comptes afin de vous aider à les distinguer plus facilement. Vous pouvez modifier le style dans $1 > $2 > $3.",
@@ -6948,14 +6871,6 @@
   "requestingFor": {
     "message": "Demande de"
   },
-  "requestingForAccount": {
-    "message": "Demande pour $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Demande de $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Requis"
   },
@@ -7214,10 +7129,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Phrase secrète de récupération $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Portefeuille sécurisé"
@@ -8457,12 +8368,6 @@
     "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "Ce site requiert un compte Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Un compte Solana est nécessaire pour se connecter à ce site."
-  },
   "someNetworks": {
     "message": "$1 réseaux"
   },
@@ -9673,9 +9578,6 @@
   },
   "urlErrorMsg": {
     "message": "Les URLs requièrent un préfixe HTTP/HTTPS approprié."
-  },
-  "urlUnknown": {
-    "message": "URL inconnue"
   },
   "use4ByteResolution": {
     "message": "Décoder les contrats intelligents"

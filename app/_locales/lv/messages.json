@@ -370,9 +370,6 @@
   "nevermind": {
     "message": "Nav svarīgi"
   },
-  "newAccount": {
-    "message": "Jauns konts"
-  },
   "newAccountNumberName": {
     "message": "Konts $1",
     "description": "Default name of next account to be created on create account screen"

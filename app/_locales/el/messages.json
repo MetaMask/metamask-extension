@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "Προσθήκη λογαριασμού"
   },
-  "addAccountFromNetwork": {
-    "message": "Προσθήκη λογαριασμού σε $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Προσθήκη λογαριασμού ή πορτοφολιού"
-  },
   "addAcquiredTokens": {
     "message": "Προσθέστε τα tokens που αποκτήσατε χρησιμοποιώντας το MetaMask"
   },
   "addAlias": {
     "message": "Προσθήκη ψευδωνύμου"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Λογαριασμός Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Προσθήκη ενός block explorer"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "Ανταλλαγή tokens"
   },
-  "addHardwareWalletLabel": {
-    "message": "Πορτοφόλι υλικού"
-  },
   "addMemo": {
     "message": "Προσθήκη σημειώματος"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "Ένας ιστότοπος προτείνει πρόσθετες λεπτομέρειες δικτύου."
   },
-  "addNewAccount": {
-    "message": "Προσθήκη νέου λογαριασμού Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Λογαριασμός Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Λογαριασμός Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Λογαριασμός Tron"
-  },
   "addNft": {
     "message": "Προσθήκη του NFT"
   },
   "addNfts": {
     "message": "Προσθήκη των NFT"
-  },
-  "addNonEvmAccount": {
-    "message": "Προσθήκη $1 λογαριασμού",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Για να ενεργοποιήσετε το δίκτυο $1, πρέπει να δημιουργήσετε έναν λογαριασμό $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Προσθήκη διεύθυνσης URL του RPC"
@@ -893,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "Μετάβαση στην αρχική σελίδα"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Ανοίξτε τη σελίδα Δημιουργία Λογαριασμού"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Ανοίξτε τη σελίδα DeFi"
@@ -1859,18 +1823,12 @@
   "connectAccounts": {
     "message": "Σύνδεση λογαριασμών"
   },
-  "connectAnAccountHeader": {
-    "message": "Σύνδεση λογαριασμού"
-  },
   "connectHardwareDevice": {
     "message": "Σύνδεση $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Χειροκίνητη σύνδεση στον τρέχοντα ιστότοπο"
-  },
-  "connectMoreAccounts": {
-    "message": "Σύνδεση περισσότερων λογαριασμών"
   },
   "connectSnap": {
     "message": "Σύνδεση $1",
@@ -1888,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "To MetaMask δεν είναι συνδεδεμένo σε αυτόν τον ιστότοπο. Για να συνδεθείτε σε έναν ιστότοπο web3, βρείτε και κάντε κλικ στο κουμπί σύνδεσης."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "Το $1 μπορεί να δει το υπόλοιπο του λογαριασμού, τη διεύθυνση, τη δραστηριότητα και να προτείνει συναλλαγές προς έγκριση για συνδεδεμένους λογαριασμούς.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Συνδεδεμένοι ιστότοποι"
@@ -1924,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "$1 δίκτυα συνδεδεμένα",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Συνδέεται με $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Σύνδεση"
@@ -1962,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "Η λήψη του $1 απέτυχε, ελέγξτε το δίκτυό σας και προσπαθήστε ξανά.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Για να συνδεθείτε σε έναν ιστότοπο, επιλέξτε το κουμπί σύνδεσης. Το MetaMask μπορεί να συνδεθεί μόνο με ιστότοπους web3."
   },
   "connectionRequest": {
     "message": "Αίτημα σύνδεσης"
@@ -2056,9 +2003,6 @@
     "message": "Προσθήκη λογαριασμού…",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Δημιουργία νέου λογαριασμού"
-  },
   "createPassword": {
     "message": "Κωδικός πρόσβασης στο MetaMask"
   },
@@ -2083,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Δημιουργία λογαριασμού"
-  },
-  "createSolanaAccount": {
-    "message": "Δημιουργία λογαριασμού στο Solana"
   },
   "creatorAddress": {
     "message": "Διεύθυνση δημιουργού"
@@ -2368,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "σελίδα ανταλλαγών"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "η σελίδα Ανταλλαγών/Ramps"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "η σελίδα προστασίας συναλλαγών"
   },
@@ -2514,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Είστε βέβαιοι ότι θέλετε να αποσυνδεθείτε; Μπορεί να χάσετε τη λειτουργικότητα της ιστοσελίδας."
   },
-  "disconnectAllAccountsText": {
-    "message": "λογαριασμοί"
-  },
   "disconnectAllDescriptionText": {
     "message": "Εάν αποσυνδεθείτε από αυτόν τον ιστότοπο, θα πρέπει να επανασυνδέσετε τους λογαριασμούς και τα δίκτυά σας για να χρησιμοποιήσετε ξανά αυτόν τον ιστότοπο."
   },
@@ -2531,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Όλες οι αποκεντρωμένες εφαρμογές (dapps) αποσυνδέθηκαν με επιτυχία."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Αυτό θα σας αποσυνδέσει από αυτόν το ιστότοπο"
@@ -3562,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "Το αναγνωριστικό ενός NFT είναι μοναδικό δεδομένου ότι δεν υπάρχουν δύο ίδια NFT. Και πάλι, στο OpenSea αυτός ο αριθμός βρίσκεται στην ενότητα \"Λεπτομέρειες\". Σημειώστε τον ή αντιγράψτε τον στο πρόχειρο σας."
   },
-  "importPrivateKey": {
-    "message": "Ιδιωτικό κλειδί"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Εισαγωγή της Μυστικής Φράσης Ανάκτησης"
   },
@@ -3579,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "Δεν μπορέσαμε να εισάγουμε τα tokens. Προσπαθήστε ξανά αργότερα."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Εισαγωγή πορτοφολιού ή λογαριασμού"
   },
   "importWalletSuccess": {
     "message": "Έγινε εισαγωγή του πορτοφολιού $1",
@@ -4691,9 +4617,6 @@
   },
   "new": {
     "message": "Νέα!"
-  },
-  "newAccount": {
-    "message": "Νέος λογαριασμός"
   },
   "newAccountIconMessage": {
     "message": "Ανανεώσαμε τα εικονίδια λογαριασμών για να μπορείτε να ξεχωρίζετε πιο εύκολα τους λογαριασμούς σας. Μπορείτε να αλλάξετε το στυλ στις $1 > $2 > $3.",
@@ -6948,14 +6871,6 @@
   "requestingFor": {
     "message": "Ζητάει για το"
   },
-  "requestingForAccount": {
-    "message": "Ζητάει για το $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Ζητήθηκε για $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "Απαιτείται"
   },
@@ -7214,10 +7129,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Μυστική Φράση Ανάκτησης"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Μυστική Φράση Ανάκτησης $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Ασφαλές πορτοφόλι"
@@ -8457,12 +8368,6 @@
     "message": "Επικοινωνήστε με τους διαχειριστές του $1 για περαιτέρω υποστήριξη.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "Αυτός ο ιστότοπος απαιτεί λογαριασμό στο Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Απαιτείται λογαριασμός στο Solana για να συνδεθείτε σε αυτόν τον ιστότοπο."
-  },
   "someNetworks": {
     "message": "$1 δίκτυα"
   },
@@ -9673,9 +9578,6 @@
   },
   "urlErrorMsg": {
     "message": "Οι διευθύνσεις URL απαιτούν το κατάλληλο πρόθεμα HTTP/HTTPS."
-  },
-  "urlUnknown": {
-    "message": "Άγνωστη διεύθυνση URL"
   },
   "use4ByteResolution": {
     "message": "Αποκωδικοποίηση έξυπνων συμβολαίων"

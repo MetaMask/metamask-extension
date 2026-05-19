@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "添加账户"
   },
-  "addAccountFromNetwork": {
-    "message": "添加 $1 账户",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "添加账户或钱包"
-  },
   "addAcquiredTokens": {
     "message": "添加您通过MetaMask获得的代币"
   },
   "addAlias": {
     "message": "添加别名"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "比特币账户"
   },
   "addBlockExplorer": {
     "message": "添加区块浏览器"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "兑换代币"
   },
-  "addHardwareWalletLabel": {
-    "message": "硬件钱包"
-  },
   "addMemo": {
     "message": "添加备忘录"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "一个网站正在提示额外的网络详细信息。"
   },
-  "addNewAccount": {
-    "message": "添加新账户"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "以太坊账户"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana 账户"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tron 账户"
-  },
   "addNft": {
     "message": "添加NFT"
   },
   "addNfts": {
     "message": "添加 NFT"
-  },
-  "addNonEvmAccount": {
-    "message": "添加 $1 账户",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "要启用 $1 网络，您需要创建 $2 账户。",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "添加 RPC（远程过程调用）URL"
@@ -893,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "前往主页"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "打开创建账户页面"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "打开去中心化金融页面"
@@ -1859,18 +1823,12 @@
   "connectAccounts": {
     "message": "连接账户"
   },
-  "connectAnAccountHeader": {
-    "message": "连接账户"
-  },
   "connectHardwareDevice": {
     "message": "连接$1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "手动连接到当前站点"
-  },
-  "connectMoreAccounts": {
-    "message": "连接更多账户"
   },
   "connectSnap": {
     "message": "连接$1",
@@ -1888,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask 没有连接到该网站。要连接到 web3 网站，请找到并点击连接按钮。"
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 可以查看账户余额、地址、活动，并建议要批准的关联账户交易。",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "已连接的网站"
@@ -1924,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "已连接 $1 网络",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "与 $1 连接",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "连接中……"
@@ -1962,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "获取$1失败，请检查您的网络，然后重试。",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "如要连接网站，请选择“连接”按钮。MetaMask 仅支持连接 Web3 网站。"
   },
   "connectionRequest": {
     "message": "连接请求"
@@ -2056,9 +2003,6 @@
     "message": "正在添加账户……",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "创建新账户"
-  },
   "createPassword": {
     "message": "创建密码"
   },
@@ -2083,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "创建账户"
-  },
-  "createSolanaAccount": {
-    "message": "创建 Solana 账户"
   },
   "creatorAddress": {
     "message": "创建者地址"
@@ -2368,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "兑换页面"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "兑换/法币通道页面"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "交易防护页面"
   },
@@ -2514,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "您确定要断开连接吗？您可能会失去网站功能。"
   },
-  "disconnectAllAccountsText": {
-    "message": "账户"
-  },
   "disconnectAllDescriptionText": {
     "message": "如果您断开与此网站的连接，则需要重新连接您的账户和网络才能再次使用此网站。"
   },
@@ -2531,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "所有去中心化应用均已成功断开连接。"
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "这将断开您与此站点的连接"
@@ -3562,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "NFT的ID是唯一标识符，因为所有NFT都是独一无二的。同样，在OpenSea上，此数字位于“详情”下方。记下它，或将它复制到剪贴板上。"
   },
-  "importPrivateKey": {
-    "message": "私钥"
-  },
   "importSecretRecoveryPhrase": {
     "message": "导入私钥助记词"
   },
@@ -3579,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "我们无法导入代币。请稍后再试。"
-  },
-  "importWalletOrAccountHeader": {
-    "message": "导入钱包或账户"
   },
   "importWalletSuccess": {
     "message": "钱包 $1 已导入",
@@ -4691,9 +4617,6 @@
   },
   "new": {
     "message": "新增!"
-  },
-  "newAccount": {
-    "message": "新账户"
   },
   "newAccountIconMessage": {
     "message": "我们已更新账户图标，助您更轻松地区分不同账户。您可通过 $1 > $2 > $3 调整图标样式。",
@@ -6948,14 +6871,6 @@
   "requestingFor": {
     "message": "请求"
   },
-  "requestingForAccount": {
-    "message": "请求 $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "请求 $1",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "必需"
   },
@@ -7214,10 +7129,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "私钥助记词"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "私钥助记词 $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "保护钱包安全"
@@ -8457,12 +8368,6 @@
     "message": "联系 $1 的创建者以获得进一步支持。",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "此网站正在请求 Solana 账户。"
-  },
-  "solanaAccountRequired": {
-    "message": "连接到此网站需要 Solana 账户。"
-  },
   "someNetworks": {
     "message": "$1 网络"
   },
@@ -9673,9 +9578,6 @@
   },
   "urlErrorMsg": {
     "message": "URL 需要相应的 HTTP/HTTPS 前缀。"
-  },
-  "urlUnknown": {
-    "message": "URL 未知"
   },
   "use4ByteResolution": {
     "message": "对智能合约进行解码"
