@@ -138,6 +138,10 @@ import { ToastListener } from '../../components/app/toast-listener/toast-listene
 import { ALLOWED_CAPABILITIES as SNAP_VIEW_ROUTE_ALLOWED_CAPABILITIES } from '../snaps/snap-view/messenger';
 import { createRouteWithMessenger } from '../../helpers/route-messenger-helpers';
 import { getIsTokenManagementFilterEnabled } from '../../selectors/multichain/feature-flags';
+import UnlockPage from '../unlock-page/index.ts';
+import Confirm from '../confirmations/confirm/confirm.tsx';
+import ConfirmationPage from '../confirmations/confirmation/index.js';
+import Home from '../home/index.js';
 import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
@@ -146,7 +150,6 @@ import { NetworkHandler } from './network-handler';
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
 const Lock = mmLazy(() => import('../lock/index.ts'));
-const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
 const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
@@ -172,7 +175,6 @@ const ConfirmEncryptionPublicKey = mmLazy(
 const ConfirmDecryptMessage = mmLazy(
   () => import('../confirm-decrypt-message/index.js'),
 );
-const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
 const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
 const PermissionsConnect = mmLazy(
@@ -183,9 +185,6 @@ const ConfirmAddSuggestedTokenPage = mmLazy(
 );
 const ConfirmAddSuggestedNftPage = mmLazy(
   () => import('../confirm-add-suggested-nft/index.js'),
-);
-const ConfirmationPage = mmLazy(
-  () => import('../confirmations/confirmation/index.js'),
 );
 const CreateAccountPage = mmLazy(
   () => import('../create-account/create-account.component.js'),
@@ -212,7 +211,6 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.js'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
