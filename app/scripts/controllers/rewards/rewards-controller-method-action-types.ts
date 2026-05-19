@@ -53,6 +53,11 @@ export type RewardsControllerGetPerpsDiscountForAccountAction = {
   handler: RewardsController['getPerpsDiscountForAccount'];
 };
 
+export type RewardsControllerGetVipTierForAccountAction = {
+  type: `RewardsController:getVipTierForAccount`;
+  handler: RewardsController['getVipTierForAccount'];
+};
+
 /**
  * Check if an internal account supports opt-in for rewards.
  *
@@ -197,11 +202,6 @@ export type RewardsControllerLinkAccountsToSubscriptionCandidateAction = {
   handler: RewardsController['linkAccountsToSubscriptionCandidate'];
 };
 
-export type RewardsControllerGetVipTierForAccountAction = {
-  type: `RewardsController:getVipTierForAccount`;
-  handler: RewardsController['getVipTierForAccount'];
-};
-
 /**
  * Union of all RewardsController action types.
  */
@@ -209,6 +209,7 @@ export type RewardsControllerMethodActions =
   | RewardsControllerResetStateAction
   | RewardsControllerGetActualSubscriptionIdAction
   | RewardsControllerGetPerpsDiscountForAccountAction
+  | RewardsControllerGetVipTierForAccountAction
   | RewardsControllerIsOptInSupportedAction
   | RewardsControllerGetHasAccountOptedInAction
   | RewardsControllerGetOptInStatusAction
@@ -221,5 +222,4 @@ export type RewardsControllerMethodActions =
   | RewardsControllerValidateReferralCodeAction
   | RewardsControllerGetCandidateSubscriptionIdAction
   | RewardsControllerLinkAccountToSubscriptionCandidateAction
-  | RewardsControllerLinkAccountsToSubscriptionCandidateAction
-  | RewardsControllerGetVipTierForAccountAction;
+  | RewardsControllerLinkAccountsToSubscriptionCandidateAction;
