@@ -295,6 +295,10 @@ ${Object.entries(env)
       'background',
     );
     assert.strictEqual(
+      manifestPlugin.options.stats.classifyEntrypoint('background'),
+      'background',
+    );
+    assert.strictEqual(
       manifestPlugin.options.stats.classifyEntrypoint('home'),
       'ui',
     );

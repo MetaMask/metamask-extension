@@ -85,7 +85,12 @@ const bundleSizeContentScriptEntrypoints = new Set([
 const classifyBundleSizeEntrypoint = (
   entrypointName: string,
 ): BundleSizeCategory | null => {
-  if (entrypointName === 'service-worker.ts') {
+  if (
+    // MV3 uses the service-worker.ts entry point for the background script,
+    // while MV2 uses background
+    entrypointName === 'service-worker.ts' ||
+    entrypointName === 'background'
+  ) {
     return 'background';
   }
 
