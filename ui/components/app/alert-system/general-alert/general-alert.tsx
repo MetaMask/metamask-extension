@@ -83,18 +83,22 @@ function AlertDetails({
     <Box marginTop={1}>
       <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
         {Array.isArray(details) ? (
-          <Box asChild paddingLeft={6}><ul className="alert-modal__alert-details">
-            {details.map((detail, index) => (
-              <Box asChild key={`disclosure-detail-${index}`}><li>
-                <Text
-                  variant={TextVariant.bodyMdMedium}
-                  fontWeight={FontWeight.Normal}
-                >
-                  {detail}
-                </Text>
-              </li></Box>
-            ))}
-          </ul></Box>
+          <Box asChild paddingLeft={6}>
+            <ul className="alert-modal__alert-details">
+              {details.map((detail, index) => (
+                <Box asChild key={`disclosure-detail-${index}`}>
+                  <li>
+                    <Text
+                      variant={TextVariant.bodyMdMedium}
+                      fontWeight={FontWeight.Normal}
+                    >
+                      {detail}
+                    </Text>
+                  </li>
+                </Box>
+              ))}
+            </ul>
+          </Box>
         ) : (
           <>{details}</>
         )}

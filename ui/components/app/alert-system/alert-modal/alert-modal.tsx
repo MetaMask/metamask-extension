@@ -216,7 +216,11 @@ function AlertDetails({
       key={selectedAlert.key}
       className="inline-block w-full rounded-sm"
       padding={customDetails ? 0 : 2}
-      backgroundColor={customDetails ? undefined : alertDetailsBackgroundColor as BoxBackgroundColor}
+      backgroundColor={
+        customDetails
+          ? undefined
+          : (alertDetailsBackgroundColor as BoxBackgroundColor)
+      }
     >
       {customDetails ?? (
         <Box>
@@ -234,13 +238,17 @@ function AlertDetails({
               {t('alertModalDetails')}
             </Text>
           ) : null}
-          <Box asChild paddingLeft={6}><ul className="alert-modal__alert-details">
-            {selectedAlert.alertDetails?.map((detail, index) => (
-              <Box asChild key={`${selectedAlert.key}-detail-${index}`}><li>
-                <Text variant={TextVariant.bodyMd}>{detail}</Text>
-              </li></Box>
-            ))}
-          </ul></Box>
+          <Box asChild paddingLeft={6}>
+            <ul className="alert-modal__alert-details">
+              {selectedAlert.alertDetails?.map((detail, index) => (
+                <Box asChild key={`${selectedAlert.key}-detail-${index}`}>
+                  <li>
+                    <Text variant={TextVariant.bodyMd}>{detail}</Text>
+                  </li>
+                </Box>
+              ))}
+            </ul>
+          </Box>
         </Box>
       )}
     </Box>

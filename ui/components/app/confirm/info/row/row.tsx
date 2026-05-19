@@ -74,7 +74,10 @@ function getConfirmInfoRowTooltipProps(
   return { title: tooltip };
 }
 
-const BACKGROUND_COLORS: Record<ConfirmInfoRowVariant, BoxBackgroundColor | undefined> = {
+const BACKGROUND_COLORS: Record<
+  ConfirmInfoRowVariant,
+  BoxBackgroundColor | undefined
+> = {
   [ConfirmInfoRowVariant.Default]: undefined,
   [ConfirmInfoRowVariant.Critical]: BoxBackgroundColor.ErrorMuted,
   [ConfirmInfoRowVariant.Warning]: BoxBackgroundColor.WarningMuted,
@@ -85,7 +88,6 @@ const TEXT_COLOR_CLASSES: Record<ConfirmInfoRowVariant, string> = {
   [ConfirmInfoRowVariant.Critical]: 'text-error-alternative',
   [ConfirmInfoRowVariant.Warning]: 'text-warning-default',
 };
-
 
 const TOOLTIP_ICONS = {
   [ConfirmInfoRowVariant.Default]: IconName.Question,
@@ -135,7 +137,9 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
       <Box
         data-testid={dataTestId}
         className={`flex confirm-info-row rounded-lg ${TEXT_COLOR_CLASSES[variant]}`}
-        flexDirection={isCollapsible ? BoxFlexDirection.Column : BoxFlexDirection.Row}
+        flexDirection={
+          isCollapsible ? BoxFlexDirection.Column : BoxFlexDirection.Row
+        }
         justifyContent={BoxJustifyContent.Between}
         flexWrap={BoxFlexWrap.Wrap}
         alignItems={isSmall ? BoxAlignItems.Center : BoxAlignItems.Start}

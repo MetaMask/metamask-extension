@@ -1,10 +1,6 @@
 import React from 'react';
 
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexWrap,
-} from '@metamask/design-system-react';
+import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display/user-preferenced-currency-display.component';
 import CurrencyDisplay from '../../../../ui/currency-display/currency-display.component';
 

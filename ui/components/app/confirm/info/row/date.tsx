@@ -1,14 +1,8 @@
 import React from 'react';
 
-import {
-  TextColor,
-} from '../../../../../helpers/constants/design-system';
+import { TextColor } from '../../../../../helpers/constants/design-system';
 import { formatUTCDateFromUnixTimestamp } from '../../../../../helpers/utils/util';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexWrap,
-} from '@metamask/design-system-react';
+import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
 import { Text } from '../../../../component-library';
 
 export type ConfirmInfoRowDateProps = {

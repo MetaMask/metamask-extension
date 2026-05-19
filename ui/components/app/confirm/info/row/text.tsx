@@ -4,11 +4,7 @@ import {
   IconColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexWrap,
-} from '@metamask/design-system-react';
+import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
 import {
   ButtonIcon,
   ButtonIconSize,

@@ -1,9 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import React, { memo, useState } from 'react';
 import { AvatarAccountSize } from '@metamask/design-system-react';
-import {
-  TextColor,
-} from '../../../../../helpers/constants/design-system';
+import { TextColor } from '../../../../../helpers/constants/design-system';
 import {
   Box,
   BoxAlignItems,

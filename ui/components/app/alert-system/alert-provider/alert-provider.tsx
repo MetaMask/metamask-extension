@@ -49,7 +49,10 @@ export function AlertProvider({
   }
 
   return (
-    <Box paddingTop={paddingTop} className={textAlign ? TEXT_ALIGN_CLASS[textAlign] : undefined}>
+    <Box
+      paddingTop={paddingTop}
+      className={textAlign ? TEXT_ALIGN_CLASS[textAlign] : undefined}
+    >
       <Text
         marginTop={1}
         display={Display.InlineFlex}

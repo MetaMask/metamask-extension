@@ -12,12 +12,7 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
-import {
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../../component-library';
 
 export type InlineAlertProps = {
   /** The key of the alert */

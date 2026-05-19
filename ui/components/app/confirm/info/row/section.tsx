@@ -1,8 +1,5 @@
 import React, { CSSProperties } from 'react';
-import {
-  Box,
-  BoxBackgroundColor,
-} from '@metamask/design-system-react';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 
 export type ConfirmInfoSectionProps = {
   children: React.ReactNode | string;

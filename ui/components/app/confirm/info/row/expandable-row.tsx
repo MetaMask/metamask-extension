@@ -6,9 +6,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '../../../../component-library';
-import {
-  IconColor,
-} from '../../../../../helpers/constants/design-system';
+import { IconColor } from '../../../../../helpers/constants/design-system';
 import { useBoolean } from '../../../../../hooks/useBoolean';
 import { ConfirmInfoRow, ConfirmInfoRowProps } from './row';
 

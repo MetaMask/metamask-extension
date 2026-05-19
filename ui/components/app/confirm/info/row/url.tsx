@@ -1,11 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
-import {
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../../../component-library';
 import {
   AlignItems,
   BorderRadius,
@@ -15,11 +10,7 @@ import {
   TextVariant,
   BackgroundColor,
 } from '../../../../../helpers/constants/design-system';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexWrap,
-} from '@metamask/design-system-react';
+import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
 import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
 import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
