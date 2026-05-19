@@ -148,19 +148,8 @@ export type MergedItem =
   | { type: 'completed'; tx: TransactionViewModel; time: number; nonce: number }
   | { type: 'non-evm'; transaction: Transaction; time: number; nonce: number };
 
-const isTerminalEvmActivityStatus = (status: string): boolean => {
-  return (
-    status === TransactionStatus.confirmed ||
-    status === TransactionStatus.failed ||
-    status === TransactionStatus.dropped ||
-    status === TransactionStatus.rejected ||
-    status === TransactionStatus.cancelled
-  );
-};
-
-const isInProgressTransactionControllerStatus = (status: string): boolean => {
-  return IN_PROGRESS_TRANSACTION_STATUSES.includes(status as TransactionStatus);
-};
+const isInProgressTransactionControllerStatus = (status: string): boolean =>
+  IN_PROGRESS_TRANSACTION_STATUSES.includes(status as TransactionStatus);
 
 const isLocalTransactionGroupPending = (group: TransactionGroup): boolean => {
   const { primaryTransaction, initialTransaction } = group;
@@ -170,24 +159,13 @@ const isLocalTransactionGroupPending = (group: TransactionGroup): boolean => {
     return status === SmartTransactionStatus.pending;
   }
 
-  const effectiveStatus = getStatusKey(primaryTransaction);
-
-  if (isTerminalEvmActivityStatus(effectiveStatus)) {
-    return false;
-  }
-
-  return isInProgressTransactionControllerStatus(effectiveStatus);
+  return isInProgressTransactionControllerStatus(
+    getStatusKey(primaryTransaction),
+  );
 };
 
-const isCompletedTransactionPending = (tx: TransactionViewModel): boolean => {
-  const effectiveStatus = getStatusKey(tx);
-
-  if (isTerminalEvmActivityStatus(effectiveStatus)) {
-    return false;
-  }
-
-  return isInProgressTransactionControllerStatus(effectiveStatus);
-};
+const isCompletedTransactionPending = (tx: TransactionViewModel): boolean =>
+  isInProgressTransactionControllerStatus(getStatusKey(tx));
 
 const isNonEvmTransactionPending = (transaction: Transaction): boolean => {
   const { status } = transaction;
