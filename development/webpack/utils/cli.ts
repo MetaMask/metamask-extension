@@ -672,6 +672,13 @@ function getOptions(
       group: toOrange('Options:'),
       type: 'boolean',
     },
+    bundleAnalyzer: {
+      array: false,
+      default: false,
+      description: 'Generate a bundle analyzer report',
+      group: toOrange('Options:'),
+      type: 'boolean',
+    },
   } as const satisfies YargsOptionsMap;
 }
 

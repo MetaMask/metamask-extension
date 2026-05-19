@@ -12,6 +12,7 @@ type ArtifactLink = { url: string; label: string };
 type ArtifactLinkMap = {
   bundleSizeData: ArtifactLink;
   bundleSizeStats: ArtifactLink;
+  bundleAnalyzer: ArtifactLink;
   interactionStats: ArtifactLink;
   storybook: ArtifactLink;
   tsMigrationDashboard: ArtifactLink;
@@ -45,6 +46,10 @@ export function getArtifactLinks(
     bundleSizeStats: {
       url: `${hostUrl}/bundle-size/bundle_size.json`,
       label: 'Bundle Size Stats',
+    },
+    bundleAnalyzer: {
+      url: `${hostUrl}/build-dist-webpack/bundle-analyzer/report.html`,
+      label: 'Bundle Analyzer',
     },
     interactionStats: {
       url: `${hostUrl}/benchmarks/benchmark-${BENCHMARK_PLATFORMS.CHROME}-${BENCHMARK_BUILD_TYPES.WEBPACK}-interactionUserActions.json`,
@@ -225,6 +230,7 @@ export function buildArtifactsBody({
 
   contentRows.push(
     `bundle size: ${artifacts.link('bundleSizeStats')}`,
+    `bundle analyzer: ${artifacts.link('bundleAnalyzer')}`,
     `interaction-benchmark: ${artifacts.link('interactionStats')}`,
     `storybook: ${artifacts.link('storybook')}`,
     `typescript migration: ${artifacts.link('tsMigrationDashboard')}`,
