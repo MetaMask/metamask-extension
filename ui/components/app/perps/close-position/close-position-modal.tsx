@@ -626,6 +626,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                     formatFeeText={`-${formatFiat(roundedFees)}`}
                     feeTextFontWeight={FontWeight.Medium}
                     feeTextTestId="perps-close-summary-fees-value"
+                    showVipBadge
                   />
                 </Box>
 

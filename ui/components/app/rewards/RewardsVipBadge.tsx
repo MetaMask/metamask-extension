@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import {
   Box,
   FontWeight,
   Text,
   TextVariant,
 } from '@metamask/design-system-react';
-import { CaipAccountId } from '@metamask/utils';
+import type { CaipAccountId } from '@metamask/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { submitRequestToBackground } from '../../../store/background-connection';
-import { forceUpdateMetamaskState } from '../../../store/actions';
-import { MetaMaskReduxDispatch } from '../../../store/store';
+import { useVipTier } from '../../../hooks/rewards/useVipTier';
 import { RewardsIcon, RewardsIconVariant } from './RewardsIcon';
 
 export const RewardsVipBadge = ({
@@ -19,24 +16,7 @@ export const RewardsVipBadge = ({
   accountId: CaipAccountId;
 }) => {
   const t = useI18nContext();
-  const dispatch = useDispatch();
-  const [vipTier, setVipTier] = useState<number | null>(null);
-
-  useEffect(() => {
-    dispatch(async (d: MetaMaskReduxDispatch) => {
-      try {
-        const vipTierResponse = (await submitRequestToBackground(
-          'rewardsGetVipTierForAccount',
-          [accountId],
-        )) as number | null;
-        await forceUpdateMetamaskState(d);
-        setVipTier(vipTierResponse);
-      } catch (error) {
-        console.warn('Error fetching vip tier:', error);
-        setVipTier(null);
-      }
-    });
-  }, [accountId, dispatch]);
+  const vipTier = useVipTier(accountId);
 
   if (!vipTier) {
     return null;

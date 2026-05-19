@@ -276,6 +276,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                   }
                   feeTextFontWeight={FontWeight.Medium}
                   feeTextTestId="perps-reverse-fee-value"
+                  showVipBadge
                 />
               </Box>
               {error && (

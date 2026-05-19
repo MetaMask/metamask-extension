@@ -2,6 +2,16 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { PerpsFeesDisplay } from './perps-fees-display';
 
+jest.mock('../../rewards/RewardsVipBadge', () => ({
+  RewardsVipBadge: ({ accountId }: { accountId: string }) => (
+    <span data-testid="rewards-vip-badge">{accountId}</span>
+  ),
+}));
+
+jest.mock('../../../../hooks/rewards/useVipTierAccountId', () => ({
+  useVipTierAccountId: () => 'eip155:1:0xabc123',
+}));
+
 describe('PerpsFeesDisplay', () => {
   describe('discount badge visibility', () => {
     it('hides the discount badge when metamaskFeeRateDiscountPercentage is undefined', () => {
@@ -92,6 +102,38 @@ describe('PerpsFeesDisplay', () => {
       );
 
       expect(screen.getByTestId('my-fee-text')).toHaveTextContent('$0.50');
+    });
+  });
+
+  describe('VIP badge', () => {
+    it('does not render the VIP badge by default', () => {
+      render(<PerpsFeesDisplay formatFeeText="$10.00" />);
+
+      expect(
+        screen.queryByTestId('rewards-vip-badge'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('renders the VIP badge when showVipBadge is true', () => {
+      render(<PerpsFeesDisplay formatFeeText="$10.00" showVipBadge />);
+
+      expect(screen.getByTestId('rewards-vip-badge')).toBeInTheDocument();
+    });
+
+    it('renders VIP badge alongside discount and fee text', () => {
+      render(
+        <PerpsFeesDisplay
+          formatFeeText="$10.00"
+          metamaskFeeRateDiscountPercentage={15}
+          showVipBadge
+        />,
+      );
+
+      expect(screen.getByTestId('rewards-vip-badge')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-fees-display-discount'),
+      ).toBeInTheDocument();
+      expect(screen.getByText('$10.00')).toBeInTheDocument();
     });
   });
 });
