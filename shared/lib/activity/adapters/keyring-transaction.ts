@@ -25,11 +25,7 @@ function mapStatus(status: Transaction['status']): Status {
 }
 
 function mapTimestamp(timestamp: Transaction['timestamp']) {
-  if (!timestamp) {
-    return 0;
-  }
-
-  return timestamp < 1e12 ? timestamp * 1000 : timestamp;
+  return timestamp ? timestamp * 1000 : 0;
 }
 
 function getAddress(movements: Movement[]) {
@@ -42,10 +38,7 @@ function hasFungibleAsset(
   return movement.asset?.fungible === true;
 }
 
-function getToken(
-  movements: Movement[],
-  direction: TokenAmount['direction'],
-) {
+function getToken(movements: Movement[], direction: TokenAmount['direction']) {
   const movement = movements.find(hasFungibleAsset);
 
   if (!movement) {
