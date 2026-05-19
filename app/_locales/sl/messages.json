@@ -78,9 +78,6 @@
   "autoLockTimeLimit": {
     "message": "Časovnik za samodejno odjavo (minute)"
   },
-  "autoLockTimeLimitDescription": {
-    "message": "Nastavite, po koliko minutah mirovanja naj se MetaMask samodejno odjavi"
-  },
   "average": {
     "message": "Povprečje"
   },
@@ -180,12 +177,6 @@
   },
   "createPassword": {
     "message": "Ustvari geslo"
-  },
-  "currencyConversion": {
-    "message": "Pretvorba valute"
-  },
-  "currentLanguage": {
-    "message": "Trenutni jezik"
   },
   "custom": {
     "message": "Napredno"
@@ -333,12 +324,6 @@
   "likeToImportTokens": {
     "message": "Želite dodati te žetone?"
   },
-  "lineaGoerli": {
-    "message": "Testno omrežje Linea Goerli"
-  },
-  "links": {
-    "message": "Povezave"
-  },
   "loading": {
     "message": "Nalaganje ..."
   },
@@ -372,9 +357,6 @@
   },
   "nevermind": {
     "message": "Pozabi"
-  },
-  "newAccount": {
-    "message": "Nov račun"
   },
   "newAccountNumberName": {
     "message": "Račun $1",
@@ -481,9 +463,6 @@
   "restore": {
     "message": "Obnovi"
   },
-  "revealSeedWords": {
-    "message": "Razkrij seed words"
-  },
   "revealSeedWordsWarning": {
     "message": "S temi besedami lahko kdorkoli ukrade vse vaše račune.",
     "description": "$1 is bolded text using the message from 'revealSeedWordsWarning2'"
@@ -530,9 +509,6 @@
   "showFiatConversionInTestnets": {
     "message": "Pokažite pretvorbo na testnih omrežjih"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Izberite to možnost, če želite prikazati pretvorbo klasičnih valut na preskusnih omrežjih"
-  },
   "showHexData": {
     "message": "Pokaži Hex Data"
   },
@@ -562,9 +538,6 @@
   },
   "stateLogs": {
     "message": "State dnevniki"
-  },
-  "stateLogsDescription": {
-    "message": "State vsebujejo vaš javni nasklov in zgodovino transakcij."
   },
   "submitted": {
     "message": "Potrjeno"

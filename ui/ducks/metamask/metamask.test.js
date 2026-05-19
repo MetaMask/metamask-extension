@@ -10,7 +10,6 @@ import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import reduceMetamask, {
-  getConversionRate,
   getGasEstimateType,
   getGasEstimateTypeByChainId,
   getGasFeeEstimates,
@@ -20,11 +19,11 @@ import reduceMetamask, {
   getNativeCurrency,
   getSendHexDataFeatureFlagState,
   getSendToAccounts,
-  isNotEIP1559Network,
   getCurrentCurrency,
   getAllNfts,
   getTokensByChainId,
 } from './metamask';
+import { getConversionRate, isNotEIP1559Network } from './base-selectors';
 
 jest.mock('@metamask/transaction-controller', () => ({
   ...jest.requireActual('@metamask/transaction-controller'),
