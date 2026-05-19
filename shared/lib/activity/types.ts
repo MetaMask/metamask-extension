@@ -48,6 +48,13 @@ export type ActivityType =
   | 'marketCloseShort'
   | 'nftMint';
 
+export type TokenAmount = {
+  amount?: string;
+  decimals?: number;
+  symbol?: string;
+  direction: 'in' | 'out';
+};
+
 type ActivityItem<Type extends ActivityType, Data> = {
   type: Type;
   chainId: CaipChainId;
@@ -64,29 +71,34 @@ export type ActivityListItem =
       {
         from: string;
         to: string;
-        tokenSymbol?: string;
+        token?: TokenAmount;
       }
     >
   | ActivityItem<
       'swap',
       {
-        sourceTokenSymbol?: string;
-        destinationTokenSymbol?: string;
+        sourceToken?: TokenAmount;
+        destinationToken?: TokenAmount;
       }
     >
   | ActivityItem<
       'swapIncomplete',
       {
-        sourceTokenSymbol?: string;
+        sourceToken?: TokenAmount;
       }
     >
   | ActivityItem<
       'buy' | 'lendingDeposit' | 'claim',
       {
-        tokenSymbol?: string;
+        token?: TokenAmount;
       }
     >
-  | ActivityItem<'claimMusdBonus', object>
+  | ActivityItem<
+      'claimMusdBonus',
+      {
+        token?: TokenAmount;
+      }
+    >
   | ActivityItem<
       'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
       {
@@ -98,7 +110,7 @@ export type ActivityListItem =
       {
         from: string;
         to: string;
-        tokenSymbol?: string;
+        token?: TokenAmount;
       }
     >
   | ActivityItem<

@@ -4,6 +4,7 @@ import { zeroAddress } from 'viem';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
 import type { ActivityListItem, Status } from '../types';
 import { supplyMethodIds } from './constants';
+import { getTokenAmountFromTransfer } from './helpers';
 
 // Converts indexed API transactions into the shared activity item shape
 export function mapApiEvmTransactions({
@@ -27,6 +28,20 @@ export function mapApiEvmTransactions({
   const receivedTransfer = valueTransfers?.find(({ to }) =>
     equalsIgnoreCase(to, subjectAddress),
   );
+  const sentNftTransfer = valueTransfers?.find(
+    ({ from, transferType }) =>
+      equalsIgnoreCase(from, subjectAddress) &&
+      (transferType === 'erc721' || transferType === 'erc1155'),
+  );
+  const receivedNftTransfer = valueTransfers?.find(
+    ({ to, transferType }) =>
+      equalsIgnoreCase(to, subjectAddress) &&
+      (transferType === 'erc721' || transferType === 'erc1155'),
+  );
+  const sentNativeTransfer = valueTransfers?.find(
+    ({ from, transferType }) =>
+      equalsIgnoreCase(from, subjectAddress) && transferType === 'normal',
+  );
   const hasSupplyMethodId =
     transaction.methodId && supplyMethodIds.has(transaction.methodId);
 
@@ -38,7 +53,7 @@ export function mapApiEvmTransactions({
         status,
         timestamp,
         data: {
-          sourceTokenSymbol: sentTransfer?.symbol,
+          sourceToken: getTokenAmountFromTransfer(sentTransfer, 'out'),
           hash,
         },
       };
@@ -50,8 +65,8 @@ export function mapApiEvmTransactions({
       status,
       timestamp,
       data: {
-        sourceTokenSymbol: sentTransfer?.symbol,
-        destinationTokenSymbol: receivedTransfer?.symbol,
+        sourceToken: getTokenAmountFromTransfer(sentTransfer, 'out'),
+        destinationToken: getTokenAmountFromTransfer(receivedTransfer, 'in'),
         hash,
       },
     };
@@ -73,14 +88,9 @@ export function mapApiEvmTransactions({
   }
 
   // TODO: Categorize NFT in the backend, sometimes TRANSFER or CONTRACT_CALL
-  const isNftTransfer = valueTransfers?.some(
-    ({ transferType }) =>
-      transferType === 'erc721' || transferType === 'erc1155',
-  );
-
-  if (isNftTransfer) {
-    if (receivedTransfer) {
-      if (receivedTransfer.from === zeroAddress) {
+  if (sentNftTransfer || receivedNftTransfer) {
+    if (receivedNftTransfer) {
+      if (receivedNftTransfer.from === zeroAddress) {
         return {
           type: 'nftMint',
           chainId,
@@ -88,17 +98,14 @@ export function mapApiEvmTransactions({
           timestamp,
           data: {
             hash,
-            from: receivedTransfer.from,
-            to: receivedTransfer.to,
-            tokenSymbol: receivedTransfer?.symbol,
+            from: receivedNftTransfer.from,
+            to: receivedNftTransfer.to,
+            token: getTokenAmountFromTransfer(receivedNftTransfer, 'in'),
           },
         };
       }
 
-      if (
-        sentTransfer &&
-        valueTransfers?.some((v) => v.transferType === 'normal')
-      ) {
+      if (sentNativeTransfer) {
         return {
           type: 'buy',
           chainId,
@@ -106,7 +113,7 @@ export function mapApiEvmTransactions({
           timestamp,
           data: {
             hash,
-            tokenSymbol: receivedTransfer?.symbol,
+            token: getTokenAmountFromTransfer(receivedNftTransfer, 'in'),
           },
         };
       }
@@ -118,14 +125,14 @@ export function mapApiEvmTransactions({
         timestamp,
         data: {
           hash,
-          from: receivedTransfer.from,
-          to: receivedTransfer.to,
-          tokenSymbol: receivedTransfer?.symbol,
+          from: receivedNftTransfer.from,
+          to: receivedNftTransfer.to,
+          token: getTokenAmountFromTransfer(receivedNftTransfer, 'in'),
         },
       };
     }
 
-    if (sentTransfer) {
+    if (sentNftTransfer) {
       return {
         type: 'send',
         chainId,
@@ -133,9 +140,9 @@ export function mapApiEvmTransactions({
         timestamp,
         data: {
           hash,
-          from: sentTransfer.from,
-          to: sentTransfer.to,
-          tokenSymbol: sentTransfer?.symbol,
+          from: sentNftTransfer.from,
+          to: sentNftTransfer.to,
+          token: getTokenAmountFromTransfer(sentNftTransfer, 'out'),
         },
       };
     }
@@ -163,9 +170,7 @@ export function mapApiEvmTransactions({
       data: {
         from: transfer?.from ?? transaction.from,
         to: transfer?.to ?? transaction.to,
-        tokenSymbol: isReceive
-          ? receivedTransfer?.symbol
-          : sentTransfer?.symbol,
+        token: getTokenAmountFromTransfer(transfer, isReceive ? 'in' : 'out'),
         hash,
       },
     };
@@ -179,6 +184,7 @@ export function mapApiEvmTransactions({
       timestamp,
       data: {
         hash,
+        token: getTokenAmountFromTransfer(receivedTransfer, 'in'),
       },
     };
   }
@@ -191,7 +197,10 @@ export function mapApiEvmTransactions({
       timestamp,
       data: {
         hash,
-        tokenSymbol: receivedTransfer?.symbol ?? sentTransfer?.symbol,
+        token: getTokenAmountFromTransfer(
+          receivedTransfer ?? sentTransfer,
+          receivedTransfer ? 'in' : 'out',
+        ),
       },
     };
   }
@@ -205,7 +214,7 @@ export function mapApiEvmTransactions({
       timestamp,
       data: {
         hash,
-        tokenSymbol: sentTransfer?.symbol,
+        token: getTokenAmountFromTransfer(sentTransfer, 'out'),
       },
     };
   }
@@ -223,8 +232,8 @@ export function mapApiEvmTransactions({
       status,
       timestamp,
       data: {
-        sourceTokenSymbol: sentTransfer.symbol,
-        destinationTokenSymbol: receivedTransfer.symbol,
+        sourceToken: getTokenAmountFromTransfer(sentTransfer, 'out'),
+        destinationToken: getTokenAmountFromTransfer(receivedTransfer, 'in'),
         hash,
       },
     };

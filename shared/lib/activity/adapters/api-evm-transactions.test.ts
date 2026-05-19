@@ -46,7 +46,10 @@ describe('mapEvmTransactions', () => {
         from: subjectAddress,
         hash: undefined,
         to: baseRecipientAddress,
-        tokenSymbol: 'USDC',
+        token: {
+          direction: 'out',
+          symbol: 'USDC',
+        },
       },
     });
   });
@@ -81,7 +84,10 @@ describe('mapEvmTransactions', () => {
         from: lineaSenderAddress,
         hash: undefined,
         to: subjectAddress,
-        tokenSymbol: 'mUSD',
+        token: {
+          direction: 'in',
+          symbol: 'mUSD',
+        },
       },
     });
   });
@@ -114,7 +120,62 @@ describe('mapEvmTransactions', () => {
       timestamp: 1778003873000,
       data: {
         hash: undefined,
-        sourceTokenSymbol: 'mUSD',
+        sourceToken: {
+          direction: 'out',
+          symbol: 'mUSD',
+        },
+      },
+    });
+  });
+
+  it('maps an NFT sale with received native value to a Send activity', () => {
+    const nftRecipientAddress = '0x4f5243ceea96cee1da0fdb89c756d0e999439424';
+    const nftBuyerAddress = '0x78c87da124bb36a914ff1c0f2d642f47870c997c';
+    const transaction = {
+      timestamp: '2026-02-23T22:04:23.000Z',
+      chainId: Number(CHAIN_IDS.MAINNET),
+      from: nftBuyerAddress,
+      to: subjectAddress,
+      transactionCategory: 'TRANSFER',
+      valueTransfers: [
+        {
+          from: subjectAddress,
+          to: nftRecipientAddress,
+          amount: 1,
+          tokenId: '984',
+          symbol: 'BAE',
+          transferType: 'erc1155',
+        },
+        {
+          from: nftBuyerAddress,
+          to: subjectAddress,
+          amount: '1000000000000000',
+          decimal: 18,
+          symbol: 'ETH',
+          transferType: 'normal',
+        },
+      ],
+    } as unknown as V1TransactionByHashResponse;
+
+    expect(
+      mapApiEvmTransactions({
+        subjectAddress,
+        transaction,
+      }),
+    ).toStrictEqual({
+      type: 'send',
+      chainId: 'eip155:1',
+      status: 'success',
+      timestamp: 1771884263000,
+      data: {
+        from: subjectAddress,
+        hash: undefined,
+        to: nftRecipientAddress,
+        token: {
+          amount: '1',
+          direction: 'out',
+          symbol: 'BAE',
+        },
       },
     });
   });
@@ -156,8 +217,11 @@ describe('mapEvmTransactions', () => {
       status: 'success',
       timestamp: 1778643089000,
       data: {
-        tokenSymbol: 'USDC',
         hash: '0x08d14578168f22001e95503469c63613bd9f3d3f60e81dbbf204fbd21f484bd9',
+        token: {
+          direction: 'out',
+          symbol: 'USDC',
+        },
       },
     });
   });
@@ -192,6 +256,10 @@ describe('mapEvmTransactions', () => {
       timestamp: 1778633325000,
       data: {
         hash: '0x875ded271a40278391fca5d71892231afd0cb9592f31bdf3b7c949906cb982c4',
+        token: {
+          direction: 'in',
+          symbol: 'mUSD',
+        },
       },
     });
   });
