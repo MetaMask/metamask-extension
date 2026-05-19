@@ -30,7 +30,6 @@ import {
   ExcludedSnapPermissions,
 } from '../../../../../shared/constants/snaps/permissions';
 import { PreferencesControllerGetStateAction } from '../../preferences-controller';
-import { KeyringType } from '../../../../../shared/constants/keyring';
 import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 import {
