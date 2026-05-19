@@ -14,7 +14,10 @@ import {
 } from '@metamask/design-system-react';
 
 import { getSelectedInternalAccount } from '../../selectors';
-import { selectTransactionById } from '../../selectors/transactionController';
+import {
+  selectTransactionById,
+  type TransactionState,
+} from '../../selectors/transactionController';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -222,7 +225,7 @@ const HyperliquidDepositPage = () => {
   const { search } = useLocation();
   const transactionId = getTransactionIdFromSearch(search);
   const depositTransaction = useSelector((state) =>
-    selectTransactionById(state, transactionId),
+    selectTransactionById(state as TransactionState, transactionId),
   );
   const { account, isInitialLoading: isBalanceLoading } =
     usePerpsLiveAccount();

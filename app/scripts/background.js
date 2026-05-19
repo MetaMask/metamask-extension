@@ -56,7 +56,6 @@ import getFetchWithTimeout from '../../shared/lib/fetch-with-timeout';
 import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
-import { HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE } from '../../shared/lib/hyperliquid-deposit-transaction';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import { getDeferredDeepLinkFromCookie } from '../../shared/lib/deep-links/utils';
@@ -117,6 +116,7 @@ import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageM
 import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 import { getIframeProperties } from './lib/getIframeProperties';
 import { registerHyperliquidDepositModalListener } from './lib/hyperliquid-deposit-modal-background';
+import { openHyperliquidDepositPopup } from './lib/hyperliquid-deposit-popup';
 
 /**
  * @typedef {import('../../shared/lib/stores/persistence-manager').Backup} Backup
@@ -2144,59 +2144,13 @@ async function triggerUi() {
   }
 }
 
-const HYPERLIQUID_DEPOSIT_MODAL_POPUP_PATH =
-  'notification.html#/hyperliquid-deposit';
-
 async function openHyperliquidDepositModalPopup({ tabId, windowId }) {
-  const triggerId = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-
-  try {
-    const currentPopupId = controller.appStateController.getCurrentPopupId();
-    await notificationManager.showPopup(
-      (newPopupId) =>
-        controller.appStateController.setCurrentPopupId(newPopupId),
-      currentPopupId,
-      getHyperliquidDepositModalPopupPath(triggerId),
-    );
-
-    await notifyHyperliquidDepositPopupRoute({
-      tabId,
-      triggerId,
-      windowId,
-    });
-  } catch (error) {
-    log.warn('Unable to open Hyperliquid deposit flow in popup', {
-      reason: 'popup-open-failed',
-      error,
-    });
-  }
-}
-
-function getHyperliquidDepositModalPopupPath(triggerId) {
-  return `${HYPERLIQUID_DEPOSIT_MODAL_POPUP_PATH}?trigger=${encodeURIComponent(
-    triggerId,
-  )}`;
-}
-
-async function notifyHyperliquidDepositPopupRoute({
-  tabId,
-  triggerId,
-  windowId,
-}) {
-  try {
-    await browser.runtime.sendMessage({
-      type: HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE,
-      payload: {
-        ...(tabId ? { tabId } : {}),
-        triggerId,
-        ...(windowId ? { windowId } : {}),
-      },
-    });
-  } catch (error) {
-    log.debug('No open popup received Hyperliquid deposit route message', {
-      error,
-    });
-  }
+  await openHyperliquidDepositPopup({
+    appStateController: controller.appStateController,
+    notificationManager,
+    tabId,
+    windowId,
+  });
 }
 
 registerHyperliquidDepositModalListener({

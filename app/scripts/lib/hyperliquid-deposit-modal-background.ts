@@ -8,7 +8,9 @@ import {
 
 const DEFAULT_TRIGGER_COOLDOWN_MS = 2_000;
 
-type Runtime = Pick<typeof browser.runtime, 'onMessage'>;
+type Runtime = {
+  onMessage: Pick<typeof browser.runtime.onMessage, 'addListener' | 'removeListener'>;
+};
 
 type OpenDepositFlowContext = {
   tabId?: number;

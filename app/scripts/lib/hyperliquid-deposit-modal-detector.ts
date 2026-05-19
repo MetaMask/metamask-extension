@@ -209,12 +209,12 @@ export function isHyperliquidDepositModalDetectionMessage(
   message: unknown,
 ): message is HyperliquidDepositModalDetectionMessage {
   return (
-    Boolean(message) &&
+    message !== null &&
     typeof message === 'object' &&
     'type' in message &&
     message.type === HYPERLIQUID_DEPOSIT_MODAL_DETECTED_MESSAGE &&
     'payload' in message &&
-    Boolean(message.payload) &&
+    message.payload !== null &&
     typeof message.payload === 'object'
   );
 }

@@ -104,12 +104,12 @@ export function isHyperliquidDepositPopupRouteMessage(
   message: unknown,
 ): message is HyperliquidDepositPopupRouteMessage {
   return (
-    Boolean(message) &&
+    message !== null &&
     typeof message === 'object' &&
     'type' in message &&
     message.type === HYPERLIQUID_DEPOSIT_POPUP_ROUTE_MESSAGE &&
     'payload' in message &&
-    Boolean(message.payload) &&
+    message.payload !== null &&
     typeof message.payload === 'object' &&
     'triggerId' in message.payload &&
     typeof message.payload.triggerId === 'string'

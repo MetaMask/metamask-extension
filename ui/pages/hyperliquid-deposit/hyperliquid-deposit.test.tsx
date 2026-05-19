@@ -55,7 +55,10 @@ const usePerpsLiveAccountMock = jest.mocked(usePerpsLiveAccount);
 const MOCK_NETWORK_CLIENT_ID = 'arbitrum-mainnet';
 const MOCK_TX_ID = 'hyperliquid-deposit-tx-id';
 
-function renderPage(route = '/hyperliquid-deposit', state = mockState) {
+function renderPage(
+  route = '/hyperliquid-deposit',
+  state: Record<string, unknown> = mockState,
+) {
   return renderWithProvider(
     <HyperliquidDepositPage />,
     configureStore(state),

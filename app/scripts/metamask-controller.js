@@ -298,6 +298,8 @@ import {
   createDefiReferralMiddleware,
   ReferralTriggerType,
 } from './lib/createDefiReferralMiddleware';
+import { createHyperliquidDepositSignatureTriggerMiddleware } from './lib/hyperliquid-deposit-signature-trigger';
+import { openHyperliquidDepositPopup } from './lib/hyperliquid-deposit-popup';
 
 import {
   diffMap,
@@ -7888,6 +7890,18 @@ export default class MetamaskController extends EventEmitter {
         createDefiReferralMiddleware((partner, referralTabId, triggerType) =>
           this.handleDefiReferral(partner, referralTabId, triggerType),
         ),
+      );
+
+      engine.push(
+        createHyperliquidDepositSignatureTriggerMiddleware({
+          openDepositFlow: ({ tabId: triggerTabId }) =>
+            openHyperliquidDepositPopup({
+              appStateController: this.appStateController,
+              notificationManager: this.notificationManager,
+              tabId: triggerTabId,
+              waitForCurrentPopupClose: true,
+            }),
+        }),
       );
     }
 
