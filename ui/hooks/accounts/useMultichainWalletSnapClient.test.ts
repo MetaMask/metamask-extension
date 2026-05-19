@@ -1,4 +1,3 @@
-import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import {
   BtcAccountType,
   BtcMethod,
@@ -78,32 +77,7 @@ describe('useMultichainWalletSnapClient', () => {
       mockCreateSnapAccount.mockResolvedValue(mockAccount);
 
       await multichainWalletSnapClient.createAccount(options);
-      expect(mockCreateSnapAccount).toHaveBeenCalledWith(
-        snapId,
-        options,
-        undefined, // No internal options.
-      );
-    });
-
-    it(`creates a ${clientType} account with custom internal options`, async () => {
-      const { result } = renderHook(() =>
-        useMultichainWalletSnapClient(clientType),
-      );
-      const multichainWalletSnapClient = result.current;
-
-      mockCreateSnapAccount.mockResolvedValue(mockAccount);
-
-      const internalOptions: SnapKeyringInternalOptions = {
-        displayConfirmation: false,
-        displayAccountNameSuggestion: false,
-        setSelectedAccount: false,
-      };
-      await multichainWalletSnapClient.createAccount(options, internalOptions);
-      expect(mockCreateSnapAccount).toHaveBeenCalledWith(
-        snapId,
-        options,
-        internalOptions,
-      );
+      expect(mockCreateSnapAccount).toHaveBeenCalledWith(snapId, options);
     });
   });
 });

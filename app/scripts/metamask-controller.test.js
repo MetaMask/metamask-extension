@@ -128,24 +128,6 @@ jest.mock('./messenger-client-init/accounts/snap-account-service-init', () => ({
         messengerClient: {
           init: jest.fn().mockResolvedValue(undefined),
           name: 'SnapAccountService',
-          async getLegacySnapKeyring() {
-            const result = await controllerMessenger.call(
-              'KeyringController:withController',
-              async (controller) => {
-                const found = controller.keyrings.find(
-                  ({ keyring }) => keyring.type === 'Snap Keyring',
-                );
-                let snapKeyring = found?.keyring;
-                if (!snapKeyring) {
-                  const { keyring } =
-                    await controller.addNewKeyring('Snap Keyring');
-                  snapKeyring = keyring;
-                }
-                return { snapKeyring };
-              },
-            );
-            return result.snapKeyring;
-          },
         },
       };
     }),
@@ -2462,8 +2444,8 @@ describe('MetaMaskController', () => {
           );
 
           expect(
-            // 0: HD keyring, 1: Snap keyring, 2: Trezor keyring
-            metamaskController.keyringController.state.keyrings[2].type,
+            // 0: HD keyring, 1: Trezor keyring (v2 Snap keyrings are lazy)
+            metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(TrezorKeyring.type);
           expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
         });
@@ -2475,8 +2457,8 @@ describe('MetaMaskController', () => {
           );
 
           expect(
-            // 0: HD keyring, 1: Snap keyring, 2: Ledger keyring
-            metamaskController.keyringController.state.keyrings[2].type,
+            // 0: HD keyring, 1: Ledger keyring (v2 Snap keyrings are lazy)
+            metamaskController.keyringController.state.keyrings[1].type,
           ).toBe(LedgerKeyring.type);
           expect(firstPage).toStrictEqual(KNOWN_PUBLIC_KEY_ADDRESSES);
         });
@@ -2643,8 +2625,8 @@ describe('MetaMaskController', () => {
                 );
 
                 expect(
-                  // 0: HD keyring, 1: Snap keyring, 2: Ledger/Trezor keyring
-                  metamaskController.keyringController.state.keyrings[2]
+                  // 0: HD keyring, 1: Ledger/Trezor keyring (v2 Snap keyrings are lazy)
+                  metamaskController.keyringController.state.keyrings[1]
                     .accounts,
                 ).toStrictEqual([
                   KNOWN_PUBLIC_KEY_ADDRESSES[
@@ -4958,12 +4940,13 @@ describe('MetaMaskController', () => {
         const currentKeyrings =
           metamaskController.keyringController.state.keyrings;
 
-        // 0: Primary HD keyring, 1: Snap keyring, 2: Newly imported HD keyring
+        // 0: Primary HD keyring, 1: Newly imported HD keyring
+        // (v2 Snap keyrings are created lazily per-snap, not eagerly here)
         expect(
           metamaskController.keyringController.state.keyrings,
-        ).toHaveLength(3);
+        ).toHaveLength(2);
         const newlyAddedKeyringId =
-          metamaskController.keyringController.state.keyrings[2].metadata.id;
+          metamaskController.keyringController.state.keyrings[1].metadata.id;
         const newSRP = Buffer.from(
           await metamaskController.getSeedPhrase(password, newlyAddedKeyringId),
         ).toString('utf8');
@@ -4971,9 +4954,6 @@ describe('MetaMaskController', () => {
         expect(
           currentKeyrings.filter((kr) => kr.type === 'HD Key Tree'),
         ).toHaveLength(2);
-        expect(
-          currentKeyrings.filter((kr) => kr.type === 'Snap Keyring'),
-        ).toHaveLength(1);
         expect(currentKeyrings).toHaveLength(previousKeyrings.length + 1);
         expect(newSRP).toStrictEqual(TEST_SEED_ALT);
       });
@@ -6521,12 +6501,6 @@ describe('MetaMaskController', () => {
         }),
       });
 
-      // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({
-        // Now required, since it's invoked automatically when new account groups get added.
-        setSelectedAccounts: jest.fn(),
-      });
-
       await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
     });
 
@@ -6768,16 +6742,10 @@ describe('MetaMaskController', () => {
         }),
       });
 
-      // Avoid KC.addNewKeyring side-effects and AccountTracker sync touching NetworkController
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockResolvedValue({
-        // Now required, since it's invoked automatically when new account groups get added.
-        setSelectedAccounts: jest.fn(),
-      });
-
       await metamaskController.createNewVaultAndRestore('foo', TEST_SEED);
     });
 
-    it('calls getSnapKeyring, syncWithUserStorageAtLeastOnce, and discoverAndCreateAccounts for each HD keyring', async () => {
+    it('calls syncWithUserStorageAtLeastOnce and discoverAndCreateAccounts for each HD keyring', async () => {
       jest
         .spyOn(
           metamaskController.accountTreeController,

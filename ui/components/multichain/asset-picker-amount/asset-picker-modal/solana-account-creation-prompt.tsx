@@ -35,17 +35,10 @@ export const SolanaAccountCreationPrompt = () => {
   const handleCreateAccount = useCallback(async () => {
     try {
       setIsCreating(true);
-      await solanaWalletSnapClient.createAccount(
-        {
-          scope: MultichainNetworks.SOLANA,
-          entropySource: primaryKeyring?.metadata?.id,
-        },
-        {
-          displayConfirmation: false,
-          displayAccountNameSuggestion: false,
-          setSelectedAccount: false,
-        },
-      );
+      await solanaWalletSnapClient.createAccount({
+        scope: MultichainNetworks.SOLANA,
+        entropySource: primaryKeyring?.metadata?.id,
+      });
     } catch (error) {
       console.error('Error creating Solana account:', error);
     } finally {

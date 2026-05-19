@@ -4,6 +4,7 @@ import {
   MessengerEvents,
 } from '@metamask/messenger';
 import { MultichainRoutingServiceMessenger } from '@metamask/snaps-controllers';
+import { KeyringControllerWithKeyringV2Action } from '@metamask/keyring-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 /**
@@ -33,4 +34,36 @@ export function getMultichainRoutingServiceMessenger(
     ],
   });
   return routerMessenger;
+}
+
+type InitActions = KeyringControllerWithKeyringV2Action;
+
+export type MultichainRoutingServiceInitMessenger = ReturnType<
+  typeof getMultichainRoutingServiceInitMessenger
+>;
+
+/**
+ * Get a restricted messenger for the multichain router init. Used to look up
+ * the per-snap v2 Snap keyring that owns a given account.
+ *
+ * @param messenger - The messenger to restrict.
+ * @returns The restricted messenger.
+ */
+export function getMultichainRoutingServiceInitMessenger(
+  messenger: RootMessenger<InitActions, never>,
+) {
+  const initMessenger = new Messenger<
+    'MultichainRoutingServiceInit',
+    InitActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'MultichainRoutingServiceInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: initMessenger,
+    actions: ['KeyringController:withKeyringV2'],
+  });
+  return initMessenger;
 }

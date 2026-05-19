@@ -6625,17 +6625,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-snap-keyring@npm:^22.0.1":
-  version: 22.0.1
-  resolution: "@metamask/eth-snap-keyring@npm:22.0.1"
+"@metamask/eth-snap-keyring@npm:^22.0.1, @metamask/eth-snap-keyring@npm:^22.1.0":
+  version: 22.1.0
+  resolution: "@metamask/eth-snap-keyring@npm:22.1.0"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/keyring-internal-api": "npm:^11.0.1"
     "@metamask/keyring-internal-snap-client": "npm:^10.0.3"
-    "@metamask/keyring-sdk": "npm:^2.0.2"
+    "@metamask/keyring-sdk": "npm:^2.1.1"
     "@metamask/keyring-snap-sdk": "npm:^9.0.1"
-    "@metamask/keyring-utils": "npm:^3.2.0"
+    "@metamask/keyring-utils": "npm:^3.3.1"
     "@metamask/messenger": "npm:^1.1.1"
     "@metamask/snaps-controllers": "npm:^19.0.1"
     "@metamask/snaps-sdk": "npm:^11.0.0"
@@ -6647,7 +6647,7 @@ __metadata:
     uuid: "npm:^9.0.1"
   peerDependencies:
     "@metamask/keyring-api": ^23.0.0
-  checksum: 10/138a17918ba3fae5788f8c80fe48df959055d8e0567ae62114ae7754f7a0b812bc9efe7f211c0ee0f303cc1d6b898b9049d4743d30f947e5075ac8f273168a1c
+  checksum: 10/91082e01cda399ab054e6015577e83f8654228015b9ec44e9ed759200a3ccc3ae5af8874ed0bc98e347b76eefbef62fd4a9052ca881f8f9bfa1eeefaf24123d1
   languageName: node
   linkType: hard
 
@@ -8069,20 +8069,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-account-service@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/snap-account-service@npm:0.1.0"
+"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@0.1.0-preview-a96479ea9":
+  version: 0.1.0-preview-a96479ea9
+  resolution: "@metamask-previews/snap-account-service@npm:0.1.0-preview-a96479ea9"
   dependencies:
     "@metamask/account-api": "npm:^1.0.4"
     "@metamask/account-tree-controller": "npm:^7.4.0"
     "@metamask/eth-snap-keyring": "npm:^22.0.1"
+    "@metamask/keyring-api": "npm:^23.1.0"
     "@metamask/keyring-controller": "npm:^25.5.0"
+    "@metamask/keyring-snap-sdk": "npm:^9.0.1"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/utils": "npm:^11.9.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/75f07b042cc6223943f663a6ef5cf76553fe7bf5a1132e4b95d2621e749e8c7ec88c47e881f7e914e7017ae810d2380f95825a0aff7583f9ad3c9868116ef08c
+  checksum: 10/4eb3d1ebd2301cbaeaf2c7b36bfa79dedd3fe3b10e3eea49c71b1f1fff1d14a3ec1f2d883f085c2b7dcafd31591da7ee6bb8a8bab3874fea590c873793aef232
   languageName: node
   linkType: hard
 
@@ -33609,7 +33611,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^12.0.2"
     "@metamask/eth-qr-keyring": "npm:^2.0.2"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@metamask/eth-snap-keyring": "npm:^22.0.1"
+    "@metamask/eth-snap-keyring": "npm:^22.1.0"
     "@metamask/eth-token-tracker": "npm:^10.0.2"
     "@metamask/eth-trezor-keyring": "npm:^10.0.2"
     "@metamask/etherscan-link": "npm:^3.0.0"

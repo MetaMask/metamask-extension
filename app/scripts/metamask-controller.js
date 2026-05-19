@@ -76,6 +76,7 @@ import {
   TrxAccountType,
   BtcAccountType,
 } from '@metamask/keyring-api';
+import { isSnapKeyring } from '@metamask/eth-snap-keyring/v2';
 import {
   hexToBigInt,
   toCaipChainId,
@@ -215,7 +216,6 @@ import {
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { NON_EVM_ACCOUNT_CHANGED_CONFIGS } from '../../shared/constants/multichain/networks';
 import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
-import { MultichainWalletSnapClient } from '../../shared/lib/accounts';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { updateCurrentLocale } from '../../shared/lib/translate';
 import {
@@ -1031,8 +1031,6 @@ export default class MetamaskController extends EventEmitter {
           // If not, discovery will fallback to the primary keyring ID anyway.
           const id = selected?.options?.entropy?.id;
 
-          await this.getSnapKeyring();
-
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
 
           if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
@@ -1802,15 +1800,6 @@ export default class MetamaskController extends EventEmitter {
         console.error(err);
       }
     });
-  }
-
-  /**
-   * Initialize the snap keyring if it is not present.
-   *
-   * @returns {SnapKeyring}
-   */
-  async getSnapKeyring() {
-    return this.snapAccountService.getLegacySnapKeyring();
   }
 
   trackInsightSnapView(snapId) {
@@ -2816,7 +2805,7 @@ export default class MetamaskController extends EventEmitter {
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
       getAccountsBySnapId: (snapId) =>
-        getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId),
+        getAccountsBySnapId(this.controllerMessenger, snapId),
       checkIsSeedlessPasswordOutdated:
         this.checkIsSeedlessPasswordOutdated.bind(this),
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
@@ -3113,7 +3102,6 @@ export default class MetamaskController extends EventEmitter {
           this.accountTreeController,
         ),
       syncAccountTreeWithUserStorage: async () => {
-        await this.getSnapKeyring();
         await this.accountTreeController.syncWithUserStorage();
       },
 
@@ -3802,12 +3790,21 @@ export default class MetamaskController extends EventEmitter {
       setName: this.nameController.setName.bind(this.nameController),
 
       // SnapKeyring
-      createSnapAccount: async (snapId, options, internalOptions) => {
-        // NOTE: We should probably start using `withKeyring` with `createIfMissing: true`
-        // in this case.
-        const keyring = await this.getSnapKeyring();
-
-        return await keyring.createAccount(snapId, options, internalOptions);
+      createSnapAccount: async (snapId, options) => {
+        await this.controllerMessenger.call(
+          'SnapAccountService:ensureReady',
+          snapId,
+        );
+        return await this.keyringController.withKeyringV2(
+          {
+            filter: (keyring) =>
+              isSnapKeyring(keyring) && keyring.snapId === snapId,
+          },
+          async ({ keyring }) => {
+            const [account] = await keyring.createAccounts(options);
+            return account;
+          },
+        );
       },
 
       // Multichain Assets Controller
@@ -4847,10 +4844,6 @@ export default class MetamaskController extends EventEmitter {
 
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
-      // Initialize the legacy Snap keyring so the accounts-controller will be able to
-      // fetch Snap accounts.
-      await this.getSnapKeyring();
-
       // Once we have our first HD keyring available, we re-create the internal list of
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
       // there are some account migration happening in that function).
@@ -4918,9 +4911,6 @@ export default class MetamaskController extends EventEmitter {
       if (!keyringIdToDiscover) {
         throw new Error('No keyring id to discover accounts for');
       }
-
-      // Ensure the snap keyring is initialized
-      await this.getSnapKeyring();
 
       const wallet = this.multichainAccountService.getMultichainAccountWallet({
         entropySource: keyringIdToDiscover,
@@ -5190,10 +5180,6 @@ export default class MetamaskController extends EventEmitter {
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
 
-      // Initialize the legacy Snap keyring so the accounts-controller will be able to
-      // fetch Snap accounts.
-      await this.getSnapKeyring();
-
       // We re-created the vault, meaning we only have 1 new HD keyring
       // now. We re-create the internal list of accounts (which is
       // not an expensive operation, since we should only have 1 HD
@@ -5215,7 +5201,6 @@ export default class MetamaskController extends EventEmitter {
         // check if external services are enabled
         const { useExternalServices } = this.preferencesController.state;
         if (useExternalServices) {
-          await this.getSnapKeyring();
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         }
         await this.discoverAndCreateAccounts(id);
@@ -5242,13 +5227,6 @@ export default class MetamaskController extends EventEmitter {
     }
   }
 
-  async _getMultichainWalletSnapClient(snapId) {
-    const keyring = await this.getSnapKeyring();
-    const messenger = this.controllerMessenger;
-
-    return new MultichainWalletSnapClient(snapId, keyring, messenger);
-  }
-
   /**
    * Imports accounts with balances to the keyring.
    */
@@ -5265,7 +5243,6 @@ export default class MetamaskController extends EventEmitter {
         },
       );
       if (isHdKeyring) {
-        await this.getSnapKeyring();
         await this.accountTreeController.syncWithUserStorageAtLeastOnce();
         await this.discoverAndCreateAccounts(metadata.id);
       }
@@ -5418,10 +5395,6 @@ export default class MetamaskController extends EventEmitter {
     } catch (error) {
       log.error('Error while unlocking extension.', error);
     }
-
-    // Initialize the legacy Snap keyring so the accounts-controller will be able to
-    // fetch Snap accounts.
-    await this.getSnapKeyring();
 
     // Re-create accounts in the accounts-controller, after the keyring-controller gets
     // unlocked.

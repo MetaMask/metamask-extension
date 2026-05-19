@@ -22,7 +22,6 @@ import {
   SnapControllerHandleRequestAction,
   SnapControllerIsMinimumPlatformVersionAction,
 } from '@metamask/snaps-controllers';
-import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 
@@ -54,9 +53,3 @@ export type SnapKeyringBuilderMessenger = Messenger<
 >;
 
 export type SnapKeyringBuilderV2Messenger = SnapKeyringBuilderMessenger;
-
-/**
- * Interface for the MetaMask Controller used by the snap keyring.
- * This interface defines only the methods needed from the controller.
- */
-export type GetSnapKeyring = () => Promise<SnapKeyring>;

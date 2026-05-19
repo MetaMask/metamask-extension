@@ -54,14 +54,11 @@ export const CreateSnapAccount = ({
 
   const onCreateAccount = useCallback(
     async (accountNameSuggestion?: string) => {
-      const newAccount = await client.createAccount(
-        {
-          scope: chainId,
-          entropySource: selectedKeyringId,
-          accountNameSuggestion,
-        },
-        { setSelectedAccount: setNewlyCreatedAccountAsSelected },
-      );
+      const newAccount = await client.createAccount({
+        scope: chainId,
+        entropySource: selectedKeyringId,
+        accountNameSuggestion,
+      });
       onActionComplete(true, newAccount);
     },
     [

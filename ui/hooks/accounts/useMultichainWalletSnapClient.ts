@@ -1,4 +1,3 @@
-import { SnapKeyringInternalOptions } from '@metamask/eth-snap-keyring';
 import { KeyringAccount } from '@metamask/keyring-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { Sender } from '@metamask/keyring-snap-client';
@@ -106,10 +105,9 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
   async createAccount(
     options: CreateAccountSnapOptions,
-    internalOptions?: SnapKeyringInternalOptions,
   ): Promise<KeyringAccount> {
     // This will trigger the Snap account creation flow (+ account renaming)
-    return await createSnapAccount(this.#snapId, options, internalOptions);
+    return await createSnapAccount(this.#snapId, options);
   }
 
   async getNextAvailableAccountName(
