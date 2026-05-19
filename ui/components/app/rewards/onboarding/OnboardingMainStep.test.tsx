@@ -80,6 +80,7 @@ jest.mock('../../../../hooks/rewards/useOptIn', () => ({
 }));
 
 jest.mock('../../../../hooks/rewards/useValidateReferralCode', () => ({
+  REFERRAL_CODE_MIN_LENGTH: 3,
   useValidateReferralCode: jest.fn(),
 }));
 
