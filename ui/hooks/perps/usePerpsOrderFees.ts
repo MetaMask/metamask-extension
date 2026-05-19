@@ -9,7 +9,7 @@ import { submitRequestToBackground } from '../../store/background-connection';
 import { usePerpsMetamaskFeeDiscountBips } from './usePerpsMetamaskFeeDiscountBips';
 
 /** Basis-point denominator: 10000 bips = 100%. */
-const BASIS_POINTS_DIVISOR = 10000;
+export const BASIS_POINTS_DIVISOR = 10000;
 
 type UsePerpsOrderFeesOptions = {
   /** Asset symbol (e.g. 'BTC', 'ETH', 'xyz:TSLA') */
@@ -52,8 +52,8 @@ type UsePerpsOrderFeesReturn = {
  * Un-discounted MetaMask builder fee expressed in basis points. Derived from
  * the shared fallback rate so the two stay in sync (0.001 decimal = 10 bps).
  */
-const ORIGINAL_METAMASK_FEE_BIPS =
-  PERPS_FALLBACK_FEE_RATES.metamaskFeeRate * 10000;
+export const ORIGINAL_METAMASK_FEE_BIPS =
+  PERPS_FALLBACK_FEE_RATES.metamaskFeeRate * BASIS_POINTS_DIVISOR;
 
 function createFallbackFeeResult(amount?: string): FeeCalculationResult {
   const parsedAmount = Number.parseFloat(amount ?? '');

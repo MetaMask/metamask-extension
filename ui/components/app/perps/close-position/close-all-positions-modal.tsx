@@ -35,11 +35,11 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../../store/background-connection';
 import { usePerpsMetamaskFeeDiscountBips } from '../../../../hooks/perps/usePerpsMetamaskFeeDiscountBips';
+import {
+  BASIS_POINTS_DIVISOR,
+  ORIGINAL_METAMASK_FEE_BIPS,
+} from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
-
-const BASIS_POINTS_DIVISOR = 10000;
-const ORIGINAL_METAMASK_FEE_BIPS =
-  PERPS_FALLBACK_FEE_RATES.metamaskFeeRate * BASIS_POINTS_DIVISOR;
 
 export type CloseAllPositionsModalProps = {
   isOpen: boolean;
