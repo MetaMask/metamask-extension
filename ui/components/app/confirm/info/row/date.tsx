@@ -1,9 +1,13 @@
 import React from 'react';
 
-import { TextColor } from '../../../../../helpers/constants/design-system';
+import {
+  AlignItems,
+  Display,
+  FlexWrap,
+  TextColor,
+} from '../../../../../helpers/constants/design-system';
 import { formatUTCDateFromUnixTimestamp } from '../../../../../helpers/utils/util';
-import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
-import { Text } from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 
 export type ConfirmInfoRowDateProps = {
   /** timestamp as seconds since unix epoch e.g. Solidity block.timestamp (type uint256) value */
@@ -14,9 +18,9 @@ export const ConfirmInfoRowDate = ({
   unixTimestamp,
 }: ConfirmInfoRowDateProps) => (
   <Box
-    className="flex"
-    alignItems={BoxAlignItems.Center}
-    flexWrap={BoxFlexWrap.Wrap}
+    display={Display.Flex}
+    alignItems={AlignItems.center}
+    flexWrap={FlexWrap.Wrap}
     gap={2}
   >
     <Text color={TextColor.inherit} style={{ whiteSpace: 'pre-wrap' }}>

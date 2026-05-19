@@ -3,7 +3,7 @@
 exports[`ConfirmInfoRowAddress renders appropriately with PetNames enabled 1`] = `
 <div>
   <div
-    class="flex-row items-center flex"
+    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
   >
     <div
       class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"

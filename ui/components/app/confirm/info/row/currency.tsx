@@ -1,6 +1,11 @@
 import React from 'react';
 
-import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
+import {
+  AlignItems,
+  Display,
+  FlexWrap,
+} from '../../../../../helpers/constants/design-system';
+import { Box } from '../../../../component-library';
 import UserPreferencedCurrencyDisplay from '../../../user-preferenced-currency-display/user-preferenced-currency-display.component';
 import CurrencyDisplay from '../../../../ui/currency-display/currency-display.component';
 
@@ -24,9 +29,9 @@ export const ConfirmInfoRowCurrency = ({
   chainId,
 }: ConfirmInfoRowCurrencyProps) => (
   <Box
-    className="flex"
-    alignItems={BoxAlignItems.Center}
-    flexWrap={BoxFlexWrap.Wrap}
+    display={Display.Flex}
+    alignItems={AlignItems.center}
+    flexWrap={FlexWrap.Wrap}
     style={{
       columnGap: '8px',
       fontSize: 'var(--font-size-3)',

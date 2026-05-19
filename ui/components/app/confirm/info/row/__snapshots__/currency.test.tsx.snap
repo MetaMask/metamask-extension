@@ -3,7 +3,7 @@
 exports[`ConfirmInfoRowCurrency should display in currency passed 1`] = `
 <div>
   <div
-    class="flex-wrap items-center flex"
+    class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
     style="column-gap: 8px;"
   >
     <div
@@ -24,7 +24,7 @@ exports[`ConfirmInfoRowCurrency should display in currency passed 1`] = `
 exports[`ConfirmInfoRowCurrency should display value in user preferred currency by default 1`] = `
 <div>
   <div
-    class="flex-wrap items-center flex"
+    class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
     style="column-gap: 8px;"
   >
     <div
@@ -46,3 +46,4 @@ exports[`ConfirmInfoRowCurrency should display value in user preferred currency 
   </div>
 </div>
 `;
+

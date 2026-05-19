@@ -1,5 +1,9 @@
 import React, { CSSProperties } from 'react';
-import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
+import { Box } from '../../../../component-library';
+import {
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../../helpers/constants/design-system';
 
 export type ConfirmInfoSectionProps = {
   children: React.ReactNode | string;
@@ -17,10 +21,9 @@ export const ConfirmInfoSection = ({
   return (
     <Box
       data-testid={dataTestId}
-      backgroundColor={BoxBackgroundColor.BackgroundSection}
-      className="rounded-lg"
-      paddingLeft={noPadding ? 0 : 2}
-      paddingRight={noPadding ? 0 : 2}
+      backgroundColor={BackgroundColor.backgroundSection}
+      borderRadius={BorderRadius.LG}
+      paddingInline={noPadding ? 0 : 2}
       paddingTop={noPadding ? 0 : 1}
       paddingBottom={noPadding ? 0 : 1}
       marginBottom={4}

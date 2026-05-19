@@ -1,16 +1,22 @@
 import React, { useCallback, useState } from 'react';
 import { isSnapId } from '@metamask/snaps-utils';
-import { Icon, IconName, IconSize, Text } from '../../../../component-library';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../../component-library';
 import {
   AlignItems,
   BorderRadius,
   Display,
+  FlexWrap,
   IconColor,
   TextColor,
   TextVariant,
   BackgroundColor,
 } from '../../../../../helpers/constants/design-system';
-import { Box, BoxAlignItems, BoxFlexWrap } from '@metamask/design-system-react';
 import SnapAuthorshipPill from '../../../snaps/snap-authorship-pill';
 import { SnapMetadataModal } from '../../../snaps/snap-metadata-modal';
 import { useOriginTrustSignals } from '../../../../../hooks/useOriginTrustSignals';
@@ -144,9 +150,9 @@ export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
 
   return (
     <Box
-      className="flex"
-      alignItems={BoxAlignItems.Center}
-      flexWrap={BoxFlexWrap.Wrap}
+      display={Display.Flex}
+      alignItems={AlignItems.center}
+      flexWrap={FlexWrap.Wrap}
       gap={2}
     >
       {renderIcon()}

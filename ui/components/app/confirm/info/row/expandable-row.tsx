@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import classnames from 'clsx';
-import { Box } from '@metamask/design-system-react';
 import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
 } from '../../../../component-library';
-import { IconColor } from '../../../../../helpers/constants/design-system';
+import {
+  Display,
+  IconColor,
+} from '../../../../../helpers/constants/design-system';
 import { useBoolean } from '../../../../../hooks/useBoolean';
 import { ConfirmInfoRow, ConfirmInfoRowProps } from './row';
 
@@ -20,7 +23,7 @@ export const ConfirmInfoExpandableRow = (
 ) => {
   const { content, children, startExpanded, ...rowProps } = props;
 
-  const ref = useRef() as React.MutableRefObject<HTMLDivElement | null>;
+  const ref = useRef() as React.MutableRefObject<HTMLSpanElement | null>;
 
   const { value: expanded, toggle } = useBoolean(startExpanded);
   const [, setLoaded] = useState<boolean>(false);
@@ -33,7 +36,7 @@ export const ConfirmInfoExpandableRow = (
   return (
     <>
       <ConfirmInfoRow {...rowProps}>
-        <Box className="flex">
+        <Box display={Display.Flex}>
           <ButtonIcon
             marginLeft={1}
             className={classnames({

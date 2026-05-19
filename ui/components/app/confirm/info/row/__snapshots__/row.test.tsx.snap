@@ -3,15 +3,15 @@
 exports[`ConfirmInfoRow should match snapshot 1`] = `
 <div>
   <div
-    class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+    class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <div
-      class="flex-row items-start justify-start flex text-alternative"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
       style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
     >
       <div
-        class="items-center flex"
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
         style="flex-shrink: 0;"
       >
         <p
@@ -33,15 +33,15 @@ exports[`ConfirmInfoRow should match snapshot 1`] = `
 exports[`ConfirmInfoRow should match snapshot for Small rowVariant 1`] = `
 <div>
   <div
-    class="flex-row flex-wrap items-center justify-between mt-0 mb-0 pr-0 pl-0 flex confirm-info-row rounded-lg text-default"
+    class="mm-box confirm-info-row mm-box--margin-top-0 mm-box--margin-bottom-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
     style="overflow-wrap: anywhere; position: relative;"
   >
     <div
-      class="flex-row items-center justify-start flex text-alternative"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-center mm-box--color-text-alternative"
       style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
     >
       <div
-        class="items-center flex"
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
         style="flex-shrink: 0;"
       >
         <p
@@ -63,7 +63,7 @@ exports[`ConfirmInfoRow should match snapshot for Small rowVariant 1`] = `
 exports[`ConfirmInfoRow should match snapshot when copy is enabled 1`] = `
 <div>
   <div
-    class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+    class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
     style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
   >
     <button
@@ -77,11 +77,11 @@ exports[`ConfirmInfoRow should match snapshot when copy is enabled 1`] = `
       />
     </button>
     <div
-      class="flex-row items-start justify-start pr-6 flex text-alternative"
+      class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
       style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
     >
       <div
-        class="items-center flex"
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
         style="flex-shrink: 0;"
       >
         <p
@@ -103,16 +103,16 @@ exports[`ConfirmInfoRow should match snapshot when copy is enabled 1`] = `
 exports[`ConfirmInfoRowSkeleton should match snapshot 1`] = `
 <div>
   <div
-    class="flex-row flex-wrap items-center justify-between mt-0 mb-0 pr-0 pl-0 flex confirm-info-row rounded-lg text-default"
+    class="mm-box confirm-info-row mm-box--margin-top-0 mm-box--margin-bottom-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--color-text-default mm-box--rounded-lg"
     data-testid="test-skeleton"
     style="overflow-wrap: anywhere; position: relative;"
   >
     <div
-      class="flex-row items-center justify-start flex text-alternative"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-center mm-box--color-text-alternative"
       style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
     >
       <div
-        class="items-center flex"
+        class="mm-box mm-box--display-flex mm-box--align-items-center"
         style="flex-shrink: 0;"
       >
         <div
