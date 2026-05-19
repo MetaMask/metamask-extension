@@ -46,6 +46,7 @@ export function useTransactionCustomAmount({
   const tokenAddress = getTokenAddress(transactionMeta);
   const tokenFiatRate =
     useTokenFiatRate(tokenAddress, chainId as Hex, currency) ?? 1;
+  const hasBalanceUsdOverride = balanceUsdOverride !== undefined;
   const balanceUsd = useTokenBalance(balanceUsdOverride);
 
   const { updateTokenAmount: updateTokenAmountCallback } =
@@ -181,17 +182,25 @@ export function useTransactionCustomAmount({
 
   const updatePendingAmountPercentage = useCallback(
     (percentage: number) => {
-      if (!balanceUsd) {
+      const balanceUsdValue = new BigNumber(String(balanceUsd ?? 0));
+
+      if (!balanceUsdValue.isFinite() || balanceUsdValue.lte(0)) {
         return;
       }
 
-      const newAmountFiat = new BigNumber(percentage)
+      const newAmountFiatValue = new BigNumber(percentage)
         .dividedBy(100)
-        .times(String(balanceUsd))
-        .round(2, BigNumber.ROUND_DOWN)
+        .times(balanceUsdValue);
+      const shouldSetMaxAmountMode =
+        percentage === 100 && !hasBalanceUsdOverride;
+      const newAmountFiat = (
+        shouldSetMaxAmountMode || percentage !== 100
+          ? newAmountFiatValue.round(2, BigNumber.ROUND_DOWN)
+          : newAmountFiatValue
+      )
         .toString(10);
 
-      if (percentage === 100) {
+      if (shouldSetMaxAmountMode) {
         setIsMax(true);
       } else if (isMaxAmount) {
         setIsMax(false);
@@ -222,6 +231,7 @@ export function useTransactionCustomAmount({
     [
       balanceUsd,
       disableUpdate,
+      hasBalanceUsdOverride,
       isMaxAmount,
       setIsMax,
       tokenFiatRate,
