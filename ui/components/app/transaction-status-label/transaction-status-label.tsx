@@ -34,6 +34,8 @@ export type TransactionStatusLabelProps = {
   isEarliestNonce?: boolean;
   statusOnly?: boolean;
   statusDisplayMode?: StatusDisplayMode;
+  label?: string;
+  tooltip?: string;
 };
 
 // TransactionStatusLabel renders a single line of user-facing status text (i18n from the resolved
@@ -54,6 +56,8 @@ export default function TransactionStatusLabel({
   className,
   statusOnly,
   statusDisplayMode = STATUS_DISPLAY_MODE.default,
+  label,
+  tooltip,
 }: Readonly<TransactionStatusLabelProps>) {
   const t = useI18nContext();
   const statusKey = getTransactionDisplayStatusKey(status, isEarliestNonce);
@@ -65,11 +69,11 @@ export default function TransactionStatusLabel({
     return null;
   }
 
-  const tooltipText = error?.rpc?.message || error?.message;
-  let statusText: string | undefined =
-    statusKey !== undefined && statusKey !== '' ? t(statusKey) : undefined;
+  const tooltipText = tooltip || error?.rpc?.message || error?.message;
+  let statusText = label ?? t(statusKey);
 
-  if (statusKey === TransactionStatus.confirmed && !statusOnly) {
+
+  if (!label && statusKey === TransactionStatus.confirmed && !statusOnly) {
     statusText = date;
   }
 
@@ -79,7 +83,8 @@ export default function TransactionStatusLabel({
       title={tooltipText}
       wrapperClassName={classnames(
         'transaction-status-label',
-        `transaction-status-label--${statusKey}`,
+        label ? 'transaction-status-label--confirmed' : undefined,
+        !label && `transaction-status-label--${statusKey}`,
         className,
       )}
     >

@@ -220,6 +220,42 @@ describe('TransactionStatusLabel Component', () => {
     expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
   });
 
+  it('label overrides the displayed text', () => {
+    render(
+      <TransactionStatusLabel
+        status={TransactionStatus.confirmed}
+        label="cancelled"
+      />,
+    );
+    expect(screen.getByText('cancelled')).toBeInTheDocument();
+  });
+
+  it('label applies confirmed class regardless of status', () => {
+    render(
+      <TransactionStatusLabel
+        status={TransactionStatus.failed}
+        label="cancelled"
+      />,
+    );
+    expect(screen.getByTestId('tooltip').className).toContain(
+      'transaction-status-label--confirmed',
+    );
+    expect(screen.getByTestId('tooltip').className).not.toContain(
+      'transaction-status-label--failed',
+    );
+  });
+
+  it('tooltip prop overrides the tooltip text', () => {
+    render(
+      <TransactionStatusLabel
+        status={TransactionStatus.failed}
+        error={{ message: 'original error' }}
+        tooltip="custom tooltip"
+      />,
+    );
+    expect(screen.getByTestId('tooltip').dataset.title).toBe('custom tooltip');
+  });
+
   describe('when statusDisplayMode is activityMinimal', () => {
     it('does not display pending status text (submitted, earliest nonce)', () => {
       render(

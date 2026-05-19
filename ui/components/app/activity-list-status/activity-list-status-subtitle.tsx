@@ -13,6 +13,8 @@ export type ActivityListStatusSubtitleProps = {
   date?: string;
   error?: { message?: string; rpc?: { message?: string } };
   className?: string;
+  label?: string;
+  tooltip?: string;
 };
 
 /**
@@ -25,6 +27,8 @@ export type ActivityListStatusSubtitleProps = {
  * @param options0.date - Optional completion date (unused in activity minimal mode).
  * @param options0.error - Optional error for status tooltip text.
  * @param options0.className - Optional class name for the status label.
+ * @param options0.label - Optional label text to display instead of the status.
+ * @param options0.tooltip - Optional tooltip text to display when the status is hovered.
  */
 export function ActivityListStatusSubtitle({
   status,
@@ -32,6 +36,8 @@ export function ActivityListStatusSubtitle({
   date,
   error,
   className,
+  label,
+  tooltip,
 }: Readonly<ActivityListStatusSubtitleProps>) {
   const statusKey = getTransactionDisplayStatusKey(status, isEarliestNonce);
 
@@ -48,6 +54,8 @@ export function ActivityListStatusSubtitle({
       className={className}
       statusOnly
       statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
+      label={label}
+      tooltip={tooltip}
     />
   );
 }
