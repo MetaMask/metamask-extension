@@ -124,8 +124,8 @@ export const useValidateReferralCode = (
     (code: string) => {
       const refinedCode = normalizeReferralCode(code);
       setReferralCodeState(refinedCode);
-      // If empty, do NOT validate; clear error/validating state
-      if (refinedCode.length < 1) {
+      // If below minimum length, do NOT validate; clear error/validating state
+      if (refinedCode.length < REFERRAL_CODE_MIN_LENGTH) {
         requestIdRef.current += 1;
         clearDebounceTimer();
         setIsValidating(false);
