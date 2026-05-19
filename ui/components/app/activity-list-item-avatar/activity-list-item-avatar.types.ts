@@ -9,7 +9,7 @@ export type ResolvedActivityToken = {
   fallbackName: string;
 };
 
-export type ActivityAvatarConfig =
+export type ActivityListItemAvatarConfig =
   | { variant: 'single'; token: ResolvedActivityToken }
   | {
       variant: 'dual';

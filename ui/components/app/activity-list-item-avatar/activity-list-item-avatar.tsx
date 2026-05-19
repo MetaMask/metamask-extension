@@ -2,12 +2,12 @@ import React from 'react';
 import classnames from 'clsx';
 import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
 import type {
-  ActivityAvatarConfig,
+  ActivityListItemAvatarConfig,
   ResolvedActivityToken,
-} from './activity-item-avatar.types';
+} from './activity-list-item-avatar.types';
 
-type ActivityItemAvatarProps = {
-  config: ActivityAvatarConfig;
+type ActivityListItemAvatarProps = {
+  config: ActivityListItemAvatarConfig;
 };
 
 const ActivityTokenAvatar = ({
@@ -21,7 +21,7 @@ const ActivityTokenAvatar = ({
       fallbackText={token.fallbackName.charAt(0)}
       src={token.imageUrl}
       className={classnames(className)}
-      data-testid="activity-item-avatar-token"
+      data-testid="activity-list-item-avatar-token"
     />
   );
 };
@@ -32,30 +32,31 @@ const ActivityDualTokenAvatar = ({
 }: Readonly<{ from: ResolvedActivityToken; to: ResolvedActivityToken }>) => {
   return (
     <div
-      className="activity-item-avatar-dual"
-      data-testid="activity-item-avatar-dual"
+      className="activity-list-item-avatar-dual"
+      data-testid="activity-list-item-avatar-dual"
     >
-      <div className="activity-item-avatar-dual__half activity-item-avatar-dual__half--left">
+      <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--left">
         <ActivityTokenAvatar
           token={from}
-          className="activity-item-avatar-dual__token bg-transparent"
+          className="activity-list-item-avatar-dual__token bg-transparent"
         />
       </div>
-      <div className="activity-item-avatar-dual__half activity-item-avatar-dual__half--right">
+      <div className="activity-list-item-avatar-dual__half activity-list-item-avatar-dual__half--right">
         <ActivityTokenAvatar
           token={to}
-          className="activity-item-avatar-dual__token bg-transparent"
+          className="activity-list-item-avatar-dual__token bg-transparent"
         />
       </div>
     </div>
   );
 };
 
-export const ActivityItemAvatar = ({
+export const ActivityListItemAvatar = ({
   config,
-}: Readonly<ActivityItemAvatarProps>) => {
+}: Readonly<ActivityListItemAvatarProps>) => {
   if (config.variant === 'dual') {
     return <ActivityDualTokenAvatar from={config.from} to={config.to} />;
   }
+
   return <ActivityTokenAvatar token={config.token} />;
 };

@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { NATIVE_TOKEN_ADDRESS } from '../../../../../shared/constants/transaction';
-import { ActivityItemAvatar } from './activity-item-avatar';
+import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
+import { ActivityListItemAvatar } from './activity-list-item-avatar';
 import type {
-  ActivityAvatarConfig,
+  ActivityListItemAvatarConfig,
   ResolvedActivityToken,
-} from './activity-item-avatar.types';
+} from './activity-list-item-avatar.types';
 
 const ethToken: ResolvedActivityToken = {
   address: NATIVE_TOKEN_ADDRESS,
@@ -25,11 +25,11 @@ const usdcToken: ResolvedActivityToken = {
     'https://raw.githubusercontent.com/MetaMask/contract-metadata/master/images/usdc.svg',
 };
 
-function renderAvatar(config: ActivityAvatarConfig) {
-  return render(<ActivityItemAvatar config={config} />);
+function renderAvatar(config: ActivityListItemAvatarConfig) {
+  return render(<ActivityListItemAvatar config={config} />);
 }
 
-describe('ActivityItemAvatar', () => {
+describe('ActivityListItemAvatar', () => {
   it('renders dual token avatars for swaps', () => {
     renderAvatar({
       variant: 'dual',
@@ -37,8 +37,12 @@ describe('ActivityItemAvatar', () => {
       to: usdcToken,
     });
 
-    expect(screen.getByTestId('activity-item-avatar-dual')).toBeInTheDocument();
-    expect(screen.getAllByTestId('activity-item-avatar-token')).toHaveLength(2);
+    expect(
+      screen.getByTestId('activity-list-item-avatar-dual'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByTestId('activity-list-item-avatar-token'),
+    ).toHaveLength(2);
   });
 
   it('renders a single token avatar', () => {
@@ -48,10 +52,10 @@ describe('ActivityItemAvatar', () => {
     });
 
     expect(
-      screen.getByTestId('activity-item-avatar-token'),
+      screen.getByTestId('activity-list-item-avatar-token'),
     ).toBeInTheDocument();
     expect(
-      screen.queryByTestId('activity-item-avatar-dual'),
+      screen.queryByTestId('activity-list-item-avatar-dual'),
     ).not.toBeInTheDocument();
   });
 });
