@@ -713,7 +713,7 @@ export default function Routes() {
     Boolean(activeQrCodeScanRequest) &&
     !(
       shouldRestrictQrHardwarePairing &&
-      activeQrCodeScanRequest?.type === QrScanRequestType.PAIR
+      activeQrCodeScanRequest.type === QrScanRequestType.PAIR
     );
   const shouldShowNetworkConfirmationPopover = pendingConfirmations.some(
     (confirmation) =>

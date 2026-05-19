@@ -478,7 +478,6 @@ describe('Routes Component', () => {
         ...mockState.metamask,
         activeQrCodeScanRequest: {
           type: QrScanRequestType.SIGN,
-          request: { requestId: 'req-1', payload: {} },
         },
         pendingApprovals: {
           'approval-1': {
