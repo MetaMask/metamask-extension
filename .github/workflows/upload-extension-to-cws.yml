@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (semver without v), e.g. 13.0.0 — must match GitHub Release tag v{version}'
+        description: 'Chrome manifest version (1–4 dot-separated integers, e.g. 13.0.0) — must match GitHub Release tag v{version}'
         required: true
         type: string
       target:
@@ -52,10 +52,17 @@ jobs:
           PUBLISHER_EMAIL_PROD: ${{ vars.PUBLISHER_EMAIL }}
         run: |
           set -euo pipefail
-          if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
-            echo "::error::Invalid version format: ${VERSION}"
+          if [[ ! "${VERSION}" =~ ^[0-9]+(\.[0-9]+){0,3}$ ]]; then
+            echo "::error::Invalid version format (Chrome manifest): ${VERSION} — use 1–4 dot-separated integers (e.g. 13.0.0), not semver pre-release/build metadata"
             exit 1
           fi
+          IFS='.' read -r -a version_parts <<< "${VERSION}"
+          for part in "${version_parts[@]}"; do
+            if (( part < 0 || part > 65535 )); then
+              echo "::error::Version segment out of range (0–65535): ${part} in ${VERSION}"
+              exit 1
+            fi
+          done
           if [[ "${TARGET}" == "production" && "${{ github.ref }}" != "refs/heads/main" ]]; then
             echo "::error::Production uploads must run from the main branch (current: ${{ github.ref }})"
             exit 1
@@ -138,6 +145,8 @@ jobs:
 
       - name: Upload to Chrome Web Store
         id: cws-upload
+        env:
+          ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         run: |
           set -euo pipefail
           echo "Target: ${{ inputs.target }}"
@@ -149,7 +158,7 @@ jobs:
 
           HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" \
             -X PUT \
-            -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
             -H "x-goog-api-version: 2" \
             -T "${ZIP_NAME}" \
             "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${EXTENSION_ID}?uploadType=media&publisherEmail=${PUBLISHER_EMAIL}")
