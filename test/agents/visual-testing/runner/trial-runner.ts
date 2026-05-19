@@ -191,7 +191,7 @@ async function executeAgent(
       counter.process(message)
       const line = formatMessage(message);
       if (line !== null) {
-        process.stdout.write(line + '\n');
+        process.stdout.write(`${line  }\n`);
       }
     },
     telemetry: {
@@ -263,7 +263,7 @@ async function runJudgeEval<T>(
         onMessage: (message: AgentMessage) => {
           const line = formatMessage(message);
           if (line !== null) {
-            process.stdout.write(line + '\n');
+            process.stdout.write(`${line  }\n`);
           }
         },
       },

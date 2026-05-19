@@ -42,7 +42,7 @@ export function writeBatchSummary(
   };
 
   const jsonPath = summaryJsonPath(artifactsDir, batchTimestamp);
-  fs.mkdirSync(fs.realpathSync(jsonPath + '/..'), { recursive: true });
+  fs.mkdirSync(fs.realpathSync(`${jsonPath  }/..`), { recursive: true });
   fs.writeFileSync(jsonPath, JSON.stringify(summary, null, 2));
 
   const mdPath = summaryMdPath(artifactsDir, batchTimestamp);
@@ -133,7 +133,7 @@ export function writeMultiBatchSummary(
   };
 
   const jsonPath = summaryJsonPath(artifactsDir, batchTimestamp);
-  fs.mkdirSync(fs.realpathSync(jsonPath + '/..'), { recursive: true });
+  fs.mkdirSync(fs.realpathSync(`${jsonPath  }/..`), { recursive: true });
   fs.writeFileSync(jsonPath, JSON.stringify(summary, null, 2));
 
   const mdPath = summaryMdPath(artifactsDir, batchTimestamp);

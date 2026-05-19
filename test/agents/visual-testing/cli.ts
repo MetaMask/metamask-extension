@@ -5,7 +5,7 @@ import { parseArgs } from 'node:util';
 import dotenv from 'dotenv';
 import { loadConfig } from './config/load-config';
 import { runBatch, runMultiBatch } from './runner/batch-runner';
-import { SCENARIOS } from './scenarios/index';
+import { SCENARIOS } from "./scenarios";
 import { summaryJsonPath } from './artifacts/paths';
 
 const repoRoot = execSync('git rev-parse --show-toplevel', {
@@ -112,11 +112,11 @@ async function runCommand(values: Record<string, unknown>) {
 
 function resolveScenarioEntries(
   names: string[],
-): Array<{ name: string; factory: (typeof SCENARIOS)[string] }> {
-  const entries: Array<{
+): { name: string; factory: (typeof SCENARIOS)[string] }[] {
+  const entries: {
     name: string;
     factory: (typeof SCENARIOS)[string];
-  }> = [];
+  }[] = [];
 
   for (const name of names) {
     const factory = SCENARIOS[name];
