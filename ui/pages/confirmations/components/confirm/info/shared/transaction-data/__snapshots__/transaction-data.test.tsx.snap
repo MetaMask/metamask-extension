@@ -3,11 +3,11 @@
 exports[`TransactionData renders a truncated token id for an NFT with a long token id 1`] = `
 <div>
   <div
-    class="mb-4 pt-1 pr-2 pb-1 pl-2 bg-section rounded-lg"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="advanced-details-data-section"
   >
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -21,11 +21,11 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         />
       </button>
       <div
-        class="flex-row items-start justify-start pr-6 flex text-alternative"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -40,16 +40,16 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
       />
     </div>
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="advanced-details-data-function"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="flex-row items-start justify-start flex text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -76,7 +76,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         </div>
       </div>
       <div
-        class="flex-wrap gap-2 items-center flex min-w-0"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -91,16 +91,16 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
       data-testid="advanced-details-safeTransferFrom-params"
     >
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-0"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -127,7 +127,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
           </div>
         </div>
         <div
-          class="flex-row items-center flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
             class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -149,16 +149,16 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         </div>
       </div>
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-1"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -185,7 +185,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
           </div>
         </div>
         <div
-          class="flex-row items-center flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
             class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -207,16 +207,16 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         </div>
       </div>
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-2"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -243,7 +243,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
           </div>
         </div>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -254,16 +254,16 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         </div>
       </div>
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-3"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -290,7 +290,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
           </div>
         </div>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -301,16 +301,16 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
         </div>
       </div>
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-4"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -337,7 +337,7 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
           </div>
         </div>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -355,11 +355,11 @@ exports[`TransactionData renders a truncated token id for an NFT with a long tok
 exports[`TransactionData renders decoded data with names and descriptions 1`] = `
 <div>
   <div
-    class="mb-4 pt-1 pr-2 pb-1 pl-2 bg-section rounded-lg"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="advanced-details-data-section"
   >
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -373,11 +373,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         />
       </button>
       <div
-        class="flex-row items-start justify-start pr-6 flex text-alternative"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -392,15 +392,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       />
     </div>
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="flex-row items-start justify-start flex text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -411,7 +411,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
       <div
-        class="flex"
+        class="mm-box mm-box--display-flex"
       >
         <button
           aria-label="expand"
@@ -423,7 +423,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           />
         </button>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           data-testid="advanced-details-data-function"
         >
           <p
@@ -436,10 +436,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       </div>
     </div>
     <div
-      class="expandable"
+      class="mm-box expandable"
     >
       <div
-        class=""
+        class="mm-box"
         style="margin-top: -8px;"
       >
         <div
@@ -447,16 +447,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           data-testid="advanced-details-WRAP_ETH-params"
         >
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -483,7 +483,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-row items-center flex"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
                 class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -505,16 +505,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -541,7 +541,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-wrap gap-2 items-center flex min-w-0"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -562,15 +562,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       />
     </div>
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="flex-row items-start justify-start flex text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -581,7 +581,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
       <div
-        class="flex"
+        class="mm-box mm-box--display-flex"
       >
         <button
           aria-label="expand"
@@ -593,7 +593,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           />
         </button>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           data-testid="advanced-details-data-function"
         >
           <p
@@ -606,10 +606,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       </div>
     </div>
     <div
-      class="expandable"
+      class="mm-box expandable"
     >
       <div
-        class=""
+        class="mm-box"
         style="margin-top: -8px;"
       >
         <div
@@ -617,16 +617,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           data-testid="advanced-details-V3_SWAP_EXACT_IN-params"
         >
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -653,7 +653,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-row items-center flex"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
                 class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -675,16 +675,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -711,7 +711,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-wrap gap-2 items-center flex min-w-0"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -722,16 +722,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -758,7 +758,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-wrap gap-2 items-center flex min-w-0"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -769,16 +769,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-3"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -808,7 +808,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap mm-box--justify-content-flex-end"
             >
               <div
-                class="flex-row items-center flex"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -829,7 +829,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -839,7 +839,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 </p>
               </div>
               <div
-                class="flex-row items-center flex"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -860,7 +860,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -870,7 +870,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
                 </p>
               </div>
               <div
-                class="flex-row items-center flex"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -893,16 +893,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-4"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -929,7 +929,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-wrap gap-2 items-center flex min-w-0"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -950,15 +950,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       />
     </div>
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="flex-row items-start justify-start flex text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -969,7 +969,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
       <div
-        class="flex"
+        class="mm-box mm-box--display-flex"
       >
         <button
           aria-label="expand"
@@ -981,7 +981,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           />
         </button>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           data-testid="advanced-details-data-function"
         >
           <p
@@ -994,10 +994,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       </div>
     </div>
     <div
-      class="expandable"
+      class="mm-box expandable"
     >
       <div
-        class=""
+        class="mm-box"
         style="margin-top: -8px;"
       >
         <div
@@ -1005,16 +1005,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           data-testid="advanced-details-PAY_PORTION-params"
         >
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -1041,7 +1041,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-row items-center flex"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
                 class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -1063,16 +1063,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -1099,7 +1099,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-row items-center flex"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
                 class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -1121,16 +1121,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -1157,7 +1157,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-wrap gap-2 items-center flex min-w-0"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1178,15 +1178,15 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       />
     </div>
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="flex-row items-start justify-start flex text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -1197,7 +1197,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
         </div>
       </div>
       <div
-        class="flex"
+        class="mm-box mm-box--display-flex"
       >
         <button
           aria-label="expand"
@@ -1209,7 +1209,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           />
         </button>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           data-testid="advanced-details-data-function"
         >
           <p
@@ -1222,10 +1222,10 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
       </div>
     </div>
     <div
-      class="expandable"
+      class="mm-box expandable"
     >
       <div
-        class=""
+        class="mm-box"
         style="margin-top: -8px;"
       >
         <div
@@ -1233,16 +1233,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
           data-testid="advanced-details-SWEEP-params"
         >
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -1269,7 +1269,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-row items-center flex"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
                 class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -1291,16 +1291,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -1327,7 +1327,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-row items-center flex"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
             >
               <div
                 class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -1349,16 +1349,16 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -1385,7 +1385,7 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
               </div>
             </div>
             <div
-              class="flex-wrap gap-2 items-center flex min-w-0"
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1405,11 +1405,11 @@ exports[`TransactionData renders decoded data with names and descriptions 1`] = 
 exports[`TransactionData renders decoded data with no names 1`] = `
 <div>
   <div
-    class="mb-4 pt-1 pr-2 pb-1 pl-2 bg-section rounded-lg"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="advanced-details-data-section"
   >
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -1423,11 +1423,11 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         />
       </button>
       <div
-        class="flex-row items-start justify-start pr-6 flex text-alternative"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -1442,16 +1442,16 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       />
     </div>
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="advanced-details-data-function"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="flex-row items-start justify-start flex text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -1462,7 +1462,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
       <div
-        class="flex-wrap gap-2 items-center flex min-w-0"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1477,16 +1477,16 @@ exports[`TransactionData renders decoded data with no names 1`] = `
       data-testid="advanced-details-someFunction-params"
     >
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-0"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -1513,7 +1513,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
           </div>
         </div>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1524,16 +1524,16 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-1"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -1560,7 +1560,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
           </div>
         </div>
         <div
-          class="flex-row items-center flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
             class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -1582,16 +1582,16 @@ exports[`TransactionData renders decoded data with no names 1`] = `
         </div>
       </div>
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-2"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -1618,7 +1618,7 @@ exports[`TransactionData renders decoded data with no names 1`] = `
           </div>
         </div>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1636,11 +1636,11 @@ exports[`TransactionData renders decoded data with no names 1`] = `
 exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
 <div>
   <div
-    class="mb-4 pt-1 pr-2 pb-1 pl-2 bg-section rounded-lg"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="advanced-details-data-section"
   >
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -1654,11 +1654,11 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         />
       </button>
       <div
-        class="flex-row items-start justify-start pr-6 flex text-alternative"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -1673,16 +1673,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       />
     </div>
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="advanced-details-data-function"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="flex-row items-start justify-start flex text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -1709,7 +1709,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="flex-wrap gap-2 items-center flex min-w-0"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -1724,16 +1724,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
       data-testid="advanced-details-permit-params"
     >
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-0"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -1760,7 +1760,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="flex-row items-center flex"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
         >
           <div
             class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -1782,16 +1782,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-1"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -1822,16 +1822,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         class="mm-box mm-box--padding-left-2"
       >
         <div
-          class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
           data-testid="advanced-details-data-param-0"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
-            class="flex-row items-start justify-start flex text-alternative"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
             style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
           >
             <div
-              class="items-center flex"
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
               style="flex-shrink: 0;"
             >
               <p
@@ -1862,16 +1862,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           class="mm-box mm-box--padding-left-2"
         >
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-0"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -1902,16 +1902,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--padding-left-2"
           >
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -1938,7 +1938,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-row items-center flex"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -1960,16 +1960,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -1996,7 +1996,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2007,16 +2007,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2043,7 +2043,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2054,16 +2054,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-3"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2090,7 +2090,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2102,16 +2102,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-1"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -2142,16 +2142,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--padding-left-2"
           >
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2178,7 +2178,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-row items-center flex"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -2200,16 +2200,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2236,7 +2236,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2247,16 +2247,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2283,7 +2283,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2294,16 +2294,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-3"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2330,7 +2330,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2342,16 +2342,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
             data-testid="advanced-details-data-param-2"
             style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
           >
             <div
-              class="flex-row items-start justify-start flex text-alternative"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
               style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
               <div
-                class="items-center flex"
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
                 style="flex-shrink: 0;"
               >
                 <p
@@ -2382,16 +2382,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             class="mm-box mm-box--padding-left-2"
           >
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-0"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2418,7 +2418,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-row items-center flex"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
               >
                 <div
                   class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -2440,16 +2440,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-1"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2476,7 +2476,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2487,16 +2487,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-2"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2523,7 +2523,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2534,16 +2534,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
               </div>
             </div>
             <div
-              class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+              class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
               data-testid="advanced-details-data-param-3"
               style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
             >
               <div
-                class="flex-row items-start justify-start flex text-alternative"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
                 style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
-                  class="items-center flex"
+                  class="mm-box mm-box--display-flex mm-box--align-items-center"
                   style="flex-shrink: 0;"
                 >
                   <p
@@ -2570,7 +2570,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
                 </div>
               </div>
               <div
-                class="flex-wrap gap-2 items-center flex min-w-0"
+                class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
               >
                 <p
                   class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2583,16 +2583,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
           data-testid="advanced-details-data-param-1"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
-            class="flex-row items-start justify-start flex text-alternative"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
             style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
           >
             <div
-              class="items-center flex"
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
               style="flex-shrink: 0;"
             >
               <p
@@ -2619,7 +2619,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="flex-row items-center flex"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
           >
             <div
               class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
@@ -2641,16 +2641,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
           data-testid="advanced-details-data-param-2"
           style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
         >
           <div
-            class="flex-row items-start justify-start flex text-alternative"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
             style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
           >
             <div
-              class="items-center flex"
+              class="mm-box mm-box--display-flex mm-box--align-items-center"
               style="flex-shrink: 0;"
             >
               <p
@@ -2677,7 +2677,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
             </div>
           </div>
           <div
-            class="flex-wrap gap-2 items-center flex min-w-0"
+            class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
           >
             <p
               class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2689,16 +2689,16 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
         </div>
       </div>
       <div
-        class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+        class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="advanced-details-data-param-2"
         style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
       >
         <div
-          class="flex-row items-start justify-start flex text-alternative"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
           style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
-            class="items-center flex"
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
             style="flex-shrink: 0;"
           >
             <p
@@ -2725,7 +2725,7 @@ exports[`TransactionData renders decoded data with tuples and arrays 1`] = `
           </div>
         </div>
         <div
-          class="flex-wrap gap-2 items-center flex min-w-0"
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         >
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
@@ -2745,11 +2745,11 @@ exports[`TransactionData renders nothing if no transaction data 1`] = `<div />`;
 exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
 <div>
   <div
-    class="mb-4 pt-1 pr-2 pb-1 pl-2 bg-section rounded-lg"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="advanced-details-data-section"
   >
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
@@ -2763,11 +2763,11 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
         />
       </button>
       <div
-        class="flex-row items-start justify-start pr-6 flex text-alternative"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -2782,15 +2782,15 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
       />
     </div>
     <div
-      class="flex-row flex-wrap items-start justify-between mt-2 mb-2 pr-2 pl-2 flex confirm-info-row rounded-lg text-default"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="flex-row items-start justify-start flex text-alternative"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
         style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
-          class="items-center flex"
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
           style="flex-shrink: 0;"
         >
           <p
@@ -2801,7 +2801,7 @@ exports[`TransactionData renders raw hexadecimal if no decoded data 1`] = `
         </div>
       </div>
       <div
-        class="flex-wrap gap-2 items-center flex min-w-0"
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
         data-testid="advanced-details-transaction-hex"
       >
         <p
