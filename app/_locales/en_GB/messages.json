@@ -5419,9 +5419,6 @@
   "percentChange": {
     "message": "Percent change"
   },
-  "percentFee": {
-    "message": "$1% fee"
-  },
   "permissionFor": {
     "message": "Permission for"
   },
