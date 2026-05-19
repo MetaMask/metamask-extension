@@ -1,0 +1,396 @@
+diff --git a/dist/data-sources/RpcDataSource.cjs b/dist/data-sources/RpcDataSource.cjs
+index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063293e817f 100644
+--- a/dist/data-sources/RpcDataSource.cjs
++++ b/dist/data-sources/RpcDataSource.cjs
+@@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ var __importDefault = (this && this.__importDefault) || function (mod) {
+     return (mod && mod.__esModule) ? mod : { "default": mod };
+ };
+-var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
++var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.createRpcDataSource = exports.RpcDataSource = exports.caipChainIdToHex = void 0;
+ const providers_1 = require("@ethersproject/providers");
+@@ -294,7 +294,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+                     for (const balance of normalizedBalances) {
+                         const stateMetadata = existingMetadata[balance.assetId];
+                         const pipelineMetadata = assetsInfo[balance.assetId];
+-                        let decimals = stateMetadata?.decimals ?? pipelineMetadata?.decimals;
++                        let decimals = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_pickValidDecimals).call(this, stateMetadata, pipelineMetadata);
+                         if (decimals === undefined) {
+                             const parsed = (0, utils_1.parseCaipAssetType)(balance.assetId);
+                             if (parsed.assetNamespace === 'erc20') {
+@@ -321,7 +321,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+                     // by the price/info API) and fall back to a minimal stub only when
+                     // nothing is in state yet, so we don't clobber that richer metadata.
+                     const existingNativeMeta = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getExistingAssetsMetadata).call(this)[nativeAssetId];
+-                    if (existingNativeMeta) {
++                    if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingNativeMeta)) {
+                         assetsInfo[nativeAssetId] = existingNativeMeta;
+                     }
+                     else {
+@@ -619,7 +619,18 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+ }
+ exports.RpcDataSource = RpcDataSource;
+ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
++    if (!Number.isFinite(decimals) || decimals < 0) {
++        log('Invalid decimals — defaulting balance to "0"', {
++            rawBalance,
++            decimals,
++        });
++        return '0';
++    }
+     const rawAmount = new bignumber_js_1.default(rawBalance);
++    if (!rawAmount.isFinite()) {
++        log('Invalid raw balance — defaulting to "0"', { rawBalance, decimals });
++        return '0';
++    }
+     const divisor = new bignumber_js_1.default(10).pow(decimals);
+     return rawAmount.dividedBy(divisor).toFixed();
+ }, _RpcDataSource_collectMetadataForBalances = function _RpcDataSource_collectMetadataForBalances(balances, chainId) {
+@@ -635,7 +646,7 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+             // enriched by the price/info API with image, description, etc.
+             // Only emit a minimal stub when there's nothing in state yet,
+             // so we don't clobber that richer metadata on every balance refresh.
+-            if (existingMeta) {
++            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
+                 assetsInfo[balance.assetId] = existingMeta;
+             }
+             else {
+@@ -657,6 +668,15 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+         }
+     }
+     return assetsInfo;
++}, _RpcDataSource_hasValidDecimals = function _RpcDataSource_hasValidDecimals(metadata) {
++    return Boolean(metadata && Number.isFinite(metadata.decimals) && metadata.decimals >= 0);
++}, _RpcDataSource_pickValidDecimals = function _RpcDataSource_pickValidDecimals(...metadatas) {
++    for (const metadata of metadatas) {
++        if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, metadata)) {
++            return metadata.decimals;
++        }
++    }
++    return undefined;
+ }, _RpcDataSource_handleBalanceUpdate = 
+ /**
+  * Handle balance update from BalanceFetcher.
+@@ -681,7 +701,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+     for (const balance of normalizedBalances) {
+         const stateMetadata = existingMetadata[balance.assetId];
+         const pipelineMetadata = assetsInfo[balance.assetId];
+-        const decimals = stateMetadata?.decimals ?? pipelineMetadata?.decimals;
++        const decimals = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_pickValidDecimals).call(this, stateMetadata, pipelineMetadata);
+         if (decimals === undefined) {
+             continue;
+         }
+diff --git a/dist/data-sources/RpcDataSource.mjs b/dist/data-sources/RpcDataSource.mjs
+index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad9bce092f 100644
+--- a/dist/data-sources/RpcDataSource.mjs
++++ b/dist/data-sources/RpcDataSource.mjs
+@@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+ };
+-var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
++var _RpcDataSource_instances, _RpcDataSource_messenger, _RpcDataSource_onActiveChainsUpdated, _RpcDataSource_getNativeAssetForChain, _RpcDataSource_timeout, _RpcDataSource_tokenDetectionEnabled, _RpcDataSource_useExternalService, _RpcDataSource_isOnboarded, _RpcDataSource_activeChains, _RpcDataSource_chainStatuses, _RpcDataSource_providerCache, _RpcDataSource_activeSubscriptions, _RpcDataSource_unsubscribeTransactionConfirmed, _RpcDataSource_unsubscribeIncomingTransactions, _RpcDataSource_multicallClient, _RpcDataSource_balanceFetcher, _RpcDataSource_tokenDetector, _RpcDataSource_convertToHumanReadable, _RpcDataSource_collectMetadataForBalances, _RpcDataSource_hasValidDecimals, _RpcDataSource_pickValidDecimals, _RpcDataSource_handleBalanceUpdate, _RpcDataSource_handleDetectionUpdate, _RpcDataSource_subscribeToNetworkController, _RpcDataSource_subscribeToTransactionEvents, _RpcDataSource_onTransactionConfirmed, _RpcDataSource_onIncomingTransactions, _RpcDataSource_refreshBalanceForChains, _RpcDataSource_initializeFromNetworkController, _RpcDataSource_updateFromNetworkState, _RpcDataSource_getProvider, _RpcDataSource_getMulticallProvider, _RpcDataSource_clearProviderCache, _RpcDataSource_fetchDecimalsViaRpc, _RpcDataSource_getExistingAssetsMetadata;
+ import { Web3Provider } from "@ethersproject/providers";
+ import { toHex } from "@metamask/controller-utils";
+ import { isStrictHexString, isCaipChainId, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
+@@ -287,7 +287,7 @@ export class RpcDataSource extends AbstractDataSource {
+                     for (const balance of normalizedBalances) {
+                         const stateMetadata = existingMetadata[balance.assetId];
+                         const pipelineMetadata = assetsInfo[balance.assetId];
+-                        let decimals = stateMetadata?.decimals ?? pipelineMetadata?.decimals;
++                        let decimals = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_pickValidDecimals).call(this, stateMetadata, pipelineMetadata);
+                         if (decimals === undefined) {
+                             const parsed = parseCaipAssetType(balance.assetId);
+                             if (parsed.assetNamespace === 'erc20') {
+@@ -314,7 +314,7 @@ export class RpcDataSource extends AbstractDataSource {
+                     // by the price/info API) and fall back to a minimal stub only when
+                     // nothing is in state yet, so we don't clobber that richer metadata.
+                     const existingNativeMeta = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getExistingAssetsMetadata).call(this)[nativeAssetId];
+-                    if (existingNativeMeta) {
++                    if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingNativeMeta)) {
+                         assetsInfo[nativeAssetId] = existingNativeMeta;
+                     }
+                     else {
+@@ -611,7 +611,18 @@ export class RpcDataSource extends AbstractDataSource {
+     }
+ }
+ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
++    if (!Number.isFinite(decimals) || decimals < 0) {
++        log('Invalid decimals — defaulting balance to "0"', {
++            rawBalance,
++            decimals,
++        });
++        return '0';
++    }
+     const rawAmount = new BigNumberJS(rawBalance);
++    if (!rawAmount.isFinite()) {
++        log('Invalid raw balance — defaulting to "0"', { rawBalance, decimals });
++        return '0';
++    }
+     const divisor = new BigNumberJS(10).pow(decimals);
+     return rawAmount.dividedBy(divisor).toFixed();
+ }, _RpcDataSource_collectMetadataForBalances = function _RpcDataSource_collectMetadataForBalances(balances, chainId) {
+@@ -627,7 +638,7 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+             // enriched by the price/info API with image, description, etc.
+             // Only emit a minimal stub when there's nothing in state yet,
+             // so we don't clobber that richer metadata on every balance refresh.
+-            if (existingMeta) {
++            if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, existingMeta)) {
+                 assetsInfo[balance.assetId] = existingMeta;
+             }
+             else {
+@@ -649,7 +660,16 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+         }
+     }
+     return assetsInfo;
+-}, _RpcDataSource_handleBalanceUpdate = 
++}, _RpcDataSource_hasValidDecimals = function _RpcDataSource_hasValidDecimals(metadata) {
++    return Boolean(metadata && Number.isFinite(metadata.decimals) && metadata.decimals >= 0);
++}, _RpcDataSource_pickValidDecimals = function _RpcDataSource_pickValidDecimals(...metadatas) {
++    for (const metadata of metadatas) {
++        if (__classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_hasValidDecimals).call(this, metadata)) {
++            return metadata.decimals;
++        }
++    }
++    return undefined;
++}, _RpcDataSource_handleBalanceUpdate =
+ /**
+  * Handle balance update from BalanceFetcher.
+  *
+@@ -673,7 +693,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+     for (const balance of normalizedBalances) {
+         const stateMetadata = existingMetadata[balance.assetId];
+         const pipelineMetadata = assetsInfo[balance.assetId];
+-        const decimals = stateMetadata?.decimals ?? pipelineMetadata?.decimals;
++        const decimals = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_pickValidDecimals).call(this, stateMetadata, pipelineMetadata);
+         if (decimals === undefined) {
+             continue;
+         }
+@@ -793,7 +813,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+     __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, toRefresh).catch((error) => {
+         log('Failed to refresh balance after incoming transactions', { error });
+     });
+-}, _RpcDataSource_refreshBalanceForChains = 
++}, _RpcDataSource_refreshBalanceForChains =
+ /**
+  * Fetch balances for the given chains across all active subscriptions and
+  * push updates to the controller.
+@@ -932,7 +952,7 @@ async function _RpcDataSource_refreshBalanceForChains(chainIds) {
+     };
+ }, _RpcDataSource_clearProviderCache = function _RpcDataSource_clearProviderCache() {
+     __classPrivateFieldGet(this, _RpcDataSource_providerCache, "f").clear();
+-}, _RpcDataSource_fetchDecimalsViaRpc = 
++}, _RpcDataSource_fetchDecimalsViaRpc =
+ /**
+  * Fetch the `decimals()` value from an ERC20 contract via RPC.
+  *
+diff --git a/dist/defaults.cjs b/dist/defaults.cjs
+index 89c221284337be43bd46579e76eb3fde24c61d84..742b313fd98c823da4d6479df94433bfadf3ab8b 100644
+--- a/dist/defaults.cjs
++++ b/dist/defaults.cjs
+@@ -2,10 +2,18 @@
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.buildDefaultAssetsInfo = exports.getDefaultAssetMetadata = exports.getDefaultTrackedAssetsForChain = exports.DEFAULT_ASSET_METADATA = exports.CHAINS_WITH_DEFAULT_TRACKED_ASSETS = exports.DEFAULT_TRACKED_ASSETS_BY_CHAIN = void 0;
+ /**
+- * Address of MetaMask USD (mUSD) — same canonical contract address
+- * across every chain we deploy it to.
++ * EIP-55 checksummed address of MetaMask USD (mUSD) — same canonical contract
++ * address across every chain we deploy it to.
++ *
++ * Must be checksummed so that the CAIP-19 asset IDs produced by
++ * `musdAssetId()` (and therefore the keys seeded into `assetsInfo` by
++ * `buildDefaultAssetsInfo()`) match the keys written by data sources, which
++ * always pass IDs through `normalizeAssetId` → `toChecksumAddress` before
++ * emitting a `DataResponse`. Using a lowercase address would cause the
++ * pre-seeded keys to diverge from the data-source keys, leaving a duplicate
++ * entry in `assetsInfo` after the first balance or token-data poll.
+  */
+-const MUSD_ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
++const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+ /**
+  * Hardcoded metadata for MetaMask USD. Pre-seeding this in default
+  * state makes the token immediately renderable in the UI before any
+@@ -49,13 +57,13 @@ exports.DEFAULT_TRACKED_ASSETS_BY_CHAIN = new Map([
+ exports.CHAINS_WITH_DEFAULT_TRACKED_ASSETS = new Set(exports.DEFAULT_TRACKED_ASSETS_BY_CHAIN.keys());
+ /**
+  * Pre-seeded metadata for every default tracked asset, keyed by the
+- * lowercase CAIP-19 id so callers can look up without worrying about
+- * checksum case.
++ * checksummed CAIP-19 id. All callers must pass a checksummed asset ID;
++ * use `normalizeAssetId` to ensure the correct format before looking up.
+  */
+ exports.DEFAULT_ASSET_METADATA = new Map([
+-    [musdAssetId('eip155:1').toLowerCase(), MUSD_METADATA],
+-    [musdAssetId('eip155:59144').toLowerCase(), MUSD_METADATA],
+-    [musdAssetId('eip155:143').toLowerCase(), MUSD_METADATA],
++    [musdAssetId('eip155:1'), MUSD_METADATA],
++    [musdAssetId('eip155:59144'), MUSD_METADATA],
++    [musdAssetId('eip155:143'), MUSD_METADATA],
+ ]);
+ /**
+  * Return the default tracked assets for a CAIP-2 chain id. Empty when
+@@ -71,12 +79,12 @@ exports.getDefaultTrackedAssetsForChain = getDefaultTrackedAssetsForChain;
+ /**
+  * Look up pre-seeded metadata for a default tracked asset.
+  *
+- * @param assetId - CAIP-19 asset id (any case).
++ * @param assetId - CAIP-19 asset id (must be EIP-55 checksummed for EVM tokens).
+  * @returns The metadata if the asset is a default tracked asset,
+  * otherwise `undefined`.
+  */
+ function getDefaultAssetMetadata(assetId) {
+-    return exports.DEFAULT_ASSET_METADATA.get(assetId.toLowerCase());
++    return exports.DEFAULT_ASSET_METADATA.get(assetId);
+ }
+ exports.getDefaultAssetMetadata = getDefaultAssetMetadata;
+ /**
+diff --git a/dist/defaults.d.cts b/dist/defaults.d.cts
+index 8a394b946bb43741794ff7cf40f8c02092f1efb9..692f2459922eb19814db95c5bc5399e32e042d03 100644
+--- a/dist/defaults.d.cts
++++ b/dist/defaults.d.cts
+@@ -17,8 +17,8 @@ export declare const DEFAULT_TRACKED_ASSETS_BY_CHAIN: ReadonlyMap<ChainId, reado
+ export declare const CHAINS_WITH_DEFAULT_TRACKED_ASSETS: ReadonlySet<ChainId>;
+ /**
+  * Pre-seeded metadata for every default tracked asset, keyed by the
+- * lowercase CAIP-19 id so callers can look up without worrying about
+- * checksum case.
++ * checksummed CAIP-19 id. All callers must pass a checksummed asset ID;
++ * use `normalizeAssetId` to ensure the correct format before looking up.
+  */
+ export declare const DEFAULT_ASSET_METADATA: ReadonlyMap<string, AssetMetadata>;
+ /**
+@@ -32,7 +32,7 @@ export declare function getDefaultTrackedAssetsForChain(chainId: ChainId): reado
+ /**
+  * Look up pre-seeded metadata for a default tracked asset.
+  *
+- * @param assetId - CAIP-19 asset id (any case).
++ * @param assetId - CAIP-19 asset id (must be EIP-55 checksummed for EVM tokens).
+  * @returns The metadata if the asset is a default tracked asset,
+  * otherwise `undefined`.
+  */
+diff --git a/dist/defaults.d.mts b/dist/defaults.d.mts
+index 66647726f16561ef6e15463265706ddb0b379afc..a45ccef1c3c9e26eb431bdecc60e80aa57b96f8c 100644
+--- a/dist/defaults.d.mts
++++ b/dist/defaults.d.mts
+@@ -17,8 +17,8 @@ export declare const DEFAULT_TRACKED_ASSETS_BY_CHAIN: ReadonlyMap<ChainId, reado
+ export declare const CHAINS_WITH_DEFAULT_TRACKED_ASSETS: ReadonlySet<ChainId>;
+ /**
+  * Pre-seeded metadata for every default tracked asset, keyed by the
+- * lowercase CAIP-19 id so callers can look up without worrying about
+- * checksum case.
++ * checksummed CAIP-19 id. All callers must pass a checksummed asset ID;
++ * use `normalizeAssetId` to ensure the correct format before looking up.
+  */
+ export declare const DEFAULT_ASSET_METADATA: ReadonlyMap<string, AssetMetadata>;
+ /**
+@@ -32,7 +32,7 @@ export declare function getDefaultTrackedAssetsForChain(chainId: ChainId): reado
+ /**
+  * Look up pre-seeded metadata for a default tracked asset.
+  *
+- * @param assetId - CAIP-19 asset id (any case).
++ * @param assetId - CAIP-19 asset id (must be EIP-55 checksummed for EVM tokens).
+  * @returns The metadata if the asset is a default tracked asset,
+  * otherwise `undefined`.
+  */
+diff --git a/dist/defaults.mjs b/dist/defaults.mjs
+index 1057202b0fa11842bd58fe08e579d05c23fc9c42..67b8b0d641fa480b4ec402e189628c15dd9a688b 100644
+--- a/dist/defaults.mjs
++++ b/dist/defaults.mjs
+@@ -1,8 +1,16 @@
+ /**
+- * Address of MetaMask USD (mUSD) — same canonical contract address
+- * across every chain we deploy it to.
++ * EIP-55 checksummed address of MetaMask USD (mUSD) — same canonical contract
++ * address across every chain we deploy it to.
++ *
++ * Must be checksummed so that the CAIP-19 asset IDs produced by
++ * `musdAssetId()` (and therefore the keys seeded into `assetsInfo` by
++ * `buildDefaultAssetsInfo()`) match the keys written by data sources, which
++ * always pass IDs through `normalizeAssetId` → `toChecksumAddress` before
++ * emitting a `DataResponse`. Using a lowercase address would cause the
++ * pre-seeded keys to diverge from the data-source keys, leaving a duplicate
++ * entry in `assetsInfo` after the first balance or token-data poll.
+  */
+-const MUSD_ADDRESS = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
++const MUSD_ADDRESS = '0xacA92E438df0B2401fF60dA7E4337B687a2435DA';
+ /**
+  * Hardcoded metadata for MetaMask USD. Pre-seeding this in default
+  * state makes the token immediately renderable in the UI before any
+@@ -46,13 +54,13 @@ export const DEFAULT_TRACKED_ASSETS_BY_CHAIN = new Map([
+ export const CHAINS_WITH_DEFAULT_TRACKED_ASSETS = new Set(DEFAULT_TRACKED_ASSETS_BY_CHAIN.keys());
+ /**
+  * Pre-seeded metadata for every default tracked asset, keyed by the
+- * lowercase CAIP-19 id so callers can look up without worrying about
+- * checksum case.
++ * checksummed CAIP-19 id. All callers must pass a checksummed asset ID;
++ * use `normalizeAssetId` to ensure the correct format before looking up.
+  */
+ export const DEFAULT_ASSET_METADATA = new Map([
+-    [musdAssetId('eip155:1').toLowerCase(), MUSD_METADATA],
+-    [musdAssetId('eip155:59144').toLowerCase(), MUSD_METADATA],
+-    [musdAssetId('eip155:143').toLowerCase(), MUSD_METADATA],
++    [musdAssetId('eip155:1'), MUSD_METADATA],
++    [musdAssetId('eip155:59144'), MUSD_METADATA],
++    [musdAssetId('eip155:143'), MUSD_METADATA],
+ ]);
+ /**
+  * Return the default tracked assets for a CAIP-2 chain id. Empty when
+@@ -67,12 +75,12 @@ export function getDefaultTrackedAssetsForChain(chainId) {
+ /**
+  * Look up pre-seeded metadata for a default tracked asset.
+  *
+- * @param assetId - CAIP-19 asset id (any case).
++ * @param assetId - CAIP-19 asset id (must be EIP-55 checksummed for EVM tokens).
+  * @returns The metadata if the asset is a default tracked asset,
+  * otherwise `undefined`.
+  */
+ export function getDefaultAssetMetadata(assetId) {
+-    return DEFAULT_ASSET_METADATA.get(assetId.toLowerCase());
++    return DEFAULT_ASSET_METADATA.get(assetId);
+ }
+ /**
+  * Build the `assetsInfo` map to use in default controller state —
+diff --git a/dist/utils/native-assets.cjs b/dist/utils/native-assets.cjs
+index dc052873cad1770d1f40c65c8a2a8c7916b648fa..7ad29f4f0af4740a01f9d69e65d04776d2d50509 100644
+--- a/dist/utils/native-assets.cjs
++++ b/dist/utils/native-assets.cjs
+@@ -4,6 +4,7 @@ exports.buildNativeAssetsFromApi = exports.buildNativeAssetsFromConstant = void
+ const assets_controllers_1 = require("@metamask/assets-controllers");
+ const controller_utils_1 = require("@metamask/controller-utils");
+ const utils_1 = require("@metamask/utils");
++const normalizeAssetId_1 = require("./normalizeAssetId.cjs");
+ const CHAINID_NETWORK_URL = 'https://chainid.network/chains.json';
+ /**
+  * Builds a native asset map from the hardcoded SPOT_PRICES_SUPPORT_INFO constant.
+@@ -14,7 +15,7 @@ function buildNativeAssetsFromConstant() {
+     const nativeAssetsMap = {};
+     for (const nativeAssetId of Object.values(assets_controllers_1.SPOT_PRICES_SUPPORT_INFO)) {
+         const { chainId } = (0, utils_1.parseCaipAssetType)(nativeAssetId);
+-        nativeAssetsMap[chainId] = nativeAssetId;
++        nativeAssetsMap[chainId] = (0, normalizeAssetId_1.normalizeAssetId)(nativeAssetId);
+     }
+     return nativeAssetsMap;
+ }
+diff --git a/dist/utils/native-assets.mjs b/dist/utils/native-assets.mjs
+index b33e063cdba5acbcae2aeb17f36034abc01af461..4501d24046a603f2410b2a797dc84e38174c7ee7 100644
+--- a/dist/utils/native-assets.mjs
++++ b/dist/utils/native-assets.mjs
+@@ -1,6 +1,7 @@
+ import { SPOT_PRICES_SUPPORT_INFO } from "@metamask/assets-controllers";
+ import { fetchWithErrorHandling } from "@metamask/controller-utils";
+ import { parseCaipAssetType } from "@metamask/utils";
++import { normalizeAssetId } from "./normalizeAssetId.mjs";
+ const CHAINID_NETWORK_URL = 'https://chainid.network/chains.json';
+ /**
+  * Builds a native asset map from the hardcoded SPOT_PRICES_SUPPORT_INFO constant.
+@@ -11,7 +12,7 @@ export function buildNativeAssetsFromConstant() {
+     const nativeAssetsMap = {};
+     for (const nativeAssetId of Object.values(SPOT_PRICES_SUPPORT_INFO)) {
+         const { chainId } = parseCaipAssetType(nativeAssetId);
+-        nativeAssetsMap[chainId] = nativeAssetId;
++        nativeAssetsMap[chainId] = normalizeAssetId(nativeAssetId);
+     }
+     return nativeAssetsMap;
+ }
