@@ -85,10 +85,13 @@ export const PerpsFillTag: React.FC<PerpsFillTagProps> = ({
         testId: 'perps-fill-tag-adl',
       },
       [FillType.Liquidation]: {
-        condition: isEqualCaseInsensitive(
-          fill.liquidation?.liquidatedUser ?? '',
-          selectedAccount?.address ?? '',
-        ),
+        condition:
+          Boolean(fill.liquidation?.liquidatedUser) &&
+          Boolean(selectedAccount?.address) &&
+          isEqualCaseInsensitive(
+            fill.liquidation?.liquidatedUser ?? '',
+            selectedAccount?.address ?? '',
+          ),
         label: t('perpsLiquidated'),
         textColor: TextColor.ErrorDefault,
         bgClass: 'bg-error-muted',
