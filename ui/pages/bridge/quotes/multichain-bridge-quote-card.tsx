@@ -29,11 +29,7 @@ import {
   getPriceImpact,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatNetworkFee,
-  formatTokenAmount,
-  readMmFee,
-} from '../utils/quote';
+import { formatNetworkFee, formatTokenAmount, readMmFee } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
@@ -130,7 +126,9 @@ export const MultichainBridgeQuoteCard = ({
     );
   }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
 
-  const quoteFeePercentage = activeQuote ? readMmFee(activeQuote) : undefined;
+  const quoteFeePercentage = activeQuote
+    ? readMmFee(activeQuote).quoteFeePercentage
+    : undefined;
 
   const shouldShowGasSponsored = useMemo(() => {
     // HW wallets cannot use any form of gas sponsorship. Gate early as
@@ -217,7 +215,7 @@ export const MultichainBridgeQuoteCard = ({
             >
               {t('multichainQuoteCardRateExplanation', [
                 new BigNumber(activeQuote.quote.feeData.metabridge.amount).gt(0)
-                  ? quoteFeePercentage ?? BRIDGE_MM_FEE_RATE
+                  ? (quoteFeePercentage ?? BRIDGE_MM_FEE_RATE)
                   : '0',
               ])}
             </Tooltip>
