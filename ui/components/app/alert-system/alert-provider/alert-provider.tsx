@@ -3,8 +3,8 @@ import {
   SECURITY_PROVIDER_CONFIG,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
+import { Box } from '@metamask/design-system-react';
 import {
-  Box,
   ButtonLink,
   ButtonLinkSize,
   Icon,
@@ -22,6 +22,12 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+
+const TEXT_ALIGN_CLASS: Partial<Record<TextAlign, string>> = {
+  [TextAlign.Left]: 'text-left',
+  [TextAlign.Center]: 'text-center',
+  [TextAlign.Right]: 'text-right',
+};
 
 export type AlertProviderProps = {
   provider?: SecurityProvider;
@@ -43,7 +49,7 @@ export function AlertProvider({
   }
 
   return (
-    <Box paddingTop={paddingTop} textAlign={textAlign}>
+    <Box paddingTop={paddingTop} className={textAlign ? TEXT_ALIGN_CLASS[textAlign] : undefined}>
       <Text
         marginTop={1}
         display={Display.InlineFlex}

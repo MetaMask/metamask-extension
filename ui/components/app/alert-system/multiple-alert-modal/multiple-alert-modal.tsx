@@ -1,18 +1,16 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
-  AlignItems,
   BackgroundColor,
   BorderRadius,
-  Display,
   IconColor,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -138,7 +136,7 @@ function PageNavigation({
     return null;
   }
   return (
-    <Box display={Display.Flex} alignItems={AlignItems.center}>
+    <Box className="flex" alignItems={BoxAlignItems.Center}>
       <PreviousButton
         selectedIndex={selectedIndex}
         onBackButtonClick={onBackButtonClick}

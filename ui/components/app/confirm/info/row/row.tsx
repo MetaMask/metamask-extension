@@ -2,6 +2,13 @@ import React, { createContext } from 'react';
 import Tooltip from '../../../../ui/tooltip/tooltip';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   ButtonIcon,
   ButtonIconSize,
   Icon,
@@ -11,15 +18,8 @@ import {
 } from '../../../../component-library';
 import { Skeleton } from '../../../../component-library/skeleton';
 import {
-  AlignItems,
-  BackgroundColor,
-  BorderRadius,
   Color,
-  Display,
-  FlexDirection,
-  FlexWrap,
   IconColor,
-  JustifyContent,
   OverflowWrap,
   TextColor,
   TextVariant,
@@ -74,17 +74,18 @@ function getConfirmInfoRowTooltipProps(
   return { title: tooltip };
 }
 
-const BACKGROUND_COLORS = {
+const BACKGROUND_COLORS: Record<ConfirmInfoRowVariant, BoxBackgroundColor | undefined> = {
   [ConfirmInfoRowVariant.Default]: undefined,
-  [ConfirmInfoRowVariant.Critical]: BackgroundColor.errorMuted,
-  [ConfirmInfoRowVariant.Warning]: BackgroundColor.warningMuted,
+  [ConfirmInfoRowVariant.Critical]: BoxBackgroundColor.ErrorMuted,
+  [ConfirmInfoRowVariant.Warning]: BoxBackgroundColor.WarningMuted,
 };
 
-const TEXT_COLORS = {
-  [ConfirmInfoRowVariant.Default]: TextColor.textDefault,
-  [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
+const TEXT_COLOR_CLASSES: Record<ConfirmInfoRowVariant, string> = {
+  [ConfirmInfoRowVariant.Default]: 'text-default',
+  [ConfirmInfoRowVariant.Critical]: 'text-error-alternative',
+  [ConfirmInfoRowVariant.Warning]: 'text-warning-default',
 };
+
 
 const TOOLTIP_ICONS = {
   [ConfirmInfoRowVariant.Default]: IconName.Question,
@@ -133,19 +134,16 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
     <ConfirmInfoRowContext.Provider value={{ variant }}>
       <Box
         data-testid={dataTestId}
-        className="confirm-info-row"
-        display={Display.Flex}
-        flexDirection={isCollapsible ? FlexDirection.Column : FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        flexWrap={FlexWrap.Wrap}
-        alignItems={isSmall ? AlignItems.center : AlignItems.flexStart}
+        className={`flex confirm-info-row rounded-lg ${TEXT_COLOR_CLASSES[variant]}`}
+        flexDirection={isCollapsible ? BoxFlexDirection.Column : BoxFlexDirection.Row}
+        justifyContent={BoxJustifyContent.Between}
+        flexWrap={BoxFlexWrap.Wrap}
+        alignItems={isSmall ? BoxAlignItems.Center : BoxAlignItems.Start}
         backgroundColor={BACKGROUND_COLORS[variant]}
-        borderRadius={BorderRadius.LG}
         marginTop={isSmall ? 0 : 2}
         marginBottom={isSmall ? 0 : 2}
         paddingLeft={isSmall ? 0 : 2}
         paddingRight={isSmall ? 0 : 2}
-        color={TEXT_COLORS[variant] as TextColor}
         style={{
           overflowWrap: OverflowWrap.Anywhere,
           minHeight: isSmall ? undefined : '24px',
@@ -176,14 +174,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           />
         )}
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.flexStart}
-          alignItems={isSmall ? AlignItems.center : AlignItems.flexStart}
-          color={color ?? TextColor.textAlternative}
-          paddingRight={contentPaddingRight || null}
+          className={`flex ${color ?? TextColor.textAlternative}${onClick ? ' hoverable' : ''}`}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Start}
+          alignItems={isSmall ? BoxAlignItems.Center : BoxAlignItems.Start}
+          paddingRight={contentPaddingRight || undefined}
           onClick={onClick}
-          className={onClick && 'hoverable'}
           style={{
             flexShrink: 0,
             flexBasis: 'auto',
@@ -192,8 +188,8 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           }}
         >
           <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
+            className="flex"
+            alignItems={BoxAlignItems.Center}
             style={{
               flexShrink: 0,
               ...labelChildrenStyleOverride,

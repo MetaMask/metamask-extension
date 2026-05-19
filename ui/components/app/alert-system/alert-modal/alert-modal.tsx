@@ -7,11 +7,8 @@ import {
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   AlignItems,
-  BackgroundColor,
   BlockSize,
-  BorderRadius,
   Display,
-  FlexDirection,
   IconColor,
   Severity,
   TextAlign,
@@ -23,6 +20,11 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   Button,
   ButtonSize,
   Checkbox,
@@ -88,17 +90,17 @@ function getSeverityStyle(severity?: Severity) {
   switch (severity) {
     case Severity.Warning:
       return {
-        background: BackgroundColor.warningMuted,
+        background: BoxBackgroundColor.WarningMuted,
         icon: IconColor.warningDefault,
       };
     case Severity.Danger:
       return {
-        background: BackgroundColor.errorMuted,
+        background: BoxBackgroundColor.ErrorMuted,
         icon: IconColor.errorDefault,
       };
     default:
       return {
-        background: BackgroundColor.backgroundDefault,
+        background: BoxBackgroundColor.BackgroundDefault,
         icon: IconColor.infoDefault,
       };
   }
@@ -129,9 +131,8 @@ function AlertHeader({
   return (
     <Box
       gap={3}
-      display={Display.Block}
-      alignItems={AlignItems.center}
-      textAlign={TextAlign.Center}
+      className="block text-center"
+      alignItems={BoxAlignItems.Center}
     >
       <Icon
         name={
@@ -213,11 +214,9 @@ function AlertDetails({
   return (
     <Box
       key={selectedAlert.key}
-      display={Display.InlineBlock}
+      className="inline-block w-full rounded-sm"
       padding={customDetails ? 0 : 2}
-      width={BlockSize.Full}
-      backgroundColor={customDetails ? undefined : alertDetailsBackgroundColor}
-      borderRadius={BorderRadius.SM}
+      backgroundColor={customDetails ? undefined : alertDetailsBackgroundColor as BoxBackgroundColor}
     >
       {customDetails ?? (
         <Box>
@@ -235,13 +234,13 @@ function AlertDetails({
               {t('alertModalDetails')}
             </Text>
           ) : null}
-          <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
+          <Box asChild paddingLeft={6}><ul className="alert-modal__alert-details">
             {selectedAlert.alertDetails?.map((detail, index) => (
-              <Box as="li" key={`${selectedAlert.key}-detail-${index}`}>
+              <Box asChild key={`${selectedAlert.key}-detail-${index}`}><li>
                 <Text variant={TextVariant.bodyMd}>{detail}</Text>
-              </Box>
+              </li></Box>
             ))}
-          </Box>
+          </ul></Box>
         </Box>
       )}
     </Box>
@@ -270,11 +269,9 @@ export function AcknowledgeCheckboxBase({
 
   return (
     <Box
-      display={Display.Flex}
+      className="flex w-full rounded-lg"
       padding={4}
-      width={BlockSize.Full}
       backgroundColor={severityStyle.background}
-      borderRadius={BorderRadius.LG}
       marginTop={4}
     >
       <Checkbox
@@ -453,11 +450,10 @@ export function AlertModal({
         </ModalBody>
         <ModalFooter>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
+            className="flex w-full"
+            flexDirection={BoxFlexDirection.Column}
             gap={4}
             paddingTop={2}
-            width={BlockSize.Full}
           >
             {customAcknowledgeButton ?? (
               <>

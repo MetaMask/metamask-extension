@@ -1,9 +1,6 @@
 import classnames from 'clsx';
 import React from 'react';
 import {
-  AlignItems,
-  BorderRadius,
-  Display,
   IconColor,
   Severity,
   TextColor,
@@ -12,6 +9,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import {
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import {
   Icon,
   IconName,
   IconSize,
@@ -70,15 +71,13 @@ export default function InlineAlert({
   );
 
   return (
-    <Box display={Display.Flex}>
+    <Box className="flex">
       <Box
         data-testid="inline-alert"
         {...(alertKey && { 'data-alert-key': alertKey })}
-        borderRadius={BorderRadius.SM}
         gap={1}
-        display={Display.InlineFlex}
-        alignItems={AlignItems.center}
         className={classnames({
+          'inline-flex rounded-sm': true,
           'inline-alert': true,
           'inline-alert__info': severity === Severity.Info,
           'inline-alert__warning': severity === Severity.Warning,
@@ -88,7 +87,8 @@ export default function InlineAlert({
           'inline-alert__pill': pill,
           'inline-alert__transparent-background': !textOverride,
         })}
-        backgroundColor={backgroundColor}
+        alignItems={BoxAlignItems.Center}
+        backgroundColor={backgroundColor as unknown as BoxBackgroundColor}
         style={{
           cursor: onClick ? 'pointer' : 'default',
           ...style,

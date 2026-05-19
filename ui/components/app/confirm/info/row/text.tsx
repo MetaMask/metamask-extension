@@ -1,15 +1,15 @@
 import React, { useContext } from 'react';
 import { I18nContext } from '../../../../../contexts/i18n';
 import {
-  AlignItems,
-  BlockSize,
-  Display,
-  FlexWrap,
   IconColor,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
 import {
   Box,
+  BoxAlignItems,
+  BoxFlexWrap,
+} from '@metamask/design-system-react';
+import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
@@ -47,11 +47,10 @@ export const ConfirmInfoRowText: React.FC<ConfirmInfoRowTextProps> = ({
   return (
     <Box
       data-testid={dataTestId}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      flexWrap={FlexWrap.Wrap}
+      className="flex min-w-0"
+      alignItems={BoxAlignItems.Center}
+      flexWrap={BoxFlexWrap.Wrap}
       gap={2}
-      minWidth={BlockSize.Zero}
     >
       {isEditable ? (
         <ButtonIcon

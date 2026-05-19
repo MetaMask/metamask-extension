@@ -2,12 +2,14 @@ import { NameType } from '@metamask/name-controller';
 import React, { memo, useState } from 'react';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import {
-  AlignItems,
-  Display,
-  FlexDirection,
   TextColor,
 } from '../../../../../helpers/constants/design-system';
-import { Box, Text } from '../../../../component-library';
+import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import { Text } from '../../../../component-library';
 import NicknamePopovers from '../../../modals/nickname-popovers';
 import Name from '../../../name/name';
 import { shortenAddress } from '../../../../../helpers/utils/util';
@@ -35,9 +37,9 @@ export const ConfirmInfoRowAddress = memo(
 
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        className="flex"
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
       >
         {
           // PetNames on this component are disabled for snaps until the `<Name />`
@@ -46,9 +48,9 @@ export const ConfirmInfoRowAddress = memo(
           isSnapUsingThis ? (
             <>
               <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Row}
-                alignItems={AlignItems.center}
+                className="flex"
+                flexDirection={BoxFlexDirection.Row}
+                alignItems={BoxAlignItems.Center}
                 onClick={isSnapUsingThis ? () => null : handleDisplayNameClick}
               >
                 <PreferredAvatar
