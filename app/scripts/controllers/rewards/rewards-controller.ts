@@ -740,11 +740,13 @@ export class RewardsController extends BaseController<
     } else {
       const feeResponse = this.#getVipFeesForAccount(subscriptionId).then(
         (vipFeeResponse): VipFeesResponseDto | 0 | null => {
-          if (
-            !vipFeeResponse ||
-            !vipFeeResponse?.fees?.hyperliquid?.builderFeeBips
-          ) {
+          if (!vipFeeResponse) {
             return vipFeeResponse;
+          }
+          if (!vipFeeResponse.fees?.hyperliquid?.builderFeeBips) {
+            // VIP tier may be set while perps builder fee is absent — treat as
+            // no discount (0), not unknowable (null).
+            return 0;
           }
           const rawBips = vipFeeResponse.fees.hyperliquid.builderFeeBips;
           const next: VipPerpsFeesState = {
@@ -769,7 +771,7 @@ export class RewardsController extends BaseController<
         if (!result) {
           return result;
         }
-        builderFeeBipsRaw = result?.fees?.hyperliquid?.builderFeeBips ?? '';
+        builderFeeBipsRaw = result.fees?.hyperliquid?.builderFeeBips ?? '';
       } catch (error) {
         log.warn(
           'RewardsController: VIP fees fetch failed; returning no discount:',
