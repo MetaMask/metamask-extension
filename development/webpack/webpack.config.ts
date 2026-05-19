@@ -557,12 +557,6 @@ const config = {
           chunks: isChunkableAsync,
           minChunks: 2,
         },
-        asyncVendor: {
-          // js/mjs files in node_modules or subdirectories of node_modules
-          test: /[\\/]node_modules[\\/].*?\.m?js$/u,
-          chunks: isChunkableAsync,
-          minChunks: 2,
-        },
       },
     },
   },
