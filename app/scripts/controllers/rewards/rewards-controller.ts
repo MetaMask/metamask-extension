@@ -256,6 +256,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'isOptInSupported',
   'getActualSubscriptionId',
   'getPerpsDiscountForAccount',
+  'getVipFeesForAccount',
   'resetState',
 ] as const;
 
@@ -645,6 +646,57 @@ export class RewardsController extends BaseController<
     return vipDiscountBips;
   }
 
+  async getVipFeesForAccount(
+    account: CaipAccountId,
+    subscriptionIdOverride?: string,
+  ): Promise<VipFeesResponseDto | 0 |null> {
+
+    const subscriptionId = subscriptionIdOverride|| (this.#getAccountState(account))?.subscriptionId;
+    if (!subscriptionId) {
+      return 0;
+    }
+
+    const subscription = this.state.rewardsSubscriptions[subscriptionId];
+    if (!subscription) {
+      // Subscription record missing from state — treat as unhydrated so the
+      // caller can retry once the subscription is loaded.
+      return null;
+    }
+
+      // Deduplicate concurrent fetches: if there's already an in-flight
+      // request for this subscriptionId, await it instead of firing another.
+      let inFlight = this.#vipFeesFetchInFlight.get(subscriptionId);
+      if (!inFlight) {
+        inFlight = this.#withAuthRetry(() => {
+          const subscriptionToken = this.#getSubscriptionToken(subscriptionId);
+          if (!subscriptionToken) {
+            throw new AuthorizationFailedError(
+              `No subscription token found for subscription ID: ${subscriptionId}`,
+            );
+          }
+          return this.messenger.call(
+            'RewardsDataService:getVipFees',
+            subscriptionToken,
+          );
+        }, subscriptionId).then((vipFeeResponse): VipFeesResponseDto | 0 => {
+          // Backend contract: tier-0 responses have fees=null and vipTier=0.
+          if (
+            !vipFeeResponse?.fees ||
+            vipFeeResponse.vipTier <= 0
+          ) {
+            return 0;
+          }
+          return vipFeeResponse;
+        });
+        this.#vipFeesFetchInFlight.set(subscriptionId, inFlight);
+        const cleanup = () => this.#vipFeesFetchInFlight.delete(subscriptionId);
+        inFlight.then(cleanup, cleanup);
+      }
+
+        const result = await inFlight;
+        return result ;
+  }
+
   /**
    * Resolve a VIP-driven perps discount for the given account. Returns null
    * when the discount is currently unknowable (invalid input, no subscription,
@@ -665,14 +717,7 @@ export class RewardsController extends BaseController<
       return null;
     }
 
-    const subscription = this.state.rewardsSubscriptions[subscriptionId];
-    if (!subscription) {
-      // Subscription record missing from state — treat as unhydrated so the
-      // caller can retry once the subscription is loaded.
-      return null;
-    }
-
-    let builderFeeBipsRaw: string;
+ let builderFeeBipsRaw: string;
     const cached = this.state.rewardsVipPerpsFees[subscriptionId];
     const cacheAgeMs = cached ? Date.now() - cached.lastFetched : null;
     if (
@@ -682,30 +727,13 @@ export class RewardsController extends BaseController<
     ) {
       builderFeeBipsRaw = cached.hyperliquidBuilderFeeBips;
     } else {
-      // Deduplicate concurrent fetches: if there's already an in-flight
-      // request for this subscriptionId, await it instead of firing another.
-      let inFlight = this.#vipFeesFetchInFlight.get(subscriptionId);
-      if (!inFlight) {
-        inFlight = this.#withAuthRetry(() => {
-          const subscriptionToken = this.#getSubscriptionToken(subscriptionId);
-          if (!subscriptionToken) {
-            throw new AuthorizationFailedError(
-              `No subscription token found for subscription ID: ${subscriptionId}`,
-            );
-          }
-          return this.messenger.call(
-            'RewardsDataService:getVipFees',
-            subscriptionToken,
-          );
-        }, subscriptionId).then((vipFeeResponse): VipFeesResponseDto | 0 => {
-          // Backend contract: tier-0 responses have fees=null and vipTier=0.
+      const feeResponse = this.getVipFeesForAccount(account, subscriptionId).then((vipFeeResponse): VipFeesResponseDto | 0 |null=> {
           if (
-            !vipFeeResponse?.fees ||
-            vipFeeResponse.vipTier <= 0 ||
-            !vipFeeResponse.fees.hyperliquid?.builderFeeBips
+            !vipFeeResponse || !vipFeeResponse?.fees?.hyperliquid?.builderFeeBips
           ) {
-            return 0;
+            return vipFeeResponse;
           }
+
           const rawBips = vipFeeResponse.fees.hyperliquid.builderFeeBips;
           const next: VipPerpsFeesState = {
             hyperliquidBuilderFeeBips: rawBips,
@@ -723,18 +751,12 @@ export class RewardsController extends BaseController<
           });
           return vipFeeResponse;
         });
-        this.#vipFeesFetchInFlight.set(subscriptionId, inFlight);
-        const cleanup = () => this.#vipFeesFetchInFlight.delete(subscriptionId);
-        inFlight.then(cleanup, cleanup);
-      }
-
       try {
-        const result = await inFlight;
-        if (result === 0) {
-          return 0;
+        const result = await feeResponse;
+        if (!result) {
+          return result;
         }
-        const feeResponse = result as VipFeesResponseDto;
-        builderFeeBipsRaw = feeResponse.fees?.hyperliquid?.builderFeeBips ?? '';
+        builderFeeBipsRaw = result?.fees?.hyperliquid?.builderFeeBips ?? '';
       } catch (error) {
         log.warn(
           'RewardsController: VIP fees fetch failed; returning no discount:',

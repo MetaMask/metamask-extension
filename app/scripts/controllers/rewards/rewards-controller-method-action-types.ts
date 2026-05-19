@@ -197,6 +197,11 @@ export type RewardsControllerLinkAccountsToSubscriptionCandidateAction = {
   handler: RewardsController['linkAccountsToSubscriptionCandidate'];
 };
 
+export type RewardsControllerGetVipFeesForAccountAction = {
+  type: `RewardsController:getVipFeesForAccount`;
+  handler: RewardsController['getVipFeesForAccount'];
+};
+
 /**
  * Union of all RewardsController action types.
  */
@@ -216,4 +221,5 @@ export type RewardsControllerMethodActions =
   | RewardsControllerValidateReferralCodeAction
   | RewardsControllerGetCandidateSubscriptionIdAction
   | RewardsControllerLinkAccountToSubscriptionCandidateAction
-  | RewardsControllerLinkAccountsToSubscriptionCandidateAction;
+  | RewardsControllerLinkAccountsToSubscriptionCandidateAction
+  | RewardsControllerGetVipFeesForAccountAction;
