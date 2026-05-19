@@ -27,12 +27,12 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useBridgeNavigation } from '../../../hooks/bridge/useBridgeNavigation';
 import Reader from '../../../components/app/qr-hardware-popover/qr-hardware-sign-request/reader';
 
-import { useHwSwapQuoteData } from '../../../hooks/swap/hardware-wallets/useHwSwapQuoteData';
-import { useHwSwapSubmission } from '../../../hooks/swap/hardware-wallets/useHwSwapSubmission';
-import { useHwSwapConnectionMonitoring } from '../../../hooks/swap/hardware-wallets/useHwSwapConnectionMonitoring';
-import { useHwSwapConfirmationMonitoring } from '../../../hooks/swap/hardware-wallets/useHwSwapConfirmationMonitoring';
-import { useHwSwapQrState } from '../../../hooks/swap/hardware-wallets/useHwSwapQrState';
-import { useHwSwapNavigation } from '../../../hooks/swap/hardware-wallets/useHwSwapNavigation';
+import { useHwSwapQuoteData } from '../../../hooks/hardware-wallets/useHwSwapQuoteData';
+import { useHwSwapSubmission } from '../../../hooks/hardware-wallets/useHwSwapSubmission';
+import { useHwSwapConnectionMonitoring } from '../../../hooks/hardware-wallets/useHwSwapConnectionMonitoring';
+import { useHwSwapConfirmationMonitoring } from '../../../hooks/hardware-wallets/useHwSwapConfirmationMonitoring';
+import { useHwSwapQrState } from '../../../hooks/hardware-wallets/useHwSwapQrState';
+import { useHwSwapNavigation } from '../../../hooks/hardware-wallets/useHwSwapNavigation';
 import {
   ConnectionStatus,
   useHardwareWalletActions,
