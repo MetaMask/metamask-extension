@@ -7,7 +7,10 @@ import { useDispatch } from 'react-redux';
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 
+import { ORIGIN_METAMASK } from '@metamask/approval-controller';
 import type { ApprovalRequest } from '@metamask/approval-controller';
+import { ApprovalType } from '@metamask/controller-utils';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import type { Json } from '@metamask/utils';
 
 import { useAppSelector } from '../../store/store';
@@ -77,6 +80,7 @@ import {
 import { MUSD_CONVERSION_ROUTE } from '../musd/constants/routes';
 import { getProviderConfig } from '../../../shared/lib/selectors/networks';
 import {
+  getActiveQrCodeScanRequest,
   getNetworkIdentifier,
   getUnapprovedConfirmations,
   getShowExtensionInFullSizeView,
@@ -108,19 +112,11 @@ import {
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import QRHardwarePopover from '../../components/app/qr-hardware-popover';
-import { ToggleIpfsModal } from '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal';
-import { BasicConfigurationModal } from '../../components/app/basic-configuration-modal';
-import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
-
-import { DeprecatedNetworkModal } from '../../components/app/deprecated-network-modal/DeprecatedNetworkModal';
-import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
-import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
 import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
@@ -147,6 +143,33 @@ import { NetworkHandler } from './network-handler';
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
 const Lock = mmLazy(() => import('../lock/index.ts'));
 const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
+const QRHardwarePopover = mmLazy(
+  () => import('../../components/app/qr-hardware-popover/index.js'),
+);
+const ToggleIpfsModal = mmLazy(
+  () =>
+    import(
+      '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal.js'
+    ),
+);
+const BasicConfigurationModal = mmLazy(
+  () => import('../../components/app/basic-configuration-modal/index.ts'),
+);
+const KeyringSnapRemovalResult = mmLazy(
+  () => import('../../components/app/modals/keyring-snap-removal-modal/index.ts'),
+);
+const DeprecatedNetworkModal = mmLazy(
+  () =>
+    import(
+      '../../components/app/deprecated-network-modal/DeprecatedNetworkModal.tsx'
+    ),
+);
+const NetworkConfirmationPopover = mmLazy(
+  () =>
+    import(
+      '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover.tsx'
+    ),
+);
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
 const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
@@ -224,6 +247,10 @@ const MultichainAccountDetailsPage = mmLazy(
 );
 const SmartAccountPage = mmLazy(
   () => import('../multichain-accounts/smart-account-page/index.ts'),
+);
+const MultichainAccountIntroModalContainer = mmLazy(
+  () =>
+    import('../../components/app/modals/multichain-accounts/intro-modal/index.ts'),
 );
 const ShieldPlan = mmLazy(() => import('../shield/plan/index.ts'));
 const PerpsMarketDetailPage = mmLazy(
@@ -575,6 +602,7 @@ export default function Routes() {
   const currentExtensionPopupId = useAppSelector(
     (state) => state.metamask.currentExtensionPopupId,
   );
+  const activeQrCodeScanRequest = useAppSelector(getActiveQrCodeScanRequest);
 
   const isShowKeyringSnapRemovalResultModal = useAppSelector(
     (state) => state.appState.showKeyringRemovalSnapModal,
@@ -679,6 +707,19 @@ export default function Routes() {
 
   const environmentType = getEnvironmentType();
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+  const isRestrictedQrHardwareEnv =
+    environmentType === ENVIRONMENT_TYPE_POPUP || isSidepanel;
+  const shouldShowQrHardwarePopover =
+    Boolean(activeQrCodeScanRequest) &&
+    !(
+      isRestrictedQrHardwareEnv &&
+      activeQrCodeScanRequest?.type === QrScanRequestType.PAIR
+    );
+  const shouldShowNetworkConfirmationPopover = pendingConfirmations.some(
+    (confirmation) =>
+      confirmation.origin === ORIGIN_METAMASK &&
+      confirmation.type === ApprovalType.AddEthereumChain,
+  );
 
   return (
     <div
@@ -693,38 +734,58 @@ export default function Routes() {
       <NetworkHandler />
       <ToastListener />
 
-      <QRHardwarePopover />
+      {shouldShowQrHardwarePopover ? (
+        <Suspense fallback={null}>
+          <QRHardwarePopover />
+        </Suspense>
+      ) : null}
       {isUnlocked ? <Modal /> : null}
       <Alert visible={alertOpen} msg={alertMessage} />
 
-      <NetworkConfirmationPopover />
+      {shouldShowNetworkConfirmationPopover ? (
+        <Suspense fallback={null}>
+          <NetworkConfirmationPopover />
+        </Suspense>
+      ) : null}
       {isImportNftsModalOpen ? (
         <ImportNftsModal onClose={() => dispatch(hideImportNftsModal())} />
       ) : null}
 
       {isIpfsModalOpen ? (
-        <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
+        <Suspense fallback={null}>
+          <ToggleIpfsModal onClose={() => dispatch(hideIpfsModal())} />
+        </Suspense>
       ) : null}
-      {isBasicConfigurationModalOpen ? <BasicConfigurationModal /> : null}
+      {isBasicConfigurationModalOpen ? (
+        <Suspense fallback={null}>
+          <BasicConfigurationModal />
+        </Suspense>
+      ) : null}
       {isImportTokensModalOpen ? (
         <ImportTokensModal onClose={() => dispatch(hideImportTokensModal())} />
       ) : null}
       {isDeprecatedNetworkModalOpen ? (
-        <DeprecatedNetworkModal
-          onClose={() => dispatch(hideDeprecatedNetworkModal())}
-        />
+        <Suspense fallback={null}>
+          <DeprecatedNetworkModal
+            onClose={() => dispatch(hideDeprecatedNetworkModal())}
+          />
+        </Suspense>
       ) : null}
       {isShowKeyringSnapRemovalResultModal && (
-        <KeyringSnapRemovalResult
-          isOpen={isShowKeyringSnapRemovalResultModal}
-          onClose={hideShowKeyringSnapRemovalResultModal}
-        />
+        <Suspense fallback={null}>
+          <KeyringSnapRemovalResult
+            isOpen={isShowKeyringSnapRemovalResultModal}
+            onClose={hideShowKeyringSnapRemovalResultModal}
+          />
+        </Suspense>
       )}
 
       {showMultichainIntroModal ? (
-        <MultichainAccountIntroModalContainer
-          onClose={() => setShowMultichainIntroModal(false)}
-        />
+        <Suspense fallback={null}>
+          <MultichainAccountIntroModalContainer
+            onClose={() => setShowMultichainIntroModal(false)}
+          />
+        </Suspense>
       ) : null}
 
       {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}

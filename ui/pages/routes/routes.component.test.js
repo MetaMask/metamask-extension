@@ -2,6 +2,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import { render as rtlRender, screen } from '@testing-library/react';
+import { ApprovalType } from '@metamask/controller-utils';
+import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -13,6 +15,7 @@ import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockSendState from '../../../test/data/mock-send-state.json';
 import mockState from '../../../test/data/mock-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
+import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccountsIntroModal';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import useMultiPolling from '../../hooks/useMultiPolling';
@@ -67,6 +70,33 @@ jest.mock('../../ducks/domains', () => ({
   initializeDomainSlice: () => ({ type: 'XXX' }),
 }));
 
+jest.mock('./confirmation-router', () => ({
+  ConfirmationRouter: Object.assign(() => null, {
+    displayName: 'MockConfirmationRouter',
+  }),
+}));
+
+jest.mock('../../components/app/toast-master/toast-master', () => {
+  const { useLocation } = jest.requireActual('react-router-dom');
+  const { CONFIRMATION_V_NEXT_ROUTE: confirmationRoute } = jest.requireActual(
+    '../../helpers/constants/routes',
+  );
+
+  const MockToastMaster = () => {
+    const location = useLocation();
+
+    return location.pathname === confirmationRoute ? null : (
+      <div className="toasts-container" />
+    );
+  };
+
+  MockToastMaster.displayName = 'MockToastMaster';
+
+  return {
+    ToastMaster: MockToastMaster,
+  };
+});
+
 jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
     useIsOriginalNativeTokenSymbol: jest.fn(),
@@ -80,6 +110,90 @@ jest.mock(
 jest.mock(
   '../../../shared/lib/fetch-with-cache',
   () => () => mockFetchWithCache,
+);
+
+jest.mock('../../hooks/useMultichainAccountsIntroModal', () => ({
+  useMultichainAccountsIntroModal: jest.fn(() => ({
+    showMultichainIntroModal: false,
+    setShowMultichainIntroModal: jest.fn(),
+  })),
+}));
+
+jest.mock(
+  '../../components/app/qr-hardware-popover/index.js',
+  () => {
+    const MockQrHardwarePopover = () => (
+      <div data-testid="qr-hardware-popover" />
+    );
+    MockQrHardwarePopover.displayName = 'MockQrHardwarePopover';
+    return MockQrHardwarePopover;
+  },
+);
+
+jest.mock(
+  '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal.js',
+  () => {
+    const MockToggleIpfsModal = () => <div data-testid="toggle-ipfs-modal" />;
+    MockToggleIpfsModal.displayName = 'MockToggleIpfsModal';
+    return MockToggleIpfsModal;
+  },
+);
+
+jest.mock(
+  '../../components/app/basic-configuration-modal/index.ts',
+  () => {
+    const MockBasicConfigurationModal = () => (
+      <div data-testid="basic-configuration-modal" />
+    );
+    MockBasicConfigurationModal.displayName = 'MockBasicConfigurationModal';
+    return MockBasicConfigurationModal;
+  },
+);
+
+jest.mock(
+  '../../components/app/modals/keyring-snap-removal-modal/index.ts',
+  () => {
+    const MockKeyringSnapRemovalResult = () => (
+      <div data-testid="keyring-snap-removal-result" />
+    );
+    MockKeyringSnapRemovalResult.displayName = 'MockKeyringSnapRemovalResult';
+    return MockKeyringSnapRemovalResult;
+  },
+);
+
+jest.mock(
+  '../../components/app/deprecated-network-modal/DeprecatedNetworkModal.tsx',
+  () => {
+    const MockDeprecatedNetworkModal = () => (
+      <div data-testid="deprecated-network-modal" />
+    );
+    MockDeprecatedNetworkModal.displayName = 'MockDeprecatedNetworkModal';
+    return MockDeprecatedNetworkModal;
+  },
+);
+
+jest.mock(
+  '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover.tsx',
+  () => {
+    const MockNetworkConfirmationPopover = () => (
+      <div data-testid="network-confirmation-popover" />
+    );
+    MockNetworkConfirmationPopover.displayName =
+      'MockNetworkConfirmationPopover';
+    return MockNetworkConfirmationPopover;
+  },
+);
+
+jest.mock(
+  '../../components/app/modals/multichain-accounts/intro-modal/index.ts',
+  () => {
+    const MockMultichainAccountIntroModal = () => (
+      <div data-testid="multichain-account-intro-modal" />
+    );
+    MockMultichainAccountIntroModal.displayName =
+      'MockMultichainAccountIntroModal';
+    return MockMultichainAccountIntroModal;
+  },
 );
 
 jest.mock('../../hooks/musd', () => ({
@@ -174,10 +288,17 @@ const render = (pathname, state) => {
 
 describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
+  const mockUseMultichainAccountsIntroModal = jest.mocked(
+    useMultichainAccountsIntroModal,
+  );
 
   beforeEach(() => {
     // Clear previous mock implementations
     useMultiPolling.mockClear();
+    mockUseMultichainAccountsIntroModal.mockReturnValue({
+      showMultichainIntroModal: false,
+      setShowMultichainIntroModal: jest.fn(),
+    });
 
     // Mock implementation for useMultiPolling
     useMultiPolling.mockImplementation(({ input }) => {
@@ -291,6 +412,92 @@ describe('Routes Component', () => {
     );
 
     expect(await screen.findByTestId('home-route')).toBeInTheDocument();
+  });
+
+  it('does not mount deferred modal chunks until their gating state is active', () => {
+    render(DEFAULT_ROUTE, {
+      ...mockState,
+      appState: {
+        ...mockState.appState,
+        showIpfsModalOpen: false,
+        showBasicFunctionalityModal: false,
+        deprecatedNetworkModalOpen: false,
+        showKeyringRemovalSnapModal: false,
+      },
+      metamask: {
+        ...mockState.metamask,
+        activeQrCodeScanRequest: null,
+        pendingApprovals: {},
+      },
+    });
+
+    expect(screen.queryByTestId('qr-hardware-popover')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('network-confirmation-popover'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('toggle-ipfs-modal')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('basic-configuration-modal'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('deprecated-network-modal'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('keyring-snap-removal-result'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('multichain-account-intro-modal'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders deferred modal chunks when their gating state becomes active', async () => {
+    mockUseMultichainAccountsIntroModal.mockReturnValue({
+      showMultichainIntroModal: true,
+      setShowMultichainIntroModal: jest.fn(),
+    });
+
+    render(DEFAULT_ROUTE, {
+      ...mockState,
+      appState: {
+        ...mockState.appState,
+        showIpfsModalOpen: true,
+        showBasicFunctionalityModal: true,
+        deprecatedNetworkModalOpen: true,
+        showKeyringRemovalSnapModal: true,
+      },
+      metamask: {
+        ...mockState.metamask,
+        activeQrCodeScanRequest: {
+          type: QrScanRequestType.SIGN,
+          request: { requestId: 'req-1', payload: {} },
+        },
+        pendingApprovals: {
+          'approval-1': {
+            id: 'approval-1',
+            origin: 'metamask',
+            type: ApprovalType.AddEthereumChain,
+          },
+        },
+      },
+    });
+
+    expect(await screen.findByTestId('qr-hardware-popover')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('network-confirmation-popover'),
+    ).toBeInTheDocument();
+    expect(await screen.findByTestId('toggle-ipfs-modal')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('basic-configuration-modal'),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('deprecated-network-modal'),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('keyring-snap-removal-result'),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('multichain-account-intro-modal'),
+    ).toBeInTheDocument();
   });
 });
 
