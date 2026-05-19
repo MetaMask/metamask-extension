@@ -197,7 +197,8 @@ export const isDiscountedMMFee = (quote: QuoteResponse) => {
   const isDiscounted = Boolean(
     quoteFeePercentage &&
     baseFeePercentage &&
-    baseFeePercentage !== quoteFeePercentage,
+    baseFeePercentage !== quoteFeePercentage &&
+    Boolean(quoteBpsFee),
   );
 
   return {

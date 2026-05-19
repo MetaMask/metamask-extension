@@ -53,6 +53,9 @@ export const BridgeVipFeeMessage = () => {
   return (
     <Row gap={1} justifyContent={JustifyContent.center}>
       <RewardsVipBadge accountId={caipAccountId} />
+      <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+        {t('includes')}
+      </Text>
       <Text
         variant={TextVariant.BodyXs}
         color={TextColor.TextAlternative}
@@ -61,7 +64,7 @@ export const BridgeVipFeeMessage = () => {
         {t('percent', [baseFeePercentage])}
       </Text>
       <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
-        {t('percentFee', [quoteFeePercentage])}
+        {t('mmFee', [quoteFeePercentage])}
       </Text>
     </Row>
   );

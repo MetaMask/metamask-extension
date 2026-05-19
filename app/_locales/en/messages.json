@@ -3532,6 +3532,9 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "includes": {
+    "message": "Includes"
+  },
   "includesXTransactions": {
     "message": "Includes $1 transactions"
   },
@@ -4098,6 +4101,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
+  },
+  "mmFee": {
+    "message": "$1% MM fee."
   },
   "month": {
     "message": "month"
