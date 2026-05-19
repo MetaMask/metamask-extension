@@ -2164,10 +2164,6 @@ export class RewardsController extends BaseController<
       return false;
     }
 
-    if (code.length !== 6) {
-      return false;
-    }
-
     const response = await this.messenger.call(
       'RewardsDataService:validateReferralCode',
       code,

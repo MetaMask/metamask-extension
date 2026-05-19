@@ -33,7 +33,8 @@ export type UseValidateReferralCodeResult = {
 
 /**
  * Custom hook for validating referral codes with debounced validation.
- * Validates 6-character base32 encoded strings following RFC 4648 standard.
+ * Any non-empty input is forwarded to the backend, which is the source of
+ * truth for whether a referral code exists.
  *
  * @param initialValue - Initial referral code value (default: '')
  * @param debounceMs - Debounce delay in milliseconds (default: 300)
@@ -84,16 +85,14 @@ export const useValidateReferralCode = (
     (code: string) => {
       const refinedCode = code.trim().toUpperCase();
       setReferralCodeState(refinedCode);
-      // If not at minLength, do NOT validate; keep referral code state but clear error/validating state
-      if (refinedCode.length < 6) {
+      // If empty, do NOT validate; clear error/validating state
+      if (refinedCode.length < 1) {
         debouncedValidation.cancel();
         setIsValidating(false);
-        setError('minLength 6 characters');
+        setError('');
         return;
       }
-      if (refinedCode) {
-        setIsValidating(true);
-      }
+      setIsValidating(true);
       debouncedValidation(refinedCode);
     },
     [debouncedValidation],

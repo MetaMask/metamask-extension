@@ -36,14 +36,14 @@ describe('useValidateReferralCode', () => {
     expect(validateRewardsReferralCode).not.toHaveBeenCalled();
   });
 
-  it('does not validate while code length is less than 6', async () => {
+  it('does not validate for empty input', async () => {
     const { result } = renderHookWithProvider(
       () => useValidateReferralCode(),
       {},
     );
 
     act(() => {
-      result.current.setReferralCode('abc');
+      result.current.setReferralCode('   ');
     });
 
     expect(result.current.isValidating).toBe(false);
@@ -54,6 +54,56 @@ describe('useValidateReferralCode', () => {
     });
 
     expect(validateRewardsReferralCode).not.toHaveBeenCalled();
+  });
+
+  it('validates after debounce for any non-empty input and sets isValid=true', async () => {
+    const { result } = renderHookWithProvider(
+      () => useValidateReferralCode('', 1000),
+      {},
+    );
+
+    act(() => {
+      result.current.setReferralCode('abc');
+    });
+
+    expect(result.current.isValidating).toBe(true);
+
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    await waitFor(() => {
+      expect(result.current.isValidating).toBe(false);
+    });
+
+    expect(result.current.isValid).toBe(true);
+    const calls = validateRewardsReferralCode.mock.calls.map((c) => c[0]);
+    expect(calls).toContain('ABC');
+  });
+
+  it('validates vanity codes longer than 6 chars', async () => {
+    const { result } = renderHookWithProvider(
+      () => useValidateReferralCode('', 1000),
+      {},
+    );
+
+    act(() => {
+      result.current.setReferralCode('bankless');
+    });
+
+    expect(result.current.isValidating).toBe(true);
+
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+
+    await waitFor(() => {
+      expect(result.current.isValidating).toBe(false);
+    });
+
+    expect(result.current.isValid).toBe(true);
+    const calls = validateRewardsReferralCode.mock.calls.map((c) => c[0]);
+    expect(calls).toContain('BANKLESS');
   });
 
   it('validates successfully when code length is >= 6 and sets isValid=true', async () => {
