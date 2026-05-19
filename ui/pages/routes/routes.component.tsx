@@ -247,6 +247,15 @@ const MusdConversionPage = mmLazy(() => import('../musd/index.tsx'));
 const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
 // End Lazy Routes
 
+/**
+ * Returns whether a route should kick off Rive preload as soon as it matches.
+ *
+ * This preserves first-frame performance for known Rive surfaces by starting the
+ * runtime and WASM load while the route subtree is still resolving.
+ *
+ * @param pathname - The current router pathname.
+ * @returns True when the route is a known Rive consumer surface.
+ */
 export const shouldPreloadRiveForPath = (pathname: string) =>
   pathname === ONBOARDING_WELCOME_ROUTE ||
   pathname === ONBOARDING_COMPLETION_ROUTE ||

@@ -46,6 +46,12 @@ const setRiveWasmReadyState = (nextState: Partial<RiveWasmReadyState>) => {
   notifyRiveWasmListeners();
 };
 
+/**
+ * Lazily loads the Rive runtime module once per session.
+ *
+ * The module-level promise memoization keeps repeated preload requests from
+ * re-importing the runtime chunk.
+ */
 const loadRiveRuntime = () => {
   if (!runtimeLoaderPromise) {
     runtimeLoaderPromise = import('@rive-app/react-canvas');
@@ -214,6 +220,9 @@ export const useRiveWasmFile = (url: string) => {
   const cachedBuffer = urlBufferMap[url];
 
   useEffect(() => {
+    // Route-based preload handles the primary Rive surfaces. This component-level
+    // request keeps non-route consumers, such as toasts and modals, working when
+    // they are mounted outside those preloaded route transitions.
     preloadRiveWasm().catch((error) => {
       console.error('[Rive] Failed to preload WASM:', error);
     });
