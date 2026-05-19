@@ -38,7 +38,7 @@ export const RewardsVipBadge = ({
     });
   }, [accountId, dispatch]);
 
-  if (!vipTier) {
+  if (vipTier === null) {
     return null;
   }
 

@@ -696,6 +696,9 @@ export class RewardsController extends BaseController<
     }
 
     const vipFeeResponse = await this.#getVipFeesForAccount(subscriptionId);
+    if (vipFeeResponse === 0) {
+      return 0;
+    }
     if (!vipFeeResponse) {
       return null;
     }
