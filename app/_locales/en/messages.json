@@ -8783,6 +8783,9 @@
   "srpRevealMaliciousBlockHeading": {
     "message": "You might be getting scammed right now"
   },
+  "srpRevealMaliciousBlockDismiss": {
+    "message": "Back to safety"
+  },
   "srpRevealMaliciousBlockIconAriaLabel": {
     "message": "Danger"
   },
