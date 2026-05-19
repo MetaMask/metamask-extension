@@ -719,6 +719,14 @@
         "@babel/runtime": true
       }
     },
+    "@metamask-previews/wallet": {
+      "packages": {
+        "@metamask/browser-passworder": true,
+        "@metamask/keyring-controller": true,
+        "@metamask/messenger": true,
+        "@metamask/utils": true
+      }
+    },
     "@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
