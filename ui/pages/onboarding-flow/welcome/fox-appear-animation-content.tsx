@@ -7,6 +7,7 @@ import {
   Alignment,
 } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
+import classnames from 'clsx';
 import {
   useRiveWasmContext,
   useRiveWasmFile,
@@ -132,6 +133,11 @@ export default function FoxAppearAnimation({
     }
   }, [rive, isLoader, isWasmReady, skipTransition, bufferLoading, buffer]);
 
+  const containerClassName = classnames({
+    'riv-animation__fox-container--loader': isLoader,
+    'riv-animation__fox-container': !isLoader,
+  });
+
   // Don't render Rive component until ready or if loading/failed
   if (
     !isWasmReady ||
@@ -141,9 +147,7 @@ export default function FoxAppearAnimation({
     status === 'failed'
   ) {
     return (
-      <Box
-        className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
-      >
+      <Box className={containerClassName}>
         {isLoader && (
           <img
             data-testid="loading-indicator"
@@ -157,10 +161,7 @@ export default function FoxAppearAnimation({
   }
 
   return (
-    <Box
-      ref={containerRef}
-      className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
-    >
+    <Box ref={containerRef} className={containerClassName}>
       <RiveComponent className="riv-animation__canvas" />
       {isLoader && (
         <img

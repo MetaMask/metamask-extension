@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { Box } from '@metamask/design-system-react';
+import classnames from 'clsx';
 import { mmLazy } from '../../../helpers/utils/mm-lazy';
 
 type FoxAppearAnimationProps = {
@@ -17,12 +18,15 @@ export default function FoxAppearAnimation({
   isLoader = false,
   skipTransition = false,
 }: FoxAppearAnimationProps) {
+  const containerClassName = classnames({
+    'riv-animation__fox-container--loader': isLoader,
+    'riv-animation__fox-container': !isLoader,
+  });
+
   return (
     <Suspense
       fallback={
-        <Box
-          className={`${isLoader ? 'riv-animation__fox-container--loader' : 'riv-animation__fox-container'}`}
-        >
+        <Box className={containerClassName}>
           {isLoader && (
             <img
               data-testid="loading-indicator"
