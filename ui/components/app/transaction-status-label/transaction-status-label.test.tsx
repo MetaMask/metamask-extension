@@ -199,9 +199,7 @@ describe('TransactionStatusLabel Component', () => {
   });
 
   it('renders label and tooltip if provided when status is omitted', () => {
-    render(
-      <TransactionStatusLabel label="cancelled" tooltip="protected" />,
-    );
+    render(<TransactionStatusLabel label="cancelled" tooltip="protected" />);
     expect(screen.getByText('cancelled')).toBeInTheDocument();
     expect(screen.getByTestId('tooltip')).toHaveAttribute(
       'data-tooltip-title',
