@@ -107,6 +107,7 @@ describe('HardwareWalletRepair', () => {
     ).not.toBeInTheDocument();
   });
 
+  // @ts-expect-error: each is a valid test function in jest
   it.each([
     HardwareWalletType.OneKey,
     HardwareWalletType.Lattice,
@@ -115,7 +116,7 @@ describe('HardwareWalletRepair', () => {
     null,
   ])(
     'does not render Ledger-specific Ethereum app instructions for %s',
-    (walletType) => {
+    (walletType: HardwareWalletType | null) => {
       const { getByText, queryByText } = renderRepairPage(walletType);
       expect(
         getByText(/hardwareWalletRepairStepOneTitle/u),
