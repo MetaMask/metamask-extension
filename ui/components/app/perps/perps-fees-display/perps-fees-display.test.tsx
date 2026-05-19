@@ -107,7 +107,38 @@ describe('PerpsFeesDisplay', () => {
       );
 
       expect(screen.getByText('$100.00')).toBeInTheDocument();
+      expect(screen.getByText('$80.00')).toBeInTheDocument();
       expect(screen.getByText('-20%')).toBeInTheDocument();
+    });
+
+    it('strikes through the original fee when a discount is active', () => {
+      render(
+        <PerpsFeesDisplay
+          fee={100}
+          metamaskFeeRateDiscountPercentage={20}
+          feeTextTestId="fee"
+        />,
+      );
+
+      const original = screen.getByTestId('fee-original');
+      expect(original).toHaveTextContent('$100.00');
+      expect(original).toHaveStyle({ textDecoration: 'line-through' });
+
+      const discounted = screen.getByTestId('fee');
+      expect(discounted).toHaveTextContent('$80.00');
+    });
+
+    it('applies negated prefix to both original and discounted fees', () => {
+      render(
+        <PerpsFeesDisplay
+          fee={100}
+          metamaskFeeRateDiscountPercentage={50}
+          negated
+        />,
+      );
+
+      expect(screen.getByText('-$100.00')).toBeInTheDocument();
+      expect(screen.getByText('-$50.00')).toBeInTheDocument();
     });
 
     it('forwards the optional feeTextTestId to the fee text node', () => {
@@ -146,6 +177,7 @@ describe('PerpsFeesDisplay', () => {
         screen.getByTestId('perps-fees-display-discount'),
       ).toBeInTheDocument();
       expect(screen.getByText('$10.00')).toBeInTheDocument();
+      expect(screen.getByText('$8.50')).toBeInTheDocument();
     });
   });
 });

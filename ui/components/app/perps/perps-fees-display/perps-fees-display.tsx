@@ -76,14 +76,28 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   feeTextTestId,
   showVipBadge = false,
 }) => {
+  const hasDiscount =
+    metamaskFeeRateDiscountPercentage !== undefined &&
+    metamaskFeeRateDiscountPercentage > 0;
+
+  const formatFee = (amount: number): string => {
+    const formatted = formatPerpsFiat(amount, {
+      ranges: PRICE_RANGES_MINIMAL_VIEW,
+    });
+    return negated ? `-${formatted}` : formatted;
+  };
+
   let feeText: string;
+  let discountedFeeText: string | undefined;
+
   if (fee === undefined) {
     feeText = placeholder;
   } else {
-    const formatted = formatPerpsFiat(fee, {
-      ranges: PRICE_RANGES_MINIMAL_VIEW,
-    });
-    feeText = negated ? `-${formatted}` : formatted;
+    feeText = formatFee(fee);
+    if (hasDiscount) {
+      const discountedFee = fee * (1 - metamaskFeeRateDiscountPercentage / 100);
+      discountedFeeText = formatFee(discountedFee);
+    }
   }
 
   return (
@@ -93,8 +107,7 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
       gap={1}
     >
       {showVipBadge ? <RewardsVipBadge /> : null}
-      {metamaskFeeRateDiscountPercentage !== undefined &&
-        metamaskFeeRateDiscountPercentage > 0 ? (
+      {hasDiscount ? (
         <Box
           flexDirection={BoxFlexDirection.Row}
           alignItems={BoxAlignItems.Center}
@@ -115,14 +128,37 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
           </Text>
         </Box>
       ) : null}
-      <Text
-        variant={variant}
-        color={feeTextColor}
-        fontWeight={feeTextFontWeight}
-        data-testid={feeTextTestId}
-      >
-        {feeText}
-      </Text>
+      {discountedFeeText === undefined ? (
+        <Text
+          variant={variant}
+          color={feeTextColor}
+          fontWeight={feeTextFontWeight}
+          data-testid={feeTextTestId}
+        >
+          {feeText}
+        </Text>
+      ) : (
+        <>
+          <Text
+            variant={variant}
+            color={TextColor.TextAlternative}
+            style={{ textDecoration: 'line-through' }}
+            data-testid={
+              feeTextTestId ? `${feeTextTestId}-original` : undefined
+            }
+          >
+            {feeText}
+          </Text>
+          <Text
+            variant={variant}
+            color={feeTextColor}
+            fontWeight={feeTextFontWeight}
+            data-testid={feeTextTestId}
+          >
+            {discountedFeeText}
+          </Text>
+        </>
+      )}
     </Box>
   );
 };
