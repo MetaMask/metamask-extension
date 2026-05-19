@@ -9,6 +9,7 @@ import {
 } from './types';
 import { MessengerClient } from './controller-list';
 import { MESSENGER_FACTORIES } from './messengers';
+import { Wallet } from '@metamask/wallet';
 
 const log = createProjectLogger('messenger-client-init');
 
@@ -91,10 +92,12 @@ export type InitFunctions = Partial<{
  * @returns The initialized messenger clients and associated data.
  */
 export function initMessengerClients({
+  wallet,
   baseControllerMessenger,
   initFunctions,
   initRequest,
 }: {
+  wallet: Wallet;
   baseControllerMessenger: BaseControllerMessenger;
   initFunctions: InitFunctions;
   initRequest: Omit<
@@ -114,6 +117,7 @@ export function initMessengerClients({
     name: Name,
   ): MessengerClientByName[Name] =>
     getMessengerClientOrThrow(
+      wallet,
       partialMessengerClientsByName as MessengerClientByName,
       name,
     );
@@ -204,10 +208,12 @@ export function initMessengerClients({
 }
 
 function getMessengerClientOrThrow<Name extends MessengerClientName>(
+  wallet: Wallet,
   messengerClientsByName: MessengerClientByName,
   name: Name,
 ): MessengerClientByName[Name] {
-  const messengerClient = messengerClientsByName[name];
+  const messengerClient =
+    wallet.getInstance(name) ?? messengerClientsByName[name];
 
   if (!messengerClient) {
     throw new Error(

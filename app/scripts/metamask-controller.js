@@ -421,8 +421,6 @@ import { AppStateControllerInit } from './messenger-client-init/app-state-contro
 import { PermissionControllerInit } from './messenger-client-init/permission-controller-init';
 import { SubjectMetadataControllerInit } from './messenger-client-init/subject-metadata-controller-init';
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
-import { KeyringControllerInit } from './messenger-client-init/keyring-controller-init';
-import { SnapKeyringBuilderInit } from './messenger-client-init/accounts/snap-keyring-builder-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
@@ -457,6 +455,7 @@ import { getAddTransactionSendCallExtraOptions } from './lib/transaction/tempo-t
 import { DataDeletionServiceInit } from './messenger-client-init/data-deletion-service-init';
 import { LegacyBackgroundApiServiceInit } from './messenger-client-init/legacy-background-api-service-init';
 import { getSnapKeyring } from './lib/snap-keyring/utils/getSnapKeyring';
+import { initializeWallet } from './wallet-init/initialization';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -545,6 +544,8 @@ export default class MetamaskController extends EventEmitter {
 
     this.initializeChainlist();
 
+    this.wallet = initializeWallet(controllerMessenger, initState);
+
     this.controllerMessenger = controllerMessenger;
     this.currentMigrationVersion = opts.currentMigrationVersion;
 
@@ -619,8 +620,6 @@ export default class MetamaskController extends EventEmitter {
       StorageService: StorageServiceInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
-      SnapKeyringBuilder: SnapKeyringBuilderInit,
-      KeyringController: KeyringControllerInit,
       AccountsController: AccountsControllerInit,
       AddressBookController: AddressBookControllerInit,
       AlertController: AlertControllerInit,
@@ -746,7 +745,7 @@ export default class MetamaskController extends EventEmitter {
     this.loggingController = messengerClientsByName.LoggingController;
     this.appMetadataController = messengerClientsByName.AppMetadataController;
     this.preferencesController = messengerClientsByName.PreferencesController;
-    this.keyringController = messengerClientsByName.KeyringController;
+    this.keyringController = this.wallet.getInstance('KeyringController');
     this.accountsController = messengerClientsByName.AccountsController;
     this.addressBookController = messengerClientsByName.AddressBookController;
     this.alertController = messengerClientsByName.AlertController;
@@ -9434,23 +9433,22 @@ export default class MetamaskController extends EventEmitter {
    * @returns {*} The result of the callback
    */
   async #withKeyringForDevice(options, callback) {
-    const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringType = null;
     switch (options.name) {
       case HardwareDeviceNames.trezor:
-        keyringType = keyringOverrides?.trezor?.type || TrezorKeyring.type;
+        keyringType = TrezorKeyring.type;
         break;
       case HardwareDeviceNames.oneKey:
-        keyringType = keyringOverrides?.oneKey?.type || OneKeyKeyring?.type;
+        keyringType = OneKeyKeyring?.type;
         break;
       case HardwareDeviceNames.ledger:
-        keyringType = keyringOverrides?.ledger?.type || LedgerKeyring.type;
+        keyringType = LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
         keyringType = QrKeyring.type;
         break;
       case HardwareDeviceNames.lattice:
-        keyringType = keyringOverrides?.lattice?.type || LatticeKeyring.type;
+        keyringType = LatticeKeyring.type;
         break;
       default:
         throw new Error(
@@ -9556,7 +9554,6 @@ export default class MetamaskController extends EventEmitter {
       getUIState: this.getState.bind(this),
       infuraProjectId: this.opts.infuraProjectId,
       initLangCode: this.opts.initLangCode,
-      keyringOverrides: this.opts.overrides?.keyrings,
       sendUpdate: this.sendUpdate.bind(this),
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
@@ -9583,6 +9580,7 @@ export default class MetamaskController extends EventEmitter {
     };
 
     return initMessengerClients({
+      wallet: this.wallet,
       baseControllerMessenger: this.controllerMessenger,
       initFunctions,
       initRequest,
