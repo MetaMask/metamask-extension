@@ -1,10 +1,10 @@
 import { act } from '@testing-library/react-hooks';
-import { HardwareWalletSignatureStatus } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
-import { createSignatureState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine.test-helpers';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { HardwareWalletSignatureStatus } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { createSignatureState } from '../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine.test-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useHwSwapNavigation } from './useHwSwapNavigation';
 
-jest.mock('../../../components/app/toast-listener/shared', () => ({
+jest.mock('../../components/app/toast-listener/shared', () => ({
   showSuccessToast: jest.fn(),
 }));
 
@@ -13,7 +13,7 @@ jest.mock('../../bridge/useBridgeNavigation', () => ({
 }));
 
 const mockShowSuccessToast = jest.requireMock(
-  '../../../components/app/toast-listener/shared',
+  '../../components/app/toast-listener/shared',
 ).showSuccessToast;
 const mockUseBridgeNavigation = jest.requireMock(
   '../../bridge/useBridgeNavigation',

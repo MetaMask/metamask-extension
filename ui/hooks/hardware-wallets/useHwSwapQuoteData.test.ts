@@ -1,13 +1,13 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { useHwSwapQuoteData } from './useHwSwapQuoteData';
 
-jest.mock('../../../ducks/bridge/selectors', () => ({
+jest.mock('../../ducks/bridge/selectors', () => ({
   getBridgeQuotes: jest.fn(),
   getFromToken: jest.fn(),
   getToToken: jest.fn(),
 }));
 
-jest.mock('../../../../shared/lib/selectors/keyring', () => ({
+jest.mock('../../../shared/lib/selectors/keyring', () => ({
   getHardwareWalletType: jest.fn(),
   isHardwareWallet: jest.fn(),
 }));
@@ -20,19 +20,19 @@ jest.mock('react-redux', () => ({
 const mockUseSelector = jest.requireMock('react-redux').useSelector;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetBridgeQuotes = jest.requireMock(
-  '../../../ducks/bridge/selectors',
+  '../../ducks/bridge/selectors',
 ).getBridgeQuotes;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetFromToken = jest.requireMock(
-  '../../../ducks/bridge/selectors',
+  '../../ducks/bridge/selectors',
 ).getFromToken;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetToToken = jest.requireMock(
-  '../../../ducks/bridge/selectors',
+  '../../ducks/bridge/selectors',
 ).getToToken;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockGetHardwareWalletType = jest.requireMock(
-  '../../../../shared/lib/selectors/keyring',
+  '../../../shared/lib/selectors/keyring',
 ).getHardwareWalletType;
 
 const mockFromToken = {
