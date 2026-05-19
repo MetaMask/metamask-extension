@@ -12,7 +12,8 @@ type GetMultichainAccountAddressListPagePathOptions = {
  * Builds the path for the multichain account address list page.
  *
  * @param accountGroupId - Account group id used by the address list page.
- * @param options - Optional query params, such as receive-flow source.
+ * @param options - Optional query params.
+ * @param options.source - Address list page source.
  * @returns Route path with encoded query params.
  */
 export function getMultichainAccountAddressListPagePath(

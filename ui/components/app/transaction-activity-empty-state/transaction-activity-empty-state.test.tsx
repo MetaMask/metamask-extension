@@ -11,11 +11,11 @@ import { ThemeType } from '../../../../shared/constants/preferences';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import * as useMultichainSelectorHook from '../../../hooks/useMultichainSelector';
+import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 import {
   TransactionActivityEmptyState,
   type TransactionActivityEmptyStateProps,
 } from './transaction-activity-empty-state';
-import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 
 // Mock the useBridging hook
 jest.mock('../../../hooks/bridge/useBridging');
