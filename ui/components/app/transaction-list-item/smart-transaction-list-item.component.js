@@ -8,7 +8,6 @@ import TransactionStatusLabel from '../transaction-status-label';
 import { ActivityListStatusSubtitle } from '../activity-list-status';
 import TransactionIcon from '../transaction-icon';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import {
   TransactionGroupStatus,
   SmartTransactionStatus,
@@ -44,8 +43,7 @@ export default function SmartTransactionListItem({
     useTransactionDisplayData(transactionGroup);
   const currentChain = useSelector(getCurrentNetwork);
 
-  const { time, status } = smartTransaction;
-  const date = formatDateWithYearContext(time, 'MMM d, y', 'MMM d');
+  const { status } = smartTransaction;
   let displayedStatusKey;
   if (status === SmartTransactionStatus.pending) {
     displayedStatusKey = TransactionGroupStatus.pending;
