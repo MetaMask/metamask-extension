@@ -176,7 +176,10 @@
     "message": "Activity"
   },
   "activityEmptyDescription": {
-    "message": "Nothing to see yet. Swap your first token today."
+    "message": "Swap your first token today."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "Add funds to your wallet to get started."
   },
   "add": {
     "message": "Add"
