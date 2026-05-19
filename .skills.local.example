@@ -1,11 +1,15 @@
 # Template for per-engineer skills config used by `yarn skills`.
 # Copy this file to `.skills.local` (gitignored).
 #
-# Skill source repos are configured via env vars (set in your shell rc):
+# Zero-config default: the `postinstall` hook clones MetaMask/skills into
+# `.skills-cache/metamask-skills` on every `yarn install`. `yarn skills`
+# auto-detects that cache when no env var is set — nothing to do.
+#
+# Optional: point at a different clone via env var (set in your shell rc):
 #   METAMASK_SKILLS_DIR   path to MetaMask/skills checkout (public, no auth)
 #   CONSENSYS_SKILLS_DIR  path to Consensys/skills checkout (private overlay)
 #
-# Example shell rc setup:
+# Example shell rc setup (only if you want to override the cache):
 #   export METAMASK_SKILLS_DIR=~/dev/metamask/skills
 #   export CONSENSYS_SKILLS_DIR=~/dev/Consensys/skills   # optional
 #
