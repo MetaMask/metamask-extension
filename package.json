@@ -161,7 +161,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A7.0.0#~/.yarn/patches/@metamask-assets-controller-npm-7.0.0-5e9819d140.patch",
+    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A7.0.0#~/.yarn/patches/@metamask-assets-controller-npm-7.0.0-b32ae360c0.patch",
     "@metamask/bridge-controller": "72.0.0",
     "@metamask/bridge-status-controller": "71.1.1",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
@@ -411,7 +411,7 @@
     "@metamask/ppom-validator": "0.39.1",
     "@metamask/preinstalled-example-snap": "^0.7.2",
     "@metamask/profile-metrics-controller": "^3.0.4",
-    "@metamask/profile-sync-controller": "^28.0.2",
+    "@metamask/profile-sync-controller": "^28.1.0",
     "@metamask/providers": "^22.1.1",
     "@metamask/rate-limit-controller": "^7.0.0",
     "@metamask/react-data-query": "^0.2.0",
