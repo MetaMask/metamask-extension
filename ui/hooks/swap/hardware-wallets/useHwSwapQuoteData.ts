@@ -7,7 +7,7 @@ import {
   getFromToken,
   getToToken,
 } from '../../../ducks/bridge/selectors';
-import { getHardwareWalletType } from '../../../selectors/selectors';
+import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
 
 /**
  * Provides quote and token data for hardware wallet swap/bridge flows.
@@ -33,6 +33,13 @@ export function useHwSwapQuoteData() {
   const lockedQuoteRef = useRef(activeQuote);
   if (activeQuote && !lockedQuoteRef.current) {
     lockedQuoteRef.current = activeQuote;
+    console.log(
+      '[HW-Batch] useHwSwapQuoteData: latched activeQuote → lockedQuote',
+      JSON.stringify({
+        requestId: activeQuote?.quote?.requestId ?? null,
+        hasApproval: Boolean(activeQuote?.approval),
+      }),
+    );
   }
   const lockedQuote = lockedQuoteRef.current;
 

@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux';
 import {
   HardwareWalletSignatureEvent,
   HardwareWalletSignatureStatus,
-} from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
-import type { BridgeStatusState } from '../../../pages/bridge/hardware-wallets/types';
+} from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { BridgeStatusState } from '../../../pages/hardware-wallets/swap/types';
 
 type UseHardwareWalletConfirmationMonitoringOptions = {
   hardwareWalletUsed: boolean;
@@ -62,6 +62,17 @@ export function useHwSwapConfirmationMonitoring({
     const currentId = confirmationTxData?.id;
     const previousId = previousTxIdRef.current;
 
+    console.log(
+      '[HW-Batch] useHwSwapConfirmationMonitoring effect',
+      JSON.stringify({
+        currentId: currentId ?? null,
+        previousId: previousId ?? null,
+        hardwareWalletUsed,
+        signatureState: signatureState.status,
+        isDeviceDisconnected: isDeviceDisconnectedRef?.current ?? false,
+      }),
+    );
+
     if (
       hardwareWalletUsed &&
       (signatureState.status ===
@@ -72,6 +83,13 @@ export function useHwSwapConfirmationMonitoring({
       !currentId &&
       !isDeviceDisconnectedRef?.current
     ) {
+      console.log(
+        '[HW-Batch] useHwSwapConfirmationMonitoring → TransactionRejected',
+        JSON.stringify({
+          previousId,
+          currentId: currentId ?? null,
+        }),
+      );
       dispatchSignatureEvent({
         type: HardwareWalletSignatureEvent.TransactionRejected,
       });

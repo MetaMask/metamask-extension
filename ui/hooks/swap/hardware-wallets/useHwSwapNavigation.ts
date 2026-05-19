@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react';
 
 import { showSuccessToast } from '../../../components/app/toast-listener/shared';
 import { useBridgeNavigation } from '../../bridge/useBridgeNavigation';
-import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
+import { HardwareWalletSignatureStatus } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
 
 type UseHardwareWalletNavigationOptions = {
   signatureState: HardwareWalletSignaturesState;
@@ -35,6 +35,9 @@ export function useHwSwapNavigation({
       return;
     }
 
+    console.log(
+      '[HW-Batch] useHwSwapNavigation: Submitted → scheduling toast + navigate in 1s',
+    );
     hasNavigatedAfterSubmission.current = true;
 
     const toastId = `bridge-hw-submitted-${Date.now()}`;
