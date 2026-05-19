@@ -1,11 +1,11 @@
-// The global jest setup mocks this module to always return false; unmock it
-// here so we can test the real implementation.
-jest.unmock('./remote-feature-flag');
-
 import {
   isAssetsUnifyStateFeatureEnabled,
   ASSETS_UNIFY_STATE_VERSION_1,
 } from './remote-feature-flag';
+
+// The global jest setup mocks this module to always return false; unmock it
+// here so we can test the real implementation.
+jest.unmock('./remote-feature-flag');
 
 describe('isAssetsUnifyStateFeatureEnabled', () => {
   const originalInTest = process.env.IN_TEST;
