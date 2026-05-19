@@ -85,7 +85,7 @@ describe('useMultichainTransactionDisplay', () => {
       mockState,
     );
     expect(result.current.title).toBe('Sent');
-    expect(result.current.from?.amount).toMatch(/^-/);
+    expect(result.current.from?.amount).toMatch(/^-/u);
   });
 
   it('returns positive to amount for non-Send type (Receive)', () => {
@@ -96,7 +96,7 @@ describe('useMultichainTransactionDisplay', () => {
     );
     expect(result.current.title).toBe('Received');
     // to is NOT negative for non-Send
-    expect(result.current.to?.amount).not.toMatch(/^-/);
+    expect(result.current.to?.amount).not.toMatch(/^-/u);
   });
 
   it('isRedeposit is true when to is empty and type is Send', () => {
