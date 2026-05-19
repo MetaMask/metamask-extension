@@ -85,8 +85,8 @@ export type OrderCalculations = {
   liquidationPriceRaw: number | null;
   /** Total order value in USD */
   orderValue: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount) */
+  estimatedFees: number | null;
 };
 
 /**
@@ -212,8 +212,8 @@ export type LeverageSliderProps = {
 export type OrderSummaryProps = {
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount) */
+  estimatedFees: number | null;
   /** Estimated liquidation price */
   liquidationPrice: string | null;
   /**

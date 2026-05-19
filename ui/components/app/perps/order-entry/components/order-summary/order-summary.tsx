@@ -78,9 +78,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
         </Text>
         <PerpsFeesDisplay
           metamaskFeeRateDiscountPercentage={
-            estimatedFees ? metamaskFeeRateDiscountPercentage : undefined
+            estimatedFees === null
+              ? undefined
+              : metamaskFeeRateDiscountPercentage
           }
-          formatFeeText={estimatedFees ?? '-'}
+          fee={estimatedFees ?? undefined}
           feeTextTestId="perps-order-summary-estimated-fees"
           showVipBadge
         />

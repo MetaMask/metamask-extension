@@ -623,7 +623,8 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                         ? undefined
                         : metamaskFeeRateDiscountPercentage
                     }
-                    formatFeeText={`-${formatFiat(roundedFees)}`}
+                    fee={roundedFees}
+                    negated
                     feeTextFontWeight={FontWeight.Medium}
                     feeTextTestId="perps-close-summary-fees-value"
                     showVipBadge

@@ -6,6 +6,13 @@ import configureStore from '../../../../../../store/store';
 import mockState from '../../../../../../../test/data/mock-state.json';
 import { OrderSummary } from './order-summary';
 
+jest.mock('../../../../../../../shared/lib/perps-formatters', () => ({
+  ...jest.requireActual('../../../../../../../shared/lib/perps-formatters'),
+  formatPerpsFiat: jest.fn(
+    (value: string | number) => `$${Number(value).toFixed(2)}`,
+  ),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
@@ -64,7 +71,7 @@ describe('OrderSummary', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired={null}
-          estimatedFees="$0.50"
+          estimatedFees={0.5}
           liquidationPrice={null}
         />,
         mockStore,
@@ -90,7 +97,7 @@ describe('OrderSummary', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired="$1,000.00"
-          estimatedFees="$0.50"
+          estimatedFees={0.5}
           liquidationPrice="$42,500.00"
         />,
         mockStore,
@@ -107,7 +114,7 @@ describe('OrderSummary', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired="$1,000.00"
-          estimatedFees="$0.50"
+          estimatedFees={0.5}
           liquidationPrice="$42,500.00"
         />,
         mockStore,
@@ -122,7 +129,7 @@ describe('OrderSummary', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired="$1,000.00"
-          estimatedFees="$0.50"
+          estimatedFees={0.5}
           liquidationPrice="$42,500.00"
           metamaskFeeRateDiscountPercentage={50}
         />,
@@ -133,7 +140,6 @@ describe('OrderSummary', () => {
         screen.getByTestId('perps-fees-display-discount'),
       ).toBeInTheDocument();
       expect(screen.getByText('-50%')).toBeInTheDocument();
-      // Fee text still renders alongside the badge
       expect(screen.getByText('$0.50')).toBeInTheDocument();
     });
 
@@ -141,7 +147,7 @@ describe('OrderSummary', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired="$1,000.00"
-          estimatedFees="$0.50"
+          estimatedFees={0.5}
           liquidationPrice="$42,500.00"
           metamaskFeeRateDiscountPercentage={0}
         />,
