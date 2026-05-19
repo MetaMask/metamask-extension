@@ -18,11 +18,17 @@ jest.mock('../../ui/tooltip', () => {
   const MockTooltip = ({
     children,
     title,
+    wrapperClassName,
   }: {
     children?: React.ReactNode;
     title?: string;
+    wrapperClassName?: string;
   }) => (
-    <div data-testid="tooltip" data-tooltip-title={title ?? ''}>
+    <div
+      data-testid="tooltip"
+      data-tooltip-title={title ?? ''}
+      className={wrapperClassName}
+    >
       {children}
     </div>
   );
@@ -82,17 +88,6 @@ describe('shouldShowActivityListStatusSubtitle', () => {
 });
 
 describe('TransactionStatusLabel Component', () => {
-  it('should render CONFIRMED status and date', () => {
-    const props = {
-      status: 'confirmed',
-      date: 'June 1',
-      statusOnly: false,
-    };
-
-    render(<TransactionStatusLabel {...props} />);
-    expect(screen.getByText('June 1')).toBeInTheDocument();
-  });
-
   it('should render PENDING status when submitted and isEarliestNonce is true', () => {
     const props = {
       status: TransactionStatus.submitted,
@@ -198,25 +193,10 @@ describe('TransactionStatusLabel Component', () => {
     expect(screen.getByText('queued')).toBeInTheDocument();
   });
 
-  it('should display date for confirmed transactions when not statusOnly', () => {
-    const props = {
-      status: TransactionStatus.confirmed,
-      date: 'June 1',
-      statusOnly: false,
-    };
-
-    render(<TransactionStatusLabel {...props} />);
-    expect(screen.getByText('June 1')).toBeInTheDocument();
-  });
-
-  it('should display status text for confirmed transactions when statusOnly is true', () => {
-    const props = {
-      status: TransactionStatus.confirmed,
-      date: 'June 1',
-      statusOnly: true,
-    };
-
-    render(<TransactionStatusLabel {...props} />);
+  it('displays confirmed status text', () => {
+    render(
+      <TransactionStatusLabel status={TransactionStatus.confirmed} />,
+    );
     expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
   });
 
@@ -253,7 +233,10 @@ describe('TransactionStatusLabel Component', () => {
         tooltip="custom tooltip"
       />,
     );
-    expect(screen.getByTestId('tooltip').dataset.title).toBe('custom tooltip');
+    expect(screen.getByTestId('tooltip')).toHaveAttribute(
+      'data-tooltip-title',
+      'custom tooltip',
+    );
   });
 
   describe('when statusDisplayMode is activityMinimal', () => {
@@ -284,14 +267,12 @@ describe('TransactionStatusLabel Component', () => {
       render(
         <TransactionStatusLabel
           status={TransactionStatus.confirmed}
-          date="June 1"
           statusDisplayMode={STATUS_DISPLAY_MODE.activityMinimal}
         />,
       );
       expect(
         screen.queryByText(TransactionStatus.confirmed),
       ).not.toBeInTheDocument();
-      expect(screen.queryByText('June 1')).not.toBeInTheDocument();
     });
 
     it('displays queued status text when submitted and not earliest nonce', () => {

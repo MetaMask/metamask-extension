@@ -12,7 +12,6 @@ import { TransactionGroupCategory } from '../../../../shared/constants/transacti
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import { getTransactionDisplayStatusKey } from '../../app/transaction-status-label';
 import { ActivityListStatusSubtitle } from '../../app/activity-list-status';
-import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
@@ -28,7 +27,7 @@ type Props = {
 export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
   const matchedBridgeHistoryItem = bridgeHistoryItems[transaction.id];
-  const { from, to, type, timestamp, isRedeposit, title } =
+  const { from, to, type, isRedeposit, title } =
     useMultichainTransactionDisplay(transaction);
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[transaction.status];
 
@@ -66,11 +65,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
         }
         title="Redeposit"
         subtitle={
-          <ActivityListStatusSubtitle
-            date={formatTimestamp(timestamp)}
-            error={{}}
-            status={statusKey}
-          />
+          <ActivityListStatusSubtitle error={{}} status={statusKey} />
         }
       />
     );
@@ -108,11 +103,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
       }
       title={title}
       subtitle={
-        <ActivityListStatusSubtitle
-          date={formatTimestamp(transaction.timestamp)}
-          error={{}}
-          status={statusKey}
-        />
+        <ActivityListStatusSubtitle error={{}} status={statusKey} />
       }
     />
   );

@@ -1,6 +1,5 @@
 import React from 'react';
 import classnames from 'clsx';
-import { TransactionStatus } from '@metamask/transaction-controller';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -29,10 +28,8 @@ const shouldRenderStatusText = (
 export type TransactionStatusLabelProps = {
   status?: string;
   className?: string;
-  date?: string;
   error?: { message?: string; rpc?: { message?: string } };
   isEarliestNonce?: boolean;
-  statusOnly?: boolean;
   statusDisplayMode?: StatusDisplayMode;
   label?: string;
   tooltip?: string;
@@ -43,18 +40,13 @@ export type TransactionStatusLabelProps = {
 // signing; submitted/signed become pending vs queued based on `isEarliestNonce`).
 // When `error` supplies a message, it is shown as a tooltip over the status text.
 //
-// For confirmed transactions, passing `statusOnly: false` replaces the translated "confirmed"
-// copy with `date`, which list UIs use to show when the transaction completed.
-//
-// `statusDisplayMode: activityMinimal` is currently used on activity list: in this mode
-// only queued, signing, and failed states render label text.
+// `statusDisplayMode: activityMinimal` is used on activity list rows: only queued, signing, and
+// failed states render label text.
 export default function TransactionStatusLabel({
   status,
-  date,
   error,
   isEarliestNonce,
   className,
-  statusOnly,
   statusDisplayMode = STATUS_DISPLAY_MODE.default,
   label,
   tooltip,
@@ -70,12 +62,7 @@ export default function TransactionStatusLabel({
   }
 
   const tooltipText = tooltip || error?.rpc?.message || error?.message;
-  let statusText = label ?? t(statusKey);
-
-
-  if (!label && statusKey === TransactionStatus.confirmed && !statusOnly) {
-    statusText = date;
-  }
+  const statusText = label ?? t(statusKey);
 
   return (
     <Tooltip

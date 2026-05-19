@@ -44,7 +44,6 @@ import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import CancelButton from '../cancel-button';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
@@ -194,11 +193,6 @@ function TransactionListItemInner({
     displayedStatusKey,
     isEarliestNonce || shouldShowPendingBridgeStatus,
   );
-  const date = formatDateWithYearContext(
-    transactionGroup.primaryTransaction.time,
-    'MMM d, y',
-    'MMM d',
-  );
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
@@ -331,7 +325,6 @@ function TransactionListItemInner({
             <ActivityListStatusSubtitle
               isEarliestNonce={isEarliestNonce || shouldShowPendingBridgeStatus}
               error={error}
-              date={date}
               status={displayedStatusKey}
             />
           )
@@ -409,9 +402,7 @@ function TransactionListItemInner({
                   isEarliestNonce || shouldShowPendingBridgeStatus
                 }
                 error={error}
-                date={date}
                 status={displayedStatusKey}
-                statusOnly
               />
             )}
             chainId={chainId}

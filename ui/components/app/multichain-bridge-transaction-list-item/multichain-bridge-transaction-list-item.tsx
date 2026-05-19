@@ -179,7 +179,6 @@ const MultichainBridgeTransactionListItem: React.FC<
       subtitle={
         isTerminalState ? (
           <ActivityListStatusSubtitle
-            date={formatTimestamp(transaction.timestamp)}
             error={{}}
             status={KEYRING_TRANSACTION_STATUS_KEY[transaction.status]}
             className={

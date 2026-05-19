@@ -95,7 +95,6 @@ export default function SmartTransactionListItem({
         subtitle={
           <ActivityListStatusSubtitle
             isEarliestNonce={isEarliestNonce}
-            date={date}
             status={displayedStatusKey}
           />
         }
@@ -127,9 +126,7 @@ export default function SmartTransactionListItem({
             <TransactionStatusLabel
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
-              date={date}
               status={displayedStatusKey}
-              statusOnly
             />
           )}
           chainId={chainId}
