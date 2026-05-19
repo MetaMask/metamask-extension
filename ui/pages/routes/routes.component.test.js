@@ -76,6 +76,11 @@ jest.mock('./confirmation-router', () => ({
   }),
 }));
 
+jest.mock('../../../app/scripts/lib/util', () => ({
+  ...jest.requireActual('../../../app/scripts/lib/util'),
+  getEnvironmentType: jest.fn(() => 'fullscreen'),
+}));
+
 jest.mock('../../components/app/toast-master/toast-master', () => {
   const { useLocation } = jest.requireActual('react-router-dom');
   const { CONFIRMATION_V_NEXT_ROUTE: confirmationRoute } = jest.requireActual(
@@ -288,6 +293,9 @@ const render = (pathname, state) => {
 
 describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
+  const { getEnvironmentType: mockGetEnvironmentType } = jest.requireMock(
+    '../../../app/scripts/lib/util',
+  );
   const mockUseMultichainAccountsIntroModal = jest.mocked(
     useMultichainAccountsIntroModal,
   );
@@ -295,6 +303,7 @@ describe('Routes Component', () => {
   beforeEach(() => {
     // Clear previous mock implementations
     useMultiPolling.mockClear();
+    mockGetEnvironmentType.mockReturnValue('fullscreen');
     mockUseMultichainAccountsIntroModal.mockReturnValue({
       showMultichainIntroModal: false,
       setShowMultichainIntroModal: jest.fn(),
@@ -498,6 +507,23 @@ describe('Routes Component', () => {
     expect(
       await screen.findByTestId('multichain-account-intro-modal'),
     ).toBeInTheDocument();
+  });
+
+  it('does not render the QR hardware popover for PAIR requests in popup environments', () => {
+    mockGetEnvironmentType.mockReturnValue('popup');
+
+    render(DEFAULT_ROUTE, {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        activeQrCodeScanRequest: {
+          type: QrScanRequestType.PAIR,
+        },
+        pendingApprovals: {},
+      },
+    });
+
+    expect(screen.queryByTestId('qr-hardware-popover')).not.toBeInTheDocument();
   });
 });
 

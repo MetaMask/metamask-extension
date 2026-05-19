@@ -707,12 +707,12 @@ export default function Routes() {
 
   const environmentType = getEnvironmentType();
   const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
-  const isRestrictedQrHardwareEnv =
+  const shouldRestrictQrHardwarePairing =
     environmentType === ENVIRONMENT_TYPE_POPUP || isSidepanel;
   const shouldShowQrHardwarePopover =
     Boolean(activeQrCodeScanRequest) &&
     !(
-      isRestrictedQrHardwareEnv &&
+      shouldRestrictQrHardwarePairing &&
       activeQrCodeScanRequest?.type === QrScanRequestType.PAIR
     );
   const shouldShowNetworkConfirmationPopover = pendingConfirmations.some(
