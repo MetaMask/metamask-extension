@@ -108,7 +108,6 @@ export const hardwareWalletSignaturesReducer = (
   state: HardwareWalletSignaturesState,
   action: HardwareWalletSignaturesAction,
 ): HardwareWalletSignaturesState => {
-  const prevState = state.status;
   let nextState: HardwareWalletSignaturesState;
 
   switch (action.type) {
@@ -181,17 +180,6 @@ export const hardwareWalletSignaturesReducer = (
       break;
     default:
       nextState = state;
-  }
-
-  if (prevState !== nextState.status) {
-    console.log(
-      '[HW-Batch] state machine transition',
-      JSON.stringify({
-        event: action.type,
-        from: prevState,
-        to: nextState.status,
-      }),
-    );
   }
 
   return nextState;

@@ -25,7 +25,9 @@ export type BridgeStatusState = {
 };
 
 /** Transaction history entries from BridgeStatusState, used for approval lookups. */
-export type BridgeTxHistory = NonNullable<BridgeStatusState['metamask']['txHistory']>;
+export type BridgeTxHistory = NonNullable<
+  BridgeStatusState['metamask']['txHistory']
+>;
 
 /**
  * Represents an active QR hardware wallet signing request from the QR keyring.
