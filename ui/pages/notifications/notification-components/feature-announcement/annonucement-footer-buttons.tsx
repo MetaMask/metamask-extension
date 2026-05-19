@@ -1,5 +1,4 @@
 import React, { useCallback, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -8,9 +7,9 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
 import {
-  getShieldInAppNavigationFromExternalLink,
-  SHIELD_ANNOUNCEMENT_NOTIFICATION_ID,
-} from '../../../../../shared/lib/shield';
+  isInternalRouteHref,
+  resolveDeepLinkHref,
+} from '../../../../helpers/utils/resolve-deep-link-href';
 import { FeatureAnnouncementNotification } from './types';
 
 const useAnalyticEventCallback = (props: {
@@ -71,7 +70,6 @@ export const ExtensionLinkButton = (props: {
 export const ExternalLinkButton = (props: {
   notification: FeatureAnnouncementNotification;
 }) => {
-  const navigate = useNavigate();
   const { notification } = props;
   const analyticCallback = useAnalyticEventCallback({
     id: notification.id,
@@ -83,41 +81,33 @@ export const ExternalLinkButton = (props: {
     return null;
   }
 
-  let href: string | undefined = notification.data.externalLink.externalLinkUrl;
-  let isExternal = true;
-  const isShieldAnnouncementNotification =
-    notification.id === SHIELD_ANNOUNCEMENT_NOTIFICATION_ID;
-  // use native navigation for shield announcement instead of opening new tab
-  // TODO: clean this when we have better control of how deeplink are opened
-  if (isShieldAnnouncementNotification) {
-    // don't open new tab with href
-    href = undefined;
-    // don't show external arrow icon
-    isExternal = false;
-  }
-  const onClick = () => {
-    analyticCallback();
-    if (isShieldAnnouncementNotification && notification.data.externalLink) {
-      try {
-        const path = getShieldInAppNavigationFromExternalLink(
-          notification.data.externalLink.externalLinkUrl,
-        );
-        navigate(path);
-      } catch (error) {
-        console.error(
-          '[ExternalLinkButton] error parsing external link',
-          error,
-        );
-      }
+  const { externalLinkUrl, externalLinkText } = notification.data.externalLink;
+
+  const openResolvedLink = async () => {
+    const href = await resolveDeepLinkHref(externalLinkUrl);
+
+    if (isInternalRouteHref(href)) {
+      global.platform.openExtensionInBrowser(href, null, true);
+      return;
     }
+
+    await global.platform.openTab({ url: href });
+  };
+
+  const onClick: React.MouseEventHandler<HTMLElement> = (event) => {
+    event.preventDefault();
+    analyticCallback();
+    openResolvedLink().catch((error) => {
+      console.error('[ExternalLinkButton] error opening external link', error);
+    });
   };
 
   return (
     <NotificationDetailButton
       variant={ButtonVariant.Secondary}
-      text={notification.data.externalLink.externalLinkText}
-      href={href}
-      isExternal={isExternal}
+      text={externalLinkText}
+      href={externalLinkUrl}
+      isExternal={true}
       onClick={onClick}
     />
   );

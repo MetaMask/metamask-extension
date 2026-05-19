@@ -28,7 +28,7 @@ export type NotificationDetailButtonProps = {
    * Additional click functionality when button is pressed
    * Can be used to call analytic events
    */
-  onClick?: () => void;
+  onClick?: React.MouseEventHandler<HTMLElement>;
 };
 
 export const NotificationDetailButton = ({
