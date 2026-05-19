@@ -1,0 +1,153 @@
+name: Upload extension to Chrome Web Store
+
+# INFRA-3646 — workflow_dispatch upload to CWS via GCP WIF (no refresh tokens in GitHub Secrets).
+# Beta: cws-beta environment + *_BETA repo variables (INFRA-3645).
+# Production: cws-production environment + prod variables (INFRA-3644).
+# Runway sender verification: deferred to INFRA-3649 (RAPID runtime identity enforcement).
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (semver without v), e.g. 13.0.0 — must match GitHub Release tag v{version}'
+        required: true
+        type: string
+      target:
+        description: 'CWS target'
+        required: true
+        type: choice
+        default: beta
+        options:
+          - beta
+          - production
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  upload:
+    name: Upload to CWS (${{ inputs.target }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: ${{ inputs.target == 'production' && 'cws-production' || inputs.target == 'beta' && 'cws-beta' || null }}
+    env:
+      VERSION: ${{ inputs.version }}
+      RELEASE_TAG: v${{ inputs.version }}
+      ZIP_NAME: metamask-chrome-${{ inputs.version }}.zip
+      WIF_PROVIDER: ${{ inputs.target == 'beta' && vars.WIF_PROVIDER_BETA || vars.WIF_PROVIDER }}
+      WIF_SERVICE_ACCOUNT: ${{ inputs.target == 'beta' && vars.WIF_SERVICE_ACCOUNT_BETA || vars.WIF_SERVICE_ACCOUNT }}
+      EXTENSION_ID: ${{ inputs.target == 'beta' && vars.EXTENSION_ID_BETA || vars.EXTENSION_ID }}
+      PUBLISHER_EMAIL: ${{ inputs.target == 'beta' && vars.PUBLISHER_EMAIL_BETA || vars.PUBLISHER_EMAIL }}
+    steps:
+      - name: Validate inputs and configuration
+        run: |
+          set -euo pipefail
+          if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Invalid version format: ${VERSION}"
+            exit 1
+          fi
+          if [[ "${{ inputs.target }}" == "production" && "${{ github.ref }}" != "refs/heads/main" ]]; then
+            echo "::error::Production uploads must run from the main branch (current: ${{ github.ref }})"
+            exit 1
+          fi
+          missing=""
+          for name in WIF_PROVIDER WIF_SERVICE_ACCOUNT EXTENSION_ID PUBLISHER_EMAIL; do
+            if [[ -z "${!name:-}" ]]; then
+              missing="${missing} ${name}"
+            fi
+          done
+          if [[ -n "${missing}" ]]; then
+            echo "::error::Missing repository variables for target '${{ inputs.target }}':${missing}"
+            exit 1
+          fi
+          {
+            echo "## CWS upload"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| Target | \`${{ inputs.target }}\` |"
+            echo "| Version | \`${VERSION}\` |"
+            echo "| Release tag | \`${RELEASE_TAG}\` |"
+            echo "| Asset | \`${ZIP_NAME}\` |"
+            echo "| Extension ID | \`${EXTENSION_ID}\` |"
+            echo "| Service account | \`${WIF_SERVICE_ACCOUNT}\` |"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Download release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          echo "Downloading ${ZIP_NAME} from release ${RELEASE_TAG}..."
+          gh release download "${RELEASE_TAG}" \
+            --repo "${{ github.repository }}" \
+            --pattern "${ZIP_NAME}"
+          ls -lh "${ZIP_NAME}"
+
+      # Beta/dev listing rejects manifest.key tied to production extension ID (POC lesson).
+      - name: Strip manifest key from zip (beta only)
+        if: inputs.target == 'beta'
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/extension
+          unzip -q "${ZIP_NAME}" -d /tmp/extension
+          jq 'del(.key) | .version = env.VERSION' /tmp/extension/manifest.json > /tmp/extension/manifest-tmp.json
+          mv /tmp/extension/manifest-tmp.json /tmp/extension/manifest.json
+          cd /tmp/extension
+          zip -r -q "${GITHUB_WORKSPACE}/${ZIP_NAME}" .
+          echo "Stripped manifest key and set version in manifest.json"
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@c200f3691d83b41bf9bbd8638997a462592937ed # v2.1.13
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.WIF_SERVICE_ACCOUNT }}
+          token_format: access_token
+          access_token_scopes: https://www.googleapis.com/auth/chromewebstore
+
+      - name: Upload to Chrome Web Store
+        id: cws-upload
+        run: |
+          set -euo pipefail
+          echo "Target: ${{ inputs.target }}"
+          echo "Extension ID: ${EXTENSION_ID}"
+          echo "Publisher email: ${PUBLISHER_EMAIL}"
+          echo "Version: ${VERSION}"
+          echo "Zip size: $(stat --format=%s "${ZIP_NAME}") bytes"
+          echo ""
+
+          HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            -X PUT \
+            -H "Authorization: Bearer ${{ steps.auth.outputs.access_token }}" \
+            -H "x-goog-api-version: 2" \
+            -T "${ZIP_NAME}" \
+            "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${EXTENSION_ID}?uploadType=media&publisherEmail=${PUBLISHER_EMAIL}")
+
+          echo "http_code=${HTTP_CODE}" >> "${GITHUB_OUTPUT}"
+          echo "HTTP Status: ${HTTP_CODE}"
+          echo ""
+          cat /tmp/response.json
+          echo ""
+
+          if [[ "${HTTP_CODE}" != "200" ]]; then
+            echo "::error::Upload failed with HTTP ${HTTP_CODE}"
+            exit 1
+          fi
+
+          echo "Package uploaded (draft/pending review). Not published to users."
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo ""
+            echo "### Result"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            echo "| HTTP status | \`${{ steps.cws-upload.outputs.http_code || 'n/a' }}\` |"
+            echo "| Published to users | no (upload only) |"
+            echo "| Workflow run | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |"
+          } >> "${GITHUB_STEP_SUMMARY}"
