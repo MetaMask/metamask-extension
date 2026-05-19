@@ -92,7 +92,9 @@ export const TransactionActivityEmptyState: React.FC<
     setIsFundingModalOpen(false);
 
     if (selectedAccountGroup) {
-      navigate(getMultichainAccountAddressListReceivePagePath(selectedAccountGroup));
+      navigate(
+        getMultichainAccountAddressListReceivePagePath(selectedAccountGroup),
+      );
     }
   }, [navigate, selectedAccountGroup]);
 

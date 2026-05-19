@@ -10,9 +10,7 @@ describe('multichain-account-address-list-page utils', () => {
 
   describe('getMultichainAccountAddressListPagePath', () => {
     it('returns the address list route with an encoded account group id', () => {
-      expect(
-        getMultichainAccountAddressListPagePath(accountGroupId),
-      ).toBe(
+      expect(getMultichainAccountAddressListPagePath(accountGroupId)).toBe(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}`,
       );
     });
@@ -28,7 +26,9 @@ describe('multichain-account-address-list-page utils', () => {
 
   describe('getMultichainAccountAddressListReceivePagePath', () => {
     it('returns the receive-flow address list route', () => {
-      expect(getMultichainAccountAddressListReceivePagePath(accountGroupId)).toBe(
+      expect(
+        getMultichainAccountAddressListReceivePagePath(accountGroupId),
+      ).toBe(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}?accountGroupId=${encodeURIComponent(accountGroupId)}&source=receive`,
       );
     });

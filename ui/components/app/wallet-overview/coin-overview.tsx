@@ -249,7 +249,9 @@ export const CoinOverview = ({
 
     if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
-      navigate(getMultichainAccountAddressListReceivePagePath(selectedAccountGroup));
+      navigate(
+        getMultichainAccountAddressListReceivePagePath(selectedAccountGroup),
+      );
     }
   }, [selectedAccountGroup, navigate, trackEvent, chainId]);
 
