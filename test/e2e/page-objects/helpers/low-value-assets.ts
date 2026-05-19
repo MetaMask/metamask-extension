@@ -13,18 +13,18 @@ const LOW_VALUE_ASSETS_TOGGLE_SELECTOR =
 export async function expandLowValueAssetsIfPresent(
   driver: Driver,
 ): Promise<void> {
-  const isPresent = await driver.isElementPresent({
-    css: LOW_VALUE_ASSETS_TOGGLE_SELECTOR,
-  });
-  if (!isPresent) {
-    return;
-  }
+  await driver.executeScript(`
+    const toggle = document.querySelector(${JSON.stringify(
+      LOW_VALUE_ASSETS_TOGGLE_SELECTOR,
+    )});
+    if (!(toggle instanceof HTMLElement)) {
+      return;
+    }
 
-  const toggle = await driver.findElement(LOW_VALUE_ASSETS_TOGGLE_SELECTOR);
-  const ariaExpanded = await toggle.getAttribute('aria-expanded');
-  if (ariaExpanded === 'true') {
-    return;
-  }
+    if (toggle.getAttribute('aria-expanded') === 'true') {
+      return;
+    }
 
-  await driver.clickElement(LOW_VALUE_ASSETS_TOGGLE_SELECTOR);
+    toggle.click();
+  `);
 }
