@@ -325,6 +325,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSeasonStatuses: RewardsControllerState['rewardsSeasonStatuses'];
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
   rewardsPointsEstimateHistory: RewardsControllerState['rewardsPointsEstimateHistory'];
+  rewardsVipPerpsFees: RewardsControllerState['rewardsVipPerpsFees'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];

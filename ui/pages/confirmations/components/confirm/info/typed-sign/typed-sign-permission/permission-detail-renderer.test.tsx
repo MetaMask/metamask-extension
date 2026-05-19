@@ -9,6 +9,7 @@ import {
   renderWithConfirmContext,
 } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { enLocale as messages } from '../../../../../../../../test/lib/i18n-helpers';
+import { fetchErc20DecimalsOrThrow } from '../../../../../utils/token';
 import { PermissionDetailRenderer } from './permission-detail-renderer';
 
 jest.mock(
@@ -25,12 +26,10 @@ jest.mock('../../../../../utils/token', () => ({
   fetchErc20DecimalsOrThrow: jest.fn().mockResolvedValue(18),
 }));
 
-function fetchErc20DecimalsMock() {
-  const { fetchErc20DecimalsOrThrow } = jest.requireMock(
-    '../../../../../utils/token',
-  ) as { fetchErc20DecimalsOrThrow: jest.Mock };
-  return fetchErc20DecimalsOrThrow;
-}
+const mockFetchErc20DecimalsOrThrow =
+  fetchErc20DecimalsOrThrow as jest.MockedFunction<
+    typeof fetchErc20DecimalsOrThrow
+  >;
 
 const getMockStore = (permission?: DecodedPermission) => {
   const state = getMockTypedSignPermissionConfirmState(permission);
@@ -74,8 +73,8 @@ function renderPermissionDetail(
 
 describe('PermissionDetailRenderer', () => {
   beforeEach(() => {
-    fetchErc20DecimalsMock().mockReset();
-    fetchErc20DecimalsMock().mockResolvedValue(18);
+    mockFetchErc20DecimalsOrThrow.mockReset();
+    mockFetchErc20DecimalsOrThrow.mockResolvedValue(18);
   });
 
   describe('native-token-periodic', () => {
@@ -226,6 +225,34 @@ describe('PermissionDetailRenderer', () => {
     });
   });
 
+  describe('native-token-allowance', () => {
+    const permission = {
+      type: 'native-token-allowance',
+      data: {
+        allowanceAmount: '0x1234',
+        startTime: 123456789,
+      },
+    };
+
+    it('renders the allowance details section', async () => {
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <PermissionDetailRenderer
+          permission={permission}
+          expiry={123456789}
+          chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
+        />,
+        getMockStore(),
+      );
+      await waitFor(() => {
+        expect(
+          getByTestId('native-token-allowance-details-section'),
+        ).toBeInTheDocument();
+      });
+    });
+  });
+
   describe('erc20-token-periodic', () => {
     const permission = {
       type: 'erc20-token-periodic',
@@ -282,6 +309,37 @@ describe('PermissionDetailRenderer', () => {
       ).toBeInTheDocument();
       expect(
         getByTestId('erc20-token-stream-stream-rate-section'),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe('erc20-token-allowance', () => {
+    const permission = {
+      type: 'erc20-token-allowance',
+      data: {
+        tokenAddress: '0xA0b86a33E6441b8c4C8C0E4A8e4A8e4A8e4A8e4A',
+        allowanceAmount: '0x1234',
+        startTime: 123456789,
+      },
+    };
+
+    it('renders the allowance details section while token metadata loads', () => {
+      mockFetchErc20DecimalsOrThrow.mockImplementationOnce(
+        () => new Promise(() => undefined),
+      );
+
+      const { getByTestId } = renderWithConfirmContextProvider(
+        <PermissionDetailRenderer
+          permission={permission}
+          expiry={123456789}
+          chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
+        />,
+        getMockStore(),
+      );
+      expect(
+        getByTestId('erc20-token-allowance-details-section'),
       ).toBeInTheDocument();
     });
   });

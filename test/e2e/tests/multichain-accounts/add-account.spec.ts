@@ -129,11 +129,7 @@ describe('Add account', function () {
         await headerNavbar.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.addNewImportedAccount(
-          TEST_PRIVATE_KEY,
-          undefined,
-          { isMultichainAccountsState2Enabled: true },
-        );
+        await accountListPage.addNewImportedAccount(TEST_PRIVATE_KEY);
 
         await accountListPage.checkPageIsLoaded();
         await accountListPage.openMultichainAccountMenu({
@@ -211,9 +207,7 @@ describe('Add account', function () {
         await accountDetailsPage.navigateBack();
 
         // Create 3rd account with private key
-        await accountListPage.addNewImportedAccount(testPrivateKey, undefined, {
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.addNewImportedAccount(testPrivateKey);
 
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,

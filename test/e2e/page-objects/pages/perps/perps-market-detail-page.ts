@@ -77,6 +77,10 @@ export class PerpsMarketDetailPage {
     testId: 'perps-edit-margin-modal-save',
   };
 
+  private readonly favoriteButton = {
+    testId: 'perps-market-detail-favorite-button',
+  };
+
   private readonly geoBlockModal = { testId: 'perps-geo-block-modal' };
 
   private readonly geoBlockModalDismiss = {
@@ -184,8 +188,6 @@ export class PerpsMarketDetailPage {
     xpath: `(//*[@data-testid="perps-update-tpsl-modal"]//input[contains(@class,"mm-text-field__input")])[1]`,
   };
 
-  private readonly tradeCtaButtons = { testId: 'perps-trade-cta-buttons' };
-
   private readonly updateTpslModal = { testId: 'perps-update-tpsl-modal' };
 
   private readonly updateTpslModalSubmit = {
@@ -290,6 +292,35 @@ export class PerpsMarketDetailPage {
   }
 
   /**
+   * Clicks the favourite (star) button to toggle watchlist for this market.
+   * The button is always visible in the market detail header.
+   */
+  async clickFavoriteButton(): Promise<void> {
+    await this.driver.clickElement(this.favoriteButton);
+  }
+
+  /**
+   * Waits for the favorite (star) button to reach the given state.
+   * Pass `'favorited'` for aria-label "Remove from favorites",
+   * `'unfavorited'` for "Add to favorites", or omit to wait for any state.
+   *
+   * @param state - Target button state, or undefined for any state.
+   */
+  async waitForFavoriteButton(
+    state?: 'favorited' | 'unfavorited',
+  ): Promise<void> {
+    if (state === undefined) {
+      await this.driver.waitForSelector(this.favoriteButton);
+      return;
+    }
+    const ariaLabel =
+      state === 'favorited' ? 'Remove from favorites' : 'Add to favorites';
+    await this.driver.waitForSelector({
+      xpath: `//*[@data-testid='perps-market-detail-favorite-button'][@aria-label='${ariaLabel}']`,
+    });
+  }
+
+  /**
    * Clicks the Add Funds CTA button visible when balance is zero.
    */
   async clickAddFundsCta(): Promise<void> {
@@ -351,9 +382,13 @@ export class PerpsMarketDetailPage {
 
   /**
    * Opens the margin Add/Remove popover: clicks the margin summary card, then waits for the menu.
+   *
+   * Dismisses any visible toast and scrolls the card to the viewport centre
+   * so that sticky CTA buttons at the bottom cannot intercept the click.
    */
   async clickMarginMenu(): Promise<void> {
-    await this.driver.clickElement(this.marginCard);
+    await this.dismissPerpsToastIfPresent();
+    await this.driver.findScrollToAndClickElement(this.marginCard);
     await this.driver.waitForSelector(this.marginMenu);
   }
 
@@ -424,9 +459,13 @@ export class PerpsMarketDetailPage {
   /**
    * Clicks the auto-close row to open the TP/SL update modal.
    * Works whether the position has no TP/SL yet (shows a CTA) or already has one.
+   *
+   * Dismisses any visible toast and scrolls the row to the viewport centre
+   * so that sticky CTA buttons at the bottom cannot intercept the click.
    */
   async clickAutoCloseRow(): Promise<void> {
-    await this.driver.clickElement(this.autoCloseRow);
+    await this.dismissPerpsToastIfPresent();
+    await this.driver.findScrollToAndClickElement(this.autoCloseRow);
   }
 
   /**

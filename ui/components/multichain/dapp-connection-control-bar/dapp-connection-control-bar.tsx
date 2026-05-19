@@ -39,7 +39,10 @@ import {
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
-import { getDappActiveNetwork } from '../../../selectors/dapp';
+import {
+  getDappActiveNetwork,
+  getIsEip1193CompatibleConnection,
+} from '../../../selectors/dapp';
 import {
   addPermittedAccounts,
   hidePermittedNetworkToast,
@@ -81,6 +84,7 @@ export const DappConnectionControlBar: React.FC = () => {
     { permissions: Record<string, { parentCapability: string }> }
   >;
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
+  const isEip1193Compatible = useSelector(getIsEip1193CompatibleConnection);
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupInternalAccounts = useSelector((state) =>
     getInternalAccountsFromGroupById(
@@ -310,8 +314,8 @@ export const DappConnectionControlBar: React.FC = () => {
             )
           ) : (
             <>
-              {/* Network selector (icon-only, same size as action icons) */}
-              {dappActiveNetwork && (
+              {/* Network selector — only for EIP-1193-compatible (EVM) connections */}
+              {dappActiveNetwork && isEip1193Compatible && (
                 <button
                   ref={setNetworkButtonElement}
                   className="dapp-connection-control-bar__network-button flex items-center gap-1"
