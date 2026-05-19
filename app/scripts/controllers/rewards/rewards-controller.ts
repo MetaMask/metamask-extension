@@ -695,6 +695,10 @@ export class RewardsController extends BaseController<
   }
 
   async getVipTierForAccount(account: CaipAccountId): Promise<number | null> {
+    if (!this.isRewardsFeatureEnabled()) {
+      return null;
+    }
+
     const vipFeeResponse = await this.#getVipFeesForAccount(account);
     if (!vipFeeResponse) {
       return null;
