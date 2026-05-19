@@ -45,58 +45,73 @@ function isGitDir(dir: string): boolean {
   }
 }
 
-if (!isGitDir(CACHE_DIR)) {
-  mkdirSync(path.dirname(CACHE_DIR), { recursive: true });
-  const clone = run('git', [
-    'clone',
-    '--depth',
-    '1',
-    '--branch',
-    'main',
-    PUBLIC_REPO,
-    CACHE_DIR,
-  ]);
-  if (clone.status !== 0) {
-    warn('clone failed (offline?)');
-    process.exit(0);
+// Top-level guard: synchronous calls (mkdirSync, statSync, existsSync) can
+// throw on EPERM, read-only filesystem, or unexpected file-vs-dir conflicts.
+// Honor the "never fails the install" contract — swallow anything that
+// escapes and exit 0.
+try {
+  if (!isGitDir(CACHE_DIR)) {
+    mkdirSync(path.dirname(CACHE_DIR), { recursive: true });
+    const clone = run('git', [
+      'clone',
+      '--depth',
+      '1',
+      '--branch',
+      'main',
+      PUBLIC_REPO,
+      CACHE_DIR,
+    ]);
+    if (clone.status !== 0) {
+      warn('clone failed (offline?)');
+      process.exit(0);
+    }
+  } else {
+    const fetch = run('git', [
+      '-C',
+      CACHE_DIR,
+      'fetch',
+      '--depth',
+      '1',
+      'origin',
+      'main',
+    ]);
+    if (fetch.status !== 0) {
+      warn('fetch failed (offline?)');
+      process.exit(0);
+    }
+    const reset = run('git', [
+      '-C',
+      CACHE_DIR,
+      'reset',
+      '--hard',
+      'origin/main',
+    ]);
+    if (reset.status !== 0) {
+      warn('reset failed');
+      process.exit(0);
+    }
   }
-} else {
-  const fetch = run('git', [
-    '-C',
-    CACHE_DIR,
-    'fetch',
-    '--depth',
-    '1',
-    'origin',
-    'main',
-  ]);
-  if (fetch.status !== 0) {
-    warn('fetch failed (offline?)');
-    process.exit(0);
-  }
-  const reset = run('git', ['-C', CACHE_DIR, 'reset', '--hard', 'origin/main']);
-  if (reset.status !== 0) {
-    warn('reset failed');
-    process.exit(0);
-  }
-}
 
-const args = [
-  '--repo',
-  REPO,
-  '--target',
-  process.cwd(),
-  '--source',
-  path.join(process.cwd(), CACHE_DIR),
-];
-const consensys = process.env.CONSENSYS_SKILLS_DIR;
-if (consensys && existsSync(path.join(consensys, 'domains'))) {
-  args.push('--source', consensys);
-}
+  const args = [
+    '--repo',
+    REPO,
+    '--target',
+    process.cwd(),
+    '--source',
+    path.join(process.cwd(), CACHE_DIR),
+  ];
+  const consensys = process.env.CONSENSYS_SKILLS_DIR;
+  if (consensys && existsSync(path.join(consensys, 'domains'))) {
+    args.push('--source', consensys);
+  }
 
-const installer = path.join(CACHE_DIR, 'tools', 'install');
-const result = run('bash', [installer, ...args]);
-if (result.status !== 0) {
-  warn('install failed');
+  const installer = path.join(CACHE_DIR, 'tools', 'install');
+  const result = run('bash', [installer, ...args]);
+  if (result.status !== 0) {
+    warn('install failed');
+  }
+} catch (e) {
+  const msg = e instanceof Error ? e.message : String(e);
+  warn(`unexpected error: ${msg}`);
 }
 process.exit(0);
