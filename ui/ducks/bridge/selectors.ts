@@ -116,7 +116,12 @@ import {
   getMaybeHexChainId,
   isSupportedBridgeChain,
 } from './utils';
-import type { BridgeNetwork, BridgeState, BridgeToken, QuoteValidationErrors } from './types';
+import type {
+  BridgeNetwork,
+  BridgeState,
+  BridgeToken,
+  QuoteValidationErrors,
+} from './types';
 
 const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
@@ -1026,10 +1031,10 @@ const computeQuoteValidationErrors = (
       new BigNumber(quote.totalNetworkFee?.amount ?? '0').lte(0)),
   );
 
-  const priceImpactNumber = (() => {
-    const parsed = Number(quote?.quote?.priceData?.priceImpact);
-    return Number.isNaN(parsed) ? null : parsed;
-  })();
+  const parsedPriceImpactNumber = Number(quote?.quote?.priceData?.priceImpact);
+  const priceImpactNumber = Number.isNaN(parsedPriceImpactNumber)
+    ? null
+    : parsedPriceImpactNumber;
 
   return {
     // Shown prior to fetching quotes (native reserve error takes precedence)
@@ -1084,9 +1089,7 @@ const computeQuoteValidationErrors = (
       priceImpactNumber > warning &&
       priceImpactNumber <= error,
     ),
-    isPriceImpactError: Boolean(
-      priceImpactNumber && priceImpactNumber > error,
-    ),
+    isPriceImpactError: Boolean(priceImpactNumber && priceImpactNumber > error),
   };
 };
 

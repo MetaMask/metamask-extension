@@ -82,8 +82,7 @@ const CHAIN_ID = 'eip155:1' as CaipChainId;
 const NATIVE_ASSET_ID = 'eip155:1/slip44:60' as CaipAssetType;
 const ERC20_TOKEN_ADDRESS =
   '0xdAC17F958D2ee523a2206206994597C13D831ec7' as `0x${string}`;
-const ERC20_ASSET_ID =
-  `eip155:1/erc20:${ERC20_TOKEN_ADDRESS}` as CaipAssetType;
+const ERC20_ASSET_ID = `eip155:1/erc20:${ERC20_TOKEN_ADDRESS}` as CaipAssetType;
 const STABLECOIN_ASSET_ID =
   'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as CaipAssetType;
 
@@ -104,7 +103,7 @@ const mockAsset = {
 
 let mockDestStablecoins: CaipAssetType[] = [STABLECOIN_ASSET_ID];
 // Mutated per-test to control the asset list returned by the selector
-const mockAssetList: typeof mockAsset[] = [mockAsset];
+const mockAssetList: (typeof mockAsset)[] = [mockAsset];
 
 jest.mock('../../../../ducks/batch-sell/selectors', () => ({
   getAvailableBatchSellNetworks: () => mockNetworks,

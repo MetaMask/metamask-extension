@@ -140,7 +140,10 @@ describe('AssetListItem', () => {
     it('does not render bullet separator when percentageChange is not provided', () => {
       render(
         <AssetListItem
-          asset={makeAsset({ tokenFiatPrice: 2000, percentageChange: undefined })}
+          asset={makeAsset({
+            tokenFiatPrice: 2000,
+            percentageChange: undefined,
+          })}
           selected={false}
           onSelect={jest.fn()}
           onDeselect={jest.fn()}

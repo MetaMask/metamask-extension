@@ -34,7 +34,11 @@ import {
   BackgroundColor,
   TextColor as TextColorLegacy,
 } from '../../../../../helpers/constants/design-system';
-import { MAX_SEND_PERCENT, MIN_SEND_PERCENT, SEND_PERCENTS_STEPS } from '../../../../../constants/batch-sell';
+import {
+  MAX_SEND_PERCENT,
+  MIN_SEND_PERCENT,
+  SEND_PERCENTS_STEPS,
+} from '../../../../../constants/batch-sell';
 
 type QuotesListItemProps = {
   asset: BatchSellAsset;
