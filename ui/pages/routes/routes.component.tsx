@@ -641,7 +641,9 @@ export default function Routes() {
 
   useEffect(() => {
     if (shouldPreloadRiveForPath(location.pathname)) {
-      preloadRiveWasm().catch(() => undefined);
+      preloadRiveWasm().catch((error) => {
+        console.error('[Rive] Failed to preload route assets:', error);
+      });
     }
   }, [location.pathname]);
 

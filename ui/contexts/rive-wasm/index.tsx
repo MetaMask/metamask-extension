@@ -214,7 +214,9 @@ export const useRiveWasmFile = (url: string) => {
   const cachedBuffer = urlBufferMap[url];
 
   useEffect(() => {
-    preloadRiveWasm().catch(() => undefined);
+    preloadRiveWasm().catch((error) => {
+      console.error('[Rive] Failed to preload WASM:', error);
+    });
   }, [url]);
 
   const result = useAsyncResult(async () => {
