@@ -30,6 +30,9 @@ jobs:
     name: Upload to CWS (${{ inputs.target }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.target }}
+      cancel-in-progress: false
     environment: ${{ inputs.target == 'production' && 'cws-production' || inputs.target == 'beta' && 'cws-beta' || null }}
     env:
       VERSION: ${{ inputs.version }}
