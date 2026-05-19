@@ -23,9 +23,7 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringControllerAddNewKeyringAction,
 } from '@metamask/keyring-controller';
-import {
-  SnapAccountServiceGetLegacySnapKeyringAction,
-} from '@metamask/snap-account-service';
+import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
 import {
   RateLimitControllerCallApiAction,
   RateLimitedApiMap,
@@ -187,9 +185,7 @@ export function getSnapPermissionSpecifications(
         getClientCryptography: () => ({}),
 
         getSnapKeyring: async () => {
-          return messenger.call(
-            'SnapAccountService:getLegacySnapKeyring',
-          );
+          return messenger.call('SnapAccountService:getLegacySnapKeyring');
         },
       },
       messenger as RestrictedMethodMessenger,
