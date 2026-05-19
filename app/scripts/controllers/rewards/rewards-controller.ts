@@ -256,7 +256,7 @@ const MESSENGER_EXPOSED_METHODS = [
   'isOptInSupported',
   'getActualSubscriptionId',
   'getPerpsDiscountForAccount',
-  'getVipFeesForAccount',
+  'getVipTierForAccount',
   'resetState',
 ] as const;
 
@@ -646,7 +646,7 @@ export class RewardsController extends BaseController<
     return vipDiscountBips;
   }
 
-  async getVipFeesForAccount(
+  async #getVipFeesForAccount(
     account: CaipAccountId,
     subscriptionIdOverride?: string,
   ): Promise<VipFeesResponseDto | 0 | null> {
@@ -694,6 +694,14 @@ export class RewardsController extends BaseController<
     return result;
   }
 
+  async getVipTierForAccount(account: CaipAccountId): Promise<number | null> {
+    const vipFeeResponse = await this.#getVipFeesForAccount(account);
+    if (!vipFeeResponse) {
+      return null;
+    }
+    return vipFeeResponse.vipTier;
+  }
+
   /**
    * Resolve a VIP-driven perps discount for the given account. Returns null
    * when the discount is currently unknowable (invalid input, no subscription,
@@ -724,7 +732,7 @@ export class RewardsController extends BaseController<
     ) {
       builderFeeBipsRaw = cached.hyperliquidBuilderFeeBips;
     } else {
-      const feeResponse = this.getVipFeesForAccount(
+      const feeResponse = this.#getVipFeesForAccount(
         account,
         subscriptionId,
       ).then((vipFeeResponse): VipFeesResponseDto | 0 | null => {

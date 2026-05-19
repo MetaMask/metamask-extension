@@ -64,7 +64,6 @@ export const RewardsBadge = ({
           }
           startIconName={startIconName}
         />
-
         <Text
           variant={TextVariant.BodySm}
           className={textClassName}

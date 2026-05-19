@@ -11,7 +11,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { submitRequestToBackground } from '../../../store/background-connection';
 import { forceUpdateMetamaskState } from '../../../store/actions';
 import { MetaMaskReduxDispatch } from '../../../store/store';
-import { type VipFeesResponseDto } from '../../../../app/scripts/controllers/rewards/rewards-controller.types';
 import { RewardsIcon, RewardsIconVariant } from './RewardsIcon';
 
 export const RewardsVipBadge = ({
@@ -21,16 +20,16 @@ export const RewardsVipBadge = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const [vipTier, setVipTier] = useState<number | 0>(0);
+  const [vipTier, setVipTier] = useState<number | null>(null);
 
   useEffect(() => {
     dispatch(async (d: MetaMaskReduxDispatch) => {
-      const vipFees = (await submitRequestToBackground(
-        'rewardsGetVipFeesForAccount',
+      const vipTierResponse = (await submitRequestToBackground(
+        'rewardsGetVipTierForAccount',
         [accountId],
-      )) as VipFeesResponseDto | 0;
+      )) as number | null;
       await forceUpdateMetamaskState(d);
-      setVipTier(vipFees ? vipFees.vipTier : 0);
+      setVipTier(vipTierResponse);
     });
   }, [accountId, dispatch]);
 

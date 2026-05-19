@@ -3001,8 +3001,8 @@ export default class MetamaskController extends EventEmitter {
         this.rewardsController.getPerpsDiscountForAccount.bind(
           this.rewardsController,
         ),
-      rewardsGetVipFeesForAccount:
-        this.rewardsController.getVipFeesForAccount.bind(
+      rewardsGetVipTierForAccount:
+        this.rewardsController.getVipTierForAccount.bind(
           this.rewardsController,
         ),
 

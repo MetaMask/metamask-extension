@@ -35,7 +35,7 @@ export const BridgeVipFeeMessage = () => {
   }
 
   const caipAccountId = formatAccountToCaipAccountId(
-    fromAccount.address,
+    fromAccount?.address,
     fromChain?.chainId,
   );
   if (!caipAccountId) {

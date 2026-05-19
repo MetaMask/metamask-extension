@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { isCrossChain } from '@metamask/bridge-controller';
 import { BigNumber } from 'bignumber.js';
 import { PopoverPosition, Text } from '../../../components/component-library';
 import {
@@ -18,7 +19,6 @@ import { Row, Tooltip } from '../layout';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
 import { isDiscountedMMFee } from '../utils/quote';
-import { isCrossChain } from '@metamask/bridge-controller';
 
 export const BridgeCTAInfoText = () => {
   const t = useI18nContext();
