@@ -11,6 +11,7 @@ import {
   type BridgeController,
   formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
+import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import {
@@ -58,7 +59,6 @@ import {
   IconColor,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import { Box, BoxBackgroundColor } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { formatTokenAmount } from '../utils/quote';
 import { isNetworkAdded } from '../../../ducks/bridge/utils';

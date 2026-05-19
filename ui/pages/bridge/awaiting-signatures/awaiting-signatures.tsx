@@ -4,6 +4,11 @@ import isEqual from 'lodash/isEqual';
 import { isCrossChain } from '@metamask/bridge-controller';
 
 import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   isHardwareWallet,
   getHardwareWalletType,
 } from '../../../../shared/lib/selectors/keyring';
@@ -20,11 +25,6 @@ import {
   AvatarBaseSize,
   Text,
 } from '../../../components/component-library';
-import {
-  Box,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import {
   getBridgeQuotes,
   getFromChain,

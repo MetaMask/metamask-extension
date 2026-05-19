@@ -1,10 +1,10 @@
 import React from 'react';
+import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 import { Text } from '../../../components/component-library';
 import {
   TextVariant,
   BlockSize,
 } from '../../../helpers/constants/design-system';
-import { Box, BoxJustifyContent } from '@metamask/design-system-react';
 
 type TransactionDetailRowProps = {
   title: string;

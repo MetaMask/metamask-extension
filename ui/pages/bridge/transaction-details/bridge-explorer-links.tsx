@@ -4,6 +4,7 @@ import {
   formatChainIdToHex,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP } from '../../../../shared/constants/common';
 import {
   IconName,
@@ -11,7 +12,6 @@ import {
 } from '../../../components/component-library';
 import { openBlockExplorer } from '../../../components/multichain/menu-items/view-explorer-menu-item';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const getBlockExplorerName = (

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import classnames from 'clsx';
+import { Box } from '@metamask/design-system-react';
 import {
   IconProps,
   IconSize,
   PolymorphicRef,
 } from '../../../components/component-library';
 import { BackgroundColor } from '../../../helpers/constants/design-system';
-import { Box } from '@metamask/design-system-react';
 
 const HollowCircle = React.forwardRef(
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

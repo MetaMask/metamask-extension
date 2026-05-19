@@ -5,9 +5,9 @@ import {
 } from '@metamask/transaction-controller';
 import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { Text } from '../../../components/component-library';
 import { TextColor } from '../../../helpers/constants/design-system';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Segment from './segment';

@@ -10,7 +10,7 @@ import {
   IconColor,
   IconName,
   IconSize,
-} from '@metamask/design-system-react';
+ Box } from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
@@ -26,7 +26,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import { Box } from '@metamask/design-system-react';
 
 import {
   getShouldHideZeroBalanceTokens,

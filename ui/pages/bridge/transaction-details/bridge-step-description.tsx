@@ -10,12 +10,12 @@ import {
   ActionTypes,
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { Text } from '../../../components/component-library';
 import {
   FontWeight,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../shared/constants/bridge';
 

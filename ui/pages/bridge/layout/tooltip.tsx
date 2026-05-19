@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Box } from '@metamask/design-system-react';
 import {
   Icon,
   IconName,
@@ -17,7 +18,6 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { Box } from '@metamask/design-system-react';
 import Column from './column';
 
 const Tooltip = React.forwardRef(

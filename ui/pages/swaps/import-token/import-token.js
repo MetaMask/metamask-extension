@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import {
   TextVariant,
@@ -21,7 +22,6 @@ import {
   BUTTON_SIZES,
   ModalOverlay,
 } from '../../../components/component-library';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { FormTextField } from '../../../components/component-library/form-text-field/deprecated';
 import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';

@@ -1,12 +1,12 @@
 import React from 'react';
-import { IconSize } from '../../../components/component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
 import {
   Box,
   BoxBackgroundColor,
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { IconSize } from '../../../components/component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 import HollowCircle from './hollow-circle';
 
 /**

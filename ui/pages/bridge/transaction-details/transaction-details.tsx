@@ -12,6 +12,13 @@ import {
   StatusTypes,
 } from '@metamask/bridge-controller';
 import {
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxFlexWrap,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
@@ -48,13 +55,6 @@ import {
   Display,
   TextTransform,
 } from '../../../helpers/constants/design-system';
-import {
-  Box,
-  BoxAlignItems,
-  BoxFlexDirection,
-  BoxFlexWrap,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
