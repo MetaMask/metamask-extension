@@ -53,12 +53,13 @@ export default function TransactionStatusLabel({
 }: Readonly<TransactionStatusLabelProps>) {
   const t = useI18nContext();
   const statusKey = getTransactionDisplayStatusKey(status, isEarliestNonce);
-  if (statusKey === undefined || statusKey === '') {
-    return null;
-  }
-
-  if (!shouldRenderStatusText(statusKey, statusDisplayMode)) {
-    return null;
+  if (!label) {
+    if (statusKey === undefined || statusKey === '') {
+      return null;
+    }
+    if (!shouldRenderStatusText(statusKey, statusDisplayMode)) {
+      return null;
+    }
   }
 
   const tooltipText = tooltip || error?.rpc?.message || error?.message;
