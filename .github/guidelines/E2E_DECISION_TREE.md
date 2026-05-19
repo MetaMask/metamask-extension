@@ -48,7 +48,7 @@ document.
 |---|-----------|--------|-----------|
 | 1 | Push to `main` or `stable` | **Always run** | Safety net; all tests must pass on run-everything branches |
 | 2 | `skip-everything` is true | **Skip all CI** | Locales-only, version-bump-only, or merge-queue-up-to-date |
-| 3 | `force-e2e` label or `[force-e2e]` commit tag | **Force run** | Overrides all skip conditions below |
+| 3 | `force-e2e` label or `[force-e2e]` commit tag | **Force run** | Overrides skip conditions #4–#6 (but not #2 — `skip-everything` gates the entire step) |
 | 4 | `skip-e2e` label or `[skip-e2e]` commit tag | **Skip** | Manual escape hatch for infra issues |
 | 5 | Builds reused from base branch AND no `test/e2e/**` files changed | **Skip** | 2×2 matrix — validated builds + no test changes |
 | 6 | ALL changed files match `non_e2e_related_files` AND no build-affecting CI files changed | **Skip** | Docs, unit tests, config, CI, dev tools only |
@@ -74,15 +74,21 @@ The "builds from base branch" condition (rule #5) deserves special attention:
 
 | Mechanism | Scope | Effect |
 |---|---|---|
-| `force-e2e` label | PR | Force E2E to run, overrides all skip logic |
+| `force-e2e` label | PR | Force E2E to run, overrides skip conditions #4–#6 |
 | `skip-e2e` label | PR | Skip E2E (escape hatch for infra issues) |
 | `[force-e2e]` in commit message | Single push | Same as label — force run |
 | `[skip-e2e]` in commit message | Single push | Same as label — skip |
 | `force-builds` label | PR | Force fresh builds (disables build reuse) |
 | `skip-builds` label | PR | Force build reuse regardless of hash match |
 
-> **Note:** Labels carry through to merge queue runs. Commit message tags do
-> NOT (they're ignored in merge queue to prevent leakage from squash messages).
+> **Note:** E2E labels (`skip-e2e`, `force-e2e`) carry through to merge queue
+> runs via API label lookup. Build labels (`skip-builds`, `force-builds`) only
+> apply on `pull_request` events — the build-overrides step is skipped in the
+> merge queue.
+
+> **`skip-builds` and merge:** When `skip-builds` is used, builds are reused
+> without hash verification. The CI status gate blocks merge in this case —
+> remove the label and push again to merge.
 
 > **Cross-repo PRs:** Manual overrides are ignored for PRs from forks
 > (security measure — external contributors cannot bypass E2E).
@@ -151,8 +157,11 @@ When a PR targets a release branch (e.g. `cherry-pick-fix` → `release/12.0.0`)
 tests always run because `release/*` branches aren't in the run-everything set.
 The only ways to skip E2E on a release PR are:
 
-1. **Manual skip** — `skip-e2e` label or `[skip-e2e]` commit tag (rule #4)
-2. **Non-E2E files only** — all changes are docs/tests/config (rule #6)
+- **Manual skip** — `skip-e2e` label or `[skip-e2e]` commit tag (rule #4)
+- **Non-E2E files only** — all changes are docs/tests/config (rule #6)
+
+Rule #2 (`skip-everything`) also applies in theory, but locales-only or
+version-bump-only cherry-picks to release branches don't happen in practice.
 
 ### Why release branches don't allow test skipping
 
