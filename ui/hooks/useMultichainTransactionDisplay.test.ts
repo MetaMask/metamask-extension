@@ -20,7 +20,12 @@ function makeAsset(
   unit: string = 'SOL',
   fungible: true = true,
 ) {
-  return { type: assetId as `${string}:${string}/${string}:${string}`, amount, unit, fungible };
+  return {
+    type: assetId as `${string}:${string}/${string}:${string}`,
+    amount,
+    unit,
+    fungible,
+  };
 }
 
 const baseMovement = (assetId: string, amount: string, unit = 'SOL') => ({
@@ -57,10 +62,18 @@ const mockState = {
 
 describe('KEYRING_TRANSACTION_STATUS_KEY', () => {
   it('maps all KeyringTransactionStatus values', () => {
-    expect(KEYRING_TRANSACTION_STATUS_KEY[KeyringTransactionStatus.Failed]).toBeDefined();
-    expect(KEYRING_TRANSACTION_STATUS_KEY[KeyringTransactionStatus.Confirmed]).toBeDefined();
-    expect(KEYRING_TRANSACTION_STATUS_KEY[KeyringTransactionStatus.Unconfirmed]).toBeDefined();
-    expect(KEYRING_TRANSACTION_STATUS_KEY[KeyringTransactionStatus.Submitted]).toBeDefined();
+    expect(
+      KEYRING_TRANSACTION_STATUS_KEY[KeyringTransactionStatus.Failed],
+    ).toBeDefined();
+    expect(
+      KEYRING_TRANSACTION_STATUS_KEY[KeyringTransactionStatus.Confirmed],
+    ).toBeDefined();
+    expect(
+      KEYRING_TRANSACTION_STATUS_KEY[KeyringTransactionStatus.Unconfirmed],
+    ).toBeDefined();
+    expect(
+      KEYRING_TRANSACTION_STATUS_KEY[KeyringTransactionStatus.Submitted],
+    ).toBeDefined();
   });
 });
 
@@ -119,7 +132,13 @@ describe('useMultichainTransactionDisplay', () => {
       metamask: {
         ...mockState.metamask,
         assetsMetadata: {
-          [USDC_ASSET_ID]: { symbol: 'USDC', name: 'USD Coin', decimals: 6, fungible: true, iconUrl: '' },
+          [USDC_ASSET_ID]: {
+            symbol: 'USDC',
+            name: 'USD Coin',
+            decimals: 6,
+            fungible: true,
+            iconUrl: '',
+          },
         },
       },
     };
@@ -149,7 +168,10 @@ describe('useMultichainTransactionDisplay', () => {
   it('skips non-fungible assets in aggregation', () => {
     const tx = baseTransaction({
       from: [
-        { asset: { ...makeAsset(SOL_ASSET_ID, '2'), fungible: false as never }, address: 'Addr' },
+        {
+          asset: { ...makeAsset(SOL_ASSET_ID, '2'), fungible: false as never },
+          address: 'Addr',
+        },
       ],
       to: [],
     });
@@ -178,8 +200,16 @@ describe('useMultichainTransactionDisplay', () => {
   it('includes base and priority fees when present', () => {
     const tx = baseTransaction({
       fees: [
-        { type: 'base', asset: makeAsset(SOL_ASSET_ID, '0.000005'), address: '' },
-        { type: 'priority', asset: makeAsset(SOL_ASSET_ID, '0.000001'), address: '' },
+        {
+          type: 'base',
+          asset: makeAsset(SOL_ASSET_ID, '0.000005'),
+          address: '',
+        },
+        {
+          type: 'priority',
+          asset: makeAsset(SOL_ASSET_ID, '0.000001'),
+          address: '',
+        },
       ],
     });
     const { result } = renderHookWithProvider(

@@ -22,7 +22,10 @@ describe('isAssetsUnifyStateFeatureEnabled', () => {
     it('returns true regardless of the feature flag value', () => {
       process.env.IN_TEST = 'true';
       expect(
-        isAssetsUnifyStateFeatureEnabled(undefined, ASSETS_UNIFY_STATE_VERSION_1),
+        isAssetsUnifyStateFeatureEnabled(
+          undefined,
+          ASSETS_UNIFY_STATE_VERSION_1,
+        ),
       ).toBe(true);
     });
   });
@@ -34,7 +37,10 @@ describe('isAssetsUnifyStateFeatureEnabled', () => {
 
     it('returns false when featureFlag is undefined', () => {
       expect(
-        isAssetsUnifyStateFeatureEnabled(undefined, ASSETS_UNIFY_STATE_VERSION_1),
+        isAssetsUnifyStateFeatureEnabled(
+          undefined,
+          ASSETS_UNIFY_STATE_VERSION_1,
+        ),
       ).toBe(false);
     });
 
