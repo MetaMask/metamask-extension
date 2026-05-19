@@ -103,7 +103,10 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../shared/constants/metametrics';
-import { AssetType, TokenStandard } from '../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../shared/constants/transaction';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
