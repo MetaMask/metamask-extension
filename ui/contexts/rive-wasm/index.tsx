@@ -50,7 +50,8 @@ const setRiveWasmReadyState = (nextState: Partial<RiveWasmReadyState>) => {
  * Lazily loads the Rive runtime module once per session.
  *
  * The module-level promise memoization keeps repeated preload requests from
- * re-importing the runtime chunk.
+ * re-importing the runtime chunk. If multiple callers request preload while an
+ * earlier request is still in flight, they all await the same shared promise.
  */
 const loadRiveRuntime = () => {
   if (!runtimeLoaderPromise) {
@@ -226,7 +227,7 @@ export const useRiveWasmFile = (url: string) => {
     preloadRiveWasm().catch((error) => {
       console.error('[Rive] Failed to preload WASM:', error);
     });
-  }, [url]);
+  }, []);
 
   const result = useAsyncResult(async () => {
     if (!isWasmReady) {

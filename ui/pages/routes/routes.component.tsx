@@ -252,6 +252,9 @@ const PerpsLayout = mmLazy(() => import('../perps/perps-layout.tsx'));
  *
  * This preserves first-frame performance for known Rive surfaces by starting the
  * runtime and WASM load while the route subtree is still resolving.
+ * Exact matches are used for leaf routes with a single known Rive surface,
+ * while prefix checks cover route families whose nested paths can also render
+ * Rive content.
  *
  * @param pathname - The current router pathname.
  * @returns True when the route is a known Rive consumer surface.
@@ -651,7 +654,7 @@ export default function Routes() {
   useEffect(() => {
     if (shouldPreloadRiveForPath(location.pathname)) {
       preloadRiveWasm().catch((error) => {
-        console.error('[Rive] Failed to preload route assets:', error);
+        console.error('[Rive] Failed to preload WASM for route:', error);
       });
     }
   }, [location.pathname]);
