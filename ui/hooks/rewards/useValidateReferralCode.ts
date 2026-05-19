@@ -3,9 +3,17 @@ import { useDispatch } from 'react-redux';
 import { validateRewardsReferralCode } from '../../store/actions';
 
 export const REFERRAL_CODE_DEBOUNCE_MS = 1000;
+export const REFERRAL_CODE_MIN_LENGTH = 3;
+export const REFERRAL_CODE_MAX_LENGTH = 12;
+const REFERRAL_CODE_INVALID_ERROR = 'Invalid code';
 const REFERRAL_CODE_UNKNOWN_ERROR = 'Unknown error';
+const REFERRAL_CODE_PATTERN = /^[A-Z0-9-]+$/;
 
 const normalizeReferralCode = (code: string) => code.trim().toUpperCase();
+const isReferralCodeFormatValid = (code: string) =>
+  code.length >= REFERRAL_CODE_MIN_LENGTH &&
+  code.length <= REFERRAL_CODE_MAX_LENGTH &&
+  REFERRAL_CODE_PATTERN.test(code);
 
 export type UseValidateReferralCodeResult = {
   /**
@@ -37,8 +45,8 @@ export type UseValidateReferralCodeResult = {
 
 /**
  * Custom hook for validating referral codes with debounced validation.
- * Any non-empty input is forwarded to the backend, which is the source of
- * truth for whether a referral code exists.
+ * Debounces backend validation for referral codes that pass the backend format
+ * constraints: 3-12 uppercase letters, numbers, or hyphens.
  *
  * @param initialValue - Initial referral code value (default: '')
  * @param debounceMs - Debounce delay in milliseconds
@@ -52,7 +60,7 @@ export const useValidateReferralCode = (
   const [referralCode, setReferralCodeState] = useState(initialReferralCode);
   const [error, setError] = useState('');
   const [isValidating, setIsValidating] = useState(
-    initialReferralCode.length >= 1,
+    isReferralCodeFormatValid(initialReferralCode),
   );
   const hasInitialized = useRef(false);
   const requestIdRef = useRef(0);
@@ -68,11 +76,17 @@ export const useValidateReferralCode = (
 
   const validateCode = useCallback(
     async (code: string): Promise<string> => {
+      const refinedCode = normalizeReferralCode(code);
+
+      if (!isReferralCodeFormatValid(refinedCode)) {
+        return REFERRAL_CODE_INVALID_ERROR;
+      }
+
       try {
-        const valid = await dispatch(validateRewardsReferralCode(code));
+        const valid = await dispatch(validateRewardsReferralCode(refinedCode));
 
         if (!valid) {
-          return 'Invalid code';
+          return REFERRAL_CODE_INVALID_ERROR;
         }
         return '';
       } catch {
@@ -118,6 +132,15 @@ export const useValidateReferralCode = (
         setError('');
         return;
       }
+
+      if (!isReferralCodeFormatValid(refinedCode)) {
+        requestIdRef.current += 1;
+        clearDebounceTimer();
+        setIsValidating(false);
+        setError(REFERRAL_CODE_INVALID_ERROR);
+        return;
+      }
+
       triggerValidation(refinedCode);
     },
     [clearDebounceTimer, triggerValidation],
@@ -143,7 +166,8 @@ export const useValidateReferralCode = (
     [clearDebounceTimer],
   );
 
-  const isValid = Boolean(referralCode) && !error && !isValidating;
+  const isValid =
+    isReferralCodeFormatValid(referralCode) && !error && !isValidating;
   const isUnknownError = error === REFERRAL_CODE_UNKNOWN_ERROR;
 
   return {
