@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Text, TextVariant } from '@metamask/design-system-react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import { getTransactionDisplayStatusKey } from '../../../../shared/lib/activity/transaction-display-status';
 import { ActivityListStatusSubtitle } from '../../app/activity-list-status';
 import { useFormatters } from '../../../hooks/useFormatters';
 import type { TransactionViewModel } from '../../../../shared/lib/multichain/types';
@@ -40,8 +39,6 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
       ? TransactionStatus.failed
       : TransactionStatus.confirmed;
 
-  const activityListItemStatusKey =
-    getTransactionDisplayStatusKey(transactionStatus);
   const isProtected = isProtectedByEnforcedSimulations(transaction);
 
   const failureMessage =
@@ -66,7 +63,7 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
         {/* Left side - Action and Details */}
         <div
           className="flex-1 min-w-0"
-          data-testid={`activity-list-item-status--${activityListItemStatusKey}`}
+          data-testid={`activity-list-item-status--${transactionStatus}`}
         >
           <Text
             className="font-medium truncate"
