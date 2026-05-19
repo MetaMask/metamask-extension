@@ -21,57 +21,73 @@ describe('PerpsFeesDisplay', () => {
     );
   });
 
-  describe('discount badge visibility', () => {
-    it('hides the discount badge when metamaskFeeRateDiscountPercentage is undefined', () => {
-      render(<PerpsFeesDisplay fee={10} />);
+  describe('discount visibility', () => {
+    it('does not show discounted fee when metamaskFeeRateDiscountPercentage is undefined', () => {
+      render(<PerpsFeesDisplay fee={10} feeTextTestId="fee" />);
 
-      expect(
-        screen.queryByTestId('perps-fees-display-discount'),
-      ).not.toBeInTheDocument();
-      expect(screen.queryByText(/-\d+%/u)).not.toBeInTheDocument();
+      expect(screen.getByTestId('fee')).toHaveTextContent('$10.00');
+      expect(screen.queryByTestId('fee-original')).not.toBeInTheDocument();
     });
 
-    it('hides the discount badge when metamaskFeeRateDiscountPercentage is zero', () => {
+    it('does not show discounted fee when metamaskFeeRateDiscountPercentage is zero', () => {
       render(
-        <PerpsFeesDisplay fee={10} metamaskFeeRateDiscountPercentage={0} />,
+        <PerpsFeesDisplay
+          fee={10}
+          metamaskFeeRateDiscountPercentage={0}
+          feeTextTestId="fee"
+        />,
       );
 
-      expect(
-        screen.queryByTestId('perps-fees-display-discount'),
-      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('fee')).toHaveTextContent('$10.00');
+      expect(screen.queryByTestId('fee-original')).not.toBeInTheDocument();
     });
 
-    it('hides the discount badge when metamaskFeeRateDiscountPercentage is negative', () => {
+    it('does not show discounted fee when metamaskFeeRateDiscountPercentage is negative', () => {
       render(
-        <PerpsFeesDisplay fee={10} metamaskFeeRateDiscountPercentage={-5} />,
+        <PerpsFeesDisplay
+          fee={10}
+          metamaskFeeRateDiscountPercentage={-5}
+          feeTextTestId="fee"
+        />,
       );
 
-      expect(
-        screen.queryByTestId('perps-fees-display-discount'),
-      ).not.toBeInTheDocument();
+      expect(screen.getByTestId('fee')).toHaveTextContent('$10.00');
+      expect(screen.queryByTestId('fee-original')).not.toBeInTheDocument();
     });
 
-    it('renders the discount badge when metamaskFeeRateDiscountPercentage is positive', () => {
+    it('shows strikethrough original and discounted fee when metamaskFeeRateDiscountPercentage is positive', () => {
       render(
-        <PerpsFeesDisplay fee={10} metamaskFeeRateDiscountPercentage={15} />,
+        <PerpsFeesDisplay
+          fee={10}
+          metamaskFeeRateDiscountPercentage={15}
+          feeTextTestId="fee"
+        />,
       );
 
-      expect(
-        screen.getByTestId('perps-fees-display-discount'),
-      ).toBeInTheDocument();
-      expect(screen.getByText('-15%')).toBeInTheDocument();
+      const original = screen.getByTestId('fee-original');
+      expect(original).toHaveTextContent('$10.00');
+      expect(original).toHaveStyle({ textDecoration: 'line-through' });
+      expect(screen.getByTestId('fee')).toHaveTextContent('$8.50');
     });
 
-    [1, 5, 10, 25, 50, 100].forEach((percentage) => {
-      it(`renders the discount label correctly for ${percentage} percent`, () => {
+    [
+      { percentage: 1, expected: '$9.90' },
+      { percentage: 5, expected: '$9.50' },
+      { percentage: 10, expected: '$9.00' },
+      { percentage: 25, expected: '$7.50' },
+      { percentage: 50, expected: '$5.00' },
+      { percentage: 100, expected: '$0.00' },
+    ].forEach(({ percentage, expected }) => {
+      it(`computes the discounted fee correctly for ${percentage}%`, () => {
         render(
           <PerpsFeesDisplay
             fee={10}
             metamaskFeeRateDiscountPercentage={percentage}
+            feeTextTestId="fee"
           />,
         );
 
-        expect(screen.getByText(`-${percentage}%`)).toBeInTheDocument();
+        expect(screen.getByTestId('fee')).toHaveTextContent(expected);
       });
     });
   });
@@ -101,31 +117,13 @@ describe('PerpsFeesDisplay', () => {
       expect(screen.getByText('-$100.00')).toBeInTheDocument();
     });
 
-    it('renders both fee text and discount when both are present', () => {
+    it('renders both original and discounted fee when discount is present', () => {
       render(
         <PerpsFeesDisplay fee={100} metamaskFeeRateDiscountPercentage={20} />,
       );
 
       expect(screen.getByText('$100.00')).toBeInTheDocument();
       expect(screen.getByText('$80.00')).toBeInTheDocument();
-      expect(screen.getByText('-20%')).toBeInTheDocument();
-    });
-
-    it('strikes through the original fee when a discount is active', () => {
-      render(
-        <PerpsFeesDisplay
-          fee={100}
-          metamaskFeeRateDiscountPercentage={20}
-          feeTextTestId="fee"
-        />,
-      );
-
-      const original = screen.getByTestId('fee-original');
-      expect(original).toHaveTextContent('$100.00');
-      expect(original).toHaveStyle({ textDecoration: 'line-through' });
-
-      const discounted = screen.getByTestId('fee');
-      expect(discounted).toHaveTextContent('$80.00');
     });
 
     it('applies negated prefix to both original and discounted fees', () => {
@@ -173,9 +171,6 @@ describe('PerpsFeesDisplay', () => {
       );
 
       expect(screen.getByTestId('rewards-vip-badge')).toBeInTheDocument();
-      expect(
-        screen.getByTestId('perps-fees-display-discount'),
-      ).toBeInTheDocument();
       expect(screen.getByText('$10.00')).toBeInTheDocument();
       expect(screen.getByText('$8.50')).toBeInTheDocument();
     });

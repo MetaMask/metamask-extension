@@ -727,8 +727,8 @@ describe('ClosePositionModal', () => {
     });
   });
 
-  describe('MetaMask fee discount badge', () => {
-    it('does not render the discount badge when no discount is active', () => {
+  describe('MetaMask fee discount', () => {
+    it('does not show discounted fee when no discount is active', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.00145,
         isLoading: false,
@@ -746,11 +746,11 @@ describe('ClosePositionModal', () => {
       );
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-close-summary-fees-value-original'),
       ).not.toBeInTheDocument();
     });
 
-    it('renders the inline discount badge next to the fees value when a discount is active', () => {
+    it('shows strikethrough original and discounted fee when a discount is active', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.00045 + 0.0005, // protocol + half-off builder
         isLoading: false,
@@ -768,16 +768,14 @@ describe('ClosePositionModal', () => {
       );
 
       expect(
-        screen.getByTestId('perps-fees-display-discount'),
+        screen.getByTestId('perps-close-summary-fees-value-original'),
       ).toBeInTheDocument();
-      expect(screen.getByText('-50%')).toBeInTheDocument();
-      // Fee value text still present
       expect(
         screen.getByTestId('perps-close-summary-fees-value'),
       ).toBeInTheDocument();
     });
 
-    it('does not render the discount badge while feeRate is unavailable', () => {
+    it('does not show discounted fee while feeRate is unavailable', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
         isLoading: true,
@@ -795,7 +793,7 @@ describe('ClosePositionModal', () => {
       );
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-close-summary-fees-value-original'),
       ).not.toBeInTheDocument();
     });
   });

@@ -1,14 +1,9 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   Box,
   BoxAlignItems,
-  BoxBackgroundColor,
   BoxFlexDirection,
   FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -21,9 +16,9 @@ import { RewardsVipBadge } from '../../rewards/RewardsVipBadge';
 
 export type PerpsFeesDisplayProps = {
   /**
-   * MetaMask fee discount in whole percentage points. When `undefined`, `0`,
-   * or negative, the discount badge is not rendered (matching mobile's
-   * `PerpsFeesDisplay`).
+   * MetaMask fee discount in whole percentage points. When defined and
+   * positive, the original fee is struck through and the discounted fee
+   * is shown alongside it.
    */
   metamaskFeeRateDiscountPercentage?: number;
   /** Raw fee amount in USD. When `undefined`, a placeholder is rendered. */
@@ -49,13 +44,12 @@ export type PerpsFeesDisplayProps = {
 };
 
 /**
- * Renders the estimated fee text with an inline `-X%` warning-colored badge
- * when a MetaMask fee discount is active, and an optional VIP tier badge.
- * Mirrors mobile's
- * `app/components/UI/Perps/components/PerpsFeesDisplay/PerpsFeesDisplay.tsx`.
+ * Renders the estimated fee text with an optional strikethrough original and
+ * discounted fee when a MetaMask fee discount is active, plus an optional VIP
+ * tier badge.
  *
  * @param props - Component props.
- * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount in whole percentage points. The badge is hidden when this is `undefined`, `0`, or negative.
+ * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount in whole percentage points. When positive, the original fee is struck through and the discounted fee appears next to it.
  * @param props.fee - Raw fee amount in USD.
  * @param props.negated - When true, the formatted fee is prefixed with `-`.
  * @param props.placeholder - Text shown when `fee` is `undefined` (defaults to `"-"`).
@@ -76,29 +70,34 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   feeTextTestId,
   showVipBadge = false,
 }) => {
-  const hasDiscount =
-    metamaskFeeRateDiscountPercentage !== undefined &&
-    metamaskFeeRateDiscountPercentage > 0;
+  const formatFee = useCallback(
+    (amount: number): string => {
+      const formatted = formatPerpsFiat(amount, {
+        ranges: PRICE_RANGES_MINIMAL_VIEW,
+      });
+      return negated ? `-${formatted}` : formatted;
+    },
+    [negated],
+  );
 
-  const formatFee = (amount: number): string => {
-    const formatted = formatPerpsFiat(amount, {
-      ranges: PRICE_RANGES_MINIMAL_VIEW,
-    });
-    return negated ? `-${formatted}` : formatted;
-  };
-
-  let feeText: string;
-  let discountedFeeText: string | undefined;
-
-  if (fee === undefined) {
-    feeText = placeholder;
-  } else {
-    feeText = formatFee(fee);
-    if (hasDiscount) {
-      const discountedFee = fee * (1 - metamaskFeeRateDiscountPercentage / 100);
-      discountedFeeText = formatFee(discountedFee);
+  const { feeText, discountedFeeText } = useMemo(() => {
+    if (fee === undefined) {
+      return { feeText: placeholder, discountedFeeText: undefined };
     }
-  }
+
+    const text = formatFee(fee);
+
+    if (
+      metamaskFeeRateDiscountPercentage !== undefined &&
+      metamaskFeeRateDiscountPercentage > 0
+    ) {
+      const discountedFee =
+        fee * (1 - metamaskFeeRateDiscountPercentage / 100);
+      return { feeText: text, discountedFeeText: formatFee(discountedFee) };
+    }
+
+    return { feeText: text, discountedFeeText: undefined };
+  }, [fee, placeholder, metamaskFeeRateDiscountPercentage, formatFee]);
 
   return (
     <Box
@@ -107,27 +106,6 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
       gap={1}
     >
       {showVipBadge ? <RewardsVipBadge /> : null}
-      {hasDiscount ? (
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          gap={1}
-          backgroundColor={BoxBackgroundColor.WarningMuted}
-          paddingLeft={1}
-          paddingRight={1}
-          className="rounded"
-          data-testid="perps-fees-display-discount"
-        >
-          <Icon
-            name={IconName.MetamaskFoxOutline}
-            size={IconSize.Sm}
-            color={IconColor.WarningDefault}
-          />
-          <Text variant={TextVariant.BodyXs} color={TextColor.WarningDefault}>
-            {`-${metamaskFeeRateDiscountPercentage}%`}
-          </Text>
-        </Box>
-      ) : null}
       {discountedFeeText === undefined ? (
         <Text
           variant={variant}

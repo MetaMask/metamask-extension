@@ -109,8 +109,8 @@ describe('OrderSummary', () => {
     });
   });
 
-  describe('MetaMask fee discount badge', () => {
-    it('does not render the discount badge when metamaskFeeRateDiscountPercentage is undefined', () => {
+  describe('MetaMask fee discount', () => {
+    it('does not show discounted fee when metamaskFeeRateDiscountPercentage is undefined', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired="$1,000.00"
@@ -121,11 +121,11 @@ describe('OrderSummary', () => {
       );
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-order-summary-estimated-fees-original'),
       ).not.toBeInTheDocument();
     });
 
-    it('renders the discount badge in the fees row when metamaskFeeRateDiscountPercentage > 0', () => {
+    it('shows strikethrough original and discounted fee when metamaskFeeRateDiscountPercentage > 0', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired="$1,000.00"
@@ -137,13 +137,14 @@ describe('OrderSummary', () => {
       );
 
       expect(
-        screen.getByTestId('perps-fees-display-discount'),
-      ).toBeInTheDocument();
-      expect(screen.getByText('-50%')).toBeInTheDocument();
-      expect(screen.getByText('$0.50')).toBeInTheDocument();
+        screen.getByTestId('perps-order-summary-estimated-fees-original'),
+      ).toHaveTextContent('$0.50');
+      expect(
+        screen.getByTestId('perps-order-summary-estimated-fees'),
+      ).toHaveTextContent('$0.25');
     });
 
-    it('does not render the discount badge when metamaskFeeRateDiscountPercentage is 0', () => {
+    it('does not show discounted fee when metamaskFeeRateDiscountPercentage is 0', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired="$1,000.00"
@@ -155,11 +156,11 @@ describe('OrderSummary', () => {
       );
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-order-summary-estimated-fees-original'),
       ).not.toBeInTheDocument();
     });
 
-    it('does not render the discount badge when estimatedFees is null even if a discount is active', () => {
+    it('does not show discounted fee when estimatedFees is null even if a discount is active', () => {
       renderWithProvider(
         <OrderSummary
           marginRequired="$1,000.00"
@@ -171,7 +172,7 @@ describe('OrderSummary', () => {
       );
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-order-summary-estimated-fees-original'),
       ).not.toBeInTheDocument();
       expect(
         screen.getByTestId('perps-order-summary-estimated-fees'),
