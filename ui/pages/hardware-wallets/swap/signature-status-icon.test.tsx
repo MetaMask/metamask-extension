@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { SignatureStepStatus } from './hardware-wallet-signatures.utils';
+import { SignatureStepStatus } from './types';
 import SignatureStatusIcon from './signature-status-icon';
 
 jest.mock('../../../components/ui/pulse-loader', () => () => (
@@ -16,11 +16,7 @@ describe('SignatureStatusIcon', () => {
       />,
     );
 
-    expect(
-      container.querySelector(
-        '.hardware-wallet-signatures__step-icon--complete',
-      ),
-    ).not.toBeNull();
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   it('renders rejected icon when status is Rejected', () => {
@@ -31,11 +27,7 @@ describe('SignatureStatusIcon', () => {
       />,
     );
 
-    expect(
-      container.querySelector(
-        '.hardware-wallet-signatures__step-icon--rejected',
-      ),
-    ).not.toBeNull();
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   it('renders rejected icon when status is Failed', () => {
@@ -46,11 +38,7 @@ describe('SignatureStatusIcon', () => {
       />,
     );
 
-    expect(
-      container.querySelector(
-        '.hardware-wallet-signatures__step-icon--rejected',
-      ),
-    ).not.toBeNull();
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   it('renders rejected icon when status is Disconnected', () => {
@@ -61,15 +49,11 @@ describe('SignatureStatusIcon', () => {
       />,
     );
 
-    expect(
-      container.querySelector(
-        '.hardware-wallet-signatures__step-icon--rejected',
-      ),
-    ).not.toBeNull();
+    expect(container.querySelector('svg')).not.toBeNull();
   });
 
   it('renders pulse loader when status is Active', () => {
-    const { getByTestId, container } = render(
+    const { getByTestId } = render(
       <SignatureStatusIcon
         status={SignatureStepStatus.Active}
         stepNumber={1}
@@ -77,9 +61,6 @@ describe('SignatureStatusIcon', () => {
     );
 
     expect(getByTestId('pulse-loader')).toBeDefined();
-    expect(
-      container.querySelector('.hardware-wallet-signatures__step-icon--active'),
-    ).not.toBeNull();
   });
 
   it('renders step number when status is Pending', () => {

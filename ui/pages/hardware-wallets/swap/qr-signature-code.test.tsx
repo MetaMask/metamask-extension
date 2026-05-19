@@ -11,7 +11,9 @@ jest.mock('qrcode.react', () => ({
 jest.mock('@ngraveio/bc-ur', () => ({
   UR: class MockUR {
     mockBuf: Buffer;
+
     mockStr: string;
+
     constructor(mockBuffer: Buffer, mockString: string) {
       this.mockBuf = mockBuffer;
       this.mockStr = mockString;
@@ -19,7 +21,10 @@ jest.mock('@ngraveio/bc-ur', () => ({
   },
   UREncoder: class MockUREncoder {
     private mockCount = 0;
+
+    // eslint-disable-next-line @typescript-eslint/no-useless-constructor, no-empty-function
     constructor() {}
+
     nextPart() {
       this.mockCount += 1;
       return `qr-part-${this.mockCount}`;
@@ -37,19 +42,6 @@ describe('QrSignatureCode', () => {
     const { getByTestId } = render(<QrSignatureCode payload={payload} />);
 
     expect(getByTestId('qr-code-svg')).toBeDefined();
-  });
-
-  it('renders with the correct QR code container class', () => {
-    const payload = {
-      type: 'eth-sign-request',
-      cbor: 'a201010203',
-    };
-
-    const { container } = render(<QrSignatureCode payload={payload} />);
-
-    expect(
-      container.querySelector('.hardware-wallet-signatures__qr-code'),
-    ).not.toBeNull();
   });
 
   it('renders the QR code value uppercase', () => {

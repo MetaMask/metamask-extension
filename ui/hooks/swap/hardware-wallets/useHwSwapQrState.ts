@@ -1,10 +1,10 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { SerializedUR } from '@metamask/eth-qr-keyring';
 import { providerErrors, serializeError } from '@metamask/rpc-errors';
 
 import { HardwareKeyringType } from '../../../../shared/constants/hardware-wallets';
-import { getHardwareWalletType } from '../../../selectors/selectors';
+import { getHardwareWalletType } from '../../../../shared/lib/selectors/keyring';
 import { getActiveQrCodeScanRequest } from '../../../selectors';
 import {
   cancelQrCodeScan,
@@ -13,9 +13,9 @@ import {
   rejectPendingApproval,
 } from '../../../store/actions';
 import type { MetaMaskReduxDispatch } from '../../../store/store';
-import { HardwareWalletSignatureStatus } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
-import type { HardwareWalletSignaturesState } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures-state-machine';
-import { isQrHardwareSignRequest } from '../../../pages/bridge/hardware-wallets/hardware-wallet-signatures.utils';
+import { HardwareWalletSignatureStatus } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import type { HardwareWalletSignaturesState } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures-state-machine';
+import { isQrHardwareSignRequest } from '../../../pages/hardware-wallets/swap/hardware-wallet-signatures.utils';
 
 type UseHardwareWalletQrStateOptions = {
   signatureState: HardwareWalletSignaturesState;
@@ -62,6 +62,11 @@ export function useHwSwapQrState({
       ? activeQrCodeScanRequest
       : undefined;
 
+  // Use a ref so the cancel callback doesn't recreate on every render due to
+  // the non-memoized qrSignRequest object changing identity.
+  const qrSignRequestRef = useRef(qrSignRequest);
+  qrSignRequestRef.current = qrSignRequest;
+
   const currentQrRequestId = qrSignRequest?.request.requestId;
 
   useEffect(() => {
@@ -96,10 +101,10 @@ export function useHwSwapQrState({
       dispatch(cancelTx(confirmationTxData as Parameters<typeof cancelTx>[0]));
     }
 
-    if (qrSignRequest) {
+    if (qrSignRequestRef.current) {
       dispatch(cancelQrCodeScan());
     }
-  }, [dispatch, qrSignRequest, confirmationTxData]);
+  }, [dispatch, confirmationTxData]);
 
   return {
     isReadingQrSignature,

@@ -10,7 +10,7 @@ import {
 } from '@metamask/design-system-react';
 
 import PulseLoader from '../../../components/ui/pulse-loader';
-import { SignatureStepStatus } from './hardware-wallet-signatures.utils';
+import { SignatureStepStatus } from './types';
 
 const SignatureStatusIcon = ({
   status,
@@ -22,7 +22,6 @@ const SignatureStatusIcon = ({
   if (status === SignatureStepStatus.Complete) {
     return (
       <Box
-        className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--complete"
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
       >
@@ -42,7 +41,6 @@ const SignatureStatusIcon = ({
   ) {
     return (
       <Box
-        className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--rejected"
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
       >
@@ -58,7 +56,6 @@ const SignatureStatusIcon = ({
   if (status === SignatureStepStatus.Active) {
     return (
       <Box
-        className="hardware-wallet-signatures__step-icon hardware-wallet-signatures__step-icon--active"
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
       >
@@ -69,7 +66,6 @@ const SignatureStatusIcon = ({
 
   return (
     <Box
-      className="hardware-wallet-signatures__step-icon"
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
     >

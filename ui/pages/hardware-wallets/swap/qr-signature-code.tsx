@@ -13,6 +13,14 @@ const QR_FRAGMENT_SIZE = 200;
 const QR_REFRESH_RATE = 200;
 const QR_CODE_SIZE = 240;
 
+/**
+ * Renders an animated QR code for QR hardware wallet signing. Displays a
+ * rotating sequence of UR-encoded fragments that the hardware device scans
+ * to complete the signature.
+ *
+ * @param props - Component props.
+ * @param props.payload - The UR payload containing the CBOR-encoded signing data.
+ */
 const QrSignatureCode = ({
   payload,
 }: {
@@ -41,7 +49,6 @@ const QrSignatureCode = ({
 
   return (
     <Box
-      className="hardware-wallet-signatures__qr-code"
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       marginTop={4}
