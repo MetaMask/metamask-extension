@@ -88,10 +88,6 @@
   "account": {
     "message": "Account"
   },
-  "vip": {
-    "message": "VIP $1",
-    "description": "$1 is the VIP tier number"
-  },
   "accountActivity": {
     "message": "Account activity"
   },
@@ -4357,12 +4353,6 @@
   "musdConvert": {
     "message": "Convert"
   },
-  "percent": {
-    "message": "$1%"
-  },
-  "percentFee": {
-    "message": "$1% fee"
-  },
   "musdConvertAndGetBonus": {
     "message": "Convert and get $1%",
     "description": "$1 is the bonus percentage (e.g., 3)"
@@ -5417,8 +5407,14 @@
   "perSecond": {
     "message": "per second"
   },
+  "percent": {
+    "message": "$1%"
+  },
   "percentChange": {
     "message": "Percent change"
+  },
+  "percentFee": {
+    "message": "$1% fee"
   },
   "permissionFor": {
     "message": "Permission for"
@@ -9853,6 +9849,10 @@
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "Visit site"

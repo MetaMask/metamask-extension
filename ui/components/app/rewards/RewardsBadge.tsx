@@ -56,8 +56,14 @@ export const RewardsBadge = ({
       onMouseLeave={allowHideBadge ? () => setIsHovered(false) : undefined}
     >
       <Box className="flex items-center gap-1" onClick={onClick}>
-
-            <RewardsIcon variant={useAlternativeIconColor ? RewardsIconVariant.Alternative : RewardsIconVariant.Default} startIconName={startIconName} />
+        <RewardsIcon
+          variant={
+            useAlternativeIconColor
+              ? RewardsIconVariant.Alternative
+              : RewardsIconVariant.Default
+          }
+          startIconName={startIconName}
+        />
 
         <Text
           variant={TextVariant.BodySm}

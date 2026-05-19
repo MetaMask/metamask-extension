@@ -22,18 +22,8 @@
   "QRHardwareSignRequestCancel": {
     "message": "Reject"
   },
-  "percent": {
-    "message": "$1%"
-  },
-  "percentFee": {
-    "message": "$1% fee"
-  },
   "QRHardwareSignRequestDescription": {
     "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature"
-  },
-  "vip": {
-    "message": "VIP $1",
-    "description": "$1 is the VIP tier number"
   },
   "QRHardwareSignRequestGetSignature": {
     "message": "Get signature"
@@ -5417,8 +5407,14 @@
   "perSecond": {
     "message": "per second"
   },
+  "percent": {
+    "message": "$1%"
+  },
   "percentChange": {
     "message": "Percent change"
+  },
+  "percentFee": {
+    "message": "$1% fee"
   },
   "permissionFor": {
     "message": "Permission for"
@@ -9853,6 +9849,10 @@
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "Visit site"

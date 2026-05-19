@@ -1,9 +1,5 @@
-import React, {  useState } from 'react';
-import {
-  Icon,
-  IconName,
-  IconSize,
-} from '@metamask/design-system-react';
+import React, { useState } from 'react';
+import { Icon, IconName, IconSize } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export enum RewardsIconVariant {
@@ -13,9 +9,9 @@ export enum RewardsIconVariant {
 }
 
 export const RewardsIcon = ({
-  variant=RewardsIconVariant.Default,
+  variant = RewardsIconVariant.Default,
   startIconName,
-  size=16,
+  size = 16,
 }: {
   variant?: RewardsIconVariant;
   startIconName?: IconName;
@@ -23,7 +19,6 @@ export const RewardsIcon = ({
 }) => {
   const t = useI18nContext();
   const [imageLoadError, setImageLoadError] = useState(false);
-
 
   if (startIconName) {
     return <Icon name={startIconName} size={IconSize.Sm} />;
@@ -33,6 +28,17 @@ export const RewardsIcon = ({
     return null;
   }
 
-  const iconPath = variant === RewardsIconVariant.Default ? './images/metamask-rewards-points.svg' : `./images/metamask-rewards-points-${variant}.svg`;
-  return <img src={iconPath} alt={t('rewardsPointsIcon')} width={size} height={size} onError={() => setImageLoadError(true)} />
+  const iconPath =
+    variant === RewardsIconVariant.Default
+      ? './images/metamask-rewards-points.svg'
+      : `./images/metamask-rewards-points-${variant}.svg`;
+  return (
+    <img
+      src={iconPath}
+      alt={t('rewardsPointsIcon')}
+      width={size}
+      height={size}
+      onError={() => setImageLoadError(true)}
+    />
+  );
 };
