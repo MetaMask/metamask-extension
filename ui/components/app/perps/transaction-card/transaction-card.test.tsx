@@ -600,4 +600,73 @@ describe('TransactionCard', () => {
       ).not.toBeInTheDocument();
     });
   });
+
+  describe('ADL badge accessibility', () => {
+    const createAdlTransaction = () =>
+      createMockTransaction({
+        fill: {
+          shortTitle: 'Closed long',
+          amount: '+$100',
+          amountNumber: 100,
+          isPositive: true,
+          size: '1.5',
+          entryPrice: '2000',
+          points: '0',
+          pnl: '+100',
+          fee: '1',
+          action: 'Closed',
+          feeToken: 'USDC',
+          fillType: FillType.AutoDeleveraging,
+        },
+      });
+
+    it('does not nest the ADL button inside another button when row is clickable', () => {
+      const transaction = createAdlTransaction();
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={jest.fn()} />,
+        mockStore,
+      );
+
+      const card = screen.getByTestId(`transaction-card-${transaction.id}`);
+      const adlButton = screen.getByTestId('perps-fill-tag-adl-button');
+
+      let ancestor = adlButton.parentElement;
+      while (ancestor && ancestor !== card) {
+        expect(ancestor.tagName).not.toBe('BUTTON');
+        ancestor = ancestor.parentElement;
+      }
+    });
+
+    it('fires row onClick from the row button when ADL badge is present', () => {
+      const handleClick = jest.fn();
+      globalThis.platform = { openTab: jest.fn() } as never;
+      const transaction = createAdlTransaction();
+
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={handleClick} />,
+        mockStore,
+      );
+
+      const card = screen.getByTestId(`transaction-card-${transaction.id}`);
+      const rowButton = card.querySelector(
+        'button:not([data-testid="perps-fill-tag-adl-button"])',
+      );
+      expect(rowButton).not.toBeNull();
+      fireEvent.click(rowButton as HTMLElement);
+      expect(handleClick).toHaveBeenCalledWith(transaction);
+    });
+
+    it('renders the ADL badge outside the row button area', () => {
+      const transaction = createAdlTransaction();
+      renderWithProvider(
+        <TransactionCard transaction={transaction} onClick={jest.fn()} />,
+        mockStore,
+      );
+
+      expect(screen.getByTestId('perps-fill-tag-adl')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('perps-fill-tag-adl-button'),
+      ).toBeInTheDocument();
+    });
+  });
 });

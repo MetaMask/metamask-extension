@@ -15,6 +15,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { PerpsFillTag } from '../perps-fill-tag';
 import { getDisplayName } from '../utils';
+import { FillType } from '../types';
 import type { PerpsTransaction } from '../types';
 
 export type TransactionCardProps = {
@@ -134,17 +135,17 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
   };
 
   const isClickable = Boolean(onClick);
+  const hasInteractiveBadge =
+    transaction.fill?.fillType === FillType.AutoDeleveraging;
 
   const content = (
     <>
-      {/* Token Logo */}
       <PerpsTokenLogo
         symbol={transaction.symbol}
         size={AvatarTokenSize.Md}
         className="shrink-0"
       />
 
-      {/* Left side: Title and subtitle */}
       <Box
         className="min-w-0 flex-1"
         flexDirection={BoxFlexDirection.Column}
@@ -157,14 +158,15 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
           gap={2}
         >
           <Text fontWeight={FontWeight.Medium}>{transaction.title}</Text>
-          <PerpsFillTag transaction={transaction} screenName={screenName} />
+          {!(isClickable && hasInteractiveBadge) && (
+            <PerpsFillTag transaction={transaction} screenName={screenName} />
+          )}
         </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {getSubtitleDisplay()}
         </Text>
       </Box>
 
-      {/* Right side: Amount and time */}
       <Box
         className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
@@ -187,6 +189,30 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({
     variantStyles,
     showTopBorder && 'border-t border-background-default',
   );
+
+  if (isClickable && hasInteractiveBadge) {
+    return (
+      <Box
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        className={twMerge(
+          variantStyles,
+          showTopBorder && 'border-t border-background-default',
+        )}
+        data-testid={`transaction-card-${transaction.id}`}
+      >
+        <ButtonBase
+          className="flex-1 justify-start rounded-none min-w-0 h-auto text-left cursor-pointer gap-4 px-4 py-3"
+          onClick={handleClick}
+        >
+          {content}
+        </ButtonBase>
+        <Box className="pr-4 shrink-0">
+          <PerpsFillTag transaction={transaction} screenName={screenName} />
+        </Box>
+      </Box>
+    );
+  }
 
   if (isClickable) {
     return (
