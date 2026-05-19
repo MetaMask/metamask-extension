@@ -13,7 +13,7 @@ import { JustifyContent } from '../../../helpers/constants/design-system';
 import { Row } from '../layout';
 import { RewardsVipBadge } from '../../../components/app/rewards/RewardsVipBadge';
 import { formatAccountToCaipAccountId } from '../../../helpers/utils/rewards-utils';
-import { isDiscountedMMFee } from '../utils/quote';
+import { readMmFee } from '../utils/quote';
 
 export const BridgeVipFeeMessage = () => {
   const t = useI18nContext();
@@ -43,7 +43,7 @@ export const BridgeVipFeeMessage = () => {
   }
 
   const { isDiscounted, baseFeePercentage, quoteFeePercentage } =
-    isDiscountedMMFee(activeQuote);
+    readMmFee(activeQuote);
 
   if (!isDiscounted) {
     return null;

@@ -18,7 +18,7 @@ import {
 import { Row, Tooltip } from '../layout';
 import { getCurrentKeyring } from '../../../../shared/lib/selectors/keyring';
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-import { isDiscountedMMFee } from '../utils/quote';
+import { readMmFee } from '../utils/quote';
 
 export const BridgeCTAInfoText = () => {
   const t = useI18nContext();
@@ -50,7 +50,7 @@ export const BridgeCTAInfoText = () => {
     return null;
   }
 
-  const { isDiscounted, quoteFeePercentage } = isDiscountedMMFee(activeQuote);
+  const { isDiscounted, quoteFeePercentage } = readMmFee(activeQuote);
 
   return hasMMFee || hasApproval ? (
     <Row

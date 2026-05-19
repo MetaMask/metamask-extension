@@ -168,7 +168,7 @@ export const isQuoteExpiredOrInvalid = ({
  * @param bps - The value in basis points (e.g., "87.5" or 87.5)
  * @returns The percentage value as a string (e.g., "0.875")
  */
-export const bpsToPercentage = (
+const bpsToPercentage = (
   bps: string | number | undefined,
 ): string | undefined => {
   if (bps === undefined || bps === null) {
@@ -185,7 +185,7 @@ export const bpsToPercentage = (
   return (bpsValue / 100).toString();
 };
 
-export const isDiscountedMMFee = (quote: QuoteResponse) => {
+export const readMmFee = (quote: QuoteResponse) => {
   // Get the fee percentage from the quote or fallback to default
   // @ts-expect-error: controller types are not up to date yet
   const quoteBpsFee = quote.quote.feeData?.metabridge?.quoteBpsFee;

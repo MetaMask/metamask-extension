@@ -24,12 +24,17 @@ export const RewardsVipBadge = ({
 
   useEffect(() => {
     dispatch(async (d: MetaMaskReduxDispatch) => {
-      const vipTierResponse = (await submitRequestToBackground(
-        'rewardsGetVipTierForAccount',
-        [accountId],
-      )) as number | null;
-      await forceUpdateMetamaskState(d);
-      setVipTier(vipTierResponse);
+      try {
+        const vipTierResponse = (await submitRequestToBackground(
+          'rewardsGetVipTierForAccount',
+          [accountId],
+        )) as number | null;
+        await forceUpdateMetamaskState(d);
+        setVipTier(vipTierResponse);
+      } catch (error) {
+        console.warn('Error fetching vip tier:', error);
+        setVipTier(null);
+      }
     });
   }, [accountId, dispatch]);
 

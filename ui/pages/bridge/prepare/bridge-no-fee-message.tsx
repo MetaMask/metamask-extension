@@ -9,7 +9,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { Row } from '../layout';
-import { isDiscountedMMFee } from '../utils/quote';
+import { readMmFee } from '../utils/quote';
 
 export const BridgeNoFeeMessage = () => {
   const t = useI18nContext();
@@ -19,7 +19,7 @@ export const BridgeNoFeeMessage = () => {
     return null;
   }
 
-  const { isDiscounted } = isDiscountedMMFee(activeQuote);
+  const { isDiscounted } = readMmFee(activeQuote);
 
   if (isDiscounted) {
     return null;
