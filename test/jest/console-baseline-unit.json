@@ -548,10 +548,10 @@
       "React: Act warnings (component updates not wrapped)": 10
     },
     "ui/hooks/identity/useAccountSyncing/useAccountSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 8
+      "MetaMask: Background connection not initialized": 13
     },
     "ui/hooks/identity/useAuthentication/useAutoSignIn.test.tsx": {
-      "MetaMask: Background connection not initialized": 4
+      "MetaMask: Background connection not initialized": 12
     },
     "ui/hooks/identity/useAuthentication/useAutoSignOut.test.tsx": {
       "MetaMask: Background connection not initialized": 2
@@ -566,7 +566,7 @@
       "MetaMask: Background connection not initialized": 1
     },
     "ui/hooks/identity/useContactSyncing/useContactSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 5
+      "MetaMask: Background connection not initialized": 10
     },
     "ui/hooks/metamask-notifications/useCounter.test.tsx": {
       "Reselect: Input stability warnings": 3
