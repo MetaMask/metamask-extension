@@ -164,9 +164,7 @@ describe('BridgeVipFeeMessage', () => {
 
     expect(screen.getByText(messages.includes.message)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        messages.percent.message.replace('$1', '0.875'),
-      ),
+      screen.getByText(messages.percent.message.replace('$1', '0.875')),
     ).toBeInTheDocument();
     expect(
       screen.getByText(messages.mmFee.message.replace('$1', '0.5')),
@@ -189,9 +187,7 @@ describe('BridgeVipFeeMessage', () => {
 
     expect(screen.getByText(messages.includes.message)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        messages.percent.message.replace('$1', '0.875'),
-      ),
+      screen.getByText(messages.percent.message.replace('$1', '0.875')),
     ).toBeInTheDocument();
     expect(
       screen.getByText(messages.mmFee.message.replace('$1', '0.5')),
