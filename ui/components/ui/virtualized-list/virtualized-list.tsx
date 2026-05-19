@@ -18,6 +18,10 @@ type Props<TItem> = {
   data: TItem[];
   estimatedItemSize: number;
   keyExtractor?: (item: TItem, index: number) => string;
+  itemRef?: (
+    node: HTMLDivElement | null,
+    info: { item: TItem; index: number },
+  ) => void;
   listEmptyComponent?: ReactNode;
   listFooterComponent?: ReactNode;
   overscan?: number;
@@ -29,6 +33,7 @@ export const VirtualizedList = <TItem,>({
   data,
   estimatedItemSize,
   keyExtractor,
+  itemRef,
   listEmptyComponent,
   listFooterComponent,
   overscan = 5,
@@ -72,7 +77,11 @@ export const VirtualizedList = <TItem,>({
           const key = keyExtractor
             ? keyExtractor(item, index)
             : index.toString();
-          return <div key={key}>{renderItem({ item, index })}</div>;
+          return (
+            <div key={key} ref={(node) => itemRef?.(node, { item, index })}>
+              {renderItem({ item, index })}
+            </div>
+          );
         })}
         {listFooterComponent}
       </>
@@ -97,7 +106,10 @@ export const VirtualizedList = <TItem,>({
             <div
               key={key}
               data-index={virtualItem.index}
-              ref={virtualizer.measureElement}
+              ref={(node) => {
+                virtualizer.measureElement(node);
+                itemRef?.(node, { item, index: virtualItem.index });
+              }}
               className="absolute top-0 left-0 w-full"
               style={{
                 transform: `translateY(${virtualItem.start}px)`,
