@@ -488,8 +488,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing Snap accounts.
  *
- * @param messenger - The messenger instace.
- * @param helpers - Helpers required by the Snap keyring implementation.
+ * @param messenger - The messenger instance.
  * @returns A Snap keyring builder.
  */
 export function snapKeyringBuilder(messenger: SnapKeyringBuilderMessenger) {

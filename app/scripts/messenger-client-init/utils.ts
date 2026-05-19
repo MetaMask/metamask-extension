@@ -1,4 +1,5 @@
 import { createProjectLogger } from '@metamask/utils';
+import { Wallet } from '@metamask/wallet';
 import {
   BaseControllerMessenger,
   BaseRestrictedControllerMessenger,
@@ -9,7 +10,6 @@ import {
 } from './types';
 import { MessengerClient } from './controller-list';
 import { MESSENGER_FACTORIES } from './messengers';
-import { Wallet } from '@metamask/wallet';
 
 const log = createProjectLogger('messenger-client-init');
 
@@ -85,6 +85,7 @@ export type InitFunctions = Partial<{
  * Each init object can be a function that returns a messenger client.
  *
  * @param options - Options bag.
+ * @param options.wallet - The wallet instance.
  * @param options.baseControllerMessenger - Unrestricted base controller messenger.
  * @param options.initFunctions - Map of init functions keyed by messenger client name.
  * @param options.initRequest - Base request used to initialize the messenger clients.

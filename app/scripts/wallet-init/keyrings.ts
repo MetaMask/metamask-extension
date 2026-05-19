@@ -11,6 +11,7 @@ import {
   LedgerIframeBridge,
   LedgerKeyring,
 } from '@metamask/eth-ledger-bridge-keyring';
+import { Messenger } from '@metamask/messenger';
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
@@ -18,9 +19,10 @@ import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
 import { snapKeyringBuilder } from '../lib/snap-keyring';
-import { RootMessenger } from '../lib/messenger';
+import { RootMessenger, RootMessengerActions, RootMessengerEvents } from '../lib/messenger';
+import { SnapKeyringBuilderMessenger } from '../lib/snap-keyring/types';
 
-export function getKeyringBuilders(messenger: RootMessenger) {
+export function getKeyringBuilders(messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>) {
   const overrides = process.env.IN_TEST
     ? {
         // Use `require` to make it easier to exclude this test code from the Browserify build.
@@ -82,8 +84,41 @@ export function getKeyringBuilders(messenger: RootMessenger) {
     );
   }
 
+  const snapKeyringMessenger: SnapKeyringBuilderMessenger = new Messenger({
+    namespace: 'SnapKeyring',
+    parent: messenger,
+  });
+
+  messenger.delegate({
+    messenger: snapKeyringMessenger,
+    actions: [
+      'ApprovalController:addRequest',
+      'ApprovalController:acceptRequest',
+      'ApprovalController:rejectRequest',
+      'ApprovalController:startFlow',
+      'ApprovalController:endFlow',
+      'ApprovalController:showSuccess',
+      'ApprovalController:showError',
+      'PhishingController:testOrigin',
+      'PhishingController:maybeUpdateState',
+      'KeyringController:getAccounts',
+      'KeyringController:persistAllKeyrings',
+      'AccountsController:setSelectedAccount',
+      'AccountsController:getAccountByAddress',
+      'AccountsController:setAccountName',
+      'AccountsController:listMultichainAccounts',
+      'AccountsController:updateAccounts',
+      'SnapController:handleRequest',
+      'SnapController:getSnap',
+      'SnapController:isMinimumPlatformVersion',
+      'PreferencesController:getState',
+      'RemoteFeatureFlagController:getState',
+      'MetaMetricsController:trackEvent',
+    ],
+  });
+
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
-  keyrings.push(snapKeyringBuilder(messenger));
+  keyrings.push(snapKeyringBuilder(snapKeyringMessenger));
 
   return keyrings;
 }
