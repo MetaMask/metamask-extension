@@ -55,54 +55,108 @@ const defaultProps = {
   isSubmitting: false,
 };
 
+const defaultFeeResult = {
+  feeRate: 0.00145,
+  protocolFeeRate: 0.00045,
+  metamaskFeeRate: 0.001,
+  feeAmount: 0,
+  protocolFeeAmount: 0,
+  metamaskFeeAmount: 0,
+};
+
+function setDefaultBackgroundResponses() {
+  mockSubmitRequestToBackground.mockImplementation((method: string) => {
+    if (method === 'rewardsGetPerpsDiscountForAccount') {
+      return Promise.resolve(null);
+    }
+    return Promise.resolve(defaultFeeResult);
+  });
+}
+
 describe('CloseAllPositionsModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockSubmitRequestToBackground.mockResolvedValue({ feeRate: 0.00145 });
+    setDefaultBackgroundResponses();
   });
 
-  it('renders when open', () => {
+  it('renders when open', async () => {
     renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).not.toHaveTextContent('--');
+    });
 
     expect(
       screen.getByTestId('perps-close-all-positions-modal'),
     ).toBeInTheDocument();
   });
 
-  it('displays the description text', () => {
+  it('displays the description text', async () => {
     renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).not.toHaveTextContent('--');
+    });
 
     expect(
       screen.getByText(/close all your open positions/iu),
     ).toBeInTheDocument();
   });
 
-  it('displays margin value', () => {
+  it('displays margin value', async () => {
     renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).not.toHaveTextContent('--');
+    });
 
     expect(
       screen.getByTestId('perps-close-all-total-margin-value'),
     ).toBeInTheDocument();
   });
 
-  it('displays fees value', () => {
+  it('displays fees value', async () => {
     renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).not.toHaveTextContent('--');
+    });
 
     expect(
       screen.getByTestId('perps-close-all-fees-value'),
     ).toBeInTheDocument();
   });
 
-  it('displays you will receive value', () => {
+  it('displays you will receive value', async () => {
     renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).not.toHaveTextContent('--');
+    });
 
     expect(
       screen.getByTestId('perps-close-all-receive-value'),
     ).toBeInTheDocument();
   });
 
-  it('calls onConfirm when Close all button is clicked', () => {
+  it('calls onConfirm when Close all button is clicked', async () => {
     renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).not.toHaveTextContent('--');
+    });
 
     fireEvent.click(
       screen.getByTestId('perps-close-all-positions-modal-submit'),
@@ -111,8 +165,14 @@ describe('CloseAllPositionsModal', () => {
     expect(defaultProps.onConfirm).toHaveBeenCalledTimes(1);
   });
 
-  it('calls onClose when Keep positions button is clicked', () => {
+  it('calls onClose when Keep positions button is clicked', async () => {
     renderWithProvider(<CloseAllPositionsModal {...defaultProps} />, mockStore);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).not.toHaveTextContent('--');
+    });
 
     fireEvent.click(
       screen.getByTestId('perps-close-all-positions-modal-cancel'),
@@ -121,11 +181,17 @@ describe('CloseAllPositionsModal', () => {
     expect(defaultProps.onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('disables submit button when isSubmitting is true', () => {
+  it('disables submit button when isSubmitting is true', async () => {
     renderWithProvider(
       <CloseAllPositionsModal {...defaultProps} isSubmitting />,
       mockStore,
     );
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).not.toHaveTextContent('--');
+    });
 
     expect(
       screen.getByTestId('perps-close-all-positions-modal-submit'),
@@ -155,15 +221,30 @@ describe('CloseAllPositionsModal', () => {
   });
 
   it('fetches fees per unique symbol rather than using a single rate', async () => {
-    const feeRateBySymbol: Record<string, number> = {
-      ETH: 0.001,
-      BTC: 0.002,
+    const feesBySymbol: Record<
+      string,
+      { protocolFeeRate: number; metamaskFeeRate: number }
+    > = {
+      ETH: { protocolFeeRate: 0.0003, metamaskFeeRate: 0.0007 },
+      BTC: { protocolFeeRate: 0.0005, metamaskFeeRate: 0.0015 },
     };
     mockSubmitRequestToBackground.mockImplementation(
-      (_method: string, args: unknown[]) => {
+      (method: string, args: unknown[]) => {
+        if (method === 'rewardsGetPerpsDiscountForAccount') {
+          return Promise.resolve(null);
+        }
         const { symbol } = (args as [{ symbol: string }])[0];
+        const rates = feesBySymbol[symbol] ?? {
+          protocolFeeRate: 0.00045,
+          metamaskFeeRate: 0.001,
+        };
         return Promise.resolve({
-          feeRate: feeRateBySymbol[symbol] ?? 0.00145,
+          feeRate: rates.protocolFeeRate + rates.metamaskFeeRate,
+          protocolFeeRate: rates.protocolFeeRate,
+          metamaskFeeRate: rates.metamaskFeeRate,
+          feeAmount: 0,
+          protocolFeeAmount: 0,
+          metamaskFeeAmount: 0,
         });
       },
     );
@@ -179,6 +260,15 @@ describe('CloseAllPositionsModal', () => {
         'perpsCalculateFees',
         [expect.objectContaining({ symbol: 'BTC' })],
       );
+    });
+
+    // ETH: 7125 * (0.0003 + 0.0007) = 7.125
+    // BTC: 22500 * (0.0005 + 0.0015) = 45
+    // Total = 52.125, rounded = 52.13
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('perps-close-all-fees-value'),
+      ).toHaveTextContent('-$52.13');
     });
   });
 
