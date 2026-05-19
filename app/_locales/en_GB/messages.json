@@ -25,6 +25,10 @@
   "QRHardwareSignRequestDescription": {
     "message": "After you’ve signed with your wallet, click on 'Get Signature' to receive the signature"
   },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
+  },
   "QRHardwareSignRequestGetSignature": {
     "message": "Get signature"
   },

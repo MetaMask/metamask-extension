@@ -88,6 +88,10 @@
   "account": {
     "message": "Account"
   },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
+  },
   "accountActivity": {
     "message": "Account activity"
   },
