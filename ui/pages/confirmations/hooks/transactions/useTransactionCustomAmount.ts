@@ -197,8 +197,7 @@ export function useTransactionCustomAmount({
         shouldSetMaxAmountMode || percentage !== 100
           ? newAmountFiatValue.round(2, BigNumber.ROUND_DOWN)
           : newAmountFiatValue
-      )
-        .toString(10);
+      ).toString(10);
 
       if (shouldSetMaxAmountMode) {
         setIsMax(true);
