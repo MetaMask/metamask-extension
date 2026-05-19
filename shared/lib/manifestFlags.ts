@@ -147,10 +147,6 @@ export type ManifestFlags = {
      * instead of the default 12345.
      */
     fixtureServerPort?: number;
-    /**
-     * Enables the Hyperliquid deposit modal DOM observer POC in the content script.
-     */
-    hyperliquidDepositModalDetection?: boolean;
   };
 };
 
