@@ -160,3 +160,50 @@ export const isQuoteExpiredOrInvalid = ({
 
   return false;
 };
+
+/**
+ * Converts basis points (BPS) to percentage
+ * 1 BPS = 0.01%
+ *
+ * @param bps - The value in basis points (e.g., "87.5" or 87.5)
+ * @returns The percentage value as a string (e.g., "0.875")
+ */
+const bpsToPercentage = (
+  bps: string | number | undefined,
+): string | undefined => {
+  if (bps === undefined || bps === null) {
+    return undefined;
+  }
+
+  const bpsValue = typeof bps === 'string' ? parseFloat(bps) : bps;
+
+  if (isNaN(bpsValue)) {
+    return undefined;
+  }
+
+  // BPS to percentage: divide by 100
+  return (bpsValue / 100).toString();
+};
+
+export const readMmFee = (quote: QuoteResponse) => {
+  // Get the fee percentage from the quote or fallback to default
+  // @ts-expect-error: controller types are not up to date yet
+  const quoteBpsFee = quote.quote.feeData?.metabridge?.quoteBpsFee;
+  // @ts-expect-error: controller types are not up to date yet
+  const baseBpsFee = quote.quote.feeData?.metabridge?.baseBpsFee;
+  const quoteFeePercentage = bpsToPercentage(quoteBpsFee);
+  const baseFeePercentage = bpsToPercentage(baseBpsFee);
+
+  const isDiscounted = Boolean(
+    quoteFeePercentage &&
+    baseFeePercentage &&
+    baseFeePercentage !== quoteFeePercentage &&
+    Boolean(quoteBpsFee),
+  );
+
+  return {
+    isDiscounted,
+    baseFeePercentage,
+    quoteFeePercentage,
+  };
+};

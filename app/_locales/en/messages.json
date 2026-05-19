@@ -4391,6 +4391,9 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "includes": {
+    "message": "Includes"
+  },
   "includesXTransactions": {
     "message": "Includes $1 transactions"
   },
@@ -4957,6 +4960,9 @@
   },
   "mismatchedRpcUrl": {
     "message": "According to our records the submitted RPC URL value does not match a known provider for this chain ID."
+  },
+  "mmFee": {
+    "message": "$1% MM fee."
   },
   "month": {
     "message": "month"
@@ -6268,6 +6274,9 @@
   },
   "perSecond": {
     "message": "per second"
+  },
+  "percent": {
+    "message": "$1%"
   },
   "percentChange": {
     "message": "Percent change"
@@ -10530,6 +10539,13 @@
   "unavailable": {
     "message": "Unavailable"
   },
+  "unavailableNetworkConnection": {
+    "message": "Unavailable network connection"
+  },
+  "unavailableNetworkConnectionDescription": {
+    "message": "The connection with $1 is unreliable. Update network connectivity details before continuing or try again later.",
+    "description": "Message shown when the send page detects the asset's network has an unreliable RPC. $1 is the network name."
+  },
   "unexpectedBehavior": {
     "message": "This behavior is unexpected and should be reported as a bug, even if your accounts are restored."
   },
@@ -10733,6 +10749,10 @@
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "vip": {
+    "message": "VIP $1",
+    "description": "$1 is the VIP tier number"
   },
   "visitSite": {
     "message": "Visit site"
