@@ -115,6 +115,9 @@ describe('RewardsVipBadge', () => {
   });
 
   it('renders null when vip tier fetch throws an error', async () => {
+    jest.spyOn(console, 'warn').mockImplementationOnce(() => {
+      // noop
+    });
     mockGetVipTierForAccount.mockRejectedValueOnce(new Error('test'));
 
     const { container } = renderWithProvider(
@@ -131,6 +134,7 @@ describe('RewardsVipBadge', () => {
       ]
     `);
       expect(container).toMatchInlineSnapshot(`<div />`);
+      expect(console.warn).toHaveBeenCalledTimes(1);
     });
   });
 });
