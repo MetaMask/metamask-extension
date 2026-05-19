@@ -814,7 +814,7 @@
     "web-vitals": "^4.2.4",
     "webextension-polyfill": "^0.8.0",
     "webpack": "^5.104.1",
-    "webpack-bundle-analyzer": "^5.3.0",
+    "webpack-bundle-analyzer": "patch:webpack-bundle-analyzer@npm%3A5.3.0#~/.yarn/patches/webpack-bundle-analyzer-npm-5.3.0-946883e2fa.patch",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.4",
     "ws": "^8.20.1",
