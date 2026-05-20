@@ -43,10 +43,7 @@ export {
   getAssetsControllerMessenger,
   getAssetsControllerInitMessenger,
 } from './assets-controller-messenger';
-export type {
-  AssetsControllerMessenger,
-  AssetsControllerInitMessenger,
-} from './assets-controller-messenger';
+export type { AssetsControllerInitMessenger } from './assets-controller-messenger';
 
 export { getClientControllerMessenger } from './client-controller-messenger';
 export type { ClientControllerMessenger } from './client-controller-messenger';
