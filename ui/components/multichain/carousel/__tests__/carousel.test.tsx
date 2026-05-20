@@ -4,6 +4,7 @@ import { Carousel } from '../carousel';
 import { fetchCarouselSlidesFromContentful } from '../../../../hooks/useCarouselManagement/fetchCarouselSlidesFromContentful';
 
 const it = globalThis.it as unknown as jest.It;
+const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 
 jest.mock('../../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
@@ -191,7 +192,7 @@ describe('Carousel', () => {
     expect(screen.getByText('Test Slide 1')).toBeInTheDocument();
   });
 
-  it('does not follow href when the slide click handler consumes the click', () => {
+  it('does not follow href when the slide click handler consumes the click', async () => {
     const onSlideClickMock = jest.fn().mockReturnValue(true);
     const slides = [
       {
@@ -213,6 +214,7 @@ describe('Carousel', () => {
     fireEvent.click(screen.getByTestId('carousel-slide-download-mobile-slide'));
 
     expect(onSlideClickMock).toHaveBeenCalledWith('download-mobile-slide');
+    await flushPromises();
     expect(mockUseNavigate).not.toHaveBeenCalled();
     expect(global.platform.openTab).not.toHaveBeenCalled();
   });

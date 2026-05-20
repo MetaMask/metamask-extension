@@ -126,9 +126,9 @@ export const Carousel = React.forwardRef(
 
     const handleSlideClick = (slideId: string) => {
       if (state.isTransitioning) {
-        return;
+        return true;
       }
-      onSlideClick?.(slideId);
+      return onSlideClick?.(slideId);
     };
 
     // Loading state
