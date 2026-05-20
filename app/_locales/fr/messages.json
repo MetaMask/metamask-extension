@@ -175,8 +175,169 @@
   "activity": {
     "message": "Activité"
   },
-  "activityEmptyDescription": {
-    "message": "Rien à voir pour l’instant. Échangez votre premier jeton dès aujourd’hui."
+  "activity_approveSpendingCap_failed_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_pending_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_failed_description": {
+    "message": "Échec de la passerelle"
+  },
+  "activity_bridge_failed_title": {
+    "message": "Échec de la passerelle"
+  },
+  "activity_buy_success_description": {
+    "message": "A acheté $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_title": {
+    "message": "A acheté $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "Interaction de contrats intelligents"
+  },
+  "activity_deposit_failed_description": {
+    "message": "Le dépôt a échoué"
+  },
+  "activity_deposit_failed_title": {
+    "message": "Le dépôt a échoué"
+  },
+  "activity_fallback_description": {
+    "message": "Transaction"
+  },
+  "activity_fallback_title": {
+    "message": "Transaction"
+  },
+  "activity_increaseSpendingCap_failed_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingDeposit_failed_title": {
+    "message": "Le dépôt a échoué"
+  },
+  "activity_lendingWithdrawal_failed_description": {
+    "message": "Le retrait a échoué"
+  },
+  "activity_lendingWithdrawal_failed_title": {
+    "message": "Le retrait a échoué"
+  },
+  "activity_lendingWithdrawal_success_description": {
+    "message": "Retrait de prêt"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "Retrait de prêt"
+  },
+  "activity_nftMint_success_title": {
+    "message": "A minté $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsCloseShort_success_description": {
+    "message": "Fermer la position courte"
+  },
+  "activity_perpsCloseShort_success_title": {
+    "message": "Fermer la position courte"
+  },
+  "activity_perpsOpenLong_success_description": {
+    "message": "Position longue ouverte"
+  },
+  "activity_perpsOpenLong_success_title": {
+    "message": "Position longue ouverte"
+  },
+  "activity_perpsWithdrawFunds_failed_description": {
+    "message": "Le retrait a échoué"
+  },
+  "activity_perpsWithdrawFunds_failed_title": {
+    "message": "Le retrait a échoué"
+  },
+  "activity_predictionCashedOut_success_description": {
+    "message": "Encaissé"
+  },
+  "activity_predictionCashedOut_success_title": {
+    "message": "Encaissé"
+  },
+  "activity_predictionPlaced_success_description": {
+    "message": "Prédiction placée"
+  },
+  "activity_predictionPlaced_success_title": {
+    "message": "Prédiction placée"
+  },
+  "activity_predictionsWithdrawFunds_failed_description": {
+    "message": "Le retrait a échoué"
+  },
+  "activity_predictionsWithdrawFunds_failed_title": {
+    "message": "Le retrait a échoué"
+  },
+  "activity_predictionsWithdrawFunds_pending_description": {
+    "message": "Retrait en cours"
+  },
+  "activity_predictionsWithdrawFunds_pending_title": {
+    "message": "Retrait en cours"
+  },
+  "activity_receive_failed_description": {
+    "message": "De : $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_pending_description": {
+    "message": "De : $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_description": {
+    "message": "De : $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_revokeSpendingCap_failed_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_success_description": {
+    "message": "$1 ",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_failed_description": {
+    "message": "Vers : $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_description": {
+    "message": "Vers : $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_title": {
+    "message": "Envoi de $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Vers : $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_success_title": {
+    "message": "A envoyé $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_swapIncomplete_failed_title": {
+    "message": "Échec du swap"
+  },
+  "activity_swap_failed_title": {
+    "message": "Échec du swap"
   },
   "add": {
     "message": "Ajouter"
@@ -226,6 +387,9 @@
   },
   "addCustomNetwork": {
     "message": "Ajouter un réseau personnalisé"
+  },
+  "addCustomToken": {
+    "message": "Ajouter un jeton personnalisé"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "N’ajoutez ce fournisseur de RPC que si vous lui faites confiance. $1",
@@ -525,6 +689,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "Ce jeton présente des signes évidents de comportement malveillant. Continuer peut entraîner une perte de fonds."
   },
+  "alertMinimumReserve": {
+    "message": "Un solde de réserve est requis"
+  },
   "alertModalAcknowledge": {
     "message": "J’ai pris connaissance du risque et je souhaite toujours continuer"
   },
@@ -605,6 +772,9 @@
   },
   "all": {
     "message": "Tous"
+  },
+  "allDefaultNetworks": {
+    "message": "Tous les réseaux par défaut"
   },
   "allNetworks": {
     "message": "Tous les réseaux"
@@ -2805,8 +2975,14 @@
   "enterSymbol": {
     "message": "Saisissez le symbole"
   },
+  "enterTokenAddress": {
+    "message": "Saisissez l’adresse du jeton"
+  },
   "enterTokenNameOrAddress": {
     "message": "Saisissez le nom du jeton ou collez l’adresse"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Saisissez le nom ou l’adresse du jeton"
   },
   "enterYourPassword": {
     "message": "Saisissez votre mot de passe"
@@ -3106,7 +3282,7 @@
     "message": "L’estimation du prix du carburant a échoué en raison d’une erreur de réseau."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Le parrainage de gaz n’est pas disponible pour cette transaction. Vous devrez conserver au moins $1 $2 sur votre compte.",
+    "message": "Ce réseau spécifique exige que vous mainteniez une réserve de $1 $2 sur votre compte.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -4011,6 +4187,9 @@
   "managePermissions": {
     "message": "Gérer les autorisations"
   },
+  "manageTokens": {
+    "message": "Gérer les jetons"
+  },
   "manageWalletRecovery": {
     "message": "Gérer la récupération du portefeuille"
   },
@@ -4709,6 +4888,9 @@
   "newContract": {
     "message": "Nouveau contrat"
   },
+  "newCustomTokenAdded": {
+    "message": "« $1 » a été ajouté avec succès !"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Paramètres > Sécurité et confidentialité"
   },
@@ -4844,8 +5026,14 @@
   "noSnaps": {
     "message": "Aucun Snap installé"
   },
+  "noTokensMatchSearch": {
+    "message": "Aucun jeton ne correspond à vos critères de recherche"
+  },
   "noTokensMatchingYourFilters": {
     "message": "Aucun jeton ne correspond à vos critères de recherche"
+  },
+  "noTokensToManage": {
+    "message": "Vous ne possédez pas encore de jetons. Effectuez une recherche par nom ou par adresse pour découvrir les jetons les plus populaires."
   },
   "noWebcamFound": {
     "message": "La caméra de votre ordinateur n’a pas été trouvée. Veuillez réessayer."
@@ -5432,6 +5620,9 @@
     "message": "Payer avec",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "Bénéficiaire"
+  },
   "pending": {
     "message": "En attente"
   },
@@ -5453,6 +5644,9 @@
   },
   "perSecond": {
     "message": "par seconde"
+  },
+  "percent": {
+    "message": "$1 %"
   },
   "percentChange": {
     "message": "Variation en pourcentage"
@@ -5782,6 +5976,10 @@
   "perpsAutoClose": {
     "message": "Fermeture automatique"
   },
+  "perpsAutoDeleveraging": {
+    "message": "Réduction automatique de l’effet de levier",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "disponible",
     "description": "is the available balance amount"
@@ -5839,7 +6037,7 @@
     "message": "Fermer la position longue"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Les clôtures partielles doivent avoir une valeur d’au moins $1 USD. Augmentez le montant de clôture ou clôturez la position complète."
+    "message": "Les clôtures partielles doivent être d’une valeur minimale de $1 USD. Augmentez le montant à clôturer ou clôturez la position dans son intégralité."
   },
   "perpsClosePosition": {
     "message": "Fermer la position"
@@ -5874,6 +6072,9 @@
   "perpsDepositActivityTitle": {
     "message": "Contrats à terme perpétuels financés"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Échec de la passerelle"
+  },
   "perpsDepositFailed": {
     "message": "Le dépôt n’a pas pu être effectué. Veuillez réessayer."
   },
@@ -5896,10 +6097,10 @@
     "message": "Ajouter des fonds à votre compte de trading de contrats à terme perpétuels"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Vos fonds sont disponibles pour le trading."
+    "message": "Les fonds sont prêts à être tradés"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Fonds ajoutés au compte de trading de contrats à terme perpétuels"
+    "message": "Votre compte de trading de contrats à terme perpétuels a été approvisionné"
   },
   "perpsDeposits": {
     "message": "Dépôts"
@@ -6004,6 +6205,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Le prix actuel est proche du prix de liquidation estimé"
+  },
+  "perpsLiquidated": {
+    "message": "Liquidé",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Distance de liquidation"
@@ -6188,11 +6393,14 @@
   "perpsSortByPriceChange": {
     "message": "Variation du prix"
   },
+  "perpsSortByRank": {
+    "message": "Rang"
+  },
   "perpsSortBySection": {
     "message": "Trier par"
   },
   "perpsSortByTitle": {
-    "message": "Trier"
+    "message": "Filtrer"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -6364,6 +6572,9 @@
   "perpsTrades": {
     "message": "Trades"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Position longue ouverte"
+  },
   "perpsTriggerPrice": {
     "message": "Prix déclencheur"
   },
@@ -6462,6 +6673,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Aucun compte sélectionné. Sélectionnez un compte et réessayez."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Échec du retrait"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Une erreur s’est produite"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Disponible dans environ 1 minute"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Retrait en cours "
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$2 $1 transféré(s) vers votre portefeuille",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Fonds transférés vers votre portefeuille"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Retrait effectué"
   },
   "perpsWithdrawReceive": {
     "message": "Recevoir"
@@ -6794,6 +7027,46 @@
     "message": "L’accès à l’appareil photo est requis",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Retournez sur votre portefeuille matériel et trouvez l’option permettant de partager ou d’exporter vos comptes, choisissez MetaMask, puis scannez le code QR.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Scannez le code QR de synchronisation du portefeuille",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Retournez sur votre portefeuille matériel et approuvez la transaction, puis scannez le code QR qui s’affiche.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Scanner le code QR de signature",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Assurez-vous que le code QR est entièrement visible et bien éclairé, puis réessayez. Si le problème persiste, essayez de mettre à jour le micrologiciel (firmware) de votre portefeuille matériel.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Impossible de lire le code QR",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Retournez sur votre portefeuille matériel, choisissez MetaMask comme type de portefeuille, puis générez un nouveau code QR et scannez-le.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Code QR incorrect",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Retournez sur votre portefeuille matériel et approuvez la transaction, puis scannez le code QR qui s’affiche.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Code QR incorrect",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "En attente"
   },
@@ -6856,6 +7129,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Protégez vos fonds"
+  },
+  "redeemer": {
+    "message": "Racheteur"
   },
   "redeposit": {
     "message": "Déposer à nouveau"
@@ -7114,6 +7390,12 @@
   "rewardsLinkAccountError": {
     "message": "Échec de l’ajout du compte"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Vérification de la région…"
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Gagnez des prix, profitez d’avantages et découvrez d’autres façons de gagner de l’argent, simplement en utilisant MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Nous ne pouvons pas déterminer si votre pays autorise l’adhésion au programme de récompenses. Veuillez vérifier votre connexion et réessayer."
   },
@@ -7132,6 +7414,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Région non prise en charge"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "En vous inscrivant, vous acceptez notre $1. Nous inscrirons tous les comptes sur cet appareil et suivrons l’activité sur la blockchain pour vous récompenser automatiquement. $2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "En savoir plus."
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "conditions générales et notre politique de confidentialité"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Échec de l’inscription"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Code de parrainage non valide"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Code de parrainage (facultatif)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Impossible de valider le code de parrainage."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Vérifiez votre connexion et réessayez."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Masquer le code"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Vous avez un code de parrainage ?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Inscrivez-vous au programme de récompenses"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Inscription en cours…"
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Commencez à gagner des récompenses"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Vérification du code de parrainage…",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7147,6 +7469,12 @@
   "rewardsPointsIcon": {
     "message": "Points de récompense",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "Pour accéder aux Récompenses MetaMask, scannez le code QR avec votre appareil mobile."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Continuer sur appareil mobile"
   },
   "rewardsSignInFailed": {
     "message": "Échec de la connexion",
@@ -9261,6 +9589,9 @@
   "tokenAddress": {
     "message": "Adresse du jeton"
   },
+  "tokenAllowance": {
+    "message": "Allocation de jetons"
+  },
   "tokenAlreadyAdded": {
     "message": "Ce jeton a déjà été ajouté."
   },
@@ -9302,6 +9633,9 @@
   "tokenPermissionsCount": {
     "message": "Autorisation pour $1 jetons",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "Impossible d’afficher les résultats de la recherche. Veuillez réessayer."
   },
   "tokenStandard": {
     "message": "Jeton standard"
