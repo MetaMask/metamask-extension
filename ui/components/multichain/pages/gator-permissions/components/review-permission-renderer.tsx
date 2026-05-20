@@ -312,7 +312,7 @@ function renderElement({
         />
       );
 
-    case 'raw-list':
+    case 'list':
       return (
         <GatorPermissionDetailRow
           key={rowKey}
@@ -320,7 +320,7 @@ function renderElement({
           value={
             <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
               {element.getValue(ctx).map((value, valueIndex) => (
-                <li key={`${value}-${valueIndex}`}>{value}</li>
+                <li key={`${value}-${valueIndex}`}>{t(value)}</li>
               ))}
             </ul>
           }

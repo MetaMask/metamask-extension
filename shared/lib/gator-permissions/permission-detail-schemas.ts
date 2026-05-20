@@ -46,19 +46,34 @@ const requireStartTime = (permission: {
 
 const alwaysVisible = () => true;
 
-const TOKEN_APPROVAL_REVOCATION_METHODS: Array<{
+const TOKEN_APPROVAL_REVOCATION_METHODS: {
   key: string;
-  label: string;
-}> = [
-  { key: 'erc20Approve', label: 'ERC-20 approve(spender, 0)' },
-  { key: 'erc721Approve', label: 'ERC-721 approve(address(0), tokenId)' },
+  translationKey: string;
+}[] = [
+  {
+    key: 'erc20Approve',
+    translationKey: 'gatorPermissionsErc20ApproveRevocation',
+  },
+  {
+    key: 'erc721Approve',
+    translationKey: 'gatorPermissionsErc721ApproveRevocation',
+  },
   {
     key: 'erc721SetApprovalForAll',
-    label: 'ERC-721/ERC-1155 setApprovalForAll(false)',
+    translationKey: 'gatorPermissionsSetApprovalForAllRevocation',
   },
-  { key: 'permit2Approve', label: 'Permit2 approve(token, spender, 0, 0)' },
-  { key: 'permit2Lockdown', label: 'Permit2 lockdown' },
-  { key: 'permit2InvalidateNonces', label: 'Permit2 invalidate nonces' },
+  {
+    key: 'permit2Approve',
+    translationKey: 'gatorPermissionsPermit2ApproveRevocation',
+  },
+  {
+    key: 'permit2Lockdown',
+    translationKey: 'gatorPermissionsPermit2Lockdown',
+  },
+  {
+    key: 'permit2InvalidateNonces',
+    translationKey: 'gatorPermissionsPermit2InvalidateNonces',
+  },
 ];
 
 const TOKEN_APPROVAL_REVOCATION_PRIMITIVE_KEYS =
@@ -69,7 +84,7 @@ function getEnabledTokenApprovalRevocationMethods(
 ): string[] {
   return TOKEN_APPROVAL_REVOCATION_METHODS.filter(({ key }) =>
     Boolean(getData<boolean | undefined>(ctx, key)),
-  ).map(({ label }) => label);
+  ).map(({ translationKey }) => translationKey);
 }
 
 function hasAllTokenApprovalRevocationPrimitivesEnabled(
@@ -710,7 +725,7 @@ const tokenApprovalRevocationSchema: PermissionSchemaEntry = {
           includeInViews: ['confirmation', 'reviewDetail'],
         },
         {
-          type: 'raw-list',
+          type: 'list',
           labelKey: 'gatorPermissionsRevocationMethods',
           testId: 'review-gator-permission-revocation-methods',
           getValue: (ctx) => getEnabledTokenApprovalRevocationMethods(ctx),
