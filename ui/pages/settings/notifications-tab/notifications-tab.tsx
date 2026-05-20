@@ -1,5 +1,5 @@
 import React from 'react';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import NotificationsSettingsContent from '../../notifications-settings/notifications-settings';
 import { SettingsTab } from '../shared';
 import { SettingItemConfig } from '../types';

@@ -8,7 +8,8 @@
 // Kept outside `.eslintrc*.js` because ESLint v8 validates every config
 // it loads and rejects unknown top-level exports.
 //
-// See ADR 0021 (modularize-routes) / WPC-402.
+// See ADR 0021 (modularize-routes):
+// https://github.com/MetaMask/decisions/tree/main/decisions/core/0021-modularize-routes.md
 
 const fs = require('node:fs');
 const path = require('node:path');

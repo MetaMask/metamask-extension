@@ -763,7 +763,7 @@ module.exports = {
      * architectural `app` <-> `ui` <-> `shared` zones so that if the
      * exemption list is ever changed, the registry's sibling-route
      * imports continue to be permitted without silently losing the
-     * `ui` <-> `app` boundary. See ADR 0021 (modularize-routes) / WPC-402.
+     * `ui` <-> `app` boundary. See ADR 0021 (modularize-routes).
      */
     {
       files: ['ui/pages/routes/**/*.{js,ts,tsx}', 'ui/pages/index.js'],

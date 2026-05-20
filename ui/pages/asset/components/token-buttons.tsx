@@ -30,7 +30,7 @@ import {
 import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 
 import { Asset } from '../types/asset';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 

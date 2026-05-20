@@ -20,7 +20,7 @@ import {
 import { Skeleton } from '../../components/component-library/skeleton';
 import { PreferredAvatar } from '../../components/app/preferred-avatar';
 import { getSnapName, shortenAddress } from '../../helpers/utils/util';
-// eslint-disable-next-line import-x/no-restricted-paths -- TODO(WPC-402): allowed by ADR-0021 backlog
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { selectAccountGroupNameByInternalAccount } from '../confirmations/selectors/accounts';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
 import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
