@@ -60,6 +60,9 @@ type EventEntry = {
 };
 
 const eventEntries = new Map<NamespacedName, EventEntry>();
+// Tracks whether the router is attached to the *current* `background`
+// reference. `setBackgroundConnection` resets it to false because the
+// previous connection's listener is unreachable from the new connection.
 let notificationRouterAttached = false;
 
 function notificationRouter(notification: JsonRpcNotification<[string, Json]>) {
@@ -109,6 +112,10 @@ export async function setBackgroundConnection(
  * the same event share a single upstream `messengerSubscribe` IPC and a single
  * `background.onNotification` listener. The upstream `messengerUnsubscribe` IPC
  * is only sent when the last local subscriber to an event unsubscribes.
+ *
+ * Callbacks are identified by reference: subscribing the same function object
+ * twice to the same event collapses to a single slot, and the first
+ * unsubscribe removes it for both callers.
  *
  * @param event - The event name.
  * @param callback - The callback to invoke when the event is emitted.
