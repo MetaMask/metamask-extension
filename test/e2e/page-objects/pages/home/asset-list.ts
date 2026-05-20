@@ -470,12 +470,24 @@ class AssetListPage {
     console.log('Getting network icon details from sort-by-networks button');
     const iconDetails = await this.driver.executeScript(`
       const button = document.querySelector('[data-testid="sort-by-networks"]');
-      const avatarNetwork = button?.querySelector('.mm-avatar-network img');
-      return avatarNetwork ? {
-        src: avatarNetwork.src,
-        alt: avatarNetwork.alt,
-        isVisible: avatarNetwork.offsetWidth > 0 && avatarNetwork.offsetHeight > 0
-      } : null;
+      const avatarNetwork = button?.querySelector('.mm-avatar-network__network-image');
+
+      if (!avatarNetwork) {
+        return null;
+      }
+
+      const backgroundImage = getComputedStyle(avatarNetwork).backgroundImage || avatarNetwork.style.backgroundImage;
+      const backgroundImageUrl = backgroundImage.match(/^url\\(["']?(.*?)["']?\\)$/)?.[1] ?? '';
+      const isImage = avatarNetwork instanceof HTMLImageElement;
+      const rect = avatarNetwork.getBoundingClientRect();
+
+      return {
+        src: isImage ? avatarNetwork.src : backgroundImageUrl,
+        alt: isImage
+          ? avatarNetwork.alt
+          : avatarNetwork.getAttribute('aria-label') || '',
+        isVisible: rect.width > 0 && rect.height > 0,
+      };
     `);
     return iconDetails as {
       src: string;

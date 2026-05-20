@@ -233,14 +233,16 @@ describe('MultichainAggregatedAddressListRow', () => {
 
       // Verify network avatars are displayed
       // Note: Only networks with valid images will be rendered
-      const networkAvatars = screen.queryAllByAltText(ALT_TEXTS.NETWORK_LOGO);
+      const networkAvatars = screen.queryAllByRole('img', {
+        name: ALT_TEXTS.NETWORK_LOGO,
+      });
 
       expect(networkAvatars.length).toBeGreaterThanOrEqual(1);
       expect(networkAvatars.length).toBeLessThanOrEqual(chainIds.length);
 
       // Verify at least one expected image is present
-      const avatarSources = networkAvatars.map((avatar) =>
-        avatar.getAttribute('src'),
+      const avatarImageStyles = networkAvatars.map((avatar) =>
+        avatar.getAttribute('style'),
       );
       const expectedSources = [
         IMAGE_SOURCES.ETH_LOGO,
@@ -248,10 +250,8 @@ describe('MultichainAggregatedAddressListRow', () => {
         IMAGE_SOURCES.ARBITRUM,
       ];
       expect(
-        avatarSources.some(
-          (src) =>
-            src &&
-            expectedSources.includes(src as (typeof expectedSources)[number]),
+        avatarImageStyles.some((style) =>
+          expectedSources.some((src) => style?.includes(src)),
         ),
       ).toBe(true);
     });
