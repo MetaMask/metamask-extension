@@ -267,6 +267,33 @@ describe('subscribeToMessengerEvent', () => {
     expect(listenerB).not.toHaveBeenCalled();
   });
 
+  it('collapses to one slot when the same callback is subscribed twice to the same event', async () => {
+    const { submitNotification, messengerUnsubscribe } = setup();
+
+    const listener = jest.fn();
+
+    const unsubscribeFirst = await subscribeToMessengerEvent(event, listener);
+    const unsubscribeSecond = await subscribeToMessengerEvent(event, listener);
+
+    submitNotification({
+      jsonrpc: '2.0',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
+      params: [event, [{ foo: 'bar' }, []]],
+    });
+
+    // Set-by-reference: a notification fires the callback exactly once,
+    // not once per subscribe call.
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    // The first unsubscribe empties the set, so the upstream IPC is sent.
+    await unsubscribeFirst();
+    expect(messengerUnsubscribe).toHaveBeenCalledTimes(1);
+
+    // The second unsubscribe finds nothing to remove and is a no-op.
+    await unsubscribeSecond();
+    expect(messengerUnsubscribe).toHaveBeenCalledTimes(1);
+  });
+
   it('ignores subscription notifications that have no params', async () => {
     const { submitNotification } = setup();
 
