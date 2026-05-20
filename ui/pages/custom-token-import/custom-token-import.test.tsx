@@ -295,7 +295,7 @@ describe('CustomTokenImportPage', () => {
             [expectedAssetId]: expect.objectContaining({
               address: '0x1111111111111111111111111111111111111111',
               symbol: 'APE',
-              name: 'APE',
+              name: 'ApeCoin',
               decimals: 18,
               chainId: '0x1',
               unlisted: true,
@@ -305,6 +305,28 @@ describe('CustomTokenImportPage', () => {
       );
 
       await waitFor(() => expect(actions.addImportedTokens).toHaveBeenCalled());
+    });
+
+    it('passes the full token name (not the symbol) as the name field in metadata', async () => {
+      const actions = getMockedActions();
+
+      await submitCustomToken({
+        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
+      });
+
+      const expectedAssetId =
+        'eip155:1/erc20:0x1111111111111111111111111111111111111111';
+
+      await waitFor(() => {
+        const metadataArg = actions.importCustomAssetsBatch.mock.calls[0][2];
+        const metadata = metadataArg[expectedAssetId];
+        // tokenInfoGetter mock returns name: 'ApeCoin' and symbol: 'APE'.
+        // These must be stored separately; the symbol must not be used in place
+        // of the name.
+        expect(metadata.name).toBe('ApeCoin');
+        expect(metadata.symbol).toBe('APE');
+        expect(metadata.name).not.toBe(metadata.symbol);
+      });
     });
 
     it('marks the asset as previously hidden when assetPreferences has hidden: true for it', async () => {

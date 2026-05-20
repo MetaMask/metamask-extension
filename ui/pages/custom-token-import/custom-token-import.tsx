@@ -188,6 +188,7 @@ export const CustomTokenImportPage = () => {
 
   const [address, setAddress] = useState('');
   const [symbol, setSymbol] = useState('');
+  const [name, setName] = useState('');
   const [decimals, setDecimals] = useState('');
   const [addressError, setAddressError] = useState<string | null>(null);
   const [symbolError, setSymbolError] = useState<string | null>(null);
@@ -230,6 +231,7 @@ export const CustomTokenImportPage = () => {
   const clearFormData = useCallback(() => {
     setAddress('');
     setSymbol('');
+    setName('');
     setDecimals('');
     resetValidation();
   }, [resetValidation]);
@@ -240,6 +242,7 @@ export const CustomTokenImportPage = () => {
       setAddress(trimmed);
       resetValidation();
       setSymbol('');
+      setName('');
       setDecimals('');
 
       // Invalidate any in-flight lookup so its eventual result is ignored.
@@ -328,6 +331,7 @@ export const CustomTokenImportPage = () => {
             ? ''
             : String(rawDecimals);
         setSymbol(info?.symbol ?? '');
+        setName(info?.name ?? '');
         setDecimals(nextDecimals);
         setShowSymbolAndDecimals(true);
         if (!info?.symbol || nextDecimals === '') {
@@ -500,7 +504,7 @@ export const CustomTokenImportPage = () => {
                 [assetId]: {
                   address,
                   symbol,
-                  name: symbol,
+                  name: name || symbol,
                   decimals: parsedDecimals,
                   chainId: selectedNetwork,
                   unlisted: true,
@@ -533,6 +537,7 @@ export const CustomTokenImportPage = () => {
     dispatch,
     isSubmitting,
     isValid,
+    name,
     navigate,
     networkClientId,
     parsedDecimals,

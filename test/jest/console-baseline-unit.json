@@ -1372,6 +1372,9 @@
     "ui/pages/confirmations/utils/confirm.test.ts": {
       "error: Failed to detect if URL": 1
     },
+    "ui/pages/custom-token-import/custom-token-import.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2
+    },
     "ui/pages/defi/components/defi-details-page.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
