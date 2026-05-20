@@ -6606,6 +6606,10 @@
   "perpsAutoClose": {
     "message": "Auto close"
   },
+  "perpsAutoDeleveraging": {
+    "message": "Auto-deleveraging",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "available",
     "description": "is the available balance amount"
@@ -6831,6 +6835,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Current price is near the estimated liquidation price"
+  },
+  "perpsLiquidated": {
+    "message": "Liquidated",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Liquidation distance"
