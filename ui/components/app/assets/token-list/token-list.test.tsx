@@ -226,7 +226,7 @@ describe('TokenList', () => {
     expect(screen.getByText(lowValueAssetsLabel(1))).toBeInTheDocument();
   });
 
-  it('collapses non-native tokens with missing fiat balance', () => {
+  it('does not collapse non-native tokens with missing fiat balance', () => {
     jest
       .mocked(getAssetsBySelectedAccountGroup)
       .mockReturnValue(
@@ -239,8 +239,8 @@ describe('TokenList', () => {
     render();
 
     expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
-    expect(screen.queryByTestId('token-cell-UNKNOWN')).not.toBeInTheDocument();
-    expect(screen.getByText(lowValueAssetsLabel(1))).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-UNKNOWN')).toBeInTheDocument();
+    expect(screen.queryByTestId('low-value-assets-toggle')).toBeNull();
   });
 
   it('renders low value tokens inline when sort is not declining balance', () => {

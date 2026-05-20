@@ -82,10 +82,12 @@ const setLowValueAssetsExpandedSessionValue = (isExpanded: boolean) => {
 };
 
 const isLowValueAsset = (token: TokenWithFiatAmount) => {
-  const tokenFiatAmount = token.tokenFiatAmount ?? 0;
+  const { tokenFiatAmount } = token;
 
   return (
     !token.isNative &&
+    tokenFiatAmount !== null &&
+    tokenFiatAmount !== undefined &&
     Number.isFinite(tokenFiatAmount) &&
     tokenFiatAmount < LOW_VALUE_ASSET_FIAT_THRESHOLD
   );
