@@ -199,21 +199,11 @@
   "addAccount": {
     "message": "अकाउंट जोड़ें"
   },
-  "addAccountFromNetwork": {
-    "message": "$1 अकाउंट जोड़ें",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "अकाउंट या वॉलेट जोड़ें"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask का इस्तेमाल करके, आपके द्वारा प्राप्त किए गए टोकन जोड़ें"
   },
   "addAlias": {
     "message": "उपनाम जोड़ें"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Bitcoin अकाउंट"
   },
   "addBlockExplorer": {
     "message": "ब्लॉक एक्सप्लोरर जोड़ें"
@@ -267,9 +257,6 @@
   "addFundsModalSwapTokens": {
     "message": "टोकन स्वैप करें"
   },
-  "addHardwareWalletLabel": {
-    "message": "हार्डवेयर वॉलेट"
-  },
   "addMemo": {
     "message": "मेमो जोड़ें"
   },
@@ -283,31 +270,11 @@
   "addNetworkDescription": {
     "message": "एक साइट अतिरिक्त नेटवर्क डिटेल्स का सुझाव दे रही है।"
   },
-  "addNewAccount": {
-    "message": "एक नया Ethereum अकाउंट जोड़ें"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Ethereum अकाउंट"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Solana अकाउंट"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Tron अकाउंट"
-  },
   "addNft": {
     "message": "NFT जोड़ें"
   },
   "addNfts": {
     "message": "NFTs जोड़ें"
-  },
-  "addNonEvmAccount": {
-    "message": "$1 अकाउंट जोड़ें",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "$1 नेटवर्क को चालू करने के लिए, आपको $2 अकाउंट बनाना होगा।",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "RPC URL जोड़ें"
@@ -557,9 +524,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "धीमी गति"
-  },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "गैस स्पॉन्सरशिप उपलब्ध नहीं है"
   },
   "alertReasonGasTooLow": {
     "message": "कम गैस लिमिट"
@@ -896,9 +860,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "होम पेज पर जाएं"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "अकाउंट बनाएं पेज खोलें"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "DeFi पेज खोलें"
@@ -1862,18 +1823,12 @@
   "connectAccounts": {
     "message": "खातों को कनेक्ट करें"
   },
-  "connectAnAccountHeader": {
-    "message": "किसी अकाउंट को कनेक्ट करें"
-  },
   "connectHardwareDevice": {
     "message": "$1 को कनेक्ट करें",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "वर्तमान साइट से मैन्युअल रूप से कनेक्ट करें"
-  },
-  "connectMoreAccounts": {
-    "message": "अधिक खाते को कनेक्ट करें"
   },
   "connectSnap": {
     "message": "$1 को कनेक्ट करें",
@@ -1891,10 +1846,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask इस साइट से कनेक्ट नहीं है। किसी web3 साइट से कनेक्ट करने के लिए, उनकी साइट पर कनेक्ट बटन खोजें।"
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1, अकाउंट का बैलेंस, एड्रेस, एक्टिविटी देख सकता है और कनेक्टेड अकाउंट्स के लिए एप्रूवल देने के लिए ट्रांसेक्शन का सुझाव दे सकता है।",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "कनेक्ट की गई साइटें"
@@ -1927,10 +1878,6 @@
   "connectedWithNetwork": {
     "message": "$1 नेटवर्क कनेक्ट किए गए",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "$1 से कनेक्ट किए गए",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "कनेक्ट किया जा रहा है"
@@ -1965,9 +1912,6 @@
   "connectionFailedDescription": {
     "message": "$1 को लाना नहीं हो पाया, अपना नेटवर्क जांचें और दोबारा कोशिश करें।",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "किसी साइट से कनेक्ट करने के लिए, कनेक्ट बटन का चयन करें। MetaMask केवल Web3 साइटों से कनेक्ट हो सकता है।"
   },
   "connectionRequest": {
     "message": "कनेक्शन के लिए अनुरोध"
@@ -2059,9 +2003,6 @@
     "message": "अकाउंट जोड़ा जा रहा है...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "एक नया अकाउंट बनाएं"
-  },
   "createPassword": {
     "message": "MetaMask पासवर्ड"
   },
@@ -2086,9 +2027,6 @@
   },
   "createSnapAccountTitle": {
     "message": "अकाउंट बनाएं"
-  },
-  "createSolanaAccount": {
-    "message": "Solana अकाउंट बनाएं"
   },
   "creatorAddress": {
     "message": "निर्माता का एड्रेस"
@@ -2371,9 +2309,6 @@
   "deepLink_theSwapsPage": {
     "message": "स्वैप पेज"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "स्वैप/रैंप्स पेज"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "ट्रांसेक्शन शील्ड पेज"
   },
@@ -2517,9 +2452,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "क्या आप वाकई डिस्कनेक्ट करना चाहते हैं? आप साइट की फंक्शनलिटी खो सकते हैं।"
   },
-  "disconnectAllAccountsText": {
-    "message": "अकाउंट"
-  },
   "disconnectAllDescriptionText": {
     "message": "यदि आप इस साइट से डिस्कनेक्ट हो जाते हैं, तो आपको इस साइट का दोबारा उपयोग करने के लिए अपने एकाउंट्स और नेटवर्क को फिर से कनेक्ट करना होगा।"
   },
@@ -2534,9 +2466,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "सभी dapps सही से डिसकनेक्ट किए गए।"
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "यह आपको इस साइट से डिस्कनेक्ट कर देगा"
@@ -3565,9 +3494,6 @@
   "importNFTTokenIdToolTip": {
     "message": "किसी NFT की ID एक विशिष्ट पहचानकर्ता है क्योंकि कोई भी दो NFT एक जैसे नहीं होते हैं। फिर से, OpenSea पर यह संख्या 'डिटेल्स' के नीचे होगी। इसे नोट कर लें या अपने क्लिपबोर्ड पर कॉपी कर लें।"
   },
-  "importPrivateKey": {
-    "message": "प्राइवेट की (key)"
-  },
   "importSecretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज़ इंपोर्ट करें"
   },
@@ -3582,9 +3508,6 @@
   },
   "importTokensError": {
     "message": "हम टोकनों को इंपोर्ट नहीं कर सके। कृपया बाद में फिर से कोशिश करें।"
-  },
-  "importWalletOrAccountHeader": {
-    "message": "वॉलेट या अकाउंट इंपोर्ट करें"
   },
   "importWalletSuccess": {
     "message": "वॉलेट $1 को इंपोर्ट किया गया",
@@ -3931,9 +3854,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "MetaMask लॉक हो रहा है..."
-  },
-  "logOut": {
-    "message": "लॉग आउट करें"
   },
   "loginErrorConnectButton": {
     "message": "फिर से कोशिश करें"
@@ -4697,9 +4617,6 @@
   },
   "new": {
     "message": "नया!"
-  },
-  "newAccount": {
-    "message": "नया अकाउंट"
   },
   "newAccountIconMessage": {
     "message": "हमने आपके एकाउंट्स को आसानी से पहचानने में मदद के लिए अकाउंट आइकन रिफ्रेश किए हैं। आप इसका स्टाइल $1 > $2 > $3 में बदल सकते हैं।",
@@ -6954,14 +6871,6 @@
   "requestingFor": {
     "message": "के लिए अनुरोध कर रहे हैं"
   },
-  "requestingForAccount": {
-    "message": "$1 के लिए अनुरोध कर रहे हैं",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "$1 के लिए अनुरोध कर रहे हैं",
-    "description": "Name of Network"
-  },
   "required": {
     "message": "जरुरी"
   },
@@ -7220,10 +7129,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज़"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "सीक्रेट रिकवरी फ्रेज़ $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "वॉलेट सुरक्षित करें"
@@ -8463,12 +8368,6 @@
     "message": "अधिक सहायता के लिए $1 के निर्माताओं से कॉन्टेक्ट करें।",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "यह साइट Solana अकाउंट का अनुरोध कर रही है।"
-  },
-  "solanaAccountRequired": {
-    "message": "इस साइट से कनेक्ट करने के लिए एक Solana अकाउंट आवश्यक है।"
-  },
   "someNetworks": {
     "message": "$1 नेटवर्क"
   },
@@ -9679,9 +9578,6 @@
   },
   "urlErrorMsg": {
     "message": "URL को उपयुक्त HTTP/HTTPS प्रीफिक्स्ड की आवश्यकता होती है।"
-  },
-  "urlUnknown": {
-    "message": "URL अज्ञात"
   },
   "use4ByteResolution": {
     "message": "स्मार्ट कॉन्ट्रैक्ट्स को डीकोड करें"

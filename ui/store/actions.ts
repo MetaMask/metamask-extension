@@ -121,7 +121,6 @@ import {
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
   getInternalAccountByAddress,
-  getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
   getOriginOfCurrentTab,
   getIsSocialLoginFlow,
@@ -1470,55 +1469,6 @@ export function importNewAccount(
     }
 
     return await forceUpdateMetamaskState(dispatch);
-  };
-}
-
-export function addNewAccount(
-  keyringId?: string,
-  showLoading: boolean = true,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  log.debug(`background.addNewAccount`);
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch, getState) => {
-    const keyrings = getMetaMaskHdKeyrings(getState());
-    const [defaultPrimaryKeyring] = keyrings;
-
-    // The HD keyring to add the account for.
-    let hdKeyring = defaultPrimaryKeyring;
-    if (keyringId) {
-      hdKeyring = keyrings.find((keyring) => keyring.metadata.id === keyringId);
-    }
-    // Fail-safe in case we could not find the associated HD keyring.
-    if (!hdKeyring) {
-      log.error('Should never reach this. There is always a keyring');
-      throw new Error('Keyring not found');
-    }
-    const oldAccounts = hdKeyring.accounts;
-
-    if (showLoading) {
-      dispatch(showLoadingIndication());
-    }
-
-    let newAccount;
-    try {
-      const addedAccountAddress = await submitRequestToBackground(
-        'addNewAccount',
-        [oldAccounts.length, keyringId],
-      );
-      await forceUpdateMetamaskState(dispatch);
-      const newState = getState();
-      newAccount = getInternalAccountByAddress(newState, addedAccountAddress);
-    } catch (error) {
-      dispatch(displayWarning(error));
-      throw error;
-    } finally {
-      if (showLoading) {
-        dispatch(hideLoadingIndication());
-      }
-    }
-
-    return newAccount;
   };
 }
 
@@ -7367,6 +7317,33 @@ export function performSignIn(): ThunkAction<
           ? error.message
           : 'Unknown error occurred during sign-in.';
       logErrorWithMessage(errorMessage);
+      throw error;
+    }
+  };
+}
+
+/**
+ * Marks profile pairing as needed in the AuthenticationController state.
+ *
+ * Dispatched by `useAutoSignIn` when a new keyring/SRP is added so that the
+ * next auto-sign-in cycle re-runs `performSignIn` and re-pairs profiles. The
+ * controller method is a synchronous, never-throws state setter.
+ *
+ * @returns A thunk action that toggles `needsProfilePairing` to `true`.
+ */
+export function requestProfilePairing(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return async () => {
+    try {
+      await submitRequestToBackground('requestProfilePairing');
+    } catch (error) {
+      logErrorWithMessage(error);
       throw error;
     }
   };

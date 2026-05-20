@@ -1,26 +1,33 @@
 import type { Mockttp } from 'mockttp';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
-import { getProductionRemoteFlagApiResponse } from '../../feature-flags/feature-flag-registry';
+import {
+  getProductionRemoteFlagApiResponse,
+  getProductionRemoteFlagDefaults,
+} from '../../feature-flags/feature-flag-registry';
+import {
+  MOCK_ETH_OPEN_LONG_FILL,
+  MOCK_ETH_LIMIT_ORDER,
+  MOCK_ETH_FUNDING,
+  MOCK_USDC_DEPOSIT,
+} from './mocks/websocketActivityMocks';
 
-const PERPS_ENABLED_FLAG = {
-  remoteFeatureFlags: {
-    perpsEnabledVersion: {
-      enabled: true,
-      minimumVersion: '0.0.0',
-    },
-  },
-};
+/**
+ * Production remote flag defaults used as the base for all perps manifest flag
+ * overrides. Starting from these ensures any flag added to the registry is
+ * automatically included without having to update this file.
+ */
+const PROD_REMOTE_FLAGS = getProductionRemoteFlagDefaults();
 
 /**
  * Remote feature flags for eligible (non-geo-blocked) users.
- * Explicitly clears the geo-block list so US-TX (the E2E geolocation mock) remains eligible.
+ * Starts from production defaults, enables perps, and clears the geo-block list
+ * so US-TX (the E2E geolocation mock) remains eligible.
  */
-const PERPS_ELIGIBLE_FLAG = {
+export const PERPS_ELIGIBLE_FLAG = {
   remoteFeatureFlags: {
-    ...PERPS_ENABLED_FLAG.remoteFeatureFlags,
-    perpsPerpTradingGeoBlockedCountriesV2: {
-      blockedRegions: [],
-    },
+    ...PROD_REMOTE_FLAGS,
+    perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+    perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] },
   },
 };
 
@@ -31,10 +38,9 @@ const PERPS_ELIGIBLE_FLAG = {
  */
 const PERPS_GEO_BLOCKED_FLAG = {
   remoteFeatureFlags: {
-    ...PERPS_ENABLED_FLAG.remoteFeatureFlags,
-    perpsPerpTradingGeoBlockedCountriesV2: {
-      blockedRegions: ['US'],
-    },
+    ...PROD_REMOTE_FLAGS,
+    perpsEnabledVersion: { enabled: true, minimumVersion: '0.0.0' },
+    perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: ['US'] },
   },
 };
 
@@ -94,6 +100,35 @@ export function getPerpsGeoBlockConfig(title?: string) {
 }
 
 /**
+ * Registers the eligible feature-flag HTTP mock on `server`.
+ * Overrides /v1/flags so the background RemoteFeatureFlagController sees
+ * `perpsPerpTradingGeoBlockedCountriesV2` with `blockedRegions: []`,
+ * keeping US-TX eligible.
+ *
+ * Extracted to avoid duplicating this logic across config functions that
+ * all need the same flag mock alongside their own additional mocks.
+ *
+ * @param server - The Mockttp server instance to register the mock on.
+ */
+async function mockEligibleFeatureFlags(server: Mockttp): Promise<void> {
+  const eligibleFlags = [
+    ...getProductionRemoteFlagApiResponse().filter(
+      (entry) =>
+        !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
+    ),
+    { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
+  ];
+  await server
+    .forGet('https://client-config.api.cx.metamask.io/v1/flags')
+    .withQuery({ client: 'extension', distribution: 'main' })
+    .thenCallback(() => ({
+      ok: true,
+      statusCode: 200,
+      json: eligibleFlags,
+    }));
+}
+
+/**
  * withFixtures config for Perps E2E tests with an eligible (non-geo-blocked) user.
  * Use this for tests that exercise trading actions (Long/Short, Add Funds, Close All).
  *
@@ -115,22 +150,69 @@ export function getPerpsConfigEligible(title?: string) {
       .build(),
     title,
     manifestFlags: PERPS_ELIGIBLE_FLAG,
+    testSpecificMock: (server: Mockttp) => mockEligibleFeatureFlags(server),
+  };
+}
+
+/**
+ * withFixtures config for Perps Activity E2E tests.
+ *
+ * Extends the eligible config by adding HTTP mock overrides for all four
+ * activity transaction types. Uses `withJsonBodyIncluding` so only the
+ * specific request types are intercepted; everything else (clearinghouseState,
+ * meta, allMids, etc.) falls through to the global mock-e2e.js handlers.
+ *
+ * Activity data injected:
+ * - Trades:   one ETH "Open Long" fill  (`userFills`)
+ * - Orders:   one ETH Limit buy order   (`openOrders`)
+ * - Funding:  one ETH funding payment   (`userFunding`)
+ * - Deposits: one USDC deposit entry    (`userNonFundingLedgerUpdates`)
+ *
+ * @param title - The test title for debugging.
+ * @returns Partial withFixtures config to spread into withFixtures().
+ */
+export function getPerpsConfigEligibleWithActivity(title?: string) {
+  return {
+    fixtures: new FixtureBuilderV2()
+      .withPerpsController({
+        isEligible: true,
+        isFirstTimeUser: { mainnet: false, testnet: false },
+      })
+      .build(),
+    title,
+    manifestFlags: PERPS_ELIGIBLE_FLAG,
     testSpecificMock: async (server: Mockttp) => {
-      const eligibleFlags = [
-        ...getProductionRemoteFlagApiResponse().filter(
-          (entry) =>
-            !('perpsPerpTradingGeoBlockedCountriesV2' in (entry as object)),
-        ),
-        { perpsPerpTradingGeoBlockedCountriesV2: { blockedRegions: [] } },
-      ];
+      await mockEligibleFeatureFlags(server);
+
+      // Override userFills — returns an ETH open-long fill for the Trades filter
       await server
-        .forGet('https://client-config.api.cx.metamask.io/v1/flags')
-        .withQuery({ client: 'extension', distribution: 'main' })
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'userFills' })
         .thenCallback(() => ({
-          ok: true,
           statusCode: 200,
-          json: eligibleFlags,
+          json: [MOCK_ETH_OPEN_LONG_FILL],
         }));
+
+      // Override openOrders — returns an ETH limit buy for the Orders filter
+      await server
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'openOrders' })
+        .thenCallback(() => ({
+          statusCode: 200,
+          json: [MOCK_ETH_LIMIT_ORDER],
+        }));
+
+      // Override userFunding — returns an ETH funding payment for the Funding filter
+      await server
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'userFunding' })
+        .thenCallback(() => ({ statusCode: 200, json: [MOCK_ETH_FUNDING] }));
+
+      // Override userNonFundingLedgerUpdates — returns a USDC deposit for the Deposits filter
+      await server
+        .forPost('https://api.hyperliquid.xyz/info')
+        .withJsonBodyIncluding({ type: 'userNonFundingLedgerUpdates' })
+        .thenCallback(() => ({ statusCode: 200, json: [MOCK_USDC_DEPOSIT] }));
     },
   };
 }
