@@ -37,11 +37,10 @@ jobs:
 
       - name: Run zizmor
         # The minimum severity is tightened over time as findings are resolved.
-        # Lower the threshold to `low`, then `informational` as the remaining
-        # tiers are cleaned up.
+        # Lower the threshold to `informational` as the last tier is cleaned up.
         run: |
           zizmor --config .github/zizmor.yml \
-            --min-severity=medium \
+            --min-severity=low \
             --format=sarif \
             .github/workflows/ > zizmor.sarif
 
