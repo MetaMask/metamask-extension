@@ -6,6 +6,7 @@ import { CustomAmountInfo } from '../../../info/custom-amount-info';
 import { PerpsWithdrawBalance } from '../../../perps-confirmations/perps-withdraw-balance';
 import { PERPS_CURRENCY, ARBITRUM_USDC } from '../../../../constants/perps';
 import { usePerpsLiveAccount } from '../../../../../../hooks/perps/stream';
+import { getTradeableBalance } from '../../../../../../hooks/perps/getTradeableBalance';
 
 export const PerpsWithdrawInfo = () => {
   useAddToken({
@@ -20,10 +21,7 @@ export const PerpsWithdrawInfo = () => {
   const preferredToken = usePerpsWithdrawDefaultToken();
 
   const { account } = usePerpsLiveAccount();
-  const balanceUsdOverride =
-    parseFloat(
-      account?.withdrawableBalance ?? account?.spendableBalance ?? '0',
-    ) || 0;
+  const balanceUsdOverride = parseFloat(getTradeableBalance(account)) || 0;
 
   return (
     // Percentage buttons (25/50/75/Max) are intentionally hidden for MVP —

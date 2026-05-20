@@ -104,7 +104,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
   );
 
   const referralCodeIsError =
-    referralCode.length >= 6 &&
+    referralCode.length >= 1 &&
     !referralCodeIsValid &&
     !isValidatingReferralCode &&
     !isUnknownErrorReferralCode;
@@ -198,7 +198,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
       );
     }
 
-    if (referralCode.length >= 6) {
+    if (referralCode.length >= 1 && !isValidatingReferralCode) {
       return (
         <Icon
           name={IconName.Error}

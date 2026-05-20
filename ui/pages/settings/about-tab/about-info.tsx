@@ -16,10 +16,6 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { SUPPORT_LINK } from '../../../helpers/constants/common';
 import { isBeta } from '../../../../shared/lib/build-types';
 import {
-  getNumberOfSettingRoutesInTab,
-  handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
-import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -38,19 +34,6 @@ export default function AboutInfo(): React.ReactElement {
   } = useBoolean();
 
   const version = process.env.METAMASK_VERSION ?? '';
-
-  const n = getNumberOfSettingRoutesInTab(t, t('about'));
-  const settingsRefs = useMemo(
-    () =>
-      Array.from({ length: n }, () =>
-        React.createRef<HTMLDivElement>(),
-      ) as React.RefObject<HTMLDivElement>[],
-    [n],
-  );
-
-  useEffect(() => {
-    handleSettingsRefs(t, t('about'), settingsRefs);
-  }, [t, settingsRefs]);
 
   const handleContactUsClick = useCallback(() => {
     trackEvent(
@@ -85,19 +68,18 @@ export default function AboutInfo(): React.ReactElement {
 
     return (
       <Box
-        ref={settingsRefs[1]}
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
         className="w-full"
       >
-        <Box ref={settingsRefs[2]} {...linkItemProps}>
+        <Box {...linkItemProps}>
           <TextButton asChild {...linkProps}>
             <a href={privacyUrl} target="_blank" rel="noopener noreferrer">
               {t('privacyMsg')}
             </a>
           </TextButton>
         </Box>
-        <Box ref={settingsRefs[3]} {...linkItemProps}>
+        <Box {...linkItemProps}>
           <TextButton asChild {...linkProps}>
             <a
               href="https://metamask.io/terms.html"
@@ -109,7 +91,7 @@ export default function AboutInfo(): React.ReactElement {
           </TextButton>
         </Box>
         {isBeta() ? (
-          <Box ref={settingsRefs[8]} {...linkItemProps}>
+          <Box {...linkItemProps}>
             <TextButton asChild {...linkProps}>
               <a
                 href="https://metamask.io/beta-terms"
@@ -121,7 +103,7 @@ export default function AboutInfo(): React.ReactElement {
             </TextButton>
           </Box>
         ) : null}
-        <Box ref={settingsRefs[4]} {...linkItemProps}>
+        <Box {...linkItemProps}>
           <TextButton asChild {...linkProps}>
             <a
               href="https://raw.githubusercontent.com/MetaMask/metamask-extension/main/attribution.txt"
@@ -133,7 +115,7 @@ export default function AboutInfo(): React.ReactElement {
           </TextButton>
         </Box>
         <Divider />
-        <Box ref={settingsRefs[5]} {...linkItemProps}>
+        <Box {...linkItemProps}>
           <TextButton
             onClick={toggleVisitSupportDataConsentModal}
             {...linkProps}
@@ -141,14 +123,14 @@ export default function AboutInfo(): React.ReactElement {
             {t('supportCenter')}
           </TextButton>
         </Box>
-        <Box ref={settingsRefs[6]} {...linkItemProps}>
+        <Box {...linkItemProps}>
           <TextButton asChild {...linkProps}>
             <a href={siteUrl} target="_blank" rel="noopener noreferrer">
               {t('visitWebSite')}
             </a>
           </TextButton>
         </Box>
-        <Box ref={settingsRefs[7]} {...linkItemProps}>
+        <Box {...linkItemProps}>
           <TextButton asChild {...linkProps}>
             <a
               href={SUPPORT_LINK}
@@ -184,7 +166,7 @@ export default function AboutInfo(): React.ReactElement {
           className="info-tab__logo w-24 h-24"
         />
       </Box>
-      <Box ref={settingsRefs[0]} data-testid="info-tab-version">
+      <Box data-testid="info-tab-version">
         <Text
           variant={TextVariant.BodySm}
           color={TextColor.TextAlternative}

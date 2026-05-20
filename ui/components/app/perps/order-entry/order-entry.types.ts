@@ -218,6 +218,12 @@ export type OrderSummaryProps = {
   estimatedFees: string | null;
   /** Estimated liquidation price */
   liquidationPrice: string | null;
+  /**
+   * MetaMask fee discount percentage (whole numbers). When provided and
+   * positive, the fees row renders an inline `-X%` badge alongside the fee
+   * value.
+   */
+  metamaskFeeRateDiscountPercentage?: number;
 };
 
 /**
