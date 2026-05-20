@@ -541,7 +541,7 @@ const config = {
       cacheGroups: {
         js: {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
-          test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           name: 'js',
           chunks: isChunkableInitial,
         },
@@ -553,7 +553,7 @@ const config = {
         },
         asyncJs: {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
-          test: /(?!.*\/node_modules\/).+\.(?:m?[tj]s|[tj]sx?)?$/u,
+          test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           chunks: isChunkableAsync,
           minChunks: 2,
         },
