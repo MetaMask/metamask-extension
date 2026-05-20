@@ -12,6 +12,10 @@ on:
     types: [opened, edited, labeled, unlabeled, reopened, synchronize]
   merge_group:
 
+# Labelling uses LABEL_TOKEN (PAT); GITHUB_TOKEN only needs read.
+permissions:
+  contents: read
+
 jobs:
   check-template-and-add-labels:
     runs-on: ubuntu-latest
