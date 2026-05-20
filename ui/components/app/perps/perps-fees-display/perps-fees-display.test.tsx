@@ -140,8 +140,10 @@ describe('PerpsFeesDisplay', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('renders the VIP badge when showVipBadge is true', () => {
-      render(<PerpsFeesDisplay fee={10} showVipBadge />);
+    it('renders the VIP badge when a discount is active', () => {
+      render(
+        <PerpsFeesDisplay fee={10} metamaskFeeRateDiscountPercentage={10} />,
+      );
 
       expect(screen.getByTestId('rewards-vip-badge')).toBeInTheDocument();
     });
@@ -151,7 +153,6 @@ describe('PerpsFeesDisplay', () => {
         <PerpsFeesDisplay
           fee={8.5}
           metamaskFeeRateDiscountPercentage={15}
-          showVipBadge
         />,
       );
 

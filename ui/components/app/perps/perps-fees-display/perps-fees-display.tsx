@@ -36,12 +36,6 @@ export type PerpsFeesDisplayProps = {
   feeTextFontWeight?: FontWeight;
   /** Optional override for the testid on the fee text element. */
   feeTextTestId?: string;
-  /**
-   * When true, renders the {@link RewardsVipBadge} inline with the fee
-   * value. The badge fetches the selected account's VIP tier from the
-   * background and self-hides when no tier applies.
-   */
-  showVipBadge?: boolean;
 };
 
 /**
@@ -57,7 +51,6 @@ export type PerpsFeesDisplayProps = {
  * @param props.feeTextColor - Text color for the fee value (defaults to TextDefault).
  * @param props.feeTextFontWeight - Optional font weight for the fee value.
  * @param props.feeTextTestId - Optional testid forwarded to the fee value text node.
- * @param props.showVipBadge - When true, renders the VIP badge inline.
  */
 export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   metamaskFeeRateDiscountPercentage,
@@ -67,7 +60,6 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   feeTextColor = TextColor.TextDefault,
   feeTextFontWeight,
   feeTextTestId,
-  showVipBadge = false,
 }) => {
   const formatFee = useCallback(
     (amount: number): string =>
@@ -93,6 +85,10 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
 
     return { feeText: text, originalFeeText: undefined };
   }, [fee, placeholder, metamaskFeeRateDiscountPercentage, formatFee]);
+
+  const showVipBadge = useMemo(() => {
+    return metamaskFeeRateDiscountPercentage !== undefined && metamaskFeeRateDiscountPercentage > 0;
+  }, [metamaskFeeRateDiscountPercentage]);
 
   return (
     <Box

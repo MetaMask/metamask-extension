@@ -84,7 +84,6 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
           }
           fee={estimatedFees ?? undefined}
           feeTextTestId="perps-order-summary-estimated-fees"
-          showVipBadge
         />
       </Box>
     </Box>
