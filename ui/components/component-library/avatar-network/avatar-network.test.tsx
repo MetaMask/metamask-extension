@@ -53,7 +53,11 @@ describe('AvatarNetwork', () => {
 
   it('should render the default image label if no name is provided', () => {
     render(
-      <AvatarNetwork data-testid="avatar-network" src="./images/eth_logo.svg" />,
+      <AvatarNetwork
+        data-testid="avatar-network"
+        name=""
+        src="./images/eth_logo.svg"
+      />,
     );
 
     expect(screen.getByRole('img', { name: 'network logo' })).toBeDefined();
