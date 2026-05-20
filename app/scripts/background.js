@@ -587,19 +587,6 @@ const criticalErrorHandler = new CriticalErrorHandler();
  * @param {browser.Runtime.Port} port - The port provided by a new context.
  */
 const handleOnConnect = async (port) => {
-  // Blocked ports (e.g. the Trezor Connect popup's `trezor-connect`
-  // content-script port) are not MetaMask UI ports and are processed by
-  // their own listener (the Trezor SDK registers its own
-  // `chrome.runtime.onConnect` handler). The content script forwards every
-  // port message to the popup window via `window.postMessage`, so posting
-  // MetaMask's liveness/initialized signals to the port would inject
-  // unexpected messages into the third-party popup during its handshake.
-  // `connectWindowPostMessage` already bails for these ports; bailing here
-  // too keeps the trezor popup's message stream clean.
-  if (metamaskBlockedPorts.includes(port.name)) {
-    return;
-  }
-
   const { isMetaMaskUIPort } = parsePortInfo(port);
   if (inTest) {
     const simulatedDelay =

@@ -155,15 +155,6 @@ chrome.runtime.onConnect.addListener((port) => {
     'MetaMask service worker: Received connection from port',
     port.name,
   );
-  // Skip ports that belong to third-party flows (e.g. the Trezor Connect
-  // popup's `trezor-connect` content-script port). These ports forward every
-  // message to a third-party popup window via `window.postMessage`, so
-  // posting MetaMask's liveness signals here would inject unexpected
-  // messages into the popup during its own handshake. Keep this list in
-  // sync with `metamaskBlockedPorts` in `app/scripts/background.js`.
-  if (port.name === 'trezor-connect') {
-    return;
-  }
   try {
     // `handleOnConnect` can be called asynchronously, well after the `onConnect`
     // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
