@@ -22,25 +22,3 @@ export function getDelegationControllerMessenger(
   });
   return controllerMessenger;
 }
-
-export type DelegationControllerInitMessenger = ReturnType<
-  typeof getDelegationControllerInitMessenger
->;
-
-export function getDelegationControllerInitMessenger(
-  messenger: RootMessenger<never, never>,
-) {
-  const controllerInitMessenger = new Messenger<
-    'DelegationControllerInit',
-    never,
-    never,
-    typeof messenger
-  >({
-    namespace: 'DelegationControllerInit',
-    parent: messenger,
-  });
-  messenger.delegate({
-    messenger: controllerInitMessenger,
-  });
-  return controllerInitMessenger;
-}
