@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -13,7 +14,7 @@ import {
   ButtonIconSize,
   IconName,
 } from '@metamask/design-system-react';
-import { ERC721, ERC1155 } from '@metamask/controller-utils';
+import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
@@ -47,12 +48,30 @@ import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { isEvmChainId } from '../../../shared/lib/asset-utils';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { AssetType } from '../../../shared/constants/transaction';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 const MIN_DECIMAL_VALUE = 0;
 const MAX_DECIMAL_VALUE = 36;
+const CUSTOM_TOKEN_IMPORT_DEFAULT_VIEW_STATE = 'default';
+const CUSTOM_TOKEN_IMPORT_LOOKUP_FAILED_VIEW_STATE = 'lookup_failed';
+const METRICS_PROPERTIES = {
+  addedToken: 'added_token',
+  assetType: 'asset_type',
+  chainId: 'chain_id',
+  clickedSecurityLink: 'clicked_security_link',
+  tokenContractAddress: 'token_contract_address',
+  tokenStandard: 'token_standard',
+  tokenSymbol: 'token_symbol',
+  viewState: 'view_state',
+} as const;
 
 /**
  * Full-screen "Add a custom token" page.
@@ -61,6 +80,7 @@ export const CustomTokenImportPage = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const currentChainId = useSelector(getCurrentChainId) as Hex;
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
@@ -136,9 +156,27 @@ export const CustomTokenImportPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const infoGetter = useRef(tokenInfoGetter());
+  const clickedSecurityLinkRef = useRef(false);
   // Tracks the in-flight `handleAddressChange` invocation so async results
   // from previous calls (stale address or stale network) can be discarded.
   const addressLookupRef = useRef(0);
+
+  const trackViewed = useCallback(
+    (viewState: string) => {
+      trackEvent({
+        category: MetaMetricsEventCategory.Wallet,
+        event: MetaMetricsEventName.ImportCustomTokenViewed,
+        properties: {
+          [METRICS_PROPERTIES.viewState]: viewState,
+        },
+      });
+    },
+    [trackEvent],
+  );
+
+  useEffect(() => {
+    trackViewed(CUSTOM_TOKEN_IMPORT_DEFAULT_VIEW_STATE);
+  }, [trackViewed]);
 
   const resetValidation = useCallback(() => {
     setAddressError(null);
@@ -251,11 +289,15 @@ export const CustomTokenImportPage = () => {
         setSymbol(info?.symbol ?? '');
         setDecimals(nextDecimals);
         setShowSymbolAndDecimals(true);
+        if (!info?.symbol || nextDecimals === '') {
+          trackViewed(CUSTOM_TOKEN_IMPORT_LOOKUP_FAILED_VIEW_STATE);
+        }
       } catch {
         if (!isLatestLookup()) {
           return;
         }
         setShowSymbolAndDecimals(true);
+        trackViewed(CUSTOM_TOKEN_IMPORT_LOOKUP_FAILED_VIEW_STATE);
       }
     },
     [
@@ -265,6 +307,7 @@ export const CustomTokenImportPage = () => {
       selectedAccount?.address,
       selectedNetwork,
       t,
+      trackViewed,
       tokenListForSelectedNetwork,
     ],
   );
@@ -347,6 +390,30 @@ export const CustomTokenImportPage = () => {
 
   const parsedDecimals = Number(decimals);
 
+  const handleSecurityLinkClick = useCallback(() => {
+    clickedSecurityLinkRef.current = true;
+  }, []);
+
+  const trackSubmitAttempt = useCallback(
+    (addedToken: 0 | 1) => {
+      trackEvent({
+        category: MetaMetricsEventCategory.Wallet,
+        event: MetaMetricsEventName.ImportCustomTokenInteracted,
+        sensitiveProperties: {
+          [METRICS_PROPERTIES.addedToken]: addedToken,
+          [METRICS_PROPERTIES.tokenSymbol]: symbol,
+          [METRICS_PROPERTIES.tokenContractAddress]: address,
+          [METRICS_PROPERTIES.chainId]: selectedNetwork,
+          [METRICS_PROPERTIES.clickedSecurityLink]:
+            clickedSecurityLinkRef.current,
+          [METRICS_PROPERTIES.assetType]: AssetType.token,
+          [METRICS_PROPERTIES.tokenStandard]: ERC20,
+        },
+      });
+    },
+    [address, selectedNetwork, symbol, trackEvent],
+  );
+
   const handleSubmit = useCallback(async () => {
     if (Number.isNaN(parsedDecimals) || !isValid || isSubmitting) {
       return;
@@ -366,6 +433,7 @@ export const CustomTokenImportPage = () => {
           networkClientId,
         ),
       );
+      trackSubmitAttempt(1);
       navigate(TOKEN_MANAGEMENT_ROUTE, {
         state: {
           tokenManagementToast: {
@@ -374,6 +442,9 @@ export const CustomTokenImportPage = () => {
           },
         },
       });
+    } catch (error) {
+      trackSubmitAttempt(0);
+      throw error;
     } finally {
       setIsSubmitting(false);
     }
@@ -386,6 +457,7 @@ export const CustomTokenImportPage = () => {
     networkClientId,
     parsedDecimals,
     symbol,
+    trackSubmitAttempt,
   ]);
 
   return (
@@ -431,6 +503,7 @@ export const CustomTokenImportPage = () => {
         onAddressChange={handleAddressChange}
         onSymbolChange={handleSymbolChange}
         onDecimalsChange={handleDecimalsChange}
+        onSecurityLinkClick={handleSecurityLinkClick}
         onSubmit={handleSubmit}
       />
     </Page>
