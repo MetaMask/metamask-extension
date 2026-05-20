@@ -248,7 +248,8 @@ describe('Carousel', () => {
     },
     {
       testName: 'external URL that only starts with the deep link host',
-      linkUrl: 'https://link.metamask.io.evil.com/home?openNetworkSelector=true',
+      linkUrl:
+        'https://link.metamask.io.evil.com/home?openNetworkSelector=true',
       expected: {
         openTab:
           'https://link.metamask.io.evil.com/home?openNetworkSelector=true',

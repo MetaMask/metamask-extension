@@ -11,9 +11,7 @@ function toInternalHref(path: string, query: URLSearchParams): string {
 }
 
 function isDeepLinkHost(hostname: string): boolean {
-  return (
-    hostname === DEEP_LINK_HOST || hostname.endsWith(`.${DEEP_LINK_HOST}`)
-  );
+  return hostname === DEEP_LINK_HOST || hostname.endsWith(`.${DEEP_LINK_HOST}`);
 }
 
 /**
