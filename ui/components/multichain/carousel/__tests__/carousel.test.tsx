@@ -237,9 +237,22 @@ describe('Carousel', () => {
       expected: { navigate: '/?openNetworkSelector=true' },
     },
     {
+      testName: 'deep link subdomain that resolves to an internal route',
+      linkUrl: 'https://links.link.metamask.io/home?openNetworkSelector=true',
+      expected: { navigate: '/?openNetworkSelector=true' },
+    },
+    {
       testName: 'deep link that resolves to a redirect URL',
       linkUrl: 'https://link.metamask.io/buy?amount=100',
       expected: { openTab: 'https://app.metamask.io/buy?amount=100' },
+    },
+    {
+      testName: 'external URL that only starts with the deep link host',
+      linkUrl: 'https://link.metamask.io.evil.com/home?openNetworkSelector=true',
+      expected: {
+        openTab:
+          'https://link.metamask.io.evil.com/home?openNetworkSelector=true',
+      },
     },
     {
       testName: 'non-deep-link external URL',

@@ -10,11 +10,26 @@ function toInternalHref(path: string, query: URLSearchParams): string {
   return queryString ? `${path}?${queryString}` : path;
 }
 
-export async function resolveDeepLinkHref(href: string): Promise<string> {
+function isDeepLinkHost(hostname: string): boolean {
+  return (
+    hostname === DEEP_LINK_HOST || hostname.endsWith(`.${DEEP_LINK_HOST}`)
+  );
+}
+
+/**
+ * Resolves MetaMask deep links from trusted, client-owned content surfaces.
+ *
+ * This intentionally bypasses the deep-link interstitial for internal routes.
+ * Do not use this for arbitrary user-provided links or untrusted origins.
+ * @param href
+ */
+export async function resolveTrustedDeepLinkHref(
+  href: string,
+): Promise<string> {
   try {
     const url = new URL(href);
 
-    if (url.hostname !== DEEP_LINK_HOST) {
+    if (!isDeepLinkHost(url.hostname)) {
       return href;
     }
 
