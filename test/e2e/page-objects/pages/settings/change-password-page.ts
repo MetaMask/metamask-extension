@@ -35,6 +35,13 @@ export default class ChangePasswordPage {
     await this.driver.waitForSelector(this.currentPasswordInput);
   }
 
+  async waitForPasskeyVerificationToComplete(): Promise<void> {
+    console.log(
+      'Waiting for passkey verification to complete and new password form to appear',
+    );
+    await this.driver.waitForSelector(this.newPasswordInput);
+  }
+
   async confirmCurrentPassword(password: string): Promise<void> {
     console.log('Confirm current password');
     await this.driver.fill(this.currentPasswordInput, password);
