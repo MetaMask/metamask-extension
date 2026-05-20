@@ -110,11 +110,7 @@ export function useTransactionCustomAmount({
 
   const amountHuman = useMemo(
     () =>
-      getAmountHumanFromFiat(
-        amountFiat,
-        tokenFiatRate,
-        hasBalanceUsdOverride,
-      ),
+      getAmountHumanFromFiat(amountFiat, tokenFiatRate, hasBalanceUsdOverride),
     [amountFiat, hasBalanceUsdOverride, tokenFiatRate],
   );
 
