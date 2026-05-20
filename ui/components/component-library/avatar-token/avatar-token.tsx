@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import classnames from 'clsx';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
 import {
@@ -8,6 +8,7 @@ import {
   TextColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
+import { AvatarImage, useImageFallback } from '../avatar-base/avatar-image';
 import type { PolymorphicRef } from '../box';
 import type { AvatarTokenComponent } from './avatar-token.types';
 import { AvatarTokenProps, AvatarTokenSize } from './avatar-token.types';
@@ -34,40 +35,9 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
     }: AvatarTokenProps<C>,
     ref: PolymorphicRef<C>,
   ) => {
-    const [showFallback, setShowFallback] = useState(!src);
-
-    useEffect(() => {
-      if (!src) {
-        setShowFallback(true);
-        return undefined;
-      }
-
-      let isMounted = true;
-      const image = new Image();
-
-      image.onload = () => {
-        if (isMounted) {
-          setShowFallback(false);
-        }
-      };
-      image.onerror = () => {
-        if (isMounted) {
-          setShowFallback(true);
-        }
-      };
-      setShowFallback(false);
-      image.src = src;
-
-      return () => {
-        isMounted = false;
-        image.onload = null;
-        image.onerror = null;
-        image.removeAttribute('src');
-      };
-    }, [src]);
+    const showFallback = useImageFallback(src);
 
     const fallbackString = name?.[0] ?? '?';
-    const tokenImageStyle = { backgroundImage: `url("${src}")` };
 
     return (
       <AvatarBase
@@ -88,30 +58,17 @@ export const AvatarToken: AvatarTokenComponent = React.forwardRef(
           ...(props as AvatarBaseProps<C>),
         }}
       >
-        {showFallback ? (
+        {showFallback || !src ? (
           fallbackString
         ) : (
-          <>
-            {showHalo && (
-              <span
-                style={tokenImageStyle}
-                className={
-                  showHalo ? 'mm-avatar-token__token-image--blurred' : ''
-                }
-                aria-hidden="true"
-              />
-            )}
-            <span
-              role="img"
-              className={
-                showHalo
-                  ? 'mm-avatar-token__token-image--size-reduced'
-                  : 'mm-avatar-token__token-image'
-              }
-              style={tokenImageStyle}
-              aria-label={`${name} logo`}
-            />
-          </>
+          <AvatarImage
+            src={src}
+            showHalo={showHalo}
+            imageClassName="mm-avatar-token__token-image"
+            reducedImageClassName="mm-avatar-token__token-image--size-reduced"
+            blurredImageClassName="mm-avatar-token__token-image--blurred"
+            label={`${name} logo`}
+          />
         )}
       </AvatarBase>
     );

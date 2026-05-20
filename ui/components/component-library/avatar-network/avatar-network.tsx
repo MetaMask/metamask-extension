@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import classnames from 'clsx';
 import {
   Display,
@@ -11,6 +11,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import type { PolymorphicRef } from '../box';
 import { AvatarBase, AvatarBaseProps } from '../avatar-base';
+import { AvatarImage, useImageFallback } from '../avatar-base/avatar-image';
 import type { AvatarNetworkComponent } from './avatar-network.types';
 import { AvatarNetworkProps, AvatarNetworkSize } from './avatar-network.types';
 
@@ -36,40 +37,9 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
     }: AvatarNetworkProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
-    const [showFallback, setShowFallback] = useState(!src);
-
-    useEffect(() => {
-      if (!src) {
-        setShowFallback(true);
-        return undefined;
-      }
-
-      let isMounted = true;
-      const image = new Image();
-
-      image.onload = () => {
-        if (isMounted) {
-          setShowFallback(false);
-        }
-      };
-      image.onerror = () => {
-        if (isMounted) {
-          setShowFallback(true);
-        }
-      };
-      setShowFallback(false);
-      image.src = src;
-
-      return () => {
-        isMounted = false;
-        image.onload = null;
-        image.onerror = null;
-        image.removeAttribute('src');
-      };
-    }, [src]);
+    const showFallback = useImageFallback(src);
 
     const fallbackString = name?.[0] ?? '?';
-    const networkImageStyle = { backgroundImage: `url("${src}")` };
 
     return (
       <AvatarBase
@@ -92,30 +62,17 @@ export const AvatarNetwork: AvatarNetworkComponent = React.forwardRef(
           ...(props as AvatarBaseProps<C>),
         }}
       >
-        {showFallback ? (
+        {showFallback || !src ? (
           fallbackString
         ) : (
-          <>
-            {showHalo && (
-              <span
-                style={networkImageStyle}
-                className={
-                  showHalo ? 'mm-avatar-network__network-image--blurred' : ''
-                }
-                aria-hidden="true"
-              />
-            )}
-            <span
-              role="img"
-              className={
-                showHalo
-                  ? 'mm-avatar-network__network-image--size-reduced'
-                  : 'mm-avatar-network__network-image'
-              }
-              style={networkImageStyle}
-              aria-label={(name && `${name} logo`) || 'network logo'}
-            />
-          </>
+          <AvatarImage
+            src={src}
+            showHalo={showHalo}
+            imageClassName="mm-avatar-network__network-image"
+            reducedImageClassName="mm-avatar-network__network-image--size-reduced"
+            blurredImageClassName="mm-avatar-network__network-image--blurred"
+            label={(name && `${name} logo`) || 'network logo'}
+          />
         )}
       </AvatarBase>
     );

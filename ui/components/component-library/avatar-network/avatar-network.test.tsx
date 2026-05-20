@@ -7,6 +7,7 @@ import {
   BorderColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { mockImageEvent } from '../avatar-base/avatar-image.test-utils';
 import { AvatarNetwork } from './avatar-network';
 import { AvatarNetworkSize } from './avatar-network.types';
 
@@ -37,32 +38,7 @@ describe('AvatarNetwork', () => {
   });
 
   it('should render the first letter of the name prop if the image fails to load', async () => {
-    jest.spyOn(window, 'Image').mockImplementation(() => {
-      const image: {
-        onerror: (() => void) | null;
-        onload: (() => void) | null;
-        removeAttribute: jest.Mock;
-        src?: string;
-      } = {
-        onerror: null,
-        onload: null,
-        removeAttribute: jest.fn(),
-      };
-
-      let imageSrc = '';
-      Object.defineProperty(image, 'src', {
-        get() {
-          return imageSrc;
-        },
-        set(src) {
-          imageSrc = src;
-          image.onerror?.();
-        },
-      });
-
-      return image as unknown as HTMLImageElement;
-    });
-
+    mockImageEvent('error');
     render(<AvatarNetwork data-testid="avatar-network" {...args} />);
 
     expect(await screen.findByText('e')).toBeDefined();
@@ -75,6 +51,14 @@ describe('AvatarNetwork', () => {
     expect(getByText('e')).toBeDefined();
   });
 
+  it('should render the default image label if no name is provided', () => {
+    render(
+      <AvatarNetwork data-testid="avatar-network" src="./images/eth_logo.svg" />,
+    );
+
+    expect(screen.getByRole('img', { name: 'network logo' })).toBeDefined();
+  });
+
   it('should render halo effect if showHalo is true and image url is there', () => {
     const { container } = render(
       <AvatarNetwork data-testid="avatar-network" {...args} showHalo />,
@@ -83,6 +67,9 @@ describe('AvatarNetwork', () => {
       '.mm-avatar-network__network-image--size-reduced',
     );
     expect(image).toBeDefined();
+    expect(
+      container.querySelector('.mm-avatar-network__network-image--blurred'),
+    ).toBeDefined();
   });
 
   it('should render the first letter of the name prop when showHalo is true and no image url is provided', () => {

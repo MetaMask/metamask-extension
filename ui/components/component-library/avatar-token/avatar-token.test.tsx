@@ -6,6 +6,7 @@ import {
   BorderColor,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { mockImageEvent } from '../avatar-base/avatar-image.test-utils';
 import { AvatarToken } from './avatar-token';
 import { AvatarTokenSize } from './avatar-token.types';
 
@@ -36,32 +37,7 @@ describe('AvatarToken', () => {
   });
 
   it('should render the first letter of the name prop if the image fails to load', async () => {
-    jest.spyOn(window, 'Image').mockImplementation(() => {
-      const image: {
-        onerror: (() => void) | null;
-        onload: (() => void) | null;
-        removeAttribute: jest.Mock;
-        src?: string;
-      } = {
-        onerror: null,
-        onload: null,
-        removeAttribute: jest.fn(),
-      };
-
-      let imageSrc = '';
-      Object.defineProperty(image, 'src', {
-        get() {
-          return imageSrc;
-        },
-        set(src) {
-          imageSrc = src;
-          image.onerror?.();
-        },
-      });
-
-      return image as unknown as HTMLImageElement;
-    });
-
+    mockImageEvent('error');
     render(<AvatarToken {...args} data-testid="avatar-token" />);
 
     expect(await screen.findByText('a')).toBeDefined();
@@ -74,6 +50,19 @@ describe('AvatarToken', () => {
     expect(getByText('a')).toBeDefined();
   });
 
+  it('cleans up the preloaded image on unmount', () => {
+    const { removeAttribute } = mockImageEvent('load');
+    const { unmount } = render(
+      <AvatarToken {...args} data-testid="avatar-token" />,
+    );
+
+    expect(screen.getByRole('img')).toHaveStyle(
+      `background-image: url("${args.src}")`,
+    );
+    unmount();
+    expect(removeAttribute).toHaveBeenCalledWith('src');
+  });
+
   it('should render halo effect if showHalo is true and image url is there', () => {
     const { container } = render(
       <AvatarToken {...args} data-testid="avatar-token" showHalo />,
@@ -82,6 +71,9 @@ describe('AvatarToken', () => {
       '.mm-avatar-token__token-image--size-reduced',
     );
     expect(image).toBeDefined();
+    expect(
+      container.querySelector('.mm-avatar-token__token-image--blurred'),
+    ).toBeDefined();
   });
 
   it('should render the first letter of the name prop when showHalo is true and no image url is provided', () => {
