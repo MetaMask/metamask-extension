@@ -7,11 +7,11 @@ import {
 } from '@metamask/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
+import { MultichainAccountServiceMessenger } from '@metamask/multichain-account-service';
 import {
   getMultichainAccountServiceInitMessenger,
   getMultichainAccountServiceMessenger,
   MultichainAccountServiceInitMessenger,
-  MultichainAccountServiceMessenger,
 } from '../messengers/accounts';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { MultichainAccountServiceInit } from './multichain-account-service-init';

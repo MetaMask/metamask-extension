@@ -2,43 +2,15 @@ import {
   AccountsControllerAccountsAddedEvent,
   AccountsControllerAccountsRemovedEvent,
   AccountsControllerGetAccountAction,
-  AccountsControllerGetSelectedMultichainAccountAction,
-  AccountsControllerListMultichainAccountsAction,
   AccountsControllerSelectedAccountChangeEvent,
-  AccountsControllerSetSelectedAccountAction,
 } from '@metamask/accounts-controller';
-import { Messenger } from '@metamask/messenger';
-import {
-  AuthenticationController,
-  UserStorageController,
-} from '@metamask/profile-sync-controller';
-import { SnapControllerGetSnapAction } from '@metamask/snaps-controllers';
-import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
-import {
-  MultichainAccountServiceCreateMultichainAccountGroupAction,
-  MultichainAccountServiceCreateMultichainAccountGroupsAction,
-  MultichainAccountServiceWalletStatusChangeEvent,
-} from '@metamask/multichain-account-service';
-import type { AccountTreeControllerMessenger as AccountTreeControllerMessengerType } from '@metamask/account-tree-controller';
+import { Messenger, MessengerActions, MessengerEvents } from '@metamask/messenger';
+import { UserStorageController } from '@metamask/profile-sync-controller';
+import { MultichainAccountServiceWalletStatusChangeEvent } from '@metamask/multichain-account-service';
+import type { AccountTreeControllerMessenger } from '@metamask/account-tree-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
-
-type Actions =
-  | AccountsControllerGetAccountAction
-  | AccountsControllerGetSelectedMultichainAccountAction
-  | AccountsControllerSetSelectedAccountAction
-  | AccountsControllerListMultichainAccountsAction
-  | SnapControllerGetSnapAction
-  | KeyringControllerGetStateAction
-  | UserStorageController.UserStorageControllerGetStateAction
-  | UserStorageController.UserStorageControllerPerformGetStorageAction
-  | UserStorageController.UserStorageControllerPerformGetStorageAllFeatureEntriesAction
-  | UserStorageController.UserStorageControllerPerformSetStorageAction
-  | UserStorageController.UserStorageControllerPerformBatchSetStorageAction
-  | AuthenticationController.AuthenticationControllerGetSessionProfileAction
-  | MultichainAccountServiceCreateMultichainAccountGroupAction
-  | MultichainAccountServiceCreateMultichainAccountGroupsAction;
 
 type Events =
   | AccountsControllerAccountsAddedEvent
@@ -46,8 +18,6 @@ type Events =
   | AccountsControllerSelectedAccountChangeEvent
   | UserStorageController.UserStorageControllerStateChangeEvent
   | MultichainAccountServiceWalletStatusChangeEvent;
-
-export type AccountTreeControllerMessenger = AccountTreeControllerMessengerType;
 
 /**
  * Get a restricted messenger for the account tree controller. This is scoped to the
@@ -57,17 +27,16 @@ export type AccountTreeControllerMessenger = AccountTreeControllerMessengerType;
  * @returns The restricted controller messenger.
  */
 export function getAccountTreeControllerMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<AccountTreeControllerMessenger>,
+    MessengerEvents<AccountTreeControllerMessenger>
+  >,
 ) {
-  const accountTreeControllerMessenger = new Messenger<
-    'AccountTreeController',
-    Actions,
-    Events,
-    typeof messenger
-  >({
-    namespace: 'AccountTreeController',
-    parent: messenger,
-  });
+  const accountTreeControllerMessenger: AccountTreeControllerMessenger =
+    new Messenger({
+      namespace: 'AccountTreeController',
+      parent: messenger,
+    });
   messenger.delegate({
     messenger: accountTreeControllerMessenger,
     events: [
@@ -94,7 +63,7 @@ export function getAccountTreeControllerMessenger(
       'KeyringController:getState',
     ],
   });
-  return accountTreeControllerMessenger as unknown as AccountTreeControllerMessengerType;
+  return accountTreeControllerMessenger;
 }
 
 export type AllowedInitializationActions =
