@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { TransactionCard } from '../transaction-card';
 import { PERPS_RECENT_ACTIVITY_MAX_TRANSACTIONS } from '../../../../../shared/constants/perps';
+import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
 import { BorderRadius } from '../../../../helpers/constants/design-system';
 import { Skeleton } from '../../../component-library/skeleton';
@@ -153,6 +154,7 @@ export const PerpsRecentActivity: React.FC<PerpsRecentActivityProps> = ({
             key={transaction.id}
             transaction={transaction}
             onClick={handleRowClick}
+            screenName={PERPS_EVENT_VALUE.SCREEN_NAME.WALLET_HOME_PERPS_TAB}
           />
         ))}
       </Box>

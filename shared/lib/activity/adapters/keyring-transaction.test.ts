@@ -29,7 +29,7 @@ describe('mapKeyringTransaction', () => {
           events: [],
         },
       }),
-    ).toEqual({
+    ).toStrictEqual({
       type: 'send',
       chainId: MultichainNetworks.SOLANA,
       status: 'success',
@@ -84,7 +84,7 @@ describe('mapKeyringTransaction', () => {
           events: [],
         },
       }),
-    ).toEqual({
+    ).toStrictEqual({
       type: 'swap',
       chainId: MultichainNetworks.SOLANA,
       status: 'pending',

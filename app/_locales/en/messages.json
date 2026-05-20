@@ -176,7 +176,10 @@
     "message": "Activity"
   },
   "activityEmptyDescription": {
-    "message": "Nothing to see yet. Swap your first token today."
+    "message": "Swap your first token today."
+  },
+  "activityEmptyNoFundsDescription": {
+    "message": "Add funds to your wallet to get started."
   },
   "activity_approveSpendingCap_failed_description": {
     "message": "$1",
@@ -6606,6 +6609,10 @@
   "perpsAutoClose": {
     "message": "Auto close"
   },
+  "perpsAutoDeleveraging": {
+    "message": "Auto-deleveraging",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "available",
     "description": "is the available balance amount"
@@ -6831,6 +6838,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Current price is near the estimated liquidation price"
+  },
+  "perpsLiquidated": {
+    "message": "Liquidated",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Liquidation distance"
@@ -10723,7 +10734,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "vip": {
-    "message": "VIP $1",
+    "message": "VIP Fox $1",
     "description": "$1 is the VIP tier number"
   },
   "visitSite": {
