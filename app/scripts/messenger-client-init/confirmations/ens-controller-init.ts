@@ -1,8 +1,8 @@
-import { EnsController } from '@metamask/ens-controller';
 import {
-  EnsControllerInitMessenger,
+  EnsController,
   EnsControllerMessenger,
-} from '../messengers';
+} from '@metamask/ens-controller';
+import { EnsControllerInitMessenger } from '../messengers';
 import { MessengerClientInitFunction } from '../types';
 
 /**
