@@ -348,7 +348,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
-            szDecimals={marketInfo?.szDecimals}
+            szDecimals={sizeDecimals ?? marketInfo?.szDecimals}
             currentPositionSize={
               mode === 'modify' ? existingPosition?.size : undefined
             }
