@@ -1,7 +1,7 @@
 import path from 'path';
 import os from 'os';
 import { existsSync } from 'node:fs';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { Buffer } from 'node:buffer';
 import net from 'node:net';
@@ -241,6 +241,8 @@ export async function installTemporaryAddonViaRdp({
   host = '127.0.0.1',
   timeoutMs = 15000,
 }: InstallTemporaryAddonOptions): Promise<string | null> {
+  const resolvedAddonPath = await resolveAddonInstallPath(addonPath);
+
   return await new Promise<string | null>((resolve, reject) => {
     const socket = net.connect({ port, host });
     let finished = false;
@@ -277,7 +279,7 @@ export async function installTemporaryAddonViaRdp({
         sendMessage({
           to: message.addonsActor,
           type: 'installTemporaryAddon',
-          addonPath,
+          addonPath: resolvedAddonPath,
         });
         return;
       }
@@ -346,4 +348,21 @@ export async function installTemporaryAddonViaRdp({
       }
     });
   });
+}
+
+async function resolveAddonInstallPath(addonPath: string): Promise<string> {
+  if (path.extname(addonPath).toLowerCase() === '.xpi') {
+    return addonPath;
+  }
+
+  try {
+    const addonStats = await stat(addonPath);
+    if (addonStats.isDirectory()) {
+      return await getOrBuildXpi(addonPath);
+    }
+  } catch {
+    // Let Firefox return the path error if this is an invalid path.
+  }
+
+  return addonPath;
 }
