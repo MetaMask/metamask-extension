@@ -1783,12 +1783,6 @@
   "batchSellHightRateAlertModalDescription": {
     "message": "Batch selling one token could lead to a higher rate. Want to do a swap instead?"
   },
-  "batchSellInsufficientGasMessage": {
-    "message": "You need more $1 in your wallet to cover the network fee for this transaction."
-  },
-  "batchSellInsufficientGasTitle": {
-    "message": "Not enough $1 for network fee"
-  },
   "batchSellMaxSelectedTokens": {
     "message": "Max $1 tokens allowed"
   },
