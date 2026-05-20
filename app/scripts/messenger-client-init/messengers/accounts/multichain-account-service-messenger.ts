@@ -45,7 +45,6 @@ export function getMultichainAccountServiceMessenger(
       'SnapController:stateChange',
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
-      'RemoteFeatureFlagController:stateChange',
     ],
     actions: [
       'AccountsController:listMultichainAccounts',
