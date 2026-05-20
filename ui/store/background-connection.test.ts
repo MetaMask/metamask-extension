@@ -20,12 +20,6 @@ function setup() {
       notificationListeners.add(listener);
     });
 
-  const removeOnNotification = jest
-    .fn()
-    .mockImplementation((listener: NotificationListener) => {
-      notificationListeners.delete(listener);
-    });
-
   const submitNotification = (notification: JsonRpcNotification) => {
     notificationListeners.forEach((listener) => listener(notification));
   };
@@ -37,7 +31,6 @@ function setup() {
   // @ts-expect-error Partial mock.
   setBackgroundConnection({
     onNotification,
-    removeOnNotification,
     messengerSubscribe,
     messengerUnsubscribe,
   });
@@ -45,7 +38,6 @@ function setup() {
   return {
     submitNotification,
     onNotification,
-    removeOnNotification,
     messengerSubscribe,
     messengerUnsubscribe,
   };

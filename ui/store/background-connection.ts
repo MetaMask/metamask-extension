@@ -68,6 +68,7 @@ function notificationRouter(notification: JsonRpcNotification<[string, Json]>) {
     return;
   }
   const [eventName, payload] = params;
+  // `eventName` is `string` from the notification params; mismatches are caught by the entry-not-found check below.
   const entry = eventEntries.get(eventName as NamespacedName);
   if (!entry) {
     return;
@@ -114,6 +115,7 @@ export async function subscribeToMessengerEvent<Data extends Json>(
   event: NamespacedName,
   callback: (data: Data) => void,
 ): Promise<() => Promise<void>> {
+  // `Data extends Json` but `(data: Data) => void` is not assignable to `(data: Json) => void` due to contravariant function parameters; the cast is safe because all callbacks receive `Json`-shaped data at runtime.
   const typedCallback = callback as (data: Json) => void;
 
   let entry = eventEntries.get(event);
