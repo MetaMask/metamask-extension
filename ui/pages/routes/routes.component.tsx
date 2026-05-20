@@ -148,27 +148,22 @@ const QRHardwarePopover = mmLazy(
 );
 const ToggleIpfsModal = mmLazy(
   () =>
-    import(
-      '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal.js'
-    ),
+    import('../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal.js'),
 );
 const BasicConfigurationModal = mmLazy(
   () => import('../../components/app/basic-configuration-modal/index.ts'),
 );
 const KeyringSnapRemovalResult = mmLazy(
-  () => import('../../components/app/modals/keyring-snap-removal-modal/index.ts'),
+  () =>
+    import('../../components/app/modals/keyring-snap-removal-modal/index.ts'),
 );
 const DeprecatedNetworkModal = mmLazy(
   () =>
-    import(
-      '../../components/app/deprecated-network-modal/DeprecatedNetworkModal.tsx'
-    ),
+    import('../../components/app/deprecated-network-modal/DeprecatedNetworkModal.tsx'),
 );
 const NetworkConfirmationPopover = mmLazy(
   () =>
-    import(
-      '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover.tsx'
-    ),
+    import('../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover.tsx'),
 );
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
 const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));

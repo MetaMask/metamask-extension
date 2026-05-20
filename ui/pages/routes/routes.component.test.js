@@ -124,16 +124,11 @@ jest.mock('../../hooks/useMultichainAccountsIntroModal', () => ({
   })),
 }));
 
-jest.mock(
-  '../../components/app/qr-hardware-popover/index.js',
-  () => {
-    const MockQrHardwarePopover = () => (
-      <div data-testid="qr-hardware-popover" />
-    );
-    MockQrHardwarePopover.displayName = 'MockQrHardwarePopover';
-    return MockQrHardwarePopover;
-  },
-);
+jest.mock('../../components/app/qr-hardware-popover/index.js', () => {
+  const MockQrHardwarePopover = () => <div data-testid="qr-hardware-popover" />;
+  MockQrHardwarePopover.displayName = 'MockQrHardwarePopover';
+  return MockQrHardwarePopover;
+});
 
 jest.mock(
   '../../components/app/assets/nfts/nft-default-image/toggle-ipfs-modal.js',
@@ -144,16 +139,13 @@ jest.mock(
   },
 );
 
-jest.mock(
-  '../../components/app/basic-configuration-modal/index.ts',
-  () => {
-    const MockBasicConfigurationModal = () => (
-      <div data-testid="basic-configuration-modal" />
-    );
-    MockBasicConfigurationModal.displayName = 'MockBasicConfigurationModal';
-    return MockBasicConfigurationModal;
-  },
-);
+jest.mock('../../components/app/basic-configuration-modal/index.ts', () => {
+  const MockBasicConfigurationModal = () => (
+    <div data-testid="basic-configuration-modal" />
+  );
+  MockBasicConfigurationModal.displayName = 'MockBasicConfigurationModal';
+  return MockBasicConfigurationModal;
+});
 
 jest.mock(
   '../../components/app/modals/keyring-snap-removal-modal/index.ts',
@@ -489,7 +481,9 @@ describe('Routes Component', () => {
       },
     });
 
-    expect(await screen.findByTestId('qr-hardware-popover')).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('qr-hardware-popover'),
+    ).toBeInTheDocument();
     expect(
       await screen.findByTestId('network-confirmation-popover'),
     ).toBeInTheDocument();
