@@ -19,6 +19,11 @@ on:
         required: true
         type: string
         description: The test command to run
+      pre-test-command:
+        required: false
+        type: string
+        default: ''
+        description: Optional command to run before tests (for runner setup).
       builds-from-run:
         required: true
         type: string
@@ -139,6 +144,10 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }}
           path: ./previous-test-results/
+
+      - name: Run pre-test command
+        if: ${{ inputs.pre-test-command != '' }}
+        run: ${{ inputs.pre-test-command }}
 
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}

@@ -1,0 +1,374 @@
+import path from 'path';
+import os from 'os';
+import { existsSync } from 'node:fs';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { pathToFileURL } from 'node:url';
+import { Buffer } from 'node:buffer';
+import net from 'node:net';
+import { execFileSync } from 'node:child_process';
+import { firefox } from '@playwright/test';
+import type { Page } from '@playwright/test';
+import { getOrBuildXpi } from '../../helpers/xpi';
+
+const ABOUT_DEBUGGING_URL = 'about:debugging#/runtime/this-firefox';
+const PATCH_MARKER = '// --- MetaMask Firefox Harness Patch ---';
+
+export type FirefoxPolicySetup = {
+  policiesPath: string;
+  xpiPath: string;
+  cleanup: () => Promise<void>;
+};
+
+type PrepareMetaMaskFirefoxPoliciesOptions = {
+  extensionDirectory?: string;
+  extensionId?: string;
+};
+
+export async function prepareMetaMaskFirefoxPolicies(
+  options: PrepareMetaMaskFirefoxPoliciesOptions = {},
+): Promise<FirefoxPolicySetup> {
+  const extensionDirectory =
+    options.extensionDirectory ?? path.join(process.cwd(), 'dist', 'firefox');
+  const extensionId = options.extensionId ?? 'webextension@metamask.io';
+  const xpiPath = await getOrBuildXpi(extensionDirectory);
+
+  const policyDirectory = await mkdtemp(
+    path.join(os.tmpdir(), 'mm-firefox-policies-'),
+  );
+  const policiesPath = path.join(policyDirectory, 'policies.json');
+
+  const policies = {
+    policies: {
+      ExtensionSettings: {
+        [extensionId]: {
+          installation_mode: 'force_installed',
+          install_url: pathToFileURL(xpiPath).href,
+        },
+      },
+    },
+  };
+
+  await writeFile(policiesPath, JSON.stringify(policies, null, 2), 'utf-8');
+
+  return {
+    policiesPath,
+    xpiPath,
+    cleanup: async () => {
+      await rm(policyDirectory, { recursive: true, force: true });
+    },
+  };
+}
+
+export async function findMetaMaskInternalUuid(
+  page: Page,
+  extensionId: string,
+  timeoutMs = 15000,
+): Promise<string> {
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    try {
+      await page.goto(ABOUT_DEBUGGING_URL, {
+        waitUntil: 'domcontentloaded',
+        timeout: 5000,
+      });
+    } catch {
+      await page.waitForTimeout(500);
+      continue;
+    }
+    const bodyText = await page.locator('body').innerText();
+
+    if (!bodyText.includes(extensionId)) {
+      await page.waitForTimeout(500);
+      continue;
+    }
+
+    const scopedUuidMatch = bodyText.match(
+      new RegExp(
+        `${extensionId}[\\s\\S]*?UUID\\s+([0-9a-f]{8}-[0-9a-f-]{27})`,
+        'i',
+      ),
+    );
+    if (scopedUuidMatch?.[1]) {
+      return scopedUuidMatch[1];
+    }
+
+    const genericUuidMatch = bodyText.match(
+      /UUID\s+([0-9a-f]{8}-[0-9a-f-]{27})/i,
+    );
+    if (genericUuidMatch?.[1]) {
+      return genericUuidMatch[1];
+    }
+
+    await page.waitForTimeout(500);
+  }
+
+  throw new Error(
+    `Failed to resolve UUID for ${extensionId} from ${ABOUT_DEBUGGING_URL} within ${timeoutMs}ms.`,
+  );
+}
+
+export async function findMetaMaskInternalUuidFromProfile(
+  profileDirectory: string,
+  extensionId: string,
+  timeoutMs = 15000,
+): Promise<string> {
+  const deadline = Date.now() + timeoutMs;
+  const prefsPath = path.join(profileDirectory, 'prefs.js');
+
+  while (Date.now() < deadline) {
+    try {
+      const prefsContent = await readFile(prefsPath, 'utf-8');
+      const mappingMatch = prefsContent.match(
+        /user_pref\("extensions\.webextensions\.uuids",\s*"(.+)"\);/,
+      );
+
+      if (!mappingMatch?.[1]) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        continue;
+      }
+
+      const escapedJson = mappingMatch[1]
+        .replace(/\\"/gu, '"')
+        .replace(/\\\\/gu, '\\');
+      const parsed = JSON.parse(escapedJson) as Record<string, string>;
+      const uuid = parsed[extensionId];
+
+      if (uuid) {
+        return uuid;
+      }
+    } catch {
+      // Ignore read/parse race conditions while Firefox is still writing prefs.
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+
+  throw new Error(
+    `Failed to resolve UUID for ${extensionId} from ${prefsPath} within ${timeoutMs}ms.`,
+  );
+}
+
+/**
+ * Patch Playwright's bundled Firefox to make extension pages reachable by Juggler.
+ * This mirrors the experimental approach used by other extension projects.
+ */
+export async function ensurePatchedPlaywrightFirefox(): Promise<void> {
+  const executablePath = firefox.executablePath();
+  const cfgPathCandidates = [
+    path.join(path.dirname(executablePath), 'playwright.cfg'),
+    path.join(path.dirname(path.dirname(executablePath)), 'playwright.cfg'),
+    path.join(
+      path.dirname(path.dirname(executablePath)),
+      'Resources/playwright.cfg',
+    ),
+    path.join(
+      path.dirname(path.dirname(path.dirname(executablePath))),
+      'Contents/Resources/playwright.cfg',
+    ),
+  ];
+  const cfgPath = cfgPathCandidates.find((candidatePath) =>
+    existsSync(candidatePath),
+  );
+
+  if (!cfgPath) {
+    throw new Error(
+      `Could not locate playwright.cfg near Firefox executable at ${executablePath}`,
+    );
+  }
+
+  const firefoxResourcesDir = path.dirname(cfgPath);
+  const cfgContent = await readFile(cfgPath, 'utf-8');
+
+  if (cfgContent.includes(PATCH_MARKER)) {
+    return;
+  }
+
+  const omniPath = path.join(firefoxResourcesDir, 'omni.ja');
+  const tempDir = await mkdtemp(path.join(os.tmpdir(), 'mm-firefox-patch-'));
+
+  try {
+    execFileSync(
+      'unzip',
+      [
+        '-q',
+        omniPath,
+        'modules/addons/AddonSettings.sys.mjs',
+        'chrome/juggler/content/content/JugglerFrameChild.jsm',
+      ],
+      { cwd: tempDir },
+    );
+
+    const addonSettingsPath = path.join(
+      tempDir,
+      'modules/addons/AddonSettings.sys.mjs',
+    );
+    const jugglerChildPath = path.join(
+      tempDir,
+      'chrome/juggler/content/content/JugglerFrameChild.jsm',
+    );
+
+    const addonSettings = await readFile(addonSettingsPath, 'utf-8');
+    const patchedAddonSettings = addonSettings.replace(
+      'makeConstant("EXPERIMENTS_ENABLED", false)',
+      'makeConstant("EXPERIMENTS_ENABLED", true)',
+    );
+    await writeFile(addonSettingsPath, patchedAddonSettings, 'utf-8');
+
+    const jugglerChild = await readFile(jugglerChildPath, 'utf-8');
+    const patchedJugglerChild = jugglerChild.replace(
+      'moz-extension://',
+      'moz-extension-DISABLED://',
+    );
+    await writeFile(jugglerChildPath, patchedJugglerChild, 'utf-8');
+
+    execFileSync(
+      'zip',
+      [
+        '-q',
+        '-u',
+        omniPath,
+        'modules/addons/AddonSettings.sys.mjs',
+        'chrome/juggler/content/content/JugglerFrameChild.jsm',
+      ],
+      { cwd: tempDir },
+    );
+
+    const patchedCfg =
+      cfgContent +
+      `\n${PATCH_MARKER}\nlockPref("marionette.running", true);\n// --- End MetaMask Firefox Harness Patch ---\n`;
+    await writeFile(cfgPath, patchedCfg, 'utf-8');
+  } finally {
+    await rm(tempDir, { recursive: true, force: true });
+  }
+}
+
+type InstallTemporaryAddonOptions = {
+  port: number;
+  addonPath: string;
+  host?: string;
+  timeoutMs?: number;
+};
+
+type RdpMessage = {
+  addonsActor?: string;
+  addon?: { id?: string };
+  error?: string;
+};
+
+/**
+ * Installs an unpacked Firefox extension via Remote Debugging Protocol.
+ * This avoids enterprise-policy signing requirements for local unsigned builds.
+ */
+export async function installTemporaryAddonViaRdp({
+  port,
+  addonPath,
+  host = '127.0.0.1',
+  timeoutMs = 15000,
+}: InstallTemporaryAddonOptions): Promise<string | null> {
+  return await new Promise<string | null>((resolve, reject) => {
+    const socket = net.connect({ port, host });
+    let finished = false;
+    let installedAddonId: string | null = null;
+    let remainingBytes = 0;
+    const buffers: Buffer[] = [];
+
+    const finalize = (error?: Error) => {
+      if (finished) {
+        return;
+      }
+      finished = true;
+      socket.destroy();
+      if (error) {
+        reject(error);
+      } else {
+        resolve(installedAddonId);
+      }
+    };
+
+    const timer = setTimeout(() => {
+      finalize(
+        new Error(`Timed out installing addon via RDP after ${timeoutMs}ms`),
+      );
+    }, timeoutMs);
+
+    const sendMessage = (data: Record<string, unknown>) => {
+      const raw = Buffer.from(JSON.stringify(data));
+      socket.write(`${raw.length}:${raw.toString()}`);
+    };
+
+    const onMessage = (message: RdpMessage) => {
+      if (message.addonsActor) {
+        sendMessage({
+          to: message.addonsActor,
+          type: 'installTemporaryAddon',
+          addonPath,
+        });
+        return;
+      }
+
+      if (message.addon) {
+        installedAddonId = message.addon.id ?? null;
+        clearTimeout(timer);
+        finalize();
+        return;
+      }
+
+      if (message.error) {
+        clearTimeout(timer);
+        finalize(new Error(`RDP addon install failed: ${message.error}`));
+      }
+    };
+
+    socket.once('error', (error) => {
+      clearTimeout(timer);
+      finalize(error);
+    });
+
+    socket.once('connect', () => {
+      sendMessage({ to: 'root', type: 'getRoot' });
+    });
+
+    socket.on('data', (chunk) => {
+      let data = chunk;
+      while (data.length > 0) {
+        if (remainingBytes === 0) {
+          const colonIndex = data.indexOf(':');
+          buffers.push(data);
+          if (colonIndex === -1) {
+            return;
+          }
+
+          const headerBuffer = Buffer.concat(buffers);
+          const headerColon = headerBuffer.indexOf(':');
+          buffers.length = 0;
+          remainingBytes = Number(
+            headerBuffer.subarray(0, headerColon).toString(),
+          );
+          if (!Number.isFinite(remainingBytes)) {
+            clearTimeout(timer);
+            finalize(new Error('Invalid RDP frame length'));
+            return;
+          }
+          data = headerBuffer.subarray(headerColon + 1);
+        }
+
+        if (data.length < remainingBytes) {
+          remainingBytes -= data.length;
+          buffers.push(data);
+          return;
+        }
+
+        const payloadBytes = remainingBytes;
+        buffers.push(data.subarray(0, payloadBytes));
+        const payload = Buffer.concat(buffers).toString();
+        buffers.length = 0;
+        remainingBytes = 0;
+
+        const parsed = JSON.parse(payload) as RdpMessage;
+        onMessage(parsed);
+        data = data.subarray(payloadBytes);
+      }
+    });
+  });
+}

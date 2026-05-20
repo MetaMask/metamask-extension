@@ -101,6 +101,17 @@ jobs:
       test-command: yarn test:e2e:firefox:dist
       builds-from-run: ${{ inputs.builds-from-run }}
 
+  test-e2e-firefox-playwright-poc:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: test-e2e-firefox-playwright-poc
+      build-artifact: build-test-mv2-browserify
+      build-command: yarn build:test:mv2
+      pre-test-command: yarn playwright install firefox
+      test-command: yarn test:e2e:playwright:firefox:poc
+      builds-from-run: ${{ inputs.builds-from-run }}
+      test-timeout-minutes: 20
+
   test-e2e-firefox-report:
     needs:
       - test-e2e-firefox-browserify
@@ -109,6 +120,7 @@ jobs:
       - test-e2e-firefox-webpack
       - test-e2e-firefox-flask-webpack
       - test-e2e-firefox-dist-webpack
+      - test-e2e-firefox-playwright-poc
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: ${{ !cancelled() }}
