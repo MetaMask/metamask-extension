@@ -162,9 +162,6 @@
   "networks": {
     "message": "netwerken"
   },
-  "newAccount": {
-    "message": "Nieuw account"
-  },
   "newContract": {
     "message": "Nieuw contract"
   },
