@@ -1,10 +1,5 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
-  BadgeWrapper,
   Box,
   Icon,
   IconName,
@@ -17,8 +12,10 @@ import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/multichain/networks';
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
-import { getImageForChainId } from '../../../selectors/multichain';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { ActivityListItemAvatar } from '../../../components/app/activity-list-item-avatar';
+import { ChainBadge } from '../../../components/app/chain-badge/chain-badge';
+import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-config';
 import { useGetLabel } from '../useGetLabel';
 import type { ActivityCellProps } from './types';
 
@@ -142,7 +139,7 @@ const renderDescriptionLine = (
   }
 
   return null;
-}
+};
 
 export function GenericActivityCell({
   data,
@@ -151,9 +148,8 @@ export function GenericActivityCell({
   const t = useI18nContext();
   const { description: labelDescription, title } = useGetLabel(data);
   const description = descriptionOverride ?? labelDescription;
-  const pendingStatusText = data.status === 'pending'
-    ? t(data.status)
-    : undefined;
+  const pendingStatusText =
+    data.status === 'pending' ? t(data.status) : undefined;
   const { primaryToken, secondaryToken } = getCellTokenAmounts(data);
   const primaryTokenAmount = primaryToken
     ? formatTokenAmount(primaryToken)
@@ -172,29 +168,23 @@ export function GenericActivityCell({
       data.chainId as keyof typeof MULTICHAIN_NETWORK_TO_NICKNAME
     ] ??
     data.chainId;
-  const networkIconSrc = getImageForChainId(chainId);
+  const avatarConfig = useMemo(
+    () =>
+      getActivityListItemAvatarConfig(data, primaryToken, secondaryToken, {
+        chainIdForImage: data.chainId,
+        hexChainId: chainId,
+        networkName,
+      }),
+    [data, primaryToken, secondaryToken, chainId, networkName],
+  );
 
   return (
     <Box className="px-4 py-3 transition-transform duration-200 ease-out">
       <div className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4">
         <div className="relative flex items-center justify-center">
-          <BadgeWrapper
-            badge={
-              <div className="rounded-full bg-background-default p-0.5">
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  name={networkName}
-                  src={networkIconSrc}
-                />
-              </div>
-            }
-          >
-            <AvatarToken
-              className="size-8"
-              name="token"
-              size={AvatarTokenSize.Md}
-            />
-          </BadgeWrapper>
+          <ChainBadge chainId={chainId}>
+            <ActivityListItemAvatar config={avatarConfig} />
+          </ChainBadge>
         </div>
         <div className="min-w-0">
           <Text className="font-medium truncate">{title}</Text>

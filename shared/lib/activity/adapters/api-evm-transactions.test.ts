@@ -1,5 +1,6 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { CHAIN_IDS } from '../../../constants/network';
+import { toAssetId } from '../../asset-utils';
 import { mapApiEvmTransactions } from './api-evm-transactions';
 
 const subjectAddress = '0x9bed78535d6a03a955f1504aadba974d9a29e292';
@@ -49,6 +50,7 @@ describe('mapEvmTransactions', () => {
         token: {
           direction: 'out',
           symbol: 'USDC',
+          assetId: toAssetId(baseUsdc, 'eip155:8453'),
         },
       },
     });
@@ -87,6 +89,7 @@ describe('mapEvmTransactions', () => {
         token: {
           direction: 'in',
           symbol: 'mUSD',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
         },
       },
     });
@@ -221,6 +224,7 @@ describe('mapEvmTransactions', () => {
         token: {
           direction: 'out',
           symbol: 'USDC',
+          assetId: toAssetId(baseUsdc, 'eip155:8453'),
         },
       },
     });
@@ -259,6 +263,7 @@ describe('mapEvmTransactions', () => {
         token: {
           direction: 'in',
           symbol: 'mUSD',
+          assetId: toAssetId(lineaMusd, 'eip155:59144'),
         },
       },
     });

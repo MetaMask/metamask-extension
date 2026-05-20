@@ -1,6 +1,7 @@
 import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { renderHook } from '@testing-library/react-hooks';
 import { useSelector } from 'react-redux';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { isExcludedTransactionHash } from './excluded-transaction-hash';
 import { isIncomingNativeAssetTransfer } from './incoming-native-asset-transfer';
 import { isIncomingTokenTransfer } from './incoming-token-transfer';
@@ -189,6 +190,7 @@ describe('query filters', () => {
             decimals: 6,
             direction: 'out',
             symbol: 'USDC',
+            assetId: toAssetId(tokenAddress, 'eip155:1'),
           },
           hash: '0xvalid',
         },

@@ -52,6 +52,8 @@ export type TokenAmount = {
   amount?: string;
   decimals?: number;
   symbol?: string;
+  // CAIP-19 asset id (from adapters)
+  assetId?: string;
   direction: 'in' | 'out';
 };
 

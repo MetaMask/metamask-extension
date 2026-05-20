@@ -3,12 +3,15 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../../constants/network';
 import {
   IN_PROGRESS_TRANSACTION_STATUSES,
+  NATIVE_TOKEN_ADDRESS,
   SmartTransactionStatus,
   TransactionGroupStatus,
 } from '../../../constants/transaction';
+import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
 
@@ -110,17 +113,48 @@ function getSwapMetaDataTokenSymbol(
   return typeof tokenSymbol === 'string' ? tokenSymbol : undefined;
 }
 
-function getToken(
+const resolveTokenAssetId = (
+  chainId: CaipChainId,
+  hexChainId: string,
+  symbol: string | undefined,
+  contractAddress?: string,
+): string | undefined => {
+  if (contractAddress) {
+    return toAssetId(contractAddress, chainId);
+  }
+
+  const nativeSymbol = getNativeTokenSymbol(hexChainId);
+  if (!symbol || (nativeSymbol && symbol === nativeSymbol)) {
+    return toAssetId(NATIVE_TOKEN_ADDRESS, chainId);
+  }
+
+  return undefined;
+};
+
+const getToken = (
   symbol: string | undefined,
   direction: TokenAmount['direction'],
-) {
-  return symbol ? { symbol, direction } : undefined;
-}
+  chainId: CaipChainId,
+  hexChainId: string,
+  contractAddress?: string,
+) => {
+  if (!symbol && !contractAddress) {
+    return undefined;
+  }
 
-function hasNativeValue(transaction: TransactionGroup['initialTransaction']) {
-  const { value } = transaction.txParams;
-  return Boolean(value && value !== '0' && value !== '0x0');
-}
+  const assetId = resolveTokenAssetId(
+    chainId,
+    hexChainId,
+    symbol,
+    contractAddress,
+  );
+
+  return {
+    direction,
+    ...(symbol ? { symbol } : {}),
+    ...(assetId ? { assetId } : {}),
+  };
+};
 
 // Converts local TransactionController groups into activity items
 export function mapLocalTransaction({
@@ -133,6 +167,7 @@ export function mapLocalTransaction({
     KnownCaipNamespace.Eip155,
     parseInt(initialTransaction.chainId, 16).toString(),
   );
+  const hexChainId = initialTransaction.chainId;
   const status = mapStatus({ primaryTransaction, initialTransaction });
   const timestamp = primaryTransaction.time ?? initialTransaction.time;
   const hash =
@@ -144,7 +179,13 @@ export function mapLocalTransaction({
     case TransactionType.simpleSend:
     case TransactionType.tokenMethodSafeTransferFrom:
     case TransactionType.tokenMethodTransfer:
-    case TransactionType.tokenMethodTransferFrom:
+    case TransactionType.tokenMethodTransferFrom: {
+      const tokenSymbol = getTokenSymbol(initialTransaction);
+      const contractAddress =
+        initialTransaction.type === TransactionType.simpleSend
+          ? undefined
+          : initialTransaction.txParams.to;
+
       return {
         type: 'send',
         chainId,
@@ -154,11 +195,20 @@ export function mapLocalTransaction({
           hash,
           from,
           to,
-          token: getToken(getTokenSymbol(initialTransaction), 'out'),
+          token: getToken(
+            tokenSymbol,
+            'out',
+            chainId,
+            hexChainId,
+            contractAddress,
+          ),
         },
       };
+    }
 
-    case TransactionType.incoming:
+    case TransactionType.incoming: {
+      const tokenSymbol = getTokenSymbol(initialTransaction);
+
       return {
         type: 'receive',
         chainId,
@@ -168,9 +218,10 @@ export function mapLocalTransaction({
           hash,
           from,
           to,
-          token: getToken(getTokenSymbol(initialTransaction), 'in'),
+          token: getToken(tokenSymbol, 'in', chainId, hexChainId),
         },
       };
+    }
 
     case TransactionType.swap:
     case TransactionType.swapAndSend: {
@@ -179,9 +230,7 @@ export function mapLocalTransaction({
         primaryTransaction.sourceTokenSymbol ??
         getSwapMetaDataTokenSymbol(initialTransaction, 'token_from') ??
         getSwapMetaDataTokenSymbol(primaryTransaction, 'token_from') ??
-        (hasNativeValue(initialTransaction)
-          ? getNativeTokenSymbol(initialTransaction.chainId)
-          : undefined);
+        getNativeTokenSymbol(initialTransaction.chainId);
       const destinationTokenSymbol =
         initialTransaction.destinationTokenSymbol ??
         primaryTransaction.destinationTokenSymbol ??
@@ -196,10 +245,24 @@ export function mapLocalTransaction({
           timestamp,
           data: {
             hash,
-            sourceToken: getToken(sourceTokenSymbol, 'out'),
+            sourceToken: getToken(
+              sourceTokenSymbol,
+              'out',
+              chainId,
+              hexChainId,
+              initialTransaction.sourceTokenAddress ??
+                primaryTransaction.sourceTokenAddress,
+            ),
           },
         };
       }
+
+      const sourceTokenAddress =
+        initialTransaction.sourceTokenAddress ??
+        primaryTransaction.sourceTokenAddress;
+      const destinationTokenAddress =
+        initialTransaction.destinationTokenAddress ??
+        primaryTransaction.destinationTokenAddress;
 
       return {
         type: 'swap',
@@ -208,8 +271,20 @@ export function mapLocalTransaction({
         timestamp,
         data: {
           hash,
-          sourceToken: getToken(sourceTokenSymbol, 'out'),
-          destinationToken: getToken(destinationTokenSymbol, 'in'),
+          sourceToken: getToken(
+            sourceTokenSymbol,
+            'out',
+            chainId,
+            hexChainId,
+            sourceTokenAddress,
+          ),
+          destinationToken: getToken(
+            destinationTokenSymbol,
+            'in',
+            chainId,
+            hexChainId,
+            destinationTokenAddress,
+          ),
         },
       };
     }
@@ -251,7 +326,13 @@ export function mapLocalTransaction({
         timestamp,
         data: {
           hash,
-          token: getToken(getTokenSymbol(initialTransaction), 'out'),
+          token: getToken(
+            getTokenSymbol(initialTransaction),
+            'out',
+            chainId,
+            hexChainId,
+            initialTransaction.txParams.to,
+          ),
         },
       };
 

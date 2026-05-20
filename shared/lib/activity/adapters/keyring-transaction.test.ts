@@ -1,7 +1,4 @@
-import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/keyring-api';
+import { TransactionStatus, TransactionType } from '@metamask/keyring-api';
 import { MultichainNetworks } from '../../../constants/multichain/networks';
 import { mapKeyringTransaction } from './keyring-transaction';
 
@@ -43,6 +40,7 @@ describe('mapKeyringTransaction', () => {
         to: 'to-address',
         token: {
           amount: '2.5',
+          assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
           direction: 'out',
           symbol: 'USDC',
         },
@@ -58,7 +56,7 @@ describe('mapKeyringTransaction', () => {
           chain: MultichainNetworks.SOLANA,
           account: '00000000-0000-4000-8000-000000000000',
           status: TransactionStatus.Submitted,
-          timestamp: 1716367781000,
+          timestamp: 1716367781,
           type: TransactionType.Swap,
           from: [
             {
@@ -95,11 +93,13 @@ describe('mapKeyringTransaction', () => {
         hash: 'swap-id',
         sourceToken: {
           amount: '1',
+          assetId: `${MultichainNetworks.SOLANA}/slip44:501`,
           direction: 'out',
           symbol: 'SOL',
         },
         destinationToken: {
           amount: '100',
+          assetId: `${MultichainNetworks.SOLANA}/token:usdc`,
           direction: 'in',
           symbol: 'USDC',
         },

@@ -48,6 +48,7 @@ function getToken(movements: Movement[], direction: TokenAmount['direction']) {
   return {
     amount: movement.asset.amount,
     symbol: movement.asset.unit,
+    assetId: movement.asset.type,
     direction,
   };
 }
