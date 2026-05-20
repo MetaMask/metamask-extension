@@ -308,7 +308,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [closeSize, currentPrice],
   );
 
-  const { feeRate, metamaskFeeRateDiscountPercentage } = usePerpsOrderFees({
+  const {
+    feeRate,
+    undiscountedFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
   });
@@ -326,6 +330,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const estimatedFees = useMemo(
     () => closeNotionalUsd * (feeRate ?? 0),
     [closeNotionalUsd, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () => closeNotionalUsd * (undiscountedFeeRate ?? 0),
+    [closeNotionalUsd, undiscountedFeeRate],
   );
 
   const isPriceValid = useMemo(
@@ -349,6 +358,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
   const roundedFees = useMemo(
     () => Math.round(estimatedFees * 100) / 100,
     [estimatedFees],
+  );
+
+  const roundedOriginalFees = useMemo(
+    () => Math.round(originalEstimatedFees * 100) / 100,
+    [originalEstimatedFees],
   );
 
   // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
@@ -623,6 +637,7 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
                         ? undefined
                         : metamaskFeeRateDiscountPercentage
                     }
+                    originalFee={roundedOriginalFees}
                     fee={roundedFees}
                     feeTextFontWeight={FontWeight.Medium}
                     feeTextTestId="perps-close-summary-fees-value"

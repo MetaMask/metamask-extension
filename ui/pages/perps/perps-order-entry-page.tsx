@@ -314,13 +314,36 @@ const PerpsOrderEntryPage: React.FC = () => {
   const isOrderPending = isSubmitting;
 
   // Dynamic fee rate for close-mode order submission tracking. Also surfaces
-  // the MetaMask fee discount percentage (when applicable) so the
-  // OrderSummary can render the inline `-X%` badge next to the estimated fees.
-  const { feeRate: closeFeeRate, metamaskFeeRateDiscountPercentage } =
-    usePerpsOrderFees({
-      symbol: decodedSymbol ?? '',
-      orderType: 'market',
-    });
+  // the MetaMask fee discount so the OrderSummary can render the inline VIP
+  // badge next to the estimated fees.
+  const {
+    feeRate: closeFeeRate,
+    undiscountedFeeRate: closeUndiscountedFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
+    symbol: decodedSymbol ?? '',
+    orderType: 'market',
+  });
+
+  const originalEstimatedFees = useMemo(() => {
+    if (
+      orderCalculations?.estimatedFees === null ||
+      orderCalculations?.estimatedFees === undefined ||
+      closeFeeRate === undefined ||
+      closeFeeRate === 0 ||
+      closeUndiscountedFeeRate === undefined
+    ) {
+      return null;
+    }
+    return (
+      orderCalculations.estimatedFees *
+      (closeUndiscountedFeeRate / closeFeeRate)
+    );
+  }, [
+    orderCalculations?.estimatedFees,
+    closeFeeRate,
+    closeUndiscountedFeeRate,
+  ]);
 
   const isLimitPriceInvalid = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -1510,6 +1533,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           <OrderSummary
             marginRequired={orderCalculations.marginRequired}
             estimatedFees={orderCalculations.estimatedFees}
+            originalEstimatedFees={originalEstimatedFees}
             liquidationPrice={orderCalculations.liquidationPrice}
             metamaskFeeRateDiscountPercentage={
               metamaskFeeRateDiscountPercentage

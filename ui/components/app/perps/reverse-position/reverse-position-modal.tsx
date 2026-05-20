@@ -105,6 +105,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
 
   const {
     feeRate,
+    undiscountedFeeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
     metamaskFeeRateDiscountPercentage,
@@ -117,6 +118,14 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     () =>
       feeRate === undefined ? undefined : 2 * sizeNum * currentPrice * feeRate,
     [sizeNum, currentPrice, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () =>
+      undiscountedFeeRate === undefined
+        ? undefined
+        : 2 * sizeNum * currentPrice * undiscountedFeeRate,
+    [sizeNum, currentPrice, undiscountedFeeRate],
   );
 
   const shouldShowFeePlaceholder =
@@ -263,6 +272,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                       ? undefined
                       : metamaskFeeRateDiscountPercentage
                   }
+                  originalFee={originalEstimatedFees}
                   fee={shouldShowFeePlaceholder ? undefined : estimatedFees}
                   placeholder="--"
                   feeTextFontWeight={FontWeight.Medium}

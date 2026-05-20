@@ -17,10 +17,15 @@ import { RewardsVipBadge } from '../../rewards/RewardsVipBadge';
 export type PerpsFeesDisplayProps = {
   /**
    * MetaMask fee discount in whole percentage points. When defined and
-   * positive, the pre-discount fee is computed, struck through, and shown
-   * alongside the already-discounted `fee`.
+   * positive, a VIP badge is rendered and (if `originalFee` is also provided)
+   * the pre-discount fee is shown struck-through.
    */
   metamaskFeeRateDiscountPercentage?: number;
+  /**
+   * Fee amount in USD **before** any VIP discount. Shown struck-through when
+   * a discount is active. When `undefined` the struck-through row is omitted.
+   */
+  originalFee?: number;
   /**
    * Fee amount in USD **after** any VIP discount has already been applied.
    * When `undefined`, a placeholder is rendered.
@@ -44,7 +49,8 @@ export type PerpsFeesDisplayProps = {
  * tier badge.
  *
  * @param props - Component props.
- * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount in whole percentage points. When positive, the pre-discount fee is reverse-computed, struck through, and shown next to the already-discounted `fee`.
+ * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount in whole percentage points. Controls VIP badge visibility and struck-through original fee display.
+ * @param props.originalFee - Fee amount in USD before discount. Shown struck-through when a discount is active.
  * @param props.fee - Fee amount in USD after any VIP discount has been applied.
  * @param props.placeholder - Text shown when `fee` is `undefined` (defaults to `"-"`).
  * @param props.variant - Text variant for the fee value (defaults to BodySm).
@@ -54,6 +60,7 @@ export type PerpsFeesDisplayProps = {
  */
 export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   metamaskFeeRateDiscountPercentage,
+  originalFee,
   fee,
   placeholder = '-',
   variant = TextVariant.BodySm,
@@ -77,21 +84,18 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
     if (
       metamaskFeeRateDiscountPercentage !== undefined &&
       metamaskFeeRateDiscountPercentage > 0 &&
-      metamaskFeeRateDiscountPercentage < 100
+      originalFee !== undefined &&
+      originalFee > fee
     ) {
-      const originalFee = fee / (1 - metamaskFeeRateDiscountPercentage / 100);
       return { feeText: text, originalFeeText: formatFee(originalFee) };
     }
 
     return { feeText: text, originalFeeText: undefined };
-  }, [fee, placeholder, metamaskFeeRateDiscountPercentage, formatFee]);
+  }, [fee, placeholder, metamaskFeeRateDiscountPercentage, originalFee, formatFee]);
 
-  const showVipBadge = useMemo(() => {
-    return (
-      metamaskFeeRateDiscountPercentage !== undefined &&
-      metamaskFeeRateDiscountPercentage > 0
-    );
-  }, [metamaskFeeRateDiscountPercentage]);
+  const showVipBadge =
+    metamaskFeeRateDiscountPercentage !== undefined &&
+    metamaskFeeRateDiscountPercentage > 0;
 
   return (
     <Box

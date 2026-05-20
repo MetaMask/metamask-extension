@@ -120,12 +120,14 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
 
 type MockedUsePerpsOrderFeesReturn = {
   feeRate: number | undefined;
+  undiscountedFeeRate: number | undefined;
   isLoading: boolean;
   metamaskFeeRateDiscountPercentage: number | undefined;
 };
 const mockUsePerpsOrderFees = jest.fn<MockedUsePerpsOrderFeesReturn, []>(
   () => ({
     feeRate: 0.00145,
+    undiscountedFeeRate: 0.00145,
     isLoading: false,
     metamaskFeeRateDiscountPercentage: undefined,
   }),
@@ -162,6 +164,7 @@ describe('ClosePositionModal', () => {
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.00145,
+      undiscountedFeeRate: 0.00145,
       isLoading: false,
       metamaskFeeRateDiscountPercentage: undefined,
     });
@@ -731,6 +734,7 @@ describe('ClosePositionModal', () => {
     it('does not show discounted fee when no discount is active', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.00145,
+        undiscountedFeeRate: 0.00145,
         isLoading: false,
         metamaskFeeRateDiscountPercentage: undefined,
       });
@@ -752,7 +756,8 @@ describe('ClosePositionModal', () => {
 
     it('shows strikethrough original and discounted fee when a discount is active', () => {
       mockUsePerpsOrderFees.mockReturnValue({
-        feeRate: 0.00045 + 0.0005, // protocol + half-off builder
+        feeRate: 0.00045 + 0.0005, // protocol + half-off builder (discounted)
+        undiscountedFeeRate: 0.00145, // protocol + full builder
         isLoading: false,
         metamaskFeeRateDiscountPercentage: 50,
       });
@@ -778,6 +783,7 @@ describe('ClosePositionModal', () => {
     it('does not show discounted fee while feeRate is unavailable', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: undefined,
         isLoading: true,
         metamaskFeeRateDiscountPercentage: 50,
       });

@@ -17,13 +17,15 @@ import type { OrderSummaryProps } from '../../order-entry.types';
  *
  * @param props - Component props
  * @param props.marginRequired - Margin required for the position
- * @param props.estimatedFees - Estimated trading fees
+ * @param props.estimatedFees - Estimated trading fees (after discount)
+ * @param props.originalEstimatedFees - Estimated trading fees before discount
  * @param props.liquidationPrice - Estimated liquidation price
  * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount percentage (whole numbers)
  */
 export const OrderSummary: React.FC<OrderSummaryProps> = ({
   marginRequired,
   estimatedFees,
+  originalEstimatedFees,
   liquidationPrice,
   metamaskFeeRateDiscountPercentage,
 }) => {
@@ -82,6 +84,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
               ? undefined
               : metamaskFeeRateDiscountPercentage
           }
+          originalFee={originalEstimatedFees ?? undefined}
           fee={estimatedFees ?? undefined}
           feeTextTestId="perps-order-summary-estimated-fees"
         />

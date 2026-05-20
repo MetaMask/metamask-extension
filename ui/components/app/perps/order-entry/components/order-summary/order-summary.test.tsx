@@ -130,6 +130,7 @@ describe('OrderSummary', () => {
         <OrderSummary
           marginRequired="$1,000.00"
           estimatedFees={0.5}
+          originalEstimatedFees={1.0}
           liquidationPrice="$42,500.00"
           metamaskFeeRateDiscountPercentage={50}
         />,
@@ -165,6 +166,7 @@ describe('OrderSummary', () => {
         <OrderSummary
           marginRequired="$1,000.00"
           estimatedFees={null}
+          originalEstimatedFees={1.0}
           liquidationPrice="$42,500.00"
           metamaskFeeRateDiscountPercentage={50}
         />,

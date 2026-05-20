@@ -155,6 +155,7 @@ describe('ReversePositionModal', () => {
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.0001,
+      undiscountedFeeRate: 0.0001,
       isLoading: false,
       hasError: false,
     });
@@ -217,6 +218,7 @@ describe('ReversePositionModal', () => {
     it('shows fee placeholder while fees are unavailable', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: undefined,
         isLoading: true,
         hasError: false,
       });
@@ -231,6 +233,7 @@ describe('ReversePositionModal', () => {
     it('shows fee placeholder when fee lookup fails', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: undefined,
         isLoading: false,
         hasError: true,
       });
@@ -245,6 +248,7 @@ describe('ReversePositionModal', () => {
     it('does not show discounted fee while the fee placeholder is shown', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: 0.0002,
         isLoading: true,
         hasError: false,
         metamaskFeeRateDiscountPercentage: 50,
@@ -260,6 +264,7 @@ describe('ReversePositionModal', () => {
     it('shows strikethrough original and discounted fee when fees are available', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.0001,
+        undiscountedFeeRate: 0.0002,
         isLoading: false,
         hasError: false,
         metamaskFeeRateDiscountPercentage: 50,
