@@ -141,6 +141,7 @@ export function getVariables(
   variables.set('ENABLE_SENTRY', args.sentry.toString());
   variables.set('ENABLE_SNOW', args.snow.toString());
   variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
+
   // Validate required production variables
   if (args.validateEnv && env === ENVIRONMENTS.PRODUCTION) {
     const requiredVars =
