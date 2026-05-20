@@ -10,6 +10,9 @@ on:
         description: Stored coverage
         value: ${{ jobs.report-coverage.outputs.stored-coverage }}
 
+permissions:
+  contents: read
+
 jobs:
   test-unit:
     name: Unit tests

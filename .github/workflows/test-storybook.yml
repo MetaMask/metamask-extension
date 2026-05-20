@@ -3,6 +3,9 @@ name: Test storybook
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   test-storybook:
     name: Test storybook

@@ -3,6 +3,9 @@ name: Create release bug report issue when release branch gets created
 on:
   create:
 
+permissions:
+  contents: read
+
 jobs:
   create-bug-report:
     # Only run for release branch creation (not tags or other branches)

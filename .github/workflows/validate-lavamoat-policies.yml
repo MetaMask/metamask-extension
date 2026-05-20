@@ -8,6 +8,9 @@ env:
   INFURA_PROD_PROJECT_ID: 00000000000
   SEGMENT_PROD_WRITE_KEY: 00000000000
 
+permissions:
+  contents: read
+
 jobs:
   validate-lavamoat-policy-build:
     name: Validate LavaMoat build policy

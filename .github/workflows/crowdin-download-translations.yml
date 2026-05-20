@@ -5,6 +5,9 @@ on:
     - cron: '0 */12 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   download-translations:
     runs-on: ubuntu-latest
