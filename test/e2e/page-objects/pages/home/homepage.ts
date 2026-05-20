@@ -42,7 +42,8 @@ class HomePage {
     css: '.mm-banner-base',
   };
 
-  private readonly bitcoinAccountIcon = 'img[src="./images/bitcoin-logo.svg"]';
+  private readonly bitcoinAccountIcon =
+    '.mm-avatar-network__network-image[style*="bitcoin-logo.svg"], .mm-avatar-token__token-image[style*="bitcoin-logo.svg"]';
 
   protected readonly bridgeButton: string =
     '[data-testid="eth-overview-bridge"]';
@@ -84,7 +85,8 @@ class HomePage {
 
   protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
 
-  private readonly solanaAccountIcon = 'img[src="./images/solana-logo.svg"]';
+  private readonly solanaAccountIcon =
+    '.mm-avatar-network__network-image[style*="solana-logo.svg"], .mm-avatar-token__token-image[style*="solana-logo.svg"]';
 
   protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
 

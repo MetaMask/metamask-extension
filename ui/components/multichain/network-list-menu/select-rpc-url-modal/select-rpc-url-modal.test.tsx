@@ -92,7 +92,9 @@ describe('SelectRpcUrlModal Component', () => {
     const networkImage = getByRole('img');
 
     expect(networkImage).toBeInTheDocument();
-    expect(networkImage).toHaveAttribute('src', imageSrc);
+    expect(networkImage).toHaveStyle({
+      backgroundImage: `url(${imageSrc})`,
+    });
     expect(getByText(networkConfiguration.name)).toBeInTheDocument();
   });
 
@@ -165,13 +167,15 @@ describe('SelectRpcUrlModal Component', () => {
     );
 
     const networkImage = screen.getByRole('img');
-    expect(networkImage).toBeInTheDocument();
-    expect(networkImage).toHaveAttribute(
-      'src',
+    const imageSrc =
       CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
         networkConfiguration.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-      ],
-    );
+      ];
+
+    expect(networkImage).toBeInTheDocument();
+    expect(networkImage).toHaveStyle({
+      backgroundImage: `url(${imageSrc})`,
+    });
   });
 
   it('should handle click on RPC URL and call onNetworkChange', () => {

@@ -73,10 +73,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="Solana logo"
+      <span
+        aria-label="Solana logo"
         class="mm-avatar-network__network-image"
-        src="./images/solana-logo.svg"
+        role="img"
+        style="background-image: url(./images/solana-logo.svg);"
       />
     </div>
     <div
@@ -114,10 +115,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="Bitcoin logo"
+      <span
+        aria-label="Bitcoin logo"
         class="mm-avatar-network__network-image"
-        src="./images/bitcoin-logo.svg"
+        role="img"
+        style="background-image: url(./images/bitcoin-logo.svg);"
       />
     </div>
     <div
@@ -155,10 +157,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="Ethereum logo"
+      <span
+        aria-label="Ethereum logo"
         class="mm-avatar-network__network-image"
-        src="./images/eth_logo.svg"
+        role="img"
+        style="background-image: url(./images/eth_logo.svg);"
       />
     </div>
     <div
@@ -196,10 +199,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="OP logo"
+      <span
+        aria-label="OP logo"
         class="mm-avatar-network__network-image"
-        src="./images/optimism.svg"
+        role="img"
+        style="background-image: url(./images/optimism.svg);"
       />
     </div>
     <div
@@ -237,10 +241,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="Polygon logo"
+      <span
+        aria-label="Polygon logo"
         class="mm-avatar-network__network-image"
-        src="./images/pol-token.svg"
+        role="img"
+        style="background-image: url(./images/pol-token.svg);"
       />
     </div>
     <div
@@ -278,10 +283,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="BNB Chain logo"
+      <span
+        aria-label="BNB Chain logo"
         class="mm-avatar-network__network-image"
-        src="./images/bnb.svg"
+        role="img"
+        style="background-image: url(./images/bnb.svg);"
       />
     </div>
     <div
@@ -319,10 +325,11 @@ exports[`BridgeInputGroup should render destination networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="Tron logo"
+      <span
+        aria-label="Tron logo"
         class="mm-avatar-network__network-image"
-        src="./images/tron-logo.svg"
+        role="img"
+        style="background-image: url(./images/tron-logo.svg);"
       />
     </div>
     <div
@@ -482,10 +489,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="Solana logo"
+      <span
+        aria-label="Solana logo"
         class="mm-avatar-network__network-image"
-        src="./images/solana-logo.svg"
+        role="img"
+        style="background-image: url(./images/solana-logo.svg);"
       />
     </div>
     <div
@@ -523,10 +531,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="Bitcoin logo"
+      <span
+        aria-label="Bitcoin logo"
         class="mm-avatar-network__network-image"
-        src="./images/bitcoin-logo.svg"
+        role="img"
+        style="background-image: url(./images/bitcoin-logo.svg);"
       />
     </div>
     <div
@@ -564,10 +573,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="Ethereum logo"
+      <span
+        aria-label="Ethereum logo"
         class="mm-avatar-network__network-image"
-        src="./images/eth_logo.svg"
+        role="img"
+        style="background-image: url(./images/eth_logo.svg);"
       />
     </div>
     <div
@@ -605,10 +615,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="OP logo"
+      <span
+        aria-label="OP logo"
         class="mm-avatar-network__network-image"
-        src="./images/optimism.svg"
+        role="img"
+        style="background-image: url(./images/optimism.svg);"
       />
     </div>
     <div
@@ -646,10 +657,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="Polygon logo"
+      <span
+        aria-label="Polygon logo"
         class="mm-avatar-network__network-image"
-        src="./images/pol-token.svg"
+        role="img"
+        style="background-image: url(./images/pol-token.svg);"
       />
     </div>
     <div
@@ -687,10 +699,11 @@ exports[`BridgeInputGroup should render source networks 1`] = `
     <div
       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
-      <img
-        alt="BNB Chain logo"
+      <span
+        aria-label="BNB Chain logo"
         class="mm-avatar-network__network-image"
-        src="./images/bnb.svg"
+        role="img"
+        style="background-image: url(./images/bnb.svg);"
       />
     </div>
     <div

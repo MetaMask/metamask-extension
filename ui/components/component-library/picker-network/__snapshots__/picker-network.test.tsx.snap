@@ -20,10 +20,11 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
-            <img
-              alt="Network3 logo"
+            <span
+              aria-label="Network3 logo"
               class="mm-avatar-network__network-image"
-              src="img2"
+              role="img"
+              style="background-image: url(img2);"
             />
           </div>
         </div>
@@ -34,10 +35,11 @@ exports[`PickerNetwork should render multiple avatars when avatarGroupProps is p
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
-            <img
-              alt="Network1 logo"
+            <span
+              aria-label="Network1 logo"
               class="mm-avatar-network__network-image"
-              src="img1"
+              role="img"
+              style="background-image: url(img1);"
             />
           </div>
         </div>
@@ -82,10 +84,11 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
-            <img
-              alt="Network3 logo"
+            <span
+              aria-label="Network3 logo"
               class="mm-avatar-network__network-image"
-              src="img2"
+              role="img"
+              style="background-image: url(img2);"
             />
           </div>
         </div>
@@ -96,10 +99,11 @@ exports[`PickerNetwork should render multiple avatars with a stacked tag when is
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
           >
-            <img
-              alt="Network1 logo"
+            <span
+              aria-label="Network1 logo"
               class="mm-avatar-network__network-image"
-              src="img1"
+              role="img"
+              style="background-image: url(img1);"
             />
           </div>
         </div>

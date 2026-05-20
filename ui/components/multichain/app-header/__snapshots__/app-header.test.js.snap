@@ -48,10 +48,10 @@ exports[`App Header locked state matches snapshot: locked 1`] = `
             fill="rgb(22,22,22)"
           />
         </svg>
-        <img
-          alt=""
+        <span
+          aria-hidden="true"
           class="app-header__metafox-logo--icon"
-          src="./images/logo/metamask-fox.svg"
+          style="background-image: url(./images/logo/metamask-fox.svg); background-position: center; background-repeat: no-repeat; background-size: contain; display: inline-block;"
         />
       </button>
     </div>
@@ -82,10 +82,10 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
           fill="rgb(22,22,22)"
         />
       </svg>
-      <img
-        alt=""
+      <span
+        aria-hidden="true"
         class="app-header__metafox-logo--icon"
-        src="./images/logo/metamask-fox.svg"
+        style="background-image: url(./images/logo/metamask-fox.svg); background-position: center; background-repeat: no-repeat; background-size: contain; display: inline-block;"
       />
     </button>
   </div>
@@ -163,10 +163,11 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         <div
                           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                         >
-                          <img
-                            alt="network logo"
+                          <span
+                            aria-label="network logo"
                             class="mm-avatar-network__network-image"
-                            src="./images/arbitrum.svg"
+                            role="img"
+                            style="background-image: url(./images/arbitrum.svg);"
                           />
                         </div>
                       </div>
@@ -177,10 +178,11 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         <div
                           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                         >
-                          <img
-                            alt="network logo"
+                          <span
+                            aria-label="network logo"
                             class="mm-avatar-network__network-image"
-                            src="./images/pol-token.svg"
+                            role="img"
+                            style="background-image: url(./images/pol-token.svg);"
                           />
                         </div>
                       </div>
@@ -191,10 +193,11 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         <div
                           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                         >
-                          <img
-                            alt="network logo"
+                          <span
+                            aria-label="network logo"
                             class="mm-avatar-network__network-image"
-                            src="./images/bnb.svg"
+                            role="img"
+                            style="background-image: url(./images/bnb.svg);"
                           />
                         </div>
                       </div>
@@ -205,10 +208,11 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                         <div
                           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                         >
-                          <img
-                            alt="network logo"
+                          <span
+                            aria-label="network logo"
                             class="mm-avatar-network__network-image"
-                            src="./images/eth_logo.svg"
+                            role="img"
+                            style="background-image: url(./images/eth_logo.svg);"
                           />
                         </div>
                       </div>

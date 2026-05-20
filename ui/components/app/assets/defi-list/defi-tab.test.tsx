@@ -115,17 +115,17 @@ describe('DefiList', () => {
     });
 
     await waitFor(() => {
-      const image = screen.getByAltText('stETH logo');
+      const image = screen.getByRole('img', { name: 'stETH logo' });
 
       expect(screen.getByTestId('defi-list-market-value')).toHaveTextContent(
         '$20,000.00',
       );
 
       expect(image).toBeInTheDocument();
-      expect(image).toHaveAttribute(
-        'src',
-        'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png',
-      );
+      expect(image).toHaveStyle({
+        backgroundImage:
+          'url(https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png)',
+      });
 
       expect(screen.getByTestId('avatar-group')).toBeInTheDocument();
       expect(screen.getByTestId('sort-by-popover-toggle')).toBeInTheDocument();

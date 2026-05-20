@@ -77,8 +77,12 @@ describe('TokenIcon', () => {
 
     const { container } = renderTokenIcon();
 
-    const avatarToken = container.querySelector('.mm-avatar-token img');
-    expect(avatarToken).toHaveAttribute('src', TOKEN_IMAGE_MOCK);
+    const avatarToken = container.querySelector(
+      '.mm-avatar-token .mm-avatar-token__token-image',
+    );
+    expect(avatarToken).toHaveStyle({
+      backgroundImage: `url(${TOKEN_IMAGE_MOCK})`,
+    });
   });
 
   it('handles missing token gracefully', () => {

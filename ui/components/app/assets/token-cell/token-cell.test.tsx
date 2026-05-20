@@ -259,16 +259,18 @@ describe('Token Cell', () => {
   });
 
   it('should render the correct token and filter by symbol and address', () => {
-    const { getByTestId, getByAltText } = renderWithProvider(
+    const { getByTestId, getByRole } = renderWithProvider(
       <TokenCell {...(props as TokenCellProps)} />,
       mockStore,
     );
 
-    const image = getByAltText('TEST logo');
+    const image = getByRole('img', { name: 'TEST logo' });
 
     expect(getByTestId('multichain-token-list-item-value')).toBeInTheDocument();
     expect(image).toBeInTheDocument();
-    expect(image).toHaveAttribute('src', './images/test_image.svg');
+    expect(image).toHaveStyle({
+      backgroundImage: 'url(./images/test_image.svg)',
+    });
   });
 
   it('should render amount with the correct format', () => {

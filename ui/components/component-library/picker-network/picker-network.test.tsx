@@ -26,7 +26,9 @@ describe('PickerNetwork', () => {
     );
     const image = screen.getByRole('img');
     expect(image).toBeDefined();
-    expect(image).toHaveAttribute('src', './images/pol-token.svg');
+    expect(image).toHaveStyle({
+      backgroundImage: 'url(./images/pol-token.svg)',
+    });
   });
   it('should render avatar network inside the PickerNetwork with custom props', () => {
     const container = (
