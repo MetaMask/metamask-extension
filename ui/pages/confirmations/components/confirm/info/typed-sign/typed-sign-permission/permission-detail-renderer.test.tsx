@@ -372,13 +372,16 @@ describe('PermissionDetailRenderer', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders the all-primitives text when only ERC primitives are enabled', () => {
+    it('renders the all-primitives text when all revocation primitives are enabled', () => {
       const permission = {
         type: 'token-approval-revocation',
         data: {
           erc20Approve: true,
           erc721Approve: true,
           erc721SetApprovalForAll: true,
+          permit2Approve: true,
+          permit2Lockdown: true,
+          permit2InvalidateNonces: true,
         },
       };
       const { getByText, queryByText } = renderWithConfirmContextProvider(
@@ -393,9 +396,13 @@ describe('PermissionDetailRenderer', () => {
       );
 
       expect(
-        getByText('All revocation primitives for ERC-20, ERC-1155, ERC-721.'),
+        getByText(
+          messages.gatorPermissionsAllTokenApprovalRevocationPrimitives.message,
+        ),
       ).toBeInTheDocument();
-      expect(queryByText('ERC-20 approve(spender, 0)')).not.toBeInTheDocument();
+      expect(
+        queryByText(messages.gatorPermissionsErc20ApproveRevocation.message),
+      ).not.toBeInTheDocument();
     });
 
     it('renders the revocation method list when non-primitive methods are enabled', () => {
@@ -420,10 +427,12 @@ describe('PermissionDetailRenderer', () => {
       );
 
       expect(
-        getByText('Permit2 approve(token, spender, 0, 0)'),
+        getByText(messages.gatorPermissionsPermit2ApproveRevocation.message),
       ).toBeInTheDocument();
       expect(
-        queryByText('All revocation primitives for ERC-20, ERC-1155, ERC-721.'),
+        queryByText(
+          messages.gatorPermissionsAllTokenApprovalRevocationPrimitives.message,
+        ),
       ).not.toBeInTheDocument();
     });
   });

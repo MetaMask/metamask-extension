@@ -965,7 +965,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/permission-detail-renderer.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 8,
+      "React: Act warnings (component updates not wrapped)": 10,
       "Reselect: Identity function warnings": 3,
       "Test errors: Uncaught Errors": 3
     },
