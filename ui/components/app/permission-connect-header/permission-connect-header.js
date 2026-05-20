@@ -1,20 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
+  Display,
   JustifyContent,
   TextColor,
   TextVariant,
-  Display,
-  BlockSize,
   FontWeight,
-  FlexDirection,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   IconSize,
   Text,
-  Box,
   AvatarFavicon,
   AvatarBase,
 } from '../../component-library';
@@ -36,10 +40,9 @@ const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
     <>
       <Nav confirmationId={requestId} />
       <Box
-        backgroundColor={BackgroundColor.backgroundDefault}
-        width={BlockSize.Full}
-        alignItems={AlignItems.center}
-        display={Display.Flex}
+        backgroundColor={BoxBackgroundColor.BackgroundDefault}
+        className="flex w-full"
+        alignItems={BoxAlignItems.Center}
         padding={4}
         style={{
           boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
@@ -70,8 +73,7 @@ const PermissionConnectHeader = ({ requestId, origin, iconUrl }) => {
         <Box
           marginLeft={4}
           marginRight={4}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
+          className="flex flex-col"
           style={{ overflow: 'hidden' }}
         >
           <Text ellipsis fontWeight={FontWeight.Medium}>

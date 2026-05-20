@@ -2,12 +2,11 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
 import { isHexPrefixed } from 'ethereumjs-util';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { normalizeSafeAddress } from '../../../../shared/lib/multichain/address';
-import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  AlignItems,
-  Display,
   IconColor,
   TextAlign,
   TextColor,
@@ -113,10 +112,10 @@ function QrCodeView({
         {addressEnd}
       </Text>
       <Box
-        display={Display.Flex}
+        className="flex"
         marginBottom={4}
         gap={2}
-        alignItems={AlignItems.center}
+        alignItems={BoxAlignItems.Center}
         color={TextColor.primaryDefault}
         className="qr-code__copy-button"
         data-testid="address-copy-button-text"
