@@ -33,12 +33,10 @@ export const buildQuoteRequestForEntry = ({
   entry,
   destAssetId,
   walletAddress,
-  rpcUrl,
 }: {
   entry: SendAssetEntry;
   destAssetId: string;
   walletAddress: string;
-  rpcUrl?: string;
 }): QuoteRequestParams | undefined => {
   const { asset, sendAmountPercent, slippagePercent } = entry;
   const srcTokenAmount = buildSrcTokenAmountSmallestUnit(
@@ -54,7 +52,6 @@ export const buildQuoteRequestForEntry = ({
     srcTokenAmount,
     srcChainId: asset.chainId,
     destChainId: asset.chainId,
-    insufficientBal: Boolean(rpcUrl?.includes('localhost')),
     slippage: slippagePercent,
     walletAddress,
   };

@@ -17,12 +17,10 @@ import {
   formatChainIdToHex,
   getNativeAssetForChainId,
   selectBatchSellQuotes,
+  selectBatchSellTrades,
   selectMinimumBalanceForRentExemptionInSOL,
 } from '@metamask/bridge-controller';
-import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
-  CHAIN_IDS,
-} from '../../../shared/constants/network';
+import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../shared/lib/network.utils';
 import {
   getAssetsBySelectedAccountGroup,
@@ -49,20 +47,8 @@ import { getSelectedAccountGroup } from '../../selectors/multichain-accounts/acc
 import { QuoteValidationErrors, type BridgeToken } from '../bridge/types';
 import { createDeepEqualSelector } from '../../../shared/lib/selectors/selector-creators';
 import { isHardwareWallet } from '../../../shared/lib/selectors/keyring';
+import { BATCH_SELL_SUPPORTED_CHAIN_IDS } from '../../constants/batch-sell';
 import { BatchSellAsset } from './types';
-
-/**
- * V1 of batch sell functionality relies on a hardcoded list
- * of supported networks.
- */
-const BATCH_SELL_SUPPORTED_CHAIN_IDS = new Set([
-  toEvmCaipChainId(CHAIN_IDS.MAINNET),
-  toEvmCaipChainId(CHAIN_IDS.BSC),
-  toEvmCaipChainId(CHAIN_IDS.BASE),
-  toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
-  toEvmCaipChainId(CHAIN_IDS.ARBITRUM),
-  toEvmCaipChainId(CHAIN_IDS.POLYGON),
-]);
 
 /**
  * Returns all available multichain network configurations for the currently
@@ -371,6 +357,11 @@ export const getBatchSellQuotes = createSelector(
       selectedQuote,
     });
   },
+);
+
+export const getBatchSellTrades = createSelector(
+  ({ metamask }: BridgeAppState) => metamask,
+  (controllerStates) => selectBatchSellTrades(controllerStates),
 );
 
 // Per-quote validation errors for batch-sell. Returns an array of length

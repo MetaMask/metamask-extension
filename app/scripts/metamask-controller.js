@@ -3578,6 +3578,10 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           `${BRIDGE_CONTROLLER_NAME}:${BridgeUserAction.UPDATE_QUOTE_PARAMS}`,
         ),
+      updateBatchSellTrades: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        `${BRIDGE_CONTROLLER_NAME}:updateBatchSellTrades`,
+      ),
       [BridgeBackgroundAction.TRACK_METAMETRICS_EVENT]:
         this.controllerMessenger.call.bind(
           this.controllerMessenger,

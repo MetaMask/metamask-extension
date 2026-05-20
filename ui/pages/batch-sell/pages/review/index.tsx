@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   LOW_SLIPPAGE_PERCENT_THRESHOLD,
   SLIPPAGE_PERCENT_OPTIONS,
 } from '../../../../constants/batch-sell';
 import { BATCH_SELL_SELECT_ROUTE } from '../../../../helpers/constants/routes';
+import { getBatchSellTrades } from '../../../../ducks/batch-sell/selectors';
 import { useBatchSellQuotesConfig } from './hooks/useBatchSellQuotesConfig';
 import { Header } from './components/header';
 import { QuotesList } from './components/quotes-list';
@@ -15,6 +17,7 @@ import { TotalReceivedModal } from './components/total-received-modal';
 import { SlippageModal } from './components/slippage-modal';
 import { ReviewAndConfirmModal } from './components/review-and-confirm-modal';
 import { useBatchSellQuotesFetching } from './hooks/useBatchSellQuotesFetching';
+import { useBatchSellTradesFetching } from './hooks/useBatchSellTradesFetching';
 import { useBatchSellAggregateValidation } from './hooks/useBatchSellAggregateValidation';
 
 // CASE: no quotes available for any asset should disable the info button and review
@@ -32,7 +35,6 @@ export const BatchSellReviewPage = () => {
     useState(false);
   const [totalReceivedModalIsOpen, setTotalReceivedAssetModalIsOpen] =
     useState(false);
-  // read network fees from getNetwork fees once micaela integrtes controller
 
   const {
     sendAssetsConfig,
@@ -48,18 +50,27 @@ export const BatchSellReviewPage = () => {
     deleteAsset,
   } = useBatchSellQuotesConfig();
 
-  const { data, isLoading } = useBatchSellQuotesFetching(
-    {
-      sendAssetsConfig,
-      receivedAsset: selectedReceiveAsset,
-    },
-    { enabled: hasInitialSelection },
+  const { data, entries, isLoading, quotesLastFetchedMs } =
+    useBatchSellQuotesFetching(
+      {
+        sendAssetsConfig,
+        receivedAsset: selectedReceiveAsset,
+      },
+      { enabled: hasInitialSelection },
+    );
+
+  useBatchSellTradesFetching(
+    { data, entries, quotesLastFetchedMs },
+    { enabled: hasInitialSelection && !isLoading },
   );
+
+  const { totalNetworkFee: batchFees, isBatchSellTradeAvailable } =
+    useSelector(getBatchSellTrades);
 
   const validation = useBatchSellAggregateValidation({
     sendAssetsConfig,
     quotes: data?.quotes,
-    totalNetworkFee: data?.totalNetworkFee,
+    totalNetworkFee: batchFees?.amount,
   });
 
   if (!hasInitialSelection) {
@@ -142,9 +153,11 @@ export const BatchSellReviewPage = () => {
         }}
         totalReceivedAmount={data?.totalReceivedAmount}
         minimumReceivedAmount={data?.minimumReceivedAmount}
-        totalNetworkFee={data?.totalNetworkFee}
-        totalNetworkFeeFiat={data?.totalNetworkFeeFiat}
+        totalNetworkFee={batchFees?.amount}
+        totalNetworkFeeFiat={batchFees?.valueInCurrency}
+        networkFeeAssetSymbol={batchFees?.asset.symbol}
         isInsufficientGasForFee={validation.isInsufficientGasForFee}
+        isBatchSellTradeAvailable={isBatchSellTradeAvailable}
       />
     </Box>
   );

@@ -5,18 +5,16 @@ import { CaipChainId } from '@metamask/utils';
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { getNativeAssetForChain } from '../../../../../ducks/batch-sell/selectors';
 import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
-import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import {
+  BatchSellQuotesConfig,
+  BatchSellQuotesResults,
+  BatchSellValidationResult,
+} from '../types';
 
 type Args = {
   sendAssetsConfig: BatchSellQuotesConfig['sendAssetsConfig'];
   quotes?: BatchSellQuotesResults['quotes'];
-  totalNetworkFee?: number;
-};
-
-export type BatchSellValidationResult = {
-  isNoQuotesAvailable: boolean;
-  isInsufficientGasForFee: boolean;
-  nativeAssetSymbol: string | undefined;
+  totalNetworkFee?: string | number;
 };
 
 export const useBatchSellAggregateValidation = ({
@@ -73,7 +71,7 @@ export const useBatchSellAggregateValidation = ({
       nativeAsset.balance || '0',
     ).minus(nativeBeingSent);
 
-    return remainingNativeBalance.lt(totalNetworkFee.toString());
+    return remainingNativeBalance.lt(new BigNumber(totalNetworkFee.toString()));
   }, [totalNetworkFee, nativeAsset, sendAssetEntries]);
 
   return {

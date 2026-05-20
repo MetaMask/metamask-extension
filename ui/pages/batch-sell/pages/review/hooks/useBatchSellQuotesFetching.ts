@@ -12,8 +12,6 @@ import {
   getFromAccount,
   getIsStxEnabled,
 } from '../../../../../ducks/bridge/selectors';
-import { getMultichainProviderConfig } from '../../../../../selectors/multichain';
-import { useMultichainSelector } from '../../../../../hooks/useMultichainSelector';
 import {
   BatchSellQuotesConfig,
   BatchSellQuotesResults,
@@ -22,20 +20,17 @@ import {
   SendAssetEntry,
 } from '../types';
 import {
-  buildQuoteRequestContext,
-  buildQuoteRequestForEntry,
-  buildResults,
-} from '../utils';
-import {
   getBatchSellQuotes,
   getBatchSellQuotesValidationErrors,
 } from '../../../../../ducks/batch-sell/selectors';
+import { buildResults } from '../utils/buildResults';
+import { buildQuoteRequestForEntry } from '../utils/buildQuoteRequest';
+import { buildQuoteRequestContext } from '../utils/buildQuoteRequestContext';
+import { QUOTE_REQUEST_DEBOUNCE_MS } from '../../../../../constants/batch-sell';
 
 type Options = {
   enabled: boolean;
 };
-
-const QUOTE_REQUEST_DEBOUNCE_MS = 300;
 
 export const useBatchSellQuotesFetching = (
   { sendAssetsConfig, receivedAsset }: BatchSellQuotesConfig,
@@ -44,7 +39,6 @@ export const useBatchSellQuotesFetching = (
   const dispatch = useDispatch();
 
   const selectedAccount = useSelector(getFromAccount);
-  const providerConfig = useMultichainSelector(getMultichainProviderConfig);
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
   const entries = useMemo<SendAssetEntry[]>(
@@ -93,10 +87,6 @@ export const useBatchSellQuotesFetching = (
     validationErrorsByIndex,
   ]);
 
-  // The dispatcher reference is stable across renders. `useRef(debounce(...))`
-  // is used because `useCallback` and React Compiler don't track that
-  // `debounce` returns a fresh function reference; the inner function only
-  // touches `dispatch` and an action creator, so it's safe not to recreate.
   const debouncedDispatchQuoteRequests = useRef(
     debounce(
       (
@@ -126,7 +116,6 @@ export const useBatchSellQuotesFetching = (
           entry,
           destAssetId: receivedAsset.id,
           walletAddress: selectedAccount.address,
-          rpcUrl: providerConfig?.rpcUrl,
         });
         if (!params) {
           return undefined;
@@ -157,7 +146,6 @@ export const useBatchSellQuotesFetching = (
     receivedAsset,
     requestCount,
     selectedAccount?.address,
-    providerConfig?.rpcUrl,
     smartTransactionsEnabled,
     dispatch,
   ]);
@@ -179,5 +167,10 @@ export const useBatchSellQuotesFetching = (
     requestCount > 0 &&
     (!hasEverFetched || controllerResult.isLoading);
 
-  return { data, isLoading };
+  return {
+    data,
+    entries,
+    isLoading,
+    quotesLastFetchedMs: controllerResult.quotesLastFetchedMs,
+  };
 };
