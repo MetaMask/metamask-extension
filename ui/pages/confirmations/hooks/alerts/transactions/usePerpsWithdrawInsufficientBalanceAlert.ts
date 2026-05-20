@@ -60,8 +60,8 @@ export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
         field: RowAlertKey.EstimatedFee,
         isBlocking: true,
         key: AlertsName.InsufficientPayTokenBalance,
-        message: t('perpsWithdrawInsufficient'),
-        reason: t('perpsWithdrawInvalidAmount'),
+        message: t('alertInsufficientPayTokenBalance'),
+        reason: t('alertInsufficientPayTokenBalance'),
         severity: Severity.Danger,
       },
     ];

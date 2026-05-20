@@ -87,6 +87,7 @@ import {
   normalizeTpslPrices,
   safeDecodeURIComponent,
   formatSignedChangePercent,
+  willFlipPosition,
 } from '../../components/app/perps/utils';
 import {
   parsePerpsDisplayPrice,
@@ -1100,9 +1101,32 @@ const PerpsOrderEntryPage: React.FC = () => {
       // emitted above by replacePerpsToastByKey. Re-emitting from the
       // market-detail useEffect races with the ORDER_SUBMITTED replace below
       // and can leave the toast stuck at "Submitting your trade".
+      //
+      // Market orders with TP/SL on a new (or flipping) position route through
+      // the two-step flow used by mobile: place the market order without
+      // TP/SL, then call `perpsUpdatePositionTPSL` so the controller submits
+      // the trigger orders under `grouping: 'positionTpsl'`. Sending TP/SL in
+      // the same `placeOrder` call falls back to the controller's
+      // `normalTpsl` default, which leaves the resulting trigger orders
+      // tagged `isPositionTpsl: false` and breaks the auto-close/orders
+      // partition on the market-detail page.
+      const shouldHandleTpslSeparately =
+        (orderParams.takeProfitPrice || orderParams.stopLossPrice) &&
+        orderFormState.type === 'market' &&
+        (!position ||
+          parseFloat(position.size.replaceAll(',', '')) === 0 ||
+          willFlipPosition(position, orderParams));
+      const placeOrderParams = shouldHandleTpslSeparately
+        ? (() => {
+            const stripped = { ...orderParams };
+            delete stripped.takeProfitPrice;
+            delete stripped.stopLossPrice;
+            return stripped;
+          })()
+        : orderParams;
       const result = await submitRequestToBackground<PerpsBackgroundResult>(
         'perpsPlaceOrder',
-        [orderParams],
+        [placeOrderParams],
       );
       if (!result.success) {
         const message = result.error || 'Failed to place order';
@@ -1111,6 +1135,47 @@ const PerpsOrderEntryPage: React.FC = () => {
           message,
         );
         throw new Error(result.error ?? 'Failed to place order');
+      }
+      if (shouldHandleTpslSeparately) {
+        const { takeProfitPrice: cleanTp, stopLossPrice: cleanSl } =
+          normalizeTpslPrices({
+            takeProfitPrice: orderParams.takeProfitPrice,
+            stopLossPrice: orderParams.stopLossPrice,
+          });
+        const tpslResult =
+          await submitRequestToBackground<PerpsBackgroundResult>(
+            'perpsUpdatePositionTPSL',
+            [
+              {
+                symbol: orderFormState.asset,
+                takeProfitPrice: cleanTp,
+                stopLossPrice: cleanSl,
+              },
+            ],
+          );
+        if (!tpslResult.success) {
+          // The market order already filled — treat as "position opened,
+          // TP/SL not set": show the TP/SL-specific failure toast and
+          // navigate back to the market detail page so the user can attach
+          // TP/SL from the open position rather than re-submitting the
+          // order form (which would open a duplicate position).
+          const tpslMessage =
+            tpslResult.error || 'Failed to attach TP/SL to position';
+          reportTransactionFailure(
+            MetaMetricsEventName.PerpsRiskManagement,
+            tpslMessage,
+          );
+          const translatedTpslError = translatePerpsError(
+            new Error(tpslMessage),
+            t as (key: string) => string,
+          );
+          replacePerpsToastByKey({
+            key: PERPS_TOAST_KEYS.UPDATE_FAILED,
+            description: translatedTpslError ?? tpslMessage,
+          });
+          handleBackClick();
+          return;
+        }
       }
       // Navigate only on success. On failure, stay on the form so the catch
       // block's failure toast renders on the current page. Navigating before
