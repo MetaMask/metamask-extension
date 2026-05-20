@@ -331,7 +331,9 @@ describe('MusdBuyGetCta', () => {
       );
 
       expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
-      expect(screen.getByAltText('mUSD logo')).toBeInTheDocument();
+      expect(
+        screen.getByRole('img', { name: 'mUSD logo' }),
+      ).toBeInTheDocument();
     });
 
     it('renders network badge when selectedChainId is provided', () => {
@@ -344,7 +346,9 @@ describe('MusdBuyGetCta', () => {
         store,
       );
 
-      expect(screen.getByAltText('Ethereum Mainnet logo')).toBeInTheDocument();
+      expect(
+        screen.getByRole('img', { name: 'Ethereum Mainnet logo' }),
+      ).toBeInTheDocument();
     });
 
     it('does not render network badge when selectedChainId is null', () => {
@@ -359,7 +363,7 @@ describe('MusdBuyGetCta', () => {
 
       expect(screen.getByTestId('musd-buy-get-cta-icon')).toBeInTheDocument();
       expect(
-        screen.queryByAltText('Ethereum Mainnet logo'),
+        screen.queryByRole('img', { name: 'Ethereum Mainnet logo' }),
       ).not.toBeInTheDocument();
     });
   });

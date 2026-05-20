@@ -116,10 +116,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
-                      <img
-                        alt="Ethereum logo"
+                      <span
+                        aria-label="Ethereum logo"
                         class="mm-avatar-network__network-image"
-                        src="./images/eth_logo.svg"
+                        role="img"
+                        style="background-image: url(./images/eth_logo.svg);"
                       />
                     </div>
                     <div
@@ -179,10 +180,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
-                      <img
-                        alt="Linea logo"
+                      <span
+                        aria-label="Linea logo"
                         class="mm-avatar-network__network-image"
-                        src="./images/linea-logo-mainnet.svg"
+                        role="img"
+                        style="background-image: url(./images/linea-logo-mainnet.svg);"
                       />
                     </div>
                     <div
@@ -242,10 +244,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
-                      <img
-                        alt="BNB Chain logo"
+                      <span
+                        aria-label="BNB Chain logo"
                         class="mm-avatar-network__network-image"
-                        src="./images/bnb.svg"
+                        role="img"
+                        style="background-image: url(./images/bnb.svg);"
                       />
                     </div>
                     <div
@@ -364,10 +367,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
-                      <img
-                        alt="Monad logo"
+                      <span
+                        aria-label="Monad logo"
                         class="mm-avatar-network__network-image"
-                        src="./images/monad.svg"
+                        role="img"
+                        style="background-image: url(./images/monad.svg);"
                       />
                     </div>
                     <div
@@ -457,10 +461,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Arbitrum logo"
+                        <span
+                          aria-label="Arbitrum logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/arbitrum.svg"
+                          role="img"
+                          style="background-image: url(./images/arbitrum.svg);"
                         />
                       </div>
                       <div
@@ -504,10 +509,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Avalanche logo"
+                        <span
+                          aria-label="Avalanche logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/avax-token.svg"
+                          role="img"
+                          style="background-image: url(./images/avax-token.svg);"
                         />
                       </div>
                       <div
@@ -551,10 +557,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Base logo"
+                        <span
+                          aria-label="Base logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/base.svg"
+                          role="img"
+                          style="background-image: url(./images/base.svg);"
                         />
                       </div>
                       <div
@@ -598,10 +605,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="HyperEVM logo"
+                        <span
+                          aria-label="HyperEVM logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/hyperevm.svg"
+                          role="img"
+                          style="background-image: url(./images/hyperevm.svg);"
                         />
                       </div>
                       <div
@@ -645,10 +653,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="MegaETH logo"
+                        <span
+                          aria-label="MegaETH logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/MegaETH-logo-mainnet.png"
+                          role="img"
+                          style="background-image: url(./images/MegaETH-logo-mainnet.png);"
                         />
                       </div>
                       <div
@@ -692,10 +701,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="OP logo"
+                        <span
+                          aria-label="OP logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/optimism.svg"
+                          role="img"
+                          style="background-image: url(./images/optimism.svg);"
                         />
                       </div>
                       <div
@@ -739,10 +749,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Polygon logo"
+                        <span
+                          aria-label="Polygon logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/pol-token.svg"
+                          role="img"
+                          style="background-image: url(./images/pol-token.svg);"
                         />
                       </div>
                       <div
@@ -786,10 +797,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Sei logo"
+                        <span
+                          aria-label="Sei logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/sei.svg"
+                          role="img"
+                          style="background-image: url(./images/sei.svg);"
                         />
                       </div>
                       <div
@@ -833,10 +845,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Tempo logo"
+                        <span
+                          aria-label="Tempo logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/tempo.svg"
+                          role="img"
+                          style="background-image: url(./images/tempo.svg);"
                         />
                       </div>
                       <div
@@ -880,10 +893,11 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="zkSync Era logo"
+                        <span
+                          aria-label="zkSync Era logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/zk-sync.svg"
+                          role="img"
+                          style="background-image: url(./images/zk-sync.svg);"
                         />
                       </div>
                       <div
@@ -1392,10 +1406,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
-                      <img
-                        alt="Ethereum logo"
+                      <span
+                        aria-label="Ethereum logo"
                         class="mm-avatar-network__network-image"
-                        src="./images/eth_logo.svg"
+                        role="img"
+                        style="background-image: url(./images/eth_logo.svg);"
                       />
                     </div>
                     <div
@@ -1455,10 +1470,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
-                      <img
-                        alt="Linea logo"
+                      <span
+                        aria-label="Linea logo"
                         class="mm-avatar-network__network-image"
-                        src="./images/linea-logo-mainnet.svg"
+                        role="img"
+                        style="background-image: url(./images/linea-logo-mainnet.svg);"
                       />
                     </div>
                     <div
@@ -1518,10 +1534,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
-                      <img
-                        alt="BNB Chain logo"
+                      <span
+                        aria-label="BNB Chain logo"
                         class="mm-avatar-network__network-image"
-                        src="./images/bnb.svg"
+                        role="img"
+                        style="background-image: url(./images/bnb.svg);"
                       />
                     </div>
                     <div
@@ -1640,10 +1657,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                     <div
                       class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                     >
-                      <img
-                        alt="Monad logo"
+                      <span
+                        aria-label="Monad logo"
                         class="mm-avatar-network__network-image"
-                        src="./images/monad.svg"
+                        role="img"
+                        style="background-image: url(./images/monad.svg);"
                       />
                     </div>
                     <div
@@ -1733,10 +1751,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Arbitrum logo"
+                        <span
+                          aria-label="Arbitrum logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/arbitrum.svg"
+                          role="img"
+                          style="background-image: url(./images/arbitrum.svg);"
                         />
                       </div>
                       <div
@@ -1780,10 +1799,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Avalanche logo"
+                        <span
+                          aria-label="Avalanche logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/avax-token.svg"
+                          role="img"
+                          style="background-image: url(./images/avax-token.svg);"
                         />
                       </div>
                       <div
@@ -1827,10 +1847,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Base logo"
+                        <span
+                          aria-label="Base logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/base.svg"
+                          role="img"
+                          style="background-image: url(./images/base.svg);"
                         />
                       </div>
                       <div
@@ -1874,10 +1895,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="HyperEVM logo"
+                        <span
+                          aria-label="HyperEVM logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/hyperevm.svg"
+                          role="img"
+                          style="background-image: url(./images/hyperevm.svg);"
                         />
                       </div>
                       <div
@@ -1921,10 +1943,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="MegaETH logo"
+                        <span
+                          aria-label="MegaETH logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/MegaETH-logo-mainnet.png"
+                          role="img"
+                          style="background-image: url(./images/MegaETH-logo-mainnet.png);"
                         />
                       </div>
                       <div
@@ -1968,10 +1991,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="OP logo"
+                        <span
+                          aria-label="OP logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/optimism.svg"
+                          role="img"
+                          style="background-image: url(./images/optimism.svg);"
                         />
                       </div>
                       <div
@@ -2015,10 +2039,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Polygon logo"
+                        <span
+                          aria-label="Polygon logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/pol-token.svg"
+                          role="img"
+                          style="background-image: url(./images/pol-token.svg);"
                         />
                       </div>
                       <div
@@ -2062,10 +2087,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Sei logo"
+                        <span
+                          aria-label="Sei logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/sei.svg"
+                          role="img"
+                          style="background-image: url(./images/sei.svg);"
                         />
                       </div>
                       <div
@@ -2109,10 +2135,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="Tempo logo"
+                        <span
+                          aria-label="Tempo logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/tempo.svg"
+                          role="img"
+                          style="background-image: url(./images/tempo.svg);"
                         />
                       </div>
                       <div
@@ -2156,10 +2183,11 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
                       >
-                        <img
-                          alt="zkSync Era logo"
+                        <span
+                          aria-label="zkSync Era logo"
                           class="mm-avatar-network__network-image"
-                          src="./images/zk-sync.svg"
+                          role="img"
+                          style="background-image: url(./images/zk-sync.svg);"
                         />
                       </div>
                       <div

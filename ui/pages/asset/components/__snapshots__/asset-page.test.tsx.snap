@@ -218,10 +218,11 @@ exports[`AssetPage should render a native asset 1`] = `
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
             >
-              <img
-                alt="static-logo"
+              <span
+                aria-label="TEST logo"
                 class="mm-avatar-token__token-image"
-                src="./images/eth_logo.svg"
+                role="img"
+                style="background-image: url(./images/eth_logo.svg);"
               />
             </div>
             <div
@@ -230,10 +231,11 @@ exports[`AssetPage should render a native asset 1`] = `
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
               >
-                <img
-                  alt="static-logo"
+                <span
+                  aria-label="Ethereum logo"
                   class="mm-avatar-network__network-image"
-                  src="./images/eth_logo.svg"
+                  role="img"
+                  style="background-image: url(./images/eth_logo.svg);"
                 />
               </div>
             </div>
@@ -587,10 +589,11 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
             >
-              <img
-                alt="static-logo"
+              <span
+                aria-label="TEST logo"
                 class="mm-avatar-token__token-image"
-                src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x309375769e79382befdec5bdab51063aebdc4936.png"
+                role="img"
+                style="background-image: url(https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x309375769e79382befdec5bdab51063aebdc4936.png);"
               />
             </div>
             <div
@@ -599,10 +602,11 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
               >
-                <img
-                  alt="static-logo"
+                <span
+                  aria-label="Ethereum logo"
                   class="mm-avatar-network__network-image"
-                  src="./images/eth_logo.svg"
+                  role="img"
+                  style="background-image: url(./images/eth_logo.svg);"
                 />
               </div>
             </div>
@@ -993,10 +997,11 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
             >
-              <img
-                alt="static-logo"
+              <span
+                aria-label="TEST logo"
                 class="mm-avatar-token__token-image"
-                src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xe4246b1ac0ba6839d9efa41a8a30ae3007185f55.png"
+                role="img"
+                style="background-image: url(https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xe4246b1ac0ba6839d9efa41a8a30ae3007185f55.png);"
               />
             </div>
             <div
@@ -1005,10 +1010,11 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
               <div
                 class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
               >
-                <img
-                  alt="static-logo"
+                <span
+                  aria-label="Ethereum logo"
                   class="mm-avatar-network__network-image"
-                  src="./images/eth_logo.svg"
+                  role="img"
+                  style="background-image: url(./images/eth_logo.svg);"
                 />
               </div>
             </div>
