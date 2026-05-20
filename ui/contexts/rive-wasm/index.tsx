@@ -39,7 +39,7 @@ let riveWasmReadyState: RiveWasmReadyState = {
 
 let runtimeLoaderPromise:
   | Promise<{
-      RuntimeLoader?: typeof import('@rive-app/canvas').RuntimeLoader;
+      runtimeLoader?: typeof import('@rive-app/canvas').RuntimeLoader;
     }>
   | undefined;
 let wasmPreloadPromise: Promise<void> | undefined;
@@ -67,7 +67,7 @@ const loadRiveRuntime = () => {
   if (!runtimeLoaderPromise) {
     runtimeLoaderPromise = import('@rive-app/react-canvas')
       .then((module) => ({
-        RuntimeLoader: module.RuntimeLoader,
+        runtimeLoader: module.RuntimeLoader,
       }))
       .catch((error) => {
         runtimeLoaderPromise = undefined;
@@ -90,7 +90,7 @@ export const preloadRiveWasm = async () => {
     });
 
     wasmPreloadPromise = (async () => {
-      const { RuntimeLoader } = await loadRiveRuntime();
+      const { runtimeLoader: RuntimeLoader } = await loadRiveRuntime();
 
       if (typeof RuntimeLoader === 'undefined') {
         setRiveWasmReadyState({

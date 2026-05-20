@@ -23,7 +23,8 @@ describe('rive-wasm context', () => {
 
     global.fetch = fetchMock as typeof fetch;
 
-    const riveWasmModule = await import('./index');
+    const riveWasmModule =
+      jest.requireActual<typeof import('./index')>('./index');
 
     expect(fetchMock).not.toHaveBeenCalled();
 
