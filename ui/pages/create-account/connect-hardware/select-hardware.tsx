@@ -141,6 +141,10 @@ const SelectHardware = ({
     useState(false);
   const [showFirefoxWarning, setShowFirefoxWarning] = useState(false);
 
+  // When opened in a fresh tab (e.g. redirected from side panel/popup for
+  // hardware wallet onboarding), there is no browser history to go back to.
+  // Navigate explicitly to choose-wallet-type with replace and propagate
+  // fromFreshTab so upstream pages continue using explicit routing.
   const handleBack = useCallback(() => {
     if (location.key === 'default') {
       navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE, {

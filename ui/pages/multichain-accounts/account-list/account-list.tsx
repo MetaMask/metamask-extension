@@ -123,6 +123,11 @@ export const AccountList = () => {
     navigate(CHOOSE_NEW_WALLET_TYPE_PAGE_ROUTE);
   }, [navigate]);
 
+  // When opened in a fresh tab (e.g. redirected from side panel/popup for
+  // hardware wallet onboarding), there is no browser history to go back to.
+  // Detect this via location.key being 'default' (initial entry) or
+  // fromFreshTab state propagated from downstream pages, then navigate
+  // directly to home instead of using history-based back navigation.
   const isFreshTab =
     location.key === 'default' ||
     (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===

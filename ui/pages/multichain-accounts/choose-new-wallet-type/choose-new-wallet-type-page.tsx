@@ -71,6 +71,10 @@ export const ChooseNewWalletTypePage = () => {
     getIsWatchEthereumAccountEnabled,
   );
 
+  // When opened in a fresh tab (e.g. redirected from side panel/popup),
+  // there is no browser history to go back to. Navigate to account list
+  // with replace and propagate fromFreshTab so upstream pages also use
+  // explicit routing instead of history-based back navigation.
   const isFreshTab =
     location.key === 'default' ||
     (location.state as { fromFreshTab?: boolean } | null)?.fromFreshTab ===
