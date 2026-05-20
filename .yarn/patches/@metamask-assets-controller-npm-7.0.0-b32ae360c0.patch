@@ -1,3 +1,131 @@
+diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
+index 187d0c6998d9d5c07718af4592d6cb71ca8a4ff6..d41a7002936886686c63c00e713f2eaafcb571b3 100644
+--- a/dist/AssetsController.cjs
++++ b/dist/AssetsController.cjs
+@@ -18,13 +18,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.AssetsController = exports.getDefaultAssetsControllerState = void 0;
+ const base_controller_1 = require("@metamask/base-controller");
+ const client_controller_1 = require("@metamask/client-controller");
+-const controller_utils_1 = require("@metamask/controller-utils");
+ const utils_1 = require("@metamask/utils");
+ const async_mutex_1 = require("async-mutex");
+ const bignumber_js_1 = __importDefault(require("bignumber.js"));
+ const lodash_1 = require("lodash");
+ const AccountsApiDataSource_1 = require("./data-sources/AccountsApiDataSource.cjs");
+ const BackendWebsocketDataSource_1 = require("./data-sources/BackendWebsocketDataSource.cjs");
++const assets_1 = require("./data-sources/evm-rpc-services/utils/assets.cjs");
+ const PriceDataSource_1 = require("./data-sources/PriceDataSource.cjs");
+ const RpcDataSource_1 = require("./data-sources/RpcDataSource.cjs");
+ const SnapDataSource_1 = require("./data-sources/SnapDataSource.cjs");
+@@ -619,7 +619,8 @@ class AssetsController extends base_controller_1.BaseController {
+                 if (__classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, normalizedAssetId)) {
+                     tokenType = 'native';
+                 }
+-                else if (parsed.assetNamespace === 'spl') {
++                else if (parsed.chain.namespace === utils_1.KnownCaipNamespace.Solana &&
++                    parsed.assetNamespace === TokenDataSource_1.CaipAssetNamespace.Token) {
+                     tokenType = 'spl';
+                 }
+                 const assetMetadata = {
+@@ -1579,7 +1580,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+     return result;
+ }, _AssetsController_shouldHideNativeToken = function _AssetsController_shouldHideNativeToken(chainId, metadata) {
+     // Check if it's a chain that should skip native tokens
+-    if (!controller_utils_1.CHAIN_IDS_WITH_NO_NATIVE_TOKEN.includes(chainId)) {
++    if (!(0, assets_1.shouldSkipNativeForCaipChainId)(chainId)) {
+         return false;
+     }
+     return metadata.type === 'native';
+diff --git a/dist/AssetsController.d.cts b/dist/AssetsController.d.cts
+index 8034e57e6c18e069e69be6f38c4dddd9b15195d4..ca1d113cef6266281c4402fc542cbc3860f3b6d0 100644
+--- a/dist/AssetsController.d.cts
++++ b/dist/AssetsController.d.cts
+@@ -13,7 +13,7 @@ import type { NetworkEnablementControllerGetStateAction, NetworkEnablementContro
+ import type { GetPermissions, PermissionControllerStateChange } from "@metamask/permission-controller";
+ import { PhishingControllerBulkScanTokensAction } from "@metamask/phishing-controller";
+ import type { PreferencesControllerStateChangeEvent } from "@metamask/preferences-controller";
+-import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction } from "@metamask/snaps-controllers";
++import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction, SnapControllerSnapInstalledEvent } from "@metamask/snaps-controllers";
+ import type { TransactionControllerIncomingTransactionsReceivedEvent, TransactionControllerTransactionConfirmedEvent, TransactionControllerUnapprovedTransactionAddedEvent } from "@metamask/transaction-controller";
+ import type { AssetsControllerMethodActions } from "./AssetsController-method-action-types.cjs";
+ import type { AccountsApiDataSourceConfig } from "./data-sources/AccountsApiDataSource.cjs";
+@@ -110,7 +110,7 @@ export type AssetsControllerAssetsDetectedEvent = {
+ };
+ export type AssetsControllerEvents = AssetsControllerStateChangeEvent | AssetsControllerBalanceChangedEvent | AssetsControllerPriceChangedEvent | AssetsControllerAssetsDetectedEvent;
+ type AllowedActions = AccountsControllerGetSelectedAccountAction | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction | NetworkControllerGetStateAction | NetworkControllerGetNetworkClientByIdAction | NetworkEnablementControllerGetStateAction | SnapControllerGetRunnableSnapsAction | SnapControllerHandleRequestAction | GetPermissions | BackendWebSocketServiceActions | PhishingControllerBulkScanTokensAction;
+-type AllowedEvents = AccountTreeControllerSelectedAccountGroupChangeEvent | AccountTreeControllerStateChangeEvent | ClientControllerStateChangeEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerUnapprovedTransactionAddedEvent | NetworkControllerStateChangeEvent | NetworkControllerNetworkAddedEvent | NetworkControllerNetworkRemovedEvent | TransactionControllerTransactionConfirmedEvent | TransactionControllerIncomingTransactionsReceivedEvent | NetworkEnablementControllerEvents | AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange | BackendWebSocketServiceEvents;
++type AllowedEvents = AccountTreeControllerSelectedAccountGroupChangeEvent | AccountTreeControllerStateChangeEvent | ClientControllerStateChangeEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerUnapprovedTransactionAddedEvent | NetworkControllerStateChangeEvent | NetworkControllerNetworkAddedEvent | NetworkControllerNetworkRemovedEvent | TransactionControllerTransactionConfirmedEvent | TransactionControllerIncomingTransactionsReceivedEvent | NetworkEnablementControllerEvents | AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange | SnapControllerSnapInstalledEvent | BackendWebSocketServiceEvents;
+ export type AssetsControllerMessenger = Messenger<typeof CONTROLLER_NAME, AssetsControllerActions | AllowedActions, AssetsControllerEvents | AllowedEvents>;
+ export type AssetsControllerOptions = {
+     messenger: AssetsControllerMessenger;
+diff --git a/dist/AssetsController.d.mts b/dist/AssetsController.d.mts
+index 790c523713105d601ac5a805a9236df40f2fcf26..2db1fbf280708e068b8fe4e2a1dc887e6babe48a 100644
+--- a/dist/AssetsController.d.mts
++++ b/dist/AssetsController.d.mts
+@@ -13,7 +13,7 @@ import type { NetworkEnablementControllerGetStateAction, NetworkEnablementContro
+ import type { GetPermissions, PermissionControllerStateChange } from "@metamask/permission-controller";
+ import { PhishingControllerBulkScanTokensAction } from "@metamask/phishing-controller";
+ import type { PreferencesControllerStateChangeEvent } from "@metamask/preferences-controller";
+-import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction } from "@metamask/snaps-controllers";
++import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction, SnapControllerSnapInstalledEvent } from "@metamask/snaps-controllers";
+ import type { TransactionControllerIncomingTransactionsReceivedEvent, TransactionControllerTransactionConfirmedEvent, TransactionControllerUnapprovedTransactionAddedEvent } from "@metamask/transaction-controller";
+ import type { AssetsControllerMethodActions } from "./AssetsController-method-action-types.mjs";
+ import type { AccountsApiDataSourceConfig } from "./data-sources/AccountsApiDataSource.mjs";
+@@ -110,7 +110,7 @@ export type AssetsControllerAssetsDetectedEvent = {
+ };
+ export type AssetsControllerEvents = AssetsControllerStateChangeEvent | AssetsControllerBalanceChangedEvent | AssetsControllerPriceChangedEvent | AssetsControllerAssetsDetectedEvent;
+ type AllowedActions = AccountsControllerGetSelectedAccountAction | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction | NetworkControllerGetStateAction | NetworkControllerGetNetworkClientByIdAction | NetworkEnablementControllerGetStateAction | SnapControllerGetRunnableSnapsAction | SnapControllerHandleRequestAction | GetPermissions | BackendWebSocketServiceActions | PhishingControllerBulkScanTokensAction;
+-type AllowedEvents = AccountTreeControllerSelectedAccountGroupChangeEvent | AccountTreeControllerStateChangeEvent | ClientControllerStateChangeEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerUnapprovedTransactionAddedEvent | NetworkControllerStateChangeEvent | NetworkControllerNetworkAddedEvent | NetworkControllerNetworkRemovedEvent | TransactionControllerTransactionConfirmedEvent | TransactionControllerIncomingTransactionsReceivedEvent | NetworkEnablementControllerEvents | AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange | BackendWebSocketServiceEvents;
++type AllowedEvents = AccountTreeControllerSelectedAccountGroupChangeEvent | AccountTreeControllerStateChangeEvent | ClientControllerStateChangeEvent | KeyringControllerLockEvent | KeyringControllerUnlockEvent | PreferencesControllerStateChangeEvent | TransactionControllerUnapprovedTransactionAddedEvent | NetworkControllerStateChangeEvent | NetworkControllerNetworkAddedEvent | NetworkControllerNetworkRemovedEvent | TransactionControllerTransactionConfirmedEvent | TransactionControllerIncomingTransactionsReceivedEvent | NetworkEnablementControllerEvents | AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange | SnapControllerSnapInstalledEvent | BackendWebSocketServiceEvents;
+ export type AssetsControllerMessenger = Messenger<typeof CONTROLLER_NAME, AssetsControllerActions | AllowedActions, AssetsControllerEvents | AllowedEvents>;
+ export type AssetsControllerOptions = {
+     messenger: AssetsControllerMessenger;
+diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
+index 5aaeff65d579e58f017ef10331979bec6bad2161..0ee0ccb1ab234acdcea227d68154b9ff3ea86121 100644
+--- a/dist/AssetsController.mjs
++++ b/dist/AssetsController.mjs
+@@ -12,19 +12,19 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
+ var _AssetsController_instances, _AssetsController_isEnabled, _AssetsController_isBasicFunctionality, _AssetsController_defaultUpdateInterval, _AssetsController_trace, _AssetsController_captureException, _AssetsController_firstInitFetchReported, _AssetsController_stateSizeReported, _AssetsController_emitTrace, _AssetsController_emitStateSizeTrace, _AssetsController_uiOpen, _AssetsController_keyringUnlocked, _AssetsController_controllerMutex, _AssetsController_activeSubscriptions, _AssetsController_enabledChains, _AssetsController_lastKnownAccountIds, _AssetsController_getSelectedAccounts, _AssetsController_backendWebsocketDataSource, _AssetsController_accountsApiDataSource, _AssetsController_snapDataSource, _AssetsController_rpcDataSource, _AssetsController_stakedBalanceDataSource, _AssetsController_allBalanceDataSources_get, _AssetsController_priceDataSource, _AssetsController_detectionMiddleware, _AssetsController_customAssetGraduationMiddleware, _AssetsController_rpcFallbackMiddleware, _AssetsController_tokenDataSource, _AssetsController_unsubscribeBasicFunctionality, _AssetsController_queryApiClient, _AssetsController_onActiveChainsUpdated, _AssetsController_initializeNativeAssetsMap, _AssetsController_initializeState, _AssetsController_extractEnabledChains, _AssetsController_normalizeChainReference, _AssetsController_subscribeToEvents, _AssetsController_onUnapprovedTransactionAdded, _AssetsController_updateActive, _AssetsController_handleAccountTreeStateChange, _AssetsController_registerActionHandlers, _AssetsController_handleActiveChainsUpdate, _AssetsController_executeMiddlewares, _AssetsController_getNativeAssetMap, _AssetsController_isNativeAsset, _AssetsController_resolveNativeAssetIds, _AssetsController_getNativeAssetIdsForEnabledChains, _AssetsController_getNativeAssetIdsForAccount, _AssetsController_ensureNativeBalancesDefaultZero, _AssetsController_ensureDefaultTrackedAssetsSeeded, _AssetsController_updateState, _AssetsController_getAssetsFromState, _AssetsController_shouldHideNativeToken, _AssetsController_tokenStandardToAssetType, _AssetsController_start, _AssetsController_stop, _AssetsController_subscribeAssets, _AssetsController_subscribeAssetsBalance, _AssetsController_subscribeRpcCustomAssetsSupplement, _AssetsController_unsubscribeBySubscriptionKey, _AssetsController_subscribeStakedBalance, _AssetsController_buildChainToAccountsMap, _AssetsController_subscribeDataSource, _AssetsController_unsubscribeDataSource, _AssetsController_buildDataRequest, _AssetsController_getEnabledChainsForAccount, _AssetsController_handleAccountGroupChanged, _AssetsController_handleEnabledNetworksChanged, _AssetsController_handleNetworkAdded, _AssetsController_refreshAssetsAfterNetworkChange;
+ import { BaseController } from "@metamask/base-controller";
+ import { clientControllerSelectors } from "@metamask/client-controller";
+-import { CHAIN_IDS_WITH_NO_NATIVE_TOKEN } from "@metamask/controller-utils";
+-import { isCaipChainId, isStrictHexString, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
++import { isCaipChainId, isStrictHexString, KnownCaipNamespace, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
+ import { Mutex } from "async-mutex";
+ import BigNumberJS from "bignumber.js";
+ import $lodash from "lodash";
+ const { isEqual } = $lodash;
+ import { AccountsApiDataSource } from "./data-sources/AccountsApiDataSource.mjs";
+ import { BackendWebsocketDataSource } from "./data-sources/BackendWebsocketDataSource.mjs";
++import { shouldSkipNativeForCaipChainId } from "./data-sources/evm-rpc-services/utils/assets.mjs";
+ import { PriceDataSource } from "./data-sources/PriceDataSource.mjs";
+ import { RpcDataSource } from "./data-sources/RpcDataSource.mjs";
+ import { SnapDataSource } from "./data-sources/SnapDataSource.mjs";
+ import { StakedBalanceDataSource } from "./data-sources/StakedBalanceDataSource.mjs";
+-import { TokenDataSource } from "./data-sources/TokenDataSource.mjs";
++import { CaipAssetNamespace, TokenDataSource } from "./data-sources/TokenDataSource.mjs";
+ import { CHAINS_WITH_DEFAULT_TRACKED_ASSETS, DEFAULT_TRACKED_ASSETS_BY_CHAIN, buildDefaultAssetsInfo, getDefaultAssetMetadata } from "./defaults.mjs";
+ import { AssetsDataSourceError } from "./errors.mjs";
+ import { projectLogger, createModuleLogger } from "./logger.mjs";
+@@ -613,7 +613,8 @@ export class AssetsController extends BaseController {
+                 if (__classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, normalizedAssetId)) {
+                     tokenType = 'native';
+                 }
+-                else if (parsed.assetNamespace === 'spl') {
++                else if (parsed.chain.namespace === KnownCaipNamespace.Solana &&
++                    parsed.assetNamespace === CaipAssetNamespace.Token) {
+                     tokenType = 'spl';
+                 }
+                 const assetMetadata = {
+@@ -1572,7 +1573,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+     return result;
+ }, _AssetsController_shouldHideNativeToken = function _AssetsController_shouldHideNativeToken(chainId, metadata) {
+     // Check if it's a chain that should skip native tokens
+-    if (!CHAIN_IDS_WITH_NO_NATIVE_TOKEN.includes(chainId)) {
++    if (!shouldSkipNativeForCaipChainId(chainId)) {
+         return false;
+     }
+     return metadata.type === 'native';
 diff --git a/dist/data-sources/AccountsApiDataSource.cjs b/dist/data-sources/AccountsApiDataSource.cjs
 index dfd334c39f845e244ead969627cc196bb1edf7a3..f780bb932633024e7577e5596f0b5fe391834254 100644
 --- a/dist/data-sources/AccountsApiDataSource.cjs
