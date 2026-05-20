@@ -15,3 +15,14 @@ rules:
         metamask/*: ref-pin
         # Default for everything else: require a hash pin.
         "*": hash-pin
+
+  # The build and publish workflows call internal reusable workflows
+  # (run-build.yml, run-e2e.yml, publish-prerelease.yml, etc.) that each
+  # consume 40+ secrets. Listing every secret at every call site would
+  # produce ~1500 lines of YAML for no real security gain — caller and
+  # callee live in the same repository and share the same trust boundary.
+  secrets-inherit:
+    ignore:
+      - main.yml
+      - nightly-build.yml
+      - publish-release-from-release-head.yml
