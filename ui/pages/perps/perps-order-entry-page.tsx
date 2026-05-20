@@ -313,16 +313,18 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const isOrderPending = isSubmitting;
 
-  // Dynamic fee rate for close-mode order submission tracking. Also surfaces
-  // the MetaMask fee discount so the OrderSummary can render the inline VIP
-  // badge next to the estimated fees.
+  // Dynamic fee rate matching the user-selected order type. Used for both:
+  // 1. Reverse-engineering the original (pre-discount) fee from
+  //    orderCalculations.estimatedFees (which OrderEntry computes with the
+  //    same orderType).
+  // 2. Close-mode order submission tracking (close mode defaults to market).
   const {
     feeRate: closeFeeRate,
     undiscountedFeeRate: closeUndiscountedFeeRate,
     metamaskFeeRateDiscountPercentage,
   } = usePerpsOrderFees({
     symbol: decodedSymbol ?? '',
-    orderType: 'market',
+    orderType,
   });
 
   const originalEstimatedFees = useMemo(() => {
