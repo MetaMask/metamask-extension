@@ -14,26 +14,34 @@ import { formatAccountToCaipAccountId } from '../../helpers/utils/rewards-utils'
  * account has no VIP tier).
  */
 export function useVipTier(): number | null {
+  const accountId = useVipTierAccountId();
+
+  const { data } = useRewardsVipTierQuery(accountId);
+
+  return data ?? null;
+}
+
+function useVipTierAccountId() {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
-
-  const accountId = useMemo(
+  return useMemo(
     () =>
       selectedAccount?.address
         ? formatAccountToCaipAccountId(selectedAccount.address, chainId)
         : null,
     [selectedAccount?.address, chainId],
   );
+}
 
-  const { data } = useQuery({
+
+function useRewardsVipTierQuery(accountId: string | null) {
+  return useQuery({
     queryKey: ['rewardsVipTier', accountId],
     queryFn: () =>
       submitRequestToBackground<number | null>(
         'rewardsGetVipTierForAccount',
-        [accountId as NonNullable<typeof accountId>],
+        [String(accountId)],
       ),
     enabled: accountId !== null,
   });
-
-  return data ?? null;
 }
