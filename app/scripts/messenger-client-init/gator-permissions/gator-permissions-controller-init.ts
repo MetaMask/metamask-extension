@@ -3,9 +3,9 @@ import {
   type GatorPermissionsControllerConfig,
 } from '@metamask/gator-permissions-controller';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
+import { GatorPermissionsControllerMessenger } from '@metamask/gator-permissions-controller';
 import { MessengerClientInitFunction } from '../types';
 import { getEnabledAdvancedPermissions } from '../../../../shared/lib/gator-permissions/feature-flags';
-import { GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
 
 const createGatorPermissionsConfig = (
   remoteFeatureFlagControllerState: Parameters<

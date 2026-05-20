@@ -1,8 +1,8 @@
 import { DelegationController } from '@metamask/delegation-controller';
+import { type DelegationControllerMessenger } from '@metamask/delegation-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import type { MessengerClientInitRequest } from '../types';
 import {
-  type DelegationControllerMessenger,
   type DelegationControllerInitMessenger,
   getDelegationControllerMessenger,
   getDelegationControllerInitMessenger,
