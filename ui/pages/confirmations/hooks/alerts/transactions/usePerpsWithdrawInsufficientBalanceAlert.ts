@@ -6,7 +6,6 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
-import { PERPS_WITHDRAW_AMOUNT_DECIMALS } from '../../../../../components/app/perps/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { getTradeableBalance } from '../../../../../hooks/perps/getTradeableBalance';
@@ -14,6 +13,8 @@ import { getPerpsStreamManager } from '../../../../../providers/perps';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayPrimaryRequiredToken } from '../../pay/useTransactionPayData';
 import { AlertsName } from '../constants';
+
+const PERPS_WITHDRAW_AMOUNT_DECIMALS = 6;
 
 /**
  * Blocking alert when the entered amount exceeds the HL withdrawable balance.

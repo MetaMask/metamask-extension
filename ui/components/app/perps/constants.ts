@@ -29,12 +29,7 @@ export const METAMASK_PERPS_ICONS_BASE_URL =
  * Perps withdraw amount input: digits with optional decimal, max six fractional digits
  * (aligned with HyperLiquid / controller expectations).
  */
-export const PERPS_WITHDRAW_AMOUNT_DECIMALS = 6;
-
-export const PERPS_WITHDRAW_AMOUNT_REGEX = new RegExp(
-  `^\\d*\\.?\\d{0,${PERPS_WITHDRAW_AMOUNT_DECIMALS}}$`,
-  'u',
-);
+export const PERPS_WITHDRAW_AMOUNT_REGEX = /^\d*\.?\d{0,6}$/u;
 
 export const isValidPerpsWithdrawAmount = (amount: string): boolean =>
   PERPS_WITHDRAW_AMOUNT_REGEX.test(amount);
