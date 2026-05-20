@@ -24,6 +24,10 @@ function isDeepLinkHost(hostname: string): boolean {
 export async function resolveTrustedDeepLinkHref(
   href: string,
 ): Promise<string> {
+  if (isInternalRouteHref(href)) {
+    return href;
+  }
+
   try {
     const url = new URL(href);
 
