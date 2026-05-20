@@ -4866,10 +4866,6 @@ export default class MetamaskController extends EventEmitter {
 
       const primaryKeyring = this.keyringController.state.keyrings[0];
 
-      // Initialize the legacy Snap keyring so the accounts-controller will be able to
-      // fetch Snap accounts.
-      await this.getSnapKeyring();
-
       // Once we have our first HD keyring available, we re-create the internal list of
       // accounts (they should be up-to-date already, but we still run `updateAccounts` as
       // there are some account migration happening in that function).
@@ -5209,10 +5205,6 @@ export default class MetamaskController extends EventEmitter {
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
 
-      // Initialize the legacy Snap keyring so the accounts-controller will be able to
-      // fetch Snap accounts.
-      await this.getSnapKeyring();
-
       // We re-created the vault, meaning we only have 1 new HD keyring
       // now. We re-create the internal list of accounts (which is
       // not an expensive operation, since we should only have 1 HD
@@ -5431,10 +5423,6 @@ export default class MetamaskController extends EventEmitter {
         await this.seedlessOnboardingController.submitPassword(password);
       }
     }
-
-    // Initialize the legacy Snap keyring so the accounts-controller will be able to
-    // fetch Snap accounts.
-    await this.getSnapKeyring();
 
     // Re-create accounts in the accounts-controller, after the keyring-controller gets
     // unlocked.
