@@ -117,6 +117,30 @@ describe('subscribeToMessengerEvent', () => {
     expect(listenerB).toHaveBeenCalledWith([{ foo: 'bar' }, []]);
   });
 
+  it('coalesces concurrent subscribers for the same event into one upstream IPC', async () => {
+    const { messengerSubscribe } = setup();
+
+    const { promise: subscribeRpcPromise, resolve: resolveSubscribe } =
+      createDeferredPromise<void>();
+    messengerSubscribe.mockReturnValueOnce(subscribeRpcPromise);
+
+    const listenerA = jest.fn();
+    const listenerB = jest.fn();
+
+    const subscribeA = subscribeToMessengerEvent(event, listenerA);
+    const subscribeB = subscribeToMessengerEvent(event, listenerB);
+
+    // Both calls are pending until the upstream RPC resolves.
+    expect(messengerSubscribe).toHaveBeenCalledTimes(1);
+
+    resolveSubscribe();
+
+    await subscribeA;
+    await subscribeB;
+
+    expect(messengerSubscribe).toHaveBeenCalledTimes(1);
+  });
+
   it('refcounts subscribers and only unsubscribes upstream on the last unsubscribe', async () => {
     const { submitNotification, messengerUnsubscribe } = setup();
 
