@@ -11,16 +11,6 @@ import {
 } from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
-type AllowedInitializationActions =
-  | PreferencesControllerGetStateAction
-  | RemoteFeatureFlagControllerGetStateAction;
-
-type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
-
-export type MultichainAccountServiceInitMessenger = ReturnType<
-  typeof getMultichainAccountServiceInitMessenger
->;
-
 /**
  * Get a restricted messenger for the account wallet controller. This is scoped to the
  * actions and events that this controller is allowed to handle.
@@ -65,6 +55,16 @@ export function getMultichainAccountServiceMessenger(
   });
   return serviceMessenger;
 }
+
+type AllowedInitializationActions =
+  | PreferencesControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction;
+
+type AllowedInitializationEvents = PreferencesControllerStateChangeEvent;
+
+export type MultichainAccountServiceInitMessenger = ReturnType<
+  typeof getMultichainAccountServiceInitMessenger
+>;
 
 /**
  * Get a restricted messenger for the account wallet controller. This is scoped to the

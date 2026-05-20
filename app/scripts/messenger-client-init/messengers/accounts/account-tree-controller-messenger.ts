@@ -1,27 +1,13 @@
-import {
-  AccountsControllerAccountsAddedEvent,
-  AccountsControllerAccountsRemovedEvent,
-  AccountsControllerGetAccountAction,
-  AccountsControllerSelectedAccountChangeEvent,
-} from '@metamask/accounts-controller';
+import { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
 import {
   Messenger,
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import { UserStorageController } from '@metamask/profile-sync-controller';
-import { MultichainAccountServiceWalletStatusChangeEvent } from '@metamask/multichain-account-service';
 import type { AccountTreeControllerMessenger } from '@metamask/account-tree-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
 import { AccountOrderControllerGetStateAction } from '../../../controllers/account-order';
-
-type Events =
-  | AccountsControllerAccountsAddedEvent
-  | AccountsControllerAccountsRemovedEvent
-  | AccountsControllerSelectedAccountChangeEvent
-  | UserStorageController.UserStorageControllerStateChangeEvent
-  | MultichainAccountServiceWalletStatusChangeEvent;
 
 /**
  * Get a restricted messenger for the account tree controller. This is scoped to the
@@ -87,12 +73,12 @@ export type AccountTreeControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getAccountTreeControllerInitMessenger(
-  messenger: RootMessenger<AllowedInitializationActions, Events>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
   const accountTreeControllerInitMessenger = new Messenger<
     'AccountTreeControllerInit',
     AllowedInitializationActions,
-    Events,
+    never,
     typeof messenger
   >({
     namespace: 'AccountTreeControllerInit',
