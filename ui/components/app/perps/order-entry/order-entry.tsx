@@ -95,10 +95,11 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   const marketInfo = usePerpsMarketInfo(asset);
 
   // Fetch dynamic fee rates from the controller (user-specific, with discounts)
-  const { feeRate, metamaskFeeRateDiscountPercentage } = usePerpsOrderFees({
-    symbol: asset,
-    orderType: orderType ?? 'market',
-  });
+  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: asset,
+      orderType: orderType ?? 'market',
+    });
 
   // Use custom hook for form state management
   const {
@@ -134,6 +135,18 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   });
 
   const isLong = formState.direction === 'long';
+
+  const originalEstimatedFees = useMemo(() => {
+    if (
+      calculations.estimatedFees === null ||
+      feeRate === undefined ||
+      feeRate === 0 ||
+      undiscountedFeeRate === undefined
+    ) {
+      return null;
+    }
+    return calculations.estimatedFees * (undiscountedFeeRate / feeRate);
+  }, [calculations.estimatedFees, feeRate, undiscountedFeeRate]);
 
   const onCalculationsChangeRef = useRef(onCalculationsChange);
   onCalculationsChangeRef.current = onCalculationsChange;
@@ -396,6 +409,7 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
           <OrderSummary
             marginRequired={calculations.marginRequired}
             estimatedFees={calculations.estimatedFees}
+            originalEstimatedFees={originalEstimatedFees}
             liquidationPrice={calculations.liquidationPrice}
             metamaskFeeRateDiscountPercentage={
               metamaskFeeRateDiscountPercentage

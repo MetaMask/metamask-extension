@@ -23,12 +23,18 @@ type UsePerpsOrderFeesOptions = {
 
 type UsePerpsOrderFeesReturn = {
   /**
-   * Combined fee rate (protocol + MetaMask).
+   * Combined fee rate (protocol + MetaMask) **after** any VIP discount.
    * `undefined` while loading or when the call failed entirely (error state).
    * When the call succeeds, the provider's own internal fallback to base rates
    * guarantees a numeric value even if the fee-tier API is down.
    */
   feeRate: number | undefined;
+  /**
+   * Combined fee rate **before** the MetaMask VIP discount is applied.
+   * Equals `feeRate` when no discount is in effect. Consumers use this to
+   * display a struck-through "original" fee alongside the discounted one.
+   */
+  undiscountedFeeRate: number | undefined;
   /** Protocol (exchange) fee rate, if available */
   protocolFeeRate?: number;
   /** MetaMask builder fee rate, if available */
@@ -201,6 +207,7 @@ export function usePerpsOrderFees({
 
   return {
     feeRate: discountedFeeResult?.feeRate,
+    undiscountedFeeRate: feeResult?.feeRate,
     protocolFeeRate: discountedFeeResult?.protocolFeeRate,
     metamaskFeeRate: discountedFeeResult?.metamaskFeeRate,
     metamaskFeeRateDiscountPercentage,
