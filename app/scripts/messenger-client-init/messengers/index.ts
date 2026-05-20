@@ -493,6 +493,7 @@ export const MESSENGER_FACTORIES = {
   },
   DelegationController: {
     getMessenger: getDelegationControllerMessenger,
+    getInitMessenger: noop,
   },
   EncryptionPublicKeyController: {
     getMessenger: getEncryptionPublicKeyControllerMessenger,
