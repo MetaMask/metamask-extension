@@ -87,7 +87,10 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
   }, [fee, placeholder, metamaskFeeRateDiscountPercentage, formatFee]);
 
   const showVipBadge = useMemo(() => {
-    return metamaskFeeRateDiscountPercentage !== undefined && metamaskFeeRateDiscountPercentage > 0;
+    return (
+      metamaskFeeRateDiscountPercentage !== undefined &&
+      metamaskFeeRateDiscountPercentage > 0
+    );
   }, [metamaskFeeRateDiscountPercentage]);
 
   return (

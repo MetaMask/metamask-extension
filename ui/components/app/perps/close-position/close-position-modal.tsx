@@ -195,8 +195,8 @@ const getCloseSuccessToastConfig = ({
       : PERPS_TOAST_KEYS.TRADE_SUCCESS,
     ...(formattedPnl
       ? {
-        description: t('perpsToastClosePnlSubtitle', [formattedPnl]),
-      }
+          description: t('perpsToastClosePnlSubtitle', [formattedPnl]),
+        }
       : {}),
   };
 };
@@ -217,8 +217,8 @@ const getCloseFailureToastConfig = ({
 
   const errorMessage = isOrderSizeMinError
     ? t('perpsClosePartialMinNotional', [
-      formatFiat(PERPS_MIN_MARKET_ORDER_USD),
-    ])
+        formatFiat(PERPS_MIN_MARKET_ORDER_USD),
+      ])
     : handlePerpsError(error, t as (key: string) => string);
 
   if (isPartialClose) {

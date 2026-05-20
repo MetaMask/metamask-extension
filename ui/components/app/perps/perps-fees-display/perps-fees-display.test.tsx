@@ -135,9 +135,7 @@ describe('PerpsFeesDisplay', () => {
     it('does not render the VIP badge by default', () => {
       render(<PerpsFeesDisplay fee={10} />);
 
-      expect(
-        screen.queryByTestId('rewards-vip-badge'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId('rewards-vip-badge')).not.toBeInTheDocument();
     });
 
     it('renders the VIP badge when a discount is active', () => {
@@ -150,10 +148,7 @@ describe('PerpsFeesDisplay', () => {
 
     it('renders VIP badge alongside discount and fee text', () => {
       render(
-        <PerpsFeesDisplay
-          fee={8.5}
-          metamaskFeeRateDiscountPercentage={15}
-        />,
+        <PerpsFeesDisplay fee={8.5} metamaskFeeRateDiscountPercentage={15} />,
       );
 
       expect(screen.getByTestId('rewards-vip-badge')).toBeInTheDocument();

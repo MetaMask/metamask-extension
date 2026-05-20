@@ -33,15 +33,13 @@ function useVipTierAccountId() {
   );
 }
 
-
 function useRewardsVipTierQuery(accountId: string | null) {
   return useQuery({
     queryKey: ['rewardsVipTier', accountId],
     queryFn: () =>
-      submitRequestToBackground<number | null>(
-        'rewardsGetVipTierForAccount',
-        [String(accountId)],
-      ),
+      submitRequestToBackground<number | null>('rewardsGetVipTierForAccount', [
+        String(accountId),
+      ]),
     enabled: accountId !== null,
   });
 }
