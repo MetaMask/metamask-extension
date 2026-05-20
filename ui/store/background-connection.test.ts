@@ -127,17 +127,31 @@ describe('subscribeToMessengerEvent', () => {
     const listenerA = jest.fn();
     const listenerB = jest.fn();
 
-    const subscribeA = subscribeToMessengerEvent(event, listenerA);
-    const subscribeB = subscribeToMessengerEvent(event, listenerB);
+    let resolvedA = false;
+    let resolvedB = false;
 
-    // Both calls are pending until the upstream RPC resolves.
+    const subscribeA = subscribeToMessengerEvent(event, listenerA).then(() => {
+      resolvedA = true;
+    });
+    const subscribeB = subscribeToMessengerEvent(event, listenerB).then(() => {
+      resolvedB = true;
+    });
+
+    // Let any already-scheduled microtasks run; neither subscribe call
+    // should have resolved yet because both await the same in-flight RPC.
+    await new Promise((r) => setImmediate(r));
+
     expect(messengerSubscribe).toHaveBeenCalledTimes(1);
+    expect(resolvedA).toBe(false);
+    expect(resolvedB).toBe(false);
 
     resolveSubscribe();
 
     await subscribeA;
     await subscribeB;
 
+    expect(resolvedA).toBe(true);
+    expect(resolvedB).toBe(true);
     expect(messengerSubscribe).toHaveBeenCalledTimes(1);
   });
 
