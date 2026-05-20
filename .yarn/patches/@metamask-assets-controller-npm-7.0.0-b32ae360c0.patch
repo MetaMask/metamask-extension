@@ -338,6 +338,54 @@ index e229d840c2b506efd286ba0eb951fd77f0713b79..1e33cd35800f0e8f325a145945969e11
  }, _SnapDataSource_handleSnapBalancesUpdated = function _SnapDataSource_handleSnapBalancesUpdated(payload) {
      // Transform the snap keyring payload to DataResponse format
      let assetsBalance;
+diff --git a/dist/data-sources/evm-rpc-services/utils/assets.cjs b/dist/data-sources/evm-rpc-services/utils/assets.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..063bbe6d080ebeb435ef972f38363b2f11817b54
+--- /dev/null
++++ b/dist/data-sources/evm-rpc-services/utils/assets.cjs
+@@ -0,0 +1,9 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.shouldSkipNativeForCaipChainId = void 0;
++const controller_utils_1 = require("@metamask/controller-utils");
++function shouldSkipNativeForCaipChainId(caipChainId) {
++    return controller_utils_1.CHAIN_IDS_WITH_NO_NATIVE_TOKEN.includes(caipChainId);
++}
++exports.shouldSkipNativeForCaipChainId = shouldSkipNativeForCaipChainId;
++//# sourceMappingURL=assets.cjs.map
+\ No newline at end of file
+diff --git a/dist/data-sources/evm-rpc-services/utils/assets.d.cts b/dist/data-sources/evm-rpc-services/utils/assets.d.cts
+new file mode 100644
+index 0000000000000000000000000000000000000000..92a25cf7fe164cf7e466ad8a3b7a0b2e5197a930
+--- /dev/null
++++ b/dist/data-sources/evm-rpc-services/utils/assets.d.cts
+@@ -0,0 +1,3 @@
++import { CaipChainId } from "@metamask/utils";
++export declare function shouldSkipNativeForCaipChainId(caipChainId: CaipChainId): boolean;
++//# sourceMappingURL=assets.d.cts.map
+\ No newline at end of file
+diff --git a/dist/data-sources/evm-rpc-services/utils/assets.d.mts b/dist/data-sources/evm-rpc-services/utils/assets.d.mts
+new file mode 100644
+index 0000000000000000000000000000000000000000..907ac8a7ed0f06d7907ea59809e532dbd0765048
+--- /dev/null
++++ b/dist/data-sources/evm-rpc-services/utils/assets.d.mts
+@@ -0,0 +1,3 @@
++import { CaipChainId } from "@metamask/utils";
++export declare function shouldSkipNativeForCaipChainId(caipChainId: CaipChainId): boolean;
++//# sourceMappingURL=assets.d.mts.map
+\ No newline at end of file
+diff --git a/dist/data-sources/evm-rpc-services/utils/assets.mjs b/dist/data-sources/evm-rpc-services/utils/assets.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..ccc8f9a6602d05bc6e3e36e17a08a92e3dca219e
+--- /dev/null
++++ b/dist/data-sources/evm-rpc-services/utils/assets.mjs
+@@ -0,0 +1,5 @@
++import { CHAIN_IDS_WITH_NO_NATIVE_TOKEN } from "@metamask/controller-utils";
++export function shouldSkipNativeForCaipChainId(caipChainId) {
++    return CHAIN_IDS_WITH_NO_NATIVE_TOKEN.includes(caipChainId);
++}
++//# sourceMappingURL=assets.mjs.map
+\ No newline at end of file
 diff --git a/dist/defaults.cjs b/dist/defaults.cjs
 index 89c221284337be43bd46579e76eb3fde24c61d84..742b313fd98c823da4d6479df94433bfadf3ab8b 100644
 --- a/dist/defaults.cjs
