@@ -36,11 +36,11 @@ jobs:
           echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
 
       - name: Run zizmor
-        # The minimum severity is tightened over time as findings are resolved.
-        # Lower the threshold to `informational` as the last tier is cleaned up.
+        # Gate at the strictest possible level. Any new finding (even
+        # `informational`) fails this job.
         run: |
           zizmor --config .github/zizmor.yml \
-            --min-severity=low \
+            --min-severity=informational \
             --format=sarif \
             .github/workflows/ > zizmor.sarif
 
