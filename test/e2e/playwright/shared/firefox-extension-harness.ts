@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { pathToFileURL } from 'node:url';
 import { Buffer } from 'node:buffer';
+import { HomePage } from '../../../page-objects/pages/home/homepage';
 import net from 'node:net';
 import { execFileSync } from 'node:child_process';
 import { firefox } from '@playwright/test';
