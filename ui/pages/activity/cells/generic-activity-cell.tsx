@@ -1,11 +1,5 @@
 import React, { useMemo } from 'react';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '@metamask/design-system-react';
+import { Icon, IconName, IconSize, Text } from '@metamask/design-system-react';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import { formatUnits } from 'viem';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
@@ -137,7 +131,7 @@ const renderDescriptionLine = (
   return null;
 };
 
-export function GenericActivityCell({ data }: ActivityCellProps) {
+export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
   const t = useI18nContext();
   const { description, title } = useGetLabel(data);
   const pendingStatusText =
@@ -171,35 +165,37 @@ export function GenericActivityCell({ data }: ActivityCellProps) {
   );
 
   return (
-    <Box className="px-4 py-3 transition-transform duration-200 ease-out">
-      <div className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4">
-        <div className="relative flex items-center justify-center">
-          <ChainBadge chainId={chainId}>
-            <ActivityListItemAvatar config={avatarConfig} />
-          </ChainBadge>
-        </div>
-        <div className="min-w-0">
-          <Text className="font-medium truncate">{title}</Text>
-          {renderDescriptionLine(pendingStatusText, description)}
-        </div>
-        <div className="text-right whitespace-nowrap">
-          {primaryTokenAmount ? (
-            <Text
-              className={`text-sm font-medium ${
-                primaryToken?.direction === 'in' ? 'text-success-default' : ''
-              }`}
-            >
-              {primaryTokenAmount}
-            </Text>
-          ) : null}
-          {secondaryTokenAmount ? (
-            <Text variant="body-sm" className="text-alternative">
-              {secondaryTokenAmount}
-            </Text>
-          ) : null}
-          {/* Debug type and hash are hidden while the amount UI is wired */}
-        </div>
+    <div
+      className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3 transition-transform duration-200 ease-out hover:bg-hover cursor-pointer"
+      role="button"
+      onClick={onClick}
+    >
+      <div className="relative flex items-center justify-center">
+        <ChainBadge chainId={chainId}>
+          <ActivityListItemAvatar config={avatarConfig} />
+        </ChainBadge>
       </div>
-    </Box>
+      <div className="min-w-0">
+        <Text className="font-medium truncate">{title}</Text>
+        {renderDescriptionLine(pendingStatusText, description)}
+      </div>
+      <div className="text-right whitespace-nowrap">
+        {primaryTokenAmount ? (
+          <Text
+            className={`text-sm font-medium ${
+              primaryToken?.direction === 'in' ? 'text-success-default' : ''
+            }`}
+          >
+            {primaryTokenAmount}
+          </Text>
+        ) : null}
+        {secondaryTokenAmount ? (
+          <Text variant="body-sm" className="text-alternative">
+            {secondaryTokenAmount}
+          </Text>
+        ) : null}
+        {/* Debug type and hash are hidden while the amount UI is wired */}
+      </div>
+    </div>
   );
 }
