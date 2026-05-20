@@ -36,8 +36,9 @@ type PostinstallDeps = {
   stderr?: Stderr;
 };
 
-export function warn(msg: string, stderr: Stderr = process.stderr): void {
-  stderr.write(
+export function warn(msg: string, stderr?: Stderr): void {
+  const writer = stderr ?? process.stderr;
+  writer.write(
     `skills postinstall: ${msg} (run \`yarn skills\` for details)\n`,
   );
 }
@@ -45,14 +46,16 @@ export function warn(msg: string, stderr: Stderr = process.stderr): void {
 export function run(
   cmd: string,
   args: string[],
-  spawn: SpawnSync = spawnSync,
+  spawn?: SpawnSync,
 ): SpawnSyncReturns<Buffer> {
-  return spawn(cmd, args, { stdio: 'ignore' }) as SpawnSyncReturns<Buffer>;
+  const spawnFn = spawn ?? spawnSync;
+  return spawnFn(cmd, args, { stdio: 'ignore' }) as SpawnSyncReturns<Buffer>;
 }
 
-export function isGitDir(dir: string, stat: StatSync = statSync): boolean {
+export function isGitDir(dir: string, stat?: StatSync): boolean {
+  const statFn = stat ?? statSync;
   try {
-    return stat(path.join(dir, '.git')).isDirectory();
+    return statFn(path.join(dir, '.git')).isDirectory();
   } catch {
     return false;
   }
@@ -67,8 +70,9 @@ export function shouldSkipPostinstall(env: NodeJS.ProcessEnv): boolean {
 export function installArgs(
   cwd: string,
   env: NodeJS.ProcessEnv,
-  exists: ExistsSync = existsSync,
+  exists?: ExistsSync,
 ): string[] {
+  const existsFn = exists ?? existsSync;
   const args = [
     '--repo',
     REPO,
@@ -78,21 +82,21 @@ export function installArgs(
     path.join(cwd, CACHE_DIR),
   ];
   const consensys = env.CONSENSYS_SKILLS_DIR;
-  if (consensys && exists(path.join(consensys, 'domains'))) {
+  if (consensys && existsFn(path.join(consensys, 'domains'))) {
     args.push('--source', consensys);
   }
   return args;
 }
 
-export function postinstall({
-  cwd = process.cwd(),
-  env = process.env,
-  exists = existsSync,
-  mkdir = mkdirSync,
-  spawn = spawnSync,
-  stat = statSync,
-  stderr = process.stderr,
-}: PostinstallDeps = {}): number {
+export function postinstall(deps?: PostinstallDeps): number {
+  const cwd = deps?.cwd ?? process.cwd();
+  const env = deps?.env ?? process.env;
+  const exists = deps?.exists ?? existsSync;
+  const mkdir = deps?.mkdir ?? mkdirSync;
+  const spawn = deps?.spawn ?? spawnSync;
+  const stat = deps?.stat ?? statSync;
+  const stderr = deps?.stderr ?? process.stderr;
+
   if (shouldSkipPostinstall(env)) {
     return 0;
   }

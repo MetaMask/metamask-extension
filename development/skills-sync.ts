@@ -58,10 +58,11 @@ export function cacheDir(cwd: string): string {
   return path.join(cwd, '.skills-cache', 'metamask-skills');
 }
 
-export function syncIn(dir: string, stat: StatSync = statSync): string | null {
+export function syncIn(dir: string, stat?: StatSync): string | null {
+  const statFn = stat ?? statSync;
   const candidate = path.join(dir, 'tools', 'sync');
   try {
-    if (stat(candidate).isFile()) {
+    if (statFn(candidate).isFile()) {
       return candidate;
     }
   } catch {
@@ -72,9 +73,10 @@ export function syncIn(dir: string, stat: StatSync = statSync): string | null {
 
 export function bashMajorVersion(
   candidate: string,
-  spawn: SpawnSync = spawnSync,
+  spawn?: SpawnSync,
 ): number | null {
-  const result = spawn(candidate, ['--version'], { encoding: 'utf8' });
+  const spawnFn = spawn ?? spawnSync;
+  const result = spawnFn(candidate, ['--version'], { encoding: 'utf8' });
   if (result.status !== 0) {
     return null;
   }
@@ -86,11 +88,12 @@ export function bashMajorVersion(
 }
 
 export function pickBash(
-  env: NodeJS.ProcessEnv = process.env,
-  spawn: SpawnSync = spawnSync,
+  env?: NodeJS.ProcessEnv,
+  spawn?: SpawnSync,
 ): string | null {
+  const resolvedEnv = env ?? process.env;
   const candidates = [
-    env.BASH,
+    resolvedEnv.BASH,
     'bash',
     '/opt/homebrew/bin/bash',
     '/usr/local/bin/bash',
@@ -114,18 +117,21 @@ type SkillSourceEnv = Record<
 type SyncPick = { sync: string };
 
 export function loadSkillSourceEnv(
-  cwd: string = process.cwd(),
-  processEnv: NodeJS.ProcessEnv = process.env,
-  readFile: ReadFileSync = readFileSync,
+  cwd?: string,
+  processEnv?: NodeJS.ProcessEnv,
+  readFile?: ReadFileSync,
 ): SkillSourceEnv {
+  const resolvedCwd = cwd ?? process.cwd();
+  const resolvedEnv = processEnv ?? process.env;
+  const readFileFn = readFile ?? readFileSync;
   const env: SkillSourceEnv = {
-    METAMASK_SKILLS_DIR: processEnv.METAMASK_SKILLS_DIR,
-    CONSENSYS_SKILLS_DIR: processEnv.CONSENSYS_SKILLS_DIR,
+    METAMASK_SKILLS_DIR: resolvedEnv.METAMASK_SKILLS_DIR,
+    CONSENSYS_SKILLS_DIR: resolvedEnv.CONSENSYS_SKILLS_DIR,
   };
 
   try {
     const localConfig = parse(
-      readFile(path.join(cwd, '.skills.local'), 'utf8') as string,
+      readFileFn(path.join(resolvedCwd, '.skills.local'), 'utf8') as string,
     );
     for (const key of SOURCE_ENV_KEYS) {
       if (!env[key]) {
@@ -142,7 +148,7 @@ export function loadSkillSourceEnv(
 export function pickSync(
   cwd: string,
   sourceEnv: SkillSourceEnv,
-  stat: StatSync = statSync,
+  stat?: StatSync,
 ): SyncPick | null {
   const publicSync = sourceEnv.METAMASK_SKILLS_DIR
     ? syncIn(sourceEnv.METAMASK_SKILLS_DIR, stat)
@@ -169,10 +175,10 @@ export function pickSync(
 export function buildDelegatedEnv(
   cwd: string,
   sourceEnv: SkillSourceEnv,
-  processEnv: NodeJS.ProcessEnv = process.env,
-  stat: StatSync = statSync,
+  processEnv?: NodeJS.ProcessEnv,
+  stat?: StatSync,
 ): NodeJS.ProcessEnv {
-  const env = { ...processEnv };
+  const env = { ...(processEnv ?? process.env) };
   for (const key of SOURCE_ENV_KEYS) {
     if (!env[key] && sourceEnv[key]) {
       env[key] = sourceEnv[key];
@@ -198,34 +204,38 @@ export function prependBashToPath(
 }
 
 export function main(
-  argv: string[] = process.argv.slice(2),
-  cwd: string = process.cwd(),
-  processEnv: NodeJS.ProcessEnv = process.env,
-  spawn: SpawnSync = spawnSync,
-  stat: StatSync = statSync,
-  readFile: ReadFileSync = readFileSync,
+  argv?: string[],
+  cwd?: string,
+  processEnv?: NodeJS.ProcessEnv,
+  spawn?: SpawnSync,
+  stat?: StatSync,
+  readFile?: ReadFileSync,
 ): number {
-  const sourceEnv = loadSkillSourceEnv(cwd, processEnv, readFile);
-  const picked = pickSync(cwd, sourceEnv, stat);
+  const resolvedArgv = argv ?? process.argv.slice(2);
+  const resolvedCwd = cwd ?? process.cwd();
+  const resolvedEnv = processEnv ?? process.env;
+  const spawnFn = spawn ?? spawnSync;
+  const sourceEnv = loadSkillSourceEnv(resolvedCwd, resolvedEnv, readFile);
+  const picked = pickSync(resolvedCwd, sourceEnv, stat);
   if (!picked) {
     process.stderr.write(NO_SOURCE_MESSAGE);
     return 1;
   }
 
-  const bash = pickBash(processEnv, spawn);
+  const bash = pickBash(resolvedEnv, spawnFn);
   if (!bash) {
     process.stderr.write(NO_BASH_MESSAGE);
     return 1;
   }
 
   const env = prependBashToPath(
-    buildDelegatedEnv(cwd, sourceEnv, processEnv, stat),
+    buildDelegatedEnv(resolvedCwd, sourceEnv, resolvedEnv, stat),
     bash,
   );
 
-  const result = spawn(
+  const result = spawnFn(
     bash,
-    [picked.sync, '--repo', REPO, '--target', cwd, ...argv],
+    [picked.sync, '--repo', REPO, '--target', resolvedCwd, ...resolvedArgv],
     { stdio: 'inherit', env },
   ) as SpawnSyncReturns<Buffer>;
   return result.status === null ? 1 : result.status;

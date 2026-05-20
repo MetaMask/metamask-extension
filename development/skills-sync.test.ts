@@ -150,6 +150,14 @@ describe('skills-sync wrapper', () => {
 
     expect(syncIn(publicDir, statFor([]))).toBeNull();
     expect(bashMajorVersion('/bin/sh', spawn)).toBeNull();
+    expect(
+      bashMajorVersion(
+        '/missing/bash',
+        jest.fn(() => ({
+          status: 1,
+        })) as unknown as typeof import('node:child_process').spawnSync,
+      ),
+    ).toBeNull();
   });
 
   it('prepends the selected Bash directory so delegated scripts use Bash 4+', () => {
@@ -184,6 +192,33 @@ describe('skills-sync wrapper', () => {
     ).toBe(1);
     expect(write).toHaveBeenCalledWith(
       expect.stringContaining('No skills source available.'),
+    );
+  });
+
+  it('exits with a clear error when no supported Bash is available', () => {
+    const write = jest
+      .spyOn(process.stderr, 'write')
+      .mockImplementation(() => true);
+    const spawn = jest.fn(() => ({
+      status: 0,
+      stdout: 'GNU bash, version 3.2.57(1)-release',
+      stderr: '',
+    })) as unknown as typeof import('node:child_process').spawnSync;
+
+    expect(
+      main(
+        [],
+        cwd,
+        { PATH: '/bin', BASH: '/bin/bash' },
+        spawn,
+        statFor([cacheSync]),
+        jest.fn(() => {
+          throw new Error('missing');
+        }) as unknown as typeof import('node:fs').readFileSync,
+      ),
+    ).toBe(1);
+    expect(write).toHaveBeenCalledWith(
+      expect.stringContaining('No supported Bash found.'),
     );
   });
 
