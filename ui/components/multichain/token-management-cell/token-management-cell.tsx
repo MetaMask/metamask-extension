@@ -9,10 +9,6 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   FontWeight,
-  Icon,
-  IconColor,
-  IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -174,19 +170,6 @@ export const TokenManagementCell = ({
               onLabel=""
               dataTestId={`${dataTestId}-toggle`}
             />
-            {isLoading ? (
-              <span
-                className="pointer-events-none absolute inset-0 flex items-center justify-center"
-                data-testid={`${dataTestId}-toggle-loading`}
-              >
-                <Icon
-                  className="animate-spin"
-                  name={IconName.Loading}
-                  color={IconColor.IconMuted}
-                  size={IconSize.Sm}
-                />
-              </span>
-            ) : null}
           </span>
         ) : null}
       </Box>

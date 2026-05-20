@@ -115,21 +115,6 @@ describe('TokenManagementCell', () => {
     expect(onToggle).not.toHaveBeenCalled();
   });
 
-  it('shows a loading spinner over the toggle while loading', () => {
-    renderCell({
-      symbol: 'MUSD',
-      primaryLabel: 'MetaMask USD',
-      isOn: true,
-      isLoading: true,
-      onToggle: jest.fn(),
-      testIdSuffix: 'musd',
-    });
-
-    expect(
-      screen.getByTestId('token-management-cell-musd-toggle-loading'),
-    ).toBeInTheDocument();
-  });
-
   it('omits the toggle when showToggle is false', () => {
     renderCell({
       symbol: 'ETH',
