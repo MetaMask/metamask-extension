@@ -52,6 +52,9 @@ export function submitRequestToBackground<R>(
 }
 
 type EventEntry = {
+  // Callbacks are identified by reference. Subscribing the same function twice
+  // to the same event collapses to a single entry, and the first matching
+  // unsubscribe removes it for both callers — mirrors `Set` semantics.
   callbacks: Set<(data: Json) => void>;
   subscribePromise: Promise<void>;
 };
