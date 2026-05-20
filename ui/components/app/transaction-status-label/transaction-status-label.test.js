@@ -21,9 +21,7 @@ jest.mock('../../ui/tooltip', () => ({
 
 describe('TransactionStatusLabel Component', () => {
   it('renders translated status text for confirmed transactions', () => {
-    render(
-      <TransactionStatusLabel status={TransactionStatus.confirmed} />,
-    );
+    render(<TransactionStatusLabel status={TransactionStatus.confirmed} />);
     expect(screen.getByText(TransactionStatus.confirmed)).toBeInTheDocument();
   });
 
