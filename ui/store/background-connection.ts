@@ -63,7 +63,7 @@ function notificationRouter(notification: JsonRpcNotification<[string, Json]>) {
   if (notification.method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
     return;
   }
-  const params = notification.params;
+  const { params } = notification;
   if (!params) {
     return;
   }
@@ -120,7 +120,9 @@ export async function subscribeToMessengerEvent<Data extends Json>(
 
   let entry = eventEntries.get(event);
 
-  if (!entry) {
+  if (entry) {
+    entry.callbacks.add(typedCallback);
+  } else {
     if (!notificationRouterAttached) {
       background.onNotification(notificationRouter);
       notificationRouterAttached = true;
@@ -143,8 +145,6 @@ export async function subscribeToMessengerEvent<Data extends Json>(
     subscribePromise.catch(() => {
       eventEntries.delete(event);
     });
-  } else {
-    entry.callbacks.add(typedCallback);
   }
 
   await entry.subscribePromise;
