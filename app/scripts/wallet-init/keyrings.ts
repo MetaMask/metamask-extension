@@ -19,10 +19,16 @@ import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
 import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-factory';
 import { snapKeyringBuilder } from '../lib/snap-keyring';
-import { RootMessenger, RootMessengerActions, RootMessengerEvents } from '../lib/messenger';
+import {
+  RootMessenger,
+  RootMessengerActions,
+  RootMessengerEvents,
+} from '../lib/messenger';
 import { SnapKeyringBuilderMessenger } from '../lib/snap-keyring/types';
 
-export function getKeyringBuilders(messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>) {
+export function getKeyringBuilders(
+  messenger: RootMessenger<RootMessengerActions, RootMessengerEvents>,
+) {
   const overrides = process.env.IN_TEST
     ? {
         // Use `require` to make it easier to exclude this test code from the Browserify build.

@@ -81,12 +81,6 @@ export type MessengerClientInitRequest<
   currentMigrationVersion: number;
 
   /**
-   * An instance of an encryptor to use for encrypting and decrypting
-   * sensitive data.
-   */
-  encryptor: Encryptor;
-
-  /**
    * Returns a promise that resolves when onboarding has been completed.
    */
   ensureOnboardingComplete: () => Promise<void>;
