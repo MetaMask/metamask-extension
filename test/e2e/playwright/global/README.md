@@ -1,6 +1,6 @@
 # Playwright Firefox Extension PoC
 
-This folder contains `firefox-extension-poc.spec.ts`, a minimal proof-of-concept for running the MetaMask Firefox extension with Playwright.
+This folder contains `firefox-pw-poc.spec.ts`, a minimal proof-of-concept for running the MetaMask Firefox extension with Playwright.
 
 ## Why this PoC exists
 
@@ -52,19 +52,6 @@ Fix:
   - Appends `lockPref("marionette.running", true);` in `playwright.cfg`.
 - After patching, `moz-extension://.../home.html` became Playwright-reachable.
 
-### 3) UI readiness and balance assertions were flaky
-
-Observed symptom:
-
-- Extension page reachable, but selectors were not immediately present.
-- Balance assertion could read empty string before render settled.
-
-Fix:
-
-- Added readiness wait for `.controller-loaded`.
-- Added unlock/home screen diagnostics.
-- Changed balance assertion to `expect.poll(...).toContain('ETH')` for async UI stabilization.
-
 ## Validated command
 
 Run the PoC in headless CI mode:
@@ -73,22 +60,8 @@ Run the PoC in headless CI mode:
 CI=1 yarn playwright test --project=firefox-extension-poc --retries=0
 ```
 
-Current expected result:
-
-- Add-on installs successfully.
-- Extension URL is reachable from Playwright.
-- Wallet unlock succeeds.
-- ETH balance check passes.
-
 ## Current constraints
 
 - This is an experimental harness workaround, not a native Playwright Firefox extension API.
 - It depends on patching Playwright's bundled Firefox internals at runtime.
 - The internal `moz-extension://<uuid>` identifier is dynamic and discovered from profile prefs.
-- Stability can vary by Firefox runtime/channel and host OS.
-
-## Suggested next migration steps
-
-1. Extract the PoC launch flow into shared Playwright E2E setup when reliability is confirmed in CI.
-2. Add a second Firefox Playwright smoke test (e.g. open account menu) to validate repeatability.
-3. Gate broader Selenium-to-Playwright migration on deterministic startup metrics for this path.

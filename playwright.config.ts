@@ -79,7 +79,7 @@ const config: PlaywrightTestConfig = {
     },
     {
       name: 'firefox-extension-poc',
-      testMatch: '/global/specs/firefox-extension-poc.spec.ts',
+      testMatch: '/global/specs/firefox-pw-poc.spec.ts',
       use: {
         ...devices['Desktop Firefox'],
         headless: Boolean(process.env.CI),
