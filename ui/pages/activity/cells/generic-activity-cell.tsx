@@ -6,6 +6,9 @@ import {
   AvatarTokenSize,
   BadgeWrapper,
   Box,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '@metamask/design-system-react';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
@@ -15,6 +18,7 @@ import { MULTICHAIN_NETWORK_TO_NICKNAME } from '../../../../shared/constants/mul
 import type { TokenAmount } from '../../../../shared/lib/activity/types';
 import { convertCaipToHexChainId } from '../../../../shared/lib/network.utils';
 import { getImageForChainId } from '../../../selectors/multichain';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useGetLabel } from '../useGetLabel';
 import type { ActivityCellProps } from './types';
 
@@ -89,12 +93,67 @@ function getCellTokenAmounts(activity: ActivityCellProps['data']) {
   }
 }
 
+const renderDescriptionLine = (
+  pendingStatusText: string | undefined,
+  description: string | undefined,
+) => {
+  if (pendingStatusText && description) {
+    return (
+      <div className="flex min-w-0 items-center gap-1">
+        <Icon
+          name={IconName.Clock}
+          size={IconSize.Xs}
+          className="shrink-0 text-alternative"
+        />
+        <Text variant="body-sm" className="shrink-0 text-alternative">
+          {pendingStatusText}
+        </Text>
+        <Text variant="body-sm" className="shrink-0 text-alternative">
+          •
+        </Text>
+        <Text variant="body-sm" className="truncate text-alternative">
+          {description}
+        </Text>
+      </div>
+    );
+  }
+
+  if (pendingStatusText) {
+    return (
+      <div className="flex min-w-0 items-center gap-1">
+        <Icon
+          name={IconName.Clock}
+          size={IconSize.Xs}
+          className="shrink-0 text-alternative"
+        />
+        <Text variant="body-sm" className="shrink-0 text-alternative">
+          {pendingStatusText}
+        </Text>
+      </div>
+    );
+  }
+
+  if (description) {
+    return (
+      <Text variant="body-sm" className="truncate text-alternative">
+        {description}
+      </Text>
+    );
+  }
+
+  return null;
+}
+
 export function GenericActivityCell({
   data,
   description: descriptionOverride,
 }: GenericActivityCellProps) {
+  const t = useI18nContext();
   const { description: labelDescription, title } = useGetLabel(data);
   const description = descriptionOverride ?? labelDescription;
+  const pendingStatusText = data.status === 'pending'
+    ? t(data.status)
+    : undefined;
   const { primaryToken, secondaryToken } = getCellTokenAmounts(data);
   const primaryTokenAmount = primaryToken
     ? formatTokenAmount(primaryToken)
@@ -139,19 +198,13 @@ export function GenericActivityCell({
         </div>
         <div className="min-w-0">
           <Text className="font-medium truncate">{title}</Text>
-          {description ? (
-            <Text variant="body-sm" className="text-alternative truncate">
-              {description}
-            </Text>
-          ) : null}
+          {renderDescriptionLine(pendingStatusText, description)}
         </div>
         <div className="text-right whitespace-nowrap">
           {primaryTokenAmount ? (
             <Text
               className={`text-sm font-medium ${
-                primaryToken?.direction === 'in'
-                  ? 'text-success-default'
-                  : ''
+                primaryToken?.direction === 'in' ? 'text-success-default' : ''
               }`}
             >
               {primaryTokenAmount}
