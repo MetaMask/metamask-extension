@@ -434,5 +434,4 @@ ${Object.entries(env)
     assert.strictEqual(exit.mock.calls[0].arguments.length, 1);
     assert.strictEqual(exit.mock.calls[0].arguments[0], 0);
   });
-
 });
