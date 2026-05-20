@@ -4,6 +4,11 @@ on:
   issue_comment:
     types: created
 
+# Push + PR ops use LAVAMOAT_UPDATE_TOKEN (PAT); GITHUB_TOKEN only
+# needs read access.
+permissions:
+  contents: read
+
 jobs:
   is-cross-repo-pr:
     name: Determine whether this PR is cross-repo

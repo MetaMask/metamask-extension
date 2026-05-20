@@ -22,6 +22,9 @@ on:
       GCP_RLS_SHEET_ACCOUNT_BASE64:
         required: false
 
+permissions:
+  contents: read
+
 jobs:
   resolve-bases:
     # Determines if the release is hotfix or not based on semver. Then sets the appropriate base branches for the checkout and release PR.

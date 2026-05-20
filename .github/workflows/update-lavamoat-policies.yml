@@ -8,6 +8,11 @@ concurrency:
   group: update-lavamoat-policies-${{ github.event.issue.number }}
   cancel-in-progress: true
 
+# Push + PR ops use LAVAMOAT_UPDATE_TOKEN (PAT); GITHUB_TOKEN only
+# needs read access.
+permissions:
+  contents: read
+
 jobs:
   prepare:
     name: Prepare
