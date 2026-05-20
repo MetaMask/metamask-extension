@@ -21,7 +21,7 @@ class BitcoinHomepage extends HomePage {
       await this.driver.waitForMultipleSelectors([
         this.sendButton,
         this.buySellButton,
-        this.moreButton,
+        this.swapButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for bitcoin homepage to be loaded', e);
