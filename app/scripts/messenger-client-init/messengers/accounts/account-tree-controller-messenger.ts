@@ -1,16 +1,9 @@
-import {
-  AccountsControllerAccountsAddedEvent,
-  AccountsControllerAccountsRemovedEvent,
-  AccountsControllerGetAccountAction,
-  AccountsControllerSelectedAccountChangeEvent,
-} from '@metamask/accounts-controller';
+import { AccountsControllerGetAccountAction } from '@metamask/accounts-controller';
 import {
   Messenger,
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import { UserStorageController } from '@metamask/profile-sync-controller';
-import { MultichainAccountServiceWalletStatusChangeEvent } from '@metamask/multichain-account-service';
 import type { AccountTreeControllerMessenger } from '@metamask/account-tree-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller-method-action-types';
 import { RootMessenger } from '../../../lib/messenger';
