@@ -6,6 +6,7 @@ import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import { RowAlertKey } from '../../../../../components/app/confirm/info/row/constants';
+import { PERPS_WITHDRAW_AMOUNT_DECIMALS } from '../../../../../components/app/perps/constants';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { isPerpsWithdrawTransaction } from '../../../../../../shared/lib/transactions.utils';
 import { getTradeableBalance } from '../../../../../hooks/perps/getTradeableBalance';
@@ -47,8 +48,7 @@ export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
 
   const exceedsBalance =
     isPerpsWithdraw &&
-    enteredAmount.gt(0) &&
-    enteredAmount.gt(availableBalance);
+    exceedsPerpsWithdrawBalance(enteredAmount, availableBalance);
 
   return useMemo(() => {
     if (!exceedsBalance) {
@@ -66,4 +66,26 @@ export function usePerpsWithdrawInsufficientBalanceAlert(): Alert[] {
       },
     ];
   }, [exceedsBalance, t]);
+}
+
+function exceedsPerpsWithdrawBalance(
+  enteredAmount: BigNumber,
+  availableBalance: BigNumber,
+): boolean {
+  if (!enteredAmount.gt(0)) {
+    return false;
+  }
+
+  if (!availableBalance.gt(0)) {
+    return true;
+  }
+
+  return enteredAmount
+    .round(PERPS_WITHDRAW_AMOUNT_DECIMALS, BigNumber.ROUND_DOWN)
+    .gt(
+      availableBalance.round(
+        PERPS_WITHDRAW_AMOUNT_DECIMALS,
+        BigNumber.ROUND_DOWN,
+      ),
+    );
 }
