@@ -3470,19 +3470,10 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should return false for empty code', async () => {
+    it('should return false for empty / whitespace-only input', async () => {
       await withController({ isDisabled: false }, async ({ controller }) => {
-        const result = await controller.validateReferralCode('  ');
-
-        expect(result).toBe(false);
-      });
-    });
-
-    it('should return false for code with invalid length', async () => {
-      await withController({ isDisabled: false }, async ({ controller }) => {
-        const result = await controller.validateReferralCode('TEST');
-
-        expect(result).toBe(false);
+        expect(await controller.validateReferralCode('')).toBe(false);
+        expect(await controller.validateReferralCode('   ')).toBe(false);
       });
     });
 
@@ -3500,6 +3491,28 @@ describe('RewardsController', () => {
           const result = await controller.validateReferralCode('TEST12');
 
           expect(result).toBe(true);
+        },
+      );
+    });
+
+    it('should forward non-empty vanity codes to the data service', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:validateReferralCode') {
+              return Promise.resolve({ valid: true });
+            }
+            return undefined;
+          });
+
+          const result = await controller.validateReferralCode('BANKLESS');
+
+          expect(result).toBe(true);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:validateReferralCode',
+            'BANKLESS',
+          );
         },
       );
     });
