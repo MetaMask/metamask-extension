@@ -11,7 +11,7 @@ import { completeImportSRPOnboardingFlow } from '../../page-objects/flows/onboar
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { mockSegment } from './mocks/segment';
 
-describe('Wallet Created Events - Imported Account', function () {
+describe('Wallet Created Events - Imported Account TEST', function () {
   it('are sent when onboarding user who chooses to opt in metrics', async function () {
     // We need to distinguish between browsers, because routes differ (MetaMetrics screen)
     const expectedEvents = [
