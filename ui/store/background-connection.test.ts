@@ -267,6 +267,31 @@ describe('subscribeToMessengerEvent', () => {
     expect(listenerB).not.toHaveBeenCalled();
   });
 
+  it('dispatches notifications that arrive before the upstream messengerSubscribe RPC resolves', async () => {
+    const { messengerSubscribe, submitNotification } = setup();
+
+    const { promise: subscribeRpcPromise, resolve: resolveSubscribe } =
+      createDeferredPromise<void>();
+    messengerSubscribe.mockReturnValueOnce(subscribeRpcPromise);
+
+    const listener = jest.fn();
+    const subscribePromise = subscribeToMessengerEvent(event, listener);
+
+    // The upstream RPC is still pending, but the notification router is
+    // attached and the callback set is populated. A notification arriving
+    // now must still reach the listener.
+    submitNotification({
+      jsonrpc: '2.0',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
+      params: [event, [{ foo: 'bar' }, []]],
+    });
+
+    expect(listener).toHaveBeenCalledWith([{ foo: 'bar' }, []]);
+
+    resolveSubscribe();
+    await subscribePromise;
+  });
+
   it('clears subscription state when setBackgroundConnection is called again', async () => {
     const firstConnection = setup();
 
