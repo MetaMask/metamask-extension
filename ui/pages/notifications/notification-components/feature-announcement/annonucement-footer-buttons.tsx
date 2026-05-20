@@ -8,7 +8,7 @@ import { NotificationDetailButton } from '../../../../components/multichain';
 import { ButtonVariant } from '../../../../components/component-library';
 import {
   isInternalRouteHref,
-  resolveDeepLinkHref,
+  resolveTrustedDeepLinkHref,
 } from '../../../../helpers/utils/resolve-deep-link-href';
 import { FeatureAnnouncementNotification } from './types';
 
@@ -84,7 +84,7 @@ export const ExternalLinkButton = (props: {
   const { externalLinkUrl, externalLinkText } = notification.data.externalLink;
 
   const openResolvedLink = async () => {
-    const href = await resolveDeepLinkHref(externalLinkUrl);
+    const href = await resolveTrustedDeepLinkHref(externalLinkUrl);
 
     if (isInternalRouteHref(href)) {
       global.platform.openExtensionInBrowser(href, null, true);
