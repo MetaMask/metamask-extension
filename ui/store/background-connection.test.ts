@@ -266,4 +266,36 @@ describe('subscribeToMessengerEvent', () => {
     expect(listenerA).toHaveBeenCalledTimes(1);
     expect(listenerB).not.toHaveBeenCalled();
   });
+
+  it('clears subscription state when setBackgroundConnection is called again', async () => {
+    const firstConnection = setup();
+
+    const firstListener = jest.fn();
+    await subscribeToMessengerEvent(event, firstListener);
+
+    expect(firstConnection.messengerSubscribe).toHaveBeenCalledTimes(1);
+    expect(firstConnection.onNotification).toHaveBeenCalledTimes(1);
+
+    // Replace the background connection. The new connection should start
+    // with no in-memory subscription state — a subscribe for the same
+    // event must send a fresh upstream IPC and attach a fresh notification
+    // router.
+    const secondConnection = setup();
+
+    const secondListener = jest.fn();
+    await subscribeToMessengerEvent(event, secondListener);
+
+    expect(secondConnection.messengerSubscribe).toHaveBeenCalledTimes(1);
+    expect(secondConnection.messengerSubscribe).toHaveBeenCalledWith(event);
+    expect(secondConnection.onNotification).toHaveBeenCalledTimes(1);
+
+    secondConnection.submitNotification({
+      jsonrpc: '2.0',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
+      params: [event, [{ foo: 'bar' }, []]],
+    });
+
+    expect(secondListener).toHaveBeenCalledWith([{ foo: 'bar' }, []]);
+    expect(firstListener).not.toHaveBeenCalled();
+  });
 });
