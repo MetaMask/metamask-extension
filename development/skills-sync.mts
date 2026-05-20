@@ -33,6 +33,35 @@ function syncIn(dir: string): string | null {
   return null;
 }
 
+function bashMajorVersion(candidate: string): number | null {
+  const result = spawnSync(candidate, ['--version'], { encoding: 'utf8' });
+  if (result.status !== 0) return null;
+
+  const match = `${result.stdout}${result.stderr}`.match(
+    /GNU bash, version (\d+)\./u,
+  );
+  return match ? Number(match[1]) : null;
+}
+
+function pickBash(): string | null {
+  const candidates = [
+    process.env.BASH,
+    'bash',
+    '/opt/homebrew/bin/bash',
+    '/usr/local/bin/bash',
+    '/bin/bash',
+  ].filter((candidate): candidate is string => Boolean(candidate));
+
+  for (const candidate of new Set(candidates)) {
+    const major = bashMajorVersion(candidate);
+    if (major && major >= 4) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
 type SkillSourceEnv = Record<
   (typeof SOURCE_ENV_KEYS)[number],
   string | undefined
@@ -119,8 +148,28 @@ if (!env.METAMASK_SKILLS_DIR && syncIn(CACHE_DIR)) {
   env.METAMASK_SKILLS_DIR = CACHE_DIR;
 }
 
+const bash = pickBash();
+if (!bash) {
+  process.stderr.write(
+    [
+      'No supported Bash found.',
+      '',
+      '`yarn skills` requires Bash 4+ because the shared skills installer uses',
+      'modern Bash features. macOS /bin/bash is 3.2.',
+      '',
+      'Install a current Bash, then re-run `yarn skills`:',
+      '  brew install bash',
+      '',
+    ].join('\n'),
+  );
+  process.exit(1);
+}
+if (bash.includes(path.sep)) {
+  env.PATH = `${path.dirname(bash)}${path.delimiter}${env.PATH ?? ''}`;
+}
+
 const result = spawnSync(
-  'bash',
+  bash,
   [
     picked.sync,
     '--repo',
