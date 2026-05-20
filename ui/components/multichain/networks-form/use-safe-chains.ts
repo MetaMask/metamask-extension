@@ -48,8 +48,12 @@ const loadSafeChains = () => {
       allowStale: true,
       cacheOptions: { cacheRefreshTime: DAY },
     })
-      .then((response) => ({ safeChains: response as SafeChain[] }))
-      .catch((error: Error) => ({ error }))
+      .then(
+        (response): SafeChainsState => ({
+          safeChains: response as SafeChain[],
+        }),
+      )
+      .catch((error: Error): SafeChainsState => ({ error }))
       .then((nextState) => {
         safeChainsState = nextState;
         if (nextState.safeChains) {
