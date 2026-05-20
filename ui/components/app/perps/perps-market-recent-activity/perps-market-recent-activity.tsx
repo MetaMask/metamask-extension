@@ -18,6 +18,7 @@ import { usePerpsMarketFills } from '../../../../hooks/perps';
 import { transformFillsToTransactions } from '../utils/transactionTransforms';
 import { TransactionCard } from '../transaction-card';
 import { PERPS_CONSTANTS } from '../constants';
+import { PERPS_EVENT_VALUE } from '../../../../../shared/constants/perps-events';
 import { PERPS_ACTIVITY_ROUTE } from '../../../../helpers/constants/routes';
 import { Skeleton } from '../../../component-library/skeleton';
 import type { PerpsTransaction } from '../types';
@@ -61,6 +62,7 @@ const RecentActivityList: React.FC<{
         variant="muted"
         showTopBorder={index > 0}
         onClick={onTransactionClick}
+        screenName={PERPS_EVENT_VALUE.SCREEN_NAME.MARKET_DETAIL}
       />
     ))}
   </Box>
