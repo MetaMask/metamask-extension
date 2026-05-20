@@ -906,7 +906,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-sdk": true,
+        "@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
         "@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": true,
@@ -1006,7 +1006,7 @@
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
-        "@metamask/keyring-sdk": true,
+        "@metamask/eth-hd-keyring>@metamask/keyring-sdk": true,
         "@metamask/utils": true,
         "buffer": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
@@ -1169,22 +1169,22 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "lodash": true,
         "@metamask/keyring-controller>ulid": true
       }
     },
-    "@metamask/keyring-sdk": {
+    "@metamask/eth-hd-keyring>@metamask/keyring-sdk": {
       "packages": {
         "@ethereumjs/tx": true,
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-api": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
-        "@metamask/keyring-sdk>ethereum-cryptography": true,
-        "@metamask/keyring-sdk>uuid": true
+        "async-mutex": true,
+        "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography": true,
+        "@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": true
       }
     },
     "@metamask/keyring-snap-client": {
@@ -1487,7 +1487,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
@@ -1618,7 +1618,7 @@
         "TextEncoder": true
       }
     },
-    "@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": {
+    "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true
       }
@@ -2359,6 +2359,12 @@
         "browserify>util": true
       }
     },
+    "async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      }
+    },
     "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
       "globals": {
         "clearTimeout": true,
@@ -2366,12 +2372,6 @@
       },
       "packages": {
         "tslib": true
-      }
-    },
-    "mockttp>async-mutex": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
       }
     },
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
@@ -3013,14 +3013,14 @@
         "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography>@noble/hashes": true
       }
     },
-    "@metamask/keyring-sdk>ethereum-cryptography": {
+    "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
         "crypto": true,
         "module": true
       },
       "packages": {
-        "@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
+        "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography>@noble/hashes": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
@@ -4930,7 +4930,7 @@
         "crypto": true
       }
     },
-    "@metamask/keyring-sdk>uuid": {
+    "@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": {
       "globals": {
         "crypto": true
       }
