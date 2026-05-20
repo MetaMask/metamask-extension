@@ -26,10 +26,11 @@ exports[`TokenListItem handles clicking staking opens tab 1`] = `
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
           >
-            <img
-              alt="network logo"
+            <span
+              aria-label="network logo"
               class="mm-avatar-network__network-image"
-              src="./eth-logo.png"
+              role="img"
+              style="background-image: url(./eth-logo.png);"
             />
           </div>
         </div>
@@ -288,10 +289,11 @@ exports[`TokenListItem should render correctly 1`] = `
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network multichain-token-list-item__badge__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
           >
-            <img
-              alt="network logo"
+            <span
+              aria-label="network logo"
               class="mm-avatar-network__network-image"
-              src="./eth-logo.png"
+              role="img"
+              style="background-image: url(./eth-logo.png);"
             />
           </div>
         </div>
