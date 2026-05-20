@@ -466,6 +466,111 @@ index e229d840c2b506efd286ba0eb951fd77f0713b79..1e33cd35800f0e8f325a145945969e11
  }, _SnapDataSource_handleSnapBalancesUpdated = function _SnapDataSource_handleSnapBalancesUpdated(payload) {
      // Transform the snap keyring payload to DataResponse format
      let assetsBalance;
+diff --git a/dist/data-sources/TokenDataSource.cjs b/dist/data-sources/TokenDataSource.cjs
+index 6dbbd889c9bcb76dc1654e6508c71dbadafd12a7..fb38ba11a58bb1d6e2e678838286e4eff75346ef 100644
+--- a/dist/data-sources/TokenDataSource.cjs
++++ b/dist/data-sources/TokenDataSource.cjs
+@@ -12,7 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
+ };
+ var _TokenDataSource_instances, _TokenDataSource_apiClient, _TokenDataSource_getNativeAssetIds, _TokenDataSource_messenger, _TokenDataSource_fetchTimeoutMs, _TokenDataSource_getSupportedNetworks, _TokenDataSource_filterAssetsByNetwork, _TokenDataSource_filterBlockaidSpamTokens;
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.TokenDataSource = void 0;
++exports.TokenDataSource = exports.CaipAssetNamespace = void 0;
+ const core_backend_1 = require("@metamask/core-backend");
+ const phishing_controller_1 = require("@metamask/phishing-controller");
+ const utils_1 = require("@metamask/utils");
+@@ -41,7 +41,7 @@ var CaipAssetNamespace;
+     CaipAssetNamespace["Slip44"] = "slip44";
+     CaipAssetNamespace["Erc20"] = "erc20";
+     CaipAssetNamespace["Token"] = "token";
+-})(CaipAssetNamespace || (CaipAssetNamespace = {}));
++})(CaipAssetNamespace || (exports.CaipAssetNamespace = CaipAssetNamespace = {}));
+ const MUSD_ADDRESS_LOWERCASE = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+ // ============================================================================
+ // HELPER FUNCTIONS
+@@ -62,12 +62,15 @@ const MUSD_ADDRESS_LOWERCASE = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+ function transformV3AssetResponseToMetadata(assetId, assetData, nativeAssetIds) {
+     const parsed = (0, utils_1.parseCaipAssetType)(assetId);
+     let tokenType = 'erc20';
+-    if (nativeAssetIds.has(assetId.toLowerCase())) {
++    if (nativeAssetIds.has(assetId.toLowerCase()) ||
++        parsed.assetNamespace === CaipAssetNamespace.Slip44) {
+         tokenType = 'native';
+     }
+-    else if (parsed.assetNamespace === 'spl') {
++    else if (parsed.chain.namespace === utils_1.KnownCaipNamespace.Solana &&
++        parsed.assetNamespace === CaipAssetNamespace.Token) {
+         tokenType = 'spl';
+     }
++    // TODO: Add support for Tron trc20 standard
+     const metadata = {
+         // Type derived from assetId
+         type: tokenType,
+diff --git a/dist/data-sources/TokenDataSource.d.cts b/dist/data-sources/TokenDataSource.d.cts
+index ae3d4725e6ff74851e6a99fce7ce7f8742d898aa..89ff9c849aeee960cc3c1156635afb843b9ef6f5 100644
+--- a/dist/data-sources/TokenDataSource.d.cts
++++ b/dist/data-sources/TokenDataSource.d.cts
+@@ -2,6 +2,12 @@ import { ApiPlatformClient } from "@metamask/core-backend";
+ import type { PhishingControllerBulkScanTokensAction } from "@metamask/phishing-controller";
+ import type { AssetsControllerMessenger } from "../AssetsController.cjs";
+ import type { Middleware } from "../types.cjs";
++/** CAIP-19 `assetNamespace` segments used across filtering logic. */
++export declare enum CaipAssetNamespace {
++    Slip44 = "slip44",
++    Erc20 = "erc20",
++    Token = "token"
++}
+ export type TokenDataSourceOptions = {
+     /** ApiPlatformClient for API calls with caching */
+     queryApiClient: ApiPlatformClient;
+diff --git a/dist/data-sources/TokenDataSource.d.mts b/dist/data-sources/TokenDataSource.d.mts
+index 83374f15ef5cd49b97aa0a61dda8b34747a810f0..a27fc22d1b074161e4f917cba4ed1e67669dfacc 100644
+--- a/dist/data-sources/TokenDataSource.d.mts
++++ b/dist/data-sources/TokenDataSource.d.mts
+@@ -2,6 +2,12 @@ import { ApiPlatformClient } from "@metamask/core-backend";
+ import type { PhishingControllerBulkScanTokensAction } from "@metamask/phishing-controller";
+ import type { AssetsControllerMessenger } from "../AssetsController.mjs";
+ import type { Middleware } from "../types.mjs";
++/** CAIP-19 `assetNamespace` segments used across filtering logic. */
++export declare enum CaipAssetNamespace {
++    Slip44 = "slip44",
++    Erc20 = "erc20",
++    Token = "token"
++}
+ export type TokenDataSourceOptions = {
+     /** ApiPlatformClient for API calls with caching */
+     queryApiClient: ApiPlatformClient;
+diff --git a/dist/data-sources/TokenDataSource.mjs b/dist/data-sources/TokenDataSource.mjs
+index c3d0a544fa9b9b900cb0df93065976646019183e..9b5fb897c9ffffe9a0663f7aec99654c76496cc7 100644
+--- a/dist/data-sources/TokenDataSource.mjs
++++ b/dist/data-sources/TokenDataSource.mjs
+@@ -33,7 +33,7 @@ const BULK_SCAN_BATCH_SIZE = 100;
+  */
+ const MIN_TOKEN_OCCURRENCES = 3;
+ /** CAIP-19 `assetNamespace` segments used across filtering logic. */
+-var CaipAssetNamespace;
++export var CaipAssetNamespace;
+ (function (CaipAssetNamespace) {
+     CaipAssetNamespace["Slip44"] = "slip44";
+     CaipAssetNamespace["Erc20"] = "erc20";
+@@ -59,12 +59,15 @@ const MUSD_ADDRESS_LOWERCASE = '0xaca92e438df0b2401ff60da7e4337b687a2435da';
+ function transformV3AssetResponseToMetadata(assetId, assetData, nativeAssetIds) {
+     const parsed = parseCaipAssetType(assetId);
+     let tokenType = 'erc20';
+-    if (nativeAssetIds.has(assetId.toLowerCase())) {
++    if (nativeAssetIds.has(assetId.toLowerCase()) ||
++        parsed.assetNamespace === CaipAssetNamespace.Slip44) {
+         tokenType = 'native';
+     }
+-    else if (parsed.assetNamespace === 'spl') {
++    else if (parsed.chain.namespace === KnownCaipNamespace.Solana &&
++        parsed.assetNamespace === CaipAssetNamespace.Token) {
+         tokenType = 'spl';
+     }
++    // TODO: Add support for Tron trc20 standard
+     const metadata = {
+         // Type derived from assetId
+         type: tokenType,
 diff --git a/dist/data-sources/evm-rpc-services/utils/assets.cjs b/dist/data-sources/evm-rpc-services/utils/assets.cjs
 new file mode 100644
 index 0000000000000000000000000000000000000000..063bbe6d080ebeb435ef972f38363b2f11817b54
