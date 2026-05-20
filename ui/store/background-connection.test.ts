@@ -184,4 +184,23 @@ describe('subscribeToMessengerEvent', () => {
 
     expect(listener).not.toHaveBeenCalled();
   });
+
+  it('clears the entry when the upstream messengerSubscribe IPC rejects, allowing retry', async () => {
+    const { messengerSubscribe } = setup();
+
+    messengerSubscribe.mockRejectedValueOnce(new Error('subscribe failed'));
+    messengerSubscribe.mockResolvedValueOnce(undefined);
+
+    const listener = jest.fn();
+
+    await expect(subscribeToMessengerEvent(event, listener)).rejects.toThrow(
+      'subscribe failed',
+    );
+
+    // A fresh subscribe attempt should send a new IPC, not silently reuse a
+    // rejected entry.
+    await subscribeToMessengerEvent(event, listener);
+
+    expect(messengerSubscribe).toHaveBeenCalledTimes(2);
+  });
 });
