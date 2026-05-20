@@ -110,10 +110,12 @@ export function useTransactionCustomAmount({
 
   const amountHuman = useMemo(
     () =>
-      new BigNumber(amountFiat || '0')
-        .dividedBy(String(tokenFiatRate))
-        .toString(10),
-    [amountFiat, tokenFiatRate],
+      getAmountHumanFromFiat(
+        amountFiat,
+        tokenFiatRate,
+        hasBalanceUsdOverride,
+      ),
+    [amountFiat, hasBalanceUsdOverride, tokenFiatRate],
   );
 
   useEffect(() => {
@@ -218,9 +220,11 @@ export function useTransactionCustomAmount({
 
       setAmountFiat(newAmountFiat);
 
-      const newAmountHuman = new BigNumber(newAmountFiat || '0')
-        .dividedBy(String(tokenFiatRate))
-        .toString(10);
+      const newAmountHuman = getAmountHumanFromFiat(
+        newAmountFiat,
+        tokenFiatRate,
+        hasBalanceUsdOverride,
+      );
 
       setAmountHumanDebounced(newAmountHuman);
       if (!disableUpdate) {
@@ -262,4 +266,18 @@ function useTokenBalance(balanceUsdOverride?: number) {
   ).toNumber();
 
   return payTokenBalanceUsd;
+}
+
+function getAmountHumanFromFiat(
+  amountFiat: string,
+  tokenFiatRate: number,
+  skipFiatRateConversion: boolean,
+) {
+  const amountFiatValue = new BigNumber(amountFiat || '0');
+
+  if (skipFiatRateConversion) {
+    return amountFiatValue.toString(10);
+  }
+
+  return amountFiatValue.dividedBy(String(tokenFiatRate)).toString(10);
 }
