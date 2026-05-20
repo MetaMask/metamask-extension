@@ -1,4 +1,7 @@
-import { AccountTreeController , AccountTreeControllerMessenger } from '@metamask/account-tree-controller';
+import {
+  AccountTreeController,
+  AccountTreeControllerMessenger,
+} from '@metamask/account-tree-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
