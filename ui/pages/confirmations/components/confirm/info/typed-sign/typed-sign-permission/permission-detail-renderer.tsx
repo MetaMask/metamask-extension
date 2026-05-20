@@ -182,6 +182,22 @@ function renderElement(
       );
     }
 
+    case 'raw-list': {
+      return (
+        <ConfirmInfoRow
+          key={index}
+          label={t(element.labelKey)}
+          tooltip={element.tooltip}
+        >
+          <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+            {element.getValue(ctx).map((value, valueIndex) => (
+              <li key={`${value}-${valueIndex}`}>{value}</li>
+            ))}
+          </ul>
+        </ConfirmInfoRow>
+      );
+    }
+
     case 'date': {
       return (
         <DateAndTimeRow
@@ -282,8 +298,10 @@ function renderElement(
       return <NetworkRow key={index} />;
     }
 
-    default:
-      return throwUnhandledPermissionSchemaElement(element);
+    default: {
+      const neverElement: never = element;
+      return throwUnhandledPermissionSchemaElement(neverElement);
+    }
   }
 }
 

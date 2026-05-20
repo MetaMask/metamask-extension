@@ -803,9 +803,9 @@ describe('Permission List Item', () => {
         expect(expandedSkeletons.length).toBeGreaterThan(skeletons.length);
       });
 
-      it('renders erc20 token revocation permission correctly without frequency row', () => {
+      it('renders token approval revocation permission correctly without frequency row', () => {
         const mockErc20TokenRevocationPermission: PermissionInfoWithMetadata<{
-          type: 'erc20-token-revocation';
+          type: 'token-approval-revocation';
           isAdjustmentAllowed: boolean;
           data: Record<string, unknown>;
         }> = {
@@ -813,10 +813,15 @@ describe('Permission List Item', () => {
             chainId: '0x1',
             from: mockAccountAddress,
             permission: {
-              type: 'erc20-token-revocation',
+              type: 'token-approval-revocation',
               isAdjustmentAllowed: false,
               data: {
-                justification: 'Revoke all token approvals',
+                erc20Approve: true,
+                erc721Approve: true,
+                erc721SetApprovalForAll: true,
+                permit2Approve: true,
+                permit2Lockdown: true,
+                permit2InvalidateNonces: true,
               },
             },
             rules: [

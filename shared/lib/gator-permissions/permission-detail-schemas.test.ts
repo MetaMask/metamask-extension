@@ -292,7 +292,7 @@ describe('other schema fields', () => {
       'text',
     );
     const revokeAll = findElementOfType(
-      'erc20-token-revocation',
+      'token-approval-revocation',
       'review-gator-permission-amount-label',
       'text',
     );
@@ -318,7 +318,7 @@ describe('other schema fields', () => {
       'account',
     );
     const hasNetwork = PERMISSION_SCHEMAS[
-      'erc20-token-revocation'
+      'token-approval-revocation'
     ].sections.some((section) =>
       section.elements.some((element) => element.type === 'network'),
     );

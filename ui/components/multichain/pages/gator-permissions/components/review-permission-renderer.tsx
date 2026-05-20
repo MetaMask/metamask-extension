@@ -312,6 +312,22 @@ function renderElement({
         />
       );
 
+    case 'raw-list':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t(element.labelKey)}
+          value={
+            <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+              {element.getValue(ctx).map((value, valueIndex) => (
+                <li key={`${value}-${valueIndex}`}>{value}</li>
+              ))}
+            </ul>
+          }
+          testId={element.testId}
+        />
+      );
+
     case 'date':
       return (
         <GatorPermissionDetailRow
@@ -371,8 +387,13 @@ function renderElement({
     case 'divider':
     case 'origin':
     case 'address':
-    default:
-      return throwUnhandledPermissionSchemaElement(element as never);
+      throw new Error(
+        `Unexpected schema element type in review renderer: ${element.type}`,
+      );
+    default: {
+      const neverElement: never = element;
+      return throwUnhandledPermissionSchemaElement(neverElement);
+    }
   }
 }
 

@@ -344,11 +344,18 @@ describe('PermissionDetailRenderer', () => {
     });
   });
 
-  describe('erc20-token-revocation', () => {
+  describe('token-approval-revocation', () => {
     it('renders the revocation details section', () => {
       const permission = {
-        type: 'erc20-token-revocation',
-        data: {},
+        type: 'token-approval-revocation',
+        data: {
+          erc20Approve: true,
+          erc721Approve: true,
+          erc721SetApprovalForAll: true,
+          permit2Approve: true,
+          permit2Lockdown: true,
+          permit2InvalidateNonces: true,
+        },
       };
       const { getByTestId } = renderWithConfirmContextProvider(
         <PermissionDetailRenderer
@@ -361,8 +368,63 @@ describe('PermissionDetailRenderer', () => {
         getMockStore(),
       );
       expect(
-        getByTestId('erc20-token-revocation-details-section'),
+        getByTestId('token-approval-revocation-details-section'),
       ).toBeInTheDocument();
+    });
+
+    it('renders the all-primitives text when only ERC primitives are enabled', () => {
+      const permission = {
+        type: 'token-approval-revocation',
+        data: {
+          erc20Approve: true,
+          erc721Approve: true,
+          erc721SetApprovalForAll: true,
+        },
+      };
+      const { getByText, queryByText } = renderWithConfirmContextProvider(
+        <PermissionDetailRenderer
+          permission={permission}
+          expiry={null}
+          chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
+        />,
+        getMockStore(),
+      );
+
+      expect(
+        getByText('All revocation primitives for ERC-20, ERC-1155, ERC-721.'),
+      ).toBeInTheDocument();
+      expect(queryByText('ERC-20 approve(spender, 0)')).not.toBeInTheDocument();
+    });
+
+    it('renders the revocation method list when non-primitive methods are enabled', () => {
+      const permission = {
+        type: 'token-approval-revocation',
+        data: {
+          erc20Approve: true,
+          erc721Approve: true,
+          erc721SetApprovalForAll: true,
+          permit2Approve: true,
+        },
+      };
+      const { getByText, queryByText } = renderWithConfirmContextProvider(
+        <PermissionDetailRenderer
+          permission={permission}
+          expiry={null}
+          chainId="0x1"
+          origin="https://example.com"
+          ownerId="test-id"
+        />,
+        getMockStore(),
+      );
+
+      expect(
+        getByText('Permit2 approve(token, spender, 0, 0)'),
+      ).toBeInTheDocument();
+      expect(
+        queryByText('All revocation primitives for ERC-20, ERC-1155, ERC-721.'),
+      ).not.toBeInTheDocument();
     });
   });
 

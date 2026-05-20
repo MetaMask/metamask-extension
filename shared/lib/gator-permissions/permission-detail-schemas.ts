@@ -46,6 +46,42 @@ const requireStartTime = (permission: {
 
 const alwaysVisible = () => true;
 
+const TOKEN_APPROVAL_REVOCATION_METHODS: Array<{
+  key: string;
+  label: string;
+}> = [
+  { key: 'erc20Approve', label: 'ERC-20 approve(spender, 0)' },
+  { key: 'erc721Approve', label: 'ERC-721 approve(address(0), tokenId)' },
+  {
+    key: 'erc721SetApprovalForAll',
+    label: 'ERC-721/ERC-1155 setApprovalForAll(false)',
+  },
+  { key: 'permit2Approve', label: 'Permit2 approve(token, spender, 0, 0)' },
+  { key: 'permit2Lockdown', label: 'Permit2 lockdown' },
+  { key: 'permit2InvalidateNonces', label: 'Permit2 invalidate nonces' },
+];
+
+const TOKEN_APPROVAL_REVOCATION_PRIMITIVE_KEYS =
+  TOKEN_APPROVAL_REVOCATION_METHODS.map(({ key }) => key);
+
+function getEnabledTokenApprovalRevocationMethods(
+  ctx: PermissionRenderContext,
+): string[] {
+  return TOKEN_APPROVAL_REVOCATION_METHODS.filter(({ key }) =>
+    Boolean(getData<boolean | undefined>(ctx, key)),
+  ).map(({ label }) => label);
+}
+
+function hasAllTokenApprovalRevocationPrimitivesEnabled(
+  ctx: PermissionRenderContext,
+): boolean {
+  const hasAllPrimitives = TOKEN_APPROVAL_REVOCATION_PRIMITIVE_KEYS.every(
+    (key) => Boolean(getData<boolean | undefined>(ctx, key)),
+  );
+
+  return hasAllPrimitives;
+}
+
 // ---------------------------------------------------------------------------
 // Common sections — shared across all permission types
 // These are confirmation-only; the review page renders them with custom UI.
@@ -644,14 +680,14 @@ const erc20TokenAllowanceSchema: PermissionSchemaEntry = {
   ],
 };
 
-const erc20TokenRevocationSchema: PermissionSchemaEntry = {
+const tokenApprovalRevocationSchema: PermissionSchemaEntry = {
   tokenVariant: 'none',
   tokenResolution: { kind: 'none' },
   sections: [
     justificationSection,
     permissionInfoSection,
     {
-      testId: 'erc20-token-revocation-details-section',
+      testId: 'token-approval-revocation-details-section',
       elements: [
         {
           type: 'text',
@@ -661,6 +697,28 @@ const erc20TokenRevocationSchema: PermissionSchemaEntry = {
           isVisible: alwaysVisible,
           includeInViews: ['reviewSummary'],
         },
+        {
+          type: 'text',
+          labelKey: 'gatorPermissionsRevocationMethods',
+          testId:
+            'review-gator-permission-all-token-approval-revocation-primitives',
+          getValue: () => ({
+            key: 'gatorPermissionsAllTokenApprovalRevocationPrimitives',
+          }),
+          isVisible: (ctx) =>
+            hasAllTokenApprovalRevocationPrimitivesEnabled(ctx),
+          includeInViews: ['confirmation', 'reviewDetail'],
+        },
+        {
+          type: 'raw-list',
+          labelKey: 'gatorPermissionsRevocationMethods',
+          testId: 'review-gator-permission-revocation-methods',
+          getValue: (ctx) => getEnabledTokenApprovalRevocationMethods(ctx),
+          isVisible: (ctx) =>
+            !hasAllTokenApprovalRevocationPrimitivesEnabled(ctx),
+          includeInViews: ['confirmation', 'reviewDetail'],
+        },
+        { type: 'divider', includeInViews: ['confirmation'] },
         {
           type: 'expiry',
           labelKey: 'gatorPermissionsExpirationDate',
@@ -686,7 +744,7 @@ export const PERMISSION_SCHEMAS: PermissionSchemaRegistry = {
   'erc20-token-periodic': erc20TokenPeriodicSchema,
   'erc20-token-stream': erc20TokenStreamSchema,
   'erc20-token-allowance': erc20TokenAllowanceSchema,
-  'erc20-token-revocation': erc20TokenRevocationSchema,
+  'token-approval-revocation': tokenApprovalRevocationSchema,
 };
 
 /**
