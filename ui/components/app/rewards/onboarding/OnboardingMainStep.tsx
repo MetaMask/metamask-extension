@@ -21,7 +21,10 @@ import {
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOptIn } from '../../../../hooks/rewards/useOptIn';
-import { useValidateReferralCode } from '../../../../hooks/rewards/useValidateReferralCode';
+import {
+  REFERRAL_CODE_MIN_LENGTH,
+  useValidateReferralCode,
+} from '../../../../hooks/rewards/useValidateReferralCode';
 import { useGeoRewardsMetadata } from '../../../../hooks/rewards/useGeoRewardsMetadata';
 import { useCandidateSubscriptionId } from '../../../../hooks/rewards/useCandidateSubscriptionId';
 import { setErrorToast } from '../../../../ducks/rewards';
@@ -102,9 +105,11 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
       ? onboardingReferralCode.trim().toUpperCase()
       : undefined,
   );
+  const referralCodeReadyForValidation =
+    referralCode.length >= REFERRAL_CODE_MIN_LENGTH;
 
   const referralCodeIsError =
-    referralCode.length >= 1 &&
+    referralCodeReadyForValidation &&
     !referralCodeIsValid &&
     !isValidatingReferralCode &&
     !isUnknownErrorReferralCode;
@@ -198,7 +203,7 @@ const OnboardingMainStep: React.FC<OnboardingMainStepProps> = ({
       );
     }
 
-    if (referralCode.length >= 1 && !isValidatingReferralCode) {
+    if (referralCodeReadyForValidation && !isValidatingReferralCode) {
       return (
         <Icon
           name={IconName.Error}
