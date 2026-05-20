@@ -39,7 +39,9 @@ jest.mock('react-router-dom', () => {
 });
 
 jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
-  jest.requireActual('../../../shared/lib/assets-unify-state/remote-feature-flag'),
+  jest.requireActual(
+    '../../../shared/lib/assets-unify-state/remote-feature-flag',
+  ),
 );
 
 // The page kicks off real on-chain probes through `getTokenStandardAndDetailsByChain`
@@ -92,9 +94,7 @@ describe('CustomTokenImportPage', () => {
     actions.importCustomAssetsBatch.mockClear();
   });
 
-  const buildState = (
-    metamaskOverrides: Record<string, unknown> = {},
-  ) => ({
+  const buildState = (metamaskOverrides: Record<string, unknown> = {}) => ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
@@ -304,9 +304,7 @@ describe('CustomTokenImportPage', () => {
         ),
       );
 
-      await waitFor(() =>
-        expect(actions.addImportedTokens).toHaveBeenCalled(),
-      );
+      await waitFor(() => expect(actions.addImportedTokens).toHaveBeenCalled());
     });
 
     it('marks the asset as previously hidden when assetPreferences has hidden: true for it', async () => {
