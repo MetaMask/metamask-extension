@@ -1,0 +1,106 @@
+diff --git a/dist/token-prices-service/codefi-v2.cjs b/dist/token-prices-service/codefi-v2.cjs
+index 388bcc6554c8e837e19a24d10741cc72a766f5b3..25bc0703a5819459c67bd607f67c5796e8fade01 100644
+--- a/dist/token-prices-service/codefi-v2.cjs
++++ b/dist/token-prices-service/codefi-v2.cjs
+@@ -219,8 +219,6 @@ const chainIdToNativeTokenAddress = {
+     '0x64': '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d', // Gnosis
+     '0x1e': '0x542fda317318ebf1d3deaf76e0b632741a7e677d', // Rootstock Mainnet - Native symbol: RBTC
+     '0x3dc': '0x779ded0c9e1022225f8e0630b35a9b54be713736', // Stable - Native symbol: USDT0
+-    '0x1079': '0x20c0000000000000000000000000000000000000', // Tempo Mainnet - Pseudo-Native symbol: pathUSD
+-    '0xa5bf': '0x20c0000000000000000000000000000000000000', // Tempo Moderato Testnet - Pseudo-Native symbol: pathUSD
+ };
+ /**
+  * Returns the address that should be used to query the price api for the
+@@ -273,7 +271,7 @@ exports.SPOT_PRICES_SUPPORT_INFO = {
+     '0x74c': 'eip155:1868/erc20:0x0000000000000000000000000000000000000000', // Soneium - Native symbol: ETH
+     '0xa729': 'eip155:42793/erc20:0x0000000000000000000000000000000000000000', // Etherlink - Native symbol: XTZ (Tezos L2)
+     '0xab5': 'eip155:2741/erc20:0x0000000000000000000000000000000000000000', // Abstract - Native symbol: ETH
+-    '0x1079': 'eip155:4217/erc20:0x20c0000000000000000000000000000000000000', // Tempo Mainnet - Pseudo-Native symbol: pathUSD
++    '0x1079': 'eip155:4217/slip44:60', // Tempo Mainnet - No native asset
+     '0x10e6': 'eip155:4326/erc20:0x0000000000000000000000000000000000000000', // MegaETH Mainnet - Native symbol: ETH
+     '0x1388': 'eip155:5000/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000', // Mantle - Native symbol: MNT
+     '0x2105': 'eip155:8453/slip44:60', // Base - Native symbol: ETH
+@@ -286,7 +284,7 @@ exports.SPOT_PRICES_SUPPORT_INFO = {
+     '0xa516': 'eip155:42262/slip44:474', // Oasis Emerald - Native symbol: ROSE
+     '0xa867': 'eip155:43111/erc20:0x0000000000000000000000000000000000000000', // Hemi - Native symbol: ETH
+     '0xa86a': 'eip155:43114/slip44:9005', // Avalanche C-Chain - Native symbol: AVAX
+-    '0xa5bf': 'eip155:42431/erc20:0x20c0000000000000000000000000000000000000', // Tempo Testnet Moderato - Pseudo-Native symbol: pathUSD
++    '0xa5bf': 'eip155:42431/slip44:60', // Tempo Testnet Moderato - No native asset
+     '0xe708': 'eip155:59144/slip44:60', // Linea Mainnet - Native symbol: ETH
+     '0xed88': 'eip155:60808/erc20:0x0000000000000000000000000000000000000000', // BOB - Native symbol: ETH
+     '0x138de': 'eip155:80094/erc20:0x0000000000000000000000000000000000000000', // Berachain - Native symbol: Bera',
+diff --git a/dist/token-prices-service/codefi-v2.d.cts b/dist/token-prices-service/codefi-v2.d.cts
+index 6a1e6130a6cf6c9be8b835c345ab2e634c2b8fe2..de1e688b61cea1d311e7002ad45b6daae20783e5 100644
+--- a/dist/token-prices-service/codefi-v2.d.cts
++++ b/dist/token-prices-service/codefi-v2.d.cts
+@@ -67,7 +67,7 @@ export declare const SPOT_PRICES_SUPPORT_INFO: {
+     readonly '0x74c': "eip155:1868/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0xa729': "eip155:42793/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0xab5': "eip155:2741/erc20:0x0000000000000000000000000000000000000000";
+-    readonly '0x1079': "eip155:4217/erc20:0x20c0000000000000000000000000000000000000";
++    readonly '0x1079': "eip155:4217/slip44:60";
+     readonly '0x10e6': "eip155:4326/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0x1388': "eip155:5000/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000";
+     readonly '0x2105': "eip155:8453/slip44:60";
+@@ -80,7 +80,7 @@ export declare const SPOT_PRICES_SUPPORT_INFO: {
+     readonly '0xa516': "eip155:42262/slip44:474";
+     readonly '0xa867': "eip155:43111/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0xa86a': "eip155:43114/slip44:9005";
+-    readonly '0xa5bf': "eip155:42431/erc20:0x20c0000000000000000000000000000000000000";
++    readonly '0xa5bf': "eip155:42431/slip44:60";
+     readonly '0xe708': "eip155:59144/slip44:60";
+     readonly '0xed88': "eip155:60808/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0x138de': "eip155:80094/erc20:0x0000000000000000000000000000000000000000";
+diff --git a/dist/token-prices-service/codefi-v2.d.mts b/dist/token-prices-service/codefi-v2.d.mts
+index d89a6a8881a723793ae21804a9b0002c307d20ef..a10b18c734be7f82e889b8739af1547fd8c14248 100644
+--- a/dist/token-prices-service/codefi-v2.d.mts
++++ b/dist/token-prices-service/codefi-v2.d.mts
+@@ -67,7 +67,7 @@ export declare const SPOT_PRICES_SUPPORT_INFO: {
+     readonly '0x74c': "eip155:1868/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0xa729': "eip155:42793/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0xab5': "eip155:2741/erc20:0x0000000000000000000000000000000000000000";
+-    readonly '0x1079': "eip155:4217/erc20:0x20c0000000000000000000000000000000000000";
++    readonly '0x1079': "eip155:4217/slip44:60";
+     readonly '0x10e6': "eip155:4326/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0x1388': "eip155:5000/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000";
+     readonly '0x2105': "eip155:8453/slip44:60";
+@@ -80,7 +80,7 @@ export declare const SPOT_PRICES_SUPPORT_INFO: {
+     readonly '0xa516': "eip155:42262/slip44:474";
+     readonly '0xa867': "eip155:43111/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0xa86a': "eip155:43114/slip44:9005";
+-    readonly '0xa5bf': "eip155:42431/erc20:0x20c0000000000000000000000000000000000000";
++    readonly '0xa5bf': "eip155:42431/slip44:60";
+     readonly '0xe708': "eip155:59144/slip44:60";
+     readonly '0xed88': "eip155:60808/erc20:0x0000000000000000000000000000000000000000";
+     readonly '0x138de': "eip155:80094/erc20:0x0000000000000000000000000000000000000000";
+diff --git a/dist/token-prices-service/codefi-v2.mjs b/dist/token-prices-service/codefi-v2.mjs
+index 8e975c5e24c1faa4d35d15d1b40443f723d5d185..8c542bb5a78c162d7c61f1233ffa640dca3ac446 100644
+--- a/dist/token-prices-service/codefi-v2.mjs
++++ b/dist/token-prices-service/codefi-v2.mjs
+@@ -216,8 +216,6 @@ const chainIdToNativeTokenAddress = {
+     '0x64': '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d', // Gnosis
+     '0x1e': '0x542fda317318ebf1d3deaf76e0b632741a7e677d', // Rootstock Mainnet - Native symbol: RBTC
+     '0x3dc': '0x779ded0c9e1022225f8e0630b35a9b54be713736', // Stable - Native symbol: USDT0
+-    '0x1079': '0x20c0000000000000000000000000000000000000', // Tempo Mainnet - Pseudo-Native symbol: pathUSD
+-    '0xa5bf': '0x20c0000000000000000000000000000000000000', // Tempo Moderato Testnet - Pseudo-Native symbol: pathUSD
+ };
+ /**
+  * Returns the address that should be used to query the price api for the
+@@ -269,7 +267,7 @@ export const SPOT_PRICES_SUPPORT_INFO = {
+     '0x74c': 'eip155:1868/erc20:0x0000000000000000000000000000000000000000', // Soneium - Native symbol: ETH
+     '0xa729': 'eip155:42793/erc20:0x0000000000000000000000000000000000000000', // Etherlink - Native symbol: XTZ (Tezos L2)
+     '0xab5': 'eip155:2741/erc20:0x0000000000000000000000000000000000000000', // Abstract - Native symbol: ETH
+-    '0x1079': 'eip155:4217/erc20:0x20c0000000000000000000000000000000000000', // Tempo Mainnet - Pseudo-Native symbol: pathUSD
++    '0x1079': 'eip155:4217/slip44:60', // Tempo Mainnet - No native asset
+     '0x10e6': 'eip155:4326/erc20:0x0000000000000000000000000000000000000000', // MegaETH Mainnet - Native symbol: ETH
+     '0x1388': 'eip155:5000/erc20:0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000', // Mantle - Native symbol: MNT
+     '0x2105': 'eip155:8453/slip44:60', // Base - Native symbol: ETH
+@@ -282,7 +280,7 @@ export const SPOT_PRICES_SUPPORT_INFO = {
+     '0xa516': 'eip155:42262/slip44:474', // Oasis Emerald - Native symbol: ROSE
+     '0xa867': 'eip155:43111/erc20:0x0000000000000000000000000000000000000000', // Hemi - Native symbol: ETH
+     '0xa86a': 'eip155:43114/slip44:9005', // Avalanche C-Chain - Native symbol: AVAX
+-    '0xa5bf': 'eip155:42431/erc20:0x20c0000000000000000000000000000000000000', // Tempo Testnet Moderato - Pseudo-Native symbol: pathUSD
++    '0xa5bf': 'eip155:42431/slip44:60', // Tempo Testnet Moderato - No native asset
+     '0xe708': 'eip155:59144/slip44:60', // Linea Mainnet - Native symbol: ETH
+     '0xed88': 'eip155:60808/erc20:0x0000000000000000000000000000000000000000', // BOB - Native symbol: ETH
+     '0x138de': 'eip155:80094/erc20:0x0000000000000000000000000000000000000000', // Berachain - Native symbol: Bera',
