@@ -17,11 +17,14 @@ import { RewardsVipBadge } from '../../rewards/RewardsVipBadge';
 export type PerpsFeesDisplayProps = {
   /**
    * MetaMask fee discount in whole percentage points. When defined and
-   * positive, the original fee is struck through and the discounted fee
-   * is shown alongside it.
+   * positive, the pre-discount fee is computed, struck through, and shown
+   * alongside the already-discounted `fee`.
    */
   metamaskFeeRateDiscountPercentage?: number;
-  /** Raw fee amount in USD. When `undefined`, a placeholder is rendered. */
+  /**
+   * Fee amount in USD **after** any VIP discount has already been applied.
+   * When `undefined`, a placeholder is rendered.
+   */
   fee: number | undefined;
   /** Text shown when `fee` is `undefined` (defaults to `"-"`). */
   placeholder?: string;
@@ -47,8 +50,8 @@ export type PerpsFeesDisplayProps = {
  * tier badge.
  *
  * @param props - Component props.
- * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount in whole percentage points. When positive, the original fee is struck through and the discounted fee appears next to it.
- * @param props.fee - Raw fee amount in USD.
+ * @param props.metamaskFeeRateDiscountPercentage - MetaMask fee discount in whole percentage points. When positive, the pre-discount fee is reverse-computed, struck through, and shown next to the already-discounted `fee`.
+ * @param props.fee - Fee amount in USD after any VIP discount has been applied.
  * @param props.placeholder - Text shown when `fee` is `undefined` (defaults to `"-"`).
  * @param props.variant - Text variant for the fee value (defaults to BodySm).
  * @param props.feeTextColor - Text color for the fee value (defaults to TextDefault).
@@ -72,23 +75,23 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
     [],
   );
 
-  const { feeText, discountedFeeText } = useMemo(() => {
+  const { feeText, originalFeeText } = useMemo(() => {
     if (fee === undefined) {
-      return { feeText: placeholder, discountedFeeText: undefined };
+      return { feeText: placeholder, originalFeeText: undefined };
     }
 
     const text = formatFee(fee);
 
     if (
       metamaskFeeRateDiscountPercentage !== undefined &&
-      metamaskFeeRateDiscountPercentage > 0
+      metamaskFeeRateDiscountPercentage > 0 &&
+      metamaskFeeRateDiscountPercentage < 100
     ) {
-      const discountedFee =
-        fee * (1 - metamaskFeeRateDiscountPercentage / 100);
-      return { feeText: text, discountedFeeText: formatFee(discountedFee) };
+      const originalFee = fee / (1 - metamaskFeeRateDiscountPercentage / 100);
+      return { feeText: text, originalFeeText: formatFee(originalFee) };
     }
 
-    return { feeText: text, discountedFeeText: undefined };
+    return { feeText: text, originalFeeText: undefined };
   }, [fee, placeholder, metamaskFeeRateDiscountPercentage, formatFee]);
 
   return (
@@ -98,7 +101,7 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
       gap={1}
     >
       {showVipBadge ? <RewardsVipBadge /> : null}
-      {discountedFeeText === undefined ? (
+      {originalFeeText === undefined ? (
         <Text
           variant={variant}
           color={feeTextColor}
@@ -117,7 +120,7 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
               feeTextTestId ? `${feeTextTestId}-original` : undefined
             }
           >
-            {feeText}
+            {originalFeeText}
           </Text>
           <Text
             variant={variant}
@@ -125,7 +128,7 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
             fontWeight={feeTextFontWeight}
             data-testid={feeTextTestId}
           >
-            {discountedFeeText}
+            {feeText}
           </Text>
         </>
       )}

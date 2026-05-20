@@ -138,10 +138,10 @@ describe('OrderSummary', () => {
 
       expect(
         screen.getByTestId('perps-order-summary-estimated-fees-original'),
-      ).toHaveTextContent('$0.50');
+      ).toHaveTextContent('$1.00');
       expect(
         screen.getByTestId('perps-order-summary-estimated-fees'),
-      ).toHaveTextContent('$0.25');
+      ).toHaveTextContent('$0.50');
     });
 
     it('does not show discounted fee when metamaskFeeRateDiscountPercentage is 0', () => {
