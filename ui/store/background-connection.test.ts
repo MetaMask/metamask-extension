@@ -231,4 +231,39 @@ describe('subscribeToMessengerEvent', () => {
 
     consoleErrorSpy.mockRestore();
   });
+
+  it('is idempotent when the same unsubscribe function is called twice', async () => {
+    const { messengerUnsubscribe } = setup();
+
+    const listener = jest.fn();
+    const unsubscribe = await subscribeToMessengerEvent(event, listener);
+
+    await unsubscribe();
+    await unsubscribe();
+
+    expect(messengerUnsubscribe).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps subscriptions to different events independent', async () => {
+    const { submitNotification, messengerSubscribe } = setup();
+
+    const otherEvent = 'OtherController:stateChange';
+
+    const listenerA = jest.fn();
+    const listenerB = jest.fn();
+
+    await subscribeToMessengerEvent(event, listenerA);
+    await subscribeToMessengerEvent(otherEvent, listenerB);
+
+    expect(messengerSubscribe).toHaveBeenCalledTimes(2);
+
+    submitNotification({
+      jsonrpc: '2.0',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
+      params: [event, [{ foo: 'bar' }, []]],
+    });
+
+    expect(listenerA).toHaveBeenCalledTimes(1);
+    expect(listenerB).not.toHaveBeenCalled();
+  });
 });
