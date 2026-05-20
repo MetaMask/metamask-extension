@@ -33821,7 +33821,7 @@ __metadata:
     "@metamask/snaps-execution-environments": "npm:^11.0.2"
     "@metamask/snaps-registry": "npm:^4.0.0"
     "@metamask/snaps-rpc-methods": "file:.yalc/@metamask/snaps-rpc-methods"
-    "@metamask/snaps-sdk": "npm:^11.1.1"
+    "@metamask/snaps-sdk": "file:.yalc/@metamask/snaps-sdk"
     "@metamask/snaps-utils": "file:.yalc/@metamask/snaps-utils"
     "@metamask/solana-wallet-snap": "npm:^2.8.0"
     "@metamask/solana-wallet-standard": "npm:^1.0.0"
