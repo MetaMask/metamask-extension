@@ -175,9 +175,6 @@
   "activity": {
     "message": "Aktivität"
   },
-  "activityEmptyDescription": {
-    "message": "Noch nichts zu sehen. Swappen Sie heute Ihr erstes Token."
-  },
   "add": {
     "message": "Hinzufügen"
   },
@@ -226,6 +223,9 @@
   },
   "addCustomNetwork": {
     "message": "Benutzerdefiniertes Netzwerk hinzufügen"
+  },
+  "addCustomToken": {
+    "message": "Benutzerdefinierten Token hinzufügen"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Fügen Sie diesen RPC-Anbieter nur hinzu, wenn Sie sich sicher sind, dass Sie ihm vertrauen können. $1",
@@ -525,6 +525,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "Dieses Token weist starke Anzeichen von bösartigem Verhalten auf. Das Fortfahren kann zum Verlust von Geldern führen."
   },
+  "alertMinimumReserve": {
+    "message": "Reservesaldo ist erforderlich"
+  },
   "alertModalAcknowledge": {
     "message": "Ich bin mir des Risikos bewusst und möchte trotzdem fortfahren"
   },
@@ -605,6 +608,9 @@
   },
   "all": {
     "message": "Alle"
+  },
+  "allDefaultNetworks": {
+    "message": "Alle Standardnetzwerk"
   },
   "allNetworks": {
     "message": "Alle Netzwerke"
@@ -1449,7 +1455,7 @@
     "message": "Mehr $1 für Gas benötigt"
   },
   "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "Dieses spezifische Netzwerk erfordert, dass Sie eine Reserve von $1 $3 auf Ihrem Konto vorhalten. Mit Ihrem aktuellen Saldo können Sie maximal $2 $3 verwenden.",
+    "message": "Dieses spezifische Netzwerk erfordert, dass Sie eine Reserve von $1 $3 auf Ihrem Konto aufrechterhalten. Mit Ihrem aktuellen Saldo können Sie maximal $2 $3 verwenden.",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
@@ -2805,8 +2811,14 @@
   "enterSymbol": {
     "message": "Symbol eingeben"
   },
+  "enterTokenAddress": {
+    "message": "Token-Adresse eingeben"
+  },
   "enterTokenNameOrAddress": {
     "message": "Name des Tokens eingeben oder Adresse einfügen"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Token-Name oder Adresse eingeben"
   },
   "enterYourPassword": {
     "message": "Geben Sie Ihr Passwort ein"
@@ -3106,7 +3118,7 @@
     "message": "Die Berechnung des Gas-Preises ist aufgrund eines Netzwerkfehlers fehlgeschlagen."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Gas-Sponsoring ist für diese Transaktion nicht verfügbar. Sie benötigen mindestens $1 $2 auf Ihrem Konto.",
+    "message": "Dieses spezifische Netzwerk erfordert, dass Sie eine Reserve von $1 $2 auf Ihrem Konto aufrechterhalten.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -4011,6 +4023,9 @@
   "managePermissions": {
     "message": "Genehmigungen verwalten"
   },
+  "manageTokens": {
+    "message": "Token verwalten"
+  },
   "manageWalletRecovery": {
     "message": "Wiederherstellung der Wallet verwalten"
   },
@@ -4844,8 +4859,14 @@
   "noSnaps": {
     "message": "Keine Snaps installiert"
   },
+  "noTokensMatchSearch": {
+    "message": "Keine Token stimmen mit Ihrer Suche überein"
+  },
   "noTokensMatchingYourFilters": {
     "message": "Keine mit Ihren Filtern übereinstimmenden Tokens"
+  },
+  "noTokensToManage": {
+    "message": "Sie haben noch keine Token. Suchen Sie nach Name oder Adresse, um beliebte Token zu entdecken."
   },
   "noWebcamFound": {
     "message": "Die Webcam Ihres Computers wurde nicht gefunden. Bitte versuchen Sie es erneut."
@@ -5432,6 +5453,9 @@
     "message": "Bezahlen mit",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "Zahlungsempfänger"
+  },
   "pending": {
     "message": "Ausstehend"
   },
@@ -5874,6 +5898,9 @@
   "perpsDepositActivityTitle": {
     "message": "Finanzierte Perps"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Bridge fehlgeschlagen"
+  },
   "perpsDepositFailed": {
     "message": "Die Einzahlung konnte nicht abgeschlossen werden. Versuchen Sie es erneut."
   },
@@ -5896,10 +5923,10 @@
     "message": "Gelder werden Perps hinzugefügt"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Ihre Gelder sind zum Handel bereit."
+    "message": "Gelder liegen für den Handel bereit"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Gelder wurden Perps zugeführt"
+    "message": "Ihr Perps-Konto wurde finanziert"
   },
   "perpsDeposits": {
     "message": "Einzahlungen"
@@ -6188,11 +6215,14 @@
   "perpsSortByPriceChange": {
     "message": "Preisänderung"
   },
+  "perpsSortByRank": {
+    "message": "Rang"
+  },
   "perpsSortBySection": {
     "message": "Sortieren nach"
   },
   "perpsSortByTitle": {
-    "message": "Sortieren"
+    "message": "Filter"
   },
   "perpsSortByVolume": {
     "message": "Volumen"
@@ -6364,6 +6394,9 @@
   "perpsTrades": {
     "message": "Trades"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Geöffnete Long-Position"
+  },
   "perpsTriggerPrice": {
     "message": "Auslösungspreis"
   },
@@ -6462,6 +6495,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Kein Konto ausgewählt. Wählen Sie ein Konto aus und versuchen Sie es erneut."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Fortfahren mit Auszahlung fehlgeschlagen"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Etwas ist schiefgelaufen"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Verfügbar in etwa 1 Minute"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Abhebung im Gange"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2 wurde Ihrer Wallet hinzugefügt",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Gelder wurden Ihrer Wallet hinzugefügt"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Auszahlung abgeschlossen"
   },
   "perpsWithdrawReceive": {
     "message": "Empfangen"
@@ -6857,6 +6912,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "Schützen Sie Ihre Wallet"
   },
+  "redeemer": {
+    "message": "Einlöser"
+  },
   "redeposit": {
     "message": "Erneut einzahlen"
   },
@@ -7114,6 +7172,12 @@
   "rewardsLinkAccountError": {
     "message": "Hinzufügen des Kontos fehlgeschlagen"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Region wird überprüft ..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Gewinnen Sie Preise, beanspruchen Sie Vorteile und entdecken Sie weitere Verdienstmöglichkeiten – allein durch die Nutzung von MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Wir können nicht ermitteln, ob Ihr Land die Teilnahme am Belohnungsprogramm zulässt. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
   },
@@ -7132,6 +7196,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Region wird nicht unterstützt"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "Mit Ihrer Teilnahme stimmen Sie unseren $1 zu. Wir aktivieren die Teilnahme für alle Konten auf diesem Gerät und erfassen die On-Chain-Aktivitäten, um Sie automatisch zu belohnen. $2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Mehr erfahren"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Nutzungsbedingungen und Datenschutzerklärung"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Anmeldung fehlgeschlagen"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Ungültiger Empfehlungscode"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Empfehlungscode (optional)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Empfehlungscode konnte nicht validiert werden."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Code verbergen"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Sie haben einen Empfehlungscode?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Belohnungen beitreten"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Beitritt ..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Beginnen Sie, Belohnungen zu sammeln"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Verifizierung des Empfehlungscodes läuft ...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7147,6 +7251,12 @@
   "rewardsPointsIcon": {
     "message": "Belohnungspunkte",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "Um auf MetaMask-Belohnungen zuzugreifen, scannen Sie den QR-Code mit Ihrem Mobilgerät."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Weiter auf Mobilgerät"
   },
   "rewardsSignInFailed": {
     "message": "Anmeldung ist fehlgeschlagen",
@@ -9261,6 +9371,9 @@
   "tokenAddress": {
     "message": "Token-Adresse"
   },
+  "tokenAllowance": {
+    "message": "Token-Erlaubnis"
+  },
   "tokenAlreadyAdded": {
     "message": "Token wurde bereits hinzugefügt."
   },
@@ -9302,6 +9415,9 @@
   "tokenPermissionsCount": {
     "message": "$1 Token-Genehmigungen",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "Die Suchergebnisse konnten nicht geladen werden. Bitte versuchen Sie es erneut."
   },
   "tokenStandard": {
     "message": "Token-Standard"

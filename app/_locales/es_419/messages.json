@@ -175,9 +175,6 @@
   "activity": {
     "message": "Actividad"
   },
-  "activityEmptyDescription": {
-    "message": "Aún no hay nada que ver. Canjea tu primer token hoy."
-  },
   "add": {
     "message": "Añadir"
   },
@@ -226,6 +223,9 @@
   },
   "addCustomNetwork": {
     "message": "Agregar red personalizada"
+  },
+  "addCustomToken": {
+    "message": "Añadir un token personalizado"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Agregue este proveedor de RPC solo si está seguro de que puede confiar en él. $1",
@@ -525,6 +525,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "Este token muestra fuertes indicios de comportamiento malicioso. Continuar podría resultar en la pérdida de fondos."
   },
+  "alertMinimumReserve": {
+    "message": "Se requiere un saldo de reserva"
+  },
   "alertModalAcknowledge": {
     "message": "Soy consciente del riesgo y aún así deseo continuar"
   },
@@ -605,6 +608,9 @@
   },
   "all": {
     "message": "Todas"
+  },
+  "allDefaultNetworks": {
+    "message": "Todas las redes predeterminadas"
   },
   "allNetworks": {
     "message": "Todas las redes"
@@ -2805,8 +2811,14 @@
   "enterSymbol": {
     "message": "Ingrese el símbolo"
   },
+  "enterTokenAddress": {
+    "message": "Ingresa la dirección del token"
+  },
   "enterTokenNameOrAddress": {
     "message": "Introduzca el nombre del token o pegue la dirección"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Introduce el nombre o la dirección del token"
   },
   "enterYourPassword": {
     "message": "Ingresa tu contraseña"
@@ -3106,7 +3118,7 @@
     "message": "Se produjo un error al calcular el precio del gas debido a una falla en la red."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "El patrocinio de gas no está disponible para esta transacción. Deberás mantener al menos $1 $2 en tu cuenta.",
+    "message": "Esta red en concreto requiere mantener una reserva de $1 $2 en tu cuenta.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -4011,6 +4023,9 @@
   "managePermissions": {
     "message": "Administrar permisos"
   },
+  "manageTokens": {
+    "message": "Administrar tokens"
+  },
   "manageWalletRecovery": {
     "message": "Gestiona la recuperación de la billetera"
   },
@@ -4844,8 +4859,14 @@
   "noSnaps": {
     "message": "No tiene ningún snap instalado."
   },
+  "noTokensMatchSearch": {
+    "message": "No hay tokens que coincidan con tu búsqueda"
+  },
   "noTokensMatchingYourFilters": {
     "message": "No hay tokens que coincidan con tus filtros"
+  },
+  "noTokensToManage": {
+    "message": "Aún no tienes tokens. Busca por nombre o dirección para descubrir tokens populares."
   },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
@@ -5432,6 +5453,9 @@
     "message": "Pagar con",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "Beneficiario"
+  },
   "pending": {
     "message": "Pendiente"
   },
@@ -5874,6 +5898,9 @@
   "perpsDepositActivityTitle": {
     "message": "Contratos perpetuos financiados"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Puente fallido"
+  },
   "perpsDepositFailed": {
     "message": "No se pudo completar el depósito. Inténtalo de nuevo."
   },
@@ -5896,10 +5923,10 @@
     "message": "Añadir fondos a contratos perpetuos"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Tus fondos están listos para operar."
+    "message": "Los fondos están listos para operar"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Fondos agregados a Perps"
+    "message": "Se depositaron fondos en tu cuenta de contratos perpetuos"
   },
   "perpsDeposits": {
     "message": "Depósitos"
@@ -6188,11 +6215,14 @@
   "perpsSortByPriceChange": {
     "message": "Cambio de precio"
   },
+  "perpsSortByRank": {
+    "message": "Rango"
+  },
   "perpsSortBySection": {
     "message": "Ordenar por"
   },
   "perpsSortByTitle": {
-    "message": "Clasificar"
+    "message": "Filtro"
   },
   "perpsSortByVolume": {
     "message": "Volumen"
@@ -6368,6 +6398,9 @@
   "perpsTrades": {
     "message": "Operaciones"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Posición larga abierta"
+  },
   "perpsTriggerPrice": {
     "message": "Precio de activación"
   },
@@ -6466,6 +6499,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "No se seleccionó ninguna cuenta. Selecciona una cuenta e inténtalo de nuevo."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Error al procesar el retiro"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Algo salió mal"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Disponible en aproximadamente 1 minuto"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Retiro en curso"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "Se transfirieron $1 $2 a tu billetera",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Fondos transferidos a tu billetera"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Retiro finalizado"
   },
   "perpsWithdrawReceive": {
     "message": "Recibir"
@@ -6861,6 +6916,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "Protege tu billetera"
   },
+  "redeemer": {
+    "message": "Redentor"
+  },
   "redeposit": {
     "message": "Volver a depositar"
   },
@@ -7118,6 +7176,12 @@
   "rewardsLinkAccountError": {
     "message": "Error al agregar la cuenta"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Comprobando región..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Gana premios, consigue ventajas y descubre más formas de ganar dinero, simplemente usando MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "No podemos determinar si tu país permite optar por el programa de recompensas. Verifica tu conexión e inténtalo nuevamente."
   },
@@ -7136,6 +7200,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Región no admitida"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "Al registrarte, aceptas nuestros $1. Activaremos todas las cuentas en este dispositivo y realizaremos un seguimiento de la actividad en la cadena de bloques para recompensarte automáticamente. $2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Conozca más"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Términos y Aviso de Privacidad"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Error al registrarte"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Código de recomendación no válido"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Código de recomendación (opcional)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "El código de recomendación no se pudo validar."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Comprueba tu conexión y vuelve a intentarlo."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Ocultar código"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "¿Tienes un código de recomendación?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Unirse a Recompensas"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Uniéndose..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Empieza a ganar recompensas"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Verificando código de recomendación...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7151,6 +7255,12 @@
   "rewardsPointsIcon": {
     "message": "Puntos de recompensa",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "Para acceder a Recompensas de MetaMask, escanea el código QR con tu dispositivo móvil."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Continuar en el celular"
   },
   "rewardsSignInFailed": {
     "message": "Error al iniciar sesión",
@@ -9265,6 +9375,9 @@
   "tokenAddress": {
     "message": "Dirección del token"
   },
+  "tokenAllowance": {
+    "message": "Asignación de tokens"
+  },
   "tokenAlreadyAdded": {
     "message": "Ya se agregó el token."
   },
@@ -9306,6 +9419,9 @@
   "tokenPermissionsCount": {
     "message": "$1 permisos de token",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "No se pudieron cargar los resultados de la búsqueda. Inténtalo de nuevo."
   },
   "tokenStandard": {
     "message": "Estándar de token"

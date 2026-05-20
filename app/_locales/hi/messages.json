@@ -175,9 +175,6 @@
   "activity": {
     "message": "एक्टिविटी"
   },
-  "activityEmptyDescription": {
-    "message": "अभी देखने के लिए कुछ नहीं है। अपना पहला टोकन आज ही स्वैप करें।"
-  },
   "add": {
     "message": "जोड़ें"
   },
@@ -226,6 +223,9 @@
   },
   "addCustomNetwork": {
     "message": "कस्टम नेटवर्क जोड़ें"
+  },
+  "addCustomToken": {
+    "message": "एक कस्टम टोकन जोड़ें"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "इस RPC प्रोवाइडर को केवल तभी जोड़ें जब आप निश्चित हैं कि आप इस पर विश्वास कर सकते हैं। $1",
@@ -525,6 +525,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "इस टोकन में बुरी नीयत वाले व्यवहार के स्पष्ट संकेत हैं। आगे बढ़ने पर फंड्स का नुकसान हो सकता है।"
   },
+  "alertMinimumReserve": {
+    "message": "रिज़र्व बैलेंस ज़रूरी है"
+  },
   "alertModalAcknowledge": {
     "message": "मैंने जोखिम को स्वीकार कर लिया है और इसके बावजूद आगे बढ़ना चाहता हूँ"
   },
@@ -605,6 +608,9 @@
   },
   "all": {
     "message": "सभी"
+  },
+  "allDefaultNetworks": {
+    "message": "सभी डिफॉल्ट नेटवर्क"
   },
   "allNetworks": {
     "message": "सभी नेटवर्क"
@@ -2805,8 +2811,14 @@
   "enterSymbol": {
     "message": "सिंबल डालें"
   },
+  "enterTokenAddress": {
+    "message": "टोकन एड्रेस डालें"
+  },
   "enterTokenNameOrAddress": {
     "message": "टोकन का नाम दर्ज करें या एड्रेस पेस्ट करें"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "टोकन नाम या एड्रेस डालें"
   },
   "enterYourPassword": {
     "message": "अपना पासवर्ड डालें"
@@ -3106,7 +3118,7 @@
     "message": "गैस प्राइस अनुमान नेटवर्क गड़बड़ी के कारण नहीं हो पाया है।"
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "इस ट्रांसेक्शन के लिए गैस स्पॉन्सरशिप उपलब्ध नहीं है। आपको अपने अकाउंट में कम से कम $1 $2 रखना होगा।",
+    "message": "इस खास नेटवर्क को आपके अकाउंट में $1 $2 का रिज़र्व बनाए रखना ज़रूरी है।",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -4011,6 +4023,9 @@
   "managePermissions": {
     "message": "अनुमतियाँ प्रबंधित करें"
   },
+  "manageTokens": {
+    "message": "टोकन मैनेज करें"
+  },
   "manageWalletRecovery": {
     "message": "वॉलेट रिकवरी मैनेज करें"
   },
@@ -4844,8 +4859,14 @@
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
   },
+  "noTokensMatchSearch": {
+    "message": "कोई भी टोकन आपकी सर्च से मैच नहीं करता"
+  },
   "noTokensMatchingYourFilters": {
     "message": "कोई भी टोकन आपके फ़िल्टर से मैच नहीं कर रहा"
+  },
+  "noTokensToManage": {
+    "message": "आपके पास अभी तक कोई टोकन नहीं है। पॉपुलर टोकन खोजने के लिए नाम या पते से खोजें।"
   },
   "noWebcamFound": {
     "message": "आपके कंप्यूटर का वेबकैम नहीं मिला। कृपया फिर से कोशिश करें।"
@@ -5432,6 +5453,9 @@
     "message": "के साथ भुगतान करें",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "पेई"
+  },
   "pending": {
     "message": "अभी पूरा नहीं हुआ"
   },
@@ -5839,7 +5863,7 @@
     "message": "लॉन्ग को क्लोज़ करें"
   },
   "perpsClosePartialMinNotional": {
-    "message": "आंशिक क्लोज़ की कीमत USD में कम से कम $1 होनी चाहिए। क्लोज़ अमाउंट बढ़ाएँ या पूरी पोज़िशन बंद करें।"
+    "message": "पार्शियल क्लोज़ कम से कम $1 USD वैल्यू का होना चाहिए। क्लोज़ अमाउंट बढ़ाएं या पूरी पोज़िशन क्लोज करें।"
   },
   "perpsClosePosition": {
     "message": "पोज़िशन बंद करें"
@@ -5874,6 +5898,9 @@
   "perpsDepositActivityTitle": {
     "message": "फंडेड पर्प्स"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "ब्रिज नहीं हो पाया"
+  },
   "perpsDepositFailed": {
     "message": "डिपॉज़िट करना पूरा नहीं हो पाया। कृपया दोबारा कोशिश करें।"
   },
@@ -5896,10 +5923,10 @@
     "message": "पर्प्स में फंड्स जोड़े जा रहे हैं"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "आपके फंड्स ट्रेड करने के लिए तैयार हैं।"
+    "message": "फंड्स ट्रेड करने के लिए तैयार हैं"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "फंड्स पर्प्स में जोड़े गए"
+    "message": "आपका पर्प्स अकाउंट फंड हो गया"
   },
   "perpsDeposits": {
     "message": "डिपॉज़िट"
@@ -6188,11 +6215,14 @@
   "perpsSortByPriceChange": {
     "message": "प्राइस में बदलाव"
   },
+  "perpsSortByRank": {
+    "message": "रैंक"
+  },
   "perpsSortBySection": {
     "message": "इसके अनुसार क्रमबद्ध करें"
   },
   "perpsSortByTitle": {
-    "message": "सॉर्ट करें"
+    "message": "फिल्टर"
   },
   "perpsSortByVolume": {
     "message": "वॉल्यूम"
@@ -6364,6 +6394,9 @@
   "perpsTrades": {
     "message": "ट्रेड्स"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "खुला लॉन्ग"
+  },
   "perpsTriggerPrice": {
     "message": "ट्रिगर प्राइस"
   },
@@ -6462,6 +6495,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "कोई अकाउंट नहीं चुना गया। कृपया एक अकाउंट चुनें और दोबारा कोशिश करें।"
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "विदड्रॉवल नहीं हो पाया"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "कुछ गलत हो गया"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "लगभग 1 मिनट में उपलब्ध होगा"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "विदड्रॉवल प्रोग्रेस में है"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2 आपके वॉलेट में भेजा गया",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "फंड आपके वॉलेट में भेजे गए"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "विदड्रॉवल पूरा हुआ"
   },
   "perpsWithdrawReceive": {
     "message": "प्राप्त करें"
@@ -6857,6 +6912,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "अपने वॉलेट को सुरक्षित रखें"
   },
+  "redeemer": {
+    "message": "रिडीमर"
+  },
   "redeposit": {
     "message": "फिर से डिपॉज़िट करें"
   },
@@ -7114,6 +7172,12 @@
   "rewardsLinkAccountError": {
     "message": "अकाउंट जोड़ना नहीं हो पाया"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "क्षेत्र की जांच की जा रही है…"
+  },
+  "rewardsOnboardingDescription": {
+    "message": "इनाम जीतें, फ़ायदे पाएँ, और कमाने के और भी तरीके जानें—सिर्फ़ MetaMask का इस्तेमाल करके।"
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "हम यह निर्धारित नहीं कर सकते कि आपका देश रिवॉर्ड्स प्रोग्राम में ऑप्ट-इन की अनुमति देता है या नहीं। कृपया अपना कनेक्शन जांचें और फिर से कोशिश करें।"
   },
@@ -7132,6 +7196,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "क्षेत्र सपोर्टेड नहीं है"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "जॉइन करके, आप हमारे $1 से सहमत हैं। हम इस डिवाइस पर सभी अकाउंट को ऑप्ट इन करेंगे और आपको अपने आप रिवॉर्ड देने के लिए ऑन-चेन एक्टिविटी को ट्रैक करेंगे। $2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "ज़्यादा जानें"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "नियम और गोपनीयता सूचना"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "ऑप्ट-इन नहीं हो पाया"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "रेफरल कोड ग़लत है"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "रेफरल कोड (वैकल्पिक)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "अपना कनेक्शन जांचें और फिर से प्रयास करें।"
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "कोड छिपाएँ"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "क्या आपके पास रेफ़रल कोड है?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "रिवॉर्ड में शामिल हों"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "शामिल हो रहे हैं..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "रिवॉर्ड कमाना शुरू करें"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "रेफरल कोड वेरीफाई किया जा रहा है…",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7147,6 +7251,12 @@
   "rewardsPointsIcon": {
     "message": "रिवॉर्ड पॉइंट्स",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "MetaMask रिवॉर्ड्स को एक्सेस करने के लिए, अपने मोबाइल डिवाइस से QR कोड स्कैन करें।"
+  },
+  "rewardsQRCodeTitle": {
+    "message": "मोबाइल पर जारी रखें"
   },
   "rewardsSignInFailed": {
     "message": "साइन इन नहीं हो पाया",
@@ -9261,6 +9371,9 @@
   "tokenAddress": {
     "message": "टोकन पता"
   },
+  "tokenAllowance": {
+    "message": "टोकन अलाउंस"
+  },
   "tokenAlreadyAdded": {
     "message": "टोकन पहले ही जोड़ा जा चुका है।"
   },
@@ -9302,6 +9415,9 @@
   "tokenPermissionsCount": {
     "message": "$1 टोकन अनुमतियां",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "सर्च रिज़ल्ट लोड नहीं हो सके। कृपया फिर से कोशिश करें।"
   },
   "tokenStandard": {
     "message": "टोकन स्टैंडर्ड"

@@ -175,9 +175,6 @@
   "activity": {
     "message": "アクティビティ"
   },
-  "activityEmptyDescription": {
-    "message": "まだ表示できるものがありません。さっそく最初のトークンをスワップしましょう。"
-  },
   "add": {
     "message": "追加"
   },
@@ -226,6 +223,9 @@
   },
   "addCustomNetwork": {
     "message": "カスタムネットワークを追加"
+  },
+  "addCustomToken": {
+    "message": "カスタムトークンを追加"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "このRPCプロバイダーは、確実に信頼できる場合のみ追加してください。$1",
@@ -525,6 +525,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "このトークンには悪意のある動作の兆候が強く見られます。続行すると資金を失う可能性があります。"
   },
+  "alertMinimumReserve": {
+    "message": "準備金が必要です"
+  },
   "alertModalAcknowledge": {
     "message": "リスクを承知したうえで続行します"
   },
@@ -605,6 +608,9 @@
   },
   "all": {
     "message": "すべて"
+  },
+  "allDefaultNetworks": {
+    "message": "すべてのデフォルトのネットワーク"
   },
   "allNetworks": {
     "message": "すべてのネットワーク"
@@ -2805,8 +2811,14 @@
   "enterSymbol": {
     "message": "シンボルを入力してください"
   },
+  "enterTokenAddress": {
+    "message": "トークンアドレスを入力"
+  },
   "enterTokenNameOrAddress": {
     "message": "トークン名を入力するか、アドレスを貼り付けてください"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "トークン名またはアドレスを入力してください"
   },
   "enterYourPassword": {
     "message": "パスワードを入力"
@@ -3106,7 +3118,7 @@
     "message": "ネットワークエラーのため、ガス価格の見積もりに失敗しました。"
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "このトランザクションでガススポンサーシップは利用できません。アカウントに$1 $2以上の残高を残す必要があります。",
+    "message": "このネットワークは、アカウントに$1 $2の準備金を必要とします。",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -4011,6 +4023,9 @@
   "managePermissions": {
     "message": "アクセス許可の管理"
   },
+  "manageTokens": {
+    "message": "トークンを管理"
+  },
   "manageWalletRecovery": {
     "message": "ウォレットの復元の管理"
   },
@@ -4844,8 +4859,14 @@
   "noSnaps": {
     "message": "snapがインストールされていません"
   },
+  "noTokensMatchSearch": {
+    "message": "検索に一致するトークンがありません"
+  },
   "noTokensMatchingYourFilters": {
     "message": "フィルターに一致するトークンがありません"
+  },
+  "noTokensToManage": {
+    "message": "まだトークンがありません。名前またはアドレスで検索して、人気のトークンを見つけましょう。"
   },
   "noWebcamFound": {
     "message": "お使いのコンピューターのWebカメラが見つかりませんでした。もう一度お試しください。"
@@ -5432,6 +5453,9 @@
     "message": "支払方法:",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "支払先"
+  },
   "pending": {
     "message": "保留中"
   },
@@ -5839,7 +5863,7 @@
     "message": "ロングをクローズ"
   },
   "perpsClosePartialMinNotional": {
-    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、ポジション全体をクローズしてください。"
+    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、ポジションを完全にクローズしてください。"
   },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
@@ -5874,6 +5898,9 @@
   "perpsDepositActivityTitle": {
     "message": "パーペチュアルに入金しました"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "ブリッジに失敗しました"
+  },
   "perpsDepositFailed": {
     "message": "デポジットを完了できませんでした。もう一度お試しください。"
   },
@@ -5896,10 +5923,10 @@
     "message": "パーペチュアルに入金中"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "資金を取引に利用できます。"
+    "message": "取引用の資金が準備できました"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "パーペチュアルに資金が追加されました"
+    "message": "パーペチュアルアカウントに入金されました"
   },
   "perpsDeposits": {
     "message": "デポジット"
@@ -6188,11 +6215,14 @@
   "perpsSortByPriceChange": {
     "message": "価格変動"
   },
+  "perpsSortByRank": {
+    "message": "ランキング"
+  },
   "perpsSortBySection": {
     "message": "並べ替え基準"
   },
   "perpsSortByTitle": {
-    "message": "並べ替え"
+    "message": "フィルター"
   },
   "perpsSortByVolume": {
     "message": "取引量"
@@ -6364,6 +6394,9 @@
   "perpsTrades": {
     "message": "取引"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "ロングをオープンしました"
+  },
   "perpsTriggerPrice": {
     "message": "トリガー価格"
   },
@@ -6462,6 +6495,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "アカウントが選択されていません。アカウントを選択してもう一度お試しください。"
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "出金に失敗しました"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "問題が発生しました"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "約1分後にご利用可能となります"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "出金が進行中です"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2がウォレットに移動されました",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "資金がウォレットに移動されました"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "出金完了"
   },
   "perpsWithdrawReceive": {
     "message": "受取"
@@ -6857,6 +6912,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "資産を守りましょう"
   },
+  "redeemer": {
+    "message": "請求者"
+  },
   "redeposit": {
     "message": "再デポジット"
   },
@@ -7114,6 +7172,12 @@
   "rewardsLinkAccountError": {
     "message": "アカウントの追加に失敗しました"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "地域を確認中…"
+  },
+  "rewardsOnboardingDescription": {
+    "message": "MetaMaskを使うだけで、賞品を獲得し、特典を請求し、他にも収益を得る方法を発見できます。"
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "お住いの国でリワードプログラムへのオプトインが許可されているかを確認できません。接続を確認して、もう一度お試しください。"
   },
@@ -7132,6 +7196,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "未対応の地域です"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "参加することで、当社の$1に同意したもののとみなされます。当社はこのデバイスのすべてのアカウントをオプトインし、オンチェーンアクティビティを追跡して、自動的に報酬を提供します。$2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "詳細。"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "規約およびプライバシー通知"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "オプトインに失敗しました"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "無効な紹介コード"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "紹介コード（オプション）"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "紹介コードを検証できませんでした."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "接続を確認して、もう一度お試しください。"
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "コードを非表示"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "紹介コードをお持ちですか？"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "リワードに参加"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "参加中..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "リワードの獲得を開始"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "紹介コードを検証中...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7147,6 +7251,12 @@
   "rewardsPointsIcon": {
     "message": "リワードポイント",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "MetaMask Rewardsにアクセスするには、モバイルデバイスでQRコードをスキャンしてください。"
+  },
+  "rewardsQRCodeTitle": {
+    "message": "モバイルで続行"
   },
   "rewardsSignInFailed": {
     "message": "サインインできませんでした",
@@ -9261,6 +9371,9 @@
   "tokenAddress": {
     "message": "トークンアドレス"
   },
+  "tokenAllowance": {
+    "message": "トークン使用可能額"
+  },
   "tokenAlreadyAdded": {
     "message": "トークンの追加がすでに完了しています。"
   },
@@ -9302,6 +9415,9 @@
   "tokenPermissionsCount": {
     "message": "$1トークンのアクセス許可",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "検索結果を読み込めませんでした。もう一度お試しください。"
   },
   "tokenStandard": {
     "message": "トークン規格"
