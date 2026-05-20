@@ -1,7 +1,8 @@
 import {
   SubscriptionController,
   SubscriptionService,
- SubscriptionControllerMessenger } from '@metamask/subscription-controller';
+  SubscriptionControllerMessenger,
+} from '@metamask/subscription-controller';
 import { MessengerClientInitRequest } from '../types';
 import {
   getSubscriptionControllerInitMessenger,

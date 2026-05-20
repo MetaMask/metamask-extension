@@ -1,7 +1,8 @@
 import {
   ShieldController,
   ShieldRemoteBackend,
- ShieldControllerMessenger } from '@metamask/shield-controller';
+  ShieldControllerMessenger,
+} from '@metamask/shield-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { MessengerClientInitRequest } from '../types';
 import {
