@@ -171,6 +171,14 @@ const SOLANA_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
   iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.SOLANA],
 };
 
+const STELLAR_SWAPS_TOKEN_OBJECT: SwapsTokenObject = {
+  symbol: 'XLM',
+  name: 'Stellar Lumens',
+  address: DEFAULT_TOKEN_ADDRESS,
+  decimals: 7,
+  iconUrl: MULTICHAIN_TOKEN_IMAGE_MAP[MultichainNetworks.STELLAR],
+};
+
 // A gas value for ERC20 approve calls that should be sufficient for all ERC20 approve implementations
 export const DEFAULT_ERC20_APPROVE_GAS = '0x1d4c0';
 
@@ -245,6 +253,7 @@ export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.HYPE,
   CHAIN_IDS.MEGAETH_MAINNET,
   MultichainNetworks.SOLANA,
+  MultichainNetworks.STELLAR,
 ] as const;
 
 export const ALLOWED_DEV_SWAPS_CHAIN_IDS = [
@@ -374,6 +383,7 @@ export const SWAPS_CHAINID_DEFAULT_TOKEN_MAP = {
   [CHAIN_IDS.HYPE]: HYPE_SWAPS_TOKEN_OBJECT,
   [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_SWAPS_TOKEN_OBJECT,
   [MultichainNetworks.SOLANA]: SOLANA_SWAPS_TOKEN_OBJECT,
+  [MultichainNetworks.STELLAR]: STELLAR_SWAPS_TOKEN_OBJECT,
 } as const;
 
 export const ETHEREUM = 'ethereum';

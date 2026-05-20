@@ -253,6 +253,22 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         // NOTE: This might throw, so keep this in the `try` clause.
         const accountId = await onceSaved;
 
+        const multichain = this.#messenger.call(
+          'AccountsController:listMultichainAccounts',
+        );
+        const acctByAddr = this.#messenger.call(
+          'AccountsController:getAccountByAddress',
+          address,
+        );
+        const hasAccountById = multichain.some((a) => a.id === accountId);
+        // When the same address exists on multiple snap keyrings (e.g. preinstalled
+        // npm Stellar + local dev snap), `updateAccounts` may sync a different
+        // canonical id than the one returned by `onceSaved`. Prefer the id that
+        // AccountsController actually holds for this address.
+        const selectedAccountId = hasAccountById
+          ? accountId
+          : (acctByAddr?.id ?? accountId);
+
         // From here, we know the account has been saved into the Snap keyring
         // state, so we can safely uses this state to run post-processing.
         // (e.g. renaming the account, select the account, etc...)
@@ -261,7 +277,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           // Set the selected account to the new account
           this.#messenger.call(
             'AccountsController:setSelectedAccount',
-            accountId,
+            selectedAccountId,
           );
         }
 

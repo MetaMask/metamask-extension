@@ -4,6 +4,7 @@ import { debounce } from 'lodash';
 import {
   isSolanaAddress,
   isBtcMainnetAddress,
+  isStellarAddress,
   isTronAddress,
 } from '../../../../../shared/lib/multichain/accounts';
 import { isValidHexAddress } from '../../../../../shared/lib/hexstring-utils';
@@ -14,6 +15,7 @@ import {
   validateBtcAddress,
   validateEvmHexAddress,
   validateSolanaAddress,
+  validateStellarAddress,
   validateTronAddress,
 } from '../../utils/sendValidations';
 import { useSendContext } from '../../context/send';
@@ -25,8 +27,13 @@ const VALIDATION_DEBOUNCE_MS = 500;
 export const useRecipientValidation = () => {
   const t = useI18nContext();
   const { asset, chainId, to } = useSendContext();
-  const { isBitcoinSendType, isEvmSendType, isSolanaSendType, isTronSendType } =
-    useSendType();
+  const {
+    isBitcoinSendType,
+    isEvmSendType,
+    isSolanaSendType,
+    isStellarSendType,
+    isTronSendType,
+  } = useSendType();
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
   const [acknowledged, setAcknowledged] = useState(false);
@@ -82,6 +89,10 @@ export const useRecipientValidation = () => {
         return validateTronAddress(toAddress);
       }
 
+      if (isStellarSendType && isStellarAddress(toAddress)) {
+        return validateStellarAddress(toAddress);
+      }
+
       if (isResolvableName(toAddress)) {
         return await validateName(chainId, toAddress, signal);
       }
@@ -96,6 +107,7 @@ export const useRecipientValidation = () => {
     isBitcoinSendType,
     isEvmSendType,
     isSolanaSendType,
+    isStellarSendType,
     isTronSendType,
     validateName,
   ]);

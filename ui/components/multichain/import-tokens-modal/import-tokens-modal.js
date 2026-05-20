@@ -240,17 +240,21 @@ export const ImportTokensModal = ({ onClose }) => {
 
     const tokenData = {};
     for (const token of filteredTokenListGenerator(shouldAddToken)) {
-      if (token.address) {
-        tokenData[token.address.toLowerCase()] = {
-          address: token.address,
-          symbol: token.symbol,
-          name: token.name,
-          decimals: token.decimals,
-          iconUrl: token.image,
-          aggregators: token.aggregators,
-          occurrences: token.occurrences,
-        };
-      }
+      // Native assets use an empty address (see useTokensWithFiltering `buildTokenData`).
+      // Omitting them made non-EVM chains with only native bridge entries show "Unavailable on this network".
+      const storageKey =
+        token.address && token.address.length > 0
+          ? token.address.toLowerCase()
+          : '';
+      tokenData[storageKey] = {
+        address: token.address,
+        symbol: token.symbol,
+        name: token.name,
+        decimals: token.decimals,
+        iconUrl: token.image,
+        aggregators: token.aggregators,
+        occurrences: token.occurrences,
+      };
     }
 
     return {

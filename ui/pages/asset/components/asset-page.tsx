@@ -23,10 +23,12 @@ import {
   EthMethod,
   SolMethod,
   TrxAccountType,
+  XlmScope,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
+  type CaipChainId,
   Hex,
   isCaipChainId,
   parseCaipAssetType,
@@ -95,6 +97,7 @@ import { AssetMarketDetails } from './asset-market-details';
 import AssetChart from './chart/asset-chart';
 import { MarketClosedActionButton } from './market-closed-action-button';
 import TokenButtons from './token-buttons';
+import { StellarClassicTrustlineActivateCard } from './stellar-classic-trustline-activate-card';
 import { TronDailyResources } from './tron-daily-resources';
 import { MusdBonusSection } from './musd-bonus-section';
 import { MusdConvertSection } from './musd-convert-section';
@@ -251,7 +254,31 @@ const AssetPage = ({
     accountType: bip44Asset?.accountType,
     assetId: bip44Asset?.assetId ?? assetId,
     rwaData,
+    isStellarTrustlineInactive: assetWithBalance?.isStellarTrustlineInactive,
   };
+
+  const isStellarChainId =
+    chainId === XlmScope.Pubnet || chainId === XlmScope.Testnet;
+  let isSep41StellarAsset = false;
+  if (assetId && isStellarChainId) {
+    try {
+      isSep41StellarAsset =
+        parseCaipAssetType(assetId as CaipAssetType).assetNamespace === 'sep41';
+    } catch {
+      isSep41StellarAsset = false;
+    }
+  }
+  const isStellarClassicTrustlineTrackedToken =
+    isStellarChainId &&
+    type === AssetType.token &&
+    Boolean(assetId) &&
+    !isSep41StellarAsset;
+  const showStellarClassicTrustlineActivate =
+    isStellarClassicTrustlineTrackedToken &&
+    assetWithBalance?.isStellarTrustlineInactive === true;
+  const hasStellarClassicTrustlineToRemove =
+    assetWithBalance !== undefined &&
+    assetWithBalance.isStellarTrustlineInactive !== true;
   const { safeChains } = useSafeChains();
   const { isStockToken: checkIsStockToken, isTokenTradingOpen } = useRWAToken();
   const isStockToken = checkIsStockToken(updatedAsset);
@@ -325,6 +352,13 @@ const AssetPage = ({
           assetNameElement
         )}
       </Box>
+      <StellarClassicTrustlineActivateCard
+        visible={showStellarClassicTrustlineActivate}
+        account={selectedAccount}
+        chainId={chainId as CaipChainId}
+        assetId={assetId as CaipAssetType}
+        symbol={symbol}
+      />
       <AssetChart
         chainId={chainId}
         address={address}
@@ -352,6 +386,16 @@ const AssetPage = ({
             token={tokenAsset}
             disableSendForNonEvm
             isMarketClosed={isMarketClosed}
+            stellarClassicTrustlineRemove={
+              isStellarClassicTrustlineTrackedToken
+                ? {
+                    hasTrustline: hasStellarClassicTrustlineToRemove,
+                    accountId: selectedAccount.id,
+                    assetId: assetId as CaipAssetType,
+                    scope: chainId as CaipChainId,
+                  }
+                : undefined
+            }
           />
         ) : null}
         {isMarketClosed && tokenAsset ? (

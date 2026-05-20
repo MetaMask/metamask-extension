@@ -21,6 +21,10 @@ import {
   SOLANA_WALLET_SNAP_ID,
 } from '../../../shared/lib/accounts/solana-wallet-snap';
 import {
+  STELLAR_WALLET_NAME,
+  STELLAR_WALLET_SNAP_ID,
+} from '../../../shared/lib/accounts/stellar-wallet-snap';
+import {
   TRON_WALLET_NAME,
   TRON_WALLET_SNAP_ID,
 } from '../../../shared/lib/accounts/tron-wallet-snap';
@@ -34,6 +38,7 @@ export enum WalletClientType {
   Bitcoin = 'bitcoin-wallet-snap',
   Solana = 'solana-wallet-snap',
   Tron = 'tron-wallet-snap',
+  Stellar = 'stellar-wallet-snap',
 }
 
 export const EVM_WALLET_TYPE = 'evm' as const;
@@ -51,6 +56,10 @@ const WALLET_SNAP_MAP: Record<WalletClientType, { id: SnapId; name: string }> =
     [WalletClientType.Tron]: {
       id: TRON_WALLET_SNAP_ID,
       name: TRON_WALLET_NAME,
+    },
+    [WalletClientType.Stellar]: {
+      id: STELLAR_WALLET_SNAP_ID,
+      name: STELLAR_WALLET_NAME,
     },
   };
 

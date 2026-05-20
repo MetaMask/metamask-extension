@@ -29,6 +29,108 @@ let scriptsLoadInitiated = false;
 const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
+
+/**
+ * Property name when the engine threw "Cannot read properties of undefined (reading 'x')".
+ *
+ * @param {string} message - Error message.
+ * @returns {string | undefined}
+ */
+function extractPropertyReadFromTypeErrorMessage(message) {
+  const m = message.match(
+    /Cannot read properties of (?:undefined|null) \(reading '([^']+)'\)/u,
+  );
+  return m ? m[1] : undefined;
+}
+
+/**
+ * First stack frame that points at a Browserify chunk under the extension root.
+ *
+ * @param {string} stack - Full stack string.
+ * @returns {{ file: string, line: string, column: string } | null}
+ */
+function parseFirstChunkStackFrame(stack) {
+  const re =
+    /(common-\d+\.js|background-\d+\.js|ui-\d+\.js|content-script-\d+\.js|offscreen-\d+\.js):(\d+):(\d+)/u;
+  const match = stack.match(re);
+  if (match === null) {
+    return null;
+  }
+  return {
+    file: match[1],
+    line: match[2],
+    column: match[3],
+  };
+}
+
+/**
+ * Extra hints: which property was undefined, and how to map chunk+line to node_modules path.
+ *
+ * @param {unknown} error - Thrown value.
+ */
+function logImportScriptsResolutionHints(error) {
+  const message =
+    error !== null &&
+    typeof error === 'object' &&
+    'message' in error &&
+    typeof error.message === 'string'
+      ? error.message
+      : '';
+  const propertyRead = extractPropertyReadFromTypeErrorMessage(message);
+  if (propertyRead !== undefined) {
+    console.error(
+      `MetaMask app-init: The base value was null/undefined when reading property '${propertyRead}' (from the error message).`,
+    );
+  }
+
+  const stack = error instanceof Error ? error.stack : undefined;
+  if (stack === undefined || typeof stack !== 'string') {
+    return;
+  }
+
+  const frame = parseFirstChunkStackFrame(stack);
+  if (frame === null) {
+    return;
+  }
+
+  console.error(
+    'MetaMask app-init: The stack points at a Browserify chunk (many packages). Map it to a real file (often under node_modules) using source maps:',
+  );
+  console.error(
+    `  yarn resolve-chunk-frame chrome ${frame.file} ${frame.line} ${frame.column}`,
+  );
+  console.error(
+    'MetaMask app-init: Use firefox instead of chrome if that matches your dist. The CLI reads dist/sourcemaps/*.map or an inline map at the end of the chunk under dist/<platform>/. If lookup fails, retry with column minus 1.',
+  );
+}
+
+/**
+ * Log importScripts errors with fields DevTools often hides when printing the raw value.
+ *
+ * @param {string} context - Where the failure occurred.
+ * @param {unknown} error - Thrown value (Error, DOMException, string, etc.).
+ */
+function logImportScriptsFailure(context, error) {
+  /** @type {Record<string, unknown>} */
+  const details = { string: String(error) };
+  if (error !== null && typeof error === 'object') {
+    if ('message' in error) {
+      details.message = error.message;
+    }
+    if ('name' in error) {
+      details.name = error.name;
+    }
+    if ('code' in error) {
+      details.code = error.code;
+    }
+  }
+  console.error(`MetaMask app-init: ${context}`, details);
+  if (error instanceof Error && error.stack) {
+    console.error(error.stack);
+  }
+  logImportScriptsResolutionHints(error);
+}
+
 // eslint-disable-next-line import-x/unambiguous
 function tryImport(...fileNames) {
   try {
@@ -45,11 +147,30 @@ function tryImport(...fileNames) {
     });
 
     return true;
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (error) {
+    if (fileNames.length > 1) {
+      logImportScriptsFailure(
+        'Original error from the batched importScripts call',
+        error,
+      );
+      console.error(
+        'MetaMask app-init: importScripts runs scripts in order until one throws; scripts listed earlier in the batch may have already executed. Re-importing the same URLs in this worker would double-run them and can cause misleading errors (e.g. duplicate const). Use the stack trace above — the failing bundle is usually the first frame under your extension (e.g. common-*.js or background-*.js), not app-init.js.',
+      );
+      return false;
+    }
 
-  return false;
+    let scriptSummary;
+    if (fileNames.length === 0) {
+      scriptSummary = '(no script paths)';
+    } else {
+      scriptSummary = fileNames[0];
+    }
+    console.error(
+      `MetaMask app-init: importScripts failed while loading ${scriptSummary}.`,
+    );
+    logImportScriptsFailure('Error from importScripts for that load', error);
+    return false;
+  }
 }
 
 function importAllScripts() {
@@ -59,11 +180,12 @@ function importAllScripts() {
   }
   scriptsLoadInitiated = true;
   const files = [];
+  let scriptImportsOk = true;
 
   // In testMode individual files are imported, this is to help capture load time stats
   const loadFile = (fileName) => {
     if (testMode) {
-      tryImport(fileName);
+      scriptImportsOk = tryImport(fileName) && scriptImportsOk;
     } else {
       files.push(fileName);
     }
@@ -114,16 +236,22 @@ function importAllScripts() {
   fileList.forEach((fileName) => loadFile(fileName));
 
   // Import all required resources
-  tryImport(...files);
+  scriptImportsOk = tryImport(...files) && scriptImportsOk;
 
   const endImportScriptsTime = Date.now();
 
-  // for performance metrics/reference
-  console.log(
-    `SCRIPTS IMPORT COMPLETE in Seconds: ${
-      (Date.now() - startImportScriptsTime) / 1000
-    }`,
-  );
+  // for performance metrics/reference (only when every import succeeded)
+  if (scriptImportsOk) {
+    console.log(
+      `SCRIPTS IMPORT COMPLETE in Seconds: ${
+        (Date.now() - startImportScriptsTime) / 1000
+      }`,
+    );
+  } else {
+    console.error(
+      'MetaMask app-init: Not logging "SCRIPTS IMPORT COMPLETE" because one or more importScripts calls failed; see errors above.',
+    );
+  }
 
   // In testMode load time logs are output to console
   if (testMode) {

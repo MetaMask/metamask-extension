@@ -18,6 +18,7 @@ import { captureException } from '../sentry';
 import { HardwareDeviceNames } from '../../constants/hardware-wallets';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
+import { STELLAR_WALLET_SNAP_ID } from './stellar-wallet-snap';
 import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
 
 /**
@@ -28,7 +29,8 @@ import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
 type SUPPORTED_WALLET_SNAP_ID =
   | typeof SOLANA_WALLET_SNAP_ID
   | typeof BITCOIN_WALLET_SNAP_ID
-  | typeof TRON_WALLET_SNAP_ID;
+  | typeof TRON_WALLET_SNAP_ID
+  | typeof STELLAR_WALLET_SNAP_ID;
 
 export type SnapAccountNameOptions = {
   chainId?: CaipChainId;
@@ -71,6 +73,9 @@ export async function getNextAvailableSnapAccountName(
     }
     case TRON_WALLET_SNAP_ID: {
       return `Tron Account ${accountNumber}`;
+    }
+    case STELLAR_WALLET_SNAP_ID: {
+      return `Stellar Account ${accountNumber}`;
     }
     default:
       return defaultSnapAccountName;
