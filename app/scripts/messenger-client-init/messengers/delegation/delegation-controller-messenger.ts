@@ -18,10 +18,7 @@ export function getDelegationControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: [
-      'AccountsController:getSelectedAccount',
-      'KeyringController:signTypedMessage',
-    ],
+    actions: ['KeyringController:signTypedMessage'],
   });
   return controllerMessenger;
 }
