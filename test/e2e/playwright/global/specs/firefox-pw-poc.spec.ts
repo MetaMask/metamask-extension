@@ -85,9 +85,6 @@ test('loads MetaMask in Firefox, unlocks wallet, and verifies balance', async ()
         await page.getByTestId('unlock-submit').click();
       }
 
-      const homePage = new HomePage(page);
-      console.log(homePage);
-
     } finally {
       await extensionContext?.close();
 
