@@ -301,8 +301,7 @@
     "@metamask/bridge-status-controller@npm:^71.1.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
-    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
-    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@1.25.3-preview-91ebde0"
+    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -440,7 +439,7 @@
     "@metamask/subscription-controller": "^6.1.2",
     "@metamask/transaction-controller": "^65.1.0",
     "@metamask/transaction-pay-controller": "^22.5.0",
-    "@metamask/tron-wallet-snap": "^1.25.3",
+    "@metamask/tron-wallet-snap": "npm:@metamask-previews/tron-wallet-snap@1.25.3-preview-91ebde0",
     "@metamask/user-operation-controller": "^41.2.0",
     "@metamask/utils": "^11.11.0",
     "@mui/material": "^5.18.0",
