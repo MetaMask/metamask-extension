@@ -231,6 +231,7 @@ export function main(
   return result.status === null ? 1 : result.status;
 }
 
+/* istanbul ignore next */
 if (process.argv[1]?.endsWith(`${path.sep}skills-sync.ts`)) {
   process.exit(main());
 }
