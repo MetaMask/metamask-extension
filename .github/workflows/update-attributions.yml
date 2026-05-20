@@ -205,7 +205,7 @@ jobs:
           persist-credentials: false
       - name: Post comment if the update failed
         run: |
-          passed="${{ needs.check-status.outputs.PASSED }}"
+          passed="${NEEDS_CHECK_STATUS_OUTPUTS_PASSED}"
           if [[ $passed != "true" ]]; then
             gh pr comment "${PR_NUMBER}" --body "Attributions update failed. You can [review the logs or retry the attributions update here](${ACTION_RUN_URL})"
           fi
@@ -213,3 +213,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
           PR_NUMBER: ${{ github.event.issue.number }}
           ACTION_RUN_URL: '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          NEEDS_CHECK_STATUS_OUTPUTS_PASSED: ${{ needs.check-status.outputs.PASSED }}
