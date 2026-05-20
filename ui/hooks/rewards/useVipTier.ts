@@ -36,10 +36,13 @@ function useVipTierAccountId() {
 function useRewardsVipTierQuery(accountId: string | null) {
   return useQuery({
     queryKey: ['rewardsVipTier', accountId],
-    queryFn: () =>
-      submitRequestToBackground<number | null>('rewardsGetVipTierForAccount', [
-        String(accountId),
-      ]),
+    queryFn: async () => {
+      const tier = await submitRequestToBackground<number | null>(
+        'rewardsGetVipTierForAccount',
+        [String(accountId)],
+      );
+      return tier ?? null;
+    },
     enabled: accountId !== null,
   });
 }
