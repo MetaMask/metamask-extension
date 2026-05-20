@@ -51,8 +51,42 @@ export function submitRequestToBackground<R>(
   return background[method](...rpcArgs) as unknown as Promise<R>;
 }
 
+type EventEntry = {
+  callbacks: Set<(data: Json) => void>;
+  subscribePromise: Promise<void>;
+};
+
+const eventEntries = new Map<NamespacedName, EventEntry>();
+let notificationRouterAttached = false;
+
+function notificationRouter(notification: JsonRpcNotification<[string, Json]>) {
+  if (notification.method !== MESSENGER_SUBSCRIPTION_NOTIFICATION) {
+    return;
+  }
+  const params = notification.params;
+  if (!params) {
+    return;
+  }
+  const [eventName, payload] = params;
+  const entry = eventEntries.get(eventName as NamespacedName);
+  if (!entry) {
+    return;
+  }
+  for (const callback of entry.callbacks) {
+    try {
+      callback(payload);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+}
+
 /**
- * Sets/replaces the background connection reference
+ * Sets/replaces the background connection reference.
+ *
+ * Clears any in-memory subscription state because subscriptions registered
+ * against the previous background connection are stale once the connection
+ * has been replaced.
  *
  * @param backgroundConnection
  */
@@ -60,10 +94,17 @@ export async function setBackgroundConnection(
   backgroundConnection: BackgroundRpcClient,
 ) {
   background = backgroundConnection;
+  eventEntries.clear();
+  notificationRouterAttached = false;
 }
 
 /**
  * Subscribe to a given messenger event emitted by the background.
+ *
+ * Subscriptions are deduplicated by event name: multiple local subscribers to
+ * the same event share a single upstream `messengerSubscribe` IPC and a single
+ * `background.onNotification` listener. The upstream `messengerUnsubscribe` IPC
+ * is only sent when the last local subscriber to an event unsubscribes.
  *
  * @param event - The event name.
  * @param callback - The callback to invoke when the event is emitted.
@@ -73,21 +114,55 @@ export async function subscribeToMessengerEvent<Data extends Json>(
   event: NamespacedName,
   callback: (data: Data) => void,
 ): Promise<() => Promise<void>> {
-  await submitRequestToBackground('messengerSubscribe', [event]);
+  const typedCallback = callback as (data: Json) => void;
 
-  const listener = (notification: JsonRpcNotification<[string, Data]>) => {
-    if (
-      notification.method === MESSENGER_SUBSCRIPTION_NOTIFICATION &&
-      notification.params?.[0] === event
-    ) {
-      callback(notification.params[1]);
+  let entry = eventEntries.get(event);
+
+  if (!entry) {
+    if (!notificationRouterAttached) {
+      background.onNotification(notificationRouter);
+      notificationRouterAttached = true;
     }
-  };
 
-  background.onNotification(listener);
+    const subscribePromise = Promise.resolve(
+      submitRequestToBackground<void>('messengerSubscribe', [event]),
+    );
 
-  return () => {
-    background.removeOnNotification(listener);
-    return submitRequestToBackground('messengerUnsubscribe', [event]);
+    entry = {
+      callbacks: new Set([typedCallback]),
+      subscribePromise,
+    };
+    eventEntries.set(event, entry);
+
+    // Side-effect handler: clear the entry on rejection so future subscribe
+    // attempts retry cleanly. Do NOT reassign `entry.subscribePromise` here —
+    // the original promise must retain its rejection so awaiters below still
+    // see it.
+    subscribePromise.catch(() => {
+      eventEntries.delete(event);
+    });
+  } else {
+    entry.callbacks.add(typedCallback);
+  }
+
+  await entry.subscribePromise;
+
+  return async () => {
+    const currentEntry = eventEntries.get(event);
+    if (!currentEntry) {
+      return;
+    }
+
+    const removed = currentEntry.callbacks.delete(typedCallback);
+    if (!removed) {
+      return;
+    }
+
+    if (currentEntry.callbacks.size > 0) {
+      return;
+    }
+
+    eventEntries.delete(event);
+    await submitRequestToBackground('messengerUnsubscribe', [event]);
   };
 }

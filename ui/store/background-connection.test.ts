@@ -80,7 +80,6 @@ describe('subscribeToMessengerEvent', () => {
       messengerSubscribe,
       messengerUnsubscribe,
       onNotification,
-      removeOnNotification,
     } = setup();
 
     const listener = jest.fn();
@@ -101,7 +100,57 @@ describe('subscribeToMessengerEvent', () => {
     expect(listener).not.toHaveBeenCalled();
 
     expect(messengerUnsubscribe).toHaveBeenCalledWith(event);
-    expect(removeOnNotification).toHaveBeenCalledWith(expect.any(Function));
+  });
+
+  it('sends only one messengerSubscribe IPC for multiple subscribers to the same event', async () => {
+    const { submitNotification, messengerSubscribe, onNotification } = setup();
+
+    const listenerA = jest.fn();
+    const listenerB = jest.fn();
+
+    await subscribeToMessengerEvent(event, listenerA);
+    await subscribeToMessengerEvent(event, listenerB);
+
+    expect(messengerSubscribe).toHaveBeenCalledTimes(1);
+    expect(messengerSubscribe).toHaveBeenCalledWith(event);
+    expect(onNotification).toHaveBeenCalledTimes(1);
+
+    submitNotification({
+      jsonrpc: '2.0',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
+      params: [event, [{ foo: 'bar' }, []]],
+    });
+
+    expect(listenerA).toHaveBeenCalledWith([{ foo: 'bar' }, []]);
+    expect(listenerB).toHaveBeenCalledWith([{ foo: 'bar' }, []]);
+  });
+
+  it('refcounts subscribers and only unsubscribes upstream on the last unsubscribe', async () => {
+    const { submitNotification, messengerUnsubscribe } = setup();
+
+    const listenerA = jest.fn();
+    const listenerB = jest.fn();
+
+    const unsubscribeA = await subscribeToMessengerEvent(event, listenerA);
+    const unsubscribeB = await subscribeToMessengerEvent(event, listenerB);
+
+    await unsubscribeA();
+
+    expect(messengerUnsubscribe).not.toHaveBeenCalled();
+
+    submitNotification({
+      jsonrpc: '2.0',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
+      params: [event, [{ foo: 'bar' }, []]],
+    });
+
+    expect(listenerA).not.toHaveBeenCalled();
+    expect(listenerB).toHaveBeenCalledWith([{ foo: 'bar' }, []]);
+
+    await unsubscribeB();
+
+    expect(messengerUnsubscribe).toHaveBeenCalledTimes(1);
+    expect(messengerUnsubscribe).toHaveBeenCalledWith(event);
   });
 
   it('ignores other JSON-RPC notifications', async () => {
