@@ -5,6 +5,7 @@ import { BigNumber } from 'bignumber.js';
 import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { StatusTypes } from '@metamask/bridge-controller';
+import { Box } from '@metamask/design-system-react';
 import {
   isBridgeComplete,
   isBridgeFailed,
@@ -18,8 +19,6 @@ import { ActivityListItem } from '../../multichain/activity-list-item/activity-l
 import Segment from '../../../pages/bridge/transaction-details/segment';
 import {
   Display,
-  FlexDirection,
-  BlockSize,
   TextColor,
   FontWeight,
   TextAlign,
@@ -27,7 +26,6 @@ import {
   BorderColor,
 } from '../../../helpers/constants/design-system';
 import {
-  Box,
   Text,
   BadgeWrapper,
   AvatarNetwork,
@@ -170,11 +168,7 @@ const MultichainBridgeTransactionListItem: React.FC<
       }
       title={title}
       subtitle={
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={1}
-        >
+        <Box className="flex flex-col" gap={1}>
           {isTerminalState ? (
             <TransactionStatusLabel
               date={formatTimestamp(transaction.timestamp)}
@@ -188,20 +182,14 @@ const MultichainBridgeTransactionListItem: React.FC<
               }
             />
           ) : (
-            <Box
-              marginTop={0}
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              gap={1}
-              width={BlockSize.Full}
-            >
+            <Box marginTop={0} className="flex flex-col w-full" gap={1}>
               <Text
                 color={TextColor.textAlternative}
                 variant={TextVariant.bodySm}
               >
                 {t('bridgeTransactionProgress', [txIndex])}
               </Text>
-              <Box display={Display.Flex} gap={2} width={BlockSize.Full}>
+              <Box className="flex w-full" gap={2}>
                 <Segment type={srcSegmentStatus} />
                 <Segment type={destSegmentStatus} />
               </Box>
