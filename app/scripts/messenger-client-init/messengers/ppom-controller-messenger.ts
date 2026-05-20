@@ -10,24 +10,20 @@ import { PPOMControllerMessenger } from '@metamask/ppom-validator';
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import { RootMessenger } from '../../lib/messenger';
 
-type MessengerActions = NetworkControllerGetNetworkClientByIdAction;
+type AllowedActions = NetworkControllerGetNetworkClientByIdAction;
 
-type MessengerEvents =
+type AllowedEvents =
   | NetworkControllerStateChangeEvent
   | NetworkControllerNetworkDidChangeEvent
   | PreferencesControllerStateChangeEvent;
 
-export type PPOMControllerInitMessenger = ReturnType<
-  typeof getPPOMControllerInitMessenger
->;
-
 export function getPPOMControllerMessenger(
-  messenger: RootMessenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ): PPOMControllerMessenger {
   const controllerMessenger = new Messenger<
     'PPOMController',
-    MessengerActions,
-    MessengerEvents,
+    AllowedActions,
+    AllowedEvents,
     typeof messenger
   >({
     namespace: 'PPOMController',
@@ -49,16 +45,20 @@ type AllowedInitializationActions =
   | NetworkControllerGetSelectedNetworkClientAction
   | NetworkControllerGetStateAction;
 
+export type PPOMControllerInitMessenger = ReturnType<
+  typeof getPPOMControllerInitMessenger
+>;
+
 export function getPPOMControllerInitMessenger(
   messenger: RootMessenger<
-    MessengerActions | AllowedInitializationActions,
-    MessengerEvents
+    AllowedActions | AllowedInitializationActions,
+    AllowedEvents
   >,
 ) {
   const controllerInitMessenger = new Messenger<
     'PPOMControllerInit',
-    MessengerActions | AllowedInitializationActions,
-    MessengerEvents,
+    AllowedActions | AllowedInitializationActions,
+    AllowedEvents,
     typeof messenger
   >({
     namespace: 'PPOMControllerInit',
