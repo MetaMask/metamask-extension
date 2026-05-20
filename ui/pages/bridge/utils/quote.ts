@@ -168,7 +168,7 @@ export const isQuoteExpiredOrInvalid = ({
  * @param bps - The value in basis points (e.g., "87.5" or 87.5)
  * @returns The percentage value as a string (e.g., "0.875")
  */
-const bpsToPercentage = (
+export const bpsToPercentage = (
   bps: string | number | undefined,
 ): string | undefined => {
   if (bps === undefined || bps === null) {

@@ -36,10 +36,10 @@ import { AvatarGroup } from '../../../../../components/multichain/avatar-group';
 import { AvatarType } from '../../../../../components/multichain/avatar-group/avatar-group.types';
 import { Tooltip } from '../../../../bridge/layout';
 import {
+  bpsToPercentage,
   formatCurrencyAmount,
   formatTokenAmount,
 } from '../../../../bridge/utils/quote';
-import { bpsToPercentage } from '../../../../../ducks/bridge/utils';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
@@ -119,7 +119,12 @@ const YouSellRow = ({
             avatarType={AvatarType.TOKEN}
           />
           <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-            {t('batchSellYouSellTokenCount', [tokenCount.toString()])}
+            {t(
+              tokenCount > 1
+                ? 'batchSellYouSellTokenCountPlural'
+                : 'batchSellYouSellTokenCount',
+              [tokenCount.toString()],
+            )}
           </Text>
           <Icon
             name={isExpanded ? IconName.ArrowUp : IconName.ArrowDown}

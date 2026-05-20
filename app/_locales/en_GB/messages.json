@@ -1810,6 +1810,12 @@
   "batchSellSlippageDescription": {
     "message": "Your transaction won't go through if the price changes more than the slippage percent."
   },
+  "batchSellYouSellTokenCount": {
+    "message": "$1 token"
+  },
+  "batchSellYouSellTokenCountPlural": {
+    "message": "$1 tokens"
+  },
   "bestQuote": {
     "message": "Best quote"
   },
