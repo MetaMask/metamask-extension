@@ -185,8 +185,12 @@ export function getSnapPermissionSpecifications(
           // We only need a subset of the Snap keyring's functionality, and this message handling is now
           // owned by the Snap account service.
           handleKeyringSnapMessage(snapId: string, message: SnapMessage) {
-            return messenger.call('SnapAccountService:handleKeyringSnapMessage', snapId as SnapId, message);
-          }
+            return messenger.call(
+              'SnapAccountService:handleKeyringSnapMessage',
+              snapId as SnapId,
+              message,
+            );
+          },
         }),
       },
       messenger as RestrictedMethodMessenger,
