@@ -4,23 +4,87 @@ import {
 } from '@metamask/transaction-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../../constants/network';
+import {
+  IN_PROGRESS_TRANSACTION_STATUSES,
+  SmartTransactionStatus,
+  TransactionGroupStatus,
+} from '../../../constants/transaction';
 import type { TransactionGroup } from '../../multichain/types';
 import type { ActivityListItem, Status, TokenAmount } from '../types';
 
-function mapStatus(
-  status: TransactionGroup['primaryTransaction']['status'],
-): Status {
-  switch (status) {
-    case TransactionStatus.confirmed:
-      return 'success';
-    case TransactionStatus.cancelled:
-    case TransactionStatus.dropped:
-    case TransactionStatus.failed:
-    case TransactionStatus.rejected:
-      return 'failed';
-    default:
-      return 'pending';
+function getTransactionStatusKey(
+  transaction: TransactionGroup['primaryTransaction'],
+): string {
+  const {
+    txReceipt: { status: receiptStatus } = {},
+    type,
+    status,
+  } = transaction;
+
+  if (receiptStatus === '0x0') {
+    return TransactionStatus.failed;
   }
+
+  if (
+    status === TransactionStatus.confirmed &&
+    type === TransactionType.cancel
+  ) {
+    return TransactionGroupStatus.cancelled;
+  }
+
+  return transaction.status;
+}
+
+function mapStatus({
+  primaryTransaction,
+  initialTransaction,
+}: {
+  primaryTransaction: TransactionGroup['primaryTransaction'];
+  initialTransaction: TransactionGroup['initialTransaction'];
+}): Status {
+  if (initialTransaction.isSmartTransaction) {
+    const smartStatus = initialTransaction.status as string | undefined;
+
+    if (smartStatus === SmartTransactionStatus.pending) {
+      return 'pending';
+    }
+
+    if (smartStatus === SmartTransactionStatus.success) {
+      return 'success';
+    }
+
+    if (smartStatus === SmartTransactionStatus.cancelled) {
+      return 'failed';
+    }
+
+    return 'pending';
+  }
+
+  const statusKey = getTransactionStatusKey(primaryTransaction);
+
+  if (statusKey === TransactionStatus.confirmed) {
+    return 'success';
+  }
+
+  if (
+    statusKey === TransactionStatus.cancelled ||
+    statusKey === TransactionGroupStatus.cancelled ||
+    statusKey === TransactionStatus.dropped ||
+    statusKey === TransactionStatus.failed ||
+    statusKey === TransactionStatus.rejected
+  ) {
+    return 'failed';
+  }
+
+  if (
+    IN_PROGRESS_TRANSACTION_STATUSES.includes(
+      statusKey as (typeof IN_PROGRESS_TRANSACTION_STATUSES)[number],
+    )
+  ) {
+    return 'pending';
+  }
+
+  return 'pending';
 }
 
 function getNativeTokenSymbol(chainId: string) {
@@ -69,7 +133,7 @@ export function mapLocalTransaction({
     KnownCaipNamespace.Eip155,
     parseInt(initialTransaction.chainId, 16).toString(),
   );
-  const status = mapStatus(primaryTransaction.status);
+  const status = mapStatus({ primaryTransaction, initialTransaction });
   const timestamp = primaryTransaction.time ?? initialTransaction.time;
   const hash =
     primaryTransaction.hash ?? initialTransaction.hash ?? primaryTransaction.id;

@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Text } from '@metamask/design-system-react';
+import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
 import { formatDateWithYearContext } from '../../helpers/utils/util';
@@ -8,12 +9,12 @@ import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import { ListItem } from './cells/list-item';
-import { dedupeItems, getItemKey, groupItemsByDate } from './helpers';
+import { dedupeItems, getItemKey, groupActivityListItems } from './helpers';
 import { useLocalTransactions } from './useLocalTransactions';
 import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
 
-const itemHeight = 72;
+const itemHeight = 70;
 const evmPaginationRootMargin = '300px 0px';
 
 // Prototype implementation for the new activity list
@@ -45,7 +46,7 @@ export function ActivityList() {
         return hash ? [hash] : [];
       }),
     );
-    const grouped = groupItemsByDate(
+    const grouped = groupActivityListItems(
       dedupeItems(evmItems, nonEvmItems, localItems),
     );
 
@@ -118,17 +119,25 @@ export function ActivityList() {
         estimatedItemSize={itemHeight}
         keyExtractor={getItemKey}
         itemRef={observeLastEvmItem}
-        renderItem={({ item: row }) =>
-          row.type === 'date-header' ? (
-            <Box className="px-4 py-2 bg-background-default">
-              <Text className="text-sm text-alternative">
-                {formatDateWithYearContext(row.date, 'MMM d, y', 'MMM d, y')}
-              </Text>
-            </Box>
-          ) : (
-            <ListItem data={row.item} />
-          )
-        }
+        renderItem={({ item: row }) => {
+          if (row.type === 'pending-header') {
+            return <SectionHeader label={t('pending')} />;
+          }
+
+          if (row.type === 'date-header') {
+            return (
+              <SectionHeader
+                label={formatDateWithYearContext(
+                  row.date,
+                  'MMM d, y',
+                  'MMM d, y',
+                )}
+              />
+            );
+          }
+
+          return <ListItem data={row.item} />;
+        }}
         listFooterComponent={
           isFetchingNextPage ? (
             <Box className="p-4 flex justify-center">

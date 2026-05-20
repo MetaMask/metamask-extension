@@ -1,8 +1,21 @@
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 
 export type GroupedItem =
+  | { type: 'pending-header' }
   | { type: 'date-header'; date: number }
   | { type: 'item'; item: ActivityListItem };
+
+/**
+ * Whether an activity row belongs in the Pending section.
+ * Aligns with activity-v2 `isActivityPendingMergedItem`: adapters map
+ * in-flight local, smart-transaction, and non-EVM keyring states to `pending`.
+ *
+ * @param item - A normalized activity list item.
+ * @returns True if the row should appear under the Pending header.
+ */
+export function isActivityPendingListItem(item: ActivityListItem): boolean {
+  return item.status === 'pending';
+}
 
 function getItemHash(item: ActivityListItem) {
   return item.data.hash?.toLowerCase();
@@ -37,7 +50,7 @@ export function dedupeItems(...sources: ActivityListItem[][]) {
     .sort((a, b) => b.timestamp - a.timestamp);
 }
 
-export function groupItemsByDate(items: ActivityListItem[]) {
+function groupItemsByDate(items: ActivityListItem[]): GroupedItem[] {
   let currentDate: number | null = null;
 
   return items.flatMap((item): GroupedItem[] => {
@@ -55,7 +68,45 @@ export function groupItemsByDate(items: ActivityListItem[]) {
   });
 }
 
+/**
+ * Groups activity items for the list: optional Pending section (no date
+ * headers), then date-grouped historical rows.
+ *
+ * @param items - Items sorted newest-first.
+ */
+export function groupActivityListItems(
+  items: ActivityListItem[],
+): GroupedItem[] {
+  const pending: ActivityListItem[] = [];
+  const historical: ActivityListItem[] = [];
+
+  for (const item of items) {
+    if (isActivityPendingListItem(item)) {
+      pending.push(item);
+    } else {
+      historical.push(item);
+    }
+  }
+
+  const grouped: GroupedItem[] = [];
+
+  if (pending.length > 0) {
+    grouped.push({ type: 'pending-header' });
+    for (const item of pending) {
+      grouped.push({ type: 'item', item });
+    }
+  }
+
+  grouped.push(...groupItemsByDate(historical));
+
+  return grouped;
+}
+
 export function getItemKey(row: GroupedItem, index: number) {
+  if (row.type === 'pending-header') {
+    return 'pending-header';
+  }
+
   if (row.type === 'date-header') {
     return `date-header:${row.date}`;
   }
