@@ -38,6 +38,10 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+jest.mock('../../../shared/lib/assets-unify-state/remote-feature-flag', () =>
+  jest.requireActual('../../../shared/lib/assets-unify-state/remote-feature-flag'),
+);
+
 // The page kicks off real on-chain probes through `getTokenStandardAndDetailsByChain`
 // and `tokenInfoGetter`. Replace them with deterministic stubs so the unit
 // test never reaches the background script.
@@ -46,6 +50,7 @@ jest.mock('../../store/actions', () => {
   return {
     ...actual,
     addImportedTokens: jest.fn(() => () => Promise.resolve()),
+    importCustomAssetsBatch: jest.fn(() => () => Promise.resolve()),
     getTokenStandardAndDetailsByChain: jest.fn().mockResolvedValue({
       standard: 'ERC20',
       symbol: 'APE',
@@ -69,15 +74,27 @@ jest.mock('../../helpers/utils/token-util', () => {
 const getMockedActions = () =>
   jest.requireMock('../../store/actions') as {
     addImportedTokens: jest.Mock;
+    importCustomAssetsBatch: jest.Mock;
   };
+
+const ASSETS_UNIFY_STATE_FLAG_ON = {
+  assetsUnifyState: {
+    enabled: true,
+    featureVersion: '1',
+  },
+};
 
 describe('CustomTokenImportPage', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
-    getMockedActions().addImportedTokens.mockClear();
+    const actions = getMockedActions();
+    actions.addImportedTokens.mockClear();
+    actions.importCustomAssetsBatch.mockClear();
   });
 
-  const buildState = () => ({
+  const buildState = (
+    metamaskOverrides: Record<string, unknown> = {},
+  ) => ({
     ...mockState,
     metamask: {
       ...mockState.metamask,
@@ -98,11 +115,15 @@ describe('CustomTokenImportPage', () => {
           ],
         },
       },
+      ...metamaskOverrides,
     },
   });
 
-  const renderPage = (trackEvent = jest.fn()) => {
-    const store = configureStore(buildState());
+  const renderPage = (
+    trackEvent = jest.fn(),
+    metamaskOverrides: Record<string, unknown> = {},
+  ) => {
+    const store = configureStore(buildState(metamaskOverrides));
     return {
       store,
       ...renderWithProvider(
@@ -113,6 +134,28 @@ describe('CustomTokenImportPage', () => {
         () => trackEvent,
       ),
     };
+  };
+
+  const submitCustomToken = async (
+    metamaskOverrides: Record<string, unknown> = {},
+  ) => {
+    const trackEvent = jest.fn();
+    const rendered = renderPage(trackEvent, metamaskOverrides);
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: '0x1111111111111111111111111111111111111111' },
+    });
+
+    await screen.findByTestId('custom-token-import-symbol-input');
+    await waitFor(() =>
+      expect(
+        screen.getByTestId('custom-token-import-submit-button'),
+      ).not.toBeDisabled(),
+    );
+
+    fireEvent.click(screen.getByTestId('custom-token-import-submit-button'));
+
+    return { trackEvent, ...rendered };
   };
 
   it('renders the form scaffolding without crashing', () => {
@@ -185,21 +228,7 @@ describe('CustomTokenImportPage', () => {
 
   it('returns to token management with success toast state after submitting a custom token', async () => {
     const actions = getMockedActions();
-    const trackEvent = jest.fn();
-    renderPage(trackEvent);
-
-    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
-      target: { value: '0x1111111111111111111111111111111111111111' },
-    });
-
-    await screen.findByTestId('custom-token-import-symbol-input');
-    await waitFor(() =>
-      expect(
-        screen.getByTestId('custom-token-import-submit-button'),
-      ).not.toBeDisabled(),
-    );
-
-    fireEvent.click(screen.getByTestId('custom-token-import-submit-button'));
+    const { trackEvent } = await submitCustomToken();
 
     await waitFor(() =>
       expect(actions.addImportedTokens).toHaveBeenCalledWith(
@@ -240,5 +269,172 @@ describe('CustomTokenImportPage', () => {
         },
       }),
     );
+  });
+
+  describe('when the assets-unify-state remote feature flag is enabled', () => {
+    it('seeds AssetsController via importCustomAssetsBatch so the token appears in the manage-tokens list', async () => {
+      const actions = getMockedActions();
+
+      await submitCustomToken({
+        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
+      });
+
+      const expectedAssetId =
+        'eip155:1/erc20:0x1111111111111111111111111111111111111111';
+
+      await waitFor(() =>
+        expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          [
+            {
+              assetId: expectedAssetId,
+              isHidden: false,
+            },
+          ],
+          {
+            [expectedAssetId]: expect.objectContaining({
+              address: '0x1111111111111111111111111111111111111111',
+              symbol: 'APE',
+              name: 'APE',
+              decimals: 18,
+              chainId: '0x1',
+              unlisted: true,
+            }),
+          },
+        ),
+      );
+
+      await waitFor(() =>
+        expect(actions.addImportedTokens).toHaveBeenCalled(),
+      );
+    });
+
+    it('marks the asset as previously hidden when assetPreferences has hidden: true for it', async () => {
+      const actions = getMockedActions();
+      const assetId =
+        'eip155:1/erc20:0x1111111111111111111111111111111111111111';
+
+      await submitCustomToken({
+        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
+        assetPreferences: {
+          [assetId]: { hidden: true },
+        },
+      });
+
+      await waitFor(() =>
+        expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          [
+            {
+              assetId,
+              isHidden: true,
+            },
+          ],
+          expect.any(Object),
+        ),
+      );
+    });
+
+    it('allows re-importing a token that is currently hidden in assetPreferences without showing "tokenAlreadyAdded"', async () => {
+      const actions = getMockedActions();
+      const tokenAddress = '0x1111111111111111111111111111111111111111';
+      const assetId = `eip155:1/erc20:${tokenAddress}`;
+      const accountId = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+
+      renderPage(jest.fn(), {
+        remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
+        // Simulate state after the user hid the token from the manage tokens
+        // list when assets-unify-state is on: the token remains in
+        // `customAssets` (so the unified `getAllTokens` selector still
+        // returns it) and `assetPreferences[assetId].hidden` is `true`.
+        customAssets: { [accountId]: [assetId] },
+        assetsInfo: {
+          [assetId]: {
+            type: 'erc20',
+            symbol: 'APE',
+            name: 'ApeCoin',
+            decimals: 18,
+          },
+        },
+        assetPreferences: {
+          [assetId]: { hidden: true },
+        },
+      });
+
+      fireEvent.change(
+        screen.getByTestId('custom-token-import-address-input'),
+        { target: { value: tokenAddress } },
+      );
+
+      await screen.findByTestId('custom-token-import-symbol-input');
+
+      expect(
+        screen.queryByText(messages.tokenAlreadyAdded.message),
+      ).not.toBeInTheDocument();
+      await waitFor(() =>
+        expect(
+          screen.getByTestId('custom-token-import-submit-button'),
+        ).not.toBeDisabled(),
+      );
+
+      fireEvent.click(screen.getByTestId('custom-token-import-submit-button'));
+
+      await waitFor(() =>
+        expect(actions.importCustomAssetsBatch).toHaveBeenCalledWith(
+          accountId,
+          [
+            {
+              assetId,
+              isHidden: true,
+            },
+          ],
+          expect.any(Object),
+        ),
+      );
+    });
+  });
+
+  it('still shows "tokenAlreadyAdded" for a visible (non-hidden) token even when assets-unify-state is enabled', async () => {
+    const tokenAddress = '0x1111111111111111111111111111111111111111';
+    const assetId = `eip155:1/erc20:${tokenAddress}`;
+    const accountId = 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3';
+
+    renderPage(jest.fn(), {
+      remoteFeatureFlags: ASSETS_UNIFY_STATE_FLAG_ON,
+      // Token is present in `customAssets` but NOT hidden: the unified
+      // selector should still return it, so the "already added" guard
+      // must trigger.
+      customAssets: { [accountId]: [assetId] },
+      assetsInfo: {
+        [assetId]: {
+          type: 'erc20',
+          symbol: 'APE',
+          name: 'ApeCoin',
+          decimals: 18,
+        },
+      },
+    });
+
+    fireEvent.change(screen.getByTestId('custom-token-import-address-input'), {
+      target: { value: tokenAddress },
+    });
+
+    await waitFor(() =>
+      expect(
+        screen.getByText(messages.tokenAlreadyAdded.message),
+      ).toBeInTheDocument(),
+    );
+    expect(
+      screen.getByTestId('custom-token-import-submit-button'),
+    ).toBeDisabled();
+  });
+
+  it('does not call importCustomAssetsBatch when the assets-unify-state remote feature flag is off', async () => {
+    const actions = getMockedActions();
+
+    await submitCustomToken();
+
+    await waitFor(() => expect(actions.addImportedTokens).toHaveBeenCalled());
+    expect(actions.importCustomAssetsBatch).not.toHaveBeenCalled();
   });
 });

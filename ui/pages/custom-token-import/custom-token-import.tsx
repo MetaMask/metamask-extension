@@ -27,6 +27,7 @@ import { Header, Page } from '../../components/multichain/pages/page';
 import {
   addImportedTokens,
   getTokenStandardAndDetailsByChain,
+  importCustomAssetsBatch,
 } from '../../store/actions';
 import {
   TOKEN_MANAGEMENT_ROUTE,
@@ -43,11 +44,16 @@ import {
   getAllTokens,
   selectERC20TokensByChain,
 } from '../../selectors';
+import { getIsAssetsUnifyStateEnabled } from '../../selectors/assets-unify-state/feature-flags';
+import {
+  getAssetsControllerAssetPreferences,
+  isAssetIdHiddenInPreferencesMap,
+} from '../../selectors/assets-unify-state/asset-preferences';
 import { checkExistingAddresses } from '../../helpers/utils/util';
 import { tokenInfoGetter } from '../../helpers/utils/token-util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { isEvmChainId } from '../../../shared/lib/asset-utils';
+import { isEvmChainId, toAssetId } from '../../../shared/lib/asset-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -95,6 +101,10 @@ export const CustomTokenImportPage = () => {
     string,
     Record<string, { address: string }[]>
   >;
+  const assetsUnifyStateFeatureEnabled = useSelector(
+    getIsAssetsUnifyStateEnabled,
+  );
+  const assetPreferences = useSelector(getAssetsControllerAssetPreferences);
   // Chain-scoped token-list cache, same source the backend uses inside
   // `getTokenStandardAndDetailsByChain`. Provides the metadata fallback for
   // `tokenInfoGetter` when on-chain `symbol()`/`decimals()`/`name()` calls
@@ -137,10 +147,41 @@ export const CustomTokenImportPage = () => {
       ]?.networkClientId
     : undefined;
 
-  const existingTokens = useMemo(
-    () => allTokens?.[selectedNetwork]?.[selectedAccount?.address ?? ''] ?? [],
-    [allTokens, selectedNetwork, selectedAccount?.address],
-  );
+  const existingTokens = useMemo(() => {
+    const tokens =
+      allTokens?.[selectedNetwork]?.[selectedAccount?.address ?? ''] ?? [];
+
+    // When assets-unify-state is enabled, `allTokens` is derived from
+    // AssetsController state. Hiding a token only flips
+    // `assetPreferences[assetId].hidden = true`; the token stays in
+    // `customAssets`, so it still appears in `allTokens`. Treat hidden tokens
+    // as not-yet-imported so users can re-import them — `handleSubmit`
+    // dispatches `importCustomAssetsBatch` with `isHidden: true`, which
+    // unhides the asset rather than adding a duplicate.
+    if (!assetsUnifyStateFeatureEnabled) {
+      return tokens;
+    }
+
+    return tokens.filter((token) => {
+      if (!token?.address) {
+        return true;
+      }
+      const assetId = toAssetId(
+        token.address as Hex,
+        selectedNetwork as CaipChainId | Hex,
+      );
+      if (!assetId) {
+        return true;
+      }
+      return !isAssetIdHiddenInPreferencesMap(assetPreferences, assetId);
+    });
+  }, [
+    allTokens,
+    assetPreferences,
+    assetsUnifyStateFeatureEnabled,
+    selectedAccount?.address,
+    selectedNetwork,
+  ]);
 
   const tokenListForSelectedNetwork =
     erc20TokensByChain?.[selectedNetwork]?.data;
@@ -433,6 +474,43 @@ export const CustomTokenImportPage = () => {
           networkClientId,
         ),
       );
+
+      // When assets-unify-state is enabled, the manage-tokens list reads from
+      // AssetsController (customAssets + assetsInfo) rather than
+      // TokensController.allTokens.
+      if (assetsUnifyStateFeatureEnabled && selectedAccount?.id) {
+        const assetId = toAssetId(
+          address as Hex,
+          selectedNetwork as CaipChainId | Hex,
+        );
+        if (assetId) {
+          await dispatch(
+            importCustomAssetsBatch(
+              selectedAccount.id,
+              [
+                {
+                  assetId,
+                  isHidden: isAssetIdHiddenInPreferencesMap(
+                    assetPreferences,
+                    assetId,
+                  ),
+                },
+              ],
+              {
+                [assetId]: {
+                  address,
+                  symbol,
+                  name: symbol,
+                  decimals: parsedDecimals,
+                  chainId: selectedNetwork,
+                  unlisted: true,
+                },
+              },
+            ),
+          );
+        }
+      }
+
       trackSubmitAttempt(1);
       navigate(TOKEN_MANAGEMENT_ROUTE, {
         state: {
@@ -450,12 +528,16 @@ export const CustomTokenImportPage = () => {
     }
   }, [
     address,
+    assetPreferences,
+    assetsUnifyStateFeatureEnabled,
     dispatch,
     isSubmitting,
     isValid,
     navigate,
     networkClientId,
     parsedDecimals,
+    selectedAccount?.id,
+    selectedNetwork,
     symbol,
     trackSubmitAttempt,
   ]);
