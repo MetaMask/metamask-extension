@@ -175,176 +175,6 @@
   "activity": {
     "message": "Aktibidad"
   },
-  "activity_approveSpendingCap_failed_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_approveSpendingCap_pending_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_approveSpendingCap_success_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_bridge_failed_description": {
-    "message": "Nabigo ang pag-bridge"
-  },
-  "activity_bridge_failed_title": {
-    "message": "Nabigo ang pag-bridge"
-  },
-  "activity_buy_success_description": {
-    "message": "Bumili ng $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_buy_success_title": {
-    "message": "Bumili ng $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_contractInteraction_success_title": {
-    "message": "Interaksyon sa smart na kontrata"
-  },
-  "activity_deposit_failed_description": {
-    "message": "Nabigo ang pagdeposito"
-  },
-  "activity_deposit_failed_title": {
-    "message": "Nabigo ang pagdeposito"
-  },
-  "activity_fallback_description": {
-    "message": "Transaksyon"
-  },
-  "activity_fallback_title": {
-    "message": "Transaksyon"
-  },
-  "activity_increaseSpendingCap_failed_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_increaseSpendingCap_pending_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_increaseSpendingCap_success_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_lendingDeposit_failed_title": {
-    "message": "Nabigo ang pagdeposito"
-  },
-  "activity_lendingWithdrawal_failed_description": {
-    "message": "Pumalya ang pag-withdraw"
-  },
-  "activity_lendingWithdrawal_failed_title": {
-    "message": "Pumalya ang pag-withdraw"
-  },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "Pag-withdraw sa pagpapautang"
-  },
-  "activity_lendingWithdrawal_success_title": {
-    "message": "Pag-withdraw sa pagpapautang"
-  },
-  "activity_nftMint_success_title": {
-    "message": "Nag-mint ng $1",
-    "description": "$1 is the NFT token symbol"
-  },
-  "activity_perpsCloseShort_success_description": {
-    "message": "Naisara ang short"
-  },
-  "activity_perpsCloseShort_success_title": {
-    "message": "Naisara ang short"
-  },
-  "activity_perpsOpenLong_success_description": {
-    "message": "Bukas na long"
-  },
-  "activity_perpsOpenLong_success_title": {
-    "message": "Bukas na long"
-  },
-  "activity_perpsWithdrawFunds_failed_description": {
-    "message": "Pumalya ang pag-withdraw"
-  },
-  "activity_perpsWithdrawFunds_failed_title": {
-    "message": "Pumalya ang pag-withdraw"
-  },
-  "activity_predictionCashedOut_pending_description": {
-    "message": "Nagca-cash out"
-  },
-  "activity_predictionCashedOut_pending_title": {
-    "message": "Nagca-cash out"
-  },
-  "activity_predictionCashedOut_success_description": {
-    "message": "Nag-cash out"
-  },
-  "activity_predictionCashedOut_success_title": {
-    "message": "Nag-cash out"
-  },
-  "activity_predictionPlaced_success_description": {
-    "message": "Nailagay na prediksyon"
-  },
-  "activity_predictionPlaced_success_title": {
-    "message": "Nailagay na prediksyon"
-  },
-  "activity_predictionsWithdrawFunds_failed_description": {
-    "message": "Pumalya ang pag-withdraw"
-  },
-  "activity_predictionsWithdrawFunds_failed_title": {
-    "message": "Pumalya ang pag-withdraw"
-  },
-  "activity_predictionsWithdrawFunds_pending_description": {
-    "message": "Wini-withdraw"
-  },
-  "activity_predictionsWithdrawFunds_pending_title": {
-    "message": "Wini-withdraw"
-  },
-  "activity_receive_failed_description": {
-    "message": "Mula kay/sa: $1",
-    "description": "$1 is the shortened sender address"
-  },
-  "activity_receive_pending_description": {
-    "message": "Mula kay/sa: $1",
-    "description": "$1 is the shortened sender address"
-  },
-  "activity_receive_success_description": {
-    "message": "Mula kay/sa: $1",
-    "description": "$1 is the shortened sender address"
-  },
-  "activity_revokeSpendingCap_failed_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_revokeSpendingCap_pending_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_revokeSpendingCap_success_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_send_failed_description": {
-    "message": "Para kay/sa: $1",
-    "description": "$1 is the shortened recipient address"
-  },
-  "activity_send_pending_description": {
-    "message": "Para kay/sa: $1",
-    "description": "$1 is the shortened recipient address"
-  },
-  "activity_send_pending_title": {
-    "message": "Ipinapadala ang $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "Para kay/sa: $1",
-    "description": "$1 is the shortened recipient address"
-  },
-  "activity_send_success_title": {
-    "message": "Nagpadala ng $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_swapIncomplete_failed_title": {
-    "message": "Nabigo ang pag-swap"
-  },
-  "activity_swap_failed_title": {
-    "message": "Nabigo ang pag-swap"
-  },
   "add": {
     "message": "Idagdag"
   },
@@ -4894,9 +4724,6 @@
   "newContract": {
     "message": "Bagong kontrata"
   },
-  "newCustomTokenAdded": {
-    "message": "Ang “$1” matagumpay na naidagdag!"
-  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Seguridad at pagkapribado"
   },
@@ -5651,9 +5478,6 @@
   "perSecond": {
     "message": "bawat segundo"
   },
-  "percent": {
-    "message": "$1%"
-  },
   "percentChange": {
     "message": "Pagbabago ng porsiyento"
   },
@@ -5982,10 +5806,6 @@
   "perpsAutoClose": {
     "message": "Awtomatikong nagsasara"
   },
-  "perpsAutoDeleveraging": {
-    "message": "Awtomatikong pag-deleverage",
-    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
-  },
   "perpsAvailable": {
     "message": "available",
     "description": "is the available balance amount"
@@ -6211,10 +6031,6 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Ang kasalukuyang presyo ay malapit sa tinatayang liquidation price"
-  },
-  "perpsLiquidated": {
-    "message": "Na-liquidate",
-    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Layo sa liquidation"
@@ -7032,46 +6848,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "Kailangan ang access sa camera",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrErrorNonUrPairingBody": {
-    "message": "Bumalik sa wallet na hardware mo at hanapin ang opsyon na ibahagi o i-export ang mga account mo, piliin ang MetaMask, at pagkatapos, i-scan ang QR code.",
-    "description": "Body text for the non-UR QR code error during pairing."
-  },
-  "qrErrorNonUrPairingTitle": {
-    "message": "I-scan ang pag-sync ng QR code sa wallet",
-    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
-  },
-  "qrErrorNonUrSigningBody": {
-    "message": "Bumalik sa wallet na hardware mo at aprubahan ang transaksyon, saka i-scan ang QR code na ipapakita nito.",
-    "description": "Body text for the non-UR QR code error during signing."
-  },
-  "qrErrorNonUrSigningTitle": {
-    "message": "I-scan ang QR code ng lagda",
-    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
-  },
-  "qrErrorUrDecodeBody": {
-    "message": "Siguraduhing nakikita nang buo at may sapat na liwanag ang QR code at subukan ulit. Kung may isyu pa rin, baka kailanganin mong i-update ang firmware ng wallet na hardware mo.",
-    "description": "Body text for the UR decode error (universal for pairing and signing)."
-  },
-  "qrErrorUrDecodeTitle": {
-    "message": "Hindi mabasa ang QR code",
-    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
-  },
-  "qrErrorWrongUrTypePairingBody": {
-    "message": "Bumalik sa wallet na hardware mo, piliin ang MetaMask sa uri ng wallet, at bumuo at mag-scan ng bagong QR code.",
-    "description": "Body text for the wrong UR type error during pairing."
-  },
-  "qrErrorWrongUrTypePairingTitle": {
-    "message": "Maling QR code",
-    "description": "Title shown when the UR type does not match what is expected during pairing."
-  },
-  "qrErrorWrongUrTypeSigningBody": {
-    "message": "Bumalik sa wallet na hardware mo at aprubahan ang transaksyon, saka i-scan ang QR code na ipapakita nito.",
-    "description": "Body text for the wrong UR type error during signing."
-  },
-  "qrErrorWrongUrTypeSigningTitle": {
-    "message": "Maling QR code",
-    "description": "Title shown when the UR type does not match what is expected during signing."
   },
   "queued": {
     "message": "Naka-queue"

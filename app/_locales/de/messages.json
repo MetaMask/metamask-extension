@@ -175,170 +175,6 @@
   "activity": {
     "message": "Aktivität"
   },
-  "activity_approveSpendingCap_failed_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_approveSpendingCap_pending_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_approveSpendingCap_success_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_bridge_failed_description": {
-    "message": "Bridge fehlgeschlagen"
-  },
-  "activity_bridge_failed_title": {
-    "message": "Bridge fehlgeschlagen"
-  },
-  "activity_buy_success_description": {
-    "message": "$1 gekauft",
-    "description": "$1 is the token symbol"
-  },
-  "activity_buy_success_title": {
-    "message": "$1 gekauft",
-    "description": "$1 is the token symbol"
-  },
-  "activity_contractInteraction_success_title": {
-    "message": "Smart Contract-Interaktion"
-  },
-  "activity_deposit_failed_description": {
-    "message": "Einzahlung fehlgeschlagen"
-  },
-  "activity_deposit_failed_title": {
-    "message": "Einzahlung fehlgeschlagen"
-  },
-  "activity_fallback_description": {
-    "message": "Transaktion"
-  },
-  "activity_fallback_title": {
-    "message": "Transaktion"
-  },
-  "activity_increaseSpendingCap_failed_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_increaseSpendingCap_pending_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_increaseSpendingCap_success_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_lendingDeposit_failed_title": {
-    "message": "Einzahlung fehlgeschlagen"
-  },
-  "activity_lendingWithdrawal_failed_description": {
-    "message": "Auszahlung fehlgeschlagen"
-  },
-  "activity_lendingWithdrawal_failed_title": {
-    "message": "Auszahlung fehlgeschlagen"
-  },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "Kreditauszahlung"
-  },
-  "activity_lendingWithdrawal_success_title": {
-    "message": "Kreditauszahlung"
-  },
-  "activity_nftMint_success_title": {
-    "message": "$1 geprägt",
-    "description": "$1 is the NFT token symbol"
-  },
-  "activity_perpsCloseShort_success_description": {
-    "message": "Geschlossene Short-Position"
-  },
-  "activity_perpsCloseShort_success_title": {
-    "message": "Geschlossene Short-Position"
-  },
-  "activity_perpsOpenLong_success_description": {
-    "message": "Geöffnete Long-Position"
-  },
-  "activity_perpsOpenLong_success_title": {
-    "message": "Geöffnete Long-Position"
-  },
-  "activity_perpsWithdrawFunds_failed_description": {
-    "message": "Auszahlung fehlgeschlagen"
-  },
-  "activity_perpsWithdrawFunds_failed_title": {
-    "message": "Auszahlung fehlgeschlagen"
-  },
-  "activity_predictionCashedOut_success_description": {
-    "message": "Ausgezahlt"
-  },
-  "activity_predictionCashedOut_success_title": {
-    "message": "Ausgezahlt"
-  },
-  "activity_predictionPlaced_success_description": {
-    "message": "Prognose platziert"
-  },
-  "activity_predictionPlaced_success_title": {
-    "message": "Prognose platziert"
-  },
-  "activity_predictionsWithdrawFunds_failed_description": {
-    "message": "Auszahlung fehlgeschlagen"
-  },
-  "activity_predictionsWithdrawFunds_failed_title": {
-    "message": "Auszahlung fehlgeschlagen"
-  },
-  "activity_predictionsWithdrawFunds_pending_description": {
-    "message": "Auszahlung"
-  },
-  "activity_predictionsWithdrawFunds_pending_title": {
-    "message": "Auszahlung"
-  },
-  "activity_receive_failed_description": {
-    "message": "Von: $1",
-    "description": "$1 is the shortened sender address"
-  },
-  "activity_receive_pending_description": {
-    "message": "Von: $1",
-    "description": "$1 is the shortened sender address"
-  },
-  "activity_receive_success_description": {
-    "message": "Von: $1",
-    "description": "$1 is the shortened sender address"
-  },
-  "activity_revokeSpendingCap_failed_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_revokeSpendingCap_pending_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_revokeSpendingCap_success_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_send_failed_description": {
-    "message": "An: $1",
-    "description": "$1 is the shortened recipient address"
-  },
-  "activity_send_pending_description": {
-    "message": "An: $1",
-    "description": "$1 is the shortened recipient address"
-  },
-  "activity_send_pending_title": {
-    "message": "Senden von $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "An: $1",
-    "description": "$1 is the shortened recipient address"
-  },
-  "activity_send_success_title": {
-    "message": "$1 gesendet",
-    "description": "$1 is the token symbol"
-  },
-  "activity_swapIncomplete_failed_title": {
-    "message": "Swap fehlgeschlagen"
-  },
-  "activity_swap_failed_title": {
-    "message": "Swap fehlgeschlagen"
-  },
   "add": {
     "message": "Hinzufügen"
   },
@@ -4888,9 +4724,6 @@
   "newContract": {
     "message": "Neuer Contract"
   },
-  "newCustomTokenAdded": {
-    "message": "„$1“ wurde erfolgreich hinzugefügt!"
-  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Einstellungen > Sicherheit und Datenschutz"
   },
@@ -5645,9 +5478,6 @@
   "perSecond": {
     "message": "pro Sekunde"
   },
-  "percent": {
-    "message": "$1 %"
-  },
   "percentChange": {
     "message": "Prozentänderung"
   },
@@ -5976,10 +5806,6 @@
   "perpsAutoClose": {
     "message": "Automatische Schließung"
   },
-  "perpsAutoDeleveraging": {
-    "message": "Automatischer Fremdkapitalabbau",
-    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
-  },
   "perpsAvailable": {
     "message": "verfügbar",
     "description": "is the available balance amount"
@@ -6205,10 +6031,6 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Der aktuelle Preis liegt in etwa bei dem geschätzten Liquiditätspreis"
-  },
-  "perpsLiquidated": {
-    "message": "Liquidiert",
-    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Liquidationsdistanz"
@@ -7026,46 +6848,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "Kamerazugriff erforderlich",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrErrorNonUrPairingBody": {
-    "message": "Kehren Sie zu Ihrer Hardware-Wallet zurück, suchen Sie die Option zum Teilen oder Exportieren Ihrer Konten, wählen Sie MetaMask aus und scannen Sie anschließend den QR-Code.",
-    "description": "Body text for the non-UR QR code error during pairing."
-  },
-  "qrErrorNonUrPairingTitle": {
-    "message": "Wallet-Synchronisierungs-QR-Code scannen",
-    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
-  },
-  "qrErrorNonUrSigningBody": {
-    "message": "Kehren Sie zu Ihrer Hardware-Wallet zurück, bestätigen Sie die Transaktion und scannen Sie anschließend den angezeigten QR-Code.",
-    "description": "Body text for the non-UR QR code error during signing."
-  },
-  "qrErrorNonUrSigningTitle": {
-    "message": "Signatur-QR-Code scannen",
-    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
-  },
-  "qrErrorUrDecodeBody": {
-    "message": "Stellen Sie sicher, dass der QR-Code vollständig sichtbar sowie gut beleuchtet ist und versuchen Sie es erneut. Falls das Problem weiterhin besteht, müssen Sie möglicherweise die Firmware Ihrer Hardware-Wallet aktualisieren.",
-    "description": "Body text for the UR decode error (universal for pairing and signing)."
-  },
-  "qrErrorUrDecodeTitle": {
-    "message": "QR-Code konnte nicht gelesen werden",
-    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
-  },
-  "qrErrorWrongUrTypePairingBody": {
-    "message": "Kehren Sie zu Ihrer Hardware-Wallet zurück, wählen Sie MetaMask als Wallet-Typ aus und generieren sowie scannen Sie anschließend einen neuen QR-Code.",
-    "description": "Body text for the wrong UR type error during pairing."
-  },
-  "qrErrorWrongUrTypePairingTitle": {
-    "message": "Falscher QR-Code",
-    "description": "Title shown when the UR type does not match what is expected during pairing."
-  },
-  "qrErrorWrongUrTypeSigningBody": {
-    "message": "Kehren Sie zu Ihrer Hardware-Wallet zurück, bestätigen Sie die Transaktion und scannen Sie anschließend den angezeigten QR-Code.",
-    "description": "Body text for the wrong UR type error during signing."
-  },
-  "qrErrorWrongUrTypeSigningTitle": {
-    "message": "Falscher QR-Code",
-    "description": "Title shown when the UR type does not match what is expected during signing."
   },
   "queued": {
     "message": "In Warteschlange"

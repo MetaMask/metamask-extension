@@ -175,176 +175,6 @@
   "activity": {
     "message": "Δραστηριότητα"
   },
-  "activity_approveSpendingCap_failed_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_approveSpendingCap_pending_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_approveSpendingCap_success_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_bridge_failed_description": {
-    "message": "Η μεταφορά απέτυχε"
-  },
-  "activity_bridge_failed_title": {
-    "message": "Η μεταφορά απέτυχε"
-  },
-  "activity_buy_success_description": {
-    "message": "Αγοράσατε $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_buy_success_title": {
-    "message": "Αγοράσατε $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_contractInteraction_success_title": {
-    "message": "Αλληλεπίδραση έξυπνου συμβολαίου"
-  },
-  "activity_deposit_failed_description": {
-    "message": "Η κατάθεση απέτυχε"
-  },
-  "activity_deposit_failed_title": {
-    "message": "Η κατάθεση απέτυχε"
-  },
-  "activity_fallback_description": {
-    "message": "Συναλλαγή"
-  },
-  "activity_fallback_title": {
-    "message": "Συναλλαγή"
-  },
-  "activity_increaseSpendingCap_failed_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_increaseSpendingCap_pending_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_increaseSpendingCap_success_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_lendingDeposit_failed_title": {
-    "message": "Η κατάθεση απέτυχε"
-  },
-  "activity_lendingWithdrawal_failed_description": {
-    "message": "Η ανάληψη απέτυχε"
-  },
-  "activity_lendingWithdrawal_failed_title": {
-    "message": "Η ανάληψη απέτυχε"
-  },
-  "activity_lendingWithdrawal_success_description": {
-    "message": "Ανάληψη Δανεισμού"
-  },
-  "activity_lendingWithdrawal_success_title": {
-    "message": "Ανάληψη Δανεισμού"
-  },
-  "activity_nftMint_success_title": {
-    "message": "Δημιουργήσατε $1",
-    "description": "$1 is the NFT token symbol"
-  },
-  "activity_perpsCloseShort_success_description": {
-    "message": "Κλειστή θέση πώλησης (short)"
-  },
-  "activity_perpsCloseShort_success_title": {
-    "message": "Κλειστή θέση πώλησης (short)"
-  },
-  "activity_perpsOpenLong_success_description": {
-    "message": "Άνοιξε θέση αγοράς (long)"
-  },
-  "activity_perpsOpenLong_success_title": {
-    "message": "Άνοιξε θέση αγοράς (long)"
-  },
-  "activity_perpsWithdrawFunds_failed_description": {
-    "message": "Η ανάληψη απέτυχε"
-  },
-  "activity_perpsWithdrawFunds_failed_title": {
-    "message": "Η ανάληψη απέτυχε"
-  },
-  "activity_predictionCashedOut_pending_description": {
-    "message": "Εξαργύρωση"
-  },
-  "activity_predictionCashedOut_pending_title": {
-    "message": "Εξαργύρωση"
-  },
-  "activity_predictionCashedOut_success_description": {
-    "message": "Εξαργυρώθηκε"
-  },
-  "activity_predictionCashedOut_success_title": {
-    "message": "Εξαργυρώθηκε"
-  },
-  "activity_predictionPlaced_success_description": {
-    "message": "H πρόβλεψη καταχωρήθηκε"
-  },
-  "activity_predictionPlaced_success_title": {
-    "message": "H πρόβλεψη καταχωρήθηκε"
-  },
-  "activity_predictionsWithdrawFunds_failed_description": {
-    "message": "Η ανάληψη απέτυχε"
-  },
-  "activity_predictionsWithdrawFunds_failed_title": {
-    "message": "Η ανάληψη απέτυχε"
-  },
-  "activity_predictionsWithdrawFunds_pending_description": {
-    "message": "Ανάληψη"
-  },
-  "activity_predictionsWithdrawFunds_pending_title": {
-    "message": "Ανάληψη"
-  },
-  "activity_receive_failed_description": {
-    "message": "Από: $1",
-    "description": "$1 is the shortened sender address"
-  },
-  "activity_receive_pending_description": {
-    "message": "Από: $1",
-    "description": "$1 is the shortened sender address"
-  },
-  "activity_receive_success_description": {
-    "message": "Από: $1",
-    "description": "$1 is the shortened sender address"
-  },
-  "activity_revokeSpendingCap_failed_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_revokeSpendingCap_pending_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_revokeSpendingCap_success_description": {
-    "message": "$1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_send_failed_description": {
-    "message": "Προς: $1",
-    "description": "$1 is the shortened recipient address"
-  },
-  "activity_send_pending_description": {
-    "message": "Προς: $1",
-    "description": "$1 is the shortened recipient address"
-  },
-  "activity_send_pending_title": {
-    "message": "Αποστολή $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_send_success_description": {
-    "message": "Προς: $1",
-    "description": "$1 is the shortened recipient address"
-  },
-  "activity_send_success_title": {
-    "message": "Εστάλη $1",
-    "description": "$1 is the token symbol"
-  },
-  "activity_swapIncomplete_failed_title": {
-    "message": "Η ανταλλαγή απέτυχε"
-  },
-  "activity_swap_failed_title": {
-    "message": "Η ανταλλαγή απέτυχε"
-  },
   "add": {
     "message": "Προσθήκη"
   },
@@ -4894,9 +4724,6 @@
   "newContract": {
     "message": "Νέο συμβόλαιο"
   },
-  "newCustomTokenAdded": {
-    "message": "Το “$1” προστέθηκε με επιτυχία!"
-  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Ρυθμίσεις > Ασφάλεια και απόρρητο"
   },
@@ -5651,9 +5478,6 @@
   "perSecond": {
     "message": "ανά δευτερόλεπτο"
   },
-  "percent": {
-    "message": "$1%"
-  },
   "percentChange": {
     "message": "Ποσοστιαία μεταβολή"
   },
@@ -5982,10 +5806,6 @@
   "perpsAutoClose": {
     "message": "Αυτόματο κλείσιμο"
   },
-  "perpsAutoDeleveraging": {
-    "message": "Αυτόματη μείωση μόχλευσης",
-    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
-  },
   "perpsAvailable": {
     "message": "διαθέσιμο",
     "description": "is the available balance amount"
@@ -6211,10 +6031,6 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Η τρέχουσα τιμή βρίσκεται κοντά στην εκτιμώμενη τιμή ρευστοποίησης"
-  },
-  "perpsLiquidated": {
-    "message": "Ρευστοποιήθηκε",
-    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Απόσταση ρευστοποίησης"
@@ -7032,46 +6848,6 @@
   "qrCameraAccessNeededTitle": {
     "message": "Απαιτείται πρόσβαση στην κάμερα",
     "description": "Title when the camera permission dialog was dismissed without a choice."
-  },
-  "qrErrorNonUrPairingBody": {
-    "message": "Επιστρέψτε στο πορτοφόλι υλικού σας και βρείτε την επιλογή για κοινή χρήση ή εξαγωγή των λογαριασμών σας, επιλέξτε το MetaMask και στη συνέχεια σαρώστε τον κωδικό QR.",
-    "description": "Body text for the non-UR QR code error during pairing."
-  },
-  "qrErrorNonUrPairingTitle": {
-    "message": "Σαρώστε τον κωδικό QR για συγχρονισμό με το πορτοφόλι",
-    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
-  },
-  "qrErrorNonUrSigningBody": {
-    "message": "Επιστρέψτε στο πορτοφόλι υλικού σας και εγκρίνετε τη συναλλαγή, στη συνέχεια σαρώστε τον κωδικό QR που εμφανίζεται.",
-    "description": "Body text for the non-UR QR code error during signing."
-  },
-  "qrErrorNonUrSigningTitle": {
-    "message": "Σαρώστε τον κωδικό QR για υπογραφή",
-    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
-  },
-  "qrErrorUrDecodeBody": {
-    "message": "Βεβαιωθείτε ότι ο κωδικός QR είναι ευδιάκριτος με καλό φωτισμό και προσπαθήστε ξανά. Αν το πρόβλημα συνεχιστεί, ίσως χρειαστεί να ενημερώσετε το υλικολογισμικό του πορτοφολιού υλικού σας.",
-    "description": "Body text for the UR decode error (universal for pairing and signing)."
-  },
-  "qrErrorUrDecodeTitle": {
-    "message": "Δεν ήταν δυνατή η ανάγνωση του κωδικού QR",
-    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
-  },
-  "qrErrorWrongUrTypePairingBody": {
-    "message": "Επιστρέψτε στο πορτοφόλι υλικού σας, επιλέξτε το MetaMask ως τύπο πορτοφολιού και στη συνέχεια δημιουργήστε και σαρώστε έναν νέο κωδικό QR.",
-    "description": "Body text for the wrong UR type error during pairing."
-  },
-  "qrErrorWrongUrTypePairingTitle": {
-    "message": "Λάθος κωδικός QR",
-    "description": "Title shown when the UR type does not match what is expected during pairing."
-  },
-  "qrErrorWrongUrTypeSigningBody": {
-    "message": "Επιστρέψτε στο πορτοφόλι υλικού σας και εγκρίνετε τη συναλλαγή, στη συνέχεια σαρώστε τον κωδικό QR που εμφανίζεται.",
-    "description": "Body text for the wrong UR type error during signing."
-  },
-  "qrErrorWrongUrTypeSigningTitle": {
-    "message": "Λάθος κωδικός QR",
-    "description": "Title shown when the UR type does not match what is expected during signing."
   },
   "queued": {
     "message": "Σε Αναμονή"
