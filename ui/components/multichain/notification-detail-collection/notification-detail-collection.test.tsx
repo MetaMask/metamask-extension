@@ -45,6 +45,8 @@ describe('NotificationDetailCollection', () => {
     const images = screen.getAllByRole('img');
     expect(images.length).toBe(2);
     expect(images[0]).toHaveAttribute('src', defaultProps.icon.src);
-    expect(images[1]).toHaveAttribute('src', defaultProps.icon.badgeSrc);
+    expect(images[1]).toHaveStyle(
+      `background-image: url("${defaultProps.icon.badgeSrc}")`,
+    );
   });
 });

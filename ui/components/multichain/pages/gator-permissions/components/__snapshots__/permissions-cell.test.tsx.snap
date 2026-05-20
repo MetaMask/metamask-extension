@@ -70,10 +70,11 @@ exports[`PermissionsCell renders correctly with required props 1`] = `
                   <div
                     class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
                   >
-                    <img
-                      alt="Polygon logo"
+                    <span
+                      aria-label="Polygon logo"
                       class="mm-avatar-token__token-image"
-                      src="./images/pol-token.svg"
+                      role="img"
+                      style="background-image: url(./images/pol-token.svg);"
                     />
                   </div>
                 </div>
@@ -84,10 +85,11 @@ exports[`PermissionsCell renders correctly with required props 1`] = `
                   <div
                     class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-token mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full"
                   >
-                    <img
-                      alt="Ethereum Mainnet logo"
+                    <span
+                      aria-label="Ethereum Mainnet logo"
                       class="mm-avatar-token__token-image"
-                      src="./images/eth_logo.svg"
+                      role="img"
+                      style="background-image: url(./images/eth_logo.svg);"
                     />
                   </div>
                 </div>

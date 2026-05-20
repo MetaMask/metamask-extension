@@ -478,7 +478,7 @@ class AssetListPage {
 
       const backgroundImage = getComputedStyle(avatarNetwork).backgroundImage || avatarNetwork.style.backgroundImage;
       const backgroundImageUrl = backgroundImage.match(/^url\\(["']?(.*?)["']?\\)$/)?.[1] ?? '';
-      const isImage = avatarNetwork instanceof HTMLImageElement;
+      const isImage = avatarNetwork.tagName.toLowerCase() === 'img';
       const rect = avatarNetwork.getBoundingClientRect();
 
       return {
