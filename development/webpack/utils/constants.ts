@@ -12,7 +12,7 @@ export const DEV_SERVER_OPTIONS: Configuration = {
   host: 'localhost',
   port: 8080,
   // client injection is disabled because the client is registered
-  // as a `dev-server-client` webpack entry by `ManifestPlugin` and injected
+  // as a `dev-server-client.js` webpack entry by `ManifestPlugin` and injected
   // into UI pages by `HtmlBundlerPlugin`'s `beforeEmit` hook.
   client: false,
   devMiddleware: {
