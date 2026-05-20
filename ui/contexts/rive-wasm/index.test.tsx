@@ -23,7 +23,7 @@ describe('rive-wasm context', () => {
 
     global.fetch = fetchMock as typeof fetch;
 
-    const riveWasmModule = await import(".");
+    const riveWasmModule = await import('./index');
 
     expect(fetchMock).not.toHaveBeenCalled();
 
