@@ -52,6 +52,16 @@ export default function init() {
           TrezorConnectSDK.init({
             ...msg.params,
             env: 'webextension',
+            // Force iframe core mode. The default 'auto' mode triggers a
+            // pre-call switch to 'core-in-suite-desktop' (a WebSocket to
+            // ws://127.0.0.1:21335 that can hang on its 20s timeout when
+            // Trezor Suite Desktop isn't running) and a TRANSPORT.GET_INFO
+            // probe in CoreInIframe.init whose 'core-in-popup' fallback is
+            // explicitly disabled in `webextension` env — leaving the
+            // Trezor Connect popup with no terminal state to render. See
+            // `app/scripts/lib/trezor-connect-bridge-iframe-mode.ts` for
+            // the symmetric MV2 fix.
+            coreMode: 'iframe',
           }).then(() => {
             sendResponse();
           });
