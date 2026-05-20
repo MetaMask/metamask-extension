@@ -117,7 +117,7 @@ export function GenericActivityCell({
 
   return (
     <Box className="px-4 py-3 transition-transform duration-200 ease-out">
-      <div className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-3">
+      <div className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4">
         <div className="relative flex items-center justify-center">
           <BadgeWrapper
             badge={
