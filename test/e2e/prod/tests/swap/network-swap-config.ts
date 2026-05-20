@@ -239,71 +239,71 @@ export const SWAP_TEST_NETWORKS: NetworkSwapConfig[] = [
   // },
   // Add more networks here as needed.
   //  Popular network list
-  // {
-  //   networkId: 'Base',
-  //   networkName: 'Base',
-  //   chainId: 8453,
-  //   nativeTokenSymbol: 'ETH',
-  //   manualTokens: [
-  //     {
-  //       symbol: 'USDC',
-  //       name: 'USD Coin',
-  //       address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-  //       decimals: 6,
-  //     },
-  //     {
-  //       symbol: 'WETH',
-  //       name: 'Wrapped Ether',
-  //       address: '0x4200000000000000000000000000000000000006',
-  //       decimals: 18,
-  //     },
-  //   ],
-  //   fixtureSetupMethod: 'withNetworkControllerOnBase',
-  //   blockExplorerUrl: 'https://basescan.org',
-  //   swapExecutionTokenSymbols: ['USDC', 'WETH'],
-  //   defaultSwapAmount: 0.0000001,
-  //   swapExecutionRoutes: [
-  //     { from: 'ETH', to: 'USDC', amount: '0.0000001' },
-  //     { from: 'USDC', to: 'WETH', amount: 0.01 },
-  //     { from: 'WETH', to: 'ETH', useMax: true },
-  //   ],
-  // },
-  // Custom network list
   {
-    networkId: 'Chiliz',
-    networkName: 'Chiliz Chain',
-    chainId: 88888,
-    nativeTokenSymbol: 'CHZ',
-    rpcUrl: 'https://rpc.ankr.com/chiliz',
-    rpcName: 'Chiliz RPC',
-    tokenlistUrl:
-      'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
+    networkId: 'Base',
+    networkName: 'Base',
+    chainId: 8453,
+    nativeTokenSymbol: 'ETH',
     manualTokens: [
       {
         symbol: 'USDC',
-        name: 'Bridged USDC (ChainPort)',
-        address: '0xa37936F56249965d407E39347528a1A91eB1cbef',
+        name: 'USD Coin',
+        address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
         decimals: 6,
       },
       {
-        symbol: 'PEPPER',
-        name: 'PEPPER',
-        address: '0x60F397acBCfB8f4e3234C659A3E10867e6fA6b67',
+        symbol: 'WETH',
+        name: 'Wrapped Ether',
+        address: '0x4200000000000000000000000000000000000006',
         decimals: 18,
       },
     ],
-    fixtureSetupMethod: 'withNetworkControllerOnMainnet',
-    blockExplorerUrl: 'https://explorer.chiliz.com',
-    swapExecutionTokenSymbols: ['USDC', 'PEPPER'],
+    fixtureSetupMethod: 'withNetworkControllerOnBase',
+    blockExplorerUrl: 'https://basescan.org',
+    swapExecutionTokenSymbols: ['USDC', 'WETH'],
+    defaultSwapAmount: 0.0000001,
     swapExecutionRoutes: [
-      { from: 'CHZ', to: 'USDC', amount: 5 },
-      { from: 'USDC', to: 'PEPPER', amount: 0.55 },
-      { from: 'PEPPER', to: 'CHZ', useMax: true },
+      { from: 'ETH', to: 'USDC', amount: '0.0000001' },
+      { from: 'USDC', to: 'WETH', amount: 0.01 },
+      { from: 'WETH', to: 'ETH', useMax: true },
     ],
-    defaultSwapAmount: 20,
-    gasFeeSponsoredByProtocol: true,
-    requiresManualSetup: true,
   },
+  // Custom network list
+  // {
+  //   networkId: 'Chiliz',
+  //   networkName: 'Chiliz Chain',
+  //   chainId: 88888,
+  //   nativeTokenSymbol: 'CHZ',
+  //   rpcUrl: 'https://rpc.ankr.com/chiliz',
+  //   rpcName: 'Chiliz RPC',
+  //   tokenlistUrl:
+  //     'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
+  //   manualTokens: [
+  //     {
+  //       symbol: 'USDC',
+  //       name: 'Bridged USDC (ChainPort)',
+  //       address: '0xa37936F56249965d407E39347528a1A91eB1cbef',
+  //       decimals: 6,
+  //     },
+  //     {
+  //       symbol: 'PEPPER',
+  //       name: 'PEPPER',
+  //       address: '0x60F397acBCfB8f4e3234C659A3E10867e6fA6b67',
+  //       decimals: 18,
+  //     },
+  //   ],
+  //   fixtureSetupMethod: 'withNetworkControllerOnMainnet',
+  //   blockExplorerUrl: 'https://explorer.chiliz.com',
+  //   swapExecutionTokenSymbols: ['USDC', 'PEPPER'],
+  //   swapExecutionRoutes: [
+  //     { from: 'CHZ', to: 'USDC', amount: 5 },
+  //     { from: 'USDC', to: 'PEPPER', amount: 0.55 },
+  //     { from: 'PEPPER', to: 'CHZ', useMax: true },
+  //   ],
+  //   defaultSwapAmount: 20,
+  //   gasFeeSponsoredByProtocol: true,
+  //   requiresManualSetup: true,
+  // },
 ];
 
 /**
