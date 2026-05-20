@@ -19,6 +19,8 @@ jobs:
       IS_CROSS_REPO_PR: ${{ steps.is-cross-repo.outputs.IS_CROSS_REPO_PR }}
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Determine whether this PR is cross-repo
         id: is-cross-repo
         run: echo "IS_CROSS_REPO_PR=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
@@ -36,6 +38,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: React to the comment
         run: |
           gh api \
@@ -61,6 +65,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
@@ -87,6 +93,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Checkout pull request
         run: gh pr checkout "${PR_NUMBER}"
         env:
@@ -116,6 +124,9 @@ jobs:
     if: ${{ needs.is-cross-repo-pr.outputs.IS_CROSS_REPO_PR == 'false' }}
     steps:
       - name: Checkout repository
+        # zizmor: ignore[artipacked]
+        # Credentials are persisted on purpose: this job pushes the
+        # updated attribution file back to the PR. No artifacts uploaded.
         uses: actions/checkout@v6
         with:
           # Use PAT to ensure that the commit later can trigger status check workflows
@@ -191,6 +202,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
       - name: Post comment if the update failed
         run: |
           passed="${{ needs.check-status.outputs.PASSED }}"

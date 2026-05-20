@@ -128,6 +128,7 @@ jobs:
             .github
             .nvmrc
           sparse-checkout-cone-mode: false
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v6

@@ -28,6 +28,9 @@ jobs:
       STORED_COVERAGE: ${{ needs.run-tests.outputs.stored-coverage }}
     steps:
       - name: Checkout repository
+        # zizmor: ignore[artipacked]
+        # Credentials are persisted on purpose: the job force-pushes the
+        # `metamaskbot/update-coverage` branch. No artifacts are uploaded.
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.LAVAMOAT_UPDATE_TOKEN }}
