@@ -1,5 +1,37 @@
+diff --git a/dist/data-sources/AccountsApiDataSource.cjs b/dist/data-sources/AccountsApiDataSource.cjs
+index dfd334c39f845e244ead969627cc196bb1edf7a3..f780bb932633024e7577e5596f0b5fe391834254 100644
+--- a/dist/data-sources/AccountsApiDataSource.cjs
++++ b/dist/data-sources/AccountsApiDataSource.cjs
+@@ -367,7 +367,10 @@ async function _AccountsApiDataSource_initializeActiveChains() {
+ }, _AccountsApiDataSource_fetchActiveChains = async function _AccountsApiDataSource_fetchActiveChains() {
+     const response = await __classPrivateFieldGet(this, _AccountsApiDataSource_apiClient, "f").accounts.fetchV2SupportedNetworks();
+     // Use fullSupport networks as active chains
+-    return response.fullSupport.map(decimalToChainId);
++    return (response.fullSupport
++        .map(decimalToChainId)
++        // TODO Restore solana when there is a fix for how we handle non-evm chains here
++        .filter((chainId) => chainId.startsWith('eip155:')));
+ }, _AccountsApiDataSource_processV5Balances = function _AccountsApiDataSource_processV5Balances(balances, request) {
+     const assetsBalance = {};
+     // Build a map of lowercase addresses to account IDs for efficient lookup
+diff --git a/dist/data-sources/AccountsApiDataSource.mjs b/dist/data-sources/AccountsApiDataSource.mjs
+index f8d8d9c37320092df5003f7626108bb0302bc9dc..e65d5acf7e061defcb86a096227a0868d9e86c0c 100644
+--- a/dist/data-sources/AccountsApiDataSource.mjs
++++ b/dist/data-sources/AccountsApiDataSource.mjs
+@@ -362,7 +362,10 @@ async function _AccountsApiDataSource_initializeActiveChains() {
+ }, _AccountsApiDataSource_fetchActiveChains = async function _AccountsApiDataSource_fetchActiveChains() {
+     const response = await __classPrivateFieldGet(this, _AccountsApiDataSource_apiClient, "f").accounts.fetchV2SupportedNetworks();
+     // Use fullSupport networks as active chains
+-    return response.fullSupport.map(decimalToChainId);
++    return (response.fullSupport
++        .map(decimalToChainId)
++        // TODO Restore solana when there is a fix for how we handle non-evm chains here
++        .filter((chainId) => chainId.startsWith('eip155:')));
+ }, _AccountsApiDataSource_processV5Balances = function _AccountsApiDataSource_processV5Balances(balances, request) {
+     const assetsBalance = {};
+     // Build a map of lowercase addresses to account IDs for efficient lookup
 diff --git a/dist/data-sources/RpcDataSource.cjs b/dist/data-sources/RpcDataSource.cjs
-index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063293e817f 100644
+index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..a30b5e647f38e2c1ccb7afa4dbdd58fa24aa59c5 100644
 --- a/dist/data-sources/RpcDataSource.cjs
 +++ b/dist/data-sources/RpcDataSource.cjs
 @@ -13,7 +13,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -11,7 +43,33 @@ index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063
  Object.defineProperty(exports, "__esModule", { value: true });
  exports.createRpcDataSource = exports.RpcDataSource = exports.caipChainIdToHex = void 0;
  const providers_1 = require("@ethersproject/providers");
-@@ -294,7 +294,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+@@ -25,6 +25,7 @@ const utils_2 = require("../utils/index.cjs");
+ const constants_1 = require("../utils/constants.cjs");
+ const AbstractDataSource_1 = require("./AbstractDataSource.cjs");
+ const evm_rpc_services_1 = require("./evm-rpc-services/index.cjs");
++const assets_1 = require("./evm-rpc-services/utils/assets.cjs");
+ const CONTROLLER_NAME = 'RpcDataSource';
+ const DEFAULT_BALANCE_INTERVAL = 30000; // 30 seconds
+ const DEFAULT_DETECTION_INTERVAL = 180000; // 3 minutes
+@@ -245,11 +246,13 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+             const { address, id: accountId } = account;
+             for (const chainId of chainsForAccount) {
+                 const hexChainId = (0, exports.caipChainIdToHex)(chainId);
+-                // Build a single AssetFetchEntry[] for native + custom ERC-20s
+                 const nativeAssetId = __classPrivateFieldGet(this, _RpcDataSource_getNativeAssetForChain, "f").call(this, chainId);
+-                const assetsToFetch = [
+-                    { assetId: nativeAssetId, address: constants_1.ZERO_ADDRESS },
+-                ];
++                const shouldSkipNative = (0, assets_1.shouldSkipNativeForCaipChainId)(chainId);
++                const assetsToFetch = [];
++                if (!shouldSkipNative) {
++                    // Build a single AssetFetchEntry[] for native + custom ERC-20s
++                    assetsToFetch.push({ assetId: nativeAssetId, address: constants_1.ZERO_ADDRESS });
++                }
+                 if (request.customAssets) {
+                     const existingMetadata = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getExistingAssetsMetadata).call(this);
+                     for (const assetId of request.customAssets) {
+@@ -294,7 +297,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
                      for (const balance of normalizedBalances) {
                          const stateMetadata = existingMetadata[balance.assetId];
                          const pipelineMetadata = assetsInfo[balance.assetId];
@@ -20,7 +78,16 @@ index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063
                          if (decimals === undefined) {
                              const parsed = (0, utils_1.parseCaipAssetType)(balance.assetId);
                              if (parsed.assetNamespace === 'erc20') {
-@@ -321,7 +321,7 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+@@ -315,13 +318,15 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+                     if (!assetsBalance[accountId]) {
+                         assetsBalance[accountId] = {};
+                     }
+-                    assetsBalance[accountId][nativeAssetId] = { amount: '0' };
++                    if (!shouldSkipNative) {
++                        assetsBalance[accountId][nativeAssetId] = { amount: '0' };
++                    }
+                     // Even on error, include native token metadata. Prefer the richer
+                     // metadata already in state (e.g. enriched with image/description
                      // by the price/info API) and fall back to a minimal stub only when
                      // nothing is in state yet, so we don't clobber that richer metadata.
                      const existingNativeMeta = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getExistingAssetsMetadata).call(this)[nativeAssetId];
@@ -29,7 +96,7 @@ index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063
                          assetsInfo[nativeAssetId] = existingNativeMeta;
                      }
                      else {
-@@ -619,7 +619,18 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
+@@ -619,7 +624,18 @@ class RpcDataSource extends AbstractDataSource_1.AbstractDataSource {
  }
  exports.RpcDataSource = RpcDataSource;
  _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
@@ -48,7 +115,7 @@ index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063
      const divisor = new bignumber_js_1.default(10).pow(decimals);
      return rawAmount.dividedBy(divisor).toFixed();
  }, _RpcDataSource_collectMetadataForBalances = function _RpcDataSource_collectMetadataForBalances(balances, chainId) {
-@@ -635,7 +646,7 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+@@ -635,7 +651,7 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
              // enriched by the price/info API with image, description, etc.
              // Only emit a minimal stub when there's nothing in state yet,
              // so we don't clobber that richer metadata on every balance refresh.
@@ -57,7 +124,7 @@ index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063
                  assetsInfo[balance.assetId] = existingMeta;
              }
              else {
-@@ -657,6 +668,15 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+@@ -657,6 +673,15 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
          }
      }
      return assetsInfo;
@@ -73,7 +140,7 @@ index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063
  }, _RpcDataSource_handleBalanceUpdate = 
  /**
   * Handle balance update from BalanceFetcher.
-@@ -681,7 +701,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+@@ -681,7 +706,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
      for (const balance of normalizedBalances) {
          const stateMetadata = existingMetadata[balance.assetId];
          const pipelineMetadata = assetsInfo[balance.assetId];
@@ -83,7 +150,7 @@ index 8cfd0c7e4ad0c69d9778cde2a5eed54d87564a7f..fa3be158c9ad5b6f39beed7acf554063
              continue;
          }
 diff --git a/dist/data-sources/RpcDataSource.mjs b/dist/data-sources/RpcDataSource.mjs
-index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad9bce092f 100644
+index 6fc556f592639593e9d6c60c61fd6fe107f6b134..282d9110825cb2fc7790c7ba66226a68eb6523f6 100644
 --- a/dist/data-sources/RpcDataSource.mjs
 +++ b/dist/data-sources/RpcDataSource.mjs
 @@ -9,7 +9,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
@@ -95,7 +162,33 @@ index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad
  import { Web3Provider } from "@ethersproject/providers";
  import { toHex } from "@metamask/controller-utils";
  import { isStrictHexString, isCaipChainId, parseCaipAssetType, parseCaipChainId } from "@metamask/utils";
-@@ -287,7 +287,7 @@ export class RpcDataSource extends AbstractDataSource {
+@@ -19,6 +19,7 @@ import { normalizeAssetId } from "../utils/index.mjs";
+ import { ZERO_ADDRESS } from "../utils/constants.mjs";
+ import { AbstractDataSource } from "./AbstractDataSource.mjs";
+ import { BalanceFetcher, MulticallClient, TokenDetector, TokensApiClient } from "./evm-rpc-services/index.mjs";
++import { shouldSkipNativeForCaipChainId } from "./evm-rpc-services/utils/assets.mjs";
+ const CONTROLLER_NAME = 'RpcDataSource';
+ const DEFAULT_BALANCE_INTERVAL = 30000; // 30 seconds
+ const DEFAULT_DETECTION_INTERVAL = 180000; // 3 minutes
+@@ -238,11 +239,13 @@ export class RpcDataSource extends AbstractDataSource {
+             const { address, id: accountId } = account;
+             for (const chainId of chainsForAccount) {
+                 const hexChainId = caipChainIdToHex(chainId);
+-                // Build a single AssetFetchEntry[] for native + custom ERC-20s
+                 const nativeAssetId = __classPrivateFieldGet(this, _RpcDataSource_getNativeAssetForChain, "f").call(this, chainId);
+-                const assetsToFetch = [
+-                    { assetId: nativeAssetId, address: ZERO_ADDRESS },
+-                ];
++                const shouldSkipNative = shouldSkipNativeForCaipChainId(chainId);
++                const assetsToFetch = [];
++                if (!shouldSkipNative) {
++                    // Build a single AssetFetchEntry[] for native + custom ERC-20s
++                    assetsToFetch.push({ assetId: nativeAssetId, address: ZERO_ADDRESS });
++                }
+                 if (request.customAssets) {
+                     const existingMetadata = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getExistingAssetsMetadata).call(this);
+                     for (const assetId of request.customAssets) {
+@@ -287,7 +290,7 @@ export class RpcDataSource extends AbstractDataSource {
                      for (const balance of normalizedBalances) {
                          const stateMetadata = existingMetadata[balance.assetId];
                          const pipelineMetadata = assetsInfo[balance.assetId];
@@ -104,7 +197,16 @@ index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad
                          if (decimals === undefined) {
                              const parsed = parseCaipAssetType(balance.assetId);
                              if (parsed.assetNamespace === 'erc20') {
-@@ -314,7 +314,7 @@ export class RpcDataSource extends AbstractDataSource {
+@@ -308,13 +311,15 @@ export class RpcDataSource extends AbstractDataSource {
+                     if (!assetsBalance[accountId]) {
+                         assetsBalance[accountId] = {};
+                     }
+-                    assetsBalance[accountId][nativeAssetId] = { amount: '0' };
++                    if (!shouldSkipNative) {
++                        assetsBalance[accountId][nativeAssetId] = { amount: '0' };
++                    }
+                     // Even on error, include native token metadata. Prefer the richer
+                     // metadata already in state (e.g. enriched with image/description
                      // by the price/info API) and fall back to a minimal stub only when
                      // nothing is in state yet, so we don't clobber that richer metadata.
                      const existingNativeMeta = __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_getExistingAssetsMetadata).call(this)[nativeAssetId];
@@ -113,7 +215,7 @@ index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad
                          assetsInfo[nativeAssetId] = existingNativeMeta;
                      }
                      else {
-@@ -611,7 +611,18 @@ export class RpcDataSource extends AbstractDataSource {
+@@ -611,7 +616,18 @@ export class RpcDataSource extends AbstractDataSource {
      }
  }
  _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated = new WeakMap(), _RpcDataSource_getNativeAssetForChain = new WeakMap(), _RpcDataSource_timeout = new WeakMap(), _RpcDataSource_tokenDetectionEnabled = new WeakMap(), _RpcDataSource_useExternalService = new WeakMap(), _RpcDataSource_isOnboarded = new WeakMap(), _RpcDataSource_activeChains = new WeakMap(), _RpcDataSource_chainStatuses = new WeakMap(), _RpcDataSource_providerCache = new WeakMap(), _RpcDataSource_activeSubscriptions = new WeakMap(), _RpcDataSource_unsubscribeTransactionConfirmed = new WeakMap(), _RpcDataSource_unsubscribeIncomingTransactions = new WeakMap(), _RpcDataSource_multicallClient = new WeakMap(), _RpcDataSource_balanceFetcher = new WeakMap(), _RpcDataSource_tokenDetector = new WeakMap(), _RpcDataSource_instances = new WeakSet(), _RpcDataSource_convertToHumanReadable = function _RpcDataSource_convertToHumanReadable(rawBalance, decimals) {
@@ -132,7 +234,7 @@ index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad
      const divisor = new BigNumberJS(10).pow(decimals);
      return rawAmount.dividedBy(divisor).toFixed();
  }, _RpcDataSource_collectMetadataForBalances = function _RpcDataSource_collectMetadataForBalances(balances, chainId) {
-@@ -627,7 +638,7 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+@@ -627,7 +643,7 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
              // enriched by the price/info API with image, description, etc.
              // Only emit a minimal stub when there's nothing in state yet,
              // so we don't clobber that richer metadata on every balance refresh.
@@ -141,11 +243,10 @@ index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad
                  assetsInfo[balance.assetId] = existingMeta;
              }
              else {
-@@ -649,7 +660,16 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
+@@ -649,6 +665,15 @@ _RpcDataSource_messenger = new WeakMap(), _RpcDataSource_onActiveChainsUpdated =
          }
      }
      return assetsInfo;
--}, _RpcDataSource_handleBalanceUpdate = 
 +}, _RpcDataSource_hasValidDecimals = function _RpcDataSource_hasValidDecimals(metadata) {
 +    return Boolean(metadata && Number.isFinite(metadata.decimals) && metadata.decimals >= 0);
 +}, _RpcDataSource_pickValidDecimals = function _RpcDataSource_pickValidDecimals(...metadatas) {
@@ -155,11 +256,10 @@ index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad
 +        }
 +    }
 +    return undefined;
-+}, _RpcDataSource_handleBalanceUpdate =
+ }, _RpcDataSource_handleBalanceUpdate = 
  /**
   * Handle balance update from BalanceFetcher.
-  *
-@@ -673,7 +693,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
+@@ -673,7 +698,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
      for (const balance of normalizedBalances) {
          const stateMetadata = existingMetadata[balance.assetId];
          const pipelineMetadata = assetsInfo[balance.assetId];
@@ -168,24 +268,76 @@ index 6fc556f592639593e9d6c60c61fd6fe107f6b134..54f1b45a1aa50ed36dfa5f02260e8dad
          if (decimals === undefined) {
              continue;
          }
-@@ -793,7 +813,7 @@ async function _RpcDataSource_handleBalanceUpdate(result) {
-     __classPrivateFieldGet(this, _RpcDataSource_instances, "m", _RpcDataSource_refreshBalanceForChains).call(this, toRefresh).catch((error) => {
-         log('Failed to refresh balance after incoming transactions', { error });
-     });
--}, _RpcDataSource_refreshBalanceForChains = 
-+}, _RpcDataSource_refreshBalanceForChains =
+diff --git a/dist/data-sources/SnapDataSource.cjs b/dist/data-sources/SnapDataSource.cjs
+index 2272801be7c25f2201653fb4189ad4da7340c2a9..dc79c84ec103154abeda0378d2fc983ea29812a2 100644
+--- a/dist/data-sources/SnapDataSource.cjs
++++ b/dist/data-sources/SnapDataSource.cjs
+@@ -345,6 +345,10 @@ _SnapDataSource_messenger = new WeakMap(), _SnapDataSource_onActiveChainsUpdated
+     const messenger = __classPrivateFieldGet(this, _SnapDataSource_messenger, "f");
+     messenger.subscribe('AccountsController:accountBalancesUpdated', __classPrivateFieldGet(this, _SnapDataSource_handleSnapBalancesUpdatedBound, "f"));
+     messenger.subscribe('PermissionController:stateChange', __classPrivateFieldGet(this, _SnapDataSource_handlePermissionStateChangeBound, "f"));
++    // Rediscover keyring snaps when any snap gets installed
++    messenger.subscribe('SnapController:snapInstalled', () => {
++        __classPrivateFieldGet(this, _SnapDataSource_instances, "m", _SnapDataSource_discoverKeyringSnaps).call(this);
++    });
+ }, _SnapDataSource_handleSnapBalancesUpdated = function _SnapDataSource_handleSnapBalancesUpdated(payload) {
+     // Transform the snap keyring payload to DataResponse format
+     let assetsBalance;
+diff --git a/dist/data-sources/SnapDataSource.d.cts b/dist/data-sources/SnapDataSource.d.cts
+index be7e0d2c3a1011f191fc4a50a0ba36af9f897749..8356b8e34cc13bbe12de96bffb87893636a7feae 100644
+--- a/dist/data-sources/SnapDataSource.d.cts
++++ b/dist/data-sources/SnapDataSource.d.cts
+@@ -1,5 +1,5 @@
+ import type { GetPermissions, PermissionConstraint, PermissionControllerStateChange } from "@metamask/permission-controller";
+-import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction } from "@metamask/snaps-controllers";
++import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction, SnapControllerSnapInstalledEvent } from "@metamask/snaps-controllers";
+ import type { AssetsControllerMessenger } from "../AssetsController.cjs";
+ import type { ChainId, DataRequest, DataResponse, Middleware } from "../types.cjs";
+ import { AbstractDataSource } from "./AbstractDataSource.cjs";
+@@ -64,7 +64,7 @@ export type SnapDataSourceState = {
  /**
-  * Fetch balances for the given chains across all active subscriptions and
-  * push updates to the controller.
-@@ -932,7 +952,7 @@ async function _RpcDataSource_refreshBalanceForChains(chainIds) {
-     };
- }, _RpcDataSource_clearProviderCache = function _RpcDataSource_clearProviderCache() {
-     __classPrivateFieldGet(this, _RpcDataSource_providerCache, "f").clear();
--}, _RpcDataSource_fetchDecimalsViaRpc = 
-+}, _RpcDataSource_fetchDecimalsViaRpc =
+  * Allowed events that SnapDataSource can subscribe to.
+  */
+-export type SnapDataSourceAllowedEvents = AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange;
++export type SnapDataSourceAllowedEvents = AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange | SnapControllerSnapInstalledEvent;
+ export type SnapDataSourceAllowedActions = SnapControllerGetRunnableSnapsAction | SnapControllerHandleRequestAction | GetPermissions;
+ export type SnapDataSourceOptions = {
+     /** The AssetsController messenger (shared by all data sources). */
+diff --git a/dist/data-sources/SnapDataSource.d.mts b/dist/data-sources/SnapDataSource.d.mts
+index 635744e9df1cad3698ae2ba3bb952bd652785ee1..cf4e643f50c3d91423fdd22dc8891bd36fbb6952 100644
+--- a/dist/data-sources/SnapDataSource.d.mts
++++ b/dist/data-sources/SnapDataSource.d.mts
+@@ -1,5 +1,5 @@
+ import type { GetPermissions, PermissionConstraint, PermissionControllerStateChange } from "@metamask/permission-controller";
+-import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction } from "@metamask/snaps-controllers";
++import type { SnapControllerGetRunnableSnapsAction, SnapControllerHandleRequestAction, SnapControllerSnapInstalledEvent } from "@metamask/snaps-controllers";
+ import type { AssetsControllerMessenger } from "../AssetsController.mjs";
+ import type { ChainId, DataRequest, DataResponse, Middleware } from "../types.mjs";
+ import { AbstractDataSource } from "./AbstractDataSource.mjs";
+@@ -64,7 +64,7 @@ export type SnapDataSourceState = {
  /**
-  * Fetch the `decimals()` value from an ERC20 contract via RPC.
-  *
+  * Allowed events that SnapDataSource can subscribe to.
+  */
+-export type SnapDataSourceAllowedEvents = AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange;
++export type SnapDataSourceAllowedEvents = AccountsControllerAccountBalancesUpdatedEvent | PermissionControllerStateChange | SnapControllerSnapInstalledEvent;
+ export type SnapDataSourceAllowedActions = SnapControllerGetRunnableSnapsAction | SnapControllerHandleRequestAction | GetPermissions;
+ export type SnapDataSourceOptions = {
+     /** The AssetsController messenger (shared by all data sources). */
+diff --git a/dist/data-sources/SnapDataSource.mjs b/dist/data-sources/SnapDataSource.mjs
+index e229d840c2b506efd286ba0eb951fd77f0713b79..1e33cd35800f0e8f325a145945969e11357d6f21 100644
+--- a/dist/data-sources/SnapDataSource.mjs
++++ b/dist/data-sources/SnapDataSource.mjs
+@@ -339,6 +339,10 @@ _SnapDataSource_messenger = new WeakMap(), _SnapDataSource_onActiveChainsUpdated
+     const messenger = __classPrivateFieldGet(this, _SnapDataSource_messenger, "f");
+     messenger.subscribe('AccountsController:accountBalancesUpdated', __classPrivateFieldGet(this, _SnapDataSource_handleSnapBalancesUpdatedBound, "f"));
+     messenger.subscribe('PermissionController:stateChange', __classPrivateFieldGet(this, _SnapDataSource_handlePermissionStateChangeBound, "f"));
++    // Rediscover keyring snaps when any snap gets installed
++    messenger.subscribe('SnapController:snapInstalled', () => {
++        __classPrivateFieldGet(this, _SnapDataSource_instances, "m", _SnapDataSource_discoverKeyringSnaps).call(this);
++    });
+ }, _SnapDataSource_handleSnapBalancesUpdated = function _SnapDataSource_handleSnapBalancesUpdated(payload) {
+     // Transform the snap keyring payload to DataResponse format
+     let assetsBalance;
 diff --git a/dist/defaults.cjs b/dist/defaults.cjs
 index 89c221284337be43bd46579e76eb3fde24c61d84..742b313fd98c823da4d6479df94433bfadf3ab8b 100644
 --- a/dist/defaults.cjs
