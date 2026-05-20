@@ -35,7 +35,6 @@ export const RewardsBadge = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const [imageLoadError, setImageLoadError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const handleClose = useCallback(() => {

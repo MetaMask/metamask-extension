@@ -1167,6 +1167,38 @@ describe('RewardsController', () => {
       );
     });
 
+    it('returns 0 when /vip/fees has fees but no hyperliquid builderFeeBips', async () => {
+      await withController(
+        { state: stateWithVipAccount(), isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation(
+            (method: string, ..._args: unknown[]): unknown => {
+              if (method === 'RewardsDataService:getVipFees') {
+                return Promise.resolve({
+                  vipTier: 2,
+                  fees: {
+                    swaps: { feeBips: '50' },
+                  },
+                  updatedAt: '2026-05-01T00:00:00.000Z',
+                } as VipFeesResponseDto);
+              }
+              return Promise.resolve(undefined);
+            },
+          );
+
+          const result = await controller.getPerpsDiscountForAccount(
+            VIP_ACCOUNT,
+            BASE_FEE_BIPS,
+          );
+
+          expect(result).toBe(0);
+          expect(
+            controller.state.rewardsVipPerpsFees[VIP_SUB_ID],
+          ).toBeUndefined();
+        },
+      );
+    });
+
     it('returns 0 when /vip/fees returns tier 0 (fees=null)', async () => {
       await withController(
         { state: stateWithVipAccount(), isDisabled: false },
@@ -3438,19 +3470,10 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should return false for empty code', async () => {
+    it('should return false for empty / whitespace-only input', async () => {
       await withController({ isDisabled: false }, async ({ controller }) => {
-        const result = await controller.validateReferralCode('  ');
-
-        expect(result).toBe(false);
-      });
-    });
-
-    it('should return false for code with invalid length', async () => {
-      await withController({ isDisabled: false }, async ({ controller }) => {
-        const result = await controller.validateReferralCode('TEST');
-
-        expect(result).toBe(false);
+        expect(await controller.validateReferralCode('')).toBe(false);
+        expect(await controller.validateReferralCode('   ')).toBe(false);
       });
     });
 
@@ -3468,6 +3491,28 @@ describe('RewardsController', () => {
           const result = await controller.validateReferralCode('TEST12');
 
           expect(result).toBe(true);
+        },
+      );
+    });
+
+    it('should forward non-empty vanity codes to the data service', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:validateReferralCode') {
+              return Promise.resolve({ valid: true });
+            }
+            return undefined;
+          });
+
+          const result = await controller.validateReferralCode('BANKLESS');
+
+          expect(result).toBe(true);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:validateReferralCode',
+            'BANKLESS',
+          );
         },
       );
     });
