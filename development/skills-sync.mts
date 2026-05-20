@@ -1,20 +1,27 @@
 // Wrapper for `yarn skills`. Picks a multi-source-aware tools/sync from
 // whichever skill repo is configured and delegates.
 //
-// Source precedence:
-//   1. METAMASK_SKILLS_DIR   public MetaMask/skills clone (engineer override)
-//   2. CONSENSYS_SKILLS_DIR  private Consensys/skills clone (internal overlay)
-//   3. .skills-cache/metamask-skills (populated by postinstall — zero-config default)
-// First match wins for the tools/sync binary; install still walks every
-// configured source. Cache fallback means `yarn skills` works out of the box
-// after `yarn install` without any shell rc edit.
+// Source configuration comes from env vars first, then .skills.local.
+// Prefer the public MetaMask/skills sync CLI whenever it is available:
+//   1. METAMASK_SKILLS_DIR/tools/sync
+//   2. .skills-cache/metamask-skills/tools/sync (zero-config default)
+//   3. CONSENSYS_SKILLS_DIR/tools/sync (private fallback when no public source exists)
+// The public sync still walks every configured source. Cache fallback means
+// `yarn skills` works out of the box after `yarn install` without any shell rc
+// edit.
 
 import { spawnSync } from 'node:child_process';
-import { statSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
+import { parse } from 'dotenv';
 
 const REPO = 'metamask-extension';
 const CACHE_DIR = path.join(process.cwd(), '.skills-cache', 'metamask-skills');
+const CONFIG_FILE = path.join(process.cwd(), '.skills.local');
+const SOURCE_ENV_KEYS = [
+  'METAMASK_SKILLS_DIR',
+  'CONSENSYS_SKILLS_DIR',
+] as const;
 
 function syncIn(dir: string): string | null {
   const candidate = path.join(dir, 'tools', 'sync');
@@ -26,20 +33,57 @@ function syncIn(dir: string): string | null {
   return null;
 }
 
-type SyncPick = { sync: string; cacheFallback: boolean };
+type SkillSourceEnv = Record<
+  (typeof SOURCE_ENV_KEYS)[number],
+  string | undefined
+>;
+type SyncPick = { sync: string };
 
-function pickSync(): SyncPick | null {
-  for (const env of ['METAMASK_SKILLS_DIR', 'CONSENSYS_SKILLS_DIR']) {
-    const dir = process.env[env];
-    if (!dir) continue;
-    const hit = syncIn(dir);
-    if (hit) return { sync: hit, cacheFallback: false };
+function loadSkillSourceEnv(): SkillSourceEnv {
+  const env: SkillSourceEnv = {
+    METAMASK_SKILLS_DIR: process.env.METAMASK_SKILLS_DIR,
+    CONSENSYS_SKILLS_DIR: process.env.CONSENSYS_SKILLS_DIR,
+  };
+
+  try {
+    const localConfig = parse(readFileSync(CONFIG_FILE, 'utf8'));
+    for (const key of SOURCE_ENV_KEYS) {
+      if (!env[key]) {
+        env[key] = localConfig[key];
+      }
+    }
+  } catch {
+    // ignored: .skills.local is optional
   }
-  const cache = syncIn(CACHE_DIR);
-  return cache ? { sync: cache, cacheFallback: true } : null;
+
+  return env;
 }
 
-const picked = pickSync();
+function pickSync(sourceEnv: SkillSourceEnv): SyncPick | null {
+  const publicSync = sourceEnv.METAMASK_SKILLS_DIR
+    ? syncIn(sourceEnv.METAMASK_SKILLS_DIR)
+    : null;
+  if (publicSync) {
+    return { sync: publicSync };
+  }
+
+  const cacheSync = syncIn(CACHE_DIR);
+  if (cacheSync) {
+    return { sync: cacheSync };
+  }
+
+  if (sourceEnv.CONSENSYS_SKILLS_DIR) {
+    const privateSync = syncIn(sourceEnv.CONSENSYS_SKILLS_DIR);
+    if (privateSync) {
+      return { sync: privateSync };
+    }
+  }
+
+  return null;
+}
+
+const sourceEnv = loadSkillSourceEnv();
+const picked = pickSync(sourceEnv);
 if (!picked) {
   process.stderr.write(
     [
@@ -48,14 +92,15 @@ if (!picked) {
       'The postinstall hook normally clones the public skills repo into',
       '.skills-cache/metamask-skills automatically. If that did not happen',
       '(e.g. you ran the wrapper before `yarn install`, or postinstall was',
-      'skipped via CI / SKILLS_SKIP_POSTINSTALL), point at a clone manually:',
+      'skipped via CI / SKILLS_SKIP_POSTINSTALL), point at a clone manually',
+      'in .skills.local or via shell env:',
       '',
       '  git clone https://github.com/MetaMask/skills ~/dev/metamask/skills',
-      '  export METAMASK_SKILLS_DIR=~/dev/metamask/skills',
+      '  echo METAMASK_SKILLS_DIR=~/dev/metamask/skills >> .skills.local',
       '',
       'Optional private overlay (Consensys internal, SSH required):',
       '  git clone git@github.com:Consensys/skills.git ~/dev/Consensys/skills',
-      '  export CONSENSYS_SKILLS_DIR=~/dev/Consensys/skills',
+      '  echo CONSENSYS_SKILLS_DIR=~/dev/Consensys/skills >> .skills.local',
       '',
       'Then re-run `yarn skills`.',
       '',
@@ -65,7 +110,12 @@ if (!picked) {
 }
 
 const env = { ...process.env };
-if (picked.cacheFallback && !env.METAMASK_SKILLS_DIR) {
+for (const key of SOURCE_ENV_KEYS) {
+  if (!env[key] && sourceEnv[key]) {
+    env[key] = sourceEnv[key];
+  }
+}
+if (!env.METAMASK_SKILLS_DIR && syncIn(CACHE_DIR)) {
   env.METAMASK_SKILLS_DIR = CACHE_DIR;
 }
 

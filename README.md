@@ -80,24 +80,25 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
 
 ## AI Agent Skills (`yarn skills`)
 
-AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [Consensys/skills](https://github.com/Consensys/skills) repo. Per [ADR #57](https://github.com/MetaMask/decisions/pull/162) this content is **not committed here** — `yarn skills` syncs it on demand into local-only paths under `.cursor/`, `.claude/`, and `.agents/`.
+AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [MetaMask/skills](https://github.com/MetaMask/skills) repo, with an optional private overlay from [Consensys/skills](https://github.com/Consensys/skills). Per [ADR #57](https://github.com/MetaMask/decisions/pull/162) this content is **not committed here** — `yarn skills` syncs it on demand into local-only paths under `.cursor/`, `.claude/`, and `.agents/`.
 
-One-time setup:
-
-```bash
-git clone git@github.com:Consensys/skills.git ~/path/to/consensys-skills
-export CONSENSYS_SKILLS_DIR=~/path/to/consensys-skills   # add to your shell rc
-```
-
-Then in this repo:
+Zero-config setup:
 
 ```bash
-cp .skills.local.example .skills.local       # optional: pre-pick default domains
-yarn skills                                   # interactive prompt
-SKILLS_DOMAINS=perps,testing yarn skills      # non-interactive
+yarn install # clones MetaMask/skills into .skills-cache/metamask-skills
+yarn skills  # syncs all default skills from the cache
 ```
 
-If `CONSENSYS_SKILLS_DIR` is unset, `yarn skills` prints the same setup instructions and exits. Skipping it is fine — it only affects agent tooling, not the app build.
+Optional local configuration:
+
+```bash
+cp .skills.local.example .skills.local
+# edit .skills.local to set SKILLS_DOMAINS or override skills source paths
+yarn skills --select                         # interactively pick domains
+SKILLS_DOMAINS=perps,testing yarn skills      # one-off domain override
+```
+
+Skipping `yarn skills` is fine — it only affects agent tooling, not the app build.
 
 ## Git Hooks
 

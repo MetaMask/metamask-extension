@@ -33,14 +33,14 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 
 ### Comprehensive Guidelines Location
 
-> **Setup required:** Paths under `.cursor/`, `.claude/`, and `.agents/` are **not committed**. They are synced on demand from [Consensys/skills](https://github.com/Consensys/skills) via `yarn skills` (see README → "AI Agent Skills"). Run `yarn skills` first; otherwise the references below will not exist locally.
+> **Agent skills:** Paths under `.cursor/`, `.claude/`, and `.agents/` are synced from [MetaMask/skills](https://github.com/MetaMask/skills) by `yarn install` and can be refreshed with `yarn skills` (see README -> "AI Agent Skills"). If a referenced skill is missing locally, run `yarn skills`.
 
 Read these files for detailed coding standards:
 
 - Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
 - Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
 - E2E testing standards: `./test/e2e/AGENTS.md`
-- E2E test creation workflow (Agent Skill): `.cursor/skills/creating-e2e-tests/SKILL.md` (symlinked from `.claude/skills/` and `.agents/skills/` — edit the `.cursor` copy only)
+- E2E test creation workflow (Agent Skill): `.agents/skills/mms-e2e-testing/SKILL.md`
 - CI workflows: `.github/AGENTS.md`
 - Front-end performance:
   - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)

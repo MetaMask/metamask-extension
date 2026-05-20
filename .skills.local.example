@@ -5,13 +5,14 @@
 # `.skills-cache/metamask-skills` on every `yarn install`. `yarn skills`
 # auto-detects that cache when no env var is set — nothing to do.
 #
-# Optional: point at a different clone via env var (set in your shell rc):
+# Optional: point at a different clone here, or via env var if you need a
+# per-shell override. Environment variables take precedence over this file.
 #   METAMASK_SKILLS_DIR   path to MetaMask/skills checkout (public, no auth)
 #   CONSENSYS_SKILLS_DIR  path to Consensys/skills checkout (private overlay)
 #
-# Example shell rc setup (only if you want to override the cache):
-#   export METAMASK_SKILLS_DIR=~/dev/metamask/skills
-#   export CONSENSYS_SKILLS_DIR=~/dev/Consensys/skills   # optional
+# Example local setup (only if you want to override the cache):
+#   METAMASK_SKILLS_DIR=~/dev/metamask/skills
+#   CONSENSYS_SKILLS_DIR=~/dev/Consensys/skills   # optional
 #
 # Default behavior installs ALL domains. Set SKILLS_DOMAINS to opt out of some:
 #   SKILLS_DOMAINS=                          # all (default)
