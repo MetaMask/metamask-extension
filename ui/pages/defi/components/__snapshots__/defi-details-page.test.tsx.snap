@@ -35,10 +35,11 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
         <div
           class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
         >
-          <img
-            alt="Lido logo"
+          <span
+            aria-label="Lido logo"
             class="mm-avatar-token__token-image"
-            src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png"
+            role="img"
+            style="background-image: url(https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png);"
           />
         </div>
         <div
@@ -47,10 +48,11 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
           >
-            <img
-              alt="Custom Mainnet RPC logo"
+            <span
+              aria-label="Custom Mainnet RPC logo"
               class="mm-avatar-network__network-image"
-              src="./images/eth_logo.svg"
+              role="img"
+              style="background-image: url(./images/eth_logo.svg);"
             />
           </div>
         </div>
@@ -101,10 +103,11 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                 <div
                   class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-full"
                 >
-                  <img
-                    alt="Liquid staked Ether 2.0 logo"
+                  <span
+                    aria-label="Liquid staked Ether 2.0 logo"
                     class="mm-avatar-token__token-image"
-                    src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png"
+                    role="img"
+                    style="background-image: url(https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84/logo.png);"
                   />
                 </div>
                 <div
@@ -113,10 +116,11 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                   <div
                     class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-section mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
                   >
-                    <img
-                      alt="Custom Mainnet RPC logo"
+                    <span
+                      aria-label="Custom Mainnet RPC logo"
                       class="mm-avatar-network__network-image"
-                      src="./images/eth_logo.svg"
+                      role="img"
+                      style="background-image: url(./images/eth_logo.svg);"
                     />
                   </div>
                 </div>
