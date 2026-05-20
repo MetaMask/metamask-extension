@@ -1,7 +1,29 @@
+import type { Configuration } from 'webpack-dev-server';
+
 export const MODES = {
   PRODUCTION: 'production',
   DEVELOPMENT: 'development',
 } as const;
+
+export const DEV_SERVER_OPTIONS: Configuration = {
+  hot: false,
+  liveReload: true,
+  // always use loopback, as 0.0.0.0 tends to fail on some machines (WSL2?)
+  host: 'localhost',
+  port: 8080,
+  // client injection is disabled because the client is registered
+  // as a `dev-server-client` webpack entry by `ManifestPlugin` and injected
+  // into UI pages by `HtmlBundlerPlugin`'s `beforeEmit` hook.
+  client: false,
+  devMiddleware: {
+    // browsers need actual files on disk; extension pages are loaded via
+    // `chrome-extension://`, not from the dev-server HTTP origin.
+    writeToDisk: true,
+  },
+  // we don't need/have a "static" directory, so disable it
+  static: false,
+  allowedHosts: 'all',
+};
 
 /**
  * The build environment. This describes the environment this build was produced in.

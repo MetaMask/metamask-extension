@@ -1,5 +1,6 @@
 import { join, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
+import type { Configuration } from 'webpack-dev-server';
 import type TerserPluginType from 'terser-webpack-plugin';
 
 export type Manifest = chrome.runtime.Manifest;
@@ -69,6 +70,30 @@ export const UI_COMPONENT_RE = new RegExp(
  * @returns `undefined`
  */
 export const noop = () => undefined;
+
+/**
+ * Builds the webpack-dev-server client import URL from a
+ * dev-server config. webpack preserves the query string as `__resourceQuery`,
+ * which the client reads at runtime to know where to connect.
+ *
+ * Only fields that are set are forwarded; anything omitted falls back to
+ * webpack-dev-server's client defaults at runtime. `protocol=ws` is always
+ * included because the extension page origin is `chrome-extension://...`,
+ * so the client cannot auto-detect a WebSocket protocol.
+ *
+ * @param config - The webpack-dev-server configuration.
+ * @returns The import specifier for the dev-server client.
+ */
+export const getDevServerClientUrl = (config: Configuration): string => {
+  const params = new URLSearchParams({ protocol: 'ws' });
+  if (config.host !== undefined) params.set('hostname', config.host);
+  if (config.port !== undefined) params.set('port', config.port.toString());
+  if (config.hot !== undefined) params.set('hot', config.hot.toString());
+  if (config.liveReload !== undefined) {
+    params.set('live-reload', config.liveReload.toString());
+  }
+  return `webpack-dev-server/client/index?${params}`;
+};
 
 /**
  * @param filename

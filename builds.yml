@@ -203,7 +203,6 @@ features:
 # Variables that were declared have to be defined somewhere in the load chain before usage
 env:
   - ENABLE_SENTRY: true
-  - ENABLE_DEV_SERVER: false
   - ACCOUNTS_USE_DEV_APIS: false
   - BRIDGE_USE_DEV_APIS: false
   - SWAPS_USE_DEV_APIS: false

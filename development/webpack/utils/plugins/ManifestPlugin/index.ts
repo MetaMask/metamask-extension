@@ -14,9 +14,11 @@ import { validate } from 'schema-utils';
 import {
   noop,
   extensionToJs,
+  getDevServerClientUrl,
   type Manifest,
   type Browser,
 } from '../../helpers';
+import { DEV_SERVER_OPTIONS } from '../../constants';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
@@ -699,6 +701,19 @@ export class ManifestPlugin<Z extends boolean> {
         }
         this.addHtml({ compiler, entries, filename });
       }
+    }
+
+    // In development mode with watch enabled, register the webpack-dev-server client.
+    if (
+      compiler.options.mode === 'development' &&
+      compiler.options.watch === true
+    ) {
+      this.addManifestScript({
+        compiler,
+        entries,
+        filename: 'dev-server-client.js',
+        opts: { import: [getDevServerClientUrl(DEV_SERVER_OPTIONS)] },
+      });
     }
   }
 

@@ -47,6 +47,7 @@ if (args.dryRun) {
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
+const isDevWatch = isDevelopment && args.watch === true;
 const MANIFEST_VERSION = args.manifest_version;
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
@@ -132,6 +133,23 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
+    // In development mode with watch enabled, inject a `<script>` tag for the bundled
+    // webpack-dev-server client into every UI page (identified by the
+    // `#app-content` mount point — every page that renders the React UI
+    // has it via `partial-body.html`, no other extension page does). Kept
+    // out of the MV3 service worker, the Firefox MV2 background page, and
+    // the offscreen page — reloading those would break the message ports
+    // connecting them to the UI.
+    beforeEmit: (content, _entry, compilation) => {
+      if (!isDevWatch || !content.includes('id="app-content"')) return content;
+      const entrypoint = compilation.entrypoints.get('dev-server-client.js');
+      if (!entrypoint) return content;
+      const tags = entrypoint
+        .getFiles()
+        .map((file) => `<script src="${file}" defer></script>`)
+        .join('');
+      return content.replace('</head>', `${tags}</head>`);
+    },
     preload: [
       {
         attributes: { as: 'font', crossorigin: true },
