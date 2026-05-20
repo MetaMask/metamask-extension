@@ -175,6 +175,176 @@
   "activity": {
     "message": "アクティビティ"
   },
+  "activity_approveSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_failed_description": {
+    "message": "ブリッジに失敗しました"
+  },
+  "activity_bridge_failed_title": {
+    "message": "ブリッジに失敗しました"
+  },
+  "activity_buy_success_description": {
+    "message": "$1を購入しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_title": {
+    "message": "$1を購入しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "スマートコントラクトのインタラクション"
+  },
+  "activity_deposit_failed_description": {
+    "message": "デポジット失敗"
+  },
+  "activity_deposit_failed_title": {
+    "message": "デポジット失敗"
+  },
+  "activity_fallback_description": {
+    "message": "トランザクション"
+  },
+  "activity_fallback_title": {
+    "message": "トランザクション"
+  },
+  "activity_increaseSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingDeposit_failed_title": {
+    "message": "デポジット失敗"
+  },
+  "activity_lendingWithdrawal_failed_description": {
+    "message": "出金失敗"
+  },
+  "activity_lendingWithdrawal_failed_title": {
+    "message": "出金失敗"
+  },
+  "activity_lendingWithdrawal_success_description": {
+    "message": "貸付金の引き出し"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "貸付金の引き出し"
+  },
+  "activity_nftMint_success_title": {
+    "message": "$1をミントしました",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsCloseShort_success_description": {
+    "message": "ショートをクローズしました"
+  },
+  "activity_perpsCloseShort_success_title": {
+    "message": "ショートをクローズしました"
+  },
+  "activity_perpsOpenLong_success_description": {
+    "message": "ロングをオープンしました"
+  },
+  "activity_perpsOpenLong_success_title": {
+    "message": "ロングをオープンしました"
+  },
+  "activity_perpsWithdrawFunds_failed_description": {
+    "message": "出金失敗"
+  },
+  "activity_perpsWithdrawFunds_failed_title": {
+    "message": "出金失敗"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "キャッシュアウトしています"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "キャッシュアウトしています"
+  },
+  "activity_predictionCashedOut_success_description": {
+    "message": "キャッシュアウト済み"
+  },
+  "activity_predictionCashedOut_success_title": {
+    "message": "キャッシュアウト済み"
+  },
+  "activity_predictionPlaced_success_description": {
+    "message": "予測が作成されました"
+  },
+  "activity_predictionPlaced_success_title": {
+    "message": "予測が作成されました"
+  },
+  "activity_predictionsWithdrawFunds_failed_description": {
+    "message": "出金失敗"
+  },
+  "activity_predictionsWithdrawFunds_failed_title": {
+    "message": "出金失敗"
+  },
+  "activity_predictionsWithdrawFunds_pending_description": {
+    "message": "引き出し中"
+  },
+  "activity_predictionsWithdrawFunds_pending_title": {
+    "message": "引き出し中"
+  },
+  "activity_receive_failed_description": {
+    "message": "移動元: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_pending_description": {
+    "message": "移動元: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_description": {
+    "message": "移動元: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_revokeSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_failed_description": {
+    "message": "移動先: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_description": {
+    "message": "移動先: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_title": {
+    "message": "$1を送信中",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "移動先: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_success_title": {
+    "message": "$1を送金しました",
+    "description": "$1 is the token symbol"
+  },
+  "activity_swapIncomplete_failed_title": {
+    "message": "スワップに失敗しました"
+  },
+  "activity_swap_failed_title": {
+    "message": "スワップに失敗しました"
+  },
   "add": {
     "message": "追加"
   },
@@ -213,6 +383,9 @@
   },
   "addCustomNetwork": {
     "message": "カスタムネットワークを追加"
+  },
+  "addCustomToken": {
+    "message": "カスタムトークンを追加"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "このRPCプロバイダーは、確実に信頼できる場合のみ追加してください。$1",
@@ -489,6 +662,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "このトークンには悪意のある動作の兆候が強く見られます。続行すると資金を失う可能性があります。"
   },
+  "alertMinimumReserve": {
+    "message": "準備金が必要です"
+  },
   "alertModalAcknowledge": {
     "message": "リスクを承知したうえで続行します"
   },
@@ -569,6 +745,9 @@
   },
   "all": {
     "message": "すべて"
+  },
+  "allDefaultNetworks": {
+    "message": "すべてのデフォルトのネットワーク"
   },
   "allNetworks": {
     "message": "すべてのネットワーク"
@@ -1408,6 +1587,10 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "ガス代により多くの$1が必要です"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "このネットワークは、アカウントに$1 $3の準備金を必要とします。現在の残高では$2 $3までしか使えません",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "$1以上の準備金が必要です",
@@ -2730,8 +2913,14 @@
   "enterSymbol": {
     "message": "シンボルを入力してください"
   },
+  "enterTokenAddress": {
+    "message": "トークンアドレスを入力"
+  },
   "enterTokenNameOrAddress": {
     "message": "トークン名を入力するか、アドレスを貼り付けてください"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "トークン名またはアドレスを入力してください"
   },
   "enterYourPassword": {
     "message": "パスワードを入力"
@@ -3029,6 +3218,10 @@
   },
   "gasPriceFetchFailed": {
     "message": "ネットワークエラーのため、ガス価格の見積もりに失敗しました。"
+  },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "このネットワークは、アカウントに$1 $2の準備金を必要とします。",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1時間",
@@ -3926,6 +4119,9 @@
   "managePermissions": {
     "message": "アクセス許可の管理"
   },
+  "manageTokens": {
+    "message": "トークンを管理"
+  },
   "manageWalletRecovery": {
     "message": "ウォレットの復元の管理"
   },
@@ -4621,6 +4817,9 @@
   "newContract": {
     "message": "新しいコントラクト"
   },
+  "newCustomTokenAdded": {
+    "message": "「$1」が追加されました！"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "「設定」>「セキュリティとプライバシー」でオフにできます。"
   },
@@ -4756,8 +4955,14 @@
   "noSnaps": {
     "message": "snapがインストールされていません"
   },
+  "noTokensMatchSearch": {
+    "message": "検索に一致するトークンがありません"
+  },
   "noTokensMatchingYourFilters": {
     "message": "フィルターに一致するトークンがありません"
+  },
+  "noTokensToManage": {
+    "message": "まだトークンがありません。名前またはアドレスで検索して、人気のトークンを見つけましょう。"
   },
   "noWebcamFound": {
     "message": "お使いのコンピューターのWebカメラが見つかりませんでした。もう一度お試しください。"
@@ -5344,6 +5549,9 @@
     "message": "支払方法:",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "支払先"
+  },
   "pending": {
     "message": "保留中"
   },
@@ -5365,6 +5573,9 @@
   },
   "perSecond": {
     "message": "/秒"
+  },
+  "percent": {
+    "message": "$1%"
   },
   "percentChange": {
     "message": "変動率"
@@ -5694,6 +5905,10 @@
   "perpsAutoClose": {
     "message": "自動クローズ"
   },
+  "perpsAutoDeleveraging": {
+    "message": "自動レバレッジ解除",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "使用可能",
     "description": "is the available balance amount"
@@ -5750,6 +5965,9 @@
   "perpsCloseLong": {
     "message": "ロングをクローズ"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "一部クローズはUSDで$1以上の価値である必要があります。クローズ金額を増やすか、ポジションを完全にクローズしてください。"
+  },
   "perpsClosePosition": {
     "message": "ポジションのクローズ"
   },
@@ -5782,6 +6000,9 @@
   },
   "perpsDepositActivityTitle": {
     "message": "パーペチュアルに入金しました"
+  },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "ブリッジに失敗しました"
   },
   "perpsDepositFailed": {
     "message": "デポジットを完了できませんでした。もう一度お試しください。"
@@ -5913,6 +6134,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "現在の価格が予想清算価格に近づいています"
+  },
+  "perpsLiquidated": {
+    "message": "清算",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "清算価格との距離"
@@ -6102,6 +6327,9 @@
   },
   "perpsSortBySection": {
     "message": "並べ替え基準"
+  },
+  "perpsSortByTitle": {
+    "message": "フィルター"
   },
   "perpsSortByVolume": {
     "message": "取引量"
@@ -6386,6 +6614,10 @@
   },
   "perpsWithdrawPostQuoteToastPendingTitle": {
     "message": "出金が進行中です"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2がウォレットに移動されました",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
   },
   "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
     "message": "資金がウォレットに移動されました"
@@ -6827,6 +7059,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "資産を守りましょう"
   },
+  "redeemer": {
+    "message": "請求者"
+  },
   "redeposit": {
     "message": "再デポジット"
   },
@@ -7100,6 +7335,10 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "未対応の地域です"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "参加することで、当社の$1に同意したもののとみなされます。当社はこのデバイスのすべてのアカウントをオプトインし、オンチェーンアクティビティを追跡して、自動的に報酬を提供します。$2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
   "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "詳細。"
   },
@@ -7151,6 +7390,12 @@
   "rewardsPointsIcon": {
     "message": "リワードポイント",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "MetaMask Rewardsにアクセスするには、モバイルデバイスでQRコードをスキャンしてください。"
+  },
+  "rewardsQRCodeTitle": {
+    "message": "モバイルで続行"
   },
   "rewardsSignInFailed": {
     "message": "サインインできませんでした",
@@ -9255,6 +9500,9 @@
   "tokenAddress": {
     "message": "トークンアドレス"
   },
+  "tokenAllowance": {
+    "message": "トークン使用可能額"
+  },
   "tokenAlreadyAdded": {
     "message": "トークンの追加がすでに完了しています。"
   },
@@ -9296,6 +9544,9 @@
   "tokenPermissionsCount": {
     "message": "$1トークンのアクセス許可",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "検索結果を読み込めませんでした。もう一度お試しください。"
   },
   "tokenStandard": {
     "message": "トークン規格"

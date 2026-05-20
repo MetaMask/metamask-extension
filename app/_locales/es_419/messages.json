@@ -175,6 +175,176 @@
   "activity": {
     "message": "Actividad"
   },
+  "activity_approveSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_failed_description": {
+    "message": "Puente fallido"
+  },
+  "activity_bridge_failed_title": {
+    "message": "Puente fallido"
+  },
+  "activity_buy_success_description": {
+    "message": "Compraste $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_title": {
+    "message": "Compraste $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "Interacción con el contrato inteligente"
+  },
+  "activity_deposit_failed_description": {
+    "message": "Depósito fallido"
+  },
+  "activity_deposit_failed_title": {
+    "message": "Depósito fallido"
+  },
+  "activity_fallback_description": {
+    "message": "Transacción"
+  },
+  "activity_fallback_title": {
+    "message": "Transacción"
+  },
+  "activity_increaseSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingDeposit_failed_title": {
+    "message": "Depósito fallido"
+  },
+  "activity_lendingWithdrawal_failed_description": {
+    "message": "Retiro fallido"
+  },
+  "activity_lendingWithdrawal_failed_title": {
+    "message": "Retiro fallido"
+  },
+  "activity_lendingWithdrawal_success_description": {
+    "message": "Retiro de préstamo"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "Retiro de préstamo"
+  },
+  "activity_nftMint_success_title": {
+    "message": "Acuñaste $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsCloseShort_success_description": {
+    "message": "Posición corta cerrada"
+  },
+  "activity_perpsCloseShort_success_title": {
+    "message": "Posición corta cerrada"
+  },
+  "activity_perpsOpenLong_success_description": {
+    "message": "Posición larga abierta"
+  },
+  "activity_perpsOpenLong_success_title": {
+    "message": "Posición larga abierta"
+  },
+  "activity_perpsWithdrawFunds_failed_description": {
+    "message": "Retiro fallido"
+  },
+  "activity_perpsWithdrawFunds_failed_title": {
+    "message": "Retiro fallido"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "Retirando efectivo"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "Retirando efectivo"
+  },
+  "activity_predictionCashedOut_success_description": {
+    "message": "Cobrado"
+  },
+  "activity_predictionCashedOut_success_title": {
+    "message": "Cobrado"
+  },
+  "activity_predictionPlaced_success_description": {
+    "message": "Predicción colocada"
+  },
+  "activity_predictionPlaced_success_title": {
+    "message": "Predicción colocada"
+  },
+  "activity_predictionsWithdrawFunds_failed_description": {
+    "message": "Retiro fallido"
+  },
+  "activity_predictionsWithdrawFunds_failed_title": {
+    "message": "Retiro fallido"
+  },
+  "activity_predictionsWithdrawFunds_pending_description": {
+    "message": "Retirando"
+  },
+  "activity_predictionsWithdrawFunds_pending_title": {
+    "message": "Retirando"
+  },
+  "activity_receive_failed_description": {
+    "message": "De: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_pending_description": {
+    "message": "De: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_description": {
+    "message": "De: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_revokeSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_failed_description": {
+    "message": "Para: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_description": {
+    "message": "Para: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_title": {
+    "message": "Enviando $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Para: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_success_title": {
+    "message": "$1 enviado",
+    "description": "$1 is the token symbol"
+  },
+  "activity_swapIncomplete_failed_title": {
+    "message": "Error al canjear"
+  },
+  "activity_swap_failed_title": {
+    "message": "Error al canjear"
+  },
   "add": {
     "message": "Añadir"
   },
@@ -213,6 +383,9 @@
   },
   "addCustomNetwork": {
     "message": "Agregar red personalizada"
+  },
+  "addCustomToken": {
+    "message": "Añadir un token personalizado"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Agregue este proveedor de RPC solo si está seguro de que puede confiar en él. $1",
@@ -489,6 +662,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "Este token muestra fuertes indicios de comportamiento malicioso. Continuar podría resultar en la pérdida de fondos."
   },
+  "alertMinimumReserve": {
+    "message": "Se requiere un saldo de reserva"
+  },
   "alertModalAcknowledge": {
     "message": "Soy consciente del riesgo y aún así deseo continuar"
   },
@@ -569,6 +745,9 @@
   },
   "all": {
     "message": "Todas"
+  },
+  "allDefaultNetworks": {
+    "message": "Todas las redes predeterminadas"
   },
   "allNetworks": {
     "message": "Todas las redes"
@@ -1408,6 +1587,10 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Se necesita más $1 para gas"
+  },
+  "bridgeValidationInsufficientNativeReserveMessage": {
+    "message": "Esta red específica requiere mantener una reserva de $1 $3 en tu cuenta. Con tu saldo actual, puedes usar un máximo de $2 $3",
+    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Se requiere un saldo mínimo de reserva de $1",
@@ -2730,8 +2913,14 @@
   "enterSymbol": {
     "message": "Ingrese el símbolo"
   },
+  "enterTokenAddress": {
+    "message": "Ingresa la dirección del token"
+  },
   "enterTokenNameOrAddress": {
     "message": "Introduzca el nombre del token o pegue la dirección"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Introduce el nombre o la dirección del token"
   },
   "enterYourPassword": {
     "message": "Ingresa tu contraseña"
@@ -3029,6 +3218,10 @@
   },
   "gasPriceFetchFailed": {
     "message": "Se produjo un error al calcular el precio del gas debido a una falla en la red."
+  },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "Esta red en concreto requiere mantener una reserva de $1 $2 en tu cuenta.",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 horas",
@@ -3926,6 +4119,9 @@
   "managePermissions": {
     "message": "Administrar permisos"
   },
+  "manageTokens": {
+    "message": "Administrar tokens"
+  },
   "manageWalletRecovery": {
     "message": "Gestiona la recuperación de la billetera"
   },
@@ -4621,6 +4817,9 @@
   "newContract": {
     "message": "Contrato nuevo"
   },
+  "newCustomTokenAdded": {
+    "message": "¡\"$1\" se añadió con éxito!"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Configuración > Seguridad y privacidad"
   },
@@ -4756,8 +4955,14 @@
   "noSnaps": {
     "message": "No tiene ningún snap instalado."
   },
+  "noTokensMatchSearch": {
+    "message": "No hay tokens que coincidan con tu búsqueda"
+  },
   "noTokensMatchingYourFilters": {
     "message": "No hay tokens que coincidan con tus filtros"
+  },
+  "noTokensToManage": {
+    "message": "Aún no tienes tokens. Busca por nombre o dirección para descubrir tokens populares."
   },
   "noWebcamFound": {
     "message": "No se encontró la cámara web del equipo. Vuelva a intentarlo."
@@ -5344,6 +5549,9 @@
     "message": "Pagar con",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "Beneficiario"
+  },
   "pending": {
     "message": "Pendiente"
   },
@@ -5365,6 +5573,9 @@
   },
   "perSecond": {
     "message": "por segundo"
+  },
+  "percent": {
+    "message": "$1%"
   },
   "percentChange": {
     "message": "Cambio porcentual"
@@ -5694,6 +5905,10 @@
   "perpsAutoClose": {
     "message": "Cierre automático"
   },
+  "perpsAutoDeleveraging": {
+    "message": "Desapalancamiento automático",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "disponible",
     "description": "is the available balance amount"
@@ -5750,6 +5965,9 @@
   "perpsCloseLong": {
     "message": "Cerrar posición larga"
   },
+  "perpsClosePartialMinNotional": {
+    "message": "Los cierres parciales deben tener un valor mínimo de $1 USD. Aumenta el monto del cierre o cierra la posición completa."
+  },
   "perpsClosePosition": {
     "message": "Cerrar posición"
   },
@@ -5782,6 +6000,9 @@
   },
   "perpsDepositActivityTitle": {
     "message": "Contratos perpetuos financiados"
+  },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Puente fallido"
   },
   "perpsDepositFailed": {
     "message": "No se pudo completar el depósito. Inténtalo de nuevo."
@@ -5913,6 +6134,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "El precio actual está cerca del precio de liquidación estimado"
+  },
+  "perpsLiquidated": {
+    "message": "Liquidada",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Distancia de liquidación"
@@ -6102,6 +6327,9 @@
   },
   "perpsSortBySection": {
     "message": "Ordenar por"
+  },
+  "perpsSortByTitle": {
+    "message": "Filtro"
   },
   "perpsSortByVolume": {
     "message": "Volumen"
@@ -6390,6 +6618,10 @@
   },
   "perpsWithdrawPostQuoteToastPendingTitle": {
     "message": "Retiro en curso"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "Se transfirieron $1 $2 a tu billetera",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
   },
   "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
     "message": "Fondos transferidos a tu billetera"
@@ -6831,6 +7063,9 @@
   "recoveryPhraseReminderTitle": {
     "message": "Protege tu billetera"
   },
+  "redeemer": {
+    "message": "Redentor"
+  },
   "redeposit": {
     "message": "Volver a depositar"
   },
@@ -7104,6 +7339,10 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Región no admitida"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "Al registrarte, aceptas nuestros $1. Activaremos todas las cuentas en este dispositivo y realizaremos un seguimiento de la actividad en la cadena de bloques para recompensarte automáticamente. $2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
   "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Conozca más"
   },
@@ -7155,6 +7394,12 @@
   "rewardsPointsIcon": {
     "message": "Puntos de recompensa",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "Para acceder a Recompensas de MetaMask, escanea el código QR con tu dispositivo móvil."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Continuar en el celular"
   },
   "rewardsSignInFailed": {
     "message": "Error al iniciar sesión",
@@ -9259,6 +9504,9 @@
   "tokenAddress": {
     "message": "Dirección del token"
   },
+  "tokenAllowance": {
+    "message": "Asignación de tokens"
+  },
   "tokenAlreadyAdded": {
     "message": "Ya se agregó el token."
   },
@@ -9300,6 +9548,9 @@
   "tokenPermissionsCount": {
     "message": "$1 permisos de token",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "No se pudieron cargar los resultados de la búsqueda. Inténtalo de nuevo."
   },
   "tokenStandard": {
     "message": "Estándar de token"
