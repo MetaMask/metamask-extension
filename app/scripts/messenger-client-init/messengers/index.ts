@@ -76,8 +76,6 @@ import {
   getMultichainAccountServiceInitMessenger,
   getSnapKeyringBuilderMessenger,
   getSnapKeyringBuilderInitMessenger,
-  getSnapKeyringBuilderV2Messenger,
-  getSnapKeyringBuilderV2InitMessenger,
   getSnapAccountServiceMessenger,
 } from './accounts';
 import {
@@ -674,10 +672,6 @@ export const MESSENGER_FACTORIES = {
   SnapKeyringBuilder: {
     getMessenger: getSnapKeyringBuilderMessenger,
     getInitMessenger: getSnapKeyringBuilderInitMessenger,
-  },
-  SnapKeyringBuilderV2: {
-    getMessenger: getSnapKeyringBuilderV2Messenger,
-    getInitMessenger: getSnapKeyringBuilderV2InitMessenger,
   },
   StaticAssetsController: {
     getMessenger: getStaticAssetsControllerMessenger,
