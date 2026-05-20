@@ -79,6 +79,7 @@ import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useOnClickOutside } from '../perps/hooks/useClickOutside';
 import { useBatchSell } from '../../../hooks/batch-sell/useBatchSell';
+import { getIsBatchSellEnabled } from '../../../selectors/batch-sell/feature-flags';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 
 type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
@@ -91,6 +92,7 @@ type MoreButtonsGroupProps<TagElem extends React.ElementType = 'div'> = {
     testId?: string;
     iconName: IconName;
     tagProps?: TagProps<TagElem>;
+    enabled: boolean;
   }[];
 };
 
@@ -101,6 +103,28 @@ const MoreButtonsGroup = ({
   modalIsOpen,
 }: MoreButtonsGroupProps) => {
   const t = useContext(I18nContext);
+  const hasOnlyOneEnabledAction =
+    actions.filter(({ enabled }) => enabled).length === 1;
+  const onlyEnabledAction = actions.filter(({ enabled }) => enabled)[0];
+
+  if (hasOnlyOneEnabledAction) {
+    return (
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        data-testid={`${classPrefix}-overview-default`}
+        Icon={
+          <Icon
+            name={onlyEnabledAction.iconName}
+            color={IconColor.IconAlternative}
+            size={IconSize.Md}
+          />
+        }
+        label={onlyEnabledAction.label}
+        width={BlockSize.Full}
+        onClick={onlyEnabledAction.onClick}
+      />
+    );
+  }
 
   return (
     <>
@@ -238,6 +262,7 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const batchSellEnabled = useSelector(getIsBatchSellEnabled);
   const normalizedChainId = isCaipChainId(chainId) ? chainId : toHex(chainId);
   const isEvmAsset = isEvmChainId(normalizedChainId);
 
@@ -553,12 +578,14 @@ const CoinButtons = ({
               },
               backgroundColor: BackgroundColor.primaryMuted,
             },
+            enabled: batchSellEnabled,
           },
           {
             label: t('receive'),
             onClick: handleReceiveOnClick,
             testId: `${classPrefix}-overview-receive`,
             iconName: IconName.Received,
+            enabled: true,
           },
         ]}
       />

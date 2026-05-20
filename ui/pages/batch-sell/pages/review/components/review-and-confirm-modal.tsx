@@ -270,8 +270,8 @@ export const ReviewAndConfirmModal = ({
       isClosedOnEscapeKey
       isClosedOnOutsideClick
       onClose={() => {
-        setIsYouSellExpanded(false)
-        onClose()
+        setIsYouSellExpanded(false);
+        onClose();
       }}
     >
       <ModalOverlay />

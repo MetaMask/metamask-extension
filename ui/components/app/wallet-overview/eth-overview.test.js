@@ -138,6 +138,7 @@ describe('EthOverview', () => {
         [CHAIN_IDS.MAINNET]: {},
       },
       remoteFeatureFlags: {
+        batchSell: { minimumVersion: '0.0.0' },
         bridgeConfig: {
           support: true,
         },
@@ -373,6 +374,29 @@ describe('EthOverview', () => {
       fireEvent.click(queryByTestId('eth-overview-batchSell'));
 
       expect(mockOpenBatchSellExperience).toHaveBeenCalledTimes(1);
+    });
+
+    it('should show Receive as a direct button when Batch Sell is disabled', () => {
+      const disabledBatchSellStore = configureMockStore([thunk])({
+        ...mockStore,
+        metamask: {
+          ...mockStore.metamask,
+          remoteFeatureFlags: {
+            ...mockStore.metamask.remoteFeatureFlags,
+            batchSell: { minimumVersion: '999.0.0' },
+          },
+        },
+      });
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        disabledBatchSellStore,
+      );
+
+      // Only one action enabled → renders as a direct button, not a dropdown
+      expect(queryByTestId('eth-overview-more')).not.toBeInTheDocument();
+      expect(queryByTestId('eth-overview-default')).toBeInTheDocument();
+      expect(queryByTestId('eth-overview-batchSell')).not.toBeInTheDocument();
     });
 
     it('should always show the Portfolio button', () => {
