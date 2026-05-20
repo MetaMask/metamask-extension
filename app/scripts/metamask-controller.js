@@ -988,8 +988,9 @@ export default class MetamaskController extends EventEmitter {
     setSentinelApiAuth(() => this.authenticationController.getBearerToken());
 
     this.notificationServicesController.init();
-    this.snapController.init();
-    this.snapAccountService.init();
+    this.snapController.init().then(async () => {
+      await this.snapAccountService.init();
+    });
     this.cronjobController.init();
 
     this.controllerMessenger.subscribe(
