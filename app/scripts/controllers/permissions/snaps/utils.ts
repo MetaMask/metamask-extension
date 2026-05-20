@@ -1,4 +1,7 @@
-import { KeyringControllerWithKeyringV2UnsafeAction } from '@metamask/keyring-controller';
+import {
+  KeyringControllerWithKeyringV2UnsafeAction,
+  KeyringTypes,
+} from '@metamask/keyring-controller';
 import type { HdKeyring } from '@metamask/eth-hd-keyring/v2';
 import { KeyringType } from '@metamask/keyring-api/v2';
 import { RootMessenger } from '../../../lib/messenger';
@@ -19,7 +22,7 @@ export async function getMnemonicSeed(
     const seed = (await messenger.call(
       'KeyringController:withKeyringV2Unsafe',
       {
-        type: KeyringType.Hd,
+        type: KeyringTypes.hd,
         index: 0,
       },
       async ({ keyring }) => (keyring as HdKeyring).seed,
