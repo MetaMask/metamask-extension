@@ -14,24 +14,9 @@ class EditConnectedAccountsModal {
     text: 'Add account',
   };
 
-  private readonly disconnectButton = {
-    testId: 'disconnect-accounts-button',
-  };
-
   private readonly editAccountsModalTitle = {
     text: 'Edit accounts',
     tag: 'h4',
-  };
-
-  private readonly ethereumAccountButton = {
-    text: 'Ethereum account',
-    tag: 'button',
-  };
-
-  private readonly selectAllAccountsCheckbox = 'input[title="Select all"]';
-
-  private readonly submitAddAccountButton = {
-    testId: 'submit-add-account-with-name',
   };
 
   private readonly connectAccountsButton = {

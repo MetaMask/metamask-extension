@@ -175,8 +175,175 @@
   "activity": {
     "message": "Aktivitas"
   },
-  "activityEmptyDescription": {
-    "message": "Belum ada apa pun. Swap token pertama Anda hari ini."
+  "activity_approveSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_failed_description": {
+    "message": "Bridge gagal"
+  },
+  "activity_bridge_failed_title": {
+    "message": "Bridge gagal"
+  },
+  "activity_buy_success_description": {
+    "message": "Dibeli senilai $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_title": {
+    "message": "Dibeli senilai $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "Interaksi kontrak cerdas"
+  },
+  "activity_deposit_failed_description": {
+    "message": "Deposit gagal"
+  },
+  "activity_deposit_failed_title": {
+    "message": "Deposit gagal"
+  },
+  "activity_fallback_description": {
+    "message": "Transaksi"
+  },
+  "activity_fallback_title": {
+    "message": "Transaksi"
+  },
+  "activity_increaseSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingDeposit_failed_title": {
+    "message": "Deposit gagal"
+  },
+  "activity_lendingWithdrawal_failed_description": {
+    "message": "Penarikan gagal"
+  },
+  "activity_lendingWithdrawal_failed_title": {
+    "message": "Penarikan gagal"
+  },
+  "activity_lendingWithdrawal_success_description": {
+    "message": "Penarikan pinjaman"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "Penarikan pinjaman"
+  },
+  "activity_nftMint_success_title": {
+    "message": "Dicetak senilai $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsCloseShort_success_description": {
+    "message": "Short tertutup"
+  },
+  "activity_perpsCloseShort_success_title": {
+    "message": "Short tertutup"
+  },
+  "activity_perpsOpenLong_success_description": {
+    "message": "Long terbuka"
+  },
+  "activity_perpsOpenLong_success_title": {
+    "message": "Long terbuka"
+  },
+  "activity_perpsWithdrawFunds_failed_description": {
+    "message": "Penarikan gagal"
+  },
+  "activity_perpsWithdrawFunds_failed_title": {
+    "message": "Penarikan gagal"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "Mencairkan"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "Mencairkan"
+  },
+  "activity_predictionCashedOut_success_description": {
+    "message": "Dicairkan"
+  },
+  "activity_predictionCashedOut_success_title": {
+    "message": "Dicairkan"
+  },
+  "activity_predictionPlaced_success_description": {
+    "message": "Prediksi dibuat"
+  },
+  "activity_predictionPlaced_success_title": {
+    "message": "Prediksi dibuat"
+  },
+  "activity_predictionsWithdrawFunds_failed_description": {
+    "message": "Penarikan gagal"
+  },
+  "activity_predictionsWithdrawFunds_failed_title": {
+    "message": "Penarikan gagal"
+  },
+  "activity_predictionsWithdrawFunds_pending_description": {
+    "message": "Penarikan"
+  },
+  "activity_predictionsWithdrawFunds_pending_title": {
+    "message": "Penarikan"
+  },
+  "activity_receive_failed_description": {
+    "message": "Dari: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_pending_description": {
+    "message": "Dari: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_description": {
+    "message": "Dari: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_revokeSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_failed_description": {
+    "message": "Ke: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_description": {
+    "message": "Ke: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_title": {
+    "message": "Mengirim $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Ke: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_success_title": {
+    "message": "Kirim $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_swapIncomplete_failed_title": {
+    "message": "Pertukaran gagal"
+  },
+  "activity_swap_failed_title": {
+    "message": "Pertukaran gagal"
   },
   "add": {
     "message": "Tambah"
@@ -199,21 +366,11 @@
   "addAccount": {
     "message": "Tambah akun"
   },
-  "addAccountFromNetwork": {
-    "message": "Tambahkan akun $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Tambahkan akun atau dompet"
-  },
   "addAcquiredTokens": {
     "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
   },
   "addAlias": {
     "message": "Tambahkan alias"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Akun Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Tambahkan block explorer"
@@ -226,6 +383,9 @@
   },
   "addCustomNetwork": {
     "message": "Tambahkan jaringan khusus"
+  },
+  "addCustomToken": {
+    "message": "Tambahkan token khusus"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Cukup tambahkan penyedia RPC ini jika Anda yakin dapat memercayainya. $1",
@@ -267,9 +427,6 @@
   "addFundsModalSwapTokens": {
     "message": "Tukar token"
   },
-  "addHardwareWalletLabel": {
-    "message": "Dompet perangkat keras"
-  },
   "addMemo": {
     "message": "Tambahkan memo"
   },
@@ -283,31 +440,11 @@
   "addNetworkDescription": {
     "message": "Sebuah situs menyarankan detail jaringan tambahan."
   },
-  "addNewAccount": {
-    "message": "Tambahkan akun Ethereum baru"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Akun Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Akun Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Akun Tron"
-  },
   "addNft": {
     "message": "Tambahkan NFT"
   },
   "addNfts": {
     "message": "Tambahkan NFT"
-  },
-  "addNonEvmAccount": {
-    "message": "Tambahkan akun $1",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Untuk mengaktifkan jaringan $1, Anda perlu membuat akun $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Tambahkan URL RPC"
@@ -525,6 +662,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "Token ini menunjukkan tanda-tanda kuat perilaku berbahaya. Melanjutkan aktivitas ini dapat mengakibatkan hilangnya dana."
   },
+  "alertMinimumReserve": {
+    "message": "Saldo cadangan diperlukan"
+  },
   "alertModalAcknowledge": {
     "message": "Saya telah memahami risikonya dan masih ingin melanjutkan"
   },
@@ -557,9 +697,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Kecepatan lambat"
-  },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Sponsor gas tidak tersedia"
   },
   "alertReasonGasTooLow": {
     "message": "Batas gas rendah"
@@ -608,6 +745,9 @@
   },
   "all": {
     "message": "Semua"
+  },
+  "allDefaultNetworks": {
+    "message": "Semua jaringan default"
   },
   "allNetworks": {
     "message": "Semua jaringan"
@@ -896,9 +1036,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "Buka halaman beranda"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Buka halaman Buat Akun"
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Buka halaman DeFi"
@@ -1862,18 +1999,12 @@
   "connectAccounts": {
     "message": "Hubungkan akun"
   },
-  "connectAnAccountHeader": {
-    "message": "Hubungkan akun"
-  },
   "connectHardwareDevice": {
     "message": "Hubungkan $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Hubungkan ke situs saat ini secara manual"
-  },
-  "connectMoreAccounts": {
-    "message": "Hubungkan lebih banyak akun"
   },
   "connectSnap": {
     "message": "Hubungkan $1",
@@ -1891,10 +2022,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask tidak terhubung ke situs ini. Untuk terhubung ke situs web3, cari dan klik tombol hubungkan."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 dapat melihat saldo akun, alamat, aktivitas, dan menyarankan transaksi yang akan disetujui untuk akun terhubung.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Situs yang terhubung"
@@ -1927,10 +2054,6 @@
   "connectedWithNetwork": {
     "message": "$1 jaringan terhubung",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Terhubung dengan $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Menghubungkan"
@@ -1965,9 +2088,6 @@
   "connectionFailedDescription": {
     "message": "Pengambilan $1 gagal, periksa jaringan Anda dan coba lagi.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Untuk terhubung ke situs, pilih tombol hubungkan. MetaMask hanya dapat terhubung ke situs web3."
   },
   "connectionRequest": {
     "message": "Permintaan koneksi"
@@ -2059,9 +2179,6 @@
     "message": "Menambahkan akun...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Buat akun baru"
-  },
   "createPassword": {
     "message": "Kata sandi MetaMask"
   },
@@ -2086,9 +2203,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Buat akun"
-  },
-  "createSolanaAccount": {
-    "message": "Buat akun Solana"
   },
   "creatorAddress": {
     "message": "Alamat pembuat"
@@ -2371,9 +2485,6 @@
   "deepLink_theSwapsPage": {
     "message": "halaman swap"
   },
-  "deepLink_theSwapsRampsPage": {
-    "message": "halaman Swap/Ramp"
-  },
   "deepLink_theTransactionShieldPage": {
     "message": "halaman transaction shield"
   },
@@ -2517,9 +2628,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "Anda yakin ingin memutus koneksi? Fungsionalitas situs Anda bisa hilang."
   },
-  "disconnectAllAccountsText": {
-    "message": "akun"
-  },
   "disconnectAllDescriptionText": {
     "message": "Jika Anda memutuskan koneksi dari situs ini, Anda harus menghubungkan kembali akun dan jaringan agar dapat menggunakan situs ini lagi."
   },
@@ -2534,9 +2642,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Semua dapp berhasil diputus koneksinya."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snap"
   },
   "disconnectMessage": {
     "message": "Ini akan memutus koneksi dari situs ini"
@@ -2808,8 +2913,14 @@
   "enterSymbol": {
     "message": "Masukkan simbol"
   },
+  "enterTokenAddress": {
+    "message": "Masukkan alamat token"
+  },
   "enterTokenNameOrAddress": {
     "message": "Masukkan nama token atau tempel alamat"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Masukkan nama atau alamat token"
   },
   "enterYourPassword": {
     "message": "Masukkan kata sandi"
@@ -3109,7 +3220,7 @@
     "message": "Estimasi biaya gas gagal karena terjadi kesalahan pada jaringan."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Sponsor gas tidak tersedia untuk transaksi ini. Anda perlu menyimpan minimal $1 atau $2 di akun Anda.",
+    "message": "Jaringan khusus ini mengharuskan Anda untuk mempertahankan saldo cadangan sebesar $1 $2 di akun Anda.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -3565,9 +3676,6 @@
   "importNFTTokenIdToolTip": {
     "message": "ID NFT merupakan pengenal unik karena tidak ada dua NFT yang sama. Sekali lagi, angka ini berada di bawah 'Detail' pada OpenSea. Catat atau salin ke papan klip."
   },
-  "importPrivateKey": {
-    "message": "Kunci Pribadi"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Impor Frasa Pemulihan Rahasia"
   },
@@ -3582,9 +3690,6 @@
   },
   "importTokensError": {
     "message": "Kami tidak dapat mengimpor token. Coba lagi nanti."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Impor dompet atau akun"
   },
   "importWalletSuccess": {
     "message": "Dompet $1 diimpor",
@@ -3932,9 +4037,6 @@
   "lockMetaMaskLoadingMessage": {
     "message": "Mengunci MetaMask..."
   },
-  "logOut": {
-    "message": "Keluar"
-  },
   "loginErrorConnectButton": {
     "message": "Coba lagi"
   },
@@ -4016,6 +4118,9 @@
   },
   "managePermissions": {
     "message": "Kelola izin"
+  },
+  "manageTokens": {
+    "message": "Kelola token"
   },
   "manageWalletRecovery": {
     "message": "Kelola pemulihan dompet"
@@ -4698,9 +4803,6 @@
   "new": {
     "message": "Baru!"
   },
-  "newAccount": {
-    "message": "Akun baru"
-  },
   "newAccountIconMessage": {
     "message": "Kami telah memperbarui ikon akun agar Anda dapat membedakan akun dengan lebih mudah. ​​Anda dapat mengubah gayanya di $1 > $2 > $3.",
     "description": "$1, $2, and $3 are bold text for Settings, General, and Account icon respectively"
@@ -4714,6 +4816,9 @@
   },
   "newContract": {
     "message": "Kontrak baru"
+  },
+  "newCustomTokenAdded": {
+    "message": "“$1” berhasil ditambahkan!"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Pengaturan > Keamanan dan privasi"
@@ -4850,8 +4955,14 @@
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
   },
+  "noTokensMatchSearch": {
+    "message": "Tidak ada token yang sesuai dengan pencarian Anda"
+  },
   "noTokensMatchingYourFilters": {
     "message": "Tidak ada token yang sesuai dengan filter Anda"
+  },
+  "noTokensToManage": {
+    "message": "Anda belum memiliki token apa pun. Cari berdasarkan nama atau alamat untuk menemukan token populer."
   },
   "noWebcamFound": {
     "message": "Webcam komputer Anda tidak ditemukan. Harap coba lagi."
@@ -5438,6 +5549,9 @@
     "message": "Bayar melalui",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "Penerima pembayaran"
+  },
   "pending": {
     "message": "Menunggu"
   },
@@ -5459,6 +5573,9 @@
   },
   "perSecond": {
     "message": "per detik"
+  },
+  "percent": {
+    "message": "$1%"
   },
   "percentChange": {
     "message": "Perubahan persentase"
@@ -5788,6 +5905,10 @@
   "perpsAutoClose": {
     "message": "Tutup otomatis"
   },
+  "perpsAutoDeleveraging": {
+    "message": "Deleverage otomatis",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "tersedia",
     "description": "is the available balance amount"
@@ -5845,7 +5966,7 @@
     "message": "Tutup long"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Penutupan sebagian harus bernilai minimal $1 dalam USD. Tingkatkan jumlah penutupan atau tutup posisi penuh."
+    "message": "Penutupan sebagian harus bernilai minimal $1 dalam USD. Tingkatkan jumlah penutupan atau tutup seluruh posisi."
   },
   "perpsClosePosition": {
     "message": "Tutup posisi"
@@ -5880,6 +6001,9 @@
   "perpsDepositActivityTitle": {
     "message": "Perp yang Didanai"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Bridge gagal"
+  },
   "perpsDepositFailed": {
     "message": "Deposit tidak dapat diselesaikan. Coba lagi."
   },
@@ -5902,10 +6026,10 @@
     "message": "Menambahkan dana ke Perp"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Dana Anda siap untuk diperdagangkan."
+    "message": "Dana siap untuk diperdagangkan"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Dana ditambahkan ke Perp"
+    "message": "Akun Perp Anda telah didanai"
   },
   "perpsDeposits": {
     "message": "Deposit"
@@ -6010,6 +6134,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Harga saat ini mendekati estimasi harga likuidasi"
+  },
+  "perpsLiquidated": {
+    "message": "Dilikuidasi",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Jarak likuidasi"
@@ -6194,11 +6322,14 @@
   "perpsSortByPriceChange": {
     "message": "Perubahan harga"
   },
+  "perpsSortByRank": {
+    "message": "Peringkat"
+  },
   "perpsSortBySection": {
     "message": "Urutkan sesuai"
   },
   "perpsSortByTitle": {
-    "message": "Urutkan"
+    "message": "Filter"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -6374,6 +6505,9 @@
   "perpsTrades": {
     "message": "Perdagangan"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Long terbuka"
+  },
   "perpsTriggerPrice": {
     "message": "Harga pemicu"
   },
@@ -6472,6 +6606,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Belum ada akun yang dipilih. Pilih akun dan coba lagi."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Gagal memproses penarikan"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Terjadi kesalahan"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Tersedia dalam waktu sekitar 1 menit"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Penarikan sedang diproses"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2 dipindahkan ke dompet Anda",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Dana telah dipindahkan ke dompet Anda"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Penarikan selesai"
   },
   "perpsWithdrawReceive": {
     "message": "Terima"
@@ -6804,6 +6960,46 @@
     "message": "Akses kamera diperlukan",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Kembali ke dompet perangkat keras dan temukan opsi untuk berbagi atau mengekspor akun Anda, pilih MetaMask, lalu pindai kode QR.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Pindai kode QR sinkronisasi dompet",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Kembali ke dompet perangkat keras dan setujui transaksi, lalu pindai kode QR yang muncul.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Pindai kode QR tanda tangan",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Pastikan kode QR terlihat jelas dan terang, lalu coba lagi. Jika masalah berlanjut, Anda mungkin perlu memperbarui firmware dompet perangkat keras.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Tidak dapat membaca kode QR",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Kembali ke dompet perangkat keras, pilih MetaMask sebagai jenis dompet, lalu buat dan pindai kode QR baru.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Kode QR salah",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Kembali ke dompet perangkat keras dan setujui transaksi, lalu pindai kode QR yang muncul.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Kode QR salah",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Antrean"
   },
@@ -6866,6 +7062,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Lindungi dompet Anda"
+  },
+  "redeemer": {
+    "message": "Penukar"
   },
   "redeposit": {
     "message": "Deposit ulang"
@@ -6957,14 +7156,6 @@
   },
   "requestingFor": {
     "message": "Meminta untuk"
-  },
-  "requestingForAccount": {
-    "message": "Meminta untuk $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Meminta untuk $1",
-    "description": "Name of Network"
   },
   "required": {
     "message": "Diperlukan"
@@ -7124,6 +7315,12 @@
   "rewardsLinkAccountError": {
     "message": "Gagal menambahkan akun"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Memeriksa wilayah..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Menangkan hadiah, klaim keuntungan, dan temukan cara lainnya untuk menghasilkan—hanya dengan menggunakan MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Kami tidak dapat memastikan jika negara Anda mengizinkan Anda untuk berpartisipasi dalam program reward. Periksa koneksi dan coba lagi."
   },
@@ -7142,6 +7339,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Wilayah tidak didukung"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "Dengan bergabung, Anda menyetujui $1 kami. Kami akan mengaktifkan semua akun di perangkat ini dan melacak aktivitas on-chain untuk memberikan reward secara otomatis. $2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Selengkapnya"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Syarat dan Pemberitahuan Privasi"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Gagal berpartisipasi"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Kode referensi tidak valid"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Kode referensi (opsional)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Kode referensi tidak dapat divalidasi."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Periksa koneksi Anda dan coba lagi."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Sembunyikan kode"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Punya kode referensi?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Gabung dengan Reward"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Bergabung..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Mulai dapatkan reward"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Memverifikasi kode referensi...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7157,6 +7394,12 @@
   "rewardsPointsIcon": {
     "message": "Poin reward",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "Untuk mengakses MetaMask Rewards, pindai kode QR dengan perangkat seluler Anda."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Lanjutkan di perangkat seluler"
   },
   "rewardsSignInFailed": {
     "message": "Gagal masuk",
@@ -7224,10 +7467,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Frasa Pemulihan Rahasia $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Amankan dompet"
@@ -8467,12 +8706,6 @@
     "message": "Hubungi pembuat $1 untuk dukungan lebih lanjut.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "Situs ini meminta akun Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Akun Solana diperlukan untuk terhubung ke situs ini."
-  },
   "someNetworks": {
     "message": "$1 jaringan"
   },
@@ -9271,6 +9504,9 @@
   "tokenAddress": {
     "message": "Alamat Token"
   },
+  "tokenAllowance": {
+    "message": "Jatah token"
+  },
   "tokenAlreadyAdded": {
     "message": "Token telah ditambahkan."
   },
@@ -9312,6 +9548,9 @@
   "tokenPermissionsCount": {
     "message": "$1 izin token",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "Tidak dapat memuat hasil pencarian. Coba lagi."
   },
   "tokenStandard": {
     "message": "Standar token"
@@ -9683,9 +9922,6 @@
   },
   "urlErrorMsg": {
     "message": "URL memerlukan awalan HTTP/HTTPS yang sesuai."
-  },
-  "urlUnknown": {
-    "message": "URL tidak dikenal"
   },
   "use4ByteResolution": {
     "message": "Uraikan kode kontrak cerdas"

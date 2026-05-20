@@ -33,7 +33,9 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getIsSocialLoginFlow } from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../srp-input-form';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CreatePasswordForm } from '../create-password-form';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../contexts/metametrics';

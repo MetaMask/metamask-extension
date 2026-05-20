@@ -60,6 +60,9 @@ import {
   getAccountGroupNameByInternalAccount,
   getToAccounts,
   getHardwareWalletName,
+  getActiveQuoteInsufficientNativeReserveError,
+  getInsufficientNativeReserveError,
+  getQuoteRequestInsufficientBal,
   getFromTokenBalanceInUsd,
   getFromAmountInCurrency,
   getValidatedFromValue,
@@ -81,6 +84,85 @@ describe('Bridge selectors', () => {
   afterAll(() => {
     setGlobalDevModeChecks({ inputStabilityCheck: 'once' });
   });
+
+  const createBtcBridgeState = ({
+    fromTokenInputValue = '1',
+    fromNativeBalance = '1',
+    nonEvmFeesInNative,
+    srcTokenAmount = '100000000',
+  }: {
+    fromTokenInputValue?: string;
+    fromNativeBalance?: string;
+    nonEvmFeesInNative?: string;
+    srcTokenAmount?: string;
+  } = {}) => {
+    const btcAsset = getNativeAssetForChainId(ChainId.BTC);
+    const ethAsset = getNativeAssetForChainId(ChainId.ETH);
+    const btcQuote =
+      nonEvmFeesInNative === undefined
+        ? undefined
+        : {
+            quote: {
+              requestId: 'btc-quote',
+              bridgeId: 'rango',
+              aggregator: 'rango',
+              srcChainId: ChainId.BTC,
+              srcTokenAmount,
+              srcAsset: btcAsset,
+              destChainId: ChainId.ETH,
+              destTokenAmount: '1000000000000000000',
+              destAsset: ethAsset,
+              minDestTokenAmount: '990000000000000000',
+              feeData: {
+                metabridge: {
+                  amount: '0',
+                  asset: btcAsset,
+                },
+              },
+              bridges: ['rango'],
+              protocols: ['rango'],
+              steps: [],
+            },
+            trade: {
+              unsignedPsbtBase64: 'psbt',
+              inputsToSign: null,
+            },
+            estimatedProcessingTimeInSeconds: 600,
+            nonEvmFeesInNative,
+          };
+
+    return createBridgeMockStore({
+      bridgeSliceOverrides: {
+        fromTokenInputValue,
+        fromToken: toBridgeToken(btcAsset),
+        toToken: toBridgeToken(ethAsset),
+      },
+      bridgeStateOverrides: {
+        quotesLastFetched: Date.now(),
+        quoteRequest: {
+          srcChainId: ChainId.BTC,
+          srcTokenAmount,
+        },
+        quotes: btcQuote ? ([btcQuote] as unknown as QuoteResponse[]) : [],
+      },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: MOCK_BITCOIN_ACCOUNT.id,
+        },
+        balances: {
+          [MOCK_BITCOIN_ACCOUNT.id]: {
+            [btcAsset.assetId]: {
+              amount: fromNativeBalance,
+              unit: 'BTC',
+            },
+          },
+        },
+      },
+    });
+  };
+
+  const createBtcZeroNetworkFeeQuoteState = () =>
+    createBtcBridgeState({ nonEvmFeesInNative: '0' });
 
   describe('getFromChain', () => {
     it('returns the fromChain from the multichain network controller', () => {
@@ -2066,6 +2148,17 @@ describe('Bridge selectors', () => {
       expect(result.isInsufficientGasForQuote).toStrictEqual(false);
     });
 
+    it('should return isNetworkFeeUnavailable=true for a BTC quote with zero network fee', () => {
+      const state = createBtcZeroNetworkFeeQuoteState();
+      const result = getValidationErrors(state as never);
+
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+      ).toStrictEqual('0');
+      expect(result.isNetworkFeeUnavailable).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
     it('should return isEstimatedReturnLow=true return value is less than 65% of sent funds', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
@@ -2531,6 +2624,92 @@ describe('Bridge selectors', () => {
 
       // 100 - 80 = 20 MON remaining, which is >= 10 MON reserve
       expect(result.isInsufficientNativeReserve).toBe(false);
+    });
+
+    it('should return isInsufficientNativeReserve=true on Bitcoin when native balance after trade leaves less than 3000 sats', () => {
+      const state = createBtcBridgeState({
+        fromTokenInputValue: '0.999995',
+        fromNativeBalance: '1',
+        srcTokenAmount: '99999500',
+      });
+      const result = getValidationErrors(state as never);
+
+      // 1 - 0.999995 = 0.000005 BTC, which is < 0.00003 BTC reserve
+      expect(result.isInsufficientNativeReserve).toBe(true);
+    });
+
+    it('should return isInsufficientNativeReserve=false on Bitcoin when native balance after trade leaves 3000 sats', () => {
+      const state = createBtcBridgeState({
+        fromTokenInputValue: '0.99997',
+        fromNativeBalance: '1',
+        srcTokenAmount: '99997000',
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientNativeReserve).toBe(false);
+    });
+
+    it('should keep the BTC quote request reserve error independent of quote fee data', () => {
+      const stateWithSmallQuoteFee = createBtcBridgeState({
+        fromTokenInputValue: '0.99997',
+        fromNativeBalance: '1',
+        nonEvmFeesInNative: '0.00000001',
+        srcTokenAmount: '99997000',
+      });
+      const stateWithLargeQuoteFee = createBtcBridgeState({
+        fromTokenInputValue: '0.99997',
+        fromNativeBalance: '1',
+        nonEvmFeesInNative: '0.00002',
+        srcTokenAmount: '99997000',
+      });
+
+      expect(
+        getInsufficientNativeReserveError(stateWithSmallQuoteFee as never),
+      ).toBeUndefined();
+      expect(
+        getInsufficientNativeReserveError(stateWithLargeQuoteFee as never),
+      ).toBeUndefined();
+      expect(
+        getQuoteRequestInsufficientBal(stateWithSmallQuoteFee as never),
+      ).toBe(false);
+      expect(
+        getQuoteRequestInsufficientBal(stateWithLargeQuoteFee as never),
+      ).toBe(false);
+    });
+
+    it('should return isInsufficientNativeReserve=true and isInsufficientGasForQuote=false on Bitcoin when the quote fee is payable but the reserve would be depleted', () => {
+      const state = createBtcBridgeState({
+        fromTokenInputValue: '0.99997',
+        fromNativeBalance: '1',
+        nonEvmFeesInNative: '0.00000001',
+        srcTokenAmount: '99997000',
+      });
+      const result = getValidationErrors(state as never);
+      const nativeReserveError = getActiveQuoteInsufficientNativeReserveError(
+        state as never,
+      );
+
+      expect(
+        getBridgeQuotes(state as never).activeQuote?.totalNetworkFee.amount,
+      ).toStrictEqual('1e-8');
+      expect(nativeReserveError?.maxSwappableNativeBalance).toStrictEqual(
+        '0.99996999',
+      );
+      expect(result.isInsufficientNativeReserve).toBe(true);
+      expect(result.isInsufficientGasForQuote).toBe(false);
+    });
+
+    it('should return isInsufficientGasForQuote=true and isInsufficientNativeReserve=false on Bitcoin when the quote fee cannot be paid', () => {
+      const state = createBtcBridgeState({
+        fromTokenInputValue: '0.99997',
+        fromNativeBalance: '1',
+        nonEvmFeesInNative: '0.000031',
+        srcTokenAmount: '99997000',
+      });
+      const result = getValidationErrors(state as never);
+
+      expect(result.isInsufficientNativeReserve).toBe(false);
+      expect(result.isInsufficientGasForQuote).toBe(true);
     });
 
     it('should return isInsufficientNativeReserve=false on Solana even when trying to use full balance', () => {
@@ -4121,6 +4300,24 @@ describe('Bridge selectors', () => {
       });
       const result = getWarningLabels(state as never);
       expect(result).toContain('tx_alert');
+    });
+
+    it('returns network_fee_unavailable when BTC network fee is unavailable', () => {
+      const state = createBtcZeroNetworkFeeQuoteState();
+      const result = getWarningLabels(state as never);
+
+      expect(result).toContain('network_fee_unavailable');
+    });
+
+    it('returns insufficient_native_reserve when Bitcoin reserve would be depleted', () => {
+      const state = createBtcBridgeState({
+        fromTokenInputValue: '0.999995',
+        fromNativeBalance: '1',
+        srcTokenAmount: '99999500',
+      });
+      const result = getWarningLabels(state as never);
+
+      expect(result).toContain('insufficient_native_reserve');
     });
 
     it('returns price_impact when price impact exceeds warning threshold', () => {
