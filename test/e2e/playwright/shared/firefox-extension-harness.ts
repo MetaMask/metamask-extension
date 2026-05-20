@@ -155,36 +155,25 @@ export async function findMetaMaskInternalUuidFromProfile(
  */
 export async function ensurePatchedPlaywrightFirefox(): Promise<void> {
   const executablePath = firefox.executablePath();
-  const cfgPathCandidates = [
-    path.join(path.dirname(executablePath), 'playwright.cfg'),
-    path.join(path.dirname(path.dirname(executablePath)), 'playwright.cfg'),
-    path.join(
-      path.dirname(path.dirname(executablePath)),
-      'Resources/playwright.cfg',
-    ),
+  const omniPathCandidates = [
+    path.join(path.dirname(executablePath), 'omni.ja'),
+    path.join(path.dirname(path.dirname(executablePath)), 'omni.ja'),
+    path.join(path.dirname(path.dirname(executablePath)), 'Resources/omni.ja'),
     path.join(
       path.dirname(path.dirname(path.dirname(executablePath))),
-      'Contents/Resources/playwright.cfg',
+      'Contents/Resources/omni.ja',
     ),
   ];
-  const cfgPath = cfgPathCandidates.find((candidatePath) =>
+  const omniPath = omniPathCandidates.find((candidatePath) =>
     existsSync(candidatePath),
   );
 
-  if (!cfgPath) {
+  if (!omniPath) {
     throw new Error(
-      `Could not locate playwright.cfg near Firefox executable at ${executablePath}`,
+      `Could not locate omni.ja near Firefox executable at ${executablePath}`,
     );
   }
 
-  const firefoxResourcesDir = path.dirname(cfgPath);
-  const cfgContent = await readFile(cfgPath, 'utf-8');
-
-  if (cfgContent.includes(PATCH_MARKER)) {
-    return;
-  }
-
-  const omniPath = path.join(firefoxResourcesDir, 'omni.ja');
   const tempDir = await mkdtemp(path.join(os.tmpdir(), 'mm-firefox-patch-'));
 
   try {
@@ -193,32 +182,24 @@ export async function ensurePatchedPlaywrightFirefox(): Promise<void> {
       [
         '-q',
         omniPath,
-        'modules/addons/AddonSettings.sys.mjs',
         'chrome/juggler/content/content/JugglerFrameChild.jsm',
       ],
       { cwd: tempDir },
     );
 
-    const addonSettingsPath = path.join(
-      tempDir,
-      'modules/addons/AddonSettings.sys.mjs',
-    );
     const jugglerChildPath = path.join(
       tempDir,
       'chrome/juggler/content/content/JugglerFrameChild.jsm',
     );
 
-    const addonSettings = await readFile(addonSettingsPath, 'utf-8');
-    const patchedAddonSettings = addonSettings.replace(
-      'makeConstant("EXPERIMENTS_ENABLED", false)',
-      'makeConstant("EXPERIMENTS_ENABLED", true)',
-    );
-    await writeFile(addonSettingsPath, patchedAddonSettings, 'utf-8');
-
     const jugglerChild = await readFile(jugglerChildPath, 'utf-8');
+    if (jugglerChild.includes(PATCH_MARKER)) {
+      return;
+    }
+
     const patchedJugglerChild = jugglerChild.replace(
       'moz-extension://',
-      'moz-extension-DISABLED://',
+      `moz-extension-DISABLED:// ${PATCH_MARKER}`,
     );
     await writeFile(jugglerChildPath, patchedJugglerChild, 'utf-8');
 
@@ -228,16 +209,10 @@ export async function ensurePatchedPlaywrightFirefox(): Promise<void> {
         '-q',
         '-u',
         omniPath,
-        'modules/addons/AddonSettings.sys.mjs',
         'chrome/juggler/content/content/JugglerFrameChild.jsm',
       ],
       { cwd: tempDir },
     );
-
-    const patchedCfg =
-      cfgContent +
-      `\n${PATCH_MARKER}\nlockPref("marionette.running", true);\n// --- End MetaMask Firefox Harness Patch ---\n`;
-    await writeFile(cfgPath, patchedCfg, 'utf-8');
   } finally {
     await rm(tempDir, { recursive: true, force: true });
   }

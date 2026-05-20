@@ -4,7 +4,6 @@ import os from 'os';
 import { mkdtemp, rm } from 'node:fs/promises';
 import FixtureServer from '../../../fixtures/fixture-server';
 import { buildDefaultFixture } from '../../llm-workflow/fixture-helper';
-import { HomePage } from '../../../page-objects/pages/home/homepage';
 import { WALLET_PASSWORD } from '../../../constants';
 import {
   ensurePatchedPlaywrightFirefox,
@@ -31,7 +30,7 @@ async function withFixtures(testSuite: () => Promise<void>) {
   }
 }
 
-test('loads MetaMask in Firefox, unlocks wallet, and verifies balance', async () => {
+test('loads MetaMask in Firefox and unlocks wallet', async () => {
   test.setTimeout(90000);
 
   await withFixtures(async () => {
@@ -85,6 +84,7 @@ test('loads MetaMask in Firefox, unlocks wallet, and verifies balance', async ()
         await page.getByTestId('unlock-submit').click();
       }
 
+      await new Promise((resolve) => setTimeout(resolve, 3000));
     } finally {
       await extensionContext?.close();
 
