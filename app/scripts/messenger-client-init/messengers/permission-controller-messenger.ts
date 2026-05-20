@@ -8,7 +8,7 @@ import type {
 } from '@metamask/approval-controller';
 import type { GetSubjectMetadata } from '@metamask/permission-controller';
 import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
-import type { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
+import type { SnapAccountServiceHandleKeyringSnapMessageAction } from '@metamask/snap-account-service';
 import {
   SnapControllerGetPermittedSnapsAction,
   SnapControllerInstallSnapsAction,
@@ -71,7 +71,7 @@ type AllowedInitializationActions =
   | MultichainRoutingServiceIsSupportedScopeAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | SnapPermissionSpecificationsActions
-  | SnapAccountServiceGetLegacySnapKeyringAction
+  | SnapAccountServiceHandleKeyringSnapMessageAction
   | ApprovalControllerAddRequestAction;
 
 export type PermissionControllerInitMessenger = ReturnType<
@@ -122,7 +122,7 @@ export function getPermissionControllerInitMessenger(
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
       'SnapInterfaceController:setInterfaceDisplayed',
-      'SnapAccountService:getLegacySnapKeyring',
+      'SnapAccountService:handleKeyringSnapMessage',
       'ApprovalController:addRequest',
     ],
   });

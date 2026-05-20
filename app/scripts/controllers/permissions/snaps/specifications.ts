@@ -21,13 +21,15 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
-import { SnapAccountServiceGetLegacySnapKeyringAction } from '@metamask/snap-account-service';
+import { SnapAccountServiceHandleKeyringSnapMessageAction } from '@metamask/snap-account-service';
 import {
   RateLimitControllerCallApiAction,
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
+import { SnapMessage } from '@metamask/eth-snap-keyring';
+import { SnapId } from '@metamask/snaps-sdk';
 import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
@@ -56,7 +58,7 @@ export type SnapPermissionSpecificationsActions =
   | SnapControllerGetSnapAction
   | SnapControllerGetSnapStateAction
   | SnapControllerHandleRequestAction
-  | SnapAccountServiceGetLegacySnapKeyringAction
+  | SnapAccountServiceHandleKeyringSnapMessageAction
   | KeyringControllerWithKeyringAction
   | KeyringControllerWithKeyringV2UnsafeAction
   | MaybeUpdateState
@@ -179,9 +181,13 @@ export function getSnapPermissionSpecifications(
          */
         getClientCryptography: () => ({}),
 
-        getSnapKeyring: async () => {
-          return messenger.call('SnapAccountService:getLegacySnapKeyring');
-        },
+        getSnapKeyring: async () => ({
+          // We only need a subset of the Snap keyring's functionality, and this message handling is now
+          // owned by the Snap account service.
+          handleKeyringSnapMessage(snapId: string, message: SnapMessage) {
+            return messenger.call('SnapAccountService:handleKeyringSnapMessage', snapId as SnapId, message);
+          }
+        }),
       },
       messenger as RestrictedMethodMessenger,
     ),
