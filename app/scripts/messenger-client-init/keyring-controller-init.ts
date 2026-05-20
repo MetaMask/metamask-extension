@@ -7,6 +7,7 @@ import { KeyringClass } from '@metamask/keyring-utils';
 import LatticeKeyring from 'eth-lattice-keyring';
 import {
   OneKeyKeyring,
+  TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
 import {
@@ -17,7 +18,6 @@ import { hardwareKeyringBuilderFactory } from '../lib/hardware-keyring-builder-f
 import { isManifestV3 } from '../../../shared/lib/mv3.utils';
 import { qrKeyringBuilderFactory } from '../lib/qr-keyring-builder-factory';
 import { encryptorFactory } from '../lib/encryptor-factory';
-import { TrezorConnectBridgeIframeMode } from '../lib/trezor-connect-bridge-iframe-mode';
 import { TrezorOffscreenBridge } from '../lib/offscreen-bridge/trezor-offscreen-bridge';
 import { LedgerOffscreenBridge } from '../lib/offscreen-bridge/ledger-offscreen-bridge';
 import { LatticeKeyringOffscreen } from '../lib/offscreen-bridge/lattice-offscreen-keyring';
@@ -73,11 +73,11 @@ export const KeyringControllerInit: MessengerClientInitFunction<
       ),
       hardwareKeyringBuilderFactory(
         TrezorKeyring as unknown as KeyringClass,
-        keyringOverrides?.trezorBridge || TrezorConnectBridgeIframeMode,
+        keyringOverrides?.trezorBridge || TrezorConnectBridge,
       ),
       hardwareKeyringBuilderFactory(
         OneKeyKeyring as unknown as KeyringClass,
-        keyringOverrides?.oneKey || TrezorConnectBridgeIframeMode,
+        keyringOverrides?.oneKey || TrezorConnectBridge,
       ),
       hardwareKeyringBuilderFactory(
         LedgerKeyring as unknown as KeyringClass,
