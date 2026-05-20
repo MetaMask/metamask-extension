@@ -37,9 +37,11 @@ export const useBatchSellTradesFetching = (
     }
 
     const { data: latestData, entries: latestEntries } = latestArgsRef.current;
+
     const quotes = latestEntries
-      .filter(({ enabled }) => enabled)
+      .filter((entry) => entry.enabled)
       .map((entry) => latestData?.quotes[entry.assetId]?.quote ?? null);
+
     if (!quotes.some((quote) => quote !== null)) {
       return;
     }
