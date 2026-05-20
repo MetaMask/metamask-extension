@@ -4,12 +4,12 @@ import {
   RestrictedMethodMessenger,
 } from '@metamask/snaps-rpc-methods';
 import { ControllerGetStateAction } from '@metamask/base-controller';
-// import { ApprovalType } from '@metamask/controller-utils'; // POC: re-enable with snaps-rpc-methods yalc
+import { ApprovalType } from '@metamask/controller-utils';
 import { CurrencyRateController } from '@metamask/assets-controllers';
 import type { AssetsControllerGetStateAction } from '@metamask/assets-controller';
-// import type { MultichainTransactionsControllerActions } from '@metamask/multichain-transactions-controller'; // POC: re-enable with snaps-rpc-methods yalc
+import type { MultichainTransactionsControllerActions } from '@metamask/multichain-transactions-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
-// import { rpcErrors } from '@metamask/rpc-errors'; // POC: re-enable with snaps-rpc-methods yalc
+import { rpcErrors } from '@metamask/rpc-errors';
 import {
   SnapControllerClearSnapStateAction,
   SnapControllerGetSnapAction,
@@ -20,7 +20,7 @@ import {
   SnapInterfaceControllerGetInterfaceAction,
   SnapInterfaceControllerSetInterfaceDisplayedAction,
 } from '@metamask/snaps-controllers';
-// import { nanoid } from 'nanoid'; // POC: re-enable with snaps-rpc-methods yalc
+import { nanoid } from 'nanoid';
 import {
   KeyringControllerGetKeyringsByTypeAction,
   KeyringControllerWithKeyringAction,
@@ -36,7 +36,7 @@ import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../../shared/constants/snaps/permissions';
-// import { USE_UNIVERSAL_MULTICHAIN_CONFIRMATION } from '../../../../../shared/constants/confirmations'; // POC: re-enable with snaps-rpc-methods yalc
+import { USE_UNIVERSAL_MULTICHAIN_CONFIRMATION } from '../../../../../shared/constants/confirmations';
 import { PreferencesControllerGetStateAction } from '../../preferences-controller';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller-method-action-types';
@@ -48,7 +48,19 @@ import {
 } from '../../../../../shared/lib/assets-unify-state/remote-feature-flag';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../../shared/lib/environment';
 
-// POC: ConfirmTransactionParams type removed — re-enable with snaps-rpc-methods yalc
+type ConfirmTransactionParams = {
+  accountId: string;
+  assetDecimals: number;
+  assetSymbol: string;
+  assetType: string;
+  chain: string;
+  chainNamespace: 'solana' | 'bip122' | 'tron';
+  feeAssetType?: string;
+  feeRaw?: string;
+  from: string;
+  to: string;
+  value: string;
+};
 
 export type SnapPermissionSpecificationsActions =
   | AppStateControllerGetUnlockPromiseAction
@@ -73,7 +85,8 @@ export type SnapPermissionSpecificationsActions =
   | SnapInterfaceControllerSetInterfaceDisplayedAction
   | TestOrigin
   | SnapControllerUpdateSnapStateAction
-  | ApprovalControllerAddRequestAction;
+  | ApprovalControllerAddRequestAction
+  | MultichainTransactionsControllerActions;
 
 /**
  * Get the permission specifications for Snaps.
@@ -186,6 +199,68 @@ export function getSnapPermissionSpecifications(
          * empty object.
          */
         getClientCryptography: () => ({}),
+
+        showUniversalTransactionConfirmation: async (
+          snapId: string,
+          params: ConfirmTransactionParams,
+        ) => {
+          if (!USE_UNIVERSAL_MULTICHAIN_CONFIRMATION) {
+            throw rpcErrors.methodNotSupported();
+          }
+
+          const approvalId = nanoid();
+          messenger.call(
+            'MultichainTransactionsController:addPendingTransaction',
+            {
+              approvalId,
+              chainNamespace: params.chainNamespace,
+              chain: params.chain,
+              accountId: params.accountId,
+              from: params.from,
+              to: params.to,
+              value: params.value,
+              assetType: params.assetType,
+              assetSymbol: params.assetSymbol,
+              assetDecimals: params.assetDecimals,
+              feeRaw: params.feeRaw,
+              feeAssetType: params.feeAssetType,
+              origin: snapId,
+              createdAt: Date.now(),
+            },
+          );
+
+          const addAndShowApprovalRequest = async () =>
+            messenger.call(
+              'ApprovalController:addRequest',
+              {
+                id: approvalId,
+                origin: snapId,
+                type: ApprovalType.Transaction,
+                requestData: {
+                  approvalId,
+                  chainNamespace: params.chainNamespace,
+                  txParams: {
+                    from: params.from,
+                    to: params.to,
+                    value: params.value,
+                  },
+                },
+              },
+              true,
+            );
+
+          try {
+            await addAndShowApprovalRequest();
+            return true;
+          } catch (_err) {
+            return false;
+          } finally {
+            messenger.call(
+              'MultichainTransactionsController:removePendingTransaction',
+              approvalId,
+            );
+          }
+        },
 
         getSnapKeyring: async () => {
           // TODO: Use `withKeyring` instead.
