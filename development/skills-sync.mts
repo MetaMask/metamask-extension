@@ -71,7 +71,14 @@ if (picked.cacheFallback && !env.METAMASK_SKILLS_DIR) {
 
 const result = spawnSync(
   'bash',
-  [picked.sync, '--repo', REPO, '--target', process.cwd(), ...process.argv.slice(2)],
+  [
+    picked.sync,
+    '--repo',
+    REPO,
+    '--target',
+    process.cwd(),
+    ...process.argv.slice(2),
+  ],
   { stdio: 'inherit', env },
 );
 process.exit(result.status === null ? 1 : result.status);
