@@ -175,9 +175,6 @@
   "activity": {
     "message": "Aktibidad"
   },
-  "activityEmptyDescription": {
-    "message": "Wala pang bago sa ngayon. I-swap na ang iyong unang token ngayon."
-  },
   "add": {
     "message": "Idagdag"
   },
@@ -1411,10 +1408,6 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Kailangan pa ng $1 para sa gas"
-  },
-  "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "Hinihingi ng partikular na network na ito na magpanatili ka ng reserbang $1 $3 sa account mo. Sa kasalukuyan mong balanse, puwede kang gumamit ng maximum na $2 $3",
-    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Kinakailangan ang minimum na $1 na reserbang balanse",
@@ -3036,10 +3029,6 @@
   },
   "gasPriceFetchFailed": {
     "message": "Ang pagtantya ng presyo ng gas ay nabigo dahil sa network error."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Hindi available ang pag-iisponsor ng gas para sa transaksyong ito. Kakailanganin mo ng hindi bababa sa $1 $2 sa account mo.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 oras",
@@ -5761,9 +5750,6 @@
   "perpsCloseLong": {
     "message": "Isara ang long"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Ang mga bahagyang pagsasara ay dapat na hindi bababa sa $1 sa halaga ng USD. Dagdagan ang halaga ng pagsasara o isara ang buong posisyon."
-  },
   "perpsClosePosition": {
     "message": "Isara ang posisyon"
   },
@@ -5819,10 +5805,10 @@
     "message": "Nagdadagdag ng mga pondo sa Perps"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Handa nang mai-trade ang iyong mga pondo."
+    "message": "Ang mga pondo ay handa ng i-trade"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Mga pondong naidagdag sa Perps"
+    "message": "Napondohan ang iyong Perps account"
   },
   "perpsDeposits": {
     "message": "Mga deposito"
@@ -6111,11 +6097,11 @@
   "perpsSortByPriceChange": {
     "message": "Pagbabago ng presyo"
   },
+  "perpsSortByRank": {
+    "message": "Rank"
+  },
   "perpsSortBySection": {
     "message": "I-sort ayon sa"
-  },
-  "perpsSortByTitle": {
-    "message": "Isaayos"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -6287,6 +6273,9 @@
   "perpsTrades": {
     "message": "Mga Trade"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Bukas na long"
+  },
   "perpsTriggerPrice": {
     "message": "Trigger price"
   },
@@ -6385,6 +6374,24 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Walang piniling account. Pumili ng account at subukan muli."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Nabigong magpatuloy sa pag-withdraw"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Mayroong nang mali"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Available sa loob ng humigit-kumulang 1 minuto"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Kasalukuyang nagwi-withdraw"
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Nailipat ang mga pondo sa iyong wallet"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Tapos ng mag-withdraw"
   },
   "perpsWithdrawReceive": {
     "message": "Tumanggap"
@@ -6717,6 +6724,46 @@
     "message": "Kailangan ang access sa camera",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Bumalik sa wallet na hardware mo at hanapin ang opsyon na ibahagi o i-export ang mga account mo, piliin ang MetaMask, at pagkatapos, i-scan ang QR code.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "I-scan ang pag-sync ng QR code sa wallet",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Bumalik sa wallet na hardware mo at aprubahan ang transaksyon, saka i-scan ang QR code na ipapakita nito.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "I-scan ang QR code ng lagda",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Siguraduhing nakikita nang buo at may sapat na liwanag ang QR code at subukan ulit. Kung may isyu pa rin, baka kailanganin mong i-update ang firmware ng wallet na hardware mo.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Hindi mabasa ang QR code",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Bumalik sa wallet na hardware mo, piliin ang MetaMask sa uri ng wallet, at bumuo at mag-scan ng bagong QR code.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Maling QR code",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Bumalik sa wallet na hardware mo at aprubahan ang transaksyon, saka i-scan ang QR code na ipapakita nito.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Maling QR code",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Naka-queue"
   },
@@ -7029,6 +7076,12 @@
   "rewardsLinkAccountError": {
     "message": "Bigong maidagdag ang account"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Sinusuri ang rehiyon..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Manalo ng mga premyo, mag-claim ng perks, at alamin ang mas maraming paraan para kumita sa paggamit lang ng MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Hindi namin matukoy kung pinapayagan ng iyong bansa na mag-opt in sa programa ng mga reward. Suriin ang iyong koneksyon at subukang muli."
   },
@@ -7046,6 +7099,42 @@
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Hindi sinusuportahan ang rehiyon"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Matuto pa."
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Abiso sa Mga Tuntunin at Pagkapribado"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Nabigong mag-opt-in"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Hindi valid na referral code"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Referral code (opsyonal)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Hindi ma-validate ang referral code."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Suriin ang iyong koneksyon at subukang muli."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Itago ang code"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "May referral code ka ba?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Sumali sa Mga Reward"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Sumasali..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Simulang makaipon ng mga reward"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Vine-verify ang referral code...",

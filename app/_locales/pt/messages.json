@@ -175,9 +175,6 @@
   "activity": {
     "message": "Atividade"
   },
-  "activityEmptyDescription": {
-    "message": "Nada para ver ainda. Troque seu primeiro token hoje."
-  },
   "add": {
     "message": "Adicionar"
   },
@@ -1411,10 +1408,6 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Necessário mais $1 para gás"
-  },
-  "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "Esta rede específica exige que você mantenha uma reserva de $1 a $3 em sua conta. Com seu saldo atual, você pode usar no máximo $2 a $3",
-    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "É necessário um saldo mínimo de reserva de $1",
@@ -3036,10 +3029,6 @@
   },
   "gasPriceFetchFailed": {
     "message": "Ocorreu uma falha na estimativa do preço do gás devido a um erro na rede."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "O patrocínio de gás não está disponível para esta transação. Você precisará manter pelo menos $1 $2 em sua conta.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 h",
@@ -5761,9 +5750,6 @@
   "perpsCloseLong": {
     "message": "Encerrar posição long"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Fechamentos parciais devem ter um valor mínimo de $1 em USD. Aumente o valor do fechamento ou feche a posição completa."
-  },
   "perpsClosePosition": {
     "message": "Encerrar posição"
   },
@@ -5819,10 +5805,10 @@
     "message": "Adicionando fundos aos Perps"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Seus fundos estão prontos para negociar."
+    "message": "Os fundos estão prontos para negociação"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Fundos adicionados aos Perps"
+    "message": "Sua conta perps recebeu um depósito"
   },
   "perpsDeposits": {
     "message": "Depósitos"
@@ -6111,11 +6097,11 @@
   "perpsSortByPriceChange": {
     "message": "Variação de preço"
   },
+  "perpsSortByRank": {
+    "message": "Classificação"
+  },
   "perpsSortBySection": {
     "message": "Classificar por"
-  },
-  "perpsSortByTitle": {
-    "message": "Classificar"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -6287,6 +6273,9 @@
   "perpsTrades": {
     "message": "Negociações"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Abriu posição long"
+  },
   "perpsTriggerPrice": {
     "message": "Preço de disparo"
   },
@@ -6385,6 +6374,24 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Nenhuma conta selecionada. Selecione uma conta e tente novamente."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Não foi possível prosseguir com o saque"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Ocorreu algum erro"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Disponível em cerca de 1 minuto"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Retirada em andamento"
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Fundos transferidos para sua carteira"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Saque concluído"
   },
   "perpsWithdrawReceive": {
     "message": "Receber"
@@ -6717,6 +6724,46 @@
     "message": "Necessário acesso à câmera",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Volte à sua carteira de hardware e procure a opção para compartilhar ou exportar suas contas, escolha MetaMask e, em seguida, escaneie o código QR.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Escaneie o código QR para sincronizar a carteira",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Volte à sua carteira de hardware, aprove a transação e, em seguida, escaneie o código QR exibido.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Escaneie o código QR da assinatura",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Certifique-se de que o código QR esteja totalmente visível e bem iluminado e tente novamente. Se o problema persistir, talvez seja necessário atualizar o firmware da sua carteira de hardware.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Não foi possível ler o código QR",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Volte à sua carteira de hardware, escolha MetaMask como tipo de carteira e, em seguida, gere e escaneie um novo código QR.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Código QR errado",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Volte à sua carteira de hardware, aprove a transação e, em seguida, escaneie o código QR exibido.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Código QR errado",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Na fila"
   },
@@ -7029,6 +7076,12 @@
   "rewardsLinkAccountError": {
     "message": "Falha ao adicionar a conta"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Verificando região..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Ganhe prêmios, resgate vantagens e descubra mais maneiras de ganhar — bastando apenas usar a MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Não foi possível determinar se o seu país permite a participação no programa de recompensas. Verifique sua conexão e tente novamente."
   },
@@ -7046,6 +7099,42 @@
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Não há suporte a essa região"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Saiba mais."
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Termos e Aviso de privacidade"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "A participação falhou"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Código de indicação inválido"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Código de indicação (opcional)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Não foi possível validar o código de indicação."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Verifique sua conexão e tente novamente."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Ocultar código"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Tem um código de indicação?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Participe do programa de recompensas"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Entrando..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Comece a ganhar recompensas"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Verificando código de indicação...",

@@ -175,9 +175,6 @@
   "activity": {
     "message": "Hoạt động"
   },
-  "activityEmptyDescription": {
-    "message": "Chưa có gì để xem. Hãy hoán đổi token đầu tiên của bạn ngay hôm nay."
-  },
   "add": {
     "message": "Thêm"
   },
@@ -1411,10 +1408,6 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Cần thêm $1 để trả phí gas"
-  },
-  "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "Mạng cụ thể này yêu cầu duy trì khoản dự trữ $1 $3 trong tài khoản của bạn. Với số dư hiện tại, bạn có thể sử dụng tối đa $2 $3",
-    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Yêu cầu số dư dự trữ tối thiểu $1",
@@ -3036,10 +3029,6 @@
   },
   "gasPriceFetchFailed": {
     "message": "Không ước tính được giá gas do lỗi mạng."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Tài trợ phí gas không khả dụng cho giao dịch này. Bạn cần giữ ít nhất $1 $2 trong tài khoản của mình.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 giờ",
@@ -5761,9 +5750,6 @@
   "perpsCloseLong": {
     "message": "Đóng vị thế mua khống"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Đóng một phần phải có giá trị tối thiểu là $1 USD. Hãy tăng số lượng đóng hoặc đóng toàn bộ vị thế."
-  },
   "perpsClosePosition": {
     "message": "Đóng vị thế"
   },
@@ -5819,10 +5805,10 @@
     "message": "Đang nạp tiền vào Hợp đồng vĩnh cửu"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Tiền của bạn đã sẵn sàng để giao dịch."
+    "message": "Tiền đã sẵn sàng để giao dịch"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Tiền đã được nạp vào Hợp đồng vĩnh cửu"
+    "message": "Tài khoản Hợp đồng vĩnh cửu đã được nạp tiền"
   },
   "perpsDeposits": {
     "message": "Nạp tiền"
@@ -6111,11 +6097,11 @@
   "perpsSortByPriceChange": {
     "message": "Biến động giá"
   },
+  "perpsSortByRank": {
+    "message": "Xếp hạng"
+  },
   "perpsSortBySection": {
     "message": "Sắp xếp theo"
-  },
-  "perpsSortByTitle": {
-    "message": "Sắp xếp"
   },
   "perpsSortByVolume": {
     "message": "Khối lượng"
@@ -6291,6 +6277,9 @@
   "perpsTrades": {
     "message": "Giao dịch"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Đã mở vị thế mua khống"
+  },
   "perpsTriggerPrice": {
     "message": "Giá kích hoạt"
   },
@@ -6389,6 +6378,24 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Chưa chọn tài khoản. Hãy chọn một tài khoản và thử lại."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Không thể tiến hành rút tiền"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Đã xảy ra sự cố"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Sẽ khả dụng sau khoảng 1 phút"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Đang rút tiền"
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Tiền đã được chuyển vào ví của bạn"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Rút tiền hoàn tất"
   },
   "perpsWithdrawReceive": {
     "message": "Nhận"
@@ -6721,6 +6728,46 @@
     "message": "Cần quyền truy cập camera",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Quay lại ví cứng của bạn và tìm tùy chọn chia sẻ hoặc xuất tài khoản, chọn MetaMask, sau đó quét mã QR.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Quét mã QR đồng bộ ví",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Quay lại ví cứng của bạn và chấp thuận giao dịch, sau đó quét mã QR hiển thị.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Quét mã QR chữ ký",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Đảm bảo mã QR hiển thị đầy đủ và đủ ánh sáng, sau đó thử lại. Nếu sự cố vẫn tiếp diễn, bạn có thể cần cập nhật firmware của ví cứng.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Không thể đọc mã QR",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Quay lại ví cứng của bạn, chọn MetaMask làm loại ví, sau đó tạo và quét mã QR mới.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Sai mã QR",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Quay lại ví cứng của bạn và chấp thuận giao dịch, sau đó quét mã QR hiển thị.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Sai mã QR",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Đã đưa vào hàng đợi"
   },
@@ -7033,6 +7080,12 @@
   "rewardsLinkAccountError": {
     "message": "Thêm tài khoản không thành công"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Đang kiểm tra khu vực..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Giành giải thưởng, nhận ưu đãi và khám phá thêm nhiều cách kiếm lợi nhuận — chỉ bằng cách sử dụng MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Chúng tôi không thể xác định liệu quốc gia của bạn có cho phép tham gia chương trình phần thưởng hay không. Vui lòng kiểm tra kết nối và thử lại."
   },
@@ -7050,6 +7103,42 @@
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Khu vực không được hỗ trợ"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Tìm hiểu thêm"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Điều khoản và Thông báo quyền riêng tư"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Đăng ký tham gia thất bại"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Mã giới thiệu không hợp lệ"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Mã giới thiệu (không bắt buộc)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Không thể xác minh mã giới thiệu."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Kiểm tra kết nối của bạn và thử lại."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Ẩn mã"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Có mã giới thiệu?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Tham gia chương trình Phần thưởng"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Đang tham gia..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Bắt đầu kiếm phần thưởng"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Đang xác minh mã giới thiệu...",

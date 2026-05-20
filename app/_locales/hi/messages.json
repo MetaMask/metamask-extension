@@ -175,9 +175,6 @@
   "activity": {
     "message": "एक्टिविटी"
   },
-  "activityEmptyDescription": {
-    "message": "अभी देखने के लिए कुछ नहीं है। अपना पहला टोकन आज ही स्वैप करें।"
-  },
   "add": {
     "message": "जोड़ें"
   },
@@ -1411,10 +1408,6 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "गैस के लिए अधिक $1 की आवश्यकता है"
-  },
-  "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "इस विशेष नेटवर्क के लिए आपके अकाउंट में $1 $3 का रिज़र्व बनाए रखना आवश्यक है। आपके वर्तमान बैलेंस के साथ, आप अधिकतम $2 $3 तक उपयोग कर सकते हैं",
-    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "न्यूनतम $1 रिज़र्व बैलेंस आवश्यक है",
@@ -3036,10 +3029,6 @@
   },
   "gasPriceFetchFailed": {
     "message": "गैस प्राइस अनुमान नेटवर्क गड़बड़ी के कारण नहीं हो पाया है।"
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "इस ट्रांसेक्शन के लिए गैस स्पॉन्सरशिप उपलब्ध नहीं है। आपको अपने अकाउंट में कम से कम $1 $2 रखना होगा।",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 घंटे",
@@ -5761,9 +5750,6 @@
   "perpsCloseLong": {
     "message": "लॉन्ग को क्लोज़ करें"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "आंशिक क्लोज़ की कीमत USD में कम से कम $1 होनी चाहिए। क्लोज़ अमाउंट बढ़ाएँ या पूरी पोज़िशन बंद करें।"
-  },
   "perpsClosePosition": {
     "message": "पोज़िशन बंद करें"
   },
@@ -5819,10 +5805,10 @@
     "message": "पर्प्स में फंड्स जोड़े जा रहे हैं"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "आपके फंड्स ट्रेड करने के लिए तैयार हैं।"
+    "message": "फंड्स ट्रेड करने के लिए तैयार हैं"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "फंड्स पर्प्स में जोड़े गए"
+    "message": "आपका पर्प्स अकाउंट फंड हो गया"
   },
   "perpsDeposits": {
     "message": "डिपॉज़िट"
@@ -6111,11 +6097,11 @@
   "perpsSortByPriceChange": {
     "message": "प्राइस में बदलाव"
   },
+  "perpsSortByRank": {
+    "message": "रैंक"
+  },
   "perpsSortBySection": {
     "message": "इसके अनुसार क्रमबद्ध करें"
-  },
-  "perpsSortByTitle": {
-    "message": "सॉर्ट करें"
   },
   "perpsSortByVolume": {
     "message": "वॉल्यूम"
@@ -6287,6 +6273,9 @@
   "perpsTrades": {
     "message": "ट्रेड्स"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "खुला लॉन्ग"
+  },
   "perpsTriggerPrice": {
     "message": "ट्रिगर प्राइस"
   },
@@ -6385,6 +6374,24 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "कोई अकाउंट नहीं चुना गया। कृपया एक अकाउंट चुनें और दोबारा कोशिश करें।"
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "विदड्रॉवल नहीं हो पाया"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "कुछ गलत हो गया"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "लगभग 1 मिनट में उपलब्ध होगा"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "विदड्रॉवल प्रोग्रेस में है"
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "फंड आपके वॉलेट में भेजे गए"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "विदड्रॉवल पूरा हुआ"
   },
   "perpsWithdrawReceive": {
     "message": "प्राप्त करें"
@@ -6717,6 +6724,46 @@
     "message": "कैमरा एक्सेस की आवश्यकता है",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "अपने हार्डवेयर वॉलेट पर वापस जाएं और एकाउंट्स शेयर या एक्सपोर्ट करने का विकल्प ढूंढें, MetaMask चुनें, फिर QR कोड स्कैन करें।",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "वॉलेट सिंक QR कोड स्कैन करें",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "अपने हार्डवेयर वॉलेट पर वापस जाएं और ट्रांसेक्शन को एप्रूव करें, फिर वहां दिखने वाला QR कोड स्कैन करें।",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "सिग्नेचर QR कोड स्कैन करें",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "सुनिश्चित करें कि QR कोड पूरी तरह दिखाई दे रहा है और अच्छी रोशनी में है, फिर से प्रयास करें। यदि समस्या बनी रहती है, तो आपको अपने हार्डवेयर वॉलेट का फर्मवेयर अपडेट करना पड़ सकता है।",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "QR कोड पढ़ा नहीं जा सका",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "अपने हार्डवेयर वॉलेट पर वापस जाएं, MetaMask को वॉलेट प्रकार के रूप में चुनें, फिर नया QR कोड जनरेट करके स्कैन करें।",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "गलत QR कोड",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "अपने हार्डवेयर वॉलेट पर वापस जाएं और ट्रांसेक्शन को एप्रूव करें, फिर वहां दिखने वाला QR कोड स्कैन करें।",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "गलत QR कोड",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "कतारबद्ध"
   },
@@ -7029,6 +7076,12 @@
   "rewardsLinkAccountError": {
     "message": "अकाउंट जोड़ना नहीं हो पाया"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "क्षेत्र की जांच की जा रही है…"
+  },
+  "rewardsOnboardingDescription": {
+    "message": "इनाम जीतें, फ़ायदे पाएँ, और कमाने के और भी तरीके जानें—सिर्फ़ MetaMask का इस्तेमाल करके।"
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "हम यह निर्धारित नहीं कर सकते कि आपका देश रिवॉर्ड्स प्रोग्राम में ऑप्ट-इन की अनुमति देता है या नहीं। कृपया अपना कनेक्शन जांचें और फिर से कोशिश करें।"
   },
@@ -7046,6 +7099,42 @@
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "क्षेत्र सपोर्टेड नहीं है"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "ज़्यादा जानें"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "नियम और गोपनीयता सूचना"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "ऑप्ट-इन नहीं हो पाया"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "रेफरल कोड ग़लत है"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "रेफरल कोड (वैकल्पिक)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "रेफरल कोड का सत्यापन नहीं हो पाया।"
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "अपना कनेक्शन जांचें और फिर से प्रयास करें।"
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "कोड छिपाएँ"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "क्या आपके पास रेफ़रल कोड है?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "रिवॉर्ड में शामिल हों"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "शामिल हो रहे हैं..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "रिवॉर्ड कमाना शुरू करें"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "रेफरल कोड वेरीफाई किया जा रहा है…",

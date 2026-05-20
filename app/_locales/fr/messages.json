@@ -175,9 +175,6 @@
   "activity": {
     "message": "Activité"
   },
-  "activityEmptyDescription": {
-    "message": "Rien à voir pour l’instant. Échangez votre premier jeton dès aujourd’hui."
-  },
   "add": {
     "message": "Ajouter"
   },
@@ -1411,10 +1408,6 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Vous avez besoin de plus de $1 pour payer les frais de gaz"
-  },
-  "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "Ce réseau spécifique exige que vous mainteniez une réserve de $1 $3 sur votre compte. Avec votre solde actuel, vous pouvez utiliser $2 $3 au maximum",
-    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Solde minimum de réserve en $1 requis",
@@ -3036,10 +3029,6 @@
   },
   "gasPriceFetchFailed": {
     "message": "L’estimation du prix du carburant a échoué en raison d’une erreur de réseau."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Le parrainage de gaz n’est pas disponible pour cette transaction. Vous devrez conserver au moins $1 $2 sur votre compte.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 h",
@@ -5761,9 +5750,6 @@
   "perpsCloseLong": {
     "message": "Fermer la position longue"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Les clôtures partielles doivent avoir une valeur d’au moins $1 USD. Augmentez le montant de clôture ou clôturez la position complète."
-  },
   "perpsClosePosition": {
     "message": "Fermer la position"
   },
@@ -5819,10 +5805,10 @@
     "message": "Ajouter des fonds à votre compte de trading de contrats à terme perpétuels"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Vos fonds sont disponibles pour le trading."
+    "message": "Les fonds sont prêts à être tradés"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Fonds ajoutés au compte de trading de contrats à terme perpétuels"
+    "message": "Votre compte de trading de contrats à terme perpétuels a été approvisionné"
   },
   "perpsDeposits": {
     "message": "Dépôts"
@@ -6111,11 +6097,11 @@
   "perpsSortByPriceChange": {
     "message": "Variation du prix"
   },
+  "perpsSortByRank": {
+    "message": "Rang"
+  },
   "perpsSortBySection": {
     "message": "Trier par"
-  },
-  "perpsSortByTitle": {
-    "message": "Trier"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -6287,6 +6273,9 @@
   "perpsTrades": {
     "message": "Trades"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Position longue ouverte"
+  },
   "perpsTriggerPrice": {
     "message": "Prix déclencheur"
   },
@@ -6385,6 +6374,24 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Aucun compte sélectionné. Sélectionnez un compte et réessayez."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Échec du retrait"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Une erreur s’est produite"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Disponible dans environ 1 minute"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Retrait en cours "
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Fonds transférés vers votre portefeuille"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Retrait effectué"
   },
   "perpsWithdrawReceive": {
     "message": "Recevoir"
@@ -6717,6 +6724,46 @@
     "message": "L’accès à l’appareil photo est requis",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Retournez sur votre portefeuille matériel et trouvez l’option permettant de partager ou d’exporter vos comptes, choisissez MetaMask, puis scannez le code QR.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Scannez le code QR de synchronisation du portefeuille",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Retournez sur votre portefeuille matériel et approuvez la transaction, puis scannez le code QR qui s’affiche.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Scanner le code QR de signature",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Assurez-vous que le code QR est entièrement visible et bien éclairé, puis réessayez. Si le problème persiste, essayez de mettre à jour le micrologiciel (firmware) de votre portefeuille matériel.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Impossible de lire le code QR",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Retournez sur votre portefeuille matériel, choisissez MetaMask comme type de portefeuille, puis générez un nouveau code QR et scannez-le.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Code QR incorrect",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Retournez sur votre portefeuille matériel et approuvez la transaction, puis scannez le code QR qui s’affiche.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Code QR incorrect",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "En attente"
   },
@@ -7029,6 +7076,12 @@
   "rewardsLinkAccountError": {
     "message": "Échec de l’ajout du compte"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Vérification de la région…"
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Gagnez des prix, profitez d’avantages et découvrez d’autres façons de gagner de l’argent, simplement en utilisant MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Nous ne pouvons pas déterminer si votre pays autorise l’adhésion au programme de récompenses. Veuillez vérifier votre connexion et réessayer."
   },
@@ -7046,6 +7099,42 @@
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Région non prise en charge"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "En savoir plus."
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "conditions générales et notre politique de confidentialité"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Échec de l’inscription"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Code de parrainage non valide"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Code de parrainage (facultatif)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Impossible de valider le code de parrainage."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Vérifiez votre connexion et réessayez."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Masquer le code"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Vous avez un code de parrainage ?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Inscrivez-vous au programme de récompenses"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Inscription en cours…"
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Commencez à gagner des récompenses"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Vérification du code de parrainage…",

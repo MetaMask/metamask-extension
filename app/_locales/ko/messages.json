@@ -175,9 +175,6 @@
   "activity": {
     "message": "활동"
   },
-  "activityEmptyDescription": {
-    "message": "아직 표시할 내용이 없습니다. 첫 토큰 스왑을 시작해 보세요."
-  },
   "add": {
     "message": "추가"
   },
@@ -1411,10 +1408,6 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "가스비를 위해 더 많은 $1 필요"
-  },
-  "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "이 특정 네트워크는 계정에 최소 $1 $3의 예치금을 유지해야 합니다. 현재 잔액으로는 최대 $2 $3까지 사용할 수 있습니다",
-    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "최소 $1의 예치금이 필요합니다",
@@ -3036,10 +3029,6 @@
   },
   "gasPriceFetchFailed": {
     "message": "네트워크 오류로 인해 가스 가격 견적 추산을 실패했습니다."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "이 트랜잭션에는 가스 후원이 제공되지 않습니다. 계정에 최소 $1 $2의 잔고를 유지해야 합니다.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 시간",
@@ -5761,9 +5750,6 @@
   "perpsCloseLong": {
     "message": "롱 청산"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "부분 종료는 USD 기준 최소 $1 이상이어야 합니다. 종료 금액을 늘리거나 전체 포지션을 종료하세요."
-  },
   "perpsClosePosition": {
     "message": "포지션 종료"
   },
@@ -5819,10 +5805,10 @@
     "message": "무기한 선물에 자금 추가 중"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "자금을 거래에 사용할 준비가 되었습니다."
+    "message": "거래 준비 완료"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "무기한 선물에 자금 추가됨"
+    "message": "무기한 선물 계정에 자금이 조달되었습니다"
   },
   "perpsDeposits": {
     "message": "예치"
@@ -6111,11 +6097,11 @@
   "perpsSortByPriceChange": {
     "message": "가격 변동"
   },
+  "perpsSortByRank": {
+    "message": "순위"
+  },
   "perpsSortBySection": {
     "message": "정렬 기준"
-  },
-  "perpsSortByTitle": {
-    "message": "정렬"
   },
   "perpsSortByVolume": {
     "message": "거래량"
@@ -6291,6 +6277,9 @@
   "perpsTrades": {
     "message": "거래하기"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "오픈한 롱"
+  },
   "perpsTriggerPrice": {
     "message": "트리거 가격"
   },
@@ -6389,6 +6378,24 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "선택한 계정이 없습니다 계정을 선택한 후 다시 시도해 주세요."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "출금 실패"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "문제가 발생했습니다"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "약 1분 후 사용 가능"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "인출이 진행 중입니다"
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "자금이 지갑으로 전송되었습니다"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "출금 완료"
   },
   "perpsWithdrawReceive": {
     "message": "받기"
@@ -6721,6 +6728,46 @@
     "message": "카메라 접근 권한 필요",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "하드웨어 지갑으로 돌아가 계정 공유 또는 계정 내보내기 옵션을 찾은 후 MetaMask를 선택하고 QR 코드를 스캔하세요.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "지갑 동기화 QR 코드 스캔하기",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "하드웨어 지갑으로 돌아가 거래를 승인한 후 표시된 QR 코드를 스캔하세요.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "서명 QR 코드 스캔하기",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "QR 코드가 화면에 완전히 표시되고 주변 조명이 충분히 밝은지 확인한 후 다시 시도해 주세요. 문제가 계속되는 경우, 하드웨어 지갑의 펌웨어를 업데이트해야 할 수 있습니다.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "QR 코드를 읽을 수 없음",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "하드웨어 지갑으로 돌아가 MetaMask를 지갑 유형으로 선택한 후, 새 QR 코드를 생성해 스캔하세요.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "잘못된 QR 코드",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "하드웨어 지갑으로 돌아가 거래를 승인한 후 표시된 QR 코드를 스캔하세요.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "잘못된 QR 코드",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "대기열에 지정됨"
   },
@@ -7033,6 +7080,12 @@
   "rewardsLinkAccountError": {
     "message": "계정 추가 실패"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "지역 확인 중..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "MetaMask를 사용하기만 해도 상품을 받고, 혜택을 청구하며, 더 많은 수익 기회를 발견할 수 있습니다."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "현재 사용자의 국가에서 보상 프로그램에 참여할 수 있는지 확인할 수 없습니다. 인터넷 연결 상태를 확인하고 다시 시도해 주세요."
   },
@@ -7050,6 +7103,42 @@
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "지원되지 않는 지역입니다"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "자세히 알아보세요."
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "약관 및 개인정보 보호 고지"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "참여 실패"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "잘못된 추천 코드"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "추천 코드(선택 사항)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "추천 코드를 확인할 수 없습니다."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "연결 상태를 확인하고 다시 시도하세요."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "코드 숨기기"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "추천 코드가 있으세요?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "보상 프로그램 가입"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "가입 중..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "보상 적립 시작하기"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "추천인 코드 확인 중...",

@@ -175,9 +175,6 @@
   "activity": {
     "message": "Aktivitas"
   },
-  "activityEmptyDescription": {
-    "message": "Belum ada apa pun. Swap token pertama Anda hari ini."
-  },
   "add": {
     "message": "Tambah"
   },
@@ -1411,10 +1408,6 @@
   },
   "bridgeValidationInsufficientGasTitle": {
     "message": "Diperlukan lebih banyak $1 untuk gas"
-  },
-  "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "Jaringan khusus ini mengharuskan Anda untuk mempertahankan saldo cadangan sebesar $1 $3 di akun Anda. Dengan saldo saat ini, Anda dapat menggunakan maksimal $2 $3",
-    "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
     "message": "Saldo cadangan minimum $1 diperlukan",
@@ -3036,10 +3029,6 @@
   },
   "gasPriceFetchFailed": {
     "message": "Estimasi biaya gas gagal karena terjadi kesalahan pada jaringan."
-  },
-  "gasSponsorshipReserveBalanceWarning": {
-    "message": "Sponsor gas tidak tersedia untuk transaksi ini. Anda perlu menyimpan minimal $1 atau $2 di akun Anda.",
-    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
     "message": "$1 jam",
@@ -5761,9 +5750,6 @@
   "perpsCloseLong": {
     "message": "Tutup long"
   },
-  "perpsClosePartialMinNotional": {
-    "message": "Penutupan sebagian harus bernilai minimal $1 dalam USD. Tingkatkan jumlah penutupan atau tutup posisi penuh."
-  },
   "perpsClosePosition": {
     "message": "Tutup posisi"
   },
@@ -5819,10 +5805,10 @@
     "message": "Menambahkan dana ke Perp"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Dana Anda siap untuk diperdagangkan."
+    "message": "Dana siap untuk diperdagangkan"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Dana ditambahkan ke Perp"
+    "message": "Akun Perp Anda telah didanai"
   },
   "perpsDeposits": {
     "message": "Deposit"
@@ -6111,11 +6097,11 @@
   "perpsSortByPriceChange": {
     "message": "Perubahan harga"
   },
+  "perpsSortByRank": {
+    "message": "Peringkat"
+  },
   "perpsSortBySection": {
     "message": "Urutkan sesuai"
-  },
-  "perpsSortByTitle": {
-    "message": "Urutkan"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -6291,6 +6277,9 @@
   "perpsTrades": {
     "message": "Perdagangan"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Long terbuka"
+  },
   "perpsTriggerPrice": {
     "message": "Harga pemicu"
   },
@@ -6389,6 +6378,24 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Belum ada akun yang dipilih. Pilih akun dan coba lagi."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Gagal memproses penarikan"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Terjadi kesalahan"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Tersedia dalam waktu sekitar 1 menit"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Penarikan sedang diproses"
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Dana telah dipindahkan ke dompet Anda"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Penarikan selesai"
   },
   "perpsWithdrawReceive": {
     "message": "Terima"
@@ -6721,6 +6728,46 @@
     "message": "Akses kamera diperlukan",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Kembali ke dompet perangkat keras dan temukan opsi untuk berbagi atau mengekspor akun Anda, pilih MetaMask, lalu pindai kode QR.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Pindai kode QR sinkronisasi dompet",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Kembali ke dompet perangkat keras dan setujui transaksi, lalu pindai kode QR yang muncul.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Pindai kode QR tanda tangan",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Pastikan kode QR terlihat jelas dan terang, lalu coba lagi. Jika masalah berlanjut, Anda mungkin perlu memperbarui firmware dompet perangkat keras.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Tidak dapat membaca kode QR",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Kembali ke dompet perangkat keras, pilih MetaMask sebagai jenis dompet, lalu buat dan pindai kode QR baru.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Kode QR salah",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Kembali ke dompet perangkat keras dan setujui transaksi, lalu pindai kode QR yang muncul.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Kode QR salah",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Antrean"
   },
@@ -7033,6 +7080,12 @@
   "rewardsLinkAccountError": {
     "message": "Gagal menambahkan akun"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Memeriksa wilayah..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Menangkan hadiah, klaim keuntungan, dan temukan cara lainnya untuk menghasilkan—hanya dengan menggunakan MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Kami tidak dapat memastikan jika negara Anda mengizinkan Anda untuk berpartisipasi dalam program reward. Periksa koneksi dan coba lagi."
   },
@@ -7050,6 +7103,42 @@
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Wilayah tidak didukung"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Selengkapnya"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Syarat dan Pemberitahuan Privasi"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Gagal berpartisipasi"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Kode referensi tidak valid"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Kode referensi (opsional)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Kode referensi tidak dapat divalidasi."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Periksa koneksi Anda dan coba lagi."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Sembunyikan kode"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Punya kode referensi?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Gabung dengan Reward"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Bergabung..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Mulai dapatkan reward"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Memverifikasi kode referensi...",
