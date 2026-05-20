@@ -267,6 +267,21 @@ describe('subscribeToMessengerEvent', () => {
     expect(listenerB).not.toHaveBeenCalled();
   });
 
+  it('ignores subscription notifications that have no params', async () => {
+    const { submitNotification } = setup();
+
+    const listener = jest.fn();
+    await subscribeToMessengerEvent(event, listener);
+
+    submitNotification({
+      jsonrpc: '2.0',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
+      // No params field.
+    });
+
+    expect(listener).not.toHaveBeenCalled();
+  });
+
   it('propagates messengerUnsubscribe IPC rejection to the awaiter', async () => {
     const { messengerUnsubscribe } = setup();
 
