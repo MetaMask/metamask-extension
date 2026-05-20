@@ -26,7 +26,7 @@
     "start:flask": "yarn start --type flask",
     "start:beta": "yarn start --type beta",
     "start:flask:mv2": "ENABLE_MV3=false yarn start:mv2 --type flask",
-    "start:lavamoat": "node -e \"console.error('yarn start:lavamoat is not currently supported because webpack watch mode does not support LavaMoat.\\nUse yarn webpack:lavamoat:build or yarn build:test:webpack for production-like LavaMoat verification.\\nSee https://github.com/MetaMask/metamask-extension/issues/40677 for details.'); process.exit(1);\"",
+    "start:lavamoat": "node -e \"console.error('yarn start:lavamoat is not currently supported because LavaMoat does not support webpack watch mode.\\nUse yarn webpack:lavamoat:build or yarn build:test:webpack for production-like LavaMoat verification.\\nSee https://github.com/MetaMask/metamask-extension/issues/40677 for details.'); process.exit(1);\"",
     "dist": "yarn build dist",
     "dist:mv2": "ENABLE_MV3=false yarn build dist",
     "build": "yarn lavamoat:build",
