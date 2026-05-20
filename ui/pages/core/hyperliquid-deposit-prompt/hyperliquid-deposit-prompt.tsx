@@ -28,6 +28,7 @@ export type HyperliquidDepositPromptResult =
     }
   | {
       started: false;
+      suppress?: boolean;
     };
 
 type HyperliquidDepositPromptProps = {
@@ -57,6 +58,18 @@ const FlowButton = ({
       type="button"
     >
       {isLoading ? 'Preparing...' : children}
+    </button>
+  );
+};
+
+const ManualDepositButton = ({ onClick }: { onClick: () => void }) => {
+  return (
+    <button
+      className="hyperliquid-deposit__manual-link"
+      onClick={onClick}
+      type="button"
+    >
+      No thanks, I&apos;ll deposit manually.
     </button>
   );
 };
@@ -125,6 +138,15 @@ export const HyperliquidDepositPrompt = ({
     window.close();
   }, [onActionComplete]);
 
+  const handleManualDeposit = useCallback(() => {
+    if (onActionComplete) {
+      onActionComplete({ started: false, suppress: true });
+      return;
+    }
+
+    window.close();
+  }, [onActionComplete]);
+
   const handleReviewDeposit = useCallback(async () => {
     const fromAddress = selectedAddress || selectedAccount?.address;
 
@@ -174,13 +196,16 @@ export const HyperliquidDepositPrompt = ({
             <p>Fund your Hyperliquid account with any token from MetaMask.</p>
           </div>
           <InlineError message={error} />
-          <FlowButton
-            dataTestId="hyperliquid-deposit-intro-button"
-            isLoading={isSubmitting}
-            onClick={handleReviewDeposit}
-          >
-            Review deposit
-          </FlowButton>
+          <div className="hyperliquid-deposit__actions">
+            <FlowButton
+              dataTestId="hyperliquid-deposit-intro-button"
+              isLoading={isSubmitting}
+              onClick={handleReviewDeposit}
+            >
+              Review deposit
+            </FlowButton>
+            <ManualDepositButton onClick={handleManualDeposit} />
+          </div>
         </div>
       </section>
     </main>

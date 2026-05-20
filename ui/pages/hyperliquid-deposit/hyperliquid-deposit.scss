@@ -162,6 +162,30 @@
     }
   }
 
+  &__actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+    margin-top: auto;
+
+    .hyperliquid-deposit__button {
+      margin-top: 0;
+    }
+  }
+
+  &__manual-link {
+    align-self: center;
+    border: 0;
+    background: transparent;
+    color: var(--color-primary-default);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    cursor: pointer;
+  }
+
   &__error {
     width: 100%;
     margin: 16px 0 0;

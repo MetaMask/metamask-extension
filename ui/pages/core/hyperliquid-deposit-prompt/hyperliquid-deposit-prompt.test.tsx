@@ -91,6 +91,9 @@ describe('HyperliquidDepositPrompt', () => {
       ),
     ).toBeInTheDocument();
     expect(screen.getByText('Review deposit')).toBeInTheDocument();
+    expect(
+      screen.getByText("No thanks, I'll deposit manually."),
+    ).toBeInTheDocument();
   });
 
   it('creates a deposit transaction and resolves the prompt before opening the transaction confirmation', async () => {
@@ -147,5 +150,20 @@ describe('HyperliquidDepositPrompt', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(onActionComplete).toHaveBeenCalledWith({ started: false });
+  });
+
+  it('resolves the prompt as suppressed when manual deposit is selected', () => {
+    const { onActionComplete } = renderPrompt();
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: "No thanks, I'll deposit manually.",
+      }),
+    );
+
+    expect(onActionComplete).toHaveBeenCalledWith({
+      started: false,
+      suppress: true,
+    });
   });
 });

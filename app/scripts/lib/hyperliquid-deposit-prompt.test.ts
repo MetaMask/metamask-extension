@@ -1,5 +1,9 @@
 import { HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE } from '../../../shared/constants/app';
-import { showHyperliquidDepositPromptApproval } from './hyperliquid-deposit-prompt';
+import {
+  clearHyperliquidDepositPromptSuppressions,
+  isHyperliquidDepositPromptSuppressed,
+  showHyperliquidDepositPromptApproval,
+} from './hyperliquid-deposit-prompt';
 
 jest.mock('loglevel', () => ({ error: jest.fn() }));
 const mockLogError = jest.requireMock('loglevel').error;
@@ -7,6 +11,10 @@ const mockLogError = jest.requireMock('loglevel').error;
 describe('showHyperliquidDepositPromptApproval', () => {
   const origin = 'https://app.hyperliquid.xyz';
   const selectedAddress = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+  beforeEach(() => {
+    clearHyperliquidDepositPromptSuppressions();
+  });
 
   it('adds and shows a Hyperliquid deposit prompt approval', () => {
     const approvalController = {
@@ -59,10 +67,42 @@ describe('showHyperliquidDepositPromptApproval', () => {
       selectedAddress,
     });
     await Promise.resolve();
+    await Promise.resolve();
 
     expect(mockLogError).toHaveBeenCalledWith(
       'Hyperliquid deposit prompt approval was rejected or failed',
       error,
+    );
+  });
+
+  it('suppresses future prompts when the user chooses manual deposit', async () => {
+    const approvalController = {
+      addAndShowApprovalRequest: jest.fn().mockResolvedValue({
+        started: false,
+        suppress: true,
+      }),
+      hasRequest: jest.fn().mockReturnValue(false),
+    };
+
+    showHyperliquidDepositPromptApproval({
+      approvalController,
+      origin,
+      selectedAddress,
+    });
+    await Promise.resolve();
+
+    expect(
+      isHyperliquidDepositPromptSuppressed({ origin, selectedAddress }),
+    ).toBe(true);
+
+    showHyperliquidDepositPromptApproval({
+      approvalController,
+      origin,
+      selectedAddress,
+    });
+
+    expect(approvalController.addAndShowApprovalRequest).toHaveBeenCalledTimes(
+      1,
     );
   });
 });
