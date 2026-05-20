@@ -95,14 +95,11 @@ export const OrderEntry: React.FC<OrderEntryProps> = ({
   const marketInfo = usePerpsMarketInfo(asset);
 
   // Fetch dynamic fee rates from the controller (user-specific, with discounts)
-  const {
-    feeRate,
-    undiscountedFeeRate,
-    metamaskFeeRateDiscountPercentage,
-  } = usePerpsOrderFees({
-    symbol: asset,
-    orderType: orderType ?? 'market',
-  });
+  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: asset,
+      orderType: orderType ?? 'market',
+    });
 
   // Use custom hook for form state management
   const {

@@ -308,14 +308,11 @@ export const ClosePositionModal: React.FC<ClosePositionModalProps> = ({
     [closeSize, currentPrice],
   );
 
-  const {
-    feeRate,
-    undiscountedFeeRate,
-    metamaskFeeRateDiscountPercentage,
-  } = usePerpsOrderFees({
-    symbol: position.symbol,
-    orderType: 'market',
-  });
+  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: position.symbol,
+      orderType: 'market',
+    });
 
   const margin = useMemo(() => {
     const totalMargin = parseFloat(position.marginUsed) || 0;

@@ -91,7 +91,13 @@ export const PerpsFeesDisplay: React.FC<PerpsFeesDisplayProps> = ({
     }
 
     return { feeText: text, originalFeeText: undefined };
-  }, [fee, placeholder, metamaskFeeRateDiscountPercentage, originalFee, formatFee]);
+  }, [
+    fee,
+    placeholder,
+    metamaskFeeRateDiscountPercentage,
+    originalFee,
+    formatFee,
+  ]);
 
   const showVipBadge =
     metamaskFeeRateDiscountPercentage !== undefined &&
