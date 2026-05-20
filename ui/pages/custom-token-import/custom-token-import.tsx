@@ -64,9 +64,9 @@ import {
 } from '../../../shared/constants/metametrics';
 import { AssetType } from '../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';
-import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 const MIN_DECIMAL_VALUE = 0;
@@ -443,16 +443,19 @@ export const CustomTokenImportPage = () => {
     try {
       if (isAssetsUnifiedStateInBuild) {
         const caipChainId = normalizeToCaipChainId(selectedNetwork);
-        if (!isCaipChainId(caipChainId)) {
-          return;
+        if (isCaipChainId(caipChainId)) {
+          const { namespace, reference } = parseCaipChainId(caipChainId);
+
+          // create asset id from address and caipChainId
+          const assetId = toCaipAssetType(
+            namespace,
+            reference,
+            'erc20',
+            address,
+          );
+
+          await dispatch(addCustomAsset(selectedAccount.id, assetId));
         }
-
-        const { namespace, reference } = parseCaipChainId(caipChainId);
-
-        // create asset id from address and caipChainId
-        const assetId = toCaipAssetType(namespace, reference, 'erc20', address);
-
-        await dispatch(addCustomAsset(selectedAccount.id, assetId));
       }
 
       await dispatch(
@@ -486,11 +489,14 @@ export const CustomTokenImportPage = () => {
   }, [
     address,
     dispatch,
+    isAssetsUnifiedStateInBuild,
     isSubmitting,
     isValid,
     navigate,
     networkClientId,
     parsedDecimals,
+    selectedAccount.id,
+    selectedNetwork,
     symbol,
     trackSubmitAttempt,
   ]);
