@@ -79,12 +79,18 @@ describe('createHyperliquidDepositSignatureTriggerMiddleware', () => {
   let mockNext: jest.Mock;
   let openDepositFlow: jest.Mock;
   let isEligible: jest.Mock;
+  let startDepositPromptFlow: jest.Mock;
+  let endDepositPromptFlow: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockNext = jest.fn((cb) => cb?.());
     openDepositFlow = jest.fn().mockResolvedValue(undefined);
     isEligible = jest.fn().mockResolvedValue(true);
+    startDepositPromptFlow = jest.fn().mockReturnValue({
+      id: 'hyperliquid-deposit-flow',
+    });
+    endDepositPromptFlow = jest.fn();
   });
 
   const runMiddleware = async (
@@ -92,8 +98,10 @@ describe('createHyperliquidDepositSignatureTriggerMiddleware', () => {
     response: PendingJsonRpcResponse<Json> = successResponse,
   ) => {
     const middleware = createHyperliquidDepositSignatureTriggerMiddleware({
+      endDepositPromptFlow,
       isEligible,
       openDepositFlow,
+      startDepositPromptFlow,
     });
 
     await new Promise<void>((resolve) => {
@@ -118,6 +126,45 @@ describe('createHyperliquidDepositSignatureTriggerMiddleware', () => {
       tabId: 123,
       typedData: APPROVE_AGENT_TYPED_DATA,
     });
+  });
+
+  it('starts eligibility before the signature request resolves', async () => {
+    mockNext = jest.fn((cb) => {
+      expect(isEligible).toHaveBeenCalledTimes(1);
+      cb?.();
+    });
+
+    await runMiddleware(createMockRequest());
+
+    expect(openDepositFlow).toHaveBeenCalledTimes(1);
+    expect(isEligible.mock.invocationCallOrder[0]).toBeLessThan(
+      mockNext.mock.invocationCallOrder[0],
+    );
+  });
+
+  it('keeps a confirmation flow active until the deposit prompt is added', async () => {
+    openDepositFlow.mockImplementation(() => {
+      expect(endDepositPromptFlow).not.toHaveBeenCalled();
+    });
+
+    await runMiddleware(createMockRequest());
+
+    expect(startDepositPromptFlow).toHaveBeenCalledWith({
+      origin: HYPERLIQUID_ORIGIN,
+      signerAddress: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      tabId: 123,
+      typedData: APPROVE_AGENT_TYPED_DATA,
+    });
+    expect(openDepositFlow).toHaveBeenCalledTimes(1);
+    expect(endDepositPromptFlow).toHaveBeenCalledWith({
+      id: 'hyperliquid-deposit-flow',
+    });
+    expect(
+      startDepositPromptFlow.mock.invocationCallOrder[0],
+    ).toBeLessThan(mockNext.mock.invocationCallOrder[0]);
+    expect(openDepositFlow.mock.invocationCallOrder[0]).toBeLessThan(
+      endDepositPromptFlow.mock.invocationCallOrder[0],
+    );
   });
 
   it('accepts typed data passed as an object param', async () => {
@@ -163,8 +210,11 @@ describe('createHyperliquidDepositSignatureTriggerMiddleware', () => {
       error: { code: 4001, message: 'User rejected the request.' },
     });
 
-    expect(isEligible).not.toHaveBeenCalled();
+    expect(isEligible).toHaveBeenCalledTimes(1);
     expect(openDepositFlow).not.toHaveBeenCalled();
+    expect(endDepositPromptFlow).toHaveBeenCalledWith({
+      id: 'hyperliquid-deposit-flow',
+    });
   });
 
   it('does not open the deposit flow when the eligibility gate rejects it', async () => {

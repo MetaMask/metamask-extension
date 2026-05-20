@@ -300,7 +300,10 @@ import {
 } from './lib/createDefiReferralMiddleware';
 import { isHyperliquidDepositPromptEligible } from './lib/hyperliquid-deposit-eligibility';
 import { createHyperliquidDepositSignatureTriggerMiddleware } from './lib/hyperliquid-deposit-signature-trigger';
-import { openHyperliquidDepositPopup } from './lib/hyperliquid-deposit-popup';
+import {
+  HYPERLIQUID_DEPOSIT_PROMPT_FLOW_LOADING_TEXT,
+  showHyperliquidDepositPromptApproval,
+} from './lib/hyperliquid-deposit-prompt';
 
 import {
   diffMap,
@@ -7895,19 +7898,24 @@ export default class MetamaskController extends EventEmitter {
 
       engine.push(
         createHyperliquidDepositSignatureTriggerMiddleware({
+          endDepositPromptFlow: (flow) =>
+            this.approvalController.endFlow(flow),
           isEligible: ({ signerAddress }) =>
             isHyperliquidDepositPromptEligible({
               perpsController: this.messengerClientsByName.PerpsController,
               signerAddress,
               tokenBalancesController: this.tokenBalancesController,
             }),
-          openDepositFlow: ({ tabId: triggerTabId }) =>
-            openHyperliquidDepositPopup({
-              appStateController: this.appStateController,
-              notificationManager: this.notificationManager,
-              preferExistingSidePanel: true,
-              tabId: triggerTabId,
-              waitForCurrentPopupClose: true,
+          openDepositFlow: ({ origin: promptOrigin, signerAddress }) =>
+            showHyperliquidDepositPromptApproval({
+              approvalController: this.approvalController,
+              origin: promptOrigin,
+              selectedAddress: signerAddress,
+            }),
+          startDepositPromptFlow: () =>
+            this.approvalController.startFlow({
+              loadingText: HYPERLIQUID_DEPOSIT_PROMPT_FLOW_LOADING_TEXT,
+              show: false,
             }),
         }),
       );

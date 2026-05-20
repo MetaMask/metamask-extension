@@ -9,6 +9,7 @@ import {
 } from '../../../../store/actions';
 import {
   HYPERLIQUID_APPROVAL_TYPE,
+  HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE,
   ASTERDEX_APPROVAL_TYPE,
   GMX_APPROVAL_TYPE,
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
@@ -26,6 +27,7 @@ import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
 import snapDefault from './snaps/snap-default/snap-default';
 import defiReferralConsent from './defi-referral-consent';
+import hyperliquidDepositPrompt from './hyperliquid-deposit-prompt';
 
 const APPROVAL_TEMPLATES = {
   [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
@@ -44,6 +46,7 @@ const APPROVAL_TEMPLATES = {
     removeSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
     snapAccountRedirect,
+  [HYPERLIQUID_DEPOSIT_PROMPT_APPROVAL_TYPE]: hyperliquidDepositPrompt,
   [HYPERLIQUID_APPROVAL_TYPE]: defiReferralConsent,
   [ASTERDEX_APPROVAL_TYPE]: defiReferralConsent,
   [GMX_APPROVAL_TYPE]: defiReferralConsent,

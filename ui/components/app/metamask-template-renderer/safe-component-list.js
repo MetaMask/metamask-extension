@@ -63,6 +63,7 @@ import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
 import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
+import { HyperliquidDepositPrompt } from '../../../pages/core/hyperliquid-deposit-prompt';
 import { Delineator } from '../../ui/delineator';
 
 export const safeComponentList = {
@@ -84,6 +85,7 @@ export const safeComponentList = {
   DefinitionList,
   div: 'div',
   FormTextField,
+  HyperliquidDepositPrompt,
   i: 'i',
   MetaMaskTranslation,
   OriginPill,

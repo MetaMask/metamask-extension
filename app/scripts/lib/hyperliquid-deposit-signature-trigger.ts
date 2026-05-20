@@ -32,18 +32,30 @@ export type HyperliquidDepositSignatureTriggerContext = {
   typedData: RecordLike;
 };
 
+export type HyperliquidDepositPromptFlow = {
+  id: string;
+};
+
 type CreateHyperliquidDepositSignatureTriggerMiddlewareOptions = {
+  endDepositPromptFlow?: (
+    flow: HyperliquidDepositPromptFlow,
+  ) => Promise<void> | void;
   isEligible?: (
     context: HyperliquidDepositSignatureTriggerContext,
   ) => boolean | Promise<boolean>;
   openDepositFlow: (
     context: HyperliquidDepositSignatureTriggerContext,
   ) => void | Promise<void>;
+  startDepositPromptFlow?: (
+    context: HyperliquidDepositSignatureTriggerContext,
+  ) => HyperliquidDepositPromptFlow | undefined;
 };
 
 export function createHyperliquidDepositSignatureTriggerMiddleware({
+  endDepositPromptFlow,
   isEligible = () => true,
   openDepositFlow,
+  startDepositPromptFlow,
 }: CreateHyperliquidDepositSignatureTriggerMiddlewareOptions) {
   return createAsyncMiddleware(
     async (
@@ -51,45 +63,101 @@ export function createHyperliquidDepositSignatureTriggerMiddleware({
       res: PendingJsonRpcResponse<Json>,
       next: AsyncJsonRpcEngineNextCallback,
     ) => {
-      await next();
+      const context = getHyperliquidApproveAgentContext(req);
+      const eligibilityPromise = context
+        ? Promise.resolve(isEligible(context)).catch((error) => {
+            log.error(
+              'Failed to check Hyperliquid deposit prompt eligibility',
+              error,
+            );
+            return false;
+          })
+        : undefined;
+      const promptFlow = context
+        ? startHyperliquidDepositPromptFlow({
+            context,
+            startDepositPromptFlow,
+          })
+        : undefined;
 
-      if (!isExtendedJSONRPCRequest(req)) {
-        return;
+      try {
+        await next();
+
+        if (!context || typeof res.result !== 'string') {
+          return;
+        }
+
+        if (!(await eligibilityPromise)) {
+          return;
+        }
+
+        try {
+          await Promise.resolve(openDepositFlow(context));
+        } catch (error) {
+          log.error(
+            'Failed to open Hyperliquid deposit prompt after ApproveAgent signature',
+            error,
+          );
+        }
+      } finally {
+        if (promptFlow && endDepositPromptFlow) {
+          try {
+            await Promise.resolve(endDepositPromptFlow(promptFlow));
+          } catch (error) {
+            log.error(
+              'Failed to end Hyperliquid deposit prompt approval flow',
+              error,
+            );
+          }
+        }
       }
-
-      if (
-        req.origin !== HYPERLIQUID_ORIGIN ||
-        req.method !== 'eth_signTypedData_v4' ||
-        typeof res.result !== 'string'
-      ) {
-        return;
-      }
-
-      const typedData = getTypedDataFromRequest(req);
-
-      if (!isHyperliquidApproveAgentTypedData(typedData)) {
-        return;
-      }
-
-      const context = {
-        origin: req.origin,
-        signerAddress: getSignerAddressFromRequest(req),
-        tabId: req.tabId,
-        typedData,
-      };
-
-      if (!(await isEligible(context))) {
-        return;
-      }
-
-      Promise.resolve(openDepositFlow(context)).catch((error) => {
-        log.error(
-          'Failed to open Hyperliquid deposit prompt after ApproveAgent signature',
-          error,
-        );
-      });
     },
   );
+}
+
+function startHyperliquidDepositPromptFlow({
+  context,
+  startDepositPromptFlow,
+}: {
+  context: HyperliquidDepositSignatureTriggerContext;
+  startDepositPromptFlow?:
+    | CreateHyperliquidDepositSignatureTriggerMiddlewareOptions['startDepositPromptFlow']
+    | undefined;
+}): HyperliquidDepositPromptFlow | undefined {
+  try {
+    return startDepositPromptFlow?.(context);
+  } catch (error) {
+    log.error(
+      'Failed to start Hyperliquid deposit prompt approval flow',
+      error,
+    );
+    return undefined;
+  }
+}
+
+function getHyperliquidApproveAgentContext(
+  req: JsonRpcRequest,
+): HyperliquidDepositSignatureTriggerContext | undefined {
+  if (
+    !isExtendedJSONRPCRequest(req) ||
+    req.origin !== HYPERLIQUID_ORIGIN ||
+    req.method !== 'eth_signTypedData_v4'
+  ) {
+    return undefined;
+  }
+
+  const typedData = getTypedDataFromRequest(req);
+
+  if (!isHyperliquidApproveAgentTypedData(typedData)) {
+    return undefined;
+  }
+
+  return {
+    origin: req.origin,
+    signerAddress: getSignerAddressFromRequest(req),
+    tabId: req.tabId,
+    typedData,
+  };
 }
 
 function isExtendedJSONRPCRequest(
