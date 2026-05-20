@@ -35,3 +35,27 @@ export const DefaultStory = () => {
 };
 
 DefaultStory.storyName = 'Default';
+
+export const BrowserNotSupported = () => {
+  return (
+    <SelectHardware
+      browserSupported={false}
+      isFirefox={false}
+      connectToHardwareWallet={() => {
+        /* no-op */
+      }}
+    />
+  );
+};
+
+export const FirefoxBrowser = () => {
+  return (
+    <SelectHardware
+      browserSupported
+      isFirefox
+      connectToHardwareWallet={() => {
+        /* no-op */
+      }}
+    />
+  );
+};
