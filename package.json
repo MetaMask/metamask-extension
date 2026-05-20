@@ -296,7 +296,8 @@
     "@metamask/bridge-status-controller@npm:^71.1.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
-    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0"
+    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
+    "@metamask/snap-account-service": "npm:@metamask-previews/snap-account-service@0.2.0-preview-bfa94c060"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",

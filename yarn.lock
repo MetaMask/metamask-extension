@@ -8117,37 +8117,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-account-service@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@metamask/snap-account-service@npm:0.1.0"
+"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@0.2.0-preview-bfa94c060":
+  version: 0.2.0-preview-bfa94c060
+  resolution: "@metamask-previews/snap-account-service@npm:0.2.0-preview-bfa94c060"
   dependencies:
     "@metamask/account-api": "npm:^1.0.4"
     "@metamask/account-tree-controller": "npm:^7.4.0"
     "@metamask/eth-snap-keyring": "npm:^22.0.1"
+    "@metamask/keyring-api": "npm:^23.1.0"
     "@metamask/keyring-controller": "npm:^25.5.0"
+    "@metamask/keyring-snap-sdk": "npm:^9.0.1"
     "@metamask/messenger": "npm:^1.2.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/utils": "npm:^11.9.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/75f07b042cc6223943f663a6ef5cf76553fe7bf5a1132e4b95d2621e749e8c7ec88c47e881f7e914e7017ae810d2380f95825a0aff7583f9ad3c9868116ef08c
-  languageName: node
-  linkType: hard
-
-"@metamask/snap-account-service@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@metamask/snap-account-service@npm:0.2.0"
-  dependencies:
-    "@metamask/account-api": "npm:^1.0.4"
-    "@metamask/account-tree-controller": "npm:^7.4.0"
-    "@metamask/eth-snap-keyring": "npm:^22.0.1"
-    "@metamask/keyring-controller": "npm:^25.5.0"
-    "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/snaps-sdk": "npm:^11.0.0"
-    "@metamask/utils": "npm:^11.9.0"
-    lodash: "npm:^4.17.21"
-  checksum: 10/46a737d3e4cf38ef06180c3bddb64e1b4b97e534c701dd33a5dd5e517a7ba51c1cbfbf1a4aa630d60485a4482202965a3c299bf48931839697624d956509c004
+  checksum: 10/fe0d0148c581e2696a9b4b2647ae659ac24aba0dafbea352037c9cbd0e12d1822c671e06d70de9bdc739875bfece7de390b8390745e70660e1bb5d871ae100c4
   languageName: node
   linkType: hard
 
