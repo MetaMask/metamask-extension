@@ -1,0 +1,21 @@
+--- chainNamespace guard ---
+    USE_UNIVERSAL_MULTICHAIN_CONFIRMATION &&
+    type === ApprovalType.Transaction &&
+    nextConfirmation.requestData?.chainNamespace
+  ) {
+    return CONFIRM_MULTICHAIN_TRANSACTION_PATH.replace(':id', confirmationId);
+  }
+
+  if (type === ApprovalType.Transaction) {
+    let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
+    if (queryString.length) {
+      url = `${url}${queryString}`;
+    }
+    return url;
+
+--- route constant ---
+131:export const CONFIRM_MULTICHAIN_TRANSACTION_PATH =
+
+--- router registration ---
+122:import UniversalTransactionConfirmation from '../../pages/confirmations/components/confirm/universal-transaction';
+366:        element: <UniversalTransactionConfirmation />,

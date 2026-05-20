@@ -1409,7 +1409,7 @@
       },
       "packages": {
         "@metamask/post-message-stream": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/snaps-execution-environments>@metamask/snaps-utils": true,
         "@metamask/utils": true
       }
     },
@@ -1418,7 +1418,7 @@
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/snaps-rpc-methods>@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true
       }
@@ -1439,18 +1439,37 @@
         "FileReader": true,
         "TextDecoder": true,
         "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "console.warn": true,
-        "document.body.appendChild": true,
-        "document.createElement": true,
         "fetch": true,
         "navigator": true
       },
       "packages": {
+        "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@scure/base": true,
+        "fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>marked": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/snaps-execution-environments>@metamask/snaps-utils": {
+      "globals": {
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true,
+        "document.body.appendChild": true,
+        "document.createElement": true
+      },
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
+    "@metamask/snaps-rpc-methods>@metamask/snaps-utils": {
+      "packages": {
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/permission-controller": true,
-        "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-sdk": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1459,8 +1478,6 @@
         "cron-parser": true,
         "fast-json-stable-stringify": true,
         "luxon": true,
-        "@metamask/snaps-utils>marked": true,
-        "@metamask/snaps-utils>rfdc": true,
         "@metamask/snaps-utils>validate-npm-package-name": true
       }
     },

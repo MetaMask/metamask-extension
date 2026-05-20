@@ -128,6 +128,8 @@ export const NOTIFICATIONS_ROUTE = '/notifications';
 export const NOTIFICATIONS_SETTINGS_ROUTE = '/settings/notifications';
 export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
+export const CONFIRM_MULTICHAIN_TRANSACTION_PATH =
+  '/confirm-multichain-transaction/:id';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 export const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
 export const SIGNATURE_REQUEST_PATH = '/signature-request';

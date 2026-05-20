@@ -760,7 +760,7 @@
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/profile-sync-controller": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/account-tree-controller>@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "eslint>fast-deep-equal": true
@@ -839,7 +839,7 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/assets-controller>@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
         "@metamask/assets-controller>bignumber.js": true,
@@ -879,7 +879,7 @@
         "@metamask/phishing-controller": true,
         "@metamask/polling-controller": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/assets-controllers>@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/core-backend>@tanstack/query-core": true,
         "mockttp>async-mutex": true,
@@ -1724,7 +1724,7 @@
         "@metamask/base-controller": true,
         "@metamask/delegation-core": true,
         "@metamask/delegation-deployments": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/gator-permissions-controller>@metamask/snaps-utils": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
@@ -1939,7 +1939,7 @@
         "@metamask/multichain-account-service>@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "@metamask/multichain-account-service>@metamask/keyring-snap-client": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/multichain-account-service>@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "mockttp>async-mutex": true,
         "lodash": true
@@ -1978,13 +1978,14 @@
     },
     "@metamask/multichain-transactions-controller": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "console.warn": true
       },
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-snap-client": true,
-        "@metamask/snaps-utils": true
+        "@metamask/multichain-transactions-controller>@metamask/snaps-utils": true
       }
     },
     "@metamask/name-controller": {
@@ -2427,9 +2428,9 @@
         "@metamask/post-message-stream": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-registry": true,
-        "@metamask/snaps-rpc-methods": true,
+        "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/snaps-controllers>@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "mockttp>async-mutex": true,
@@ -2460,7 +2461,7 @@
     "@metamask/snaps-rpc-methods": {
       "meta": {
         "webpack-optimization": [
-          "Dependency '@metamask/snaps-utils' reexports from '@metamask/snaps-sdk' and webpack collapsed that to a direct import."
+          "Dependency '@metamask/snaps-rpc-methods>@metamask/snaps-utils' reexports from '@metamask/snaps-sdk' and webpack collapsed that to a direct import."
         ]
       },
       "packages": {
@@ -2469,11 +2470,24 @@
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
-        "@metamask/snaps-utils": true,
+        "@metamask/snaps-rpc-methods>@metamask/snaps-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
         "mockttp>async-mutex": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/snaps-rpc-methods": {
+      "packages": {
+        "@metamask/json-rpc-engine": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/snaps-controllers>@metamask/snaps-utils": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@noble/hashes": true
       }
     },
     "@metamask/snaps-sdk": {
@@ -2492,6 +2506,37 @@
         "File": true,
         "FileReader": true,
         "TextDecoder": true,
+        "URL": true,
+        "fetch": true,
+        "navigator": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>@metamask/slip44": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@scure/base": true,
+        "fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>marked": true,
+        "@metamask/snaps-utils>rfdc": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/account-tree-controller>@metamask/snaps-utils": {
+      "packages": {
+        "@metamask/snaps-sdk": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@scure/base": true,
+        "fast-json-stable-stringify": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/snaps-controllers>@metamask/snaps-utils": {
+      "globals": {
+        "File": true,
+        "FileReader": true,
+        "TextDecoder": true,
         "TextEncoder": true,
         "URL": true,
         "console.error": true,
@@ -2506,7 +2551,6 @@
         "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/permission-controller": true,
         "@metamask/rpc-errors": true,
-        "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-sdk": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -2519,6 +2563,30 @@
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
         "semver": true,
+        "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/snaps-rpc-methods>@metamask/snaps-utils": {
+      "globals": {
+        "TextEncoder": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@scure/base": true,
+        "chalk": true,
+        "cron-parser": true,
+        "fast-json-stable-stringify": true,
+        "luxon": true,
+        "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>validate-npm-package-name": true
       }
     },

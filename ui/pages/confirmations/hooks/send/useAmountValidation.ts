@@ -42,15 +42,18 @@ export const useAmountValidation = () => {
       }
 
       try {
+        console.log('[useAmountValidation] calling validateAmountWithSnap with amount:', amount || '0');
         const result = (await validateAmountWithSnap(
           amount || '0',
         )) as SnapOnAmountInputResult;
+        console.log('[useAmountValidation] snap result:', result);
 
         if (result.errors?.length > 0) {
           return mapSnapErrorCodeIntoTranslation(result.errors[0].code, t);
         }
         return undefined;
       } catch (error) {
+        console.error('[useAmountValidation] snap RPC threw error:', error);
         return t('invalidValue');
       }
     },
@@ -65,21 +68,24 @@ export const useAmountValidation = () => {
     const normalizedValue = normalizeAmount(value);
 
     const validations = [
-      () => validatePositiveNumericString(normalizedValue, t),
-      () => validateERC1155Balance(asset as Asset, normalizedValue, t),
-      () =>
+      { name: 'validatePositiveNumericString', fn: () => validatePositiveNumericString(normalizedValue, t) },
+      { name: 'validateERC1155Balance', fn: () => validateERC1155Balance(asset as Asset, normalizedValue, t) },
+      { name: 'validateTokenBalance', fn: () =>
         validateTokenBalance(
           normalizedValue,
           rawBalanceNumeric,
           asset?.decimals,
           t,
         ),
-      () => validateNonEvmAmount(normalizedValue),
+      },
+      { name: 'validateNonEvmAmount', fn: () => validateNonEvmAmount(normalizedValue) },
     ];
 
     for (const validation of validations) {
-      const error = await Promise.resolve(validation());
+      const error = await Promise.resolve(validation.fn());
+      console.log(`[useAmountValidation] ${validation.name} result:`, error ?? 'OK', '| rawBalanceNumeric:', rawBalanceNumeric?.toString(), '| decimals:', asset?.decimals);
       if (error) {
+        console.error(`[useAmountValidation] BLOCKED by ${validation.name}:`, error);
         return setAndReturnError(error);
       }
     }
@@ -144,7 +150,9 @@ export function validatePositiveNumericString(
   value: string,
   t: ReturnType<typeof useI18nContext>,
 ): string | undefined {
-  if (!isValidPositiveNumericString(value)) {
+  const valid = isValidPositiveNumericString(value);
+  console.log('[useAmountValidation] validatePositiveNumericString value:', JSON.stringify(value), 'valid:', valid);
+  if (!valid) {
     return t('invalidValue');
   }
   return undefined;

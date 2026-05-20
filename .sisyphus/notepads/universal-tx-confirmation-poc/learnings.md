@@ -1,0 +1,2 @@
+- 2026-05-19: `usePendingMultichainTransaction` should read `state.metamask.pendingTransactions` and return `undefined` when `approvalId` is missing.
+- Existing multichain selectors in the extension still reference `state.metamask.nonEvmTransactions`; this hook is for the confirmation-specific pending transaction slice, not the activity selector path.

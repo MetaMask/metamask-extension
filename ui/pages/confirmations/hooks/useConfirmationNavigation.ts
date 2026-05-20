@@ -10,6 +10,7 @@ import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../confirmation/templates
 import {
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_MULTICHAIN_TRANSACTION_PATH,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
@@ -22,6 +23,7 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
+import { USE_UNIVERSAL_MULTICHAIN_CONFIRMATION } from '../../../../shared/constants/confirmations';
 import { sanitizeRedirectUrl } from '../../../../shared/lib/safe-redirect';
 
 export enum ConfirmationLoader {
@@ -165,6 +167,15 @@ export function getConfirmationRoute(
   if (isSignatureTransactionType(nextConfirmation)) {
     return `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}${SIGNATURE_REQUEST_PATH}`;
   }
+
+  if (
+    USE_UNIVERSAL_MULTICHAIN_CONFIRMATION &&
+    type === ApprovalType.Transaction &&
+    nextConfirmation.requestData?.chainNamespace
+  ) {
+    return CONFIRM_MULTICHAIN_TRANSACTION_PATH.replace(':id', confirmationId);
+  }
+
   if (type === ApprovalType.Transaction) {
     let url = `${CONFIRM_TRANSACTION_ROUTE}/${confirmationId}`;
     if (queryString.length) {

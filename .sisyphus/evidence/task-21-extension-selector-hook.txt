@@ -1,0 +1,46 @@
+Verification 1: selector state path
+
+$ grep -rn "nonEvmTransactions\|pendingTransactions" /Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/ 2>/dev/null | head -20
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/multichain-transactions.test.ts:25:  MultichainTransactionsControllerState['nonEvmTransactions'];
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/multichain-transactions.test.ts:35:  nonEvmTransactions: unknown,
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/multichain-transactions.test.ts:40:      nonEvmTransactions: nonEvmTransactions as NonEvmTransactionsMap,
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/toast.ts:27:  state.metamask?.nonEvmTransactions ?? EMPTY_OBJECT;
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/toast.ts:216:  (nonEvmTransactionsMap, crossChainBridgeIds) => {
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/toast.ts:217:    if (!nonEvmTransactionsMap) {
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/toast.ts:221:    return Object.values(nonEvmTransactionsMap)
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/multichain.test.ts:120:      nonEvmTransactions: {
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/activity.test.ts:23:  MultichainTransactionsControllerState['nonEvmTransactions'];
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/activity.test.ts:33:  nonEvmTransactions: unknown,
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/activity.test.ts:46:      nonEvmTransactions: nonEvmTransactions as NonEvmTransactionsMap,
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/activity.ts:89:  (nonEvmTransactions, tokenScanCache) => {
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/activity.ts:92:        nonEvmTransactions.flatMap((transaction) =>
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/activity.ts:106:      return nonEvmTransactions;
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/activity.ts:109:    return filterMaliciousTransactions(nonEvmTransactions, maliciousTokenKeys);
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/multichain-transactions.ts:10:// Lightweight shape for nonEvmTransactions state map
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/multichain-transactions.ts:21:  state.metamask.nonEvmTransactions as NonEvmTransactionsMap;
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/toast.test.ts:457:          nonEvmTransactions: {
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/selectors/toast.test.ts:481:          nonEvmTransactions: {
+
+Verification 2: controller wiring
+
+$ grep -rn "MultichainTransactionsController\|multichainTransactions" /Users/matthewwalsh/dev/metamask-extension-universal-tx/app/scripts/metamask-controller.js | head -10
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/app/scripts/metamask-controller.js:342:  MultichainTransactionsControllerInit,
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/app/scripts/metamask-controller.js:700:      MultichainTransactionsController: MultichainTransactionsControllerInit,
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/app/scripts/metamask-controller.js:813:    this.multichainTransactionsController =
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/app/scripts/metamask-controller.js:814:      messengerClientsByName.MultichainTransactionsController;
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/app/scripts/metamask-controller.js:1435:        MultichainTransactionsController: this.multichainTransactionsController,
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/app/scripts/metamask-controller.js:3915:      // MultichainTransactionsController
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/app/scripts/metamask-controller.js:3917:        this.multichainTransactionsController.updateTransactionsForAccount(
+
+Verification 3: created hook
+
+$ cat /Users/matthewwalsh/dev/metamask-extension-universal-tx/ui/pages/confirmations/hooks/usePendingMultichainTransaction.ts
+import { useSelector } from 'react-redux';
+
+export function usePendingMultichainTransaction(
+  approvalId: string | undefined,
+) {
+  return useSelector((state: any) =>
+    approvalId ? state.metamask.pendingTransactions?.[approvalId] : undefined,
+  );
+}

@@ -6,6 +6,7 @@ import type {
   ApprovalControllerAcceptRequestAction,
   ApprovalControllerRejectRequestAction,
 } from '@metamask/approval-controller';
+import type { MultichainTransactionsControllerActions } from '@metamask/multichain-transactions-controller';
 import type { GetSubjectMetadata } from '@metamask/permission-controller';
 import { AccountsControllerListAccountsAction } from '@metamask/accounts-controller';
 import {
@@ -68,6 +69,7 @@ type AllowedInitializationActions =
   | AccountsControllerListAccountsAction
   | MultichainRoutingServiceGetSupportedAccountsAction
   | MultichainRoutingServiceIsSupportedScopeAction
+  | MultichainTransactionsControllerActions
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | SnapPermissionSpecificationsActions
   | ApprovalControllerAddRequestAction;
@@ -107,6 +109,8 @@ export function getPermissionControllerInitMessenger(
       'KeyringController:addNewKeyring',
       'MultichainRoutingService:isSupportedScope',
       'MultichainRoutingService:getSupportedAccounts',
+      'MultichainTransactionsController:addPendingTransaction',
+      'MultichainTransactionsController:removePendingTransaction',
       'NetworkController:findNetworkClientIdByChainId',
       'PhishingController:maybeUpdateState',
       'PhishingController:testOrigin',

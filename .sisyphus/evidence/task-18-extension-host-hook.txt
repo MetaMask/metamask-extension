@@ -1,0 +1,13 @@
+/Users/matthewwalsh/dev/metamask-extension-universal-tx/app/scripts/controllers/permissions/snaps/specifications.ts:203:        showUniversalTransactionConfirmation: async (
+            'MultichainTransactionsController:addPendingTransaction',
+          const addAndShowApprovalRequest = async () =>
+
+Extended verification:
+            'MultichainTransactionsController:addPendingTransaction',
+          const addAndShowApprovalRequest = async () =>
+            await addAndShowApprovalRequest();
+              'MultichainTransactionsController:removePendingTransaction',
+
+Type verification:
+lsp_diagnostics: no errors in app/scripts/controllers/permissions/snaps/specifications.ts and app/scripts/messenger-client-init/messengers/permission-controller-messenger.ts
+yarn lint:tsc: failed with pre-existing unrelated errors outside changed files (see run output); changed files have no LSP TypeScript errors.

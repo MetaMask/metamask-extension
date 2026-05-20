@@ -22,8 +22,9 @@ import Alerts from '../../components/app/alerts';
 
 import {
   ASSET_ROUTE,
-  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
+  CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  CONFIRM_MULTICHAIN_TRANSACTION_PATH,
   CONFIRM_TRANSACTION_ROUTE,
   CONNECT_ROUTE,
   DEFAULT_ROUTE,
@@ -118,6 +119,7 @@ import NetworkConfirmationPopover from '../../components/multichain/network-list
 import { ToastMaster } from '../../components/app/toast-master/toast-master';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
 import CrossChainSwapTxDetails from '../bridge/transaction-details/transaction-details';
+import { UniversalTransactionConfirmation } from '../../pages/confirmations/components/confirm/universal-transaction';
 import { MultichainAccountAddressListPage } from '../multichain-accounts/multichain-account-address-list-page';
 import { MultichainAccountPrivateKeyListPage } from '../multichain-accounts/multichain-account-private-key-list-page';
 import MultichainAccountIntroModalContainer from '../../components/app/modals/multichain-accounts/intro-modal';
@@ -358,6 +360,10 @@ export const routeConfig = [
       {
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
         element: <Confirm />,
+      },
+      {
+        path: CONFIRM_MULTICHAIN_TRANSACTION_PATH,
+        element: <UniversalTransactionConfirmation />,
       },
       {
         path: CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
