@@ -16,10 +16,7 @@ import {
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import { showAccountCreationDialog, snapKeyringBuilder } from './snap-keyring';
-import {
-  SnapKeyringBuilderAllowActions,
-  SnapKeyringBuilderMessenger,
-} from './types';
+import { SnapKeyringBuilderAllowedActions, SnapKeyringBuilderMessenger } from './types';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -87,7 +84,7 @@ const createControllerMessenger = ({
   const rootMessenger = getRootMessenger();
   const messenger = new Messenger<
     'SnapKeyring',
-    SnapKeyringBuilderAllowActions,
+    SnapKeyringBuilderAllowedActions,
     never,
     typeof rootMessenger
   >({
@@ -145,6 +142,12 @@ const createControllerMessenger = ({
       case 'AccountsController:getAccountByAddress':
         return mockGetAccountByAddress.mockReturnValue(account)(params);
 
+      case 'KeyringController:persistAllKeyrings':
+        return mockPersistKeyringHelper();
+
+      case 'AccountsController:updateAccounts':
+        return undefined;
+
       case 'AccountsController:listMultichainAccounts':
         return mockListMultichainAccounts.mockReturnValue([])();
 
@@ -173,6 +176,9 @@ const createControllerMessenger = ({
       case 'RemoteFeatureFlagController:getState':
         return mockRemoteFeatureFlagsGetStateRequest(params);
 
+      case 'MetaMetricsController:trackEvent':
+        return mockTrackEvent(...params);
+
       default:
         throw new Error(
           `MOCK_FAIL - unsupported messenger call: ${actionType}`,
@@ -198,11 +204,7 @@ const createSnapKeyringBuilder = ({
     remoteFeatureFlags: {},
   } as RemoteFeatureFlagControllerState);
 
-  return snapKeyringBuilder(createControllerMessenger(), {
-    persistKeyringHelper: mockPersistKeyringHelper,
-    removeAccountHelper: mockRemoveAccountHelper,
-    trackEvent: mockTrackEvent,
-  });
+  return snapKeyringBuilder(createControllerMessenger());
 };
 
 /**
