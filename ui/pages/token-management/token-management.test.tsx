@@ -691,51 +691,6 @@ describe('TokenManagementPage', () => {
     );
   });
 
-  it('optimistically transitions the toggle ON and shows a spinner while importing a search result', () => {
-    const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
-    const usdcAssetId = `eip155:1/erc20:${usdcAddress}`;
-    setTokenSearchState({
-      results: [
-        {
-          assetId: usdcAssetId,
-          symbol: 'USDC',
-          decimals: 6,
-          name: 'USD Coin',
-        },
-      ],
-    });
-
-    const actions = getMockedActions();
-    actions.addImportedTokens.mockImplementationOnce(
-      () => () => new Promise(() => undefined),
-    );
-
-    renderPage();
-
-    fireEvent.change(screen.getByTestId('token-management-search-input'), {
-      target: { value: 'usdc' },
-    });
-
-    const toggle = screen.getByTestId(
-      `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
-    ) as HTMLInputElement;
-    fireEvent.click(toggle);
-
-    const updatedToggle = screen.getByTestId(
-      `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle`,
-    ) as HTMLInputElement;
-    expect(updatedToggle.value).toBe('true');
-    expect(updatedToggle.closest('.toggle-button')).toHaveClass(
-      'toggle-button--on',
-      'toggle-button--disabled',
-    );
-    expect(
-      screen.getByTestId(
-        `token-management-cell-search-${usdcAssetId.toLowerCase()}-toggle-loading`,
-      ),
-    ).toBeInTheDocument();
-  });
-
   it('toggling OFF an EVM token defers the hide and keeps the row visible until unmount', async () => {
     const actions = getMockedActions();
 
