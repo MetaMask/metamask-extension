@@ -8,7 +8,10 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { formatChainIdToHex } from '@metamask/bridge-controller';
+import {
+  formatChainIdToCaip,
+  formatChainIdToHex,
+} from '@metamask/bridge-controller';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -16,7 +19,13 @@ import {
 } from '@metamask/design-system-react';
 import { ERC20, ERC721, ERC1155 } from '@metamask/controller-utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  isCaipChainId,
+  parseCaipChainId,
+  toCaipAssetType,
+  type CaipChainId,
+  type Hex,
+} from '@metamask/utils';
 import { isValidHexAddress } from '../../../shared/lib/hexstring-utils';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
@@ -25,6 +34,7 @@ import { addHexPrefix } from '../../../app/scripts/lib/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { Header, Page } from '../../components/multichain/pages/page';
 import {
+  addCustomAsset,
   addImportedTokens,
   getTokenStandardAndDetailsByChain,
 } from '../../store/actions';
@@ -56,6 +66,7 @@ import { AssetType } from '../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { type CustomTokenImportNetworkOption } from './custom-token-import-network-selector';
 import { CustomTokenImportForm } from './custom-token-import-form';
+import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../shared/lib/environment';
 
 const EMPTY_ADDRESS = '0x0000000000000000000000000000000000000000';
 const MIN_DECIMAL_VALUE = 0;
@@ -72,6 +83,11 @@ const METRICS_PROPERTIES = {
   tokenSymbol: 'token_symbol',
   viewState: 'view_state',
 } as const;
+
+const normalizeToCaipChainId = (chainId: string): CaipChainId =>
+  chainId.startsWith('0x')
+    ? formatChainIdToCaip(chainId as Hex)
+    : (chainId as CaipChainId);
 
 /**
  * Full-screen "Add a custom token" page.
@@ -106,6 +122,11 @@ export const CustomTokenImportPage = () => {
 
   const [selectedNetwork, setSelectedNetwork] =
     useState<string>(currentChainId);
+
+  const isAssetsUnifiedStateInBuild = useMemo(
+    () => getIsAssetsUnifiedStateIncludedInBuild(),
+    [],
+  );
 
   const availableNetworks = useMemo<CustomTokenImportNetworkOption[]>(
     () =>
@@ -420,6 +441,20 @@ export const CustomTokenImportPage = () => {
     }
     setIsSubmitting(true);
     try {
+      if (isAssetsUnifiedStateInBuild) {
+        const caipChainId = normalizeToCaipChainId(selectedNetwork);
+        if (!isCaipChainId(caipChainId)) {
+          return;
+        }
+
+        const { namespace, reference } = parseCaipChainId(caipChainId);
+
+        // create asset id from address and caipChainId
+        const assetId = toCaipAssetType(namespace, reference, 'erc20', address);
+
+        await dispatch(addCustomAsset(selectedAccount.id, assetId));
+      }
+
       await dispatch(
         addImportedTokens(
           [
