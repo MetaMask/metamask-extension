@@ -203,4 +203,32 @@ describe('subscribeToMessengerEvent', () => {
 
     expect(messengerSubscribe).toHaveBeenCalledTimes(2);
   });
+
+  it('continues invoking remaining callbacks when one callback throws', async () => {
+    const { submitNotification } = setup();
+
+    const consoleErrorSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    const throwingListener = jest.fn(() => {
+      throw new Error('callback boom');
+    });
+    const otherListener = jest.fn();
+
+    await subscribeToMessengerEvent(event, throwingListener);
+    await subscribeToMessengerEvent(event, otherListener);
+
+    submitNotification({
+      jsonrpc: '2.0',
+      method: MESSENGER_SUBSCRIPTION_NOTIFICATION,
+      params: [event, [{ foo: 'bar' }, []]],
+    });
+
+    expect(throwingListener).toHaveBeenCalledTimes(1);
+    expect(otherListener).toHaveBeenCalledTimes(1);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(expect.any(Error));
+
+    consoleErrorSpy.mockRestore();
+  });
 });
