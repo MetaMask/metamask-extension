@@ -218,6 +218,28 @@ describe('subscribeToMessengerEvent', () => {
     expect(messengerSubscribe).toHaveBeenCalledTimes(2);
   });
 
+  it('rejects all concurrent subscribers when the upstream messengerSubscribe RPC rejects', async () => {
+    const { messengerSubscribe } = setup();
+
+    messengerSubscribe.mockRejectedValueOnce(new Error('subscribe failed'));
+
+    const listenerA = jest.fn();
+    const listenerB = jest.fn();
+
+    const subscribeA = subscribeToMessengerEvent(event, listenerA);
+    const subscribeB = subscribeToMessengerEvent(event, listenerB);
+
+    expect(messengerSubscribe).toHaveBeenCalledTimes(1);
+
+    await expect(subscribeA).rejects.toThrow('subscribe failed');
+    await expect(subscribeB).rejects.toThrow('subscribe failed');
+
+    // Entry is cleared, so a retry sends a fresh IPC.
+    messengerSubscribe.mockResolvedValueOnce(undefined);
+    await subscribeToMessengerEvent(event, listenerA);
+    expect(messengerSubscribe).toHaveBeenCalledTimes(2);
+  });
+
   it('continues invoking remaining callbacks when one callback throws', async () => {
     const { submitNotification } = setup();
 
