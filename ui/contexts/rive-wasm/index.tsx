@@ -17,6 +17,14 @@ const RIVE_WASM_URL = new URL(
   import.meta.url,
 );
 
+const logRivePreloadError = (...args: unknown[]) => {
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
+
+  console.error(...args);
+};
+
 type RiveWasmReadyState = {
   isWasmReady: boolean;
   loading: boolean;
@@ -231,7 +239,7 @@ export const useRiveWasmFile = (url: string) => {
     // request keeps non-route consumers, such as toasts and modals, working when
     // they are mounted outside those preloaded route transitions.
     preloadRiveWasm().catch((error) => {
-      console.error('[Rive] Failed to preload WASM:', error);
+      logRivePreloadError('[Rive] Failed to preload WASM:', error);
     });
   }, []);
 

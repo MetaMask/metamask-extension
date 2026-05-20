@@ -263,6 +263,14 @@ const RIVE_PRELOAD_PREFIX_ROUTES = [
   PERPS_WITHDRAW_ROUTE,
 ] as const;
 
+const logRiveRoutePreloadError = (...args: unknown[]) => {
+  if (process.env.NODE_ENV === 'test') {
+    return;
+  }
+
+  console.error(...args);
+};
+
 /**
  * Returns whether a route should kick off Rive preload as soon as it matches.
  *
@@ -666,7 +674,7 @@ export default function Routes() {
   useEffect(() => {
     if (shouldPreloadRiveForPath(location.pathname)) {
       preloadRiveWasm().catch((error) => {
-        console.error(
+        logRiveRoutePreloadError(
           '[Rive] Failed to preload WASM for route:',
           location.pathname,
           error,
