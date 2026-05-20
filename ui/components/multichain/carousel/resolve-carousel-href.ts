@@ -1,4 +1,4 @@
 export {
   isInternalRouteHref,
-  resolveDeepLinkHref as resolveCarouselHref,
+  resolveTrustedDeepLinkHref as resolveCarouselHref,
 } from '../../../helpers/utils/resolve-deep-link-href';
