@@ -5,8 +5,7 @@ const LOW_VALUE_ASSETS_TOGGLE_SELECTOR =
 
 /**
  * Expands the low value assets group when present so token row lookups include
- * rows under the sub-$1 / unknown-fiat threshold. No-op when absent or already
- * expanded.
+ * rows under the sub-$1 threshold. No-op when absent or already expanded.
  *
  * @param driver - E2E driver.
  */

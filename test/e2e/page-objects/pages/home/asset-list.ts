@@ -206,6 +206,7 @@ class AssetListPage {
 
   async clickOnAsset(assetName: string): Promise<void> {
     console.log(`Clicking on the token name `);
+    await expandLowValueAssetsIfPresent(this.driver);
     await this.driver.clickElement({
       css: this.tokenName,
       text: assetName,
@@ -421,6 +422,7 @@ class AssetListPage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
+    await expandLowValueAssetsIfPresent(this.driver);
     await this.driver.clickElement({
       text: tokenSymbol,
       css: this.tokenNameInDetails,
@@ -583,6 +585,7 @@ class AssetListPage {
     console.log(
       `Check that token amount ${tokenAmount} is displayed in token details modal for token ${tokenName}`,
     );
+    await expandLowValueAssetsIfPresent(this.driver);
     await this.driver.clickElement({
       testId: 'multichain-token-list-item-token-name',
       text: tokenName,
