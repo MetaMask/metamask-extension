@@ -88,7 +88,7 @@ describe('skills-sync wrapper', () => {
         `METAMASK_SKILLS_DIR=${publicDir}`,
         `CONSENSYS_SKILLS_DIR=${privateDir}`,
       ].join('\n'),
-    ) as typeof import('node:fs').readFileSync;
+    ) as unknown as typeof import('node:fs').readFileSync;
 
     expect(
       loadSkillSourceEnv(cwd, { METAMASK_SKILLS_DIR: '/env/public' }, readFile),
@@ -124,7 +124,7 @@ describe('skills-sync wrapper', () => {
           ? 'GNU bash, version 5.3.9(1)-release'
           : 'GNU bash, version 3.2.57(1)-release',
       stderr: '',
-    })) as typeof import('node:child_process').spawnSync;
+    })) as unknown as typeof import('node:child_process').spawnSync;
 
     expect(pickBash({ BASH: '/bin/bash' }, spawn)).toBe(
       '/opt/homebrew/bin/bash',
@@ -136,7 +136,7 @@ describe('skills-sync wrapper', () => {
       status: 0,
       stdout: 'GNU bash, version 3.2.57(1)-release',
       stderr: '',
-    })) as typeof import('node:child_process').spawnSync;
+    })) as unknown as typeof import('node:child_process').spawnSync;
 
     expect(pickBash({ BASH: '/bin/bash' }, spawn)).toBeNull();
   });
@@ -146,7 +146,7 @@ describe('skills-sync wrapper', () => {
       status: 0,
       stdout: 'not bash',
       stderr: '',
-    })) as typeof import('node:child_process').spawnSync;
+    })) as unknown as typeof import('node:child_process').spawnSync;
 
     expect(syncIn(publicDir, statFor([]))).toBeNull();
     expect(bashMajorVersion('/bin/sh', spawn)).toBeNull();
@@ -175,11 +175,11 @@ describe('skills-sync wrapper', () => {
         [],
         cwd,
         {},
-        jest.fn() as typeof import('node:child_process').spawnSync,
+        jest.fn() as unknown as typeof import('node:child_process').spawnSync,
         statFor([]),
         jest.fn(() => {
           throw new Error('missing');
-        }) as typeof import('node:fs').readFileSync,
+        }) as unknown as typeof import('node:fs').readFileSync,
       ),
     ).toBe(1);
     expect(write).toHaveBeenCalledWith(
@@ -197,7 +197,7 @@ describe('skills-sync wrapper', () => {
         };
       }
       return { status: 0, stdout: '', stderr: '' };
-    }) as typeof import('node:child_process').spawnSync;
+    }) as unknown as typeof import('node:child_process').spawnSync;
 
     expect(
       main(
@@ -208,7 +208,7 @@ describe('skills-sync wrapper', () => {
         statFor([cacheSync]),
         jest.fn(() => {
           throw new Error('missing');
-        }) as typeof import('node:fs').readFileSync,
+        }) as unknown as typeof import('node:fs').readFileSync,
       ),
     ).toBe(0);
     expect(spawn).toHaveBeenLastCalledWith(
