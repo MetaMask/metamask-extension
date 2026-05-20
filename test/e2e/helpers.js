@@ -26,6 +26,10 @@ const {
 } = require('./websocket/account-activity-mocks');
 const { perpsWebSocketConfig } = require('./websocket/perps-mocks');
 const { WEBSOCKET_SERVICES } = require('./websocket/constants');
+const {
+  addVirtualAuthenticator,
+  removeVirtualAuthenticator,
+} = require('./webdriver/virtual-authenticator');
 
 // Register each WebSocket service explicitly.
 WebSocketRegistry.register(solanaWebSocketConfig);
@@ -169,6 +173,7 @@ async function withFixtures(options, testSuite) {
     perpsWebSocketSpecificMocks = [],
     extendedTimeoutMultiplier = 1,
     unifiedEvmAccountsApiBalances,
+    virtualAuthenticator,
   } = options;
 
   // Normalize localNodeOptions
@@ -433,18 +438,30 @@ async function withFixtures(options, testSuite) {
       });
     }
 
+    const effectiveDriver = driverProxy ?? driver;
+
+    if (virtualAuthenticator) {
+      await addVirtualAuthenticator(effectiveDriver);
+    }
+
     console.log(`\nExecuting testcase: '${title}'\n`);
 
     await testSuite({
       bundlerServer,
       contractRegistry,
-      driver: driverProxy ?? driver,
+      driver: effectiveDriver,
       localNodes,
       mockedEndpoint,
       mockServer,
       extensionId,
       getNetworkReport,
       clearNetworkReport,
+      ...(virtualAuthenticator && {
+        resetVirtualAuthenticator: async () => {
+          await removeVirtualAuthenticator(effectiveDriver);
+          await addVirtualAuthenticator(effectiveDriver);
+        },
+      }),
     });
 
     const errorsAndExceptions = driver.summarizeErrorsAndExceptions();

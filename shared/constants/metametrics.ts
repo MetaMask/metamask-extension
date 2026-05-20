@@ -1049,6 +1049,8 @@ export enum MetaMetricsEventName {
   TermsOfUseAccepted = 'Terms of Use Accepted',
   ThemeChanged = 'Theme Changed',
   TokenImportButtonClicked = 'Import Token Button Clicked',
+  ImportCustomTokenViewed = 'Import Custom Token Viewed',
+  ImportCustomTokenInteracted = 'Import Custom Token Interacted',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
   TokenSortPreference = 'Token Sort Preference Updated',
@@ -1379,6 +1381,7 @@ export enum MetaMetricsTokenEventSource {
   Dapp = 'dapp',
   Detected = 'detected',
   List = 'list',
+  ManageTokens = 'manage_tokens',
 }
 
 export enum MetaMetricsTransactionEventSource {
