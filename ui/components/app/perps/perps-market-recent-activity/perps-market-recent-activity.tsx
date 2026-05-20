@@ -2,8 +2,6 @@ import React, { useMemo } from 'react';
 import {
   Box,
   BoxFlexDirection,
-  BoxJustifyContent,
-  BoxAlignItems,
   Text,
   TextVariant,
   TextColor,
@@ -48,9 +46,10 @@ const RecentActivityEmpty: React.FC = () => {
   );
 };
 
-const RecentActivityList: React.FC<{ transactions: PerpsTransaction[] }> = ({
-  transactions,
-}) => (
+const RecentActivityList: React.FC<{
+  transactions: PerpsTransaction[];
+  onTransactionClick: () => void;
+}> = ({ transactions, onTransactionClick }) => (
   <Box
     flexDirection={BoxFlexDirection.Column}
     className="overflow-hidden rounded-xl"
@@ -61,6 +60,7 @@ const RecentActivityList: React.FC<{ transactions: PerpsTransaction[] }> = ({
         transaction={transaction}
         variant="muted"
         showTopBorder={index > 0}
+        onClick={onTransactionClick}
       />
     ))}
   </Box>
@@ -91,37 +91,41 @@ export const PerpsMarketRecentActivity: React.FC<
   const hasTransactions = transactions.length > 0;
   const showSkeleton = isInitialLoading && !hasTransactions;
 
+  const handleSeeAll = () => navigate(PERPS_ACTIVITY_ROUTE);
+
   return (
     <>
-      <Box
-        flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        paddingTop={4}
-        paddingBottom={2}
-      >
-        <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
-          {t('perpsRecentActivity')}
-        </Text>
-        {hasTransactions && (
-          <ButtonBase
-            onClick={() => navigate(PERPS_ACTIVITY_ROUTE)}
-            className="bg-transparent hover:bg-transparent active:bg-transparent p-0 min-w-0 h-auto"
-            data-testid="perps-market-detail-view-all-activity"
-            aria-label={t('perpsSeeAll')}
-          >
-            <Icon
-              name={IconName.ArrowRight}
-              size={IconSize.Sm}
-              color={IconColor.IconAlternative}
-            />
-          </ButtonBase>
-        )}
-      </Box>
+      {hasTransactions ? (
+        <ButtonBase
+          onClick={handleSeeAll}
+          className="w-full flex flex-row justify-between items-center pt-4 pb-2 bg-transparent rounded-none hover:bg-hover active:bg-pressed"
+          style={{ paddingLeft: 0, paddingRight: 0 }}
+          data-testid="perps-market-detail-view-all-activity"
+          aria-label={`${t('perpsRecentActivity')}, ${t('perpsSeeAll')}`}
+        >
+          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
+            {t('perpsRecentActivity')}
+          </Text>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            color={IconColor.IconAlternative}
+          />
+        </ButtonBase>
+      ) : (
+        <Box paddingTop={4} paddingBottom={2}>
+          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
+            {t('perpsRecentActivity')}
+          </Text>
+        </Box>
+      )}
       {showSkeleton && <RecentActivitySkeleton />}
       {!showSkeleton && !hasTransactions && <RecentActivityEmpty />}
       {!showSkeleton && hasTransactions && (
-        <RecentActivityList transactions={transactions} />
+        <RecentActivityList
+          transactions={transactions}
+          onTransactionClick={handleSeeAll}
+        />
       )}
     </>
   );
