@@ -162,6 +162,7 @@
   },
   "resolutions": {
     "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A7.0.0#~/.yarn/patches/@metamask-assets-controller-npm-7.0.0-b32ae360c0.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A106.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-106.0.0-b453fa2e45.patch",
     "@metamask/bridge-controller": "72.0.0",
     "@metamask/bridge-status-controller": "71.1.1",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
@@ -300,9 +301,7 @@
     "@metamask/bridge-status-controller@npm:^71.1.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
-    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
-    "@metamask/assets-controllers@npm:^108.1.0": "patch:@metamask/assets-controllers@npm%3A106.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-106.0.0-b453fa2e45.patch",
-    "@metamask/assets-controllers@npm:^106.0.0": "patch:@metamask/assets-controllers@npm%3A106.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-106.0.0-b453fa2e45.patch"
+    "@metamask/permission-controller@npm:^12.3.0": "^13.0.0"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -340,7 +339,7 @@
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^9.0.0",
     "@metamask/assets-controller": "^7.0.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A106.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-106.0.0-b453fa2e45.patch",
+    "@metamask/assets-controllers": "^106.0.0",
     "@metamask/base-controller": "^9.0.1",
     "@metamask/bitcoin-wallet-snap": "^1.10.1",
     "@metamask/bridge-controller": "^72.0.0",
