@@ -320,11 +320,9 @@ function TransactionListItemInner({
             />
           ) : (
             <TransactionStatusLabel
-              statusOnly
               isPending={isPending}
               isEarliestNonce={isEarliestNonce || shouldShowPendingBridgeStatus}
               error={error}
-              date={date}
               status={displayedStatusKey}
             />
           )
@@ -402,9 +400,7 @@ function TransactionListItemInner({
                   isEarliestNonce || shouldShowPendingBridgeStatus
                 }
                 error={error}
-                date={date}
                 status={displayedStatusKey}
-                statusOnly
               />
             )}
             chainId={chainId}
