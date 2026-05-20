@@ -313,14 +313,39 @@ const PerpsOrderEntryPage: React.FC = () => {
 
   const isOrderPending = isSubmitting;
 
-  // Dynamic fee rate for close-mode order submission tracking. Also surfaces
-  // the MetaMask fee discount percentage (when applicable) so the
-  // OrderSummary can render the inline `-X%` badge next to the estimated fees.
-  const { feeRate: closeFeeRate, metamaskFeeRateDiscountPercentage } =
-    usePerpsOrderFees({
-      symbol: decodedSymbol ?? '',
-      orderType: 'market',
-    });
+  // Dynamic fee rate matching the user-selected order type. Used for both:
+  // 1. Reverse-engineering the original (pre-discount) fee from
+  //    orderCalculations.estimatedFees (which OrderEntry computes with the
+  //    same orderType).
+  // 2. Close-mode order submission tracking (close mode defaults to market).
+  const {
+    feeRate: closeFeeRate,
+    undiscountedFeeRate: closeUndiscountedFeeRate,
+    metamaskFeeRateDiscountPercentage,
+  } = usePerpsOrderFees({
+    symbol: decodedSymbol ?? '',
+    orderType,
+  });
+
+  const originalEstimatedFees = useMemo(() => {
+    if (
+      orderCalculations?.estimatedFees === null ||
+      orderCalculations?.estimatedFees === undefined ||
+      closeFeeRate === undefined ||
+      closeFeeRate === 0 ||
+      closeUndiscountedFeeRate === undefined
+    ) {
+      return null;
+    }
+    return (
+      orderCalculations.estimatedFees *
+      (closeUndiscountedFeeRate / closeFeeRate)
+    );
+  }, [
+    orderCalculations?.estimatedFees,
+    closeFeeRate,
+    closeUndiscountedFeeRate,
+  ]);
 
   const isLimitPriceInvalid = useMemo(() => {
     if (orderType !== 'limit' || !orderFormState) {
@@ -1510,6 +1535,7 @@ const PerpsOrderEntryPage: React.FC = () => {
           <OrderSummary
             marginRequired={orderCalculations.marginRequired}
             estimatedFees={orderCalculations.estimatedFees}
+            originalEstimatedFees={originalEstimatedFees}
             liquidationPrice={orderCalculations.liquidationPrice}
             metamaskFeeRateDiscountPercentage={
               metamaskFeeRateDiscountPercentage
