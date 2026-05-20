@@ -5,10 +5,6 @@ name: Upload extension to Chrome Web Store
 # Production: cws-production environment + prod variables (INFRA-3644).
 # CWS API v2 upload (v1.1 sunsets 2026-10-15): chromewebstore.googleapis.com/upload/v2/...
 # Runway sender verification: deferred to INFRA-3649 (RAPID runtime identity enforcement).
-#
-# TEMP (remove before merge): pull_request + label `test-cws-upload` for PR testing.
-# Requires repo variable CWS_PR_TEST_VERSION (Chrome manifest version, e.g. 13.31.0) and
-# release v{CWS_PR_TEST_VERSION} with asset metamask-chrome-{version}.zip.
 
 on:
   workflow_dispatch:
@@ -25,9 +21,6 @@ on:
         options:
           - beta
           - production
-  # TEMP — delete before merging to main
-  pull_request:
-    types: [labeled, synchronize]
 
 permissions:
   contents: read
@@ -35,28 +28,21 @@ permissions:
 
 jobs:
   upload:
-    name: Upload to CWS (${{ github.event_name == 'workflow_dispatch' && inputs.target || 'beta' }})
+    name: Upload to CWS (${{ inputs.target }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: >-
-      github.event_name == 'workflow_dispatch'
-      || (
-        github.event_name == 'pull_request'
-        && github.event.pull_request.head.repo.full_name == github.repository
-        && contains(join(github.event.pull_request.labels.*.name, ','), 'test-cws-upload')
-      )
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name == 'workflow_dispatch' && inputs.target || 'beta' }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.target }}
       cancel-in-progress: false
-    environment: ${{ (github.event_name == 'workflow_dispatch' && inputs.target == 'production' && 'cws-production') || 'cws-beta' }}
+    environment: ${{ inputs.target == 'production' && 'cws-production' || inputs.target == 'beta' && 'cws-beta' || null }}
     env:
-      VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.version || vars.CWS_PR_TEST_VERSION }}
-      RELEASE_TAG: v${{ github.event_name == 'workflow_dispatch' && inputs.version || vars.CWS_PR_TEST_VERSION }}
-      ZIP_NAME: metamask-chrome-${{ github.event_name == 'workflow_dispatch' && inputs.version || vars.CWS_PR_TEST_VERSION }}.zip
+      VERSION: ${{ inputs.version }}
+      RELEASE_TAG: v${{ inputs.version }}
+      ZIP_NAME: metamask-chrome-${{ inputs.version }}.zip
     steps:
       - name: Validate inputs and configuration
         env:
-          TARGET: ${{ github.event_name == 'workflow_dispatch' && inputs.target || 'beta' }}
+          TARGET: ${{ inputs.target }}
           WIF_PROVIDER_BETA: ${{ vars.WIF_PROVIDER_BETA }}
           WIF_SERVICE_ACCOUNT_BETA: ${{ vars.WIF_SERVICE_ACCOUNT_BETA }}
           EXTENSION_ID_BETA: ${{ vars.EXTENSION_ID_BETA }}
@@ -69,17 +55,6 @@ jobs:
           PUBLISHER_EMAIL_PROD: ${{ vars.PUBLISHER_EMAIL }}
         run: |
           set -euo pipefail
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "TEMP PR test mode (label: test-cws-upload, target: beta, environment: cws-beta)"
-          fi
-          if [[ -z "${VERSION}" ]]; then
-            echo "::error::VERSION is empty. For pull_request runs set repo variable CWS_PR_TEST_VERSION."
-            exit 1
-          fi
-          if [[ "${{ github.event_name }}" == "pull_request" && "${TARGET}" != "beta" ]]; then
-            echo "::error::pull_request test runs are beta-only"
-            exit 1
-          fi
           if [[ ! "${VERSION}" =~ ^[0-9]+(\.[0-9]+){0,3}$ ]]; then
             echo "::error::Invalid version format (Chrome manifest): ${VERSION} — use 1–4 dot-separated integers (e.g. 13.0.0), not semver pre-release/build metadata"
             exit 1
@@ -126,7 +101,6 @@ jobs:
             exit 1
           fi
           {
-            echo "TARGET=${TARGET}"
             echo "WIF_PROVIDER=${WIF_PROVIDER}"
             echo "WIF_SERVICE_ACCOUNT=${WIF_SERVICE_ACCOUNT}"
             echo "EXTENSION_ID=${EXTENSION_ID}"
@@ -138,7 +112,6 @@ jobs:
             echo ""
             echo "| Field | Value |"
             echo "|-------|-------|"
-            echo "| Trigger | \`${{ github.event_name }}\` |"
             echo "| Target | \`${TARGET}\` |"
             echo "| Version | \`${VERSION}\` |"
             echo "| Release tag | \`${RELEASE_TAG}\` |"
@@ -161,7 +134,7 @@ jobs:
 
       # Beta/dev listing rejects manifest.key tied to production extension ID (POC lesson).
       - name: Strip manifest key from zip (beta only)
-        if: env.TARGET == 'beta'
+        if: inputs.target == 'beta'
         run: |
           set -euo pipefail
           mkdir -p /tmp/extension
@@ -187,7 +160,7 @@ jobs:
           ACCESS_TOKEN: ${{ steps.auth.outputs.access_token }}
         run: |
           set -euo pipefail
-          echo "Target: ${TARGET}"
+          echo "Target: ${{ inputs.target }}"
           echo "Publisher ID: ${PUBLISHER_ID}"
           echo "Extension ID: ${EXTENSION_ID}"
           echo "Publisher email (dashboard): ${PUBLISHER_EMAIL}"
