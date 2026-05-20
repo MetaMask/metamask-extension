@@ -19,10 +19,6 @@ import { getActivityListItemAvatarConfig } from '../resolve-activity-avatar-conf
 import { useGetLabel } from '../useGetLabel';
 import type { ActivityCellProps } from './types';
 
-type GenericActivityCellProps = ActivityCellProps & {
-  description?: string;
-};
-
 function trimDecimalZeroes(value: string) {
   if (!value.includes('.')) {
     return value;
@@ -141,13 +137,9 @@ const renderDescriptionLine = (
   return null;
 };
 
-export function GenericActivityCell({
-  data,
-  description: descriptionOverride,
-}: GenericActivityCellProps) {
+export function GenericActivityCell({ data }: ActivityCellProps) {
   const t = useI18nContext();
-  const { description: labelDescription, title } = useGetLabel(data);
-  const description = descriptionOverride ?? labelDescription;
+  const { description, title } = useGetLabel(data);
   const pendingStatusText =
     data.status === 'pending' ? t(data.status) : undefined;
   const { primaryToken, secondaryToken } = getCellTokenAmounts(data);

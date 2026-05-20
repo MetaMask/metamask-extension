@@ -48,6 +48,10 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
       return {
         title: [activity.data.token?.symbol ?? 'NFT'],
       };
+    case 'contractInteraction':
+      return {
+        description: [shortenAddress(activity.data.to ?? '')]
+      };
     // Token in description
     case 'approveSpendingCap':
     case 'increaseSpendingCap':
