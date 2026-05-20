@@ -440,7 +440,11 @@ const AssetListControlBar = ({
                       : handleTokenImportModal
                   }
                   size={ButtonBaseSize.Sm}
-                  startIconName={isTokenManagementFilterEnabled? IconName.MoreVertical : IconName.Add}
+                  startIconName={
+                    isTokenManagementFilterEnabled
+                      ? IconName.MoreVertical
+                      : IconName.Add
+                  }
                   startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
                   backgroundColor={
                     isTokenSortPopoverOpen
