@@ -267,6 +267,17 @@ describe('subscribeToMessengerEvent', () => {
     expect(listenerB).not.toHaveBeenCalled();
   });
 
+  it('propagates messengerUnsubscribe IPC rejection to the awaiter', async () => {
+    const { messengerUnsubscribe } = setup();
+
+    messengerUnsubscribe.mockRejectedValueOnce(new Error('unsubscribe failed'));
+
+    const listener = jest.fn();
+    const unsubscribe = await subscribeToMessengerEvent(event, listener);
+
+    await expect(unsubscribe()).rejects.toThrow('unsubscribe failed');
+  });
+
   it('dispatches notifications that arrive before the upstream messengerSubscribe RPC resolves', async () => {
     const { messengerSubscribe, submitNotification } = setup();
 
