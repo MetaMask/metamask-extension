@@ -13,7 +13,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-// Architectural boundaries between `app` (background), `ui`, and `shared`.
+// Architectural boundaries between the three top-level source trees:
+// - `app/`     (background script — service worker, controllers, RPC)
+// - `ui/`      (React UI rendered in the extension popup/expanded view)
+// - `shared/`  (code safe to import from either side)
 const architecturalZones = [
   {
     target: './app',
@@ -64,7 +67,7 @@ const routeIsolationZones = routeDirs.map((route) => ({
   except: [`./${route}`, './routes'],
   message:
     `Route directories must be isolated. "${route}" must not import ` +
-    `from a sibling route directory. See ADR 0021 (modularize-routes) / WPC-402.`,
+    `from a sibling route directory. See ADR 0021 (modularize-routes).`,
 }));
 
 module.exports = { architecturalZones, routeIsolationZones };
