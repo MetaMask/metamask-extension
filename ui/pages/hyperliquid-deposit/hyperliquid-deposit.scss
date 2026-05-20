@@ -3,8 +3,8 @@
   display: flex;
   justify-content: center;
   padding: 0;
-  background: rgb(0, 0, 0);
-  color: rgb(255, 255, 255);
+  background: var(--color-background-default);
+  color: var(--color-text-default);
 
   &__panel {
     position: relative;
@@ -13,7 +13,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: rgb(0, 0, 0);
+    background: var(--color-background-default);
   }
 
   &__step {
@@ -41,8 +41,8 @@
     height: 36px;
     border: 0;
     border-radius: 50%;
-    background: rgb(31, 31, 31);
-    color: rgb(177, 177, 177);
+    background: var(--color-background-muted);
+    color: var(--color-icon-default);
     font-size: 28px;
     line-height: 1;
     cursor: pointer;
@@ -79,7 +79,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 3px solid rgb(0, 0, 0);
+    border: 3px solid var(--color-background-default);
     border-radius: 50%;
     background: rgb(0, 199, 111);
     color: rgb(255, 255, 255);
@@ -93,7 +93,7 @@
 
     h1 {
       margin: 0;
-      color: rgb(255, 255, 255);
+      color: var(--color-text-default);
       font-size: 20px;
       font-weight: 700;
       line-height: 28px;
@@ -101,7 +101,7 @@
 
     p {
       margin: 12px 0 0;
-      color: rgb(177, 177, 177);
+      color: var(--color-text-alternative);
       font-size: 16px;
       line-height: 24px;
     }
@@ -114,7 +114,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: rgb(24, 24, 24);
+    background: var(--color-background-section);
   }
 
   &__pending-loader-icon {
@@ -130,15 +130,15 @@
     margin-top: auto;
     padding: 0 18px;
     border-radius: 14px;
-    background: rgb(24, 24, 24);
+    background: var(--color-background-section);
 
     span {
-      color: rgb(177, 177, 177);
+      color: var(--color-text-alternative);
       font-weight: 600;
     }
 
     strong {
-      color: rgb(255, 255, 255);
+      color: var(--color-text-default);
     }
   }
 
@@ -148,16 +148,16 @@
     margin-top: auto;
     border: 0;
     border-radius: 14px;
-    background: rgb(255, 255, 255);
-    color: rgb(0, 0, 0);
+    background: var(--color-primary-default);
+    color: var(--color-primary-inverse);
     font-size: 16px;
     font-weight: 700;
     line-height: 22px;
     cursor: pointer;
 
     &:disabled {
-      background: rgb(67, 67, 67);
-      color: rgb(177, 177, 177);
+      background: var(--color-background-muted);
+      color: var(--color-text-muted);
       cursor: default;
     }
   }
@@ -165,7 +165,7 @@
   &__error {
     width: 100%;
     margin: 16px 0 0;
-    color: rgb(255, 95, 95);
+    color: var(--color-error-default);
     font-size: 13px;
     line-height: 18px;
     text-align: center;
