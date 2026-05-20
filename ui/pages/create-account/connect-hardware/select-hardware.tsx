@@ -36,10 +36,11 @@ import {
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
-/**
- * Whether WebUSB is available for Trezor device pairing.
- * Disabled in test environments to avoid uncontrolled USB prompts.
- */
+// Not all browsers support WebUSB (e.g. Firefox does not).
+// When unavailable, Trezor connection falls back to the Trezor Connect screen
+// which relies on Trezor Bridge software.
+// Disabled in test environments to avoid uncontrolled USB prompts.
+// See: https://mozilla.github.io/standards-positions/#webusb
 const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
 
 type WalletOptionBase = {
