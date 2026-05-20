@@ -428,7 +428,7 @@
     "@metamask/snaps-execution-environments": "^11.0.2",
     "@metamask/snaps-rpc-methods": "file:.yalc/@metamask/snaps-rpc-methods",
     "@metamask/snaps-sdk": "^11.1.1",
-    "@metamask/snaps-utils": "^12.2.0",
+    "@metamask/snaps-utils": "file:.yalc/@metamask/snaps-utils",
     "@metamask/solana-wallet-snap": "^2.8.0",
     "@metamask/solana-wallet-standard": "^1.0.0",
     "@metamask/storage-service": "^1.0.0",
