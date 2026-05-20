@@ -1,4 +1,8 @@
-import { Messenger, MessengerActions, MessengerEvents } from '@metamask/messenger';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type { MultichainAccountServiceMessenger } from '@metamask/multichain-account-service';
 import {

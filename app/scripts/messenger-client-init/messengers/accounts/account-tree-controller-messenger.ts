@@ -4,7 +4,11 @@ import {
   AccountsControllerGetAccountAction,
   AccountsControllerSelectedAccountChangeEvent,
 } from '@metamask/accounts-controller';
-import { Messenger, MessengerActions, MessengerEvents } from '@metamask/messenger';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
 import { UserStorageController } from '@metamask/profile-sync-controller';
 import { MultichainAccountServiceWalletStatusChangeEvent } from '@metamask/multichain-account-service';
 import type { AccountTreeControllerMessenger } from '@metamask/account-tree-controller';
