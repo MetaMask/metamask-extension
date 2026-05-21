@@ -5601,9 +5601,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/account-tree-controller@npm:^7.2.0, @metamask/account-tree-controller@npm:^7.3.0, @metamask/account-tree-controller@npm:^7.4.0":
-  version: 7.4.0
-  resolution: "@metamask/account-tree-controller@npm:7.4.0"
+"@metamask/account-tree-controller@npm:@metamask-previews/account-tree-controller@7.4.0-preview-c7c3c44":
+  version: 7.4.0-preview-c7c3c44
+  resolution: "@metamask-previews/account-tree-controller@npm:7.4.0-preview-c7c3c44"
   dependencies:
     "@metamask/accounts-controller": "npm:^38.1.1"
     "@metamask/base-controller": "npm:^9.1.0"
@@ -5622,7 +5622,7 @@ __metadata:
   peerDependencies:
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/8c9967775e4ef3bcb718efb18feb2f94f077c540510c94eb9cc9e814dc91f19b1d4e374e694cbfb6697e162d9c88922acafa1723e727b8912bf4ef3620a8e784
+  checksum: 10/54edb7c2ee08ddb00efd91bcaf2d1afd1a57a7d2d4e8431104e78cc063f357e57631e7598546e418fe3ac4b1c9b3b61fa21cd2c8dff6dbdc8ead893f40e2cb10
   languageName: node
   linkType: hard
 
