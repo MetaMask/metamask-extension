@@ -10,7 +10,8 @@ import {
   IconColor,
   IconName,
   IconSize,
- Box } from '@metamask/design-system-react';
+  Box,
+} from '@metamask/design-system-react';
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { shortenAddress } from '../../../../helpers/utils/util';
 
