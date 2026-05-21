@@ -3418,6 +3418,7 @@
         "stream.Writable": true,
         "tls.connect": true,
         "url.URL": true,
+        "util.types.isUint8Array": true,
         "zlib.Z_DEFAULT_WINDOWBITS": true,
         "zlib.Z_SYNC_FLUSH": true,
         "zlib.createDeflateRaw": true,

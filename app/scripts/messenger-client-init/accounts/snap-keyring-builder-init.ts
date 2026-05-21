@@ -1,12 +1,10 @@
 import { MessengerClientInitFunction } from '../types';
-import {
-  SnapKeyringBuilderInitMessenger,
-  SnapKeyringBuilderMessenger,
-} from '../messengers/accounts';
+import { SnapKeyringBuilderInitMessenger } from '../messengers/accounts';
 import {
   snapKeyringBuilder,
   SnapKeyringBuilder,
 } from '../../lib/snap-keyring/snap-keyring';
+import { SnapKeyringBuilderMessenger } from '../../lib/snap-keyring/types';
 
 /**
  * Initialize the Snap keyring builder.

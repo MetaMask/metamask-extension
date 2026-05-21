@@ -1,10 +1,10 @@
-import { ApprovalController } from '@metamask/approval-controller';
+import {
+  ApprovalController,
+  ApprovalControllerMessenger,
+} from '@metamask/approval-controller';
 import { MessengerClientInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  getApprovalControllerMessenger,
-  ApprovalControllerMessenger,
-} from '../messengers';
+import { getApprovalControllerMessenger } from '../messengers';
 import { getRootMessenger } from '../../lib/messenger';
 import { ApprovalControllerInit } from './approval-controller-init';
 

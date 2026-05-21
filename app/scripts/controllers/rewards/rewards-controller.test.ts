@@ -857,6 +857,36 @@ describe('RewardsController', () => {
       );
     });
 
+    it('returns null when the subscription record is missing even if a VIP fees cache entry exists', async () => {
+      await withController(
+        {
+          state: {
+            rewardsAccounts: {
+              [VIP_ACCOUNT]: vipAccountState({
+                subscriptionId: NON_VIP_SUB_ID,
+              }),
+            },
+            rewardsVipPerpsFees: {
+              [NON_VIP_SUB_ID]: {
+                hyperliquidBuilderFeeBips: '5',
+                lastFetched: Date.now(),
+              },
+            },
+          },
+          isDisabled: false,
+        },
+        async ({ controller, mockMessengerCall }) => {
+          const result = await controller.getPerpsDiscountForAccount(
+            VIP_ACCOUNT,
+            BASE_FEE_BIPS,
+          );
+
+          expect(result).toBeNull();
+          expect(mockMessengerCall).not.toHaveBeenCalled();
+        },
+      );
+    });
+
     it('calls /vip/fees even when the subscription is flagged as not VIP, and promotes the subscription on a valid response', async () => {
       await withController(
         {
@@ -1133,6 +1163,38 @@ describe('RewardsController', () => {
           );
 
           expect(result).toBeNull();
+        },
+      );
+    });
+
+    it('returns 0 when /vip/fees has fees but no hyperliquid builderFeeBips', async () => {
+      await withController(
+        { state: stateWithVipAccount(), isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation(
+            (method: string, ..._args: unknown[]): unknown => {
+              if (method === 'RewardsDataService:getVipFees') {
+                return Promise.resolve({
+                  vipTier: 2,
+                  fees: {
+                    swaps: { feeBips: '50' },
+                  },
+                  updatedAt: '2026-05-01T00:00:00.000Z',
+                } as VipFeesResponseDto);
+              }
+              return Promise.resolve(undefined);
+            },
+          );
+
+          const result = await controller.getPerpsDiscountForAccount(
+            VIP_ACCOUNT,
+            BASE_FEE_BIPS,
+          );
+
+          expect(result).toBe(0);
+          expect(
+            controller.state.rewardsVipPerpsFees[VIP_SUB_ID],
+          ).toBeUndefined();
         },
       );
     });
@@ -3408,19 +3470,10 @@ describe('RewardsController', () => {
       });
     });
 
-    it('should return false for empty code', async () => {
+    it('should return false for empty / whitespace-only input', async () => {
       await withController({ isDisabled: false }, async ({ controller }) => {
-        const result = await controller.validateReferralCode('  ');
-
-        expect(result).toBe(false);
-      });
-    });
-
-    it('should return false for code with invalid length', async () => {
-      await withController({ isDisabled: false }, async ({ controller }) => {
-        const result = await controller.validateReferralCode('TEST');
-
-        expect(result).toBe(false);
+        expect(await controller.validateReferralCode('')).toBe(false);
+        expect(await controller.validateReferralCode('   ')).toBe(false);
       });
     });
 
@@ -3438,6 +3491,28 @@ describe('RewardsController', () => {
           const result = await controller.validateReferralCode('TEST12');
 
           expect(result).toBe(true);
+        },
+      );
+    });
+
+    it('should forward non-empty vanity codes to the data service', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:validateReferralCode') {
+              return Promise.resolve({ valid: true });
+            }
+            return undefined;
+          });
+
+          const result = await controller.validateReferralCode('BANKLESS');
+
+          expect(result).toBe(true);
+          expect(mockMessengerCall).toHaveBeenCalledWith(
+            'RewardsDataService:validateReferralCode',
+            'BANKLESS',
+          );
         },
       );
     });
