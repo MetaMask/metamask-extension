@@ -96,6 +96,7 @@ const makeBannerResponse = (linkUrl: string) => ({
 
 describe('Carousel', () => {
   let fetchSpy: jest.SpyInstance;
+  let previousPlatform: typeof global.platform;
 
   const defaultProps = {
     slides: mockSlides,
@@ -111,6 +112,7 @@ describe('Carousel', () => {
     process.env.CONTENTFUL_ACCESS_SPACE_ID = 'test-space';
     process.env.CONTENTFUL_ACCESS_TOKEN = 'test-token';
     fetchSpy = jest.spyOn(globalThis, 'fetch');
+    previousPlatform = global.platform;
     global.platform = {
       openTab: jest.fn(),
     } as unknown as typeof global.platform;
@@ -118,6 +120,7 @@ describe('Carousel', () => {
 
   afterEach(() => {
     fetchSpy.mockRestore();
+    global.platform = previousPlatform;
     delete process.env.CONTENTFUL_ACCESS_SPACE_ID;
     delete process.env.CONTENTFUL_ACCESS_TOKEN;
   });
