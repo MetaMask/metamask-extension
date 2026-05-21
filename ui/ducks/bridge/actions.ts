@@ -270,7 +270,11 @@ export const setToToken = (newToToken: TokenPayload) => {
         );
       }
 
-      dispatch(setFromToken(fromTokenToUse));
+      await dispatch(
+        setFromToken(fromTokenToUse) as unknown as Parameters<
+          typeof dispatch
+        >[0],
+      );
     }
 
     dispatch(setToTokenAction(newToToken));

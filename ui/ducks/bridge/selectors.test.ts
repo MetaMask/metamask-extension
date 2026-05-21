@@ -1218,7 +1218,7 @@ describe('Bridge selectors', () => {
                   .quote as unknown as QuoteResponse['quote']),
                 requestId: 'fastestQuote',
               },
-            },
+            } as unknown as QuoteResponse,
           ],
         },
       });
