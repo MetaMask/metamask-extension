@@ -10,12 +10,7 @@ class OnboardingSrpPage {
     text: 'Clear all',
   };
 
-  private readonly importHeader = {
-    tag: 'h2',
-    text: 'Import a wallet',
-  };
-
-  private readonly importSubHeader = {
+  private readonly importDescription = {
     tag: 'p',
     text: 'Enter your Secret Recovery Phrase',
   };
@@ -43,9 +38,12 @@ class OnboardingSrpPage {
       await this.driver.waitForMultipleSelectors([
         this.srpMessage,
         this.srpWord0,
-        this.importHeader,
-        this.importSubHeader,
+        this.importDescription,
       ]);
+      // Continue button is initially disabled
+      await this.driver.waitForSelector(this.srpConfirmButton, {
+        state: 'disabled',
+      });
     } catch (e) {
       console.log(
         'Timeout while waiting for onboarding srp page to be loaded',
