@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Box, Text } from '@metamask/design-system-react';
 import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
@@ -7,8 +6,8 @@ import { useScrollContainer } from '../../contexts/scroll-container';
 import { formatDateWithYearContext } from '../../helpers/utils/util';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
-import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import { NetworkFilter } from './network-filter';
 import { LegacyDetails } from './legacy-details';
 import { ListItem } from './cells/list-item';
 import { dedupeItems, getItemKey, groupActivityListItems } from './helpers';
@@ -22,14 +21,9 @@ const itemHeight = 70;
 export function ActivityList() {
   const t = useI18nContext();
   const scrollContainerRef = useScrollContainer();
-  const allNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
-  const [selectedNetwork, setSelectedNetwork] = useState('');
+  const [networks, setNetworks] = useState<string[]>([]);
   const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
     null,
-  );
-  const networks = useMemo(
-    () => (selectedNetwork ? [selectedNetwork] : allNetworks),
-    [selectedNetwork, allNetworks],
   );
   const localItems = useLocalTransactions({ networks });
   const nonEvmItems = useNonEvmTransactions({ networks });
@@ -92,20 +86,7 @@ export function ActivityList() {
   return (
     <>
       <Box className="p-3">
-        <select
-          className="rounded border border-border-muted bg-background-default text-sm"
-          value={selectedNetwork}
-          onChange={(event) => {
-            setSelectedNetwork(event.target.value);
-          }}
-        >
-          <option value="">All networks</option>
-          {allNetworks.map((network) => (
-            <option key={network} value={network}>
-              {network}
-            </option>
-          ))}
-        </select>
+        <NetworkFilter onSelect={setNetworks} />
       </Box>
 
       <VirtualizedList
