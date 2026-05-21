@@ -17,12 +17,7 @@ export function useEarliestPendingNonceByChain(): Record<string, number> {
       const { chainId, status, txParams } = transaction;
       const nonce = txParams?.nonce;
 
-      if (
-        !chainId ||
-        !nonce ||
-        !status ||
-        !(status in PENDING_STATUS_HASH)
-      ) {
+      if (!chainId || !nonce || !status || !(status in PENDING_STATUS_HASH)) {
         continue;
       }
 

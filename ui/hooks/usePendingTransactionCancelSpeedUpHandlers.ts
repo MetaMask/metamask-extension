@@ -5,9 +5,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { EditGasModes } from '../../shared/constants/gas';
-import {
-  MetaMetricsEventCategory,
-} from '../../shared/constants/metametrics';
+import { MetaMetricsEventCategory } from '../../shared/constants/metametrics';
 import { useTransactionModalContext } from '../contexts/transaction-modal';
 import { MetaMetricsContext } from '../contexts/metametrics';
 import { abortTransactionSigning } from '../store/actions';

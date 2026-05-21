@@ -9,7 +9,10 @@ import type { EditGasModes } from '../../../../shared/constants/gas';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { PendingTransactionActionButtons } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-action-buttons';
 import type { MetaMaskReduxState } from '../../../store/store';
-import { selectTransactionById, selectTransactions } from '../../../selectors/transactionController';
+import {
+  selectTransactionById,
+  selectTransactions,
+} from '../../../selectors/transactionController';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { buildTransactionGroupFromMeta } from './build-transaction-group-from-meta';
 
@@ -29,7 +32,7 @@ const buildInactiveTransactionGroup = (): TransactionGroup => {
     hasCancelled: false,
     hasRetried: false,
   };
-}
+};
 
 type PendingEvmActionsProps = {
   metaId: string;
@@ -94,4 +97,4 @@ export const PendingEvmActions = ({
       primaryTransaction={meta}
     />
   );
-}
+};

@@ -26,8 +26,7 @@ export function usePendingTransactionActions({
     setEditGasMode,
   });
 
-  const onSpeedUpClick =
-    transactionGroup.hasCancelled ? onCancel : onSpeedUp;
+  const onSpeedUpClick = transactionGroup.hasCancelled ? onCancel : onSpeedUp;
 
   return {
     showCancel,

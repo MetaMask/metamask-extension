@@ -32,23 +32,17 @@ export const deriveNonceGroupFlags = (
     const inPriorityStatus = status in PRIORITY_STATUS_HASH;
     const isDropped = status === TransactionStatus.dropped;
 
-    if (
-      type === TransactionType.retry &&
-      (inPriorityStatus || isDropped)
-    ) {
+    if (type === TransactionType.retry && (inPriorityStatus || isDropped)) {
       hasRetried = true;
     }
 
-    if (
-      type === TransactionType.cancel &&
-      (inPriorityStatus || isDropped)
-    ) {
+    if (type === TransactionType.cancel && (inPriorityStatus || isDropped)) {
       hasCancelled = true;
     }
   }
 
   return { hasCancelled, hasRetried };
-}
+};
 
 /**
  * Minimal transaction group for pending-action hooks (no `raw` on activity rows).
@@ -61,7 +55,10 @@ export const buildTransactionGroupFromMeta = (
   const siblings = transactions.filter(
     (transaction) => getNonceNetworkKey(transaction) === key,
   );
-  const { hasCancelled, hasRetried } = deriveNonceGroupFlags(meta, transactions);
+  const { hasCancelled, hasRetried } = deriveNonceGroupFlags(
+    meta,
+    transactions,
+  );
   const nonce = (meta.txParams?.nonce ?? '0x0') as Hex;
 
   return {
@@ -72,4 +69,4 @@ export const buildTransactionGroupFromMeta = (
     hasCancelled,
     hasRetried,
   };
-}
+};

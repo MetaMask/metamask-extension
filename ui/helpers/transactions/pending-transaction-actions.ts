@@ -4,9 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import { isTransactionPending } from './is-transaction-pending';
 
-export type PendingTransactionSpeedUpLabel =
-  | 'speedUp'
-  | 'speedUpCancellation';
+export type PendingTransactionSpeedUpLabel = 'speedUp' | 'speedUpCancellation';
 
 export type PendingTransactionActionVisibility = {
   showCancel: boolean;

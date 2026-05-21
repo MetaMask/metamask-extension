@@ -58,4 +58,4 @@ export const PendingTransactionActionButtons = ({
       ) : null}
     </Box>
   );
-}
+};

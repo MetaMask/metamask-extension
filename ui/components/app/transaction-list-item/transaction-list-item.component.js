@@ -192,7 +192,6 @@ function TransactionListItemInner({
     });
   }, [isUnapproved, navigate, id, trackEvent, category]);
 
-
   return (
     <>
       <ActivityListItem
