@@ -1,3 +1,4 @@
+import { Browser } from 'selenium-webdriver';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
 import { Driver } from '../../webdriver/driver';
@@ -53,10 +54,13 @@ describe('Forgot password', function () {
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
         await resetPasswordPage.waitForPasswordInputToNotBeVisible();
 
-        // Assert passkey setup is shown
-        const setupPasskeyPage = new SetupPasskeyPage(driver);
-        await setupPasskeyPage.checkPageIsLoaded();
-        await setupPasskeyPage.skipPasskeySetup();
+        // Assert passkey setup is shown for chrome
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+        if (!isFirefox) {
+          const setupPasskeyPage = new SetupPasskeyPage(driver);
+          await setupPasskeyPage.checkPageIsLoaded();
+          await setupPasskeyPage.skipPasskeySetup();
+        }
 
         await homePage.headerNavbar.checkPageIsLoaded();
         await driver.delay(1000); // to avoid a race condition where the wallet is not locked yet

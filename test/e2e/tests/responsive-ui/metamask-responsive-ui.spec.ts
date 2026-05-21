@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
 import { E2E_SRP, WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilderV2 from '../../fixtures/fixture-builder-v2';
@@ -107,10 +108,13 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
         await resetPasswordPage.waitForPasswordInputToNotBeVisible();
 
-        // Assert passkey setup is shown
-        const setupPasskeyPage = new SetupPasskeyPage(driver);
-        await setupPasskeyPage.checkPageIsLoaded();
-        await setupPasskeyPage.skipPasskeySetup();
+        // Assert passkey setup is shown for chrome
+        const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
+        if (!isFirefox) {
+          const setupPasskeyPage = new SetupPasskeyPage(driver);
+          await setupPasskeyPage.checkPageIsLoaded();
+          await setupPasskeyPage.skipPasskeySetup();
+        }
 
         // Check balance renders correctly
         const homePage = new HomePage(driver);
