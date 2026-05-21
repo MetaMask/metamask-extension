@@ -36,7 +36,7 @@ export default function QuizContent({
         </Box>
       )}
       {image && (
-        <Box className="flex text-center" margin="auto">
+        <Box className="flex text-center mx-auto">
           <img
             src={image}
             alt={t('srpSecurityQuizImgAlt')}
