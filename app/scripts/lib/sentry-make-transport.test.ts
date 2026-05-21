@@ -127,6 +127,9 @@ describe('sentry-make-transport', () => {
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
       );
+      // In Sentry v10, this opted-out path can short-circuit before the
+      // default fetch transport is instantiated, so the behavior we care about
+      // here is the absence of any outbound network request.
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();
