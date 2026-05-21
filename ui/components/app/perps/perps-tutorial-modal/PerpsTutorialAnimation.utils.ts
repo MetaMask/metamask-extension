@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { Fit } from '@rive-app/react-canvas';
+import type { Fit } from '@rive-app/react-canvas';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -18,6 +18,9 @@ const BASE_CONTAINER_STYLE: CSSProperties = {
   alignItems: 'center',
 };
 
+const FIT_CONTAIN = 'contain' as Fit;
+const FIT_COVER = 'cover' as Fit;
+
 /**
  * Get container styles based on viewport type.
  *
@@ -28,7 +31,7 @@ export const getPerpsTutorialAnimationLayout = (
   environmentType: string,
 ): { containerStyle: CSSProperties; fit: Fit } => {
   if (environmentType === ENVIRONMENT_TYPE_SIDEPANEL) {
-    return { containerStyle: BASE_CONTAINER_STYLE, fit: Fit.Contain };
+    return { containerStyle: BASE_CONTAINER_STYLE, fit: FIT_CONTAIN };
   }
 
   if (environmentType === ENVIRONMENT_TYPE_POPUP) {
@@ -38,12 +41,12 @@ export const getPerpsTutorialAnimationLayout = (
         height: '200px',
         maxWidth: '340px',
       },
-      fit: Fit.Contain,
+      fit: FIT_CONTAIN,
     };
   }
 
   return {
     containerStyle: { ...BASE_CONTAINER_STYLE, maxWidth: '280px' },
-    fit: Fit.Cover,
+    fit: FIT_COVER,
   };
 };
