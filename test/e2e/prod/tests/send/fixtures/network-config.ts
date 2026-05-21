@@ -223,6 +223,26 @@ export function getNetworkConfigByName(
 }
 
 /**
+ * Get networks by a list of names (case-insensitive), searching across all categories.
+ * @param names - Array of network names to look up
+ * @returns Array of matching NetworkTestConfig entries
+ */
+export function getNetworksByNames(
+  names: string[],
+): NetworkTestConfig[] {
+  const config = loadNetworkConfigs();
+  const all = [
+    ...config.additionalNetworks,
+    ...config.popularNetworks,
+    ...config.customNetworks,
+  ];
+  const lowerNames = names.map((n) => n.trim().toLowerCase());
+  return all.filter((net) =>
+    lowerNames.includes(net.networkName.trim().toLowerCase()),
+  );
+}
+
+/**
  * Validate that all required fields are present in network config
  * @param network - The network configuration to validate
  * @returns true if valid, false otherwise
