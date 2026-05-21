@@ -4,7 +4,6 @@ import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
-import { expandLowValueAssetsIfPresent } from '../../helpers/low-value-assets';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
   BASE_ACCOUNT_SYNC_TIMEOUT,
@@ -64,6 +63,11 @@ class HomePage {
   private readonly loadingOverlay = {
     text: 'Connecting to Localhost 8545',
   };
+
+  private readonly lowValueAssetsToggle =
+    '[data-testid="low-value-assets-toggle"]';
+
+  private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
   private readonly nftTab = {
     testId: 'account-overview__nfts-tab',
@@ -152,6 +156,25 @@ class HomePage {
       throw e;
     }
     console.log('Home page is loaded');
+  }
+
+  private async expandLowValueAssetsIfPresent(): Promise<void> {
+    let toggle;
+
+    try {
+      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
+    } catch {
+      return;
+    }
+
+    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+      timeout: 5000,
+    });
   }
 
   async waitForNetworkAndDOMReady(): Promise<void> {
@@ -462,7 +485,7 @@ class HomePage {
     expectedTokenBalance: string,
     symbol: string,
   ): Promise<void> {
-    await expandLowValueAssetsIfPresent(this.driver);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector({
       css: '[data-testid="multichain-token-list-item-value"]',
       text: `${expectedTokenBalance} ${symbol}`,

@@ -16,6 +16,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import {
+  getCurrencyRates,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
@@ -94,6 +95,7 @@ jest.mock('../../../../hooks/useI18nContext', () => ({
 }));
 
 jest.mock('../../../../selectors', () => ({
+  getCurrencyRates: jest.fn(),
   getShouldHideZeroBalanceTokens: jest.fn(),
   getTokenSortConfig: jest.fn(),
   getUseExternalServices: jest.fn(),
@@ -187,6 +189,9 @@ describe('TokenList', () => {
         typeof getPreferences
       >);
     jest.mocked(getShouldHideZeroBalanceTokens).mockReturnValue(false);
+    jest.mocked(getCurrencyRates).mockReturnValue({
+      ETH: { conversionRate: 1, usdConversionRate: 1 },
+    });
     jest.mocked(getTokenSortConfig).mockReturnValue({
       key: 'tokenFiatAmount',
       order: 'dsc',
@@ -221,6 +226,46 @@ describe('TokenList', () => {
     render();
 
     expect(screen.getByTestId('token-cell-ETH')).toBeInTheDocument();
+    expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-DUST')).not.toBeInTheDocument();
+    expect(screen.getByText(lowValueAssetsLabel(1))).toBeInTheDocument();
+  });
+
+  it('uses the current currency equivalent of one dollar for BTC balances', () => {
+    jest.mocked(getCurrencyRates).mockReturnValue({
+      ETH: { conversionRate: 0.05, usdConversionRate: 2500 },
+    });
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValue(
+        createAccountGroupAssets([
+          createAsset({ symbol: 'DUST', fiatBalance: 0.00001 }),
+          createAsset({ symbol: 'USDC', fiatBalance: 0.00003 }),
+        ]),
+      );
+
+    render();
+
+    expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
+    expect(screen.queryByTestId('token-cell-DUST')).not.toBeInTheDocument();
+    expect(screen.getByText(lowValueAssetsLabel(1))).toBeInTheDocument();
+  });
+
+  it('uses the current currency equivalent of one dollar for weak currency balances', () => {
+    jest.mocked(getCurrencyRates).mockReturnValue({
+      ETH: { conversionRate: 250000, usdConversionRate: 2500 },
+    });
+    jest
+      .mocked(getAssetsBySelectedAccountGroup)
+      .mockReturnValue(
+        createAccountGroupAssets([
+          createAsset({ symbol: 'DUST', fiatBalance: 50 }),
+          createAsset({ symbol: 'USDC', fiatBalance: 150 }),
+        ]),
+      );
+
+    render();
+
     expect(screen.getByTestId('token-cell-USDC')).toBeInTheDocument();
     expect(screen.queryByTestId('token-cell-DUST')).not.toBeInTheDocument();
     expect(screen.getByText(lowValueAssetsLabel(1))).toBeInTheDocument();

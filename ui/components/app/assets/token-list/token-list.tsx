@@ -24,6 +24,7 @@ import {
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
+  getCurrencyRates,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
@@ -73,6 +74,13 @@ type TokenListDisplayItem =
 const LOW_VALUE_ASSET_FIAT_THRESHOLD = 1;
 let lowValueAssetsExpandedSessionValue = false;
 
+type CurrencyRate = {
+  conversionRate?: number | null;
+  usdConversionRate?: number | null;
+};
+
+type CurrencyRates = Record<string, CurrencyRate>;
+
 const getInitialLowValueAssetsExpanded = () => {
   return lowValueAssetsExpandedSessionValue;
 };
@@ -81,7 +89,31 @@ const setLowValueAssetsExpandedSessionValue = (isExpanded: boolean) => {
   lowValueAssetsExpandedSessionValue = isExpanded;
 };
 
-const isLowValueAsset = (token: TokenWithFiatAmount) => {
+const getLowValueAssetFiatThreshold = (currencyRates?: CurrencyRates) => {
+  const currencyRate = Object.values(currencyRates ?? {}).find(
+    ({ conversionRate, usdConversionRate }) =>
+      typeof conversionRate === 'number' &&
+      typeof usdConversionRate === 'number' &&
+      Number.isFinite(conversionRate) &&
+      Number.isFinite(usdConversionRate) &&
+      conversionRate > 0 &&
+      usdConversionRate > 0,
+  );
+
+  if (!currencyRate?.conversionRate || !currencyRate.usdConversionRate) {
+    return LOW_VALUE_ASSET_FIAT_THRESHOLD;
+  }
+
+  return (
+    (LOW_VALUE_ASSET_FIAT_THRESHOLD * currencyRate.conversionRate) /
+    currencyRate.usdConversionRate
+  );
+};
+
+const isLowValueAsset = (
+  token: TokenWithFiatAmount,
+  lowValueAssetFiatThreshold: number,
+) => {
   const { tokenFiatAmount } = token;
 
   return (
@@ -89,7 +121,7 @@ const isLowValueAsset = (token: TokenWithFiatAmount) => {
     tokenFiatAmount !== null &&
     tokenFiatAmount !== undefined &&
     Number.isFinite(tokenFiatAmount) &&
-    tokenFiatAmount < LOW_VALUE_ASSET_FIAT_THRESHOLD
+    tokenFiatAmount < lowValueAssetFiatThreshold
   );
 };
 
@@ -160,6 +192,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
+  const currencyRates = useSelector(getCurrencyRates) as CurrencyRates;
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -172,6 +205,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 
   const useExternalServices = useSelector(getUseExternalServices);
+  const lowValueAssetFiatThreshold = useMemo(
+    () => getLowValueAssetFiatThreshold(currencyRates),
+    [currencyRates],
+  );
 
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
@@ -246,7 +283,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     const lowValueAssets: TokenWithFiatAmount[] = [];
 
     sortedFilteredTokens.forEach((token) => {
-      if (isLowValueAsset(token)) {
+      if (isLowValueAsset(token, lowValueAssetFiatThreshold)) {
         lowValueAssets.push(token);
         return;
       }
@@ -257,7 +294,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       visibleTokens: highValueTokens,
       lowValueTokens: lowValueAssets,
     };
-  }, [sortedFilteredTokens, tokenSortConfig]);
+  }, [lowValueAssetFiatThreshold, sortedFilteredTokens, tokenSortConfig]);
 
   const lowValueAssetCount = lowValueTokens.length;
 

@@ -1,7 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import { veryLargeDelayMs } from '../../../helpers';
-import { expandLowValueAssetsIfPresent } from '../../helpers/low-value-assets';
 
 class AssetListPage {
   private readonly driver: Driver;
@@ -62,6 +61,8 @@ class AssetListPage {
 
   private readonly lowValueAssetsToggle =
     '[data-testid="low-value-assets-toggle"]';
+
+  private readonly lowValueAssetsToggleExpanded = `${this.lowValueAssetsToggle}[aria-expanded="true"]`;
 
   private readonly multichainTokenListButton = {
     testId: 'multichain-token-list-button',
@@ -207,14 +208,9 @@ class AssetListPage {
     );
   }
 
-  async clickLowValueAssetsToggle(): Promise<void> {
-    console.log('Clicking on the low value assets toggle');
-    await this.driver.clickElement(this.lowValueAssetsToggle);
-  }
-
   async clickOnAsset(assetName: string): Promise<void> {
     console.log(`Clicking on the token name `);
-    await expandLowValueAssetsIfPresent(this.driver);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       css: this.tokenName,
       text: assetName,
@@ -238,6 +234,25 @@ class AssetListPage {
     console.log('Dismissing token imported success message');
     await this.driver.clickElement(this.tokenImportedMessageCloseButton);
     await this.driver.assertElementNotPresent(this.tokenImportedSuccessMessage);
+  }
+
+  private async expandLowValueAssetsIfPresent(): Promise<void> {
+    let toggle;
+
+    try {
+      toggle = await this.driver.findElement(this.lowValueAssetsToggle, 1000);
+    } catch {
+      return;
+    }
+
+    if ((await toggle.getAttribute('aria-expanded')) === 'true') {
+      return;
+    }
+
+    await this.driver.clickElement(this.lowValueAssetsToggle);
+    await this.driver.waitForSelector(this.lowValueAssetsToggleExpanded, {
+      timeout: 5000,
+    });
   }
 
   async getCurrentNetworksOptionTotal(): Promise<string> {
@@ -430,7 +445,7 @@ class AssetListPage {
    */
   async openTokenDetails(tokenSymbol: string): Promise<void> {
     console.log(`Opening token details for ${tokenSymbol}`);
-    await expandLowValueAssetsIfPresent(this.driver);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       text: tokenSymbol,
       css: this.tokenNameInDetails,
@@ -593,7 +608,7 @@ class AssetListPage {
     console.log(
       `Check that token amount ${tokenAmount} is displayed in token details modal for token ${tokenName}`,
     );
-    await expandLowValueAssetsIfPresent(this.driver);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.clickElement({
       testId: 'multichain-token-list-item-token-name',
       text: tokenName,
@@ -634,7 +649,7 @@ class AssetListPage {
   ): Promise<void> {
     const { timeout, amountTimeout } = options;
     console.log(`Checking if token ${tokenName} exists in token list`);
-    await expandLowValueAssetsIfPresent(this.driver);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.waitForSelector(
       {
         css: this.tokenName,
@@ -675,7 +690,7 @@ class AssetListPage {
     console.log(
       `Waiting for token at position ${position} to be "${tokenName}"`,
     );
-    await expandLowValueAssetsIfPresent(this.driver);
+    await this.expandLowValueAssetsIfPresent();
     const index = position - 1;
     await this.driver.waitUntil(
       async () => {
@@ -698,7 +713,7 @@ class AssetListPage {
    */
   async checkTokenItemNumber(expectedNumber: number = 1): Promise<void> {
     console.log(`Waiting for ${expectedNumber} token items to be displayed`);
-    await expandLowValueAssetsIfPresent(this.driver);
+    await this.expandLowValueAssetsIfPresent();
     await this.driver.wait(async () => {
       const tokenItemsNumber = await this.getNumberOfAssets();
       return tokenItemsNumber === expectedNumber;
@@ -722,7 +737,7 @@ class AssetListPage {
       console.log(
         `Checking token general change percentage for address ${address}`,
       );
-      await expandLowValueAssetsIfPresent(this.driver);
+      await this.expandLowValueAssetsIfPresent();
       await this.driver.waitForSelector({
         css: this.tokenPercentage(address),
         text: expectedChange,
