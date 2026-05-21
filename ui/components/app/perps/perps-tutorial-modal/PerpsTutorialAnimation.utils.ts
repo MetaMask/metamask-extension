@@ -26,9 +26,9 @@ const BASE_CONTAINER_STYLE: CSSProperties = {
  */
 export const getPerpsTutorialAnimationLayout = (
   environmentType: string,
-): { containerStyle: CSSProperties; defaultFit: Fit } => {
+): { containerStyle: CSSProperties; fit: Fit } => {
   if (environmentType === ENVIRONMENT_TYPE_SIDEPANEL) {
-    return { containerStyle: BASE_CONTAINER_STYLE, defaultFit: Fit.Contain };
+    return { containerStyle: BASE_CONTAINER_STYLE, fit: Fit.Contain };
   }
 
   if (environmentType === ENVIRONMENT_TYPE_POPUP) {
@@ -38,12 +38,12 @@ export const getPerpsTutorialAnimationLayout = (
         height: '200px',
         maxWidth: '340px',
       },
-      defaultFit: Fit.Contain,
+      fit: Fit.Contain,
     };
   }
 
   return {
     containerStyle: { ...BASE_CONTAINER_STYLE, maxWidth: '280px' },
-    defaultFit: Fit.Cover,
+    fit: Fit.Cover,
   };
 };

@@ -157,7 +157,7 @@ export const useRiveWasmReady = () => {
         return currentState;
       }
 
-      return { ...riveWasmReadyState };
+      return riveWasmReadyState;
     });
 
     return () => {

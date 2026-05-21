@@ -38,7 +38,7 @@ const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({
   const environmentType = getEnvironmentType();
 
   // Get viewport-specific container style and fit mode
-  const { containerStyle, defaultFit } = useMemo(
+  const { containerStyle, fit: defaultFit } = useMemo(
     () => getPerpsTutorialAnimationLayout(environmentType),
     [environmentType],
   );
