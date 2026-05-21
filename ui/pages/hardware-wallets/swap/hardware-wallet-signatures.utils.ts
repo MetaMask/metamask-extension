@@ -233,6 +233,15 @@ export const getFinalStepDescription = ({
   return t('bridgeHwToAddress', [shortenAddress(toAddress)]);
 };
 
+/**
+ * Returns true when the first signature step should display as complete because
+ * the flow has already progressed to (or failed on) the final signature step.
+ *
+ * @param options - Configuration object.
+ * @param options.step - The signature step being evaluated.
+ * @param options.activeSignature - The signature step that is currently active or interrupted.
+ * @returns True when evaluating the first step while the active step is the final step.
+ */
 const isCompletedBeforeFinalSignature = ({
   step,
   activeSignature,
@@ -244,60 +253,48 @@ const isCompletedBeforeFinalSignature = ({
   activeSignature === HardwareWalletSignatureStatus.AwaitingFinalSignature;
 
 /**
- * Computes the display status (pending/active/complete/rejected/failed/disconnected)
- * for a given signature step based on the overall state machine state.
+ * Computes the display status for a step when the flow was interrupted by
+ * rejection, failure, or device disconnection.
+ *
+ * @param options - Configuration object.
+ * @param options.step - The signature step to compute status for.
+ * @param options.interruptedSignature - The signature step that was interrupted.
+ * @param options.interruptedStepStatus - The display status to use when the step matches the interrupted signature.
+ * @returns The computed SignatureStepStatus for this step.
+ */
+const getInterruptedStepStatus = ({
+  step,
+  interruptedSignature,
+  interruptedStepStatus,
+}: {
+  step: HardwareWalletSignatureStatus;
+  interruptedSignature: HardwareWalletSignatureStatus;
+  interruptedStepStatus: SignatureStepStatus;
+}): SignatureStepStatus => {
+  if (interruptedSignature === step) {
+    return interruptedStepStatus;
+  }
+
+  return isCompletedBeforeFinalSignature({
+    step,
+    activeSignature: interruptedSignature,
+  })
+    ? SignatureStepStatus.Complete
+    : SignatureStepStatus.Pending;
+};
+
+/**
+ * Computes the display status for a step while the flow is actively awaiting
+ * one of the hardware wallet signatures.
  *
  * @param step - The signature step to compute status for.
  * @param signatureState - The current state machine state.
  * @returns The computed SignatureStepStatus for this step.
  */
-export const getStepStatus = (
+const getActiveStepStatus = (
   step: HardwareWalletSignatureStatus,
   signatureState: HardwareWalletSignaturesState,
 ): SignatureStepStatus => {
-  if (signatureState.status === HardwareWalletSignatureStatus.Submitted) {
-    return SignatureStepStatus.Complete;
-  }
-
-  if (signatureState.status === HardwareWalletSignatureStatus.Rejected) {
-    if (signatureState.rejectedSignature === step) {
-      return SignatureStepStatus.Rejected;
-    }
-
-    return isCompletedBeforeFinalSignature({
-      step,
-      activeSignature: signatureState.rejectedSignature,
-    })
-      ? SignatureStepStatus.Complete
-      : SignatureStepStatus.Pending;
-  }
-
-  if (signatureState.status === HardwareWalletSignatureStatus.Failed) {
-    if (signatureState.failedSignature === step) {
-      return SignatureStepStatus.Failed;
-    }
-
-    return isCompletedBeforeFinalSignature({
-      step,
-      activeSignature: signatureState.failedSignature,
-    })
-      ? SignatureStepStatus.Complete
-      : SignatureStepStatus.Pending;
-  }
-
-  if (signatureState.status === HardwareWalletSignatureStatus.Disconnected) {
-    if (signatureState.disconnectedSignature === step) {
-      return SignatureStepStatus.Disconnected;
-    }
-
-    return isCompletedBeforeFinalSignature({
-      step,
-      activeSignature: signatureState.disconnectedSignature,
-    })
-      ? SignatureStepStatus.Complete
-      : SignatureStepStatus.Pending;
-  }
-
   if (signatureState.status === step) {
     return SignatureStepStatus.Active;
   }
@@ -311,4 +308,50 @@ export const getStepStatus = (
   }
 
   return SignatureStepStatus.Pending;
+};
+
+/**
+ * Computes the display status (pending/active/complete/rejected/failed/disconnected)
+ * for a given signature step based on the overall state machine state.
+ *
+ * @param step - The signature step to compute status for.
+ * @param signatureState - The current state machine state.
+ * @returns The computed SignatureStepStatus for this step.
+ */
+export const getStepStatus = (
+  step: HardwareWalletSignatureStatus,
+  signatureState: HardwareWalletSignaturesState,
+): SignatureStepStatus => {
+  switch (signatureState.status) {
+    case HardwareWalletSignatureStatus.Submitted:
+      return SignatureStepStatus.Complete;
+
+    case HardwareWalletSignatureStatus.Rejected:
+      return getInterruptedStepStatus({
+        step,
+        interruptedSignature: signatureState.rejectedSignature,
+        interruptedStepStatus: SignatureStepStatus.Rejected,
+      });
+
+    case HardwareWalletSignatureStatus.Failed:
+      return getInterruptedStepStatus({
+        step,
+        interruptedSignature: signatureState.failedSignature,
+        interruptedStepStatus: SignatureStepStatus.Failed,
+      });
+
+    case HardwareWalletSignatureStatus.Disconnected:
+      return getInterruptedStepStatus({
+        step,
+        interruptedSignature: signatureState.disconnectedSignature,
+        interruptedStepStatus: SignatureStepStatus.Disconnected,
+      });
+
+    case HardwareWalletSignatureStatus.AwaitingFirstSignature:
+    case HardwareWalletSignatureStatus.AwaitingFinalSignature:
+      return getActiveStepStatus(step, signatureState);
+
+    default:
+      return SignatureStepStatus.Pending;
+  }
 };
