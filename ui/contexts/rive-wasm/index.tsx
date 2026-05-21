@@ -46,6 +46,14 @@ let wasmPreloadPromise: Promise<void> | undefined;
 
 const riveWasmListeners = new Set<(state: RiveWasmReadyState) => void>();
 
+const areRiveWasmReadyStatesEqual = (
+  left: RiveWasmReadyState,
+  right: RiveWasmReadyState,
+) =>
+  left.isWasmReady === right.isWasmReady &&
+  left.loading === right.loading &&
+  left.error === right.error;
+
 const notifyRiveWasmListeners = () => {
   const nextState = { ...riveWasmReadyState };
   riveWasmListeners.forEach((listener) => listener(nextState));
@@ -145,11 +153,7 @@ export const useRiveWasmReady = () => {
 
     riveWasmListeners.add(listener);
     setState((currentState) => {
-      if (
-        currentState.isWasmReady === riveWasmReadyState.isWasmReady &&
-        currentState.loading === riveWasmReadyState.loading &&
-        currentState.error === riveWasmReadyState.error
-      ) {
+      if (areRiveWasmReadyStatesEqual(currentState, riveWasmReadyState)) {
         return currentState;
       }
 
