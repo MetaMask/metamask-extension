@@ -1,8 +1,8 @@
 import { Wallet } from '@metamask/wallet';
 import { Json } from '@metamask/utils';
+import { Encryptor } from '@metamask/keyring-controller';
 import { RootMessenger } from '../lib/messenger';
 import { getKeyringBuilders } from './keyrings';
-import { Encryptor } from '@metamask/keyring-controller';
 
 export function initializeWallet({
   messenger,
