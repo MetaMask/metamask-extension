@@ -79,6 +79,7 @@ import { useAccountGroupsForPermissions } from '../../../hooks/useAccountGroupsF
 import {
   PermissionsRequest,
   getCaip25CaveatValueFromPermissions,
+  // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 } from '../../permissions-connect/connect-page/utils';
 import { MultichainSiteCell } from '../../../components/multichain-accounts/multichain-site-cell/multichain-site-cell';
 import { MultichainEditAccountsPage } from '../../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
@@ -637,7 +638,7 @@ export const MultichainAccountsConnectPage: React.FC<
               </Box>
               {selectedAccountGroupIds.length === 0 && (
                 <Box
-                  className="connect-page__accounts-empty"
+                  className="multichain-connect-page__accounts-empty"
                   display={Display.Flex}
                   justifyContent={JustifyContent.flexStart}
                   alignItems={AlignItems.center}
@@ -659,7 +660,7 @@ export const MultichainAccountsConnectPage: React.FC<
                   padding={4}
                 >
                   <Box
-                    className="connect-page__edit-icon"
+                    className="multichain-connect-page__edit-icon"
                     marginRight={4}
                     display={Display.Flex}
                     alignItems={AlignItems.center}

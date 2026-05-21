@@ -78,6 +78,30 @@ If you are not a MetaMask Internal Developer, or are otherwise developing on a f
   - [How to add custom build to Chrome](./docs/add-to-chrome.md)
   - [How to add custom build to Firefox](./docs/add-to-firefox.md)
 
+## AI Agent Skills (`yarn skills`)
+
+AI coding agents (Cursor, Claude Code, Codex) consume shared skills from the [MetaMask/skills](https://github.com/MetaMask/skills) repo, with an optional private overlay from [Consensys/skills](https://github.com/Consensys/skills). Per [ADR #57](https://github.com/MetaMask/decisions/pull/162) this content is **not committed here** — `yarn skills` syncs it on demand into local-only paths under `.cursor/`, `.claude/`, and `.agents/`.
+
+Zero-config setup:
+
+```bash
+yarn install # clones MetaMask/skills into .skills-cache/metamask-skills
+yarn skills  # syncs all default skills from the cache
+```
+
+Optional local configuration:
+
+```bash
+cp .skills.local.example .skills.local
+# edit .skills.local to set SKILLS_DOMAINS or override skills source paths
+yarn skills --select                         # interactively pick domains
+SKILLS_DOMAINS=perps,testing yarn skills      # one-off domain override
+```
+
+Use `.skills.local` for persistent skills configuration. Shell environment variables with the same names are supported for one-off or CI overrides and take precedence.
+
+Skipping `yarn skills` is fine — it only affects agent tooling, not the app build.
+
 ## Git Hooks
 
 To get quick feedback from our shared code quality fitness functions before committing the code, you can install our git hooks with Husky.
