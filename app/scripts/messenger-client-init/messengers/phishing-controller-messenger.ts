@@ -1,8 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import { AllowedEvents } from '@metamask/phishing-controller';
-import type {
-  AddressBookControllerGetStateAction,
-} from '@metamask/address-book-controller';
+import type { AddressBookControllerGetStateAction } from '@metamask/address-book-controller';
 import type { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
 import { RootMessenger } from '../../lib/messenger';
 
