@@ -2768,7 +2768,6 @@ export default class MetamaskController extends EventEmitter {
       deFiPositionsController,
       multichainAssetsRatesController,
       staticAssetsController,
-      notificationManager,
     } = this;
 
     return {
@@ -2890,7 +2889,7 @@ export default class MetamaskController extends EventEmitter {
         'LegacyBackgroundApiService:getOpenMetamaskTabsIds',
       ),
       markNotificationPopupAsAutomaticallyClosed:
-        notificationManager.markAsAutomaticallyClosed.bind(
+        this.notificationManager.markAsAutomaticallyClosed.bind(
           this.notificationManager,
         ),
       getCode: this.controllerMessenger.call.bind(
@@ -2919,10 +2918,8 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'LegacyBackgroundApiService:getAccountsBySnapId',
       ),
-      checkIsSeedlessPasswordOutdated: this.controllerMessenger.call.bind(
-        this.controllerMessenger,
-        'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-      ),
+      checkIsSeedlessPasswordOutdated:
+        this.checkIsSeedlessPasswordOutdated.bind(this),
       syncPasswordAndUnlockWallet: this.syncPasswordAndUnlockWallet.bind(this),
 
       // subscription
@@ -4656,7 +4653,7 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Changes the wallet password using a verified passkey assertion, then either renews
+   * Changes the wallet password using a verified passkey assertion, then either renewscheckIsSeedlessPasswordOutdated
    * vault key protection for the new encryption key or removes the passkey enrollment.
    * Non-social-login only.
    *
@@ -4751,6 +4748,45 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
+   * Checks if the seedless password is outdated.
+   *
+   * @param {object} args - The arguments for the checkIsSeedlessPasswordOutdated method.
+   * @param {boolean} args.skipCache - whether to skip the cache @default false
+   * @param {boolean} args.captureSentryError - whether to capture the sentry error. @default false
+   * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
+   */
+  async checkIsSeedlessPasswordOutdated(args) {
+    const skipCache = args?.skipCache || false;
+    const captureSentryError = args?.captureSentryError || false;
+    try {
+      const isSocialLoginFlow =
+        this.onboardingController.getIsSocialLoginFlow();
+      const { completedOnboarding } = this.onboardingController.state;
+
+      if (!isSocialLoginFlow || !completedOnboarding) {
+        // this is only available for seedless onboarding flow and completed onboarding
+        return false;
+      }
+
+      const isPasswordOutdated =
+        await this.seedlessOnboardingController.checkIsPasswordOutdated({
+          skipCache,
+        });
+      return isPasswordOutdated;
+    } catch (error) {
+      if (captureSentryError) {
+        this.controllerMessenger?.captureException?.(
+          createSentryError(
+            'Failed to check if seedless password is outdated',
+            error,
+          ),
+        );
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Syncs the seed phrases with the social login flow.
    *
    * @returns {Promise<void>}
@@ -4784,7 +4820,8 @@ export default class MetamaskController extends EventEmitter {
         if (!srpHash) {
           // import private key secret
           if (secret.type === SecretType.PrivateKey) {
-            await this.importAccountWithStrategy(
+            await this.controllerMessenger.call(
+              'LegacyBackgroundApiService:importAccountWithStrategy',
               'privateKey',
               [bytesToHex(secret.data)],
               {
@@ -5209,7 +5246,8 @@ export default class MetamaskController extends EventEmitter {
       }
 
       if (secret.type === SecretType.PrivateKey) {
-        await this.importAccountWithStrategy(
+        await this.controllerMessenger.call(
+          'LegacyBackgroundApiService:importAccountWithStrategy',
           'privateKey',
           [bytesToHex(secret.data)],
           {
@@ -9572,7 +9610,14 @@ export default class MetamaskController extends EventEmitter {
       offscreenPromise: this.offscreenPromise,
       preinstalledSnaps: this.opts.preinstalledSnaps,
       persistedState: initState,
-      removeAccount: this.removeAccount.bind(this),
+      removeAccount: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'LegacyBackgroundApiService:removeAccount',
+      ),
+      // Temporarily get the mutex from `MetamaskController` until we can
+      // migrate the seedless onboarding functionality to the LegacyBackgroundApiService.
+      // TODO: Remove this once the migration is complete.
+      seedlessOperationMutex: this.seedlessOperationMutex,
       setupUntrustedCommunicationEip1193:
         this.setupUntrustedCommunicationEip1193.bind(this),
       setupUntrustedCommunicationCaip:

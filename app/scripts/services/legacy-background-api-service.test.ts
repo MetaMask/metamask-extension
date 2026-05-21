@@ -22,6 +22,7 @@ import {
   LegacyBackgroundApiService,
   LegacyBackgroundApiServiceMessenger,
 } from './legacy-background-api-service';
+import { Mutex } from 'async-mutex';
 
 jest.unmock('../../../shared/lib/assets-unify-state/remote-feature-flag');
 
@@ -1076,171 +1077,6 @@ describe('LegacyBackgroundApiService', () => {
       });
     });
   });
-
-  describe('checkIsSeedlessPasswordOutdated', () => {
-    it("returns false if it's a social login flow", async () => {
-      await withService(async ({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getIsSocialLoginFlow',
-          jest.fn().mockReturnValue(true),
-        );
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ completedOnboarding: false }),
-        );
-
-        const result = await rootMessenger.call(
-          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-        );
-
-        expect(result).toStrictEqual(false);
-      });
-    });
-
-    it('returns false if the user has not completed onboarding', async () => {
-      await withService(async ({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getIsSocialLoginFlow',
-          jest.fn().mockReturnValue(false),
-        );
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ completedOnboarding: false }),
-        );
-
-        const result = await rootMessenger.call(
-          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-        );
-
-        expect(result).toStrictEqual(false);
-      });
-    });
-
-    it('returns true if the password is outdated', async () => {
-      await withService(async ({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getIsSocialLoginFlow',
-          jest.fn().mockReturnValue(true),
-        );
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ completedOnboarding: true }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(true),
-        );
-
-        const result = await rootMessenger.call(
-          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-        );
-
-        expect(result).toStrictEqual(true);
-      });
-    });
-
-    it('returns false if the password is not outdated', async () => {
-      await withService(async ({ rootMessenger }) => {
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getIsSocialLoginFlow',
-          jest.fn().mockReturnValue(true),
-        );
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ completedOnboarding: true }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(false),
-        );
-
-        const result = await rootMessenger.call(
-          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-        );
-
-        expect(result).toStrictEqual(false);
-      });
-    });
-
-    it('skips the cache if specified', async () => {
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const callSpy = jest.spyOn(serviceMessenger, 'call');
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getIsSocialLoginFlow',
-          jest.fn().mockReturnValue(true),
-        );
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ completedOnboarding: true }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockResolvedValue(false),
-        );
-
-        const result = await rootMessenger.call(
-          'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-          { skipCache: true },
-        );
-
-        expect(result).toStrictEqual(false);
-
-        expect(callSpy).toHaveBeenCalledWith(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          { skipCache: true },
-        );
-      });
-    });
-
-    it('captures and throws an error', async () => {
-      await withService(async ({ rootMessenger, serviceMessenger }) => {
-        const error = new Error('Test error');
-
-        const captureExceptionSpy = jest.spyOn(
-          serviceMessenger,
-          'captureException',
-        );
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getIsSocialLoginFlow',
-          jest.fn().mockReturnValue(true),
-        );
-
-        rootMessenger.registerActionHandler(
-          'OnboardingController:getState',
-          jest.fn().mockReturnValue({ completedOnboarding: true }),
-        );
-
-        rootMessenger.registerActionHandler(
-          'SeedlessOnboardingController:checkIsPasswordOutdated',
-          jest.fn().mockRejectedValue(error),
-        );
-
-        await expect(
-          rootMessenger.call(
-            'LegacyBackgroundApiService:checkIsSeedlessPasswordOutdated',
-            { captureSentryError: true },
-          ),
-        ).rejects.toThrow(error);
-
-        expect(captureExceptionSpy).toHaveBeenCalledWith(
-          createSentryError(
-            'Failed to check if seedless password is outdated',
-            error,
-          ),
-        );
-      });
-    });
-  });
 });
 
 /**
@@ -1327,8 +1163,6 @@ function getMessenger(
       'PermissionController:updatePermissionsByCaveat',
       'KeyringController:getKeyringsByType',
       'KeyringController:addNewKeyring',
-      'OnboardingController:getState',
-      'SeedlessOnboardingController:checkIsPasswordOutdated',
     ],
   });
 
@@ -1362,6 +1196,7 @@ async function withService<ReturnValue>(
     getOpenMetamaskTabsIds: () => ({}),
     markPasswordForgotten: () => jest.fn(),
     unMarkPasswordForgotten: () => jest.fn(),
+    seedlessOperationMutex: new Mutex(),
     ...options,
   });
   return await testFunction({ service, rootMessenger, serviceMessenger });

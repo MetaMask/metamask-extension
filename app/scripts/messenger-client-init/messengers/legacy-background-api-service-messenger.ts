@@ -53,8 +53,6 @@ export function getLegacyBackgroundApiServiceMessenger(
       'PermissionController:updatePermissionsByCaveat',
       'KeyringController:getKeyringsByType',
       'KeyringController:addNewKeyring',
-      'OnboardingController:getState',
-      'SeedlessOnboardingController:checkIsPasswordOutdated',
     ],
   });
 

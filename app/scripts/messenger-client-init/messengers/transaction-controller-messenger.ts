@@ -88,7 +88,6 @@ export function getTransactionControllerMessenger(
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getNetworkClientById',
       'RemoteFeatureFlagController:getState',
-      'KeyringController:getState',
     ],
     events: [
       'AccountActivityService:transactionUpdated',

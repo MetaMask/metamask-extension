@@ -28,6 +28,7 @@ import { CHAIN_IDS } from '../../shared/constants/network';
 import { toAssetId } from '../../shared/lib/asset-utils';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../shared/lib/environment';
 import MetaMaskController from './metamask-controller';
+import NotificationManager from './lib/notification-manager';
 
 // Opt out of the global `isAssetsUnifyStateFeatureEnabled` mock (see test/jest/setup.js)
 // so unify-state tests can exercise real feature-flag gating via controller state.
@@ -185,6 +186,11 @@ describe('MetaMaskController', function () {
         getVersion: () => 'foo',
       },
       browser: browserPolyfillMock,
+      getRequestAccountTabIds: () => ({}),
+      getOpenMetamaskTabsIds: () => ({}),
+      notificationManager: {
+        markAsAutomaticallyClosed: jest.fn(),
+      },
       infuraProjectId: 'foo',
       cronjobControllerStorageManager: {
         init: noop,
@@ -222,26 +228,6 @@ describe('MetaMaskController', function () {
       );
       expect(METAMASK_HOTLIST_DIFF_URL).toStrictEqual(
         'https://phishing-detection.api.cx.metamask.io/v2/diffsSince',
-      );
-    });
-  });
-
-  describe('#importAccountWithStrategy', function () {
-    it('throws an error when importing the same account twice', async function () {
-      const importPrivkey =
-        '4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
-      await metamaskController.createNewVaultAndKeychain('test@123');
-
-      await metamaskController.importAccountWithStrategy('privateKey', [
-        importPrivkey,
-      ]);
-
-      await expect(
-        metamaskController.importAccountWithStrategy('privateKey', [
-          importPrivkey,
-        ]),
-      ).rejects.toThrow(
-        'KeyringController - The account you are trying to import is a duplicate',
       );
     });
   });
@@ -812,118 +798,6 @@ describe('MetaMaskController', function () {
           data: 'DUMMY_DATA',
         }),
       ).toThrow(error);
-    });
-  });
-
-  describe('#checkIsSeedlessPasswordOutdated', function () {
-    it('should return undefined if firstTimeFlowType is not seedless', async function () {
-      metamaskController.onboardingController.setFirstTimeFlowType(
-        FirstTimeFlowType.create,
-      );
-      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBeFalsy();
-    });
-
-    it('should return false if firstTimeFlowType is seedless and password is not outdated', async function () {
-      // We now need the Snap keyring after onboarding the wallet.
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
-      metamaskController.onboardingController.setFirstTimeFlowType(
-        FirstTimeFlowType.socialCreate,
-      );
-      metamaskController.onboardingController.completeOnboarding();
-      jest
-        .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
-        )
-        .mockResolvedValue(false);
-      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBe(false);
-      expect(
-        metamaskController.seedlessOnboardingController.checkIsPasswordOutdated,
-      ).toHaveBeenCalled();
-    });
-
-    it('should return true if firstTimeFlowType is seedless and password is outdated', async function () {
-      // We now need the Snap keyring after onboarding the wallet.
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
-      metamaskController.onboardingController.setFirstTimeFlowType(
-        FirstTimeFlowType.socialCreate,
-      );
-      metamaskController.onboardingController.completeOnboarding();
-      jest
-        .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
-        )
-        .mockResolvedValue(true);
-      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
-      expect(result).toBe(true);
-      expect(
-        metamaskController.seedlessOnboardingController.checkIsPasswordOutdated,
-      ).toHaveBeenCalled();
-    });
-
-    it('captures the error when password check fails and captureSentryError is true', async function () {
-      const error = new Error('Network error');
-
-      jest
-        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
-        .mockReturnValue(true);
-      jest
-        .spyOn(metamaskController.onboardingController, 'state', 'get')
-        .mockReturnValue({ completedOnboarding: true });
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'captureException')
-        .mockImplementation();
-      jest
-        .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
-        )
-        .mockRejectedValue(error);
-
-      await expect(
-        metamaskController.checkIsSeedlessPasswordOutdated({
-          skipCache: false,
-          captureSentryError: true,
-        }),
-      ).rejects.toThrow(error);
-
-      expect(
-        metamaskController.controllerMessenger.captureException,
-      ).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not capture the error when password check fails and captureSentryError is false', async function () {
-      const error = new Error('Network error');
-
-      jest
-        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
-        .mockReturnValue(true);
-      jest
-        .spyOn(metamaskController.onboardingController, 'state', 'get')
-        .mockReturnValue({ completedOnboarding: true });
-      jest
-        .spyOn(metamaskController.controllerMessenger, 'captureException')
-        .mockImplementation();
-      jest
-        .spyOn(
-          metamaskController.seedlessOnboardingController,
-          'checkIsPasswordOutdated',
-        )
-        .mockRejectedValue(error);
-
-      await expect(
-        metamaskController.checkIsSeedlessPasswordOutdated({
-          skipCache: false,
-          captureSentryError: false,
-        }),
-      ).rejects.toThrow(error);
-
-      expect(
-        metamaskController.controllerMessenger.captureException,
-      ).not.toHaveBeenCalled();
     });
   });
 

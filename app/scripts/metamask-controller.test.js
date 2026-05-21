@@ -631,6 +631,8 @@ describe('MetaMaskController', () => {
           getVersion: () => 'foo',
           switchToAnotherURL: jest.fn(),
         },
+        getRequestAccountTabIds: () => ({}),
+        getOpenMetamaskTabsIds: () => ({}),
         browser: browserPolyfillMock,
         infuraProjectId: 'foo',
         isFirstMetaMaskControllerSetup: true,

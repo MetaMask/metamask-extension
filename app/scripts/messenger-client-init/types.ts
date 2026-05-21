@@ -10,6 +10,7 @@ import { Browser } from 'webextension-polyfill';
 import { Encryptor } from '@metamask/keyring-controller';
 import { KeyringClass } from '@metamask/keyring-utils';
 import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
+import { Mutex } from 'async-mutex';
 import type { TransactionMetricsRequest } from '../../../shared/types';
 import { MessageSender } from '../../../types/global';
 import type { CronjobControllerStorageManager } from '../lib/CronjobControllerStorageManager';
@@ -174,6 +175,12 @@ export type MessengerClientInitRequest<
    * Remove an account from keyring state.
    */
   removeAccount(address: string): Promise<string>;
+
+  // TODO: Remove this once the migration to the LegacyBackgroundApiService is complete.
+  /**
+   * The mutex used to ensure that only one seedless onboarding operation can occur at a time.
+   */
+  seedlessOperationMutex: Mutex;
 
   /**
    * Create a multiplexed stream for connecting to an untrusted context like a

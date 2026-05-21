@@ -26,6 +26,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
   getOpenMetamaskTabsIds,
   markPasswordForgotten,
   unMarkPasswordForgotten,
+  seedlessOperationMutex,
 }) => {
   const messengerClient = new LegacyBackgroundApiService({
     messenger: controllerMessenger,
@@ -34,6 +35,7 @@ export const LegacyBackgroundApiServiceInit: MessengerClientInitFunction<
     getOpenMetamaskTabsIds,
     markPasswordForgotten,
     unMarkPasswordForgotten,
+    seedlessOperationMutex,
   });
 
   return {

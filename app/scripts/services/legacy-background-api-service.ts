@@ -18,6 +18,7 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringTypes,
 } from '@metamask/keyring-controller';
+import { Buffer } from 'buffer';
 import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedAccountAction,
@@ -109,7 +110,6 @@ const MESSENGER_EXPOSED_METHODS = [
   'importAccountWithStrategy',
   'getSnapKeyring',
   'getAccountsBySnapId',
-  'checkIsSeedlessPasswordOutdated',
 ] as const;
 
 /**
@@ -148,9 +148,7 @@ type AllowedActions =
   | SeedlessOnboardingControllerUpdateBackupMetadataStateAction
   | PermissionControllerUpdatePermissionsByCaveatAction
   | KeyringControllerGetKeyringsByTypeAction
-  | KeyringControllerAddNewKeyringAction
-  | OnboardingControllerGetStateAction
-  | SeedlessOnboardingControllerCheckIsPasswordOutdatedAction;
+  | KeyringControllerAddNewKeyringAction;
 
 /**
  * The {@link LegacyBackgroundApiService} messenger.
@@ -167,6 +165,7 @@ export type LegacyBackgroundApiServiceMessenger = Messenger<
 type LegacyBackgroundApiServiceOptions = {
   messenger: LegacyBackgroundApiServiceMessenger;
   infuraProjectId: string;
+  seedlessOperationMutex: Mutex;
   getRequestAccountTabIds: () => Record<string, number>;
   getOpenMetamaskTabsIds: () => Record<string, number>;
   markPasswordForgotten: () => void;
@@ -197,7 +196,7 @@ export class LegacyBackgroundApiService {
 
   readonly #unMarkPasswordForgotten: () => void;
 
-  #seedlessOperationMutex = new Mutex();
+  #seedlessOperationMutex: Mutex;
 
   /**
    * Creates a new instance of the LegacyBackgroundApiService.
@@ -216,6 +215,7 @@ export class LegacyBackgroundApiService {
     getOpenMetamaskTabsIds,
     markPasswordForgotten,
     unMarkPasswordForgotten,
+    seedlessOperationMutex,
   }: LegacyBackgroundApiServiceOptions) {
     this.#messenger = messenger;
 
@@ -224,6 +224,10 @@ export class LegacyBackgroundApiService {
     this.#getOpenMetamaskTabsIds = getOpenMetamaskTabsIds;
     this.#markPasswordForgotten = markPasswordForgotten;
     this.#unMarkPasswordForgotten = unMarkPasswordForgotten;
+    // Temporarily get the mutex from `MetamaskController` until we can
+    // migrate the seedless onboarding functionality to this service.
+    // TODO: Remove this once the migration is complete.
+    this.#seedlessOperationMutex = seedlessOperationMutex;
 
     this.#messenger.registerMethodActionHandlers(
       this,
@@ -670,51 +674,6 @@ export class LegacyBackgroundApiService {
    */
   async getAccountsBySnapId(snapId: SnapId): Promise<string[]> {
     return getAccountsBySnapId(this.getSnapKeyring.bind(this), snapId);
-  }
-
-  /**
-   * Checks if the seedless password is outdated.
-   *
-   * @param args - The arguments for the checkIsSeedlessPasswordOutdated method.
-   * @param args.skipCache - whether to skip the cache @default false
-   * @param args.captureSentryError - whether to capture the sentry error. @default false
-   * @returns true if the password is outdated, false otherwise, undefined if the flow is not seedless
-   */
-  async checkIsSeedlessPasswordOutdated({
-    skipCache = false,
-    captureSentryError = false,
-  } = {}): Promise<boolean> {
-    try {
-      const isSocialLoginFlow = this.#messenger.call(
-        'OnboardingController:getIsSocialLoginFlow',
-      );
-      const { completedOnboarding } = this.#messenger.call(
-        'OnboardingController:getState',
-      );
-
-      if (!isSocialLoginFlow || !completedOnboarding) {
-        // this is only available for seedless onboarding flow and completed onboarding
-        return false;
-      }
-
-      const isPasswordOutdated = await this.#messenger.call(
-        'SeedlessOnboardingController:checkIsPasswordOutdated',
-        { skipCache },
-      );
-
-      return isPasswordOutdated;
-    } catch (error) {
-      if (captureSentryError) {
-        this.#messenger.captureException?.(
-          createSentryError(
-            'Failed to check if seedless password is outdated',
-            error,
-          ),
-        );
-      }
-
-      throw error;
-    }
   }
 }
 
