@@ -123,7 +123,6 @@ export function getPermissionControllerInitMessenger(
       'SnapInterfaceController:createInterface',
       'SnapInterfaceController:getInterface',
       'SnapInterfaceController:setInterfaceDisplayed',
-      'SnapAccountService:handleKeyringSnapMessage',
       'ApprovalController:addRequest',
     ],
   });
