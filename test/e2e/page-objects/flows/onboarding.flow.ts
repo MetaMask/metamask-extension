@@ -373,11 +373,6 @@ export const importSRPOnboardingFlow = async ({
   });
   await startOnboardingPage.importWallet();
 
-  if (participateInMetaMetrics) {
-    // If we have MetaMetrics enabled, we need to give some buffer for the Import Started event to be triggered
-    await driver.delay(regularDelayMs);
-  }
-
   const onboardingSrpPage = new OnboardingSrpPage(driver);
   await onboardingSrpPage.checkPageIsLoaded();
   if (fillSrpWordByWord) {

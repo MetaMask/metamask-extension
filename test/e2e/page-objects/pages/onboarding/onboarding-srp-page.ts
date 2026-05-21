@@ -5,7 +5,17 @@ import { E2E_SRP } from '../../../constants';
 class OnboardingSrpPage {
   private driver: Driver;
 
+  private readonly clearAllButton = {
+    tag: 'span',
+    text: 'Clear all',
+  };
+
   private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
+
+  private readonly srpError =
+    '[data-testid="srp-input-import__invalid-checksum-error"]';
+
+  private readonly srpIndividualWord = '[data-testid="import-srp__srp-word-0"]';
 
   private readonly srpMessage = {
     text: 'Import a wallet',
@@ -13,9 +23,6 @@ class OnboardingSrpPage {
   };
 
   private readonly srpWord0 = '[data-testid="srp-input-import__srp-note"]';
-
-  private readonly srpError =
-    '[data-testid="srp-input-import__invalid-checksum-error"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -52,6 +59,8 @@ class OnboardingSrpPage {
    */
   async fillSrp(seedPhrase: string = E2E_SRP): Promise<void> {
     await this.driver.pasteIntoField(this.srpWord0, seedPhrase);
+    await this.driver.waitForSelector(this.srpIndividualWord);
+    await this.driver.waitForSelector(this.clearAllButton);
   }
 
   /**
