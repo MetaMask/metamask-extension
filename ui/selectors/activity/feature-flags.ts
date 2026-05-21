@@ -12,5 +12,7 @@ import { getRemoteFeatureFlags } from '../../../shared/lib/selectors/remote-feat
 export const getIsActivityListRedesignEnabled = createSelector(
   getRemoteFeatureFlags,
   ({ extensionUxActivityListRedesign }) =>
-    getBooleanFeatureFlag(extensionUxActivityListRedesign, false),
+    true
+    // getBooleanFeatureFlag(extensionUxActivityListRedesign, false),
 );
+
