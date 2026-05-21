@@ -1,9 +1,14 @@
-import type { TokenBalancesControllerState } from '@metamask/assets-controllers';
+import type {
+  AccountTrackerControllerState,
+  TokenBalancesControllerState,
+  TokensControllerState,
+} from '@metamask/assets-controllers';
 import type {
   AccountState,
   PerpsControllerState,
 } from '@metamask/perps-controller';
 import log from 'loglevel';
+import { TEST_CHAINS } from '../../../shared/constants/network';
 import {
   HYPERLIQUID_DEPOSIT_CHAIN_ID,
   HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
@@ -31,6 +36,10 @@ type PerpsControllerLike = {
   state?: Partial<Pick<PerpsControllerState, 'perpsBalances'>>;
 };
 
+type AccountTrackerControllerLike = {
+  state?: Partial<Pick<AccountTrackerControllerState, 'accountsByChainId'>>;
+};
+
 type TokenBalancesControllerLike = {
   state?: Partial<TokenBalancesControllerState>;
   updateBalances?: (
@@ -38,20 +47,34 @@ type TokenBalancesControllerLike = {
   ) => Promise<void> | void;
 };
 
+type TokensControllerLike = {
+  state?: Partial<Pick<TokensControllerState, 'allTokens'>>;
+};
+
 type IsHyperliquidDepositPromptEligibleOptions = {
+  accountTrackerController?: AccountTrackerControllerLike;
   logger?: Pick<typeof log, 'warn'>;
   perpsController?: PerpsControllerLike;
   signerAddress?: string;
   tokenBalancesController?: TokenBalancesControllerLike;
+  tokensController?: TokensControllerLike;
 };
 
 export async function isHyperliquidDepositPromptEligible({
+  accountTrackerController,
   logger = log,
   perpsController,
   signerAddress,
   tokenBalancesController,
+  tokensController,
 }: IsHyperliquidDepositPromptEligibleOptions): Promise<boolean> {
-  if (!signerAddress || !perpsController || !tokenBalancesController) {
+  if (
+    !signerAddress ||
+    !accountTrackerController ||
+    !perpsController ||
+    !tokenBalancesController ||
+    !tokensController
+  ) {
     return false;
   }
 
@@ -82,6 +105,12 @@ export async function isHyperliquidDepositPromptEligible({
     hasZeroArbitrumUsdcBalance({
       address: signerAddress,
       tokenBalances: tokenBalancesController.state?.tokenBalances ?? {},
+    }) &&
+    hasAvailableMetaMaskPayBalance({
+      accountTrackerState: accountTrackerController.state,
+      address: signerAddress,
+      tokenBalances: tokenBalancesController.state?.tokenBalances ?? {},
+      tokensControllerState: tokensController.state,
     })
   );
 }
@@ -121,6 +150,29 @@ export function hasZeroArbitrumUsdcBalance({
   );
 
   return usdcBalance === undefined || isZeroHexBalance(usdcBalance);
+}
+
+export function hasAvailableMetaMaskPayBalance({
+  accountTrackerState,
+  address,
+  tokenBalances,
+  tokensControllerState,
+}: {
+  accountTrackerState?: Partial<
+    Pick<AccountTrackerControllerState, 'accountsByChainId'>
+  >;
+  address: string;
+  tokenBalances: TokenBalances;
+  tokensControllerState?: Partial<Pick<TokensControllerState, 'allTokens'>>;
+}): boolean {
+  return (
+    hasAvailableNativeBalance({ accountTrackerState, address }) ||
+    hasAvailableTokenBalance({
+      address,
+      tokenBalances,
+      tokensControllerState,
+    })
+  );
 }
 
 async function getHyperliquidAccountState({
@@ -187,6 +239,81 @@ function isZeroHexBalance(balance: string): boolean {
   } catch {
     return false;
   }
+}
+
+function hasAvailableNativeBalance({
+  accountTrackerState,
+  address,
+}: {
+  accountTrackerState?: Partial<
+    Pick<AccountTrackerControllerState, 'accountsByChainId'>
+  >;
+  address: string;
+}): boolean {
+  const accountsByChainId = accountTrackerState?.accountsByChainId ?? {};
+
+  return Object.entries(accountsByChainId).some(([chainId, accounts]) => {
+    if (isTestChain(chainId)) {
+      return false;
+    }
+
+    const account = getCaseInsensitiveRecordValue(accounts, address);
+    return Boolean(account?.balance && isPositiveHexBalance(account.balance));
+  });
+}
+
+function hasAvailableTokenBalance({
+  address,
+  tokenBalances,
+  tokensControllerState,
+}: {
+  address: string;
+  tokenBalances: TokenBalances;
+  tokensControllerState?: Partial<Pick<TokensControllerState, 'allTokens'>>;
+}): boolean {
+  const allTokens = tokensControllerState?.allTokens ?? {};
+
+  return Object.entries(allTokens).some(([chainId, tokensByAddress]) => {
+    if (isTestChain(chainId)) {
+      return false;
+    }
+
+    const accountTokens = getCaseInsensitiveRecordValue(
+      tokensByAddress,
+      address,
+    );
+
+    return (accountTokens ?? []).some(({ address: tokenAddress }) => {
+      const accountBalances = getCaseInsensitiveRecordValue(
+        tokenBalances,
+        address,
+      );
+      const chainBalances = getCaseInsensitiveRecordValue(
+        accountBalances,
+        chainId,
+      );
+      const tokenBalance = getCaseInsensitiveRecordValue(
+        chainBalances,
+        tokenAddress,
+      );
+
+      return Boolean(tokenBalance && isPositiveHexBalance(tokenBalance));
+    });
+  });
+}
+
+function isPositiveHexBalance(balance: string): boolean {
+  try {
+    return BigInt(balance) > 0n;
+  } catch {
+    return false;
+  }
+}
+
+function isTestChain(chainId: string): boolean {
+  return TEST_CHAINS.some(
+    (testChainId) => testChainId.toLowerCase() === chainId.toLowerCase(),
+  );
 }
 
 function getCaseInsensitiveRecordValue<Value>(
