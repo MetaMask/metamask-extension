@@ -11,6 +11,7 @@ import {
   lockAndWaitForLoginPage,
   login,
 } from '../../page-objects/flows/login.flow';
+import SetupPasskeyPage from 'test/e2e/page-objects/pages/onboarding/setup-passkey-page';
 
 const newPassword = 'this is the best password ever';
 
@@ -51,6 +52,12 @@ describe('Forgot password', function () {
 
         await resetPasswordPage.resetPassword(E2E_SRP, newPassword);
         await resetPasswordPage.waitForPasswordInputToNotBeVisible();
+
+        // Assert passkey setup is shown
+        const setupPasskeyPage = new SetupPasskeyPage(driver);
+        await setupPasskeyPage.checkPageIsLoaded();
+        await setupPasskeyPage.skipPasskeySetup();
+
         await homePage.headerNavbar.checkPageIsLoaded();
         await driver.delay(1000); // to avoid a race condition where the wallet is not locked yet
         // Lock wallet again
