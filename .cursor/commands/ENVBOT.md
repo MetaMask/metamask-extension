@@ -47,6 +47,8 @@ Certainty contract:
 - If you provide an inference, label it as `inferred` and name the repo evidence that supports it.
 - If two repo sources disagree or the result depends on branch/event/secrets, state the condition instead of choosing one unconditional answer.
 - Never present a Segment/Mixpanel source name, Sentry project, backend environment, OAuth target, or signing/keystore value as certain unless the repo contains the mapping or the command logic directly implies it.
+- When the repo defines an explicit enum value, constant name, config key, job name, script name, env var, or string literal for a field, output that exact repo value first. Do not replace exact repo values with friendlier paraphrases. You may add a short explanation after the exact value if useful.
+- When an exact repo value and a human-facing label both seem relevant, use this shape: `<exact repo value> (inferred label: <label>)`. Never output only the human-facing label for OAuth integration, remote flags, Sentry DSN/project, Segment/Mixpanel source, backend API flags, LavaMoat/Snow flags, manifest key context, GitHub Action job, build type, environment, or feature fences.
 
 Always read or search these files before answering:
 
@@ -57,6 +59,8 @@ Always read or search these files before answering:
 - `development/build/utils.js`
 - `development/build/config.js`
 - `development/build/set-environment-variables.js`
+- `development/webpack/utils/cli.ts`
+- `development/webpack/utils/config.ts`
 - `.github/workflows/main.yml`
 - `.github/workflows/run-build.yml`
 - `.github/workflows/publish-release-from-release-head.yml`
@@ -76,9 +80,10 @@ Also search for exact command strings in `.github/workflows` and `development/we
 1. Resolve `yarn <script>` through `package.json:scripts`.
 2. Expand script chains until the underlying build target is visible.
 3. Capture inline env prefixes such as `ENABLE_MV3=false`, `BLOCKAID_FILE_CDN=...`, `SEGMENT_WRITE_KEY=...`, and `SEGMENT_HOST=...`.
-4. Capture build type from `--build-type <type>` or `--type <type>`.
-5. If no build type is set, use `builds.yml:default` (`main`).
-6. Capture build target:
+4. Capture security flags such as `--apply-lavamoat=<true|false>`, `--snow=<true|false>`, `--lavamoat`, `--no-lavamoat`, `--snow`, and `--no-snow`.
+5. Capture build type from `--build-type <type>` or `--type <type>`.
+6. If no build type is set, use `builds.yml:default` (`main`).
+7. Capture build target:
    - Browserify:
      - `yarn build:dev dev` or `yarn build dev` -> `dev`
      - `yarn build dist` -> `dist`
@@ -90,9 +95,41 @@ Also search for exact command strings in `.github/workflows` and `development/we
      - `--test` -> testing
      - `--env production` -> production
      - production mode without `--env production` -> staging / release-candidate / pull-request / other, depending on GitHub context
-7. Capture bundler:
+8. Capture bundler:
    - `development/build/index.js` or `yarn build ...` -> `browserify`
    - `development/webpack` or `webpack:lavamoat:*` -> `webpack`
+
+## Step 1A: Resolve LavaMoat And Snow
+
+Use `package.json`, `development/build/index.js`, `development/build/task.js`, `development/build/static.js`, `development/build/scripts.js`, `development/webpack/utils/cli.ts`, and `development/webpack/utils/config.ts`.
+
+Report the exact flag/value when it is present in the package script or expanded command.
+
+Browserify rules:
+
+- `development/build/index.js` defines `apply-lavamoat` default `true`.
+- `development/build/index.js` defines `snow` default `true`.
+- `--apply-lavamoat=false` -> LavaMoat disabled.
+- `--apply-lavamoat=true` -> LavaMoat enabled.
+- `--snow=false` -> Snow disabled.
+- `--snow=true` -> Snow enabled.
+- `development/build/task.js` forwards both values to child build tasks, so preserve the resolved parent values across build task chaining.
+
+Webpack rules:
+
+- `development/webpack/utils/cli.ts` defaults `lavamoat` to `isProduction`.
+- `development/webpack/utils/cli.ts` defaults `snow` to `isProduction`.
+- `--lavamoat` or `--no-lavamoat` overrides LavaMoat.
+- `--snow` or `--no-snow` overrides Snow.
+- If production mode is not directly knowable from the command, report the condition instead of choosing one value.
+
+Output as:
+
+- `LavaMoat and Snow: LavaMoat enabled; Snow enabled`
+- `LavaMoat and Snow: LavaMoat disabled via --apply-lavamoat=false; Snow disabled via --snow=false`
+- `LavaMoat and Snow: LavaMoat enabled iff webpack production mode; Snow enabled iff webpack production mode`
+
+If either value cannot be resolved from repo-backed command expansion and defaults, write `unknown / not directly knowable from repo` for that part.
 
 ## Step 2: Resolve Browser Rows
 
@@ -100,7 +137,9 @@ Output `chrome` and `firefox` rows using these rules:
 
 - Chrome means MV3 unless the command explicitly disables MV3.
 - Firefox means MV2 and uses `ENABLE_MV3=false`.
-- Package scripts with `:mv2` are Firefox-specific. Pair them with the closest non-`:mv2` script for the Chrome row when it is obvious.
+- Package scripts with `:mv2` mean the command explicitly disables MV3. They are MV2 builds, not automatically Firefox-only builds.
+- For `:mv2` commands, output the requested command as an MV2 row. If you include both browsers, describe Chrome as `chrome (MV2 / old Chrome-compatible)` and Firefox as `firefox (MV2)`.
+- Pair `:mv2` scripts with the closest non-`:mv2` script only when explaining the Chrome MV3 counterpart. Do not describe the original `:mv2` command as MV3.
 - Package scripts without `:mv2` usually represent the Chrome/MV3 counterpart. Pair them with the closest `:mv2` package script or CI job for Firefox when it is obvious.
 - In CI, `.github/workflows/run-build.yml` sets `ENABLE_MV3` from `contains(inputs.build-name, 'mv2')`.
 - If no counterpart exists, write `No direct counterpart found`.
@@ -193,26 +232,28 @@ Use `app/scripts/messenger-client-init/remote-feature-flag-controller-init.ts`.
 
 Distribution mapping:
 
-- `main` -> `main`
-- `flask` -> `flask`
-- `beta` -> `beta`
-- `experimental` -> `main` distribution
-- Unknown -> `main`
+- `main` -> `DistributionType.Main`
+- `flask` -> `DistributionType.Flask`
+- `beta` -> `DistributionType.Beta`
+- `experimental` -> `DistributionType.Main`
+- Unknown -> `DistributionType.Main`
 
 Environment mapping:
 
-- `development` -> `dev`
-- `production` -> `prod`
-- `release-candidate` -> `rc`
-- Anything else (`testing`, `staging`, `pull-request`, `other`) falls back to `dev`
-- `experimental` build type overrides the environment to experimental; call this out because it is outside the standard list
+- `development` -> `EnvironmentType.Development`
+- `production` -> `EnvironmentType.Production`
+- `release-candidate` -> `EnvironmentType.ReleaseCandidate`
+- Anything else (`testing`, `staging`, `pull-request`, `other`) falls back to `EnvironmentType.Development`
+- `experimental` build type overrides the environment to `EnvironmentType.Exp`; call this out because it is outside the standard list
 
-Report one of:
+Report the exact enum pair first. You may add the inferred LaunchDarkly-style label in parentheses if useful.
 
-- `main-dev`, `flask-dev`, `beta-dev`
-- `main-prod`, `flask-prod`, `beta-prod`
-- `main-rc`, `flask-rc`, `beta-rc`
-- `main-exp` for experimental special case
+Examples:
+
+- `DistributionType.Main + EnvironmentType.Development` (`inferred label: main-dev`)
+- `DistributionType.Flask + EnvironmentType.Production` (`inferred label: flask-prod`)
+- `DistributionType.Beta + EnvironmentType.ReleaseCandidate` (`inferred label: beta-rc`)
+- `DistributionType.Main + EnvironmentType.Exp` (`inferred label: main-exp`)
 
 ## Step 8: Resolve Sentry Project And Sentry Env
 
@@ -239,11 +280,14 @@ Sentry target:
 - If `METAMASK_ENVIRONMENT !== production` -> `SENTRY_DSN_DEV`
 - If `METAMASK_ENVIRONMENT === production` -> `SENTRY_DSN`
 
-Report Sentry project as:
+Report Sentry project as the exact project only when the repo or visible config proves the DSN-to-project mapping. Otherwise report the selected DSN variable and `unknown / not directly knowable from repo`.
 
-- `metamask-extension` for production DSN / production release prefix
-- `metamask-extension-test` for non-production release prefix or fake/test target
-- If performance DSN is active, report `metamask-performance` and note that app errors are ignored by setup
+Use these repo-backed cases:
+
+- `shared/lib/sentry-release.js` uses release prefix `metamask-extension` for production and `metamask-extension-test` otherwise. This is a release prefix, not by itself proof of the Sentry DSN project.
+- If the visible DSN matches a repo-documented or user-provided mapping, report the project and cite that evidence.
+- If `IN_TEST` and `SENTRY_DSN_DEV` is absent, report `fake DSN / no events`.
+- If performance DSN is active, report `SENTRY_DSN_PERFORMANCE`; only report a project name if the repo proves it. Also note that app errors are ignored by setup.
 
 ## Step 9: Resolve Segment / Mixpanel Source
 
@@ -259,7 +303,7 @@ Rules:
   - `experimental` -> `SEGMENT_EXPERIMENTAL_WRITE_KEY`
 - `yarn env:e2e` sets `SEGMENT_HOST=https://api.segment.io` and `SEGMENT_WRITE_KEY=FAKE`.
 
-The human source name is not stored in this repo. Use this mapping only as a labeled inference and say `inferred from write-key ref / command context`; otherwise write `unknown / not directly knowable from repo`.
+The human source name is not stored in this repo. The only repo-backed facts are the selected write key variables and inline overrides. Use the table below only as a labeled inference and say `inferred from write-key ref / command context`; otherwise write `unknown / not directly knowable from repo`.
 
 | Context | Chrome source | Firefox source |
 | --- | --- | --- |
@@ -299,28 +343,29 @@ If the user mentions old or expected fence names that are not active features in
 
 ## Step 11: Resolve Backend APIs
 
-Report the primary backend API posture as one of `dev`, `prod`, `uat`, or mixed.
+Report these backend API postures separately. Do not collapse them into one `Backend APIs` line.
 
 Use these rules:
 
-- Accounts API:
+- `Backend APIs (accounts)`:
   - `ACCOUNTS_USE_DEV_APIS=true` -> `dev`
-  - otherwise -> `prod`
-- Bridge API:
+  - otherwise -> `prod default`
+  - if the current command context could be overridden by `.metamaskrc`, `.metamaskprodrc`, shell env, or CI secrets but the actual value is not visible, append `; local/CI override unknown / not directly knowable from repo`
+- `Backend APIs (bridge)`:
   - `BRIDGE_USE_DEV_APIS=true` -> `dev`
-  - otherwise -> `prod`
-- Swaps API:
+  - otherwise -> `prod default`
+  - if the current command context could be overridden by `.metamaskrc`, `.metamaskprodrc`, shell env, or CI secrets but the actual value is not visible, append `; local/CI override unknown / not directly knowable from repo`
+- `Backend APIs (swaps)`:
   - `SWAPS_USE_DEV_APIS=true` -> `dev`
-  - otherwise -> `prod` for bridge API, while gas dev constant points to `uat` when the dev flag is used
-- Shield:
+  - otherwise -> `prod default`
+  - if `SWAPS_USE_DEV_APIS=true`, note that the swaps dev gas constant points to a UAT URL where relevant
+  - if the current command context could be overridden by `.metamaskrc`, `.metamaskprodrc`, shell env, or CI secrets but the actual value is not visible, append `; local/CI override unknown / not directly knowable from repo`
+- `Backend APIs (shield)`:
   - `beta` -> `uat`
   - `main`, `flask`, `experimental` -> `prod`
   - dev/test environment does not currently override Shield because `loadShieldConfig()` keys off build type
-- Rewards/geolocation and some ramps use environment-specific UAT/prod logic. If relevant, note:
-  - production/release-candidate -> prod
-  - non-production QA/dist contexts may use uat where the specific module chooses UAT
 
-If multiple services differ, write `mixed` and list the important differences.
+Do not include rewards, geolocation, ramps, OAuth, Sentry, or other services in these four backend API lines. If the user asks about them, answer separately with evidence.
 
 ## Step 12: Resolve OAuth Integration
 
@@ -329,14 +374,14 @@ Use `app/scripts/services/oauth/config.ts` and `development/build/set-environmen
 Runtime OAuth config:
 
 - `main` or `experimental`:
-  - `production` or `release-candidate` -> `prod`
-  - `development` or `testing` -> `dev`
-  - otherwise -> `uat`
+  - `production` or `release-candidate` -> `BuildTypeEnv.ProdMain`
+  - `development` or `testing` -> `BuildTypeEnv.DevMain`
+  - otherwise -> `BuildTypeEnv.UatMain`
 - `flask`:
-  - `production` or `release-candidate` -> `prod` Flask
-  - `development` or `testing` -> `dev` Flask
-  - otherwise -> `uat` Flask
-- `beta` -> `prod` OAuth config
+  - `production` or `release-candidate` -> `BuildTypeEnv.ProdFlask`
+  - `development` or `testing` -> `BuildTypeEnv.DevFlask`
+  - otherwise -> `BuildTypeEnv.UatFlask`
+- `beta` -> `BuildTypeEnv.Beta`
 
 Build-time OAuth client ID source:
 
@@ -344,16 +389,28 @@ Build-time OAuth client ID source:
 - Development and testing use direct `GOOGLE_CLIENT_ID` / `APPLE_CLIENT_ID`.
 - Other non-production contexts use UAT client IDs (`GOOGLE_CLIENT_ID_UAT`, `APPLE_CLIENT_ID_UAT`, or Flask UAT variants).
 
-Report both:
+Report both as separate lines:
 
-- `OAuth integration`: `dev`, `uat`, `prod`, `dev Flask`, `uat Flask`, or `prod Flask`
-- `OAuth client ID source`: direct env vars, UAT env vars, or ref-based prod secrets
+- `OAuth integration`: exact `BuildTypeEnv.*` enum member selected by `loadOAuthConfig()`
+- `OAuth source`: direct env vars, UAT env vars, or ref-based prod secrets
 
-## Step 13: Resolve Keystore / Signing Context
+Use `direct GOOGLE_CLIENT_ID / APPLE_CLIENT_ID` only when the code reads those variables directly. Use `ref-based production variables` when the code reads `GOOGLE_CLIENT_ID_REF` / `APPLE_CLIENT_ID_REF`, then dereferences the referenced variable name.
 
-This repository is the browser extension, not an Android app. Do not invent Android keystores such as `debug`, `release`, `internalRelease`, `betaRelease`, `betaInternalRelease`, `flaskRelease`, or `flaskInternalRelease` unless a file in this repository explicitly maps the command to them.
+Allowed exact `OAuth integration` values:
 
-For the browser extension, report:
+- `BuildTypeEnv.DevMain`
+- `BuildTypeEnv.DevFlask`
+- `BuildTypeEnv.UatMain`
+- `BuildTypeEnv.UatFlask`
+- `BuildTypeEnv.ProdMain`
+- `BuildTypeEnv.ProdFlask`
+- `BuildTypeEnv.Beta`
+
+## Step 13: Resolve Manifest Key
+
+This repository is the browser extension, not an Android app. Do not report Android keystore labels such as `debug`, `release`, `internalRelease`, `betaRelease`, `betaInternalRelease`, `flaskRelease`, or `flaskInternalRelease` unless a file in this repository explicitly maps the command to them.
+
+For the `Manifest key` line, report:
 
 - Chrome non-production / release-candidate builds use fixed manifest keys for stable extension IDs.
 - Chrome production builds do not set a fixed manifest key; Chrome Web Store signing applies outside this build command.
@@ -398,15 +455,20 @@ GitHub Action job: <job or no direct job>
 Env source: <source>
 METAMASK_BUILD_TYPE: <value>
 METAMASK_ENVIRONMENT: <value>
-Remote flags target: <target>
+LavaMoat and Snow: <LavaMoat enabled|disabled|unknown; Snow enabled|disabled|unknown plus evidence/condition>
+Remote flags target: <exact distribution/env enum values, plus inferred label only if useful>
 Sentry project: <project>
 Sentry env: <env>
 Segment/Mixpanel source: <source or unknown>
 Code fences/features: <features>
 Feature combination: <description>
-Backend APIs: <dev|prod|uat|mixed plus notes>
-OAuth integration: <target plus client ID source>
-Keystore/signing: <browser signing context>
+Backend APIs (accounts): <dev|prod default|unknown plus override note>
+Backend APIs (bridge): <dev|prod default|unknown plus override note>
+Backend APIs (swaps): <dev|prod default|unknown plus override note>
+Backend APIs (shield): <prod|uat|unknown>
+OAuth integration: <exact BuildTypeEnv.* enum member>
+OAuth source: <direct env vars|UAT env vars|ref-based prod secrets|unknown>
+Manifest key: <browser manifest key context>
 Used for: <description>
 ```
 
@@ -418,7 +480,7 @@ Keep each line compact. If a field is context-dependent, write the condition, fo
 - `GitHub Secrets via run-build.yml; local uses .metamaskrc`
 - `inferred: MetaMask Extension [RC]`
 
-After the table, include a short `Evidence` list with the files/functions used. Include line references if available from the tool output.
+After the output blocks, include a short `Evidence` list with the files/functions used. Include line references if available from the tool output.
 
 ## Accuracy Rules
 
@@ -426,7 +488,8 @@ After the table, include a short `Evidence` list with the files/functions used. 
 - Everything announced as fact must be certain and deduced from the codebase.
 - Do not treat examples in the user request as facts unless they are confirmed in repo files.
 - Do not use external product knowledge to fill missing mappings.
-- For each non-obvious table value, be prepared to cite the file/function that proves it.
+- For each non-obvious output value, be prepared to cite the file/function that proves it.
+- Prefer exact repo identifiers over humanized labels throughout the output. Examples: `BuildTypeEnv.DevFlask`, `DistributionType.Flask + EnvironmentType.Development`, `build-test-browserify`, `SENTRY_DSN_DEV`, `ENABLE_MV3=false`.
 - Distinguish local command behavior from CI behavior.
 - Distinguish build target (`test`, `dist`, `prod`) from build type (`main`, `flask`, `beta`).
 - Distinguish `METAMASK_ENVIRONMENT` from Sentry env; Sentry appends build type for non-main builds.
