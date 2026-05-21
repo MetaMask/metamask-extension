@@ -21,16 +21,15 @@ import {
   KeyringControllerWithKeyringAction,
   KeyringControllerWithKeyringV2UnsafeAction,
 } from '@metamask/keyring-controller';
-import { SnapAccountServiceGetLegacySnapKeyringAction, SnapAccountServiceHandleKeyringSnapMessageAction } from '@metamask/snap-account-service';
+import { SnapAccountServiceHandleKeyringSnapMessageAction } from '@metamask/snap-account-service';
 import {
   RateLimitControllerCallApiAction,
   RateLimitedApiMap,
 } from '@metamask/rate-limit-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { ApprovalControllerAddRequestAction } from '@metamask/approval-controller';
-import type { SnapAccountServiceActions } from '@metamask/snap-account-service';
-import type { SnapMessage } from '@metamask/eth-snap-keyring';
-import type { SnapId } from '@metamask/snaps-sdk';
+import { SnapMessage } from '@metamask/eth-snap-keyring';
+import { SnapId } from '@metamask/snaps-sdk';
 import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
@@ -59,7 +58,6 @@ export type SnapPermissionSpecificationsActions =
   | SnapControllerGetSnapAction
   | SnapControllerGetSnapStateAction
   | SnapControllerHandleRequestAction
-  | SnapAccountServiceGetLegacySnapKeyringAction
   | SnapAccountServiceHandleKeyringSnapMessageAction
   | KeyringControllerWithKeyringAction
   | KeyringControllerWithKeyringV2UnsafeAction
@@ -184,12 +182,15 @@ export function getSnapPermissionSpecifications(
         getClientCryptography: () => ({}),
 
         getSnapKeyring: async () => ({
-          handleKeyringSnapMessage: async (snapId: SnapId, message: SnapMessage) =>
-            messenger.call(
+          // We only need a subset of the Snap keyring's functionality, and this message handling is now
+          // owned by the Snap account service.
+          handleKeyringSnapMessage(snapId: string, message: SnapMessage) {
+            return messenger.call(
               'SnapAccountService:handleKeyringSnapMessage',
-              snapId,
+              snapId as SnapId,
               message,
-            ),
+            );
+          },
         }),
       },
       messenger as RestrictedMethodMessenger,

@@ -85,8 +85,8 @@ export type OrderCalculations = {
   liquidationPriceRaw: number | null;
   /** Total order value in USD */
   orderValue: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount) */
+  estimatedFees: number | null;
 };
 
 /**
@@ -212,14 +212,15 @@ export type LeverageSliderProps = {
 export type OrderSummaryProps = {
   /** Margin required for the position */
   marginRequired: string | null;
-  /** Estimated trading fees */
-  estimatedFees: string | null;
+  /** Estimated trading fees (raw USD amount, after discount) */
+  estimatedFees: number | null;
+  /** Estimated trading fees before any VIP discount (raw USD amount) */
+  originalEstimatedFees?: number | null;
   /** Estimated liquidation price */
   liquidationPrice: string | null;
   /**
    * MetaMask fee discount percentage (whole numbers). When provided and
-   * positive, the fees row renders an inline `-X%` badge alongside the fee
-   * value.
+   * positive, the fees row renders a VIP badge alongside the fee value.
    */
   metamaskFeeRateDiscountPercentage?: number;
 };

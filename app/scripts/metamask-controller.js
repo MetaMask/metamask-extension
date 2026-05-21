@@ -21,7 +21,7 @@ import {
   providerErrors,
   rpcErrors,
 } from '@metamask/rpc-errors';
-import { Mutex } from 'await-semaphore';
+import { Mutex } from 'async-mutex';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
 import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
@@ -432,7 +432,6 @@ import { SubjectMetadataControllerInit } from './messenger-client-init/subject-m
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { KeyringControllerInit } from './messenger-client-init/keyring-controller-init';
 import { SnapKeyringBuilderInit } from './messenger-client-init/accounts/snap-keyring-builder-init';
-import { SnapKeyringBuilderV2Init } from './messenger-client-init/accounts/snap-keyring-builder-v2-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
@@ -629,7 +628,6 @@ export default class MetamaskController extends EventEmitter {
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
       SnapKeyringBuilder: SnapKeyringBuilderInit,
-      SnapKeyringBuilderV2: SnapKeyringBuilderV2Init,
       KeyringController: KeyringControllerInit,
       AccountsController: AccountsControllerInit,
       AddressBookController: AddressBookControllerInit,
@@ -2906,6 +2904,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       rewardsGetPerpsDiscountForAccount:
         this.rewardsController.getPerpsDiscountForAccount.bind(
+          this.rewardsController,
+        ),
+      rewardsGetVipTierForAccount:
+        this.rewardsController.getVipTierForAccount.bind(
           this.rewardsController,
         ),
 
@@ -8276,6 +8278,10 @@ export default class MetamaskController extends EventEmitter {
    */
   _onUnlock() {
     this.unMarkPasswordForgotten();
+
+    // We "force-create" the Snap keyring right after unlocking so next calls should be faster
+    // and will (potentially) avoid locking up the `KeyringController` mutex.
+    this.getSnapKeyring();
 
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'

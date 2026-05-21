@@ -3,24 +3,13 @@ import {
   MessengerActions,
   MessengerEvents,
 } from '@metamask/messenger';
-import {
-  RemoteFeatureFlagControllerStateChangeEvent,
-  RemoteFeatureFlagControllerGetStateAction,
-} from '@metamask/remote-feature-flag-controller';
-import { SnapAccountServiceEnsureReadyAction } from '@metamask/snap-account-service';
-import { MultichainAccountServiceMessenger as ServiceMessenger } from '@metamask/multichain-account-service';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type { MultichainAccountServiceMessenger } from '@metamask/multichain-account-service';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../../controllers/preferences-controller';
 import { RootMessenger } from '../../../lib/messenger';
-
-type Actions = MessengerActions<ServiceMessenger>;
-type Events = MessengerEvents<ServiceMessenger>;
-
-export type MultichainAccountServiceMessenger = ReturnType<
-  typeof getMultichainAccountServiceMessenger
->;
 
 /**
  * Get a restricted messenger for the account wallet controller. This is scoped to the
@@ -30,14 +19,12 @@ export type MultichainAccountServiceMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainAccountServiceMessenger(
-  messenger: RootMessenger<Actions, Events>,
+  messenger: RootMessenger<
+    MessengerActions<MultichainAccountServiceMessenger>,
+    MessengerEvents<MultichainAccountServiceMessenger>
+  >,
 ) {
-  const serviceMessenger = new Messenger<
-    'MultichainAccountService',
-    Actions,
-    Events,
-    typeof messenger
-  >({
+  const serviceMessenger: MultichainAccountServiceMessenger = new Messenger({
     namespace: 'MultichainAccountService',
     parent: messenger,
   });
@@ -46,7 +33,6 @@ export function getMultichainAccountServiceMessenger(
     events: [
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
-      'KeyringController:stateChange',
     ],
     actions: [
       'AccountsController:listMultichainAccounts',

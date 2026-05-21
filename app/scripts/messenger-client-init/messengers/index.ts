@@ -77,8 +77,6 @@ import {
   getMultichainAccountServiceInitMessenger,
   getSnapKeyringBuilderMessenger,
   getSnapKeyringBuilderInitMessenger,
-  getSnapKeyringBuilderV2Messenger,
-  getSnapKeyringBuilderV2InitMessenger,
   getSnapAccountServiceMessenger,
 } from './accounts';
 import {
@@ -237,7 +235,6 @@ export type { AnnouncementControllerMessenger } from './announcement-controller-
 export { getAnnouncementControllerMessenger } from './announcement-controller-messenger';
 export { getAppMetadataControllerMessenger } from './app-metadata-controller-messenger';
 export { getAppStateControllerMessenger } from './app-state-controller-messenger';
-export type { ApprovalControllerMessenger } from './approval-controller-messenger';
 export { getApprovalControllerMessenger } from './approval-controller-messenger';
 export type { BridgeControllerInitMessenger } from './bridge-controller-messenger';
 export {
@@ -266,20 +263,14 @@ export {
 } from './encryption-public-key-controller-messenger';
 export type { EncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
 export { getEncryptionPublicKeyManagerMessenger } from './encryption-public-key-manager-messenger';
-export type {
-  EnsControllerMessenger,
-  EnsControllerInitMessenger,
-} from './ens-controller-messenger';
+export type { EnsControllerInitMessenger } from './ens-controller-messenger';
 export {
   getEnsControllerMessenger,
   getEnsControllerInitMessenger,
 } from './ens-controller-messenger';
 export type { StorageServiceMessenger } from './storage-service-messenger';
 export { getStorageServiceMessenger } from './storage-service-messenger';
-export type {
-  GasFeeControllerMessenger,
-  GasFeeControllerInitMessenger,
-} from './gas-fee-controller-messenger';
+export type { GasFeeControllerInitMessenger } from './gas-fee-controller-messenger';
 export {
   getGasFeeControllerMessenger,
   getGasFeeControllerInitMessenger,
@@ -341,10 +332,7 @@ export {
 } from './remote-feature-flag-controller-messenger';
 export type { SelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
 export { getSelectedNetworkControllerMessenger } from './selected-network-controller-messenger';
-export type {
-  SignatureControllerMessenger,
-  SignatureControllerInitMessenger,
-} from './signature-controller-messenger';
+export type { SignatureControllerInitMessenger } from './signature-controller-messenger';
 export {
   getSignatureControllerMessenger,
   getSignatureControllerInitMessenger,
@@ -685,10 +673,6 @@ export const MESSENGER_FACTORIES = {
   SnapKeyringBuilder: {
     getMessenger: getSnapKeyringBuilderMessenger,
     getInitMessenger: getSnapKeyringBuilderInitMessenger,
-  },
-  SnapKeyringBuilderV2: {
-    getMessenger: getSnapKeyringBuilderV2Messenger,
-    getInitMessenger: getSnapKeyringBuilderV2InitMessenger,
   },
   StaticAssetsController: {
     getMessenger: getStaticAssetsControllerMessenger,
