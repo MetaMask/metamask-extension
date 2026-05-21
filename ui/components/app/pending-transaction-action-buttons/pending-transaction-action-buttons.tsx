@@ -1,7 +1,6 @@
 import React from 'react';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { Button, ButtonSize } from '@metamask/design-system-react';
-import { Box } from '../../component-library';
+import { Box, Button, ButtonSize } from '@metamask/design-system-react';
 import CancelButton from '../cancel-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import type { PendingTransactionSpeedUpAction } from '../../../hooks/usePendingTransactionActions';
