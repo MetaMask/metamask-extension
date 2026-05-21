@@ -7153,7 +7153,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-snap-client@npm:^8.2.0, @metamask/keyring-snap-client@npm:^8.2.1":
+"@metamask/keyring-snap-client@npm:^8.2.1":
   version: 8.2.1
   resolution: "@metamask/keyring-snap-client@npm:8.2.1"
   dependencies:
@@ -7324,14 +7324,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/multichain-account-service@npm:10.0.0"
+"@metamask/multichain-account-service@npm:@metamask-previews/multichain-account-service@10.0.0-preview-a4b03df12":
+  version: 10.0.0-preview-a4b03df12
+  resolution: "@metamask-previews/multichain-account-service@npm:10.0.0-preview-a4b03df12"
   dependencies:
     "@ethereumjs/util": "npm:^9.1.0"
     "@metamask/accounts-controller": "npm:^38.1.1"
     "@metamask/base-controller": "npm:^9.1.0"
-    "@metamask/eth-snap-keyring": "npm:^22.0.1"
+    "@metamask/eth-snap-keyring": "npm:^22.1.0"
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/keyring-api": "npm:^23.1.0"
     "@metamask/keyring-controller": "npm:^25.5.0"
@@ -7339,7 +7339,7 @@ __metadata:
     "@metamask/keyring-snap-client": "npm:^9.0.2"
     "@metamask/keyring-utils": "npm:^3.2.1"
     "@metamask/messenger": "npm:^1.2.0"
-    "@metamask/snap-account-service": "npm:^0.1.0"
+    "@metamask/snap-account-service": "npm:^0.2.0"
     "@metamask/snaps-controllers": "npm:^19.0.0"
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/snaps-utils": "npm:^12.1.2"
@@ -7351,37 +7351,7 @@ __metadata:
     "@metamask/account-api": ^1.0.4
     "@metamask/providers": ^22.0.0
     webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/07b7e0dc1d4b50bfbd4846fa82598d9a1244a37645a122d00502d710bacb05abcc863a2f569d1c6a33ea656c7f25361b8e1b4de7895be028718195aa2673384b
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-account-service@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "@metamask/multichain-account-service@npm:8.0.1"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/accounts-controller": "npm:^37.1.1"
-    "@metamask/base-controller": "npm:^9.0.1"
-    "@metamask/eth-snap-keyring": "npm:^19.0.0"
-    "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/keyring-api": "npm:^21.6.0"
-    "@metamask/keyring-controller": "npm:^25.1.1"
-    "@metamask/keyring-internal-api": "npm:^10.0.0"
-    "@metamask/keyring-snap-client": "npm:^8.2.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/messenger": "npm:^1.0.0"
-    "@metamask/snaps-controllers": "npm:^19.0.0"
-    "@metamask/snaps-sdk": "npm:^11.0.0"
-    "@metamask/snaps-utils": "npm:^12.1.2"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.9.0"
-    async-mutex: "npm:^0.5.0"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/account-api": ^1.0.0
-    "@metamask/providers": ^22.0.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/7ac3c38db8afd47593cd7ed4cc95de99195ccd2b2903281382be83990b2a47fa2f03de77e325c1ea3c7fd96367e3eac20039994d95154d478bebacd61215140a
+  checksum: 10/2e0203014e469815d6de01b640ab31145c82d2eefcfd0f1fc50c0689c032c5e1a8cf8a44cb8bfac29a199157670472475f5f2c43edb2f867e5d1368cb85bf7f1
   languageName: node
   linkType: hard
 
@@ -8117,9 +8087,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@0.2.0-preview-61b8446":
-  version: 0.2.0-preview-61b8446
-  resolution: "@metamask-previews/snap-account-service@npm:0.2.0-preview-61b8446"
+"@metamask/snap-account-service@npm:@metamask-previews/snap-account-service@0.2.0-preview-a4b03df12":
+  version: 0.2.0-preview-a4b03df12
+  resolution: "@metamask-previews/snap-account-service@npm:0.2.0-preview-a4b03df12"
   dependencies:
     "@metamask/account-api": "npm:^1.0.4"
     "@metamask/account-tree-controller": "npm:^7.4.0"
@@ -8132,7 +8102,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^11.0.0"
     "@metamask/utils": "npm:^11.9.0"
     lodash: "npm:^4.17.21"
-  checksum: 10/121822ec0633c80913cddfb950004bd0925911fe8dd2be144449a557b70c9da9bd876fa9bc32179fa1ccff8dabedec6cd43a53d9d6b66dac62d313479e1cc963
+  checksum: 10/100fd93c45e48298181deeb5e7b9c230dfef4c91dc082ab6e3fdfa48292a94909193deb65939e0decb6b7b3d905a1b088a229209383ac8da0c5b0f43375cf7fc
   languageName: node
   linkType: hard
 
