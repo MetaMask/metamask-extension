@@ -147,7 +147,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         'native-token-periodic',
         'erc20-token-stream',
         'erc20-token-periodic',
-        'erc20-token-revocation',
+        'token-approval-revocation',
         'native-token-allowance',
         'erc20-token-allowance',
       ],
@@ -2243,6 +2243,17 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     type: FeatureFlagType.Remote,
     inProd: true,
     productionDefault: 'xyz:*',
+    status: FeatureFlagStatus.Active,
+  },
+
+  vipProgramEnabled: {
+    name: 'vipProgramEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: {
+      enabled: false,
+      minimumVersion: '0.0.0',
+    },
     status: FeatureFlagStatus.Active,
   },
   rewardsBitcoinEnabledExtension: {

@@ -17,10 +17,7 @@ import {
   isPermissionDataWithTotalExposure,
   computeTotalExposureForPermission,
 } from '../../../../../../shared/lib/gator-permissions/compute-total-exposure';
-import {
-  PERMISSION_SCHEMAS,
-  assertPermissionSchemaEntry,
-} from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import { getPermissionSchemaEntry } from '../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { translateI18nValue } from '../../../../../../shared/lib/gator-permissions/translate-i18n-value';
 import type {
@@ -312,6 +309,32 @@ function renderElement({
         />
       );
 
+    case 'raw-text':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t(element.labelKey)}
+          value={element.getValue(ctx)}
+          testId={element.testId}
+        />
+      );
+
+    case 'list':
+      return (
+        <GatorPermissionDetailRow
+          key={rowKey}
+          label={t(element.labelKey)}
+          value={
+            <ul style={{ listStyle: 'disc', paddingLeft: 20 }}>
+              {element.getValue(ctx).map((value, valueIndex) => (
+                <li key={`${value}-${valueIndex}`}>{t(value)}</li>
+              ))}
+            </ul>
+          }
+          testId={element.testId}
+        />
+      );
+
     case 'date':
       return (
         <GatorPermissionDetailRow
@@ -371,8 +394,13 @@ function renderElement({
     case 'divider':
     case 'origin':
     case 'address':
-    default:
-      return throwUnhandledPermissionSchemaElement(element as never);
+      throw new Error(
+        `Unexpected schema element type in review renderer: ${element.type}`,
+      );
+    default: {
+      const neverElement: never = element;
+      return throwUnhandledPermissionSchemaElement(neverElement);
+    }
   }
 }
 
@@ -528,8 +556,7 @@ export const ReviewPermissionRenderer: React.FC<
 }) => {
   const t = useI18nContext() as I18nFunction;
 
-  const schemaEntry = PERMISSION_SCHEMAS[permissionType];
-  assertPermissionSchemaEntry(permissionType, schemaEntry);
+  const schemaEntry = getPermissionSchemaEntry(permissionType);
 
   const effectiveExpiry = extractExpiryTimestampFromRules(rules ?? []);
   const redeemerAddresses = extractAddressesFromRuleByType(

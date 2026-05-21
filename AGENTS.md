@@ -33,20 +33,22 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 
 ### Comprehensive Guidelines Location
 
+> **Agent skills:** `yarn install` prepares the public [MetaMask/skills](https://github.com/MetaMask/skills) cache; `yarn skills` syncs generated files into `.cursor/`, `.claude/`, and `.agents/` (see README -> "AI Agent Skills"). If a referenced skill is missing locally, run `yarn skills`.
+
 Read these files for detailed coding standards:
 
-- Controller patterns: `.cursor/rules/controller-guidelines/RULE.md`
-- Unit testing standards: `.cursor/rules/unit-testing-guidelines/RULE.md`
+- Controller patterns: `.cursor/rules/mms-controller-guidelines/RULE.md`
+- Unit testing standards: `.cursor/rules/mms-unit-testing/RULE.md`
 - E2E testing standards: `./test/e2e/AGENTS.md`
-- E2E test creation workflow (Agent Skill): `.cursor/skills/creating-e2e-tests/SKILL.md` (symlinked from `.claude/skills/` and `.agents/skills/` — edit the `.cursor` copy only)
+- E2E test creation workflow (Agent Skill): `.agents/skills/mms-e2e-testing/SKILL.md`
 - CI workflows: `.github/AGENTS.md`
 - Front-end performance:
-  - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance - start here)
-  - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
-  - `.cursor/rules/front-end-performance-react-compiler/RULE.md` (React Compiler & anti-patterns)
-  - `.cursor/rules/front-end-performance-state-management/RULE.md` (Redux & state management)
-- PR workflow: `.cursor/rules/pull-request-guidelines/RULE.md`
-- Code style: `.cursor/rules/coding-guidelines/RULE.md`
+  - `.cursor/rules/mms-perf-rendering/RULE.md` (rendering performance - start here)
+  - `.cursor/rules/mms-perf-hooks-effects/RULE.md` (hooks & effects)
+  - `.cursor/rules/mms-perf-react-compiler/RULE.md` (React Compiler & anti-patterns)
+  - `.cursor/rules/mms-perf-state-management/RULE.md` (Redux & state management)
+- PR workflow: `.cursor/rules/mms-pr-guidelines/RULE.md`
+- Code style: `.cursor/rules/mms-coding-guidelines/RULE.md`
 - Official guidelines: `.github/guidelines/CODING_GUIDELINES.md`
 
 ---
@@ -97,7 +99,7 @@ In `.metamaskrc`, you can also configure:
 | `command not found: yarn`        | Run `corepack enable`                                                                                   |
 | Build fails with policy errors   | Run `yarn lavamoat:auto`                                                                                |
 | Invalid Infura key error         | Check `INFURA_PROJECT_ID` in `.metamaskrc`                                                              |
-| Ganache won't start              | Ensure port 8545 is available                                                                           |
+| Anvil won't start                | Ensure port 8545 is available and `yarn foundryup` has installed the binary                             |
 | Git hooks not working in VS Code | Follow [Husky troubleshooting](https://typicode.github.io/husky/troubleshooting.html#command-not-found) |
 
 ---
@@ -168,7 +170,7 @@ yarn test:e2e:benchmark    # Performance benchmarks
 - Unit tests should be colocated with source files (`.test.ts`/`.test.tsx`)
 - Always create a test build before running E2E tests
 - Use `--leave-running` to debug failed E2E tests
-- See `.cursor/rules/unit-testing-guidelines/RULE.md` for testing standards
+- See `.cursor/rules/mms-unit-testing/RULE.md` for testing standards
 
 ### Linting & Formatting
 
@@ -199,7 +201,7 @@ yarn lint:changed:fix
 yarn dapp                  # Start test dapp on :8080
 yarn dapp-multichain       # Multichain test dapp
 yarn dapp-solana           # Solana test dapp
-yarn dapp-chain            # Dapp with local Ganache
+yarn dapp-chain            # Dapp with local Anvil
 
 # DevTools
 yarn devtools:react        # React DevTools
@@ -207,8 +209,7 @@ yarn devtools:redux        # Redux DevTools
 yarn start:dev             # Start with both DevTools
 
 # Local Blockchain
-yarn ganache:start         # Start Ganache on port 8545
-yarn anvil                 # Start Anvil (Foundry)
+yarn anvil                 # Start Anvil (Foundry) on port 8545
 
 # Storybook
 yarn storybook             # Component documentation/development
@@ -276,9 +277,9 @@ yarn test:e2e:single test/e2e/tests/new-test.spec.js --browser=chrome
 
 ```bash
 # 1. Identify file type and read relevant guidelines
-# - Controller? Read .cursor/rules/controller-guidelines/RULE.md
-# - React component? Read .cursor/rules/coding-guidelines/RULE.md
-# - Test? Read .cursor/rules/unit-testing-guidelines/RULE.md
+# - Controller? Read .cursor/rules/mms-controller-guidelines/RULE.md
+# - React component? Read .cursor/rules/mms-coding-guidelines/RULE.md
+# - Test? Read .cursor/rules/mms-unit-testing/RULE.md
 
 # 2. Make changes following guidelines
 
@@ -354,7 +355,7 @@ yarn test:e2e:single path/to/test.spec.js --browser=chrome
 
 ```bash
 # 1. MUST read controller guidelines first
-# Read .cursor/rules/controller-guidelines/RULE.md
+# Read .cursor/rules/mms-controller-guidelines/RULE.md
 
 # 2. Create controller file (TypeScript only)
 # Location: app/scripts/controllers/your-controller/your-controller.ts
@@ -382,7 +383,7 @@ yarn lint:changed:fix
 
 ### Controller Development Patterns
 
-When creating a controller, follow these critical patterns from `.cursor/rules/controller-guidelines/RULE.md`:
+When creating a controller, follow these critical patterns from `.cursor/rules/mms-controller-guidelines/RULE.md`:
 
 #### State Metadata Requirements
 
@@ -544,7 +545,7 @@ class TokensController extends BaseController</*...*/> {
 }
 ```
 
-**See `.cursor/rules/controller-guidelines/RULE.md` for complete patterns with detailed examples.**
+**See `.cursor/rules/mms-controller-guidelines/RULE.md` for complete patterns with detailed examples.**
 
 ---
 
@@ -673,7 +674,7 @@ metamask-extension/
 - Manage wallet state and business logic
 - Communicate via Messenger pattern (pub/sub)
 - Use selectors for derived state (not getter methods)
-- See `.cursor/rules/controller-guidelines.mdc` for detailed patterns
+- See `.cursor/rules/mms-controller-guidelines/RULE.md` for detailed patterns
 
 **React Components** (UI):
 
@@ -683,14 +684,14 @@ metamask-extension/
 - Performance optimizations: useMemo, useCallback, React.memo
 - Unique IDs as keys (not array index for dynamic lists)
 - Organized in component folders with tests, styles, and types
-- See `.cursor/rules/coding-guidelines/RULE.md` and `.cursor/rules/front-end-performance-rendering/RULE.md`
+- See `.cursor/rules/mms-coding-guidelines/RULE.md` and `.cursor/rules/mms-perf-rendering/RULE.md`
 
 **Testing**:
 
 - Unit tests colocated with source files (`.test.ts`)
 - Jest for unit tests, Playwright for E2E
 - Test files organized with `describe` blocks by method/function
-- See `.cursor/rules/unit-testing-guidelines/RULE.md` for testing patterns
+- See `.cursor/rules/mms-unit-testing/RULE.md` for testing patterns
 
 ### File Modification Patterns
 
@@ -960,7 +961,7 @@ describe('TokensController', () => {
 });
 ```
 
-**Detailed Guidelines:** See `.cursor/rules/unit-testing-guidelines/RULE.md`
+**Detailed Guidelines:** See `.cursor/rules/mms-unit-testing/RULE.md`
 
 ### E2E Tests
 
@@ -1012,7 +1013,7 @@ When the user explicitly asks for visual verification of UI behavior (e.g., "ver
 
 **If CLI is unavailable or denied:** Say so explicitly and explain what's missing. Do not claim you verified without actual tool output as evidence.
 
-**Skill location:** `.claude/skills/metamask-visual-testing/SKILL.md`
+**Skill location:** `.claude/skills/mms-visual-testing/SKILL.md`
 
 **MM CLI architecture docs:** `test/e2e/playwright/llm-workflow/README.md`
 
@@ -1205,7 +1206,7 @@ Complete all steps for **push** above, then:
 - [ ] Review the squash commit message (auto-generated from PR)
 - [ ] **Don't modify the commit title format** (must be: `Title (#number)`)
 
-**Detailed Guidelines:** See `.cursor/rules/pull-request-guidelines/RULE.md`
+**Detailed Guidelines:** See `.cursor/rules/mms-pr-guidelines/RULE.md`
 
 ---
 
@@ -1315,12 +1316,12 @@ useEffect(() => {
 
 **Detailed Guidelines:**
 
-- General coding: `.cursor/rules/coding-guidelines/RULE.md`
+- General coding: `.cursor/rules/mms-coding-guidelines/RULE.md`
 - Performance optimization:
-  - `.cursor/rules/front-end-performance-rendering/RULE.md` (rendering performance)
-  - `.cursor/rules/front-end-performance-hooks-effects/RULE.md` (hooks & effects)
-  - `.cursor/rules/front-end-performance-react-compiler/RULE.md` (React Compiler & anti-patterns)
-  - `.cursor/rules/front-end-performance-state-management/RULE.md` (Redux & state management)
+  - `.cursor/rules/mms-perf-rendering/RULE.md` (rendering performance)
+  - `.cursor/rules/mms-perf-hooks-effects/RULE.md` (hooks & effects)
+  - `.cursor/rules/mms-perf-react-compiler/RULE.md` (React Compiler & anti-patterns)
+  - `.cursor/rules/mms-perf-state-management/RULE.md` (Redux & state management)
 
 ---
 
@@ -1409,10 +1410,10 @@ Before marking a component complete:
 
 **See:**
 
-- `.cursor/rules/front-end-performance-rendering/RULE.md` - Rendering performance (keys, memoization, virtualization)
-- `.cursor/rules/front-end-performance-hooks-effects/RULE.md` - Hooks & effects optimization
-- `.cursor/rules/front-end-performance-react-compiler/RULE.md` - React Compiler considerations & anti-patterns
-- `.cursor/rules/front-end-performance-state-management/RULE.md` - Redux & state management optimization
+- `.cursor/rules/mms-perf-rendering/RULE.md` - Rendering performance (keys, memoization, virtualization)
+- `.cursor/rules/mms-perf-hooks-effects/RULE.md` - Hooks & effects optimization
+- `.cursor/rules/mms-perf-react-compiler/RULE.md` - React Compiler considerations & anti-patterns
+- `.cursor/rules/mms-perf-state-management/RULE.md` - Redux & state management optimization
 
 ---
 
@@ -1503,7 +1504,7 @@ Before marking a component complete:
 | Problem                 | Solution                                          |
 | ----------------------- | ------------------------------------------------- |
 | E2E tests fail to start | Build test build first: `yarn build:test`         |
-| Tests hang indefinitely | Check if port 8545 (Ganache) is available         |
+| Tests hang indefinitely | Check if port 8545 (Anvil) is available           |
 | Snapshot tests fail     | Update snapshots: `yarn test:unit -u`             |
 | Browser not launching   | Check if browser is installed and in PATH         |
 | Random E2E failures     | Use `--retries` flag or check for race conditions |
@@ -1669,28 +1670,27 @@ Performance Checks (React Components):
 
 ### Coding Guidelines
 
-- **Controller Patterns:** [.cursor/rules/controller-guidelines/RULE.md](./.cursor/rules/controller-guidelines/RULE.md)
-- **Unit Testing:** [.cursor/rules/unit-testing-guidelines/RULE.md](./.cursor/rules/unit-testing-guidelines/RULE.md)
+- **Controller Patterns:** [.cursor/rules/mms-controller-guidelines/RULE.md](./.cursor/rules/mms-controller-guidelines/RULE.md)
+- **Unit Testing:** [.cursor/rules/mms-unit-testing/RULE.md](./.cursor/rules/mms-unit-testing/RULE.md)
 - **E2E Testing:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **E2E CI Decision Tree:** [.github/guidelines/E2E_DECISION_TREE.md](./.github/guidelines/E2E_DECISION_TREE.md)
 - **E2E Deprecated Patterns:** [./test/e2e/AGENTS.md](./test/e2e/AGENTS.md)
 - **CI Workflows:** [.github/AGENTS.md](./.github/AGENTS.md)
 - **Front-End Performance:**
-  - [Rendering Performance](.cursor/rules/front-end-performance-rendering/RULE.md) - Start here (keys, memoization, virtualization)
-  - [Hooks & Effects](.cursor/rules/front-end-performance-hooks-effects/RULE.md) - useEffect best practices
-  - [React Compiler & Anti-Patterns](.cursor/rules/front-end-performance-react-compiler/RULE.md) - React Compiler considerations
-  - [State Management](.cursor/rules/front-end-performance-state-management/RULE.md) - Redux optimization
-- **Pull Requests:** [.cursor/rules/pull-request-guidelines/RULE.md](./.cursor/rules/pull-request-guidelines/RULE.md)
-- **General Coding:** [.cursor/rules/coding-guidelines/RULE.md](./.cursor/rules/coding-guidelines/RULE.md)
+  - [Rendering Performance](.cursor/rules/mms-perf-rendering/RULE.md) - Start here (keys, memoization, virtualization)
+  - [Hooks & Effects](.cursor/rules/mms-perf-hooks-effects/RULE.md) - useEffect best practices
+  - [React Compiler & Anti-Patterns](.cursor/rules/mms-perf-react-compiler/RULE.md) - React Compiler considerations
+  - [State Management](.cursor/rules/mms-perf-state-management/RULE.md) - Redux optimization
+- **Pull Requests:** [.cursor/rules/mms-pr-guidelines/RULE.md](./.cursor/rules/mms-pr-guidelines/RULE.md)
+- **General Coding:** [.cursor/rules/mms-coding-guidelines/RULE.md](./.cursor/rules/mms-coding-guidelines/RULE.md)
 - **Official Guidelines:** [.github/guidelines/CODING_GUIDELINES.md](./.github/guidelines/CODING_GUIDELINES.md)
 
 ### Non-EVM Swaps/Bridge Agent Entrypoints
 
 - **Non-EVM Swaps/Bridge Standard:** [`docs/add-non-evm-swaps-bridge-network.md`](./docs/add-non-evm-swaps-bridge-network.md) - Canonical implementation and review standard for adding non-EVM bridge or swaps support with code-gate and LaunchDarkly rollout requirements.
-- **OpenAI/Codex Skill:** [`.agents/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.agents/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Multi-agent skill entrypoint for the shared standard.
-- **Cursor Skill:** [`.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.cursor/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Cursor skill entrypoint for the shared standard.
-- **Claude Skill:** [`.claude/skills/add-non-evm-swaps-bridge-network/SKILL.md`](./.claude/skills/add-non-evm-swaps-bridge-network/SKILL.md) - Claude skill entrypoint for the shared standard.
-- **Claude Command:** [`.claude/commands/add-non-evm-swaps-bridge-network.md`](./.claude/commands/add-non-evm-swaps-bridge-network.md) - Claude command entrypoint for the shared standard.
+- **OpenAI/Codex Skill:** [`.agents/skills/mms-add-non-evm-network/SKILL.md`](./.agents/skills/mms-add-non-evm-network/SKILL.md) - Multi-agent skill entrypoint for the shared standard.
+- **Cursor Rule:** [`.cursor/rules/mms-add-non-evm-network/RULE.md`](./.cursor/rules/mms-add-non-evm-network/RULE.md) - Cursor rule entrypoint for the shared standard.
+- **Claude Skill:** [`.claude/skills/mms-add-non-evm-network/SKILL.md`](./.claude/skills/mms-add-non-evm-network/SKILL.md) - Claude skill entrypoint for the shared standard.
 - **Cursor Command:** [`.cursor/commands/add-non-evm-swaps-bridge-network.md`](./.cursor/commands/add-non-evm-swaps-bridge-network.md) - Cursor command shim to the Claude command entrypoint.
 
 ### External Resources
