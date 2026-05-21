@@ -1,6 +1,6 @@
 import React from 'react';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Box } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   ButtonLink,
   ButtonPrimary,

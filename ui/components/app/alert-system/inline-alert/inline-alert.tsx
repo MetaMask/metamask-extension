@@ -1,17 +1,17 @@
 import classnames from 'clsx';
 import React from 'react';
 import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+} from '@metamask/design-system-react';
+import {
   IconColor,
   Severity,
   TextColor,
   TextVariant,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-} from '@metamask/design-system-react';
 import { Icon, IconName, IconSize, Text } from '../../../component-library';
 
 export type InlineAlertProps = {

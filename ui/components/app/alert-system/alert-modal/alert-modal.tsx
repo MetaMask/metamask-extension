@@ -1,6 +1,12 @@
 import { ButtonVariant } from '@metamask/snaps-sdk';
 import React, { useCallback, useEffect } from 'react';
 import {
+  Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+} from '@metamask/design-system-react';
+import {
   BlockaidReason,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
@@ -18,12 +24,6 @@ import {
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../pages/confirmations/context/confirm';
-import {
-  Box,
-  BoxAlignItems,
-  BoxBackgroundColor,
-  BoxFlexDirection,
-} from '@metamask/design-system-react';
 import {
   Button,
   ButtonSize,

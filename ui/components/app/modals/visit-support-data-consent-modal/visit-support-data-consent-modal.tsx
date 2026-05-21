@@ -1,10 +1,10 @@
 import React, { useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
+import { Box } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { selectSessionData } from '../../../../selectors/identity/authentication';
 import { getMetaMetricsId } from '../../../../selectors/selectors';
 import { openWindow } from '../../../../helpers/utils/window';
-import { Box } from '@metamask/design-system-react';
 import {
   Modal,
   ModalOverlay,

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import Modal from '../../modal';
 import TextField from '../../../ui/text-field';
 import {
@@ -9,7 +10,6 @@ import {
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
   ButtonIcon,
   ButtonIconSize,

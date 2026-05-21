@@ -1,5 +1,10 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -12,11 +17,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsUserTrait,
 } from '../../../../shared/constants/metametrics';
-import {
-  Box,
-  BoxFlexDirection,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import { Text } from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
 import {

@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import {
   BackgroundColor,
@@ -9,7 +10,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import useAlerts from '../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import {
   ButtonIcon,
   ButtonIconSize,

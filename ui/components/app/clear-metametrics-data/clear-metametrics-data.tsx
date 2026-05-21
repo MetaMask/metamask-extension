@@ -1,16 +1,16 @@
 import React, { useContext } from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  hideDeleteMetaMetricsDataModal,
-  openDataDeletionErrorModal,
-} from '../../../ducks/app/app';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import {
+  hideDeleteMetaMetricsDataModal,
+  openDataDeletionErrorModal,
+} from '../../../ducks/app/app';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Button,
   ButtonSize,

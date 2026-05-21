@@ -1,9 +1,9 @@
 import React from 'react';
+import { Box } from '@metamask/design-system-react';
 import {
   SECURITY_PROVIDER_CONFIG,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
-import { Box } from '@metamask/design-system-react';
 import {
   ButtonLink,
   ButtonLinkSize,

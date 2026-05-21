@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import { CONSENSYS_PRIVACY_LINK } from '../../../../shared/lib/ui-utils';
 import ClearMetametricsData from '../clear-metametrics-data';
-import { Box, BoxFlexDirection } from '@metamask/design-system-react';
 import {
   ButtonPrimary,
   Icon,

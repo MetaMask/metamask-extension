@@ -2,17 +2,17 @@ import classnames from 'clsx';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useRef, useState } from 'react';
 import {
+  Box,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { I18nContext } from '../../../contexts/i18n';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  Box,
-  BoxAlignItems,
-  BoxJustifyContent,
-} from '@metamask/design-system-react';
 import {
   AlignItems,
   BlockSize,

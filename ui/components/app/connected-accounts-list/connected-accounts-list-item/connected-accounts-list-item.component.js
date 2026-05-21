@@ -1,8 +1,6 @@
 import React from 'react';
 import classnames from 'clsx';
 import PropTypes from 'prop-types';
-import { shortenAddress } from '../../../../helpers/utils/util';
-
 import {
   Box,
   BoxAlignItems,
@@ -10,6 +8,8 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+import { shortenAddress } from '../../../../helpers/utils/util';
+
 import { Text } from '../../../component-library';
 import { PreferredAvatar } from '../../preferred-avatar';
 import {
