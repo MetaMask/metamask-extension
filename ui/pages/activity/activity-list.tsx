@@ -9,7 +9,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import { useItemInView } from '../../hooks/useItemInView';
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
-import { LegacyDetails } from './LegacyDetails';
+import { LegacyDetails } from './legacy-details';
 import { ListItem } from './cells/list-item';
 import { dedupeItems, getItemKey, groupActivityListItems } from './helpers';
 import { useLocalTransactions } from './useLocalTransactions';
