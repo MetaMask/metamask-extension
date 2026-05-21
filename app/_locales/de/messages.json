@@ -1921,9 +1921,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Diese Website möchte die Genehmigung, Ihre Tokens abzuheben."
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Diese Website möchte die Berechtigung zum Widerrufen Ihrer ERC-20-Token-Genehmigungen."
-  },
   "confirmTitleDescPermission": {
     "message": "Diese Website möchte Genehmigungen, Ihre Tokens auszugeben."
   },

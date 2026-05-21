@@ -1921,9 +1921,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "此网站需要获得许可来提取您的代币"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "此网站请求“撤销”您的 ERC-20 代币授权许可。"
-  },
   "confirmTitleDescPermission": {
     "message": "该网站想获得花费您的代币的许可。"
   },

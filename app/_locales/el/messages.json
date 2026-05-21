@@ -1927,9 +1927,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Αυτός ο ιστότοπος ζητάει άδεια για την απόσυρση των tokens σας"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Αυτός ο ιστότοπος ζητά άδεια για να ανακαλέσει τις εγκρίσεις ERC‑20 για τα tokens σας."
-  },
   "confirmTitleDescPermission": {
     "message": "Αυτός ο ιστότοπος ζητά άδεια για να ξοδέψει τα tokens σας."
   },
