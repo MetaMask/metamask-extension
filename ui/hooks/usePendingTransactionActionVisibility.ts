@@ -15,10 +15,10 @@ import { useShouldShowSpeedUp } from './useShouldShowSpeedUp';
  * @param transactionGroup - Group from transaction selectors.
  * @param isEarliestNonce - Whether this group has the earliest pending nonce on its chain.
  */
-export function usePendingTransactionActionVisibility(
+export const usePendingTransactionActionVisibility = (
   transactionGroup: TransactionGroup,
   isEarliestNonce: boolean,
-): PendingTransactionActionVisibility {
+): PendingTransactionActionVisibility => {
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
     isEarliestNonce,
@@ -35,7 +35,7 @@ export function usePendingTransactionActionVisibility(
         primaryTransaction: transactionGroup.primaryTransaction,
         shouldShowSpeedUp,
         isBridgeTx,
-        isIntentBridgeActivity: isIntentBridgeActivity(bridgeHistoryItem),
+        hasIntentBridgeActivity: isIntentBridgeActivity(bridgeHistoryItem),
       }),
     [
       transactionGroup.hasCancelled,

@@ -14,6 +14,9 @@ function getNonceNetworkKey(transaction: TransactionMeta) {
 /**
  * Derives nonce-group flags from live controller metas (same rules as
  * groupAndSortTransactionsByNonce).
+ *
+ * @param meta - Transaction meta for the row's primary transaction.
+ * @param transactions - All transaction metas from the controller.
  */
 export const deriveNonceGroupFlags = (
   meta: TransactionMeta,
@@ -46,6 +49,9 @@ export const deriveNonceGroupFlags = (
 
 /**
  * Minimal transaction group for pending-action hooks (no `raw` on activity rows).
+ *
+ * @param meta - Transaction meta for the row's primary transaction.
+ * @param transactions - All transaction metas from the controller.
  */
 export const buildTransactionGroupFromMeta = (
   meta: TransactionMeta,

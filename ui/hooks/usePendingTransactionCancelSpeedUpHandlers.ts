@@ -1,4 +1,4 @@
-import { useCallback, useContext, type MouseEvent } from 'react';
+import { useCallback, useContext, type MouseEvent as ReactMouseEvent } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   TransactionStatus,
@@ -16,26 +16,30 @@ type UsePendingTransactionCancelSpeedUpHandlersParams = {
 };
 
 /**
- * Speed up / cancel click handlers for pending activity rows (opens gas modal or
- * aborts hardware signing).
+ * Speed up / cancel click handlers for pending EVM activity rows.
+ *
+ * @param options - Handler inputs for the row's primary transaction.
+ * @param options.primaryTransaction - Primary transaction meta for cancel / speed-up.
+ * @param options.setEditGasMode - Sets cancel vs speed-up mode before opening the gas modal.
  */
-export function usePendingTransactionCancelSpeedUpHandlers({
+export const usePendingTransactionCancelSpeedUpHandlers = ({
   primaryTransaction,
   setEditGasMode,
-}: UsePendingTransactionCancelSpeedUpHandlersParams) {
+}: UsePendingTransactionCancelSpeedUpHandlersParams) => {
   const { openModal } = useTransactionModalContext();
   const dispatch = useDispatch();
   const { trackEvent } = useContext(MetaMetricsContext);
   const { id, status } = primaryTransaction;
 
   const onSpeedUp = useCallback(
-    (event: MouseEvent) => {
+    (event: ReactMouseEvent) => {
       event.stopPropagation();
       trackEvent({
         event: 'Clicked "Speed Up"',
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           action: 'Activity Log',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- legacy metrics field
           legacy_event: true,
         },
       });
@@ -46,13 +50,14 @@ export function usePendingTransactionCancelSpeedUpHandlers({
   );
 
   const onCancel = useCallback(
-    (event: MouseEvent) => {
+    (event: ReactMouseEvent) => {
       event.stopPropagation();
       trackEvent({
         event: 'Clicked "Cancel"',
         category: MetaMetricsEventCategory.Navigation,
         properties: {
           action: 'Activity Log',
+          // eslint-disable-next-line @typescript-eslint/naming-convention -- legacy metrics field
           legacy_event: true,
         },
       });

@@ -1,4 +1,4 @@
-import React, { useMemo, type MouseEvent } from 'react';
+import React, { useMemo, type MouseEvent as ReactMouseEvent } from 'react';
 import { useSelector } from 'react-redux';
 import {
   TransactionStatus,
@@ -43,9 +43,14 @@ type PendingEvmActionsProps = {
 
 /**
  * Activity v3 adapter for pending cancel / speed-up controls.
- * Resolves meta from Redux, rebuilds the nonce group for visibility
- * rules, wires `usePendingTransactionActions`, and sets `onGasModalMetaId` before
- * delegating render to `PendingTransactionActionButtons`.
+ * Resolves meta from Redux, rebuilds nonce group for visibility rules, wires
+ * `usePendingTransactionActions` to decide visibility of action buttons.
+ *
+ * @param options - Pending action inputs for the activity row.
+ * @param options.metaId - TransactionController meta id for the row.
+ * @param options.isEarliestNonce - Whether this meta has the earliest pending nonce on its chain.
+ * @param options.setEditGasMode - Sets cancel vs speed-up mode before opening the gas modal.
+ * @param options.onGasModalMetaId - Records which meta the gas modal should target.
  */
 export const PendingEvmActions = ({
   metaId,
@@ -65,7 +70,7 @@ export const PendingEvmActions = ({
     return buildTransactionGroupFromMeta(meta, transactions);
   }, [meta, transactions]);
 
-  const inactiveGroup = useMemo(buildInactiveTransactionGroup, []);
+  const inactiveGroup = useMemo(() => buildInactiveTransactionGroup(), []);
 
   const actions = usePendingTransactionActions({
     transactionGroup: transactionGroup ?? inactiveGroup,
@@ -82,7 +87,7 @@ export const PendingEvmActions = ({
   }
 
   const wrapHandler =
-    (handler: (event: MouseEvent) => void) => (event: MouseEvent) => {
+    (handler: (event: ReactMouseEvent) => void) => (event: ReactMouseEvent) => {
       onGasModalMetaId(meta.id);
       handler(event);
     };

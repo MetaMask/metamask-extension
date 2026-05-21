@@ -54,7 +54,7 @@ describe('getPendingTransactionActionVisibility', () => {
     primaryTransaction: basePrimaryTransaction,
     shouldShowSpeedUp: true,
     isBridgeTx: false,
-    isIntentBridgeActivity: false,
+    hasIntentBridgeActivity: false,
   };
 
   it('shows cancel and speed up for a standard pending transaction', () => {
@@ -116,7 +116,7 @@ describe('getPendingTransactionActionVisibility', () => {
     expect(
       getPendingTransactionActionVisibility({
         ...baseParams,
-        isIntentBridgeActivity: true,
+        hasIntentBridgeActivity: true,
       }).showCancel,
     ).toBe(false);
   });

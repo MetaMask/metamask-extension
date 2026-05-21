@@ -12,12 +12,17 @@ type UsePendingTransactionActionsParams = {
 /**
  * Visibility and handlers for pending transaction Cancel / Speed up controls.
  * For use in activity list rows (legacy and new).
+ *
+ * @param options - Pending action inputs for the transaction group row.
+ * @param options.transactionGroup - Local EVM transaction group for the row.
+ * @param options.isEarliestNonce - Whether this group has the earliest pending nonce on its chain.
+ * @param options.setEditGasMode - Sets cancel vs speed-up mode before opening the gas modal.
  */
-export function usePendingTransactionActions({
+export const usePendingTransactionActions = ({
   transactionGroup,
   isEarliestNonce,
   setEditGasMode,
-}: UsePendingTransactionActionsParams) {
+}: UsePendingTransactionActionsParams) => {
   const { showCancel, showSpeedUp, speedUpLabel } =
     usePendingTransactionActionVisibility(transactionGroup, isEarliestNonce);
 

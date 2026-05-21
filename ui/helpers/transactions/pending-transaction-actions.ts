@@ -17,7 +17,7 @@ export type GetPendingTransactionActionVisibilityParams = {
   primaryTransaction: TransactionMeta;
   shouldShowSpeedUp: boolean;
   isBridgeTx: boolean;
-  isIntentBridgeActivity: boolean;
+  hasIntentBridgeActivity: boolean;
 };
 
 /**
@@ -25,14 +25,19 @@ export type GetPendingTransactionActionVisibilityParams = {
  * transaction group. Mirrors legacy activity list rules.
  *
  * @param params - Inputs derived from the transaction group and bridge context.
+ * @param params.hasCancelled - Whether the group already has a cancel transaction.
+ * @param params.primaryTransaction - Primary transaction meta for the group.
+ * @param params.shouldShowSpeedUp - Whether speed-up timing/chain rules allow the control.
+ * @param params.isBridgeTx - Whether the initial transaction is a bridge type.
+ * @param params.hasIntentBridgeActivity - Whether bridge history is an intent-bridge flow.
  */
-export function getPendingTransactionActionVisibility({
+export const getPendingTransactionActionVisibility = ({
   hasCancelled,
   primaryTransaction,
   shouldShowSpeedUp,
   isBridgeTx,
-  isIntentBridgeActivity,
-}: GetPendingTransactionActionVisibilityParams): PendingTransactionActionVisibility {
+  hasIntentBridgeActivity,
+}: GetPendingTransactionActionVisibilityParams): PendingTransactionActionVisibility => {
   const { status, selectedGasFeeToken } = primaryTransaction;
   const hasGasFeeTokenSelected = Boolean(selectedGasFeeToken);
   const isPending = isTransactionPending(primaryTransaction);
@@ -54,7 +59,7 @@ export function getPendingTransactionActionVisibility({
     !isUnapproved &&
     !isSubmitting &&
     !isBridgeTx &&
-    !isIntentBridgeActivity &&
+    !hasIntentBridgeActivity &&
     !hasGasFeeTokenSelected;
 
   return {
@@ -65,12 +70,12 @@ export function getPendingTransactionActionVisibility({
 }
 
 /**
- * Whether an intent-bridge history entry disables the cancel control.
+ * Whether a bridge tx history item is an intent-bridge activity.
  *
- * @param bridgeHistoryItem - Bridge tx history item from selectors, if any.
+ * @param bridgeHistoryItem - Bridge tx history item from selectors
  */
-export function isIntentBridgeActivity(
+export const isIntentBridgeActivity = (
   bridgeHistoryItem?: { quote?: { intent?: unknown } } | null,
-): boolean {
+): boolean => {
   return Boolean(bridgeHistoryItem?.quote?.intent);
 }
