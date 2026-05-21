@@ -1,4 +1,5 @@
 import { QrErrorType } from '../qr-error-content';
+import { extractMessageFromUnknownError } from '../../../../contexts/hardware-wallets';
 
 /**
  * Error categories for QR scan results.
@@ -49,22 +50,6 @@ function looksLikeUr(text: string): boolean {
 }
 
 /**
- * Extracts a string message from an unknown caught value.
- *
- * @param exception - The caught value.
- * @returns The error message or stringified value.
- */
-function extractMessage(exception: unknown): string {
-  if (exception instanceof Error) {
-    return exception.message;
-  }
-  if (typeof exception === 'string') {
-    return exception;
-  }
-  return String(exception);
-}
-
-/**
  * Classifies a QR scan result into one of four error categories.
  *
  * Priority (highest to lowest):
@@ -83,12 +68,12 @@ export function classifyScanResult(
 ): ScanErrorClassification | null {
   const { text, decodedType, expectedTypes, decoderError, exception } = input;
 
-  if (exception !== undefined) {
+  if (exception !== undefined && exception !== null) {
     const isUrFormat = text === undefined ? false : looksLikeUr(text);
     return {
       category: 'scan_exception',
       isUrFormat,
-      rawMessage: extractMessage(exception),
+      rawMessage: extractMessageFromUnknownError(exception),
     };
   }
 

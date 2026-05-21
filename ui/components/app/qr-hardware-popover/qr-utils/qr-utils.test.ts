@@ -215,18 +215,14 @@ describe('classifyScanResult', () => {
       });
     });
 
-    it('treats null as a present exception value', () => {
+    it('treats null exception as absent and falls through to other checks', () => {
       const result = classifyScanResult({
         text: 'ur:crypto-hdkey/data',
         expectedTypes: PAIRING_EXPECTED_TYPES,
         exception: null,
       });
 
-      expect(result).toStrictEqual({
-        category: 'scan_exception',
-        isUrFormat: true,
-        rawMessage: 'null',
-      });
+      expect(result).toBeNull();
     });
 
     it('infers isUrFormat from text when exception is present', () => {
