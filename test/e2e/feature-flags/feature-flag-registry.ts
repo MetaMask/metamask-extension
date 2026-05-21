@@ -2234,6 +2234,14 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
     productionDefault: 'xyz:*',
     status: FeatureFlagStatus.Active,
   },
+
+  vipProgramEnabled: {
+    name: 'vipProgramEnabled',
+    type: FeatureFlagType.Remote,
+    inProd: true,
+    productionDefault: false,
+    status: FeatureFlagStatus.Active,
+  },
   rewardsBitcoinEnabledExtension: {
     name: 'rewardsBitcoinEnabledExtension',
     type: FeatureFlagType.Remote,

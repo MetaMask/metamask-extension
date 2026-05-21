@@ -37,6 +37,7 @@ const stateWithAccount = {
         defaultRpcEndpointIndex: 0,
       },
     },
+    remoteFeatureFlags: { vipProgramEnabled: true },
   },
 };
 
@@ -51,6 +52,14 @@ const stateWithoutAccount = {
         defaultRpcEndpointIndex: 0,
       },
     },
+    remoteFeatureFlags: { vipProgramEnabled: true },
+  },
+};
+
+const stateWithVipDisabled = {
+  metamask: {
+    ...stateWithAccount.metamask,
+    remoteFeatureFlags: { vipProgramEnabled: false },
   },
 };
 
@@ -125,5 +134,17 @@ describe('useVipTier', () => {
     });
 
     expect(result.current).toBeNull();
+  });
+
+  it('returns null and skips the lookup when vipProgramEnabled is false', () => {
+    mockGetVipTierForAccount.mockResolvedValue(3);
+
+    const { result } = renderHookWithProvider(
+      () => useVipTier(),
+      stateWithVipDisabled,
+    );
+
+    expect(result.current).toBeNull();
+    expect(mockGetVipTierForAccount).not.toHaveBeenCalled();
   });
 });
