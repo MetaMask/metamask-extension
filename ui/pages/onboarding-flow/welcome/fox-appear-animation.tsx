@@ -9,6 +9,7 @@ type FoxAppearAnimationProps = {
 };
 
 const FoxAppearAnimationContent = mmLazy(
+  // eslint-disable-next-line import-x/extensions -- needed for mmLazy
   () => import('./fox-appear-animation-content.tsx'),
 );
 

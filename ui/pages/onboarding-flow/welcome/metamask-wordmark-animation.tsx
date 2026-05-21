@@ -9,6 +9,7 @@ type MetamaskWordMarkAnimationProps = {
 };
 
 const MetamaskWordMarkAnimationContent = mmLazy(
+  // eslint-disable-next-line import-x/extensions -- needed for mmLazy
   () => import('./metamask-wordmark-animation-content.tsx'),
 );
 

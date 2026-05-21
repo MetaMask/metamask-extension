@@ -3,6 +3,7 @@ import { Box } from '@metamask/design-system-react';
 import { mmLazy } from '../../../helpers/utils/mm-lazy';
 
 const WalletReadyAnimationContent = mmLazy(
+  // eslint-disable-next-line import-x/extensions -- needed for mmLazy
   () => import('./wallet-ready-animation-content.tsx'),
 );
 

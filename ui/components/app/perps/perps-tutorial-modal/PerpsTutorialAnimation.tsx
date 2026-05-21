@@ -24,6 +24,7 @@ const BASE_CONTAINER_STYLE: React.CSSProperties = {
 };
 
 const PerpsTutorialAnimationContent = mmLazy(
+  // eslint-disable-next-line import-x/extensions -- needed for mmLazy
   () => import('./PerpsTutorialAnimationContent.tsx'),
 );
 

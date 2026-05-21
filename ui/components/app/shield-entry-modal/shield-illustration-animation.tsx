@@ -3,6 +3,7 @@ import { Box } from '@metamask/design-system-react';
 import { mmLazy } from '../../../helpers/utils/mm-lazy';
 
 const ShieldIllustrationAnimationContent = mmLazy(
+  // eslint-disable-next-line import-x/extensions -- needed for mmLazy
   () => import('./shield-illustration-animation-content.tsx'),
 );
 
