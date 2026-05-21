@@ -175,8 +175,175 @@
   "activity": {
     "message": "Hoạt động"
   },
-  "activityEmptyDescription": {
-    "message": "Chưa có gì để xem. Hãy hoán đổi token đầu tiên của bạn ngay hôm nay."
+  "activity_approveSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_failed_description": {
+    "message": "Cầu nối thất bại"
+  },
+  "activity_bridge_failed_title": {
+    "message": "Cầu nối thất bại"
+  },
+  "activity_buy_success_description": {
+    "message": "Đã mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_title": {
+    "message": "Đã mua $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "Tương tác hợp đồng thông minh"
+  },
+  "activity_deposit_failed_description": {
+    "message": "Nạp tiền thất bại"
+  },
+  "activity_deposit_failed_title": {
+    "message": "Nạp tiền thất bại"
+  },
+  "activity_fallback_description": {
+    "message": "Giao dịch"
+  },
+  "activity_fallback_title": {
+    "message": "Giao dịch"
+  },
+  "activity_increaseSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingDeposit_failed_title": {
+    "message": "Nạp tiền thất bại"
+  },
+  "activity_lendingWithdrawal_failed_description": {
+    "message": "Rút tiền thất bại"
+  },
+  "activity_lendingWithdrawal_failed_title": {
+    "message": "Rút tiền thất bại"
+  },
+  "activity_lendingWithdrawal_success_description": {
+    "message": "Rút tiền cho vay"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "Rút tiền cho vay"
+  },
+  "activity_nftMint_success_title": {
+    "message": "Đã đúc $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsCloseShort_success_description": {
+    "message": "Đã đóng vị thế bán khống"
+  },
+  "activity_perpsCloseShort_success_title": {
+    "message": "Đã đóng vị thế bán khống"
+  },
+  "activity_perpsOpenLong_success_description": {
+    "message": "Đã mở vị thế mua khống"
+  },
+  "activity_perpsOpenLong_success_title": {
+    "message": "Đã mở vị thế mua khống"
+  },
+  "activity_perpsWithdrawFunds_failed_description": {
+    "message": "Rút tiền thất bại"
+  },
+  "activity_perpsWithdrawFunds_failed_title": {
+    "message": "Rút tiền thất bại"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "Đang rút tiền"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "Đang rút tiền"
+  },
+  "activity_predictionCashedOut_success_description": {
+    "message": "Đã rút tiền"
+  },
+  "activity_predictionCashedOut_success_title": {
+    "message": "Đã rút tiền"
+  },
+  "activity_predictionPlaced_success_description": {
+    "message": "Dự đoán đã đặt"
+  },
+  "activity_predictionPlaced_success_title": {
+    "message": "Dự đoán đã đặt"
+  },
+  "activity_predictionsWithdrawFunds_failed_description": {
+    "message": "Rút tiền thất bại"
+  },
+  "activity_predictionsWithdrawFunds_failed_title": {
+    "message": "Rút tiền thất bại"
+  },
+  "activity_predictionsWithdrawFunds_pending_description": {
+    "message": "Đang rút tiền"
+  },
+  "activity_predictionsWithdrawFunds_pending_title": {
+    "message": "Đang rút tiền"
+  },
+  "activity_receive_failed_description": {
+    "message": "Từ: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_pending_description": {
+    "message": "Từ: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_description": {
+    "message": "Từ: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_revokeSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_failed_description": {
+    "message": "Đến: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_description": {
+    "message": "Đến: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_title": {
+    "message": "Đang gửi $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Đến: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_success_title": {
+    "message": "Đã gửi $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_swapIncomplete_failed_title": {
+    "message": "Hoán đổi không thành công"
+  },
+  "activity_swap_failed_title": {
+    "message": "Hoán đổi không thành công"
   },
   "add": {
     "message": "Thêm"
@@ -216,6 +383,9 @@
   },
   "addCustomNetwork": {
     "message": "Thêm mạng tùy chỉnh"
+  },
+  "addCustomToken": {
+    "message": "Thêm token tùy chỉnh"
   },
   "addEthereumChainWarningModalHeader": {
     "message": "Chỉ thêm nhà cung cấp RPC này nếu bạn chắc chắn bạn có thể tin tưởng. $1",
@@ -492,6 +662,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "Token này có dấu hiệu rõ ràng của hành vi độc hại. Tiếp tục tương tác có thể khiến bạn mất tiền."
   },
+  "alertMinimumReserve": {
+    "message": "Cần có số dư dự trữ"
+  },
   "alertModalAcknowledge": {
     "message": "Tôi đã hiểu rủi ro và vẫn muốn tiếp tục"
   },
@@ -572,6 +745,9 @@
   },
   "all": {
     "message": "Tất cả"
+  },
+  "allDefaultNetworks": {
+    "message": "Tất cả các mạng mặc định"
   },
   "allNetworks": {
     "message": "Tất cả mạng"
@@ -1751,9 +1927,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Trang web này muốn được cấp quyền để rút token của bạn"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Trang web này yêu cầu quyền thu hồi các phê duyệt token ERC-20 của bạn."
-  },
   "confirmTitleDescPermission": {
     "message": "Trang web này muốn được cấp quyền chi tiêu token của bạn."
   },
@@ -2737,8 +2910,14 @@
   "enterSymbol": {
     "message": "Nhập ký hiệu"
   },
+  "enterTokenAddress": {
+    "message": "Nhập địa chỉ token"
+  },
   "enterTokenNameOrAddress": {
     "message": "Nhập tên token hoặc dán địa chỉ"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Nhập tên hoặc địa chỉ token"
   },
   "enterYourPassword": {
     "message": "Nhập mật khẩu"
@@ -3038,7 +3217,7 @@
     "message": "Không ước tính được giá gas do lỗi mạng."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Tài trợ phí gas không khả dụng cho giao dịch này. Bạn cần giữ ít nhất $1 $2 trong tài khoản của mình.",
+    "message": "Mạng cụ thể này yêu cầu duy trì số dư dự trữ $1 $2 trong tài khoản của bạn.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -3937,6 +4116,9 @@
   "managePermissions": {
     "message": "Quản lý quyền"
   },
+  "manageTokens": {
+    "message": "Quản lý token"
+  },
   "manageWalletRecovery": {
     "message": "Quản lý khôi phục ví"
   },
@@ -4632,6 +4814,9 @@
   "newContract": {
     "message": "Hợp đồng mới"
   },
+  "newCustomTokenAdded": {
+    "message": "“$1” đã được thêm thành công!"
+  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Cài đặt > Bảo mật và quyền riêng tư"
   },
@@ -4767,8 +4952,14 @@
   "noSnaps": {
     "message": "Bạn chưa cài đặt bất kỳ Snap nào."
   },
+  "noTokensMatchSearch": {
+    "message": "Không có token nào phù hợp với tìm kiếm của bạn"
+  },
   "noTokensMatchingYourFilters": {
     "message": "Không có token phù hợp với bộ lọc"
+  },
+  "noTokensToManage": {
+    "message": "Bạn chưa có token nào. Tìm kiếm theo tên hoặc địa chỉ để khám phá các token phổ biến."
   },
   "noWebcamFound": {
     "message": "Không tìm thấy webcam trên máy tính của bạn. Vui lòng thử lại."
@@ -5355,6 +5546,9 @@
     "message": "Thanh toán bằng",
     "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
+  "payee": {
+    "message": "Người nhận thanh toán"
+  },
   "pending": {
     "message": "Chờ xử lý"
   },
@@ -5376,6 +5570,9 @@
   },
   "perSecond": {
     "message": "mỗi giây"
+  },
+  "percent": {
+    "message": "$1%"
   },
   "percentChange": {
     "message": "Phần trăm thay đổi"
@@ -5705,6 +5902,10 @@
   "perpsAutoClose": {
     "message": "Tự động đóng"
   },
+  "perpsAutoDeleveraging": {
+    "message": "Tự động giảm đòn bẩy",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "khả dụng",
     "description": "is the available balance amount"
@@ -5762,7 +5963,7 @@
     "message": "Đóng vị thế mua khống"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Đóng một phần phải có giá trị tối thiểu là $1 USD. Hãy tăng số lượng đóng hoặc đóng toàn bộ vị thế."
+    "message": "Lệnh đóng một phần phải có giá trị tối thiểu là $1 theo USD. Hãy tăng số tiền đóng lệnh hoặc đóng toàn bộ vị thế."
   },
   "perpsClosePosition": {
     "message": "Đóng vị thế"
@@ -5797,6 +5998,9 @@
   "perpsDepositActivityTitle": {
     "message": "Hợp đồng vĩnh cửu đã được nạp tiền"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Cầu nối thất bại"
+  },
   "perpsDepositFailed": {
     "message": "Không thể hoàn tất giao dịch gửi tiền. Hãy thử lại."
   },
@@ -5819,10 +6023,10 @@
     "message": "Đang nạp tiền vào Hợp đồng vĩnh cửu"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Tiền của bạn đã sẵn sàng để giao dịch."
+    "message": "Tiền đã sẵn sàng để giao dịch"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Tiền đã được nạp vào Hợp đồng vĩnh cửu"
+    "message": "Tài khoản Hợp đồng vĩnh cửu đã được nạp tiền"
   },
   "perpsDeposits": {
     "message": "Nạp tiền"
@@ -5927,6 +6131,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "Giá hiện tại gần với giá thanh lý ước tính"
+  },
+  "perpsLiquidated": {
+    "message": "Đã bị thanh lý",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Khoảng cách đến thanh lý"
@@ -6111,11 +6319,14 @@
   "perpsSortByPriceChange": {
     "message": "Biến động giá"
   },
+  "perpsSortByRank": {
+    "message": "Xếp hạng"
+  },
   "perpsSortBySection": {
     "message": "Sắp xếp theo"
   },
   "perpsSortByTitle": {
-    "message": "Sắp xếp"
+    "message": "Bộ lọc"
   },
   "perpsSortByVolume": {
     "message": "Khối lượng"
@@ -6291,6 +6502,9 @@
   "perpsTrades": {
     "message": "Giao dịch"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Đã mở vị thế mua khống"
+  },
   "perpsTriggerPrice": {
     "message": "Giá kích hoạt"
   },
@@ -6389,6 +6603,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "Chưa chọn tài khoản. Hãy chọn một tài khoản và thử lại."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Không thể tiến hành rút tiền"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Đã xảy ra sự cố"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Sẽ khả dụng sau khoảng 1 phút"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Đang rút tiền"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2 đã được chuyển vào ví của bạn",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Tiền đã được chuyển vào ví của bạn"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Rút tiền hoàn tất"
   },
   "perpsWithdrawReceive": {
     "message": "Nhận"
@@ -6721,6 +6957,46 @@
     "message": "Cần quyền truy cập camera",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Quay lại ví cứng của bạn và tìm tùy chọn chia sẻ hoặc xuất tài khoản, chọn MetaMask, sau đó quét mã QR.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Quét mã QR đồng bộ ví",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Quay lại ví cứng của bạn và chấp thuận giao dịch, sau đó quét mã QR hiển thị.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Quét mã QR chữ ký",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Đảm bảo mã QR hiển thị đầy đủ và đủ ánh sáng, sau đó thử lại. Nếu sự cố vẫn tiếp diễn, bạn có thể cần cập nhật firmware của ví cứng.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "Không thể đọc mã QR",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Quay lại ví cứng của bạn, chọn MetaMask làm loại ví, sau đó tạo và quét mã QR mới.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Sai mã QR",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Quay lại ví cứng của bạn và chấp thuận giao dịch, sau đó quét mã QR hiển thị.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Sai mã QR",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "Đã đưa vào hàng đợi"
   },
@@ -6783,6 +7059,9 @@
   },
   "recoveryPhraseReminderTitle": {
     "message": "Bảo vệ ví của bạn"
+  },
+  "redeemer": {
+    "message": "Trình quy đổi"
   },
   "redeposit": {
     "message": "Nạp lại"
@@ -7033,6 +7312,12 @@
   "rewardsLinkAccountError": {
     "message": "Thêm tài khoản không thành công"
   },
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Đang kiểm tra khu vực..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Giành giải thưởng, nhận ưu đãi và khám phá thêm nhiều cách kiếm lợi nhuận — chỉ bằng cách sử dụng MetaMask."
+  },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "Chúng tôi không thể xác định liệu quốc gia của bạn có cho phép tham gia chương trình phần thưởng hay không. Vui lòng kiểm tra kết nối và thử lại."
   },
@@ -7051,6 +7336,46 @@
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Khu vực không được hỗ trợ"
   },
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "Khi tham gia, bạn đồng ý với $1 của chúng tôi. Chúng tôi sẽ đăng ký tất cả các tài khoản trên thiết bị này và theo dõi hoạt động trên chuỗi để tự động trao thưởng cho bạn. $2",
+    "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
+  },
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
+    "message": "Tìm hiểu thêm"
+  },
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
+    "message": "Điều khoản và Thông báo quyền riêng tư"
+  },
+  "rewardsOnboardingOptInError": {
+    "message": "Đăng ký tham gia thất bại"
+  },
+  "rewardsOnboardingReferralCodeError": {
+    "message": "Mã giới thiệu không hợp lệ"
+  },
+  "rewardsOnboardingReferralCodePlaceholder": {
+    "message": "Mã giới thiệu (không bắt buộc)"
+  },
+  "rewardsOnboardingReferralCodeUnknownError": {
+    "message": "Không thể xác minh mã giới thiệu."
+  },
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
+    "message": "Kiểm tra kết nối của bạn và thử lại."
+  },
+  "rewardsOnboardingReferralHide": {
+    "message": "Ẩn mã"
+  },
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Có mã giới thiệu?"
+  },
+  "rewardsOnboardingSignUp": {
+    "message": "Tham gia chương trình Phần thưởng"
+  },
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Đang tham gia..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Bắt đầu kiếm phần thưởng"
+  },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Đang xác minh mã giới thiệu...",
     "description": "Text shown while verifying a referral code during rewards opt-in"
@@ -7066,6 +7391,12 @@
   "rewardsPointsIcon": {
     "message": "Điểm phần thưởng",
     "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "Để truy cập MetaMask Phần thưởng, hãy quét mã QR bằng thiết bị di động của bạn."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Tiếp tục trên di động"
   },
   "rewardsSignInFailed": {
     "message": "Đăng nhập thất bại",
@@ -9170,6 +9501,9 @@
   "tokenAddress": {
     "message": "Địa chỉ Token"
   },
+  "tokenAllowance": {
+    "message": "Hạn mức cho phép token"
+  },
   "tokenAlreadyAdded": {
     "message": "Đã thêm token."
   },
@@ -9211,6 +9545,9 @@
   "tokenPermissionsCount": {
     "message": "$1 quyền token",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "Không thể tải kết quả tìm kiếm. Vui lòng thử lại."
   },
   "tokenStandard": {
     "message": "Tiêu chuẩn token"

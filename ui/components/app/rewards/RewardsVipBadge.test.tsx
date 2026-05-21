@@ -77,7 +77,7 @@ describe('RewardsVipBadge', () => {
                 <p
                   class="text-default text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-medium font-default"
                 >
-                  VIP Fox 5
+                  VIP 5
                 </p>
               </div>
             </div>
