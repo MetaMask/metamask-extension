@@ -12,17 +12,6 @@ jest.mock('../../../../../shared/lib/build-types', () => ({
 describe('isBlockedUrl', () => {
   const messenger = getRootMessenger();
   const phishingControllerMessenger = getPhishingControllerMessenger(messenger);
-  messenger.delegate({
-    messenger: phishingControllerMessenger,
-    actions: [
-      'AddressBookController:getState',
-      'TransactionController:getState',
-    ],
-    events: [
-      'AddressBookController:stateChange',
-      'TransactionController:stateChange',
-    ],
-  });
   const phishingController = new PhishingController({
     messenger: phishingControllerMessenger,
     state: {
