@@ -8,16 +8,18 @@ export const sentryLogger = createModuleLogger(
   globalThis.document ? 'ui' : 'background',
 );
 
-type CaptureExceptionHint = Parameters<(typeof Sentry)['captureException']>[1];
-type CaptureExceptionHintWithTags = CaptureExceptionHint & {
+type SentryCaptureExceptionHint = Parameters<
+  (typeof Sentry)['captureException']
+>[1];
+type SentryCaptureExceptionHintWithTags = SentryCaptureExceptionHint & {
   tags?: Record<string, string>;
 };
-const TRACE_ID_TAG = 'trace_id';
+export const TRACE_ID_TAG = 'trace_id';
 
 function getCaptureExceptionHintWithTraceId(
-  hint?: CaptureExceptionHint,
-): CaptureExceptionHint | undefined {
-  const activeSpan = globalThis.sentry?.getActiveSpan?.() ?? null;
+  hint?: SentryCaptureExceptionHint,
+): SentryCaptureExceptionHint | undefined {
+  const activeSpan = globalThis.sentry?.getActiveSpan?.();
 
   if (!activeSpan) {
     return hint;
@@ -31,7 +33,7 @@ function getCaptureExceptionHintWithTraceId(
     return hint;
   }
 
-  const hintWithTags = hint as CaptureExceptionHintWithTags | undefined;
+  const hintWithTags = hint as SentryCaptureExceptionHintWithTags | undefined;
 
   if (!traceId || hintWithTags?.tags?.[TRACE_ID_TAG]) {
     return hint;
@@ -43,7 +45,7 @@ function getCaptureExceptionHintWithTraceId(
       ...hintWithTags?.tags,
       [TRACE_ID_TAG]: traceId,
     },
-  } as CaptureExceptionHint;
+  } as SentryCaptureExceptionHint;
 }
 
 /**

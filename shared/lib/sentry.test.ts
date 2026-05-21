@@ -1,7 +1,5 @@
 import type * as Sentry from '@sentry/browser';
-import { captureException, captureMessage } from './sentry';
-
-const TRACE_ID_TAG = 'trace_id';
+import { captureException, captureMessage, TRACE_ID_TAG } from './sentry';
 
 describe('Sentry', () => {
   beforeEach(() => {
