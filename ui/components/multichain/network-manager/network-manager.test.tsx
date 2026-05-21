@@ -317,15 +317,15 @@ describe('NetworkManager Component', () => {
   it('keeps the current route when dismissed outside from token management', () => {
     renderNetworkManagerWithLocationDisplay(TOKEN_MANAGEMENT_ROUTE);
 
-    expect(screen.getByTestId('network-manager-current-route')).toHaveTextContent(
-      TOKEN_MANAGEMENT_ROUTE,
-    );
+    expect(
+      screen.getByTestId('network-manager-current-route'),
+    ).toHaveTextContent(TOKEN_MANAGEMENT_ROUTE);
 
     fireEvent.mouseDown(document.body);
 
-    expect(screen.getByTestId('network-manager-current-route')).toHaveTextContent(
-      TOKEN_MANAGEMENT_ROUTE,
-    );
+    expect(
+      screen.getByTestId('network-manager-current-route'),
+    ).toHaveTextContent(TOKEN_MANAGEMENT_ROUTE);
   });
 
   it('submitting a new RPC URL from add-rpc view switches to add view', async () => {
