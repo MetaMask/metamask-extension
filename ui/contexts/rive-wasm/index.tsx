@@ -144,7 +144,17 @@ export const useRiveWasmReady = () => {
     };
 
     riveWasmListeners.add(listener);
-    setState({ ...riveWasmReadyState });
+    setState((currentState) => {
+      if (
+        currentState.isWasmReady === riveWasmReadyState.isWasmReady &&
+        currentState.loading === riveWasmReadyState.loading &&
+        currentState.error === riveWasmReadyState.error
+      ) {
+        return currentState;
+      }
+
+      return { ...riveWasmReadyState };
+    });
 
     return () => {
       riveWasmListeners.delete(listener);
