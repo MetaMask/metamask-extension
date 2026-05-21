@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "扫描二维码"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "您可以从下面的官方二维码支持合作伙伴列表中选择。"
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "关联您的二维码硬件钱包"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SrpListHideAccounts": {
     "message": "隐藏 $1 个账户",
     "description": "$1 is the number of accounts"
@@ -555,9 +546,6 @@
   },
   "airDropPatternTitle": {
     "message": "空投模式"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "提醒"
@@ -1612,9 +1600,6 @@
     "message": "购买更多$1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "立即购买"
-  },
   "buyTabOpenedToastDescription": {
     "message": "我们已为您打开了用于购买的新标签页。",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -2132,9 +2117,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "我们检测到该资产已作为NFT添加。是否要将其从代币列表中删除？"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "已复制。"
   },
@@ -2352,9 +2334,6 @@
   },
   "dateCreated": {
     "message": "创建日期"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "借记卡或信用卡购买选项"
@@ -2680,9 +2659,6 @@
   "downloadAppTitle": {
     "message": "扫描二维码并下载应用程序"
   },
-  "downloadGoogleChrome": {
-    "message": "下载 Google Chrome 浏览器"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "即使忘记密码，也能通过面容 ID 轻松登录我们的应用。MetaMask 伴您随身畅行！"
   },
@@ -2691,9 +2667,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "下载我们的移动应用程序"
-  },
-  "downloadNow": {
-    "message": "立即下载"
   },
   "downloadStateLogs": {
     "message": "下载状态日志"
@@ -3458,9 +3431,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "点击提交前："
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "点击这里"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "打开以太坊应用"
   },
@@ -3470,12 +3440,6 @@
   },
   "hardwareWallets": {
     "message": "连接硬件钱包"
-  },
-  "hardwareWalletsInfo": {
-    "message": "硬件钱包集成使用API调用外部服务器，这些外部服务器可以看到您的IP地址和您与之交互的智能合约地址。"
-  },
-  "hardwareWalletsMsg": {
-    "message": "选择希望用于 MetaMask 的硬件钱包。"
   },
   "helpAndSettings": {
     "message": "帮助与设置"
@@ -3841,9 +3805,6 @@
     "message": "JSON 文件",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "账户名称"
   },
@@ -3896,9 +3857,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "了解有关隐私最佳实践的更多信息。"
-  },
-  "learnMoreKeystone": {
-    "message": "了解更多"
   },
   "learnMoreUpperCase": {
     "message": "了解更多"
@@ -3967,17 +3925,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "不支持 Firefox"
   },
-  "ledgerLiveApp": {
-    "message": "Ledger Live 应用程序"
-  },
   "ledgerLocked": {
     "message": "无法连接到 Ledger 设备。请确保您的设备已解锁并打开 Etherum 应用程序。"
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "要连接至新设备，请先断开与先前设备的连接。"
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "一次只能连接一个 Ledger 设备"
   },
   "ledgerTimeout": {
     "message": "Ledger Live 响应时间过长或连接超时。请确保 Ledger Live 应用程序已打开且您的设备已解锁。"
@@ -8967,34 +8916,6 @@
   },
   "statusNotConnected": {
     "message": "未连接"
-  },
-  "step1LatticeWallet": {
-    "message": "关联您的 Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "当您的 Lattice1 设备设置好并在线时，您可以将 MetaMask 与其相关联。解锁您的设备并准备好您的设备 ID。",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "下载 Ledger 应用程序"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "下载、设置并输入您的密码以解锁 $1。",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "关联您的 Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "将您的 Trezor 直接插入电脑并解锁。确保使用正确的密语。",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "关联您的 Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "将您的 Ledger 直接插入电脑，然后解锁并打开以太坊应用程序。",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "仍在连接到 $1……",
