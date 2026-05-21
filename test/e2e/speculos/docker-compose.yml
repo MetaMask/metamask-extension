@@ -4,20 +4,27 @@ services:
     image: ghcr.io/ledgerhq/speculos:latest
     container_name: metamask-speculos
     ports:
-      - '9999:9999'
-      - '5000:5000'
+      - '9998:9999'
+      - '5001:5000'
     volumes:
       - ./apps:/speculos/apps:ro
     environment:
       - DISPLAY=:99
     command: >
       --model nanosp /speculos/apps/ethereum.elf
-      --seed "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+      --seed "urban secret spare tunnel rubber rally ladder rally spatial feature elite success"
       --display headless
       --apdu-port 9999
       --api-port 5000
     healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:5000/']
+      test:
+        - CMD-SHELL
+        - python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/')"
       interval: 2s
       timeout: 3s
       retries: 10
+
+---
+# Note:
+# - APDU port mapped from host 9998 to container 9999 (9999 is used by PhishingWarningPageServer)
+# - REST API mapped from host 5001 to container 5000 (5000 used by macOS Control Center)

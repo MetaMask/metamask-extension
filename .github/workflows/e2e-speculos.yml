@@ -1,0 +1,39 @@
+name: E2E Speculos Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  # First build the extension
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          include-pr-checks: true
+
+      - name: Build test extension
+        run: yarn build:test
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: speculos-test-build
+          path: dist/
+          retention-days: 1
+
+  # Run Speculos tests with Docker
+  speculos-tests:
+    uses: ./.github/workflows/run-e2e.yml
+    with:
+      test-suite-name: 'Speculos Hardware Wallet'
+      build-artifact: speculos-test-build
+      test-command: 'SPECULOS_E2E=1 SPECULOS_SKIP_DOCKER_START=1 yarn test:e2e:single test/e2e/tests/hardware-wallets/ledger/ledger-speculos.spec.ts --browser=chrome --grep @speculos'
+      builds-from-run: ''
+      services: test/e2e/speculos/docker-compose.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}

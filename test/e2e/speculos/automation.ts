@@ -6,6 +6,7 @@ import { SpeculosClient } from './client';
  */
 export class SpeculosAutomation {
   private client: SpeculosClient;
+
   private isAutoApproveEnabled = false;
 
   constructor(client: SpeculosClient) {
@@ -89,7 +90,7 @@ export class SpeculosAutomation {
 
   /**
    * Scroll through transaction details
-   * @param times Number of times to press right button
+   * @param times - Number of times to press right button
    */
   async scroll(times: number = 1): Promise<void> {
     for (let i = 0; i < times; i++) {
@@ -100,6 +101,8 @@ export class SpeculosAutomation {
 
   /**
    * Wait for screen to show specific text, then approve
+   * @param expectedText
+   * @param timeout
    */
   async waitAndApprove(expectedText: string, timeout = 10000): Promise<void> {
     const start = Date.now();
@@ -126,6 +129,10 @@ export class SpeculosAutomation {
    * 1. Review screens
    * 2. Take screenshots
    * 3. Approve
+   * @param options
+   * @param options.reviewScreens
+   * @param options.takeScreenshots
+   * @param options.screenshotPrefix
    */
   async approveTransaction(
     options: {

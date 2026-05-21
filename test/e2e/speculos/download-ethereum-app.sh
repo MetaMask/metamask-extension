@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
 # Download Ethereum app from Ledger releases
 VERSION="1.9.19"
 APP_URL="https://github.com/LedgerHQ/app-ethereum/releases/download/${VERSION}/ethereum_nanosp.elf"

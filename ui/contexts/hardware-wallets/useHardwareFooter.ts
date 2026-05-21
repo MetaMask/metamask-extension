@@ -38,8 +38,6 @@ export const useHardwareFooter = ({
   currentConfirmationId,
   onUserRejectedHardwareWalletError,
 }: UseHardwareFooterArgs): UseHardwareFooterResult => {
-  const inE2e =
-    process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
   const { connectionState } = useHardwareWalletState();
   const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
@@ -52,9 +50,7 @@ export const useHardwareFooter = ({
   );
 
   const shouldRunHardwareWalletPreflight =
-    !inE2e &&
-    isHardwareWalletAccount &&
-    (isSignature || isTransactionConfirmation);
+    isHardwareWalletAccount && (isSignature || isTransactionConfirmation);
 
   // Simple sends (plain native asset transfers) don't require blind signing
   // on the Ledger device since they don't involve contract interactions.
@@ -67,10 +63,6 @@ export const useHardwareFooter = ({
   );
 
   useEffect(() => {
-    if (inE2e) {
-      return;
-    }
-
     if (!isHardwareWalletAccount) {
       setHasPreflightSucceeded(false);
       return;
@@ -82,31 +74,22 @@ export const useHardwareFooter = ({
     ) {
       setHasPreflightSucceeded(false);
     }
-  }, [connectionState.status, inE2e, isHardwareWalletAccount]);
+  }, [connectionState.status, isHardwareWalletAccount]);
 
   useEffect(() => {
-    if (inE2e) {
-      return;
-    }
-
     setHasPreflightSucceeded(false);
-  }, [currentConfirmationId, inE2e]);
+  }, [currentConfirmationId]);
 
   const isHardwareWalletReady = useMemo(() => {
-    if (inE2e || !isHardwareWalletAccount || hasPreflightSucceeded) {
+    if (!isHardwareWalletAccount || hasPreflightSucceeded) {
       return true;
     }
 
     return ConnectionStatus.Ready === connectionState.status;
-  }, [
-    connectionState.status,
-    hasPreflightSucceeded,
-    inE2e,
-    isHardwareWalletAccount,
-  ]);
+  }, [connectionState.status, hasPreflightSucceeded, isHardwareWalletAccount]);
 
   const onSubmitPreflightCheck = useCallback(async (): Promise<boolean> => {
-    if (inE2e || !isHardwareWalletAccount) {
+    if (!isHardwareWalletAccount) {
       return true;
     }
 
@@ -114,21 +97,11 @@ export const useHardwareFooter = ({
     setHasPreflightSucceeded(isDeviceReady);
 
     return isDeviceReady;
-  }, [
-    inE2e,
-    isHardwareWalletAccount,
-    ensureDeviceReady,
-    ensureDeviceReadyOptions,
-  ]);
+  }, [isHardwareWalletAccount, ensureDeviceReady, ensureDeviceReadyOptions]);
 
   const withHardwareWalletModalHandling = useCallback(
     (request: () => Promise<void>) => {
       return async () => {
-        if (inE2e) {
-          await request();
-          return;
-        }
-
         try {
           await request();
         } catch (error) {
@@ -148,7 +121,7 @@ export const useHardwareFooter = ({
         }
       };
     },
-    [inE2e, onUserRejectedHardwareWalletError, showErrorModal],
+    [onUserRejectedHardwareWalletError, showErrorModal],
   );
 
   return {

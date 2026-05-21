@@ -57,6 +57,9 @@ function getTransactionSelector(rawTxHex: string): string | undefined {
  * @returns True if WebHID is supported.
  */
 function isWebHIDSupported(): boolean {
+  if (process.env.IN_TEST) {
+    return true;
+  }
   return (
     typeof navigator !== 'undefined' && typeof navigator.hid !== 'undefined'
   );
@@ -113,6 +116,23 @@ export class LedgerOffscreenHandler {
       throw new Error('WebHID is not supported in this browser');
     }
 
+    // In Speculos E2E test mode, use the pre-configured mock device
+    // set by the CDP mock script (runs before lockdown, stores device on window).
+    // This avoids navigator.hid access issues within the LavaMoat compartment.
+    if (process.env.IN_TEST) {
+      const speculosDevice =
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        (
+          window as unknown as {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            __speculosDevice?: HIDDevice;
+          }
+        ).__speculosDevice;
+      if (speculosDevice) {
+        return TransportWebHID.open(speculosDevice);
+      }
+    }
+
     // First try to open an already-connected device (no gesture needed)
     const existingTransport = await TransportWebHID.openConnected();
     if (existingTransport) {
@@ -120,20 +140,24 @@ export class LedgerOffscreenHandler {
     }
 
     // Check if any Ledger devices are permitted
-    const devices = await navigator.hid.getDevices();
-    const ledgerDevices = devices.filter(
-      (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-    );
+    // In LavaMoat, navigator may not be directly accessible from this module;
+    // skip this check in test mode (the transport will handle it)
+    if (!process.env.IN_TEST) {
+      const devices = await navigator.hid.getDevices();
+      const ledgerDevices = devices.filter(
+        (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+      );
 
-    if (ledgerDevices.length === 0) {
-      const errorMessage =
-        'No permitted Ledger device found. User must grant permission from the UI first.';
-      throw new HardwareWalletError(errorMessage, {
-        code: ErrorCode.DeviceDisconnected,
-        severity: Severity.Err,
-        category: Category.Connection,
-        userMessage: errorMessage,
-      });
+      if (ledgerDevices.length === 0) {
+        const errorMessage =
+          'No permitted Ledger device found. User must grant permission from the UI first.';
+        throw new HardwareWalletError(errorMessage, {
+          code: ErrorCode.DeviceDisconnected,
+          severity: Severity.Err,
+          category: Category.Connection,
+          userMessage: errorMessage,
+        });
+      }
     }
 
     // Try to create a transport with the permitted device
@@ -371,32 +395,34 @@ export class LedgerOffscreenHandler {
    */
   private setupDeviceEventListeners(): void {
     if (!isWebHIDSupported()) {
-      console.warn('WebHID not supported, skipping device event listeners');
       return;
     }
 
-    navigator.hid.addEventListener('connect', ({ device }) => {
-      if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
-        chrome.runtime.sendMessage({
-          target: OffscreenCommunicationTarget.extension,
-          event: OffscreenCommunicationEvents.ledgerDeviceConnect,
-          payload: true,
-        });
-      }
-    });
+    try {
+      navigator.hid.addEventListener('connect', ({ device }) => {
+        if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
+          chrome.runtime.sendMessage({
+            target: OffscreenCommunicationTarget.extension,
+            event: OffscreenCommunicationEvents.ledgerDeviceConnect,
+            payload: true,
+          });
+        }
+      });
 
-    navigator.hid.addEventListener('disconnect', ({ device }) => {
-      if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
-        // Clean up transport state on disconnect
-        this.closeTransport();
+      navigator.hid.addEventListener('disconnect', ({ device }) => {
+        if (device.vendorId === Number(LEDGER_USB_VENDOR_ID)) {
+          this.closeTransport();
 
-        chrome.runtime.sendMessage({
-          target: OffscreenCommunicationTarget.extension,
-          event: OffscreenCommunicationEvents.ledgerDeviceConnect,
-          payload: false,
-        });
-      }
-    });
+          chrome.runtime.sendMessage({
+            target: OffscreenCommunicationTarget.extension,
+            event: OffscreenCommunicationEvents.ledgerDeviceConnect,
+            payload: false,
+          });
+        }
+      });
+    } catch {
+      // navigator.hid may be inaccessible under LavaMoat scope terminator
+    }
   }
 
   /**
@@ -554,9 +580,6 @@ export class LedgerOffscreenHandler {
 
     // Check if there's already a permitted device connected
     if (!isWebHIDSupported()) {
-      console.warn(
-        'WebHID not supported, Ledger functionality will be limited',
-      );
       return;
     }
 
@@ -567,15 +590,14 @@ export class LedgerOffscreenHandler {
       );
 
       if (hasLedger) {
-        // Notify extension that a Ledger device is available
         chrome.runtime.sendMessage({
           target: OffscreenCommunicationTarget.extension,
           event: OffscreenCommunicationEvents.ledgerDeviceConnect,
           payload: true,
         });
       }
-    } catch (error) {
-      console.error('Error checking for permitted Ledger devices:', error);
+    } catch {
+      // navigator.hid may be inaccessible under LavaMoat scope terminator
     }
   }
 }

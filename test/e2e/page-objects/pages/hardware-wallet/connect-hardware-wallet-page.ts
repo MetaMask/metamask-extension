@@ -55,10 +55,13 @@ class ConnectHardwareWalletPage {
     await this.driver.clickElement(this.connectLedgerButton);
   }
 
-  async clickContinueButton(): Promise<void> {
+  async clickContinueButton(timeout = 3000): Promise<void> {
     console.log(`Click continue button`);
     await this.driver.waitForSelector(this.continueButton);
-    await this.driver.clickElementAndWaitToDisappear(this.continueButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.continueButton,
+      timeout,
+    );
   }
 
   async clickCloseButton(): Promise<void> {

@@ -368,6 +368,10 @@ class FixtureBuilderV2 {
     return this;
   }
 
+  withSpeculosLedgerAccount(): this {
+    return this.withLedgerAccount();
+  }
+
   withNetworkControllerDoubleNode(): this {
     const secondNodeChainId = '0x53a';
     const secondNodeClientId = SECOND_NODE_NETWORK_CLIENT_ID;

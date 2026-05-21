@@ -127,31 +127,15 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
   ];
 
   const handleOptionClick = (option: WalletOption) => {
-    onClose?.();
-
-    if (option.metricsEvent) {
-      trackEvent(option.metricsEvent);
-    }
-
-    if (option.id === 'import-wallet') {
-      // Track the event for the selected option.
-      trackEvent({
-        category: MetaMetricsEventCategory.Navigation,
-        event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
-        properties: {
-          status: 'started',
-          location: 'Add Wallet Modal',
-        },
-      });
-    }
-
-    // Hardware wallet connections require expanded view
+    // Navigate BEFORE closing the modal, because onClose unmounts the component
+    // (via Modal portal returning null when isOpen=false), which can cause
+    // React Router's navigate() to fail in certain environments.
+    // See https://github.com/metamask/metamask-extension/issues/25851
     if (option.id === 'hardware-wallet') {
       if (
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
         getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
       ) {
-        // Keep sidepanel open when opening hardware wallet in expanded view
         const keepWindowOpen =
           getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
         global.platform.openExtensionInBrowser?.(
@@ -164,6 +148,23 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       }
     } else {
       navigate(option.route);
+    }
+
+    onClose?.();
+
+    if (option.metricsEvent) {
+      trackEvent(option.metricsEvent);
+    }
+
+    if (option.id === 'import-wallet') {
+      trackEvent({
+        category: MetaMetricsEventCategory.Navigation,
+        event: MetaMetricsEventName.ImportSecretRecoveryPhrase,
+        properties: {
+          status: 'started',
+          location: 'Add Wallet Modal',
+        },
+      });
     }
   };
 

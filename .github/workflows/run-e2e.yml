@@ -144,6 +144,10 @@ jobs:
           name: ${{ env.JOB_NAME }}
           path: ./previous-test-results/
 
+      - name: Start extra Docker services
+        if: ${{ inputs.services != '' }}
+        run: docker-compose -f ${{ inputs.services }} up -d
+
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
@@ -166,3 +170,9 @@ jobs:
         with:
           name: ${{ env.JOB_NAME }}
           path: ${{ inputs.test-artifacts-path }}
+inputs:
+  # Existing inputs are preserved; add optional services for docker-based test infra
+  services:
+    description: 'Path to a docker-compose file for extra services (e.g. test/e2e/speculos/docker-compose.yml)'
+    required: false
+    default: ''

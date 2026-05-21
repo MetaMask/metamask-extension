@@ -1816,6 +1816,43 @@ class Driver {
     return values.join(' ');
   }
 
+  /**
+   * Inject WebHID mock script using CDP to ensure it's available on every page load.
+   * This is necessary for Speculos tests to intercept WebHID calls before the picker shows.
+   *
+   * @param {number} wsPort - The WebSocket port for the APDU bridge
+   */
+  async injectWebHIDMockViaCDP(wsPort) {
+    if (process.env.SELENIUM_BROWSER !== 'chrome') {
+      console.log('[WebHID Mock] CDP injection only supported in Chrome');
+      return;
+    }
+
+    try {
+      const cdpConnection = await this.driver.createCDPConnection('page');
+      const webhidMockModule = await import('../speculos/webhid-mock-script');
+      const getWebHidMockScript =
+        webhidMockModule.getWebHidMockScript ??
+        webhidMockModule.default?.getWebHidMockScript;
+      if (typeof getWebHidMockScript !== 'function') {
+        throw new TypeError(
+          'webhid-mock-script: getWebHidMockScript export not found',
+        );
+      }
+      const mockScript = getWebHidMockScript(wsPort);
+
+      // Use CDP to add script to evaluate on new documents
+      await cdpConnection.execute('Page.addScriptToEvaluateOnNewDocument', {
+        source: mockScript,
+      });
+
+      console.log('[WebHID Mock] CDP injection successful');
+    } catch (error) {
+      console.error('[WebHID Mock] CDP injection failed:', error);
+      throw error;
+    }
+  }
+
   summarizeErrorsAndExceptions() {
     return this.errors.concat(this.exceptions).join('\n');
   }

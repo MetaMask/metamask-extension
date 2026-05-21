@@ -40,16 +40,9 @@ describe('useHardwareFooter', () => {
     [],
     unknown
   >;
-  let originalInTest: string | undefined;
-  let originalJestWorkerId: string | undefined;
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    originalInTest = process.env.IN_TEST;
-    originalJestWorkerId = process.env.JEST_WORKER_ID;
-    delete process.env.IN_TEST;
-    delete process.env.JEST_WORKER_ID;
 
     mockConnectionState = {
       status: ConnectionStatus.Ready,
@@ -75,20 +68,6 @@ describe('useHardwareFooter', () => {
     });
     (isHardwareWalletError as jest.Mock).mockReturnValue(false);
     (isUserRejectedHardwareWalletError as jest.Mock).mockReturnValue(false);
-  });
-
-  afterEach(() => {
-    if (originalInTest === undefined) {
-      delete process.env.IN_TEST;
-    } else {
-      process.env.IN_TEST = originalInTest;
-    }
-
-    if (originalJestWorkerId === undefined) {
-      delete process.env.JEST_WORKER_ID;
-    } else {
-      process.env.JEST_WORKER_ID = originalJestWorkerId;
-    }
   });
 
   const createConfirmation = (type: TransactionType): TransactionMeta =>
@@ -149,16 +128,6 @@ describe('useHardwareFooter', () => {
 
       expect(result.current.shouldRunHardwareWalletPreflight).toBe(true);
     });
-
-    it('returns preflight disabled in e2e mode', () => {
-      process.env.IN_TEST = 'true';
-      process.env.JEST_WORKER_ID = 'undefined';
-
-      const { result } = renderUseHardwareFooter();
-
-      expect(result.current.shouldRunHardwareWalletPreflight).toBe(false);
-      expect(result.current.isHardwareWalletReady).toBe(true);
-    });
   });
 
   describe('onSubmitPreflightCheck', () => {
@@ -209,21 +178,6 @@ describe('useHardwareFooter', () => {
 
       expect(isReady).toBe(false);
       expect(result.current.isHardwareWalletReady).toBe(false);
-    });
-
-    it('returns true without calling the device check in e2e mode', async () => {
-      process.env.IN_TEST = 'true';
-      process.env.JEST_WORKER_ID = 'undefined';
-
-      const { result } = renderUseHardwareFooter();
-
-      let isReady = false;
-      await act(async () => {
-        isReady = await result.current.onSubmitPreflightCheck();
-      });
-
-      expect(isReady).toBe(true);
-      expect(mockEnsureDeviceReady).not.toHaveBeenCalled();
     });
   });
 
