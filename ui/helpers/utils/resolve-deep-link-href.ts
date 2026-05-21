@@ -35,7 +35,8 @@ export async function resolveTrustedDeepLinkHref(
       return href;
     }
 
-    const parsed = await parse(url);
+    // Trusted content bypasses the interstitial, so signature status is ignored.
+    const parsed = await parse(url, { verify: false });
 
     if (!parsed) {
       // Unsupported MetaMask deep links intentionally fall back to the original
