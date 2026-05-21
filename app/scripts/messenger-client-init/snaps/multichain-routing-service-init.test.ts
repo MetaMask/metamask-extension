@@ -13,6 +13,9 @@ import { getRootMessenger } from '../../lib/messenger';
 import { MultichainRoutingServiceInit } from './multichain-routing-service-init';
 
 jest.mock('@metamask/snaps-controllers');
+jest.mock('@metamask/eth-snap-keyring/v2', () => ({
+  isSnapKeyring: jest.fn().mockReturnValue(true),
+}));
 
 function getInitRequestMock(): jest.Mocked<
   MessengerClientInitRequest<
@@ -73,22 +76,28 @@ describe('MultichainRoutingServiceInit', () => {
     });
   });
 
-  it('uses getLegacySnapKeyring to obtain the keyring when withSnapKeyring is invoked', async () => {
-    const mockKeyring = {};
-    const mockSnapAccountService = {
-      getLegacySnapKeyring: jest.fn().mockResolvedValue(mockKeyring),
+  it('uses KeyringController:withKeyringV2 to route requests when withSnapKeyring is invoked', async () => {
+    const mockV2Keyring = {
+      submitRequest: jest.fn().mockResolvedValue({ result: 'success' }),
+      hasAccount: jest.fn().mockReturnValue(true),
     };
     const mockAppStateController = {
       getUnlockPromise: jest.fn().mockResolvedValue(undefined),
     };
 
     const requestMock = getInitRequestMock();
+
+    jest.spyOn(requestMock.initMessenger, 'call').mockImplementation(
+      async (_action: unknown, _opts: unknown, callback: unknown) => {
+        return (
+          callback as (args: { keyring: unknown }) => Promise<unknown>
+        )({ keyring: mockV2Keyring });
+      },
+    );
+
     jest
       .mocked(requestMock.getMessengerClient)
       .mockImplementation((name: string) => {
-        if (name === 'SnapAccountService') {
-          return mockSnapAccountService as never;
-        }
         if (name === 'AppStateController') {
           return mockAppStateController as never;
         }
@@ -99,11 +108,34 @@ describe('MultichainRoutingServiceInit', () => {
 
     const { withSnapKeyring } = getMultichainRoutingServiceInitArgs();
 
-    const operation = jest.fn();
-    await withSnapKeyring(operation);
+    const mockRequest = {
+      account: '0xabc',
+      origin: 'test-origin',
+      scope: 'eip155:1',
+      method: 'eth_sendTransaction',
+      params: [],
+    };
+
+    await withSnapKeyring(async ({ keyring }) => {
+      await keyring.submitRequest(mockRequest);
+    });
 
     expect(mockAppStateController.getUnlockPromise).toHaveBeenCalledWith(true);
-    expect(mockSnapAccountService.getLegacySnapKeyring).toHaveBeenCalled();
-    expect(operation).toHaveBeenCalledWith({ keyring: mockKeyring });
+    expect(requestMock.initMessenger.call).toHaveBeenCalledWith(
+      'KeyringController:withKeyringV2',
+      expect.objectContaining({ filter: expect.any(Function) }),
+      expect.any(Function),
+    );
+    expect(mockV2Keyring.submitRequest).toHaveBeenCalledWith(
+      expect.objectContaining({
+        origin: mockRequest.origin,
+        scope: mockRequest.scope,
+        account: mockRequest.account,
+        request: {
+          method: mockRequest.method,
+          params: mockRequest.params,
+        },
+      }),
+    );
   });
 });
