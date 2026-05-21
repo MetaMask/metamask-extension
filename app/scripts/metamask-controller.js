@@ -4502,8 +4502,8 @@ export default class MetamaskController extends EventEmitter {
     authenticationResponse,
     password,
   ) {
-    const { completedOnboarding } = this.onboardingController.state;
-    if (completedOnboarding) {
+    const { completedOnboarding, firstTimeFlowType } = this.onboardingController.state;
+    if (completedOnboarding && firstTimeFlowType !== FirstTimeFlowType.restore) {
       // password is required when onboarding is complete
       if (!password) {
         throw new Error('Password required to register passkey');
