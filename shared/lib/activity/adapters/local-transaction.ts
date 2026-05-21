@@ -167,7 +167,7 @@ export function mapLocalTransaction({
           status,
           timestamp,
           metaId,
-            data: {
+          data: {
             hash,
             sourceToken: getToken(sourceTokenSymbol, 'out'),
           },
