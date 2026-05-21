@@ -577,10 +577,14 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   profile_id?: string;
   /**
-   * The wallet login type used by the user.
+   * The account type derived from the user's onboarding flow.
    */
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  account_type?: AuthConnection | 'metamask';
+  account_type?:
+    | 'metamask'
+    | 'imported'
+    | `metamask_${AuthConnection}`
+    | `imported_${AuthConnection}`;
   /**
    * The configured EVM and non-EVM chain ids in CAIP-2 format.
    */
@@ -785,7 +789,7 @@ export enum MetaMetricsUserTrait {
    */
   ProfileId = 'profile_id',
   /**
-   * Identifies the wallet login type used by the user.
+   * Identifies the account type derived from the user's onboarding flow.
    */
   AccountType = 'account_type',
   /**

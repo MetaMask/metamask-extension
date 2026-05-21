@@ -26,6 +26,7 @@ import type {
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   SeedlessOnboardingControllerGetStateAction,
+  SeedlessOnboardingControllerState,
 } from '@metamask/seedless-onboarding-controller';
 import type { Browser } from 'webextension-polyfill';
 import type { Nft } from '@metamask/assets-controllers';
@@ -45,6 +46,7 @@ import {
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsUserTrait,
@@ -77,6 +79,7 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import type { SegmentClient } from '../lib/segment';
 import {
   trace,
@@ -198,6 +201,7 @@ export type MetaMaskState = Pick<
   | 'srpSessionData'
   | 'keyrings'
   | 'multichainNetworkConfigurationsByChainId'
+  | 'firstTimeFlowType'
   // TODO: Remove as this is no longer a top-level property of the flattened background state object.
   // | 'security_providers'
 > & {
@@ -1496,7 +1500,9 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
       )?.[0]?.[1]?.profile?.profileId,
-      [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(),
+      [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(
+        metamaskState.firstTimeFlowType,
+      ),
       [MetaMetricsUserTrait.Platform]: getPlatform(),
       [MetaMetricsUserTrait.InstallType]: getInstallType(),
       [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
@@ -1537,16 +1543,37 @@ export class MetaMetricsController extends BaseController<
     return null;
   }
 
-  #getAccountTypeTrait(): NonNullable<
+  #getAccountTypeTrait(
+    firstTimeFlowType: MetaMaskState['firstTimeFlowType'],
+  ): NonNullable<
     MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]
   > {
+    switch (firstTimeFlowType) {
+      case FirstTimeFlowType.import:
+      case FirstTimeFlowType.restore:
+        return MetaMetricsEventAccountType.Imported;
+      case FirstTimeFlowType.socialImport:
+        return this.#getSocialAccountType(MetaMetricsEventAccountType.Imported);
+      case FirstTimeFlowType.socialCreate:
+        return this.#getSocialAccountType(MetaMetricsEventAccountType.Default);
+      case FirstTimeFlowType.create:
+      default:
+        return MetaMetricsEventAccountType.Default;
+    }
+  }
+
+  #getSocialAccountType(
+    baseType: MetaMetricsEventAccountType.Default | MetaMetricsEventAccountType.Imported,
+  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
+    const authConnection = this.#getSeedlessOnboardingState()?.authConnection;
+    return authConnection ? `${baseType}_${authConnection}` : baseType;
+  }
+
+  #getSeedlessOnboardingState(): Partial<SeedlessOnboardingControllerState> | undefined {
     try {
-      return (
-        this.messenger.call('SeedlessOnboardingController:getState')
-          ?.authConnection ?? 'metamask'
-      );
+      return this.messenger.call('SeedlessOnboardingController:getState');
     } catch {
-      return 'metamask';
+      return undefined;
     }
   }
 
