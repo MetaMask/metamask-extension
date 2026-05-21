@@ -4,7 +4,7 @@ import { NATIVE_TOKEN_ADDRESS } from '../../../constants/transaction';
 import { toAssetId } from '../../asset-utils';
 import type { TokenAmount } from '../types';
 
-type ValueTransfer = NonNullable<
+export type ValueTransfer = NonNullable<
   V1TransactionByHashResponse['valueTransfers']
 >[number];
 
