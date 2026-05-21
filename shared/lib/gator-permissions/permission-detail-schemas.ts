@@ -15,6 +15,7 @@ import {
   convertAmountPerSecondToAmountPerPeriod,
   getPeriodFrequencyValueTranslationKey,
 } from './time-utils';
+import { captureMessage } from '../sentry';
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -795,5 +796,12 @@ export function getPermissionSchemaEntry(
   if (throwIfUnknown) {
     throw new Error(`Unknown permission type: ${permissionType}`);
   }
+
+  captureMessage('Unknown advanced permission type encountered', {
+    extra: {
+      permissionType,
+    },
+  });
+
   return unknownPermissionTypeSchema;
 }

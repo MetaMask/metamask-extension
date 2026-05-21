@@ -364,7 +364,7 @@ export const PermissionDetailRenderer: React.FC<{
 
   const schemaEntry = getPermissionSchemaEntry(permission.type, true);
 
-  const tokenResolution = schemaEntry.tokenResolution;
+  const { tokenResolution } = schemaEntry;
 
   // Hooks must run before any code that can throw (validataion failures),
   // so hook order stays stable if permission data changes between renders.
