@@ -3397,9 +3397,6 @@
     "message": "Looking for your $1...",
     "description": "$1 is the hardware wallet type"
   },
-  "hardwareWalletRepairBackButton": {
-    "message": "Back"
-  },
   "hardwareWalletRepairCloseButton": {
     "message": "Close"
   },
@@ -3415,23 +3412,8 @@
   "hardwareWalletRepairLink": {
     "message": "Reconnect from the beginning"
   },
-  "hardwareWalletRepairNextButton": {
-    "message": "Next"
-  },
-  "hardwareWalletRepairPermissionsDescription": {
-    "message": "Connect to HID/USB devices to communicate with your hardware wallet."
-  },
   "hardwareWalletRepairPermissionsTitle": {
     "message": "Allow MetaMask permissions to:"
-  },
-  "hardwareWalletRepairReconnectButton": {
-    "message": "Try Again"
-  },
-  "hardwareWalletRepairStepFourDescription": {
-    "message": "Attempt to reconnect your device."
-  },
-  "hardwareWalletRepairStepFourTitle": {
-    "message": "Reconnect"
   },
   "hardwareWalletRepairStepOneDescription": {
     "message": "Make sure the USB cable is firmly connected to both your device and computer. Try a different USB port or cable."
