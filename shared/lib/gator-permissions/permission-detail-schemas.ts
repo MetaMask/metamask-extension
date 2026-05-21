@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js';
 import type { Hex } from '@metamask/utils';
 
 import { DAY } from '../../constants/time';
+import { captureMessage } from '../sentry';
 import { formatPermissionPeriodDuration } from './format-permission-period-duration';
 import { MAX_UINT256 } from './permission-constants';
 import { parseHexPermissionAmount } from './parse-hex-permission-amount';
@@ -15,7 +16,6 @@ import {
   convertAmountPerSecondToAmountPerPeriod,
   getPeriodFrequencyValueTranslationKey,
 } from './time-utils';
-import { captureMessage } from '../sentry';
 
 // ---------------------------------------------------------------------------
 // Helpers
