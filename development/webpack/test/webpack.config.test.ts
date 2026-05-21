@@ -93,6 +93,7 @@ describe('webpack.config.test.ts', () => {
   afterEach(() => {
     // reset argv to avoid affecting other tests
     process.argv = [process.argv0, process.argv[1]];
+    process.env = originalEnv;
     // each test needs to load a fresh config, so we need to clear webpack's cache
     // TODO: can we use `await import` instead to get a fresh copy each time?
     const cliPath = require.resolve('../utils/cli.ts');
