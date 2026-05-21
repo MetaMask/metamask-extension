@@ -6,7 +6,13 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getAccountName, getInternalAccounts } from '../../../../../selectors';
+import {
+  getAllAccountGroups,
+  getMultichainAccountGroupById,
+  getSelectedAccountGroup,
+  selectAccountGroupNameByAddress,
+} from '../../../../../selectors/multichain-accounts/account-tree';
+import type { MultichainAccountsState } from '../../../../../selectors/multichain-accounts/account-tree.types';
 import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
 
@@ -15,17 +21,48 @@ export function TransactionDetailsAccountRow() {
   const t = useI18nContext();
   const { transactionMeta } = useTransactionDetails();
   const hasPaymentDetails = Boolean(transactionMeta.metamaskPay);
-  const internalAccounts = useSelector(getInternalAccounts);
+  const selectedAccountGroupId = useSelector((state) => {
+    const multichainAccountsState = getMultichainAccountsState(state);
+    return multichainAccountsState
+      ? getSelectedAccountGroup(multichainAccountsState)
+      : undefined;
+  });
 
   const {
     txParams: { from },
   } = transactionMeta;
 
-  const accountName = getAccountName(internalAccounts, from);
+  const accountName = useSelector((state) => {
+    const multichainAccountsState = getMultichainAccountsState(state);
+    return multichainAccountsState
+      ? selectAccountGroupNameByAddress(multichainAccountsState, from)
+      : undefined;
+  });
+  const selectedAccountGroupName = useSelector((state) => {
+    const multichainAccountsState = getMultichainAccountsState(state);
 
-  const displayName = accountName ?? from;
+    if (!multichainAccountsState || !selectedAccountGroupId) {
+      return undefined;
+    }
 
-  if (!hasPaymentDetails) {
+    return getMultichainAccountGroupById(
+      multichainAccountsState,
+      selectedAccountGroupId,
+    )?.metadata.name;
+  });
+  const firstAccountGroupName = useSelector((state) => {
+    const multichainAccountsState = getMultichainAccountsState(state);
+    return multichainAccountsState
+      ? getAllAccountGroups(multichainAccountsState).find(
+          (group) => group.metadata.name,
+        )?.metadata.name
+      : undefined;
+  });
+
+  const displayName =
+    accountName || selectedAccountGroupName || firstAccountGroupName;
+
+  if (!hasPaymentDetails || !displayName) {
     return null;
   }
 
@@ -39,4 +76,14 @@ export function TransactionDetailsAccountRow() {
       </Text>
     </TransactionDetailsRow>
   );
+}
+
+function getMultichainAccountsState(
+  state: unknown,
+): MultichainAccountsState | undefined {
+  const maybeState = state as Partial<MultichainAccountsState>;
+
+  return maybeState.metamask?.accountTree?.wallets
+    ? (state as MultichainAccountsState)
+    : undefined;
 }

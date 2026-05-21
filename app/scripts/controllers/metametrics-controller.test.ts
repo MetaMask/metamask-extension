@@ -107,6 +107,8 @@ const MOCK_TRAITS = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   test_boolean_array: [1, 2, 3],
+  [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+  [MetaMetricsUserTrait.GaClientId]: '12345.67890',
 } as MetaMetricsUserTraits;
 
 const MOCK_INVALID_TRAITS = {
@@ -665,6 +667,84 @@ describe('MetaMetricsController', function () {
           expect(controller.state.marketingCampaignCookieId).toStrictEqual(
             null,
           );
+        },
+      );
+    });
+  });
+
+  describe('handleMetaMaskStateUpdate', function () {
+    it('updates the profile when install attribution traits arrive after opt-in', async function () {
+      await withController(
+        {
+          options: {
+            state: {
+              participateInMetaMetrics: null,
+              metaMetricsId: TEST_META_METRICS_ID,
+              dataCollectionForMarketing: false,
+              traits: {},
+            },
+          },
+        },
+        async ({ controller }) => {
+          await controller.setParticipateInMetaMetrics(true);
+          const identifySpy = jest
+            .spyOn(controller, 'identify')
+            .mockImplementation(() => undefined);
+
+          const metaMaskState = {
+            addressBook: {},
+            allNfts: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            multichainNetworkConfigurationsByChainId: {},
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            useNftDetection: false,
+            securityAlertsEnabled: true,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            names: {
+              ethereumAddress: {},
+            },
+            participateInMetaMetrics: true,
+            currentCurrency: 'usd',
+            dataCollectionForMarketing: false,
+            preferences: {
+              privacyMode: true,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: true,
+            } as Preferences,
+            srpSessionData: undefined,
+            keyrings: [],
+          };
+
+          controller.handleMetaMaskStateUpdate(metaMaskState);
+
+          expect(identifySpy).toHaveBeenCalledTimes(1);
+
+          controller.updateTraits({
+            [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+            [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+          });
+
+          controller.handleMetaMaskStateUpdate(metaMaskState);
+
+          expect(identifySpy).toHaveBeenCalledTimes(2);
+          expect(identifySpy).toHaveBeenLastCalledWith({
+            [MetaMetricsUserTrait.CookieId]: 'GA1.1.12345.67890',
+            [MetaMetricsUserTrait.GaClientId]: '12345.67890',
+          });
         },
       );
     });
@@ -2269,6 +2349,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
+                canonicalProfileId: 'profileId',
                 metaMetricsId: 'testid',
               },
             },
@@ -2353,6 +2434,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
+                canonicalProfileId: 'profileId',
                 metaMetricsId: 'testid',
               },
             },
@@ -2417,6 +2499,7 @@ describe('MetaMetricsController', function () {
               profile: {
                 identifierId: 'identifierId',
                 profileId: 'profileId',
+                canonicalProfileId: 'profileId',
                 metaMetricsId: 'testid',
               },
             },

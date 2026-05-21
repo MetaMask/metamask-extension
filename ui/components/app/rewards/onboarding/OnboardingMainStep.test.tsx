@@ -80,6 +80,7 @@ jest.mock('../../../../hooks/rewards/useOptIn', () => ({
 }));
 
 jest.mock('../../../../hooks/rewards/useValidateReferralCode', () => ({
+  REFERRAL_CODE_MIN_LENGTH: 3,
   useValidateReferralCode: jest.fn(),
 }));
 
@@ -333,10 +334,11 @@ describe('OnboardingMainStep', () => {
     expect(impl).toHaveBeenCalledWith('ABCD');
   });
 
-  it('shows referral error message when invalid with length >= 6', () => {
+  it('shows referral error message after validation completes and code is invalid', () => {
     setup({
       referralCode: 'ABCDEF',
       isValid: false,
+      isValidating: false,
       state: { onboardingReferralCode: 'ABCDEF' },
     });
     render(<OnboardingMainStep />);
@@ -344,6 +346,34 @@ describe('OnboardingMainStep', () => {
     expect(
       screen.getByText('rewardsOnboardingReferralCodeError'),
     ).toBeInTheDocument();
+  });
+
+  it('shows referral error message for vanity codes once validation reports invalid', () => {
+    setup({
+      referralCode: 'BANKLESS',
+      isValid: false,
+      isValidating: false,
+      state: { onboardingReferralCode: 'BANKLESS' },
+    });
+    render(<OnboardingMainStep />);
+
+    expect(
+      screen.getByText('rewardsOnboardingReferralCodeError'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not show error while validation is still in flight', () => {
+    setup({
+      referralCode: 'ABC',
+      isValid: false,
+      isValidating: true,
+      state: { onboardingReferralCode: 'ABC' },
+    });
+    render(<OnboardingMainStep />);
+
+    expect(
+      screen.queryByText('rewardsOnboardingReferralCodeError'),
+    ).not.toBeInTheDocument();
   });
 
   it('renders the unknown referral error banner when validation throws', () => {

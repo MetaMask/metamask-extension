@@ -20,7 +20,7 @@ const ToggleRow = ({
   isEnabled: boolean;
   onToggle: (value: boolean) => void;
   dataTestId: string;
-  settingsRef: React.RefObject<HTMLDivElement>;
+  settingsRef?: React.RefObject<HTMLDivElement>;
 }) => {
   return (
     <Box

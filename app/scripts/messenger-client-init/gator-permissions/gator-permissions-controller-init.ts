@@ -1,13 +1,17 @@
 import {
   GatorPermissionsController,
+  type GatorPermissionsControllerMessenger,
   type GatorPermissionsControllerConfig,
 } from '@metamask/gator-permissions-controller';
 import { assertIsValidSnapId } from '@metamask/snaps-utils';
 import { MessengerClientInitFunction } from '../types';
-import { getEnabledAdvancedPermissions } from '../../../../shared/lib/environment';
-import { GatorPermissionsControllerMessenger } from '../messengers/gator-permissions';
+import { getEnabledAdvancedPermissions } from '../../../../shared/lib/gator-permissions/feature-flags';
 
-const createGatorPermissionsConfig = (): GatorPermissionsControllerConfig => {
+const createGatorPermissionsConfig = (
+  remoteFeatureFlagControllerState: Parameters<
+    typeof getEnabledAdvancedPermissions
+  >[0],
+): GatorPermissionsControllerConfig => {
   const gatorPermissionsProviderSnapId =
     process.env.GATOR_PERMISSIONS_PROVIDER_SNAP_ID;
 
@@ -25,7 +29,9 @@ const createGatorPermissionsConfig = (): GatorPermissionsControllerConfig => {
     }
   }
 
-  const supportedPermissionTypes = getEnabledAdvancedPermissions();
+  const supportedPermissionTypes = getEnabledAdvancedPermissions(
+    remoteFeatureFlagControllerState,
+  );
 
   const config: GatorPermissionsControllerConfig = {
     supportedPermissionTypes,
@@ -41,10 +47,14 @@ const createGatorPermissionsConfig = (): GatorPermissionsControllerConfig => {
 export const GatorPermissionsControllerInit: MessengerClientInitFunction<
   GatorPermissionsController,
   GatorPermissionsControllerMessenger
-> = ({ controllerMessenger, persistedState }) => {
+> = ({ controllerMessenger, getMessengerClient, persistedState }) => {
+  const remoteFeatureFlagController = getMessengerClient(
+    'RemoteFeatureFlagController',
+  );
+
   const messengerClient = new GatorPermissionsController({
     messenger: controllerMessenger,
-    config: createGatorPermissionsConfig(),
+    config: createGatorPermissionsConfig(remoteFeatureFlagController.state),
     state: persistedState.GatorPermissionsController,
   });
 

@@ -293,6 +293,9 @@
     "ui/components/app/perps/order-entry/components/auto-close-section/auto-close-section.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
+    "ui/components/app/perps/order-entry/components/order-summary/order-summary.test.tsx": {
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/components/app/perps/order-entry/order-entry.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1
     },
@@ -304,6 +307,10 @@
     },
     "ui/components/app/reveal-srp-list/reveal-srp-list.test.tsx": {
       "Reselect: Identity function warnings": 1
+    },
+    "ui/components/app/rewards/RewardsVipBadge.test.tsx": {
+      "React: State updates on unmounted components": 1,
+      "error: Error: test": 1
     },
     "ui/components/app/selected-account/selected-account-component.test.js": {
       "React: DOM nesting violations": 1
@@ -415,11 +422,6 @@
       "React: Act warnings (component updates not wrapped)": 2,
       "React: PropTypes validation failures": 2
     },
-    "ui/components/multichain/account-menu/account-menu.test.tsx": {
-      "MetaMask: Background connection not initialized": 2,
-      "React: Act warnings (component updates not wrapped)": 3,
-      "React: State updates on unmounted components": 1
-    },
     "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
       "React: State updates on unmounted components": 1,
@@ -436,9 +438,6 @@
     "ui/components/multichain/activity-list-item/activity-list-item.test.js": {
       "React: DOM nesting violations": 1
     },
-    "ui/components/multichain/address-list-item/address-list-item.test.tsx": {
-      "React: DOM nesting violations": 1
-    },
     "ui/components/multichain/app-header/app-header-unlocked-content.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 4
@@ -451,15 +450,6 @@
     "ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 16
     },
-    "ui/components/multichain/connect-accounts-modal/connect-accounts-modal-list.test.tsx": {
-      "MetaMask: Background connection not initialized": 12
-    },
-    "ui/components/multichain/connect-accounts-modal/connect-accounts-modal.test.tsx": {
-      "MetaMask: Background connection not initialized": 8
-    },
-    "ui/components/multichain/connected-site-popover/connected-site-popover.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 4
-    },
     "ui/components/multichain/dapp-connection-control-bar/dapp-bar-network-selector-popover.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6,
       "React: componentWill* lifecycle deprecations": 1
@@ -467,13 +457,6 @@
     "ui/components/multichain/dapp-connection-control-bar/dapp-connection-control-bar.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1,
       "React: componentWill* lifecycle deprecations": 1
-    },
-    "ui/components/multichain/edit-accounts-modal/edit-accounts-modal.test.tsx": {
-      "MetaMask: Background connection not initialized": 1,
-      "React: Act warnings (component updates not wrapped)": 1,
-      "React: PropTypes validation failures": 1,
-      "React: State updates on unmounted components": 1,
-      "Reselect: Identity function warnings": 1
     },
     "ui/components/multichain/edit-networks-modal/edit-networks-modal.test.js": {
       "React: Missing key props in lists": 1,
@@ -518,12 +501,6 @@
     },
     "ui/components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.test.tsx": {
       "React: DOM nesting violations": 1
-    },
-    "ui/components/multichain/pages/review-permissions-page/site-cell/site-cell-tooltip.test.js": {
-      "React: Act warnings (component updates not wrapped)": 9
-    },
-    "ui/components/multichain/pages/review-permissions-page/site-cell/site-cell.test.tsx": {
-      "error: Error: MetaMetrics context trackEvent was": 4
     },
     "ui/components/multichain/product-tour-popover/product-tour-popover.test.js": {
       "React: Act warnings (component updates not wrapped)": 3,
@@ -578,10 +555,10 @@
       "React: Act warnings (component updates not wrapped)": 10
     },
     "ui/hooks/identity/useAccountSyncing/useAccountSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 8
+      "MetaMask: Background connection not initialized": 13
     },
     "ui/hooks/identity/useAuthentication/useAutoSignIn.test.tsx": {
-      "MetaMask: Background connection not initialized": 4
+      "MetaMask: Background connection not initialized": 12
     },
     "ui/hooks/identity/useAuthentication/useAutoSignOut.test.tsx": {
       "MetaMask: Background connection not initialized": 2
@@ -596,7 +573,7 @@
       "MetaMask: Background connection not initialized": 1
     },
     "ui/hooks/identity/useContactSyncing/useContactSyncing.test.tsx": {
-      "MetaMask: Background connection not initialized": 5
+      "MetaMask: Background connection not initialized": 10
     },
     "ui/hooks/metamask-notifications/useCounter.test.tsx": {
       "Reselect: Input stability warnings": 3
@@ -621,6 +598,10 @@
     },
     "ui/hooks/rewards/useValidateReferralCode.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 1
+    },
+    "ui/hooks/rewards/useVipTier.test.ts": {
+      "React: State updates on unmounted components": 1,
+      "error: Error: fail": 1
     },
     "ui/hooks/subscription/useSubscriptionPricing.test.ts": {
       "React: Act warnings (component updates not wrapped)": 1
@@ -666,6 +647,11 @@
       "Test errors: Uncaught TypeErrors": 3,
       "error: Error handled by React Router": 4,
       "error: React Router caught the following": 4
+    },
+    "ui/hooks/useTokenSearch.test.ts": {
+      "React: Act warnings (component updates not wrapped)": 2,
+      "React: State updates on unmounted components": 1,
+      "error: Error: boom": 1
     },
     "ui/hooks/useTransactionDisplayData.test.js": {
       "MetaMask: XChain Swaps warnings": 4
@@ -854,8 +840,8 @@
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
-      "MetaMask: Background connection not initialized": 41,
-      "React: Act warnings (component updates not wrapped)": 14,
+      "MetaMask: Background connection not initialized": 43,
+      "React: Act warnings (component updates not wrapped)": 17,
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/nft-token-transfer/nft-token-transfer.test.tsx": {
@@ -893,7 +879,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/edit-gas-fees-row/edit-gas-fees-row.test.tsx": {
-      "MetaMask: Background connection not initialized": 114,
+      "MetaMask: Background connection not initialized": 132,
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-icon/gas-fee-token-icon.test.tsx": {
@@ -1386,6 +1372,9 @@
     "ui/pages/confirmations/utils/confirm.test.ts": {
       "error: Failed to detect if URL": 1
     },
+    "ui/pages/custom-token-import/custom-token-import.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2
+    },
     "ui/pages/defi/components/defi-details-page.test.tsx": {
       "Reselect: Identity function warnings": 1
     },
@@ -1453,9 +1442,6 @@
     "ui/pages/onboarding-flow/welcome/welcome.test.tsx": {
       "MetaMask: Background connection not initialized": 16,
       "React: State updates on unmounted components": 1
-    },
-    "ui/pages/permissions-connect/connect-page/connect-page.test.tsx": {
-      "React: DOM nesting violations": 3
     },
     "ui/pages/perps/perps-market-detail-page.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 6

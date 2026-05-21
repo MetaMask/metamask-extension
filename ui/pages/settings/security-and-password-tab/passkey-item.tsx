@@ -22,6 +22,7 @@ import {
   cancelPasskeyCeremony,
   isPasskeyCeremonySilentError,
   translatePasskeyError,
+  getPasskeyErrorCode,
 } from '../../../../shared/lib/passkey';
 import PasskeyTroubleshootModal from '../../../components/app/passkey-troubleshoot-modal';
 import { toast, ToastContent } from '../../../components/ui/toast/toast';
@@ -65,6 +66,7 @@ const PasskeyItem = () => {
   const isEnrolledPasskeyIncompatibleWithSidepanel = useSelector(
     getIsEnrolledPasskeyIncompatibleWithSidepanel,
   );
+  const environmentType = getEnvironmentType();
 
   const [isPasskeyOperationPending, setIsPasskeyOperationPending] =
     useState(false);
@@ -84,7 +86,7 @@ const PasskeyItem = () => {
 
   const registerPasskey = useCallback(() => {
     cancelPasskeyCeremony();
-    if (getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) {
+    if (environmentType === ENVIRONMENT_TYPE_SIDEPANEL) {
       globalThis.platform?.openExtensionInBrowser?.(
         `${SECURITY_REGISTER_PASSKEY_ROUTE}?from=sidepanel`,
       );
@@ -92,7 +94,7 @@ const PasskeyItem = () => {
     }
 
     navigate(SECURITY_REGISTER_PASSKEY_ROUTE, { replace: true });
-  }, [navigate]);
+  }, [environmentType, navigate]);
 
   const removePasskey = useCallback(async () => {
     if (!isPasskeyRegistered) {
@@ -100,10 +102,19 @@ const PasskeyItem = () => {
     }
 
     if (
-      getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL &&
+      environmentType === ENVIRONMENT_TYPE_SIDEPANEL &&
       isEnrolledPasskeyIncompatibleWithSidepanel
     ) {
       cancelPasskeyCeremony();
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOff,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: 'passkey',
+          status: 'full_screen_opened',
+        },
+      });
       globalThis.platform?.openExtensionInBrowser?.(
         SECURITY_AND_PASSWORD_ROUTE,
       );
@@ -111,12 +122,35 @@ const PasskeyItem = () => {
     }
 
     setIsPasskeyOperationPending(true);
+    const startedAt = Date.now();
+    const verificationMethod = 'passkey';
+    trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.PasskeyTurnOff,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        verification_method: verificationMethod,
+        status: 'started',
+      },
+    });
     try {
       const authOptions = await generatePasskeyAuthenticationOptions();
       const authenticationResponse =
         await startPasskeyAuthentication(authOptions);
       await removePasskeyWithPasskeyVerification(authenticationResponse);
       await forceUpdateMetamaskState(dispatch);
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOff,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: verificationMethod,
+          status: 'completed',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - startedAt,
+        },
+      });
 
       toast.success(
         <ToastContent title={t('passkeyTurnedOff', [passkeyMethodLabel])} />,
@@ -129,14 +163,20 @@ const PasskeyItem = () => {
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention -- MetaMetrics snake_case contract
-          passkey_registered: false,
+          /* eslint-disable @typescript-eslint/naming-convention */
+          settings_group: 'security_privacy',
+          settings_type: 'passkey',
+          old_value: true,
+          new_value: false,
+          /* eslint-enable @typescript-eslint/naming-convention */
         },
       });
 
       navigate(SECURITY_AND_PASSWORD_ROUTE, { replace: true });
     } catch (error: unknown) {
+      let errorStatus = 'failed';
       if (isPasskeyCeremonySilentError(error)) {
+        errorStatus = 'cancelled';
         log.debug(
           'Passkey verification for disable cancelled or timed out',
           error,
@@ -156,12 +196,26 @@ const PasskeyItem = () => {
           { duration: PASSKEY_SETTINGS_TOAST_DURATION_MS },
         );
       }
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.PasskeyTurnOff,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          verification_method: verificationMethod,
+          status: errorStatus,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          duration_ms: Date.now() - startedAt,
+          reason: getPasskeyErrorCode(error),
+        },
+      });
       navigate(SECURITY_TURN_OFF_PASSKEY_ROUTE, { replace: true });
     } finally {
       setIsPasskeyOperationPending(false);
     }
   }, [
     dispatch,
+    environmentType,
     isEnrolledPasskeyIncompatibleWithSidepanel,
     isPasskeyRegistered,
     navigate,
@@ -192,7 +246,7 @@ const PasskeyItem = () => {
       <>
         <span>{t('passkeyDescription', [passkeyMethodSpecificLabel])}</span>
         {isPasskeyOperationPending &&
-        getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL ? (
+        environmentType === ENVIRONMENT_TYPE_SIDEPANEL ? (
           <TextButton
             type="button"
             data-testid="security-passkey-sidepanel-continue-full-screen"
@@ -206,7 +260,12 @@ const PasskeyItem = () => {
       </>
     );
     return body;
-  }, [isPasskeyOperationPending, passkeyMethodSpecificLabel, t]);
+  }, [
+    environmentType,
+    isPasskeyOperationPending,
+    passkeyMethodSpecificLabel,
+    t,
+  ]);
 
   if (!isPasskeyFeatureAvailable) {
     return null;
@@ -226,6 +285,7 @@ const PasskeyItem = () => {
       {showPasskeyTroubleshootModal ? (
         <PasskeyTroubleshootModal
           mode="verify"
+          location="settings-passkey"
           onClose={() => setShowPasskeyTroubleshootModal(false)}
           onOpenFullScreen={openSecurityAndPasswordInFullScreen}
         />

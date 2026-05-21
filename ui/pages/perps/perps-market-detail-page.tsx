@@ -94,8 +94,12 @@ import {
   parsePerpsDisplayPrice,
   formatPerpsFiatMinimal,
   formatPerpsFiatUniversal,
+  formatPerpsLiquidationPrice,
 } from '../../components/app/perps/utils/formatPerpsDisplayPrice';
-import { normalizeMarketDetailsOrders } from '../../components/app/perps/utils/orderUtils';
+import {
+  derivePositionTpslPricesFromOrders,
+  normalizeMarketDetailsOrders,
+} from '../../components/app/perps/utils/orderUtils';
 import { PerpsDetailPageSkeleton } from '../../components/app/perps/perps-skeletons';
 import { Skeleton } from '../../components/component-library/skeleton';
 import { Popover, PopoverPosition } from '../../components/component-library';
@@ -471,23 +475,41 @@ const PerpsMarketDetailPage: React.FC = () => {
   // real trigger exists. Full-position TP/SL is excluded from this list — it
   // appears in the auto-close section above (driven by position.takeProfitPrice
   // / stopLossPrice).
-  const orders = useMemo(() => {
+  const marketOrders = useMemo(() => {
     if (!decodedSymbol) {
       return [];
     }
-    const marketOrders = allOrders
+    return allOrders
       .filter(
         (order) =>
           order.symbol.toLowerCase() === decodedSymbol.toLowerCase() &&
           order.status === 'open',
       )
       .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  }, [decodedSymbol, allOrders]);
 
-    return normalizeMarketDetailsOrders({
-      orders: marketOrders,
-      existingPosition: position,
-    });
-  }, [decodedSymbol, allOrders, position]);
+  const orders = useMemo(
+    () =>
+      normalizeMarketDetailsOrders({
+        orders: marketOrders,
+        existingPosition: position,
+      }),
+    [marketOrders, position],
+  );
+
+  // Hyperliquid sometimes omits `isPositionTpsl` on WebSocket order updates,
+  // so the controller may not surface `position.takeProfitPrice` /
+  // `stopLossPrice` even when full-position TP/SL trigger orders are open.
+  // Derive the missing prices from those orders so the auto-close row matches
+  // what the user just configured.
+  const derivedPositionTpsl = useMemo(
+    () => derivePositionTpslPricesFromOrders(marketOrders, position),
+    [marketOrders, position],
+  );
+  const effectiveTakeProfitPrice =
+    position?.takeProfitPrice ?? derivedPositionTpsl.takeProfitPrice;
+  const effectiveStopLossPrice =
+    position?.stopLossPrice ?? derivedPositionTpsl.stopLossPrice;
 
   // Candle period: persisted in PreferencesController across sessions/markets.
   // Local override gives instant UI feedback; background save persists for next visit.
@@ -606,8 +628,8 @@ const PerpsMarketDetailPage: React.FC = () => {
     // Position-specific lines (only when user has an open position)
     if (position) {
       // Take Profit line — matches mobile `success.default`
-      if (position.takeProfitPrice) {
-        const tpPrice = parsePerpsDisplayPrice(position.takeProfitPrice);
+      if (effectiveTakeProfitPrice) {
+        const tpPrice = parsePerpsDisplayPrice(effectiveTakeProfitPrice);
         if (!isNaN(tpPrice) && tpPrice > 0) {
           lines.push({
             price: tpPrice,
@@ -633,8 +655,8 @@ const PerpsMarketDetailPage: React.FC = () => {
 
       // Stop Loss line — matches mobile `background.alternative`
       // Intentionally subtle: SL is a reference marker, not a danger indicator like Liq.
-      if (position.stopLossPrice) {
-        const slPrice = parsePerpsDisplayPrice(position.stopLossPrice);
+      if (effectiveStopLossPrice) {
+        const slPrice = parsePerpsDisplayPrice(effectiveStopLossPrice);
         if (!isNaN(slPrice) && slPrice > 0) {
           lines.push({
             price: slPrice,
@@ -661,7 +683,13 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
 
     return lines;
-  }, [position, chartCurrentPrice, isDark]);
+  }, [
+    position,
+    chartCurrentPrice,
+    isDark,
+    effectiveTakeProfitPrice,
+    effectiveStopLossPrice,
+  ]);
 
   // Handle candle period change
   //
@@ -1373,8 +1401,8 @@ const PerpsMarketDetailPage: React.FC = () => {
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      {position.takeProfitPrice
-                        ? formatPerpsFiatUniversal(position.takeProfitPrice)
+                      {effectiveTakeProfitPrice
+                        ? formatPerpsFiatUniversal(effectiveTakeProfitPrice)
                         : '-'}
                     </Text>
                     <Text
@@ -1387,8 +1415,8 @@ const PerpsMarketDetailPage: React.FC = () => {
                       variant={TextVariant.BodyMd}
                       fontWeight={FontWeight.Medium}
                     >
-                      {position.stopLossPrice
-                        ? formatPerpsFiatUniversal(position.stopLossPrice)
+                      {effectiveStopLossPrice
+                        ? formatPerpsFiatUniversal(effectiveStopLossPrice)
                         : '-'}
                     </Text>
                   </Box>
@@ -1480,9 +1508,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                     fontWeight={FontWeight.Medium}
                     data-testid="perps-position-liquidation-value"
                   >
-                    {position.liquidationPrice
-                      ? formatPerpsFiatUniversal(position.liquidationPrice)
-                      : '-'}
+                    {formatPerpsLiquidationPrice(position.liquidationPrice)}
                   </Text>
                 </Box>
 
@@ -1942,7 +1968,11 @@ const PerpsMarketDetailPage: React.FC = () => {
           key={position.symbol}
           isOpen={isTPSLModalOpen}
           onClose={handleCloseTPSLModal}
-          position={position}
+          position={{
+            ...position,
+            takeProfitPrice: effectiveTakeProfitPrice,
+            stopLossPrice: effectiveStopLossPrice,
+          }}
           currentPrice={currentPrice}
         />
       )}
