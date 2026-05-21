@@ -24,6 +24,20 @@ function getInitRequestMock(): jest.Mocked<
   return requestMock;
 }
 
+function getMultichainRoutingServiceInitArgs() {
+  const mockedCtorCall = jest
+    .mocked(MultichainRoutingService)
+    .mock.calls.at(-1);
+
+  if (!mockedCtorCall) {
+    throw new Error('MultichainRoutingService constructor was not called');
+  }
+
+  return mockedCtorCall[0] as ConstructorParameters<
+    typeof MultichainRoutingService
+  >[0];
+}
+
 describe('MultichainRoutingServiceInit', () => {
   it('initializes the multichain router', () => {
     const { messengerClient } =
@@ -73,9 +87,7 @@ describe('MultichainRoutingServiceInit', () => {
 
     MultichainRoutingServiceInit(requestMock);
 
-    const { withSnapKeyring } = jest
-      .mocked(MultichainRoutingService)
-      .mock.calls.at(-1)![0];
+    const { withSnapKeyring } = getMultichainRoutingServiceInitArgs();
 
     const operation = jest.fn();
     await withSnapKeyring(operation);
