@@ -11,7 +11,7 @@ import {
   lockAndWaitForLoginPage,
   login,
 } from '../../page-objects/flows/login.flow';
-import SetupPasskeyPage from 'test/e2e/page-objects/pages/onboarding/setup-passkey-page';
+import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const newPassword = 'this is the best password ever';
 

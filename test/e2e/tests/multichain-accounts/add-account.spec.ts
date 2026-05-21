@@ -16,7 +16,7 @@ import MultichainAccountDetailsPage from '../../page-objects/pages/multichain/mu
 import ResetPasswordPage from '../../page-objects/pages/reset-password-page';
 import { Driver } from '../../webdriver/driver';
 import { MOCK_ETH_CONVERSION_RATE, mockPriceApi } from '../tokens/utils/mocks';
-import SetupPasskeyPage from 'test/e2e/page-objects/pages/onboarding/setup-passkey-page';
+import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const SECOND_ACCOUNT_NAME = 'Account 2';
 const IMPORTED_ACCOUNT_NAME = 'Imported Account 1';

@@ -13,7 +13,7 @@ import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/sen
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { PAGES } from '../../webdriver/driver';
 import { getProductionRemoteFlagApiResponse } from '../../feature-flags';
-import SetupPasskeyPage from 'test/e2e/page-objects/pages/onboarding/setup-passkey-page';
+import SetupPasskeyPage from '../../page-objects/pages/onboarding/setup-passkey-page';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
