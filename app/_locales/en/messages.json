@@ -10766,7 +10766,7 @@
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
   },
   "vip": {
-    "message": "VIP Fox $1",
+    "message": "VIP $1",
     "description": "$1 is the VIP tier number"
   },
   "visitSite": {
