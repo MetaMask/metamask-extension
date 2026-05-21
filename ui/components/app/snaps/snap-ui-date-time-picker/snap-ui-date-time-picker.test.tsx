@@ -310,9 +310,9 @@ describe('SnapUIDateTimePicker', () => {
       expect(receivedValue?.toISO()).toBe(DateTime.fromISO(iso).toISO());
     });
 
-    it('defaults to current date/time when no value is in context', () => {
+    it('defaults to current date/time (seconds zeroed) when no value is in context', () => {
       mockGetValue.mockReturnValue(undefined);
-      const before = DateTime.now();
+      const before = DateTime.now().set({ second: 0, millisecond: 0 });
 
       let receivedValue: DateTime | null | undefined;
       mockDateTimePicker.mockImplementation(({ value }) => {
@@ -330,6 +330,8 @@ describe('SnapUIDateTimePicker', () => {
       expect((receivedValue as DateTime).toMillis()).toBeLessThanOrEqual(
         after.toMillis(),
       );
+      expect((receivedValue as DateTime).second).toBe(0);
+      expect((receivedValue as DateTime).millisecond).toBe(0);
     });
 
     it('passes the form parameter to getValue', () => {
@@ -398,12 +400,13 @@ describe('SnapUIDateTimePicker', () => {
       });
 
       const lastValue = receivedValues[receivedValues.length - 1];
-      expect(lastValue?.toISO()).toBe(MOCK_DATETIME.toISO());
+      const expected = MOCK_DATETIME.set({ second: 0, millisecond: 0 });
+      expect(lastValue?.toISO()).toBe(expected.toISO());
     });
   });
 
   describe('onAccept (user confirms selection)', () => {
-    it('calls handleInputChange with the ISO string for datetime type', () => {
+    it('calls handleInputChange with the normalized ISO string for datetime type', () => {
       let capturedOnAccept: (date: DateTime | null) => void = jest.fn();
       mockDateTimePicker.mockImplementation(({ onAccept }) => {
         capturedOnAccept = onAccept;
@@ -416,9 +419,10 @@ describe('SnapUIDateTimePicker', () => {
         capturedOnAccept(MOCK_DATETIME);
       });
 
+      const expected = MOCK_DATETIME.set({ second: 0, millisecond: 0 });
       expect(mockHandleInputChange).toHaveBeenCalledWith(
         'test',
-        MOCK_DATETIME.toISO(),
+        expected.toISO(),
         undefined,
       );
     });
@@ -505,9 +509,10 @@ describe('SnapUIDateTimePicker', () => {
         capturedOnAccept(MOCK_DATETIME);
       });
 
+      const expected = MOCK_DATETIME.set({ second: 0, millisecond: 0 });
       expect(mockHandleInputChange).toHaveBeenCalledWith(
         'test',
-        MOCK_DATETIME.toISO(),
+        expected.toISO(),
         'my-form',
       );
     });

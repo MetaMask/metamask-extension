@@ -118,7 +118,7 @@ function normalizeDate(
       return date.set({ second: 0, millisecond: 0 });
     case 'datetime':
     default:
-      return date;
+      return date.set({ second: 0, millisecond: 0 });
   }
 }
 
