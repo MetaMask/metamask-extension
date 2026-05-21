@@ -1,5 +1,5 @@
 diff --git a/dist/AssetsController.cjs b/dist/AssetsController.cjs
-index 187d0c6998d9d5c07718af4592d6cb71ca8a4ff6..d41a7002936886686c63c00e713f2eaafcb571b3 100644
+index 187d0c6998d9d5c07718af4592d6cb71ca8a4ff6..92494173605bb53b1615f0cdb011712b1c9bfadb 100644
 --- a/dist/AssetsController.cjs
 +++ b/dist/AssetsController.cjs
 @@ -18,13 +18,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
@@ -17,7 +17,15 @@ index 187d0c6998d9d5c07718af4592d6cb71ca8a4ff6..d41a7002936886686c63c00e713f2eaa
  const PriceDataSource_1 = require("./data-sources/PriceDataSource.cjs");
  const RpcDataSource_1 = require("./data-sources/RpcDataSource.cjs");
  const SnapDataSource_1 = require("./data-sources/SnapDataSource.cjs");
-@@ -619,7 +619,8 @@ class AssetsController extends base_controller_1.BaseController {
+@@ -596,6 +596,7 @@ class AssetsController extends base_controller_1.BaseController {
+         const normalizedAssetId = (0, utils_2.normalizeAssetId)(assetId);
+         log('Adding custom asset', { accountId, assetId: normalizedAssetId });
+         this.update((state) => {
++            var _a;
+             const customAssets = state.customAssets;
+             if (!customAssets[accountId]) {
+                 customAssets[accountId] = [];
+@@ -619,7 +620,8 @@ class AssetsController extends base_controller_1.BaseController {
                  if (__classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, normalizedAssetId)) {
                      tokenType = 'native';
                  }
@@ -27,7 +35,28 @@ index 187d0c6998d9d5c07718af4592d6cb71ca8a4ff6..d41a7002936886686c63c00e713f2eaa
                      tokenType = 'spl';
                  }
                  const assetMetadata = {
-@@ -1579,7 +1580,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+@@ -634,6 +636,11 @@ class AssetsController extends base_controller_1.BaseController {
+                 state.assetsInfo[normalizedAssetId] =
+                     assetMetadata;
+             }
++            // Seed a zero balance so the UI can render the asset immediately,
++            // before the next pipeline fetch returns the real amount.
++            const balances = state.assetsBalance;
++            balances[accountId] ?? (balances[accountId] = {});
++            (_a = balances[accountId])[normalizedAssetId] ?? (_a[normalizedAssetId] = { amount: '0' });
+         });
+         // Fetch data for the newly added custom asset (merge to preserve other chains)
+         const account = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this).find((a) => a.id === accountId);
+@@ -641,6 +648,8 @@ class AssetsController extends base_controller_1.BaseController {
+             const chainId = extractChainId(normalizedAssetId);
+             await this.getAssets([account], {
+                 chainIds: [chainId],
++                dataTypes: ['balance', 'metadata', 'price'],
++                assetTypes: ['fungible'],
+                 forceUpdate: true,
+                 updateMode: 'merge',
+             });
+@@ -1579,7 +1588,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
      return result;
  }, _AssetsController_shouldHideNativeToken = function _AssetsController_shouldHideNativeToken(chainId, metadata) {
      // Check if it's a chain that should skip native tokens
@@ -81,7 +110,7 @@ index 790c523713105d601ac5a805a9236df40f2fcf26..2db1fbf280708e068b8fe4e2a1dc887e
  export type AssetsControllerOptions = {
      messenger: AssetsControllerMessenger;
 diff --git a/dist/AssetsController.mjs b/dist/AssetsController.mjs
-index 5aaeff65d579e58f017ef10331979bec6bad2161..0ee0ccb1ab234acdcea227d68154b9ff3ea86121 100644
+index 5aaeff65d579e58f017ef10331979bec6bad2161..85a913c8536bcdd7690d96cc0d512bf4528e37aa 100644
 --- a/dist/AssetsController.mjs
 +++ b/dist/AssetsController.mjs
 @@ -12,19 +12,19 @@ var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (
@@ -107,7 +136,15 @@ index 5aaeff65d579e58f017ef10331979bec6bad2161..0ee0ccb1ab234acdcea227d68154b9ff
  import { CHAINS_WITH_DEFAULT_TRACKED_ASSETS, DEFAULT_TRACKED_ASSETS_BY_CHAIN, buildDefaultAssetsInfo, getDefaultAssetMetadata } from "./defaults.mjs";
  import { AssetsDataSourceError } from "./errors.mjs";
  import { projectLogger, createModuleLogger } from "./logger.mjs";
-@@ -613,7 +613,8 @@ export class AssetsController extends BaseController {
+@@ -590,6 +590,7 @@ export class AssetsController extends BaseController {
+         const normalizedAssetId = normalizeAssetId(assetId);
+         log('Adding custom asset', { accountId, assetId: normalizedAssetId });
+         this.update((state) => {
++            var _a;
+             const customAssets = state.customAssets;
+             if (!customAssets[accountId]) {
+                 customAssets[accountId] = [];
+@@ -613,7 +614,8 @@ export class AssetsController extends BaseController {
                  if (__classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_isNativeAsset).call(this, normalizedAssetId)) {
                      tokenType = 'native';
                  }
@@ -117,7 +154,28 @@ index 5aaeff65d579e58f017ef10331979bec6bad2161..0ee0ccb1ab234acdcea227d68154b9ff
                      tokenType = 'spl';
                  }
                  const assetMetadata = {
-@@ -1572,7 +1573,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
+@@ -628,6 +630,11 @@ export class AssetsController extends BaseController {
+                 state.assetsInfo[normalizedAssetId] =
+                     assetMetadata;
+             }
++            // Seed a zero balance so the UI can render the asset immediately,
++            // before the next pipeline fetch returns the real amount.
++            const balances = state.assetsBalance;
++            balances[accountId] ?? (balances[accountId] = {});
++            (_a = balances[accountId])[normalizedAssetId] ?? (_a[normalizedAssetId] = { amount: '0' });
+         });
+         // Fetch data for the newly added custom asset (merge to preserve other chains)
+         const account = __classPrivateFieldGet(this, _AssetsController_instances, "m", _AssetsController_getSelectedAccounts).call(this).find((a) => a.id === accountId);
+@@ -635,6 +642,8 @@ export class AssetsController extends BaseController {
+             const chainId = extractChainId(normalizedAssetId);
+             await this.getAssets([account], {
+                 chainIds: [chainId],
++                dataTypes: ['balance', 'metadata', 'price'],
++                assetTypes: ['fungible'],
+                 forceUpdate: true,
+                 updateMode: 'merge',
+             });
+@@ -1572,7 +1581,7 @@ async function _AssetsController_executeMiddlewares(sources, request, initialRes
      return result;
  }, _AssetsController_shouldHideNativeToken = function _AssetsController_shouldHideNativeToken(chainId, metadata) {
      // Check if it's a chain that should skip native tokens
