@@ -142,6 +142,12 @@ import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
+import {
+  Asset,
+  CrossChainSwap,
+  SendPage,
+  Settings,
+} from './preloaded-lazy-routes';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
@@ -152,7 +158,6 @@ const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
   () => import('../keychains/reveal-seed.tsx'),
 );
-const Settings = mmLazy(() => import('../settings/index.ts'));
 const NetworksPage = mmLazy(() => import('../networks/index.ts'));
 const TokenManagementPage = mmLazy(
   () => import('../token-management/index.ts'),
@@ -173,8 +178,6 @@ const ConfirmDecryptMessage = mmLazy(
   () => import('../confirm-decrypt-message/index.js'),
 );
 const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
-const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
-const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
 const PermissionsConnect = mmLazy(
   () => import('../permissions-connect/index.js'),
 );
@@ -194,7 +197,6 @@ const NftFullImage = mmLazy(
   () =>
     import('../../components/app/assets/nfts/nft-details/nft-full-image.tsx'),
 );
-const Asset = mmLazy(() => import('../asset/index.js'));
 const DeFiPage = mmLazy(() => import('../defi/index.ts'));
 const PermissionsPage = mmLazy(
   () =>

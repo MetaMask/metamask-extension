@@ -22,6 +22,12 @@ type ModuleWithDefaultExport<Component extends AnyComponent = AnyComponent> = {
   default: Component;
 };
 
+export type PreloadableLazyComponent<
+  Component extends AnyComponent = AnyComponent,
+> = React.LazyExoticComponent<Component> & {
+  preload: () => Promise<ModuleWithDefaultExport<Component>>;
+};
+
 /**
  * Structural type for extracting a component's display name,
  * including through HOC `.WrappedComponent` chains.
@@ -138,6 +144,15 @@ const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
  * const LegacyPage = mmLazy(
  *   () => import('./LegacyPage.js'),
  * ) as React.LazyExoticComponent<React.ComponentType<Props>>;
+ *
+ * // Intent-based preload to warm the chunk before navigation
+ * <button
+ *   onMouseEnter={() => {
+ *     void MyPage.preload();
+ *   }}
+ * >
+ *   Open page
+ * </button>
  * ```
  * @template Module - The module object type, typically inferred from `() => import('...')`.
  * @param fn - an import of the form `() => import('AAA')`
@@ -147,28 +162,46 @@ const lazyLoadSubSampleRate = getManifestFlags().sentry?.lazyLoadSubSampleRate;
 export function mmLazy<
   Module extends Record<PropertyKey, unknown>,
   Component extends AnyComponent = InferComponent<Module, true>,
->(fn: () => Promise<Module>): React.LazyExoticComponent<Component> {
-  return React.lazy(async () => {
-    // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime.
-    const startTime = getPerformanceTimestamp();
+>(fn: () => Promise<Module>): PreloadableLazyComponent<Component> {
+  let importPromise: Promise<ModuleWithDefaultExport<Component>> | undefined;
 
-    const importedModule = await fn();
-    const { componentName, component } =
-      convertToDefaultExportModule<Component>(importedModule);
+  const loadComponent = () => {
+    if (!importPromise) {
+      importPromise = (async () => {
+        // We can't start the trace here because we don't have the componentName yet, so we just hold the startTime.
+        const startTime = getPerformanceTimestamp();
 
-    // Only trace load time of lazy-loaded components if the manifestFlag is set, and then do it by Math.random probability
-    if (lazyLoadSubSampleRate && Math.random() < lazyLoadSubSampleRate) {
-      trace({
-        name: TraceName.LazyLoadComponent,
-        data: { componentName },
-        startTime,
+        const importedModule = await fn();
+        const { componentName, component } =
+          convertToDefaultExportModule<Component>(importedModule);
+
+        // Only trace load time of lazy-loaded components if the manifestFlag is set, and then do it by Math.random probability
+        if (lazyLoadSubSampleRate && Math.random() < lazyLoadSubSampleRate) {
+          trace({
+            name: TraceName.LazyLoadComponent,
+            data: { componentName },
+            startTime,
+          });
+
+          endTrace({ name: TraceName.LazyLoadComponent });
+        }
+
+        return component;
+      })().catch((error) => {
+        importPromise = undefined;
+        throw error;
       });
-
-      endTrace({ name: TraceName.LazyLoadComponent });
     }
 
-    return component;
-  });
+    return importPromise;
+  };
+
+  const LazyComponent = React.lazy(
+    loadComponent,
+  ) as PreloadableLazyComponent<Component>;
+  LazyComponent.preload = loadComponent;
+
+  return LazyComponent;
 }
 
 /**

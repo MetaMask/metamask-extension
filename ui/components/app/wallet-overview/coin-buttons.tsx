@@ -53,6 +53,10 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
+import {
+  CrossChainSwap,
+  SendPage,
+} from '../../../pages/routes/preloaded-lazy-routes';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 
 const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
@@ -265,6 +269,10 @@ const CoinButtons = ({
     transitionForward(() => navigateToSendRoute(navigate, params));
   }, [chainId, account, setCorrectChain, handleSendNonEvm, trackingLocation]);
 
+  const handleSendIntent = useCallback(() => {
+    SendPage.preload();
+  }, []);
+
   const handleBuyAndSellOnClick = useCallback(() => {
     setShowTabOpenedToast(true);
     openBuyCryptoInPdapp(getChainId());
@@ -308,6 +316,10 @@ const CoinButtons = ({
       ),
     );
   }, [location, openBridgeExperience]);
+
+  const handleSwapIntent = useCallback(() => {
+    CrossChainSwap.preload();
+  }, []);
 
   const handleReceiveOnClick = useCallback(() => {
     trace({ name: TraceName.ReceiveModal });
@@ -372,6 +384,8 @@ const CoinButtons = ({
           />
         }
         onClick={handleSwapOnClick}
+        onMouseEnter={handleSwapIntent}
+        onFocus={handleSwapIntent}
         label={t('swap')}
         data-testid={`${classPrefix}-overview-swap`}
         width={BlockSize.Full}
@@ -388,16 +402,18 @@ const CoinButtons = ({
             color={IconColor.iconAlternative}
             size={IconSize.Md}
           />
-        }
-        disabled={
-          !isSigningEnabled ||
-          (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
-        }
-        label={t('send')}
-        onClick={handleSendOnClick}
-        width={BlockSize.Full}
-        tooltipRender={(contents: React.ReactElement) =>
-          generateTooltip('sendButton', contents)
+         }
+         disabled={
+           !isSigningEnabled ||
+           (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
+         }
+         label={t('send')}
+         onClick={handleSendOnClick}
+         onMouseEnter={handleSendIntent}
+         onFocus={handleSendIntent}
+         width={BlockSize.Full}
+         tooltipRender={(contents: React.ReactElement) =>
+           generateTooltip('sendButton', contents)
         }
       />
       {showReceiveModal && (

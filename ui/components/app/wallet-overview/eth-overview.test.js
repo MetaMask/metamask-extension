@@ -20,6 +20,15 @@ import {
 } from '../../../../shared/constants/metametrics';
 import EthOverview from './eth-overview';
 
+jest.mock('../../../pages/routes/preloaded-lazy-routes', () => ({
+  SendPage: { preload: jest.fn() },
+  CrossChainSwap: { preload: jest.fn() },
+}));
+
+const { SendPage, CrossChainSwap } = jest.requireMock(
+  '../../../pages/routes/preloaded-lazy-routes',
+);
+
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
 // TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
 jest.mock(
@@ -227,6 +236,8 @@ describe('EthOverview', () => {
 
     beforeEach(() => {
       openTabSpy.mockClear();
+      SendPage.preload.mockClear();
+      CrossChainSwap.preload.mockClear();
       // Clear previous mock implementations
       useMultiPolling.mockClear();
 
@@ -244,6 +255,16 @@ describe('EthOverview', () => {
 
         return { startPolling, stopPollingByPollingToken };
       });
+    });
+
+    it('preloads send and swap routes on hover or focus', () => {
+      const { queryByTestId } = renderWithProvider(<EthOverview />, store);
+
+      fireEvent.mouseEnter(queryByTestId(ETH_OVERVIEW_SEND));
+      fireEvent.focus(queryByTestId(ETH_OVERVIEW_SWAP));
+
+      expect(SendPage.preload).toHaveBeenCalledTimes(1);
+      expect(CrossChainSwap.preload).toHaveBeenCalledTimes(1);
     });
 
     it('should show the primary balance', async () => {
