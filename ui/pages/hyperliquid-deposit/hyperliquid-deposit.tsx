@@ -212,7 +212,7 @@ function getDepositStatus(
 
 function getStatusTitle(status: HyperliquidDepositStatus): string {
   if (status === 'confirmed') {
-    return 'Account Funded';
+    return 'Wallet Funded';
   }
 
   if (status === 'failed') {
@@ -236,7 +236,7 @@ function getStatusButtonText(status: HyperliquidDepositStatus): string {
 
 function getStatusCopy(status: HyperliquidDepositStatus): string {
   if (status === 'confirmed') {
-    return 'Your Hyperliquid account has been funded and is ready for trading.';
+    return 'Your perps wallet is ready to trade on Hyperliquid.';
   }
 
   if (status === 'failed') {

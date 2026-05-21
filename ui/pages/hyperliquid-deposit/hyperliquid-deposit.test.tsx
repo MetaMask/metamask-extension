@@ -175,7 +175,7 @@ describe('HyperliquidDepositPage', () => {
         "Your deposit is on its way. We'll update this screen once the funds are available in Hyperliquid.",
       ),
     ).toBeInTheDocument();
-    expect(screen.queryByText('Account Funded')).not.toBeInTheDocument();
+    expect(screen.queryByText('Wallet Funded')).not.toBeInTheDocument();
     expect(
       screen.getByRole('status', { name: 'Waiting for confirmation' }),
     ).toBeInTheDocument();
@@ -189,10 +189,10 @@ describe('HyperliquidDepositPage', () => {
     });
     renderStatusPage(TransactionStatus.confirmed);
 
-    expect(screen.getByText('Account Funded')).toBeInTheDocument();
+    expect(screen.getByText('Wallet Funded')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Your Hyperliquid account has been funded and is ready for trading.',
+        'Your perps wallet is ready to trade on Hyperliquid.',
       ),
     ).toBeInTheDocument();
     expect(screen.getByText('Current balance')).toBeInTheDocument();
