@@ -1,5 +1,6 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -33,6 +34,7 @@ import {
   type Hex,
 } from '@metamask/utils';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
+import { ERC20 } from '@metamask/controller-utils';
 
 import { TokenManagementCell } from '../../components/multichain/token-management-cell';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -95,6 +97,16 @@ import {
   TextFieldSearch,
   TextFieldSearchSize,
 } from '../../components/component-library';
+import { MetaMetricsContext } from '../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsTokenEventSource,
+} from '../../../shared/constants/metametrics';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../shared/constants/transaction';
 
 type ManagedAsset = Parameters<typeof sortAssetsWithPriority>[0][number];
 
@@ -110,6 +122,21 @@ const SEARCH_DEBOUNCE_MS = 300;
 const TOKEN_MANAGEMENT_PAGE_TOAST_DURATION_MS = 5000;
 const TOKEN_LIST_PAGINATION_THRESHOLD_PX = ASSET_CELL_HEIGHT * 4;
 const EMPTY_TOKEN_SEARCH_RESULTS: TokenSearchResult[] = [];
+const TOKEN_MANAGEMENT_SCREEN = 'manage_tokens';
+const TOKEN_MANAGEMENT_DEFAULT_VIEW_STATE = 'default';
+const TOKEN_MANAGEMENT_NO_RESULTS_VIEW_STATE = 'no_results';
+const TOKEN_MANAGEMENT_LOCATION = 'MANAGE_TOKENS';
+const TOKEN_MANAGEMENT_CUSTOM_CTA_LOCATION = 'MANAGE_TOKENS_CUSTOM_CTA';
+const METRICS_PROPERTIES = {
+  assetType: 'asset_type',
+  chainId: 'chain_id',
+  sourceConnectionMethod: 'source_connection_method',
+  tokenContractAddress: 'token_contract_address',
+  tokenDecimalPrecision: 'token_decimal_precision',
+  tokenStandard: 'token_standard',
+  tokenSymbol: 'token_symbol',
+  viewState: 'view_state',
+} as const;
 
 type TokenManagementRouteState = {
   tokenManagementToast?: {
@@ -141,6 +168,41 @@ const getTokenManagementToastFromRouteState = (state: unknown) => {
   return {
     symbol: toast.symbol,
   };
+};
+
+const getAssetReferenceFromAssetId = (assetId: unknown): string | undefined => {
+  if (!assetId || typeof assetId !== 'string') {
+    return undefined;
+  }
+
+  const assetType = assetId.split('/').pop();
+  const assetReference = assetType?.split(':').pop();
+  return assetReference || assetId;
+};
+
+const getManagedTokenMetricsProperties = (token: ManagedAsset) => {
+  const isEvmToken = isEvmChainId(token.chainId as Hex | CaipChainId);
+  const address =
+    'address' in token && token.address
+      ? token.address
+      : getAssetReferenceFromAssetId(token.assetId);
+  const properties: Record<string, string | number> = {
+    [METRICS_PROPERTIES.chainId]: String(token.chainId),
+    [METRICS_PROPERTIES.tokenStandard]: isEvmToken ? ERC20 : TokenStandard.none,
+    [METRICS_PROPERTIES.assetType]: AssetType.token,
+  };
+
+  if (token.symbol) {
+    properties[METRICS_PROPERTIES.tokenSymbol] = token.symbol;
+  }
+  if (address) {
+    properties[METRICS_PROPERTIES.tokenContractAddress] = address;
+  }
+  if (typeof token.decimals === 'number') {
+    properties[METRICS_PROPERTIES.tokenDecimalPrecision] = token.decimals;
+  }
+
+  return properties;
 };
 
 const normalizeToHexChainId = (chainId: string): string => {
@@ -282,6 +344,7 @@ export const TokenManagementPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [pageToast, setPageToast] = useState<{ symbol: string } | null>(null);
@@ -330,6 +393,7 @@ export const TokenManagementPage = () => {
     ReadonlySet<string>
   >(() => new Set<string>());
   const stagedHidesRef = useRef<Map<string, StagedHidePayload>>(new Map());
+  const hasTrackedScreenOpenedRef = useRef(false);
 
   const stageHide = useCallback((key: string, payload: StagedHidePayload) => {
     stagedHidesRef.current.set(key, payload);
@@ -677,8 +741,15 @@ export const TokenManagementPage = () => {
 
   const handleAddCustomToken = useCallback(() => {
     commitStagedHides().catch(() => undefined);
+    trackEvent({
+      category: MetaMetricsEventCategory.Navigation,
+      event: MetaMetricsEventName.TokenImportButtonClicked,
+      properties: {
+        location: TOKEN_MANAGEMENT_CUSTOM_CTA_LOCATION,
+      },
+    });
     navigate(CUSTOM_TOKEN_IMPORT_ROUTE);
-  }, [commitStagedHides, navigate]);
+  }, [commitStagedHides, navigate, trackEvent]);
 
   const handleSearchChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -823,9 +894,19 @@ export const TokenManagementPage = () => {
       if (!stagedKey) {
         return;
       }
+      const tokenMetricsProperties = getManagedTokenMetricsProperties(token);
 
       if (nextValue) {
         unstageHide(stagedKey);
+        trackEvent({
+          category: MetaMetricsEventCategory.Wallet,
+          event: MetaMetricsEventName.TokenAdded,
+          sensitiveProperties: {
+            ...tokenMetricsProperties,
+            [METRICS_PROPERTIES.sourceConnectionMethod]:
+              MetaMetricsTokenEventSource.ManageTokens,
+          },
+        });
         return;
       }
 
@@ -844,6 +925,14 @@ export const TokenManagementPage = () => {
           address: token.address,
           caipAssetId: caipAssetId ?? undefined,
         });
+        trackEvent({
+          category: MetaMetricsEventCategory.Wallet,
+          event: MetaMetricsEventName.TokenHidden,
+          sensitiveProperties: {
+            ...tokenMetricsProperties,
+            location: TOKEN_MANAGEMENT_LOCATION,
+          },
+        });
         return;
       }
 
@@ -852,8 +941,16 @@ export const TokenManagementPage = () => {
         assetId: token.assetId as CaipAssetType,
         accountId: token.accountId,
       });
+      trackEvent({
+        category: MetaMetricsEventCategory.Wallet,
+        event: MetaMetricsEventName.TokenHidden,
+        sensitiveProperties: {
+          ...tokenMetricsProperties,
+          location: TOKEN_MANAGEMENT_LOCATION,
+        },
+      });
     },
-    [getNetworkMeta, getStagedHideKey, stageHide, unstageHide],
+    [getNetworkMeta, getStagedHideKey, stageHide, trackEvent, unstageHide],
   );
 
   const handleSearchResultToggle = useCallback(
@@ -1065,6 +1162,7 @@ export const TokenManagementPage = () => {
         ignoredEvmAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? ignoredEvmAssetIds.has(evmImportedKey) : false) ||
         isIgnoredMultichainAsset;
+      const isPending = pendingKeys.has(lowerAssetId);
 
       return (
         <TokenManagementCell
@@ -1081,8 +1179,9 @@ export const TokenManagementPage = () => {
             allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
             payload.caipChainId
           }
-          isOn={(isImported && !isHidden) || payload.isNative}
-          disabled={payload.isNative || pendingKeys.has(lowerAssetId)}
+          isOn={isPending || (isImported && !isHidden) || payload.isNative}
+          disabled={payload.isNative || isPending}
+          isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
           showToggle={!payload.isNative}
           testIdSuffix={`search-${lowerAssetId}`}
@@ -1180,6 +1279,37 @@ export const TokenManagementPage = () => {
       })),
     ];
   }, [browseApiResults, hasQuery, searchResults, visibleTokens]);
+  const tokenManagementViewState =
+    tokenListItems.length === 0
+      ? TOKEN_MANAGEMENT_NO_RESULTS_VIEW_STATE
+      : TOKEN_MANAGEMENT_DEFAULT_VIEW_STATE;
+
+  useEffect(() => {
+    if (
+      hasTrackedScreenOpenedRef.current ||
+      isSearchFetching ||
+      isSearching ||
+      isFetchingNextPage
+    ) {
+      return;
+    }
+
+    hasTrackedScreenOpenedRef.current = true;
+    trackEvent({
+      category: MetaMetricsEventCategory.Home,
+      event: MetaMetricsEventName.TokenScreenOpened,
+      properties: {
+        screen: TOKEN_MANAGEMENT_SCREEN,
+        [METRICS_PROPERTIES.viewState]: tokenManagementViewState,
+      },
+    });
+  }, [
+    isFetchingNextPage,
+    isSearchFetching,
+    isSearching,
+    tokenManagementViewState,
+    trackEvent,
+  ]);
 
   const renderTokenListItem = useCallback(
     (info: { item: TokenManagementListItem }) => {
@@ -1272,15 +1402,15 @@ export const TokenManagementPage = () => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={6}
+      aria-label={t('loading')}
       data-testid="token-management-search-loading"
     >
-      <Text
-        variant={TextVariant.BodyMd}
-        textAlign={TextAlign.Center}
-        color={TextColor.TextAlternative}
-      >
-        {t('loading')}
-      </Text>
+      <Icon
+        className="animate-spin"
+        name={IconName.Loading}
+        color={IconColor.IconMuted}
+        size={IconSize.Lg}
+      />
     </Box>
   );
 
@@ -1290,15 +1420,15 @@ export const TokenManagementPage = () => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={4}
+      aria-label={t('loading')}
       data-testid="token-management-pagination-loading"
     >
-      <Text
-        variant={TextVariant.BodySm}
-        textAlign={TextAlign.Center}
-        color={TextColor.TextAlternative}
-      >
-        {t('loading')}
-      </Text>
+      <Icon
+        className="animate-spin"
+        name={IconName.Loading}
+        color={IconColor.IconMuted}
+        size={IconSize.Sm}
+      />
     </Box>
   ) : null;
 

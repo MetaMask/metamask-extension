@@ -3,6 +3,10 @@ const path = require('node:path');
 const ts = require('typescript');
 const { version: reactVersion } = require('react/package.json');
 
+const {
+  architecturalZones,
+} = require('./development/eslint-restricted-paths-zones');
+
 const tsconfigPath = ts.findConfigFile('./', ts.sys.fileExists);
 const { config } = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
 const tsconfig = ts.parseJsonConfigFileContent(config, ts.sys, './');
@@ -743,6 +747,30 @@ module.exports = {
               .join('|')}/]`,
             message: 'Avoid using global network selectors in confirmations',
           },
+        ],
+      },
+    },
+    /**
+     * Route module isolation exemptions (defense-in-depth)
+     *
+     * The router registry (`ui/pages/routes/`) and the top-level
+     * `ui/pages/index.js` must reference every route module by design.
+     * In the current setup the route-isolation zones don't actually
+     * target these files — `routes` is excluded from `ROUTE_ISOLATION_EXEMPT_DIRS`
+     * in `development/eslint-restricted-paths-zones.js`, and `index.js`
+     * sits above any route's `target`. Still, this override re-defines
+     * `import-x/no-restricted-paths` for these paths with **only** the
+     * architectural `app` <-> `ui` <-> `shared` zones so that if the
+     * exemption list is ever changed, the registry's sibling-route
+     * imports continue to be permitted without silently losing the
+     * `ui` <-> `app` boundary. See ADR 0021 (modularize-routes).
+     */
+    {
+      files: ['ui/pages/routes/**/*.{js,ts,tsx}', 'ui/pages/index.js'],
+      rules: {
+        'import-x/no-restricted-paths': [
+          'error',
+          { basePath: './', zones: architecturalZones },
         ],
       },
     },

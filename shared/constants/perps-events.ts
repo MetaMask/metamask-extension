@@ -42,6 +42,9 @@ export const PERPS_EVENT_PROPERTY = {
   OPEN_POSITION: 'open_position',
   OPEN_ORDER: 'open_order',
   NUMBER_POSITIONS_CLOSED: 'number_positions_closed',
+  SCREEN_NAME: 'screen_name',
+  ACTION_TYPE: 'action_type',
+  ORDER_TIMESTAMP: 'order_timestamp',
 } as const;
 
 export const PERPS_EVENT_VALUE = {
@@ -128,6 +131,20 @@ export const PERPS_EVENT_VALUE = {
     MARKET_LIST: 'market_list',
     TRADING: 'trading',
     WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
+  },
+  SCREEN_NAME: {
+    PERPS_ACTIVITY_HISTORY: 'perps_activity_history',
+    WALLET_HOME_PERPS_TAB: 'wallet_home_perps_tab',
+    MARKET_DETAIL: 'market_detail',
+  },
+  ACTION_TYPE: {
+    ADL_LEARN_MORE: 'adl_learn_more',
+  },
+  PERPS_HISTORY_TABS: {
+    TRADES: 'trades',
+    ORDERS: 'orders',
+    FUNDING: 'funding',
+    DEPOSITS: 'deposits',
   },
 } as const;
 

@@ -45,3 +45,11 @@ export const SUPPORT_CONFIG = {
 export const FEEDBACK_CONFIG = {
   Url: 'https://survey.alchemer.com/s3/8649911/MetaMask-Perps-Trading-Feedback',
 } as const;
+
+/**
+ * Perps support article URLs. Aligned with mobile perpsConfig.
+ */
+export const PERPS_SUPPORT_ARTICLES_URLS = {
+  AdlUrl:
+    'https://support.metamask.io/manage-crypto/trade/perps/leverage-and-liquidation/?utm_source=extension#what-is-auto-deleveraging-adl',
+} as const;

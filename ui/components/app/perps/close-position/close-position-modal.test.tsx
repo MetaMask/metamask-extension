@@ -109,6 +109,10 @@ jest.mock('../../../../store/background-connection', () => ({
     mockSubmitRequestToBackground(...args),
 }));
 
+jest.mock('../../rewards/RewardsVipBadge', () => ({
+  RewardsVipBadge: () => null,
+}));
+
 const mockUsePerpsEligibility = jest.fn(() => ({ isEligible: true }));
 jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
   usePerpsEligibility: () => mockUsePerpsEligibility(),
@@ -116,12 +120,14 @@ jest.mock('../../../../hooks/perps/usePerpsEligibility', () => ({
 
 type MockedUsePerpsOrderFeesReturn = {
   feeRate: number | undefined;
+  undiscountedFeeRate: number | undefined;
   isLoading: boolean;
   metamaskFeeRateDiscountPercentage: number | undefined;
 };
 const mockUsePerpsOrderFees = jest.fn<MockedUsePerpsOrderFeesReturn, []>(
   () => ({
     feeRate: 0.00145,
+    undiscountedFeeRate: 0.00145,
     isLoading: false,
     metamaskFeeRateDiscountPercentage: undefined,
   }),
@@ -158,6 +164,7 @@ describe('ClosePositionModal', () => {
     mockUsePerpsEligibility.mockReturnValue({ isEligible: true });
     mockUsePerpsOrderFees.mockReturnValue({
       feeRate: 0.00145,
+      undiscountedFeeRate: 0.00145,
       isLoading: false,
       metamaskFeeRateDiscountPercentage: undefined,
     });
@@ -723,10 +730,11 @@ describe('ClosePositionModal', () => {
     });
   });
 
-  describe('MetaMask fee discount badge', () => {
-    it('does not render the discount badge when no discount is active', () => {
+  describe('MetaMask fee discount', () => {
+    it('does not show discounted fee when no discount is active', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: 0.00145,
+        undiscountedFeeRate: 0.00145,
         isLoading: false,
         metamaskFeeRateDiscountPercentage: undefined,
       });
@@ -742,13 +750,14 @@ describe('ClosePositionModal', () => {
       );
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-close-summary-fees-value-original'),
       ).not.toBeInTheDocument();
     });
 
-    it('renders the inline discount badge next to the fees value when a discount is active', () => {
+    it('shows strikethrough original and discounted fee when a discount is active', () => {
       mockUsePerpsOrderFees.mockReturnValue({
-        feeRate: 0.00045 + 0.0005, // protocol + half-off builder
+        feeRate: 0.00045 + 0.0005, // protocol + half-off builder (discounted)
+        undiscountedFeeRate: 0.00145, // protocol + full builder
         isLoading: false,
         metamaskFeeRateDiscountPercentage: 50,
       });
@@ -764,18 +773,17 @@ describe('ClosePositionModal', () => {
       );
 
       expect(
-        screen.getByTestId('perps-fees-display-discount'),
+        screen.getByTestId('perps-close-summary-fees-value-original'),
       ).toBeInTheDocument();
-      expect(screen.getByText('-50%')).toBeInTheDocument();
-      // Fee value text still present
       expect(
         screen.getByTestId('perps-close-summary-fees-value'),
       ).toBeInTheDocument();
     });
 
-    it('does not render the discount badge while feeRate is unavailable', () => {
+    it('does not show discounted fee while feeRate is unavailable', () => {
       mockUsePerpsOrderFees.mockReturnValue({
         feeRate: undefined,
+        undiscountedFeeRate: undefined,
         isLoading: true,
         metamaskFeeRateDiscountPercentage: 50,
       });
@@ -791,7 +799,7 @@ describe('ClosePositionModal', () => {
       );
 
       expect(
-        screen.queryByTestId('perps-fees-display-discount'),
+        screen.queryByTestId('perps-close-summary-fees-value-original'),
       ).not.toBeInTheDocument();
     });
   });
