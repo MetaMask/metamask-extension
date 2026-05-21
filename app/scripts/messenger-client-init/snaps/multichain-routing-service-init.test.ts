@@ -87,13 +87,15 @@ describe('MultichainRoutingServiceInit', () => {
 
     const requestMock = getInitRequestMock();
 
-    jest.spyOn(requestMock.initMessenger, 'call').mockImplementation(
-      async (_action: unknown, _opts: unknown, callback: unknown) => {
-        return (
-          callback as (args: { keyring: unknown }) => Promise<unknown>
-        )({ keyring: mockV2Keyring });
-      },
-    );
+    jest
+      .spyOn(requestMock.initMessenger, 'call')
+      .mockImplementation(
+        async (_action: unknown, _opts: unknown, callback: unknown) => {
+          return (callback as (args: { keyring: unknown }) => Promise<unknown>)(
+            { keyring: mockV2Keyring },
+          );
+        },
+      );
 
     jest
       .mocked(requestMock.getMessengerClient)
