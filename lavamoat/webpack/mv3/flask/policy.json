@@ -467,7 +467,7 @@
     "@ledgerhq/hw-app-eth>@ledgerhq/domain-service": {
       "packages": {
         "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "axios": true
+        "wait-on>axios": true
       }
     },
     "@ledgerhq/errors": {
@@ -481,7 +481,7 @@
         "ethers>@ethersproject/hash": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/cryptoassets-evm-signatures": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools>@ledgerhq/live-env": true,
-        "axios": true,
+        "wait-on>axios": true,
         "@metamask/ppom-validator>crypto-js": true
       }
     },
@@ -501,7 +501,7 @@
         "@ledgerhq/errors": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/evm-tools": true,
         "@ledgerhq/hw-app-eth>@ledgerhq/logs": true,
-        "axios": true,
+        "wait-on>axios": true,
         "@ledgerhq/hw-app-eth>bignumber.js": true,
         "buffer": true,
         "semver": true
@@ -657,7 +657,7 @@
         "performance.now": true
       },
       "packages": {
-        "@metamask/assets-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/utils": true,
         "@metamask/assets-controller>bignumber.js": true
       }
@@ -672,7 +672,7 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/account-api": true,
-        "@metamask/assets-controllers>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
@@ -736,41 +736,6 @@
         "@metamask/controller-utils>@metamask/ethjs-unit": true,
         "@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "cockatiel": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
-        "ethereumjs-util>bn.js": true,
-        "buffer": true,
-        "eth-ens-namehash": true,
-        "eslint>fast-deep-equal": true,
-        "lodash": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/controller-utils": {
-      "globals": {
-        "Buffer.from": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@metamask/ethjs-unit": true,
-        "@metamask/utils": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
         "cockatiel": true,
@@ -1169,7 +1134,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "lodash": true,
         "@metamask/keyring-controller>ulid": true
@@ -1487,7 +1452,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
@@ -2359,6 +2324,12 @@
         "browserify>util": true
       }
     },
+    "async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      }
+    },
     "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
       "globals": {
         "clearTimeout": true,
@@ -2368,18 +2339,12 @@
         "tslib": true
       }
     },
-    "mockttp>async-mutex": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
-      }
-    },
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
       "packages": {
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
       }
     },
-    "axios": {
+    "wait-on>axios": {
       "globals": {
         "AbortController": true,
         "Blob": true,
@@ -3031,7 +2996,7 @@
         "buffer": true,
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
-        "ganache>secp256k1": true
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": {
@@ -3049,7 +3014,7 @@
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
         "mockttp>express>safe-buffer": true,
-        "ganache>secp256k1": true
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
       }
     },
     "ethereumjs-util": {
@@ -3237,7 +3202,7 @@
         "string.prototype.matchall>call-bind>es-define-property": true
       }
     },
-    "axios>form-data>es-set-tostringtag>has-tostringtag": {
+    "jsdom>form-data>es-set-tostringtag>has-tostringtag": {
       "packages": {
         "string.prototype.matchall>has-symbols": true
       }
@@ -3284,7 +3249,7 @@
         "crypto-browserify": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "mockttp>express>safe-buffer": true,
-        "ganache>secp256k1": true
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
       }
     },
     "he": {
@@ -3333,7 +3298,7 @@
     "browserify>util>is-arguments": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
+        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>is-array-buffer": {
@@ -3351,7 +3316,7 @@
     "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-boolean-object": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
+        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>is-callable": {
@@ -3362,7 +3327,7 @@
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
+        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "browserify>util>is-generator-function": {
@@ -3370,7 +3335,7 @@
         "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>get-intrinsic>generator-function": true,
         "string.prototype.matchall>es-abstract>get-proto": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true,
+        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true,
         "string.prototype.matchall>es-abstract>safe-regex-test": true
       }
     },
@@ -3388,14 +3353,14 @@
     "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-number-object": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
+        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>is-regex": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
         "string.prototype.matchall>gopd": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true,
+        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true,
         "eslint-plugin-react>hasown": true
       }
     },
@@ -3407,7 +3372,7 @@
     "eslint-plugin-react>array-includes>is-string": {
       "packages": {
         "string.prototype.matchall>call-bound": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
+        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": {
@@ -4614,7 +4579,7 @@
         "core-js-pure": true
       }
     },
-    "ganache>secp256k1": {
+    "ethereumjs-util>ethereum-cryptography>secp256k1": {
       "packages": {
         "@toruslabs/eccrypto>elliptic": true
       }
@@ -5019,7 +4984,7 @@
         "browserify>util>which-typed-array>for-each": true,
         "string.prototype.matchall>es-abstract>get-proto": true,
         "string.prototype.matchall>gopd": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
+        "jsdom>form-data>es-set-tostringtag>has-tostringtag": true
       }
     }
   }
