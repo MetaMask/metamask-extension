@@ -1,10 +1,6 @@
 import React, { useMemo, type MouseEvent as ReactMouseEvent } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  TransactionStatus,
-  type TransactionMeta,
-} from '@metamask/transaction-controller';
-import type { Hex } from '@metamask/utils';
+import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { EditGasModes } from '../../../../shared/constants/gas';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { PendingTransactionActionButtons } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-action-buttons';
@@ -13,32 +9,59 @@ import {
   selectTransactionById,
   selectTransactions,
 } from '../../../selectors/transactionController';
+import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-transaction-actions';
+import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { buildTransactionGroupFromMeta } from './build-transaction-group-from-meta';
-
-const buildInactiveTransactionGroup = (): TransactionGroup => {
-  const inactiveMeta = {
-    id: 'inactive',
-    status: TransactionStatus.confirmed,
-    chainId: '0x1',
-    txParams: { nonce: '0x0' },
-  } as TransactionMeta;
-
-  return {
-    transactions: [inactiveMeta],
-    initialTransaction: inactiveMeta,
-    primaryTransaction: inactiveMeta,
-    nonce: '0x0' as Hex,
-    hasCancelled: false,
-    hasRetried: false,
-  };
-};
 
 type PendingEvmActionsProps = {
   metaId: string;
   isEarliestNonce: boolean;
   setEditGasMode: (mode: EditGasModes) => void;
   onGasModalMetaId: (metaId: string) => void;
+};
+
+type PendingEvmActionsInnerProps = {
+  meta: TransactionMeta;
+  transactionGroup: TransactionGroup;
+  isEarliestNonce: boolean;
+  setEditGasMode: (mode: EditGasModes) => void;
+  onGasModalMetaId: (metaId: string) => void;
+};
+
+const PendingEvmActionsInner = ({
+  meta,
+  transactionGroup,
+  isEarliestNonce,
+  setEditGasMode,
+  onGasModalMetaId,
+}: Readonly<PendingEvmActionsInnerProps>) => {
+  const { bridgeHistoryItem } = useBridgeTxHistoryData({ transactionGroup });
+
+  const { showCancel, onCancel, speedUp } = usePendingTransactionActions({
+    transactionGroup,
+    isEarliestNonce,
+    setEditGasMode,
+    hasIntentBridgeActivity: isIntentBridgeActivity(bridgeHistoryItem),
+  });
+
+  const wrapHandler =
+    (handler: (event: ReactMouseEvent) => void) => (event: ReactMouseEvent) => {
+      onGasModalMetaId(meta.id);
+      handler(event);
+    };
+
+  return (
+    <PendingTransactionActionButtons
+      showCancel={showCancel}
+      onCancel={wrapHandler(onCancel)}
+      speedUp={{
+        ...speedUp,
+        onClick: wrapHandler(speedUp.onClick),
+      }}
+      primaryTransaction={meta}
+    />
+  );
 };
 
 /**
@@ -70,36 +93,17 @@ export const PendingEvmActions = ({
     return buildTransactionGroupFromMeta(meta, transactions);
   }, [meta, transactions]);
 
-  const inactiveGroup = useMemo(() => buildInactiveTransactionGroup(), []);
-
-  const actions = usePendingTransactionActions({
-    transactionGroup: transactionGroup ?? inactiveGroup,
-    isEarliestNonce,
-    setEditGasMode,
-  });
-
   if (!meta || meta.isSmartTransaction || !transactionGroup) {
     return null;
   }
 
-  if (!actions.showCancel && !actions.showSpeedUp) {
-    return null;
-  }
-
-  const wrapHandler =
-    (handler: (event: ReactMouseEvent) => void) => (event: ReactMouseEvent) => {
-      onGasModalMetaId(meta.id);
-      handler(event);
-    };
-
   return (
-    <PendingTransactionActionButtons
-      showCancel={actions.showCancel}
-      showSpeedUp={actions.showSpeedUp}
-      speedUpLabel={actions.speedUpLabel}
-      onCancel={wrapHandler(actions.onCancel)}
-      onSpeedUp={wrapHandler(actions.onSpeedUp)}
-      primaryTransaction={meta}
+    <PendingEvmActionsInner
+      meta={meta}
+      transactionGroup={transactionGroup}
+      isEarliestNonce={isEarliestNonce}
+      setEditGasMode={setEditGasMode}
+      onGasModalMetaId={onGasModalMetaId}
     />
   );
 };

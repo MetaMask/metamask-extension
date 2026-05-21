@@ -4,29 +4,25 @@ import { Button, ButtonSize } from '@metamask/design-system-react';
 import { Box } from '../../component-library';
 import CancelButton from '../cancel-button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import type { PendingTransactionSpeedUpLabel } from '../../../helpers/transactions/pending-transaction-actions';
+import type { PendingTransactionSpeedUpAction } from '../../../hooks/usePendingTransactionActions';
 
 type PendingTransactionActionButtonsProps = {
   showCancel: boolean;
-  showSpeedUp: boolean;
-  speedUpLabel: PendingTransactionSpeedUpLabel;
   onCancel: (event: React.MouseEvent) => void;
-  onSpeedUp: (event: React.MouseEvent) => void;
+  speedUp: PendingTransactionSpeedUpAction;
   primaryTransaction: TransactionMeta;
 };
 
 // Cancel / Speed up buttons for pending EVM activity rows
 export const PendingTransactionActionButtons = ({
   showCancel,
-  showSpeedUp,
-  speedUpLabel,
   onCancel,
-  onSpeedUp,
+  speedUp,
   primaryTransaction,
 }: Readonly<PendingTransactionActionButtonsProps>) => {
   const t = useI18nContext();
 
-  if (!showCancel && !showSpeedUp) {
+  if (!showCancel && !speedUp.show) {
     return null;
   }
 
@@ -46,14 +42,14 @@ export const PendingTransactionActionButtons = ({
           cancelTransaction={onCancel}
         />
       ) : null}
-      {showSpeedUp ? (
+      {speedUp.show ? (
         <Button
           data-testid="speed-up-button"
           className="whitespace-nowrap"
           size={ButtonSize.Sm}
-          onClick={onSpeedUp}
+          onClick={speedUp.onClick}
         >
-          {t(speedUpLabel)}
+          {t(speedUp.label)}
         </Button>
       ) : null}
     </Box>

@@ -6,32 +6,11 @@ import {
   getPendingTransactionActionVisibility,
   isIntentBridgeActivity,
 } from './pending-transaction-actions';
-import { isTransactionPending } from './is-transaction-pending';
 
 const basePrimaryTransaction = {
   id: '1',
   status: TransactionStatus.submitted,
 } as TransactionMeta;
-
-describe('isTransactionPending', () => {
-  it('returns true for submitted transactions', () => {
-    expect(
-      isTransactionPending({
-        ...basePrimaryTransaction,
-        status: TransactionStatus.submitted,
-      }),
-    ).toBe(true);
-  });
-
-  it('returns false for confirmed transactions', () => {
-    expect(
-      isTransactionPending({
-        ...basePrimaryTransaction,
-        status: TransactionStatus.confirmed,
-      }),
-    ).toBe(false);
-  });
-});
 
 describe('isIntentBridgeActivity', () => {
   it('returns true when bridge history has an intent quote', () => {

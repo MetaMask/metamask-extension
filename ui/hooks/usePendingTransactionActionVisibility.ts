@@ -3,10 +3,8 @@ import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import {
   getPendingTransactionActionVisibility,
-  isIntentBridgeActivity,
   type PendingTransactionActionVisibility,
 } from '../helpers/transactions/pending-transaction-actions';
-import { useBridgeTxHistoryData } from './bridge/useBridgeTxHistoryData';
 import { useShouldShowSpeedUp } from './useShouldShowSpeedUp';
 
 /**
@@ -14,16 +12,17 @@ import { useShouldShowSpeedUp } from './useShouldShowSpeedUp';
  *
  * @param transactionGroup - Group from transaction selectors.
  * @param isEarliestNonce - Whether this group has the earliest pending nonce on its chain.
+ * @param hasIntentBridgeActivity - Whether bridge history is an intent-bridge flow (from caller's bridge lookup).
  */
 export const usePendingTransactionActionVisibility = (
   transactionGroup: TransactionGroup,
   isEarliestNonce: boolean,
+  hasIntentBridgeActivity: boolean,
 ): PendingTransactionActionVisibility => {
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
     isEarliestNonce,
   );
-  const { bridgeHistoryItem } = useBridgeTxHistoryData({ transactionGroup });
 
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
@@ -35,14 +34,14 @@ export const usePendingTransactionActionVisibility = (
         primaryTransaction: transactionGroup.primaryTransaction,
         shouldShowSpeedUp,
         isBridgeTx,
-        hasIntentBridgeActivity: isIntentBridgeActivity(bridgeHistoryItem),
+        hasIntentBridgeActivity,
       }),
     [
       transactionGroup.hasCancelled,
       transactionGroup.primaryTransaction,
       shouldShowSpeedUp,
       isBridgeTx,
-      bridgeHistoryItem,
+      hasIntentBridgeActivity,
     ],
   );
-}
+};

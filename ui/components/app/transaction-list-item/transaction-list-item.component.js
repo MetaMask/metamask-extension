@@ -3,7 +3,6 @@ import React, { useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 import {
   TransactionStatus,
@@ -11,6 +10,7 @@ import {
 } from '@metamask/transaction-controller';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
+import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-transaction-actions';
 import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
@@ -40,10 +40,6 @@ import { PendingTransactionActionButtons } from '../pending-transaction-action-b
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
 import {
-  selectBridgeHistoryForOriginalTxMetaId,
-  selectBridgeHistoryItemByHash,
-} from '../../../ducks/bridge-status/selectors';
-import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
 } from '../../../hooks/bridge/useBridgeTxHistoryData';
@@ -67,28 +63,18 @@ function TransactionListItemInner({
   // Bridge transactions
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
-  const { isBridgeComplete, showBridgeTxDetails, isBridgeFailed } =
-    useBridgeTxHistoryData({
-      transactionGroup,
-    });
-  const bridgeTxHistoryItemByHash = useSelector((state) =>
-    selectBridgeHistoryItemByHash(
-      state,
-      transactionGroup.initialTransaction.hash,
-    ),
-  );
-  const bridgeTxHistoryItemByOriginalTxMetaId = useSelector((state) =>
-    selectBridgeHistoryForOriginalTxMetaId(
-      state,
-      transactionGroup.initialTransaction.id,
-    ),
-  );
-  const bridgeTxHistoryItem =
-    bridgeTxHistoryItemByHash ?? bridgeTxHistoryItemByOriginalTxMetaId;
+  const {
+    bridgeHistoryItem,
+    isBridgeComplete,
+    showBridgeTxDetails,
+    isBridgeFailed,
+  } = useBridgeTxHistoryData({
+    transactionGroup,
+  });
   const isUnifiedSwapTx =
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
-    bridgeTxHistoryItem;
+    bridgeHistoryItem;
 
   const {
     initialTransaction: { id, txParams, type, metamaskPay },
@@ -108,14 +94,13 @@ function TransactionListItemInner({
 
   const {
     showCancel: showCancelButton,
-    showSpeedUp: isSpeedUpButtonVisible,
-    speedUpLabel,
     onCancel: cancelTransaction,
-    onSpeedUp: retryTransaction,
+    speedUp,
   } = usePendingTransactionActions({
     transactionGroup,
     isEarliestNonce,
     setEditGasMode,
+    hasIntentBridgeActivity: isIntentBridgeActivity(bridgeHistoryItem),
   });
 
   const resolvedType = resolveTransactionType(
@@ -212,9 +197,9 @@ function TransactionListItemInner({
           !FINAL_NON_CONFIRMED_STATUSES.includes(status) &&
           isBridgeTx &&
           !(isBridgeComplete || isBridgeFailed) &&
-          bridgeTxHistoryItem ? (
+          bridgeHistoryItem ? (
             <BridgeActivityItemTxSegments
-              bridgeTxHistoryItem={bridgeTxHistoryItem}
+              bridgeTxHistoryItem={bridgeHistoryItem}
               transactionGroup={transactionGroup}
             />
           ) : (
@@ -264,10 +249,8 @@ function TransactionListItemInner({
       >
         <PendingTransactionActionButtons
           showCancel={showCancelButton}
-          showSpeedUp={isSpeedUpButtonVisible}
-          speedUpLabel={speedUpLabel}
           onCancel={cancelTransaction}
-          onSpeedUp={retryTransaction}
+          speedUp={speedUp}
           primaryTransaction={transactionGroup.primaryTransaction}
         />
       </ActivityListItem>
@@ -285,9 +268,9 @@ function TransactionListItemInner({
             primaryCurrency={primaryCurrency}
             senderAddress={senderAddress}
             recipientAddress={recipientAddress}
-            onRetry={retryTransaction}
+            onRetry={speedUp.onClick}
             // showRetry={showRetry}
-            showSpeedUp={isSpeedUpButtonVisible}
+            showSpeedUp={speedUp.show}
             onCancel={cancelTransaction}
             transactionStatus={() => (
               <TransactionStatusLabel
