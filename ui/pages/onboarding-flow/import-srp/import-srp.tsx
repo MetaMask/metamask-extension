@@ -32,6 +32,7 @@ import {
   forceUpdateMetamaskState,
   resetOnboarding,
 } from '../../../store/actions';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import SrpInputForm from '../../srp-input-form';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 

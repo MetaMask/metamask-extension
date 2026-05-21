@@ -1,0 +1,26 @@
+# Template for per-engineer skills config used by `yarn skills`.
+# Copy this file to `.skills.local` (gitignored).
+#
+# Zero-config default: the `postinstall` hook clones MetaMask/skills into
+# `.skills-cache/metamask-skills` on every `yarn install`. `yarn skills`
+# auto-detects that cache when no env var is set — nothing to do.
+#
+# Optional persistent skills config belongs in this file. Environment variables
+# with the same names are only for one-off shell or CI overrides and take
+# precedence over this file.
+#   METAMASK_SKILLS_DIR   path to MetaMask/skills checkout (public, no auth)
+#   CONSENSYS_SKILLS_DIR  path to Consensys/skills checkout (private overlay)
+#
+# Example local setup (only if you want to override the cache):
+#   METAMASK_SKILLS_DIR=~/dev/metamask/skills
+#   CONSENSYS_SKILLS_DIR=~/dev/Consensys/skills   # optional
+#
+# Default behavior installs ALL domains. Set SKILLS_DOMAINS to opt out of some:
+#   SKILLS_DOMAINS=                          # all (default)
+#   SKILLS_DOMAINS=perps                     # single domain
+#   SKILLS_DOMAINS=perps,testing,pr-workflow # multiple domains
+#
+# Override per-run with `SKILLS_DOMAINS=... yarn skills` or `--domain <list>`.
+# Pick interactively with `yarn skills --select`.
+# Use `yarn skills --reset` to wipe.
+SKILLS_DOMAINS=

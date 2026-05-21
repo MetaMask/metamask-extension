@@ -3,6 +3,7 @@ import type { FeeCalculationResult } from '@metamask/perps-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { getSelectedInternalAccount } from '../../../shared/lib/selectors/accounts';
 import { getCurrentChainId } from '../../../shared/lib/selectors/networks';
+import { getIsVipProgramEnabled } from '../../selectors/perps/feature-flags';
 import { clearPerpsFeeDiscountCacheForTests } from './usePerpsMetamaskFeeDiscountBips';
 import { usePerpsOrderFees } from './usePerpsOrderFees';
 
@@ -34,6 +35,9 @@ function setSelectors(
     }
     if (selector === getCurrentChainId) {
       return chainId;
+    }
+    if (selector === getIsVipProgramEnabled) {
+      return true;
     }
     return undefined;
   });
@@ -425,6 +429,7 @@ describe('usePerpsOrderFees', () => {
       expect(result.current.metamaskFeeRateDiscountPercentage).toBe(50);
       expect(result.current.metamaskFeeRate).toBeCloseTo(0.0005, 10);
       expect(result.current.feeRate).toBeCloseTo(0.00095, 10);
+      expect(result.current.undiscountedFeeRate).toBe(0.00145);
       expect(result.current.protocolFeeRate).toBe(0.00045);
       expect(result.current.feeResult).toEqual({
         feeRate: 0.00095,
@@ -454,6 +459,7 @@ describe('usePerpsOrderFees', () => {
       expect(result.current.metamaskFeeRateDiscountPercentage).toBeUndefined();
       expect(result.current.metamaskFeeRate).toBe(0.001);
       expect(result.current.feeRate).toBe(0.00145);
+      expect(result.current.undiscountedFeeRate).toBe(0.00145);
     });
 
     it('swallows a thrown discount lookup (no error state surfaced)', async () => {

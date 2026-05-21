@@ -231,7 +231,6 @@ export default class TransactionListItemDetails extends PureComponent {
               <div>
                 {isProtectedByEnforcedSimulations ? (
                   <TransactionStatusLabel
-                    statusOnly
                     label={t('cancelled')}
                     tooltip={t('transactionProtectedByEnforcedSimulations')}
                   />

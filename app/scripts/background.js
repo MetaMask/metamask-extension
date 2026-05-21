@@ -2063,12 +2063,9 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
-      const pendingApprovalCount =
-        controller.appStateController.waitingForUnlock.length +
-        getAttentionRequiredApprovalCount({
-          approvalController: controller.approvalController,
-        });
-      return pendingApprovalCount;
+      return getAttentionRequiredApprovalCount({
+        approvalController: controller.approvalController,
+      });
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
       return 0;
