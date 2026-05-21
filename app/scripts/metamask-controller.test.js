@@ -148,9 +148,9 @@ jest.mock('webextension-polyfill', () => ({
 // shares the same mock instance
 const browserPolyfillMock = jest.mocked(browser);
 
-const { Ganache } = require('../../test/e2e/seeder/ganache');
+const { LocalNodeStub } = require('../../test/stub/local-node');
 
-const ganacheServer = new Ganache();
+const localNodeServer = new LocalNodeStub();
 
 const mockULIDs = [
   '01JKAF3DSGM3AB87EM9N0K41AJ',
@@ -463,7 +463,7 @@ function createMockCronjobControllerStorageManager() {
 
 describe('MetaMaskController', () => {
   beforeAll(async () => {
-    await ganacheServer.start();
+    await localNodeServer.start();
   });
 
   beforeEach(() => {
@@ -546,7 +546,7 @@ describe('MetaMaskController', () => {
   });
 
   afterAll(async () => {
-    await ganacheServer.quit();
+    await localNodeServer.quit();
   });
 
   describe('Phishing Detection Mock', () => {
@@ -1805,7 +1805,7 @@ describe('MetaMaskController', () => {
       beforeEach(() => {
         jest
           .mocked(gatorPermissionFeatureFlags.getEnabledAdvancedPermissions)
-          .mockReturnValue(['erc20-token-revocation']);
+          .mockReturnValue(['token-approval-revocation']);
         jest.mocked(forwardRequestToSnap).mockResolvedValue({});
       });
 
@@ -1834,9 +1834,14 @@ describe('MetaMaskController', () => {
           chainId,
           to: '0x0000000000000000000000000000000000000000',
           permission: {
-            type: 'erc20-token-revocation',
+            type: 'token-approval-revocation',
             data: {
-              justification: 'A test permission request',
+              erc20Approve: true,
+              erc721Approve: true,
+              erc721SetApprovalForAll: true,
+              permit2Approve: true,
+              permit2Lockdown: true,
+              permit2InvalidateNonces: true,
             },
             isAdjustmentAllowed: true,
           },
@@ -1952,7 +1957,7 @@ describe('MetaMaskController', () => {
           });
         jest
           .mocked(gatorPermissionFeatureFlags.getEnabledAdvancedPermissions)
-          .mockReturnValue(['erc20-token-revocation']);
+          .mockReturnValue(['token-approval-revocation']);
       });
 
       /**
@@ -1992,8 +1997,8 @@ describe('MetaMaskController', () => {
 
       it('omits permission types that are not enabled in the environment', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['a'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
           },
           'some-other-permission': {
             ruleTypes: ['b'],
@@ -2003,8 +2008,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['a'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2012,16 +2017,16 @@ describe('MetaMaskController', () => {
 
       it('fills chainIds from EIP-7702 supported chains when the kernel omits chainIds', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
           },
         });
 
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2029,8 +2034,8 @@ describe('MetaMaskController', () => {
 
       it('lowercases and filters kernel chainIds to EIP-7702 supported chains', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0X5', '0x99', '0xAA'],
           },
         });
@@ -2038,8 +2043,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });
@@ -2047,8 +2052,8 @@ describe('MetaMaskController', () => {
 
       it('keeps chainIds empty when the kernel sends an empty chainIds array', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: [],
           },
         });
@@ -2056,8 +2061,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: [],
           },
         });
@@ -2065,8 +2070,8 @@ describe('MetaMaskController', () => {
 
       it('uses EIP-7702 supported chains when kernel chainIds is null', async () => {
         jest.mocked(forwardRequestToSnap).mockResolvedValue({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: null,
           },
         });
@@ -2074,8 +2079,8 @@ describe('MetaMaskController', () => {
         const response = await getSupportedExecutionPermissions();
 
         expect(response.result).toStrictEqual({
-          'erc20-token-revocation': {
-            ruleTypes: ['revoke'],
+          'token-approval-revocation': {
+            ruleTypes: ['expiry'],
             chainIds: ['0x1', '0x5'],
           },
         });

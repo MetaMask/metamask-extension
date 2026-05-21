@@ -15,6 +15,7 @@ import {
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import Unlock from '../unlock-page';
 import {
   ONBOARDING_EXPERIMENTAL_AREA,

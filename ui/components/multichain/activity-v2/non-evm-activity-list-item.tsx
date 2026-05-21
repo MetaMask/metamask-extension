@@ -11,7 +11,6 @@ import {
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import TransactionIcon from '../../app/transaction-icon/transaction-icon';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
-import { formatTimestamp } from '../../app/multichain-transaction-details-modal/helpers';
 import { ActivityListItem as LegacyActivityListItem } from '../activity-list-item';
 import { ChainBadge } from '../../app/chain-badge/chain-badge';
 import { selectBridgeHistoryForAccountGroup } from '../../../ducks/bridge-status/selectors';
@@ -63,14 +62,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
         }
         title="Redeposit"
         // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
-        subtitle={
-          <TransactionStatusLabel
-            date={formatTimestamp(timestamp)}
-            error={{}}
-            status={statusKey}
-            statusOnly
-          />
-        }
+        subtitle={<TransactionStatusLabel error={{}} status={statusKey} />}
       />
     );
   }
@@ -108,14 +100,7 @@ export const NonEvmActivityListItem = ({ transaction, onClick }: Props) => {
       }
       title={title}
       // @ts-expect-error: React 18 ReactElement.key is Key|null, incompatible with @types/prop-types ReactNodeLike
-      subtitle={
-        <TransactionStatusLabel
-          date={formatTimestamp(transaction.timestamp)}
-          error={{}}
-          status={statusKey}
-          statusOnly
-        />
-      }
+      subtitle={<TransactionStatusLabel error={{}} status={statusKey} />}
     />
   );
 };

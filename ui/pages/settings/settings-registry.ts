@@ -33,6 +33,7 @@ import {
   THIRD_PARTY_APIS_ROUTE,
 } from '../../helpers/constants/routes';
 import { mmLazy } from '../../helpers/utils/mm-lazy';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { CLAIMS_TAB_KEYS } from '../shield/transaction-shield/types';
 
 /**
@@ -218,6 +219,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
   [TRANSACTION_SHIELD_ROUTE]: {
     labelKey: 'shieldTx',
     parentPath: SETTINGS_ROUTE,
+    // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
     component: mmLazy(() => import('../shield/transaction-shield/index.ts')),
     isTab: true,
     iconName: IconName.ShieldLock,
@@ -244,6 +246,7 @@ export const SETTINGS_ROUTES: Record<string, SettingsRouteMeta> = {
     labelKey: 'shieldClaimsListTitle',
     parentPath: TRANSACTION_SHIELD_ROUTE,
     component: mmLazy(
+      // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
       () => import('../shield/transaction-shield/claims-area/index.ts'),
     ),
   },

@@ -1,14 +1,14 @@
-import { GasFeeController } from '@metamask/gas-fee-controller';
+import {
+  GasFeeController,
+  GasFeeMessenger,
+} from '@metamask/gas-fee-controller';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
   SWAPS_CLIENT_ID,
 } from '../../../../shared/constants/swaps';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import {
-  GasFeeControllerInitMessenger,
-  GasFeeControllerMessenger,
-} from '../messengers';
+import { GasFeeControllerInitMessenger } from '../messengers';
 import { MessengerClientInitFunction } from '../types';
 import { getGlobalChainId } from '../init-utils';
 
@@ -27,7 +27,7 @@ const GAS_API_URL = process.env.SWAPS_USE_DEV_APIS
  */
 export const GasFeeControllerInit: MessengerClientInitFunction<
   GasFeeController,
-  GasFeeControllerMessenger,
+  GasFeeMessenger,
   GasFeeControllerInitMessenger
 > = ({ controllerMessenger, initMessenger, persistedState }) => {
   const messengerClient = new GasFeeController({

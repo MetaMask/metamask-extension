@@ -11,7 +11,6 @@ import {
 } from '../../../../shared/lib/bridge-status/utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { KEYRING_TRANSACTION_STATUS_KEY } from '../../../hooks/useMultichainTransactionDisplay';
-import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 import TransactionIcon from '../transaction-icon';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import { ActivityListItem } from '../../multichain/activity-list-item/activity-list-item';
@@ -182,10 +181,8 @@ const MultichainBridgeTransactionListItem = ({
         >
           {isTerminalState ? (
             <TransactionStatusLabel
-              date={formatTimestamp(transaction.timestamp)}
               error={{}}
               status={KEYRING_TRANSACTION_STATUS_KEY[transaction.status]}
-              statusOnly
               className={
                 isBridgeFullyComplete
                   ? 'transaction-status-label--confirmed'

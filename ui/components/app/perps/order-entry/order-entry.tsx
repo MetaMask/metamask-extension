@@ -95,10 +95,11 @@ export const OrderEntry = ({
   const marketInfo = usePerpsMarketInfo(asset);
 
   // Fetch dynamic fee rates from the controller (user-specific, with discounts)
-  const { feeRate } = usePerpsOrderFees({
-    symbol: asset,
-    orderType: orderType ?? 'market',
-  });
+  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: asset,
+      orderType: orderType ?? 'market',
+    });
 
   // Use custom hook for form state management
   const {
@@ -134,6 +135,18 @@ export const OrderEntry = ({
   });
 
   const isLong = formState.direction === 'long';
+
+  const originalEstimatedFees = useMemo(() => {
+    if (
+      calculations.estimatedFees === null ||
+      feeRate === undefined ||
+      feeRate === 0 ||
+      undiscountedFeeRate === undefined
+    ) {
+      return null;
+    }
+    return calculations.estimatedFees * (undiscountedFeeRate / feeRate);
+  }, [calculations.estimatedFees, feeRate, undiscountedFeeRate]);
 
   const onCalculationsChangeRef = useRef(onCalculationsChange);
   onCalculationsChangeRef.current = onCalculationsChange;
@@ -348,7 +361,10 @@ export const OrderEntry = ({
             leverage={formState.leverage}
             asset={asset}
             currentPrice={currentPrice}
-            szDecimals={marketInfo?.szDecimals}
+            szDecimals={sizeDecimals ?? marketInfo?.szDecimals}
+            currentPositionSize={
+              mode === 'modify' ? existingPosition?.size : undefined
+            }
             onAddFunds={onAddFunds}
             autoFocus={autoFocusUsd && formState.type === 'market'}
             usdPlaceholder={usdPlaceholder}
@@ -396,7 +412,11 @@ export const OrderEntry = ({
           <OrderSummary
             marginRequired={calculations.marginRequired}
             estimatedFees={calculations.estimatedFees}
+            originalEstimatedFees={originalEstimatedFees}
             liquidationPrice={calculations.liquidationPrice}
+            metamaskFeeRateDiscountPercentage={
+              metamaskFeeRateDiscountPercentage
+            }
           />
         )}
       </Box>

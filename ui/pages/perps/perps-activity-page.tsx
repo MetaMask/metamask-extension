@@ -228,6 +228,9 @@ const PerpsActivityPage = () => {
                           ? handleTransactionClick
                           : undefined
                       }
+                      screenName={
+                        PERPS_EVENT_VALUE.SCREEN_NAME.PERPS_ACTIVITY_HISTORY
+                      }
                     />
                   ))}
                 </Box>

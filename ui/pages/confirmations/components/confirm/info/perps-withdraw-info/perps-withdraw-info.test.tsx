@@ -95,7 +95,7 @@ describe('PerpsWithdrawInfo', () => {
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
         spendableBalance: '0',
-        withdrawableBalance: '321.09',
+        withdrawableBalance: '321.098765',
       } as never,
       isInitialLoading: false,
     });
@@ -104,7 +104,7 @@ describe('PerpsWithdrawInfo', () => {
 
     expect(customAmountInfoMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        balanceUsdOverride: 321.09,
+        balanceUsdOverride: 321.098765,
       }),
       expect.anything(),
     );
@@ -118,11 +118,13 @@ describe('PerpsWithdrawInfo', () => {
     ).toBeInTheDocument();
   });
 
-  it('does not pass hasMax (percentage buttons hidden for MVP)', () => {
+  it('passes hasMax to show percentage buttons', () => {
     renderWithProvider(<PerpsWithdrawInfo />, configureStore(mockState));
 
     expect(customAmountInfoMock).toHaveBeenCalledWith(
-      expect.not.objectContaining({ hasMax: true }),
+      expect.objectContaining({
+        hasMax: true,
+      }),
       expect.anything(),
     );
   });
@@ -144,8 +146,7 @@ describe('PerpsWithdrawInfo', () => {
 
   it('uses `withdrawableBalance` for the percentage-button balance override', () => {
     // HyperLiquid Unified Account mode: `spendableBalance` is $0 because USDC
-    // sits in the spot clearinghouse. `withdrawableBalance` is the unified
-    // value — must take precedence. Mirrors metamask-mobile#29492.
+    // sits in the spot clearinghouse. `withdrawableBalance` is the unified value.
     usePerpsLiveAccountMock.mockReturnValue({
       account: {
         spendableBalance: '0',

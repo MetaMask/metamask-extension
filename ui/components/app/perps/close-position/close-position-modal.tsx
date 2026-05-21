@@ -49,6 +49,7 @@ import {
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_MIN_MARKET_ORDER_USD } from '../constants';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { CloseAmountSection } from '../order-entry';
 import {
   PERPS_TOAST_KEYS,
@@ -307,10 +308,11 @@ export const ClosePositionModal = ({
     [closeSize, currentPrice],
   );
 
-  const { feeRate } = usePerpsOrderFees({
-    symbol: position.symbol,
-    orderType: 'market',
-  });
+  const { feeRate, undiscountedFeeRate, metamaskFeeRateDiscountPercentage } =
+    usePerpsOrderFees({
+      symbol: position.symbol,
+      orderType: 'market',
+    });
 
   const margin = useMemo(() => {
     const totalMargin = parseFloat(position.marginUsed) || 0;
@@ -325,6 +327,11 @@ export const ClosePositionModal = ({
   const estimatedFees = useMemo(
     () => closeNotionalUsd * (feeRate ?? 0),
     [closeNotionalUsd, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () => closeNotionalUsd * (undiscountedFeeRate ?? 0),
+    [closeNotionalUsd, undiscountedFeeRate],
   );
 
   const isPriceValid = useMemo(
@@ -348,6 +355,11 @@ export const ClosePositionModal = ({
   const roundedFees = useMemo(
     () => Math.round(estimatedFees * 100) / 100,
     [estimatedFees],
+  );
+
+  const roundedOriginalFees = useMemo(
+    () => Math.round(originalEstimatedFees * 100) / 100,
+    [originalEstimatedFees],
   );
 
   // HyperLiquid's marginUsed already includes accumulated PnL, so we do NOT
@@ -616,13 +628,17 @@ export const ClosePositionModal = ({
                   >
                     {t('perpsFees')}
                   </Text>
-                  <Text
-                    variant={TextVariant.BodySm}
-                    fontWeight={FontWeight.Medium}
-                    data-testid="perps-close-summary-fees-value"
-                  >
-                    -{formatFiat(roundedFees)}
-                  </Text>
+                  <PerpsFeesDisplay
+                    metamaskFeeRateDiscountPercentage={
+                      feeRate === undefined
+                        ? undefined
+                        : metamaskFeeRateDiscountPercentage
+                    }
+                    originalFee={roundedOriginalFees}
+                    fee={roundedFees}
+                    feeTextFontWeight={FontWeight.Medium}
+                    feeTextTestId="perps-close-summary-fees-value"
+                  />
                 </Box>
 
                 {/* You'll receive */}

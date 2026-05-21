@@ -4,4 +4,5 @@ export type SendAlertModalProps = {
   errorMessage: string;
   onAcknowledge: () => void;
   onClose: () => void;
+  acknowledgeLabel?: string;
 };
