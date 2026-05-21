@@ -801,6 +801,118 @@ describe('MetaMaskController', function () {
     });
   });
 
+  describe('#checkIsSeedlessPasswordOutdated', function () {
+    it('should return undefined if firstTimeFlowType is not seedless', async function () {
+      metamaskController.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.create,
+      );
+      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
+      expect(result).toBeFalsy();
+    });
+
+    it('should return false if firstTimeFlowType is seedless and password is not outdated', async function () {
+      // We now need the Snap keyring after onboarding the wallet.
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+      metamaskController.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.socialCreate,
+      );
+      metamaskController.onboardingController.completeOnboarding();
+      jest
+        .spyOn(
+          metamaskController.seedlessOnboardingController,
+          'checkIsPasswordOutdated',
+        )
+        .mockResolvedValue(false);
+      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
+      expect(result).toBe(false);
+      expect(
+        metamaskController.seedlessOnboardingController.checkIsPasswordOutdated,
+      ).toHaveBeenCalled();
+    });
+
+    it('should return true if firstTimeFlowType is seedless and password is outdated', async function () {
+      // We now need the Snap keyring after onboarding the wallet.
+      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+      metamaskController.onboardingController.setFirstTimeFlowType(
+        FirstTimeFlowType.socialCreate,
+      );
+      metamaskController.onboardingController.completeOnboarding();
+      jest
+        .spyOn(
+          metamaskController.seedlessOnboardingController,
+          'checkIsPasswordOutdated',
+        )
+        .mockResolvedValue(true);
+      const result = await metamaskController.checkIsSeedlessPasswordOutdated();
+      expect(result).toBe(true);
+      expect(
+        metamaskController.seedlessOnboardingController.checkIsPasswordOutdated,
+      ).toHaveBeenCalled();
+    });
+
+    it('captures the error when password check fails and captureSentryError is true', async function () {
+      const error = new Error('Network error');
+
+      jest
+        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+        .mockReturnValue(true);
+      jest
+        .spyOn(metamaskController.onboardingController, 'state', 'get')
+        .mockReturnValue({ completedOnboarding: true });
+      jest
+        .spyOn(metamaskController.controllerMessenger, 'captureException')
+        .mockImplementation();
+      jest
+        .spyOn(
+          metamaskController.seedlessOnboardingController,
+          'checkIsPasswordOutdated',
+        )
+        .mockRejectedValue(error);
+
+      await expect(
+        metamaskController.checkIsSeedlessPasswordOutdated({
+          skipCache: false,
+          captureSentryError: true,
+        }),
+      ).rejects.toThrow(error);
+
+      expect(
+        metamaskController.controllerMessenger.captureException,
+      ).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not capture the error when password check fails and captureSentryError is false', async function () {
+      const error = new Error('Network error');
+
+      jest
+        .spyOn(metamaskController.onboardingController, 'getIsSocialLoginFlow')
+        .mockReturnValue(true);
+      jest
+        .spyOn(metamaskController.onboardingController, 'state', 'get')
+        .mockReturnValue({ completedOnboarding: true });
+      jest
+        .spyOn(metamaskController.controllerMessenger, 'captureException')
+        .mockImplementation();
+      jest
+        .spyOn(
+          metamaskController.seedlessOnboardingController,
+          'checkIsPasswordOutdated',
+        )
+        .mockRejectedValue(error);
+
+      await expect(
+        metamaskController.checkIsSeedlessPasswordOutdated({
+          skipCache: false,
+          captureSentryError: false,
+        }),
+      ).rejects.toThrow(error);
+
+      expect(
+        metamaskController.controllerMessenger.captureException,
+      ).not.toHaveBeenCalled();
+    });
+  });
+
   describe('#syncPasswordAndUnlockWallet', function () {
     const password = 'test@123';
 
