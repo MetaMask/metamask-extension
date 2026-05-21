@@ -1010,24 +1010,33 @@ export const TokenManagementPage = () => {
           if (!evmAccount?.id) {
             return;
           }
-          await dispatch(
-            addImportedTokens(
-              [
-                {
-                  address: payload.assetReference,
-                  symbol: payload.symbol,
-                  decimals: payload.decimals,
-                  isERC721: false,
-                  name: payload.name,
-                  ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
-                },
-              ],
-              networkClientId,
-            ),
-          );
+          const actions = [
+            () =>
+              dispatch(
+                addImportedTokens(
+                  [
+                    {
+                      address: payload.assetReference,
+                      symbol: payload.symbol,
+                      decimals: payload.decimals,
+                      isERC721: false,
+                      name: payload.name,
+                      ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
+                    },
+                  ],
+                  networkClientId,
+                ),
+              ),
+          ];
+
           if (isAssetsUnifiedStateInBuild) {
-            await dispatch(addCustomAsset(evmAccount.id, payload.assetId));
+            actions.push(() =>
+              dispatch(addCustomAsset(evmAccount.id, payload.assetId)),
+            );
           }
+
+          await Promise.all(actions.map((action) => action()));
+
           return;
         }
 
@@ -1035,10 +1044,18 @@ export const TokenManagementPage = () => {
         if (!account?.id) {
           return;
         }
-        await dispatch(multichainAddAssets([payload.assetId], account.id));
+
+        const actions = [
+          () => dispatch(multichainAddAssets([payload.assetId], account.id)),
+        ];
+
         if (isAssetsUnifiedStateInBuild) {
-          await dispatch(addCustomAsset(account.id, payload.assetId));
+          actions.push(() =>
+            dispatch(addCustomAsset(account.id, payload.assetId)),
+          );
         }
+
+        await Promise.all(actions.map((action) => action()));
       } finally {
         removePendingKey(stagedKey);
       }
@@ -1152,9 +1169,9 @@ export const TokenManagementPage = () => {
         ? false
         : Boolean(
             accountIdForChain &&
-            allIgnoredAssetsByAccount[accountIdForChain]?.some(
-              (assetId) => String(assetId).toLowerCase() === lowerAssetId,
-            ),
+              allIgnoredAssetsByAccount[accountIdForChain]?.some(
+                (assetId) => String(assetId).toLowerCase() === lowerAssetId,
+              ),
           );
       const isHidden =
         stagedHideKeys.has(lowerAssetId) ||
