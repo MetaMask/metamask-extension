@@ -412,9 +412,7 @@
       }
     },
     "MultichainTransactionsController": {
-      "nonEvmTransactions": {
-        "688e01b8-3134-4ef4-80e6-8772bab38ef7": {}
-      }
+      "nonEvmTransactions": {}
     },
     "NameController": {
       "nameSources": {},
@@ -917,14 +915,6 @@
           {
             "address": "0x5cfe73b6021e818b776b421b1c4db2474086a7e1",
             "scopes": ["eip155:0"]
-          },
-          {
-            "address": "4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer",
-            "scopes": [
-              "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
-              "solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z",
-              "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
-            ]
           }
         ]
       }
