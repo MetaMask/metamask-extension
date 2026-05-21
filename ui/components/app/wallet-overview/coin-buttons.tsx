@@ -402,18 +402,18 @@ const CoinButtons = ({
             color={IconColor.iconAlternative}
             size={IconSize.Md}
           />
-         }
-         disabled={
-           !isSigningEnabled ||
-           (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
-         }
-         label={t('send')}
-         onClick={handleSendOnClick}
-         onMouseEnter={handleSendIntent}
-         onFocus={handleSendIntent}
-         width={BlockSize.Full}
-         tooltipRender={(contents: React.ReactElement) =>
-           generateTooltip('sendButton', contents)
+        }
+        disabled={
+          !isSigningEnabled ||
+          (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
+        }
+        label={t('send')}
+        onClick={handleSendOnClick}
+        onMouseEnter={handleSendIntent}
+        onFocus={handleSendIntent}
+        width={BlockSize.Full}
+        tooltipRender={(contents: React.ReactElement) =>
+          generateTooltip('sendButton', contents)
         }
       />
       {showReceiveModal && (
