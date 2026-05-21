@@ -292,7 +292,6 @@
   "test/e2e/run-e2e-test.js",
   "test/e2e/seeder/anvil-seeder.js",
   "test/e2e/seeder/contract-address-registry.js",
-  "test/e2e/seeder/ganache-seeder.js",
   "test/e2e/seeder/smart-contracts.js",
   "test/e2e/send-eth-with-private-key-test/ethereumjs-tx.js",
   "test/e2e/send-eth-with-private-key-test/send-eth-with-private-key.js",
