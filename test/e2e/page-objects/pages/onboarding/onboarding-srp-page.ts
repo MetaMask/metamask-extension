@@ -10,6 +10,16 @@ class OnboardingSrpPage {
     text: 'Clear all',
   };
 
+  private readonly importHeader = {
+    tag: 'h2',
+    text: 'Import a wallet',
+  };
+
+  private readonly importSubHeader = {
+    tag: 'p',
+    text: 'Enter your Secret Recovery Phrase',
+  };
+
   private readonly srpConfirmButton = '[data-testid="import-srp-confirm"]';
 
   private readonly srpError =
@@ -33,6 +43,8 @@ class OnboardingSrpPage {
       await this.driver.waitForMultipleSelectors([
         this.srpMessage,
         this.srpWord0,
+        this.importHeader,
+        this.importSubHeader,
       ]);
     } catch (e) {
       console.log(
