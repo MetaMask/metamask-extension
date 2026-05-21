@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen, act } from '@testing-library/react';
 import { DateTime } from 'luxon';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 import { useSnapInterfaceContext } from '../../../../contexts/snaps';
 import { SnapUIDateTimePicker } from './snap-ui-date-time-picker';
 
@@ -11,21 +11,21 @@ jest.mock('../../../../contexts/snaps', () => ({
   useSnapInterfaceContext: jest.fn(),
 }));
 
-jest.mock('@mui/x-date-pickers/DateTimePicker', () => ({
-  DateTimePicker: jest.fn(),
+jest.mock('@mui/x-date-pickers/MobileDateTimePicker', () => ({
+  MobileDateTimePicker: jest.fn(),
 }));
 
-jest.mock('@mui/x-date-pickers/DatePicker', () => ({
-  DatePicker: jest.fn(),
+jest.mock('@mui/x-date-pickers/MobileDatePicker', () => ({
+  MobileDatePicker: jest.fn(),
 }));
 
-jest.mock('@mui/x-date-pickers/TimePicker', () => ({
-  TimePicker: jest.fn(),
+jest.mock('@mui/x-date-pickers/MobileTimePicker', () => ({
+  MobileTimePicker: jest.fn(),
 }));
 
-const mockDateTimePicker = DateTimePicker as jest.Mock;
-const mockDatePicker = DatePicker as jest.Mock;
-const mockTimePicker = TimePicker as jest.Mock;
+const mockDateTimePicker = MobileDateTimePicker as jest.Mock;
+const mockDatePicker = MobileDatePicker as jest.Mock;
+const mockTimePicker = MobileTimePicker as jest.Mock;
 const mockUseSnapInterfaceContext = useSnapInterfaceContext as jest.Mock;
 
 const MOCK_DATETIME = DateTime.fromISO('2024-01-15T10:30:45.123Z');
@@ -237,14 +237,50 @@ describe('SnapUIDateTimePicker', () => {
       );
     });
 
-    it('passes the placeholder to the datetime picker', () => {
-      let capturedSlotProps: Record<string, unknown> = {};
-      mockDateTimePicker.mockImplementation(({ slotProps }) => {
-        capturedSlotProps = slotProps ?? {};
+    it('provides a renderInput prop to all picker types', () => {
+      let datetimeRenderInput: unknown;
+      let dateRenderInput: unknown;
+      let timeRenderInput: unknown;
+
+      mockDateTimePicker.mockImplementation(({ renderInput }) => {
+        datetimeRenderInput = renderInput;
         return <div data-testid="mock-datetime-picker" />;
       });
+      mockDatePicker.mockImplementation(({ renderInput }) => {
+        dateRenderInput = renderInput;
+        return <div data-testid="mock-date-picker" />;
+      });
+      mockTimePicker.mockImplementation(({ renderInput }) => {
+        timeRenderInput = renderInput;
+        return <div data-testid="mock-time-picker" />;
+      });
 
-      render(
+      const { unmount: u1 } = render(
+        <SnapUIDateTimePicker name="test" type="datetime" />,
+      );
+      expect(typeof datetimeRenderInput).toBe('function');
+      u1();
+
+      const { unmount: u2 } = render(
+        <SnapUIDateTimePicker name="test" type="date" />,
+      );
+      expect(typeof dateRenderInput).toBe('function');
+      u2();
+
+      render(<SnapUIDateTimePicker name="test" type="time" />);
+      expect(typeof timeRenderInput).toBe('function');
+    });
+
+    it('shows placeholder text before any selection is committed', () => {
+      mockDateTimePicker.mockImplementation(({ renderInput }) => {
+        return typeof renderInput === 'function' ? (
+          (renderInput as () => React.ReactElement)()
+        ) : (
+          <div />
+        );
+      });
+
+      const { getByRole } = render(
         <SnapUIDateTimePicker
           name="test"
           type="datetime"
@@ -252,63 +288,8 @@ describe('SnapUIDateTimePicker', () => {
         />,
       );
 
-      expect(
-        (capturedSlotProps.textField as Record<string, unknown>)?.placeholder,
-      ).toBe('Pick a date and time');
-    });
-
-    it('passes the placeholder to the date picker', () => {
-      let capturedSlotProps: Record<string, unknown> = {};
-      mockDatePicker.mockImplementation(({ slotProps }) => {
-        capturedSlotProps = slotProps ?? {};
-        return <div data-testid="mock-date-picker" />;
-      });
-
-      render(
-        <SnapUIDateTimePicker
-          name="test"
-          type="date"
-          placeholder="Pick a date"
-        />,
-      );
-
-      expect(
-        (capturedSlotProps.textField as Record<string, unknown>)?.placeholder,
-      ).toBe('Pick a date');
-    });
-
-    it('passes the placeholder to the time picker', () => {
-      let capturedSlotProps: Record<string, unknown> = {};
-      mockTimePicker.mockImplementation(({ slotProps }) => {
-        capturedSlotProps = slotProps ?? {};
-        return <div data-testid="mock-time-picker" />;
-      });
-
-      render(
-        <SnapUIDateTimePicker
-          name="test"
-          type="time"
-          placeholder="Pick a time"
-        />,
-      );
-
-      expect(
-        (capturedSlotProps.textField as Record<string, unknown>)?.placeholder,
-      ).toBe('Pick a time');
-    });
-
-    it('passes empty string as the default placeholder to suppress the MUI format hint', () => {
-      let capturedSlotProps: Record<string, unknown> = {};
-      mockDateTimePicker.mockImplementation(({ slotProps }) => {
-        capturedSlotProps = slotProps ?? {};
-        return <div data-testid="mock-datetime-picker" />;
-      });
-
-      render(<SnapUIDateTimePicker name="test" type="datetime" />);
-
-      expect(
-        (capturedSlotProps.textField as Record<string, unknown>)?.placeholder,
-      ).toBe('');
+      const field = getByRole('textbox');
+      expect(field.textContent).toBe('Pick a date and time');
     });
   });
 
@@ -329,8 +310,9 @@ describe('SnapUIDateTimePicker', () => {
       expect(receivedValue?.toISO()).toBe(DateTime.fromISO(iso).toISO());
     });
 
-    it('initializes with null when no value is in context', () => {
+    it('defaults to current date/time when no value is in context', () => {
       mockGetValue.mockReturnValue(undefined);
+      const before = DateTime.now();
 
       let receivedValue: DateTime | null | undefined;
       mockDateTimePicker.mockImplementation(({ value }) => {
@@ -340,7 +322,14 @@ describe('SnapUIDateTimePicker', () => {
 
       render(<SnapUIDateTimePicker name="test" type="datetime" />);
 
-      expect(receivedValue).toBeNull();
+      const after = DateTime.now();
+      expect(receivedValue).not.toBeNull();
+      expect((receivedValue as DateTime).toMillis()).toBeGreaterThanOrEqual(
+        before.toMillis(),
+      );
+      expect((receivedValue as DateTime).toMillis()).toBeLessThanOrEqual(
+        after.toMillis(),
+      );
     });
 
     it('passes the form parameter to getValue', () => {

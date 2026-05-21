@@ -197,21 +197,36 @@ export const mapSnapBorderRadiusToExtensionBorderRadius = (
  */
 export const muiPickerTheme = createTheme({
   components: {
-    MuiDialog: {
+    MuiPaper: {
       styleOverrides: {
-        paper: {
-          '& *': {
+        root: {
+          '&.MuiDialog-paper': {
+            backgroundColor: 'var(--color-background-default) !important',
+            color: 'var(--color-text-default)',
             fontFamily: 'var(--font-family-default)',
+            borderRadius: '8px',
+            '& *': {
+              fontFamily: 'inherit',
+            },
           },
-          backgroundColor: 'var(--color-background-default)',
-          color: 'var(--color-text-default)',
-          borderRadius: '8px',
+        },
+      },
+    },
+    MuiDialogContent: {
+      styleOverrides: {
+        root: {
+          padding: '0 !important',
         },
       },
     },
     MuiDialogActions: {
       styleOverrides: {
         root: {
+          padding: '8px 16px',
+          justifyContent: 'flex-start',
+          '& > button:nth-of-type(2)': {
+            marginLeft: 'auto',
+          },
           '& > button': {
             color: 'var(--color-primary-default)',
             fontWeight: 'var(--typography-s-body-md-medium-font-weight)',
@@ -229,14 +244,28 @@ export const muiPickerTheme = createTheme({
         },
       },
     },
+    MuiDateTimePickerTabs: {
+      styleOverrides: {
+        root: {
+          display: 'none',
+        },
+      },
+    },
     MuiPickersToolbar: {
       styleOverrides: {
         root: {
           backgroundColor: 'var(--color-background-alternative)',
+          padding: '16px 24px',
+        },
+        content: {
+          justifyContent: 'space-around',
+        },
+        penIconButton: {
+          display: 'none',
         },
       },
     },
-    MuiPickersToolbarButton: {
+    PrivatePickersToolbarText: {
       styleOverrides: {
         root: {
           color: 'var(--color-text-alternative)',
@@ -246,13 +275,39 @@ export const muiPickerTheme = createTheme({
         },
       },
     },
-    MuiPickersToolbarText: {
+    MuiPickersCalendarHeader: {
       styleOverrides: {
         root: {
-          color: 'var(--color-text-alternative)',
-          '&.Mui-selected': {
-            color: 'var(--color-text-default)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '8px 8px 0',
+          margin: 0,
+          maxHeight: 'none',
+          minHeight: 40,
+          position: 'relative',
+          '& .MuiPickersArrowSwitcher-root': {
+            position: 'absolute',
+            left: 8,
+            right: 8,
+            display: 'flex',
+            justifyContent: 'space-between',
+            pointerEvents: 'none',
           },
+          '& .MuiPickersArrowSwitcher-button': {
+            pointerEvents: 'auto',
+          },
+        },
+        labelContainer: {
+          marginRight: 0,
+          color: 'var(--color-text-default)',
+          cursor: 'default',
+          pointerEvents: 'none',
+          fontSize: 16,
+          fontWeight: 400,
+        },
+        switchViewButton: {
+          display: 'none',
         },
       },
     },
@@ -267,7 +322,7 @@ export const muiPickerTheme = createTheme({
         },
       },
     },
-    MuiDayCalendar: {
+    MuiDayPicker: {
       styleOverrides: {
         weekDayLabel: {
           color: 'var(--color-text-alternative)',
@@ -278,15 +333,22 @@ export const muiPickerTheme = createTheme({
       styleOverrides: {
         root: {
           color: 'var(--color-text-default)',
+          backgroundColor: 'transparent',
+          '&:hover': {
+            backgroundColor: 'var(--color-background-alternative-hover)',
+          },
           '&.Mui-selected': {
+            backgroundColor: 'var(--color-primary-default)',
+            color: 'var(--color-primary-inverse)',
             '&:hover': {
               backgroundColor: 'var(--color-primary-default-hover)',
             },
-            backgroundColor: 'var(--color-primary-default)',
-            color: 'var(--color-primary-inverse)',
+            '&:focus': {
+              backgroundColor: 'var(--color-primary-default)',
+            },
           },
           '&.MuiPickersDay-today': {
-            color: 'var(--color-primary-default)',
+            borderColor: 'var(--color-primary-default)',
           },
           '&.Mui-disabled': {
             color: 'var(--color-text-muted)',
@@ -296,11 +358,13 @@ export const muiPickerTheme = createTheme({
     },
     MuiClock: {
       styleOverrides: {
+        root: {
+          margin: '24px auto 16px',
+        },
         clock: {
           backgroundColor: 'var(--color-background-alternative)',
         },
         pin: {
-          color: 'var(--color-primary-default)',
           backgroundColor: 'var(--color-primary-default)',
         },
       },
@@ -322,21 +386,6 @@ export const muiPickerTheme = createTheme({
           color: 'var(--color-text-default)',
           '&.Mui-selected': {
             color: 'var(--color-primary-inverse)',
-          },
-        },
-      },
-    },
-    MuiPickersYear: {
-      styleOverrides: {
-        yearButton: {
-          '&:focus': {
-            color: 'var(--color-primary-default)',
-          },
-          '&.Mui-selected': {
-            color: 'var(--color-primary-default)',
-          },
-          '&.Mui-disabled': {
-            color: 'var(--color-text-muted)',
           },
         },
       },

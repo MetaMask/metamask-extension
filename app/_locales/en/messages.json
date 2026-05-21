@@ -7485,6 +7485,15 @@
   "select": {
     "message": "Select"
   },
+  "selectADate": {
+    "message": "Select a date"
+  },
+  "selectADateAndTime": {
+    "message": "Select a date and time"
+  },
+  "selectATime": {
+    "message": "Select a time"
+  },
   "selectAccountToConnect": {
     "message": "Select an account to connect"
   },
