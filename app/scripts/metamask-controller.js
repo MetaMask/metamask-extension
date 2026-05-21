@@ -8294,6 +8294,10 @@ export default class MetamaskController extends EventEmitter {
   _onUnlock() {
     this.unMarkPasswordForgotten();
 
+    // We "force-create" the Snap keyring right after unlocking so next calls should be faster
+    // and will (potentially) avoid locking up the `KeyringController` mutex.
+    this.getSnapKeyring();
+
     // In the current implementation, this handler is triggered by a
     // KeyringController event. Other controllers subscribe to the 'unlock'
     // event of the MetaMaskController itself.

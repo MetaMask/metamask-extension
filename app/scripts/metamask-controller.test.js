@@ -4899,10 +4899,14 @@ describe('MetaMaskController', () => {
         jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+        await metamaskController.submitPassword(password); // Force-unlock to trigger Snap keyring creation.
 
         const previousKeyrings = cloneDeep(
           metamaskController.keyringController.state.keyrings,
         );
+
+        // 0: Primary HD keyring, 1: Snap keyring
+        expect(previousKeyrings).toHaveLength(2);
 
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
