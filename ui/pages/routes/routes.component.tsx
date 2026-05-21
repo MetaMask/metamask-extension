@@ -142,11 +142,12 @@ import { getConnectingLabel, setTheme } from './utils';
 import { ConfirmationRouter } from './confirmation-router';
 import { Modals } from './modals';
 import { NetworkHandler } from './network-handler';
+import { lazyRouteLoaders } from './lazy-route-loaders';
 
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
 const Lock = mmLazy(() => import('../lock/index.ts'));
-const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
+const UnlockPage = mmLazy(lazyRouteLoaders.unlock);
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
 const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
@@ -172,7 +173,7 @@ const ConfirmEncryptionPublicKey = mmLazy(
 const ConfirmDecryptMessage = mmLazy(
   () => import('../confirm-decrypt-message/index.js'),
 );
-const Confirm = mmLazy(() => import('../confirmations/confirm/confirm.tsx'));
+const Confirm = mmLazy(lazyRouteLoaders.confirmTransaction);
 const SendPage = mmLazy(() => import('../confirmations/send/index.ts'));
 const CrossChainSwap = mmLazy(() => import('../bridge/index.tsx'));
 const PermissionsConnect = mmLazy(
@@ -184,9 +185,7 @@ const ConfirmAddSuggestedTokenPage = mmLazy(
 const ConfirmAddSuggestedNftPage = mmLazy(
   () => import('../confirm-add-suggested-nft/index.js'),
 );
-const ConfirmationPage = mmLazy(
-  () => import('../confirmations/confirmation/index.js'),
-);
+const ConfirmationPage = mmLazy(lazyRouteLoaders.confirmation);
 const CreateAccountPage = mmLazy(
   () => import('../create-account/create-account.component.js'),
 );
@@ -212,7 +211,7 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(() => import('../home/index.js'));
+const Home = mmLazy(lazyRouteLoaders.home);
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
