@@ -1,10 +1,6 @@
 import React, { useMemo, type MouseEvent as ReactMouseEvent } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-
-type TransactionMetaWithSmartTransaction = TransactionMeta & {
-  isSmartTransaction?: boolean;
-};
 import type { EditGasModes } from '../../../../shared/constants/gas';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { PendingTransactionActionButtons } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-action-buttons';
@@ -17,6 +13,10 @@ import { isIntentBridgeActivity } from '../../../helpers/transactions/pending-tr
 import { useBridgeTxHistoryData } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { buildTransactionGroupFromMeta } from './build-transaction-group-from-meta';
+
+type TransactionMetaWithSmartTransaction = TransactionMeta & {
+  isSmartTransaction?: boolean;
+};
 
 type PendingEvmActionsProps = {
   metaId: string;
