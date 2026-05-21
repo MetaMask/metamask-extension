@@ -1008,11 +1008,11 @@
         "ethers>@ethersproject/constants": true,
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
-        "@metamask/controller-utils": true,
+        "@metamask/bridge-controller>@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/multichain-network-controller": true,
+        "@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/bridge-controller>bignumber.js": true,
@@ -1124,6 +1124,25 @@
       }
     },
     "@metamask/assets-controllers>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "ethereumjs-util>bn.js": true,
+        "browserify>buffer": true,
+        "cockatiel": true,
+        "eth-ens-namehash": true,
+        "eslint>fast-deep-equal": true,
+        "lodash": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/controller-utils": {
       "globals": {
         "URL": true,
         "console.error": true,
@@ -2096,19 +2115,6 @@
         "lodash": true
       }
     },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "lodash": true
-      }
-    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -2303,18 +2309,6 @@
       }
     },
     "@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
