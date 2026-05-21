@@ -2,11 +2,16 @@ import {
   ListNames,
   PhishingController,
   AllowedEvents,
-  PhishingControllerActions,
 } from '@metamask/phishing-controller';
-import { Messenger } from '@metamask/messenger';
+import { AddressBookControllerGetStateAction } from '@metamask/address-book-controller';
+import { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
 import { getRootMessenger } from '../../messenger';
 import { isBlockedUrl } from './isBlockedUrl';
+import { getPhishingControllerMessenger } from 'app/scripts/messenger-client-init/messengers';
+
+type AllowedActions =
+  | AddressBookControllerGetStateAction
+  | TransactionControllerGetStateAction;
 
 // Run these tests as if we were in a Flask build
 jest.mock('../../../../../shared/lib/build-types', () => ({
@@ -15,22 +20,18 @@ jest.mock('../../../../../shared/lib/build-types', () => ({
 }));
 
 describe('isBlockedUrl', () => {
-  const messenger = getRootMessenger<
-    PhishingControllerActions,
-    AllowedEvents
-  >();
-  const phishingControllerMessenger = new Messenger<
-    'PhishingController',
-    PhishingControllerActions,
-    AllowedEvents,
-    typeof messenger
-  >({
-    namespace: 'PhishingController',
-    parent: messenger,
-  });
+  const messenger = getRootMessenger();
+  const phishingControllerMessenger = getPhishingControllerMessenger(messenger);
   messenger.delegate({
     messenger: phishingControllerMessenger,
-    events: ['TransactionController:stateChange'],
+    actions: [
+      'AddressBookController:getState',
+      'TransactionController:getState',
+    ],
+    events: [
+      'AddressBookController:stateChange',
+      'TransactionController:stateChange',
+    ],
   });
   const phishingController = new PhishingController({
     messenger: phishingControllerMessenger,
