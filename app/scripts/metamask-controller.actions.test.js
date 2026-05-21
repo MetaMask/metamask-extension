@@ -812,7 +812,9 @@ describe('MetaMaskController', function () {
 
     it('should return false if firstTimeFlowType is seedless and password is not outdated', async function () {
       // We now need the Snap keyring after onboarding the wallet.
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+      jest
+        .spyOn(metamaskController.legacyBackgroundApiService, 'getSnapKeyring')
+        .mockReturnValue({});
       metamaskController.onboardingController.setFirstTimeFlowType(
         FirstTimeFlowType.socialCreate,
       );
@@ -832,7 +834,9 @@ describe('MetaMaskController', function () {
 
     it('should return true if firstTimeFlowType is seedless and password is outdated', async function () {
       // We now need the Snap keyring after onboarding the wallet.
-      jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+      jest
+        .spyOn(metamaskController.legacyBackgroundApiService, 'getSnapKeyring')
+        .mockReturnValue({});
       metamaskController.onboardingController.setFirstTimeFlowType(
         FirstTimeFlowType.socialCreate,
       );
@@ -1229,7 +1233,12 @@ describe('MetaMaskController', function () {
           .mockRejectedValue('Unexpected error');
 
         // We now need the Snap keyring after unlocking the wallet.
-        jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+        jest
+          .spyOn(
+            metamaskController.legacyBackgroundApiService,
+            'getSnapKeyring',
+          )
+          .mockReturnValue({});
 
         await metamaskController.syncPasswordAndUnlockWallet(password);
         expect(keyringSubmitPwdSpy).toHaveBeenCalled();
@@ -1314,7 +1323,12 @@ describe('MetaMaskController', function () {
           .mockResolvedValue();
 
         // We now need the Snap keyring after unlocking the wallet.
-        jest.spyOn(metamaskController, 'getSnapKeyring').mockReturnValue({});
+        jest
+          .spyOn(
+            metamaskController.legacyBackgroundApiService,
+            'getSnapKeyring',
+          )
+          .mockReturnValue({});
 
         await metamaskController.syncPasswordAndUnlockWallet(password);
         expect(keyringSubmitPwdSpy).toHaveBeenCalled();
