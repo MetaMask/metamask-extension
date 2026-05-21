@@ -411,8 +411,10 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
 
       if (confirmationResult) {
         try {
-          // TODO: Call Guillaume's legacy API service here
-          // await this.#removeAccountHelper(address);
+          await this.#messenger.call(
+            'LegacyBackgroundApiService:removeAccount',
+            address,
+          );
           await handleUserInput(confirmationResult);
           await this.saveState();
 

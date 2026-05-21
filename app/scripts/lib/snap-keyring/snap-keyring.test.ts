@@ -16,7 +16,10 @@ import {
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import { showAccountCreationDialog, snapKeyringBuilder } from './snap-keyring';
-import { SnapKeyringBuilderAllowedActions, SnapKeyringBuilderMessenger } from './types';
+import {
+  SnapKeyringBuilderAllowedActions,
+  SnapKeyringBuilderMessenger,
+} from './types';
 
 const mockAddRequest = jest.fn();
 const mockStartFlow = jest.fn();
@@ -178,6 +181,9 @@ const createControllerMessenger = ({
 
       case 'MetaMetricsController:trackEvent':
         return mockTrackEvent(...params);
+
+      case 'LegacyBackgroundApiService:removeAccount':
+        return mockRemoveAccountHelper(...params);
 
       default:
         throw new Error(
