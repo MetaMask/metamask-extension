@@ -54,6 +54,7 @@ export const KeyringControllerInit: MessengerClientInitFunction<
   encryptor,
   getMessengerClient,
 }) => {
+  const additionalKeyringsV2 = [];
   const additionalKeyrings = [
     qrKeyringBuilderFactory(
       keyringOverrides?.qr || (QrKeyring as unknown as KeyringClass),
@@ -107,10 +108,20 @@ export const KeyringControllerInit: MessengerClientInitFunction<
   // @ts-expect-error: `addAccounts` is missing in `SnapKeyring` type.
   additionalKeyrings.push(snapKeyringBuilder);
 
+  // The v2 Snap keyring is registered via `SnapKeyringV1Adapter`, which owns the
+  // inner `SnapKeyring` (v2) instance and exposes a proper v1-compatible face for
+  // KeyringController vault management. The same inner instance is retrieved via
+  // `unwrap()` below so both v1 and v2 entries share the same underlying object —
+  // enabling both `withKeyring` (and v1-interface) and `withKeyringV2`.
+  const snapKeyringBuilderV2 = getMessengerClient('SnapKeyringBuilderV2');
+  additionalKeyrings.push(snapKeyringBuilderV2.v1Builder);
+  additionalKeyringsV2.push(snapKeyringBuilderV2.v2Builder);
+
   const messengerClient = new KeyringController({
     state: persistedState.KeyringController,
     messenger: controllerMessenger,
     keyringBuilders: additionalKeyrings,
+    keyringV2Builders: additionalKeyringsV2,
     encryptor: encryptor || encryptorFactory(600_000),
   });
 

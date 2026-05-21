@@ -106,6 +106,7 @@ import { OAuthService } from '../services/oauth/oauth-service';
 import { SnapsNameProvider } from '../lib/SnapsNameProvider';
 import { AppStateController } from '../controllers/app-state-controller';
 import { SnapKeyringBuilder } from '../lib/snap-keyring/snap-keyring';
+import { SnapKeyringBuilderV2 } from '../lib/snap-keyring/snap-keyring-v2';
 import { SubscriptionService } from '../services/subscription/subscription-service';
 import { AccountOrderController } from '../controllers/account-order';
 import { AlertController } from '../controllers/alert-controller';
@@ -195,6 +196,7 @@ export type MessengerClient =
   | SnapInterfaceController
   | SnapInsightsController
   | SnapKeyringBuilder
+  | SnapKeyringBuilderV2
   | SnapRegistryController
   | SubscriptionController
   | SnapsNameProvider

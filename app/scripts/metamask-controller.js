@@ -432,6 +432,7 @@ import { SubjectMetadataControllerInit } from './messenger-client-init/subject-m
 import { NetworkEnablementControllerInit } from './messenger-client-init/assets/network-enablement-controller-init';
 import { KeyringControllerInit } from './messenger-client-init/keyring-controller-init';
 import { SnapKeyringBuilderInit } from './messenger-client-init/accounts/snap-keyring-builder-init';
+import { SnapKeyringBuilderV2Init } from './messenger-client-init/accounts/snap-keyring-builder-v2-init';
 import { PermissionLogControllerInit } from './messenger-client-init/permission-log-controller-init';
 import { NetworkControllerInit } from './messenger-client-init/network-controller-init';
 import { AnnouncementControllerInit } from './messenger-client-init/announcement-controller-init';
@@ -628,6 +629,7 @@ export default class MetamaskController extends EventEmitter {
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
       SnapKeyringBuilder: SnapKeyringBuilderInit,
+      SnapKeyringBuilderV2: SnapKeyringBuilderV2Init,
       KeyringController: KeyringControllerInit,
       AccountsController: AccountsControllerInit,
       AddressBookController: AddressBookControllerInit,
