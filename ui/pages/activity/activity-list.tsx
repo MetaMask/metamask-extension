@@ -1,12 +1,12 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Box, Text } from '@metamask/design-system-react';
 import { SectionHeader } from '../../components/ui/section-header';
 import { VirtualizedList } from '../../components/ui/virtualized-list/virtualized-list';
 import { useScrollContainer } from '../../contexts/scroll-container';
 import { formatDateWithYearContext } from '../../helpers/utils/util';
-import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useI18nContext } from '../../hooks/useI18nContext';
+import { useItemInView } from '../../hooks/useItemInView';
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
 import type { ActivityListItem } from '../../../shared/lib/activity/types';
 import { LegacyDetails } from './LegacyDetails';
@@ -17,7 +17,6 @@ import { useNonEvmTransactions } from './useNonEvmTransactions';
 import { useTransactionsQuery } from './useTransactionsQuery';
 
 const itemHeight = 70;
-const evmPaginationRootMargin = '300px 0px';
 
 // Prototype implementation for the new activity list
 export function ActivityList() {
@@ -68,29 +67,15 @@ export function ActivityList() {
     return { groupedItems: grouped, lastEvmItemIndex: -1 };
   }, [data, localItems, nonEvmItems]);
 
-  const { ref: lastEvmItemRef } = useIntersectionObserver({
+  const itemRef = useItemInView({
+    targetIndex: lastEvmItemIndex,
     root: scrollContainerRef?.current ?? null,
-    rootMargin: evmPaginationRootMargin,
-    onChange: (isIntersecting) => {
-      if (isIntersecting && hasNextPage && !isFetchingNextPage) {
+    onVisible: () => {
+      if (hasNextPage && !isFetchingNextPage) {
         fetchNextPage();
       }
     },
   });
-
-  const lastObservedEvmItemRef = useRef<HTMLDivElement | null>(null);
-  const observeLastEvmItem = useCallback(
-    (node: HTMLDivElement | null, { index }: { index: number }) => {
-      if (index === lastEvmItemIndex) {
-        lastObservedEvmItemRef.current = node;
-        lastEvmItemRef(node);
-      } else if (node && lastObservedEvmItemRef.current === node) {
-        lastObservedEvmItemRef.current = null;
-        lastEvmItemRef(null);
-      }
-    },
-    [lastEvmItemIndex, lastEvmItemRef],
-  );
 
   const handleClick = (item: ActivityListItem) => {
     setSelectedItem(item);
@@ -127,7 +112,7 @@ export function ActivityList() {
         data={groupedItems}
         estimatedItemSize={itemHeight}
         keyExtractor={getItemKey}
-        itemRef={observeLastEvmItem}
+        itemRef={itemRef}
         renderItem={({ item: row }) => {
           if (row.type === 'pending-header') {
             return <SectionHeader label={t('pending')} />;
