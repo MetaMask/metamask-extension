@@ -286,7 +286,7 @@ describe('perps-controller selectors', () => {
       ).toBe(false);
     });
 
-    it('returns false for token-funded deposits with a non-native pay token', () => {
+    it('returns true for token-funded deposits with a non-native pay token', () => {
       expect(
         selectPerpsDepositPending(
           buildStateWithActiveDeposit({
@@ -301,7 +301,7 @@ describe('perps-controller selectors', () => {
             },
           }),
         ),
-      ).toBe(false);
+      ).toBe(true);
     });
 
     it('returns true for native-token-funded deposits', () => {
@@ -341,7 +341,7 @@ describe('perps-controller selectors', () => {
       ).toBe(true);
     });
 
-    it('returns false for a token-funded deposit transaction', () => {
+    it('returns true for a token-funded deposit transaction', () => {
       expect(
         selectPerpsShouldShowDepositToast(
           buildState({
@@ -363,7 +363,7 @@ describe('perps-controller selectors', () => {
             },
           }),
         ),
-      ).toBe(false);
+      ).toBe(true);
     });
   });
 

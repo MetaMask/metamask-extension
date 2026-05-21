@@ -37,7 +37,6 @@ import {
 import { Icon, IconName, IconSize } from '../../component-library';
 import { Toast, ToastContainer } from '../../multichain';
 import { SurveyToast } from '../../ui/survey-toast';
-import { PerpsDepositToast } from '../perps/perps-deposit-toast';
 import { StorageWriteErrorType } from '../../../../shared/constants/app-state';
 import { MerklClaimToast, MusdConversionToast } from '../musd';
 import { PerpsWithdrawToast } from '../perps/perps-withdraw-toast';
@@ -109,7 +108,6 @@ export function ToastMaster() {
         <PrivacyPolicyToast />
         <PermittedNetworkToast />
         <InfuraSwitchToast />
-        <PerpsDepositToast />
         <MerklClaimToast />
         <MusdConversionToast />
         <PerpsWithdrawToast />
@@ -124,7 +122,6 @@ export function ToastMaster() {
     return (
       <ToastContainer>
         {storageErrorToast}
-        <PerpsDepositToast />
         <PerpsWithdrawToast />
       </ToastContainer>
     );

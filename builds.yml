@@ -130,7 +130,7 @@ buildTypes:
       - APPLE_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
-      - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
+      - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic,token-approval-revocation'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
     isPrerelease: true
@@ -324,6 +324,7 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
+  - SENTRY_DISTRIBUTED_TRACING_DISABLED: false
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
@@ -367,7 +368,7 @@ env:
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   # EIP-7715 Readable Permissions
-  - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic'
+  - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic,token-approval-revocation'
   - PERMISSIONS_KERNEL_SNAP_ID: 'npm:@metamask/permissions-kernel-snap'
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
   - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
@@ -428,7 +429,7 @@ env:
   # Force enforced simulations to apply whenever a transaction has balance
   # changes, bypassing the trust signal check. Intended for local
   # development and QA only; must remain false for production builds.
-  - FORCE_ENABLE_SIMULATIONS: false
+  - FORCE_ENFORCED_SIMULATIONS: false
 
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF
