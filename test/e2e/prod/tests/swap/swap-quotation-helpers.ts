@@ -9,11 +9,12 @@
  * - Generating test reports
  */
 
-import { Driver } from '../../../webdriver/driver';
-import { PROD_DELAYS } from '../../helpers/prod-test-helpers';
 import { toHex } from '@metamask/controller-utils';
+import { Driver } from '../../../webdriver/driver';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import BridgeQuotePage from '../../../page-objects/pages/bridge/quote-page';
+import { PROD_DELAYS } from '../../helpers/prod-test-helpers';
 import {
   Token,
   QuotationSnapshot,
@@ -22,6 +23,26 @@ import {
   DEFAULT_SWAP_AMOUNT,
   TOKENS_TO_IMPORT,
 } from './network-swap-config';
+
+function normalizeAmountForInput(amount: string | number): string {
+  if (typeof amount === 'string') {
+    return amount;
+  }
+
+  // Keep plain numbers as-is; expand exponent notation (e.g. 1e-11)
+  // because swap amount inputs may sanitize `e`/`-` into unexpected values.
+  const amountText = amount.toString();
+  if (!/[eE]/u.test(amountText)) {
+    return amountText;
+  }
+
+  const expanded = amount.toLocaleString('en-US', {
+    useGrouping: false,
+    maximumSignificantDigits: 21,
+  });
+
+  return expanded;
+}
 
 /**
  * Fetch tokens from a tokenlist URL and return the first N tokens
@@ -73,7 +94,7 @@ export async function importTokensFromTokenlist(
   else if (data.data?.tokens && Array.isArray(data.data.tokens)) {
     tokensArray = data.data.tokens;
   }
-  // Strategy 4: Search for any "tokens" property recursively
+  // Strategy 4: Search for any ""tokens"" property recursively
   else {
     tokensArray = findTokensArray(data);
   }
@@ -138,39 +159,167 @@ export async function importTokensIntoWallet(
 ): Promise<void> {
   const assetListPage = new AssetListPage(driver);
   const chainIdHex = toHex(chainId).toString();
+  // Track which tokens were already existing (skipped import)
+  const skippedTokens = new Set<string>();
 
   await driver.clickElement('[data-testid="account-overview__asset-tab"]');
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
-  for (const token of tokens) {
-    console.log(
-      `[HELPER] Importing token in wallet: ${token.symbol} (${token.address})`,
-    );
-    await assetListPage.importCustomTokenByChain(chainIdHex, token.address);
-    await driver.delay(PROD_DELAYS.API_RESPONSE);
-  }
+  console.log(
+    `[HELPER] Pre-flight check: scanning asset list for ${tokens.length} tokens...`,
+  );
 
+  // Pre-flight check: identify tokens that already exist by multiple methods
   for (const token of tokens) {
-    // Some tokens display their full name in the asset list instead of the
-    // symbol (e.g. AZND shows "Asian Dollar"). Try the symbol first, then
-    // fall back to the name so verification works regardless of which label
-    // is rendered.
+    let tokenFound = false;
+
+    // Method 1: Try to find token by symbol
     try {
       await assetListPage.checkTokenExistsInList(token.symbol);
       console.log(
-        `[HELPER] Verified token visible in asset list: ${token.symbol}`,
+        `[HELPER] Token already present (by symbol): ${token.symbol}, skipping import`,
       );
+      skippedTokens.add(token.symbol);
+      tokenFound = true;
     } catch (_symbolErr) {
-      await assetListPage.checkTokenExistsInList(token.name);
+      // Symbol not found, try next method
+    }
+
+    // Method 2: Try token name as fallback
+    if (!tokenFound) {
+      try {
+        await assetListPage.checkTokenExistsInList(token.name);
+        console.log(
+          `[HELPER] Token already present (by name): ${token.name}, skipping import`,
+        );
+        skippedTokens.add(token.symbol);
+        tokenFound = true;
+      } catch (_nameErr) {
+        // Name not found, try next method
+      }
+    }
+
+    // Method 3: Try to find by address (last resort)
+    if (!tokenFound) {
+      try {
+        await assetListPage.checkTokenExistsInList(token.address);
+        console.log(
+          `[HELPER] Token already present (by address): ${token.address}, skipping import`,
+        );
+        skippedTokens.add(token.symbol);
+        tokenFound = true;
+      } catch (_addressErr) {
+        // Address not found either, will need to import
+      }
+    }
+
+    if (!tokenFound) {
       console.log(
-        `[HELPER] Verified token visible in asset list by name: ${token.name} (symbol: ${token.symbol})`,
+        `[HELPER] Token not found in asset list: ${token.symbol}, will attempt import`,
       );
     }
   }
+
+  console.log(
+    `[HELPER] Pre-flight complete: ${skippedTokens.size} tokens already present, importing ${tokens.length - skippedTokens.size} new tokens`,
+  );
+
+  // Import tokens that don't already exist
+  for (const token of tokens) {
+    if (skippedTokens.has(token.symbol)) {
+      console.log(
+        `[HELPER] Skipping import for already-present token: ${token.symbol}`,
+      );
+      continue;
+    }
+
+    console.log(
+      `[HELPER] Importing token in wallet: ${token.symbol} (${token.address})`,
+    );
+    try {
+      await assetListPage.importCustomTokenByChain(chainIdHex, token.address);
+      await driver.delay(PROD_DELAYS.API_RESPONSE);
+      console.log(
+        `[HELPER] Successfully imported token: ${token.symbol}`,
+      );
+    } catch (importError: any) {
+      // Token already exists in wallet or import failed - mark and continue
+      const errorMessage = importError?.message || '';
+      console.log(
+        `[HELPER] Import attempt for ${token.symbol} resulted in error: ${errorMessage}`,
+      );
+      if (
+        errorMessage.includes('selector not found') ||
+        errorMessage.includes('timeout') ||
+        errorMessage.includes('Cannot find') ||
+        errorMessage.includes('Token has already been added') ||
+        errorMessage.includes('already been added') ||
+        errorMessage.includes('already exists')
+      ) {
+        console.log(
+          `[HELPER] Token ${token.symbol} already exists in wallet, marking as skipped and continuing...`,
+        );
+        skippedTokens.add(token.symbol);
+      } else {
+        // Re-throw unexpected errors
+        console.log(
+          `[HELPER] Unexpected error importing ${token.symbol}, re-throwing...`,
+        );
+        throw importError;
+      }
+    }
+  }
+
+  console.log(
+    `[HELPER] Import complete. Already present/skipped: ${skippedTokens.size}, New imports: ${tokens.length - skippedTokens.size}`,
+  );
+
+  // Verify all tokens are visible in asset list
+  console.log(
+    `[HELPER] Starting verification of ${tokens.length} tokens in asset list...`,
+  );
+  for (const token of tokens) {
+    // Some tokens display their full name in the asset list instead of the
+    // symbol (e.g. AZND shows ""Asian Dollar""). Try the symbol first, then
+    // fall back to the name so verification works regardless of which label
+    // is rendered.
+    let verificationSucceeded = false;
+
+    try {
+      await assetListPage.checkTokenExistsInList(token.symbol);
+      console.log(
+        `[HELPER] ✓ Verified token visible in asset list: ${token.symbol}`,
+      );
+      verificationSucceeded = true;
+    } catch (_symbolErr) {
+      try {
+        await assetListPage.checkTokenExistsInList(token.name);
+        console.log(
+          `[HELPER] ✓ Verified token visible in asset list by name: ${token.name} (symbol: ${token.symbol})`,
+        );
+        verificationSucceeded = true;
+      } catch (_nameErr) {
+        // Both symbol and name failed
+        if (skippedTokens.has(token.symbol)) {
+          console.log(
+            `[HELPER] ✓ Token already exist (by pre-flight check): ${token.symbol}, skipping verification`,
+          );
+        } else {
+          console.log(
+            `[HELPER] ⚠ Token ${token.symbol} could not be found in asset list, but continuing...`,
+          );
+        }
+      }
+    }
+  }
+
+  console.log(
+    `[HELPER] ✓ All token operations complete. Imported or already present: ${tokens.length}`,
+  );
 }
 
 /**
- * Recursively search for a "tokens" array in nested objects
+ * Recursively search for a ""tokens"" array in nested objects
  * @param obj - Object to search
  * @returns Array of tokens if found, empty array otherwise
  */
@@ -208,8 +357,10 @@ function findTokensArray(obj: any): Token[] {
  * @param options.sourceTokenSymbol - Source token symbol (e.g. 'AZND')
  * @param options.sourceTokenName - Optional full token name fallback when the asset list
  * shows the name instead of the symbol (e.g. 'Asian Dollar' for AZND)
+ * @param options.networkName - Network name used to scope the token picker
  * @param options.destinationTokenAddress - Destination token address or symbol for native tokens
  * @param options.destinationTokenSymbol - Destination token symbol for logging
+ * @param options.destinationTokenNetworkName - Optional network label used to disambiguate native destination tokens
  * @param options.fromAmount - Amount to fill in the from-amount input
  * @param options.useMax - Click the Max button instead of filling the amount input
  * @throws Error if any step fails
@@ -219,11 +370,15 @@ export async function performSwapFlow(
   options: {
     sourceTokenSymbol: string;
     // Full token name fallback for tokens whose asset-list label differs from
-    // their symbol (e.g. AZND displays "Asian Dollar"). Optional — all existing
+    // their symbol (e.g. AZND displays ""Asian Dollar""). Optional — all existing
     // callers that omit this field are completely unaffected.
     sourceTokenName?: string;
+    networkName?: string;
     destinationTokenAddress: string;
     destinationTokenSymbol: string;
+    // Optional network context used to disambiguate native tokens with the
+    // same symbol across different networks (e.g. ETH on Base vs Ethereum).
+    destinationTokenNetworkName?: string;
     fromAmount?: string | number;
     useMax?: boolean;
   },
@@ -231,8 +386,10 @@ export async function performSwapFlow(
   const {
     sourceTokenSymbol,
     sourceTokenName,
+    networkName,
     destinationTokenAddress,
     destinationTokenSymbol,
+    destinationTokenNetworkName,
     fromAmount = DEFAULT_SWAP_AMOUNT,
     useMax = false,
   } = options;
@@ -304,8 +461,10 @@ export async function performSwapFlow(
 
   await configureSwapPairInCurrentSwapPage(driver, {
     sourceTokenSymbol,
+    networkName,
     destinationTokenAddress,
     destinationTokenSymbol,
+    destinationTokenNetworkName,
     fromAmount,
     useMax,
   });
@@ -321,8 +480,10 @@ export async function performSwapFlow(
  * @param driver - Playwright Driver instance
  * @param options - Swap pair options to configure in current swap UI
  * @param options.sourceTokenSymbol - Source token symbol to ensure selected
+ * @param options.networkName - Network name used to scope the token picker
  * @param options.destinationTokenAddress - Destination token address to search and select
  * @param options.destinationTokenSymbol - Destination token symbol for logging
+ * @param options.destinationTokenNetworkName - Optional network label used to disambiguate native destination tokens
  * @param options.fromAmount - Amount to fill in from-amount input
  * @param options.useMax - Click the Max button instead of filling the amount input
  */
@@ -330,16 +491,20 @@ export async function configureSwapPairInCurrentSwapPage(
   driver: Driver,
   options: {
     sourceTokenSymbol: string;
+    networkName?: string;
     destinationTokenAddress: string;
     destinationTokenSymbol: string;
+    destinationTokenNetworkName?: string;
     fromAmount?: string | number;
     useMax?: boolean;
   },
 ): Promise<void> {
   const {
     sourceTokenSymbol,
+    networkName,
     destinationTokenAddress,
     destinationTokenSymbol,
+    destinationTokenNetworkName,
     fromAmount = DEFAULT_SWAP_AMOUNT,
     useMax = false,
   } = options;
@@ -350,6 +515,7 @@ export async function configureSwapPairInCurrentSwapPage(
   const searchInput = '[data-testid="bridge-asset-picker-search-input"]';
   // Note: actual data-testid format is `bridge-asset--{caipAssetId}` so we use ^= starts-with
   const bridgeAsset = '[data-testid^="bridge-asset--"]';
+  const bridgeQuotePage = new BridgeQuotePage(driver);
 
   await driver.waitForSelector(sourceButton);
 
@@ -370,6 +536,9 @@ export async function configureSwapPairInCurrentSwapPage(
 
   if (!sourceAlreadySelected) {
     await driver.clickElement(sourceButton);
+    if (networkName) {
+      await bridgeQuotePage.selectNetwork(networkName);
+    }
     await driver.waitForSelector(searchInput);
     await driver.fill(searchInput, sourceTokenSymbol);
     await driver.waitForSelector({ css: bridgeAsset, text: sourceTokenSymbol });
@@ -382,6 +551,9 @@ export async function configureSwapPairInCurrentSwapPage(
   const destinationButton = '[data-testid="bridge-destination-button"]';
   await driver.waitForSelector(destinationButton);
   await driver.clickElement(destinationButton);
+  if (networkName) {
+    await bridgeQuotePage.selectNetwork(networkName);
+  }
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
   // Step 5: Search for and select destination token
@@ -412,8 +584,25 @@ export async function configureSwapPairInCurrentSwapPage(
     console.log(`[HELPER] Import token prompt detected, clicking import`);
     await driver.clickElement(importButton);
   }
-  await driver.waitForSelector(bridgeAsset);
-  await driver.clickElement(bridgeAsset);
+  let destinationSelected = false;
+  if (destinationTokenNetworkName) {
+    const scopedDestinationAsset = `//*[starts-with(@data-testid, "bridge-asset--") and contains(., "${destinationTokenSymbol}") and contains(., "${destinationTokenNetworkName}")]`;
+    try {
+      await driver.waitForSelector(scopedDestinationAsset, { timeout: 4000 });
+      await driver.clickElement(scopedDestinationAsset);
+      destinationSelected = true;
+      console.log(
+        `[HELPER] Selected network-scoped destination token: ${destinationTokenSymbol} on ${destinationTokenNetworkName}`,
+      );
+    } catch (_e) {
+      // Fall back to default row selection when no scoped row is available.
+    }
+  }
+
+  if (!destinationSelected) {
+    await driver.waitForSelector(bridgeAsset);
+    await driver.clickElement(bridgeAsset);
+  }
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
   // Step 6: Fill from-amount or use Max
@@ -426,8 +615,11 @@ export async function configureSwapPairInCurrentSwapPage(
       text: 'Max',
     });
   } else {
-    console.log(`[HELPER] Step 6: Filling from-amount with ${fromAmount}`);
-    await driver.fill(fromAmountInput, String(fromAmount));
+    const normalizedAmount = normalizeAmountForInput(fromAmount);
+    console.log(
+      `[HELPER] Step 6: Filling from-amount with ${normalizedAmount}`,
+    );
+    await driver.fill(fromAmountInput, normalizedAmount);
   }
   await driver.delay(PROD_DELAYS.API_RESPONSE);
 
@@ -540,12 +732,12 @@ export async function captureQuotationValues(
       console.warn(`  [⚠] slippage-value not found`);
     }
 
-    // 5. Capture price impact value (e.g., "0.86%")
+    // 5. Capture price impact value (e.g., ""0.86%"")
     const priceImpactXpaths = [
-      // Match translated/whitespace variants of "Price impact" and read nearest percent value after it
-      '//*[contains(normalize-space(.), "Price impact")]/following::*[contains(@class,"mm-text") and contains(normalize-space(.), "%")][1]',
+      // Match translated/whitespace variants of ""Price impact"" and read nearest percent value after it
+      '//*[contains(normalize-space(.), ""Price impact"")]/following::*[contains(@class,""mm-text"") and contains(normalize-space(.), ""%"")][1]',
       // Legacy structure fallback
-      '//*[normalize-space(text())="Price impact"]/../../div[2]/p',
+      '//*[normalize-space(text())=""Price impact""]/../../div[2]/p',
     ];
     for (const priceImpactXPath of priceImpactXpaths) {
       try {

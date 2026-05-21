@@ -7,12 +7,12 @@
  * Flow:
  * 1. Add network and import 3 tokens from tokenlist URL
  * 2. For each token pair combination:
- *    a. Navigate to source token details page
- *    b. Click Swap → Select destination token → Enter amount
- *    c. Capture initial quotation values (5 metrics)
- *    d. Click switch-tokens and capture updated values
- *    e. Verify values differ (tokens were switched)
- *    f. Navigate back to home
+ * a. Navigate to source token details page
+ * b. Click Swap → Select destination token → Enter amount
+ * c. Capture initial quotation values (5 metrics)
+ * d. Click switch-tokens and capture updated values
+ * e. Verify values differ (tokens were switched)
+ * f. Navigate back to home
  * 3. Generate comprehensive JSON report with all results
  *
  * Uses REAL network infrastructure (production RPC endpoints)
@@ -29,6 +29,7 @@ import { Driver } from '../../../webdriver/driver';
 import {
   SWAP_TEST_NETWORKS,
   DEFAULT_SWAP_AMOUNT,
+  ManualToken,
   Token,
   QuotationTestResult,
 } from './network-swap-config';
@@ -44,7 +45,7 @@ import {
   generateTokenPairs,
 } from './swap-quotation-helpers';
 
-const HOME_ACTIVITY_TAB = '[data-testid="account-overview__activity-tab"]';
+const HOME_ACTIVITY_TAB = '[data-testid=""account-overview__activity-tab""]';
 const PER_PAIR_TIMEOUT_MS = 90000;
 
 async function recoverToHome(driver: Driver): Promise<boolean> {
@@ -83,10 +84,22 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
        * Main test case: Test all token-pair combinations
        */
       it(`should validate swap quotations for all ${networkConfig.nativeTokenSymbol} token pairs`, async function () {
+        const fixtureBuilder = new FixtureBuilder();
+        const setupMethod =
+          fixtureBuilder[
+            networkConfig.fixtureSetupMethod as keyof typeof fixtureBuilder
+          ];
+
+        if (typeof setupMethod !== 'function') {
+          throw new Error(
+            `Invalid fixture setup method: ${networkConfig.fixtureSetupMethod}`,
+          );
+        }
+
         await withProductionFixtures(
           {
-            fixtures: new FixtureBuilder()
-              .withNetworkControllerOnMonad()
+            fixtures: (setupMethod as () => FixtureBuilder)
+              .call(fixtureBuilder)
               .build(),
             title:
               this.test?.fullTitle() ||
@@ -131,14 +144,32 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
               `[TEST] ✅ Network verified: ${networkConfig.networkName}`,
             );
 
-            // Step 3: Import tokens from tokenlist
-            console.log(`[TEST] Importing tokens from tokenlist...`);
+            // Step 3: Resolve tokens to import.
+            // When manualTokens is provided the config supplies exact contract
+            // addresses — no tokenlist fetch is needed. Otherwise tokens are
+            // fetched from tokenlistUrl.
             let importedTokens: Token[];
             try {
-              importedTokens = await importTokensFromTokenlist(
-                networkConfig.tokenlistUrl,
-                networkConfig.chainId,
-              );
+              if (networkConfig.manualTokens?.length) {
+                console.log(
+                  `[TEST] Using manual token list for ${networkConfig.networkName}...`,
+                );
+                importedTokens = networkConfig.manualTokens.map(
+                  (mt: ManualToken) => ({
+                    chainId: networkConfig.chainId,
+                    address: mt.address,
+                    name: mt.name ?? mt.symbol,
+                    symbol: mt.symbol,
+                    decimals: mt.decimals ?? 18,
+                  }),
+                );
+              } else {
+                console.log(`[TEST] Importing tokens from tokenlist...`);
+                importedTokens = await importTokensFromTokenlist(
+                  networkConfig.tokenlistUrl as string,
+                  networkConfig.chainId,
+                );
+              }
 
               await importTokensIntoWallet(
                 driver,
@@ -151,7 +182,7 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
               );
               importedTokens.forEach((token, index) => {
                 console.log(
-                  `  ${index + 1}. ${token.symbol} (${token.address})`,
+                  ` ${index + 1}. ${token.symbol} (${token.address})`,
                 );
               });
             } catch (error) {
@@ -207,35 +238,39 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
 
                 assertWithinPairDeadline();
 
-                if (!hasEnteredSwapFlow) {
-                  // First pair enters swap from token details.
-                  console.log(
-                    `[TEST]   → Entering swap flow: ${sourceTokenSymbol} → ${destinationTokenSymbol}`,
-                  );
-                  await performSwapFlow(driver, {
-                    sourceTokenSymbol,
-                    destinationTokenAddress,
-                    destinationTokenSymbol,
-                    fromAmount: DEFAULT_SWAP_AMOUNT,
-                  });
-                  hasEnteredSwapFlow = true;
-                } else {
+                if (hasEnteredSwapFlow) {
                   // Remaining pairs reuse current swap page to save time.
                   console.log(
-                    `[TEST]   → Reconfiguring in swap page: ${sourceTokenSymbol} → ${destinationTokenSymbol}`,
+                    `[TEST] → Reconfiguring in swap page: ${sourceTokenSymbol} → ${destinationTokenSymbol}`,
                   );
                   await configureSwapPairInCurrentSwapPage(driver, {
                     sourceTokenSymbol,
+                    networkName: networkConfig.networkName,
                     destinationTokenAddress,
                     destinationTokenSymbol,
-                    fromAmount: DEFAULT_SWAP_AMOUNT,
+                    fromAmount:
+                      networkConfig.defaultSwapAmount ?? DEFAULT_SWAP_AMOUNT,
                   });
+                } else {
+                  // First pair enters swap from token details.
+                  console.log(
+                    `[TEST] → Entering swap flow: ${sourceTokenSymbol} → ${destinationTokenSymbol}`,
+                  );
+                  await performSwapFlow(driver, {
+                    sourceTokenSymbol,
+                    networkName: networkConfig.networkName,
+                    destinationTokenAddress,
+                    destinationTokenSymbol,
+                    fromAmount:
+                      networkConfig.defaultSwapAmount ?? DEFAULT_SWAP_AMOUNT,
+                  });
+                  hasEnteredSwapFlow = true;
                 }
 
                 assertWithinPairDeadline();
 
                 // Capture initial quotation values
-                console.log(`[TEST]   → Capturing initial quotation values`);
+                console.log(`[TEST] → Capturing initial quotation values`);
                 const beforeSwitchSnapshot =
                   await captureQuotationValues(driver);
 
@@ -243,7 +278,7 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
 
                 // Switch tokens and capture new values
                 console.log(
-                  `[TEST]   → Switching tokens and capturing new values`,
+                  `[TEST] → Switching tokens and capturing new values`,
                 );
                 const afterSwitchSnapshot =
                   await switchTokensAndCapture(driver);
@@ -255,7 +290,7 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
                   beforeSwitchSnapshot.toAmount !==
                   afterSwitchSnapshot.toAmount;
                 console.log(
-                  `[TEST]   → Values changed: ${valuesChanged ? '✅' : '⚠️'}`,
+                  `[TEST] → Values changed: ${valuesChanged ? '✅' : '⚠️'}`,
                 );
 
                 // Create quotation test result
@@ -289,10 +324,10 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
                 };
 
                 testResults.push(testResult);
-                console.log(`[TEST]   ✅ Pair test completed: ${pair.label}`);
+                console.log(`[TEST] ✅ Pair test completed: ${pair.label}`);
               } catch (error) {
                 console.error(
-                  `[TEST]   ❌ Error testing pair ${pairNumber}: ${pair.label}`,
+                  `[TEST] ❌ Error testing pair ${pairNumber}: ${pair.label}`,
                 );
                 console.error(error);
 
@@ -345,13 +380,11 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
 
                 testResults.push(testResult);
 
-                console.log(
-                  `[TEST]   → Recovering to home state after failure`,
-                );
+                console.log(`[TEST] → Recovering to home state after failure`);
                 const recovered = await recoverToHome(driver);
                 if (!recovered) {
                   console.warn(
-                    `[TEST]   ⚠️  Could not confidently recover to home state`,
+                    `[TEST] ⚠️ Could not confidently recover to home state`,
                   );
                 }
                 hasEnteredSwapFlow = false;
@@ -367,7 +400,7 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
                 testResults,
                 networkConfig.networkName,
                 networkConfig.chainId,
-                networkConfig.tokenlistUrl,
+                networkConfig.tokenlistUrl ?? 'manual',
                 networkConfig.nativeTokenSymbol,
               );
 
@@ -383,9 +416,9 @@ describe('Production E2E: Multi-Network Swap Quotation Validation', function (th
               ).length;
 
               console.log(`\n[TEST] Final Results Summary:`);
-              console.log(`  Total token pairs tested: ${totalTests}`);
-              console.log(`  ✅ Passed: ${passedTests}`);
-              console.log(`  ❌ Failed: ${failedTests}`);
+              console.log(` Total token pairs tested: ${totalTests}`);
+              console.log(` ✅ Passed: ${passedTests}`);
+              console.log(` ❌ Failed: ${failedTests}`);
 
               // Assert at least some tests passed
               if (passedTests === 0) {

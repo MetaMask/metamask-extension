@@ -17,12 +17,16 @@ import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withProductionFixtures } from '../../helpers/prod-with-fixtures';
 import { PROD_DELAYS } from '../../helpers/prod-test-helpers';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../../page-objects/flows/network.flow';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkManager from '../../../page-objects/pages/network-manager';
+import SelectNetwork from '../../../page-objects/pages/dialog/select-network';
+import AddEditNetworkModal from '../../../page-objects/pages/dialog/add-edit-network';
+import AddNetworkRpcUrlModal from '../../../page-objects/pages/dialog/add-network-rpc-url';
 import { Driver } from '../../../webdriver/driver';
 import { getRequiredE2EEnv } from '../../../helpers/e2e-env';
 import {
-  SWAP_TEST_NETWORKS,
+  getSwapCustomNetworks,
   DEFAULT_SWAP_AMOUNT,
   Token,
   SwapRouteResult,
@@ -56,21 +60,44 @@ import {
 } from './swap-execution-helpers';
 
 /**
- * Production E2E Test: Monad Swap Execution
+ * Production E2E Test: Custom Network Swap Execution (Parameterized)
  *
- * Configuration is driven by SWAP_TEST_NETWORKS — only networks with
- * `swapExecutionRoutes` defined will run. Currently: Monad only.
+ * Parameterized test that runs for all custom networks configured with swap execution routes.
+ * For each custom network:
+ * 1. Adds the custom network via UI (SelectNetwork dialog -> AddCustomNetworkModal -> RpcUrlModal)
+ * 2. Imports a funded account
+ * 3. Imports ERC-20 tokens (manual or from tokenlist)
+ * 4. Executes predefined swap routes sequentially
+ * 5. Verifies each route with detailed assertions
+ * 6. Generates a markdown execution report
+ *
+ * Prerequisites:
+ * - PRIVATE_KEY_FROM in .env.e2e (funded account for swaps on custom networks)
+ * - Real network connectivity to custom network RPC endpoints\n *
+ * To add a new custom network for swap testing:
+ * 1. Add network config to SWAP_TEST_NETWORKS with requiresManualSetup: true
+ * 2. Define swapExecutionRoutes with from/to tokens and amounts
+ * 3. Test will automatically run for that network
  */
-describe('Production E2E: Network Swap Execution', function (this: Suite) {
+describe('Production E2E: Custom Network Swap Execution (Parameterized)', function (this: Suite) {
   this.timeout(900000); // 15 minutes total for all routes
 
-  SWAP_TEST_NETWORKS.forEach((networkConfig) => {
+  // Get all custom networks that require manual setup
+  const customNetworks = getSwapCustomNetworks();
+
+  // Skip test suite if no custom networks are configured
+  if (customNetworks.length === 0) {
+    console.warn('[TEST] No custom networks configured for swap testing');
+    return;
+  }
+
+  customNetworks.forEach((networkConfig) => {
     if (!networkConfig.swapExecutionRoutes?.length) {
       return; // skip networks not yet configured for execution tests
     }
 
-    describe(`Network: ${networkConfig.networkName}`, function (this: Suite) {
-      it(`should execute swap routes for ${networkConfig.nativeTokenSymbol}`, async function () {
+    describe(`${networkConfig.networkName}`, function (this: Suite) {
+      it(`should add network, import account, and execute swap routes for ${networkConfig.nativeTokenSymbol}`, async function () {
         // Collect per-route results for the final markdown report
         const routeResults: SwapRouteResult[] = [];
         const fixtureBuilder = new FixtureBuilder();
@@ -98,13 +125,13 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
           async ({ driver }: { driver: Driver }) => {
             console.log(`\n${'='.repeat(80)}`);
             console.log(
-              `[TEST] Starting swap execution test for ${networkConfig.networkName}`,
+              `[TEST] Starting custom network swap execution for ${networkConfig.networkName}`,
             );
             console.log(`${'='.repeat(80)}\n`);
 
-            // ----------------------------------------------------------------
+            // ================================================================
             // Step 1: Login
-            // ----------------------------------------------------------------
+            // ================================================================
             console.log(`[TEST] Logging in to wallet...`);
             await loginWithoutBalanceValidation(driver);
             const homePage = new HomePage(driver);
@@ -112,30 +139,90 @@ describe('Production E2E: Network Swap Execution', function (this: Suite) {
             await driver.delay(PROD_DELAYS.API_RESPONSE);
             console.log(`[TEST] ✅ Logged in`);
 
-            // ----------------------------------------------------------------
-            // Step 2: Select network
-            // ----------------------------------------------------------------
+            // ================================================================
+            // Step 2: Add Custom Network
+            // ================================================================
             console.log(
-              `[TEST] Selecting ${networkConfig.networkName} network...`,
+              `[TEST] Adding custom network: ${networkConfig.networkName}...`,
             );
-            const networkManager = new NetworkManager(driver);
-            await networkManager.openNetworkManager();
-            await networkManager.selectTab('Popular');
-            await networkManager.selectNetworkByNameWithWait(
+            await switchToEditRPCViaGlobalMenuNetworks(driver);
+
+            const selectNetworkDialog = new SelectNetwork(driver);
+            await selectNetworkDialog.checkPageIsLoaded();
+
+            console.log(
+              `[TEST] Opening Add Custom Network modal for ${networkConfig.networkName}...`,
+            );
+            await selectNetworkDialog.openAddCustomNetworkModal();
+
+            console.log(`[TEST] Filling network details for ${networkConfig.networkName}...`);
+            const addEditNetworkModal = new AddEditNetworkModal(driver);
+            await addEditNetworkModal.checkPageIsLoaded();
+            await addEditNetworkModal.fillNetworkNameInputField(
               networkConfig.networkName,
             );
+            await addEditNetworkModal.fillNetworkChainIdInputField(
+              networkConfig.chainId.toString(),
+            );
+            await addEditNetworkModal.fillCurrencySymbolInputField(
+              networkConfig.nativeTokenSymbol,
+            );
+            await addEditNetworkModal.openAddRpcUrlModal();
+
+            console.log(
+              `[TEST] Adding RPC URL for ${networkConfig.networkName}: ${networkConfig.rpcUrl}`,
+            );
+            const addRpcUrlModal = new AddNetworkRpcUrlModal(driver);
+            await addRpcUrlModal.checkPageIsLoaded();
+            await driver.delay(PROD_DELAYS.RPC_RESPONSE * 2);
+            await addRpcUrlModal.fillAddRpcUrlInput(networkConfig.rpcUrl as string);
+            await addRpcUrlModal.fillAddRpcNameInput(networkConfig.rpcName as string);
+
+            // Wait for RPC validation to complete
+            console.log(`[TEST] Waiting for RPC validation for ${networkConfig.networkName}...`);
+            await driver.delay(PROD_DELAYS.RPC_RESPONSE);
+
+            await addRpcUrlModal.saveAddRpcUrl();
+
+            console.log(`[TEST] Saving network ${networkConfig.networkName}...`);
+            await addEditNetworkModal.saveEditedNetwork();
+
+            // saveEditedNetwork() handles navigation back to home page automatically
+            // Wait longer for the navigation and page state transitions
+            console.log(
+              `[TEST] Waiting for ${networkConfig.networkName} to be added and RPC to connect...`,
+            );
+            await driver.delay(PROD_DELAYS.RPC_RESPONSE * 3);
+
+            console.log(`[TEST] ✅ Network ${networkConfig.networkName} added successfully`);
+
+            // Wait for the home page to load with the new network
+            console.log(`[TEST] Verifying home page is loaded with new network active...`);
             await homePage.checkPageIsLoaded();
             await driver.delay(PROD_DELAYS.API_RESPONSE);
-            console.log(
-              `[TEST] ✅ Network selected: ${networkConfig.networkName}`,
-            );
+            console.log(`[TEST] ✅ Home page is loaded`);
+            // From wallet home, click on sort-by-networks button
+            console.log(`[TEST] Opening network selector modal...`);
+            const networksList = '[data-testid="sort-by-networks"]';
+            await driver.clickElement(networksList);
+            // Wait for dialog to appear
+            await driver.waitForSelector('[role="dialog"]');
+            console.log(`[TEST] Able to find network selector modal...`);
+            // ================================================================
+            // Select custom network from network selector
+            // ================================================================
 
-            // ----------------------------------------------------------------
+             const chainIdHex = networkConfig.chainId;
+            const networkListItemSelector = `[data-testid="network-list-item-eip155:${chainIdHex}"]`;
+            console.log(`[TEST] Clicking on network in list: ${networkListItemSelector}...`);
+            await driver.clickElement(networkListItemSelector);
+            await driver.delay(PROD_DELAYS.MODAL_TRANSITION);
+
+            console.log(`[TEST] ✅ Network ${networkConfig.networkName} added successfully`);
+
+            // ================================================================
             // Step 3: Import funded account
-            // PRIVATE_KEY_FROM holds the account that has balance for swaps.
-            // This does NOT import the entire wallet — it adds one funded
-            // account to the existing MetaMask instance.
-            // ----------------------------------------------------------------
+            // ================================================================
             console.log(`[TEST] Importing funded account (PRIVATE_KEY_FROM)...`);
             const privateKeyFrom = getRequiredE2EEnv('PRIVATE_KEY_FROM');
             await importSingleFundedAccount(driver, privateKeyFrom);

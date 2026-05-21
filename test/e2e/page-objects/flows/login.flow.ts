@@ -87,3 +87,18 @@ export const lockAndWaitForPasskeyUnlockPage = async (
   const loginPage = new LoginPage(driver);
   await loginPage.checkPasskeyUnlockPageIsLoaded();
 };
+
+/**
+ * Unlocks the wallet and lands the user on the homepage without validating balance.
+ * Use this flow when testing networks where balance validation may not be reliable
+ * (e.g., custom networks, non-standard RPC endpoints).
+ *
+ * @param driver - The webdriver instance.
+ * @param password - Optional password to unlock the wallet. Defaults to fixture password.
+ */
+export const loginWithoutBalanceValidation = async (
+  driver: Driver,
+  password?: string,
+): Promise<void> => {
+  await login(driver, { password, validateBalance: false });
+};
