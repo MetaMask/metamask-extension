@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "Scanáil cód QR"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Is féidir leat rogha a dhéanamh as liosta de chomhpháirtithe oifigiúla tacaíochta cóid QR thíos."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Ceangail do sparán crua-earraí QR"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SrpListHideAccounts": {
     "message": "Folaigh cuntais $1",
     "description": "$1 is the number of accounts"
@@ -340,9 +331,6 @@
   },
   "airDropPatternTitle": {
     "message": "Patrún Aerthiar"
-  },
-  "airgapVault": {
-    "message": "Cruinneachán AirGap"
   },
   "alert": {
     "message": "Foláireamh"
@@ -979,9 +967,6 @@
     "message": "Ceannaigh níos mó $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "Ceannaigh Anois"
-  },
   "bytes": {
     "message": "Bearta"
   },
@@ -1385,9 +1370,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Tá braite againn gur cuireadh an tsócmhainn seo leis mar NFT. Ar mhaith leat í a bhaint de do liosta comharthaí?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Cóipeáilte."
   },
@@ -1541,9 +1523,6 @@
   },
   "dateCreated": {
     "message": "Dáta cruthaithe"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Roghanna ceannaigh le cárta dochair nó creidmheasa"
@@ -1787,9 +1766,6 @@
   "downloadAppTitle": {
     "message": "Scan an cód QR agus íoslódáil an aip"
   },
-  "downloadGoogleChrome": {
-    "message": "Íoslódáil Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Ligeann Face ID ar ár n-aip duit dul isteach fiú má dhéanann tú dearmad ar do phasfhocal. Tabhair MetaMask leat cibé áit a théann tú!"
   },
@@ -1798,9 +1774,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Faigh ár n-aip soghluaiste"
-  },
-  "downloadNow": {
-    "message": "Íoslódáil Anois"
   },
   "downloadStateLogs": {
     "message": "Íoslódáil logaí stáit"
@@ -2349,17 +2322,8 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Sula gcliceálann tú ar Cuir Isteach:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "cliceáil anseo"
-  },
   "hardwareWallets": {
     "message": "Ceangail sparán crua-earraí"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Úsáideann comhtháthú sparán crua-earraí glaonna API chuig freastalaithe seachtracha, ar féidir leo do sheoladh IP agus na seoltaí conartha cliste a mbíonn tú ag idirghníomhú leo a fheiceáil."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Roghnaigh sparán crua-earraí ar mhaith leat a úsáid le MetaMask."
   },
   "here": {
     "message": "anseo",
@@ -2729,9 +2693,6 @@
   "learnMoreAboutPrivacy": {
     "message": "Foghlaim tuilleadh faoi na cleachtais is fearr maidir le príobháideacht."
   },
-  "learnMoreKeystone": {
-    "message": "Foghlaim Tuilleadh"
-  },
   "learnMoreUpperCase": {
     "message": "Foghlaim níos mó"
   },
@@ -2795,17 +2756,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Ní Thacaítear le Firefox"
   },
-  "ledgerLiveApp": {
-    "message": "Aip Ledger Live"
-  },
   "ledgerLocked": {
     "message": "Ní féidir ceangal leis an ngléas Ledger. Cinntigh go bhfuil do ghléas díghlasáilte agus go bhfuil aip Ethereum oscailte."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Chun gléas nua a nascadh, dícheangail an ceann roimhe sin."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Ní féidir leat ach Ledger amháin a nascadh ag an am céanna."
   },
   "ledgerTimeout": {
     "message": "Tá an iomarca ama á thógáil ag Ledger Live le freagairt nó tá an nasc imithe in éag. Cinntigh go bhfuil aip Ledger Live oscailte agus go bhfuil do ghléas díghlasáilte."
@@ -5635,34 +5587,6 @@
   },
   "statusNotConnected": {
     "message": "Gan cheangal"
-  },
-  "step1LatticeWallet": {
-    "message": "Ceangail do Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Is féidir leat MetaMask a nascadh le do ghléas Lattice1 a luaithe a bheidh sé socraithe agus ar líne. Díghlasáil do ghléas agus bíodh d’Aitheantas Gléis réidh agat.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Íoslódáil an aip Ledger"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Íoslódáil, socraigh, agus cuir isteach do phasfhocal chun $1 a dhíghlasáil.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Ceangail do Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Breiseán do Trezor go díreach isteach i do ríomhaire agus díghlasáil é. Déan cinnte go n-úsáideann tú an frása faire ceart.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Ceangail do Leabhar Mór"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Breiseán do Ledger go díreach isteach i do ríomhaire, ansin díghlasáil é agus oscail an aip Ethereum.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Ag ceangal le $1 fós...",

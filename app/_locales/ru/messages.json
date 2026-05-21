@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "Сканировать QR-код"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Вы можете выбрать из списка официальных партнеров, поддерживающих QR-код ниже."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Подключите свой аппаратный кошелек на основе QR-кодов"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SrpListHideAccounts": {
     "message": "Скрыть $1 счета(-ов)",
     "description": "$1 is the number of accounts"
@@ -561,9 +552,6 @@
   },
   "airDropPatternTitle": {
     "message": "Схема Airdrop"
-  },
-  "airgapVault": {
-    "message": "AirGap Vault"
   },
   "alert": {
     "message": "Оповещение"
@@ -1618,9 +1606,6 @@
     "message": "Купить еще $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "Купить сейчас"
-  },
   "buyTabOpenedToastDescription": {
     "message": "Мы открыли новую вкладку для покупок.",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -2138,9 +2123,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Мы обнаружили, что этот актив добавлен как NFT. Хотите удалить его из списка токенов?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Скопировано."
   },
@@ -2358,9 +2340,6 @@
   },
   "dateCreated": {
     "message": "Дата создания"
-  },
-  "dcent": {
-    "message": "D'Cent"
   },
   "debitCreditPurchaseOptions": {
     "message": "Варианты покупки с помощью дебетовой или кредитной карты"
@@ -2686,9 +2665,6 @@
   "downloadAppTitle": {
     "message": "Отсканировать QR-код и скачать приложение"
   },
-  "downloadGoogleChrome": {
-    "message": "Скачать Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Face ID в нашем приложении позволяет войти, даже если вы забыли пароль. Берите MetaMask с собой куда угодно!"
   },
@@ -2697,9 +2673,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Скачайте наше мобильное приложение"
-  },
-  "downloadNow": {
-    "message": "Скачать сейчас"
   },
   "downloadStateLogs": {
     "message": "Скачать журналы состояния"
@@ -3464,9 +3437,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Перед нажатием на «Отправить»:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "нажмите здесь"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Откройте приложение Ethereum"
   },
@@ -3476,12 +3446,6 @@
   },
   "hardwareWallets": {
     "message": "Подключить аппаратный кошелек"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Интеграция с аппаратным кошельком использует вызовы API к внешним серверам, которые могут видеть ваш IP-адрес и адреса смарт-контрактов, с которыми вы взаимодействуете"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Выберите аппаратный кошелек, который хотите использовать с MetaMask."
   },
   "helpAndSettings": {
     "message": "Помощь и настройки"
@@ -3847,9 +3811,6 @@
     "message": "JSON-файл",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Чехол для ключ-карты"
-  },
   "keyringAccountName": {
     "message": "Имя счета"
   },
@@ -3902,9 +3863,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Узнайте больше о лучших методах обеспечения конфиденциальности."
-  },
-  "learnMoreKeystone": {
-    "message": "Подробнее"
   },
   "learnMoreUpperCase": {
     "message": "Подробнее"
@@ -3973,17 +3931,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox не поддерживается"
   },
-  "ledgerLiveApp": {
-    "message": "приложение Ledger Live"
-  },
   "ledgerLocked": {
     "message": "Не удалось подключиться к Ledger. Убедитесь, что устройство разблокировано и приложение Ethereum открыто."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Чтобы подключить новое устройство, отключите предыдущее."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Одновременно можно подключить только один Ledger"
   },
   "ledgerTimeout": {
     "message": "Ledger Live слишком долго не отвечает, или время ожидания подключения истекло. Убедитесь, что приложение Ledger Live открыто и устройство разблокировано."
@@ -8973,34 +8922,6 @@
   },
   "statusNotConnected": {
     "message": "Не подключено"
-  },
-  "step1LatticeWallet": {
-    "message": "Подключите Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Вы можете подключить MetaMask к своему устройству Lattice1, как только оно будет настроено и подключено к сети. Разблокируйте устройство и подготовьте свой ID устройства.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Скачать приложение Ledger"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Скачайте $1, настройте его и введите пароль для его разблокировки.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Подключить кошелек Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Подключите кошелек Trezor напрямую к компьютеру и разблокируйте его. Убедитесь, что вы используете правильную парольную фразу.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Подключите свой Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Подключите Ledger напрямую к компьютеру, разблокируйте его и откройте приложение Ethereum.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Все еще подключаюсь к $1...",
