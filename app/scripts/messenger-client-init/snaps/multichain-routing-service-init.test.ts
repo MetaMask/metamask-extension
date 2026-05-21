@@ -25,9 +25,10 @@ function getInitRequestMock(): jest.Mocked<
   const requestMock = {
     ...buildControllerInitRequestMock(),
     controllerMessenger: getMultichainRoutingServiceMessenger(baseMessenger),
-    initMessenger: getMultichainRoutingServiceInitMessenger(
-      getRootMessenger<never, never>(),
-    ),
+    initMessenger:
+      getMultichainRoutingServiceInitMessenger(
+        getRootMessenger<never, never>(),
+      ),
   };
 
   return requestMock;

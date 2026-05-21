@@ -29,7 +29,8 @@ export const getAccountsBySnapId = async (
     return (await messenger.call(
       'KeyringController:withKeyringV2',
       {
-        filter: (keyring) => isSnapKeyring(keyring) && keyring.snapId === snapId,
+        filter: (keyring) =>
+          isSnapKeyring(keyring) && keyring.snapId === snapId,
       },
       async ({ keyring }) => {
         if (!isSnapKeyring(keyring)) {

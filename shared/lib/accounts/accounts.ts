@@ -93,4 +93,3 @@ export type WalletSnapClient = {
     options?: SnapAccountNameOptions,
   ): Promise<string>;
 };
-
