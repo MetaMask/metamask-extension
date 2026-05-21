@@ -1,17 +1,7 @@
-import {
-  ListNames,
-  PhishingController,
-  AllowedEvents,
-} from '@metamask/phishing-controller';
-import { AddressBookControllerGetStateAction } from '@metamask/address-book-controller';
-import { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
+import { ListNames, PhishingController } from '@metamask/phishing-controller';
 import { getRootMessenger } from '../../messenger';
 import { isBlockedUrl } from './isBlockedUrl';
 import { getPhishingControllerMessenger } from 'app/scripts/messenger-client-init/messengers';
-
-type AllowedActions =
-  | AddressBookControllerGetStateAction
-  | TransactionControllerGetStateAction;
 
 // Run these tests as if we were in a Flask build
 jest.mock('../../../../../shared/lib/build-types', () => ({
