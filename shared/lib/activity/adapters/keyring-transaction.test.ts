@@ -29,7 +29,7 @@ describe('mapKeyringTransaction', () => {
       },
     });
 
-    expect(item).toEqual(
+    expect(item).toStrictEqual(
       expect.objectContaining({
         type: 'send',
         chainId: MultichainNetworks.SOLANA,
@@ -86,7 +86,7 @@ describe('mapKeyringTransaction', () => {
       },
     });
 
-    expect(item).toEqual(
+    expect(item).toStrictEqual(
       expect.objectContaining({
         type: 'swap',
         chainId: MultichainNetworks.SOLANA,

@@ -18,7 +18,7 @@ function trimDecimalZeroes(value: string) {
     return value;
   }
 
-  return value.replace(/\.?0+$/, '');
+  return value.replace(/\.?0+$/u, '');
 }
 
 function formatTokenAmountValue({ amount, decimals }: TokenAmount) {

@@ -2,14 +2,13 @@ import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
 import { zeroAddress } from 'viem';
 import { isEqualCaseInsensitive as equalsIgnoreCase } from '../../string-utils';
-import type { ActivityListItem, Status } from '../types';
+import type { ActivityListItem, Status, TokenAmount } from '../types';
 import { supplyMethodIds } from './constants';
 import {
   getTokenAmountFromTransfer,
   withFallbackTokenAssetId,
   type ValueTransfer,
 } from './helpers';
-import type { TokenAmount } from '../types';
 
 // Converts indexed API transactions into the shared activity item shape
 export function mapApiEvmTransactions({
