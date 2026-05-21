@@ -2,7 +2,6 @@ import React, {
   FunctionComponent,
   useCallback,
   useEffect,
-  useRef,
 } from 'react';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
@@ -68,6 +67,13 @@ type ReadOnlyPickerFieldProps = {
  * A minimal read-only field that replaces MUI's built-in date field.
  * This avoids the flash of format-mask characters (dd/mm/yy hh:mm:ss)
  * that the built-in field renders before the dialog opens.
+ * @param options0
+ * @param options0.displayText
+ * @param options0.placeholder
+ * @param options0.onClick
+ * @param options0.disabled
+ * @param options0.inputRef
+ * @param options0.className
  */
 const ReadOnlyPickerField: React.FC<ReadOnlyPickerFieldProps> = ({
   displayText,
@@ -85,6 +91,16 @@ const ReadOnlyPickerField: React.FC<ReadOnlyPickerFieldProps> = ({
     tabIndex={disabled ? -1 : 0}
     className={className}
     onClick={disabled ? undefined : onClick}
+    onKeyDown={
+      disabled
+        ? undefined
+        : (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onClick();
+            }
+          }
+    }
     style={{
       ...readOnlyFieldStyles,
       opacity: disabled ? 0.5 : 1,
@@ -169,7 +185,6 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const [committed, setCommitted] = React.useState(hasInitialValue);
 
   const [open, setOpen] = React.useState(false);
-  const fieldRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (initialValue !== undefined && initialValue !== null) {
@@ -233,13 +248,13 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const displayText = committed ? formatDisplay(pickerValue) : '';
 
   const customFieldSlot = useCallback(
-    (params?: { className?: string }) => (
+    (params?: { className?: string; ref?: React.Ref<HTMLDivElement> }) => (
       <ReadOnlyPickerField
         displayText={displayText}
         placeholder={placeholder ?? defaultPlaceholder}
         onClick={handleOpen}
         disabled={disabled}
-        inputRef={fieldRef}
+        inputRef={params?.ref}
         className={params?.className}
       />
     ),
