@@ -14,7 +14,6 @@ import HeaderNavbar from '../pages/header-navbar';
 import HomePage from '../pages/home/homepage';
 import LoginPage from '../pages/login-page';
 import TermsOfUseUpdateModal from '../pages/dialog/terms-of-use-update-modal';
-import { regularDelayMs } from 'test/e2e/helpers';
 
 /**
  * Helper function to handle post-onboarding navigation for sidepanel builds.
