@@ -1,14 +1,12 @@
 import {
   AssetsController,
+  type AssetsControllerMessenger,
   type AssetsControllerOptions,
 } from '@metamask/assets-controller';
 import type { PreferencesState } from '@metamask/preferences-controller';
 import { createApiPlatformClient } from '@metamask/core-backend';
 import { type MessengerClientInitFunction } from '../types';
-import {
-  type AssetsControllerMessenger,
-  type AssetsControllerInitMessenger,
-} from '../messengers/assets/assets-controller-messenger';
+import { type AssetsControllerInitMessenger } from '../messengers/assets/assets-controller-messenger';
 import { traceAsControllerCallback } from '../../../../shared/lib/trace';
 import type { OnboardingControllerState } from '../../controllers/onboarding';
 
@@ -94,6 +92,7 @@ function getApiClient(
   if (!apiClient) {
     apiClient = createApiPlatformClient({
       clientProduct: 'metamask-extension',
+      clientVersion: process.env.METAMASK_VERSION,
       getBearerToken: () => safeGetBearerToken(initMessenger),
     }) as unknown as AssetsControllerOptions['queryApiClient'];
   }

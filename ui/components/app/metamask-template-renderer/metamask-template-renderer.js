@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import { isEqual } from 'lodash';
 import { safeComponentList } from './safe-component-list';
 import { ValidChildren } from './section-shape';
+import { TemplateRendererContext } from './context';
 
 function getElement(section) {
   const { element } = section;
@@ -22,7 +23,7 @@ function renderElement(element) {
   return (
     <Element {...element.props} {...propsAsComponents}>
       {typeof element.children === 'object' ? (
-        <MetaMaskTemplateRenderer sections={element.children} />
+        <MetaMaskTemplateRendererBody sections={element.children} />
       ) : (
         element?.children
       )}
@@ -41,7 +42,7 @@ function getPropComponents(components) {
   }, {});
 }
 
-const MetaMaskTemplateRenderer = ({ sections }) => {
+const MetaMaskTemplateRendererBody = ({ sections }) => {
   if (!sections) {
     // If sections is null eject early by returning null
     return null;
@@ -80,7 +81,7 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
             // If this child has its own children, check if children is an
             // object, and in that case use recursion to render.
             allChildren.push(
-              <MetaMaskTemplateRenderer sections={child} key={child.key} />,
+              <MetaMaskTemplateRendererBody sections={child} key={child.key} />,
             );
           } else {
             // Otherwise render the element.
@@ -101,10 +102,34 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
   );
 };
 
+MetaMaskTemplateRendererBody.propTypes = {
+  sections: ValidChildren,
+};
+
+const MemoizedRenderer = memo(
+  MetaMaskTemplateRendererBody,
+  (prevProps, nextProps) => isEqual(prevProps.sections, nextProps.sections),
+);
+
+/**
+ * Wraps the renderer in a Provider so descendants like `MetaMaskTranslation`
+ * can render sub-templates without forming a static import cycle. The Provider
+ * value is the memo'd component, so sub-template renders via context get the
+ * same memoization as the top-level callers.
+ *
+ * @param props
+ * @param props.sections
+ */
+function MetaMaskTemplateRenderer({ sections }) {
+  return (
+    <TemplateRendererContext.Provider value={MemoizedRenderer}>
+      <MemoizedRenderer sections={sections} />
+    </TemplateRendererContext.Provider>
+  );
+}
+
 MetaMaskTemplateRenderer.propTypes = {
   sections: ValidChildren,
 };
 
-export default memo(MetaMaskTemplateRenderer, (prevProps, nextProps) => {
-  return isEqual(prevProps.sections, nextProps.sections);
-});
+export default MetaMaskTemplateRenderer;

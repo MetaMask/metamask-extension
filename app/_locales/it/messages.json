@@ -35,15 +35,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "Scansiona Codice QR"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "Collega un portafoglio hardware air-gapped che comunica tramite codici QR. I portafogli hardware air-gapped supportati ufficialmente includono:"
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Portafoglio HW basato su QR"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "about": {
     "message": "Informazioni"
   },
@@ -482,12 +473,6 @@
   "dontShowThisAgain": {
     "message": "Non mostrare di nuovo"
   },
-  "downloadGoogleChrome": {
-    "message": "Scarica Google Chrome"
-  },
-  "downloadNow": {
-    "message": "Scarica ora"
-  },
   "downloadStateLogs": {
     "message": "Scarica i log di stato"
   },
@@ -599,9 +584,6 @@
   },
   "hardwareWallets": {
     "message": "Connetti portafoglio hardware"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Selezione un portafoglio hardware che vuoi utilizzare con MetaMask"
   },
   "here": {
     "message": "qui",
@@ -757,9 +739,6 @@
   },
   "nevermind": {
     "message": "Non importa"
-  },
-  "newAccount": {
-    "message": "Nuovo Account"
   },
   "newContract": {
     "message": "Nuovo Contratto"

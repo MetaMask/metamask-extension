@@ -175,6 +175,25 @@ describe('<SingleActionFooter />', () => {
     expect(button).toHaveTextContent('Insufficient funds');
   });
 
+  it('shows insufficient funds on perpsWithdraw button when amount exceeds balance', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsWithdraw(),
+      alerts: [
+        {
+          key: 'insufficient-pay-token-balance',
+          severity: Severity.Danger,
+          reason: 'Insufficient funds',
+          message: 'Amount exceeds your available Perps balance.',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
+  });
+
   it('disables button when amount is zero', () => {
     jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
       amountUsd: '0',

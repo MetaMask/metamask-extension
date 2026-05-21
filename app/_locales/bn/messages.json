@@ -196,9 +196,6 @@
   "done": {
     "message": "সম্পন্ন "
   },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome ডাউনলোড করুন"
-  },
   "downloadStateLogs": {
     "message": "স্টেট লগগুলি ডাউনলোড করুন"
   },
@@ -256,9 +253,6 @@
   },
   "hardwareWallets": {
     "message": "একটি হার্ডওয়্যার ওয়ালেট সংযুক্ত করুন"
-  },
-  "hardwareWalletsMsg": {
-    "message": "আপনি MetaMask এর সাথে ব্যবহার করতে চান এমন একটি হার্ডওয়্যার ওয়ালেট নির্বাচন করুন"
   },
   "here": {
     "message": "এখানে",
@@ -366,9 +360,6 @@
   },
   "nevermind": {
     "message": "কিছু মনে করবেন না"
-  },
-  "newAccount": {
-    "message": "নতুন আ্যাকাউন্ট"
   },
   "newAccountNumberName": {
     "message": "অ্যাকাউন্ট $1",

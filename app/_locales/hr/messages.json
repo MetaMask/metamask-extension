@@ -199,9 +199,6 @@
   "done": {
     "message": "Gotovo"
   },
-  "downloadGoogleChrome": {
-    "message": "Preuzmi preglednik Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Preuzmi zapisnike stanja"
   },
@@ -259,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Poveži hardverski novčanik"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Odaberite hardverski novčanik koji biste željeli upotrebljavati s uslugom MetaMask"
   },
   "here": {
     "message": "ovdje",
@@ -366,9 +360,6 @@
   },
   "nevermind": {
     "message": "Zanemari"
-  },
-  "newAccount": {
-    "message": "Novi račun"
   },
   "newAccountNumberName": {
     "message": "Račun $1",

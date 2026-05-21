@@ -340,9 +340,6 @@
   "dontShowThisAgain": {
     "message": "不要再顯示"
   },
-  "downloadGoogleChrome": {
-    "message": "下載 Google Chrome 瀏覽器"
-  },
   "downloadStateLogs": {
     "message": "下載狀態紀錄"
   },
@@ -466,14 +463,8 @@
     "message": "(舊版)",
     "description": "Text representing the MEW path"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "點選這裡"
-  },
   "hardwareWallets": {
     "message": "連線硬體錢包"
-  },
-  "hardwareWalletsMsg": {
-    "message": "選擇要連線到 MetaMask 的硬體錢包"
   },
   "here": {
     "message": "這裡",
@@ -671,9 +662,6 @@
   },
   "nevermind": {
     "message": "算了"
-  },
-  "newAccount": {
-    "message": "新帳戶"
   },
   "newAccountNumberName": {
     "message": "帳戶 $1",
@@ -914,23 +902,6 @@
   "statusNotConnected": {
     "message": "未連結"
   },
-  "step1LedgerWallet": {
-    "message": "下載 Ledger 應用程式"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "下載、安裝、然後輸入密碼來解鎖 $1。",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "插入 Trezor 錢包"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "直接將錢包連接到電腦上。關於更多使用您的硬體錢包的詳細資訊，$1",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "插入 Ledger 錢包"
-  },
   "submit": {
     "message": "傳送"
   },
@@ -1030,10 +1001,6 @@
   },
   "unlock": {
     "message": "解鎖"
-  },
-  "unrecognizedChain": {
-    "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",
-    "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
   "urlErrorMsg": {
     "message": "URL 需要以適當的 HTTP/HTTPS 作為開頭"
