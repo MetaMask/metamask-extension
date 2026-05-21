@@ -1,7 +1,5 @@
-import path from 'node:path';
 import type { Stats } from 'node:fs';
 import {
-  installArgs,
   isGitDir,
   postinstall,
   shouldSkipPostinstall,
@@ -36,7 +34,6 @@ function spawnWithStatuses(statuses: number[]) {
 describe('skills-postinstall', () => {
   const cwd = '/repo';
   const cacheDir = '.skills-cache/metamask-skills';
-  const cacheSource = path.join(cwd, cacheDir);
 
   it('skips when explicitly disabled or running in CI without force', () => {
     expect(shouldSkipPostinstall({ SKILLS_SKIP_POSTINSTALL: '1' })).toBe(true);
@@ -51,38 +48,9 @@ describe('skills-postinstall', () => {
     expect(isGitDir(cacheDir, statGitDir(false))).toBe(false);
   });
 
-  it('adds the Consensys overlay only when domains exist', () => {
-    const exists = jest.fn(
-      (candidate: string) => candidate === '/private/domains',
-    ) as unknown as typeof import('node:fs').existsSync;
-
-    expect(
-      installArgs(cwd, { CONSENSYS_SKILLS_DIR: '/private' }, exists),
-    ).toStrictEqual([
-      '--repo',
-      'metamask-extension',
-      '--target',
-      cwd,
-      '--source',
-      cacheSource,
-      '--source',
-      '/private',
-    ]);
-    expect(
-      installArgs(cwd, { CONSENSYS_SKILLS_DIR: '/missing' }, exists),
-    ).toStrictEqual([
-      '--repo',
-      'metamask-extension',
-      '--target',
-      cwd,
-      '--source',
-      cacheSource,
-    ]);
-  });
-
-  it('clones the public skills cache before installing when cache is absent', () => {
+  it('clones the public skills cache when cache is absent', () => {
     const mkdir = jest.fn();
-    const spawn = spawnWithStatuses([0, 0]);
+    const spawn = spawnWithStatuses([0]);
 
     expect(
       postinstall({
@@ -108,23 +76,11 @@ describe('skills-postinstall', () => {
       ],
       { stdio: 'ignore' },
     );
-    expect(spawn).toHaveBeenLastCalledWith(
-      'bash',
-      [
-        path.join(cacheDir, 'tools', 'install'),
-        '--repo',
-        'metamask-extension',
-        '--target',
-        cwd,
-        '--source',
-        cacheSource,
-      ],
-      { stdio: 'ignore' },
-    );
+    expect(spawn).toHaveBeenCalledTimes(1);
   });
 
-  it('fetches and resets an existing cache before installing', () => {
-    const spawn = spawnWithStatuses([0, 0, 0]);
+  it('fetches and resets an existing cache', () => {
+    const spawn = spawnWithStatuses([0, 0]);
 
     expect(postinstall({ cwd, env: {}, spawn, stat: statGitDir(true) })).toBe(
       0,
@@ -141,6 +97,7 @@ describe('skills-postinstall', () => {
       ['-C', cacheDir, 'reset', '--hard', 'origin/main'],
       { stdio: 'ignore' },
     );
+    expect(spawn).toHaveBeenCalledTimes(2);
   });
 
   it('returns without side effects when postinstall is skipped', () => {
@@ -152,12 +109,11 @@ describe('skills-postinstall', () => {
     expect(spawn).not.toHaveBeenCalled();
   });
 
-  it('warns without failing when clone, fetch, reset, or install fails', () => {
+  it('warns without failing when clone, fetch, or reset fails', () => {
     for (const { statuses, gitDir } of [
       { statuses: [1], gitDir: false },
       { statuses: [1], gitDir: true },
       { statuses: [0, 1], gitDir: true },
-      { statuses: [0, 0, 1], gitDir: true },
     ]) {
       const stderr = { write: jest.fn() };
       expect(

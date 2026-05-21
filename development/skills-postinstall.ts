@@ -6,30 +6,26 @@
 // - Clones https://github.com/MetaMask/skills (public, no auth) into
 //   .skills-cache/metamask-skills if absent.
 // - `git fetch + reset` to origin/main if present.
-// - Runs tools/install against this repo.
-// - If CONSENSYS_SKILLS_DIR is set, layered as additional source so
-//   internal overlays apply too.
+// - Leaves installation/domain selection to `yarn skills`, which reads
+//   .skills.local and SKILLS_DOMAINS.
 // - All errors swallowed with a one-line warning. Engineers can run
 //   `yarn skills` manually for interactive feedback.
 
 import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
-import { existsSync, mkdirSync, statSync } from 'node:fs';
+import { mkdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 
-const REPO = 'metamask-extension';
 const CACHE_DIR = '.skills-cache/metamask-skills';
 const PUBLIC_REPO = 'https://github.com/MetaMask/skills.git';
 
 type SpawnSync = typeof spawnSync;
 type StatSync = typeof statSync;
-type ExistsSync = typeof existsSync;
 type MkdirSync = typeof mkdirSync;
 type Stderr = Pick<NodeJS.WriteStream, 'write'>;
 
 type PostinstallDeps = {
   cwd?: string;
   env?: NodeJS.ProcessEnv;
-  exists?: ExistsSync;
   mkdir?: MkdirSync;
   spawn?: SpawnSync;
   stat?: StatSync;
@@ -67,31 +63,8 @@ export function shouldSkipPostinstall(env: NodeJS.ProcessEnv): boolean {
   );
 }
 
-export function installArgs(
-  cwd: string,
-  env: NodeJS.ProcessEnv,
-  exists?: ExistsSync,
-): string[] {
-  const existsFn = exists ?? existsSync;
-  const args = [
-    '--repo',
-    REPO,
-    '--target',
-    cwd,
-    '--source',
-    path.join(cwd, CACHE_DIR),
-  ];
-  const consensys = env.CONSENSYS_SKILLS_DIR;
-  if (consensys && existsFn(path.join(consensys, 'domains'))) {
-    args.push('--source', consensys);
-  }
-  return args;
-}
-
 export function postinstall(deps?: PostinstallDeps): number {
-  const cwd = deps?.cwd ?? process.cwd();
   const env = deps?.env ?? process.env;
-  const exists = deps?.exists ?? existsSync;
   const mkdir = deps?.mkdir ?? mkdirSync;
   const spawn = deps?.spawn ?? spawnSync;
   const stat = deps?.stat ?? statSync;
@@ -135,15 +108,9 @@ export function postinstall(deps?: PostinstallDeps): number {
       }
     }
 
-    const installer = path.join(CACHE_DIR, 'tools', 'install');
-    const result = run(
-      'bash',
-      [installer, ...installArgs(cwd, env, exists)],
-      spawn,
-    );
-    if (result.status !== 0) {
-      warn('install failed', stderr);
-    }
+    // `yarn skills` performs installation with the selected Bash and honors
+    // .skills.local / SKILLS_DOMAINS. Postinstall only keeps the public cache
+    // available so that default path works without any local configuration.
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     warn(`unexpected error: ${msg}`, stderr);

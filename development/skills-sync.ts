@@ -116,6 +116,30 @@ type SkillSourceEnv = Record<
 >;
 type SyncPick = { sync: string };
 
+export function expandLeadingTilde(
+  value: string | undefined,
+  env?: NodeJS.ProcessEnv,
+): string | undefined {
+  if (!value?.startsWith('~')) {
+    return value;
+  }
+
+  const home = (env ?? process.env).HOME;
+  if (!home) {
+    return value;
+  }
+
+  if (value === '~') {
+    return home;
+  }
+
+  if (value.startsWith(`~${path.sep}`) || value.startsWith('~/')) {
+    return path.join(home, value.slice(2));
+  }
+
+  return value;
+}
+
 export function loadSkillSourceEnv(
   cwd?: string,
   processEnv?: NodeJS.ProcessEnv,
@@ -135,7 +159,7 @@ export function loadSkillSourceEnv(
     );
     for (const key of SOURCE_ENV_KEYS) {
       if (!env[key]) {
-        env[key] = localConfig[key];
+        env[key] = expandLeadingTilde(localConfig[key], resolvedEnv);
       }
     }
   } catch {
