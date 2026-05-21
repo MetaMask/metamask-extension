@@ -67,7 +67,61 @@ describe('useValidateReferralCode', () => {
     expect(validateRewardsReferralCode).not.toHaveBeenCalled();
   });
 
-  it('validates after debounce for any non-empty input and sets isValid=true', async () => {
+  it('does not validate locally invalid referral code formats', async () => {
+    const { result } = renderHookWithProvider(
+      () => useValidateReferralCode(),
+      {},
+    );
+
+    act(() => {
+      result.current.setReferralCode('ab');
+    });
+
+    expect(result.current.referralCode).toBe('AB');
+    expect(result.current.isValidating).toBe(false);
+    expect(result.current.isValid).toBe(false);
+
+    await advanceReferralCodeDebounce();
+
+    act(() => {
+      result.current.setReferralCode('abcdefghijklm');
+    });
+
+    expect(result.current.referralCode).toBe('ABCDEFGHIJKLM');
+    expect(result.current.isValidating).toBe(false);
+    expect(result.current.isValid).toBe(false);
+
+    await advanceReferralCodeDebounce();
+
+    act(() => {
+      result.current.setReferralCode('abc_123');
+    });
+
+    expect(result.current.referralCode).toBe('ABC_123');
+    expect(result.current.isValidating).toBe(false);
+    expect(result.current.isValid).toBe(false);
+
+    await advanceReferralCodeDebounce();
+
+    expect(validateRewardsReferralCode).not.toHaveBeenCalled();
+  });
+
+  it('does not call validateCode backend for locally invalid referral code formats', async () => {
+    const { result } = renderHookWithProvider(
+      () => useValidateReferralCode(),
+      {},
+    );
+
+    const tooShortError = await result.current.validateCode('ab');
+    expect(tooShortError).toBe('Invalid code');
+
+    const badCharacterError = await result.current.validateCode('abc_123');
+    expect(badCharacterError).toBe('Invalid code');
+
+    expect(validateRewardsReferralCode).not.toHaveBeenCalled();
+  });
+
+  it('validates after debounce for any locally valid input and sets isValid=true', async () => {
     const { result } = renderHookWithProvider(
       () => useValidateReferralCode('', 1000),
       {},
