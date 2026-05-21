@@ -50,7 +50,7 @@ export function AlertProvider({
 
   return (
     <Box
-      paddingTop={paddingTop}
+      paddingTop={paddingTop ?? undefined}
       className={textAlign ? TEXT_ALIGN_CLASS[textAlign] : undefined}
     >
       <Text

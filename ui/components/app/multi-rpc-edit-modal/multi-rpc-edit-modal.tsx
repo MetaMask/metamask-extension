@@ -17,6 +17,8 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  Display,
+  FlexDirection,
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -47,7 +49,7 @@ function MultiRpcEditModal() {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalBody display="flex" flexDirection="column">
+        <ModalBody display={Display.Flex} flexDirection={FlexDirection.Column}>
           <Box
             className="flex rounded-sm"
             alignItems={BoxAlignItems.Center}
