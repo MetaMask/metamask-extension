@@ -5,7 +5,7 @@ import { Severity } from '../../../../../../helpers/constants/design-system';
 import { mmLazy } from '../../../../../../helpers/utils/mm-lazy';
 
 const ShieldIconAnimationContent = mmLazy(
-  () => import('./shield-icon-animation-content.js'),
+  () => import('./shield-icon-animation-content.tsx'),
 );
 
 const ShieldIconAnimation = ({

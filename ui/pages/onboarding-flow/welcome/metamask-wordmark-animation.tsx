@@ -9,7 +9,7 @@ type MetamaskWordMarkAnimationProps = {
 };
 
 const MetamaskWordMarkAnimationContent = mmLazy(
-  () => import('./metamask-wordmark-animation-content.js'),
+  () => import('./metamask-wordmark-animation-content.tsx'),
 );
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
