@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { TransactionType } from '@metamask/transaction-controller';
 import type { TransactionGroup } from '../../shared/lib/multichain/types';
 import {
@@ -27,21 +26,11 @@ export const usePendingTransactionActionVisibility = (
   const isBridgeTx =
     transactionGroup.initialTransaction.type === TransactionType.bridge;
 
-  return useMemo(
-    () =>
-      getPendingTransactionActionVisibility({
-        hasCancelled: transactionGroup.hasCancelled,
-        primaryTransaction: transactionGroup.primaryTransaction,
-        shouldShowSpeedUp,
-        isBridgeTx,
-        hasIntentBridgeActivity,
-      }),
-    [
-      transactionGroup.hasCancelled,
-      transactionGroup.primaryTransaction,
-      shouldShowSpeedUp,
-      isBridgeTx,
-      hasIntentBridgeActivity,
-    ],
-  );
+  return getPendingTransactionActionVisibility({
+    hasCancelled: transactionGroup.hasCancelled,
+    primaryTransaction: transactionGroup.primaryTransaction,
+    shouldShowSpeedUp,
+    isBridgeTx,
+    hasIntentBridgeActivity,
+  });
 };

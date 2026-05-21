@@ -8,8 +8,6 @@ import { PENDING_STATUS_HASH } from '../constants/transactions';
  * @param transaction - Transaction meta (typically the group's primary transaction).
  */
 export function isTransactionPending(transaction: TransactionMeta): boolean {
-  const statusKey = getStatusKey(
-    transaction as Parameters<typeof getStatusKey>[0],
-  );
+  const statusKey = getStatusKey(transaction);
   return statusKey in PENDING_STATUS_HASH;
 }

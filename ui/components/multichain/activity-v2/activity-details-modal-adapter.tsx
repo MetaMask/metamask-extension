@@ -140,9 +140,7 @@ const TransactionDetailsWrapper = ({
   }
 
   const senderAddress = transaction.txParams?.from ?? '';
-  const displayedStatusKey = getStatusKey(
-    transaction as Parameters<typeof getStatusKey>[0],
-  );
+  const displayedStatusKey = getStatusKey(transaction);
   const date = formatDateWithYearContext(
     transaction.time ?? 0,
     'MMM d, y',
