@@ -1,9 +1,10 @@
-import { Messenger } from '@metamask/messenger';
+import {
+  Messenger,
+  type MessengerActions,
+  type MessengerEvents,
+} from '@metamask/messenger';
+import { ApprovalControllerMessenger } from '@metamask/approval-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-export type ApprovalControllerMessenger = ReturnType<
-  typeof getApprovalControllerMessenger
->;
 
 /**
  * Create a messenger restricted to the allowed actions and events of the
@@ -13,10 +14,14 @@ export type ApprovalControllerMessenger = ReturnType<
  * messenger.
  */
 export function getApprovalControllerMessenger(
-  messenger: RootMessenger<never, never>,
+  messenger: RootMessenger<
+    MessengerActions<ApprovalControllerMessenger>,
+    MessengerEvents<ApprovalControllerMessenger>
+  >,
 ) {
-  return new Messenger<'ApprovalController', never, never, typeof messenger>({
+  const controllerMessenger: ApprovalControllerMessenger = new Messenger({
     namespace: 'ApprovalController',
     parent: messenger,
   });
+  return controllerMessenger;
 }

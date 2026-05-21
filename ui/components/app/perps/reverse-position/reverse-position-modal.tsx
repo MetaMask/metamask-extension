@@ -14,11 +14,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
-import {
-  formatPerpsFiat,
-  formatPositionSize,
-  PRICE_RANGES_MINIMAL_VIEW,
-} from '../../../../../shared/lib/perps-formatters';
+import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
 import {
   Modal,
   ModalContent,
@@ -109,6 +105,7 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
 
   const {
     feeRate,
+    undiscountedFeeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
     metamaskFeeRateDiscountPercentage,
@@ -121,6 +118,14 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     () =>
       feeRate === undefined ? undefined : 2 * sizeNum * currentPrice * feeRate,
     [sizeNum, currentPrice, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () =>
+      undiscountedFeeRate === undefined
+        ? undefined
+        : 2 * sizeNum * currentPrice * undiscountedFeeRate,
+    [sizeNum, currentPrice, undiscountedFeeRate],
   );
 
   const shouldShowFeePlaceholder =
@@ -267,13 +272,9 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                       ? undefined
                       : metamaskFeeRateDiscountPercentage
                   }
-                  formatFeeText={
-                    shouldShowFeePlaceholder
-                      ? '--'
-                      : formatPerpsFiat(estimatedFees, {
-                          ranges: PRICE_RANGES_MINIMAL_VIEW,
-                        })
-                  }
+                  originalFee={originalEstimatedFees}
+                  fee={shouldShowFeePlaceholder ? undefined : estimatedFees}
+                  placeholder="--"
                   feeTextFontWeight={FontWeight.Medium}
                   feeTextTestId="perps-reverse-fee-value"
                 />
