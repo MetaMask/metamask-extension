@@ -987,7 +987,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.notificationServicesController.init();
     this.snapController.init();
-    this.snapAccountService.init();
     this.cronjobController.init();
 
     this.controllerMessenger.subscribe(
