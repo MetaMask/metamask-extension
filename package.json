@@ -262,7 +262,7 @@
     "elliptic": "^6.6.1",
     "@ethereumjs/tx": "patch:@ethereumjs/tx@npm%3A5.4.0#~/.yarn/patches/@ethereumjs-tx-npm-5.4.0-0c4a0f973e.patch",
     "@ledgerhq/errors": "^6.21.0",
-    "@trezor/connect-web": "~9.6.0",
+    "@trezor/connect-web": "~9.7.3",
     "nanoid@npm:^5.1.5": "^3.3.8",
     "lodash": "patch:lodash@npm%3A4.18.1#~/.yarn/patches/lodash-npm-4.18.1-a64c3070ac.patch",
     "dompurify": "patch:dompurify@npm%3A3.4.2#~/.yarn/patches/dompurify-npm-3.4.2-36824c4d4c.patch",
@@ -458,7 +458,7 @@
     "@swc/core": "^1.13.2",
     "@tanstack/react-query": "^4.36.1",
     "@tanstack/react-virtual": "^3.10.8",
-    "@trezor/connect-web": "~9.6.0",
+    "@trezor/connect-web": "~9.7.3",
     "@zxing/browser": "^0.1.5",
     "@zxing/library": "0.21.3",
     "async-mutex": "^0.5.0",
@@ -857,7 +857,8 @@
       "core-js-pure#3.41.0": true,
       "react-devtools>electron#23.3.0": true,
       "sharp#0.34.2": true,
-      "tsx>esbuild#0.27.7": true
+      "tsx>esbuild#0.27.7": true,
+      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@stellar/stellar-sdk#14.2.0": false
     }
   },
   "packageManager": "yarn@4.14.1",
