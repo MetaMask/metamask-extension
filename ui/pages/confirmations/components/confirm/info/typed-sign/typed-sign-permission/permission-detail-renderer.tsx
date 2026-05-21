@@ -35,10 +35,7 @@ import {
   computeTotalExposureForPermission,
   isPermissionDataWithTotalExposure,
 } from '../../../../../../../../shared/lib/gator-permissions/compute-total-exposure';
-import {
-  PERMISSION_SCHEMAS,
-  assertPermissionSchemaEntry,
-} from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
+import { getPermissionSchemaEntry } from '../../../../../../../../shared/lib/gator-permissions/permission-detail-schemas';
 import { throwUnhandledPermissionSchemaElement } from '../../../../../../../../shared/lib/gator-permissions/throw-unhandled-permission-schema-element';
 import { extractAddressesFromRuleByType } from '../../../../../../../../shared/lib/gator-permissions';
 import { translateI18nValue } from '../../../../../../../../shared/lib/gator-permissions/translate-i18n-value';
@@ -178,6 +175,18 @@ function renderElement(
           <Text variant={TextVariant.BodyMd}>
             {translateI18nValue(t, element.getValue(ctx))}
           </Text>
+        </ConfirmInfoRow>
+      );
+    }
+
+    case 'raw-text': {
+      return (
+        <ConfirmInfoRow
+          key={index}
+          label={t(element.labelKey)}
+          tooltip={element.tooltip}
+        >
+          <Text variant={TextVariant.BodyMd}>{element.getValue(ctx)}</Text>
         </ConfirmInfoRow>
       );
     }
@@ -353,7 +362,8 @@ export const PermissionDetailRenderer: React.FC<{
 }> = ({ permission, expiry, chainId, origin, to, ownerId, rules }) => {
   const t = useI18nContext() as I18nFunction;
 
-  const schemaEntry = PERMISSION_SCHEMAS[permission.type];
+  const schemaEntry = getPermissionSchemaEntry(permission.type, true);
+
   // Use an explicit branch (not `?.`) so React Compiler output cannot read
   // `.tokenResolution` off an undefined schema entry during invalid types.
   const tokenResolution: TokenResolution =
@@ -367,8 +377,6 @@ export const PermissionDetailRenderer: React.FC<{
     chainId,
     tokenResolution,
   );
-
-  assertPermissionSchemaEntry(permission.type, schemaEntry);
 
   if (schemaEntry.validate) {
     schemaEntry.validate(permission);

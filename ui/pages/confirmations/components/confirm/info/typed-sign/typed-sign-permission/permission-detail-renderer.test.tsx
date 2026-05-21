@@ -438,7 +438,7 @@ describe('PermissionDetailRenderer', () => {
   });
 
   describe('error handling', () => {
-    it('throws on invalid permission type', () => {
+    it('throws if throwIfUnknown is true on unknown permission type', () => {
       expect(() =>
         renderWithConfirmContext(
           <PermissionDetailRenderer
@@ -450,7 +450,7 @@ describe('PermissionDetailRenderer', () => {
           />,
           getMockStore(),
         ),
-      ).toThrow('Invalid permission type: invalid');
+      ).toThrow('Unknown permission type: invalid');
     });
 
     it('throws when startTime is missing for periodic types', () => {

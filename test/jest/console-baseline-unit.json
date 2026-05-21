@@ -492,9 +492,7 @@
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/components/multichain/pages/gator-permissions/components/review-permission-renderer.test.tsx": {
-      "Test errors: Uncaught Errors": 1,
-      "error: Error handled by React Router": 1,
-      "error: React Router caught the following": 1
+      "React: DOM nesting violations": 1
     },
     "ui/components/multichain/pages/gator-permissions/gator-permissions-page.test.tsx": {
       "MetaMask: Background connection not initialized": 2
@@ -966,7 +964,6 @@
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/permission-detail-renderer.test.tsx": {
       "React: Act warnings (component updates not wrapped)": 10,
-      "Reselect: Identity function warnings": 3,
       "Test errors: Uncaught Errors": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/typed-sign-permission.test.tsx": {

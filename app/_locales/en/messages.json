@@ -10585,6 +10585,9 @@
     "message": "Unknown network",
     "description": "Displayed on places like Snap install warning when regular name is not available."
   },
+  "unknownPermissionType": {
+    "message": "Unknown permission type"
+  },
   "unknownQrCode": {
     "message": "Error: We couldn't identify that QR code"
   },

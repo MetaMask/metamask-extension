@@ -748,11 +748,33 @@ const tokenApprovalRevocationSchema: PermissionSchemaEntry = {
   ],
 };
 
+const unknownPermissionTypeSchema: PermissionSchemaEntry = {
+  tokenVariant: 'none',
+  tokenResolution: { kind: 'none' },
+  sections: [
+    justificationSection,
+    permissionInfoSection,
+    {
+      testId: 'unknown-permission-type-details-section',
+      elements: [
+        {
+          type: 'raw-text',
+          labelKey: 'unknownPermissionType',
+          testId: 'review-gator-permission-unknown-type',
+          getValue: (ctx) => ctx.permission.type,
+          isVisible: alwaysVisible,
+          includeInViews: ['reviewSummary'],
+        },
+      ],
+    },
+  ],
+};
+
 // ---------------------------------------------------------------------------
 // Registry
 // ---------------------------------------------------------------------------
 
-export const PERMISSION_SCHEMAS: PermissionSchemaRegistry = {
+const PERMISSION_SCHEMAS: PermissionSchemaRegistry = {
   'native-token-periodic': nativeTokenPeriodicSchema,
   'native-token-stream': nativeTokenStreamSchema,
   'native-token-allowance': nativeTokenAllowanceSchema,
@@ -762,19 +784,16 @@ export const PERMISSION_SCHEMAS: PermissionSchemaRegistry = {
   'token-approval-revocation': tokenApprovalRevocationSchema,
 };
 
-/**
- * Ensures a permission type is registered in {@link PERMISSION_SCHEMAS}.
- * Call this when the controller can return types the UI registry does not yet implement,
- * so the failure is explicit instead of rendering nothing.
- *
- * @param permissionType - Permission type string from the permission payload
- * @param entry - Result of `PERMISSION_SCHEMAS[permissionType]`
- */
-export function assertPermissionSchemaEntry(
+export function getPermissionSchemaEntry(
   permissionType: string,
-  entry: PermissionSchemaEntry | undefined,
-): asserts entry is PermissionSchemaEntry {
-  if (!entry) {
-    throw new Error(`Invalid permission type: ${permissionType}`);
+  throwIfUnknown: boolean = false,
+): PermissionSchemaEntry {
+  const matchingSchema = PERMISSION_SCHEMAS[permissionType];
+  if (matchingSchema) {
+    return matchingSchema;
   }
+  if (throwIfUnknown) {
+    throw new Error(`Unknown permission type: ${permissionType}`);
+  }
+  return unknownPermissionTypeSchema;
 }
