@@ -36,7 +36,10 @@ import {
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from '../../../../../shared/constants/snaps/permissions';
-import { USE_UNIVERSAL_MULTICHAIN_CONFIRMATION } from '../../../../../shared/constants/confirmations';
+import {
+  UNIVERSAL_TRANSACTION_APPROVAL_TYPE,
+  USE_UNIVERSAL_MULTICHAIN_CONFIRMATION,
+} from '../../../../../shared/constants/confirmations';
 import { PreferencesControllerGetStateAction } from '../../preferences-controller';
 import { KeyringType } from '../../../../../shared/constants/keyring';
 import { AppStateControllerGetUnlockPromiseAction } from '../../app-state-controller-method-action-types';
@@ -235,7 +238,7 @@ export function getSnapPermissionSpecifications(
               {
                 id: approvalId,
                 origin: snapId,
-                type: ApprovalType.Transaction,
+                type: UNIVERSAL_TRANSACTION_APPROVAL_TYPE as ApprovalType,
                 requestData: {
                   approvalId,
                   chainNamespace: params.chainNamespace,

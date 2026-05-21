@@ -14,6 +14,7 @@ import {
   shouldUseRedesignForSignatures,
   shouldUseRedesignForTransactions,
 } from '../../../../shared/lib/confirmation.utils';
+import { UNIVERSAL_TRANSACTION_APPROVAL_TYPE } from '../../../../shared/constants/confirmations';
 
 /**
  * Determine the current confirmation based on the pending approvals and controller state.
@@ -64,6 +65,10 @@ const useCurrentConfirmation = (providedConfirmationId?: string) => {
 
   return useMemo(() => {
     if (pendingApproval?.type === ApprovalType.AddEthereumChain) {
+      return { currentConfirmation: pendingApproval };
+    }
+
+    if (pendingApproval?.type === UNIVERSAL_TRANSACTION_APPROVAL_TYPE) {
       return { currentConfirmation: pendingApproval };
     }
 

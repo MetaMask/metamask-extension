@@ -5,12 +5,14 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
 import { getPendingApprovals } from '../../../selectors/approvals';
+import { UNIVERSAL_TRANSACTION_APPROVAL_TYPE } from '../../../../shared/constants/confirmations';
 import { ConfirmMetamaskState } from '../types/confirm';
 
 const ConfirmationApprovalTypes = [
   ApprovalType.PersonalSign,
   ApprovalType.EthSignTypedData,
   ApprovalType.Transaction,
+  UNIVERSAL_TRANSACTION_APPROVAL_TYPE as ApprovalType,
 ];
 export const pendingConfirmationsSortedSelector = createSelector(
   getPendingApprovals,
