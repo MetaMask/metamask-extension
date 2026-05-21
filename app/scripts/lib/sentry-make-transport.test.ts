@@ -302,6 +302,8 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
+      // Sentry v10 no longer sends a session envelope eagerly here, so capture an
+      // explicit event to exercise the transport path under the opted-out state.
       Sentry.captureMessage('opted-out transport test');
 
       await tick();
@@ -340,6 +342,8 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
+      // Sentry v10 no longer emits a session envelope eagerly during init, so
+      // capture an event to verify the transport path when opted in.
       Sentry.captureMessage('opted-in transport test');
 
       await tick();
@@ -365,6 +369,8 @@ describe('sentry-make-transport', () => {
       const hasEventItem = envelopes.some((parsedEnvelope) =>
         forEachEnvelopeItem(
           parsedEnvelope,
+          // v10 captures an explicit event here instead of the eager session item
+          // the previous test version relied on.
           (_item: unknown, type: string) => type === 'event',
         ),
       );
