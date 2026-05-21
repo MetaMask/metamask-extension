@@ -78,7 +78,7 @@ describe('getPendingTransactionActionVisibility', () => {
     expect(visibility.showSpeedUp).toBe(false);
   });
 
-  it('hides cancel and speed up for bridge transactions', () => {
+  it('hides cancel for bridge transactions', () => {
     expect(
       getPendingTransactionActionVisibility({
         ...baseParams,

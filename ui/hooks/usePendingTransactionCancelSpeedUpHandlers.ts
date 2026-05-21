@@ -1,4 +1,8 @@
-import { useCallback, useContext, type MouseEvent as ReactMouseEvent } from 'react';
+import {
+  useCallback,
+  useContext,
+  type MouseEvent as ReactMouseEvent,
+} from 'react';
 import { useDispatch } from 'react-redux';
 import {
   TransactionStatus,
@@ -72,4 +76,4 @@ export const usePendingTransactionCancelSpeedUpHandlers = ({
   );
 
   return { onSpeedUp, onCancel };
-}
+};

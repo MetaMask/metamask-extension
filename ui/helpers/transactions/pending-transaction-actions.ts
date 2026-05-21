@@ -67,7 +67,7 @@ export const getPendingTransactionActionVisibility = ({
     showSpeedUp,
     speedUpLabel: hasCancelled ? 'speedUpCancellation' : 'speedUp',
   };
-}
+};
 
 /**
  * Whether a bridge tx history item is an intent-bridge activity.
@@ -78,4 +78,4 @@ export const isIntentBridgeActivity = (
   bridgeHistoryItem?: { quote?: { intent?: unknown } } | null,
 ): boolean => {
   return Boolean(bridgeHistoryItem?.quote?.intent);
-}
+};
