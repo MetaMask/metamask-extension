@@ -143,7 +143,7 @@ class AssetListPage {
   }
 
   private tokenPercentage(address: string): string {
-    return `[data-testid="token-increase-decrease-percentage-${address.toLowerCase()}"]`;
+    return `[data-testid="token-increase-decrease-percentage-${address}"]`;
   }
 
   private readonly tokenChainDropdown =
