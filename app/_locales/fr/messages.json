@@ -1921,9 +1921,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Ce site demande l’autorisation de retirer vos jetons"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Ce site demande l’autorisation de révoquer vos autorisations de jetons ERC-20."
-  },
   "confirmTitleDescPermission": {
     "message": "Ce site demande l’autorisation de dépenser vos jetons."
   },

@@ -1927,9 +1927,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Este site quer permissão para sacar seus tokens"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Este site solicita permissão para revogar suas aprovações de token ERC-20."
-  },
   "confirmTitleDescPermission": {
     "message": "Este site quer permissões para gastar seus tokens."
   },
