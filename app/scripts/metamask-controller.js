@@ -509,6 +509,12 @@ const PHISHING_SAFELIST = 'metamask-phishing-safelist';
  */
 const PERPS_DISCONNECT_GRACE_MS = 60 * 1000;
 
+function isKeyringV2NotSupportedError(error) {
+  return error?.message?.includes(
+    KeyringControllerErrorMessage.KeyringV2NotSupported,
+  );
+}
+
 export default class MetamaskController extends EventEmitter {
   /**
    * @param {object} opts
@@ -5699,11 +5705,7 @@ export default class MetamaskController extends EventEmitter {
         ({ keyring }) => KEYRING_DEVICE_PROPERTY_MAP[keyring.type],
       );
     } catch (error) {
-      if (
-        error?.message?.includes(
-          KeyringControllerErrorMessage.KeyringV2NotSupported,
-        )
-      ) {
+      if (isKeyringV2NotSupportedError(error)) {
         return undefined;
       }
       throw error;
@@ -5797,11 +5799,7 @@ export default class MetamaskController extends EventEmitter {
         },
       );
     } catch (error) {
-      if (
-        error?.message?.includes(
-          KeyringControllerErrorMessage.KeyringV2NotSupported,
-        )
-      ) {
+      if (isKeyringV2NotSupportedError(error)) {
         return undefined;
       }
       throw error;
@@ -9725,13 +9723,14 @@ export default class MetamaskController extends EventEmitter {
     // connect-device flow legitimately creates a hardware keyring; every
     // other caller operates on a keyring that should already exist, and
     // should let the controller throw `KeyringNotFound` if it doesn't.
+    // `withController` runs the check-and-create as a mutually exclusive
+    // transaction so a concurrent caller can't slip in between.
     if (options.create) {
-      const hasKeyring = this.keyringController.state.keyrings.some(
-        ({ type }) => type === keyringType,
-      );
-      if (!hasKeyring) {
-        await this.keyringController.addNewKeyring(keyringType);
-      }
+      await this.keyringController.withController(async (controller) => {
+        if (!controller.keyrings.some(({ type }) => type === keyringType)) {
+          await controller.addNewKeyring(keyringType);
+        }
+      });
     }
 
     return this.keyringController.withKeyringV2(
