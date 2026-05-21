@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
 
+import { SOLANA_TOKEN_IMAGE_URL } from '../../../../../../../../shared/constants/multichain/networks';
 import {
   AvatarToken,
   AvatarTokenSize,
@@ -16,6 +17,10 @@ import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useUniversalTransactionDataOptional } from '../../../../../hooks/transactions/useUniversalTransactionData';
 import SendHeadingLayout from '../../shared/send-heading-layout/send-heading-layout';
 
+const ASSET_IMAGE_BY_SYMBOL: Record<string, string> = {
+  SOL: SOLANA_TOKEN_IMAGE_URL,
+};
+
 export function UniversalTransactionHeadingRow() {
   const t = useI18nContext();
   const data = useUniversalTransactionDataOptional();
@@ -23,6 +28,8 @@ export function UniversalTransactionHeadingRow() {
   if (!data) {
     return null;
   }
+
+  const assetImageUrl = ASSET_IMAGE_BY_SYMBOL[data.assetSymbol];
 
   return (
     <>
@@ -36,7 +43,11 @@ export function UniversalTransactionHeadingRow() {
       </Text>
       <SendHeadingLayout
         image={
-          <AvatarToken name={data.assetSymbol} size={AvatarTokenSize.Xl} />
+          <AvatarToken
+            name={data.assetSymbol}
+            src={assetImageUrl}
+            size={AvatarTokenSize.Xl}
+          />
         }
       >
         <Box paddingBottom={1}>
