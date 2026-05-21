@@ -837,8 +837,8 @@
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
-        "@metamask/assets-controller>@metamask/phishing-controller": true,
-        "@metamask/assets-controller>@metamask/polling-controller": true,
+        "@metamask/phishing-controller": true,
+        "@metamask/polling-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "async-mutex": true,
@@ -2126,6 +2126,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/transaction-controller": true,
         "@noble/hashes": true,
         "@metamask/phishing-controller>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
@@ -2133,18 +2134,6 @@
       }
     },
     "@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,

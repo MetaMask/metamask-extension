@@ -902,8 +902,8 @@
         "@metamask/controller-utils": true,
         "@metamask/core-backend": true,
         "@metamask/keyring-snap-client": true,
-        "@metamask/assets-controller>@metamask/phishing-controller": true,
-        "@metamask/assets-controller>@metamask/polling-controller": true,
+        "@metamask/phishing-controller": true,
+        "@metamask/polling-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "async-mutex": true,
@@ -2263,43 +2263,14 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/transaction-controller": true,
         "@noble/hashes": true,
         "@metamask/phishing-controller>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
         "punycode": true
       }
     },
-    "@metamask/assets-controller>@metamask/phishing-controller": {
-      "globals": {
-        "TextEncoder": true,
-        "URL": true,
-        "console.error": true,
-        "console.warn": true,
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/assets-controller>@metamask/phishing-controller>@metamask/transaction-controller": true,
-        "@noble/hashes": true,
-        "@metamask/assets-controller>@metamask/phishing-controller>ethereum-cryptography": true,
-        "webpack-cli>fastest-levenshtein": true,
-        "punycode": true
-      }
-    },
     "@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -2769,38 +2740,6 @@
         "uuid": true
       }
     },
-    "@metamask/assets-controller>@metamask/phishing-controller>@metamask/transaction-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "ethers>@ethersproject/wallet": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/gas-fee-controller": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/network-controller": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "async-mutex": true,
-        "@metamask/assets-controller>bignumber.js": true,
-        "ethereumjs-util>bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry": true,
-        "webpack>events": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
     "@metamask/shield-controller>@metamask/transaction-controller": {
       "globals": {
         "clearTimeout": true,
@@ -3244,12 +3183,6 @@
       }
     },
     "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
-      "globals": {
-        "TextEncoder": true,
-        "crypto": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -4828,15 +4761,6 @@
       },
       "packages": {
         "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
-      }
-    },
-    "@metamask/assets-controller>@metamask/phishing-controller>ethereum-cryptography": {
-      "globals": {
-        "TextDecoder": true,
-        "crypto": true
-      },
-      "packages": {
-        "@metamask/assets-controller>@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
