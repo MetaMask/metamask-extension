@@ -8,6 +8,8 @@ import { formatDateWithYearContext } from '../../helpers/utils/util';
 import { useIntersectionObserver } from '../../hooks/useIntersectionObserver';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { selectEnabledNetworksAsCaipChainIds } from '../../selectors/multichain/networks';
+import type { ActivityListItem } from '../../../shared/lib/activity/types';
+import { LegacyDetails } from './LegacyDetails';
 import { ListItem } from './cells/list-item';
 import { dedupeItems, getItemKey, groupActivityListItems } from './helpers';
 import { useLocalTransactions } from './useLocalTransactions';
@@ -23,6 +25,9 @@ export function ActivityList() {
   const scrollContainerRef = useScrollContainer();
   const allNetworks = useSelector(selectEnabledNetworksAsCaipChainIds);
   const [selectedNetwork, setSelectedNetwork] = useState('');
+  const [selectedItem, setSelectedItem] = useState<ActivityListItem | null>(
+    null,
+  );
   const networks = useMemo(
     () => (selectedNetwork ? [selectedNetwork] : allNetworks),
     [selectedNetwork, allNetworks],
@@ -87,6 +92,10 @@ export function ActivityList() {
     [lastEvmItemIndex, lastEvmItemRef],
   );
 
+  const handleClick = (item: ActivityListItem) => {
+    setSelectedItem(item);
+  };
+
   if (isInitialLoading) {
     return (
       <Box className="p-4">
@@ -136,7 +145,9 @@ export function ActivityList() {
             );
           }
 
-          return <ListItem data={row.item} />;
+          return (
+            <ListItem data={row.item} onClick={() => handleClick(row.item)} />
+          );
         }}
         listFooterComponent={
           isFetchingNextPage ? (
@@ -145,6 +156,11 @@ export function ActivityList() {
             </Box>
           ) : null
         }
+      />
+
+      <LegacyDetails
+        item={selectedItem}
+        onClose={() => setSelectedItem(null)}
       />
     </>
   );

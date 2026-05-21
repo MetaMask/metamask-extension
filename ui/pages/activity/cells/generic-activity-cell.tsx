@@ -176,7 +176,12 @@ export function GenericActivityCell({ data, onClick }: ActivityCellProps) {
         </ChainBadge>
       </div>
       <div className="min-w-0">
-        <Text className="font-medium truncate">{title}</Text>
+        <Text
+          className="font-medium truncate"
+          data-testid="activity-list-item-action"
+        >
+          {title}
+        </Text>
         {renderDescriptionLine(pendingStatusText, description)}
       </div>
       <div className="text-right whitespace-nowrap">

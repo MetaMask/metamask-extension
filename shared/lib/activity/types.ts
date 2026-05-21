@@ -1,4 +1,7 @@
+import type { Transaction } from '@metamask/keyring-api';
+import type { V1TransactionByHashResponse } from '@metamask/core-backend';
 import type { CaipChainId } from '@metamask/utils';
+import type { TransactionGroup } from '../multichain/types';
 
 export type Status = 'pending' | 'success' | 'failed';
 
@@ -62,6 +65,10 @@ type ActivityItem<Type extends ActivityType, Data> = {
   chainId: CaipChainId;
   status: Status;
   timestamp: number;
+  raw?:
+    | { type: 'apiEvmTransaction'; data: V1TransactionByHashResponse }
+    | { type: 'keyringTransaction'; data: Transaction }
+    | { type: 'localTransaction'; data: TransactionGroup };
   data: Data & {
     hash?: string;
   };

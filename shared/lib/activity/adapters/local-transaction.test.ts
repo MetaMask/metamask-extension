@@ -24,19 +24,22 @@ describe('mapLocalTransaction', () => {
         value: '0x1',
       },
     };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x1',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
 
-    expect(
-      mapLocalTransaction({
-        transactionGroup: {
-          hasCancelled: false,
-          hasRetried: false,
-          initialTransaction: transaction,
-          nonce: '0x1',
-          primaryTransaction: transaction,
-          transactions: [transaction],
-        } as unknown as TransactionGroup,
-      }),
-    ).toStrictEqual({
+    const item = mapLocalTransaction({
+      transactionGroup,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'pending',
@@ -75,19 +78,22 @@ describe('mapLocalTransaction', () => {
         data: '0xa9059cbb00000000000000000000000050a9d56c2b8ba9a5c7f2c08c3d26e0499f23a7060000000000000000000000000000000000000000000000000000000000004e20',
       },
     };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x1',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
 
-    expect(
-      mapLocalTransaction({
-        transactionGroup: {
-          hasCancelled: false,
-          hasRetried: false,
-          initialTransaction: transaction,
-          nonce: '0x1',
-          primaryTransaction: transaction,
-          transactions: [transaction],
-        } as unknown as TransactionGroup,
-      }),
-    ).toStrictEqual({
+    const item = mapLocalTransaction({
+      transactionGroup,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'pending',
@@ -97,8 +103,7 @@ describe('mapLocalTransaction', () => {
         from,
         to: recipient,
         token: {
-          assetId:
-            'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+          assetId: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
           direction: 'out',
           symbol: 'USDC',
         },
@@ -133,19 +138,22 @@ describe('mapLocalTransaction', () => {
       time: 1716367881000,
       type: TransactionType.retry,
     };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: true,
+      initialTransaction,
+      nonce: '0x2',
+      primaryTransaction,
+      transactions: [initialTransaction, primaryTransaction],
+    } as unknown as TransactionGroup;
 
-    expect(
-      mapLocalTransaction({
-        transactionGroup: {
-          hasCancelled: false,
-          hasRetried: true,
-          initialTransaction,
-          nonce: '0x2',
-          primaryTransaction,
-          transactions: [initialTransaction, primaryTransaction],
-        } as unknown as TransactionGroup,
-      }),
-    ).toStrictEqual({
+    const item = mapLocalTransaction({
+      transactionGroup,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'approveSpendingCap',
       chainId: 'eip155:59144',
       status: 'pending',
@@ -177,19 +185,22 @@ describe('mapLocalTransaction', () => {
         value: '0x246139ca8000',
       },
     };
+    const transactionGroup = {
+      hasCancelled: false,
+      hasRetried: false,
+      initialTransaction: transaction,
+      nonce: '0x3',
+      primaryTransaction: transaction,
+      transactions: [transaction],
+    } as unknown as TransactionGroup;
 
-    expect(
-      mapLocalTransaction({
-        transactionGroup: {
-          hasCancelled: false,
-          hasRetried: false,
-          initialTransaction: transaction,
-          nonce: '0x3',
-          primaryTransaction: transaction,
-          transactions: [transaction],
-        } as unknown as TransactionGroup,
-      }),
-    ).toStrictEqual({
+    const item = mapLocalTransaction({
+      transactionGroup,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'swap',
       chainId: 'eip155:8453',
       status: 'success',

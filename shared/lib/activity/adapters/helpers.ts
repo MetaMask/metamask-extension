@@ -47,7 +47,7 @@ export function getTokenAmountFromTransfer(
 
   return {
     direction,
-    ...(transfer.amount === undefined
+    ...(transfer.amount === null || transfer.amount === undefined
       ? {}
       : { amount: String(transfer.amount) }),
     ...(transfer.decimal === undefined ? {} : { decimals: transfer.decimal }),

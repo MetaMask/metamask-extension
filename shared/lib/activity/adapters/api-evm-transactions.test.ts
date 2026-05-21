@@ -33,12 +33,14 @@ describe('mapEvmTransactions', () => {
       ],
     } as unknown as V1TransactionByHashResponse;
 
-    expect(
-      mapApiEvmTransactions({
-        subjectAddress,
-        transaction,
-      }),
-    ).toStrictEqual({
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'send',
       chainId: 'eip155:8453',
       status: 'success',
@@ -72,12 +74,14 @@ describe('mapEvmTransactions', () => {
       ],
     } as V1TransactionByHashResponse;
 
-    expect(
-      mapApiEvmTransactions({
-        subjectAddress,
-        transaction,
-      }),
-    ).toStrictEqual({
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'receive',
       chainId: 'eip155:59144',
       status: 'success',
@@ -111,12 +115,14 @@ describe('mapEvmTransactions', () => {
       ],
     } as V1TransactionByHashResponse;
 
-    expect(
-      mapApiEvmTransactions({
-        subjectAddress,
-        transaction,
-      }),
-    ).toStrictEqual({
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'swapIncomplete',
       chainId: 'eip155:59144',
       status: 'success',
@@ -160,12 +166,14 @@ describe('mapEvmTransactions', () => {
       ],
     } as unknown as V1TransactionByHashResponse;
 
-    expect(
-      mapApiEvmTransactions({
-        subjectAddress,
-        transaction,
-      }),
-    ).toStrictEqual({
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'send',
       chainId: 'eip155:1',
       status: 'success',
@@ -209,12 +217,14 @@ describe('mapEvmTransactions', () => {
       ],
     } as V1TransactionByHashResponse;
 
-    expect(
-      mapApiEvmTransactions({
-        subjectAddress,
-        transaction,
-      }),
-    ).toStrictEqual({
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'lendingDeposit',
       chainId: 'eip155:8453',
       status: 'success',
@@ -248,12 +258,14 @@ describe('mapEvmTransactions', () => {
       ],
     } as V1TransactionByHashResponse;
 
-    expect(
-      mapApiEvmTransactions({
-        subjectAddress,
-        transaction,
-      }),
-    ).toStrictEqual({
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'claimMusdBonus',
       chainId: 'eip155:59144',
       status: 'success',
@@ -288,12 +300,14 @@ describe('mapEvmTransactions', () => {
       ],
     } as V1TransactionByHashResponse;
 
-    expect(
-      mapApiEvmTransactions({
-        subjectAddress,
-        transaction,
-      }),
-    ).toStrictEqual({
+    const item = mapApiEvmTransactions({
+      subjectAddress,
+      transaction,
+    });
+    const activity = { ...item };
+    delete activity.raw;
+
+    expect(activity).toStrictEqual({
       type: 'contractInteraction',
       chainId: 'eip155:56',
       status: 'success',
