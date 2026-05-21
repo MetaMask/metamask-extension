@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import qrCode from 'qrcode-generator';
 import { isHexPrefixed } from 'ethereumjs-util';
+import { Box, BoxAlignItems } from '@metamask/design-system-react';
 // TODO: Remove restricted import
 // eslint-disable-next-line import-x/no-restricted-paths
-import { Box, BoxAlignItems } from '@metamask/design-system-react';
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { Icon, IconName, IconSize, Text } from '../../component-library';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -114,12 +114,11 @@ function QrCodeView({
         {addressEnd}
       </Text>
       <Box
-        className="flex"
         marginBottom={4}
         gap={2}
         alignItems={BoxAlignItems.Center}
         color={TextColor.primaryDefault}
-        className="qr-code__copy-button"
+        className="flex qr-code__copy-button"
         data-testid="address-copy-button-text"
         data-clipboard-text={checksummedAddress}
         onClick={() => {

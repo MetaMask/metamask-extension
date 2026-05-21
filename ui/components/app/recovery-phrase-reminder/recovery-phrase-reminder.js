@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
-  BoxFlexDirection,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
