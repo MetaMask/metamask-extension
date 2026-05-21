@@ -78,9 +78,10 @@ jest.mock('../../helpers/utils/token-util', () => {
   };
 });
 
-type TokenUtilModuleWithMock = typeof import('../../helpers/utils/token-util') & {
-  mockTokenListLookup: jest.Mock;
-};
+type TokenUtilModuleWithMock =
+  typeof import('../../helpers/utils/token-util') & {
+    mockTokenListLookup: jest.Mock;
+  };
 
 const getMockedTokenUtil = () =>
   jest.requireMock('../../helpers/utils/token-util') as TokenUtilModuleWithMock;
