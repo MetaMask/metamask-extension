@@ -106,15 +106,24 @@ describe('HyperliquidDepositPage', () => {
     renderPage();
 
     expect(
-      screen.getByRole('heading', { name: 'Deposit to Hyperliquid' }),
+      screen.getByRole('heading', {
+        name: 'Deposit to Hyperliquid from any token',
+      }),
     ).toBeInTheDocument();
+    expect(screen.getByTestId('metamask-deposit-logo')).toHaveAttribute(
+      'src',
+      './images/logo/metamask-fox.svg',
+    );
+    expect(
+      screen.getByTestId('hyperliquid-deposit-logo-separator'),
+    ).toHaveTextContent('×');
     expect(screen.getByTestId('hyperliquid-deposit-logo')).toHaveAttribute(
       'src',
       './images/hyperliquid-logo.svg',
     );
     expect(
       screen.getByText(
-        'Fund your Hyperliquid account with any token from MetaMask.',
+        'Hyperliquid requires USDC on Arbitrum. With MetaMask, use any token to fund your perps wallet with 1 click.',
       ),
     ).toBeInTheDocument();
     expect(screen.getByText('Review deposit')).toBeInTheDocument();

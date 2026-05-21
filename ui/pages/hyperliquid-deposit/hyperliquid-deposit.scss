@@ -70,6 +70,42 @@
     display: block;
   }
 
+  &__logo-pair {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  &__logo-pair-tile {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border-muted);
+    border-radius: 14px;
+    background: var(--color-background-section);
+  }
+
+  &__logo-pair-tile--hyperliquid {
+    border-color: transparent;
+    background: rgb(151, 252, 228);
+  }
+
+  &__logo-pair-image {
+    width: 42px;
+    height: 42px;
+    display: block;
+    object-fit: contain;
+  }
+
+  &__logo-pair-separator {
+    color: var(--color-text-alternative);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
   &__success-mark {
     position: absolute;
     right: -8px;
@@ -88,7 +124,7 @@
   }
 
   &__copy {
-    max-width: 260px;
+    max-width: 300px;
     text-align: center;
 
     h1 {

@@ -98,6 +98,39 @@ export const HyperliquidLogo = ({ success = false }: { success?: boolean }) => {
   );
 };
 
+const DepositLogoPair = () => {
+  return (
+    <div
+      aria-label="MetaMask and Hyperliquid"
+      className="hyperliquid-deposit__logo-pair"
+      role="img"
+    >
+      <span className="hyperliquid-deposit__logo-pair-tile">
+        <img
+          alt=""
+          className="hyperliquid-deposit__logo-pair-image"
+          data-testid="metamask-deposit-logo"
+          src="./images/logo/metamask-fox.svg"
+        />
+      </span>
+      <span
+        className="hyperliquid-deposit__logo-pair-separator"
+        data-testid="hyperliquid-deposit-logo-separator"
+      >
+        ×
+      </span>
+      <span className="hyperliquid-deposit__logo-pair-tile hyperliquid-deposit__logo-pair-tile--hyperliquid">
+        <img
+          alt=""
+          className="hyperliquid-deposit__logo-pair-image"
+          data-testid="hyperliquid-deposit-logo"
+          src="./images/hyperliquid-logo.svg"
+        />
+      </span>
+    </div>
+  );
+};
+
 const CloseButton = ({ onClick }: { onClick: () => void }) => {
   return (
     <button
@@ -190,10 +223,13 @@ export const HyperliquidDepositPrompt = ({
       >
         <div className="hyperliquid-deposit__step hyperliquid-deposit__step--intro">
           <CloseButton onClick={handleClose} />
-          <HyperliquidLogo />
+          <DepositLogoPair />
           <div className="hyperliquid-deposit__copy">
-            <h1>Deposit to Hyperliquid</h1>
-            <p>Fund your Hyperliquid account with any token from MetaMask.</p>
+            <h1>Deposit to Hyperliquid from any token</h1>
+            <p>
+              Hyperliquid requires USDC on Arbitrum. With MetaMask, use any
+              token to fund your perps wallet with 1 click.
+            </p>
           </div>
           <InlineError message={error} />
           <div className="hyperliquid-deposit__actions">
