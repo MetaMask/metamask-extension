@@ -43,15 +43,6 @@
   "QRHardwareWalletImporterTitle": {
     "message": "Escanear código QR"
   },
-  "QRHardwareWalletSteps1Description": {
-    "message": "A continuación puede elegir entre una lista de socios oficiales que admiten códigos QR."
-  },
-  "QRHardwareWalletSteps1Title": {
-    "message": "Conecte su monedero físico QR"
-  },
-  "QRHardwareWalletSteps2Description": {
-    "message": "Ngrave Zero"
-  },
   "SrpListHideAccounts": {
     "message": "Ocultar cuentas de $1",
     "description": "$1 is the number of accounts"
@@ -175,6 +166,176 @@
   "activity": {
     "message": "Actividad"
   },
+  "activity_approveSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_approveSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_bridge_failed_description": {
+    "message": "Puente fallido"
+  },
+  "activity_bridge_failed_title": {
+    "message": "Puente fallido"
+  },
+  "activity_buy_success_description": {
+    "message": "Compraste $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_buy_success_title": {
+    "message": "Compraste $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_contractInteraction_success_title": {
+    "message": "Interacción con el contrato inteligente"
+  },
+  "activity_deposit_failed_description": {
+    "message": "Depósito fallido"
+  },
+  "activity_deposit_failed_title": {
+    "message": "Depósito fallido"
+  },
+  "activity_fallback_description": {
+    "message": "Transacción"
+  },
+  "activity_fallback_title": {
+    "message": "Transacción"
+  },
+  "activity_increaseSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_increaseSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_lendingDeposit_failed_title": {
+    "message": "Depósito fallido"
+  },
+  "activity_lendingWithdrawal_failed_description": {
+    "message": "Retiro fallido"
+  },
+  "activity_lendingWithdrawal_failed_title": {
+    "message": "Retiro fallido"
+  },
+  "activity_lendingWithdrawal_success_description": {
+    "message": "Retiro de préstamo"
+  },
+  "activity_lendingWithdrawal_success_title": {
+    "message": "Retiro de préstamo"
+  },
+  "activity_nftMint_success_title": {
+    "message": "Acuñaste $1",
+    "description": "$1 is the NFT token symbol"
+  },
+  "activity_perpsCloseShort_success_description": {
+    "message": "Posición corta cerrada"
+  },
+  "activity_perpsCloseShort_success_title": {
+    "message": "Posición corta cerrada"
+  },
+  "activity_perpsOpenLong_success_description": {
+    "message": "Posición larga abierta"
+  },
+  "activity_perpsOpenLong_success_title": {
+    "message": "Posición larga abierta"
+  },
+  "activity_perpsWithdrawFunds_failed_description": {
+    "message": "Retiro fallido"
+  },
+  "activity_perpsWithdrawFunds_failed_title": {
+    "message": "Retiro fallido"
+  },
+  "activity_predictionCashedOut_pending_description": {
+    "message": "Retirando efectivo"
+  },
+  "activity_predictionCashedOut_pending_title": {
+    "message": "Retirando efectivo"
+  },
+  "activity_predictionCashedOut_success_description": {
+    "message": "Cobrado"
+  },
+  "activity_predictionCashedOut_success_title": {
+    "message": "Cobrado"
+  },
+  "activity_predictionPlaced_success_description": {
+    "message": "Predicción colocada"
+  },
+  "activity_predictionPlaced_success_title": {
+    "message": "Predicción colocada"
+  },
+  "activity_predictionsWithdrawFunds_failed_description": {
+    "message": "Retiro fallido"
+  },
+  "activity_predictionsWithdrawFunds_failed_title": {
+    "message": "Retiro fallido"
+  },
+  "activity_predictionsWithdrawFunds_pending_description": {
+    "message": "Retirando"
+  },
+  "activity_predictionsWithdrawFunds_pending_title": {
+    "message": "Retirando"
+  },
+  "activity_receive_failed_description": {
+    "message": "De: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_pending_description": {
+    "message": "De: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_receive_success_description": {
+    "message": "De: $1",
+    "description": "$1 is the shortened sender address"
+  },
+  "activity_revokeSpendingCap_failed_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_pending_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_revokeSpendingCap_success_description": {
+    "message": "$1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_failed_description": {
+    "message": "Para: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_description": {
+    "message": "Para: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_pending_title": {
+    "message": "Enviando $1",
+    "description": "$1 is the token symbol"
+  },
+  "activity_send_success_description": {
+    "message": "Para: $1",
+    "description": "$1 is the shortened recipient address"
+  },
+  "activity_send_success_title": {
+    "message": "$1 enviado",
+    "description": "$1 is the token symbol"
+  },
+  "activity_swapIncomplete_failed_title": {
+    "message": "Error al canjear"
+  },
+  "activity_swap_failed_title": {
+    "message": "Error al canjear"
+  },
   "add": {
     "message": "Añadir"
   },
@@ -196,21 +357,11 @@
   "addAccount": {
     "message": "Agregar cuenta"
   },
-  "addAccountFromNetwork": {
-    "message": "Agregar cuenta de $1",
-    "description": "$1 is the network name, e.g. Bitcoin or Solana"
-  },
-  "addAccountOrWallet": {
-    "message": "Añadir una cuenta o una billetera"
-  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que adquirió con MetaMask"
   },
   "addAlias": {
     "message": "Agregar alias"
-  },
-  "addBitcoinAccountLabel": {
-    "message": "Cuenta de Bitcoin"
   },
   "addBlockExplorer": {
     "message": "Agregar un explorador de bloque"
@@ -267,9 +418,6 @@
   "addFundsModalSwapTokens": {
     "message": "Canjear tokens"
   },
-  "addHardwareWalletLabel": {
-    "message": "Billetera física"
-  },
   "addMemo": {
     "message": "Añadir memo"
   },
@@ -283,31 +431,11 @@
   "addNetworkDescription": {
     "message": "Un sitio web sugiere detalles adicionales de la red."
   },
-  "addNewAccount": {
-    "message": "Añadir una cuenta nueva de Ethereum"
-  },
-  "addNewEthereumAccountLabel": {
-    "message": "Cuenta de Ethereum"
-  },
-  "addNewSolanaAccountLabel": {
-    "message": "Cuenta de Solana"
-  },
-  "addNewTronAccountLabel": {
-    "message": "Cuenta de Tron"
-  },
   "addNft": {
     "message": "Añadir NFT"
   },
   "addNfts": {
     "message": "Añadir NFT"
-  },
-  "addNonEvmAccount": {
-    "message": "Añadir cuenta de $1",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
-  },
-  "addNonEvmAccountFromNetworkPicker": {
-    "message": "Para habilitar la red de $1, debe crear una cuenta de $2.",
-    "description": "$1 is the non EVM network where the account is going to be created, e.g. Solana Mainnet or Solana Devnet. $2 is the account type, e.g. Bitcoin or Solana"
   },
   "addRpcUrl": {
     "message": "Agregar URL de RPC"
@@ -424,9 +552,6 @@
   },
   "airDropPatternTitle": {
     "message": "Patrón de airdrop"
-  },
-  "airgapVault": {
-    "message": "Bóveda AirGap"
   },
   "alert": {
     "message": "Alerta"
@@ -899,9 +1024,6 @@
   },
   "basicFunctionalityRequired_goToHome": {
     "message": "Ir a la página de inicio"
-  },
-  "basicFunctionalityRequired_openCreateSnapAccountPage": {
-    "message": "Abrir la página \"Crear cuenta\""
   },
   "basicFunctionalityRequired_openDefiPage": {
     "message": "Abrir la página DeFi"
@@ -1484,9 +1606,6 @@
     "message": "Comprar más $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
-  "buyNow": {
-    "message": "Comprar ahora"
-  },
   "buyTabOpenedToastDescription": {
     "message": "Abrimos una nueva pestaña para realizar compras.",
     "description": "Toast description shown after opening the buy flow in a new tab"
@@ -1793,9 +1912,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Este sitio solicita permiso para retirar sus tokens"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Este sitio solicita permisos para revocar tus aprobaciones de tokens ERC-20."
-  },
   "confirmTitleDescPermission": {
     "message": "Este sitio solicita permisos para gastar tus tokens."
   },
@@ -1865,18 +1981,12 @@
   "connectAccounts": {
     "message": "Conectar cuentas"
   },
-  "connectAnAccountHeader": {
-    "message": "Conectar una cuenta"
-  },
   "connectHardwareDevice": {
     "message": "Conectar $1",
     "description": "$1 is the hardware wallet device name"
   },
   "connectManually": {
     "message": "Conectarse manualmente al sitio actual"
-  },
-  "connectMoreAccounts": {
-    "message": "Conectar más cuentas"
   },
   "connectSnap": {
     "message": "Conectar $1",
@@ -1894,10 +2004,6 @@
   },
   "connectedAccountsEmptyDescription": {
     "message": "MetaMask no está conectado a este sitio. Para conectarse a un sitio de Web3, busque el botón de conexión en su sitio."
-  },
-  "connectedAccountsListTooltip": {
-    "message": "$1 puede ver el saldo de la cuenta, la dirección, la actividad y sugerir transacciones para aprobar para las cuentas conectadas.",
-    "description": "$1 is the origin name"
   },
   "connectedSites": {
     "message": "Sitios conectados"
@@ -1930,10 +2036,6 @@
   "connectedWithNetwork": {
     "message": "$1 redes conectadas",
     "description": "$1 represents network length"
-  },
-  "connectedWithNetworkName": {
-    "message": "Conectado con $1",
-    "description": "$1 represents network name"
   },
   "connecting": {
     "message": "Conectando"
@@ -1968,9 +2070,6 @@
   "connectionFailedDescription": {
     "message": "Error al obtener $1, verifique su red y vuelva a intentarlo.",
     "description": "$1 is the name of the snap being fetched."
-  },
-  "connectionPopoverDescription": {
-    "message": "Para conectarse a un sitio, seleccione el botón de conexión. MetaMask solo puede conectarse a sitios Web3."
   },
   "connectionRequest": {
     "message": "Solicitud de conexión"
@@ -2024,9 +2123,6 @@
   "convertTokenToNFTExistDescription": {
     "message": "Hemos detectado que este recurso se ha agregado como NFT. ¿Quiere eliminarlo de su lista de tokens?"
   },
-  "coolWallet": {
-    "message": "CoolWallet"
-  },
   "copiedExclamation": {
     "message": "Copiado."
   },
@@ -2062,9 +2158,6 @@
     "message": "Agregando cuenta...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
-  "createNewAccountHeader": {
-    "message": "Crear una nueva cuenta"
-  },
   "createPassword": {
     "message": "Contraseña de MetaMask"
   },
@@ -2089,9 +2182,6 @@
   },
   "createSnapAccountTitle": {
     "message": "Crear cuenta"
-  },
-  "createSolanaAccount": {
-    "message": "Crear cuenta de Solana"
   },
   "creatorAddress": {
     "message": "Dirección del creador"
@@ -2251,9 +2341,6 @@
   "dateCreated": {
     "message": "Fecha de creación"
   },
-  "dcent": {
-    "message": "D'Cent"
-  },
   "debitCreditPurchaseOptions": {
     "message": "Opciones de compra con tarjeta de débito o crédito"
   },
@@ -2373,9 +2460,6 @@
   },
   "deepLink_theSwapsPage": {
     "message": "la página de canjes"
-  },
-  "deepLink_theSwapsRampsPage": {
-    "message": "la página de Canjes/Rampas"
   },
   "deepLink_theTransactionShieldPage": {
     "message": "la página de protección de transacciones"
@@ -2520,9 +2604,6 @@
   "disconnectAllAccountsConfirmationDescription": {
     "message": "¿Está seguro de que se quiere desconectar? Podría perder la funcionalidad del sitio."
   },
-  "disconnectAllAccountsText": {
-    "message": "cuentas"
-  },
   "disconnectAllDescriptionText": {
     "message": "Si se desconecta de este sitio, tendrá que volver a conectar sus cuentas y redes para volver a utilizarlo."
   },
@@ -2537,9 +2618,6 @@
   },
   "disconnectAllSitesSuccess": {
     "message": "Todas las dapps se desconectaron con éxito."
-  },
-  "disconnectAllSnapsText": {
-    "message": "Snaps"
   },
   "disconnectMessage": {
     "message": "Esto lo desconectará de este sitio"
@@ -2587,9 +2665,6 @@
   "downloadAppTitle": {
     "message": "Escanea el código QR y descarga la aplicación"
   },
-  "downloadGoogleChrome": {
-    "message": "Descargar Google Chrome"
-  },
   "downloadMetaMaskMobileDescription": {
     "message": "Face ID en nuestra aplicación te permite acceder incluso si olvidas tu contraseña. ¡Lleva MetaMask a todas partes!"
   },
@@ -2598,9 +2673,6 @@
   },
   "downloadMetaMaskMobileTitle": {
     "message": "Obtén nuestra aplicación móvil"
-  },
-  "downloadNow": {
-    "message": "Descargar ahora"
   },
   "downloadStateLogs": {
     "message": "Descargar registros de estado"
@@ -3365,9 +3437,6 @@
   "hardwareWalletSubmissionWarningTitle": {
     "message": "Antes de hacer clic en Enviar:"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "haga clic aquí"
-  },
   "hardwareWalletTitleEthAppNotOpen": {
     "message": "Abrir la aplicación Ethereum"
   },
@@ -3377,12 +3446,6 @@
   },
   "hardwareWallets": {
     "message": "Conectar una billetera física"
-  },
-  "hardwareWalletsInfo": {
-    "message": "Las integraciones de monedero físico utilizan llamadas API a servidores externos, que pueden ver su dirección IP y las direcciones de contrato inteligente con las que interactúa."
-  },
-  "hardwareWalletsMsg": {
-    "message": "Seleccione un monedero físico que desee usar con MetaMask."
   },
   "helpAndSettings": {
     "message": "Ayuda y configuración"
@@ -3574,9 +3637,6 @@
   "importNFTTokenIdToolTip": {
     "message": "La ID de un NFT es un identificador único, ya que no hay dos NFT iguales. Nuevamente, en OpenSea, este número se encuentra en 'Detalles'. Tome nota de ello o cópielo en su portapapeles."
   },
-  "importPrivateKey": {
-    "message": "Clave privada"
-  },
   "importSecretRecoveryPhrase": {
     "message": "Importar frase secreta de recuperación"
   },
@@ -3591,9 +3651,6 @@
   },
   "importTokensError": {
     "message": "No pudimos importar los tokens. Por favor, inténtelo de nuevo más tarde."
-  },
-  "importWalletOrAccountHeader": {
-    "message": "Importar una billetera o una cuenta"
   },
   "importWalletSuccess": {
     "message": "Billetera $1 importada",
@@ -3754,9 +3811,6 @@
     "message": "Archivo JSON",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Shell de Keycard"
-  },
   "keyringAccountName": {
     "message": "Nombre de la cuenta"
   },
@@ -3809,9 +3863,6 @@
   },
   "learnMoreAboutPrivacy": {
     "message": "Obtenga más información sobre las mejores prácticas de privacidad."
-  },
-  "learnMoreKeystone": {
-    "message": "Conozca más"
   },
   "learnMoreUpperCase": {
     "message": "Más información"
@@ -3880,17 +3931,8 @@
   "ledgerFirefoxNotSupportedTitle": {
     "message": "Firefox no es compatible"
   },
-  "ledgerLiveApp": {
-    "message": "Aplicación Ledger Live"
-  },
   "ledgerLocked": {
     "message": "No se pudo establecer la conexión con el dispositivo Ledger. Asegúrese de que el dispositivo está desbloqueado y que la aplicación de Ethereum está abierta."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoDescription": {
-    "message": "Para conectar un nuevo dispositivo, desconecte el anterior."
-  },
-  "ledgerMultipleDevicesUnsupportedInfoTitle": {
-    "message": "Solo puede conectar un Ledger a la vez"
   },
   "ledgerTimeout": {
     "message": "Ledger Live tardó mucho en responder o se excedió el tiempo de espera de la conexión. Asegúrese de que la aplicación de Ledger Live está abierta y que su dispositivo está desbloqueado."
@@ -4707,9 +4749,6 @@
   "new": {
     "message": "Nuevo!"
   },
-  "newAccount": {
-    "message": "Nueva cuenta"
-  },
   "newAccountIconMessage": {
     "message": "Hemos actualizado los íconos de las cuentas para que puedas distinguirlas más fácilmente. Puedes cambiar el estilo en $1 > $2 > $3.",
     "description": "$1, $2, and $3 are bold text for Settings, General, and Account icon respectively"
@@ -4723,6 +4762,9 @@
   },
   "newContract": {
     "message": "Contrato nuevo"
+  },
+  "newCustomTokenAdded": {
+    "message": "¡\"$1\" se añadió con éxito!"
   },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Configuración > Seguridad y privacidad"
@@ -5478,6 +5520,9 @@
   "perSecond": {
     "message": "por segundo"
   },
+  "percent": {
+    "message": "$1%"
+  },
   "percentChange": {
     "message": "Cambio porcentual"
   },
@@ -5806,6 +5851,10 @@
   "perpsAutoClose": {
     "message": "Cierre automático"
   },
+  "perpsAutoDeleveraging": {
+    "message": "Desapalancamiento automático",
+    "description": "Badge label for trades executed via auto-deleveraging (ADL)"
+  },
   "perpsAvailable": {
     "message": "disponible",
     "description": "is the available balance amount"
@@ -6031,6 +6080,10 @@
   },
   "perpsLimitPriceNearLiquidation": {
     "message": "El precio actual está cerca del precio de liquidación estimado"
+  },
+  "perpsLiquidated": {
+    "message": "Liquidada",
+    "description": "Badge label for trades that were liquidated"
   },
   "perpsLiquidationDistance": {
     "message": "Distancia de liquidación"
@@ -6853,6 +6906,46 @@
     "message": "Se necesita acceso a la cámara",
     "description": "Title when the camera permission dialog was dismissed without a choice."
   },
+  "qrErrorNonUrPairingBody": {
+    "message": "Vuelve a tu billetera física y busca la opción para compartir o exportar tus cuentas, elige MetaMask y luego escanea el código QR.",
+    "description": "Body text for the non-UR QR code error during pairing."
+  },
+  "qrErrorNonUrPairingTitle": {
+    "message": "Escanea el código QR de sincronización de billetera",
+    "description": "Title shown when scanned QR data is not a UR code during the pairing/import flow."
+  },
+  "qrErrorNonUrSigningBody": {
+    "message": "Vuelve a tu billetera de hardware y aprueba la transacción, luego escanea el código QR que se muestra.",
+    "description": "Body text for the non-UR QR code error during signing."
+  },
+  "qrErrorNonUrSigningTitle": {
+    "message": "Escanea el código QR de firma",
+    "description": "Title shown when scanned QR data is not a UR code during the signing flow."
+  },
+  "qrErrorUrDecodeBody": {
+    "message": "Asegúrate de que el código QR esté completamente visible y bien iluminado, e inténtalo de nuevo. Si el problema continúa, es posible que debas actualizar el firmware de tu billetera física.",
+    "description": "Body text for the UR decode error (universal for pairing and signing)."
+  },
+  "qrErrorUrDecodeTitle": {
+    "message": "No se pudo leer el código QR",
+    "description": "Title shown when the UR decoder encounters an error (universal for pairing and signing)."
+  },
+  "qrErrorWrongUrTypePairingBody": {
+    "message": "Vuelve a tu billetera física, elige MetaMask como tipo de billetera y luego genera y escanea un nuevo código QR.",
+    "description": "Body text for the wrong UR type error during pairing."
+  },
+  "qrErrorWrongUrTypePairingTitle": {
+    "message": "Código QR incorrecto",
+    "description": "Title shown when the UR type does not match what is expected during pairing."
+  },
+  "qrErrorWrongUrTypeSigningBody": {
+    "message": "Vuelve a tu billetera de hardware y aprueba la transacción, luego escanea el código QR que se muestra.",
+    "description": "Body text for the wrong UR type error during signing."
+  },
+  "qrErrorWrongUrTypeSigningTitle": {
+    "message": "Código QR incorrecto",
+    "description": "Title shown when the UR type does not match what is expected during signing."
+  },
   "queued": {
     "message": "En cola"
   },
@@ -7009,14 +7102,6 @@
   },
   "requestingFor": {
     "message": "Solicitando para"
-  },
-  "requestingForAccount": {
-    "message": "Solicitando para $1",
-    "description": "Name of Account"
-  },
-  "requestingForNetwork": {
-    "message": "Solicitando para $1",
-    "description": "Name of Network"
   },
   "required": {
     "message": "Requerido"
@@ -7328,10 +7413,6 @@
   },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
-  },
-  "secretRecoveryPhrasePlusNumber": {
-    "message": "Frase secreta de recuperación $1",
-    "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
     "message": "Proteger billetera"
@@ -8571,12 +8652,6 @@
     "message": "Póngase en contacto con los creadores de $1 para obtener más ayuda.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaAccountRequested": {
-    "message": "Este sitio solicita una cuenta de Solana."
-  },
-  "solanaAccountRequired": {
-    "message": "Se requiere una cuenta de Solana para conectarse a este sitio."
-  },
   "someNetworks": {
     "message": "$1 redes"
   },
@@ -8851,34 +8926,6 @@
   },
   "statusNotConnected": {
     "message": "No conectado"
-  },
-  "step1LatticeWallet": {
-    "message": "Conecte su Lattice1"
-  },
-  "step1LatticeWalletMsg": {
-    "message": "Puede conectar MetaMask a su dispositivo Lattice1 una vez que esté configurado y en línea. Desbloquee su dispositivo y tenga a mano el ID correspondiente.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step1LedgerWallet": {
-    "message": "Descargar la aplicación de Ledger"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "Descargue y configure la aplicación, e ingrese su contraseña para desbloquear $1.",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "Conecte su Trezor"
-  },
-  "step1TrezorWalletMsg": {
-    "message": "Conecte su Trezor directamente al equipo y desbloquéelo. Asegúrese de utilizar la frase de contraseña correcta.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
-  },
-  "step2LedgerWallet": {
-    "message": "Conecte su Ledger"
-  },
-  "step2LedgerWalletMsg": {
-    "message": "Conecte su Ledger directamente a su equipo, desbloquéelo y abra la aplicación Ethereum.",
-    "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
   "stillConnectingTo": {
     "message": "Todavía conectándose a $1...",
@@ -9793,9 +9840,6 @@
   },
   "urlErrorMsg": {
     "message": "Las direcciones URL requieren el prefijo HTTP/HTTPS adecuado."
-  },
-  "urlUnknown": {
-    "message": "URL desconocida"
   },
   "use4ByteResolution": {
     "message": "Decodificar contratos inteligentes"

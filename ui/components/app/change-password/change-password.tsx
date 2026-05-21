@@ -595,7 +595,7 @@ const ChangePassword = ({
               }
             }}
           >
-            <Box>
+            <Box className="flex-1 overflow-y-auto">
               <Text
                 variant={TextVariant.BodyMd}
                 color={TextColor.TextAlternative}

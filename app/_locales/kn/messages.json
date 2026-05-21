@@ -199,9 +199,6 @@
   "done": {
     "message": "ಮುಗಿದಿದೆ"
   },
-  "downloadGoogleChrome": {
-    "message": "Google Chrome ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
-  },
   "downloadStateLogs": {
     "message": "ರಾಜ್ಯದ ಲಾಗ್‌ಗಳನ್ನು  ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ"
   },
@@ -259,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "ಹಾರ್ಡ್‌ವೇರ್ ವ್ಯಾಲೆಟ್‌ ಸಂಪರ್ಕಿಸಿ"
-  },
-  "hardwareWalletsMsg": {
-    "message": "MetaMask ನೊಂದಿಗೆ ಬಳಸಲು ನೀವು ಇಷ್ಟಪಡುವ ಹಾರ್ಡ‌ವೇರ್ ವ್ಯಾಲೆಟ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"
   },
   "here": {
     "message": "ಇಲ್ಲಿ",
@@ -369,9 +363,6 @@
   },
   "nevermind": {
     "message": "ಪರವಾಗಿಲ್ಲ"
-  },
-  "newAccount": {
-    "message": "ಹೊಸ ಖಾತೆ"
   },
   "newAccountNumberName": {
     "message": "ಖಾತೆ $1",

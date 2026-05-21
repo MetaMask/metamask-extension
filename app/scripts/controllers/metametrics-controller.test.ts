@@ -11,6 +11,10 @@ import {
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import {
+  AuthConnection,
+  type SeedlessOnboardingControllerState,
+} from '@metamask/seedless-onboarding-controller';
+import {
   EthAccountType,
   BtcAccountType,
   SolAccountType,
@@ -25,6 +29,7 @@ import {
 } from '@metamask/messenger';
 import { merge } from 'lodash';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import {
   DEVICE_TYPE,
   ENVIRONMENT_TYPE_BACKGROUND,
@@ -727,6 +732,7 @@ describe('MetaMetricsController', function () {
             } as Preferences,
             srpSessionData: undefined,
             keyrings: [],
+            firstTimeFlowType: FirstTimeFlowType.create,
           };
 
           controller.handleMetaMaskStateUpdate(metaMaskState);
@@ -1978,6 +1984,7 @@ describe('MetaMetricsController', function () {
       } as Preferences,
       srpSessionData: undefined,
       keyrings: [],
+      firstTimeFlowType: FirstTimeFlowType.create,
     };
   }
 
@@ -2168,6 +2175,7 @@ describe('MetaMetricsController', function () {
           } as Preferences,
           srpSessionData: undefined,
           keyrings: [],
+          firstTimeFlowType: FirstTimeFlowType.create,
         });
 
         expect(traits).toStrictEqual({
@@ -2212,6 +2220,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
           [MetaMetricsUserTrait.ProfileId]: undefined,
+          [MetaMetricsUserTrait.AccountType]: 'metamask',
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
           [MetaMetricsUserTrait.PrivacyModeEnabled]: true,
@@ -2222,6 +2231,114 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.Os]: OS.MACOS,
         });
       });
+    });
+
+    it('uses the social create flow to build the account type trait', async function () {
+      await withController(
+        {
+          seedlessOnboardingState: {
+            authConnection: AuthConnection.Google,
+          },
+        },
+        ({ controller }) => {
+          const traits = controller._buildUserTraitsObject({
+            addressBook: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            useNftDetection: false,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            allNfts: {},
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
+            preferences: {
+              privacyMode: false,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: false,
+            } as Preferences,
+            securityAlertsEnabled: false,
+            names: {
+              ethereumAddress: {},
+            },
+            currentCurrency: 'usd',
+            srpSessionData: undefined,
+            keyrings: [],
+            firstTimeFlowType: FirstTimeFlowType.socialCreate,
+            multichainNetworkConfigurationsByChainId: {},
+          });
+
+          expect(traits?.[MetaMetricsUserTrait.AccountType]).toBe(
+            'metamask_google',
+          );
+        },
+      );
+    });
+
+    it('uses the social import flow to build the account type trait', async function () {
+      await withController(
+        {
+          seedlessOnboardingState: {
+            authConnection: AuthConnection.Google,
+          },
+        },
+        ({ controller }) => {
+          const traits = controller._buildUserTraitsObject({
+            addressBook: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            useNftDetection: false,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            allNfts: {},
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
+            preferences: {
+              privacyMode: false,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: false,
+            } as Preferences,
+            securityAlertsEnabled: false,
+            names: {
+              ethereumAddress: {},
+            },
+            currentCurrency: 'usd',
+            srpSessionData: undefined,
+            keyrings: [],
+            firstTimeFlowType: FirstTimeFlowType.socialImport,
+            multichainNetworkConfigurationsByChainId: {},
+          });
+
+          expect(traits?.[MetaMetricsUserTrait.AccountType]).toBe(
+            'imported_google',
+          );
+        },
+      );
     });
 
     it('should return only changed traits object on subsequent calls', async function () {
@@ -2280,6 +2397,7 @@ describe('MetaMetricsController', function () {
           currentCurrency: 'usd',
           srpSessionData: undefined,
           keyrings: [],
+          firstTimeFlowType: FirstTimeFlowType.create,
           multichainNetworkConfigurationsByChainId: {},
         });
 
@@ -2355,6 +2473,7 @@ describe('MetaMetricsController', function () {
             },
           },
           keyrings: [],
+          firstTimeFlowType: FirstTimeFlowType.import,
           multichainNetworkConfigurationsByChainId: {},
         });
 
@@ -2366,6 +2485,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.OpenSeaApiEnabled]: false,
           [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]: false,
           [MetaMetricsUserTrait.ProfileId]: 'profileId',
+          [MetaMetricsUserTrait.AccountType]: 'imported',
         });
       });
     });
@@ -2441,6 +2561,7 @@ describe('MetaMetricsController', function () {
           },
           keyrings: [],
           multichainNetworkConfigurationsByChainId: {},
+          firstTimeFlowType: FirstTimeFlowType.create,
         });
 
         const updatedTraits = controller._buildUserTraitsObject({
@@ -2506,6 +2627,7 @@ describe('MetaMetricsController', function () {
           },
           keyrings: [],
           multichainNetworkConfigurationsByChainId: {},
+          firstTimeFlowType: FirstTimeFlowType.create,
         });
         expect(updatedTraits).toStrictEqual(null);
       });
@@ -3106,6 +3228,7 @@ type WithControllerOptions = {
   currentLocale?: string;
   options?: Partial<MetaMetricsControllerOptions>;
   remoteFeatureFlags?: Record<string, unknown>;
+  seedlessOnboardingState?: Partial<SeedlessOnboardingControllerState>;
   mockNetworkClientConfigurationsByNetworkClientId?: Record<
     NetworkClientId,
     {
@@ -3143,6 +3266,7 @@ async function withController<ReturnValue>(
       options = {},
       currentLocale = LOCALE,
       remoteFeatureFlags = {},
+      seedlessOnboardingState = {},
       mockNetworkClientConfigurationsByNetworkClientId = {
         selectedNetworkClientId: {
           chainId: DEFAULT_CHAIN_ID,
@@ -3186,6 +3310,11 @@ async function withController<ReturnValue>(
       }),
     );
 
+    messenger.registerActionHandler(
+      'SeedlessOnboardingController:getState',
+      jest.fn().mockReturnValue(seedlessOnboardingState),
+    );
+
     const metaMetricsControllerMessenger = new Messenger<
       'MetaMetricsController',
       AllowedActions,
@@ -3202,6 +3331,7 @@ async function withController<ReturnValue>(
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',
         'RemoteFeatureFlagController:getState',
+        'SeedlessOnboardingController:getState',
       ],
       events: [
         'PreferencesController:stateChange',

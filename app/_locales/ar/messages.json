@@ -203,9 +203,6 @@
   "done": {
     "message": "تم"
   },
-  "downloadGoogleChrome": {
-    "message": "تنزيل جوجل كروم"
-  },
   "downloadStateLogs": {
     "message": "تنزيل سجلات الحالة"
   },
@@ -263,9 +260,6 @@
   },
   "hardwareWallets": {
     "message": "الاتصال بمحفظة hardware wallet"
-  },
-  "hardwareWalletsMsg": {
-    "message": "حدد محفظة أجهزة ترغب في استخدامها مع MetaMask"
   },
   "here": {
     "message": "هنا",
@@ -370,9 +364,6 @@
   },
   "nevermind": {
     "message": "لا يهم"
-  },
-  "newAccount": {
-    "message": "حساب جديد"
   },
   "newAccountNumberName": {
     "message": "حساب $1",

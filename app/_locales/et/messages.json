@@ -199,9 +199,6 @@
   "done": {
     "message": "Valmis"
   },
-  "downloadGoogleChrome": {
-    "message": "Laadige alla Google Chrome"
-  },
   "downloadStateLogs": {
     "message": "Olekulogide allalaadimine"
   },
@@ -259,9 +256,6 @@
   },
   "hardwareWallets": {
     "message": "Ühendage riistvara rahakott"
-  },
-  "hardwareWalletsMsg": {
-    "message": "Valige riistvara rahakott, mida soovite MetaMaskis kasutada"
   },
   "here": {
     "message": "siin",
@@ -363,9 +357,6 @@
   },
   "nevermind": {
     "message": "Unusta"
-  },
-  "newAccount": {
-    "message": "Uus konto"
   },
   "newAccountNumberName": {
     "message": "Konto $1",

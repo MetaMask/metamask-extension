@@ -1,3 +1,4 @@
+import type { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Json } from '@metamask/utils';
 import type {
   DeviceType,
@@ -576,6 +577,15 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   profile_id?: string;
   /**
+   * The account type derived from the user's onboarding flow.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  account_type?:
+    | 'metamask'
+    | 'imported'
+    | `metamask_${AuthConnection}`
+    | `imported_${AuthConnection}`;
+  /**
    * The configured EVM and non-EVM chain ids in CAIP-2 format.
    */
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -778,6 +788,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user signs in
    */
   ProfileId = 'profile_id',
+  /**
+   * Identifies the account type derived from the user's onboarding flow.
+   */
+  AccountType = 'account_type',
   /**
    * Identified when the user adds or removes configured chains (evm or non-evm)
    */
@@ -1048,6 +1062,8 @@ export enum MetaMetricsEventName {
   TermsOfUseAccepted = 'Terms of Use Accepted',
   ThemeChanged = 'Theme Changed',
   TokenImportButtonClicked = 'Import Token Button Clicked',
+  ImportCustomTokenViewed = 'Import Custom Token Viewed',
+  ImportCustomTokenInteracted = 'Import Custom Token Interacted',
   TokenScreenOpened = 'Token Screen Opened',
   TokenAdded = 'Token Added',
   TokenSortPreference = 'Token Sort Preference Updated',
@@ -1378,6 +1394,7 @@ export enum MetaMetricsTokenEventSource {
   Dapp = 'dapp',
   Detected = 'detected',
   List = 'list',
+  ManageTokens = 'manage_tokens',
 }
 
 export enum MetaMetricsTransactionEventSource {

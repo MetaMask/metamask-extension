@@ -37,6 +37,11 @@ const FILE_SOURCES: Array<{
     file: 'ui/components/app/musd/constants.ts',
     exportName: 'MERKL_FEATURE_FLAG_KEY',
   },
+  {
+    key: 'ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG',
+    file: 'shared/lib/gator-permissions/feature-flags.ts',
+    exportName: 'ENABLED_ADVANCED_PERMISSIONS_FEATURE_FLAG',
+  },
 ];
 
 /**
