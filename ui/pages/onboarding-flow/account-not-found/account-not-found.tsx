@@ -10,7 +10,10 @@ import {
   getSocialLoginEmail,
   getSocialLoginType,
 } from '../../../selectors';
-import { AuthConnection, FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../../../shared/constants/onboarding';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
@@ -44,7 +47,7 @@ export default function AccountNotFound() {
       return 'accountNotFoundDescriptionTelegram';
     }
     return 'accountNotFoundDescription';
-  }, [socialLoginType])
+  }, [socialLoginType]);
 
   const descriptionInterpolation = useMemo(() => {
     if (socialLoginType === AuthConnection.Telegram) {

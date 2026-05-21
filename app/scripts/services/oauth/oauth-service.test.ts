@@ -308,6 +308,95 @@ describe('OAuthService - startOAuthLogin', () => {
     expect(mockPlatform.closeTab).toHaveBeenCalledWith(1);
   });
 
+  it('uses an empty auth code when the Telegram redirect URL has no code parameter', async () => {
+    const messenger = getMessenger();
+    const oauthEnv = getOAuthLoginEnvs();
+    const redirectUrl = `${MOCK_REDIRECT_URI}?state=${MOCK_NONCE}`;
+    const verifyRequestBodies: Record<string, string | null>[] = [];
+
+    (global.fetch as jest.Mock).mockImplementation(
+      jest.fn((input, init?: RequestInit) => {
+        const url = String(input);
+
+        if (url.includes('/api/v2/telegram/login/verify')) {
+          if (typeof init?.body !== 'string') {
+            throw new Error('Expected Telegram verify request body to be a string');
+          }
+
+          verifyRequestBodies.push(
+            JSON.parse(init.body) as Record<string, string | null>,
+          );
+
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              token: MOCK_JWT_TOKEN,
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        if (url.includes('/oauth2/token')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              access_token: 'mocked-oidc-access-token',
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        if (url.includes('/api/v1/oauth/mint')) {
+          return Promise.resolve({
+            json: jest.fn().mockResolvedValue({
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              id_token: MOCK_JWT_TOKEN,
+            }),
+            status: 200,
+            ok: true,
+          });
+        }
+
+        throw new Error(`Unexpected fetch URL: ${url}`);
+      }) as jest.Mock,
+    );
+
+    // @ts-expect-error - mock platform
+    jest.spyOn(mockPlatform, 'openTab').mockResolvedValue({ id: 1 });
+    jest.spyOn(mockPlatform, 'closeTab').mockResolvedValue(undefined);
+    jest
+      .spyOn(mockPlatform, 'addTabUpdatedListener')
+      .mockImplementation(async (fn) => {
+        await Promise.resolve();
+        await fn(1, { url: redirectUrl }, { url: redirectUrl });
+      });
+    jest
+      .spyOn(mockPlatform, 'addTabRemovedListener')
+      .mockImplementation(jest.fn());
+
+    const oauthService = new OAuthService({
+      messenger,
+      env: oauthEnv,
+      webAuthenticator: mockWebAuthenticator,
+      platform: mockPlatform,
+      bufferedTrace: mockBufferedTrace,
+      bufferedEndTrace: mockBufferedEndTrace,
+      trackEvent: mockTrackEvent,
+      addEventBeforeMetricsOptIn: mockAddEventBeforeMetricsOptIn,
+      getParticipateInMetaMetrics: mockGetParticipateInMetaMetrics,
+    });
+
+    await oauthService.startOAuthLogin(AuthConnection.Telegram);
+
+    expect(verifyRequestBodies).toHaveLength(1);
+    expect(verifyRequestBodies[0].code).toBe('');
+    expect(verifyRequestBodies[0].code).not.toBeNull();
+    expect(verifyRequestBodies[0].code_verifier).toBe(
+      'mocked-code-verifier',
+    );
+  });
+
   it('treats a closed Telegram login tab as a user-cancelled login', async () => {
     const captureException = jest.fn();
     const messenger = getMessenger({ captureException });

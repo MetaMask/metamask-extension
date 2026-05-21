@@ -10,7 +10,10 @@ import {
   getSocialLoginEmail,
   getSocialLoginType,
 } from '../../../selectors';
-import { AuthConnection, FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import {
+  AuthConnection,
+  FirstTimeFlowType,
+} from '../../../../shared/constants/onboarding';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,

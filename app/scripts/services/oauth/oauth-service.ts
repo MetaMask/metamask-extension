@@ -414,8 +414,8 @@ export class OAuthService {
     const authCode =
       authConnection === AuthConnection.Google ||
       authConnection === AuthConnection.Telegram
-        ? this.#getRedirectUrlAuthCode(redirectUrl)
-        : null;
+        ? (this.#getRedirectUrlAuthCode(redirectUrl) ?? '')
+        : '';
 
     return await this.#getAuthIdToken(loginHandler, authCode);
   }
@@ -429,7 +429,7 @@ export class OAuthService {
    */
   async #getAuthIdToken(
     loginHandler: BaseLoginHandler,
-    authCode: string | null,
+    authCode: string,
   ): Promise<OAuthLoginResult> {
     let authConnectionId = '';
     let groupedAuthConnectionId = '';
