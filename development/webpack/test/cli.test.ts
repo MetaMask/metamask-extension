@@ -96,44 +96,6 @@ describe('./utils/cli.ts', () => {
     assert.deepStrictEqual(args.browser, Browsers);
   });
 
-  describe('legacy browserify build option aliases', () => {
-    it('supports --build-type as an alias for --type', () => {
-      const { args } = parseArgv(
-        ['--build-type', 'flask'],
-        loadBuildTypesConfig(),
-      );
-
-      assert.strictEqual(args.type, 'flask');
-    });
-
-    it('supports --build-version as an alias for --releaseVersion', () => {
-      const { args } = parseArgv(
-        ['--build-version', '7'],
-        loadBuildTypesConfig(),
-      );
-
-      assert.strictEqual(args.releaseVersion, 7);
-    });
-
-    it('supports --apply-lavamoat as an alias for --lavamoat', () => {
-      const { args } = parseArgv(
-        ['--mode', 'production', '--apply-lavamoat=false'],
-        loadBuildTypesConfig(),
-      );
-
-      assert.strictEqual(args.lavamoat, false);
-    });
-
-    it('supports --features as an alias for --addFeature', () => {
-      const { features } = parseArgv(
-        ['--features', 'build-flask'],
-        loadBuildTypesConfig(),
-      );
-
-      assert(features.active.has('build-flask'));
-    });
-  });
-
   // TODO: Remove this temporary block and tests once LavaMoat supports watch
   // mode. Tracking issue: https://github.com/MetaMask/metamask-extension/issues/40677
   describe('temporary: block lavamoat and watch mode options', () => {
@@ -142,23 +104,6 @@ describe('./utils/cli.ts', () => {
       const error = mock.method(console, 'error', noop);
 
       parseArgv(['--watch', '--lavamoat'], loadBuildTypesConfig());
-
-      assert.strictEqual(exit.mock.calls.length, 1);
-      assert.strictEqual(exit.mock.calls[0].arguments[0], 1);
-      assert.ok(
-        error.mock.calls.some((call) =>
-          String(call.arguments[0]).includes(
-            'LavaMoat does not currently support watch mode.',
-          ),
-        ),
-      );
-    });
-
-    it('exits when watch and legacy apply-lavamoat are both enabled', () => {
-      const exit = mock.method(process, 'exit', noop as () => never);
-      const error = mock.method(console, 'error', noop);
-
-      parseArgv(['--watch', '--apply-lavamoat'], loadBuildTypesConfig());
 
       assert.strictEqual(exit.mock.calls.length, 1);
       assert.strictEqual(exit.mock.calls[0].arguments[0], 1);

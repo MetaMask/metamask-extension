@@ -568,7 +568,7 @@ function getOptions(
       type: 'number',
     },
     releaseVersion: {
-      alias: ['r', 'build-version'],
+      alias: 'r',
       array: false,
       default: 0,
       description:
@@ -577,7 +577,7 @@ function getOptions(
       type: 'number',
     },
     type: {
-      alias: ['t', 'build-type'],
+      alias: 't',
       array: false,
       choices: ['none', ...buildTypes],
       default: 'main' as const,
@@ -586,7 +586,7 @@ function getOptions(
       type: 'string',
     },
     [addFeat]: {
-      alias: ['a', 'features'],
+      alias: 'a',
       array: true,
       choices: allFeatures,
       coerce: uniqueSort,
@@ -630,7 +630,7 @@ function getOptions(
     },
 
     lavamoat: {
-      alias: ['l', 'apply-lavamoat'],
+      alias: 'l',
       array: false,
       default: isProduction,
       defaultDescription: prodDefaultDesc,
