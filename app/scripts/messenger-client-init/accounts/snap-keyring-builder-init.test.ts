@@ -3,11 +3,11 @@ import { MessengerClientInitRequest } from '../types';
 import {
   getSnapKeyringBuilderMessenger,
   getSnapKeyringBuilderInitMessenger,
-  SnapKeyringBuilderMessenger,
   SnapKeyringBuilderInitMessenger,
 } from '../messengers/accounts';
 import { getRootMessenger } from '../../lib/messenger';
 import { snapKeyringBuilder } from '../../lib/snap-keyring';
+import type { SnapKeyringBuilderMessenger } from '../../lib/snap-keyring/types';
 import { SnapKeyringBuilderInit } from './snap-keyring-builder-init';
 
 jest.mock('../../lib/snap-keyring/snap-keyring');
