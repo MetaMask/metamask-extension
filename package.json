@@ -161,9 +161,9 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
-    "@metamask/assets-controller": "patch:@metamask/assets-controller@npm%3A7.0.0#~/.yarn/patches/@metamask-assets-controller-npm-7.0.0-b32ae360c0.patch",
+    "@metamask/assets-controller": "8.0.1",
     "@metamask/bridge-controller": "73.0.1",
-    "@metamask/bridge-status-controller": "71.1.1",
+    "@metamask/bridge-status-controller": "71.2.0",
     "@metamask/messenger@npm:^0.3.0": "^1.2.0",
     "@metamask/network-controller": "32.0.0",
     "follow-redirects": "^1.16.0",
@@ -296,7 +296,7 @@
     "protobufjs": "^7.5.8",
     "postcss-loader/jiti": "npm:npm-empty-package@1.0.0",
     "@metamask/snaps-controllers": "^20.0.5",
-    "@metamask/bridge-status-controller@npm:^71.1.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch",
+    "@metamask/bridge-status-controller@npm:^71.2.0": "patch:@metamask/bridge-status-controller@npm%3A71.0.0#~/.yarn/patches/@metamask-bridge-status-controller-npm-71.0.0-541daf6bed.patch",
     "@metamask/permission-controller@npm:^12.2.0": "^13.0.0",
     "@metamask/permission-controller@npm:^12.2.1": "^13.0.0",
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0"
@@ -436,7 +436,7 @@
     "@metamask/storage-service": "^1.0.0",
     "@metamask/subscription-controller": "^6.1.2",
     "@metamask/transaction-controller": "^65.1.0",
-    "@metamask/transaction-pay-controller": "^22.5.0",
+    "@metamask/transaction-pay-controller": "^22.6.3",
     "@metamask/tron-wallet-snap": "^1.25.3",
     "@metamask/user-operation-controller": "^41.2.0",
     "@metamask/utils": "^11.11.0",
