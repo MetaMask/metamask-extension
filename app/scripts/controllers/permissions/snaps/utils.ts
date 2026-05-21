@@ -22,6 +22,8 @@ export async function getMnemonicSeed(
     const seed = (await messenger.call(
       'KeyringController:withKeyringV2Unsafe',
       {
+        // withKeyringV2's type selector still filters against the V1 keyring's
+        // `.type` ('HD Key Tree'), not the V2 wrapper's value.
         type: KeyringTypes.hd,
         index: 0,
       },
