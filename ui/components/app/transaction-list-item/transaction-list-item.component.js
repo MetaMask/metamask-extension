@@ -1,22 +1,20 @@
 /* eslint-disable import-x/no-duplicates */
-import React, { useMemo, useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'clsx';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Button, ButtonSize } from '@metamask/design-system-react';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { usePendingTransactionActions } from '../../../hooks/usePendingTransactionActions';
 import { CancelSpeedup } from '../../../pages/confirmations/cancel-speedup/cancel-speedup';
 import TransactionListItemDetails from '../transaction-list-item-details';
 import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
-import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import {
@@ -36,16 +34,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import { EditGasModes } from '../../../../shared/constants/gas';
-import {
-  TransactionModalContextProvider,
-  useTransactionModalContext,
-} from '../../../contexts/transaction-modal';
+import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import CancelButton from '../cancel-button';
+import { PendingTransactionActionButtons } from '../pending-transaction-action-buttons/pending-transaction-action-buttons';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
-import { abortTransactionSigning } from '../../../store/actions';
 import {
   selectBridgeHistoryForOriginalTxMetaId,
   selectBridgeHistoryItemByHash,
@@ -68,12 +61,8 @@ function TransactionListItemInner({
   isEarliestNonce = false,
   chainId,
 }) {
-  const t = useI18nContext();
   const navigate = useNavigate();
-  const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
-  const { openModal } = useTransactionModalContext();
-  const dispatch = useDispatch();
 
   // Bridge transactions
   const isBridgeTx =
@@ -96,7 +85,6 @@ function TransactionListItemInner({
   );
   const bridgeTxHistoryItem =
     bridgeTxHistoryItemByHash ?? bridgeTxHistoryItemByOriginalTxMetaId;
-  const isIntentBridgeActivity = Boolean(bridgeTxHistoryItem?.quote?.intent);
   const isUnifiedSwapTx =
     (isBridgeTx ||
       transactionGroup.initialTransaction.type === TransactionType.swap) &&
@@ -104,10 +92,8 @@ function TransactionListItemInner({
 
   const {
     initialTransaction: { id, txParams, type, metamaskPay },
-    primaryTransaction: { error, status, selectedGasFeeToken },
+    primaryTransaction: { error, status },
   } = transactionGroup;
-
-  const hasGasFeeTokenSelected = Boolean(selectedGasFeeToken);
 
   const badgeChainId =
     (type === TransactionType.perpsDeposit ||
@@ -120,48 +106,17 @@ function TransactionListItemInner({
 
   const { trackEvent } = useContext(MetaMetricsContext);
 
-  const retryTransaction = useCallback(
-    async (event) => {
-      event.stopPropagation();
-      trackEvent({
-        event: 'Clicked "Speed Up"',
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          action: 'Activity Log',
-          legacy_event: true,
-        },
-      });
-      setEditGasMode(EditGasModes.speedUp);
-      openModal('cancelSpeedUpTransaction');
-    },
-    [openModal, setEditGasMode, trackEvent],
-  );
-
-  const cancelTransaction = useCallback(
-    (event) => {
-      event.stopPropagation();
-      trackEvent({
-        event: 'Clicked "Cancel"',
-        category: MetaMetricsEventCategory.Navigation,
-        properties: {
-          action: 'Activity Log',
-          legacy_event: true,
-        },
-      });
-      if (status === TransactionStatus.approved) {
-        dispatch(abortTransactionSigning(id));
-      } else {
-        setEditGasMode(EditGasModes.cancel);
-        openModal('cancelSpeedUpTransaction');
-      }
-    },
-    [trackEvent, openModal, setEditGasMode, status, dispatch, id],
-  );
-
-  const shouldShowSpeedUp = useShouldShowSpeedUp(
+  const {
+    showCancel: showCancelButton,
+    showSpeedUp: isSpeedUpButtonVisible,
+    speedUpLabel,
+    onCancel: cancelTransaction,
+    onSpeedUp: retryTransaction,
+  } = usePendingTransactionActions({
     transactionGroup,
     isEarliestNonce,
-  );
+    setEditGasMode,
+  });
 
   const resolvedType = resolveTransactionType(
     transactionGroup.initialTransaction.type,
@@ -208,9 +163,6 @@ function TransactionListItemInner({
   // const showRetry =
   //   status === TransactionStatus.failed && !isSwap && !isSmartTransaction;
 
-  const isSigning = status === TransactionStatus.approved;
-  const isSubmitting = status === TransactionStatus.signed;
-
   const className = classnames('transaction-list-item', {
     'transaction-list-item--unconfirmed':
       isPending ||
@@ -240,58 +192,6 @@ function TransactionListItemInner({
     });
   }, [isUnapproved, navigate, id, trackEvent, category]);
 
-  const isSpeedUpButtonVisible = useMemo(() => {
-    if (
-      !shouldShowSpeedUp ||
-      !isPending ||
-      isUnapproved ||
-      isSigning ||
-      isSubmitting ||
-      hasGasFeeTokenSelected
-    ) {
-      return false;
-    }
-
-    return true;
-  }, [
-    shouldShowSpeedUp,
-    isUnapproved,
-    isPending,
-    isSigning,
-    isSubmitting,
-    hasGasFeeTokenSelected,
-  ]);
-
-  const speedUpButton = useMemo(() => {
-    if (!isSpeedUpButtonVisible) {
-      return null;
-    }
-
-    return (
-      <Button
-        className="whitespace-nowrap"
-        data-testid="speed-up-button"
-        size={ButtonSize.Sm}
-        onClick={hasCancelled ? cancelTransaction : retryTransaction}
-      >
-        {hasCancelled ? t('speedUpCancellation') : t('speedUp')}
-      </Button>
-    );
-  }, [
-    isSpeedUpButtonVisible,
-    t,
-    hasCancelled,
-    retryTransaction,
-    cancelTransaction,
-  ]);
-  const showCancelButton =
-    !hasCancelled &&
-    isPending &&
-    !isUnapproved &&
-    !isSubmitting &&
-    !isBridgeTx &&
-    !isIntentBridgeActivity &&
-    !hasGasFeeTokenSelected;
 
   return (
     <>
@@ -363,19 +263,14 @@ function TransactionListItemInner({
           )
         }
       >
-        {Boolean(showCancelButton || speedUpButton) && (
-          <Box paddingTop={2} className="flex gap-2">
-            {showCancelButton && (
-              <CancelButton
-                data-testid="cancel-button"
-                size={ButtonSize.Sm}
-                transaction={transactionGroup.primaryTransaction}
-                cancelTransaction={cancelTransaction}
-              />
-            )}
-            {speedUpButton}
-          </Box>
-        )}
+        <PendingTransactionActionButtons
+          showCancel={showCancelButton}
+          showSpeedUp={isSpeedUpButtonVisible}
+          speedUpLabel={speedUpLabel}
+          onCancel={cancelTransaction}
+          onSpeedUp={retryTransaction}
+          primaryTransaction={transactionGroup.primaryTransaction}
+        />
       </ActivityListItem>
       {showDetails &&
         (PAY_TRANSACTION_TYPES.includes(resolvedType) ? (

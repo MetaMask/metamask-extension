@@ -91,6 +91,7 @@ export function mapLocalTransaction({
     primaryTransaction.hash ?? initialTransaction.hash ?? primaryTransaction.id;
   const from = initialTransaction.txParams.from ?? '';
   const to = initialTransaction.txParams.to ?? '';
+  const metaId = primaryTransaction.id;
 
   switch (initialTransaction.type) {
     case TransactionType.simpleSend:
@@ -99,6 +100,8 @@ export function mapLocalTransaction({
         chainId,
         status,
         timestamp,
+        metaId,
+        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -117,6 +120,8 @@ export function mapLocalTransaction({
         chainId,
         status,
         timestamp,
+        metaId,
+        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -132,6 +137,8 @@ export function mapLocalTransaction({
         chainId,
         status,
         timestamp,
+        metaId,
+        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -162,6 +169,8 @@ export function mapLocalTransaction({
           chainId,
           status,
           timestamp,
+          metaId,
+          raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
             sourceToken: getToken(sourceTokenSymbol, 'out'),
@@ -174,6 +183,8 @@ export function mapLocalTransaction({
         chainId,
         status,
         timestamp,
+        metaId,
+        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           sourceToken: getToken(sourceTokenSymbol, 'out'),
@@ -192,6 +203,8 @@ export function mapLocalTransaction({
         chainId,
         status,
         timestamp,
+        metaId,
+        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           tokenSymbol: getTokenSymbol(initialTransaction),
@@ -204,6 +217,8 @@ export function mapLocalTransaction({
         chainId,
         status,
         timestamp,
+        metaId,
+        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           tokenSymbol: getTokenSymbol(initialTransaction),
@@ -217,6 +232,8 @@ export function mapLocalTransaction({
         chainId,
         status,
         timestamp,
+        metaId,
+        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           token: getToken(getTokenSymbol(initialTransaction), 'out'),
@@ -229,6 +246,8 @@ export function mapLocalTransaction({
         chainId,
         status,
         timestamp,
+        metaId,
+        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
         },
@@ -240,6 +259,8 @@ export function mapLocalTransaction({
         chainId,
         status,
         timestamp,
+        metaId,
+        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
