@@ -18,6 +18,8 @@ const BASE_CONTAINER_STYLE: CSSProperties = {
   alignItems: 'center',
 };
 
+// Use string literals with a type-only `Fit` import so the eagerly loaded
+// wrapper path does not pull the Rive runtime into the initial chunk.
 const FIT_CONTAIN = 'contain' as Fit;
 const FIT_COVER = 'cover' as Fit;
 
