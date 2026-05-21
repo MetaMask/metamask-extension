@@ -109,7 +109,6 @@ describe('Token List', function () {
           tokenAddress,
           symbol,
         );
-        await assetListPage.clickLowValueAssetsToggle();
 
         await assetListPage.checkTokenGeneralChangePercentage(
           zeroAddress(),

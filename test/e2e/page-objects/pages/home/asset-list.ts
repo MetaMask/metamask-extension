@@ -722,6 +722,7 @@ class AssetListPage {
       console.log(
         `Checking token general change percentage for address ${address}`,
       );
+      await expandLowValueAssetsIfPresent(this.driver);
       await this.driver.waitForSelector({
         css: this.tokenPercentage(address),
         text: expectedChange,

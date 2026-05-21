@@ -3,6 +3,8 @@ import type { Driver } from '../../webdriver/driver';
 const LOW_VALUE_ASSETS_TOGGLE_SELECTOR =
   '[data-testid="low-value-assets-toggle"]';
 
+const LOW_VALUE_ASSETS_TOGGLE_EXPANDED_SELECTOR = `${LOW_VALUE_ASSETS_TOGGLE_SELECTOR}[aria-expanded="true"]`;
+
 /**
  * Expands the low value assets group when present so token row lookups include
  * rows under the sub-$1 threshold. No-op when absent or already expanded.
@@ -12,18 +14,20 @@ const LOW_VALUE_ASSETS_TOGGLE_SELECTOR =
 export async function expandLowValueAssetsIfPresent(
   driver: Driver,
 ): Promise<void> {
-  await driver.executeScript(`
-    const toggle = document.querySelector(${JSON.stringify(
-      LOW_VALUE_ASSETS_TOGGLE_SELECTOR,
-    )});
-    if (!(toggle instanceof HTMLElement)) {
-      return;
-    }
+  let toggle;
 
-    if (toggle.getAttribute('aria-expanded') === 'true') {
-      return;
-    }
+  try {
+    toggle = await driver.findElement(LOW_VALUE_ASSETS_TOGGLE_SELECTOR, 1000);
+  } catch {
+    return;
+  }
 
-    toggle.click();
-  `);
+  if ((await toggle.getAttribute('aria-expanded')) === 'true') {
+    return;
+  }
+
+  await driver.clickElement(LOW_VALUE_ASSETS_TOGGLE_SELECTOR);
+  await driver.waitForSelector(LOW_VALUE_ASSETS_TOGGLE_EXPANDED_SELECTOR, {
+    timeout: 5000,
+  });
 }
