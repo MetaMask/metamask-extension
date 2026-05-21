@@ -8,6 +8,44 @@ export const sentryLogger = createModuleLogger(
   globalThis.document ? 'ui' : 'background',
 );
 
+type CaptureExceptionHint = Parameters<(typeof Sentry)['captureException']>[1];
+type CaptureExceptionHintWithTags = CaptureExceptionHint & {
+  tags?: Record<string, string>;
+};
+const TRACE_ID_TAG = 'trace_id';
+
+function getCaptureExceptionHintWithTraceId(
+  hint?: CaptureExceptionHint,
+): CaptureExceptionHint | undefined {
+  const activeSpan = globalThis.sentry?.getActiveSpan?.() ?? null;
+
+  if (!activeSpan) {
+    return hint;
+  }
+
+  let traceId: string | undefined;
+
+  try {
+    traceId = activeSpan.spanContext().traceId;
+  } catch {
+    return hint;
+  }
+
+  const hintWithTags = hint as CaptureExceptionHintWithTags | undefined;
+
+  if (!traceId || hintWithTags?.tags?.[TRACE_ID_TAG]) {
+    return hint;
+  }
+
+  return {
+    ...hintWithTags,
+    tags: {
+      ...hintWithTags?.tags,
+      [TRACE_ID_TAG]: traceId,
+    },
+  } as CaptureExceptionHint;
+}
+
 /**
  * Captures an exception event and sends it to Sentry.
  *
@@ -24,7 +62,13 @@ export function captureException(
     console.warn('Sentry not initialized');
     return undefined;
   }
-  return globalThis.sentry.captureException(exception, ...(hint ? [hint] : []));
+
+  const captureHint = getCaptureExceptionHintWithTraceId(hint);
+
+  return globalThis.sentry.captureException(
+    exception,
+    ...(captureHint ? [captureHint] : []),
+  );
 }
 
 /**
