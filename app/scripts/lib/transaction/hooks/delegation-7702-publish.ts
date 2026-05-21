@@ -5,6 +5,7 @@ import {
   PublishHook,
   PublishHookResult,
   TransactionMeta,
+  TransactionType,
 } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import { ExecutionStruct } from '../../../../../shared/lib/delegation';
@@ -33,6 +34,10 @@ const POLLING_INTERVAL_MS = 1000; // 1 Second
 const EMPTY_RESULT = {
   transactionHash: undefined,
 };
+
+type RelayTransactionTxType = NonNullable<
+  RelaySubmitRequest['metadata']
+>['txType'];
 
 const log = createProjectLogger('delegation-7702-publish-hook');
 
@@ -67,6 +72,11 @@ export class Delegation7702PublishHook {
     transactionMeta: TransactionMeta,
     _signedTx: string,
   ): Promise<PublishHookResult> {
+    if (transactionMeta.type === TransactionType.revokeDelegation) {
+      log('Skipping: revokeDelegation must publish as top-level setCode');
+      return EMPTY_RESULT;
+    }
+
     const { chainId, gasFeeTokens, selectedGasFeeToken, txParams } =
       transactionMeta;
 
@@ -122,10 +132,6 @@ export class Delegation7702PublishHook {
     const includeTransfer =
       !isGaslessSwap && !transactionMeta.isGasFeeSponsored;
 
-    if (includeTransfer && (!gasFeeToken || gasFeeToken === undefined)) {
-      throw new Error('Gas fee token not found');
-    }
-
     const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
     const finalTransactionMeta: TransactionMeta = {
       ...transactionMeta,
@@ -163,7 +169,7 @@ export class Delegation7702PublishHook {
       data,
       to,
       metadata: {
-        txType: transactionMeta.type,
+        txType: transactionMeta.type as RelayTransactionTxType,
         client: getClientForTransactionMetadata(),
         origin: sanitizeOrigin(transactionMeta.origin),
       },

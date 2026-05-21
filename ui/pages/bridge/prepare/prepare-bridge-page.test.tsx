@@ -2,7 +2,10 @@ import React from 'react';
 import type { Provider } from '@metamask/network-controller';
 import { act, render, fireEvent } from '@testing-library/react';
 import {
+  ChainId,
   formatChainIdToCaip,
+  getNativeAssetForChainId,
+  type QuoteResponse,
   QuoteStreamCompleteReason,
 } from '@metamask/bridge-controller';
 import * as reactRouterUtils from 'react-router-dom';
@@ -11,10 +14,14 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
 import configureStore from '../../../store/store';
-import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import {
+  createBridgeMockStore,
+  MOCK_BITCOIN_ACCOUNT,
+} from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { createTestProviderTools } from '../../../../test/stub/provider';
 import { setBackgroundConnection } from '../../../store/background-connection';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
 import {
   ConnectionStatus,
   HardwareConnectionPermissionState,
@@ -429,6 +436,126 @@ describe('PrepareBridgePage', () => {
     expect(getByTestId('bridge-no-quotes')).toHaveTextContent(
       'No quotes available. Try a smaller amount.',
     );
+  });
+
+  it('keeps quote request insufficientBal independent of active BTC quote fee reserve validation', async () => {
+    jest.useFakeTimers();
+    jest
+      .spyOn(reactRouterUtils, 'useSearchParams')
+      .mockReturnValue([{ get: () => null }] as never);
+
+    const updateBridgeQuoteRequestParams = jest
+      .fn()
+      .mockResolvedValue(undefined);
+    setBackgroundConnection({
+      resetState: jest.fn().mockResolvedValue(undefined),
+      getStatePatches: jest.fn().mockResolvedValue([]),
+      updateBridgeQuoteRequestParams,
+      trackUnifiedSwapBridgeEvent: jest.fn().mockResolvedValue(undefined),
+    } as never);
+
+    const btcAsset = getNativeAssetForChainId(ChainId.BTC);
+    const ethAsset = getNativeAssetForChainId(ChainId.ETH);
+    const btcToken = toBridgeToken(btcAsset);
+    const ethToken = toBridgeToken(ethAsset);
+    const btcQuote = {
+      quote: {
+        requestId: 'btc-quote',
+        bridgeId: 'rango',
+        aggregator: 'rango',
+        srcChainId: ChainId.BTC,
+        srcTokenAmount: '99997000',
+        srcAsset: btcAsset,
+        destChainId: ChainId.ETH,
+        destTokenAmount: '1000000000000000000',
+        destAsset: ethAsset,
+        minDestTokenAmount: '990000000000000000',
+        feeData: {
+          metabridge: {
+            amount: '0',
+            asset: btcAsset,
+          },
+        },
+        bridges: ['rango'],
+        protocols: ['rango'],
+        steps: [],
+      },
+      trade: {
+        unsignedPsbtBase64: 'psbt',
+        inputsToSign: null,
+      },
+      estimatedProcessingTimeInSeconds: 600,
+      nonEvmFeesInNative: '0.00000001',
+    } as unknown as QuoteResponse;
+
+    const mockStore = createBridgeMockStore({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          support: true,
+          chains: {
+            [btcToken.chainId]: { isActiveSrc: true, isActiveDest: true },
+            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: true },
+          },
+          chainRanking: [
+            { chainId: btcToken.chainId },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+          ],
+        },
+      },
+      bridgeSliceOverrides: {
+        fromTokenInputValue: '0.99997',
+        fromToken: btcToken,
+        toToken: ethToken,
+      },
+      bridgeStateOverrides: {
+        quotesLastFetched: Date.now(),
+        quoteRequest: {
+          srcChainId: ChainId.BTC,
+          destChainId: ChainId.ETH,
+          srcTokenAmount: '99997000',
+          walletAddress: MOCK_BITCOIN_ACCOUNT.address,
+        },
+        quotes: [btcQuote],
+      },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: MOCK_BITCOIN_ACCOUNT.id,
+        },
+        balances: {
+          [MOCK_BITCOIN_ACCOUNT.id]: {
+            [btcAsset.assetId]: {
+              amount: '1',
+              unit: 'BTC',
+            },
+          },
+        },
+      },
+    });
+
+    renderWithProvider(
+      <HardwareWalletProvider>
+        <PrepareBridgePage onOpenSettings={jest.fn()} />
+      </HardwareWalletProvider>,
+      configureStore(mockStore),
+    );
+
+    await act(async () => {
+      jest.advanceTimersByTime(300);
+      await Promise.resolve();
+    });
+
+    expect(updateBridgeQuoteRequestParams).toHaveBeenCalledWith(
+      expect.objectContaining({
+        insufficientBal: false,
+        srcChainId: btcToken.chainId,
+        srcTokenAmount: '99997000',
+      }),
+      expect.any(Object),
+      0,
+      1,
+    );
+
+    jest.useRealTimers();
   });
 
   describe('token_security_type_destination coverage', () => {

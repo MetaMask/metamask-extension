@@ -51,7 +51,7 @@ describe('createRouteMessenger', () => {
 
     expect(MessengerSpy).toHaveBeenCalledWith({
       namespace: 'SomePathRoute',
-      parent: uiMessenger,
+      captureException: expect.any(Function),
     });
   });
 

@@ -67,7 +67,10 @@
       "updateModalLastDismissedAt": null
     },
     "AssetsController": "object",
-    "AuthenticationController": { "isSignedIn": "boolean" },
+    "AuthenticationController": {
+      "isSignedIn": "boolean",
+      "needsProfilePairing": "boolean"
+    },
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
     "CurrencyController": {
@@ -80,6 +83,11 @@
         "ETH": {
           "conversionDate": "object",
           "conversionRate": 1700,
+          "usdConversionRate": null
+        },
+        "MON": {
+          "conversionDate": "object",
+          "conversionRate": null,
           "usdConversionRate": null
         },
         "POL": {
@@ -260,7 +268,8 @@
       "rewardsSeasonStatuses": "object",
       "rewardsSeasons": "object",
       "rewardsSubscriptionTokens": "object",
-      "rewardsSubscriptions": "object"
+      "rewardsSubscriptions": "object",
+      "rewardsVipPerpsFees": "object"
     },
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },
@@ -301,5 +310,5 @@
     },
     "config": "object"
   },
-  "meta": { "storageKind": "split", "version": 210 }
+  "meta": { "storageKind": "split", "version": 211 }
 }

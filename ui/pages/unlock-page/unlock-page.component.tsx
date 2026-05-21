@@ -54,7 +54,9 @@ import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
 import { TraceName, TraceOperation } from '../../../shared/lib/trace';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
 import { withMetaMetrics } from '../../contexts/metametrics';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
 import { captureException } from '../../../shared/lib/sentry';
@@ -118,6 +120,7 @@ type LoginError = {
 const FoxAppearAnimation = lazy(
   () =>
     // @ts-expect-error - Build system resolves without extension, but TS wants .js
+    // eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
     import('../onboarding-flow/welcome/fox-appear-animation') as Promise<{
       default: ComponentType<{
         isLoader?: boolean;
@@ -362,6 +365,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            unlock_type: 'password',
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            passkey_enabled: this.props.isPasskeyActive,
           },
         },
         {
@@ -457,6 +464,10 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           failed_attempts: this.failed_attempts,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          unlock_type: 'password',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          passkey_enabled: this.props.isPasskeyActive,
         },
       });
     }
