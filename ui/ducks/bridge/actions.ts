@@ -79,7 +79,7 @@ export {
 };
 
 const callBridgeControllerMethod = (
-  bridgeAction: BridgeUserAction | BridgeBackgroundAction,
+  bridgeAction: BridgeUserAction | BridgeBackgroundAction | string,
   ...args: unknown[]
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -135,6 +135,14 @@ export const updateQuoteRequestParams = (
         quoteRequestCount,
       ),
     );
+  };
+};
+
+export const updateBatchSellTrades = (
+  ...[quotes]: Parameters<BridgeController['updateBatchSellTrades']>
+) => {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    await dispatch(callBridgeControllerMethod('updateBatchSellTrades', quotes));
   };
 };
 
@@ -261,8 +269,12 @@ export const setToToken = (newToToken: TokenPayload) => {
           fromToken.assetId,
         );
       }
-      // @ts-expect-error - GasFeeState's nested union type is causing a type mismatch
-      dispatch(setFromToken(fromTokenToUse));
+
+      await dispatch(
+        setFromToken(fromTokenToUse) as unknown as Parameters<
+          typeof dispatch
+        >[0],
+      );
     }
 
     dispatch(setToTokenAction(newToToken));

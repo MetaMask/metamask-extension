@@ -1218,7 +1218,7 @@ describe('Bridge selectors', () => {
                   .quote as unknown as QuoteResponse['quote']),
                 requestId: 'fastestQuote',
               },
-            },
+            } as unknown as QuoteResponse,
           ],
         },
       });
@@ -1321,11 +1321,6 @@ describe('Bridge selectors', () => {
           "quotesInitialLoadTimeMs": 11000,
           "quotesLastFetchedMs": 100,
           "quotesRefreshCount": 5,
-          "totalNetworkFee": {
-            "amount": "0.00100006442841952",
-            "usd": "0.00100006442841952",
-            "valueInCurrency": "0.00100006442841952",
-          },
           "totalReceived": {
             "amount": "13.98428",
             "usd": "13.8444372",
@@ -1429,11 +1424,6 @@ describe('Bridge selectors', () => {
           "quotesInitialLoadTimeMs": 11000,
           "quotesLastFetchedMs": 100,
           "quotesRefreshCount": 2,
-          "totalNetworkFee": {
-            "amount": "0.00100006442841952",
-            "usd": "0.0200012885683904",
-            "valueInCurrency": "0.00100006442841952",
-          },
           "totalReceived": {
             "amount": "13.98428",
             "usd": "39.100516560144370997564",
@@ -1538,11 +1528,6 @@ describe('Bridge selectors', () => {
           "quotesInitialLoadTimeMs": 11000,
           "quotesLastFetchedMs": 100,
           "quotesRefreshCount": 1,
-          "totalNetworkFee": {
-            "amount": "0.00100006442841952",
-            "usd": "0.0200012885683904",
-            "valueInCurrency": "0.00100006442841952",
-          },
           "totalReceived": {
             "amount": "13.98428",
             "usd": "13.8444372",
@@ -1575,11 +1560,6 @@ describe('Bridge selectors', () => {
           "recommendedQuotes": [
             null,
           ],
-          "totalNetworkFee": {
-            "amount": "0",
-            "usd": "0",
-            "valueInCurrency": "0",
-          },
           "totalReceived": {
             "amount": "0",
             "usd": "0",
@@ -1683,11 +1663,6 @@ describe('Bridge selectors', () => {
           "quotesInitialLoadTimeMs": 11000,
           "quotesLastFetchedMs": 100,
           "quotesRefreshCount": 2,
-          "totalNetworkFee": {
-            "amount": "0.00100006442841952",
-            "usd": "0.0200012885683904",
-            "valueInCurrency": "0.00100006442841952",
-          },
           "totalReceived": {
             "amount": "13.98428",
             "usd": "39.100516560144370997564",

@@ -57,9 +57,11 @@ type ReviewAndConfirmModalProps = {
   };
   totalReceivedAmount?: number;
   minimumReceivedAmount?: number;
-  totalNetworkFee?: number;
-  totalNetworkFeeFiat?: number;
+  totalNetworkFee?: string | null;
+  totalNetworkFeeFiat?: string | null;
+  networkFeeAssetSymbol?: string;
   isInsufficientGasForFee: boolean;
+  isBatchSellTradeAvailable: boolean;
 };
 
 type YouSellRowProps = {
@@ -137,16 +139,14 @@ const YouSellRow = ({
 };
 
 type NetworkFeeRowProps = {
-  receivedAsset: {
-    symbol: string;
-  };
-  totalNetworkFee?: number;
-  totalNetworkFeeFiat?: number;
+  feeAssetSymbol: string;
+  totalNetworkFee?: string | null;
+  totalNetworkFeeFiat?: string | null;
   error?: boolean;
 };
 
 const NetworkFeeRow = ({
-  receivedAsset,
+  feeAssetSymbol,
   totalNetworkFee,
   totalNetworkFeeFiat,
   error,
@@ -155,21 +155,34 @@ const NetworkFeeRow = ({
   const locale = useSelector(getIntlLocale);
   const currency = useSelector(getCurrentCurrency);
 
+  // Token amount is only renderable once the gasless batch fetch resolves.
+  // Fiat is independent: the bridge controller returns it as `null` when no
+  // exchange rate is available for the fee asset, so we render the token
+  // amount alone in that case rather than blocking the whole row.
+  const hasTokenAmount =
+    totalNetworkFee !== undefined && totalNetworkFee !== null;
+  const hasFiatAmount =
+    totalNetworkFeeFiat !== undefined && totalNetworkFeeFiat !== null;
+
   const networkFeeTokenAmount = useMemo(
     () =>
-      formatTokenAmount(
-        locale,
-        (totalNetworkFee ?? 0).toString(),
-        receivedAsset.symbol,
-        BigNumber.ROUND_DOWN,
-      ),
-    [locale, totalNetworkFee, receivedAsset.symbol],
+      hasTokenAmount
+        ? formatTokenAmount(
+            locale,
+            totalNetworkFee,
+            feeAssetSymbol,
+            BigNumber.ROUND_DOWN,
+          )
+        : '12.34', // arbitary value to allow skeleton rendering
+    [hasTokenAmount, locale, totalNetworkFee, feeAssetSymbol],
   );
 
   const networkFeeFiatAmount = useMemo(
     () =>
-      formatCurrencyAmount((totalNetworkFeeFiat ?? 0).toString(), currency, 2),
-    [totalNetworkFeeFiat, currency],
+      hasFiatAmount
+        ? formatCurrencyAmount(totalNetworkFeeFiat, currency, 2)
+        : '12.34', // arbitary value to allow skeleton rendering
+    [hasFiatAmount, totalNetworkFeeFiat, currency],
   );
 
   return (
@@ -209,12 +222,7 @@ const NetworkFeeRow = ({
             {t('batchSellNetworkFeeTooltip')}
           </Tooltip>
         </Box>
-        <Skeleton
-          isLoading={
-            totalNetworkFee === undefined || totalNetworkFeeFiat === undefined
-          }
-          width={120}
-        >
+        <Skeleton isLoading={!hasTokenAmount} width={120}>
           <Box
             flexDirection={BoxFlexDirection.Row}
             gap={2}
@@ -227,13 +235,15 @@ const NetworkFeeRow = ({
             >
               {networkFeeTokenAmount}
             </Text>
-            <Text
-              variant={TextVariant.BodyMd}
-              fontWeight={FontWeight.Medium}
-              color={error ? TextColor.ErrorDefault : TextColor.TextDefault}
-            >
-              {networkFeeFiatAmount}
-            </Text>
+            {hasFiatAmount && (
+              <Text
+                variant={TextVariant.BodyMd}
+                fontWeight={FontWeight.Medium}
+                color={error ? TextColor.ErrorDefault : TextColor.TextDefault}
+              >
+                {networkFeeFiatAmount}
+              </Text>
+            )}
           </Box>
         </Skeleton>
       </Box>
@@ -251,13 +261,17 @@ export const ReviewAndConfirmModal = ({
   minimumReceivedAmount,
   totalNetworkFee,
   totalNetworkFeeFiat,
+  networkFeeAssetSymbol,
   isInsufficientGasForFee,
+  isBatchSellTradeAvailable,
 }: ReviewAndConfirmModalProps) => {
   const t = useI18nContext();
   const [isYouSellExpanded, setIsYouSellExpanded] = useState(false);
   const submitLabel = isInsufficientGasForFee
     ? t('alertReasonInsufficientBalance')
     : t('submit');
+  const isSubmitDisabled =
+    isInsufficientGasForFee || !isBatchSellTradeAvailable;
 
   // All quotes in a batch share the same MM fee rate, so we read it from the
   // first quote that has one and fall back to the bridge default. Mirrors the
@@ -305,7 +319,7 @@ export const ReviewAndConfirmModal = ({
             minimumReceivedAmount={minimumReceivedAmount}
           />
           <NetworkFeeRow
-            receivedAsset={receivedAsset}
+            feeAssetSymbol={networkFeeAssetSymbol ?? receivedAsset.symbol}
             totalNetworkFee={totalNetworkFee}
             totalNetworkFeeFiat={totalNetworkFeeFiat}
             error={isInsufficientGasForFee}
@@ -315,7 +329,7 @@ export const ReviewAndConfirmModal = ({
           <ButtonHero
             isFullWidth
             size={ButtonHeroSize.Lg}
-            disabled={isInsufficientGasForFee}
+            disabled={isSubmitDisabled}
             onClick={console.log}
           >
             <Text

@@ -2,6 +2,7 @@ import { CaipAssetType } from '@metamask/utils';
 import { type BridgeController } from '@metamask/bridge-controller';
 import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
 import { BridgeAssetV2 } from '../../../bridge/utils/tokens';
+import type { getBatchSellQuotes } from '../../../../ducks/batch-sell/selectors';
 
 export type BatchSellQuotesConfig = {
   sendAssetsConfig: {
@@ -15,10 +16,15 @@ export type BatchSellQuotesConfig = {
   receivedAsset: ReceivedAsset;
 };
 
+export type RecommendedQuote = ReturnType<
+  typeof getBatchSellQuotes
+>['recommendedQuotes'][number];
+
 export type BatchSellQuotesResults = {
   quotes: {
     [assetId: CaipAssetType]: {
       asset: BatchSellAsset;
+      quote: RecommendedQuote;
       slippagePercent?: number;
       receivedAmount?: number;
       receivedAmountFiat?: number;
@@ -32,8 +38,6 @@ export type BatchSellQuotesResults = {
   totalReceivedAmount: number;
   totalReceivedAmountFiat: number;
   minimumReceivedAmount: number;
-  totalNetworkFee: number;
-  totalNetworkFeeFiat: number;
 };
 
 export enum BatchSellReviewStateActionType {
@@ -100,3 +104,13 @@ export type BatchSellReviewState = {
   selectedReceiveAsset: ReceivedAsset;
   editingSlippageAssetId: CaipAssetType | null;
 };
+
+export type BatchSellValidationResult = {
+  isNoQuotesAvailable: boolean;
+  isInsufficientGasForFee: boolean;
+  nativeAssetSymbol?: string;
+};
+
+export type BatchSellQuotesControllerResult = ReturnType<
+  typeof getBatchSellQuotes
+>;

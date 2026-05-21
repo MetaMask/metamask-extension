@@ -95,6 +95,8 @@
   },
   "BridgeController": {
     "assetExchangeRates": "object",
+    "batchSellTrades": null,
+    "batchSellTradesLoadingStatus": null,
     "minimumBalanceForRentExemptionInLamports": "string",
     "quoteFetchError": null,
     "quoteRequest": "object",

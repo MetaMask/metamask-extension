@@ -7,9 +7,6 @@ import {
   SendAssetEntry,
 } from '../types';
 
-// Shapes the raw bridge controller output into the `BatchSellQuotesResults`
-// consumed by the review UI. Pulls validation findings in by entry index so
-// each quote tile gets its own warning state.
 export const buildResults = ({
   controllerResult,
   entries,
@@ -27,13 +24,17 @@ export const buildResults = ({
     entries.map((entry, index) => {
       const recommendedQuote = recommendedQuotes[index];
       if (!entry.enabled || !recommendedQuote) {
-        return [entry.assetId, { asset: entry.asset, hasQuote: false }];
+        return [
+          entry.assetId,
+          { asset: entry.asset, quote: null, hasQuote: false },
+        ];
       }
       const validation = validationErrorsByIndex[index];
       return [
         entry.assetId,
         {
           asset: entry.asset,
+          quote: recommendedQuote,
           slippagePercent: entry.slippagePercent,
           receivedAmount: toFinite(recommendedQuote.toTokenAmount?.amount),
           receivedAmountFiat: toFinite(
@@ -73,12 +74,6 @@ export const buildResults = ({
   const minimumReceivedAmount = sum(
     enabledRecommendedQuotes.map((q) => q.minToTokenAmount?.amount),
   );
-  const totalNetworkFee = sum(
-    enabledRecommendedQuotes.map((q) => q.totalNetworkFee?.amount),
-  );
-  const totalNetworkFeeFiat = sum(
-    enabledRecommendedQuotes.map((q) => q.totalNetworkFee?.valueInCurrency),
-  );
 
   return {
     quotes,
@@ -86,7 +81,5 @@ export const buildResults = ({
     totalReceivedAmount,
     totalReceivedAmountFiat,
     minimumReceivedAmount,
-    totalNetworkFee,
-    totalNetworkFeeFiat,
   };
 };

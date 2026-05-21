@@ -3,10 +3,6 @@ import { safeAmountForCalc } from '../../../../bridge/utils/quote';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { ReceivedAsset, QuoteRequestContext } from '../types';
 
-// Mirrors `fromAmountInCurrency.usd.toNumber()` from the bridge prepare page,
-// derived per-entry as `balance * (sendAmountPercent / 100) * tokenFiatPrice`.
-// Returns `0` when balance or price is missing so the metrics field stays
-// numeric.
 export const computeUsdAmountSource = ({
   asset,
   sendAmountPercent,
