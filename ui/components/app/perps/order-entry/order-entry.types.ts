@@ -180,6 +180,8 @@ export type AmountInputProps = {
    * of the previous hard-coded 6.
    */
   szDecimals?: number;
+  /** Current open position size in asset units, shown when increasing exposure */
+  currentPositionSize?: string;
   /** Callback when add-funds icon is pressed */
   onAddFunds?: () => void;
   /** Auto-focus the USD input on mount (used for keyboard-first order entry) */

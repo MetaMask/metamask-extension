@@ -420,10 +420,17 @@ describe('gator-permissions-utils', () => {
       });
     });
 
-    it('should return correct metadata for erc20-token-revocation', () => {
+    it('should return correct metadata for token-approval-revocation', () => {
       const result = getGatorPermissionDisplayMetadata(
-        'erc20-token-revocation',
-        {},
+        'token-approval-revocation',
+        {
+          erc20Approve: true,
+          erc721Approve: true,
+          erc721SetApprovalForAll: true,
+          permit2Approve: true,
+          permit2Lockdown: true,
+          permit2InvalidateNonces: true,
+        },
       );
 
       expect(result).toStrictEqual({

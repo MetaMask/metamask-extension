@@ -18,7 +18,7 @@ import {
   ModalOverlay,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { SUPPORT_LINK } from '../../../helpers/constants/common';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -75,7 +75,7 @@ export default function PasskeyTroubleshootModal({
         category: MetaMetricsEventCategory.Navigation,
         event: MetaMetricsEventName.SupportLinkClicked,
         properties: {
-          url: SUPPORT_LINK,
+          url: ZENDESK_URLS.PASSKEYS,
         },
       },
       {
@@ -165,7 +165,7 @@ export default function PasskeyTroubleshootModal({
             >
               <a
                 data-testid="passkey-troubleshoot-still-having-trouble-link"
-                href={SUPPORT_LINK}
+                href={ZENDESK_URLS.PASSKEYS}
                 target="_blank"
                 rel="noopener noreferrer"
               >
