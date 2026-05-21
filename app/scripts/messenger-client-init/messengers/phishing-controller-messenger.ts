@@ -1,6 +1,14 @@
 import { Messenger } from '@metamask/messenger';
 import { AllowedEvents } from '@metamask/phishing-controller';
+import type {
+  AddressBookControllerGetStateAction,
+} from '@metamask/address-book-controller';
+import type { TransactionControllerGetStateAction } from '@metamask/transaction-controller';
 import { RootMessenger } from '../../lib/messenger';
+
+type AllowedActions =
+  | AddressBookControllerGetStateAction
+  | TransactionControllerGetStateAction;
 
 export type PhishingControllerMessenger = ReturnType<
   typeof getPhishingControllerMessenger
@@ -14,11 +22,11 @@ export type PhishingControllerMessenger = ReturnType<
  * messenger.
  */
 export function getPhishingControllerMessenger(
-  messenger: RootMessenger<never, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
   const controllerMessenger = new Messenger<
     'PhishingController',
-    never,
+    AllowedActions,
     AllowedEvents,
     typeof messenger
   >({
@@ -27,7 +35,14 @@ export function getPhishingControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    events: ['TransactionController:stateChange'],
+    actions: [
+      'AddressBookController:getState',
+      'TransactionController:getState',
+    ],
+    events: [
+      'AddressBookController:stateChange',
+      'TransactionController:stateChange',
+    ],
   });
   return controllerMessenger;
 }
