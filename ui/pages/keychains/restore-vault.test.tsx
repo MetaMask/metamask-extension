@@ -255,9 +255,12 @@ describe('Restore vault Component', () => {
       expect(queryByTestId('create-password')).toBeInTheDocument();
     });
 
-    fireEvent.change(queryByTestId('create-password-new-input') as HTMLElement, {
-      target: { value: '12345678' },
-    });
+    fireEvent.change(
+      queryByTestId('create-password-new-input') as HTMLElement,
+      {
+        target: { value: '12345678' },
+      },
+    );
     fireEvent.change(
       queryByTestId('create-password-confirm-input') as HTMLElement,
       {

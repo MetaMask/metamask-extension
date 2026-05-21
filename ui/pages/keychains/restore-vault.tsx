@@ -165,7 +165,10 @@ function RestoreVaultPage() {
             <Text variant={TextVariant.HeadingLg}>{t('importAWallet')}</Text>
           </Box>
           <Box marginBottom={4}>
-            <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            <Text
+              variant={TextVariant.BodyMd}
+              color={TextColor.TextAlternative}
+            >
               {t('restoreWalletDescription', [
                 <TextButton
                   key="secret-recovery-phrase"

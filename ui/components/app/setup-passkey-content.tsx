@@ -252,10 +252,7 @@ export default function SetupPasskeyContent({
       }
     } catch (error) {
       if (isPasskeyCeremonySilentError(error)) {
-        log.debug(
-          'Passkey enrollment ceremony cancelled or timed out',
-          error,
-        );
+        log.debug('Passkey enrollment ceremony cancelled or timed out', error);
         trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.PasskeySetup,
