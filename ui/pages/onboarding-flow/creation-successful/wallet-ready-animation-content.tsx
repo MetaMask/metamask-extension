@@ -56,7 +56,6 @@ export default function WalletReadyAnimation() {
   // Trigger the animation start when rive is loaded
   useEffect(() => {
     if (rive && isWasmReady && !bufferLoading && buffer) {
-      console.log('rive is loaded', rive);
       const inputs = rive.stateMachineInputs('OnboardingLoader');
       if (inputs) {
         const darkToggle = inputs.find((input) => input.name === 'Dark mode');

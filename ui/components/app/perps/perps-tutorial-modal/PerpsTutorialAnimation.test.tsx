@@ -144,6 +144,28 @@ describe('PerpsTutorialAnimation', () => {
       ).toBeInTheDocument();
     });
 
+    it('uses popup loading placeholder sizing in popup environment', () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+      mockedRiveWasmContext.useRiveWasmContext.mockReturnValue({
+        isWasmReady: false,
+        loading: true,
+        error: undefined,
+        urlBufferMap: {},
+        setUrlBufferCache: jest.fn(),
+        animationCompleted: {},
+        setIsAnimationCompleted: jest.fn(),
+      });
+
+      render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
+
+      expect(screen.getByTestId('perps-tutorial-animation-loading')).toHaveStyle(
+        {
+          height: '200px',
+          maxWidth: '340px',
+        },
+      );
+    });
+
     it('renders loading placeholder when buffer is loading', () => {
       mockedRiveWasmContext.useRiveWasmFile.mockReturnValue({
         buffer: undefined,
@@ -169,6 +191,28 @@ describe('PerpsTutorialAnimation', () => {
       expect(
         screen.getByTestId('perps-tutorial-animation-loading'),
       ).toBeInTheDocument();
+    });
+
+    it('uses fullscreen loading placeholder sizing in fullscreen environment', () => {
+      mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+      mockedRiveWasmContext.useRiveWasmContext.mockReturnValue({
+        isWasmReady: false,
+        loading: true,
+        error: undefined,
+        urlBufferMap: {},
+        setUrlBufferCache: jest.fn(),
+        animationCompleted: {},
+        setIsAnimationCompleted: jest.fn(),
+      });
+
+      render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
+
+      expect(screen.getByTestId('perps-tutorial-animation-loading')).toHaveStyle(
+        {
+          height: '280px',
+          maxWidth: '280px',
+        },
+      );
     });
   });
 

@@ -144,6 +144,7 @@ export const useRiveWasmReady = () => {
     };
 
     riveWasmListeners.add(listener);
+    setState({ ...riveWasmReadyState });
 
     return () => {
       riveWasmListeners.delete(listener);
