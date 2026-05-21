@@ -1927,9 +1927,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Situs ini meminta izin untuk menarik token Anda"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Situs ini memerlukan izin untuk mencabut persetujuan token ERC-20 Anda."
-  },
   "confirmTitleDescPermission": {
     "message": "Situs ini meminta izin untuk menggunakan token Anda."
   },
