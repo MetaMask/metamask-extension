@@ -52,7 +52,8 @@ export default function PermissionsRedirect({ subjectMetadata }) {
         alignItems={BoxAlignItems.Center}
         justifyContent={BoxJustifyContent.Center}
         backgroundColor={BoxBackgroundColor.BackgroundDefault}
-        border={`1px solid ${BoxBorderColor.BorderMuted}`}
+        borderColor={BoxBorderColor.BorderMuted}
+        borderWidth={1}
         boxShadow="var(--shadow-size-lg) var(--color-shadow-default)"
       >
         <Box className="flex" marginBottom={4}>
