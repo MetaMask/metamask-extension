@@ -457,3 +457,11 @@ env:
 
   # Passkey / Biometrics unlock
   - PASSKEY_ENABLED: true
+
+  # Sentry browser SDK serverless environment checks
+  - FUNCTIONS_WORKER_RUNTIME: ''
+  - LAMBDA_TASK_ROOT: ''
+  - K_SERVICE: ''
+  - CF_PAGES: ''
+  - VERCEL: ''
+  - NETLIFY: ''
