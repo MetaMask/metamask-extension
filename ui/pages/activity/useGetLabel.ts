@@ -57,7 +57,7 @@ function getSubstitutions(activity: ActivityListItem): LabelSubstitutions {
     case 'increaseSpendingCap':
     case 'revokeSpendingCap':
       return {
-        description: [activity.data.tokenSymbol ?? ''],
+        description: [activity.data.token?.symbol ?? ''],
       };
     // No substitutions
     default:

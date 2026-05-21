@@ -85,6 +85,7 @@ export function mapApiEvmTransactions({
 
   if (transactionCategory === 'APPROVE') {
     // TODO: Categorize REVOKE in the backend
+    const approveTransfer = sentTransfer ?? receivedTransfer;
 
     return {
       type: 'approveSpendingCap',
@@ -94,7 +95,7 @@ export function mapApiEvmTransactions({
       raw: { type: 'apiEvmTransaction', data: transaction },
       data: {
         hash,
-        tokenSymbol: sentTransfer?.symbol ?? receivedTransfer?.symbol,
+        token: getToken(approveTransfer, sentTransfer ? 'out' : 'in'),
       },
     };
   }

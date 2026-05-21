@@ -97,64 +97,12 @@ function getNativeTokenSymbol(chainId: string) {
   ];
 }
 
-function getTokenSymbol(transaction: TransactionGroup['initialTransaction']) {
-  return (
-    transaction.transferInformation?.symbol ??
-    transaction.sourceTokenSymbol ??
-    transaction.destinationTokenSymbol ??
-    getNativeTokenSymbol(transaction.chainId)
-  );
-}
-
 function getSwapMetaDataTokenSymbol(
   transaction: TransactionGroup['initialTransaction'],
   key: 'token_from' | 'token_to',
 ) {
   const tokenSymbol = transaction.swapMetaData?.[key];
   return typeof tokenSymbol === 'string' ? tokenSymbol : undefined;
-}
-
-const resolveTokenAssetId = (
-  chainId: CaipChainId,
-  hexChainId: string,
-  symbol: string | undefined,
-  contractAddress?: string,
-) => {
-  if (contractAddress) {
-    return toAssetId(contractAddress, chainId);
-  }
-
-  const nativeSymbol = getNativeTokenSymbol(hexChainId);
-  if (!symbol || (nativeSymbol && symbol === nativeSymbol)) {
-    return toAssetId(NATIVE_TOKEN_ADDRESS, chainId);
-  }
-
-  return undefined;
-};
-
-function getToken(
-  symbol: string | undefined,
-  direction: TokenAmount['direction'],
-  chainId: CaipChainId,
-  hexChainId: string,
-  contractAddress?: string,
-) {
-  if (!symbol && !contractAddress) {
-    return undefined;
-  }
-
-  const assetId = resolveTokenAssetId(
-    chainId,
-    hexChainId,
-    symbol,
-    contractAddress,
-  );
-
-  return {
-    direction,
-    ...(symbol ? { symbol } : {}),
-    ...(assetId ? { assetId } : {}),
-  };
 }
 
 function hasNativeValue(transaction: TransactionGroup['initialTransaction']) {
@@ -197,7 +145,44 @@ export function mapLocalTransaction({
     KnownCaipNamespace.Eip155,
     Number.parseInt(initialTransaction.chainId, 16).toString(),
   );
-  const hexChainId = initialTransaction.chainId;
+  const nativeSymbol = getNativeTokenSymbol(initialTransaction.chainId);
+
+  const buildTokenInfo = (
+    symbol: string | undefined,
+    direction: TokenAmount['direction'],
+    contractAddress?: string,
+  ) => {
+    if (!symbol && !contractAddress) {
+      return undefined;
+    }
+
+    let assetId: string | undefined;
+    if (contractAddress) {
+      assetId = toAssetId(contractAddress, chainId);
+    } else if (!symbol || (nativeSymbol && symbol === nativeSymbol)) {
+      assetId = toAssetId(NATIVE_TOKEN_ADDRESS, chainId);
+    }
+
+    return {
+      direction,
+      ...(symbol ? { symbol } : {}),
+      ...(assetId ? { assetId } : {}),
+    };
+  };
+
+  const getToken = (
+    tx: TransactionGroup['initialTransaction'],
+    direction: TokenAmount['direction'],
+    contractAddress?: string,
+  ) => {
+    const symbol =
+      tx.transferInformation?.symbol ??
+      tx.sourceTokenSymbol ??
+      tx.destinationTokenSymbol ??
+      nativeSymbol;
+    return buildTokenInfo(symbol, direction, contractAddress);
+  };
+
   const status = mapStatus({ primaryTransaction, initialTransaction });
   const timestamp = primaryTransaction.time ?? initialTransaction.time;
   const hash =
@@ -207,7 +192,6 @@ export function mapLocalTransaction({
 
   switch (initialTransaction.type) {
     case TransactionType.simpleSend: {
-      const tokenSymbol = getTokenSymbol(initialTransaction);
       return {
         type: 'send',
         chainId,
@@ -218,7 +202,7 @@ export function mapLocalTransaction({
           hash,
           from,
           to,
-          token: getToken(tokenSymbol, 'out', chainId, hexChainId),
+          token: getToken(initialTransaction, 'out'),
         },
       };
     }
@@ -239,10 +223,8 @@ export function mapLocalTransaction({
           from,
           to: recipient,
           token: getToken(
-            getTokenSymbol(initialTransaction),
+            initialTransaction,
             'out',
-            chainId,
-            hexChainId,
             initialTransaction.txParams.to,
           ),
         },
@@ -250,8 +232,6 @@ export function mapLocalTransaction({
     }
 
     case TransactionType.incoming: {
-      const tokenSymbol = getTokenSymbol(initialTransaction);
-
       return {
         type: 'receive',
         chainId,
@@ -263,10 +243,8 @@ export function mapLocalTransaction({
           from,
           to,
           token: getToken(
-            tokenSymbol,
+            initialTransaction,
             'in',
-            chainId,
-            hexChainId,
             initialTransaction.transferInformation?.contractAddress,
           ),
         },
@@ -280,9 +258,7 @@ export function mapLocalTransaction({
         primaryTransaction.sourceTokenSymbol ??
         getSwapMetaDataTokenSymbol(initialTransaction, 'token_from') ??
         getSwapMetaDataTokenSymbol(primaryTransaction, 'token_from') ??
-        (hasNativeValue(initialTransaction)
-          ? getNativeTokenSymbol(initialTransaction.chainId)
-          : undefined);
+        (hasNativeValue(initialTransaction) ? nativeSymbol : undefined);
       const destinationTokenSymbol =
         initialTransaction.destinationTokenSymbol ??
         primaryTransaction.destinationTokenSymbol ??
@@ -298,11 +274,9 @@ export function mapLocalTransaction({
           raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
-            sourceToken: getToken(
+            sourceToken: buildTokenInfo(
               sourceTokenSymbol,
               'out',
-              chainId,
-              hexChainId,
               initialTransaction.sourceTokenAddress ??
                 primaryTransaction.sourceTokenAddress,
             ),
@@ -325,18 +299,14 @@ export function mapLocalTransaction({
         raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
-          sourceToken: getToken(
+          sourceToken: buildTokenInfo(
             sourceTokenSymbol,
             'out',
-            chainId,
-            hexChainId,
             sourceTokenAddress,
           ),
-          destinationToken: getToken(
+          destinationToken: buildTokenInfo(
             destinationTokenSymbol,
             'in',
-            chainId,
-            hexChainId,
             destinationTokenAddress,
           ),
         },
@@ -356,7 +326,11 @@ export function mapLocalTransaction({
         raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
-          tokenSymbol: getTokenSymbol(initialTransaction),
+          token: getToken(
+            initialTransaction,
+            'out',
+            initialTransaction.txParams.to,
+          ),
         },
       };
 
@@ -369,7 +343,11 @@ export function mapLocalTransaction({
         raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
-          tokenSymbol: getTokenSymbol(initialTransaction),
+          token: getToken(
+            initialTransaction,
+            'out',
+            initialTransaction.txParams.to,
+          ),
         },
       };
 
@@ -384,10 +362,8 @@ export function mapLocalTransaction({
         data: {
           hash,
           token: getToken(
-            getTokenSymbol(initialTransaction),
+            initialTransaction,
             'out',
-            chainId,
-            hexChainId,
             initialTransaction.txParams.to,
           ),
         },

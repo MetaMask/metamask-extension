@@ -160,7 +160,12 @@ describe('mapLocalTransaction', () => {
       timestamp: 1716367881000,
       data: {
         hash: '0xretry',
-        tokenSymbol: 'TDN',
+        token: {
+          assetId:
+            'eip155:59144/erc20:0x239FD4B0c4DB49Fa8660E65B97619D43D0E0A79d',
+          direction: 'out',
+          symbol: 'TDN',
+        },
       },
     });
   });

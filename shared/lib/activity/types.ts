@@ -65,6 +65,7 @@ type ActivityItem<Type extends ActivityType, Data> = {
   chainId: CaipChainId;
   status: Status;
   timestamp: number;
+  /* Used by legacy details modals. Interim until redesigned details are implemented */
   raw?:
     | { type: 'apiEvmTransaction'; data: V1TransactionByHashResponse }
     | { type: 'keyringTransaction'; data: Transaction }
@@ -111,7 +112,7 @@ export type ActivityListItem =
   | ActivityItem<
       'approveSpendingCap' | 'revokeSpendingCap' | 'increaseSpendingCap',
       {
-        tokenSymbol?: string;
+        token?: TokenAmount;
       }
     >
   | ActivityItem<
