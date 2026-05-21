@@ -1927,9 +1927,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "このサイトがトークンの引き出し許可を求めています。"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "このサイトがERC-20トークンの承認取り消し許可を求めています。"
-  },
   "confirmTitleDescPermission": {
     "message": "このサイトがトークンの使用許可を求めています。"
   },

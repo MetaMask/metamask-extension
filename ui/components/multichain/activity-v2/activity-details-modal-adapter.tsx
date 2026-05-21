@@ -11,7 +11,6 @@ import { TransactionDetailsModal as LegacyTransactionDetailsModal } from '../../
 import { PAY_TRANSACTION_TYPES } from '../../../pages/confirmations/constants/pay';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { getStatusKey } from '../../../helpers/utils/transactions.util';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import LegacyTransactionListItemDetails from '../../app/transaction-list-item-details';
 import TransactionStatusLabel from '../../app/transaction-status-label/transaction-status-label';
 import { getSelectedAddress } from '../../../selectors/selectors';
@@ -141,11 +140,6 @@ const TransactionDetailsWrapper = ({
 
   const senderAddress = transaction.txParams?.from ?? '';
   const displayedStatusKey = getStatusKey(transaction);
-  const date = formatDateWithYearContext(
-    transaction.time ?? 0,
-    'MMM d, y',
-    'MMM d',
-  );
   const chainId =
     typeof transaction.chainId === 'string'
       ? transaction.chainId
@@ -167,9 +161,7 @@ const TransactionDetailsWrapper = ({
         <TransactionStatusLabel
           isEarliestNonce={false}
           error={syntheticGroup.primaryTransaction.error}
-          date={date}
           status={displayedStatusKey}
-          statusOnly
         />
       )}
       chainId={chainId}

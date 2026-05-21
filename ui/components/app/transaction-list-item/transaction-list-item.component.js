@@ -35,7 +35,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
-import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import { PendingTransactionActionButtons } from '../pending-transaction-action-buttons/pending-transaction-action-buttons';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ActivityListItem } from '../../multichain/activity-list-item';
@@ -127,11 +126,6 @@ function TransactionListItemInner({
     displayedStatusKey === TransactionStatus.submitted &&
     !isBridgeFailed &&
     !isBridgeComplete;
-  const date = formatDateWithYearContext(
-    transactionGroup.primaryTransaction.time,
-    'MMM d, y',
-    'MMM d',
-  );
   const isSignatureReq = category === TransactionGroupCategory.signatureRequest;
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
@@ -204,11 +198,9 @@ function TransactionListItemInner({
             />
           ) : (
             <TransactionStatusLabel
-              statusOnly
               isPending={isPending}
               isEarliestNonce={isEarliestNonce || shouldShowPendingBridgeStatus}
               error={error}
-              date={date}
               status={displayedStatusKey}
             />
           )
@@ -279,9 +271,7 @@ function TransactionListItemInner({
                   isEarliestNonce || shouldShowPendingBridgeStatus
                 }
                 error={error}
-                date={date}
                 status={displayedStatusKey}
-                statusOnly
               />
             )}
             chainId={chainId}

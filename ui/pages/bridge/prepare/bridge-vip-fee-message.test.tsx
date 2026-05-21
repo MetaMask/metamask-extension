@@ -172,7 +172,7 @@ describe('BridgeVipFeeMessage', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('rewards-vip-badge')).toBeInTheDocument();
-      expect(screen.getByText('VIP Fox 5')).toBeInTheDocument();
+      expect(screen.getByText('VIP 5')).toBeInTheDocument();
     });
     expect(mockGetVipTierForAccount).toHaveBeenCalledTimes(1);
   });
