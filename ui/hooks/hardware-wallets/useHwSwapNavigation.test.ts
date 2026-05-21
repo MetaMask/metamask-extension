@@ -8,7 +8,7 @@ jest.mock('../../components/app/toast-listener/shared', () => ({
   showSuccessToast: jest.fn(),
 }));
 
-jest.mock('../../bridge/useBridgeNavigation', () => ({
+jest.mock('../bridge/useBridgeNavigation', () => ({
   useBridgeNavigation: jest.fn(),
 }));
 
@@ -16,7 +16,7 @@ const mockShowSuccessToast = jest.requireMock(
   '../../components/app/toast-listener/shared',
 ).showSuccessToast;
 const mockUseBridgeNavigation = jest.requireMock(
-  '../../bridge/useBridgeNavigation',
+  '../bridge/useBridgeNavigation',
 ).useBridgeNavigation;
 
 const mockNavigateToDefaultRoute = jest.fn();

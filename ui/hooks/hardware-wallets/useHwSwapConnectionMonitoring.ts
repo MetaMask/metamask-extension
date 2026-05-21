@@ -19,9 +19,9 @@ type UseHardwareWalletConnectionMonitoringOptions = {
 };
 
 type HardwareWalletConnectionAction =
-  | { type: HardwareWalletSignatureEvent.TransactionRejected }
-  | { type: HardwareWalletSignatureEvent.TransactionFailed }
-  | { type: HardwareWalletSignatureEvent.DeviceDisconnected };
+  | { type: typeof HardwareWalletSignatureEvent.TransactionRejected }
+  | { type: typeof HardwareWalletSignatureEvent.TransactionFailed }
+  | { type: typeof HardwareWalletSignatureEvent.DeviceDisconnected };
 
 /**
  * Monitors the hardware wallet connection during a swap/bridge signature flow.

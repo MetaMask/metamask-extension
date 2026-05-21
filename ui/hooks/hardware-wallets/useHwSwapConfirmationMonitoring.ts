@@ -17,7 +17,7 @@ type UseHardwareWalletConfirmationMonitoringOptions = {
 };
 
 type HardwareWalletConfirmationAction = {
-  type: HardwareWalletSignatureEvent.TransactionRejected;
+  type: typeof HardwareWalletSignatureEvent.TransactionRejected;
 };
 
 /**

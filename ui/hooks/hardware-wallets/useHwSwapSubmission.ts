@@ -20,7 +20,7 @@ type UseHwSwapSubmissionOptions = {
 };
 
 type HardwareWalletSignatureAction = {
-  type: HardwareWalletSignatureEvent.Reset;
+  type: typeof HardwareWalletSignatureEvent.Reset;
   needsTwoConfirmations: boolean;
 };
 
