@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import {
   AvatarAccountSize,
   Box,
-  BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
 } from '@metamask/design-system-react';
