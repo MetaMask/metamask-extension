@@ -62,11 +62,6 @@ type ActivityItem<Type extends ActivityType, Data> = {
   timestamp: number;
   /** TransactionController meta id used for cancel / speed up buttons */
   metaId?: string;
-  /* Used by legacy details modals. Interim until redesigned details are implemented */
-  raw?:
-    | { type: 'apiEvmTransaction'; data: V1TransactionByHashResponse }
-    | { type: 'keyringTransaction'; data: Transaction }
-    | { type: 'localTransaction'; data: TransactionGroup };
   data: Data & {
     hash?: string;
   };

@@ -101,7 +101,6 @@ export function mapLocalTransaction({
         status,
         timestamp,
         metaId,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -121,7 +120,6 @@ export function mapLocalTransaction({
         status,
         timestamp,
         metaId,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -138,7 +136,6 @@ export function mapLocalTransaction({
         status,
         timestamp,
         metaId,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
@@ -170,8 +167,7 @@ export function mapLocalTransaction({
           status,
           timestamp,
           metaId,
-          raw: { type: 'localTransaction', data: transactionGroup },
-          data: {
+            data: {
             hash,
             sourceToken: getToken(sourceTokenSymbol, 'out'),
           },
@@ -184,7 +180,6 @@ export function mapLocalTransaction({
         status,
         timestamp,
         metaId,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           sourceToken: getToken(sourceTokenSymbol, 'out'),
@@ -204,7 +199,6 @@ export function mapLocalTransaction({
         status,
         timestamp,
         metaId,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           tokenSymbol: getTokenSymbol(initialTransaction),
@@ -218,7 +212,6 @@ export function mapLocalTransaction({
         status,
         timestamp,
         metaId,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           tokenSymbol: getTokenSymbol(initialTransaction),
@@ -233,7 +226,6 @@ export function mapLocalTransaction({
         status,
         timestamp,
         metaId,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           token: getToken(getTokenSymbol(initialTransaction), 'out'),
@@ -247,7 +239,6 @@ export function mapLocalTransaction({
         status,
         timestamp,
         metaId,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
         },
@@ -260,7 +251,6 @@ export function mapLocalTransaction({
         status,
         timestamp,
         metaId,
-        raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
           from,
