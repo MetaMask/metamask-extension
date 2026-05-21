@@ -32,7 +32,7 @@ type PerpsControllerLike = {
     source?: string;
     standalone?: boolean;
     userAddress?: string;
-  }) => Promise<AccountState>;
+  }) => Promise<Partial<AccountState>>;
   state?: Partial<Pick<PerpsControllerState, 'perpsBalances'>>;
 };
 
@@ -124,8 +124,8 @@ export function hasZeroHyperliquidPerpsBalance({
 }): boolean {
   const balances = [
     accountState?.totalBalance,
-    accountState?.availableBalance,
-    accountState?.availableToTradeBalance,
+    accountState?.spendableBalance,
+    accountState?.withdrawableBalance,
     perpsBalances?.[HYPERLIQUID_PROVIDER_ID]?.totalBalance,
   ].filter((balance): balance is string => balance !== undefined);
 
@@ -183,7 +183,7 @@ async function getHyperliquidAccountState({
   logger: Pick<typeof log, 'warn'>;
   perpsController: PerpsControllerLike;
   signerAddress: string;
-}): Promise<AccountState | undefined> {
+}): Promise<Partial<AccountState> | undefined> {
   if (!perpsController.getAccountState) {
     return undefined;
   }

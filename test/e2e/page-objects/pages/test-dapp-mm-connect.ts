@@ -35,6 +35,18 @@ export class TestDappMmConnect {
   /** "Connect (Wagmi)" button. */
   private readonly connectWagmiButton = { testId: 'app-btn-connect-wagmi' };
 
+  /**
+   * "Connect (window.ethereum)" button.
+   *
+   * Unlike `connectLegacyButton`, this button is still rendered while another
+   * provider (e.g. the multichain session) is already connected to the dapp,
+   * so it is the reliable entrypoint for re-connecting via EIP-1193 on top of
+   * an existing connection.
+   */
+  private readonly connectWindowEthereumButton = {
+    testId: 'app-btn-connect-window-ethereum',
+  };
+
   /** "Disconnect All" button — calls sdkDisconnect() on the mm-connect dapp. */
   private readonly disconnectButton = { testId: 'app-btn-disconnect' };
 
@@ -495,6 +507,16 @@ export class TestDappMmConnect {
 
   async connectLegacy(): Promise<void> {
     await this.driver.clickElement(this.connectLegacyButton);
+  }
+
+  /**
+   * Click the "Connect (window.ethereum)" button. Use this in scenarios where
+   * the dapp already has an active connection (e.g. an existing multichain
+   * session) — the `connectLegacyButton` is hidden in that state, but the
+   * window.ethereum entrypoint stays available.
+   */
+  async connectWindowEthereum(): Promise<void> {
+    await this.driver.clickElement(this.connectWindowEthereumButton);
   }
 
   async checkLegacyCardVisible(): Promise<void> {

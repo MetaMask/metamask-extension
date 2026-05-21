@@ -4,7 +4,8 @@ import {
 } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
 import React, { useMemo } from 'react';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
+import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
+// eslint-disable-next-line import-x/no-restricted-paths -- TODO(ADR-0021): route-isolation backlog
 import { useTrustSignalMetrics } from '../../../../trust-signals/hooks/useTrustSignalMetrics';
 import { useConfirmContext } from '../../../context/confirm';
 import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransactionFeatureFlags';
@@ -112,6 +113,7 @@ export const InfoSkeleton = ({
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
   const { loader } = useConfirmationNavigationOptions();
+  const enabledPermissions = useEnabledAdvancedPermissions();
 
   useSmartTransactionFeatureFlags();
   useTransactionFocusEffect();
@@ -138,8 +140,6 @@ const Info = () => {
         if (signatureRequest?.decodedPermission) {
           const requestedPermissionType =
             signatureRequest.decodedPermission.permission.type;
-
-          const enabledPermissions = getEnabledAdvancedPermissions();
 
           if (!enabledPermissions.includes(requestedPermissionType)) {
             // This should never happen, as `wallet_requestExecutionPermissions`
@@ -175,7 +175,7 @@ const Info = () => {
           : PerpsDepositInfo,
       [TransactionType.perpsWithdraw]: () => PerpsWithdrawInfo,
     }),
-    [currentConfirmation],
+    [currentConfirmation, enabledPermissions],
   );
 
   if (!currentConfirmation?.type) {

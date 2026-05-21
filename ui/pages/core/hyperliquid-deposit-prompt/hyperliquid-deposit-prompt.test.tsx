@@ -10,16 +10,14 @@ import {
   findNetworkClientIdByChainId,
 } from '../../../store/actions';
 import {
-  ConfirmationLoader,
-  useConfirmationNavigation,
-} from '../../confirmations/hooks/useConfirmationNavigation';
-import {
   HYPERLIQUID_DEPOSIT_CHAIN_ID,
   HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID,
   HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
 } from '../../../../shared/lib/hyperliquid-deposit-transaction';
+import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import {
   HYPERLIQUID_DEPOSIT_DEFAULT_AMOUNT_USDC,
+  getHyperliquidDepositConfirmationRoute,
   HyperliquidDepositPrompt,
 } from './hyperliquid-deposit-prompt';
 
@@ -28,13 +26,13 @@ jest.mock('../../../store/actions', () => ({
   findNetworkClientIdByChainId: jest.fn(),
 }));
 
-jest.mock('../../confirmations/hooks/useConfirmationNavigation', () => {
-  const actual = jest.requireActual(
-    '../../confirmations/hooks/useConfirmationNavigation',
-  );
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
   return {
     ...actual,
-    useConfirmationNavigation: jest.fn(),
+    useNavigate: () => mockNavigate,
   };
 });
 
@@ -42,7 +40,6 @@ const addTransactionMock = jest.mocked(addTransaction);
 const findNetworkClientIdByChainIdMock = jest.mocked(
   findNetworkClientIdByChainId,
 );
-const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 
 const MOCK_NETWORK_CLIENT_ID = 'arbitrum-mainnet';
 const MOCK_TX_ID = 'hyperliquid-deposit-tx-id';
@@ -61,8 +58,6 @@ function renderPrompt({
 }
 
 describe('HyperliquidDepositPrompt', () => {
-  const navigateToTransactionMock = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -70,9 +65,6 @@ describe('HyperliquidDepositPrompt', () => {
       MOCK_NETWORK_CLIENT_ID as never,
     );
     addTransactionMock.mockResolvedValue({ id: MOCK_TX_ID } as never);
-    useConfirmationNavigationMock.mockReturnValue({
-      navigateToTransaction: navigateToTransactionMock,
-    } as never);
   });
 
   it('renders the Hyperliquid deposit prompt copy', () => {
@@ -136,10 +128,9 @@ describe('HyperliquidDepositPrompt', () => {
       started: true,
       transactionId: MOCK_TX_ID,
     });
-    expect(navigateToTransactionMock).toHaveBeenCalledWith(MOCK_TX_ID, {
-      goBackTo: '/hyperliquid-deposit?step=status&txId=hyperliquid-deposit-tx-id',
-      loader: ConfirmationLoader.CustomAmount,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      getHyperliquidDepositConfirmationRoute(MOCK_TX_ID),
+    );
   });
 
   it('keeps the prompt open if creating the transaction fails', async () => {
@@ -150,7 +141,15 @@ describe('HyperliquidDepositPrompt', () => {
 
     expect(await screen.findByText('failed')).toBeInTheDocument();
     expect(onActionComplete).not.toHaveBeenCalled();
-    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
+  it('builds the deposit confirmation route', () => {
+    expect(getHyperliquidDepositConfirmationRoute(MOCK_TX_ID)).toStrictEqual({
+      pathname: `${CONFIRM_TRANSACTION_ROUTE}/${MOCK_TX_ID}`,
+      search:
+        'loader=customAmount&goBackTo=%2Fhyperliquid-deposit%3Fstep%3Dstatus%26txId%3Dhyperliquid-deposit-tx-id',
+    });
   });
 
   it('resolves the prompt as not started when closed', () => {

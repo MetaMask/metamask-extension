@@ -195,8 +195,8 @@ describe('tempo-tx-utils', () => {
     it('return true for Tempo Mainnet', () => {
       expect(isTempoChain('0x1079')).toBe(true);
     });
-    it('return true for Tempo Moderato Testnet', () => {
-      expect(isTempoChain('0xa5bf')).toBe(true);
+    it('return false for Tempo Moderato Testnet', () => {
+      expect(isTempoChain('0xa5bf')).toBe(false);
     });
     it('return false for Polygon Mainnet', () => {
       expect(isTempoChain('0x89')).toBe(false);

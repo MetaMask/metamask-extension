@@ -1,5 +1,6 @@
 export {
   HYPERLIQUID_DEPOSIT_DEFAULT_AMOUNT_USDC,
+  getHyperliquidDepositConfirmationRoute,
   HyperliquidDepositPrompt,
   HyperliquidLogo,
 } from './hyperliquid-deposit-prompt';

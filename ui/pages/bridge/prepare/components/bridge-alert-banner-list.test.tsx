@@ -377,7 +377,13 @@ describe('BridgeAlertBannerList', () => {
           quotesInitialLoadTime: Date.now(),
           quotesLoadingStatus: RequestStatus.FETCHED,
           quotesRefreshCount: 1,
-          quotes: mockBridgeQuotesErc20Erc20 as unknown as QuoteResponse[],
+          quotes: mockBridgeQuotesErc20Erc20.map((quote) => ({
+            ...quote,
+            quote: {
+              ...quote.quote,
+              priceData: { priceImpact: '0.05' },
+            },
+          })) as unknown as QuoteResponse[],
           quoteRequest: {
             srcTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             destTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',

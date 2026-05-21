@@ -30,22 +30,26 @@ exports[`Unlock Page should match snapshot 1`] = `
           </svg>
         </div>
         <div
-          class="mm-box mm-form-text-field mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+          class="flex flex-row gap-2 items-start justify-center w-full"
         >
           <div
-            class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            class="mm-box mm-form-text-field mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
           >
-            <input
-              aria-label="Password"
-              autocomplete="off"
-              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
-              data-testid="unlock-password"
-              focused="true"
-              id="password"
-              placeholder="Enter your password"
-              type="password"
-              value=""
-            />
+            <div
+              class="mm-box mm-text-field mm-text-field--size-lg mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-width-1 box--border-style-solid"
+            >
+              <input
+                aria-label="Password"
+                autocomplete="off"
+                class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+                data-testid="unlock-password"
+                focused="true"
+                id="password"
+                placeholder="Enter your password"
+                type="password"
+                value=""
+              />
+            </div>
           </div>
         </div>
         <button

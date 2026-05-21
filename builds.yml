@@ -130,7 +130,7 @@ buildTypes:
       - APPLE_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
-      - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
+      - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
     isPrerelease: true
@@ -281,7 +281,6 @@ env:
   - QUICKNODE_OPTIMISM_URL: null
   - QUICKNODE_POLYGON_URL: null
   - QUICKNODE_BASE_URL: null
-  - QUICKNODE_BSC_URL: null
   - QUICKNODE_SEI_URL: null
   - QUICKNODE_MONAD_URL: null
   - QUICKNODE_HYPEREVM_URL: null
@@ -325,6 +324,7 @@ env:
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   # Also see DEBUG and NODE_DEBUG
   - METAMASK_DEBUG: false
+  - SENTRY_DISTRIBUTED_TRACING_DISABLED: false
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - IN_TEST
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
@@ -368,7 +368,7 @@ env:
   - METAMASK_RAMP_API_CONTENT_BASE_URL: https://on-ramp-content.api.cx.metamask.io
 
   # EIP-7715 Readable Permissions
-  - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic'
+  - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-allowance,native-token-stream,native-token-periodic,erc20-token-allowance,erc20-token-stream,erc20-token-periodic'
   - PERMISSIONS_KERNEL_SNAP_ID: 'npm:@metamask/permissions-kernel-snap'
   - GATOR_PERMISSIONS_PROVIDER_SNAP_ID: 'npm:@metamask/gator-permissions-snap'
   - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
@@ -382,7 +382,7 @@ env:
   - PERPS_ENABLED: false
   # Build-time gate: when false AssetsController is instantiated but state remains empty.
   # When true, the controller populates state (subject to remote feature flag).
-  - ASSETS_UNIFIED_STATE_ENABLED: false
+  - ASSETS_UNIFIED_STATE_ENABLED: true
   # Build-time gate: when true, hardware wallet onboarding uses the new flow.
   - NEW_HARDWARE_WALLET_ONBOARDING: false
 
@@ -426,13 +426,10 @@ env:
   ###
   - DEEP_LINK_PUBLIC_KEY: BD8cWMMR2J33ax8hvSz8LNt99H3wGBPWuAgw+lsfWcBrw4ZtTHFnWyNkbgXglqJOoc+1OA5ZC4kW4GYU/QIeBNA=
 
-  # Enforce simulation balance changes by converting external transactions to delegations.
-  - ENABLE_ENFORCED_SIMULATIONS: false
-
   # Force enforced simulations to apply whenever a transaction has balance
   # changes, bypassing the trust signal check. Intended for local
   # development and QA only; must remain false for production builds.
-  - FORCE_ENABLE_SIMULATIONS: false
+  - FORCE_ENFORCED_SIMULATIONS: false
 
   # OAuth (Social login)
   - GOOGLE_CLIENT_ID_REF
@@ -459,4 +456,4 @@ env:
   - FORCE_AUTH_MATCH_BUILD: false
 
   # Passkey / Biometrics unlock
-  - PASSKEY_ENABLED: 'false'
+  - PASSKEY_ENABLED: true

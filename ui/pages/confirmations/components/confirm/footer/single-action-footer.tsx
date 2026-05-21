@@ -9,7 +9,7 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
 import {
   useIsTransactionPayLoading,
-  useTransactionPayRequiredTokens,
+  useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
 import { FlexDirection } from '../../../../../helpers/constants/design-system';
 import {
@@ -37,65 +37,63 @@ function useSingleActionButtonState(isGaslessLoading: boolean): ButtonState {
 
   const { alerts } = useAlerts(transactionId);
   const isPayLoading = useIsTransactionPayLoading();
-  const requiredTokens = useTransactionPayRequiredTokens();
+  const primaryRequiredToken = useTransactionPayPrimaryRequiredToken();
 
   const blockingAlerts = useMemo(
     () => alerts.filter((a) => a.isBlocking),
     [alerts],
   );
 
-  const requiredAmountUsd = useMemo(
-    () =>
-      (requiredTokens ?? [])
-        .filter((token) => !token.skipIfBalance)
-        .reduce(
-          (acc, token) => acc.plus(new BigNumber(token.amountUsd ?? 0)),
-          new BigNumber(0),
-        ),
-    [requiredTokens],
-  );
-  const hasAmount = requiredAmountUsd.gt(0);
-
   return useMemo(() => {
-    const isLoadingState = isGaslessLoading || isPayLoading;
     const isHyperliquidDeposit =
       isHyperliquidDepositConfirmation(currentConfirmation);
+    const i18nKey =
+      (transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm';
     const defaultButtonText = isHyperliquidDeposit
       ? 'Confirm deposit'
-      : t((transactionType && BUTTON_TEXT_BY_TYPE[transactionType]) ?? 'confirm');
+      : t(i18nKey);
+
+    const isAwaitingRequiredToken = !primaryRequiredToken;
+    const requiredAmountUsd = primaryRequiredToken
+      ? new BigNumber(primaryRequiredToken.amountUsd ?? 0)
+      : new BigNumber(0);
+    const hasAmount = requiredAmountUsd.gt(0);
 
     const hasBlockingAlerts = blockingAlerts.length > 0;
+    const firstAlert = blockingAlerts[0];
+    const alertText =
+      firstAlert?.reason ?? (firstAlert?.message as string | undefined);
+
     const hyperliquidAmountError =
+      !isAwaitingRequiredToken &&
       isHyperliquidDeposit &&
       hasAmount &&
       requiredAmountUsd.lt(HYPERLIQUID_MIN_DEPOSIT_USDC)
         ? `Minimum ${HYPERLIQUID_MIN_DEPOSIT_USDC} USDC`
         : undefined;
-    const isDisabled =
-      hasBlockingAlerts || !hasAmount || Boolean(hyperliquidAmountError);
-
-    const firstAlert = blockingAlerts[0];
-    const alertText =
-      firstAlert?.reason ?? (firstAlert?.message as string | undefined);
 
     const buttonText =
-      (hasBlockingAlerts && alertText) ||
-      hyperliquidAmountError ||
-      defaultButtonText;
+      !isAwaitingRequiredToken && hasBlockingAlerts && alertText
+        ? alertText
+        : hyperliquidAmountError ?? defaultButtonText;
 
-    return {
-      buttonText,
-      isDisabled,
-      isLoading: isLoadingState,
-    };
+    const isDisabled =
+      isAwaitingRequiredToken ||
+      hasBlockingAlerts ||
+      !hasAmount ||
+      Boolean(hyperliquidAmountError);
+
+    const isLoading =
+      isAwaitingRequiredToken || isGaslessLoading || isPayLoading;
+
+    return { buttonText, isDisabled, isLoading };
   }, [
     blockingAlerts,
-    hasAmount,
     isGaslessLoading,
     isPayLoading,
     currentConfirmation,
+    primaryRequiredToken,
     transactionType,
-    requiredAmountUsd,
     t,
   ]);
 }
@@ -121,7 +119,7 @@ export const SingleActionFooter = ({
         className="w-full"
         data-testid="confirm-footer-button"
         disabled={isDisabled}
-        isLoading={isLoading && !isDisabled}
+        isLoading={isLoading}
         onClick={isLoading ? undefined : onSubmit}
         size={ButtonSize.Lg}
       >

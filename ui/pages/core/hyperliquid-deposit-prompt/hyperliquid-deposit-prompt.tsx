@@ -2,17 +2,18 @@ import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
 import { TransactionType } from '@metamask/transaction-controller';
+import type { InternalAccount } from '@metamask/keyring-internal-api';
+import { useNavigate } from 'react-router-dom';
 
-import { getSelectedInternalAccount } from '../../../selectors';
+import { getSelectedEvmInternalAccount } from '../../../selectors';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../../store/actions';
 import {
-  ConfirmationLoader,
-  useConfirmationNavigation,
-} from '../../confirmations/hooks/useConfirmationNavigation';
-import { HYPERLIQUID_DEPOSIT_ROUTE } from '../../../helpers/constants/routes';
+  CONFIRM_TRANSACTION_ROUTE,
+  HYPERLIQUID_DEPOSIT_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   createHyperliquidDepositTransactionParams,
   HYPERLIQUID_DEPOSIT_CHAIN_ID,
@@ -20,6 +21,7 @@ import {
 } from '../../../../shared/lib/hyperliquid-deposit-transaction';
 
 export const HYPERLIQUID_DEPOSIT_DEFAULT_AMOUNT_USDC = '100';
+const HYPERLIQUID_DEPOSIT_CONFIRMATION_LOADER = 'customAmount';
 
 export type HyperliquidDepositPromptResult =
   | {
@@ -156,8 +158,10 @@ export const HyperliquidDepositPrompt = ({
   onActionComplete,
   selectedAddress,
 }: HyperliquidDepositPromptProps) => {
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const { navigateToTransaction } = useConfirmationNavigation();
+  const selectedAccount = useSelector(
+    getSelectedEvmInternalAccount,
+  ) as InternalAccount | undefined;
+  const navigate = useNavigate();
 
   const [error, setError] = useState<string>();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -200,16 +204,15 @@ export const HyperliquidDepositPrompt = ({
         started: true,
         transactionId: depositTransactionId,
       });
-      navigateToTransaction(depositTransactionId, {
-        goBackTo: getHyperliquidDepositStatusRoute(depositTransactionId),
-        loader: ConfirmationLoader.CustomAmount,
-      });
+      navigate(
+        getHyperliquidDepositConfirmationRoute(depositTransactionId),
+      );
     } catch (depositError) {
       setError(getErrorMessage(depositError));
       setIsSubmitting(false);
     }
   }, [
-    navigateToTransaction,
+    navigate,
     onActionComplete,
     selectedAccount?.address,
     selectedAddress,
@@ -255,6 +258,18 @@ export function getHyperliquidDepositStatusRoute(transactionId: string): string 
   });
 
   return `${HYPERLIQUID_DEPOSIT_ROUTE}?${searchParams.toString()}`;
+}
+
+export function getHyperliquidDepositConfirmationRoute(transactionId: string) {
+  const searchParams = new URLSearchParams({
+    loader: HYPERLIQUID_DEPOSIT_CONFIRMATION_LOADER,
+    goBackTo: getHyperliquidDepositStatusRoute(transactionId),
+  });
+
+  return {
+    pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
+    search: searchParams.toString(),
+  };
 }
 
 async function createDepositConfirmationTransaction({

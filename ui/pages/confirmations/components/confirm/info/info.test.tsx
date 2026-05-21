@@ -19,9 +19,10 @@ import {
   renderWithConfirmContextProvider,
   renderWithConfirmContext,
 } from '../../../../../../test/lib/confirmations/render-helpers';
+import { unapprovedTypedSignMsgV4WithPermission } from '../../../../../../test/data/confirmations/typed_sign';
 import { useAssetDetails } from '../../../hooks/useAssetDetails';
-import { getEnabledAdvancedPermissions } from '../../../../../../shared/lib/environment';
 import { HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID } from '../../../../../../shared/lib/hyperliquid-deposit-transaction';
+import { useEnabledAdvancedPermissions } from '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { ConfirmationLoader } from '../../../hooks/useConfirmationNavigation';
 import { enLocale as messages } from '../../../../../../test/lib/i18n-helpers';
@@ -85,12 +86,14 @@ jest.mock('./perps-deposit-info', () => {
   };
 });
 
-jest.mock('../../../../../../shared/lib/environment', () => ({
-  ...jest.requireActual('../../../../../../shared/lib/environment'),
-  getEnabledAdvancedPermissions: jest
-    .fn()
-    .mockReturnValue(['native-token-stream']),
-}));
+jest.mock(
+  '../../../../../hooks/gator-permissions/useEnabledAdvancedPermissions',
+  () => ({
+    useEnabledAdvancedPermissions: jest
+      .fn()
+      .mockReturnValue(['native-token-stream']),
+  }),
+);
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -124,6 +127,9 @@ jest.mock('../../../context/confirm', () => {
 describe('Info', () => {
   const mockedAssetDetails = jest.mocked(useAssetDetails);
   const mockedUseParams = jest.mocked(useParams);
+  const mockedUseEnabledAdvancedPermissions = jest.mocked(
+    useEnabledAdvancedPermissions,
+  );
   const MOCK_CONFIRMATION_ID = '1';
 
   beforeEach(() => {
@@ -133,6 +139,9 @@ describe('Info', () => {
       decimals: '4' as any,
     }));
     mockedUseParams.mockReturnValue({});
+    mockedUseEnabledAdvancedPermissions.mockReturnValue([
+      'native-token-stream',
+    ]);
     mockUseConfirmationNavigationOptions.mockReturnValue({ loader: null });
     mockConfirmContextValue = null;
   });
@@ -152,7 +161,9 @@ describe('Info', () => {
   });
 
   it('renders info section for typed sign request with permission', () => {
-    const state = getMockTypedSignPermissionConfirmState();
+    const state = getMockTypedSignPermissionConfirmState(
+      unapprovedTypedSignMsgV4WithPermission.decodedPermission,
+    );
     const mockStore = configureMockStore([])(state);
     const { container } = renderWithConfirmContextProvider(<Info />, mockStore);
     expect(container).toMatchSnapshot();
@@ -160,7 +171,7 @@ describe('Info', () => {
 
   it('throws an error if gator permissions feature is not enabled', () => {
     // the requested permission type is `native-token-stream`
-    jest.mocked(getEnabledAdvancedPermissions).mockReturnValue([]);
+    mockedUseEnabledAdvancedPermissions.mockReturnValue([]);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);
@@ -171,9 +182,7 @@ describe('Info', () => {
 
   it('throws an error if the specific permission type is not enabled', () => {
     // the requested permission type is `native-token-stream`
-    jest
-      .mocked(getEnabledAdvancedPermissions)
-      .mockReturnValue(['erc20-token-stream']);
+    mockedUseEnabledAdvancedPermissions.mockReturnValue(['erc20-token-stream']);
 
     const state = getMockTypedSignPermissionConfirmState();
     const mockStore = configureMockStore([])(state);

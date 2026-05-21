@@ -19,11 +19,12 @@ describe('hyperliquid-deposit-eligibility', () => {
       expect(
         hasZeroHyperliquidPerpsBalance({
           accountState: {
-            availableBalance: '0',
             marginUsed: '0',
             returnOnEquity: '0',
+            spendableBalance: '0',
             totalBalance: '0',
             unrealizedPnl: '0',
+            withdrawableBalance: '0',
           },
         }),
       ).toBe(true);
@@ -33,11 +34,12 @@ describe('hyperliquid-deposit-eligibility', () => {
       expect(
         hasZeroHyperliquidPerpsBalance({
           accountState: {
-            availableBalance: '12.34',
             marginUsed: '0',
             returnOnEquity: '0',
+            spendableBalance: '12.34',
             totalBalance: '12.34',
             unrealizedPnl: '0',
+            withdrawableBalance: '12.34',
           },
         }),
       ).toBe(false);
@@ -214,11 +216,12 @@ describe('hyperliquid-deposit-eligibility', () => {
           },
           perpsController: {
             getAccountState: jest.fn().mockResolvedValue({
-              availableBalance: '0',
               marginUsed: '0',
               returnOnEquity: '0',
+              spendableBalance: '0',
               totalBalance: '0',
               unrealizedPnl: '0',
+              withdrawableBalance: '0',
             }),
           },
           signerAddress: SIGNER_ADDRESS,
@@ -259,11 +262,12 @@ describe('hyperliquid-deposit-eligibility', () => {
           },
           perpsController: {
             getAccountState: jest.fn().mockResolvedValue({
-              availableBalance: '0',
               marginUsed: '0',
               returnOnEquity: '0',
+              spendableBalance: '0',
               totalBalance: '0',
               unrealizedPnl: '0',
+              withdrawableBalance: '0',
             }),
           },
           signerAddress: SIGNER_ADDRESS,
@@ -298,11 +302,12 @@ describe('hyperliquid-deposit-eligibility', () => {
           },
           perpsController: {
             getAccountState: jest.fn().mockResolvedValue({
-              availableBalance: '0',
               marginUsed: '0',
               returnOnEquity: '0',
+              spendableBalance: '0',
               totalBalance: '0',
               unrealizedPnl: '0',
+              withdrawableBalance: '0',
             }),
           },
           signerAddress: SIGNER_ADDRESS,

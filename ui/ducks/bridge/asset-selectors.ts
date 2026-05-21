@@ -318,7 +318,7 @@ const getNonEvmAssetsWithBalance = createSelector(
 // Combines EVM and non-EVM assets and appends tokenFiatAmount to each asset
 const getBridgeAssetsForAccountGroupId = createSelector(
   [
-    (_: BridgeAppState, id: AccountGroupId | undefined) => id,
+    (_: BridgeAppState, id?: AccountGroupId) => id,
     getEvmAssetsWithBalance,
     getEvmExchangeRates,
     getNonEvmAssetsWithBalance,

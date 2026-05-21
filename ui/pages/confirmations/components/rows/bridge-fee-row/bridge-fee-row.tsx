@@ -54,13 +54,22 @@ export function BridgeFeeRow({
     }
 
     const totalFee = new BigNumber(totals.fees.provider.usd)
+      .plus(totals.fees.metaMask?.usd ?? '0')
       .plus(totals.fees.sourceNetwork.estimate.usd)
       .plus(totals.fees.targetNetwork.usd);
 
     return formatFiat(totalFee.toNumber());
   }, [totals, formatFiat]);
 
-  const metamaskFeeUsd = useMemo(() => formatFiat(0), [formatFiat]);
+  const metamaskFeeUsd = useMemo(() => {
+    const raw = new BigNumber(totals?.fees?.metaMask?.usd ?? '0');
+    // Show "<$0.01" when fee is positive but rounds to $0.00 so users can see
+    // the fee is actually collected (Intl.NumberFormat uses 2 decimal places).
+    if (raw.gt(0) && raw.lt('0.01')) {
+      return `<${formatFiat(0.01)}`;
+    }
+    return formatFiat(raw.toNumber());
+  }, [totals, formatFiat]);
 
   const isSmall = variant === ConfirmInfoRowSize.Small;
   const textVariant = isSmall ? TextVariant.bodyMd : TextVariant.bodyMdMedium;

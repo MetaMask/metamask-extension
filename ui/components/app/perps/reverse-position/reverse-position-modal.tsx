@@ -14,11 +14,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import type { Position as PerpsPosition } from '@metamask/perps-controller';
-import {
-  formatPerpsFiat,
-  formatPositionSize,
-  PRICE_RANGES_MINIMAL_VIEW,
-} from '../../../../../shared/lib/perps-formatters';
+import { formatPositionSize } from '../../../../../shared/lib/perps-formatters';
 import {
   Modal,
   ModalContent,
@@ -44,6 +40,7 @@ import { getPositionDirection } from '../utils';
 import { handlePerpsError } from '../utils/translate-perps-error';
 import { PERPS_TOAST_KEYS, usePerpsToast } from '../perps-toast';
 import { PerpsGeoBlockModal } from '../perps-geo-block-modal';
+import { PerpsFeesDisplay } from '../perps-fees-display';
 import { usePerpsOrderFees } from '../../../../hooks/perps/usePerpsOrderFees';
 import type { Position } from '../types';
 
@@ -108,8 +105,10 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
 
   const {
     feeRate,
+    undiscountedFeeRate,
     isLoading: isFeeLoading,
     hasError: hasFeeError,
+    metamaskFeeRateDiscountPercentage,
   } = usePerpsOrderFees({
     symbol: position.symbol,
     orderType: 'market',
@@ -119,6 +118,14 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
     () =>
       feeRate === undefined ? undefined : 2 * sizeNum * currentPrice * feeRate,
     [sizeNum, currentPrice, feeRate],
+  );
+
+  const originalEstimatedFees = useMemo(
+    () =>
+      undiscountedFeeRate === undefined
+        ? undefined
+        : 2 * sizeNum * currentPrice * undiscountedFeeRate,
+    [sizeNum, currentPrice, undiscountedFeeRate],
   );
 
   const shouldShowFeePlaceholder =
@@ -259,17 +266,18 @@ export const ReversePositionModal: React.FC<ReversePositionModalProps> = ({
                 >
                   {t('perpsFees')}
                 </Text>
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  data-testid="perps-reverse-fee-value"
-                >
-                  {shouldShowFeePlaceholder
-                    ? '--'
-                    : formatPerpsFiat(estimatedFees, {
-                        ranges: PRICE_RANGES_MINIMAL_VIEW,
-                      })}
-                </Text>
+                <PerpsFeesDisplay
+                  metamaskFeeRateDiscountPercentage={
+                    shouldShowFeePlaceholder
+                      ? undefined
+                      : metamaskFeeRateDiscountPercentage
+                  }
+                  originalFee={originalEstimatedFees}
+                  fee={shouldShowFeePlaceholder ? undefined : estimatedFees}
+                  placeholder="--"
+                  feeTextFontWeight={FontWeight.Medium}
+                  feeTextTestId="perps-reverse-fee-value"
+                />
               </Box>
               {error && (
                 <Box

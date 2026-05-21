@@ -12,16 +12,16 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import {
-  ConfirmationLoader,
-  useConfirmationNavigation,
-} from '../confirmations/hooks/useConfirmationNavigation';
 import { usePerpsLiveAccount } from '../../hooks/perps/stream';
 import {
   HYPERLIQUID_DEPOSIT_CHAIN_ID,
   HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID,
   HYPERLIQUID_DEPOSIT_USDC_ADDRESS,
 } from '../../../shared/lib/hyperliquid-deposit-transaction';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  HYPERLIQUID_DEPOSIT_ROUTE,
+} from '../../helpers/constants/routes';
 import HyperliquidDepositPage, {
   HYPERLIQUID_DEPOSIT_DEFAULT_AMOUNT_USDC,
 } from './hyperliquid-deposit';
@@ -31,13 +31,13 @@ jest.mock('../../store/actions', () => ({
   findNetworkClientIdByChainId: jest.fn(),
 }));
 
-jest.mock('../confirmations/hooks/useConfirmationNavigation', () => {
-  const actual = jest.requireActual(
-    '../confirmations/hooks/useConfirmationNavigation',
-  );
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => {
+  const actual = jest.requireActual('react-router-dom');
   return {
     ...actual,
-    useConfirmationNavigation: jest.fn(),
+    useNavigate: () => mockNavigate,
   };
 });
 
@@ -49,11 +49,22 @@ const addTransactionMock = jest.mocked(addTransaction);
 const findNetworkClientIdByChainIdMock = jest.mocked(
   findNetworkClientIdByChainId,
 );
-const useConfirmationNavigationMock = jest.mocked(useConfirmationNavigation);
 const usePerpsLiveAccountMock = jest.mocked(usePerpsLiveAccount);
 
 const MOCK_NETWORK_CLIENT_ID = 'arbitrum-mainnet';
 const MOCK_TX_ID = 'hyperliquid-deposit-tx-id';
+
+function getExpectedDepositConfirmationRoute(transactionId: string) {
+  const searchParams = new URLSearchParams({
+    loader: 'customAmount',
+    goBackTo: `${HYPERLIQUID_DEPOSIT_ROUTE}?step=status&txId=${transactionId}`,
+  });
+
+  return {
+    pathname: `${CONFIRM_TRANSACTION_ROUTE}/${transactionId}`,
+    search: searchParams.toString(),
+  };
+}
 
 function renderPage(
   route = '/hyperliquid-deposit',
@@ -84,8 +95,6 @@ function renderStatusPage(status: TransactionStatus) {
 }
 
 describe('HyperliquidDepositPage', () => {
-  const navigateToTransactionMock = jest.fn();
-
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -93,9 +102,6 @@ describe('HyperliquidDepositPage', () => {
       MOCK_NETWORK_CLIENT_ID as never,
     );
     addTransactionMock.mockResolvedValue({ id: MOCK_TX_ID } as never);
-    useConfirmationNavigationMock.mockReturnValue({
-      navigateToTransaction: navigateToTransactionMock,
-    } as never);
     usePerpsLiveAccountMock.mockReturnValue({
       account: null,
       isInitialLoading: false,
@@ -160,10 +166,9 @@ describe('HyperliquidDepositPage', () => {
     );
     expect(addTransactionMock.mock.calls[0][0].data).toContain('05f5e100');
     expect(HYPERLIQUID_DEPOSIT_DEFAULT_AMOUNT_USDC).toBe('100');
-    expect(navigateToTransactionMock).toHaveBeenCalledWith(MOCK_TX_ID, {
-      goBackTo: '/hyperliquid-deposit?step=status&txId=hyperliquid-deposit-tx-id',
-      loader: ConfirmationLoader.CustomAmount,
-    });
+    expect(mockNavigate).toHaveBeenCalledWith(
+      getExpectedDepositConfirmationRoute(MOCK_TX_ID),
+    );
   });
 
   it('shows a pending status before the deposit transaction confirms', () => {
@@ -248,6 +253,6 @@ describe('HyperliquidDepositPage', () => {
     fireEvent.click(screen.getByTestId('hyperliquid-deposit-intro-button'));
 
     expect(await screen.findByText('failed')).toBeInTheDocument();
-    expect(navigateToTransactionMock).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 });

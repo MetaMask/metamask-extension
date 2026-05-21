@@ -10,7 +10,7 @@ import configureStore from '../../../../../store/store';
 import { Severity } from '../../../../../helpers/constants/design-system';
 import {
   useIsTransactionPayLoading,
-  useTransactionPayRequiredTokens,
+  useTransactionPayPrimaryRequiredToken,
 } from '../../../hooks/pay/useTransactionPayData';
 import { HYPERLIQUID_DEPOSIT_CONFIRMATION_REQUEST_ID } from '../../../../../../shared/lib/hyperliquid-deposit-transaction';
 import { SingleActionFooter } from './single-action-footer';
@@ -96,13 +96,10 @@ describe('<SingleActionFooter />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     jest.mocked(useIsTransactionPayLoading).mockReturnValue(false);
-    jest
-      .mocked(useTransactionPayRequiredTokens)
-      .mockReturnValue([
-        { amountUsd: '10.00', skipIfBalance: false } as ReturnType<
-          typeof useTransactionPayRequiredTokens
-        >[number],
-      ]);
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '10.00',
+      skipIfBalance: false,
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
   });
 
   it('renders the button', () => {
@@ -187,26 +184,68 @@ describe('<SingleActionFooter />', () => {
     expect(button).toHaveTextContent('Insufficient funds');
   });
 
+  it('shows insufficient funds on perpsWithdraw button when amount exceeds balance', () => {
+    const { getByTestId } = render({
+      confirmation: genPerpsWithdraw(),
+      alerts: [
+        {
+          key: 'insufficient-pay-token-balance',
+          severity: Severity.Danger,
+          reason: 'Insufficient funds',
+          message: 'Amount exceeds your available Perps balance.',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent('Insufficient funds');
+  });
+
   it('disables button when amount is zero', () => {
-    jest
-      .mocked(useTransactionPayRequiredTokens)
-      .mockReturnValue([
-        { amountUsd: '0', skipIfBalance: false } as ReturnType<
-          typeof useTransactionPayRequiredTokens
-        >[number],
-      ]);
+    jest.mocked(useTransactionPayPrimaryRequiredToken).mockReturnValue({
+      amountUsd: '0',
+      skipIfBalance: false,
+    } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
 
     const { getByTestId } = render();
 
     expect(getByTestId('confirm-footer-button')).toBeDisabled();
   });
 
-  it('disables button when no required tokens exist', () => {
-    jest.mocked(useTransactionPayRequiredTokens).mockReturnValue([]);
+  it('shows disabled loading when primary required token is not yet resolved', () => {
+    jest
+      .mocked(useTransactionPayPrimaryRequiredToken)
+      .mockReturnValue(undefined);
 
     const { getByTestId } = render();
 
-    expect(getByTestId('confirm-footer-button')).toBeDisabled();
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('shows disabled loading over blocking alerts when awaiting required token', () => {
+    jest
+      .mocked(useTransactionPayPrimaryRequiredToken)
+      .mockReturnValue(undefined);
+
+    const { getByTestId } = render({
+      alerts: [
+        {
+          key: 'some-blocking-alert',
+          severity: Severity.Danger,
+          reason: 'Hardware wallet not supported',
+          message: 'Switch wallets to continue.',
+          isBlocking: true,
+        },
+      ],
+    });
+
+    const button = getByTestId('confirm-footer-button');
+    expect(button).toBeDisabled();
+    expect(button).toHaveAttribute('aria-busy', 'true');
   });
 
   it('shows Add funds label for perpsDeposit transaction type', () => {
@@ -227,12 +266,11 @@ describe('<SingleActionFooter />', () => {
 
   it('disables Hyperliquid deposit transactions below the minimum amount', () => {
     jest
-      .mocked(useTransactionPayRequiredTokens)
-      .mockReturnValue([
-        { amountUsd: '4.99', skipIfBalance: false } as ReturnType<
-          typeof useTransactionPayRequiredTokens
-        >[number],
-      ]);
+      .mocked(useTransactionPayPrimaryRequiredToken)
+      .mockReturnValue({
+        amountUsd: '4.99',
+        skipIfBalance: false,
+      } as ReturnType<typeof useTransactionPayPrimaryRequiredToken>);
 
     const { getByTestId } = render({ confirmation: genHyperliquidDeposit() });
 

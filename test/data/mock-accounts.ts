@@ -103,8 +103,6 @@ export const MOCK_ACCOUNT_INSTITUTIONAL: InternalAccount = {
     keyring: { type: KeyringTypes.snap },
     snap: {
       id: 'npm:@metamask/institutional-wallet-snap',
-      name: 'Institutional Wallet',
-      enabled: true,
     },
     lastSelected: 1751048625755,
   },

@@ -42,14 +42,6 @@ function setEnvironmentVariables({
     ? getOAuthClientId({ ...oauthClientIdOptions, provider: 'GOOGLE' })
     : '';
 
-  let assetsUnifiedStateEnabled =
-    variables.getMaybe('ASSETS_UNIFIED_STATE_ENABLED') || 'false';
-  if (isDevBuild) {
-    assetsUnifiedStateEnabled = 'true';
-  } else if (isTestBuild) {
-    assetsUnifiedStateEnabled = 'false';
-  }
-
   variables.set({
     DEBUG: isDevBuild || isTestBuild ? variables.getMaybe('DEBUG') : undefined,
     EIP_4337_ENTRYPOINT: isTestBuild
@@ -63,6 +55,8 @@ function setEnvironmentVariables({
       testing: isTestBuild,
     }),
     METAMASK_DEBUG: isDevBuild || variables.getMaybe('METAMASK_DEBUG') === true,
+    SENTRY_DISTRIBUTED_TRACING_DISABLED:
+      variables.getMaybe('SENTRY_DISTRIBUTED_TRACING_DISABLED') === true,
     METAMASK_BUILD_NAME: buildName,
     METAMASK_BUILD_APP_ID: getBuildAppId({
       buildType,
@@ -94,7 +88,9 @@ function setEnvironmentVariables({
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
     PERPS_ENABLED: isTestBuild ? 'true' : variables.getMaybe('PERPS_ENABLED'),
-    ASSETS_UNIFIED_STATE_ENABLED: assetsUnifiedStateEnabled,
+    ASSETS_UNIFIED_STATE_ENABLED: isTestBuild
+      ? 'false'
+      : variables.getMaybe('ASSETS_UNIFIED_STATE_ENABLED') || 'false',
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
   });
@@ -287,7 +283,6 @@ function getPhishingWarningPageUrl({ variables, testing }) {
 
   let phishingWarningPageUrlObject;
   try {
-    // eslint-disable-next-line no-new
     phishingWarningPageUrlObject = new URL(phishingWarningPageUrl);
   } catch (error) {
     throw new Error(
