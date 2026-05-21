@@ -1545,9 +1545,7 @@ export class MetaMetricsController extends BaseController<
 
   #getAccountTypeTrait(
     firstTimeFlowType: MetaMaskState['firstTimeFlowType'],
-  ): NonNullable<
-    MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]
-  > {
+  ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
     switch (firstTimeFlowType) {
       case FirstTimeFlowType.import:
       case FirstTimeFlowType.restore:
@@ -1563,13 +1561,17 @@ export class MetaMetricsController extends BaseController<
   }
 
   #getSocialAccountType(
-    baseType: MetaMetricsEventAccountType.Default | MetaMetricsEventAccountType.Imported,
+    baseType:
+      | MetaMetricsEventAccountType.Default
+      | MetaMetricsEventAccountType.Imported,
   ): NonNullable<MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]> {
     const authConnection = this.#getSeedlessOnboardingState()?.authConnection;
     return authConnection ? `${baseType}_${authConnection}` : baseType;
   }
 
-  #getSeedlessOnboardingState(): Partial<SeedlessOnboardingControllerState> | undefined {
+  #getSeedlessOnboardingState():
+    | Partial<SeedlessOnboardingControllerState>
+    | undefined {
     try {
       return this.messenger.call('SeedlessOnboardingController:getState');
     } catch {
