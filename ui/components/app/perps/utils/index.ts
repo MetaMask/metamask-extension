@@ -21,6 +21,8 @@ export {
   shouldDisplayOrderInMarketDetailsOrders,
   buildDisplayOrdersWithSyntheticTpsl,
   isOrderAssociatedWithFullPosition,
+  derivePositionTpslPricesFromOrders,
+  willFlipPosition,
   formatOrderLabel,
 } from './orderUtils';
 
