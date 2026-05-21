@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -10,7 +10,7 @@ import {
   getSocialLoginEmail,
   getSocialLoginType,
 } from '../../../selectors';
-import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
+import { AuthConnection, FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
@@ -38,6 +38,20 @@ export default function AccountNotFound() {
     bufferedEndTrace,
     onboardingParentContext,
   } = useContext(MetaMetricsContext);
+
+  const descriptionKey = useMemo(() => {
+    if (socialLoginType === AuthConnection.Telegram) {
+      return 'accountNotFoundDescriptionTelegram';
+    }
+    return 'accountNotFoundDescription';
+  }, [socialLoginType])
+
+  const descriptionInterpolation = useMemo(() => {
+    if (socialLoginType === AuthConnection.Telegram) {
+      return [socialLoginType];
+    }
+    return [userSocialLoginEmail || '-'];
+  }, [socialLoginType, userSocialLoginEmail]);
 
   const onLoginWithDifferentMethod = async () => {
     await dispatch(resetOnboarding());
@@ -98,8 +112,8 @@ export default function AccountNotFound() {
     <AccountStatusLayout
       dataTestId="account-not-found"
       titleKey="accountNotFoundTitle"
-      descriptionKey="accountNotFoundDescription"
-      descriptionInterpolation={[userSocialLoginEmail || '-']}
+      descriptionKey={descriptionKey}
+      descriptionInterpolation={descriptionInterpolation}
       primaryButtonTextKey="accountNotFoundCreateOne"
       onPrimaryButtonClick={onCreateNewAccount}
       secondaryButtonTextKey="useDifferentLoginMethod"
