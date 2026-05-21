@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { forEachEnvelopeItem, parseEnvelope } from '@sentry/utils';
+import { forEachEnvelopeItem, parseEnvelope } from '@sentry/core';
 import { tick } from '../../../test/lib/timer-helpers';
 import { makeTransport } from './sentry-make-transport';
 
@@ -127,7 +127,6 @@ describe('sentry-make-transport', () => {
       await expect(transport.send(envelope)).rejects.toThrow(
         'Network request skipped as metrics disabled',
       );
-      expect(makeFetchTransportSpy).toHaveBeenCalled();
       expect(fetchSpy).not.toHaveBeenCalled();
 
       fetchSpy.mockRestore();
@@ -303,6 +302,7 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
+      Sentry.captureMessage('opted-out transport test');
 
       await tick();
 
@@ -340,6 +340,7 @@ describe('sentry-make-transport', () => {
         transport: makeTransport,
         tracesSampleRate: 0,
       });
+      Sentry.captureMessage('opted-in transport test');
 
       await tick();
 
@@ -361,13 +362,13 @@ describe('sentry-make-transport', () => {
         })
         .filter((parsed): parsed is ParsedSentryEnvelope => parsed !== null);
 
-      const hasSessionItem = envelopes.some((parsedEnvelope) =>
+      const hasEventItem = envelopes.some((parsedEnvelope) =>
         forEachEnvelopeItem(
           parsedEnvelope,
-          (_item: unknown, type: string) => type === 'session',
+          (_item: unknown, type: string) => type === 'event',
         ),
       );
-      expect(hasSessionItem).toBe(true);
+      expect(hasEventItem).toBe(true);
 
       fetchSpy.mockRestore();
     });

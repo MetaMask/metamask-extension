@@ -5,6 +5,91 @@ import {
 } from './setupSentry';
 
 describe('Setup Sentry', () => {
+  describe('setupSentry', () => {
+    const ORIGINAL_ENV = process.env;
+
+    beforeEach(() => {
+      jest.resetModules();
+      process.env = {
+        ...ORIGINAL_ENV,
+        METAMASK_BUILD_TYPE: 'main',
+        METAMASK_ENVIRONMENT: 'production',
+        METAMASK_VERSION: '13.33.0',
+        SENTRY_DSN: 'https://public@example.ingest.sentry.io/1',
+      };
+    });
+
+    afterEach(() => {
+      process.env = ORIGINAL_ENV;
+      jest.restoreAllMocks();
+    });
+
+    it('enables W3C traceparent propagation during client initialization', async () => {
+      const init = jest.fn();
+      const registerSpanErrorInstrumentation = jest.fn();
+      const dedupeIntegration = jest.fn().mockReturnValue({ name: 'dedupe' });
+      const extraErrorDataIntegration = jest
+        .fn()
+        .mockReturnValue({ name: 'extraErrorData' });
+      const browserTracingIntegration = jest
+        .fn()
+        .mockReturnValue({ name: 'browserTracing' });
+      const setTag = jest.fn();
+
+      jest.doMock('@sentry/browser', () => ({
+        __esModule: true,
+        browserTracingIntegration,
+        dedupeIntegration,
+        extraErrorDataIntegration,
+        getClient: jest.fn(),
+        init,
+        registerSpanErrorInstrumentation,
+        setTag,
+      }));
+      jest.doMock('../../../shared/lib/manifestFlags', () => ({
+        getManifestFlags: () => ({}),
+      }));
+      jest.doMock('../../../shared/lib/mv3.utils', () => ({
+        isManifestV3: false,
+      }));
+      jest.doMock('../../../shared/lib/sentry-release', () => ({
+        getSentryRelease: () => 'metamask-extension@13.33.0',
+      }));
+      jest.doMock('./install-type', () => ({
+        getInstallType: () => 'normal',
+        initInstallType: jest.fn(),
+      }));
+      jest.doMock('./sentry-get-state', () => ({
+        getMetaMetricsState: jest.fn(),
+        getMetaMetricsStateFromAppState: jest.fn(),
+        getState: jest.fn(() => ({
+          MetaMetricsController: { participateInMetaMetrics: true },
+        })),
+      }));
+      jest.doMock('./sentry-make-transport', () => ({
+        makeTransport: jest.fn(),
+      }));
+      jest.doMock('./sentry-metametrics', () => ({
+        metaMetricsIntegration: jest.fn().mockReturnValue({
+          name: 'metaMetrics',
+        }),
+      }));
+
+      await jest.isolateModulesAsync(async () => {
+        const { default: setupSentry } = await import('./setupSentry');
+
+        setupSentry();
+
+        expect(registerSpanErrorInstrumentation).toHaveBeenCalled();
+        expect(init).toHaveBeenCalledWith(
+          expect.objectContaining({
+            propagateTraceparent: true,
+          }),
+        );
+      });
+    });
+  });
+
   describe('rewriteReport', () => {
     it('should remove urls from error messages', () => {
       const testReport = {

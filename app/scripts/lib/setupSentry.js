@@ -1,6 +1,6 @@
 import { createModuleLogger } from '@metamask/utils';
 import * as Sentry from '@sentry/browser';
-import { logger } from '@sentry/utils';
+import { logger } from '@sentry/core';
 import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import { sentryLogger as log } from '../../../shared/lib/sentry';
@@ -124,6 +124,7 @@ function getClientOptions() {
     tracesSampleRate: getTracesSampleRate(sentryTarget),
     // If we are reporting to SENTRY_DSN_PERFORMANCE, we want to ignore all errors.
     ignoreErrors: sentryTarget === SENTRY_DSN_PERFORMANCE ? [/.*/u] : undefined,
+    propagateTraceparent: true,
     transport: makeTransport,
   };
 }
@@ -500,8 +501,10 @@ function integrateLogging() {
     return;
   }
 
+  const sentrySdkLogger = logger;
+
   for (const loggerType of ['log', 'error']) {
-    logger[loggerType] = (...args) => {
+    sentrySdkLogger[loggerType] = (...args) => {
       const message = args[0].replace(`Sentry Logger [${loggerType}]: `, '');
       internalLog(message, ...args.slice(1));
     };
