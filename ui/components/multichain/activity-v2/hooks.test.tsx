@@ -693,6 +693,9 @@ describe('useBridgeTxHistoryData', () => {
     expect(result.current.isBridgeFailed).toBe(true);
     expect(result.current.isBridgeComplete).toBe(false);
     expect(result.current.showBridgeTxDetails).toEqual(expect.any(Function));
+    expect(result.current.bridgeHistoryItem).toMatchObject({
+      originalTransactionId: 'intent-tx-meta-id',
+    });
 
     act(() => result.current.showBridgeTxDetails?.());
 
