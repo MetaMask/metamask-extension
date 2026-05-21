@@ -60,6 +60,9 @@ class AssetListPage {
   private readonly importTokensNextButton =
     '[data-testid="import-tokens-button-next"]';
 
+  private readonly lowValueAssetsToggle =
+    '[data-testid="low-value-assets-toggle"]';
+
   private readonly multichainTokenListButton = {
     testId: 'multichain-token-list-button',
   };
@@ -140,7 +143,7 @@ class AssetListPage {
   }
 
   private tokenPercentage(address: string): string {
-    return `[data-testid="token-increase-decrease-percentage-${address}"]`;
+    return `[data-testid="token-increase-decrease-percentage-${address.toLowerCase()}"]`;
   }
 
   private readonly tokenChainDropdown =
@@ -202,6 +205,11 @@ class AssetListPage {
       },
       { timeout: 5000, interval: 100 },
     );
+  }
+
+  async clickLowValueAssetsToggle(): Promise<void> {
+    console.log('Clicking on the low value assets toggle');
+    await this.driver.clickElement(this.lowValueAssetsToggle);
   }
 
   async clickOnAsset(assetName: string): Promise<void> {

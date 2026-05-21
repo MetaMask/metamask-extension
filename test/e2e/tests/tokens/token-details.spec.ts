@@ -119,6 +119,7 @@ describe('Token Details', function () {
           symbol,
         );
         await assetListPage.dismissTokenImportedMessage();
+        await assetListPage.clickLowValueAssetsToggle();
         await assetListPage.openTokenDetails(symbol);
         await assetListPage.checkTokenSymbolAndAddressDetails(
           symbol,
