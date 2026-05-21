@@ -4887,8 +4887,8 @@ describe('MetaMaskController', () => {
           metamaskController.keyringController.state.keyrings,
         );
 
-        // 0: Primary HD keyring, 1: Snap keyring
-        expect(previousKeyrings).toHaveLength(2);
+        // 0: Primary HD keyring
+        expect(previousKeyrings).toHaveLength(1);
 
         await metamaskController.importMnemonicToVault(TEST_SEED_ALT);
 
