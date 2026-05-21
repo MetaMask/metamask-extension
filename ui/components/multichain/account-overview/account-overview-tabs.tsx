@@ -33,9 +33,10 @@ import NftsTab from '../../app/assets/nfts/nfts-tab';
 import { PerpsTab } from '../../app/perps/perps-tab';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
-import { ActivityList } from '../../../pages/activity/activity-list';
-// import { ActivityList } from '../activity-v2/activity-list';
+import { ActivityList as ActivityListV3 } from '../../../pages/activity/activity-list';
+import { ActivityList as ActivityListV2 } from '../activity-v2/activity-list';
 import { usePrefetchTransactions } from '../activity-v2/useTransactionsQuery';
+import { getIsActivityListRedesignEnabled } from '../../../selectors/activity/feature-flags';
 import { transitionForward } from '../../ui/transition';
 import { AccountOverviewCommonProps } from './common';
 
@@ -82,6 +83,9 @@ export const AccountOverviewTabs = ({
   const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
+  const isActivityListRedesignEnabled = useSelector(
+    getIsActivityListRedesignEnabled,
+  );
   const prefetchTransactions = usePrefetchTransactions();
 
   useEffect(() => {
@@ -240,7 +244,11 @@ export const AccountOverviewTabs = ({
             onMouseEnter={prefetchTransactions}
           >
             <ErrorBoundary key="activity">
-              <ActivityList />
+              {isActivityListRedesignEnabled ? (
+                <ActivityListV3 />
+              ) : (
+                <ActivityListV2 />
+              )}
             </ErrorBoundary>
           </Tab>
         )}
