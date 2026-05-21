@@ -5,8 +5,9 @@
 # `.skills-cache/metamask-skills` on every `yarn install`. `yarn skills`
 # auto-detects that cache when no env var is set — nothing to do.
 #
-# Optional: point at a different clone here, or via env var if you need a
-# per-shell override. Environment variables take precedence over this file.
+# Optional persistent skills config belongs in this file. Environment variables
+# with the same names are only for one-off shell or CI overrides and take
+# precedence over this file.
 #   METAMASK_SKILLS_DIR   path to MetaMask/skills checkout (public, no auth)
 #   CONSENSYS_SKILLS_DIR  path to Consensys/skills checkout (private overlay)
 #

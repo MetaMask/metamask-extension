@@ -98,6 +98,8 @@ yarn skills --select                         # interactively pick domains
 SKILLS_DOMAINS=perps,testing yarn skills      # one-off domain override
 ```
 
+Use `.skills.local` for persistent skills configuration. Shell environment variables with the same names are supported for one-off or CI overrides and take precedence.
+
 Skipping `yarn skills` is fine — it only affects agent tooling, not the app build.
 
 ## Git Hooks

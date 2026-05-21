@@ -27,7 +27,7 @@ const NO_SOURCE_MESSAGE = [
   '.skills-cache/metamask-skills automatically. If that did not happen',
   '(e.g. you ran the wrapper before `yarn install`, or postinstall was',
   'skipped via CI / SKILLS_SKIP_POSTINSTALL), point at a clone manually',
-  'in .skills.local or via shell env:',
+  'in .skills.local:',
   '',
   '  git clone https://github.com/MetaMask/skills ~/dev/metamask/skills',
   '  echo METAMASK_SKILLS_DIR=~/dev/metamask/skills >> .skills.local',
