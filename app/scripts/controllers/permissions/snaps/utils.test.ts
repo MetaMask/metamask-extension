@@ -27,7 +27,7 @@ describe('getMnemonicSeed', () => {
 
       await expect(getMnemonicSeed(messenger)).resolves.toBe(SEED);
       expect(messenger.call).toHaveBeenCalledWith(
-        'KeyringController:withKeyringV2',
+        'KeyringController:withKeyringV2Unsafe',
         expect.any(Object),
         expect.any(Function),
       );
