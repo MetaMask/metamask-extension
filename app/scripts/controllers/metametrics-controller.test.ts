@@ -11,6 +11,10 @@ import {
   TokensControllerState,
 } from '@metamask/assets-controllers';
 import {
+  AuthConnection,
+  type SeedlessOnboardingControllerState,
+} from '@metamask/seedless-onboarding-controller';
+import {
   EthAccountType,
   BtcAccountType,
   SolAccountType,
@@ -2212,6 +2216,7 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
           [MetaMetricsUserTrait.IsMetricsOptedIn]: true,
           [MetaMetricsUserTrait.ProfileId]: undefined,
+          [MetaMetricsUserTrait.LoginType]: 'metamask',
           [MetaMetricsUserTrait.PetnameAddressCount]: 3,
           [MetaMetricsUserTrait.TokenSortPreference]: 'token-sort-key',
           [MetaMetricsUserTrait.PrivacyModeEnabled]: true,
@@ -2222,6 +2227,59 @@ describe('MetaMetricsController', function () {
           [MetaMetricsUserTrait.Os]: OS.MACOS,
         });
       });
+    });
+
+    it('uses the seedless auth connection as the login type trait', async function () {
+      await withController(
+        {
+          seedlessOnboardingState: {
+            authConnection: AuthConnection.Google,
+          },
+        },
+        ({ controller }) => {
+          const traits = controller._buildUserTraitsObject({
+            addressBook: {},
+            allTokens: {},
+            ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+            ledgerTransportType: LedgerTransportTypes.webhid,
+            openSeaEnabled: true,
+            internalAccounts: {
+              accounts: {
+                mock1: {} as InternalAccount,
+              },
+              selectedAccount: 'mock1',
+            },
+            useNftDetection: false,
+            theme: 'default' as ThemeType,
+            useTokenDetection: true,
+            allNfts: {},
+            participateInMetaMetrics: true,
+            dataCollectionForMarketing: false,
+            preferences: {
+              privacyMode: false,
+              tokenNetworkFilter: {},
+              tokenSortConfig: {
+                key: 'token-sort-key',
+                order: 'dsc',
+                sortCallback: 'stringNumeric',
+              },
+              showNativeTokenAsMainBalance: false,
+            } as Preferences,
+            securityAlertsEnabled: false,
+            names: {
+              ethereumAddress: {},
+            },
+            currentCurrency: 'usd',
+            srpSessionData: undefined,
+            keyrings: [],
+            multichainNetworkConfigurationsByChainId: {},
+          });
+
+          expect(traits?.[MetaMetricsUserTrait.LoginType]).toBe(
+            AuthConnection.Google,
+          );
+        },
+      );
     });
 
     it('should return only changed traits object on subsequent calls', async function () {
@@ -3106,6 +3164,7 @@ type WithControllerOptions = {
   currentLocale?: string;
   options?: Partial<MetaMetricsControllerOptions>;
   remoteFeatureFlags?: Record<string, unknown>;
+  seedlessOnboardingState?: Partial<SeedlessOnboardingControllerState>;
   mockNetworkClientConfigurationsByNetworkClientId?: Record<
     NetworkClientId,
     {
@@ -3143,6 +3202,7 @@ async function withController<ReturnValue>(
       options = {},
       currentLocale = LOCALE,
       remoteFeatureFlags = {},
+      seedlessOnboardingState = {},
       mockNetworkClientConfigurationsByNetworkClientId = {
         selectedNetworkClientId: {
           chainId: DEFAULT_CHAIN_ID,
@@ -3186,6 +3246,11 @@ async function withController<ReturnValue>(
       }),
     );
 
+    messenger.registerActionHandler(
+      'SeedlessOnboardingController:getState',
+      jest.fn().mockReturnValue(seedlessOnboardingState),
+    );
+
     const metaMetricsControllerMessenger = new Messenger<
       'MetaMetricsController',
       AllowedActions,
@@ -3202,6 +3267,7 @@ async function withController<ReturnValue>(
         'NetworkController:getState',
         'NetworkController:getNetworkClientById',
         'RemoteFeatureFlagController:getState',
+        'SeedlessOnboardingController:getState',
       ],
       events: [
         'PreferencesController:stateChange',

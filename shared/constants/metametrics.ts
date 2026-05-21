@@ -1,3 +1,4 @@
+import type { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import { Json } from '@metamask/utils';
 import type {
   DeviceType,
@@ -576,6 +577,11 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   profile_id?: string;
   /**
+   * The wallet login type used by the user.
+   */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  account_type?: AuthConnection | 'metamask';
+  /**
    * The configured EVM and non-EVM chain ids in CAIP-2 format.
    */
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -778,6 +784,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user signs in
    */
   ProfileId = 'profile_id',
+  /**
+   * Identifies the wallet login type used by the user.
+   */
+  AccountType = 'account_type',
   /**
    * Identified when the user adds or removes configured chains (evm or non-evm)
    */

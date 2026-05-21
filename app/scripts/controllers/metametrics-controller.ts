@@ -24,6 +24,9 @@ import type {
   NetworkControllerNetworkDidChangeEvent,
 } from '@metamask/network-controller';
 import type { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import type {
+  SeedlessOnboardingControllerGetStateAction,
+} from '@metamask/seedless-onboarding-controller';
 import type { Browser } from 'webextension-polyfill';
 import type { Nft } from '@metamask/assets-controllers';
 import {
@@ -343,7 +346,8 @@ export type AllowedActions =
   | PreferencesControllerGetStateAction
   | NetworkControllerGetStateAction
   | NetworkControllerGetNetworkClientByIdAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | SeedlessOnboardingControllerGetStateAction;
 
 /**
  * Events that this controller is allowed to subscribe.
@@ -1492,6 +1496,7 @@ export class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.ProfileId]: Object.entries(
         metamaskState.srpSessionData || {},
       )?.[0]?.[1]?.profile?.profileId,
+      [MetaMetricsUserTrait.AccountType]: this.#getAccountTypeTrait(),
       [MetaMetricsUserTrait.Platform]: getPlatform(),
       [MetaMetricsUserTrait.InstallType]: getInstallType(),
       [MetaMetricsUserTrait.DeviceType]: getDeviceType(),
@@ -1530,6 +1535,19 @@ export class MetaMetricsController extends BaseController<
     }
 
     return null;
+  }
+
+  #getAccountTypeTrait(): NonNullable<
+    MetaMetricsUserTraits[MetaMetricsUserTrait.AccountType]
+  > {
+    try {
+      return (
+        this.messenger.call('SeedlessOnboardingController:getState')
+          ?.authConnection ?? 'metamask'
+      );
+    } catch {
+      return 'metamask';
+    }
   }
 
   /**
