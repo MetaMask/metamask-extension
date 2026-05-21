@@ -5056,6 +5056,7 @@ describe('MetaMaskController', () => {
           '0x18c7', // MegaETH Testnet
           '0x279f', // Monad Testnet
           '0x539', // Localhost
+          '0x8f', // Monad Mainnet
         ];
 
         // Assert - ensure networks with failovers have failovers, and other networks do not have failovers

@@ -26,7 +26,6 @@ import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import {
-  getPreferences,
   getShouldHideZeroBalanceTokens,
   getIsTestnet,
   getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -37,6 +36,7 @@ import {
   getEnabledNetworksByNamespace,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 
 import { AccountGroupBalance } from '../assets/account-group-balance/account-group-balance';
 import { AccountGroupBalanceChange } from '../assets/account-group-balance-change/account-group-balance-change';
@@ -51,10 +51,9 @@ import { useAccountTotalCrossChainFiatBalance } from '../../../hooks/useAccountT
 
 import { useGetFormattedTokensPerChain } from '../../../hooks/useGetFormattedTokensPerChain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
+import { useRewardsModal } from '../../../hooks/rewards/useRewardsModal';
 import { Skeleton } from '../../component-library/skeleton';
 import { isZeroAmount } from '../../../helpers/utils/number-utils';
-import { RewardsPointsBalance } from '../rewards/RewardsPointsBalance';
-import { selectRewardsEnabled } from '../../../ducks/rewards/selectors';
 import { BalanceEmptyState } from '../balance-empty-state';
 import { selectAccountGroupBalanceForEmptyState } from '../../../selectors/assets';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
@@ -202,10 +201,10 @@ export const CoinOverview = ({
 
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
-  const isRewardsEnabled = useSelector(selectRewardsEnabled);
-
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
   const isTestnet = useSelector(getMultichainIsTestnet);
+
+  useRewardsModal();
 
   // Only show empty state when Receive can act (selectedAccountGroup exists);
   // otherwise the Receive button would be a no-op.
@@ -262,9 +261,6 @@ export const CoinOverview = ({
 
   const renderPercentageAndAmountChange = () => {
     const renderPercentageAndAmountChangeTrail = () => {
-      if (isRewardsEnabled) {
-        return <RewardsPointsBalance />;
-      }
       return (
         <ButtonLink
           endIconName={IconName.Export}

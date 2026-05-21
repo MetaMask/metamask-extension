@@ -24,7 +24,7 @@ export const PerpsWithdrawInfo = () => {
   const { account } = usePerpsLiveAccount();
   const balanceUsdOverride =
     parseFloat(
-      account?.availableToTradeBalance ?? account?.availableBalance ?? '0',
+      account?.withdrawableBalance ?? account?.spendableBalance ?? '0',
     ) || 0;
 
   return (

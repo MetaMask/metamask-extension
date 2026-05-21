@@ -15,7 +15,6 @@ export const LOCK_ROUTE = '/lock';
 export const ASSET_ROUTE = '/asset';
 export const SETTINGS_ROUTE = '/settings';
 export const LEGACY_SETTINGS_V2_ROUTE = '/settings-v2';
-export const SETTINGS_V2_ROUTE = SETTINGS_ROUTE;
 export const ASSETS_ROUTE = '/settings/assets';
 export const CURRENCY_ROUTE = '/settings/preferences-and-display/currency';
 export const TRANSACTIONS_ROUTE = '/settings/transactions';
@@ -82,16 +81,15 @@ export const CONTACTS_ADD_ROUTE = '/contacts/add';
 export const CONTACTS_VIEW_ROUTE = '/contacts/view';
 export const CONTACTS_EDIT_ROUTE = '/contacts/edit';
 export const SNAP_SETTINGS_ROUTE = '/settings/snap';
-export const SECURITY_PASSWORD_CHANGE_ROUTE =
-  '/settings/security-and-privacy/password-change';
-export const BACKUPANDSYNC_ROUTE =
-  '/settings/security-and-privacy/backup-and-sync';
+export const BACKUPANDSYNC_ROUTE = '/settings/backup-and-sync';
 export const REVEAL_SEED_ROUTE = '/seed';
 export const IMPORT_SRP_ROUTE = '/import-srp';
 export const RESTORE_VAULT_ROUTE = '/restore-vault';
 export const IMPORT_TOKEN_ROUTE = '/import-token';
 export const IMPORT_TOKENS_ROUTE = '/import-tokens';
 export const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
+export const TOKEN_MANAGEMENT_ROUTE = '/token-management';
+export const CUSTOM_TOKEN_IMPORT_ROUTE = '/custom-token-import';
 export const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 export const ACCOUNT_LIST_PAGE_ROUTE = '/account-list';
 export const MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE =
@@ -382,11 +380,6 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
-    path: SECURITY_PASSWORD_CHANGE_ROUTE,
-    label: 'Change Password',
-    trackInAnalytics: true,
-  },
-  {
     path: BACKUPANDSYNC_ROUTE,
     label: 'Backup And Sync Settings Page',
     trackInAnalytics: true,
@@ -424,6 +417,16 @@ export const ROUTES = [
   {
     path: CONFIRM_IMPORT_TOKEN_ROUTE,
     label: 'Confirm Import Token Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: TOKEN_MANAGEMENT_ROUTE,
+    label: 'Token Management Page',
+    trackInAnalytics: true,
+  },
+  {
+    path: CUSTOM_TOKEN_IMPORT_ROUTE,
+    label: 'Custom Token Import Page',
     trackInAnalytics: true,
   },
   {

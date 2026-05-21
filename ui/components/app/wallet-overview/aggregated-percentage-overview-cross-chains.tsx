@@ -7,11 +7,11 @@ import { Hex } from '@metamask/utils';
 import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
-  getPreferences,
   getMarketData,
   getChainIdsToPoll,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
+import { getPreferences } from '../../../../shared/lib/selectors/preferences';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 
 // TODO: Remove restricted import

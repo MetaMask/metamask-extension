@@ -5,11 +5,11 @@ import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
-  getPreferences,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
   getUseExternalServices,
 } from '../../../../selectors';
+import { getPreferences } from '../../../../../shared/lib/selectors/preferences';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { type TokenWithFiatAmount } from '../types';
 import {

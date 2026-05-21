@@ -227,6 +227,9 @@
   "addCustomNetwork": {
     "message": "Add custom network"
   },
+  "addCustomToken": {
+    "message": "Add a custom token"
+  },
   "addEthereumChainWarningModalHeader": {
     "message": "Only add this RPC provider if you’re sure you can trust it. $1",
     "description": "$1 is addEthereumChainWarningModalHeaderPartTwo passed separately so that it can be bolded"
@@ -525,6 +528,9 @@
   "alertMessageTokenTrustSignalWarning": {
     "message": "This token shows strong signs of malicious behavior. Continuing may result in loss of funds."
   },
+  "alertMinimumReserve": {
+    "message": "Reserve balance is required"
+  },
   "alertModalAcknowledge": {
     "message": "I have acknowledged the risk and still want to proceed"
   },
@@ -557,9 +563,6 @@
   },
   "alertReasonGasFeeLow": {
     "message": "Slow speed"
-  },
-  "alertReasonGasSponsorshipUnavailable": {
-    "message": "Gas sponsorship unavailable"
   },
   "alertReasonGasTooLow": {
     "message": "Low gas limit"
@@ -608,6 +611,9 @@
   },
   "all": {
     "message": "All"
+  },
+  "allDefaultNetworks": {
+    "message": "All default networks"
   },
   "allNetworks": {
     "message": "All networks"
@@ -754,10 +760,6 @@
   "autoDetectTokens": {
     "message": "Autodetect tokens"
   },
-  "autoDetectTokensDescription": {
-    "message": "We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. $1",
-    "description": "$1 is a link to a support article"
-  },
   "autoDetectTokensDescriptionV2": {
     "message": "Displays new tokens sent to your wallet."
   },
@@ -784,9 +786,6 @@
   },
   "autoLockTimeLimit": {
     "message": "Auto-lock timer (minutes)"
-  },
-  "autoLockTimeLimitDescription": {
-    "message": "Set the idle time in minutes before MetaMask will become locked."
   },
   "available": {
     "message": "available"
@@ -1018,9 +1017,6 @@
   },
   "blockaidDescriptionTransferFarming": {
     "message": "If you approve this request, a third party known for scams will take all your assets."
-  },
-  "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base and Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -1462,7 +1458,7 @@
     "message": "More $1 needed for gas"
   },
   "bridgeValidationInsufficientNativeReserveMessage": {
-    "message": "This specific network requires to maintain a reserve of $1 $3 in your account. With your current balance you can use a maximum of $2 $3",
+    "message": "This specific network requires maintaining a reserve of $1 $3 in your account. With your current balance you can use a maximum of $2 $3",
     "description": "$1 is the minimum native reserve amount for the network, $2 is the spendable balance, $3 the ticker symbol of the token"
   },
   "bridgeValidationInsufficientNativeReserveTitle": {
@@ -1480,9 +1476,6 @@
   },
   "browserNotSupported": {
     "message": "Your browser is not supported..."
-  },
-  "builtAroundTheWorld": {
-    "message": "MetaMask is designed and built around the world."
   },
   "busy": {
     "message": "Busy"
@@ -1560,10 +1553,6 @@
   "changePasswordLoadingNote": {
     "message": "This shouldn't take long"
   },
-  "changePasswordPasskeyVerifyingTitle": {
-    "message": "Confirm with Biometrics",
-    "description": "Title shown while the wallet waits for passkey or device biometrics during change password."
-  },
   "changePasswordWarning": {
     "message": "Are you sure?"
   },
@@ -1576,13 +1565,6 @@
   "checkNetworkConnectivityOr": {
     "message": "Check network connectivity, or $1.",
     "description": "$1 is a link to update the network."
-  },
-  "chooseYourNetwork": {
-    "message": "Choose your network"
-  },
-  "chooseYourNetworkDescription": {
-    "message": "When you use our default settings and configurations, we use Infura as our default remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. In limited cases, we may use other RPC providers in order to provide the best experience for our users. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. To learn more about how Infura handles data for EVM accounts, read our $1, and for Solana accounts, $2.",
-    "description": "$1 is a link to the privacy policy, $2 is a link to Solana accounts support"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
@@ -2133,9 +2115,6 @@
   "cryptoCompare": {
     "message": "CryptoCompare"
   },
-  "currencyConversion": {
-    "message": "Currency"
-  },
   "currencyRateCheckToggle": {
     "message": "Show balance and token price checker"
   },
@@ -2169,9 +2148,6 @@
   },
   "currentHistoricalPriorityFeeRange": {
     "message": "12 hr: $1 - $2 GWEI"
-  },
-  "currentLanguage": {
-    "message": "Current language"
   },
   "currentNetwork": {
     "message": "Current network",
@@ -2531,9 +2507,6 @@
   "details": {
     "message": "Details"
   },
-  "developerOptions": {
-    "message": "Developer options"
-  },
   "developerTools": {
     "message": "Developer tools"
   },
@@ -2590,17 +2563,8 @@
   "dismiss": {
     "message": "Dismiss"
   },
-  "dismissReminderDescriptionField": {
-    "message": "Turn this on to dismiss the Secret Recovery Phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds"
-  },
-  "dismissReminderField": {
-    "message": "Dismiss Secret Recovery Phrase backup reminder"
-  },
   "displayNftMedia": {
     "message": "Display NFT media"
-  },
-  "displayNftMediaDescription": {
-    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
   },
   "displayNftMediaDescriptionV2": {
     "message": "NFT autodetection relies on this feature."
@@ -2850,8 +2814,14 @@
   "enterSymbol": {
     "message": "Enter symbol"
   },
+  "enterTokenAddress": {
+    "message": "Enter token address"
+  },
   "enterTokenNameOrAddress": {
     "message": "Enter token name or paste address"
+  },
+  "enterTokenNameOrAddressManageTokens": {
+    "message": "Enter token name or address"
   },
   "enterYourPassword": {
     "message": "Enter your password"
@@ -3151,7 +3121,7 @@
     "message": "Gas price estimation failed due to network error."
   },
   "gasSponsorshipReserveBalanceWarning": {
-    "message": "Gas sponsorship isn’t available for this transaction. You’ll need to keep at least $1 $2 in your account.",
+    "message": "This specific network requires maintaining a reserve of $1 $2 in your account.",
     "description": "$1 is the minimum required balance and $2 is the native currency symbol."
   },
   "gasTimingHoursShort": {
@@ -3761,9 +3731,6 @@
   "ipfsGateway": {
     "message": "IPFS gateway"
   },
-  "ipfsGatewayDescription": {
-    "message": "MetaMask uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Your IP address may be exposed to these services when you’re using them."
-  },
   "ipfsGatewayDescriptionV2": {
     "message": "Uses third-party services to show images of your NFTs stored on IPFS, display information related to ENS addresses entered in your browser's address bar, and fetch icons for different tokens. Choose your preferred IPFS gateway below."
   },
@@ -3944,9 +3911,6 @@
   "likeToImportTokens": {
     "message": "Would you like to import these tokens?"
   },
-  "lineaGoerli": {
-    "message": "Linea Goerli test network"
-  },
   "lineaMainnet": {
     "message": "Linea"
   },
@@ -3958,9 +3922,6 @@
   },
   "linkCentralizedExchanges": {
     "message": "Link your Coinbase or Binance accounts to transfer crypto to MetaMask for free."
-  },
-  "links": {
-    "message": "Links"
   },
   "loading": {
     "message": "Loading..."
@@ -3982,9 +3943,6 @@
   },
   "lockMetaMaskLoadingMessage": {
     "message": "Locking MetaMask..."
-  },
-  "logOut": {
-    "message": "Log out"
   },
   "loginErrorConnectButton": {
     "message": "Try again"
@@ -4067,6 +4025,9 @@
   },
   "managePermissions": {
     "message": "Manage permissions"
+  },
+  "manageTokens": {
+    "message": "Manage tokens"
   },
   "manageWalletRecovery": {
     "message": "Manage wallet recovery"
@@ -4704,9 +4665,6 @@
   "networkPermissionToast": {
     "message": "Network permissions updated"
   },
-  "networkProvider": {
-    "message": "Network provider"
-  },
   "networkStatus": {
     "message": "Network status"
   },
@@ -4904,8 +4862,14 @@
   "noSnaps": {
     "message": "You don't have any snaps installed."
   },
+  "noTokensMatchSearch": {
+    "message": "No tokens match your search"
+  },
   "noTokensMatchingYourFilters": {
     "message": "No tokens matching your filters"
+  },
+  "noTokensToManage": {
+    "message": "You don't have any tokens yet. Search by name or address to discover popular tokens."
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
@@ -5315,9 +5279,6 @@
   "overrideContentSecurityPolicyHeader": {
     "message": "Override Content-Security-Policy header"
   },
-  "overrideContentSecurityPolicyHeaderDescription": {
-    "message": "This option is a workaround for a known issue in Firefox, where a dapp's Content-Security-Policy header may prevent the extension from loading properly. Disabling this option is not recommended unless required for specific web page compatibility."
-  },
   "padlock": {
     "message": "Padlock"
   },
@@ -5333,62 +5294,77 @@
   "participateInMetaMetricsDescription": {
     "message": "Participate in MetaMetrics to help us make MetaMask better"
   },
+  "passkeyAuthMethodBiometrics": {
+    "message": "Biometrics",
+    "description": "Default OS-agnostic noun for the passkey auth method, used as $1 substitution in passkey messages on macOS / Linux / other OSes."
+  },
+  "passkeyAuthMethodTouchId": {
+    "message": "Touch ID",
+    "description": "Apple Touch ID brand name, used as $1 substitution on macOS for descriptive passkey copy that names the underlying feature."
+  },
+  "passkeyAuthMethodWindowsHello": {
+    "message": "Windows Hello",
+    "description": "Microsoft Windows Hello brand name, used as $1 substitution on Windows for all passkey copy."
+  },
   "passkeyDescription": {
-    "message": "Use Touch ID to unlock MetaMask instead of entering your password. This creates a passkey on this device only."
+    "message": "Use $1 to unlock MetaMask instead of entering your password. This creates a passkey on this device only.",
+    "description": "Description of the passkey unlock feature on the setup / settings screens. $1 is the OS-specific auth-method noun (Touch ID on macOS, Windows Hello on Windows, Biometrics elsewhere)."
   },
   "passkeyErrorAlreadyEnrolled": {
-    "message": "Biometrics are already set up for this wallet.",
-    "description": "Shown when starting passkey enrollment while a passkey is already enrolled."
+    "message": "$1 is already set up for this wallet.",
+    "description": "Shown when starting passkey enrollment while a passkey is already enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorAuthenticationVerificationFailed": {
-    "message": "We couldn't verify your Biometrics. Try again.",
-    "description": "Shown when passkey authentication response verification fails."
+    "message": "We couldn't verify your $1. Try again.",
+    "description": "Shown when passkey authentication response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorMissingKeyMaterial": {
-    "message": "Your Biometrics response was incomplete. Try again.",
-    "description": "Shown when the passkey assertion is missing required key material."
+    "message": "Your $1 response was incomplete. Try again.",
+    "description": "Shown when the passkey assertion is missing required key material. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNoAuthenticationCeremony": {
-    "message": "Biometrics sign-in session expired. Try again.",
-    "description": "Shown when passkey authentication runs without an active authentication ceremony."
+    "message": "$1 sign-in session expired. Try again.",
+    "description": "Shown when passkey authentication runs without an active authentication ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNoRegistrationCeremony": {
-    "message": "Biometrics setup session expired. Try again from the beginning.",
-    "description": "Shown when passkey registration verification runs without an active registration ceremony."
+    "message": "$1 setup session expired. Try again from the beginning.",
+    "description": "Shown when passkey registration verification runs without an active registration ceremony. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorNotEnrolled": {
-    "message": "Biometrics aren't set up for this wallet. Turn on Biometrics in Settings.",
-    "description": "Shown when biometrics unlock fails because no passkey is enrolled."
+    "message": "$1 isn't set up for this wallet. Turn on $1 in Settings.",
+    "description": "Shown when biometrics unlock fails because no passkey is enrolled. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorRegistrationFailed": {
-    "message": "Biometrics setup failed. Try again",
-    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages)."
+    "message": "$1 setup failed. Try again",
+    "description": "Shown when onboarding biometrics registration fails with an unknown error (after specific biometrics error messages). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorRegistrationVerificationFailed": {
-    "message": "We couldn't verify your Biometrics setup. Try again.",
-    "description": "Shown when passkey registration response verification fails."
+    "message": "We couldn't verify your $1 setup. Try again.",
+    "description": "Shown when passkey registration response verification fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVaultKeyDecryptionFailed": {
-    "message": "We couldn't unlock with Biometrics. Try again, or set up Biometrics again in Settings.",
-    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key."
+    "message": "We couldn't unlock with $1. Try again, or set up $1 again in Settings.",
+    "description": "Shown when the wrapped vault key cannot be decrypted with the passkey-derived key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVaultKeyMismatch": {
-    "message": "Biometrics don't match your current wallet lock. Set up Biometrics again in Settings.",
-    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key."
+    "message": "$1 doesn't match your current wallet lock. Set up $1 again in Settings.",
+    "description": "Shown when renewing passkey protection and the decrypted key does not match the expected vault key. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVaultKeyRenewalFailed": {
-    "message": "Your password was updated, but biometric unlock couldn't be turned on.",
-    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared."
+    "message": "Your password was updated, but $1 unlock couldn't be turned on.",
+    "description": "Shown after a successful wallet password change when re-wrapping the vault key for passkey fails and passkey enrollment is cleared. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyErrorVerificationFailed": {
-    "message": "We couldn't verify your Biometrics. Try again or use your password.",
-    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code."
+    "message": "We couldn't verify your $1. Try again or use your password.",
+    "description": "Shown when biometrics verification fails while turning off biometrics unlock in Settings and the error has no known passkey code. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeySetupStepRegister": {
-    "message": "Register Biometrics"
+    "message": "Register $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeySetupStepVerify": {
-    "message": "Validate Biometrics"
+    "message": "Validate $1",
+    "description": "Onboarding step label. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyTroubleshootModalDescription": {
     "message": "Try opening the extension in a full screen window and try again.",
@@ -5419,13 +5395,24 @@
     "description": "Title for the passkey troubleshoot modal when the user needs help verifying with a passkey outside of unlock (e.g. security settings or change password)."
   },
   "passkeyTurnedOff": {
-    "message": "Biometrics turned off"
+    "message": "$1 turned off",
+    "description": "Toast shown after passkey unlock is turned off. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyTurnedOn": {
-    "message": "Biometrics turned on"
+    "message": "$1 turned on",
+    "description": "Toast shown after passkey unlock is turned on. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "passkeyUnlockFailed": {
-    "message": "Biometrics unlock failed. Try your password."
+    "message": "$1 unlock failed. Try your password.",
+    "description": "Generic fallback message when passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingDescription": {
+    "message": "Use $1 to verify instead of entering your password.",
+    "description": "Supporting line under the passkey verification heading while WebAuthn runs (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
+  },
+  "passkeyVerifyingTitle": {
+    "message": "Confirm with $1",
+    "description": "Heading while the wallet waits for passkey verification (e.g. change password). $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "password": {
     "message": "Password"
@@ -5879,7 +5866,7 @@
     "message": "Close long"
   },
   "perpsClosePartialMinNotional": {
-    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or set the slider to 100%."
+    "message": "Partial closes must be at least $1 in USD value. Increase the close amount or close the full position."
   },
   "perpsClosePosition": {
     "message": "Close position"
@@ -5914,6 +5901,9 @@
   "perpsDepositActivityTitle": {
     "message": "Funded Perps"
   },
+  "perpsDepositErrorBridgeFailed": {
+    "message": "Bridge failed"
+  },
   "perpsDepositFailed": {
     "message": "Deposit could not be completed. Try again."
   },
@@ -5936,10 +5926,10 @@
     "message": "Adding funds to Perps"
   },
   "perpsDepositToastSuccessDescription": {
-    "message": "Your funds are ready to trade."
+    "message": "Funds are ready to trade"
   },
   "perpsDepositToastSuccessTitle": {
-    "message": "Funds added to Perps"
+    "message": "Your Perps account was funded"
   },
   "perpsDeposits": {
     "message": "Deposits"
@@ -6228,11 +6218,14 @@
   "perpsSortByPriceChange": {
     "message": "Price change"
   },
+  "perpsSortByRank": {
+    "message": "Rank"
+  },
   "perpsSortBySection": {
     "message": "Sort by"
   },
   "perpsSortByTitle": {
-    "message": "Sort"
+    "message": "Filter"
   },
   "perpsSortByVolume": {
     "message": "Volume"
@@ -6408,6 +6401,9 @@
   "perpsTrades": {
     "message": "Trades"
   },
+  "perpsTransactionTitleOpenedLong": {
+    "message": "Opened long"
+  },
   "perpsTriggerPrice": {
     "message": "Trigger price"
   },
@@ -6506,6 +6502,28 @@
   },
   "perpsWithdrawNoAccount": {
     "message": "No account selected. Select an account and try again."
+  },
+  "perpsWithdrawPostQuoteToastErrorDescription": {
+    "message": "Failed to proceed with withdrawal"
+  },
+  "perpsWithdrawPostQuoteToastErrorTitle": {
+    "message": "Something went wrong"
+  },
+  "perpsWithdrawPostQuoteToastPendingDescription": {
+    "message": "Available in about 1 minute"
+  },
+  "perpsWithdrawPostQuoteToastPendingTitle": {
+    "message": "Withdrawal in progress"
+  },
+  "perpsWithdrawPostQuoteToastSuccessDescription": {
+    "message": "$1 $2 moved to your wallet",
+    "description": "$1 is the formatted USD amount, e.g. '$20.73'. $2 is the destination token symbol, e.g. 'BNB'."
+  },
+  "perpsWithdrawPostQuoteToastSuccessGenericDescription": {
+    "message": "Funds moved to your wallet"
+  },
+  "perpsWithdrawPostQuoteToastSuccessTitle": {
+    "message": "Withdrawal complete"
   },
   "perpsWithdrawReceive": {
     "message": "Receive"
@@ -7084,9 +7102,6 @@
   "revealSecretRecoveryPhraseSettings": {
     "message": "Reveal Secret Recovery Phrase"
   },
-  "revealSeedWords": {
-    "message": "Reveal Secret Recovery Phrase"
-  },
   "revealSeedWordsDescription1": {
     "message": "Your $1 gives full access to your wallet, funds, and accounts.",
     "description": "This is a sentence consisting of link using 'revealSeedWordsSRPName' as $1."
@@ -7164,8 +7179,11 @@
   "rewardsLinkAccountError": {
     "message": "Failed to add account"
   },
-  "rewardsOnboardingIntroDescription": {
-    "message": "Earn points for your activity. \nAdvance through levels to unlock rewards."
+  "rewardsOnboardingCheckingRegion": {
+    "message": "Checking region..."
+  },
+  "rewardsOnboardingDescription": {
+    "message": "Win prizes, claim perks, and discover more ways to earn—just by using MetaMask."
   },
   "rewardsOnboardingIntroGeoCheckFailedDescription": {
     "message": "We cannot determine if your country allows opting into the rewards program. Please check your connection and try again."
@@ -7179,84 +7197,51 @@
   "rewardsOnboardingIntroRewardsAuthFailRetry": {
     "message": "Retry"
   },
-  "rewardsOnboardingIntroStepConfirm": {
-    "message": "Claim 250 points"
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingEligibility": {
-    "message": "Checking eligiblity..."
-  },
-  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
-    "message": "Checking region.."
-  },
-  "rewardsOnboardingIntroStepSkip": {
-    "message": "Not now"
-  },
-  "rewardsOnboardingIntroTitle": {
-    "message": "Rewards are here"
-  },
   "rewardsOnboardingIntroUnsupportedRegionDescription": {
     "message": "Rewards are not supported in your region yet. We are working on expanding access, so check back later."
   },
   "rewardsOnboardingIntroUnsupportedRegionTitle": {
     "message": "Region not supported"
   },
-  "rewardsOnboardingStep1Description": {
-    "message": "Every swap and perps trade you make in MetaMask gets you closer to rewards. Add your accounts and watch your points add up."
-  },
-  "rewardsOnboardingStep1Title": {
-    "message": "Earn points on every trade"
-  },
-  "rewardsOnboardingStep2Description": {
-    "message": "Hit points milestones to get perks like 50% off perps fees, exclusive tokens, and a free MetaMask Metal Card."
-  },
-  "rewardsOnboardingStep2Title": {
-    "message": "Level up for bigger perks"
-  },
-  "rewardsOnboardingStep3Description": {
-    "message": "You can earn points in the extension, but you’ll need the mobile app to trade perps, track your progress, and redeem rewards."
-  },
-  "rewardsOnboardingStep3Title": {
-    "message": "Unlock rewards on mobile"
-  },
-  "rewardsOnboardingStep4LegalDisclaimer": {
-    "message": "By clicking \"Claim points\", you're agreeing to our $1. We'll track your on-chain activity to reward you automatically. $2",
+  "rewardsOnboardingLegalDisclaimer": {
+    "message": "By joining, you agree to our $1. We'll opt in all accounts on this device and track on-chain activity to reward you automatically. $2",
     "description": "$1 is the Terms and Privacy Notice link, $2 is the Learn more link"
   },
-  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+  "rewardsOnboardingLegalDisclaimerLearnMoreLink": {
     "message": "Learn more"
   },
-  "rewardsOnboardingStep4LegalDisclaimerTermsLink": {
+  "rewardsOnboardingLegalDisclaimerTermsLink": {
     "message": "Terms and Privacy Notice"
   },
-  "rewardsOnboardingStep4OptInError": {
+  "rewardsOnboardingOptInError": {
     "message": "Opt-in failed"
   },
-  "rewardsOnboardingStep4ReferralCodeError": {
+  "rewardsOnboardingReferralCodeError": {
     "message": "Invalid referral code"
   },
-  "rewardsOnboardingStep4ReferralCodeInput": {
-    "message": "Use a referral code to earn 250 points"
-  },
-  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+  "rewardsOnboardingReferralCodePlaceholder": {
     "message": "Referral code (optional)"
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+  "rewardsOnboardingReferralCodeUnknownError": {
     "message": "Referral code couldn’t be validated."
   },
-  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+  "rewardsOnboardingReferralCodeUnknownErrorDescription": {
     "message": "Check your connection and try again."
   },
-  "rewardsOnboardingStep4Title": {
-    "message": "You'll earn 250 points when you sign up!"
+  "rewardsOnboardingReferralHide": {
+    "message": "Hide code"
   },
-  "rewardsOnboardingStep4TitleWithReferralCode": {
-    "message": "You'll earn 500 points when you sign up with a code!"
+  "rewardsOnboardingReferralPrompt": {
+    "message": "Have a referral code?"
   },
-  "rewardsOnboardingStepConfirm": {
-    "message": "Next"
+  "rewardsOnboardingSignUp": {
+    "message": "Join Rewards"
   },
-  "rewardsOnboardingStepOptIn": {
-    "message": "Claim points"
+  "rewardsOnboardingSignUpLoading": {
+    "message": "Joining..."
+  },
+  "rewardsOnboardingTitle": {
+    "message": "Start earning rewards"
   },
   "rewardsOptInVerifyingReferralCode": {
     "message": "Verifying referral code...",
@@ -7275,10 +7260,10 @@
     "description": "Alt text for the rewards points icon"
   },
   "rewardsQRCodeDescription": {
-    "message": "You'll need the app to track your progress and redeem rewards. Scan this QR code and we'll help you import your accounts."
+    "message": "To access MetaMask Rewards, scan the QR code with your mobile device."
   },
   "rewardsQRCodeTitle": {
-    "message": "Get the mobile app"
+    "message": "Continue on mobile"
   },
   "rewardsSignInFailed": {
     "message": "Failed to sign in",
@@ -7366,10 +7351,6 @@
   "securityAlerts": {
     "message": "Security alerts"
   },
-  "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious or unusual activity by actively reviewing transaction and signature requests. $1",
-    "description": "Link to learn more about security alerts"
-  },
   "securityAlertsDescriptionV2": {
     "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. $1"
   },
@@ -7379,15 +7360,12 @@
   "securityAndPrivacy": {
     "message": "Security and privacy"
   },
-  "securityChangePassword": {
-    "message": "Change password"
-  },
   "securityChangePasswordToastError": {
     "message": "Password couldn’t be changed. Please try again."
   },
   "securityChangePasswordToastPasskeyRenewalFailed": {
-    "message": "New password saved, but biometric unlock couldn't be turned on.",
-    "description": "Toast when passkey vault key renewal fails after the new password was already applied."
+    "message": "New password saved, but $1 unlock couldn't be turned on.",
+    "description": "Toast when passkey vault key renewal fails after the new password was already applied. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "securityChangePasswordToastSuccess": {
     "message": "New password saved"
@@ -7538,14 +7516,15 @@
     "description": "Action label for Smart Accounts. Used on multichain details page."
   },
   "setUpPasskey": {
-    "message": "Set up Biometrics"
+    "message": "Set up $1",
+    "description": "Action label for turning on passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settingAddSnapAccount": {
     "message": "Add account Snap"
   },
   "settingUpPasskey": {
-    "message": "Setting Up Biometrics",
-    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress."
+    "message": "Setting up $1",
+    "description": "Heading on the onboarding passkey setup screen while enrollment is in progress. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "settings": {
     "message": "Settings"
@@ -8193,9 +8172,6 @@
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },
-  "showFiatConversionInTestnetsDescription": {
-    "message": "Select this to show fiat conversion on test networks"
-  },
   "showFiatConversionInTestnetsDescriptionV2": {
     "message": "Shows network tokens as local currency on test networks. If you've been asked to turn this feature on, you might be getting scammed. For testing purposes only. $1",
     "description": "$1 is the 'Learn more' link"
@@ -8229,9 +8205,6 @@
   },
   "showTestnetNetworks": {
     "message": "Show test networks"
-  },
-  "showTestnetNetworksDescription": {
-    "message": "Select this to show test networks in network list"
   },
   "sidePanelMigrationToast": {
     "message": "MetaMask now opens in the side panel by default. $1 any time from the menu.",
@@ -8360,9 +8333,6 @@
   },
   "skipDeepLinkInterstitial": {
     "message": "Don't show interstitial screen when opening deep links"
-  },
-  "skipDeepLinkInterstitialDescription": {
-    "message": "Enabling this option will skip the interstitial screen that is shown when opening deep links in MetaMask. A \"deep link\" is a link like https://link.metamask.io/home that will cause MetaMask to open; these links can be obfuscated by others. The interstitial screen is designed to protect you from accidentally opening pages within MetaMask that might display your accounts, tokens, history, balances, settings, or other potentially sensitive information. This setting only applies to links signed by MetaMask."
   },
   "skipLinkConfirmationScreens": {
     "message": "Skip link confirmation screens"
@@ -8876,9 +8846,6 @@
   "stateLogs": {
     "message": "State logs"
   },
-  "stateLogsDescription": {
-    "message": "State logs contain your public account addresses and sent transactions."
-  },
   "stateLogsModalDescription": {
     "message": "State logs can help us debug issues you might encounter. Only send it to MetaMask for support, because state logs contain your public account address and transactions."
   },
@@ -8953,9 +8920,6 @@
   },
   "stxOptInDescriptionV2": {
     "message": "Turn on Smart Transactions for more reliable and secure transactions. $1"
-  },
-  "stxOptInSupportedNetworksDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on supported networks. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -9386,9 +9350,6 @@
   "theme": {
     "message": "Theme"
   },
-  "themeDescription": {
-    "message": "Choose your preferred MetaMask theme."
-  },
   "thirdPartyApis": {
     "message": "Third-party APIs"
   },
@@ -9416,6 +9377,9 @@
   },
   "tokenAddress": {
     "message": "Token address"
+  },
+  "tokenAllowance": {
+    "message": "Token allowance"
   },
   "tokenAlreadyAdded": {
     "message": "Token has already been added."
@@ -9458,6 +9422,9 @@
   "tokenPermissionsCount": {
     "message": "$1 token permissions",
     "description": "$1 is the count of token permissions (plural form)"
+  },
+  "tokenSearchError": {
+    "message": "Couldn't load search results. Please try again."
   },
   "tokenStandard": {
     "message": "Token standard"
@@ -9658,10 +9625,12 @@
     "message": "There was an error in disabling the notifications. Please try again later."
   },
   "turnOffPasskey": {
-    "message": "Turn off Biometrics"
+    "message": "Turn off $1",
+    "description": "Action label for turning off passkey unlock. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "turnOffPasskeyFailed": {
-    "message": "We couldn't turn off Biometrics. Try again."
+    "message": "We couldn't turn off $1. Try again.",
+    "description": "Error toast when turning off passkey unlock fails. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "turnOn": {
     "message": "Turn on"
@@ -9766,7 +9735,8 @@
     "description": "Label used for Private Keys row on multichain account details page."
   },
   "unlockWithPasskey": {
-    "message": "Unlock with Biometrics"
+    "message": "Unlock with $1",
+    "description": "Action label / aria-label for the passkey unlock button. $1 is the OS-specific auth-method noun (Biometrics / Touch ID / Windows Hello)."
   },
   "unpin": {
     "message": "Unpin"
@@ -9851,9 +9821,6 @@
   "useNftDetectionDescription": {
     "message": "Displays all NFTs, including fake ones airdropped by scammers."
   },
-  "useNftDetectionDescriptionText": {
-    "message": "Let MetaMask add NFTs you own using third-party services. Autodetecting NFTs exposes your IP and account address to these services. Enabling this feature could associate your IP address with your Ethereum address and display fake NFTs airdropped by scammers. You can add tokens manually to avoid this risk."
-  },
   "usePassword": {
     "message": "Use password"
   },
@@ -9865,9 +9832,6 @@
   },
   "useSafeChainsListValidation": {
     "message": "Network details check"
-  },
-  "useSafeChainsListValidationDescription": {
-    "message": "MetaMask uses a third-party service called $1 to show accurate and standardized network details. This reduces your chances of connecting to malicious or incorrect network. When using this feature, your IP address is exposed to chainid.network."
   },
   "useSafeChainsListValidationDescriptionV2": {
     "message": "Reduces your chances of connecting to a malicious or incorrect network. MetaMask uses $1 to show accurate and standardized network details."
