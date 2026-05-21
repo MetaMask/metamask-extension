@@ -10,7 +10,7 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import { login } from '../../../page-objects/flows/login.flow';
 
 /**
- * Exclude the local Ganache chain (1337) from the Accounts API supported
+ * Exclude the local chain (1337) from the Accounts API supported
  * networks so that AccountsApiDataSource does not return a fake 25 ETH
  * balance. The real balance will come from the RPC data source instead.
  *

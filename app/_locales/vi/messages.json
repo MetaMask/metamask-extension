@@ -1927,9 +1927,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Trang web này muốn được cấp quyền để rút token của bạn"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Trang web này yêu cầu quyền thu hồi các phê duyệt token ERC-20 của bạn."
-  },
   "confirmTitleDescPermission": {
     "message": "Trang web này muốn được cấp quyền chi tiêu token của bạn."
   },

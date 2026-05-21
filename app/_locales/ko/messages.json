@@ -1927,9 +1927,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "이 사이트에서 토큰 인출 권한을 요청합니다"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "이 사이트는 ERC-20 토큰 승인을 취소할 수 있는 권한을 요청합니다."
-  },
   "confirmTitleDescPermission": {
     "message": "이 사이트에서 토큰 사용 권한을 요청합니다."
   },

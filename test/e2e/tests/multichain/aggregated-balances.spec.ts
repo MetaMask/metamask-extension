@@ -10,7 +10,6 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { Anvil } from '../../seeder/anvil';
-import { Ganache } from '../../seeder/ganache';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { mockPriceApi } from '../tokens/utils/mocks';
@@ -57,7 +56,7 @@ describe('Multichain Aggregated Balances', function (this: Suite) {
         localNodes,
       }: {
         driver: Driver;
-        localNodes: Anvil[] | Ganache[] | undefined[];
+        localNodes: Anvil[] | undefined[];
       }) => {
         console.log('// Step 1: Log in and set up page objects');
         await login(driver, { localNode: localNodes[0] });

@@ -75,7 +75,6 @@ export const ActivityListItem = ({ transaction, onClick }: Props) => {
             <TransactionStatusLabel
               status={transactionStatus}
               error={failureError}
-              statusOnly
               label={isProtected ? t('cancelled') : undefined}
               tooltip={
                 isProtected

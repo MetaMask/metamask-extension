@@ -1921,9 +1921,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "यह साइट आपके टोकन को निकालने की अनुमति चाहती है"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "यह साइट आपके ERC-20 टोकन एप्रूवल को कैंसिल करने की अनुमति चाहती है।"
-  },
   "confirmTitleDescPermission": {
     "message": "यह साइट आपके टोकन खर्च करने की अनुमति चाहती है।"
   },

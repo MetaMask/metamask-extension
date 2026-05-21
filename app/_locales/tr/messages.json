@@ -1891,9 +1891,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Bu site tokenlarınızı çekmek için izin istiyor"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Bu site, ERC-20 token onaylarınızı iptal etmek için izin istiyor."
-  },
   "confirmTitleDescPermission": {
     "message": "Bu site token'larınızı harcamak için izin istiyor."
   },

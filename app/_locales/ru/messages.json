@@ -1927,9 +1927,6 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Этот сайт хочет получить разрешение на вывод ваших токенов"
   },
-  "confirmTitleDescERC20Revocation": {
-    "message": "Этот сайт запрашивает разрешение отозвать ваши одобрения токена ERC-20."
-  },
   "confirmTitleDescPermission": {
     "message": "Этот сайт запрашивает разрешение потратить ваши токены."
   },
