@@ -1,0 +1,8 @@
+# Agent skills source configuration.
+# Edit this file to change the upstream skills repo — no other files need updating.
+#
+# skills_repo: full git clone URL of the skills repository
+# skills_ref:  branch, tag, or SHA to sync from (pin to a tag for supply-chain safety)
+
+skills_repo=https://github.com/MajorLift/metamask-extension-skills.git
+skills_ref=main

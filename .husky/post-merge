@@ -1,0 +1,27 @@
+#!/usr/bin/env sh
+# post-merge — refresh agent skills from metamask-extension-skills after `git pull`.
+#
+# Only runs when `.skills/VERSION` is >7 days stale or missing.
+# Leaves updated skill files unstaged — commit them separately or let the
+# skills-sync bot PR handle it.
+#
+# Opt out: set SKILLS_SKIP_AUTOSYNC=1 in your shell.
+
+. "$(dirname -- "$0")/_/husky.sh"
+
+[ -n "$SKILLS_SKIP_AUTOSYNC" ] && exit 0
+
+STALE_DAYS=7
+
+node -e "
+const fs = require('fs');
+const path = '.skills/VERSION';
+if (!fs.existsSync(path)) process.exit(1);
+const m = fs.readFileSync(path, 'utf8').match(/synced_at=(\S+)/);
+if (!m) process.exit(1);
+const ageDays = (Date.now() - Date.parse(m[1])) / 86400000;
+process.exit(ageDays < $STALE_DAYS ? 0 : 1);
+" 2>/dev/null && exit 0
+
+echo "→ agent skills stale, refreshing (yarn skills:sync)"
+bash scripts/skills-sync.sh || echo "  (sync failed — run 'yarn skills:sync' manually)"
