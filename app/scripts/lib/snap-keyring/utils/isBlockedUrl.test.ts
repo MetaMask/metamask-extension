@@ -1,7 +1,7 @@
 import { ListNames, PhishingController } from '@metamask/phishing-controller';
 import { getRootMessenger } from '../../messenger';
+import { getPhishingControllerMessenger } from '../../../messenger-client-init/messengers/phishing-controller-messenger';
 import { isBlockedUrl } from './isBlockedUrl';
-import { getPhishingControllerMessenger } from 'app/scripts/messenger-client-init/messengers';
 
 // Run these tests as if we were in a Flask build
 jest.mock('../../../../../shared/lib/build-types', () => ({
