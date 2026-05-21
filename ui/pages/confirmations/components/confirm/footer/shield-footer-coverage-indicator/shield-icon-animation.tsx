@@ -20,10 +20,7 @@ const ShieldIconAnimation = ({
     <Suspense
       fallback={<Box className="riv-animation__shield-icon-container" />}
     >
-      <ShieldIconAnimationContent
-        severity={severity}
-        isDisabled={isDisabled}
-      />
+      <ShieldIconAnimationContent severity={severity} isDisabled={isDisabled} />
     </Suspense>
   );
 };
