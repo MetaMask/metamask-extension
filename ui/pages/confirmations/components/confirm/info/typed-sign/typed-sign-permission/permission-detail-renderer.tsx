@@ -364,12 +364,9 @@ export const PermissionDetailRenderer: React.FC<{
 
   const schemaEntry = getPermissionSchemaEntry(permission.type, true);
 
-  // Use an explicit branch (not `?.`) so React Compiler output cannot read
-  // `.tokenResolution` off an undefined schema entry during invalid types.
-  const tokenResolution: TokenResolution =
-    schemaEntry === undefined ? { kind: 'none' } : schemaEntry.tokenResolution;
+  const tokenResolution = schemaEntry.tokenResolution;
 
-  // Hooks must run before any code that can throw (invalid type / validate),
+  // Hooks must run before any code that can throw (validataion failures),
   // so hook order stays stable if permission data changes between renders.
   const nativeToken = useNativeTokenData(chainId, tokenResolution);
   const erc20Decimals = useErc20DecimalsResolved(

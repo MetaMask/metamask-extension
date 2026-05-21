@@ -362,7 +362,11 @@ describe('unknown permission type schema', () => {
 
     expect(
       unknownTypeElement.getValue(
-        ctx('some-new-permission', {}, { permission: { type: 'abc.xyz', data: {} } }),
+        ctx(
+          'some-new-permission',
+          {},
+          { permission: { type: 'abc.xyz', data: {} } },
+        ),
       ),
     ).toBe('abc.xyz');
   });
