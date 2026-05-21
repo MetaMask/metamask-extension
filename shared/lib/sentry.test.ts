@@ -2,6 +2,8 @@ import type * as Sentry from '@sentry/browser';
 import { captureException, captureMessage, TRACE_ID_TAG } from './sentry';
 
 describe('Sentry', () => {
+  const originalSentry = globalThis.sentry;
+
   beforeEach(() => {
     jest.resetAllMocks();
 
@@ -9,6 +11,10 @@ describe('Sentry', () => {
       ...globalThis.sentry,
       getActiveSpan: jest.fn().mockReturnValue(undefined),
     };
+  });
+
+  afterEach(() => {
+    globalThis.sentry = originalSentry;
   });
 
   describe('captureException', () => {
