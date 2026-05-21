@@ -1,4 +1,5 @@
 import React from 'react';
+import { TokenApprovalRevocationPermission } from '@metamask/7715-permission-types';
 import { Hex } from '@metamask/utils';
 import {
   NativeTokenStreamPermission,
@@ -17,7 +18,6 @@ import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { getPendingRevocations } from '../../../../../selectors/gator-permissions/gator-permissions';
 import { ReviewGatorPermissionItem } from './review-gator-permission-item';
-import { TokenApprovalRevocationPermission } from '@metamask/7715-permission-types';
 
 const mockAccountAddress = '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
 const mockAccountName = 'Test Gator Account';
