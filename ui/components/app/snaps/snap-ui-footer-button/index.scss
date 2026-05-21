@@ -1,9 +1,3 @@
-.snap-ui-renderer__footer-button-text {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-}
-
 .snap-ui-renderer__footer-button {
   &:not(.hide-snap-branding) {
     &.snap-ui-renderer__footer-button--primary {
@@ -26,29 +20,19 @@
 
     &.snap-ui-renderer__footer-button--secondary {
       border-color: var(--color-icon-default);
-
-      .snap-ui-renderer__footer-button-text {
-        color: var(--color-icon-default);
-      }
+      color: var(--color-icon-default);
 
       &:hover:not(&--disabled) {
         border-color: var(--color-icon-default);
-        color: var(--color-background-default);
+        color: var(--color-icon-default);
         background-color: var(--color-background-default-hover);
         box-shadow: none;
-
-        .snap-ui-renderer__footer-button-text {
-          color: var(--color-icon-default);
-        }
       }
 
       &:active:not(&--disabled) {
         border-color: var(--color-icon-default);
+        color: var(--color-icon-default);
         opacity: 60%;
-
-        .snap-ui-renderer__footer-button-text {
-          color: var(--color-icon-default);
-        }
       }
 
       &:not(.snap-ui-renderer__footer-button--danger) {

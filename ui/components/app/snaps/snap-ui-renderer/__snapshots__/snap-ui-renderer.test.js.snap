@@ -255,17 +255,13 @@ exports[`SnapUIRenderer renders footers 1`] = `
           textvariant="body-md"
           type="button"
         >
-          <span
-            class="snap-ui-renderer__footer-button-text"
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+            style="border-width: 0px;"
           >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
-              style="border-width: 0px;"
-            >
-              B
-            </div>
-            Foo
-          </span>
+            B
+          </div>
+          Foo
         </button>
       </div>
     </div>
@@ -328,17 +324,13 @@ exports[`SnapUIRenderer supports container backgrounds 1`] = `
           textvariant="body-md"
           type="button"
         >
-          <span
-            class="snap-ui-renderer__footer-button-text"
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+            style="border-width: 0px;"
           >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
-              style="border-width: 0px;"
-            >
-              B
-            </div>
-            Foo
-          </span>
+            B
+          </div>
+          Foo
         </button>
       </div>
     </div>
@@ -416,17 +408,13 @@ exports[`SnapUIRenderer supports the contentBackgroundColor prop 1`] = `
           textvariant="body-md"
           type="button"
         >
-          <span
-            class="snap-ui-renderer__footer-button-text"
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+            style="border-width: 0px;"
           >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
-              style="border-width: 0px;"
-            >
-              B
-            </div>
-            Foo
-          </span>
+            B
+          </div>
+          Foo
         </button>
       </div>
     </div>
@@ -465,11 +453,7 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
           role="button"
           type="button"
         >
-          <span
-            class="snap-ui-renderer__footer-button-text"
-          >
-            Cancel
-          </span>
+          Cancel
         </button>
         <button
           class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 w-full transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default snap-ui-renderer__footer-button snap-ui-renderer__footer-button--primary"
@@ -478,17 +462,13 @@ exports[`SnapUIRenderer supports the onCancel prop 1`] = `
           textvariant="body-md"
           type="button"
         >
-          <span
-            class="snap-ui-renderer__footer-button-text"
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
+            style="border-width: 0px;"
           >
-            <div
-              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-right-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full"
-              style="border-width: 0px;"
-            >
-              B
-            </div>
-            Foo
-          </span>
+            B
+          </div>
+          Foo
         </button>
       </div>
     </div>

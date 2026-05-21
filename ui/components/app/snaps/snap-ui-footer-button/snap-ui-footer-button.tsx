@@ -86,19 +86,17 @@ export const SnapUIFooterButton = ({
       data-theme={null}
       isDanger={snapVariant === 'destructive'}
     >
-      <span className="snap-ui-renderer__footer-button-text">
-        {isSnapAction && !hideSnapBranding && !loading && (
-          <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
-        )}
-        {loading ? (
-          <Icon
-            name={IconName.Loading}
-            style={{ animation: 'spin 1.2s linear infinite' }}
-          />
-        ) : (
-          children
-        )}
-      </span>
+      {isSnapAction && !hideSnapBranding && !loading && (
+        <SnapIcon snapId={snapId} avatarSize={IconSize.Sm} marginRight={2} />
+      )}
+      {loading ? (
+        <Icon
+          name={IconName.Loading}
+          style={{ animation: 'spin 1.2s linear infinite' }}
+        />
+      ) : (
+        children
+      )}
     </Button>
   );
 };
