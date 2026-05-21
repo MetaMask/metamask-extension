@@ -15,10 +15,10 @@ export type ScanErrorCategory =
   | 'scan_exception';
 
 /**
- * Discriminated union describing the classification of a scan result.
+ * Discriminated union describing a classified scan error.
  * Each variant carries only the metadata relevant to its category.
  */
-export type ScanClassification =
+export type ScanErrorClassification =
   | { category: 'non_ur_qr_scanned'; isUrFormat: false }
   | { category: 'wrong_ur_type'; isUrFormat: true; receivedUrType: string }
   | { category: 'ur_decode_error'; isUrFormat: true }
@@ -28,7 +28,7 @@ export type ScanClassification =
  * Input for {@link classifyScanResult}. Callers populate only the fields
  * relevant to the point where the error was detected.
  */
-export type ClassifyScanInput = {
+export type ScanClassificationInput = {
   text?: string;
   decodedType?: string;
   expectedTypes: readonly string[];
@@ -79,8 +79,8 @@ function extractMessage(exception: unknown): string {
  * @returns A classification result or `null`.
  */
 export function classifyScanResult(
-  input: ClassifyScanInput,
-): ScanClassification | null {
+  input: ScanClassificationInput,
+): ScanErrorClassification | null {
   const { text, decodedType, expectedTypes, decoderError, exception } = input;
 
   if (exception !== undefined) {

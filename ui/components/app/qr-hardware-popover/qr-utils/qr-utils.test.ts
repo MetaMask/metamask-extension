@@ -2,8 +2,8 @@ import { QrErrorType } from '../qr-error-content';
 import {
   classifyScanResult,
   scanCategoryToQrErrorType,
-  type ClassifyScanInput,
-  type ScanClassification,
+  type ScanClassificationInput,
+  type ScanErrorClassification,
 } from './qr-utils';
 
 describe('classifyScanResult', () => {
@@ -374,7 +374,7 @@ describe('classifyScanResult', () => {
     });
 
     it('when exception is explicitly undefined', () => {
-      const input: ClassifyScanInput = {
+      const input: ScanClassificationInput = {
         text: 'ur:crypto-hdkey/1-2/data',
         expectedTypes: PAIRING_EXPECTED_TYPES,
         exception: undefined,
@@ -462,12 +462,12 @@ describe('scanCategoryToQrErrorType', () => {
   });
 });
 
-describe('ScanClassification type discrimination', () => {
+describe('ScanErrorClassification type discrimination', () => {
   it('narrows non_ur_qr_scanned to { isUrFormat: false }', () => {
     const result = classifyScanResult({
       text: 'plain text',
       expectedTypes: ['crypto-hdkey'],
-    }) as ScanClassification;
+    }) as ScanErrorClassification;
 
     expect(result.category).toBe('non_ur_qr_scanned');
     expect(result.isUrFormat).toBe(false);
@@ -477,7 +477,7 @@ describe('ScanClassification type discrimination', () => {
     const result = classifyScanResult({
       decodedType: 'crypto-psbt',
       expectedTypes: ['crypto-hdkey'],
-    }) as ScanClassification;
+    }) as ScanErrorClassification;
 
     expect(result.category).toBe('wrong_ur_type');
     if (result.category === 'wrong_ur_type') {
@@ -490,7 +490,7 @@ describe('ScanClassification type discrimination', () => {
     const result = classifyScanResult({
       expectedTypes: ['crypto-hdkey'],
       exception: new Error('crash'),
-    }) as ScanClassification;
+    }) as ScanErrorClassification;
 
     expect(result.category).toBe('scan_exception');
     if (result.category === 'scan_exception') {
