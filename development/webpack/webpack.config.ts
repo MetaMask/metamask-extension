@@ -555,7 +555,7 @@ const config = {
           // only our own ts/mts/tsx/js/mjs/jsx files (NOT in node_modules)
           test: /^(?!.*[\\/]node_modules[\\/]).+\.(?:m?[tj]s|[tj]sx?)?$/u,
           chunks: isChunkableAsync,
-          minChunks: 2,
+          minChunks: 1,
         },
       },
     },
