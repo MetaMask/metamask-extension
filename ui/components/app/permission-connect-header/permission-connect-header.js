@@ -2,9 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Box,
-  BoxFlexDirection,
   BoxAlignItems,
-  BoxJustifyContent,
   BoxBackgroundColor,
 } from '@metamask/design-system-react';
 import {

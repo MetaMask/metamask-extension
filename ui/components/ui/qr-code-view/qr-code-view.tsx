@@ -112,12 +112,11 @@ function QrCodeView({
         {addressEnd}
       </Text>
       <Box
-        className="flex"
         marginBottom={4}
         gap={2}
         alignItems={BoxAlignItems.Center}
         color={TextColor.primaryDefault}
-        className="qr-code__copy-button"
+        className="flex qr-code__copy-button"
         data-testid="address-copy-button-text"
         data-clipboard-text={checksummedAddress}
         onClick={() => {
