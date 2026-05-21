@@ -4,26 +4,38 @@ import { extractMessageFromUnknownError } from '../../../../contexts/hardware-wa
 /**
  * Error categories for QR scan results.
  *
- * - `non_ur_qr_scanned` - scanned data is not UR-encoded (URL, plain address, etc.).
- * - `wrong_ur_type` - valid UR whose type does not match the current flow.
- * - `ur_decode_error` - the UR decoder failed to reassemble frames.
- * - `scan_exception` - an unexpected runtime exception during processing.
+ * - `NonUrQrScanned` - scanned data is not UR-encoded (URL, plain address, etc.).
+ * - `WrongUrType` - valid UR whose type does not match the current flow.
+ * - `UrDecodeError` - the UR decoder failed to reassemble frames.
+ * - `ScanException` - an unexpected runtime exception during processing.
  */
+export const ScanErrorCategory = {
+  NonUrQrScanned: 'non_ur_qr_scanned',
+  WrongUrType: 'wrong_ur_type',
+  UrDecodeError: 'ur_decode_error',
+  ScanException: 'scan_exception',
+} as const;
+
 export type ScanErrorCategory =
-  | 'non_ur_qr_scanned'
-  | 'wrong_ur_type'
-  | 'ur_decode_error'
-  | 'scan_exception';
+  (typeof ScanErrorCategory)[keyof typeof ScanErrorCategory];
 
 /**
  * Discriminated union describing a classified scan error.
  * Each variant carries only the metadata relevant to its category.
  */
 export type ScanErrorClassification =
-  | { category: 'non_ur_qr_scanned'; isUrFormat: false }
-  | { category: 'wrong_ur_type'; isUrFormat: true; receivedUrType: string }
-  | { category: 'ur_decode_error'; isUrFormat: true }
-  | { category: 'scan_exception'; isUrFormat: boolean; rawMessage: string };
+  | { category: typeof ScanErrorCategory.NonUrQrScanned; isUrFormat: false }
+  | {
+      category: typeof ScanErrorCategory.WrongUrType;
+      isUrFormat: true;
+      receivedUrType: string;
+    }
+  | { category: typeof ScanErrorCategory.UrDecodeError; isUrFormat: true }
+  | {
+      category: typeof ScanErrorCategory.ScanException;
+      isUrFormat: boolean;
+      rawMessage: string;
+    };
 
 /**
  * Input for {@link classifyScanResult}. Callers populate only the fields
@@ -71,14 +83,14 @@ export function classifyScanResult(
   if (exception !== undefined && exception !== null) {
     const isUrFormat = text === undefined ? false : looksLikeUr(text);
     return {
-      category: 'scan_exception',
+      category: ScanErrorCategory.ScanException,
       isUrFormat,
       rawMessage: extractMessageFromUnknownError(exception),
     };
   }
 
   if (decoderError === true) {
-    return { category: 'ur_decode_error', isUrFormat: true };
+    return { category: ScanErrorCategory.UrDecodeError, isUrFormat: true };
   }
 
   if (decodedType !== undefined) {
@@ -88,7 +100,7 @@ export function classifyScanResult(
     );
     if (!isExpected) {
       return {
-        category: 'wrong_ur_type',
+        category: ScanErrorCategory.WrongUrType,
         isUrFormat: true,
         receivedUrType: decodedType,
       };
@@ -97,7 +109,7 @@ export function classifyScanResult(
   }
 
   if (text !== undefined && text.length > 0 && !looksLikeUr(text)) {
-    return { category: 'non_ur_qr_scanned', isUrFormat: false };
+    return { category: ScanErrorCategory.NonUrQrScanned, isUrFormat: false };
   }
 
   return null;
@@ -115,12 +127,12 @@ export function scanCategoryToQrErrorType(
   category: ScanErrorCategory,
 ): QrErrorType {
   switch (category) {
-    case 'non_ur_qr_scanned':
+    case ScanErrorCategory.NonUrQrScanned:
       return QrErrorType.NonUrQrCode;
-    case 'wrong_ur_type':
+    case ScanErrorCategory.WrongUrType:
       return QrErrorType.WrongUrType;
-    case 'ur_decode_error':
-    case 'scan_exception':
+    case ScanErrorCategory.UrDecodeError:
+    case ScanErrorCategory.ScanException:
       return QrErrorType.UrDecodeError;
     default:
       return QrErrorType.UrDecodeError;

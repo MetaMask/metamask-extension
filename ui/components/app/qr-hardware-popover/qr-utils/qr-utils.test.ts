@@ -2,6 +2,7 @@ import { QrErrorType } from '../qr-error-content';
 import {
   classifyScanResult,
   scanCategoryToQrErrorType,
+  ScanErrorCategory,
   type ScanClassificationInput,
   type ScanErrorClassification,
 } from './qr-utils';
@@ -17,7 +18,10 @@ describe('classifyScanResult', () => {
           text: 'https://metamask.io',
           expectedTypes: PAIRING_EXPECTED_TYPES,
         }),
-      ).toStrictEqual({ category: 'non_ur_qr_scanned', isUrFormat: false });
+      ).toStrictEqual({
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      });
     });
 
     it('classifies an Ethereum address as non-UR', () => {
@@ -26,7 +30,10 @@ describe('classifyScanResult', () => {
           text: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD28',
           expectedTypes: PAIRING_EXPECTED_TYPES,
         }),
-      ).toStrictEqual({ category: 'non_ur_qr_scanned', isUrFormat: false });
+      ).toStrictEqual({
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      });
     });
 
     it('classifies arbitrary text as non-UR', () => {
@@ -35,7 +42,10 @@ describe('classifyScanResult', () => {
           text: 'Hello World!',
           expectedTypes: PAIRING_EXPECTED_TYPES,
         }),
-      ).toStrictEqual({ category: 'non_ur_qr_scanned', isUrFormat: false });
+      ).toStrictEqual({
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      });
     });
 
     it('classifies numeric string as non-UR', () => {
@@ -44,7 +54,10 @@ describe('classifyScanResult', () => {
           text: '1234567890',
           expectedTypes: PAIRING_EXPECTED_TYPES,
         }),
-      ).toStrictEqual({ category: 'non_ur_qr_scanned', isUrFormat: false });
+      ).toStrictEqual({
+        category: ScanErrorCategory.NonUrQrScanned,
+        isUrFormat: false,
+      });
     });
 
     it('returns null for empty text', () => {
@@ -65,7 +78,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'wrong_ur_type',
+        category: ScanErrorCategory.WrongUrType,
         isUrFormat: true,
         receivedUrType: 'crypto-hdkey',
       });
@@ -78,7 +91,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'wrong_ur_type',
+        category: ScanErrorCategory.WrongUrType,
         isUrFormat: true,
         receivedUrType: 'eth-signature',
       });
@@ -91,7 +104,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'wrong_ur_type',
+        category: ScanErrorCategory.WrongUrType,
         isUrFormat: true,
         receivedUrType: 'crypto-psbt',
       });
@@ -131,7 +144,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'wrong_ur_type',
+        category: ScanErrorCategory.WrongUrType,
         isUrFormat: true,
         receivedUrType: 'crypto-hdkey',
       });
@@ -146,7 +159,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'ur_decode_error',
+        category: ScanErrorCategory.UrDecodeError,
         isUrFormat: true,
       });
     });
@@ -159,7 +172,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'ur_decode_error',
+        category: ScanErrorCategory.UrDecodeError,
         isUrFormat: true,
       });
     });
@@ -183,7 +196,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'scan_exception',
+        category: ScanErrorCategory.ScanException,
         isUrFormat: false,
         rawMessage: 'CBOR decode failed',
       });
@@ -196,7 +209,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'scan_exception',
+        category: ScanErrorCategory.ScanException,
         isUrFormat: false,
         rawMessage: 'something went wrong',
       });
@@ -209,7 +222,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'scan_exception',
+        category: ScanErrorCategory.ScanException,
         isUrFormat: false,
         rawMessage: '42',
       });
@@ -275,7 +288,7 @@ describe('classifyScanResult', () => {
         exception: new Error('runtime crash'),
       });
 
-      expect(result?.category).toBe('scan_exception');
+      expect(result?.category).toBe(ScanErrorCategory.ScanException);
     });
 
     it('exception > wrong UR type', () => {
@@ -285,7 +298,7 @@ describe('classifyScanResult', () => {
         exception: new Error('processing error'),
       });
 
-      expect(result?.category).toBe('scan_exception');
+      expect(result?.category).toBe(ScanErrorCategory.ScanException);
     });
 
     it('decoderError > wrong UR type', () => {
@@ -295,7 +308,7 @@ describe('classifyScanResult', () => {
         expectedTypes: PAIRING_EXPECTED_TYPES,
       });
 
-      expect(result?.category).toBe('ur_decode_error');
+      expect(result?.category).toBe(ScanErrorCategory.UrDecodeError);
     });
 
     it('decoderError > non-UR text', () => {
@@ -305,7 +318,7 @@ describe('classifyScanResult', () => {
         expectedTypes: PAIRING_EXPECTED_TYPES,
       });
 
-      expect(result?.category).toBe('ur_decode_error');
+      expect(result?.category).toBe(ScanErrorCategory.UrDecodeError);
     });
 
     it('wrong UR type > non-UR text', () => {
@@ -315,7 +328,7 @@ describe('classifyScanResult', () => {
         expectedTypes: PAIRING_EXPECTED_TYPES,
       });
 
-      expect(result?.category).toBe('wrong_ur_type');
+      expect(result?.category).toBe(ScanErrorCategory.WrongUrType);
     });
   });
 
@@ -381,20 +394,20 @@ describe('classifyScanResult', () => {
   });
 
   describe('end-to-end acceptance scenarios', () => {
-    it('A4: AirGap V3 format scanned during pairing results in wrong_ur_type', () => {
+    it('A4: AirGap V3 format scanned during pairing results in WrongUrType', () => {
       const result = classifyScanResult({
         decodedType: 'crypto-multi-accounts',
         expectedTypes: PAIRING_EXPECTED_TYPES,
       });
 
       expect(result).toStrictEqual({
-        category: 'wrong_ur_type',
+        category: ScanErrorCategory.WrongUrType,
         isUrFormat: true,
         receivedUrType: 'crypto-multi-accounts',
       });
     });
 
-    it('A9: partially obscured QR results in ur_decode_error', () => {
+    it('A9: partially obscured QR results in UrDecodeError', () => {
       const result = classifyScanResult({
         text: 'ur:crypto-hdkey/1-5/partial',
         decoderError: true,
@@ -402,7 +415,7 @@ describe('classifyScanResult', () => {
       });
 
       expect(result).toStrictEqual({
-        category: 'ur_decode_error',
+        category: ScanErrorCategory.UrDecodeError,
         isUrFormat: true,
       });
     });
@@ -426,26 +439,26 @@ describe('classifyScanResult', () => {
 });
 
 describe('scanCategoryToQrErrorType', () => {
-  it('maps non_ur_qr_scanned to NonUrQrCode', () => {
-    expect(scanCategoryToQrErrorType('non_ur_qr_scanned')).toBe(
+  it('maps NonUrQrScanned to NonUrQrCode', () => {
+    expect(scanCategoryToQrErrorType(ScanErrorCategory.NonUrQrScanned)).toBe(
       QrErrorType.NonUrQrCode,
     );
   });
 
-  it('maps wrong_ur_type to WrongUrType', () => {
-    expect(scanCategoryToQrErrorType('wrong_ur_type')).toBe(
+  it('maps WrongUrType to WrongUrType', () => {
+    expect(scanCategoryToQrErrorType(ScanErrorCategory.WrongUrType)).toBe(
       QrErrorType.WrongUrType,
     );
   });
 
-  it('maps ur_decode_error to UrDecodeError', () => {
-    expect(scanCategoryToQrErrorType('ur_decode_error')).toBe(
+  it('maps UrDecodeError to UrDecodeError', () => {
+    expect(scanCategoryToQrErrorType(ScanErrorCategory.UrDecodeError)).toBe(
       QrErrorType.UrDecodeError,
     );
   });
 
-  it('maps scan_exception to UrDecodeError', () => {
-    expect(scanCategoryToQrErrorType('scan_exception')).toBe(
+  it('maps ScanException to UrDecodeError', () => {
+    expect(scanCategoryToQrErrorType(ScanErrorCategory.ScanException)).toBe(
       QrErrorType.UrDecodeError,
     );
   });
@@ -459,37 +472,37 @@ describe('scanCategoryToQrErrorType', () => {
 });
 
 describe('ScanErrorClassification type discrimination', () => {
-  it('narrows non_ur_qr_scanned to { isUrFormat: false }', () => {
+  it('narrows NonUrQrScanned to { isUrFormat: false }', () => {
     const result = classifyScanResult({
       text: 'plain text',
       expectedTypes: ['crypto-hdkey'],
     }) as ScanErrorClassification;
 
-    expect(result.category).toBe('non_ur_qr_scanned');
+    expect(result.category).toBe(ScanErrorCategory.NonUrQrScanned);
     expect(result.isUrFormat).toBe(false);
   });
 
-  it('narrows wrong_ur_type to { isUrFormat: true, receivedUrType }', () => {
+  it('narrows WrongUrType to { isUrFormat: true, receivedUrType }', () => {
     const result = classifyScanResult({
       decodedType: 'crypto-psbt',
       expectedTypes: ['crypto-hdkey'],
     }) as ScanErrorClassification;
 
-    expect(result.category).toBe('wrong_ur_type');
-    if (result.category === 'wrong_ur_type') {
+    expect(result.category).toBe(ScanErrorCategory.WrongUrType);
+    if (result.category === ScanErrorCategory.WrongUrType) {
       expect(result.isUrFormat).toBe(true);
       expect(result.receivedUrType).toBe('crypto-psbt');
     }
   });
 
-  it('narrows scan_exception to { isUrFormat, rawMessage }', () => {
+  it('narrows ScanException to { isUrFormat, rawMessage }', () => {
     const result = classifyScanResult({
       expectedTypes: ['crypto-hdkey'],
       exception: new Error('crash'),
     }) as ScanErrorClassification;
 
-    expect(result.category).toBe('scan_exception');
-    if (result.category === 'scan_exception') {
+    expect(result.category).toBe(ScanErrorCategory.ScanException);
+    if (result.category === ScanErrorCategory.ScanException) {
       expect(result.rawMessage).toBe('crash');
       expect(typeof result.isUrFormat).toBe('boolean');
     }
