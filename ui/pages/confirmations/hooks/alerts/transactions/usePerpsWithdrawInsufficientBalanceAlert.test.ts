@@ -158,6 +158,20 @@ describe('usePerpsWithdrawInsufficientBalanceAlert', () => {
     expect(result.current).toStrictEqual([EXPECTED_ALERT]);
   });
 
+  it('returns no alert when Max only exceeds the balance below Perps precision', () => {
+    setAccount({ spendableBalance: '0', withdrawableBalance: '7.863083' });
+    setEnteredAmount('7.8630830000000005');
+    const { result } = runHook(buildPerpsWithdrawState());
+    expect(result.current).toStrictEqual([]);
+  });
+
+  it('alerts when entered amount exceeds the balance by one Perps precision unit', () => {
+    setAccount({ spendableBalance: '0', withdrawableBalance: '7.863083' });
+    setEnteredAmount('7.863084');
+    const { result } = runHook(buildPerpsWithdrawState());
+    expect(result.current).toStrictEqual([EXPECTED_ALERT]);
+  });
+
   it('uses `amountFiat` (typed USD) over `amountUsd` (token count × $1) for the threshold', () => {
     // For USDC at market rate ≈ 0.9998, the user typing $39.83 produces a
     // required token with `amountFiat` ≈ 39.83 (their real USD intent) but

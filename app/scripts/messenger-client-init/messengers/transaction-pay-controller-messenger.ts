@@ -6,7 +6,10 @@ import {
 import type { TransactionPayControllerMessenger } from '@metamask/transaction-pay-controller';
 import type { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import type { KeyringControllerSignEip7702AuthorizationAction } from '@metamask/keyring-controller';
-import type { TransactionControllerGetNonceLockAction } from '@metamask/transaction-controller';
+import type {
+  TransactionControllerGetNonceLockAction,
+  TransactionControllerIsAtomicBatchSupportedAction,
+} from '@metamask/transaction-controller';
 import type { RootMessenger } from '../../lib/messenger';
 import { getIsAssetsUnifiedStateIncludedInBuild } from '../../../../shared/lib/environment';
 import { getAssetsControllerMessenger } from './assets/assets-controller-messenger';
@@ -70,7 +73,8 @@ export function getTransactionPayControllerMessenger(
 type InitMessengerActions =
   | DelegationControllerSignDelegationAction
   | KeyringControllerSignEip7702AuthorizationAction
-  | TransactionControllerGetNonceLockAction;
+  | TransactionControllerGetNonceLockAction
+  | TransactionControllerIsAtomicBatchSupportedAction;
 
 type InitMessengerEvents = never;
 
@@ -97,6 +101,7 @@ export function getTransactionPayControllerInitMessenger(
       'DelegationController:signDelegation',
       'KeyringController:signEip7702Authorization',
       'TransactionController:getNonceLock',
+      'TransactionController:isAtomicBatchSupported',
     ],
     events: [],
   });

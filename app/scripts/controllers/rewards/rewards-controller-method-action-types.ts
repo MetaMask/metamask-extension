@@ -53,6 +53,11 @@ export type RewardsControllerGetPerpsDiscountForAccountAction = {
   handler: RewardsController['getPerpsDiscountForAccount'];
 };
 
+export type RewardsControllerGetVipTierForAccountAction = {
+  type: `RewardsController:getVipTierForAccount`;
+  handler: RewardsController['getVipTierForAccount'];
+};
+
 /**
  * Check if an internal account supports opt-in for rewards.
  *
@@ -204,6 +209,7 @@ export type RewardsControllerMethodActions =
   | RewardsControllerResetStateAction
   | RewardsControllerGetActualSubscriptionIdAction
   | RewardsControllerGetPerpsDiscountForAccountAction
+  | RewardsControllerGetVipTierForAccountAction
   | RewardsControllerIsOptInSupportedAction
   | RewardsControllerGetHasAccountOptedInAction
   | RewardsControllerGetOptInStatusAction

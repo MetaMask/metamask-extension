@@ -23,10 +23,6 @@ export type UserOperationControllerMessenger = ReturnType<
   typeof getUserOperationControllerMessenger
 >;
 
-export type UserOperationControllerInitMessenger = ReturnType<
-  typeof getUserOperationControllerInitMessenger
->;
-
 /**
  * Create a messenger restricted to the allowed actions and events of the
  * user operation controller.
@@ -58,6 +54,10 @@ export function getUserOperationControllerMessenger(
   });
   return controllerMessenger;
 }
+
+export type UserOperationControllerInitMessenger = ReturnType<
+  typeof getUserOperationControllerInitMessenger
+>;
 
 type InitMessengerActions =
   | TransactionControllerEmulateNewTransactionAction
