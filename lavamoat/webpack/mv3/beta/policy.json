@@ -1152,7 +1152,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "lodash": true,
         "@metamask/keyring-controller>ulid": true
@@ -1165,7 +1165,7 @@
         "@metamask/keyring-api": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography": true,
         "@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": true
       }
@@ -1475,7 +1475,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
@@ -2352,6 +2352,12 @@
         "browserify>util": true
       }
     },
+    "async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      }
+    },
     "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
       "globals": {
         "clearTimeout": true,
@@ -2359,12 +2365,6 @@
       },
       "packages": {
         "tslib": true
-      }
-    },
-    "mockttp>async-mutex": {
-      "globals": {
-        "clearTimeout": true,
-        "setTimeout": true
       }
     },
     "string.prototype.matchall>es-abstract>available-typed-arrays": {
@@ -3024,7 +3024,7 @@
         "buffer": true,
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
-        "ganache>secp256k1": true
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": {
@@ -3042,7 +3042,7 @@
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
         "mockttp>express>safe-buffer": true,
-        "ganache>secp256k1": true
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
       }
     },
     "ethereumjs-util": {
@@ -3277,7 +3277,7 @@
         "crypto-browserify": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "mockttp>express>safe-buffer": true,
-        "ganache>secp256k1": true
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
       }
     },
     "he": {
@@ -4607,7 +4607,7 @@
         "core-js-pure": true
       }
     },
-    "ganache>secp256k1": {
+    "ethereumjs-util>ethereum-cryptography>secp256k1": {
       "packages": {
         "@toruslabs/eccrypto>elliptic": true
       }

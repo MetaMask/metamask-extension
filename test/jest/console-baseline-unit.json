@@ -492,9 +492,7 @@
       "React: componentWill* lifecycle deprecations": 1
     },
     "ui/components/multichain/pages/gator-permissions/components/review-permission-renderer.test.tsx": {
-      "Test errors: Uncaught Errors": 1,
-      "error: Error handled by React Router": 1,
-      "error: React Router caught the following": 1
+      "React: DOM nesting violations": 1
     },
     "ui/components/multichain/pages/gator-permissions/gator-permissions-page.test.tsx": {
       "MetaMask: Background connection not initialized": 2
@@ -840,8 +838,8 @@
       "Test errors: Uncaught Errors": 2
     },
     "ui/pages/confirmations/components/confirm/info/native-transfer/native-transfer.test.tsx": {
-      "MetaMask: Background connection not initialized": 41,
-      "React: Act warnings (component updates not wrapped)": 14,
+      "MetaMask: Background connection not initialized": 43,
+      "React: Act warnings (component updates not wrapped)": 17,
       "Reselect: Identity function warnings": 4
     },
     "ui/pages/confirmations/components/confirm/info/nft-token-transfer/nft-token-transfer.test.tsx": {
@@ -965,8 +963,7 @@
       "Reselect: Identity function warnings": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/permission-detail-renderer.test.tsx": {
-      "React: Act warnings (component updates not wrapped)": 8,
-      "Reselect: Identity function warnings": 3,
+      "React: Act warnings (component updates not wrapped)": 10,
       "Test errors: Uncaught Errors": 3
     },
     "ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-permission/typed-sign-permission.test.tsx": {
@@ -1371,6 +1368,9 @@
     },
     "ui/pages/confirmations/utils/confirm.test.ts": {
       "error: Failed to detect if URL": 1
+    },
+    "ui/pages/custom-token-import/custom-token-import.test.tsx": {
+      "React: Act warnings (component updates not wrapped)": 2
     },
     "ui/pages/defi/components/defi-details-page.test.tsx": {
       "Reselect: Identity function warnings": 1

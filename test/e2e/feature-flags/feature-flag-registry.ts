@@ -147,7 +147,7 @@ export const FEATURE_FLAG_REGISTRY: Record<string, FeatureFlagRegistryEntry> = {
         'native-token-periodic',
         'erc20-token-stream',
         'erc20-token-periodic',
-        'erc20-token-revocation',
+        'token-approval-revocation',
         'native-token-allowance',
         'erc20-token-allowance',
       ],

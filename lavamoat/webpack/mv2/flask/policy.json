@@ -841,7 +841,7 @@
         "@metamask/polling-controller": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/assets-controller>bignumber.js": true,
         "lodash": true,
         "@metamask/assets-controller>p-limit": true
@@ -882,7 +882,7 @@
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/core-backend>@tanstack/query-core": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "ethereumjs-util>bn.js": true,
         "immer": true,
         "lodash": true,
@@ -1430,7 +1430,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
         "@metamask/safe-event-emitter": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "pify": true
       }
     },
@@ -1568,7 +1568,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
@@ -1691,7 +1691,7 @@
         "@metamask/delegation-core": true,
         "@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
-        "@metamask/transaction-controller": true,
+        "@metamask/gator-permissions-controller>@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -1773,7 +1773,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "bitcoin-address-validation": true,
         "@metamask/multichain-account-service>@metamask/keyring-api>uuid": true
       }
@@ -1789,7 +1789,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/keyring-controller>@metamask/eth-simple-keyring": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "lodash": true,
         "@metamask/keyring-controller>ulid": true
@@ -1816,7 +1816,7 @@
         "@metamask/keyring-api": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/eth-hd-keyring>@metamask/keyring-sdk>ethereum-cryptography": true,
         "@metamask/eth-hd-keyring>@metamask/keyring-sdk>uuid": true
       }
@@ -1907,7 +1907,7 @@
         "@metamask/multichain-account-service>@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "lodash": true
       }
     },
@@ -1966,7 +1966,7 @@
         "@metamask/base-controller": true,
         "@metamask/name-controller>@metamask/controller-utils": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true
+        "async-mutex": true
       }
     },
     "@metamask/network-controller": {
@@ -2200,7 +2200,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/ppom-validator>@metamask/controller-utils": true,
-        "await-semaphore": true,
+        "@metamask/ppom-validator>await-semaphore": true,
         "buffer": true,
         "@metamask/ppom-validator>crypto-js": true,
         "@toruslabs/eccrypto>elliptic": true,
@@ -2217,7 +2217,7 @@
         "@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true
+        "async-mutex": true
       }
     },
     "@metamask/profile-sync-controller": {
@@ -2326,7 +2326,7 @@
         "@metamask/utils": true,
         "@noble/ciphers": true,
         "@noble/curves": true,
-        "mockttp>async-mutex": true
+        "async-mutex": true
       }
     },
     "@metamask/selected-network-controller": {
@@ -2427,7 +2427,7 @@
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "cron-parser": true,
         "eslint>fast-deep-equal": true,
@@ -2468,7 +2468,7 @@
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@noble/hashes": true,
-        "mockttp>async-mutex": true
+        "async-mutex": true
       }
     },
     "@metamask/snaps-sdk": {
@@ -2576,7 +2576,7 @@
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
         "ethereumjs-util>bn.js": true,
         "buffer": true,
@@ -3724,7 +3724,7 @@
         "browserify>util": true
       }
     },
-    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
+    "async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
@@ -3733,7 +3733,7 @@
         "tslib": true
       }
     },
-    "mockttp>async-mutex": {
+    "@metamask/transaction-controller>@metamask/nonce-tracker>async-mutex": {
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
@@ -3747,7 +3747,7 @@
         "string.prototype.matchall>es-abstract>typed-array-length>possible-typed-array-names": true
       }
     },
-    "await-semaphore": {
+    "@metamask/ppom-validator>await-semaphore": {
       "globals": {
         "process": true,
         "setImmediate": true
@@ -4557,7 +4557,7 @@
         "buffer": true,
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
-        "ganache>secp256k1": true
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": {
@@ -4575,7 +4575,7 @@
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "crypto-browserify>randombytes": true,
         "mockttp>express>safe-buffer": true,
-        "ganache>secp256k1": true
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
       }
     },
     "ethereumjs-util": {
@@ -4887,7 +4887,7 @@
         "crypto-browserify": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "mockttp>express>safe-buffer": true,
-        "ganache>secp256k1": true
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true
       }
     },
     "he": {
@@ -6371,7 +6371,7 @@
         "core-js-pure": true
       }
     },
-    "ganache>secp256k1": {
+    "ethereumjs-util>ethereum-cryptography>secp256k1": {
       "packages": {
         "@toruslabs/eccrypto>elliptic": true
       }

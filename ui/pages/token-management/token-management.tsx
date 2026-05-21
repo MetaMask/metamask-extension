@@ -1010,24 +1010,27 @@ export const TokenManagementPage = () => {
           if (!evmAccount?.id) {
             return;
           }
-          await dispatch(
-            addImportedTokens(
-              [
-                {
-                  address: payload.assetReference,
-                  symbol: payload.symbol,
-                  decimals: payload.decimals,
-                  isERC721: false,
-                  name: payload.name,
-                  ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
-                },
-              ],
-              networkClientId,
+          await Promise.all([
+            dispatch(
+              addImportedTokens(
+                [
+                  {
+                    address: payload.assetReference,
+                    symbol: payload.symbol,
+                    decimals: payload.decimals,
+                    isERC721: false,
+                    name: payload.name,
+                    ...(payload.iconUrl ? { image: payload.iconUrl } : {}),
+                  },
+                ],
+                networkClientId,
+              ),
             ),
-          );
-          if (isAssetsUnifiedStateInBuild) {
-            await dispatch(addCustomAsset(evmAccount.id, payload.assetId));
-          }
+            ...(isAssetsUnifiedStateInBuild
+              ? [dispatch(addCustomAsset(evmAccount.id, payload.assetId))]
+              : []),
+          ]);
+
           return;
         }
 
@@ -1035,10 +1038,13 @@ export const TokenManagementPage = () => {
         if (!account?.id) {
           return;
         }
-        await dispatch(multichainAddAssets([payload.assetId], account.id));
-        if (isAssetsUnifiedStateInBuild) {
-          await dispatch(addCustomAsset(account.id, payload.assetId));
-        }
+
+        await Promise.all([
+          dispatch(multichainAddAssets([payload.assetId], account.id)),
+          ...(isAssetsUnifiedStateInBuild
+            ? [dispatch(addCustomAsset(account.id, payload.assetId))]
+            : []),
+        ]);
       } finally {
         removePendingKey(stagedKey);
       }
@@ -1162,6 +1168,7 @@ export const TokenManagementPage = () => {
         ignoredEvmAssetIds.has(lowerAssetId) ||
         (evmImportedKey ? ignoredEvmAssetIds.has(evmImportedKey) : false) ||
         isIgnoredMultichainAsset;
+      const isPending = pendingKeys.has(lowerAssetId);
 
       return (
         <TokenManagementCell
@@ -1178,8 +1185,9 @@ export const TokenManagementPage = () => {
             allMultichainNetworkConfigurations?.[payload.caipChainId]?.name ??
             payload.caipChainId
           }
-          isOn={(isImported && !isHidden) || payload.isNative}
-          disabled={payload.isNative || pendingKeys.has(lowerAssetId)}
+          isOn={isPending || (isImported && !isHidden) || payload.isNative}
+          disabled={payload.isNative || isPending}
+          isLoading={isPending}
           onToggle={(nextValue) => handleSearchResultToggle(payload, nextValue)}
           showToggle={!payload.isNative}
           testIdSuffix={`search-${lowerAssetId}`}
@@ -1400,15 +1408,15 @@ export const TokenManagementPage = () => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={6}
+      aria-label={t('loading')}
       data-testid="token-management-search-loading"
     >
-      <Text
-        variant={TextVariant.BodyMd}
-        textAlign={TextAlign.Center}
-        color={TextColor.TextAlternative}
-      >
-        {t('loading')}
-      </Text>
+      <Icon
+        className="animate-spin"
+        name={IconName.Loading}
+        color={IconColor.IconMuted}
+        size={IconSize.Lg}
+      />
     </Box>
   );
 
@@ -1418,15 +1426,15 @@ export const TokenManagementPage = () => {
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       padding={4}
+      aria-label={t('loading')}
       data-testid="token-management-pagination-loading"
     >
-      <Text
-        variant={TextVariant.BodySm}
-        textAlign={TextAlign.Center}
-        color={TextColor.TextAlternative}
-      >
-        {t('loading')}
-      </Text>
+      <Icon
+        className="animate-spin"
+        name={IconName.Loading}
+        color={IconColor.IconMuted}
+        size={IconSize.Sm}
+      />
     </Box>
   ) : null;
 
