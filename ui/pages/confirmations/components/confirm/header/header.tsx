@@ -4,6 +4,7 @@ import {
 } from '@metamask/transaction-controller';
 import React from 'react';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
+import { UNIVERSAL_TRANSACTION_APPROVAL_TYPE } from '../../../../../../shared/constants/confirmations';
 import { Box, Text } from '../../../../../components/component-library';
 import { PreferredAvatar } from '../../../../../components/app/preferred-avatar';
 import {
@@ -90,10 +91,15 @@ const Header = () => {
   // back button if it's a wallet initiated confirmation. The default header is
   // the original header for the redesigns and includes the sender and recipient
   // addresses as well.
+  const isUniversalTransaction =
+    (currentConfirmation?.type as string | undefined) ===
+    UNIVERSAL_TRANSACTION_APPROVAL_TYPE;
   const isConfirmationWithNewHeader =
-    currentConfirmation?.type &&
-    CONFIRMATIONS_WITH_ALT_HEADER.includes(currentConfirmation.type);
+    isUniversalTransaction ||
+    (currentConfirmation?.type &&
+      CONFIRMATIONS_WITH_ALT_HEADER.includes(currentConfirmation.type));
   const isWalletInitiated =
+    isUniversalTransaction ||
     (currentConfirmation as TransactionMeta)?.origin === ORIGIN_METAMASK;
 
   const isSimpleHeader =

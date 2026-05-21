@@ -5,6 +5,7 @@ import {
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
+import { UNIVERSAL_TRANSACTION_APPROVAL_TYPE } from '../../../../../../shared/constants/confirmations';
 import {
   Box,
   ButtonIcon,
@@ -35,11 +36,23 @@ export const WalletInitiatedHeader = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const navigate = useNavigate();
 
+  const isUniversalTransaction =
+    currentConfirmation?.type === UNIVERSAL_TRANSACTION_APPROVAL_TYPE;
+
   const isSendTransaction =
-    currentConfirmation?.type &&
-    SEND_TRANSACTION_TYPES.includes(currentConfirmation.type);
+    isUniversalTransaction ||
+    (currentConfirmation?.type &&
+      SEND_TRANSACTION_TYPES.includes(currentConfirmation.type));
 
   const handleBackButtonClick = useCallback(() => {
+    if (isUniversalTransaction) {
+      onCancel({
+        location: MetaMetricsEventLocation.Confirmation,
+        navigateBackForSend: true,
+      });
+      return;
+    }
+
     if (
       currentConfirmation.type === TransactionType.shieldSubscriptionApprove
     ) {
@@ -74,7 +87,7 @@ export const WalletInitiatedHeader = () => {
         navigateBackForSend: true,
       });
     }
-  }, [currentConfirmation, navigate, onCancel]);
+  }, [currentConfirmation, isUniversalTransaction, navigate, onCancel]);
 
   const getHeaderTitle = () => {
     if (isSendTransaction) {

@@ -9,10 +9,8 @@ import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
   PREVIOUS_ROUTE,
-  SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { SendPages } from '../../constants/send';
 import { ConfirmationLoader } from '../useConfirmationNavigation';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
 import {
@@ -75,7 +73,9 @@ export const useSendActions = () => {
       const route = `${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`;
       navigate(route);
     } else {
-      navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
+      const params = new URLSearchParams();
+      params.set('loader', ConfirmationLoader.Send);
+      navigate(`${CONFIRM_TRANSACTION_ROUTE}?${params.toString()}`);
       try {
         const result = (await sendMultichainTransactionForReview(
           fromAccount as InternalAccount,

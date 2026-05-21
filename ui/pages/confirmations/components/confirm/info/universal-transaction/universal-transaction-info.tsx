@@ -2,6 +2,8 @@ import { Box } from '@metamask/design-system-react';
 import React from 'react';
 
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
+import { useUniversalTransactionDataOptional } from '../../../../hooks/transactions/useUniversalTransactionData';
+import { ConfirmLoader } from '../shared/confirm-loader/confirm-loader';
 import { UniversalTransactionFeeRow } from './rows/universal-transaction-fee-row';
 import { UniversalTransactionFromRow } from './rows/universal-transaction-from-row';
 import { UniversalTransactionHeadingRow } from './rows/universal-transaction-heading-row';
@@ -9,6 +11,12 @@ import { UniversalTransactionNetworkRow } from './rows/universal-transaction-net
 import { UniversalTransactionToRow } from './rows/universal-transaction-to-row';
 
 function UniversalTransactionInfo() {
+  const data = useUniversalTransactionDataOptional();
+
+  if (!data) {
+    return <ConfirmLoader />;
+  }
+
   return (
     <>
       <UniversalTransactionHeadingRow />
@@ -25,6 +33,8 @@ function UniversalTransactionInfo() {
       </ConfirmInfoSection>
       <ConfirmInfoSection>
         <UniversalTransactionNetworkRow />
+      </ConfirmInfoSection>
+      <ConfirmInfoSection>
         <UniversalTransactionFeeRow />
       </ConfirmInfoSection>
     </>
