@@ -341,7 +341,7 @@ class FixtureBuilder {
     return this.withNetworkController({
       selectedNetworkClientId: 'monad',
       networkConfigurations: {
-        'monad-mainnet': {
+        monad: {
           chainId: CHAIN_IDS.MONAD,
           nickname: 'Monad Mainnet',
           rpcUrl: `https://monad-mainnet.infura.io/v3/${getInfuraProjectId()}`,
@@ -349,7 +349,7 @@ class FixtureBuilder {
           rpcPrefs: {
             blockExplorerUrl: 'https://monadscan.com',
           },
-          id: 'monad-mainnet',
+          id: 'monad',
           type: 'rpc',
           isCustom: true,
         },

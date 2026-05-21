@@ -573,17 +573,17 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //   tokenlistUrl: 'https://raw.githubusercontent.com/okx/xlayer-tokenlist/main/xlayer.tokenlist.json',
   //   blockExplorerUrl: 'https://www.oklink.com/xlayer',
   // },
-  // {
-  //   networkId: 'Chiliz',
-  //   networkName: 'Chiliz Chain',
-  //   chainId: 88888,
-  //   symbol: 'CHZ',
-  //   rpcUrl: 'https://chiliz.publicnode.com',
-  //   rpcName: 'Chiliz RPC',
-  //   tokenlistUrl:
-  //     'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
-  //   blockExplorerUrl: 'https://scan.chiliz.com',
-  // },
+  {
+    networkId: 'Chiliz',
+    networkName: 'Chiliz Chain',
+    chainId: 88888,
+    symbol: 'CHZ',
+    rpcUrl: 'https://chiliz.publicnode.com',
+    rpcName: 'Chiliz RPC',
+    tokenlistUrl:
+      'https://raw.githubusercontent.com/chiliz-chain/token-list/main/tokenlist.json',
+    blockExplorerUrl: 'https://scan.chiliz.com',
+  },
   // {
   //   networkId: 'Tempo Mainnet',
   //   networkName: 'Tempo Mainnet',
@@ -628,26 +628,26 @@ export const NETWORK_CONFIGS: NetworkConfig[] = [
   //     'https://raw.githubusercontent.com/megaeth-labs/mega-tokenlist/main/megaeth.tokenlist.json',
   //   blockExplorerUrl: 'https://explorer.megaeth.io', // optional
   // },
-  {
-    networkId: 'Ink',
-    networkName: 'Ink',
-    chainId: 57073,
-    symbol: 'ETH', // adjust if the native symbol differs
-    rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
-    rpcName: 'Ink RPC',
-    tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
-    blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
-  },
-  {
-    networkId: 'Mantle',
-    networkName: 'Mantle',
-    chainId: 5000,
-    symbol: 'MNT',
-    rpcUrl: 'https://rpc.mantle.xyz',
-    rpcName: 'Mantle RPC',
-    tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
-    blockExplorerUrl: 'https://mantlescan.xyz',
-  },
+  // {
+  //   networkId: 'Ink',
+  //   networkName: 'Ink',
+  //   chainId: 57073,
+  //   symbol: 'ETH', // adjust if the native symbol differs
+  //   rpcUrl: 'https://ink.drpc.org', // placeholder, replace with real RPC
+  //   rpcName: 'Ink RPC',
+  //   tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+  //   blockExplorerUrl: 'https://explorer.inkonchain.com', // optional
+  // },
+  // {
+  //   networkId: 'Mantle',
+  //   networkName: 'Mantle',
+  //   chainId: 5000,
+  //   symbol: 'MNT',
+  //   rpcUrl: 'https://rpc.mantle.xyz',
+  //   rpcName: 'Mantle RPC',
+  //   tokenlistUrl: `file://${path.join(__dirname, 'tokenlist.json')}`,
+  //   blockExplorerUrl: 'https://mantlescan.xyz',
+  // },
 ];
 
 /**
