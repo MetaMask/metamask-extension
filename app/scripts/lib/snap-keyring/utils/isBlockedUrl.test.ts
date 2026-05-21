@@ -18,23 +18,33 @@ describe('isBlockedUrl', () => {
   // during construction without errors. Each child messenger's registerActionHandler
   // call automatically delegates the action up to the root messenger.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const txMessenger = new Messenger<'TransactionController', never, never, any>({
-    namespace: 'TransactionController',
-    parent: messenger,
-  });
+  const txMessenger = new Messenger<'TransactionController', never, never, any>(
+    {
+      namespace: 'TransactionController',
+      parent: messenger,
+    },
+  );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (txMessenger as any).registerActionHandler('TransactionController:getState', () => ({
-    transactions: [],
-  }));
+  (txMessenger as any).registerActionHandler(
+    'TransactionController:getState',
+    () => ({
+      transactions: [],
+    }),
+  );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const abMessenger = new Messenger<'AddressBookController', never, never, any>({
-    namespace: 'AddressBookController',
-    parent: messenger,
-  });
+  const abMessenger = new Messenger<'AddressBookController', never, never, any>(
+    {
+      namespace: 'AddressBookController',
+      parent: messenger,
+    },
+  );
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (abMessenger as any).registerActionHandler('AddressBookController:getState', () => ({
-    addressBook: {},
-  }));
+  (abMessenger as any).registerActionHandler(
+    'AddressBookController:getState',
+    () => ({
+      addressBook: {},
+    }),
+  );
 
   const phishingController = new PhishingController({
     messenger: phishingControllerMessenger,
