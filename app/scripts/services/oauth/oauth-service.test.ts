@@ -320,7 +320,9 @@ describe('OAuthService - startOAuthLogin', () => {
 
         if (url.includes('/api/v2/telegram/login/verify')) {
           if (typeof init?.body !== 'string') {
-            throw new Error('Expected Telegram verify request body to be a string');
+            throw new Error(
+              'Expected Telegram verify request body to be a string',
+            );
           }
 
           verifyRequestBodies.push(
@@ -392,9 +394,7 @@ describe('OAuthService - startOAuthLogin', () => {
     expect(verifyRequestBodies).toHaveLength(1);
     expect(verifyRequestBodies[0].code).toBe('');
     expect(verifyRequestBodies[0].code).not.toBeNull();
-    expect(verifyRequestBodies[0].code_verifier).toBe(
-      'mocked-code-verifier',
-    );
+    expect(verifyRequestBodies[0].code_verifier).toBe('mocked-code-verifier');
   });
 
   it('treats a closed Telegram login tab as a user-cancelled login', async () => {
