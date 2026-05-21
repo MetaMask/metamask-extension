@@ -37,7 +37,9 @@ const stateWithAccount = {
         defaultRpcEndpointIndex: 0,
       },
     },
-    remoteFeatureFlags: { vipProgramEnabled: true },
+    remoteFeatureFlags: {
+      vipProgramEnabled: { enabled: true, minimumVersion: '0.0.0' },
+    },
   },
 };
 
@@ -52,14 +54,18 @@ const stateWithoutAccount = {
         defaultRpcEndpointIndex: 0,
       },
     },
-    remoteFeatureFlags: { vipProgramEnabled: true },
+    remoteFeatureFlags: {
+      vipProgramEnabled: { enabled: true, minimumVersion: '0.0.0' },
+    },
   },
 };
 
 const stateWithVipDisabled = {
   metamask: {
     ...stateWithAccount.metamask,
-    remoteFeatureFlags: { vipProgramEnabled: false },
+    remoteFeatureFlags: {
+      vipProgramEnabled: { enabled: false, minimumVersion: '0.0.0' },
+    },
   },
 };
 

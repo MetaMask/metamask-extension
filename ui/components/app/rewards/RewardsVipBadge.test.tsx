@@ -16,7 +16,7 @@ const vipEnabledStore = () => {
   const store = createBridgeMockStore();
   store.metamask.remoteFeatureFlags = {
     ...store.metamask.remoteFeatureFlags,
-    vipProgramEnabled: true,
+    vipProgramEnabled: { enabled: true, minimumVersion: '0.0.0' },
   };
   return store;
 };

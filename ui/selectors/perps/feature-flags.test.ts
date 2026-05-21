@@ -175,14 +175,14 @@ describe('Perps Feature Flags', () => {
   });
 
   describe('getIsVipProgramEnabled', () => {
-    it('returns true when vipProgramEnabled is true', () => {
+    it('returns true when vipProgramEnabled is boolean true', () => {
       const state = {
         metamask: { remoteFeatureFlags: { vipProgramEnabled: true } },
       };
       expect(getIsVipProgramEnabled(state)).toBe(true);
     });
 
-    it('returns false when vipProgramEnabled is false', () => {
+    it('returns false when vipProgramEnabled is boolean false', () => {
       const state = {
         metamask: { remoteFeatureFlags: { vipProgramEnabled: false } },
       };
@@ -194,9 +194,37 @@ describe('Perps Feature Flags', () => {
       expect(getIsVipProgramEnabled(state)).toBe(false);
     });
 
-    it('returns false when vipProgramEnabled is a non-boolean truthy value', () => {
+    it('returns true when version-gated flag is enabled and version satisfies', () => {
+      semverGteMock.mockReturnValue(true);
       const state = {
-        metamask: { remoteFeatureFlags: { vipProgramEnabled: 'yes' } },
+        metamask: {
+          remoteFeatureFlags: {
+            vipProgramEnabled: { enabled: true, minimumVersion: '0.0.0' },
+          },
+        },
+      };
+      expect(getIsVipProgramEnabled(state)).toBe(true);
+    });
+
+    it('returns false when version-gated flag is enabled but version does not satisfy', () => {
+      semverGteMock.mockReturnValue(false);
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            vipProgramEnabled: { enabled: true, minimumVersion: '99.0.0' },
+          },
+        },
+      };
+      expect(getIsVipProgramEnabled(state)).toBe(false);
+    });
+
+    it('returns false when version-gated flag has enabled false', () => {
+      const state = {
+        metamask: {
+          remoteFeatureFlags: {
+            vipProgramEnabled: { enabled: false, minimumVersion: '0.0.0' },
+          },
+        },
       };
       expect(getIsVipProgramEnabled(state)).toBe(false);
     });
