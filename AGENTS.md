@@ -33,7 +33,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 
 ### Comprehensive Guidelines Location
 
-> **Agent skills:** Paths under `.cursor/`, `.claude/`, and `.agents/` are synced from [MetaMask/skills](https://github.com/MetaMask/skills) by `yarn install` and can be refreshed with `yarn skills` (see README -> "AI Agent Skills"). If a referenced skill is missing locally, run `yarn skills`.
+> **Agent skills:** `yarn install` prepares the public [MetaMask/skills](https://github.com/MetaMask/skills) cache; `yarn skills` syncs generated files into `.cursor/`, `.claude/`, and `.agents/` (see README -> "AI Agent Skills"). If a referenced skill is missing locally, run `yarn skills`.
 
 Read these files for detailed coding standards:
 
@@ -1692,7 +1692,6 @@ Performance Checks (React Components):
 - **OpenAI/Codex Skill:** [`.agents/skills/mms-add-non-evm-network/SKILL.md`](./.agents/skills/mms-add-non-evm-network/SKILL.md) - Multi-agent skill entrypoint for the shared standard.
 - **Cursor Rule:** [`.cursor/rules/mms-add-non-evm-network/RULE.md`](./.cursor/rules/mms-add-non-evm-network/RULE.md) - Cursor rule entrypoint for the shared standard.
 - **Claude Skill:** [`.claude/skills/mms-add-non-evm-network/SKILL.md`](./.claude/skills/mms-add-non-evm-network/SKILL.md) - Claude skill entrypoint for the shared standard.
-- **Claude Command:** [`.claude/commands/add-non-evm-swaps-bridge-network.md`](./.claude/commands/add-non-evm-swaps-bridge-network.md) - Claude command entrypoint for the shared standard.
 - **Cursor Command:** [`.cursor/commands/add-non-evm-swaps-bridge-network.md`](./.cursor/commands/add-non-evm-swaps-bridge-network.md) - Cursor command shim to the Claude command entrypoint.
 
 ### External Resources
