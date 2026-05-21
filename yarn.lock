@@ -33681,7 +33681,6 @@ __metadata:
     addons-linter: "npm:^9.5.0"
     async-mutex: "npm:^0.5.0"
     autoprefixer: "npm:^10.4.19"
-    axios: "npm:^1.16.0"
     babel-plugin-react-compiler: "npm:^1.0.0"
     babelify: "npm:^10.0.0"
     base32-encode: "npm:^1.2.0"
