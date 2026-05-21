@@ -365,8 +365,11 @@ export const CustomTokenImportPage = () => {
         if (!isLatestLookup()) {
           return;
         }
-        const { symbol: mergedSymbol, name: mergedName, decimals: mergedDecimals } =
-          mergeCustomTokenMetadataForImport(rpcTokenInfo, info);
+        const {
+          symbol: mergedSymbol,
+          name: mergedName,
+          decimals: mergedDecimals,
+        } = mergeCustomTokenMetadataForImport(rpcTokenInfo, info);
         setSymbol(mergedSymbol);
         setName(mergedName);
         setDecimals(mergedDecimals);
