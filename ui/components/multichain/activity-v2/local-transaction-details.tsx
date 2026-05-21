@@ -21,11 +21,10 @@ type LocalTransactionDetailsProps = {
   onClose: () => void;
 };
 
-/** Legacy detail modal for a local EVM transaction group. */
-export function LocalTransactionDetails({
+export const LocalTransactionDetails = ({
   transactionGroup,
   onClose,
-}: Readonly<LocalTransactionDetailsProps>) {
+}: Readonly<LocalTransactionDetailsProps>) => {
   const { initialTransaction, primaryTransaction } = transactionGroup;
   const { isBridgeFailed, showBridgeTxDetails } = useBridgeTxHistoryData({
     transactionGroup,
@@ -100,4 +99,4 @@ export function LocalTransactionDetails({
       chainId={initialTransaction.chainId}
     />
   );
-}
+};

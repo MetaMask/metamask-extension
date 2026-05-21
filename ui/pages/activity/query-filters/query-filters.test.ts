@@ -29,7 +29,7 @@ function transaction(overrides = {}) {
     valueTransfers: [],
     transactionCategory: 'TRANSFER',
     ...overrides,
-  } as V1TransactionByHashResponse;
+  } as unknown as V1TransactionByHashResponse;
 }
 
 describe('query filters', () => {
@@ -182,6 +182,7 @@ describe('query filters', () => {
         chainId: 'eip155:1',
         status: 'success',
         timestamp: 1778593067000,
+        raw: { type: 'apiEvmTransaction', data: validTransaction },
         data: {
           from: subjectAddress,
           to: otherAddress,
