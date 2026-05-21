@@ -146,9 +146,7 @@ import { NetworkHandler } from './network-handler';
 // Begin Lazy Routes
 const OnboardingFlow = mmLazy(() => import('../onboarding-flow/index.ts'));
 const Lock = mmLazy(() => import('../lock/index.ts'));
-const UnlockPage = mmLazy(
-  () => import(/* webpackMode: "eager" */ '../unlock-page/index.ts'),
-);
+const UnlockPage = mmLazy(() => import('../unlock-page/index.ts'));
 const RestoreVaultPage = mmLazy(() => import('../keychains/restore-vault.tsx'));
 const ImportSrpPage = mmLazy(() => import('../multi-srp/import-srp/index.ts'));
 const RevealSeedConfirmation = mmLazy(
@@ -214,9 +212,7 @@ const GatorPermissionsReviewPermissionsPage = mmLazy(
   () =>
     import('../../components/multichain/pages/gator-permissions/review-permissions/review-gator-permissions-page.tsx'),
 );
-const Home = mmLazy(
-  () => import(/* webpackMode: "eager" */ '../home/index.js'),
-);
+const Home = mmLazy(() => import('../home/index.js'));
 const DeepLink = mmLazy(() => import('../deep-link/deep-link.tsx'));
 const BasicFunctionalityOff = mmLazy(
   () =>
