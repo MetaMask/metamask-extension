@@ -64,6 +64,43 @@ async function waitForEndpointToBeCalled(
   }, timeout);
 }
 
+type DebuggableSeenRequest = {
+  method?: string;
+  url?: string;
+  body?: { getJson?: () => Promise<unknown>; getText?: () => Promise<string> };
+};
+
+async function getRequestPayload(request: DebuggableSeenRequest) {
+  try {
+    return await request.body?.getJson?.();
+  } catch {
+    try {
+      return await request.body?.getText?.();
+    } catch {
+      return '[unreadable request body]';
+    }
+  }
+}
+
+async function logAuthRequests(requests: unknown[]) {
+  const debugRequests = await Promise.all(
+    requests.map(async (request, index) => {
+      const requestWithBody = request as DebuggableSeenRequest;
+      return {
+        index,
+        method: requestWithBody.method ?? '[unknown method]',
+        url: requestWithBody.url ?? '[unknown url]',
+        payload: await getRequestPayload(requestWithBody),
+      };
+    }),
+  );
+
+  console.log(
+    'Profile metrics auth request debug payloads:',
+    JSON.stringify(debugRequests, null, 2),
+  );
+}
+
 describe('Profile Metrics', function () {
   describe('when MetaMetrics is enabled and the user acknowledged the privacy change', function () {
     it('sends existing accounts to the API on wallet unlock after activating MetaMetrics and an initial delay', async function () {
@@ -72,9 +109,6 @@ describe('Profile Metrics', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
-            })
-            .withAppStateController({
-              pna25Acknowledged: true,
             })
             .build(),
           testSpecificMock: async (server: Mockttp) => [
@@ -100,6 +134,7 @@ describe('Profile Metrics', function () {
           await waitForEndpointToBeCalled(driver, authCall, 2);
 
           const requests = await authCall.getSeenRequests();
+          await logAuthRequests(requests);
           assert.equal(
             requests.length,
             2,
@@ -115,9 +150,6 @@ describe('Profile Metrics', function () {
           fixtures: new FixtureBuilderV2()
             .withMetaMetricsController({
               participateInMetaMetrics: true,
-            })
-            .withAppStateController({
-              pna25Acknowledged: true,
             })
             .build(),
           testSpecificMock: async (server: Mockttp) => [
