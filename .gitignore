@@ -117,6 +117,14 @@ temp-llm-workflow-*
 # Cursor IDE internal state
 .cursor/hooks/
 
+tests/coverage-systems/
+
+runway-artifacts/
+test-failures/
+test-artifacts/
+token-import-report-*.md
+test/e2e/.env.e2e
+
 # Local git worktrees
 .worktrees
 
@@ -140,4 +148,3 @@ temp-llm-workflow-*
 .cursor/commands/
 # Carve-outs: IDE/bugbot config that must stay tracked
 !.cursor/BUGBOT.md
-.env.e2e
