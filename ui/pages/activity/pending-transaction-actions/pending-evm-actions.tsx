@@ -1,6 +1,10 @@
 import React, { useMemo, type MouseEvent as ReactMouseEvent } from 'react';
 import { useSelector } from 'react-redux';
 import type { TransactionMeta } from '@metamask/transaction-controller';
+
+type TransactionMetaWithSmartTransaction = TransactionMeta & {
+  isSmartTransaction?: boolean;
+};
 import type { EditGasModes } from '../../../../shared/constants/gas';
 import type { TransactionGroup } from '../../../../shared/lib/multichain/types';
 import { PendingTransactionActionButtons } from '../../../components/app/pending-transaction-action-buttons/pending-transaction-action-buttons';
@@ -21,7 +25,7 @@ type PendingEvmActionsProps = {
   onGasModalMetaId: (metaId: string) => void;
 };
 
-type PendingEvmActionsInnerProps = {
+type PendingTransactionActionButtonsWrapperProps = {
   meta: TransactionMeta;
   transactionGroup: TransactionGroup;
   isEarliestNonce: boolean;
@@ -29,13 +33,13 @@ type PendingEvmActionsInnerProps = {
   onGasModalMetaId: (metaId: string) => void;
 };
 
-const PendingEvmActionsInner = ({
+const PendingTransactionActionButtonsWrapper = ({
   meta,
   transactionGroup,
   isEarliestNonce,
   setEditGasMode,
   onGasModalMetaId,
-}: Readonly<PendingEvmActionsInnerProps>) => {
+}: Readonly<PendingTransactionActionButtonsWrapperProps>) => {
   const { bridgeHistoryItem } = useBridgeTxHistoryData({ transactionGroup });
 
   const { showCancel, onCancel, speedUp } = usePendingTransactionActions({
@@ -93,12 +97,16 @@ export const PendingEvmActions = ({
     return buildTransactionGroupFromMeta(meta, transactions);
   }, [meta, transactions]);
 
-  if (!meta || meta.isSmartTransaction || !transactionGroup) {
+  if (
+    !meta ||
+    (meta as TransactionMetaWithSmartTransaction).isSmartTransaction ||
+    !transactionGroup
+  ) {
     return null;
   }
 
   return (
-    <PendingEvmActionsInner
+    <PendingTransactionActionButtonsWrapper
       meta={meta}
       transactionGroup={transactionGroup}
       isEarliestNonce={isEarliestNonce}
