@@ -24,7 +24,6 @@ type MkdirSync = typeof mkdirSync;
 type Stderr = Pick<NodeJS.WriteStream, 'write'>;
 
 type PostinstallDeps = {
-  cwd?: string;
   env?: NodeJS.ProcessEnv;
   mkdir?: MkdirSync;
   spawn?: SpawnSync;

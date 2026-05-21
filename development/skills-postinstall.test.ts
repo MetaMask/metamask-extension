@@ -32,7 +32,6 @@ function spawnWithStatuses(statuses: number[]) {
 }
 
 describe('skills-postinstall', () => {
-  const cwd = '/repo';
   const cacheDir = '.skills-cache/metamask-skills';
 
   it('skips when explicitly disabled or running in CI without force', () => {
@@ -54,7 +53,6 @@ describe('skills-postinstall', () => {
 
     expect(
       postinstall({
-        cwd,
         env: {},
         mkdir,
         spawn,
@@ -82,9 +80,7 @@ describe('skills-postinstall', () => {
   it('fetches and resets an existing cache', () => {
     const spawn = spawnWithStatuses([0, 0]);
 
-    expect(postinstall({ cwd, env: {}, spawn, stat: statGitDir(true) })).toBe(
-      0,
-    );
+    expect(postinstall({ env: {}, spawn, stat: statGitDir(true) })).toBe(0);
     expect(spawn).toHaveBeenNthCalledWith(
       1,
       'git',
@@ -118,7 +114,6 @@ describe('skills-postinstall', () => {
       const stderr = { write: jest.fn() };
       expect(
         postinstall({
-          cwd,
           env: {},
           spawn: spawnWithStatuses(statuses),
           stat: statGitDir(gitDir),
@@ -136,7 +131,6 @@ describe('skills-postinstall', () => {
 
     expect(
       postinstall({
-        cwd,
         env: {},
         mkdir: jest.fn(() => {
           throw new Error('readonly');
