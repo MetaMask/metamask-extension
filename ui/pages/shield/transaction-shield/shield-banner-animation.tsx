@@ -3,7 +3,7 @@ import { Box } from '@metamask/design-system-react';
 import { mmLazy } from '../../../helpers/utils/mm-lazy';
 
 const ShieldBannerAnimationContent = mmLazy(
-  () => import('./shield-banner-animation-content'),
+  () => import('./shield-banner-animation-content.js'),
 );
 
 const ShieldBannerAnimation = ({

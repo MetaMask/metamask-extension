@@ -24,7 +24,7 @@ const BASE_CONTAINER_STYLE: React.CSSProperties = {
 };
 
 const PerpsTutorialAnimationContent = mmLazy(
-  () => import('./PerpsTutorialAnimationContent'),
+  () => import('./PerpsTutorialAnimationContent.js'),
 );
 
 const PerpsTutorialAnimation: React.FC<PerpsTutorialAnimationProps> = ({

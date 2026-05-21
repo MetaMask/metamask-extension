@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { mmLazy } from '../../../helpers/utils/mm-lazy';
 
-const StatusIconContent = mmLazy(() => import('./status-icon-content'));
+const StatusIconContent = mmLazy(() => import('./status-icon-content.js'));
 
 type Props = {
   state: 'loading' | 'success' | 'fail';

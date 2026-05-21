@@ -9,7 +9,7 @@ type FoxAppearAnimationProps = {
 };
 
 const FoxAppearAnimationContent = mmLazy(
-  () => import('./fox-appear-animation-content'),
+  () => import('./fox-appear-animation-content.js'),
 );
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

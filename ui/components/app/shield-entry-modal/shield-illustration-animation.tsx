@@ -3,7 +3,7 @@ import { Box } from '@metamask/design-system-react';
 import { mmLazy } from '../../../helpers/utils/mm-lazy';
 
 const ShieldIllustrationAnimationContent = mmLazy(
-  () => import('./shield-illustration-animation-content'),
+  () => import('./shield-illustration-animation-content.js'),
 );
 
 const ShieldIllustrationAnimation = ({

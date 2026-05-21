@@ -3,7 +3,7 @@ import { Box } from '@metamask/design-system-react';
 import { mmLazy } from '../../../helpers/utils/mm-lazy';
 
 const WalletReadyAnimationContent = mmLazy(
-  () => import('./wallet-ready-animation-content'),
+  () => import('./wallet-ready-animation-content.js'),
 );
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
