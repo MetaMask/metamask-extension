@@ -16,9 +16,15 @@ const selectors = {
   exampleDateTimePicker: '.snap-ui-renderer__date-time-picker--datetime',
   exampleDatePickerContainer: '.snap-ui-renderer__date-time-picker--date',
   exampleTimePicker: '.snap-ui-renderer__date-time-picker--time',
-  dateTimePickerInput: '.snap-ui-renderer__date-time-picker--datetime input',
-  datePickerInput: '.snap-ui-renderer__date-time-picker--date input',
-  timePickerInput: '.snap-ui-renderer__date-time-picker--time input',
+  dateTimePickerField:
+    '.snap-ui-renderer__date-time-picker--datetime [role="textbox"]',
+  datePickerField:
+    '.snap-ui-renderer__date-time-picker--date [role="textbox"]',
+  timePickerField:
+    '.snap-ui-renderer__date-time-picker--time [role="textbox"]',
+  pickerDialogOk: '.MuiDialogActions-root button:last-child',
+  pickerPrevMonthArrow:
+    '.MuiPickersCalendarHeader-root .MuiPickersArrowSwitcher-root button:first-child',
 } satisfies Record<string, string | Record<string, string>>;
 
 class SnapInteractiveDialog {
@@ -71,82 +77,144 @@ class SnapInteractiveDialog {
   }
 
   /**
-   * Types digits into a MUI v6 picker input. The input is readonly so
-   * driver.fill() cannot be used — click to focus, then sendKeys() directly.
+   * Opens a MUI v5 mobile picker dialog by clicking its read-only field.
    *
-   * @param containerSelector - Selector for the picker container (for scrolling).
-   * @param inputSelector - Selector for the readonly `<input>` element.
-   * @param digits - Zero-padded digit string (e.g. "0415" not "415").
+   * @param containerSelector - Selector for the picker wrapper (for scrolling).
+   * @param fieldSelector - Selector for the `<div role="textbox">` element.
    */
-  async #typeIntoPickerInput(
+  async #openPickerDialog(
     containerSelector: string,
-    inputSelector: string,
-    digits: string,
-  ) {
+    fieldSelector: string,
+  ): Promise<void> {
     const container = await this.driver.findElement(containerSelector);
     await this.driver.scrollToElement(container);
-    await this.driver.clickElement(inputSelector);
-    const inputEl = await this.driver.findElement(inputSelector);
-    await inputEl.sendKeys(digits);
+    await this.driver.clickElement(fieldSelector);
+    await this.driver.waitForSelector('.MuiDialog-root');
   }
 
   /**
-   * Fills the DateTimePicker with a date/time in the previous month.
-   * A previous-month date is used so the value stays within the
-   * `disableFuture` constraint.
+   * Navigates the calendar inside an open MUI v5 picker dialog to the
+   * previous month and clicks the specified day.
+   *
+   * @param day - Day of the month to select (1–31).
+   */
+  async #selectCalendarDay(day: number): Promise<void> {
+    await this.driver.clickElement(selectors.pickerPrevMonthArrow);
+    await this.driver.waitForElementToStopMoving(
+      '.MuiDayPicker-slideTransition',
+    );
+    await this.driver.clickElement({
+      text: String(day),
+      css: '.MuiPickersDay-root:not(.MuiPickersDay-hiddenDaySpacingFiller)',
+    });
+  }
+
+  /**
+   * Clicks an hour on the MUI v5 analog clock (24h mode) via `clickPoint`
+   * so the event lands on the transparent mask that handles selection.
+   * Hour 0 is displayed as "00"; all others display without zero-padding.
+   *
+   * @param hour - Hour to select (0–23).
+   */
+  async #selectClockHour(hour: number): Promise<void> {
+    const label = hour === 0 ? '00' : String(hour);
+    await this.driver.clickPoint(
+      { text: label, tag: 'span', css: '.MuiPickersClockNumber-clockNumber' },
+      1,
+      1,
+    );
+    await this.driver.delay(300);
+  }
+
+  /**
+   * Clicks a minute on the MUI v5 analog clock via `clickPoint`.
+   * Minutes are always zero-padded (e.g. "05", "30", "00").
+   *
+   * @param minute - Minute to select (must be a multiple of 5: 0, 5, 10, …, 55).
+   */
+  async #selectClockMinute(minute: number): Promise<void> {
+    const label = String(minute).padStart(2, '0');
+    await this.driver.clickPoint(
+      { text: label, tag: 'span', css: '.MuiPickersClockNumber-clockNumber' },
+      1,
+      1,
+    );
+    await this.driver.delay(300);
+  }
+
+  /**
+   * Confirms the current picker selection by clicking "OK".
+   */
+  async #confirmPicker(): Promise<void> {
+    await this.driver.clickElement(selectors.pickerDialogOk);
+    await this.driver.delay(200);
+  }
+
+  /**
+   * Selects a date and time in the MobileDateTimePicker dialog.
+   * Opens the dialog, navigates to the previous month, clicks the day,
+   * then selects hour and minute on the analog clock, and confirms.
    *
    * @param day - Day of the month to select.
    * @param hour - Hour to select (0–23).
-   * @param minute - Minute to select (0–59).
+   * @param minute - Minute to select (0–59, rounded to nearest 5 on clock face).
    * @returns ISO string of the selected date-time.
    */
   async selectInDateTimePicker(day: number, hour: number, minute: number) {
     const prevMonthDate = DateTime.now().minus({ months: 1 });
-    const digits =
-      String(prevMonthDate.month).padStart(2, '0') +
-      String(day).padStart(2, '0') +
-      String(prevMonthDate.year) +
-      String(hour).padStart(2, '0') +
-      String(minute).padStart(2, '0');
 
-    await this.#typeIntoPickerInput(
+    await this.#openPickerDialog(
       selectors.exampleDateTimePicker,
-      selectors.dateTimePickerInput,
-      digits,
+      selectors.dateTimePickerField,
     );
+    await this.#selectCalendarDay(day);
+    await this.#selectClockHour(hour);
+    await this.#selectClockMinute(minute);
+    await this.#confirmPicker();
 
     return prevMonthDate
       .set({ day, hour, minute, second: 0, millisecond: 0 })
       .toISO();
   }
 
+  /**
+   * Selects a time in the MobileTimePicker dialog.
+   * Opens the dialog, selects hour and minute on the analog clock, and confirms.
+   *
+   * @param hour - Hour to select (0–23).
+   * @param minute - Minute to select (0–59, rounded to nearest 5 on clock face).
+   * @returns ISO string of the selected time (today's date).
+   */
   async selectInTimePicker(hour: number, minute: number) {
-    const digits =
-      String(hour).padStart(2, '0') + String(minute).padStart(2, '0');
-
-    await this.#typeIntoPickerInput(
+    await this.#openPickerDialog(
       selectors.exampleTimePicker,
-      selectors.timePickerInput,
-      digits,
+      selectors.timePickerField,
     );
+    await this.#selectClockHour(hour);
+    await this.#selectClockMinute(minute);
+    await this.#confirmPicker();
 
     return DateTime.now()
       .set({ hour, minute, second: 0, millisecond: 0 })
       .toISO();
   }
 
+  /**
+   * Selects a date in the MobileDatePicker dialog.
+   * Opens the dialog, navigates to the previous month, clicks the day, and confirms.
+   *
+   * @param day - Day of the month to select.
+   * @returns ISO string of the selected date.
+   */
   async selectInDatePicker(day: number) {
     const prevMonthDate = DateTime.now().minus({ months: 1 });
-    const digits =
-      String(prevMonthDate.month).padStart(2, '0') +
-      String(day).padStart(2, '0') +
-      String(prevMonthDate.year);
 
-    await this.#typeIntoPickerInput(
+    await this.#openPickerDialog(
       selectors.exampleDatePickerContainer,
-      selectors.datePickerInput,
-      digits,
+      selectors.datePickerField,
     );
+    await this.#selectCalendarDay(day);
+    await this.#confirmPicker();
 
     return prevMonthDate
       .set({ day, hour: 0, minute: 0, second: 0, millisecond: 0 })

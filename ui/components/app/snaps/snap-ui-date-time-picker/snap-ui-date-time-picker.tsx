@@ -7,7 +7,6 @@ import React, {
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
-import type { PickersActionBarAction } from '@mui/x-date-pickers/PickersActionBar';
 import { Box } from '@metamask/design-system-react';
 import classnames from 'clsx';
 import { DateTime } from 'luxon';
@@ -33,7 +32,7 @@ export type SnapUIDateTimePickerProps = {
 /**
  * Buttons rendered in the picker action bar (order: clear → cancel → accept).
  */
-const PICKER_ACTION_BAR_ACTIONS: PickersActionBarAction[] = [
+const PICKER_ACTION_BAR_ACTIONS: ('clear' | 'cancel' | 'accept' | 'today')[] = [
   'clear',
   'cancel',
   'accept',
@@ -56,38 +55,36 @@ const readOnlyFieldStyles: React.CSSProperties = {
   boxSizing: 'border-box',
 };
 
-/**
- * A minimal read-only field that replaces MUI's built-in date field.
- * This avoids the flash of format-mask characters (dd/mm/yy hh:mm:ss)
- * that the built-in field renders before the dialog opens.
- * @param options0
- * @param options0.displayText
- * @param options0.placeholder
- * @param options0.onClick
- * @param options0.disabled
- * @param options0.inputRef
- */
-const ReadOnlyPickerField: React.FC<{
+type ReadOnlyPickerFieldProps = {
   displayText: string;
   placeholder: string;
   onClick: () => void;
   disabled?: boolean;
   inputRef?: React.Ref<HTMLDivElement>;
-}> = ({ displayText, placeholder, onClick, disabled, inputRef }) => (
+  className?: string;
+};
+
+/**
+ * A minimal read-only field that replaces MUI's built-in date field.
+ * This avoids the flash of format-mask characters (dd/mm/yy hh:mm:ss)
+ * that the built-in field renders before the dialog opens.
+ */
+const ReadOnlyPickerField: React.FC<ReadOnlyPickerFieldProps> = ({
+  displayText,
+  placeholder,
+  onClick,
+  disabled,
+  inputRef,
+  className,
+}) => (
   <div
     ref={inputRef}
     role="textbox"
+    aria-readonly="true"
+    aria-disabled={disabled || undefined}
     tabIndex={disabled ? -1 : 0}
+    className={className}
     onClick={disabled ? undefined : onClick}
-    onKeyDown={
-      disabled
-        ? undefined
-        : (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              onClick();
-            }
-          }
-    }
     style={{
       ...readOnlyFieldStyles,
       opacity: disabled ? 0.5 : 1,
@@ -183,6 +180,13 @@ export const SnapUIDateTimePicker: FunctionComponent<
 
   const handleChange = (date: DateTime | null) => {
     if (!date) {
+      return;
+    }
+    setPickerValue(normalizeDate(date, type) as DateTime);
+  };
+
+  const handleAccept = (date: DateTime | null) => {
+    if (!date) {
       setCommitted(false);
       handleInputChange(name, null, form);
       return;
@@ -229,13 +233,14 @@ export const SnapUIDateTimePicker: FunctionComponent<
   const displayText = committed ? formatDisplay(pickerValue) : '';
 
   const customFieldSlot = useCallback(
-    () => (
+    (params?: { className?: string }) => (
       <ReadOnlyPickerField
         displayText={displayText}
         placeholder={placeholder ?? defaultPlaceholder}
         onClick={handleOpen}
         disabled={disabled}
         inputRef={fieldRef}
+        className={params?.className}
       />
     ),
     [displayText, placeholder, defaultPlaceholder, handleOpen, disabled],
@@ -256,12 +261,13 @@ export const SnapUIDateTimePicker: FunctionComponent<
           onClose={handleClose}
           value={pickerValue}
           onChange={handleChange}
+          onAccept={handleAccept}
           disabled={disabled}
           disablePast={disablePast}
           disableFuture={disableFuture}
           toolbarTitle=""
           ampm={false}
-          renderInput={() => customFieldSlot()}
+          renderInput={(params) => customFieldSlot(params)}
           componentsProps={{
             actionBar: {
               actions: PICKER_ACTION_BAR_ACTIONS,
@@ -277,11 +283,12 @@ export const SnapUIDateTimePicker: FunctionComponent<
           onClose={handleClose}
           value={pickerValue}
           onChange={handleChange}
+          onAccept={handleAccept}
           disabled={disabled}
           disablePast={disablePast}
           disableFuture={disableFuture}
           toolbarTitle=""
-          renderInput={() => customFieldSlot()}
+          renderInput={(params) => customFieldSlot(params)}
           componentsProps={{
             actionBar: {
               actions: PICKER_ACTION_BAR_ACTIONS,
@@ -297,10 +304,11 @@ export const SnapUIDateTimePicker: FunctionComponent<
           onClose={handleClose}
           value={pickerValue}
           onChange={handleChange}
+          onAccept={handleAccept}
           disabled={disabled}
           ampm={false}
           toolbarTitle=""
-          renderInput={() => customFieldSlot()}
+          renderInput={(params) => customFieldSlot(params)}
           componentsProps={{
             actionBar: {
               actions: PICKER_ACTION_BAR_ACTIONS,

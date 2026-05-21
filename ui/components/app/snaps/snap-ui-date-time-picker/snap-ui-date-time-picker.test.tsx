@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, act } from '@testing-library/react';
+import { render, screen, act, fireEvent } from '@testing-library/react';
 import { DateTime } from 'luxon';
 import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
@@ -365,8 +365,8 @@ describe('SnapUIDateTimePicker', () => {
     });
   });
 
-  describe('handleChange', () => {
-    it('calls handleInputChange with the ISO string for datetime type', () => {
+  describe('onChange (intermediate selections)', () => {
+    it('does not call handleInputChange on intermediate onChange', () => {
       let capturedOnChange: (date: DateTime | null) => void = jest.fn();
       mockDateTimePicker.mockImplementation(({ onChange }) => {
         capturedOnChange = onChange;
@@ -379,103 +379,10 @@ describe('SnapUIDateTimePicker', () => {
         capturedOnChange(MOCK_DATETIME);
       });
 
-      expect(mockHandleInputChange).toHaveBeenCalledWith(
-        'test',
-        MOCK_DATETIME.toISO(),
-        undefined,
-      );
+      expect(mockHandleInputChange).not.toHaveBeenCalled();
     });
 
-    it('normalizes date type to midnight when calling handleInputChange', () => {
-      let capturedOnChange: (date: DateTime | null) => void = jest.fn();
-      mockDatePicker.mockImplementation(({ onChange }) => {
-        capturedOnChange = onChange;
-        return <div data-testid="mock-date-picker" />;
-      });
-
-      render(<SnapUIDateTimePicker name="test" type="date" />);
-
-      act(() => {
-        capturedOnChange(MOCK_DATETIME);
-      });
-
-      const expectedDate = MOCK_DATETIME.set({
-        hour: 0,
-        minute: 0,
-        second: 0,
-        millisecond: 0,
-      });
-      expect(mockHandleInputChange).toHaveBeenCalledWith(
-        'test',
-        expectedDate.toISO(),
-        undefined,
-      );
-    });
-
-    it('normalizes time type by clearing seconds and milliseconds', () => {
-      let capturedOnChange: (date: DateTime | null) => void = jest.fn();
-      mockTimePicker.mockImplementation(({ onChange }) => {
-        capturedOnChange = onChange;
-        return <div data-testid="mock-time-picker" />;
-      });
-
-      render(<SnapUIDateTimePicker name="test" type="time" />);
-
-      act(() => {
-        capturedOnChange(MOCK_DATETIME);
-      });
-
-      const expectedDate = MOCK_DATETIME.set({ second: 0, millisecond: 0 });
-      expect(mockHandleInputChange).toHaveBeenCalledWith(
-        'test',
-        expectedDate.toISO(),
-        undefined,
-      );
-    });
-
-    it('calls handleInputChange with null when the date is cleared', () => {
-      let capturedOnChange: (date: DateTime | null) => void = jest.fn();
-      mockDateTimePicker.mockImplementation(({ onChange }) => {
-        capturedOnChange = onChange;
-        return <div data-testid="mock-datetime-picker" />;
-      });
-
-      render(<SnapUIDateTimePicker name="test" type="datetime" />);
-
-      act(() => {
-        capturedOnChange(null);
-      });
-
-      expect(mockHandleInputChange).toHaveBeenCalledWith(
-        'test',
-        null,
-        undefined,
-      );
-    });
-
-    it('includes the form parameter in handleInputChange calls', () => {
-      let capturedOnChange: (date: DateTime | null) => void = jest.fn();
-      mockDateTimePicker.mockImplementation(({ onChange }) => {
-        capturedOnChange = onChange;
-        return <div data-testid="mock-datetime-picker" />;
-      });
-
-      render(
-        <SnapUIDateTimePicker name="test" type="datetime" form="my-form" />,
-      );
-
-      act(() => {
-        capturedOnChange(MOCK_DATETIME);
-      });
-
-      expect(mockHandleInputChange).toHaveBeenCalledWith(
-        'test',
-        MOCK_DATETIME.toISO(),
-        'my-form',
-      );
-    });
-
-    it('updates the internal value after a change', () => {
+    it('updates the internal picker value on onChange', () => {
       let capturedOnChange: (date: DateTime | null) => void = jest.fn();
       const receivedValues: (DateTime | null)[] = [];
       mockDateTimePicker.mockImplementation(({ onChange, value }) => {
@@ -492,6 +399,246 @@ describe('SnapUIDateTimePicker', () => {
 
       const lastValue = receivedValues[receivedValues.length - 1];
       expect(lastValue?.toISO()).toBe(MOCK_DATETIME.toISO());
+    });
+  });
+
+  describe('onAccept (user confirms selection)', () => {
+    it('calls handleInputChange with the ISO string for datetime type', () => {
+      let capturedOnAccept: (date: DateTime | null) => void = jest.fn();
+      mockDateTimePicker.mockImplementation(({ onAccept }) => {
+        capturedOnAccept = onAccept;
+        return <div data-testid="mock-datetime-picker" />;
+      });
+
+      render(<SnapUIDateTimePicker name="test" type="datetime" />);
+
+      act(() => {
+        capturedOnAccept(MOCK_DATETIME);
+      });
+
+      expect(mockHandleInputChange).toHaveBeenCalledWith(
+        'test',
+        MOCK_DATETIME.toISO(),
+        undefined,
+      );
+    });
+
+    it('normalizes date type to midnight when calling handleInputChange', () => {
+      let capturedOnAccept: (date: DateTime | null) => void = jest.fn();
+      mockDatePicker.mockImplementation(({ onAccept }) => {
+        capturedOnAccept = onAccept;
+        return <div data-testid="mock-date-picker" />;
+      });
+
+      render(<SnapUIDateTimePicker name="test" type="date" />);
+
+      act(() => {
+        capturedOnAccept(MOCK_DATETIME);
+      });
+
+      const expectedDate = MOCK_DATETIME.set({
+        hour: 0,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      });
+      expect(mockHandleInputChange).toHaveBeenCalledWith(
+        'test',
+        expectedDate.toISO(),
+        undefined,
+      );
+    });
+
+    it('normalizes time type by clearing seconds and milliseconds', () => {
+      let capturedOnAccept: (date: DateTime | null) => void = jest.fn();
+      mockTimePicker.mockImplementation(({ onAccept }) => {
+        capturedOnAccept = onAccept;
+        return <div data-testid="mock-time-picker" />;
+      });
+
+      render(<SnapUIDateTimePicker name="test" type="time" />);
+
+      act(() => {
+        capturedOnAccept(MOCK_DATETIME);
+      });
+
+      const expectedDate = MOCK_DATETIME.set({ second: 0, millisecond: 0 });
+      expect(mockHandleInputChange).toHaveBeenCalledWith(
+        'test',
+        expectedDate.toISO(),
+        undefined,
+      );
+    });
+
+    it('calls handleInputChange with null when the date is cleared', () => {
+      let capturedOnAccept: (date: DateTime | null) => void = jest.fn();
+      mockDateTimePicker.mockImplementation(({ onAccept }) => {
+        capturedOnAccept = onAccept;
+        return <div data-testid="mock-datetime-picker" />;
+      });
+
+      render(<SnapUIDateTimePicker name="test" type="datetime" />);
+
+      act(() => {
+        capturedOnAccept(null);
+      });
+
+      expect(mockHandleInputChange).toHaveBeenCalledWith(
+        'test',
+        null,
+        undefined,
+      );
+    });
+
+    it('includes the form parameter in handleInputChange calls', () => {
+      let capturedOnAccept: (date: DateTime | null) => void = jest.fn();
+      mockDateTimePicker.mockImplementation(({ onAccept }) => {
+        capturedOnAccept = onAccept;
+        return <div data-testid="mock-datetime-picker" />;
+      });
+
+      render(
+        <SnapUIDateTimePicker name="test" type="datetime" form="my-form" />,
+      );
+
+      act(() => {
+        capturedOnAccept(MOCK_DATETIME);
+      });
+
+      expect(mockHandleInputChange).toHaveBeenCalledWith(
+        'test',
+        MOCK_DATETIME.toISO(),
+        'my-form',
+      );
+    });
+  });
+
+  describe('ReadOnlyPickerField', () => {
+    /**
+     * Renders the SnapUIDateTimePicker with the mock picker invoking
+     * renderInput so the actual ReadOnlyPickerField is rendered in the DOM.
+     */
+    function renderWithField(
+      props: Partial<React.ComponentProps<typeof SnapUIDateTimePicker>> = {},
+    ) {
+      mockDateTimePicker.mockImplementation(({ renderInput, onOpen }) => {
+        const rendered =
+          typeof renderInput === 'function'
+            ? (
+                renderInput as (p: {
+                  className?: string;
+                }) => React.ReactElement
+              )({ className: 'test-class' })
+            : null;
+        return (
+          <div data-testid="mock-datetime-picker" data-on-open={!!onOpen}>
+            {rendered}
+          </div>
+        );
+      });
+
+      return render(
+        <SnapUIDateTimePicker name="test" type="datetime" {...props} />,
+      );
+    }
+
+    it('renders with role="textbox" and aria-readonly', () => {
+      renderWithField();
+      const field = screen.getByRole('textbox');
+      expect(field).toBeInTheDocument();
+      expect(field.getAttribute('aria-readonly')).toBe('true');
+    });
+
+    it('has tabIndex 0 when enabled', () => {
+      renderWithField();
+      const field = screen.getByRole('textbox');
+      expect(field.tabIndex).toBe(0);
+    });
+
+    it('has tabIndex -1 when disabled', () => {
+      renderWithField({ disabled: true });
+      const field = screen.getByRole('textbox');
+      expect(field.tabIndex).toBe(-1);
+    });
+
+    it('sets aria-disabled when disabled', () => {
+      renderWithField({ disabled: true });
+      const field = screen.getByRole('textbox');
+      expect(field.getAttribute('aria-disabled')).toBe('true');
+    });
+
+    it('does not set aria-disabled when enabled', () => {
+      renderWithField();
+      const field = screen.getByRole('textbox');
+      expect(field.hasAttribute('aria-disabled')).toBe(false);
+    });
+
+    it('forwards the className from renderInput params', () => {
+      renderWithField();
+      const field = screen.getByRole('textbox');
+      expect(field.className).toBe('test-class');
+    });
+
+    it('displays placeholder text when no value is committed', () => {
+      renderWithField({ placeholder: 'Choose date' });
+      const field = screen.getByRole('textbox');
+      expect(field.textContent).toBe('Choose date');
+    });
+
+    it('opens the picker on click when enabled', () => {
+      let capturedOnOpen: (() => void) | undefined;
+      mockDateTimePicker.mockImplementation(({ renderInput, onOpen }) => {
+        capturedOnOpen = onOpen;
+        const rendered =
+          typeof renderInput === 'function'
+            ? (renderInput as (p: object) => React.ReactElement)({})
+            : null;
+        return <div data-testid="mock-datetime-picker">{rendered}</div>;
+      });
+
+      render(<SnapUIDateTimePicker name="test" type="datetime" />);
+      const field = screen.getByRole('textbox');
+
+      fireEvent.click(field);
+
+      expect(capturedOnOpen).toBeDefined();
+    });
+
+    it('does not respond to click when disabled', () => {
+      let clickCount = 0;
+      mockDateTimePicker.mockImplementation(({ renderInput, onOpen }) => {
+        const originalOnOpen = onOpen;
+        const trackingOnOpen = () => {
+          clickCount += 1;
+          originalOnOpen?.();
+        };
+        void trackingOnOpen;
+        const rendered =
+          typeof renderInput === 'function'
+            ? (renderInput as (p: object) => React.ReactElement)({})
+            : null;
+        return <div data-testid="mock-datetime-picker">{rendered}</div>;
+      });
+
+      render(
+        <SnapUIDateTimePicker name="test" type="datetime" disabled={true} />,
+      );
+      const field = screen.getByRole('textbox');
+
+      fireEvent.click(field);
+      expect(clickCount).toBe(0);
+    });
+
+    it('applies reduced opacity when disabled', () => {
+      renderWithField({ disabled: true });
+      const field = screen.getByRole('textbox');
+      expect(field.style.opacity).toBe('0.5');
+    });
+
+    it('applies full opacity when enabled', () => {
+      renderWithField();
+      const field = screen.getByRole('textbox');
+      expect(field.style.opacity).toBe('1');
     });
   });
 });
