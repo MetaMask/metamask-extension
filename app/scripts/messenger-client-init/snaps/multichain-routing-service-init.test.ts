@@ -48,4 +48,40 @@ describe('MultichainRoutingServiceInit', () => {
       withSnapKeyring: expect.any(Function),
     });
   });
+
+  it('uses getLegacySnapKeyring to obtain the keyring when withSnapKeyring is invoked', async () => {
+    const mockKeyring = {};
+    const mockSnapAccountService = {
+      getLegacySnapKeyring: jest.fn().mockResolvedValue(mockKeyring),
+    };
+    const mockAppStateController = {
+      getUnlockPromise: jest.fn().mockResolvedValue(undefined),
+    };
+
+    const requestMock = getInitRequestMock();
+    jest
+      .mocked(requestMock.getMessengerClient)
+      .mockImplementation((name: string) => {
+        if (name === 'SnapAccountService') {
+          return mockSnapAccountService as never;
+        }
+        if (name === 'AppStateController') {
+          return mockAppStateController as never;
+        }
+        throw new Error(`Unexpected messenger client: ${name}`);
+      });
+
+    MultichainRoutingServiceInit(requestMock);
+
+    const { withSnapKeyring } = jest
+      .mocked(MultichainRoutingService)
+      .mock.calls.at(-1)![0];
+
+    const operation = jest.fn();
+    await withSnapKeyring(operation);
+
+    expect(mockAppStateController.getUnlockPromise).toHaveBeenCalledWith(true);
+    expect(mockSnapAccountService.getLegacySnapKeyring).toHaveBeenCalled();
+    expect(operation).toHaveBeenCalledWith({ keyring: mockKeyring });
+  });
 });
