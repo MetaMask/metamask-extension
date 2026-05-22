@@ -158,12 +158,12 @@ describe('PerpsTutorialAnimation', () => {
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(screen.getByTestId('perps-tutorial-animation-loading')).toHaveStyle(
-        {
-          height: '200px',
-          maxWidth: '340px',
-        },
-      );
+      expect(
+        screen.getByTestId('perps-tutorial-animation-loading'),
+      ).toHaveStyle({
+        height: '200px',
+        maxWidth: '340px',
+      });
     });
 
     it('renders loading placeholder when buffer is loading', () => {
@@ -207,12 +207,12 @@ describe('PerpsTutorialAnimation', () => {
 
       render(<PerpsTutorialAnimation artboardName="01_Short_Long" />);
 
-      expect(screen.getByTestId('perps-tutorial-animation-loading')).toHaveStyle(
-        {
-          height: '280px',
-          maxWidth: '280px',
-        },
-      );
+      expect(
+        screen.getByTestId('perps-tutorial-animation-loading'),
+      ).toHaveStyle({
+        height: '280px',
+        maxWidth: '280px',
+      });
     });
   });
 
