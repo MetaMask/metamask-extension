@@ -1,12 +1,30 @@
 import path from 'path';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import type { JudgeConfig } from './provider-types';
 import { runDeterministicEvals, type EvalScore } from './evals';
 
+const EVALS_DIR = path.join(__dirname, 'evals');
+
 const JUDGE_PROMPT = readFileSync(
-  path.join(__dirname, 'evals', 'judge-prompt.md'),
+  path.join(EVALS_DIR, 'judge-prompt.md'),
   'utf-8',
 ).trim();
+
+const RUBRICS = (() => {
+  const rubricsDir = path.join(EVALS_DIR, 'rubrics');
+  try {
+    return readdirSync(rubricsDir)
+      .filter((f) => f.endsWith('.md'))
+      .map((f) => readFileSync(path.join(rubricsDir, f), 'utf-8').trim())
+      .join('\n\n');
+  } catch {
+    return '';
+  }
+})();
+
+const FULL_JUDGE_PROMPT = RUBRICS
+  ? `${JUDGE_PROMPT}\n\n${RUBRICS}`
+  : JUDGE_PROMPT;
 
 type EvalResult = {
   task_completion: { score: number; reason: string };
@@ -103,7 +121,7 @@ export async function evaluateRun(
     const transcript = params.conversationLog.join('\n\n').slice(0, 30000);
     const metricsBlock = formatMetricsBlock(deterministicScores);
 
-    const evalPrompt = `${JUDGE_PROMPT}\n\n---\n\nTASK: ${params.prompt}\n\nCOMPLETED: ${params.success ? 'Yes' : `No (stopped after ${params.turns} turns)`}\n\nFINAL RESULT: ${params.result?.slice(0, 2000) ?? 'None'}\n\nAUTOMATED METRICS:\n${metricsBlock}\n\nAGENT TRANSCRIPT:\n${transcript}`;
+    const evalPrompt = `${FULL_JUDGE_PROMPT}\n\n---\n\nTASK: ${params.prompt}\n\nCOMPLETED: ${params.success ? 'Yes' : `No (stopped after ${params.turns} turns)`}\n\nFINAL RESULT: ${params.result?.slice(0, 2000) ?? 'None'}\n\nAUTOMATED METRICS:\n${metricsBlock}\n\nAGENT TRANSCRIPT:\n${transcript}`;
 
     const text = await judge.evaluate(evalPrompt, 1024);
 
