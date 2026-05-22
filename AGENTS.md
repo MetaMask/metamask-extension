@@ -1709,3 +1709,33 @@ Performance Checks (React Components):
 - **MetaMask Developer Docs:** https://docs.metamask.io/
 - **Community Forum:** https://community.metamask.io/
 - **User Support:** https://support.metamask.io/
+
+---
+
+## Cursor Cloud specific instructions
+
+This section is for Cloud Agents running in the pre-configured VM environment.
+
+### Environment overview
+
+- **Node.js v24.13** is installed via nvm and set as the default (`nvm use` picks it up from `.nvmrc`).
+- **Yarn 4.14.1** is managed via Corepack (`corepack enable` activates it).
+- Dependencies are installed with `yarn install --immutable`.
+- `.metamaskrc` is copied from `.metamaskrc.dist` if it does not already exist. Set `INFURA_PROJECT_ID` to a valid Infura key for the extension to connect to Ethereum networks. A public free-tier key from the devcontainer config (`3d110a0fce9e49b08d2ee584e19a05ba`) works for basic dev/testing but has rate limits.
+
+### Running services
+
+| Task | Command | Notes |
+|---|---|---|
+| Dev build (Chrome MV3) | `yarn start` | Webpack watch mode; outputs to `dist/chrome/` |
+| Unit tests (single file) | `npx jest <path> --no-coverage` | Per user rule: run one file at a time |
+| ESLint | `yarn lint:eslint` | 0 errors expected; warnings are acceptable |
+| Lint changed files | `yarn lint:changed:fix` | Always run before committing |
+| TypeScript check | `yarn lint:tsc` | Full type check |
+
+### Gotchas
+
+- The `.metamaskprodrc` warning from webpack (`Can't resolve '/workspace/.metamaskprodrc'`) is benign — this file is only needed for production builds.
+- `yarn install` runs a `postinstall` that clears the webpack cache, installs Foundry (Anvil), and syncs agent skills. If postinstall fails on `foundryup`, dependencies are still usable for dev builds and unit tests.
+- ESLint can take 8+ minutes on the full codebase. Prefer `yarn lint:changed:fix` for incremental work.
+- This is a client-side browser extension with no backend services. All external APIs are mocked during E2E tests via Mockttp.
