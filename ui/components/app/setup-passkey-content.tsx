@@ -314,6 +314,7 @@ export default function SetupPasskeyContent({
     t,
     passkeyMethodLabel,
     trackEvent,
+    password,
   ]);
 
   if (isPasskeyRegistered && !isEnrollmentInProgress) {
