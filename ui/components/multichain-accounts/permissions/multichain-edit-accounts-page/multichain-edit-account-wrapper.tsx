@@ -9,7 +9,7 @@ import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
 import {
   getCaip25CaveatValueFromPermissions,
   PermissionsRequest,
-} from '../../../../pages/permissions-connect/utils';
+} from '../../../../helpers/utils/caip25-permissions';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
 import {
   MultichainEditAccountsPage,

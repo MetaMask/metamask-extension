@@ -7,7 +7,7 @@ import {
   setPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import { MergedInternalAccountWithCaipAccountId } from '../../selectors/selectors.types';
-import { sortSelectedInternalAccounts } from '../../helpers/utils/util';
+import { sortSelectedInternalAccounts } from './util';
 
 export type PermissionsRequest = Record<
   string,

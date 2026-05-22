@@ -94,7 +94,7 @@ import SnapResult from './snaps/snap-result';
 import {
   getCaip25CaveatValueFromPermissions,
   PermissionsRequest,
-} from './utils';
+} from '../../helpers/utils/caip25-permissions';
 
 const APPROVE_TIMEOUT = MILLISECOND * 1200;
 

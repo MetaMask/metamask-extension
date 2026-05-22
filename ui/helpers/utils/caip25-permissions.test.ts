@@ -9,7 +9,7 @@ import {
   getCaip25CaveatValueFromPermissions,
   getCaip25PermissionsResponse,
   getDefaultAccounts,
-} from './utils';
+} from './caip25-permissions';
 
 const baseCaip25CaveatValue = {
   requiredScopes: {},
