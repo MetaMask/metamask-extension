@@ -21,7 +21,6 @@
     "skills": "tsx development/skills-sync.ts",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
     "start": "yarn webpack --watch",
-    "dev": "yarn webpack --watch",
     "start:with-state": "node ./app/scripts/start-with-wallet-state.mjs",
     "start:mv2": "yarn webpack --watch --browser firefox --manifestVersion 2",
     "start:flask": "yarn start --type flask",
