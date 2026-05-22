@@ -14,11 +14,10 @@ import { validate } from 'schema-utils';
 import {
   noop,
   extensionToJs,
-  getDevServerClientUrl,
   type Manifest,
   type Browser,
 } from '../../helpers';
-import { DEV_SERVER_OPTIONS } from '../../constants';
+import { DEV_SERVER_CLIENT_ENTRY_NAME } from '../../constants';
 import {
   createBundleSizeCategoryAssets,
   createBundleSizeSummary,
@@ -97,6 +96,7 @@ export class ManifestPlugin<Z extends boolean> {
     'snow.prod',
     'use-snow',
     'bootstrap',
+    DEV_SERVER_CLIENT_ENTRY_NAME,
   ]);
 
   /**
@@ -701,16 +701,6 @@ export class ManifestPlugin<Z extends boolean> {
         }
         this.addHtml({ compiler, entries, filename });
       }
-    }
-
-    // In watch mode, register the webpack-dev-server client.
-    if (compiler.options.watch) {
-      this.addManifestScript({
-        compiler,
-        entries,
-        filename: 'dev-server-client.js',
-        opts: { import: [getDevServerClientUrl(DEV_SERVER_OPTIONS)] },
-      });
     }
   }
 

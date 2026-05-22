@@ -35,7 +35,7 @@ import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getThreadLoader } from './utils/loaders/threadLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
-import { MODES } from './utils/constants';
+import { MODES, DEV_SERVER_CLIENT_ENTRY_NAME } from './utils/constants';
 
 const buildTypes = loadBuildTypesConfig();
 const { args, cacheKey, features } = parseArgv(argv.slice(2), buildTypes);
@@ -141,7 +141,9 @@ const plugins: WebpackPluginInstance[] = [
     // connecting them to the UI.
     beforeEmit: (content, _entry, compilation) => {
       if (!args.watch || !content.includes('id="app-content"')) return content;
-      const entrypoint = compilation.entrypoints.get('dev-server-client.js');
+      const entrypoint = compilation.entrypoints.get(
+        DEV_SERVER_CLIENT_ENTRY_NAME,
+      );
       if (!entrypoint) return content;
       const tags = entrypoint
         .getFiles()
