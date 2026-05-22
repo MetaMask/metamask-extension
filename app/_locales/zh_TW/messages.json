@@ -340,9 +340,6 @@
   "dontShowThisAgain": {
     "message": "不要再顯示"
   },
-  "downloadGoogleChrome": {
-    "message": "下載 Google Chrome 瀏覽器"
-  },
   "downloadStateLogs": {
     "message": "下載狀態紀錄"
   },
@@ -466,14 +463,8 @@
     "message": "(舊版)",
     "description": "Text representing the MEW path"
   },
-  "hardwareWalletSupportLinkConversion": {
-    "message": "點選這裡"
-  },
   "hardwareWallets": {
     "message": "連線硬體錢包"
-  },
-  "hardwareWalletsMsg": {
-    "message": "選擇要連線到 MetaMask 的硬體錢包"
   },
   "here": {
     "message": "這裡",
@@ -910,19 +901,6 @@
   },
   "statusNotConnected": {
     "message": "未連結"
-  },
-  "step1LedgerWallet": {
-    "message": "下載 Ledger 應用程式"
-  },
-  "step1LedgerWalletMsg": {
-    "message": "下載、安裝、然後輸入密碼來解鎖 $1。",
-    "description": "$1 represents the `ledgerLiveApp` localization value"
-  },
-  "step1TrezorWallet": {
-    "message": "插入 Trezor 錢包"
-  },
-  "step2LedgerWallet": {
-    "message": "插入 Ledger 錢包"
   },
   "submit": {
     "message": "傳送"
