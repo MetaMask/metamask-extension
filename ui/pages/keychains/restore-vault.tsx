@@ -87,6 +87,8 @@ function RestoreVaultPage() {
         });
 
         setRestorePassword(password);
+        // clear SRP from state after restoring vault is successful
+        setSecretRecoveryPhrase('');
 
         if (isPasskeyFeatureAvailable) {
           setLoading(false);
