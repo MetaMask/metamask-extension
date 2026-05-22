@@ -1953,7 +1953,7 @@
         "@metamask/scure-bip39": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "mockttp>async-mutex": true,
+        "async-mutex": true,
         "@metamask/keyring-sdk>ethereum-cryptography": true,
         "@metamask/keyring-sdk>uuid": true
       }
