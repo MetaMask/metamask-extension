@@ -193,8 +193,12 @@ test/e2e/fixtures/onboarding-fixture.json                             @MetaMask/
 test/e2e/fixtures/fixture-validation.ts                               @MetaMask/qa @MetaMask/extension-platform
 test/e2e/dist/wallet-fixture-export.spec.ts                           @MetaMask/qa @MetaMask/extension-platform
 test/e2e/dist/wallet-fixture-validation.spec.ts                       @MetaMask/qa @MetaMask/extension-platform
-test/e2e/benchmarks/utils/gated-metrics.ts                            @MetaMask/qa @MetaMask/extension-platform
-test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/qa @MetaMask/extension-platform
+test/e2e/benchmarks/utils/gated-metrics.ts                            @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
+test/e2e/benchmarks/utils/thresholds.ts                               @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
+# Threshold override files are PR-scoped relaxations of the benchmark
+# thresholds above; same approval as the registry they override.
+/.threshold-overrides.json                                            @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
+/.threshold-overrides.example.json                                    @MetaMask/qa @MetaMask/extension-platform @MetaMask/performance-council
 
 # Wallet Integrations
 app/scripts/lib/rpc-method-middleware                                 @MetaMask/wallet-integrations
@@ -251,7 +255,7 @@ shared/lib/deep-links/routes/musd.ts @MetaMask/earn
 /.github/rules/                                       @MetaMask/extension-platform @HowardBraham @itsyoboieltr
 /.github/dependabot.yml                               @MetaMask/extension-platform
 development/fitness-functions/                        @MetaMask/extension-platform @HowardBraham @itsyoboieltr
-development/metamaskbot-build-announce/               @MetaMask/extension-platform @HowardBraham @itsyoboieltr
+development/metamaskbot-build-announce/               @MetaMask/extension-platform @HowardBraham @itsyoboieltr @MetaMask/performance-council
 /codecov.yml                                          @MetaMask/extension-platform
 /sonar-project.properties                             @MetaMask/extension-platform
 

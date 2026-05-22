@@ -1,0 +1,26 @@
+name: Check No Threshold Override On Main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check-no-threshold-override:
+    name: Check no threshold override on main
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Fail if a threshold override file is committed to main
+        run: |
+          if [ -f .threshold-overrides.json ]; then
+            echo "::error::.threshold-overrides.json must not be committed to main. Threshold overrides are PR-scoped relaxations and must be removed before merge."
+            exit 1
+          fi
+          echo "OK: no threshold override file on main."
