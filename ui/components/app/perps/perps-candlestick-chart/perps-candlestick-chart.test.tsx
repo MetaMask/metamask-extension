@@ -48,10 +48,9 @@ jest.mock('lightweight-charts', () => ({
         unsubscribeVisibleLogicalRangeChange: jest.fn(),
         applyOptions: jest.fn(),
       }),
-      panes: jest.fn().mockReturnValue([
-        { getHeight: () => 200 },
-        { getHeight: () => 60 },
-      ]),
+      panes: jest
+        .fn()
+        .mockReturnValue([{ getHeight: () => 200 }, { getHeight: () => 60 }]),
       priceScale: jest.fn().mockReturnValue({ applyOptions: jest.fn() }),
       resize: jest.fn(),
       remove: jest.fn(),
