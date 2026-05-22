@@ -1,12 +1,13 @@
-import { PPOMController } from '@metamask/ppom-validator';
 import {
   MOCK_ANY_NAMESPACE,
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
+import { PPOMController } from '@metamask/ppom-validator';
+
 import { buildControllerInitRequestMock } from './test/utils';
 import { MessengerClientApi, MessengerClientName } from './types';
-import { initMessengerClients } from './utils';
+import { initMessengerClients, TaggedApiMethod } from './utils';
 
 type InitFunctions = Parameters<
   typeof initMessengerClients
@@ -171,6 +172,41 @@ describe('Messenger Client Init Utils', () => {
         test2: expect.any(Function),
         test3: expect.any(Function),
       });
+    });
+
+    it('tags API functions with _controllerName', () => {
+      const requestMock = buildControllerInitRequestMock();
+      const initMock = buildControllerFunctionMock();
+      const init2Mock = buildControllerFunctionMock();
+
+      initMock.mockReturnValue(
+        buildControllerInitResultMock({
+          api: { test1: jest.fn(), test2: jest.fn() },
+        }),
+      );
+
+      init2Mock.mockReturnValue(
+        buildControllerInitResultMock({ api: { test3: jest.fn() } }),
+      );
+
+      const { messengerClientApi } = initMessengerClients({
+        baseControllerMessenger: buildBaseControllerMessenger(),
+        initFunctions: {
+          [CONTROLLER_NAME_MOCK]: initMock,
+          [CONTROLLER_NAME_2_MOCK]: init2Mock,
+        },
+        initRequest: requestMock,
+      });
+
+      expect(
+        (messengerClientApi.test1 as TaggedApiMethod)._controllerName,
+      ).toBe(CONTROLLER_NAME_MOCK);
+      expect(
+        (messengerClientApi.test2 as TaggedApiMethod)._controllerName,
+      ).toBe(CONTROLLER_NAME_MOCK);
+      expect(
+        (messengerClientApi.test3 as TaggedApiMethod)._controllerName,
+      ).toBe(CONTROLLER_NAME_2_MOCK);
     });
 
     it('returns all persisted state entries', () => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { TokenApprovalRevocationPermission } from '@metamask/7715-permission-types';
 import { Hex } from '@metamask/utils';
 import {
   NativeTokenStreamPermission,
@@ -803,34 +804,36 @@ describe('Permission List Item', () => {
         expect(expandedSkeletons.length).toBeGreaterThan(skeletons.length);
       });
 
-      it('renders erc20 token revocation permission correctly without frequency row', () => {
-        const mockErc20TokenRevocationPermission: PermissionInfoWithMetadata<{
-          type: 'erc20-token-revocation';
-          isAdjustmentAllowed: boolean;
-          data: Record<string, unknown>;
-        }> = {
-          permissionResponse: {
-            chainId: '0x1',
-            from: mockAccountAddress,
-            permission: {
-              type: 'erc20-token-revocation',
-              isAdjustmentAllowed: false,
-              data: {
-                justification: 'Revoke all token approvals',
+      it('renders token approval revocation permission correctly without frequency row', () => {
+        const mockErc20TokenRevocationPermission: PermissionInfoWithMetadata<TokenApprovalRevocationPermission> =
+          {
+            permissionResponse: {
+              chainId: '0x1',
+              from: mockAccountAddress,
+              permission: {
+                type: 'token-approval-revocation',
+                isAdjustmentAllowed: false,
+                data: {
+                  erc20Approve: true,
+                  erc721Approve: true,
+                  erc721SetApprovalForAll: true,
+                  permit2Approve: true,
+                  permit2Lockdown: true,
+                  permit2InvalidateNonces: true,
+                },
               },
+              rules: [
+                {
+                  type: 'expiry',
+                  data: { timestamp: 1736358176 }, // January 8, 2025
+                },
+              ],
+              context: '0x00000000',
+              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
             },
-            rules: [
-              {
-                type: 'expiry',
-                data: { timestamp: 1736358176 }, // January 8, 2025
-              },
-            ],
-            context: '0x00000000',
-            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
-          siteOrigin: 'http://localhost:8000',
-          status: 'Active',
-        };
+            siteOrigin: 'http://localhost:8000',
+            status: 'Active',
+          };
 
         const { container, getByTestId, queryByTestId } = renderWithProvider(
           <ReviewGatorPermissionItem
