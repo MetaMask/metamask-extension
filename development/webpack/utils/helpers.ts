@@ -77,6 +77,57 @@ export const UI_COMPONENT_RE = new RegExp(
  */
 export const noop = () => undefined;
 
+type SignalListener = () => void;
+type SignalProcess = {
+  on: (signal: NodeJS.Signals, listener: SignalListener) => unknown;
+  removeListener: (
+    signal: NodeJS.Signals,
+    listener: SignalListener,
+  ) => unknown;
+};
+
+type IgnoreCacheShutdownSignalsOptions = {
+  process?: SignalProcess;
+  signals?: readonly NodeJS.Signals[];
+};
+
+const CACHE_SHUTDOWN_SIGNALS = ['SIGINT', 'SIGTERM'] as const;
+
+/**
+ * Temporarily ignores shutdown signals while webpack closes its filesystem
+ * cache.
+ *
+ * Non-watch builds hand the terminal back before `compiler.close()` completes
+ * so webpack can persist the cache in the background. If the process receives
+ * another shutdown signal during that close window, Node's default handling
+ * would terminate the process and can leave the cache partially written.
+ *
+ * @param options - Optional process and signals overrides for tests.
+ * @param options.process
+ * @param options.signals
+ * @returns A cleanup function that removes the installed listeners.
+ */
+export function ignoreCacheShutdownSignals({
+  process: signalProcess = process,
+  signals = CACHE_SHUTDOWN_SIGNALS,
+}: IgnoreCacheShutdownSignalsOptions = {}): () => void {
+  const listener = () => {
+    console.error(
+      '🦊 Still shutting down; waiting for webpack to finish writing its cache…',
+    );
+  };
+
+  for (const signal of signals) {
+    signalProcess.on(signal, listener);
+  }
+
+  return () => {
+    for (const signal of signals) {
+      signalProcess.removeListener(signal, listener);
+    }
+  };
+}
+
 /**
  * @param filename
  * @returns filename with .js extension (.ts | .tsx | .mjs -> .js)

@@ -1,6 +1,11 @@
 import { webpack } from 'webpack';
 import type WebpackDevServerType from 'webpack-dev-server';
-import { noop, logStats, __HMR_READY__ } from './utils/helpers';
+import {
+  noop,
+  logStats,
+  __HMR_READY__,
+  ignoreCacheShutdownSignals,
+} from './utils/helpers';
 import config from './webpack.config';
 import { MODES } from './utils/constants';
 
@@ -55,8 +60,19 @@ export function build(onComplete: () => void = noop) {
         logStats(err ?? undefined, stats);
         // `onComplete` must be called synchronously _before_ `compiler.close`
         // or the caller might observe output from the `close` command.
-        onComplete();
-        compiler.close(noop);
+        const removeCacheShutdownSignalHandlers =
+          options.cache !== null &&
+          typeof options.cache === 'object' &&
+          options.cache.type === 'filesystem'
+            ? ignoreCacheShutdownSignals()
+            : noop;
+        try {
+          onComplete();
+          compiler.close(removeCacheShutdownSignalHandlers);
+        } catch (error) {
+          removeCacheShutdownSignalHandlers();
+          throw error;
+        }
       });
     }
   }

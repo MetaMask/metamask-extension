@@ -18,6 +18,47 @@ describe('./utils/helpers.ts', () => {
     assert.strictEqual(nothing, undefined);
   });
 
+  describe('ignoreCacheShutdownSignals', () => {
+    it('ignores shutdown signals until cleanup', () => {
+      const calls: unknown[] = [];
+      const listeners = new Map<NodeJS.Signals, () => void>();
+      const signalProcess = {
+        on: mock.fn(
+          (signal: NodeJS.Signals, listener: () => void) => {
+            listeners.set(signal, listener);
+          },
+        ),
+        removeListener: mock.fn(
+          (signal: NodeJS.Signals, listener: () => void) => {
+            if (listeners.get(signal) === listener) {
+              listeners.delete(signal);
+            }
+          },
+        ),
+      };
+      mock.method(console, 'error', (message) => {
+        calls.push(message);
+      });
+
+      const cleanup = helpers.ignoreCacheShutdownSignals({
+        process: signalProcess,
+        signals: ['SIGINT'],
+      });
+
+      const listener = listeners.get('SIGINT');
+      assert(listener, 'SIGINT listener should be set');
+      listener();
+      cleanup();
+
+      assert.deepStrictEqual(calls, [
+        '🦊 Still shutting down; waiting for webpack to finish writing its cache…',
+      ]);
+      assert.strictEqual(signalProcess.on.mock.callCount(), 1);
+      assert.strictEqual(signalProcess.removeListener.mock.callCount(), 1);
+      assert.strictEqual(listeners.has('SIGINT'), false);
+    });
+  });
+
   describe('logStats', () => {
     const getStatsMock = (
       stats: 'normal' | 'none',
