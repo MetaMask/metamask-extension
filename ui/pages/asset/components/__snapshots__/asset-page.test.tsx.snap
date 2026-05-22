@@ -1234,7 +1234,7 @@ exports[`AssetPage should render an ERC20 token with prices 1`] = `
           class=""
         >
           <div
-            class="mb-2 border-muted mx-4"
+            class="mb-2 border-muted mx-4 border border-solid"
             style="height: 1px; border-bottom-width: 0;"
           />
           <h4
