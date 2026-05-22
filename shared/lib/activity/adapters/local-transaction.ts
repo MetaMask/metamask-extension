@@ -2,15 +2,19 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 import { KnownCaipNamespace, toCaipChainId } from '@metamask/utils';
-import type { CaipChainId } from '@metamask/utils';
-import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../../constants/network';
+import {
+  CHAIN_IDS,
+  CHAIN_ID_TO_CURRENCY_SYMBOL_MAP,
+} from '../../../constants/network';
 import {
   IN_PROGRESS_TRANSACTION_STATUSES,
   NATIVE_TOKEN_ADDRESS,
   SmartTransactionStatus,
   TransactionGroupStatus,
 } from '../../../constants/transaction';
+import { STATIC_MAINNET_TOKEN_LIST } from '../../../constants/tokens';
 import { toAssetId } from '../../asset-utils';
 import type { TransactionGroup } from '../../multichain/types';
 import { parseStandardTokenTransactionData } from '../../transaction.utils';
@@ -134,6 +138,28 @@ function getTokenTransferRecipient(
   return typeof recipient === 'string' ? recipient : (to ?? '');
 }
 
+function getTokenTransferAmount(
+  transaction: TransactionGroup['initialTransaction'],
+) {
+  const { data } = transaction.txParams;
+
+  if (!data) {
+    return undefined;
+  }
+
+  const transactionData = parseStandardTokenTransactionData(data);
+  const value = transactionData?.args?._value ?? transactionData?.args?.value;
+
+  return value?.toString();
+}
+
+function getTokenMetadata(chainId: string, contractAddress?: string) {
+  if (!contractAddress || chainId !== CHAIN_IDS.MAINNET) {
+    return undefined;
+  }
+  return STATIC_MAINNET_TOKEN_LIST[contractAddress.toLowerCase()];
+}
+
 // Converts local TransactionController groups into activity items
 export function mapLocalTransaction({
   transactionGroup,
@@ -147,40 +173,67 @@ export function mapLocalTransaction({
   );
   const nativeSymbol = getNativeTokenSymbol(initialTransaction.chainId);
 
-  const buildTokenInfo = (
-    symbol: string | undefined,
-    direction: TokenAmount['direction'],
-    contractAddress?: string,
-  ) => {
-    if (!symbol && !contractAddress) {
-      return undefined;
-    }
+  const getToken = ({
+    contractAddress,
+    direction,
+    symbol,
+    transaction,
+  }: {
+    contractAddress?: string;
+    direction: TokenAmount['direction'];
+    symbol?: string;
+    transaction?: TransactionGroup['initialTransaction'];
+  }) => {
+    const tokenMetadata = getTokenMetadata(
+      transaction?.chainId ?? initialTransaction.chainId,
+      contractAddress,
+    );
 
-    let assetId: string | undefined;
+    let tokenSymbol;
+    let assetId;
+    let amount;
+    let decimals;
+
     if (contractAddress) {
+      tokenSymbol =
+        transaction?.transferInformation?.symbol ??
+        tokenMetadata?.symbol ??
+        symbol;
       assetId = toAssetId(contractAddress, chainId);
-    } else if (!symbol || (nativeSymbol && symbol === nativeSymbol)) {
-      assetId = toAssetId(NATIVE_TOKEN_ADDRESS, chainId);
+
+      if (transaction?.transferInformation?.amount) {
+        amount = transaction.transferInformation.amount;
+        decimals = transaction.transferInformation.decimals;
+      } else if (transaction) {
+        amount = getTokenTransferAmount(transaction);
+        decimals = tokenMetadata?.decimals;
+      } else {
+        decimals = tokenMetadata?.decimals;
+      }
+    } else {
+      tokenSymbol = symbol ?? nativeSymbol;
+
+      if (!tokenSymbol) {
+        return undefined;
+      }
+
+      if (tokenSymbol === nativeSymbol) {
+        assetId = toAssetId(NATIVE_TOKEN_ADDRESS, chainId);
+      }
+
+      if (transaction) {
+        amount = transaction.txParams.value;
+        decimals = getNativeAssetForChainId(transaction.chainId)?.decimals;
+      }
     }
 
     return {
       direction,
-      ...(symbol ? { symbol } : {}),
+      ...(tokenSymbol ? { symbol: tokenSymbol } : {}),
       ...(assetId ? { assetId } : {}),
+      ...(amount ? { amount } : {}),
+      ...(decimals === undefined ? {} : { decimals }),
     };
-  };
-
-  const getToken = (
-    tx: TransactionGroup['initialTransaction'],
-    direction: TokenAmount['direction'],
-    contractAddress?: string,
-  ) => {
-    const symbol =
-      tx.transferInformation?.symbol ??
-      tx.sourceTokenSymbol ??
-      tx.destinationTokenSymbol ??
-      nativeSymbol;
-    return buildTokenInfo(symbol, direction, contractAddress);
   };
 
   const status = mapStatus({ primaryTransaction, initialTransaction });
@@ -202,7 +255,10 @@ export function mapLocalTransaction({
           hash,
           from,
           to,
-          token: getToken(initialTransaction, 'out'),
+          token: getToken({
+            transaction: initialTransaction,
+            direction: 'out',
+          }),
         },
       };
     }
@@ -222,11 +278,11 @@ export function mapLocalTransaction({
           hash,
           from,
           to: recipient,
-          token: getToken(
-            initialTransaction,
-            'out',
-            initialTransaction.txParams.to,
-          ),
+          token: getToken({
+            transaction: initialTransaction,
+            direction: 'out',
+            contractAddress: initialTransaction.txParams.to,
+          }),
         },
       };
     }
@@ -242,11 +298,12 @@ export function mapLocalTransaction({
           hash,
           from,
           to,
-          token: getToken(
-            initialTransaction,
-            'in',
-            initialTransaction.transferInformation?.contractAddress,
-          ),
+          token: getToken({
+            transaction: initialTransaction,
+            direction: 'in',
+            contractAddress:
+              initialTransaction.transferInformation?.contractAddress,
+          }),
         },
       };
     }
@@ -274,12 +331,13 @@ export function mapLocalTransaction({
           raw: { type: 'localTransaction', data: transactionGroup },
           data: {
             hash,
-            sourceToken: buildTokenInfo(
-              sourceTokenSymbol,
-              'out',
-              initialTransaction.sourceTokenAddress ??
+            sourceToken: getToken({
+              symbol: sourceTokenSymbol,
+              direction: 'out',
+              contractAddress:
+                initialTransaction.sourceTokenAddress ??
                 primaryTransaction.sourceTokenAddress,
-            ),
+            }),
           },
         };
       }
@@ -299,16 +357,16 @@ export function mapLocalTransaction({
         raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
-          sourceToken: buildTokenInfo(
-            sourceTokenSymbol,
-            'out',
-            sourceTokenAddress,
-          ),
-          destinationToken: buildTokenInfo(
-            destinationTokenSymbol,
-            'in',
-            destinationTokenAddress,
-          ),
+          sourceToken: getToken({
+            symbol: sourceTokenSymbol,
+            direction: 'out',
+            contractAddress: sourceTokenAddress,
+          }),
+          destinationToken: getToken({
+            symbol: destinationTokenSymbol,
+            direction: 'in',
+            contractAddress: destinationTokenAddress,
+          }),
         },
       };
     }
@@ -326,11 +384,11 @@ export function mapLocalTransaction({
         raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
-          token: getToken(
-            initialTransaction,
-            'out',
-            initialTransaction.txParams.to,
-          ),
+          token: getToken({
+            transaction: initialTransaction,
+            direction: 'out',
+            contractAddress: initialTransaction.txParams.to,
+          }),
         },
       };
 
@@ -343,11 +401,11 @@ export function mapLocalTransaction({
         raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
-          token: getToken(
-            initialTransaction,
-            'out',
-            initialTransaction.txParams.to,
-          ),
+          token: getToken({
+            transaction: initialTransaction,
+            direction: 'out',
+            contractAddress: initialTransaction.txParams.to,
+          }),
         },
       };
 
@@ -361,11 +419,11 @@ export function mapLocalTransaction({
         raw: { type: 'localTransaction', data: transactionGroup },
         data: {
           hash,
-          token: getToken(
-            initialTransaction,
-            'out',
-            initialTransaction.txParams.to,
-          ),
+          token: getToken({
+            transaction: initialTransaction,
+            direction: 'out',
+            contractAddress: initialTransaction.txParams.to,
+          }),
         },
       };
 
