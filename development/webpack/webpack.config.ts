@@ -47,7 +47,6 @@ if (args.dryRun) {
 const context = join(__dirname, '../../app');
 const nodeModules = join(__dirname, '../../node_modules');
 const isDevelopment = args.mode === MODES.DEVELOPMENT;
-const isDevWatch = isDevelopment && args.watch === true;
 const MANIFEST_VERSION = args.manifestVersion;
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
@@ -133,7 +132,7 @@ const plugins: WebpackPluginInstance[] = [
     minify: args.minify,
     test: /\.html$/u, // default is eta/html, we only want html
     data: { isTest: args.test },
-    // In development mode with watch enabled, inject a `<script>` tag for the bundled
+    // In watch mode, inject a `<script>` tag for the bundled
     // webpack-dev-server client into every UI page (identified by the
     // `#app-content` mount point — every page that renders the React UI
     // has it via `partial-body.html`, no other extension page does). Kept
@@ -141,7 +140,7 @@ const plugins: WebpackPluginInstance[] = [
     // the offscreen page — reloading those would break the message ports
     // connecting them to the UI.
     beforeEmit: (content, _entry, compilation) => {
-      if (!isDevWatch || !content.includes('id="app-content"')) return content;
+      if (!args.watch || !content.includes('id="app-content"')) return content;
       const entrypoint = compilation.entrypoints.get('dev-server-client.js');
       if (!entrypoint) return content;
       const tags = entrypoint

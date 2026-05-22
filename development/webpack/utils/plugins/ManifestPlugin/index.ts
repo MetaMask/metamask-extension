@@ -703,11 +703,8 @@ export class ManifestPlugin<Z extends boolean> {
       }
     }
 
-    // In development mode with watch enabled, register the webpack-dev-server client.
-    if (
-      compiler.options.mode === 'development' &&
-      compiler.options.watch === true
-    ) {
+    // In watch mode, register the webpack-dev-server client.
+    if (compiler.options.watch) {
       this.addManifestScript({
         compiler,
         entries,
