@@ -115,7 +115,7 @@ export const AssetMarketDetails = ({
   return (
     <Box>
       <Box
-        className="mx-4"
+        className="mx-4 border border-solid"
         marginBottom={2}
         borderColor={BoxBorderColor.BorderMuted}
         style={{ height: '1px', borderBottomWidth: 0 }}
