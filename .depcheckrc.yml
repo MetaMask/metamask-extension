@@ -73,7 +73,6 @@ ignores:
   # jest environments
   - 'jest-environment-jsdom'
   # webpack
-  - '@pmmmwh/react-refresh-webpack-plugin' # dev tool
   - 'webpack-dev-server' # dev tool
   - 'html-bundler-webpack-plugin' # build tool
   - 'webpack-bundle-analyzer' # build tool
