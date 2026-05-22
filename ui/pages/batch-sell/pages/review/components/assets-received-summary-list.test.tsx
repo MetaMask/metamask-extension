@@ -1,0 +1,152 @@
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { useSelector } from 'react-redux';
+import type { CaipAssetType } from '@metamask/utils';
+import type { BatchSellQuotesConfig, BatchSellQuotesResults } from '../types';
+import { AssetsReceivedSummaryList } from './assets-received-summary-list';
+
+jest.mock('../../../../../hooks/useI18nContext', () => ({
+  useI18nContext: () => (key: string) => key,
+}));
+
+jest.mock('../../../../../ducks/locale/locale', () => ({
+  getIntlLocale: (state: { locale?: string }) => state?.locale,
+}));
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
+
+const mockUseSelector = jest.mocked(useSelector);
+
+beforeEach(() => {
+  mockUseSelector.mockReset();
+  mockUseSelector.mockReturnValue('en-US' as never);
+});
+
+const ASSET_A = 'eip155:1/erc20:0xAAA' as CaipAssetType;
+const ASSET_B = 'eip155:1/erc20:0xBBB' as CaipAssetType;
+
+function makeSendAssetsConfig(
+  overrides: Partial<
+    Record<
+      CaipAssetType,
+      Partial<BatchSellQuotesConfig['sendAssetsConfig'][CaipAssetType]>
+    >
+  > = {},
+): BatchSellQuotesConfig['sendAssetsConfig'] {
+  return {
+    [ASSET_A]: {
+      asset: {
+        assetId: ASSET_A,
+        symbol: 'AAA',
+        name: 'Token A',
+        chainId: 'eip155:1',
+        balance: '1',
+        decimals: 18,
+        iconUrl: '',
+      } as never,
+      sendAmountPercent: 100,
+      slippagePercent: 0.5,
+      enabled: true,
+      ...overrides[ASSET_A],
+    },
+    [ASSET_B]: {
+      asset: {
+        assetId: ASSET_B,
+        symbol: 'BBB',
+        name: 'Token B',
+        chainId: 'eip155:1',
+        balance: '1',
+        decimals: 18,
+        iconUrl: '',
+      } as never,
+      sendAmountPercent: 100,
+      slippagePercent: 2,
+      enabled: true,
+      ...overrides[ASSET_B],
+    },
+  };
+}
+
+describe('AssetsReceivedSummaryList', () => {
+  it('renders one row per enabled asset', () => {
+    render(
+      <AssetsReceivedSummaryList
+        receivedAsset={{ symbol: 'USDC' }}
+        sendAssetsConfig={makeSendAssetsConfig()}
+        quotes={undefined}
+      />,
+    );
+
+    expect(screen.getByText(/AAA/u)).toBeInTheDocument();
+    expect(screen.getByText(/BBB/u)).toBeInTheDocument();
+  });
+
+  it('filters out disabled assets', () => {
+    render(
+      <AssetsReceivedSummaryList
+        receivedAsset={{ symbol: 'USDC' }}
+        sendAssetsConfig={makeSendAssetsConfig({
+          [ASSET_B]: { enabled: false },
+        })}
+        quotes={undefined}
+      />,
+    );
+
+    expect(screen.getByText(/AAA/u)).toBeInTheDocument();
+    expect(screen.queryByText(/BBB/u)).not.toBeInTheDocument();
+  });
+
+  it('renders the slippage percent for each item', () => {
+    render(
+      <AssetsReceivedSummaryList
+        receivedAsset={{ symbol: 'USDC' }}
+        sendAssetsConfig={makeSendAssetsConfig()}
+        quotes={undefined}
+      />,
+    );
+
+    expect(screen.getByText(/0\.5%/u)).toBeInTheDocument();
+    expect(screen.getByText(/2%/u)).toBeInTheDocument();
+  });
+
+  it('renders the received amount when quote is provided', () => {
+    const quotes: BatchSellQuotesResults['quotes'] = {
+      [ASSET_A]: {
+        asset: {} as never,
+        quote: {} as never,
+        receivedAmount: 100,
+        hasQuote: true,
+      },
+    };
+
+    render(
+      <AssetsReceivedSummaryList
+        receivedAsset={{ symbol: 'USDC' }}
+        sendAssetsConfig={makeSendAssetsConfig({
+          [ASSET_B]: { enabled: false },
+        })}
+        quotes={quotes}
+      />,
+    );
+
+    expect(screen.getByText(/100/u)).toBeInTheDocument();
+  });
+
+  it('renders nothing when all assets are disabled', () => {
+    const { container } = render(
+      <AssetsReceivedSummaryList
+        receivedAsset={{ symbol: 'USDC' }}
+        sendAssetsConfig={makeSendAssetsConfig({
+          [ASSET_A]: { enabled: false },
+          [ASSET_B]: { enabled: false },
+        })}
+        quotes={undefined}
+      />,
+    );
+
+    expect(container).toBeEmptyDOMElement();
+  });
+});

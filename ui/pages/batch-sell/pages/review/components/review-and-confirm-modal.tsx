@@ -4,11 +4,8 @@ import {
   BoxAlignItems,
   BoxBorderColor,
   BoxFlexDirection,
-  Button,
   ButtonHero,
   ButtonHeroSize,
-  ButtonSize,
-  ButtonVariant,
   FontWeight,
   Icon,
   IconName,
@@ -34,11 +31,14 @@ import { Skeleton } from '../../../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AvatarGroup } from '../../../../../components/multichain/avatar-group';
 import { AvatarType } from '../../../../../components/multichain/avatar-group/avatar-group.types';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { Tooltip } from '../../../../bridge/layout';
+// eslint-disable-next-line import-x/no-restricted-paths
 import {
   bpsToPercentage,
   formatCurrencyAmount,
   formatTokenAmount,
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';

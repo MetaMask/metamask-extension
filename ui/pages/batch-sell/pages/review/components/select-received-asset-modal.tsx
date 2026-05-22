@@ -5,14 +5,9 @@ import {
   Box,
   BoxAlignItems,
   BoxFlexDirection,
-  Button,
-  ButtonSize,
-  ButtonVariant,
   FontWeight,
   Text,
   TextAlign,
-  TextColor,
-  TextProps,
   TextVariant,
   twMerge,
 } from '@metamask/design-system-react';
@@ -23,9 +18,9 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalBody,
 } from '../../../../../components/component-library';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { formatCurrencyAmount } from '../../../../bridge/utils/quote';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 

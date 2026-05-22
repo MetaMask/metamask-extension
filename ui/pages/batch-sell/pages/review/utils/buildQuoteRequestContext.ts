@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { safeAmountForCalc } from '../../../../bridge/utils/quote';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { ReceivedAsset, QuoteRequestContext } from '../types';

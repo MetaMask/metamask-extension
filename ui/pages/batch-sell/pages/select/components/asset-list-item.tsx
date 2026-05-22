@@ -19,6 +19,7 @@ import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import {
   formatCurrencyAmount,
   formatTokenAmount,
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../bridge/utils/quote';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';

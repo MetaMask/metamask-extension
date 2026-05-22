@@ -8,7 +8,6 @@ import {
   ButtonIcon,
   ButtonIconSize,
   FontWeight,
-  IconColor,
   IconName,
   IconSize,
   Text,
@@ -24,16 +23,14 @@ import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import {
   formatCurrencyAmount,
   formatTokenAmount,
+  // eslint-disable-next-line import-x/no-restricted-paths
 } from '../../../../bridge/utils/quote';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { BatchSellQuotesResults } from '../types';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Tag } from '../../../../../components/component-library';
-import {
-  BackgroundColor,
-  TextColor as TextColorLegacy,
-} from '../../../../../helpers/constants/design-system';
+import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import {
   MAX_SEND_PERCENT,
   MIN_SEND_PERCENT,

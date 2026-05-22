@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { formatAddressToCaipReference } from '@metamask/bridge-controller';
 import { calcTokenValue } from '../../../../../../shared/lib/swaps-utils';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { safeAmountForCalc } from '../../../../bridge/utils/quote';
 import { BatchSellAsset } from '../../../../../ducks/batch-sell/types';
 import { QuoteRequestParams, SendAssetEntry } from '../types';

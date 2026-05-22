@@ -29,6 +29,7 @@ import {
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { sanitizeAmountInput } from '../../../../bridge/utils/quote';
 
 type SlippageModalProps = {

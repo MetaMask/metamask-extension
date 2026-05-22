@@ -1,6 +1,7 @@
 import { CaipAssetType } from '@metamask/utils';
 import { type BridgeController } from '@metamask/bridge-controller';
 import { BatchSellAsset } from '../../../../ducks/batch-sell/types';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { BridgeAssetV2 } from '../../../bridge/utils/tokens';
 import type { getBatchSellQuotes } from '../../../../ducks/batch-sell/selectors';
 

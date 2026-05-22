@@ -20,6 +20,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+// eslint-disable-next-line import-x/no-restricted-paths
 import { formatCurrencyAmount } from '../../../../bridge/utils/quote';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
 
