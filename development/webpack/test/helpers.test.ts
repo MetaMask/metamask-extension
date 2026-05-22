@@ -153,4 +153,75 @@ describe('./utils/helpers.ts', () => {
       });
     }
   });
+
+  describe('getDevServerClientUrl', () => {
+    const parse = (url: string) => {
+      const [base, query] = url.split('?');
+      return { base, params: new URLSearchParams(query) };
+    };
+
+    it('returns the webpack-dev-server client base path', () => {
+      const { base } = parse(helpers.getDevServerClientUrl({}));
+      assert.strictEqual(base, 'webpack-dev-server/client/index');
+    });
+
+    it('always sets protocol=ws (extension pages cannot auto-detect WS protocol)', () => {
+      const { params } = parse(helpers.getDevServerClientUrl({}));
+      assert.strictEqual(params.get('protocol'), 'ws');
+    });
+
+    it('omits hostname/port/hot/live-reload when the corresponding fields are unset', () => {
+      const { params } = parse(helpers.getDevServerClientUrl({}));
+      assert.strictEqual(params.has('hostname'), false);
+      assert.strictEqual(params.has('port'), false);
+      assert.strictEqual(params.has('hot'), false);
+      assert.strictEqual(params.has('live-reload'), false);
+    });
+
+    it('maps `host` to the `hostname` param', () => {
+      const { params } = parse(
+        helpers.getDevServerClientUrl({ host: 'localhost' }),
+      );
+      assert.strictEqual(params.get('hostname'), 'localhost');
+    });
+
+    it('forwards a numeric port as a string', () => {
+      const { params } = parse(helpers.getDevServerClientUrl({ port: 12345 }));
+      assert.strictEqual(params.get('port'), '12345');
+    });
+
+    it("forwards `port: 'auto'` as the string 'auto'", () => {
+      const { params } = parse(helpers.getDevServerClientUrl({ port: 'auto' }));
+      assert.strictEqual(params.get('port'), 'auto');
+    });
+
+    it('forwards `hot` as a string', () => {
+      const hotTrue = parse(helpers.getDevServerClientUrl({ hot: true }));
+      assert.strictEqual(hotTrue.params.get('hot'), 'true');
+
+      const hotFalse = parse(helpers.getDevServerClientUrl({ hot: false }));
+      assert.strictEqual(hotFalse.params.get('hot'), 'false');
+    });
+
+    it('maps `liveReload` to the `live-reload` param', () => {
+      const { params } = parse(
+        helpers.getDevServerClientUrl({ liveReload: true }),
+      );
+      assert.strictEqual(params.get('live-reload'), 'true');
+      assert.strictEqual(params.has('liveReload'), false);
+    });
+
+    it('combines all fields into a single query string', () => {
+      const url = helpers.getDevServerClientUrl({
+        host: 'localhost',
+        port: 8080,
+        hot: false,
+        liveReload: true,
+      });
+      assert.strictEqual(
+        url,
+        'webpack-dev-server/client/index?protocol=ws&hostname=localhost&port=8080&hot=false&live-reload=true',
+      );
+    });
+  });
 });
