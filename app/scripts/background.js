@@ -1205,6 +1205,25 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
     );
   }
+
+  // `yarn start:with-state` builds a local fixture wallet via WITH_STATE.
+  // Account/contact sync can otherwise pull remote user-storage for the same
+  // SRP and replace the generated local state. Applying this after migration
+  // covers both fresh fixture state and existing persisted state before
+  // controllers initialize; marking the key changed ensures split-state
+  // persistence writes the override.
+  if (
+    process.env.WITH_STATE &&
+    isObject(versionedData.data.UserStorageController)
+  ) {
+    versionedData.data.UserStorageController.isBackupAndSyncEnabled = false;
+    versionedData.data.UserStorageController.isAccountSyncingEnabled = false;
+    versionedData.data.UserStorageController.isContactSyncingEnabled = false;
+    if (!changedKeys.has('UserStorageController')) {
+      changedKeys.add('UserStorageController');
+    }
+  }
+
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
@@ -2063,12 +2082,9 @@ export function setupController(
 
   function getPendingApprovalCount() {
     try {
-      const pendingApprovalCount =
-        controller.appStateController.waitingForUnlock.length +
-        getAttentionRequiredApprovalCount({
-          approvalController: controller.approvalController,
-        });
-      return pendingApprovalCount;
+      return getAttentionRequiredApprovalCount({
+        approvalController: controller.approvalController,
+      });
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
       return 0;
