@@ -18,7 +18,16 @@ export function build(onComplete: () => void = noop) {
   if (config.watch) {
     const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
     const server = new WebpackDevServer(DEV_SERVER_OPTIONS, compiler);
-    server.start().then(() => console.log('🦊 Watching for changes…'));
+    server
+      .start()
+      .then(() => console.log('🦊 Watching for changes…'))
+      .catch((error: unknown) => {
+        console.error(
+          `🦊 Failed to start dev server on ${server.options.host ?? 'localhost'}:${server.options.port ?? '(auto)'}.`,
+        );
+        console.error(error);
+        process.exit(1);
+      });
   } else {
     console.error(`🦊 Running ${config.mode} build…`);
     compiler.run((err, stats) => {
