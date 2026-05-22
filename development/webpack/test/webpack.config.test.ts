@@ -173,7 +173,10 @@ ${Object.entries(env)
 
   function getSplitChunksConfig() {
     const config: Configuration = getWebpackConfig();
-    assert(config.optimization?.splitChunks, 'splitChunks should be configured');
+    assert(
+      config.optimization?.splitChunks,
+      'splitChunks should be configured',
+    );
 
     return config.optimization.splitChunks;
   }
@@ -452,7 +455,9 @@ ${Object.entries(env)
 
     const readAssets = (assetNames: string[]) =>
       assetNames
-        .map((assetName) => fs.readFileSync(join(outputPath, assetName), 'utf8'))
+        .map((assetName) =>
+          fs.readFileSync(join(outputPath, assetName), 'utf8'),
+        )
         .join('\n');
     const entrypointSource = readAssets(entrypointAssets);
     const asyncSource = readAssets(asyncAssets);
@@ -472,7 +477,10 @@ ${Object.entries(env)
       string,
       {
         test?: RegExp;
-        chunks?: (chunk: { name?: string; canBeInitial: () => boolean }) => boolean;
+        chunks?: (chunk: {
+          name?: string;
+          canBeInitial: () => boolean;
+        }) => boolean;
         minChunks?: number;
       }
     >;
@@ -494,7 +502,10 @@ ${Object.entries(env)
     assert(vendor.test, 'expected vendor cache group to have a test');
     assert(asyncJs.test, 'expected asyncJs cache group to have a test');
     assert(js.chunks, 'expected js cache group to have a chunks function');
-    assert(vendor.chunks, 'expected vendor cache group to have a chunks function');
+    assert(
+      vendor.chunks,
+      'expected vendor cache group to have a chunks function',
+    );
     assert(
       asyncJs.chunks,
       'expected asyncJs cache group to have a chunks function',
@@ -509,7 +520,10 @@ ${Object.entries(env)
       vendor.test.test('/project/node_modules/react/index.js'),
       true,
     );
-    assert.strictEqual(vendor.test.test('/project/ui/pages/home/index.js'), false);
+    assert.strictEqual(
+      vendor.test.test('/project/ui/pages/home/index.js'),
+      false,
+    );
     assert.strictEqual(js.chunks(initialChunk), true);
     assert.strictEqual(js.chunks(preloadRoutesChunk), false);
     assert.strictEqual(js.chunks(asyncChunk), false);
