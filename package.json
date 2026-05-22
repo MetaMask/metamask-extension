@@ -302,7 +302,8 @@
     "@metamask/permission-controller@npm:^12.3.0": "^13.0.0",
     "@metamask/account-tree-controller": "npm:@metamask-previews/account-tree-controller@7.4.0-preview-855431b",
     "@metamask/snap-account-service": "npm:@metamask-previews/snap-account-service@0.2.0-preview-8e8c4f6f5",
-    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@10.0.0-preview-8e8c4f6f5"
+    "@metamask/multichain-account-service": "npm:@metamask-previews/multichain-account-service@10.0.0-preview-8e8c4f6f5",
+    "@metamask/snaps-rpc-methods@npm:^16.0.0": "patch:@metamask/snaps-rpc-methods@npm%3A16.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-16.0.0-f7dc424d0a.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.29.2#~/.yarn/patches/@babel-runtime-npm-7.29.2-b49cad1c67.patch",
@@ -433,7 +434,7 @@
     "@metamask/snap-account-service": "^0.2.0",
     "@metamask/snaps-controllers": "^20.0.5",
     "@metamask/snaps-execution-environments": "^11.0.2",
-    "@metamask/snaps-rpc-methods": "^16.0.0",
+    "@metamask/snaps-rpc-methods": "patch:@metamask/snaps-rpc-methods@npm%3A16.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-16.0.0-f7dc424d0a.patch",
     "@metamask/snaps-sdk": "^11.1.1",
     "@metamask/snaps-utils": "^12.2.0",
     "@metamask/solana-wallet-snap": "^2.8.0",

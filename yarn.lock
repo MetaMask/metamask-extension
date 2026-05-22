@@ -8204,7 +8204,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^16.0.0":
+"@metamask/snaps-rpc-methods@npm:16.0.0":
   version: 16.0.0
   resolution: "@metamask/snaps-rpc-methods@npm:16.0.0"
   dependencies:
@@ -8218,6 +8218,23 @@ __metadata:
     "@noble/hashes": "npm:^1.7.1"
     async-mutex: "npm:^0.5.0"
   checksum: 10/3d8c8ae1667ccabb7e9dd2d8f44746f93dbdd4312e1e81df8e7ee86d40c0f458679225178227938146c8c762bee7f6032554215de294e84ce4ce279768b17641
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A16.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-16.0.0-f7dc424d0a.patch":
+  version: 16.0.0
+  resolution: "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A16.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-16.0.0-f7dc424d0a.patch::version=16.0.0&hash=3a3afe"
+  dependencies:
+    "@metamask/key-tree": "npm:^10.1.1"
+    "@metamask/permission-controller": "npm:^13.1.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/snaps-sdk": "npm:^11.1.1"
+    "@metamask/snaps-utils": "npm:^12.2.0"
+    "@metamask/superstruct": "npm:^3.2.1"
+    "@metamask/utils": "npm:^11.11.0"
+    "@noble/hashes": "npm:^1.7.1"
+    async-mutex: "npm:^0.5.0"
+  checksum: 10/f449dacb772e614eac295e2dfac988bc93656392ff0471958c1b279f79b1111696088dbe05e92e841d5555c910cfef4c93cbfe012e5dd1ae1f5c3fdb4882378d
   languageName: node
   linkType: hard
 
@@ -33694,7 +33711,7 @@ __metadata:
     "@metamask/snaps-controllers": "npm:^20.0.5"
     "@metamask/snaps-execution-environments": "npm:^11.0.2"
     "@metamask/snaps-registry": "npm:^4.0.0"
-    "@metamask/snaps-rpc-methods": "npm:^16.0.0"
+    "@metamask/snaps-rpc-methods": "patch:@metamask/snaps-rpc-methods@npm%3A16.0.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-16.0.0-f7dc424d0a.patch"
     "@metamask/snaps-sdk": "npm:^11.1.1"
     "@metamask/snaps-utils": "npm:^12.2.0"
     "@metamask/solana-wallet-snap": "npm:^2.8.0"
