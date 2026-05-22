@@ -67,6 +67,26 @@ const NETWORK_CONFIGS: NetworkConfigFile = {
       fixtureSetupMethod: 'withNetworkControllerOnArbitrum',
       description: 'Arbitrum - Popular Network',
     },
+    {
+      id: 'OP',
+      networkName: 'OP',
+      tab: 'Popular',
+      symbol: 'ETH',
+      chainIdHex: '0xa',
+      sendAmount: '0.0000001',
+      fixtureSetupMethod: 'withNetworkControllerOnOptimism',
+      description: 'Optimism - Popular Network',
+    },
+    {
+      id: 'Polygon',
+      networkName: 'Polygon',
+      tab: 'Popular',
+      symbol: 'POL',
+      chainIdHex: '0x89',
+      sendAmount: '0.5',
+      fixtureSetupMethod: 'withNetworkControllerOnPolygon',
+      description: 'Polygon - Popular Network',
+    },
   ],
   customNetworks: [
     {
